@@ -46,3 +46,8 @@ class MemoryWrite(BaseModel):
 class SettingsWrite(BaseModel):
     settings: dict
     clear_api_key: bool = False
+
+
+class SummaryCorrection(BaseModel):
+    summary: str = Field(min_length=1, max_length=50000)
+    version: str = Field(min_length=1, max_length=100)

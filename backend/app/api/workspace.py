@@ -22,6 +22,10 @@ def create_router(services: AppServices) -> APIRouter:
             return await asyncio.to_thread(workspace.find_files, query)
         return await asyncio.to_thread(workspace.tree, path)
 
+    @router.get("/api/files/quick-open")
+    async def quick_open(query: str = ""):
+        return await asyncio.to_thread(workspace.find_files, query, 50)
+
     @router.get("/api/file")
     async def file(path: str):
         return await asyncio.to_thread(workspace.read, path)

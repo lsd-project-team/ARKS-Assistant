@@ -58,6 +58,11 @@ class Repository:
             )
             result["messages"] = [record_dict(message) for message in messages]
             result["runs"] = [record_dict(run) for run in runs]
+            # 老数据没有回复关联；按当时一轮一条回复的顺序兼容，不修改历史。
+            answers = [row for row in result["messages"] if row["role"] == "assistant"]
+            completed = [row for row in result["runs"] if row["status"] == "completed"]
+            for run, answer in zip(completed, answers, strict=False):
+                run["response_message_id"] = run["response_message_id"] or answer["id"]
             return result
 
     def rename(self, thread_id: str, title: str):
@@ -153,7 +158,10 @@ class Repository:
             run.status = "completed"
             run.answer = answer
             run.updated_at = now_iso()
-            session.add(Message(thread_id=run.thread_id, role="assistant", content=answer))
+            response = Message(thread_id=run.thread_id, role="assistant", content=answer)
+            session.add(response)
+            session.flush()
+            run.response_message_id = response.id
             session.execute(
                 update(Thread).where(Thread.id == run.thread_id).values(updated_at=now_iso())
             )
@@ -170,6 +178,10 @@ class Repository:
         previous = self.run(run_id)
         if previous["status"] not in {"interrupted", "failed", "cancelled"}:
             raise ValueError("此运行不能继续")
+        source = previous
+        # 兼容旧版本的恢复记录：重新生成与旧回复的关联沿恢复链查找。
+        while source.get("resumed_from") and not source.get("regenerated_from"):
+            source = self.run(source["resumed_from"])
         with self.lock, self.database.session.begin() as session:
             latest = session.scalar(
                 select(Run.id)
@@ -191,6 +203,7 @@ class Repository:
                 thread_id=previous["thread_id"],
                 message_id=previous["message_id"],
                 resumed_from=run_id,
+                regenerated_from=source.get("regenerated_from"),
             )
             session.add(row)
             session.flush()
@@ -208,3 +221,26 @@ class Repository:
             for row in rows
             if query.casefold() in row["content"].casefold()
         ][:20]
+
+    def has_active_run(self, thread_id: str) -> bool:
+        return any(row["status"] in {"queued", "running"} for row in self.thread(thread_id)["runs"])
+
+    def regenerate(self, run_id: str) -> dict:
+        previous = self.run(run_id)
+        with self.lock, self.database.session.begin() as session:
+            latest = session.scalar(
+                select(Run)
+                .where(Run.thread_id == previous["thread_id"])
+                .order_by(Run.created_at.desc())
+                .limit(1)
+            )
+            if not latest or latest.id != run_id or latest.status != "completed":
+                raise ValueError("只能重新生成当前对话最近完成的回复")
+            run = Run(
+                thread_id=previous["thread_id"],
+                message_id=previous["message_id"],
+                regenerated_from=run_id,
+            )
+            session.add(run)
+            session.flush()
+            return record_dict(run)

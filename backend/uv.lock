@@ -1465,6 +1465,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },
+    { name = "anthropic" },
     { name = "deepagents" },
     { name = "fastapi" },
     { name = "httpx" },
@@ -1490,6 +1491,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.15" },
+    { name = "anthropic", specifier = ">=1.13,<2" },
     { name = "deepagents", specifier = ">=0.7.23,<0.8" },
     { name = "fastapi", specifier = ">=0.115" },
     { name = "httpx", specifier = ">=0.28" },

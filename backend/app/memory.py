@@ -1,5 +1,7 @@
 """跨会话 Markdown 记忆，带来源、源码版本和乐观并发检查。"""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 from threading import RLock
@@ -101,11 +103,25 @@ class MemoryService:
                 if row:
                     session.delete(row)
 
-    def prompt(self) -> str:
+    def prompt_snapshot(self) -> tuple[str, list[dict]]:
         rows = self.list()
         chunks = [
             f"[{row['scope']}/{row['name']}]\n{row['content']}\n"
             f"源码来源：{dump_json(row['sources'])}"
             for row in rows
         ]
-        return "\n\n".join(chunks)[:24000]
+        remaining = 24000
+        included = []
+        accepted = []
+        for row, chunk in zip(rows, chunks, strict=True):
+            if remaining <= 0:
+                break
+            accepted.append(chunk[:remaining])
+            included.append(
+                {**row, "partial": len(chunk) > remaining, "injected_text": chunk[:remaining]}
+            )
+            remaining -= len(chunk) + 2
+        return "\n\n".join(accepted)[:24000], included
+
+    def prompt(self) -> str:
+        return self.prompt_snapshot()[0]

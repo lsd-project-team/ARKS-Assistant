@@ -47,6 +47,8 @@ class Run(Base):
     answer: Mapped[str] = mapped_column(Text, default="")
     error: Mapped[str] = mapped_column(Text, default="")
     resumed_from: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    regenerated_from: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    response_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 

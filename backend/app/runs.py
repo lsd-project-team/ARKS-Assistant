@@ -13,6 +13,8 @@ class RunManager:
         self.repository, self.runtime, self.settings = repository, runtime, settings
         self.tasks: dict[str, asyncio.Task] = {}
         self.capacity = asyncio.Semaphore(3)
+        # 检查点纠错与新运行入队互斥，避免读完摘要后又被另一次执行覆盖。
+        self.edit_lock = asyncio.Lock()
 
     def start(self, run: dict):
         task = asyncio.create_task(self._execute(run), name=f"agent:{run['id']}")

@@ -4,7 +4,7 @@ from deepagents import create_deep_agent
 from deepagents.backends import CompositeBackend, FilesystemBackend
 from deepagents.middleware.filesystem import FilesystemMiddleware
 from deepagents.middleware.summarization import SummarizationMiddleware, SummarizationToolMiddleware
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage, RemoveMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agent_tools import conversation_tools, source_tools
@@ -12,7 +12,7 @@ from app.config import Paths, SettingsStore
 from app.context import estimate_tokens
 from app.mcp_client import ToolCatalog, adapt_tool
 from app.memory import MemoryService
-from app.provider import close_models, create_model
+from app.provider import StateInspectionModel, close_models, create_model
 from app.repository import Repository
 from app.source_backend import SourceBackend
 from app.workspace import Workspace
@@ -56,10 +56,12 @@ class AgentRuntime:
                 emit("notice", {"text": f"{server.name} 暂时无法连接，本轮继续使用本地源码"})
         return result
 
-    async def graph(self, thread_id, checkpointer, emit, owned_models=None):
+    async def graph(self, thread_id, checkpointer, emit, owned_models=None, *, inspection=False):
         settings = self.settings.load()
-        model = create_model(settings.model)
-        summary_model = create_model(settings.model, summary=True)
+        model = StateInspectionModel() if inspection else create_model(settings.model)
+        summary_model = (
+            StateInspectionModel() if inspection else create_model(settings.model, summary=True)
+        )
         if owned_models is not None:
             owned_models.extend([model, summary_model])
         backend = CompositeBackend(
@@ -68,7 +70,8 @@ class AgentRuntime:
         )
         tools = source_tools(self.workspace)
         tools += conversation_tools(self.repository, self.memories, thread_id)
-        tools += await self.remote_tools(settings.mcp_servers, emit)
+        if not inspection:
+            tools += await self.remote_tools(settings.mcp_servers, emit)
         budget = min(
             int(settings.model.context_tokens * 0.75),
             settings.model.context_tokens - settings.model.output_tokens - 1500,
@@ -82,7 +85,10 @@ class AgentRuntime:
             token_counter=estimate_tokens,
         )
         prompt = SYSTEM_PROMPT + f"\nDeepWiki 仓库：{settings.deepwiki_repo or '未配置'}\n"
-        prompt += "\n已有长期记忆：\n" + self.memories.prompt()
+        memory_prompt, included_memories = self.memories.prompt_snapshot()
+        prompt += "\n已有长期记忆：\n" + memory_prompt
+        if not inspection:
+            emit("context_sources", {"memories": included_memories})
         if settings.auto_memory:
             prompt += "\n可主动调用 remember 保存已核实且适合后续使用的项目事实。"
         else:
@@ -131,6 +137,30 @@ class AgentRuntime:
             config = {"configurable": {"thread_id": run["thread_id"]}, "recursion_limit": 60}
             state = await graph.aget_state(config)
             message = self.repository.message(run["message_id"])
+            if run.get("regenerated_from"):
+                request = run
+                while request.get("resumed_from"):
+                    request = self.repository.run(request["resumed_from"])
+                instruction_id = f"regenerate:{request['id']}"
+                # 保留档案中的旧答案；图里替换最近回复，并携带原问题和原选区重新回答。
+                instruction = HumanMessage(
+                    content="请重新回答以下用户问题，核对依据并给出完整回答：\n"
+                    + self.input_message(message).text,
+                    id=instruction_id,
+                )
+                graph_messages = state.values.get("messages", [])
+                last = graph_messages[-1] if graph_messages else None
+                edits = (
+                    [RemoveMessage(id=last.id)]
+                    if isinstance(last, AIMessage) and not last.tool_calls
+                    else []
+                )
+                # 中断后沿用第一次重新生成的稳定 ID，避免重复指令或返回旧答案。
+                if not any(item.id == instruction_id for item in graph_messages):
+                    await graph.aupdate_state(
+                        config, {"messages": [*edits, instruction]}, as_node="__start__"
+                    )
+                    state = await graph.aget_state(config)
             seen = any(item.id == message["id"] for item in state.values.get("messages", []))
             if run.get("resumed_from") and seen and not state.next:
                 completed = state.values.get("messages", [])
@@ -141,7 +171,11 @@ class AgentRuntime:
                 ):
                     return completed[-1].text
             # 同一 HumanMessage 使用稳定 ID。重试不会向检查点重复追加用户问题。
-            inputs = None if seen and state.next else {"messages": [self.input_message(message)]}
+            inputs = (
+                None
+                if (seen and state.next) or run.get("regenerated_from")
+                else {"messages": [self.input_message(message)]}
+            )
             text = ""
             summary_announced = False
             async for mode, event in graph.astream(

@@ -4,7 +4,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
 from app.config import dump_json
-from app.schemas import RunCreate, ThreadCreate, ThreadUpdate
+from app.conversation_context import ConversationContext
+from app.schemas import RunCreate, SummaryCorrection, ThreadCreate, ThreadUpdate
 from app.services import AppServices
 
 
@@ -13,6 +14,7 @@ def create_router(services: AppServices) -> APIRouter:
     workspace = services.workspace
     repository = services.repository
     runs = services.runs
+    context = ConversationContext(services.runtime)
 
     @router.get("/api/threads")
     async def threads():
@@ -39,8 +41,9 @@ def create_router(services: AppServices) -> APIRouter:
             selections.append(
                 {**selection.model_dump(), "stale": current["version"] != selection.version}
             )
-        run = repository.create_run(thread_id, body.content, selections)
-        runs.start(run)
+        async with runs.edit_lock:
+            run = repository.create_run(thread_id, body.content, selections)
+            runs.start(run)
         return run
 
     @router.get("/api/runs/{run_id}")
@@ -54,20 +57,42 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.post("/api/runs/{run_id}/resume", status_code=201)
     async def resume(run_id: str):
-        run = repository.resume(run_id)
-        runs.start(run)
+        async with runs.edit_lock:
+            run = repository.resume(run_id)
+            runs.start(run)
         return run
 
     @router.post("/api/threads/{thread_id}/compact", status_code=201)
     async def compact(thread_id: str):
-        run = repository.create_run(
-            thread_id,
-            "请调用 compact_conversation 压缩当前对话上下文，保留目标、结论和待办。"
-            "如果尚未达到压缩条件请直接说明，无需重复之前的回答。",
-            [],
-        )
-        runs.start(run)
+        async with runs.edit_lock:
+            run = repository.create_run(
+                thread_id,
+                "请调用 compact_conversation 压缩当前对话上下文，保留目标、结论和待办。"
+                "如果尚未达到压缩条件请直接说明，无需重复之前的回答。",
+                [],
+            )
+            runs.start(run)
         return run
+
+    @router.post("/api/runs/{run_id}/regenerate", status_code=201)
+    async def regenerate(run_id: str):
+        async with runs.edit_lock:
+            run = repository.regenerate(run_id)
+            runs.start(run)
+        return run
+
+    @router.get("/api/threads/{thread_id}/context")
+    async def conversation_context(thread_id: str):
+        return await context.read(thread_id)
+
+    @router.patch("/api/threads/{thread_id}/context")
+    async def correct_context(thread_id: str, body: SummaryCorrection):
+        async with runs.edit_lock:
+            return await context.correct(thread_id, body)
+
+    @router.get("/api/runs/{run_id}/context")
+    async def run_context(run_id: str):
+        return context.run_sources(run_id)
 
     @router.get("/api/runs/{run_id}/trace")
     async def trace(run_id: str):

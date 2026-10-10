@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import subprocess
+from itertools import islice
 from pathlib import Path, PurePosixPath
 
 import tree_sitter_c_sharp
@@ -103,11 +104,12 @@ class Workspace:
                     yield target
 
     def find_files(self, query: str, limit: int = 100) -> list[dict]:
-        return [
+        matches = (
             {"path": self.relative(path), "name": path.name}
             for path in self.files()
             if query.casefold() in self.relative(path).casefold()
-        ][:limit]
+        )
+        return list(islice(matches, limit))
 
     def search(self, query: str, glob: str = "*", limit: int = 100) -> dict:
         if not query or len(query) > 300:

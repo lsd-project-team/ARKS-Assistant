@@ -2,11 +2,41 @@
 
 import inspect
 import logging
+from functools import cached_property
 
+import anthropic
+import httpx
 from langchain_anthropic import ChatAnthropic
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
 from app.config import ModelSettings
+
+
+class StateInspectionModel(BaseChatModel):
+    """只装配图的状态通道；读取历史不依赖供应商配置，也不允许生成回复。"""
+
+    @property
+    def _llm_type(self):
+        return "state-inspection"
+
+    def bind_tools(self, _tools, **_kwargs):
+        return self
+
+    def _generate(self, *_args, **_kwargs):
+        raise RuntimeError("状态检查不能调用模型")
+
+
+class OwnedChatAnthropic(ChatAnthropic):
+    """供应商连接随一次运行释放，避免关闭 LangChain 缓存的共享连接池。"""
+
+    @cached_property
+    def _client(self):
+        return anthropic.Client(**self._client_params)
+
+    @cached_property
+    def _async_client(self):
+        return anthropic.AsyncClient(**self._client_params)
 
 
 def create_model(settings: ModelSettings, *, summary: bool = False):
@@ -27,8 +57,13 @@ def create_model(settings: ModelSettings, *, summary: bool = False):
         },
     }
     if settings.protocol == "anthropic":
-        return ChatAnthropic(**common)
-    return ChatOpenAI(**common, use_responses_api=False)
+        return OwnedChatAnthropic(**common)
+    return ChatOpenAI(
+        **common,
+        use_responses_api=False,
+        http_client=httpx.Client(),
+        http_async_client=httpx.AsyncClient(),
+    )
 
 
 def safe_error(error: BaseException, settings: ModelSettings) -> str:
