@@ -3,7 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowUp,
   Plus,
-  Sparkles,
+  Folder,
+  PanelLeftOpen,
+  Zap,
   X,
   Square,
   FileCode2,
@@ -25,16 +27,7 @@ function MessageBubble({ message, runId }: { message: Message; runId?: string })
   const openFile = useWorkspace((state) => state.openFile);
   return (
     <div className={`message ${message.role}`}>
-      <div className="message-label">
-        {message.role === 'user' ? (
-          '你'
-        ) : (
-          <>
-            <Sparkles size={13} />
-            Trunk Agent
-          </>
-        )}
-      </div>
+      <div className="message-label">{message.role === 'user' ? '你' : <>Trunk Agent</>}</div>
       {message.selections?.map((selection, index) => (
         <button
           className="context-citation"
@@ -73,12 +66,19 @@ function ToolActivity({ tools }: { tools: ToolEvent[] }) {
   ) : null;
 }
 
-export function ChatPane() {
-  const { threadId, selectThread, selections, removeSelection, clearSelections, setSidebar } =
-    useWorkspace();
+export function ChatPane({
+  onShowSource,
+  onShowSidebar,
+}: {
+  onShowSource: () => void;
+  onShowSidebar: () => void;
+}) {
+  const { threadId, selectThread, selections, removeSelection, clearSelections } = useWorkspace();
   const [draft, setDraft] = useState('');
   const [started, setStarted] = useState<Run>();
   const bottom = useRef<HTMLDivElement>(null);
+  const composerInput = useRef<HTMLTextAreaElement>(null);
+  const mobile = useWorkspace((state) => state.mobile);
   const cache = useQueryClient();
   const conversation = useQuery({
     queryKey: ['thread', threadId],
@@ -102,7 +102,13 @@ export function ChatPane() {
   const busy = !!active && !stream.finished;
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [stream.answer, conversation.data?.messages.length, stream.tools.length]);
+  }, [threadId, stream.answer, conversation.data?.messages.length, stream.tools.length]);
+  useEffect(() => {
+    if (mobile === 'chat') bottom.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [mobile]);
+  useEffect(() => {
+    if (selections.length) composerInput.current?.focus();
+  }, [selections.length]);
   const send = useMutation({
     mutationFn: async () => {
       let id = threadId;
@@ -148,7 +154,6 @@ export function ChatPane() {
     });
     selectThread(row.id);
     setStarted(undefined);
-    setSidebar('threads');
     void cache.invalidateQueries({ queryKey: ['threads'] });
   }
   const messages = conversation.data?.messages || [];
@@ -157,10 +162,11 @@ export function ChatPane() {
     <section className="chat-pane">
       <div className="chat-heading">
         <div>
-          <span className="agent-mark">
-            <Sparkles size={15} />
-          </span>
-          <strong>{conversation.data?.title || '新对话'}</strong>
+          <button className="show-sidebar" aria-label="展开会话导航" onClick={onShowSidebar}>
+            <PanelLeftOpen size={16} />
+          </button>
+          <Folder size={15} />
+          <strong title={conversation.data?.title}>{conversation.data?.title || '新对话'}</strong>
         </div>
         <div>
           {threadId && (
@@ -186,28 +192,25 @@ export function ChatPane() {
       <div className="chat-scroll">
         {!messages.length && !active && (
           <div className="chat-welcome">
-            <div className="welcome-mark">
-              <Sparkles size={24} strokeWidth={1.4} />
-            </div>
-            <h2>一起读懂这份源码</h2>
+            <h2>想从哪里开始？</h2>
             <p>
               解释代码、追踪模块，或聊聊你的想法。
               <br />
-              选中的代码会随问题一起发送。
+              在右侧打开文件，选中一段代码就可以提问。
             </p>
             <div className="suggestions">
               {['这个项目的模块如何组织？', '帮我理解选中的代码', '如何开始开发一个新模块？'].map(
                 (text) => (
                   <button key={text} onClick={() => setDraft(text)}>
                     {text}
-                    <ArrowUp size={12} />
+                    <Plus size={13} />
                   </button>
                 ),
               )}
             </div>
             <div className="welcome-context">
               <span className="tiny-dot" />
-              trunk<span>DeepWiki · 长期记忆</span>
+              trunk<span>已连接源码工作区</span>
             </div>
           </div>
         )}
@@ -227,7 +230,6 @@ export function ChatPane() {
         {active && (
           <div className="message assistant">
             <div className="message-label">
-              <Sparkles size={13} />
               Trunk Agent {busy && <span className="thinking">处理中</span>}
             </div>
             <ToolActivity tools={stream.tools} />
@@ -284,11 +286,12 @@ export function ChatPane() {
           }}
         >
           <textarea
+            ref={composerInput}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="询问代码，或开始一个话题…"
+            placeholder="询问代码，或聊聊你的想法…"
             aria-label="对话输入"
-            rows={3}
+            rows={2}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
                 e.preventDefault();
@@ -297,10 +300,21 @@ export function ChatPane() {
             }}
           />
           <div className="composer-toolbar">
-            <span className="model-label">
-              <span className="tiny-dot" />
-              {settings.data?.model.model || '配置模型'}
-            </span>
+            <div className="composer-tools">
+              <button
+                type="button"
+                className="attach-code"
+                aria-label="选择源码"
+                title="打开源码文件树"
+                onClick={onShowSource}
+              >
+                <Plus size={18} />
+              </button>
+              <span className="model-label">
+                <Zap size={12} fill="currentColor" />
+                {settings.data?.model.model || '配置模型'}
+              </span>
+            </div>
             {busy ? (
               <Button
                 type="button"

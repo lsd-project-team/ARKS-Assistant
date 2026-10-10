@@ -8,7 +8,6 @@ interface WorkspaceState {
   threadId: string;
   selections: Selection[];
   jump: { line: number; time: number };
-  sidebar: 'files' | 'threads';
   mobile: 'code' | 'chat';
   openFile: (path: string, line?: number) => void;
   closeFile: (path: string) => void;
@@ -16,7 +15,6 @@ interface WorkspaceState {
   addSelection: (selection: Selection) => void;
   removeSelection: (index: number) => void;
   clearSelections: () => void;
-  setSidebar: (tab: 'files' | 'threads') => void;
   setMobile: (tab: 'code' | 'chat') => void;
 }
 export const useWorkspace = create<WorkspaceState>()(
@@ -26,8 +24,7 @@ export const useWorkspace = create<WorkspaceState>()(
       activePath: '',
       threadId: '',
       selections: [],
-      sidebar: 'files',
-      mobile: 'code',
+      mobile: 'chat',
       jump: { line: 1, time: 0 },
       openFile: (path, line = 1) =>
         set((state) => ({
@@ -65,7 +62,6 @@ export const useWorkspace = create<WorkspaceState>()(
           selections: state.selections.filter((_, position) => position !== index),
         })),
       clearSelections: () => set({ selections: [] }),
-      setSidebar: (sidebar) => set({ sidebar }),
       setMobile: (mobile) => set({ mobile }),
     }),
     {

@@ -1,18 +1,10 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Layers2,
-  Files,
-  MessageSquare,
-  Brain,
-  Settings2,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Code2,
-  ArrowUpRight,
-} from 'lucide-react';
+import { Home, Files, MessageSquare, Brain, Settings2, Code2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
+import { FileExplorer } from './components/FileExplorer';
 import { ChatPane } from './components/ChatPane';
+import { PaneDivider } from './components/PaneDivider';
 import { SettingsDialog } from './components/SettingsDialog';
 import { MemoryDialog } from './components/MemoryDialog';
 import { useWorkspace } from './lib/store';
@@ -26,46 +18,43 @@ export default function App() {
   const [dialog, setDialog] = useState('');
   const [collapsed, setCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const { sidebar, setSidebar, mobile, setMobile } = useWorkspace();
-  const jump = useWorkspace((state) => state.jump.time);
-  const threadId = useWorkspace((state) => state.threadId);
+  const [explorerOpen, setExplorerOpen] = useState(true);
+  const { mobile, setMobile, jump, threadId } = useWorkspace();
   useEffect(() => {
     setMobileSidebarOpen(false);
-  }, [jump, threadId]);
+    // 窄屏文件树是浮层，打开源码后收起，让编辑器恢复完整宽度。
+    if (window.matchMedia('(max-width: 800px)').matches) setExplorerOpen(false);
+  }, [jump.time, threadId]);
   const health = useQuery({
     queryKey: ['health'],
     queryFn: () => api<{ ok: boolean; workspace: string }>('/health'),
     retry: 1,
   });
+  function showSource() {
+    setMobileSidebarOpen(false);
+    setMobile('code');
+    setExplorerOpen(true);
+  }
   return (
     <div
       className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''} mobile-${mobile} ${mobileSidebarOpen ? 'show-mobile-sidebar' : ''}`}
     >
-      <nav className="navigation-rail">
-        <div className="brand" title="Trunk Agent">
-          <Layers2 size={23} strokeWidth={1.8} />
-        </div>
-        <button
-          className={sidebar === 'files' ? 'active' : ''}
-          aria-label="文件浏览器"
-          onClick={() => {
-            setSidebar('files');
-            setCollapsed(false);
-            setMobileSidebarOpen(true);
-          }}
-        >
-          <Files size={19} />
+      <nav className="navigation-rail" aria-label="工作区导航">
+        <button className="rail-home" aria-label="问答" onClick={() => setMobile('chat')}>
+          <Home size={18} fill="currentColor" />
         </button>
         <button
-          className={sidebar === 'threads' ? 'active' : ''}
           aria-label="对话列表"
           onClick={() => {
-            setSidebar('threads');
             setCollapsed(false);
-            setMobileSidebarOpen(true);
+            setMobileSidebarOpen(!mobileSidebarOpen);
+            setMobile('chat');
           }}
         >
           <MessageSquare size={19} />
+        </button>
+        <button aria-label="文件浏览器" onClick={showSource}>
+          <Files size={19} />
         </button>
         <div className="rail-spacer" />
         <button aria-label="长期记忆" onClick={() => setDialog('memory')}>
@@ -78,68 +67,45 @@ export default function App() {
           W
         </div>
       </nav>
-      <header className="app-header">
-        <div>
-          <button
-            className="collapse-button"
-            aria-label="折叠侧栏"
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            {collapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
-          </button>
-          <strong>Trunk</strong>
-          <span className="header-divider">/</span>
-          <span>源码工作区</span>
-          <span className="version-badge">Agent</span>
-        </div>
-        <div className="header-right">
-          <span className={`connection-label ${health.error ? 'offline' : ''}`}>
-            <span className="tiny-dot" />
-            {health.error ? '服务未连接' : '本机连接'}
-          </span>
-          <button onClick={() => setDialog('settings')}>
-            Deep Agents
-            <ArrowUpRight size={12} />
-          </button>
-        </div>
-      </header>
-      {!collapsed && <Sidebar />}
+      {!collapsed && (
+        <Sidebar
+          onCollapse={() => {
+            setCollapsed(true);
+            setMobileSidebarOpen(false);
+          }}
+          onNavigate={() => setMobileSidebarOpen(false)}
+          onShowSource={showSource}
+          connected={!health.error}
+        />
+      )}
       <main className="workspace-main">
         <div className="mobile-switch">
+          <button className={mobile === 'chat' ? 'selected' : ''} onClick={() => setMobile('chat')}>
+            <MessageSquare size={14} />
+            问答
+          </button>
           <button className={mobile === 'code' ? 'selected' : ''} onClick={() => setMobile('code')}>
-            <Code2 size={13} />
+            <Code2 size={14} />
             源码
           </button>
-          <button className={mobile === 'chat' ? 'selected' : ''} onClick={() => setMobile('chat')}>
-            <MessageSquare size={13} />
-            对话
-          </button>
         </div>
-        <Suspense fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}>
-          <CodePane />
-        </Suspense>
-        <div
-          className="pane-divider"
-          onPointerDown={(event) => {
-            const parent = event.currentTarget.parentElement!;
-            const move = (next: PointerEvent) => {
-              const width = Math.min(
-                650,
-                Math.max(340, parent.getBoundingClientRect().right - next.clientX),
-              );
-              parent.style.setProperty('--chat-width', `${width}px`);
-            };
-            const stop = () => {
-              window.removeEventListener('pointermove', move);
-              window.removeEventListener('pointerup', stop);
-              document.body.style.cursor = '';
-            };
-            document.body.style.cursor = 'col-resize';
-            window.addEventListener('pointermove', move);
-            window.addEventListener('pointerup', stop, { once: true });
+        <ChatPane
+          onShowSource={showSource}
+          onShowSidebar={() => {
+            setCollapsed(false);
+            setMobileSidebarOpen(!mobileSidebarOpen);
           }}
         />
-        <ChatPane />
+        <PaneDivider />
+        <section className="source-workspace" aria-label="源码工作区">
+          <Suspense fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}>
+            <CodePane
+              explorerOpen={explorerOpen}
+              onToggleExplorer={() => setExplorerOpen(!explorerOpen)}
+            />
+          </Suspense>
+          {explorerOpen && <FileExplorer onClose={() => setExplorerOpen(false)} />}
+        </section>
       </main>
       <SettingsDialog open={dialog === 'settings'} onClose={() => setDialog('')} />
       <MemoryDialog open={dialog === 'memory'} onClose={() => setDialog('')} />

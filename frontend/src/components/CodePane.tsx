@@ -14,6 +14,7 @@ import {
   LockKeyhole,
   ChevronRight,
   RefreshCw,
+  PanelRight,
 } from 'lucide-react';
 import { api, query } from '../lib/api';
 import { useWorkspace } from '../lib/store';
@@ -35,7 +36,13 @@ const languageFor = (path: string) =>
         ? 'json'
         : 'plaintext';
 
-export function CodePane() {
+export function CodePane({
+  explorerOpen,
+  onToggleExplorer,
+}: {
+  explorerOpen: boolean;
+  onToggleExplorer: () => void;
+}) {
   const { paths, activePath, openFile, closeFile, addSelection, jump } = useWorkspace();
   const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [hasSelection, setHasSelection] = useState(false);
@@ -85,6 +92,16 @@ export function CodePane() {
           </div>
         ))}
         {!paths.length && <span className="empty-tab">源码浏览器</span>}
+        <div className="code-tab-tools">
+          <button
+            aria-label="切换文件树"
+            aria-pressed={explorerOpen}
+            title="切换文件树"
+            onClick={onToggleExplorer}
+          >
+            <PanelRight size={16} />
+          </button>
+        </div>
       </div>
       {activePath && (
         <div className="code-breadcrumb">
@@ -121,11 +138,13 @@ export function CodePane() {
               minimap: { enabled: false },
               fontFamily: 'Cascadia Code, Consolas, monospace',
               fontSize: 13,
-              lineHeight: 22,
-              padding: { top: 18 },
+              lineHeight: 23,
+              padding: { top: 16, bottom: 16 },
               scrollBeyondLastLine: false,
               automaticLayout: true,
-              renderLineHighlight: 'gutter',
+              renderLineHighlight: 'none',
+              lineNumbersMinChars: 3,
+              glyphMargin: false,
               selectionHighlight: true,
               folding: true,
               smoothScrolling: true,
@@ -138,7 +157,7 @@ export function CodePane() {
               <FileCode2 size={30} strokeWidth={1.3} />
             </div>
             <h2>从源码开始</h2>
-            <p>在左侧打开文件，选中代码后加入对话。</p>
+            <p>从右侧文件树打开文件，选中代码后加入左侧问答。</p>
             <div className="empty-hint">
               <span>浏览文件</span>
               <ChevronRight size={12} />
