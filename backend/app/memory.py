@@ -8,7 +8,7 @@ from threading import RLock
 
 from app.config import Paths, dump_json
 from app.database import Database
-from app.models import MemoryRecord, now_iso
+from app.models import MemoryRecord, Thread, now_iso
 from app.schemas import MemoryWrite
 from app.workspace import Workspace, content_version
 
@@ -45,6 +45,8 @@ class MemoryService:
             row = session.get(MemoryRecord, self.memory_id(scope, name))
             sources = json.loads(row.source_paths_json) if row else []
             source_thread = row.source_thread_id if row else None
+            source = session.get(Thread, source_thread) if source_thread else None
+            source_status = source.state if source else "deleted" if source_thread else None
         checked = []
         for source in sources:
             try:
@@ -59,6 +61,7 @@ class MemoryService:
             "content": data.decode("utf-8"),
             "version": content_version(data),
             "source_thread_id": source_thread,
+            "source_thread_status": source_status,
             "sources": checked,
             "updated_at": target.stat().st_mtime,
         }

@@ -3,7 +3,7 @@
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import ForeignKey, Index, Integer, String, Text
+from sqlalchemy import Boolean, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -26,6 +26,13 @@ class Thread(Base):
     title: Mapped[str] = mapped_column(String(120))
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    state: Mapped[str] = mapped_column(String(20), default="active", server_default="active")
+    deleted_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    pinned_order: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    last_read_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    auto_title: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
+    origin_thread_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    origin_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
 
 class Message(Base):

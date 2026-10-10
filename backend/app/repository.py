@@ -1,23 +1,17 @@
 """原始对话和可重放事件存储；图检查点不替代原始记录。"""
 
-import json
 from threading import RLock
 
 from sqlalchemy import func, select, update
 
 from app.config import dump_json
+from app.conversation_catalog import ConversationCatalog, title_from_question
+from app.conversation_history import ConversationHistory
 from app.database import Database
 from app.models import Message, Run, RunEvent, Thread, now_iso
+from app.records import record_dict
 
 TERMINAL = {"completed", "failed", "cancelled", "interrupted"}
-
-
-def record_dict(record) -> dict:
-    result = {column.name: getattr(record, column.name) for column in record.__table__.columns}
-    for field in ("selections_json", "payload_json"):
-        if field in result:
-            result[field.removesuffix("_json")] = json.loads(result.pop(field))
-    return result
 
 
 class Repository:
@@ -25,58 +19,72 @@ class Repository:
         self.database = database
         self.workspace_id = workspace_id
         self.lock = RLock()
+        self.catalog = ConversationCatalog(database, workspace_id)
+        self.history = ConversationHistory(database, self.catalog)
 
-    def threads(self) -> list[dict]:
-        with self.database.session() as session:
-            rows = session.scalars(
-                select(Thread)
-                .where(Thread.workspace_id == self.workspace_id)
-                .order_by(Thread.updated_at.desc())
-            )
-            return [record_dict(row) for row in rows]
+    def threads(self, state="active", query="", limit=100, offset=0) -> list[dict]:
+        return self.catalog.list(state, query, limit, offset)
 
     def create_thread(self, title: str) -> dict:
         with self.database.session.begin() as session:
-            row = Thread(title=title, workspace_id=self.workspace_id)
+            row = Thread(title=title, workspace_id=self.workspace_id, auto_title=title == "新对话")
             session.add(row)
             session.flush()
             return record_dict(row)
 
-    def thread(self, thread_id: str) -> dict:
+    def thread(self, thread_id: str, limit: int | None = None, before=None, around=None) -> dict:
+        page = self.history.page(thread_id, limit, before, around) if limit else None
         with self.database.session() as session:
-            row = session.get(Thread, thread_id)
-            if not row or row.workspace_id != self.workspace_id:
-                raise FileNotFoundError("对话不存在")
+            row = self.catalog.row(session, thread_id)
             result = record_dict(row)
-            messages = session.scalars(
-                select(Message)
-                .where(Message.thread_id == thread_id)
-                .order_by(Message.created_at, Message.id)
-            )
+            if page:
+                result.update(page)
+                identifiers = [row["id"] for row in page["messages"]]
+                latest = (
+                    select(Run.id)
+                    .where(Run.thread_id == thread_id)
+                    .order_by(Run.created_at.desc())
+                    .limit(1)
+                    .scalar_subquery()
+                )
+                run_filter = (
+                    Run.message_id.in_(identifiers)
+                    | Run.response_message_id.in_(identifiers)
+                    | (Run.id == latest)
+                )
+            else:
+                messages = session.scalars(
+                    select(Message)
+                    .where(Message.thread_id == thread_id)
+                    .order_by(Message.created_at, Message.id)
+                )
+                result["messages"] = [record_dict(message) for message in messages]
+                run_filter = True
             runs = session.scalars(
-                select(Run).where(Run.thread_id == thread_id).order_by(Run.created_at)
+                select(Run).where(Run.thread_id == thread_id, run_filter).order_by(Run.created_at)
             )
-            result["messages"] = [record_dict(message) for message in messages]
             result["runs"] = [record_dict(run) for run in runs]
-            # 老数据没有回复关联；按当时一轮一条回复的顺序兼容，不修改历史。
-            answers = [row for row in result["messages"] if row["role"] == "assistant"]
-            completed = [row for row in result["runs"] if row["status"] == "completed"]
-            for run, answer in zip(completed, answers, strict=False):
-                run["response_message_id"] = run["response_message_id"] or answer["id"]
             return result
 
     def rename(self, thread_id: str, title: str):
-        self.thread(thread_id)
+        self.catalog.get(thread_id)
         with self.database.session.begin() as session:
             session.execute(
                 update(Thread)
                 .where(Thread.id == thread_id)
-                .values(title=title, updated_at=now_iso())
+                .values(title=title, auto_title=False, updated_at=now_iso())
             )
 
-    def create_run(self, thread_id: str, content: str, selections: list[dict]) -> dict:
-        self.thread(thread_id)
+    def create_run(self, thread_id: str | None, content: str, selections: list[dict]) -> dict:
+        if thread_id:
+            self.catalog.get(thread_id)
         with self.lock, self.database.session.begin() as session:
+            if not thread_id:
+                # 首次发送与会话创建在同一事务内，失败不会留下空会话。
+                new_thread = Thread(title="新对话", workspace_id=self.workspace_id)
+                session.add(new_thread)
+                session.flush()
+                thread_id = new_thread.id
             active = session.scalar(
                 select(Run.id).where(
                     Run.thread_id == thread_id, Run.status.in_(["queued", "running"])
@@ -84,6 +92,16 @@ class Repository:
             )
             if active:
                 raise ValueError("此对话正在回复，请先停止或等待完成")
+            thread = self.catalog.row(session, thread_id)
+            if (
+                thread.auto_title
+                and thread.title == "新对话"
+                and not session.scalar(
+                    select(Message.id).where(Message.thread_id == thread_id).limit(1)
+                )
+            ):
+                thread.title = title_from_question(content, selections)
+            thread.state = "active"
             message = Message(
                 thread_id=thread_id,
                 role="user",
@@ -106,7 +124,7 @@ class Repository:
             if not row:
                 raise FileNotFoundError("运行不存在")
             result = record_dict(row)
-        self.thread(result["thread_id"])
+        self.catalog.get(result["thread_id"])
         return result
 
     def message(self, message_id: str) -> dict:
@@ -209,21 +227,30 @@ class Repository:
             session.flush()
             return record_dict(row)
 
-    def search_history(self, thread_id: str, query: str) -> list[dict]:
-        rows = self.thread(thread_id)["messages"]
-        return [
-            {
-                "id": row["id"],
-                "role": row["role"],
-                "content": row["content"][:12000],
-                "selections": row["selections"],
-            }
-            for row in rows
-            if query.casefold() in row["content"].casefold()
-        ][:20]
+    def search_history(self, thread_id: str, query: str, offset=0, limit=20) -> list[dict]:
+        return self.history.search(thread_id, query, offset, limit)["matches"]
 
     def has_active_run(self, thread_id: str) -> bool:
-        return any(row["status"] in {"queued", "running"} for row in self.thread(thread_id)["runs"])
+        self.catalog.get(thread_id)
+        with self.database.session() as session:
+            return bool(
+                session.scalar(
+                    select(Run.id)
+                    .where(Run.thread_id == thread_id, Run.status.in_(["queued", "running"]))
+                    .limit(1)
+                )
+            )
+
+    def active_runs(self, thread_id: str) -> list[str]:
+        self.catalog.get(thread_id, include_deleted=True)
+        with self.database.session() as session:
+            return list(
+                session.scalars(
+                    select(Run.id).where(
+                        Run.thread_id == thread_id, Run.status.in_(["queued", "running"])
+                    )
+                )
+            )
 
     def regenerate(self, run_id: str) -> dict:
         previous = self.run(run_id)

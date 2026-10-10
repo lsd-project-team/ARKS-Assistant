@@ -50,9 +50,21 @@ def source_tools(workspace: Workspace):
 
 def conversation_tools(repository: Repository, memories: MemoryService, thread_id: str):
     @tool
-    async def recall_conversation(query: str) -> str:
-        """Retrieve original messages and code selections from this conversation's archive."""
-        return dump_json(repository.search_history(thread_id, query))
+    async def recall_conversation(query: str, offset: int = 0, limit: int = 10) -> str:
+        """Search original messages, selections and paths. Page with next_offset.
+
+        Read a partial match with read_conversation_message to retrieve the full original.
+        """
+        return dump_json(
+            await asyncio.to_thread(repository.history.search, thread_id, query, offset, limit)
+        )
+
+    @tool
+    async def read_conversation_message(message_id: str, offset: int = 0) -> str:
+        """Read the original message and selection in 12000-character pages, using next_offset."""
+        return dump_json(
+            await asyncio.to_thread(repository.history.read, thread_id, message_id, offset)
+        )
 
     @tool
     async def remember(
@@ -77,4 +89,4 @@ def conversation_tools(repository: Repository, memories: MemoryService, thread_i
         )
         return dump_json(await asyncio.to_thread(memories.save, request))
 
-    return [recall_conversation, remember]
+    return [recall_conversation, read_conversation_message, remember]

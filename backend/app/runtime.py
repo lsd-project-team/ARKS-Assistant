@@ -67,6 +67,7 @@ class AgentRuntime:
         backend = CompositeBackend(
             default=FilesystemBackend(self.paths.scratch),
             routes={"/workspace/": SourceBackend(self.workspace)},
+            artifacts_root=f"/threads/{thread_id}",
         )
         tools = source_tools(self.workspace)
         tools += conversation_tools(self.repository, self.memories, thread_id)
@@ -115,10 +116,17 @@ class AgentRuntime:
     def input_message(self, message):
         content = message["content"]
         for selection in message["selections"]:
+            stale = selection.get("stale", False)
+            if stale:
+                content += (
+                    "\n\n注意：以下代码选区是历史快照，当前文件已经变化或不存在。"
+                    "回答时明确区分快照和当前源码，引用当前行号前必须重新读取核对。"
+                )
             content += (
                 f"\n\n<code_selection path={selection['path']!r} "
                 f"lines={selection['start_line']}-{selection['end_line']} "
-                f"version={selection['version']}>\n{selection['content']}\n</code_selection>"
+                f"version={selection['version']} stale={str(stale).lower()}>"
+                f"\n{selection['content']}\n</code_selection>"
             )
         return HumanMessage(content=content, id=message["id"])
 
