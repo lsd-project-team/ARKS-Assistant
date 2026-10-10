@@ -5,10 +5,12 @@ from threading import RLock
 from sqlalchemy import func, select, update
 
 from app.config import dump_json
+from app.conversation_branches import ConversationBranches
 from app.conversation_catalog import ConversationCatalog, title_from_question
 from app.conversation_history import ConversationHistory
+from app.conversation_queue import ConversationQueue
 from app.database import Database
-from app.models import Message, Run, RunEvent, Thread, now_iso
+from app.models import Message, QueuedQuestion, Run, RunEvent, Thread, now_iso
 from app.records import record_dict
 
 TERMINAL = {"completed", "failed", "cancelled", "interrupted"}
@@ -21,6 +23,8 @@ class Repository:
         self.lock = RLock()
         self.catalog = ConversationCatalog(database, workspace_id)
         self.history = ConversationHistory(database, self.catalog)
+        self.branches = ConversationBranches(self)
+        self.queue = ConversationQueue(self)
 
     def threads(self, state="active", query="", limit=100, offset=0) -> list[dict]:
         return self.catalog.list(state, query, limit, offset)
@@ -37,6 +41,14 @@ class Repository:
         with self.database.session() as session:
             row = self.catalog.row(session, thread_id)
             result = record_dict(row)
+            result["editable_message_id"] = session.scalar(
+                select(Message.id)
+                .where(
+                    Message.thread_id == thread_id, Message.role == "user", Message.context_active
+                )
+                .order_by(Message.created_at.desc(), Message.id.desc())
+                .limit(1)
+            )
             if page:
                 result.update(page)
                 identifiers = [row["id"] for row in page["messages"]]
@@ -85,38 +97,36 @@ class Repository:
                 session.add(new_thread)
                 session.flush()
                 thread_id = new_thread.id
-            active = session.scalar(
-                select(Run.id).where(
-                    Run.thread_id == thread_id, Run.status.in_(["queued", "running"])
-                )
+            return self.add_run(session, thread_id, content, selections)
+
+    @staticmethod
+    def ensure_idle(session, thread_id):
+        if session.scalar(
+            select(Run.id).where(Run.thread_id == thread_id, Run.status.in_(["queued", "running"]))
+        ):
+            raise ValueError("此对话正在回复，请先停止或等待完成")
+
+    def add_run(self, session, thread_id, content, selections):
+        self.ensure_idle(session, thread_id)
+        thread = self.catalog.row(session, thread_id)
+        if (
+            thread.auto_title
+            and thread.title == "新对话"
+            and not session.scalar(
+                select(Message.id).where(Message.thread_id == thread_id).limit(1)
             )
-            if active:
-                raise ValueError("此对话正在回复，请先停止或等待完成")
-            thread = self.catalog.row(session, thread_id)
-            if (
-                thread.auto_title
-                and thread.title == "新对话"
-                and not session.scalar(
-                    select(Message.id).where(Message.thread_id == thread_id).limit(1)
-                )
-            ):
-                thread.title = title_from_question(content, selections)
-            thread.state = "active"
-            message = Message(
-                thread_id=thread_id,
-                role="user",
-                content=content,
-                selections_json=dump_json(selections),
-            )
-            session.add(message)
-            session.flush()
-            run = Run(thread_id=thread_id, message_id=message.id)
-            session.add(run)
-            session.execute(
-                update(Thread).where(Thread.id == thread_id).values(updated_at=now_iso())
-            )
-            session.flush()
-            return record_dict(run)
+        ):
+            thread.title = title_from_question(content, selections)
+        thread.state, thread.updated_at = "active", now_iso()
+        message = Message(
+            thread_id=thread_id, role="user", content=content, selections_json=dump_json(selections)
+        )
+        session.add(message)
+        session.flush()
+        run = Run(thread_id=thread_id, message_id=message.id)
+        session.add(run)
+        session.flush()
+        return record_dict(run)
 
     def run(self, run_id: str) -> dict:
         with self.database.session() as session:
@@ -134,13 +144,19 @@ class Repository:
                 raise FileNotFoundError("消息不存在")
             return record_dict(row)
 
-    def set_status(self, run_id: str, status: str, error: str = ""):
+    def set_status(self, run_id: str, status: str, error: str = "", error_code: str = ""):
         with self.database.session.begin() as session:
-            session.execute(
-                update(Run)
-                .where(Run.id == run_id)
-                .values(status=status, error=error, updated_at=now_iso())
-            )
+            values = {
+                "status": status,
+                "error": error,
+                "error_code": error_code,
+                "updated_at": now_iso(),
+            }
+            if status == "running":
+                values["started_at"] = now_iso()
+            elif status in TERMINAL:
+                values.update(finished_at=now_iso(), stage=status)
+            session.execute(update(Run).where(Run.id == run_id).values(**values))
 
     def event(self, run_id: str, kind: str, payload: dict) -> dict:
         # 序号分配与插入必须在同一把锁和事务内，重连才能可靠去重。
@@ -156,6 +172,8 @@ class Repository:
             if kind == "token":
                 run = session.get(Run, run_id)
                 run.answer += payload["text"]
+            elif kind == "stage":
+                session.get(Run, run_id).stage = payload["stage"]
             session.flush()
             return record_dict(event)
 
@@ -176,6 +194,7 @@ class Repository:
             run.status = "completed"
             run.answer = answer
             run.updated_at = now_iso()
+            run.finished_at, run.stage = now_iso(), "completed"
             response = Message(thread_id=run.thread_id, role="assistant", content=answer)
             session.add(response)
             session.flush()
@@ -186,10 +205,24 @@ class Repository:
 
     def recover(self):
         with self.database.session.begin() as session:
+            identifiers = list(
+                session.scalars(select(Run.thread_id).where(Run.status.in_(["queued", "running"])))
+            )
+            # 服务恰好在完成回复和出队之间退出时，待发问题也需要显式恢复。
+            identifiers.extend(session.scalars(select(QueuedQuestion.thread_id)))
+            session.execute(
+                update(Thread).where(Thread.id.in_(identifiers)).values(queue_paused=True)
+            )
             session.execute(
                 update(Run)
                 .where(Run.status.in_(["queued", "running"]))
-                .values(status="interrupted", error="服务重启中断，可继续运行")
+                .values(
+                    status="interrupted",
+                    stage="interrupted",
+                    finished_at=now_iso(),
+                    error_code="interrupted",
+                    error="服务重启中断，可继续运行",
+                )
             )
 
     def resume(self, run_id: str):
@@ -222,6 +255,7 @@ class Repository:
                 message_id=previous["message_id"],
                 resumed_from=run_id,
                 regenerated_from=source.get("regenerated_from"),
+                reset_context=source.get("reset_context", False),
             )
             session.add(row)
             session.flush()

@@ -126,6 +126,8 @@ class ConversationCatalog:
         with self.database.session.begin() as session:
             row = self.row(session, thread_id, include_deleted=True)
             row.state = state
+            if state != "active":
+                row.queue_paused = True
             row.deleted_at = now_iso() if state == "deleted" else None
             row.updated_at = now_iso()
             return record_dict(row)

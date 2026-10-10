@@ -63,6 +63,14 @@ class RunCreate(BaseModel):
         return self
 
 
+class QueueEdit(RunCreate):
+    version: str = Field(min_length=1, max_length=40)
+
+
+class BranchCreate(BaseModel):
+    message_id: str = Field(min_length=1, max_length=36)
+
+
 class MemoryWrite(BaseModel):
     name: str = Field(pattern=r"^[\w\-\u4e00-\u9fff]{1,80}\.md$")
     content: str = Field(max_length=50000)

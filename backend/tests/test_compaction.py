@@ -52,6 +52,7 @@ async def test_native_compaction_archives_and_preserves_original(services, monke
     new_run = repository.create_run(thread["id"], "继续", [])
     answer = await runtime.execute(new_run, lambda *event: events.append(event))
     assert answer == "测试回复"
+    assert any(kind == "stage" and payload["stage"] == "compacting" for kind, payload in events)
     archives = list(paths.scratch.rglob("*.md"))
     assert archives, "原生压缩应产生可恢复的对话档案"
     assert any("原始问题0" in file.read_text(encoding="utf-8") for file in archives)

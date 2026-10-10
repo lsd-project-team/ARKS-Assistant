@@ -14,6 +14,7 @@ from app.mcp_client import ToolCatalog, adapt_tool
 from app.memory import MemoryService
 from app.provider import StateInspectionModel, close_models, create_model
 from app.repository import Repository
+from app.run_feedback import tool_stage
 from app.source_backend import SourceBackend
 from app.workspace import Workspace
 
@@ -48,16 +49,33 @@ class AgentRuntime:
             if not server.enabled:
                 continue
             try:
+                emit("stage", {"stage": "connecting_mcp", "detail": server.name})
                 definitions, cached = await self.mcp_cache.get(server)
                 if cached:
-                    emit("notice", {"text": f"{server.name} 连接不稳定，使用已保存的工具定义"})
+                    emit(
+                        "notice",
+                        {
+                            "text": f"{server.name} 连接不稳定，使用已保存的工具定义",
+                            "code": "mcp_connection",
+                            "action": "mcp_settings",
+                        },
+                    )
                 result.extend(adapt_tool(server, remote) for remote in definitions)
             except Exception:
-                emit("notice", {"text": f"{server.name} 暂时无法连接，本轮继续使用本地源码"})
+                emit(
+                    "notice",
+                    {
+                        "text": f"{server.name} 暂时无法连接，本轮继续使用本地源码",
+                        "code": "mcp_connection",
+                        "action": "mcp_settings",
+                    },
+                )
         return result
 
     async def graph(self, thread_id, checkpointer, emit, owned_models=None, *, inspection=False):
         settings = self.settings.load()
+        if not inspection:
+            emit("stage", {"stage": "connecting_model"})
         model = StateInspectionModel() if inspection else create_model(settings.model)
         summary_model = (
             StateInspectionModel() if inspection else create_model(settings.model, summary=True)
@@ -130,6 +148,17 @@ class AgentRuntime:
             )
         return HumanMessage(content=content, id=message["id"])
 
+    def current_input(self, message):
+        # 等待队列与历史分支可能停留很久，在真正发送前再次核对快照版本。
+        selections = []
+        for selection in message["selections"]:
+            try:
+                stale = self.workspace.read(selection["path"])["version"] != selection["version"]
+            except (OSError, ValueError):
+                stale = True
+            selections.append({**selection, "stale": stale})
+        return self.input_message({**message, "selections": selections})
+
     async def execute(self, run, emit):
         owned_models = []
         try:
@@ -145,6 +174,23 @@ class AgentRuntime:
             config = {"configurable": {"thread_id": run["thread_id"]}, "recursion_limit": 60}
             state = await graph.aget_state(config)
             message = self.repository.message(run["message_id"])
+            graph_messages = state.values.get("messages", [])
+            seen_input = any(item.id == message["id"] for item in graph_messages)
+            if run.get("reset_context") and not seen_input:
+                # 编辑的原文留在业务档案，模型状态重新建立，不能沿用含旧答案的摘要。
+                await saver.adelete_thread(run["thread_id"])
+                state = await graph.aget_state(config)
+            if not state.values.get("messages"):
+                prior = self.repository.branches.context(run["thread_id"], before=message["id"])
+                if prior:
+                    seeds = [
+                        self.current_input(row)
+                        if row["role"] == "user"
+                        else AIMessage(content=row["content"], id=row["id"])
+                        for row in prior
+                    ]
+                    await graph.aupdate_state(config, {"messages": seeds}, as_node="model")
+                    state = await graph.aget_state(config)
             if run.get("regenerated_from"):
                 request = run
                 while request.get("resumed_from"):
@@ -153,7 +199,7 @@ class AgentRuntime:
                 # 保留档案中的旧答案；图里替换最近回复，并携带原问题和原选区重新回答。
                 instruction = HumanMessage(
                     content="请重新回答以下用户问题，核对依据并给出完整回答：\n"
-                    + self.input_message(message).text,
+                    + self.current_input(message).text,
                     id=instruction_id,
                 )
                 graph_messages = state.values.get("messages", [])
@@ -182,10 +228,12 @@ class AgentRuntime:
             inputs = (
                 None
                 if (seen and state.next) or run.get("regenerated_from")
-                else {"messages": [self.input_message(message)]}
+                else {"messages": [self.current_input(message)]}
             )
             text = ""
             summary_announced = False
+            generating = False
+            emit("stage", {"stage": "thinking"})
             async for mode, event in graph.astream(
                 inputs, config, stream_mode=["messages", "updates"]
             ):
@@ -193,6 +241,7 @@ class AgentRuntime:
                     chunk, metadata = event
                     if metadata.get("lc_source") == "summarization":
                         if not summary_announced:
+                            emit("stage", {"stage": "compacting"})
                             emit("compaction", {"text": "正在压缩上下文，原始对话保留"})
                             summary_announced = True
                         continue
@@ -200,9 +249,19 @@ class AgentRuntime:
                         continue
                     part = chunk.text
                     if part:
+                        if not generating:
+                            emit("stage", {"stage": "generating"})
+                            generating = True
                         text += part
                         emit("token", {"text": part})
                 else:
+                    if any(
+                        getattr(item, "type", "") == "tool" or getattr(item, "tool_calls", [])
+                        for update in event.values()
+                        if isinstance(update, dict)
+                        for item in update.get("messages", [])
+                    ):
+                        generating = False
                     self.emit_updates(event, emit)
             final = await graph.aget_state(config)
             messages = final.values.get("messages", [])
@@ -240,11 +299,13 @@ class AgentRuntime:
             for message in update.get("messages", []):
                 if isinstance(message, AIMessage):
                     for call in message.tool_calls:
+                        emit("stage", {"stage": tool_stage(call["name"])})
                         emit(
                             "tool_start",
                             {"id": call["id"], "name": call["name"], "arguments": call["args"]},
                         )
                 elif getattr(message, "type", "") == "tool":
+                    emit("stage", {"stage": "thinking"})
                     emit(
                         "tool_end",
                         {

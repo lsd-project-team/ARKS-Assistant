@@ -3,6 +3,8 @@
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import Response, StreamingResponse
 
+from app.api.conversation_workflows import create_router as workflows_router
+from app.api.conversation_workflows import validated_selections
 from app.config import dump_json
 from app.conversation_context import ConversationContext
 from app.conversation_lifecycle import ConversationLifecycle
@@ -19,6 +21,7 @@ from app.services import AppServices
 
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
+    router.include_router(workflows_router(services))
     workspace = services.workspace
     repository = services.repository
     runs = services.runs
@@ -44,15 +47,7 @@ def create_router(services: AppServices) -> APIRouter:
         return repository.create_thread(body.title)
 
     async def start_run(body: RunCreate, thread_id: str | None):
-        selections = []
-        for selection in body.selections:
-            workspace.resolve(selection.path)
-            try:
-                current = workspace.read(selection.path)
-                stale = current["version"] != selection.version
-            except FileNotFoundError:
-                stale = True
-            selections.append({**selection.model_dump(), "stale": stale})
+        selections = validated_selections(workspace, body)
         async with runs.edit_lock:
             run = repository.create_run(thread_id, body.content, selections)
             runs.start(run)
@@ -145,7 +140,8 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.post("/api/runs/{run_id}/cancel")
     async def cancel(run_id: str):
-        await runs.cancel(run_id)
+        async with runs.edit_lock:
+            await runs.cancel(run_id)
         return repository.run(run_id)
 
     @router.post("/api/runs/{run_id}/resume", status_code=201)

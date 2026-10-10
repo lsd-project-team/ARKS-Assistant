@@ -33,6 +33,7 @@ class Thread(Base):
     auto_title: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
     origin_thread_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     origin_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    queue_paused: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
 
 
 class Message(Base):
@@ -43,6 +44,9 @@ class Message(Base):
     content: Mapped[str] = mapped_column(Text)
     selections_json: Mapped[str] = mapped_column(Text, default="[]")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    context_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
+    replaces_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    origin_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
 
 class Run(Base):
@@ -56,6 +60,11 @@ class Run(Base):
     resumed_from: Mapped[str | None] = mapped_column(String(36), nullable=True)
     regenerated_from: Mapped[str | None] = mapped_column(String(36), nullable=True)
     response_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    reset_context: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
+    stage: Mapped[str] = mapped_column(String(40), default="queued", server_default="queued")
+    error_code: Mapped[str] = mapped_column(String(40), default="", server_default="")
+    started_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    finished_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
@@ -69,6 +78,16 @@ class RunEvent(Base):
     kind: Mapped[str] = mapped_column(String(40))
     payload_json: Mapped[str] = mapped_column(Text)
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
+class QueuedQuestion(Base):
+    __tablename__ = "queued_questions"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    thread_id: Mapped[str] = mapped_column(ForeignKey("threads.id", ondelete="CASCADE"), index=True)
+    content: Mapped[str] = mapped_column(Text)
+    selections_json: Mapped[str] = mapped_column(Text, default="[]")
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
 
 class MemoryRecord(Base):

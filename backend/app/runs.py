@@ -3,8 +3,8 @@
 import asyncio
 
 from app.config import SettingsStore
-from app.provider import safe_error
 from app.repository import TERMINAL, Repository
+from app.run_feedback import error_feedback
 from app.runtime import AgentRuntime
 
 
@@ -15,8 +15,10 @@ class RunManager:
         self.capacity = asyncio.Semaphore(3)
         # 检查点纠错与新运行入队互斥，避免读完摘要后又被另一次执行覆盖。
         self.edit_lock = asyncio.Lock()
+        self.closing = False
 
     def start(self, run: dict):
+        self.repository.event(run["id"], "stage", {"stage": "queued"})
         task = asyncio.create_task(self._execute(run), name=f"agent:{run['id']}")
         self.tasks[run["id"]] = task
         task.add_done_callback(lambda _task: self.tasks.pop(run["id"], None))
@@ -25,24 +27,45 @@ class RunManager:
         def emit(kind, payload):
             return self.repository.event(run["id"], kind, payload)
 
+        completed = False
         try:
             async with self.capacity:
                 self.repository.set_status(run["id"], "running")
                 emit("status", {"status": "running"})
                 answer = await self.runtime.execute(run, emit)
                 self.repository.finish(run["id"], answer)
-                emit("done", {"status": "completed", "answer": answer})
+                emit(
+                    "done",
+                    {
+                        "status": "completed",
+                        "answer": answer,
+                        "finished_at": self.repository.run(run["id"])["finished_at"],
+                    },
+                )
+                completed = True
         except asyncio.CancelledError:
             self.repository.set_status(run["id"], "cancelled")
+            self.repository.queue.pause(run["thread_id"])
             emit("done", {"status": "cancelled"})
         except Exception as error:
-            message = safe_error(error, self.settings.load().model)
-            self.repository.set_status(run["id"], "failed", message)
-            emit("error", {"text": message})
+            feedback = error_feedback(error, self.settings.load().model)
+            self.repository.set_status(run["id"], "failed", feedback["text"], feedback["code"])
+            self.repository.queue.pause(run["thread_id"])
+            emit("error", feedback)
             emit("done", {"status": "failed"})
+        if completed and not self.closing:
+            async with self.edit_lock:
+                try:
+                    next_run = self.repository.queue.dispatch(run["thread_id"])
+                except FileNotFoundError:
+                    # 完成事件发出后，对话可能已在另一请求中被彻底删除。
+                    return
+                if next_run:
+                    self.start(next_run)
 
     async def cancel(self, run_id: str):
-        self.repository.run(run_id)
+        run = self.repository.run(run_id)
+        self.repository.queue.pause(run["thread_id"])
         task = self.tasks.get(run_id)
         if task:
             task.cancel()
@@ -53,6 +76,7 @@ class RunManager:
                 self.repository.event(run_id, "done", {"status": "cancelled"})
 
     async def shutdown(self):
+        self.closing = True
         active = list(self.tasks.values())
         for task in active:
             task.cancel()
