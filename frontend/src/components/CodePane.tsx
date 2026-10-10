@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { api, query } from '../lib/api';
 import { useWorkspace } from '../lib/store';
+import { SOURCE_THEME, registerSourceTheme } from '../lib/editorTheme';
 import type { SourceFile } from '../types';
 import { Button, ErrorText } from './ui';
 
@@ -129,7 +130,8 @@ export function CodePane({
             path={activePath}
             language={languageFor(activePath)}
             value={source.data.content}
-            theme="vs"
+            theme={SOURCE_THEME}
+            beforeMount={registerSourceTheme}
             onMount={onMount}
             loading={<span className="muted padded">正在加载编辑器…</span>}
             options={{
@@ -137,9 +139,9 @@ export function CodePane({
               domReadOnly: true,
               minimap: { enabled: false },
               fontFamily: 'Cascadia Code, Consolas, monospace',
-              fontSize: 13,
-              lineHeight: 23,
-              padding: { top: 16, bottom: 16 },
+              fontSize: 14,
+              lineHeight: 24,
+              padding: { top: 22, bottom: 22 },
               scrollBeyondLastLine: false,
               automaticLayout: true,
               renderLineHighlight: 'none',
