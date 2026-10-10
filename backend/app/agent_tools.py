@@ -73,6 +73,7 @@ def conversation_tools(repository: Repository, memories: MemoryService, thread_i
         """Save durable preferences or verified facts as a named .md memory.
 
         Include source paths for project facts. Never save credentials or guesses.
+        Duplicate content is rejected; related conflicting fields require user review.
         """
         try:
             previous = memories.read(scope, name)

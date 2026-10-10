@@ -10,7 +10,7 @@ from app.config import AppSettings, McpSettings
 from app.mcp_client import probe_mcp
 from app.model_probe import probe_capabilities
 from app.run_feedback import error_feedback
-from app.schemas import McpProbe, MemoryWrite, ModelProbe, SettingsWrite
+from app.schemas import McpProbe, MemoryRestore, MemoryWrite, ModelProbe, SettingsWrite
 from app.services import AppServices
 
 
@@ -73,8 +73,21 @@ def create_router(services: AppServices) -> APIRouter:
             return JSONResponse({"detail": "MCP 连接失败，请检查地址和连接方式"}, status_code=502)
 
     @router.get("/api/memories")
-    async def list_memories():
-        return await asyncio.to_thread(memories.list)
+    async def list_memories(include_deleted: bool = False):
+        return await asyncio.to_thread(memories.list, include_deleted)
+
+    @router.post("/api/memories/review")
+    async def review_memory(body: MemoryWrite):
+        return await asyncio.to_thread(memories.review, body)
+
+    @router.get("/api/memories/{scope}/{name}/history")
+    async def memory_history(scope: str, name: str):
+        MemoryWrite(name=name, scope=scope, content="")
+        return await asyncio.to_thread(memories.history.list, scope, name)
+
+    @router.post("/api/memories/{scope}/{name}/restore")
+    async def restore_memory(scope: str, name: str, body: MemoryRestore):
+        return await asyncio.to_thread(memories.restore, scope, name, body)
 
     @router.put("/api/memories")
     async def write_memory(body: MemoryWrite):

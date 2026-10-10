@@ -78,6 +78,15 @@ class MemoryWrite(BaseModel):
     version: str | None = None
     source_thread_id: str | None = None
     source_paths: list[str] = Field(default_factory=list)
+    confirm_conflicts: bool = False
+    reviewed_versions: dict[str, str] = Field(default_factory=dict, max_length=1000)
+
+
+class MemoryRestore(BaseModel):
+    revision_id: int = Field(ge=1)
+    version: str | None = None
+    confirm_conflicts: bool = False
+    reviewed_versions: dict[str, str] = Field(default_factory=dict, max_length=1000)
 
 
 class SettingsWrite(BaseModel):
