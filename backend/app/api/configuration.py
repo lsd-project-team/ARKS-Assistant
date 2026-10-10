@@ -3,9 +3,8 @@
 import asyncio
 
 from fastapi import APIRouter
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 
-from app.backup import create_backup
 from app.config import AppSettings, McpSettings
 from app.mcp_client import probe_mcp
 from app.model_probe import probe_capabilities
@@ -16,7 +15,6 @@ from app.services import AppServices
 
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
-    paths = services.paths
     settings = services.settings
     memories = services.memories
     runtime = services.runtime
@@ -97,10 +95,5 @@ def create_router(services: AppServices) -> APIRouter:
     async def delete_memory(scope: str, name: str, version: str):
         await asyncio.to_thread(memories.delete, scope, name, version)
         return {"ok": True}
-
-    @router.post("/api/backup")
-    async def backup():
-        file = await asyncio.to_thread(create_backup, paths)
-        return FileResponse(file, filename=file.name, media_type="application/zip")
 
     return router

@@ -6,6 +6,7 @@ from fastapi.responses import Response, StreamingResponse
 from app.api.conversation_workflows import create_router as workflows_router
 from app.api.conversation_workflows import validated_selections
 from app.config import dump_json
+from app.conversation_cleanup import create_router as cleanup_router
 from app.conversation_context import ConversationContext
 from app.conversation_lifecycle import ConversationLifecycle
 from app.schemas import (
@@ -22,6 +23,7 @@ from app.services import AppServices
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
     router.include_router(workflows_router(services))
+    router.include_router(cleanup_router(services))
     workspace = services.workspace
     repository = services.repository
     runs = services.runs

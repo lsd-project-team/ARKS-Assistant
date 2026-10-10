@@ -11,14 +11,17 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
-from app.api import configuration, conversations, workspace
+from app.api import configuration, conversations, data, workspace
 from app.config import PROJECT_ROOT, Paths
 from app.process_lock import service_lock
 from app.services import create_services
 
 
 def create_app(paths: Paths | None = None) -> FastAPI:
-    services = create_services(paths or Paths())
+    paths = paths or Paths()
+    if (paths.data / "restore.pending.json").exists():
+        raise RuntimeError("检测到未完成的数据恢复，请先运行恢复工具的 --rollback，再启动服务")
+    services = create_services(paths)
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -64,7 +67,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     async def not_found(_request, error):
         return JSONResponse({"detail": str(error)}, status_code=404)
 
-    for module in (workspace, conversations, configuration):
+    for module in (workspace, conversations, configuration, data):
         app.include_router(module.create_router(services))
     frontend = PROJECT_ROOT / "frontend/dist"
     if frontend.is_dir():

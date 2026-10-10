@@ -2,10 +2,11 @@
 
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
-from app.context import estimate_tokens
+from app.context import current_budget
 from app.provider import close_models
 from app.runtime import AgentRuntime
 from app.schemas import SummaryCorrection
+from app.summary_text import summary_parts
 
 
 class ConversationContext:
@@ -28,14 +29,15 @@ class ConversationContext:
         effective = (
             [event["summary_message"], *messages[event["cutoff_index"] :]] if event else messages
         )
+        settings = self.runtime.settings.load().model
+        snapshot = self.repository.latest_event(thread_id, "context_budget")
         return {
-            "summary": event["summary_message"].text if event else None,
+            "summary": summary_parts(event["summary_message"].text)[1] if event else None,
             "version": state.config["configurable"].get("checkpoint_id") if state.config else None,
             "updated_at": state.created_at,
             "summarized_count": event["cutoff_index"] if event else 0,
             "message_count": len(messages),
-            "tokens": estimate_tokens(effective),
-            "limit": self.runtime.settings.load().model.context_tokens,
+            **current_budget(effective, snapshot, settings.context_tokens, settings.output_tokens),
         }
 
     async def correct(self, thread_id: str, request: SummaryCorrection) -> dict:
@@ -62,10 +64,11 @@ class ConversationContext:
                 event = state.values.get("_summarization_event")
                 if not event:
                     raise ValueError("当前对话尚未压缩")
+                prefix, _body, suffix = summary_parts(event["summary_message"].text)
                 corrected = {
                     **event,
                     "summary_message": event["summary_message"].model_copy(
-                        update={"content": request.summary.strip()}
+                        update={"content": prefix + request.summary.strip() + suffix}
                     ),
                 }
                 await graph.aupdate_state(
@@ -90,6 +93,7 @@ class ConversationContext:
         run = self.repository.run(run_id)
         message = self.repository.message(run["message_id"])
         snapshot = None
+        budget = None
         tools = []
         cursor = 0
         while True:
@@ -97,6 +101,8 @@ class ConversationContext:
             for event in events:
                 if event["kind"] == "context_sources":
                     snapshot = event["payload"]
+                if event["kind"] == "context_budget":
+                    budget = event["payload"]
                 if event["kind"] == "tool_start":
                     tools.append(event["payload"])
             if len(events) < 500:
@@ -104,6 +110,7 @@ class ConversationContext:
             cursor = events[-1]["sequence"]
         return {
             "model": run["model_snapshot"],
+            "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
             "recorded": snapshot is not None,
             "selections": message["selections"],

@@ -7,6 +7,7 @@ from pathlib import Path
 from threading import RLock
 
 from app.config import Paths, dump_json
+from app.context import fit_text, text_tokens
 from app.database import Database
 from app.memory_history import MemoryHistory
 from app.memory_matching import rank_memories, related_memories
@@ -198,7 +199,9 @@ class MemoryService:
                 action="restored",
             )
 
-    def prompt_snapshot(self, query: str | None = None) -> tuple[str, list[dict]]:
+    def prompt_snapshot(
+        self, query: str | None = None, *, max_tokens: int = 8000
+    ) -> tuple[str, list[dict]]:
         rows = list(rank_memories(self.list(), query))
         chunks = [
             f"[{row['scope']}/{row['name']}]\n源码来源：{dump_json(row['sources'])}\n"
@@ -211,18 +214,21 @@ class MemoryService:
             + row["content"]
             for row in rows
         ]
-        remaining = 24000
         included = []
         accepted = []
         for row, chunk in zip(rows, chunks, strict=True):
+            remaining = max_tokens - text_tokens("\n\n".join(accepted)) - (1 if accepted else 0)
             if remaining <= 0:
                 break
-            accepted.append(chunk[:remaining])
+            header = chunk[: len(chunk) - len(row["content"])]
+            if text_tokens(header) >= remaining:
+                continue
+            chosen = fit_text(chunk, remaining)
+            accepted.append(chosen)
             included.append(
-                {**row, "partial": len(chunk) > remaining, "injected_text": chunk[:remaining]}
+                {**row, "partial": len(chosen) < len(chunk), "injected_text": chosen}
             )
-            remaining -= len(chunk) + 2
-        return "\n\n".join(accepted)[:24000], included
+        return "\n\n".join(accepted), included
 
     def prompt(self) -> str:
         return self.prompt_snapshot()[0]

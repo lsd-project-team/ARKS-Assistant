@@ -192,6 +192,18 @@ class Repository:
             )
             return [record_dict(row) for row in rows]
 
+    def latest_event(self, thread_id: str, kind: str) -> dict | None:
+        self.catalog.get(thread_id)
+        with self.database.session() as session:
+            event = session.scalar(
+                select(RunEvent)
+                .join(Run, Run.id == RunEvent.run_id)
+                .where(Run.thread_id == thread_id, RunEvent.kind == kind)
+                .order_by(Run.created_at.desc(), RunEvent.sequence.desc())
+                .limit(1)
+            )
+            return record_dict(event)["payload"] if event else None
+
     def finish(self, run_id: str, answer: str):
         with self.database.session.begin() as session:
             run = session.get(Run, run_id)

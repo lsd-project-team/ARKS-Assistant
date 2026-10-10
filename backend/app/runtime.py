@@ -3,13 +3,14 @@
 from deepagents import create_deep_agent
 from deepagents.backends import CompositeBackend, FilesystemBackend
 from deepagents.middleware.filesystem import FilesystemMiddleware
-from deepagents.middleware.summarization import SummarizationMiddleware, SummarizationToolMiddleware
+from deepagents.middleware.summarization import SummarizationToolMiddleware
 from langchain_core.messages import AIMessage, HumanMessage, RemoveMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agent_tools import conversation_tools, source_tools
 from app.config import Paths, SettingsStore
-from app.context import estimate_tokens
+from app.context import current_budget, estimate_tokens, input_budget
+from app.context_budget import BudgetedSummarization, ContextBudget
 from app.mcp_client import ToolCatalog, adapt_tool
 from app.memory import MemoryService
 from app.provider import StateInspectionModel, close_models, create_model
@@ -102,20 +103,24 @@ class AgentRuntime:
         tools += conversation_tools(self.repository, self.memories, thread_id)
         if not inspection:
             tools += await self.remote_tools(settings.mcp_servers, emit)
-        budget = min(
-            int(settings.model.context_tokens * 0.75),
-            settings.model.context_tokens - settings.model.output_tokens - 1500,
+        available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
+        budget = min(int(settings.model.context_tokens * 0.75), int(available * 0.9))
+        memory_prompt, included_memories = self.memories.prompt_snapshot(
+            memory_query, max_tokens=min(8000, available // 6)
         )
-        summary = SummarizationMiddleware(
+        summary = BudgetedSummarization(
             summary_model,
             backend=backend,
+            limit=settings.model.context_tokens,
+            output=settings.model.output_tokens,
+            emit=emit,
+            memory_prompt=memory_prompt,
             trigger=("tokens", max(1, budget)),
-            keep=("messages", 4),
-            trim_tokens_to_summarize=max(1000, budget // 2),
+            keep=("tokens", max(256, available // 8)),
+            trim_tokens_to_summarize=max(1, available // 2),
             token_counter=estimate_tokens,
         )
         prompt = SYSTEM_PROMPT + f"\nDeepWiki 仓库：{settings.deepwiki_repo or '未配置'}\n"
-        memory_prompt, included_memories = self.memories.prompt_snapshot(memory_query)
         prompt += "\n已有长期记忆：\n" + memory_prompt
         if not inspection:
             emit("context_sources", {"memories": included_memories})
@@ -133,6 +138,9 @@ class AgentRuntime:
             middleware=[
                 summary,
                 SummarizationToolMiddleware(summary),
+                ContextBudget(
+                    settings.model.context_tokens, settings.model.output_tokens, memory_prompt, emit
+                ),
                 FilesystemMiddleware(
                     backend=backend,
                     tools=["read_file", "ls", "glob", "grep"],
@@ -301,13 +309,12 @@ class AgentRuntime:
                 ),
                 text,
             )
-            emit(
-                "context",
-                {
-                    "tokens": estimate_tokens(effective),
-                    "limit": current_configuration(self.settings).model.context_tokens,
-                },
+            settings = current_configuration(self.settings).model
+            snapshot = self.repository.latest_event(run["thread_id"], "context_budget")
+            current = current_budget(
+                effective, snapshot, settings.context_tokens, settings.output_tokens
             )
+            emit("context", current)
             return answer
 
     @staticmethod

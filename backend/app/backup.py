@@ -1,21 +1,25 @@
 """在线备份通过 SQLite backup API，避免 WAL 数据遗漏。"""
 
+import shutil
 import sqlite3
 import tempfile
 from contextlib import closing
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from app.config import Paths
+from app.backup_manifest import manifest_for
+from app.config import Paths, dump_json
 
 
 def create_backup(paths: Paths) -> Path:
     folder = paths.data / "backups"
     folder.mkdir(exist_ok=True)
     destination = folder / f"trunk-agent-{datetime.now():%Y%m%d-%H%M%S-%f}.zip"
+    partial = destination.with_suffix(".partial")
     with tempfile.TemporaryDirectory() as temporary:
-        with ZipFile(destination, "w", compression=ZIP_DEFLATED) as archive:
+        staging = Path(temporary)
+        try:
             for name in ("app.sqlite3", "checkpoints.sqlite3"):
                 original = paths.data / name
                 if not original.exists():
@@ -26,10 +30,22 @@ def create_backup(paths: Paths) -> Path:
                     closing(sqlite3.connect(copy)) as target,
                 ):
                     source.backup(target)
-                archive.write(copy, name)
             # 密钥配置不进入导出备份；恢复后通过设置页重新填写。
             for group in ("memories", "scratch"):
                 for file in (paths.data / group).rglob("*"):
                     if file.is_file():
-                        archive.write(file, file.relative_to(paths.data))
+                        if file.is_symlink() or not file.resolve().is_relative_to(paths.data):
+                            raise ValueError("备份资料包含越界链接，请先核对资料目录")
+                        target = staging / file.relative_to(paths.data)
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(file, target)
+            manifest = manifest_for(staging, paths.workspace, datetime.now(UTC).isoformat())
+            (staging / "manifest.json").write_text(dump_json(manifest), encoding="utf-8")
+            with ZipFile(partial, "w", compression=ZIP_DEFLATED) as archive:
+                for file in staging.rglob("*"):
+                    if file.is_file():
+                        archive.write(file, file.relative_to(staging))
+            partial.replace(destination)
+        finally:
+            partial.unlink(missing_ok=True)
     return destination
