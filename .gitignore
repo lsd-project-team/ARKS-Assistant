@@ -8,6 +8,7 @@ output/
 **/node_modules/
 frontend/dist/
 *.log
+*.tsbuildinfo
 .env
 .env.*
 !.env.example

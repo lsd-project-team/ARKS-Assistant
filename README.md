@@ -32,6 +32,7 @@ Windows 本机运行、浏览器访问的源码助手。使用 Deep Agents，支
 - 密钥保存在本机 `data/settings.private.json`，接口返回掩码，Git 和导出备份排除密钥配置。
 - 备份通过设置 → 数据 → 导出。恢复时先停止服务，将 ZIP 解压至 `data/`，再启动并填写密钥。
 - 同一会话串行执行，全局最多三个运行。断线不取消任务；停止或重启后的运行可点击“继续运行”。
+- 同一个数据目录只运行一个服务实例，避免并发服务干扰检查点和恢复状态。
 - C# 符号定位使用 Tree-sitter 语法解析。首版支持阅读和分析，自动修改源码与执行构建留作后续扩展。
 
 开发时后端在 `backend` 中运行 `.venv/Scripts/python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765`；前端在 `frontend` 中运行 `npm run dev`，Vite 将 `/api` 代理至后端。API 文档位于 `/docs`。
@@ -48,3 +49,5 @@ npx prettier --check src vite.config.ts
 ```
 
 测试模型用于确定性的框架回归，真实供应商和 DeepWiki 的验收另记在 `docs/development.md`。所有开发遵循根目录 `SKILL.md`，关键边界逻辑使用中文注释。
+
+首版验收：后端 26 项测试通过、1 项因 Windows 符号链接权限跳过；前端构建、格式检查以及真实模型、DeepWiki、记忆和上下文压缩验证通过。完整记录见 [开发与验收记录](docs/development.md)。

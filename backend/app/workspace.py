@@ -1,5 +1,6 @@
 """源码读取、文本检索与 C# 语法符号；所有入口共享根目录边界。"""
 
+import base64
 import fnmatch
 import hashlib
 import json
@@ -111,6 +112,9 @@ class Workspace:
     def search(self, query: str, glob: str = "*", limit: int = 100) -> dict:
         if not query or len(query) > 300:
             raise ValueError("搜索词长度必须在 1 到 300 之间")
+        # GB18030 的中文字节不能直接匹配 UTF-8 查询，先按文件编码解码。
+        if not query.isascii():
+            return self._search_python(query, glob, limit)
         executable = shutil.which("rg")
         if executable:
             result = self._ripgrep(executable, query, glob, limit)
@@ -152,11 +156,17 @@ class Workspace:
                 self.resolve(path)
             except ValueError:
                 continue
+            text = data["lines"].get("text")
+            if text is None:
+                try:
+                    text, _ = decode_source(base64.b64decode(data["lines"]["bytes"]))
+                except (KeyError, ValueError):
+                    continue
             matches.append(
                 {
                     "path": path,
                     "line": data["line_number"],
-                    "text": data["lines"].get("text", "").strip()[:500],
+                    "text": text.strip()[:500],
                 }
             )
             if len(matches) > limit:

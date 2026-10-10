@@ -45,6 +45,10 @@ class RunManager:
         if task:
             task.cancel()
             await asyncio.gather(task, return_exceptions=True)
+            # 任务可能在首次进入协程前就被取消，此时协程内的异常处理不会执行。
+            if self.repository.run(run_id)["status"] in {"queued", "running"}:
+                self.repository.set_status(run_id, "cancelled")
+                self.repository.event(run_id, "done", {"status": "cancelled"})
 
     async def shutdown(self):
         active = list(self.tasks.values())

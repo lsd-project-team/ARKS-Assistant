@@ -171,6 +171,15 @@ class Repository:
         if previous["status"] not in {"interrupted", "failed", "cancelled"}:
             raise ValueError("此运行不能继续")
         with self.lock, self.database.session.begin() as session:
+            latest = session.scalar(
+                select(Run.id)
+                .where(Run.thread_id == previous["thread_id"])
+                .order_by(Run.created_at.desc())
+                .limit(1)
+            )
+            # 检查点属于整条会话，旧运行不能在更新后的图状态上恢复。
+            if latest != run_id:
+                raise ValueError("只能继续当前对话最近一次运行")
             active = session.scalar(
                 select(Run.id).where(
                     Run.thread_id == previous["thread_id"], Run.status.in_(["queued", "running"])

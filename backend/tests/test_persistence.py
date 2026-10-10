@@ -92,3 +92,32 @@ async def test_cancel_does_not_corrupt_history(services):
     assert repository.run(run["id"])["status"] == "cancelled"
     assert repository.run(run["id"])["answer"] == "部分回复"
     assert len(repository.thread(thread["id"])["messages"]) == 1
+
+
+async def test_cancel_before_task_starts_finishes_queued_run(services):
+    from app.runs import RunManager
+
+    class UnusedRuntime:
+        async def execute(self, *_args):
+            raise AssertionError("取消后不应调用模型")
+
+    repository, settings = services[3], services[5]
+    manager = RunManager(repository, UnusedRuntime(), settings)
+    thread = repository.create_thread("立即取消")
+    run = repository.create_run(thread["id"], "问题", [])
+    manager.start(run)
+    await manager.cancel(run["id"])
+    assert repository.run(run["id"])["status"] == "cancelled"
+    assert repository.events(run["id"])[-1]["kind"] == "done"
+    assert len(repository.thread(thread["id"])["messages"]) == 1
+
+
+def test_resume_old_run_cannot_use_newer_conversation_state(services):
+    repository = services[3]
+    thread = repository.create_thread("恢复顺序")
+    old = repository.create_run(thread["id"], "旧问题", [])
+    repository.set_status(old["id"], "cancelled")
+    latest = repository.create_run(thread["id"], "新问题", [])
+    repository.finish(latest["id"], "新回复")
+    with pytest.raises(ValueError, match="最近一次"):
+        repository.resume(old["id"])

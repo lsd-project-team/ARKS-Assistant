@@ -55,3 +55,12 @@ def test_symbols_search_and_readonly_backend(services):
     assert backend.write("/Program.cs", "overwritten").error
     assert backend.read("/Program.cs", offset=1, limit=1).start_line == 2
     assert "Main" in workspace.read("Program.cs")["content"]
+
+
+def test_search_legacy_chinese_file_preserves_text(services):
+    workspace = services[2]
+    text = "// 校准入口 Calibration\nclass Legacy {}"
+    (workspace.root / "Legacy.cs").write_bytes(text.encode("gb18030"))
+    for query in ("校准", "Calibration"):
+        matches = workspace.search(query, "*.cs")["matches"]
+        assert matches == [{"path": "Legacy.cs", "line": 1, "text": text.splitlines()[0]}]
