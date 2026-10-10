@@ -1,3 +1,5 @@
+import os
+
 from fastapi.testclient import TestClient
 
 from app.main import create_app
@@ -6,7 +8,10 @@ from app.main import create_app
 def test_api_migrations_validation_and_origin(services):
     paths = services[0]
     with TestClient(create_app(paths)) as client:
-        assert client.get("/api/health").json()["workspace"] == str(paths.workspace)
+        health = client.get("/api/health").json()
+        assert health["workspace"] == str(paths.workspace)
+        assert health["data_directory"] == str(paths.data)
+        assert health["process_id"] == os.getpid()
         assert client.get("/api/file", params={"path": "../secret"}).status_code == 409
         assert (
             client.get("/api/settings", headers={"Origin": "https://evil.example"}).status_code

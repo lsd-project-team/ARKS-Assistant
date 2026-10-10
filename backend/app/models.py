@@ -63,6 +63,7 @@ class Run(Base):
     reset_context: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
     stage: Mapped[str] = mapped_column(String(40), default="queued", server_default="queued")
     error_code: Mapped[str] = mapped_column(String(40), default="", server_default="")
+    model_snapshot_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     started_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     finished_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)

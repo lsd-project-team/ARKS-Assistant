@@ -87,6 +87,10 @@ class Repository:
                 .values(title=title, auto_title=False, updated_at=now_iso())
             )
 
+    def record_model(self, run_id, snapshot):
+        with self.database.session.begin() as session:
+            session.get(Run, run_id).model_snapshot_json = dump_json(snapshot)
+
     def create_run(self, thread_id: str | None, content: str, selections: list[dict]) -> dict:
         if thread_id:
             self.catalog.get(thread_id)

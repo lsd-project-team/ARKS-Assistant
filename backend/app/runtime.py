@@ -14,6 +14,7 @@ from app.mcp_client import ToolCatalog, adapt_tool
 from app.memory import MemoryService
 from app.provider import StateInspectionModel, close_models, create_model
 from app.repository import Repository
+from app.run_configuration import bind_configuration, current_configuration
 from app.run_feedback import tool_stage
 from app.source_backend import SourceBackend
 from app.workspace import Workspace
@@ -73,7 +74,7 @@ class AgentRuntime:
         return result
 
     async def graph(self, thread_id, checkpointer, emit, owned_models=None, *, inspection=False):
-        settings = self.settings.load()
+        settings = current_configuration(self.settings)
         if not inspection:
             emit("stage", {"stage": "connecting_model"})
         model = StateInspectionModel() if inspection else create_model(settings.model)
@@ -162,7 +163,8 @@ class AgentRuntime:
     async def execute(self, run, emit):
         owned_models = []
         try:
-            return await self._execute(run, emit, owned_models)
+            with bind_configuration(current_configuration(self.settings)):
+                return await self._execute(run, emit, owned_models)
         finally:
             await close_models(owned_models)
 
@@ -286,7 +288,7 @@ class AgentRuntime:
                 "context",
                 {
                     "tokens": estimate_tokens(effective),
-                    "limit": self.settings.load().model.context_tokens,
+                    "limit": current_configuration(self.settings).model.context_tokens,
                 },
             )
             return answer

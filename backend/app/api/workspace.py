@@ -1,9 +1,11 @@
 """工作区目录、源码、搜索与语法符号 API。"""
 
 import asyncio
+import os
 
 from fastapi import APIRouter
 
+from app.config import PROJECT_ROOT
 from app.services import AppServices
 
 
@@ -14,7 +16,14 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.get("/api/health")
     async def health():
-        return {"ok": True, "workspace": str(paths.workspace), "workspace_id": workspace.id}
+        return {
+            "ok": True,
+            "workspace": str(paths.workspace),
+            "workspace_id": workspace.id,
+            "project_directory": str(PROJECT_ROOT),
+            "data_directory": str(paths.data),
+            "process_id": os.getpid(),
+        }
 
     @router.get("/api/files")
     async def files(path: str = "", query: str = ""):

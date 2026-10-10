@@ -67,6 +67,8 @@ class MemoryService:
         }
 
     def save(self, request: MemoryWrite) -> dict:
+        if not request.content.strip():
+            raise ValueError("记忆内容不能为空")
         target = self.folder(request.scope) / request.name
         with self.lock:
             current_version = content_version(target.read_bytes()) if target.exists() else None

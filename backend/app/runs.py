@@ -4,6 +4,7 @@ import asyncio
 
 from app.config import SettingsStore
 from app.repository import TERMINAL, Repository
+from app.run_configuration import bind_configuration, model_snapshot
 from app.run_feedback import error_feedback
 from app.runtime import AgentRuntime
 
@@ -18,12 +19,22 @@ class RunManager:
         self.closing = False
 
     def start(self, run: dict):
+        configuration = self.settings.load()
+        snapshot = model_snapshot(configuration)
+        self.repository.record_model(run["id"], snapshot)
+        run["model_snapshot"] = snapshot
         self.repository.event(run["id"], "stage", {"stage": "queued"})
-        task = asyncio.create_task(self._execute(run), name=f"agent:{run['id']}")
+        task = asyncio.create_task(
+            self._execute_bound(run, configuration), name=f"agent:{run['id']}"
+        )
         self.tasks[run["id"]] = task
         task.add_done_callback(lambda _task: self.tasks.pop(run["id"], None))
 
-    async def _execute(self, run: dict):
+    async def _execute_bound(self, run, configuration):
+        with bind_configuration(configuration):
+            await self._execute(run, configuration)
+
+    async def _execute(self, run: dict, configuration):
         def emit(kind, payload):
             return self.repository.event(run["id"], kind, payload)
 
@@ -48,7 +59,7 @@ class RunManager:
             self.repository.queue.pause(run["thread_id"])
             emit("done", {"status": "cancelled"})
         except Exception as error:
-            feedback = error_feedback(error, self.settings.load().model)
+            feedback = error_feedback(error, configuration.model)
             self.repository.set_status(run["id"], "failed", feedback["text"], feedback["code"])
             self.repository.queue.pause(run["thread_id"])
             emit("error", feedback)

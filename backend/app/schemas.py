@@ -83,6 +83,19 @@ class MemoryWrite(BaseModel):
 class SettingsWrite(BaseModel):
     settings: dict
     clear_api_key: bool = False
+    clear_profile_keys: list[str] = Field(default_factory=list, max_length=20)
+    version: str | None = None
+
+
+class ModelProbe(BaseModel):
+    settings: dict | None = None
+    profile_id: str | None = None
+    clear_profile_keys: list[str] = Field(default_factory=list, max_length=20)
+    version: str | None = None
+
+
+class McpProbe(BaseModel):
+    server: dict | None = None
 
 
 class SummaryCorrection(BaseModel):

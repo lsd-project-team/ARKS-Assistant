@@ -103,6 +103,7 @@ class ConversationContext:
                 break
             cursor = events[-1]["sequence"]
         return {
+            "model": run["model_snapshot"],
             "memories": snapshot["memories"] if snapshot else [],
             "recorded": snapshot is not None,
             "selections": message["selections"],

@@ -1,13 +1,17 @@
 ﻿$ErrorActionPreference = 'Stop'
-$pidFile = Join-Path $PSScriptRoot 'data\server.pid'
-if (-not (Test-Path -LiteralPath $pidFile)) { Write-Host '没有由 Start.ps1 启动的服务。'; return }
-$serverProcessId = [int](Get-Content -LiteralPath $pidFile)
-$serverProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$serverProcessId"
-if (-not $serverProcess) { Remove-Item -LiteralPath $pidFile; return }
-$expectedExecutable = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'backend\.venv\Scripts\python.exe'))
-if ($serverProcess.ExecutablePath -ne $expectedExecutable -or $serverProcess.CommandLine -notlike '*uvicorn*app.main:app*') {
-    throw 'PID 已被其他进程使用，未执行关闭。'
+. (Join-Path $PSScriptRoot 'scripts\LocalServer.ps1')
+$dataDirectory = Get-ServerDataDirectory $PSScriptRoot
+$serverProcesses = @(Get-RecordedServerProcesses $PSScriptRoot $dataDirectory)
+foreach ($serverProcess in $serverProcesses) {
+    $currentProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$($serverProcess.ProcessId)"
+    if (-not $currentProcess) { continue }
+    if ($currentProcess.CreationDate -ne $serverProcess.CreationDate) { throw '进程身份已变化，未执行关闭。' }
+    Stop-Process -Id $serverProcess.ProcessId
+    Wait-Process -Id $serverProcess.ProcessId -Timeout 10 -ErrorAction SilentlyContinue
 }
-Stop-Process -Id $serverProcessId
-Remove-Item -LiteralPath $pidFile
-Write-Host '服务已停止。正在运行的对话将在下次启动时标记为可恢复。'
+foreach ($name in @('server.pid', 'server.process.json')) {
+    $recordPath = Join-Path $dataDirectory $name
+    if (Test-Path -LiteralPath $recordPath) { Remove-Item -LiteralPath $recordPath }
+}
+if ($serverProcesses.Count) { Write-Host '服务已停止。正在运行的对话将在下次启动时标记为可恢复。' }
+else { Write-Host '当前没有已记录的服务进程。' }
