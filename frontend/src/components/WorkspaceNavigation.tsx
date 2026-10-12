@@ -1,4 +1,4 @@
-import { Settings2, Menu, Palette } from 'lucide-react';
+import { Settings2, Menu, Palette, ClipboardList } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { Route } from '../knowledge/routes';
 import { appearanceModes, useAppearance } from '../lib/appearance';
@@ -14,6 +14,7 @@ export function WorkspaceNavigation({
   onCollapse,
   navigate,
   onSettings,
+  handover,
   children,
 }: {
   route: Route;
@@ -24,6 +25,7 @@ export function WorkspaceNavigation({
   onCollapse: () => void;
   navigate: (route: Route) => void;
   onSettings: () => void;
+  handover?: { active: boolean; onOpen: () => void };
   children?: ReactNode;
 }) {
   const navigationControl = useRef<HTMLButtonElement>(null);
@@ -35,8 +37,9 @@ export function WorkspaceNavigation({
     navigationControl.current?.focus();
   }, [compact]);
   const { mode, setMode } = useAppearance();
-  const active =
-    route.kind === 'chat'
+  const active = handover?.active
+    ? undefined
+    : route.kind === 'chat'
       ? hasSelectedThread
         ? undefined
         : 'chat'
@@ -105,6 +108,18 @@ export function WorkspaceNavigation({
             <span className="nav-copy">{item.label}</span>
           </button>
         ))}
+        {handover && (
+          <button
+            title="交接工作台"
+            aria-label="交接工作台"
+            aria-current={handover.active ? 'page' : undefined}
+            className={handover.active ? 'active' : ''}
+            onClick={handover.onOpen}
+          >
+            <ClipboardList size={18} strokeWidth={1.5} />
+            <span className="nav-copy">交接工作台</span>
+          </button>
+        )}
       </nav>
       <div className="navigation-conversations">{children}</div>
       <div className="navigation-tools">

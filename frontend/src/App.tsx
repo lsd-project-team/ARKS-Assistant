@@ -26,8 +26,10 @@ import './styles/conversations.css';
 import './styles/chat-experience.css';
 import './styles/conversation-workflows.css';
 import './styles/settings.css';
+import { useHandoverNavigation } from './handover/navigation';
 
 const KnowledgeWorkspace = lazy(() => import('./knowledge/KnowledgeWorkspace'));
+const HandoverWorkspace = lazy(() => import('./handover/HandoverWorkspace'));
 
 const CodePane = lazy(() =>
   import('./components/CodePane').then((module) => ({ default: module.CodePane })),
@@ -38,6 +40,8 @@ export default function App() {
   const project = useCurrentProject();
   const startConversation = useNewConversation();
   const { route, navigate, knowledgeOpen } = useKnowledgeNavigation();
+  const handover = useHandoverNavigation();
+  const projectId = useWorkspace((state) => state.projectId);
   const appearance = useAppearance((state) => state.mode);
   useEffect(() => {
     document.documentElement.dataset.appearance = appearance;
@@ -153,6 +157,7 @@ export default function App() {
         onSettings={() => {
           setDialog('settings');
         }}
+        handover={{ active: handover.open, onOpen: () => handover.navigate() }}
       >
         {motion.navigationExpanded && (
           <Sidebar
@@ -164,7 +169,25 @@ export default function App() {
           />
         )}
       </WorkspaceNavigation>
-      {projectPage && !knowledgeOpen && <ProjectHome onMaterials={() => setDialog('memory')} />}
+      {projectPage && !knowledgeOpen && !handover.open && (
+        <ProjectHome onMaterials={() => setDialog('memory')} />
+      )}
+      {handover.open && (
+        <Suspense
+          fallback={<section className="project-home padded muted">正在加载交接工作台…</section>}
+        >
+          <HandoverWorkspace
+            key={projectId}
+            tab={handover.tab}
+            recordId={handover.recordId}
+            version={handover.version}
+            navigate={handover.navigate}
+            onLegacyNavigate={(kind) => {
+              void navigate({ kind });
+            }}
+          />
+        </Suspense>
+      )}
       {knowledgeOpen && !project.data?.knowledge_available && (
         <section className="project-home">
           <div className="project-empty">
@@ -201,7 +224,7 @@ export default function App() {
           </Suspense>
         </WorkspaceLoadBoundary>
       )}
-      <main className="workspace-main" hidden={knowledgeOpen || projectPage}>
+      <main className="workspace-main" hidden={knowledgeOpen || projectPage || handover.open}>
         <div className="mobile-switch">
           <button className={mobile === 'chat' ? 'selected' : ''} onClick={() => setMobile('chat')}>
             <MessageSquare size={14} />

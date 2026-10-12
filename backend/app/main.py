@@ -15,6 +15,8 @@ from app.api import configuration, conversations, data, knowledge, workspace
 from app.api.projects import ProjectDispatcher
 from app.api.projects import create_router as projects_router
 from app.config import PROJECT_ROOT, Paths
+from app.handover.ai import HandoverAI
+from app.handover.router import create_router as handover_router
 from app.process_lock import service_lock
 from app.projects import Projects
 from app.services import create_services
@@ -26,6 +28,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
         raise RuntimeError("检测到未完成的数据恢复，请先运行恢复工具的 --rollback，再启动服务")
     services = create_services(paths)
     projects = Projects(services)
+    handover_ai = HandoverAI(projects)
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -36,8 +39,10 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 command.upgrade(migration, "head")
                 projects.initialize()
                 services.repository.recover()
+                handover_ai.recover()
                 yield
             finally:
+                await handover_ai.shutdown()
                 await projects.shutdown()
                 services.database.close()
 
@@ -76,6 +81,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     for module in (workspace, conversations, configuration, data, knowledge):
         app.include_router(module.create_router(services))
     app.include_router(projects_router(projects))
+    app.include_router(handover_router(projects, handover_ai))
     app.mount("/api/p", ProjectDispatcher(projects, app.exception_handlers))
     frontend = PROJECT_ROOT / "frontend/dist"
     if frontend.is_dir():

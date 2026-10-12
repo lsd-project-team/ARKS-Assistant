@@ -1,0 +1,221 @@
+import { useState } from 'react';
+import { ApiError } from '../lib/api';
+import { Button, ErrorText, Modal } from '../components/ui';
+import { defaults, EvidenceFields, Fields, PlanSteps } from './Fields';
+import { useHandoverDraft } from './drafts';
+import type { Client } from './client';
+import type { Definitions, HandoverRecord, Kind, Payload } from './types';
+import { text } from './types';
+
+export function RecordEditor({
+  projectId,
+  client,
+  definitions,
+  records,
+  kind,
+  row,
+  initial = {},
+  actor,
+  onActor,
+  onSaved,
+  onClose,
+}: {
+  projectId: string;
+  client: Client;
+  definitions: Definitions;
+  records: HandoverRecord[];
+  kind: Kind;
+  row?: HandoverRecord;
+  initial?: Payload;
+  actor: string;
+  onActor: (value: string) => void;
+  onSaved: (row: HandoverRecord) => void;
+  onClose: () => void;
+}) {
+  const candidate = row?.kind === 'candidate';
+  const payload = candidate ? (row.payload.proposed as Payload) : row?.payload;
+  const draftState = useHandoverDraft(
+    projectId,
+    row?.id || `new:${kind}:${text(initial.task_id)}`,
+    {
+      title: row?.title || '',
+      payload: { ...defaults(definitions, kind), ...payload, ...initial },
+      version: row?.version,
+    },
+  );
+  const { draft, setDraft } = draftState;
+  const [error, setError] = useState<unknown>();
+  const [busy, setBusy] = useState(false);
+  const [incoming, setIncoming] = useState<HandoverRecord>();
+  const [opinion, setOpinion] = useState('');
+  const setPayload = (payload: Payload) => setDraft({ ...draft, payload });
+  async function save() {
+    setBusy(true);
+    setError(undefined);
+    try {
+      const result = candidate
+        ? await client.send<HandoverRecord>(`/candidates/${row.id}/promote`, {
+            title: draft.title,
+            proposed: draft.payload,
+            actor,
+            opinion,
+            version: draft.version,
+          })
+        : await client.send<HandoverRecord>(
+            row ? `/records/${row.id}` : '/records',
+            {
+              kind,
+              title: draft.title,
+              payload: draft.payload,
+              actor,
+              version: draft.version,
+              reason: opinion,
+            },
+            row ? 'PATCH' : 'POST',
+          );
+      draftState.clear();
+      onSaved(result);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Modal
+      open
+      title={
+        candidate
+          ? `审核${definitions.kinds[kind]}候选`
+          : `${row ? '编辑' : '新增'}${definitions.kinds[kind]}`
+      }
+      onClose={onClose}
+      className="handover-modal"
+      description="保存为草稿后可继续复核。关闭页面会保留本机草稿，已确认内容的旧版本保留。"
+    >
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void save();
+        }}
+      >
+        {draftState.restored && (
+          <p className="handover-notice">已恢复此项目的本机草稿，请检查内容与版本后保存。</p>
+        )}
+        {candidate && (
+          <p className="handover-notice">
+            AI 假设：{text(row.payload.reason) || '请核对来源并修订内容。'} 合并后仍是待确认记录。
+          </p>
+        )}
+        <ErrorText error={error || draftState.warning} reveal />
+        {error instanceof ApiError && error.status === 409 && row && (
+          <Button
+            type="button"
+            onClick={() =>
+              void client
+                .get<HandoverRecord>(`/records/${row.id}`)
+                .then(setIncoming)
+                .catch(setError)
+            }
+          >
+            查看服务器当前版本
+          </Button>
+        )}
+        {incoming && (
+          <section className="handover-conflict">
+            <h3>服务器当前版本 v{incoming.version}</h3>
+            <p>逐项比较后，可将服务器的内容复制到草稿中，再使用当前版本号提交。</p>
+            <dl>
+              {Object.entries(incoming.payload)
+                .filter(([key, value]) => definitions.fields[key] && typeof value === 'string')
+                .map(([key, value]) => (
+                  <div key={key}>
+                    <dt>{definitions.fields[key]}</dt>
+                    <dd>
+                      {String(value) || '未填写'}
+                      <Button
+                        type="button"
+                        onClick={() => setPayload({ ...draft.payload, [key]: value })}
+                      >
+                        采用此项
+                      </Button>
+                    </dd>
+                  </div>
+                ))}
+            </dl>
+            <Button
+              type="button"
+              onClick={() => {
+                setDraft({ ...draft, version: incoming.version });
+                setIncoming(undefined);
+                setError(undefined);
+              }}
+            >
+              已完成比较，使用 v{incoming.version} 继续保存
+            </Button>
+          </section>
+        )}
+        <fieldset disabled={busy}>
+          <div className="handover-fields">
+            <label className="handover-field-wide">
+              <span>标题</span>
+              <input
+                required
+                maxLength={200}
+                value={draft.title}
+                onChange={(event) => setDraft({ ...draft, title: event.target.value })}
+              />
+            </label>
+            <label>
+              <span>整理人</span>
+              <input
+                required
+                maxLength={120}
+                value={actor}
+                onChange={(event) => onActor(event.target.value)}
+              />
+            </label>
+            <label>
+              <span>{candidate ? '审核意见' : '修改说明'}</span>
+              <input
+                required={candidate}
+                maxLength={2000}
+                value={opinion}
+                onChange={(event) => setOpinion(event.target.value)}
+              />
+            </label>
+          </div>
+          <Fields
+            kind={kind}
+            value={draft.payload}
+            onChange={setPayload}
+            definitions={definitions}
+            records={records.filter((item) => item.id !== row?.id)}
+          />
+          {kind === 'plan' && (
+            <PlanSteps
+              value={draft.payload.steps}
+              onChange={(steps) => setPayload({ ...draft.payload, steps })}
+            />
+          )}
+          {!candidate && (
+            <EvidenceFields
+              value={draft.payload.evidence}
+              onChange={(evidence) => setPayload({ ...draft.payload, evidence })}
+              records={records.filter((item) => item.id !== row?.id)}
+            />
+          )}
+        </fieldset>
+        <div className="handover-form-footer">
+          <span className="handover-muted">保存后另行人工确认</span>
+          <Button type="button" disabled={busy} onClick={onClose}>
+            关闭并保留草稿
+          </Button>
+          <Button className="primary" disabled={busy || !actor.trim()} type="submit">
+            {busy ? '正在保存…' : candidate ? '审核并合并' : '保存草稿'}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}

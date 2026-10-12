@@ -254,7 +254,7 @@ def test_api_backup_validation_storage_and_active_run_guard(services):
             content=exported.content,
             headers={"Content-Type": "application/zip"},
         )
-        assert checked.status_code == 200 and checked.json()["database_revision"] == "0012"
+        assert checked.status_code == 200 and checked.json()["database_revision"] == "0013"
         assert client.post("/api/backup/validate", content=b"invalid").status_code == 409
         stats = client.get("/api/storage").json()
         assert stats["counts"]["messages"] == 2 and stats["groups"]["backups"] > 0
