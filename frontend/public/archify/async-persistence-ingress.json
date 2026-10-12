@@ -1,0 +1,208 @@
+{
+  "generatedBy": "scripts/build-async-persistence-ingress.cjs",
+  "scope": "Direct .Add sites and selected wrapper/delegate paths in trunk C#; not dynamic alias/reflection or runtime queue guarantee",
+  "sources": {
+    "trunk/AKRS.ZX2200/Program.cs": "612f00e342d8b9af5bdd6708fdf5b2ca91e9de9495f729f912ff9d2bc0c33c32",
+    "trunk/AKRS.Galaxy2.PR/Models/Entities/PREntity.cs": "6debe43da1428a6c964d9c02abac0e114c7d358018ea9a5a8587128ef5f606f9",
+    "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs": "71aa2134a158c2a404f29ee3646a7de383f8f1ba386a3f6555bb2467960f010d",
+    "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+    "trunk/AKRS.ZX2200/Infrastructure/AOP/Module/PropertyChangeAop.cs": "a92775008257e37286e949ad176df4c784988fc80bd95b5042903c2020c0650a",
+    "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs": "b327f38b5596f4f61d63d85a98d8e5dc3637cf1876764a52c2dddd4db783a094",
+    "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs": "2f28e39648d034261ae5d57be4cb9e1908f4bec971d80d00120e9a3af6baa4ca",
+    "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+    "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/TemperatureCompensationEntity.cs": "753337f6b77ba5fcd257194dc0c34ca9c9cf9cebdf69fd806add645e25a43b38",
+    "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+    "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073"
+  },
+  "anchors": [
+    {
+      "id": "image-delegate",
+      "file": "trunk/AKRS.ZX2200/Program.cs",
+      "line": 248,
+      "code": "PREntity.SaveLocateImageAction += VisionService.SaveVisionImage;"
+    },
+    {
+      "id": "image-conditional",
+      "file": "trunk/AKRS.Galaxy2.PR/Models/Entities/PREntity.cs",
+      "line": 535,
+      "code": "if (IsSaveLocateImage() && postImage)"
+    },
+    {
+      "id": "image-queue",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "line": 244,
+      "code": "BitmapBlockingCollection.Add(((Bitmap)bitmap, allPath + \"//\" + bitmapName));"
+    },
+    {
+      "id": "image-unbounded",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "line": 321,
+      "code": "new BlockingCollection<(Bitmap, string)>();"
+    },
+    {
+      "id": "image-take",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "line": 347,
+      "code": "var item = BitmapBlockingCollection.Take();"
+    },
+    {
+      "id": "image-save",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "line": 351,
+      "code": "item.Item1.Save(item.Item2, System.Drawing.Imaging.ImageFormat.Bmp);"
+    },
+    {
+      "id": "image-dispose",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "line": 353,
+      "code": "item.Item1.Dispose();"
+    },
+    {
+      "id": "db-state",
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "line": 65,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(parameterChangeLogEntity);"
+    },
+    {
+      "id": "db-aop",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/AOP/Module/PropertyChangeAop.cs",
+      "line": 91,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(parameterChangeLogEntity);"
+    },
+    {
+      "id": "db-operation",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 87,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(operateLogEntity);"
+    },
+    {
+      "id": "db-capacity",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 54,
+      "code": "new BlockingCollection<object>(500);"
+    },
+    {
+      "id": "db-domain",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "line": 421,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(ob);"
+    },
+    {
+      "id": "db-defect",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "line": 410,
+      "code": "this.SaveDataToDb(defectStatisticsEntity);"
+    },
+    {
+      "id": "db-bond",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "line": 178,
+      "code": "this.SaveDataToDb(new BondPositionLogEntity(\"\", bondPosition.SubstrateNum.ToString(), bondPosition.ModuleNum.ToString(), bondPosition.Name)"
+    },
+    {
+      "id": "db-temp-uplook",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "line": 138,
+      "code": "StatisticsDomain.GetInstance().SaveDataToDb(entity);"
+    },
+    {
+      "id": "db-temp-pickup",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "line": 226,
+      "code": "StatisticsDomain.GetInstance().SaveDataToDb(entity);"
+    },
+    {
+      "id": "db-temp-class",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/TemperatureCompensationEntity.cs",
+      "line": 13,
+      "code": "public class TemperatureCompensationEntity"
+    },
+    {
+      "id": "db-temp-table",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "line": 63,
+      "code": "this.CreateTableIfNotExists<TemperatureCompensationEntity>();"
+    },
+    {
+      "id": "db-temp-query",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "line": 353,
+      "code": "return DBService.Query<TemperatureCompensationEntity>("
+    },
+    {
+      "id": "db-take",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 114,
+      "code": "var item = DbEntityBlockingCollection.Take();"
+    },
+    {
+      "id": "db-branch-op",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 116,
+      "code": "if (item is OperateLogEntity operateLogEntity)"
+    },
+    {
+      "id": "db-branch-defect",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 120,
+      "code": "else if (item is DefectStatisticsEntity defectStatisticsEntity)"
+    },
+    {
+      "id": "db-branch-param",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 124,
+      "code": "else if (item is ParameterChangeLogEntity parameterChangeLogEntity)"
+    },
+    {
+      "id": "db-branch-bond",
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 135,
+      "code": "else if (item is BondPositionLogEntity bondPositionLogEntity)"
+    },
+    {
+      "id": "monitor-image",
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "line": 690,
+      "code": "VisionService.StartSaveThread();"
+    },
+    {
+      "id": "monitor-db",
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "line": 693,
+      "code": "StatisticsService.StartSaveThread();"
+    },
+    {
+      "id": "exit",
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "line": 738,
+      "code": "System.Environment.Exit(0);"
+    }
+  ],
+  "directWrites": [
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/AOP/Module/PropertyChangeAop.cs",
+      "line": 91,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(parameterChangeLogEntity);"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "line": 244,
+      "code": "BitmapBlockingCollection.Add(((Bitmap)bitmap, allPath + \"//\" + bitmapName));"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "line": 65,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(parameterChangeLogEntity);"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "line": 421,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(ob);"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "line": 87,
+      "code": "StatisticsService.DbEntityBlockingCollection.Add(operateLogEntity);"
+    }
+  ]
+}

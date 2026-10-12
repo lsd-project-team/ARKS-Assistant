@@ -5,15 +5,31 @@ import fnmatch
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
+import sys
 from itertools import islice
 from pathlib import Path, PurePosixPath
 
 import tree_sitter_c_sharp
 from tree_sitter import Language, Parser
 
-IGNORED = {".git", ".vs", "bin", "obj", "packages", "node_modules", "__pycache__"}
+from app.version_cache import VersionCache
+
+IGNORED = {
+    ".git",
+    ".vs",
+    "bin",
+    "obj",
+    "packages",
+    "node_modules",
+    "__pycache__",
+    ".venv",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
+}
 MAX_FILE_BYTES = 2_000_000
 
 
@@ -38,6 +54,9 @@ class Workspace:
     def __init__(self, root: Path):
         self.root = root.resolve()
         self.id = content_version(str(self.root).encode())[:32]
+        self.source_id = self.id
+        self.source_cache = VersionCache()
+        self.symbol_cache = VersionCache(max_bytes=8_000_000)
 
     def resolve(self, relative: str = "") -> Path:
         normalized = relative.replace("\\", "/")
@@ -82,12 +101,16 @@ class Workspace:
         if target.stat().st_size > MAX_FILE_BYTES:
             raise ValueError("文件超过 2 MB，请通过搜索定位需要的片段")
         data = target.read_bytes()
-        content, encoding = decode_source(data)
+        version = content_version(data)
+        content, encoding = self.source_cache.get_or_create(
+            (self.relative(target), version), lambda: decode_source(data), len(data) * 4
+        )
         return {
             "path": self.relative(target),
+            "source_workspace_id": self.source_id,
             "content": content,
             "encoding": encoding,
-            "version": content_version(data),
+            "version": version,
             "line_count": len(content.splitlines()),
         }
 
@@ -196,6 +219,51 @@ class Workspace:
         source = self.read(path)
         if not path.lower().endswith(".cs"):
             return {"symbols": [], "version": source["version"]}
+        parsed = self.symbol_cache.get_or_create(
+            (source["path"], source["version"]),
+            lambda: self._parse_symbols(source),
+            len(source["content"].encode("utf-8")) * 2,
+        )
+        # 返回的数据可由调用者排序，不允许影响其他窗口共享的缓存。
+        return {**parsed, "symbols": [dict(item) for item in parsed["symbols"]]}
+
+    @staticmethod
+    def _parse_symbols(source):
+        from app.csharp_analysis import DOTNET, HELPER
+
+        command = (
+            [str(DOTNET), str(HELPER)]
+            if DOTNET.is_file() and HELPER.is_file()
+            else [sys.executable, "-m", "app.symbol_parser"]
+        )
+        try:
+            response = subprocess.run(
+                command,
+                input=json.dumps({**source, "action": "syntax"}) + "\n",
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=20,
+                cwd=Path(__file__).resolve().parents[1],
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            )
+            if response.returncode == 0:
+                parsed = json.loads(response.stdout)
+                for item in parsed.get("symbols", []):
+                    item["kind"] = re.sub(r"(?<!^)(?=[A-Z])", "_", item["kind"]).lower()
+                return {**parsed, "version": source["version"]}
+        except (OSError, ValueError, subprocess.TimeoutExpired):
+            pass
+        return {
+            "symbols": [],
+            "version": source["version"],
+            "has_syntax_errors": True,
+            "analysis": "unavailable",
+            "reason": "语法解析失败，需按显式行号补读源码",
+        }
+
+    @staticmethod
+    def _native_symbols(source):
         parser = Parser(Language(tree_sitter_c_sharp.language()))
         tree = parser.parse(source["content"].encode("utf-8"))
         symbols = []

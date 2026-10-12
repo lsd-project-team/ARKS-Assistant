@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "native-synthetic-data-verified-full-integration-pending",
+  "metadata": {
+    "file": "inspection-repository-json-sdk-evidence.json",
+    "sha256": "ba168a923d7484915a4a968732b664fd2e41f63a1ed78a60e1895f0f0b6ad247",
+    "assemblies": 2,
+    "methodsPerAssembly": 16,
+    "methodPlacements": 32,
+    "assemblyBytesIdentical": false,
+    "selectedMetadataAndILIdentical": true
+  },
+  "runtime": {
+    "test": "inspection-repository-json-sdk-runtime-test.json",
+    "testSha256": "932a8c0b2ebefee5fb1a1c31ada5baaa2f0cfde6744a31f4ffd3aa34460c02ab",
+    "audit": "inspection-repository-json-sdk-runtime-audit.json",
+    "auditSha256": "63f4c53ff4ccbdc44a33ddb8e637efffbb8a1769e08093a01512b5bcbfe94a37",
+    "command": "node scripts/test-inspection-repository-json-sdk-runtime.cjs",
+    "observedExitCode": 0,
+    "log": ".archify-work/inspection-json-sdk-native-baseline-v1.log",
+    "logSha256": "eef28f72e696f8461f8ec60ab78362f0d68cfdc36b7db3197f9d101130ed566d",
+    "distinctAssertions": 26,
+    "placements": 52,
+    "isolatedProcesses": 2,
+    "runtimes": [
+      "4.0.30319.42000",
+      "4.0.30319.42000"
+    ]
+  },
+  "findings": [
+    "Library and bin SDK DLL hashes differ, but all 16 selected JSON/Singleton method bodies and associated method metadata match exactly. Dependency/deployment equivalence is not inferred.",
+    "Actual native SaveList creates directories/files and emits typed list metadata; ReadList reconstructs ordered new objects. Missing ReadList creates an empty file and returns null, while missing ReadObject returns null without creating it.",
+    "All four Newtonsoft Error callbacks execute with synthetic records: getter errors produce partial saved JSON and member conversion errors retain default values in successfully returned partial records. These paths need native source-model validation before considering product teaching/config load accepted.",
+    "Directory creation errors in ReadList/SaveList/SaveObject occur before their applicable catch paths and propagate. Malformed root JSON paths that display native message boxes remain untested.",
+    "Actual Singleton missing-object access performs construction before read then fallback construction, caches afterward, saves via actual JSON persistence, reconstructs from saved JSON and locks concurrent initial access. Native source product/AOP and failure publication/notification behavior remain pending."
+  ],
+  "scope": "Actual selected repository SDK JSON/Singleton methods execute in two isolated Windows .NET Framework processes against separate library/bin DLL copies and guarded temporary workspace files, using synthetic record/singleton types. 26 identical assertions run against each copy; 52 placements are not 52 distinct behaviors. SDK four Error callbacks, valid/partial JSON, missing files, pre-catch path errors and generic singleton cache/concurrency execute. Source product/config/PR/AOP/native app/deployed DLL/UI/equipment acceptance remains pending. Outside current 1209 full regression/reader and 1303 source-runtime manifest.",
+  "next": "Integrate actual JSON helper and generic singleton lifetime/partial-error semantics with original repository and product/config defaults in an isolated data-only composition. Preserve source defaults and distinguish original source/adapter failure timing from actual SDK behavior; native app/build/deployment/UI/PR/equipment and all 29-group/13-requirement acceptance remain pending."
+}

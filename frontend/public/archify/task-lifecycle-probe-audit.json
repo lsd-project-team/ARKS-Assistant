@@ -1,0 +1,34 @@
+{
+  "schema": "archify-task-lifecycle-probe-v1",
+  "status": "isolated-runtime-confirmed",
+  "recordedAt": "2026-10-06T21:49:49.541Z",
+  "probe": {
+    "source": ".archify-work/task-lifecycle-probe/TaskLifecycleProbe.cs",
+    "runner": ".archify-work/run-task-lifecycle-probe.ps1",
+    "executable": ".archify-work/task-lifecycle-probe/TaskLifecycleProbe.exe",
+    "compiler": ".archify-work/official-net48-build-toolchain/microsoft.net.compilers.toolset.4.14.0/tasks/net472/csc.exe",
+    "sourceSha256": "80026e3cdd31c50469c40b64b16765875d47faba289f793e3945e171a118c7dd",
+    "output": {
+      "completed": "RanToCompletion",
+      "faulted": "Faulted",
+      "canceled": "Canceled",
+      "runningBeforeRelease": "Running",
+      "completedBlocked": false,
+      "faultedBlocked": false,
+      "canceledBlocked": false,
+      "runningBlocked": true,
+      "disposeWhileRunningThrows": true,
+      "runningAfterRelease": "RanToCompletion"
+    }
+  },
+  "conclusions": [
+    "The exact Running-only predicate returns false for RanToCompletion, Faulted and Canceled tasks, and true for a live Running task.",
+    "Calling Task.Dispose while the task is still Running throws InvalidOperationException in this .NET 4.8-targeted probe.",
+    "After the running task is released and completed, Dispose succeeds; Dispose did not perform cancellation or waiting."
+  ],
+  "boundaries": [
+    "The probe verifies .NET Task semantics and the predicate shape in isolation; it does not execute production Machine, Worker, Stop, Abort or EmergencyStop code.",
+    "No hardware, VM, database, UI or production Task instance was touched.",
+    "Production integration still requires a safe managed fixture or a controlled runtime environment."
+  ]
+}

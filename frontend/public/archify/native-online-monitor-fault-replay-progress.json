@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "status": "original-monitor-fault-identity-and-independent-replay-verified",
+  "updatedAt": "2026-10-06T20:02:16.382Z",
+  "processes": 2,
+  "checksBeforeFaultPerProcess": 4,
+  "originalMonitorThreadIdentified": true,
+  "unhandledException": "System.NullReferenceException",
+  "terminating": true,
+  "childExitCode": 3221225477,
+  "sourceAssembliesPerProcess": 16,
+  "imageConsumerCreated": false,
+  "statisticsConsumerCreated": false,
+  "dbLazyCreated": false,
+  "hardwareCount": 0,
+  "eventByteIdentical": true,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "limitations": [
+    "No real hardware, online alarm modal, successful production loop or SQL persistence acceptance.",
+    "Exit code observed separately from managed exception; cause of 0xC0000005 and CLR Exception.ToString diagnostic not established."
+  ],
+  "audit": "native-online-monitor-fault-replay-audit.json",
+  "auditSha256": "4ca8cd676500cc2e6969bb1df9fc3f2013411073639b7880c09985dc2738ec30",
+  "review": "native-online-monitor-fault-replay-review.md"
+}

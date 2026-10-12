@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T05:08:27.381Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-transport-bond-integration.log",
+    "sha256": "d71f2b8668e7153db47c5999886637964d3c5631b277e9da54fbcc208bb74a75"
+  },
+  "specialized": {
+    "checks": 310,
+    "completeMethods": 87,
+    "properties": 39,
+    "enums": 6,
+    "fields": 13,
+    "signalBindings": 23,
+    "topicSnapshots": 46,
+    "auditSha256": "651487d311fe4349bf63d5a631c1fc5f9d6db7ffd22e6b530d4fd7936b30989c",
+    "evidenceSha256": "534163f905f6c76880c2dc6b7a6c741acb4c1a4cc8ee9db60d9eff918b6fbef4"
+  },
+  "browser": {
+    "log": ".archify-work/browser-transport-bond-integration.log",
+    "sha256": "f084267aaa606da4038871384102a9fac21a089c5e29d52369463a00c279b13d",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "05e26555509bf0677e61024de67a3405641277e4c5707b784d189095a61f9f89",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 25,
+    "topicSnapshots": 407,
+    "moduleSnapshots": 940
+  },
+  "continuation": {
+    "nextEvidence": "transport-waiting-next-evidence.json",
+    "nextEvidenceSha256": "b56b9fb3966ec2b20a055543fe37f0655e2760e08f61a1d456f07d276e663ebb",
+    "fragments": 25,
+    "previousControllerCaptureSha256": "7f2d8b729ba71aefc099c6e1ae04039487bff691dff879c5319f6f7949f3bb23",
+    "next": "Original waiting-to-unload-belt transfer and shared movement/material/stop wrappers, then other seven transfers and program/pool/domain/SDK/native acceptance."
+  },
+  "scope": "Original complete TransferBondToWaitingUnload, UnClamp, block and two belt wrappers, base axis wrapper, actual child Task.Run/WaitAll and shared real Signal integrate with complete original transport producer, UI/readiness and real wafer Task/Stop. Controller program getter and relevant settings/state declarations are original. Other eight transfers, sensor/drive/log/program persistence/UI/SDK/domain lifecycle remain explicit fixtures; native UI, actual build/DLL/configuration and equipment remain pending."
+}

@@ -8,8 +8,16 @@ from fastapi.responses import JSONResponse
 from app.config import AppSettings, McpSettings
 from app.mcp_client import probe_mcp
 from app.model_probe import probe_capabilities
+from app.provider import close_models, create_model
 from app.run_feedback import error_feedback
-from app.schemas import McpProbe, MemoryRestore, MemoryWrite, ModelProbe, SettingsWrite
+from app.schemas import (
+    McpProbe,
+    MemoryRestore,
+    MemoryWrite,
+    ModelProbe,
+    SettingsWrite,
+    SourcePreferencesWrite,
+)
 from app.services import AppServices
 
 
@@ -18,6 +26,15 @@ def create_router(services: AppServices) -> APIRouter:
     settings = services.settings
     memories = services.memories
     runtime = services.runtime
+
+    @router.get("/api/source-options")
+    async def get_source_options():
+        return services.repository.source_preferences.get()
+
+    @router.put("/api/source-options")
+    async def save_source_options(body: SourcePreferencesWrite):
+        async with services.runs.edit_lock:
+            return services.repository.source_preferences.save(body)
 
     @router.get("/api/settings")
     async def get_settings():
@@ -76,7 +93,14 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.post("/api/memories/review")
     async def review_memory(body: MemoryWrite):
-        return await asyncio.to_thread(memories.review, body)
+        config = settings.load().model
+        model = (
+            create_model(config) if config.model and config.base_url and config.api_key else None
+        )
+        try:
+            return await memories.semantic_review(body, model)
+        finally:
+            await close_models([model] if model else [])
 
     @router.get("/api/memories/{scope}/{name}/history")
     async def memory_history(scope: str, name: str):

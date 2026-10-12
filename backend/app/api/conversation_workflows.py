@@ -9,13 +9,21 @@ from app.services import AppServices
 def validated_selections(workspace, body):
     selections = []
     for selection in body.selections:
+        if selection.source_workspace_id and selection.source_workspace_id != workspace.source_id:
+            raise ValueError("选区来自其他源码目录，请在当前项目重新选择；原始快照仍保留")
         workspace.resolve(selection.path)
         try:
             stale = workspace.read(selection.path)["version"] != selection.version
         except FileNotFoundError:
             stale = True
-        selections.append({**selection.model_dump(), "stale": stale})
+        selections.append(
+            {**selection.model_dump(), "source_workspace_id": workspace.source_id, "stale": stale}
+        )
     return selections
+
+
+def source_options(body):
+    return body.source_options.model_dump() if body.source_options is not None else None
 
 
 def create_router(services: AppServices):
@@ -31,7 +39,9 @@ def create_router(services: AppServices):
     async def edit(thread_id: str, message_id: str, body: RunCreate):
         selections = validated_selections(services.workspace, body)
         async with manager.edit_lock:
-            run = repository.branches.edit_latest(thread_id, message_id, body.content, selections)
+            run = repository.branches.edit_latest(
+                thread_id, message_id, body.content, selections, source_options(body)
+            )
             manager.start(run)
         return run
 
@@ -43,7 +53,7 @@ def create_router(services: AppServices):
     async def enqueue(thread_id: str, body: RunCreate):
         selections = validated_selections(services.workspace, body)
         async with manager.edit_lock:
-            item = repository.queue.add(thread_id, body.content, selections)
+            item = repository.queue.add(thread_id, body.content, selections, source_options(body))
             run = repository.queue.dispatch(thread_id)
             if run:
                 manager.start(run)
@@ -53,7 +63,9 @@ def create_router(services: AppServices):
     async def update(item_id: str, body: QueueEdit):
         selections = validated_selections(services.workspace, body)
         async with manager.edit_lock:
-            return repository.queue.update(item_id, body.content, selections, body.version)
+            return repository.queue.update(
+                item_id, body.content, selections, body.version, source_options(body)
+            )
 
     @router.delete("/api/queue/{item_id}")
     async def remove(item_id: str):

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-control-methods-and-event-boundaries-native-preparation-passed",
+  "command": "node scripts/verify-native-dispense-control.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "ee1096",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-dispense-control.log",
+  "logSha256": "eb9f52f9c399ff97e8af27faafed08ccd0dd197efa9a918d87cfdf4afd671c21",
+  "testSha256": "01536c004496b7b4ba34aa9ed4fabbdaeb40bb8071078ab250b6dd3af5e59e13",
+  "parentValidation": {
+    "command": "guarded original dispense geometry → encoding-preserving resources validation pipeline",
+    "observedSession": 82847,
+    "observedCompletionChunk": "f74456",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-dispense-geometry.cjs",
+        "log": ".archify-work/native-dispense-control/parent-geometry-verification.log",
+        "sha256": "d3a1d5c90e4b2c635dad51bc3bbb60136ad7338ea8edbc476769f3b0f9236fe6"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-dispense-control/parent-resources-verification.log",
+        "sha256": "b4f55d80e8bb696722d21257a5878399bf7c198aebeb1e15ea8edc7991090769"
+      }
+    ]
+  },
+  "acceptedProcesses": 2,
+  "checksPerPass": 35,
+  "distinctLabels": 35,
+  "selectedMethods": 43,
+  "originalSources": 11,
+  "newFrozenInputs": 52,
+  "totalFrozenBindings": 6163,
+  "wholeGoalComplete": false,
+  "diagnostics": {
+    "failedNativeAssertion": {
+      "chunk": "b9cd97",
+      "wrapperExitCode": 1,
+      "nativeExitCode": 1,
+      "checks": 2,
+      "reason": "Probe assumed designer506x506 was runtime size; actual DevExpress/WinForms construction590x590/origin295,295. Failed input/compile/probe/root preserved; no product error claimed."
+    },
+    "acceptedCompileAndPrimary": {
+      "chunk": "31cb71",
+      "exitCode": 0,
+      "checks": 35
+    },
+    "replayCompileRuntime": {
+      "chunk": "79eddf",
+      "exitCode": 0,
+      "checks": 35
+    },
+    "finalIl": {
+      "chunk": "9fdcd7",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 82847,
+      "chunk": "f74456",
+      "exitCode": 0
+    }
+  }
+}

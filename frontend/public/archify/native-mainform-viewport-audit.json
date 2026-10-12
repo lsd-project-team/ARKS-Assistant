@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "status": "native-mainform-viewport-evidence-verified",
+  "command": "node .archify-work/verify-native-mainform-viewport-documentation.cjs",
+  "observedCompletionChunk": "pending",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-mainform-viewport-documentation.log",
+  "sourceLedgerUnchanged": 19106,
+  "formalRuntimeChecksUnchanged": 1328,
+  "wholeGoalComplete": false
+}

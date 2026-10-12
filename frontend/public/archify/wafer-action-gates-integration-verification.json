@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-29T16:11:03.007Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-wafer-action-gates.log",
+    "sha256": "033ae99fc091961b0e3c69e09018c930a2e94484542e046d64a0e364a769ef8b"
+  },
+  "browser": {
+    "log": ".archify-work/browser-wafer-action-gates.log",
+    "sha256": "f18a0aeddf30ff7be09624b7a09de8f1ecf6c2566e603c7d4ef7f3114f8b3502",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "8a7a85295884e0a38695eb5c781e00d8f2b3c45aa8a1e7f9c6ce0c5f9e02b4a6",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "210 controlled assertions over 14 original methods and 1 property: consumer/search/pick/offset/change predicate/position memory/table controller/SingleStep, real Signal and 3 constructor bindings. Vision, calibration, axis command and arrival, eject-ready, Machine.Stop, UI and storage remain fixtures; no equipment acceptance."
+}

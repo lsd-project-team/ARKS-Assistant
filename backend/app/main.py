@@ -11,9 +11,12 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
-from app.api import configuration, conversations, data, workspace
+from app.api import configuration, conversations, data, knowledge, workspace
+from app.api.projects import ProjectDispatcher
+from app.api.projects import create_router as projects_router
 from app.config import PROJECT_ROOT, Paths
 from app.process_lock import service_lock
+from app.projects import Projects
 from app.services import create_services
 
 
@@ -22,6 +25,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     if (paths.data / "restore.pending.json").exists():
         raise RuntimeError("检测到未完成的数据恢复，请先运行恢复工具的 --rollback，再启动服务")
     services = create_services(paths)
+    projects = Projects(services)
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -30,15 +34,17 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 migration = Config(str(PROJECT_ROOT / "backend/alembic.ini"))
                 migration.attributes["connection"] = services.database.engine
                 command.upgrade(migration, "head")
+                projects.initialize()
                 services.repository.recover()
                 yield
             finally:
-                await services.runs.shutdown()
+                await projects.shutdown()
                 services.database.close()
 
     app = FastAPI(title="Trunk Agent", lifespan=lifespan)
     app.state.runs = services.runs
     app.state.repository = services.repository
+    app.state.projects = projects
 
     @app.middleware("http")
     async def local_origin(request: Request, call_next):
@@ -67,8 +73,10 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     async def not_found(_request, error):
         return JSONResponse({"detail": str(error)}, status_code=404)
 
-    for module in (workspace, conversations, configuration, data):
+    for module in (workspace, conversations, configuration, data, knowledge):
         app.include_router(module.create_router(services))
+    app.include_router(projects_router(projects))
+    app.mount("/api/p", ProjectDispatcher(projects, app.exception_handlers))
     frontend = PROJECT_ROOT / "frontend/dist"
     if frontend.is_dir():
         app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")

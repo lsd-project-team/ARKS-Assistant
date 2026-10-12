@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 S1/S2 步骤注入与完成状态保留",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "source", "label": "配方与载具来源" },
+    { "id": "inject", "label": "动作控制器" },
+    { "id": "task", "label": "生产任务" }
+  ],
+  "nodes": [
+    { "id": "mapping", "lane": "source", "col": 0, "type": "database", "label": "读取载具 / Mapping", "sublabel": "基板、基岛、焊点", "width": 140 },
+    { "id": "steps", "lane": "source", "col": 1, "type": "backend", "label": "读取启用 ProcessSteps", "sublabel": "S1 与 S2 各自控制器", "width": 140 },
+    { "id": "match", "lane": "inject", "col": 2, "type": "security", "label": "BondPositionName 匹配？", "sublabel": "按当前焊点名称", "width": 170 },
+    { "id": "key", "lane": "inject", "col": 3, "type": "database", "label": "RemainingSteps 已有键？", "sublabel": "S1 或 S2 字典", "width": 170 },
+    { "id": "add", "lane": "inject", "col": 4, "type": "backend", "label": "加入键并置 false", "sublabel": "只补缺失步骤", "width": 140 },
+    { "id": "preserve", "lane": "inject", "col": 5, "type": "database", "label": "保留原键和值", "sublabel": "完成状态不被覆盖", "width": 140 },
+    { "id": "task", "lane": "task", "col": 5, "type": "backend", "label": "进入动作循环", "sublabel": "S1/S2 任务各自注入", "width": 140 }
+  ],
+  "edges": [
+    { "id": "mapping-steps", "from": "mapping", "to": "steps", "label": "构造或读取入口", "role": "main" },
+    { "id": "steps-match", "from": "steps", "to": "match", "label": "遍历启用步骤", "role": "main" },
+    { "id": "match-key", "from": "match", "to": "key", "label": "匹配", "role": "main" },
+    { "id": "match-task", "from": "match", "to": "task", "label": "不匹配，跳过", "role": "branch" },
+    { "id": "key-add", "from": "key", "to": "add", "label": "没有", "role": "main" },
+    { "id": "key-preserve", "from": "key", "to": "preserve", "label": "已有", "role": "branch" },
+    { "id": "add-task", "from": "add", "to": "task", "label": "注入完成", "role": "main" },
+    { "id": "preserve-task", "from": "preserve", "to": "task", "label": "保持完成状态", "role": "main" }
+  ],
+  "mainPath": ["mapping", "steps", "match", "key", "add", "task"],
+  "cards": [
+    { "dot": "cyan", "title": "注入位置", "items": ["TransportUnit 构造与两个 Mapping 读取入口同时注入 S1/S2。", "DispenseWorkTask 在动作循环前注入 S1；BondTask 在补偿、来料与安全位处理后注入 S2。"] },
+    { "dot": "amber", "title": "边界", "items": ["重复注入不会覆盖已有完成值，因此旧键可能跨载具或配方切换保留。", "源码已确认控制流；真实 Mapping、配方、任务和设备仍未验收。"] }
+  ]
+}

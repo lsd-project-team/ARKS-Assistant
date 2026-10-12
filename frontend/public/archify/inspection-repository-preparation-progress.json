@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "full-composition-branch-passed-formal-regression-pending",
+  "preparedContext": {
+    "report": "transport-inspection-readiness-integration-review.md",
+    "checks": 1209,
+    "testSha256": "52ef95d045f8ab421aea134c31f279144add80bbd3f5aacf5d704fd7fd1013e9"
+  },
+  "continuation": {
+    "evidence": "transport-inspection-repository-next-evidence.json",
+    "sha256": "43c8d09f30ea57f1a1717c455d4a3182d3e9a557460809b8273abcedddbb8740",
+    "matchedCaptures": 19
+  },
+  "standalone": {
+    "checks": 50,
+    "capturedFragments": 29,
+    "wholeCompiledSourceFiles": 3,
+    "prior1209ChecksExecuted": false,
+    "test": "inspection-repository-preparation-test.json",
+    "testSha256": "1b596cde36ce1315c7f68e50ee87a3cbceb493f090d0afef39a96c804c77601f",
+    "audit": "inspection-repository-preparation-audit.json",
+    "auditSha256": "7320b69846564740414e8edb998d358f65fffbb8a45b96d30be9b9eebbb87a25",
+    "log": ".archify-work/inspection-repository-preparation-baseline-v2.log",
+    "logSha256": "186f7e46b2e3af475383bcfd529e74d067e770f158f143b9da300d1430ae4365",
+    "observedExitCode": 0
+  },
+  "findings": [
+    "Original singleton holds generic lock during initial construction/JSON Load; failed Load leaves instance null and next call retries; concurrent successful first access reads once. Changed filename affects Save without recreating singleton.",
+    "Original Find takes first duplicate, null Name matches, and early hit masks later null element; missing lookup reaches null. Filter uses case-sensitive Contains and enable flag, while current recipe includes disabled matching entries.",
+    "Whole BaseDsSetting initialized declarations and original recipe membership Add/Remove execute; Add deduplicates and Remove tolerates absent current recipe.",
+    "Original Add copies four exact suffix PR names in vision-list order including duplicates, then vision Save, then appends own list; copy/Save/null-list failures retain earlier effects. It does not Save its own JSON list.",
+    "Original Remove removes own item before four PR deletes and four vision list removals; no JSON or vision Save, absent object still deletes, delete failure leaves own item removed. PR enumeration uses 1/r1 while mutation uses 1/2/Refer1/Refer2.",
+    "Typed original repository lookup returns original inspection aggregate with raw untaught default and disabled backside explicit UnAble rejection.",
+    "Both original UI handlers use original repository singleton/Load/Find and original inspection states. Untaught/default/backside explicit UnAble/null state/missing/JSON-null/load exception/null-element and first duplicate untaught reject before domain/modules/wafer; taught, foreign recipe taught and early match before null start actual one-leaf tree.",
+    "Each focused UI startup performs one initial singleton JSON load; Find does not filter current recipe, so foreign-recipe taught object passes. Old 1209 assertions compile but do not execute; old Items/Read/Lookups declarations remain unused compile-context adapters in focused cases.",
+    "A separate complete 1303 branch reruns prior 1209 assertions and adds 44 original UI and 50 repository/CRUD assertions in one Run. Historical Items/Read/Lookups are removed. Seven static assertion sites (12 runtime assertions) migrate to original typed-list/Load inputs; four labels change. Strong typed list cannot contain an arbitrary wrong object, so old cast-error injection is replaced by original untaught/null short-circuit.",
+    "1303 source audit/checkpoint passes, preserving all 180 formal and 186 preparation input hashes. This branch is outside current 1209 regression/38-topic reader and awaits formal report/evidence/topic registration plus independent verify-all."
+  ],
+  "scope": "Independent standalone50/focused-UI44 preparation and complete 1303 source-audited branch are outside current 1209 full regression and reader topic counts. The 44-case probe only compiles prior RunPrevious; the separate 1303 branch executes prior 1209 plus44/50 with 12 migrated runtime assertions. JSON/path/recipe/AOP/PR/vision extension, formal branch registration/regression, real persistence/PR SDK/product singleton/VM/action/native build/deployment/UI/equipment and all 29-group/13-requirement goals remain pending.",
+  "focusedUi": {
+    "checks": 44,
+    "compiledFragments": 498,
+    "uniqueCompiledFragments": 497,
+    "priorChecksExecuted": false,
+    "test": "transport-inspection-repository-startup-preparation-test.json",
+    "testSha256": "55b0ca34a724ddd3d1408984461775e9f0c07235dddb1fb87a87bfb5682e9835",
+    "audit": "transport-inspection-repository-startup-preparation-audit.json",
+    "auditSha256": "99e8d7e9f49a6713de861fec2f6ab3a826dd5d1d926a79bd3339721bd46a0b0d",
+    "log": ".archify-work/inspection-repository-startup-baseline-v1.log",
+    "logSha256": "41390d75f92b9fdc4d31a9cdef0b01e729854492ea41531a2eafc1fd37bd2a1e",
+    "observedExitCode": 0,
+    "observedSession": 92999
+  },
+  "branchCheckpoint": {
+    "checks": 1303,
+    "compiledFragments": 498,
+    "uniqueCompiledFragments": 497,
+    "prior1209ChecksExecuted": true,
+    "changedStaticAssertionSites": 7,
+    "changedRuntimeAssertions": 12,
+    "changedLabels": 4,
+    "test": "transport-inspection-repository-integration-test.json",
+    "testSha256": "3c5bb8cd4548cc10df497c5178d143f46669c952ebda78fae50c3bb8036c2648",
+    "audit": "transport-inspection-repository-integration-checkpoint.json",
+    "auditSha256": "09e1459de257edb21cbe858e6668193ec5d2f10ed1d5a899e6ab8f7423774958",
+    "log": ".archify-work/inspection-repository-integration-baseline-v1.log",
+    "logSha256": "5886d9a9c490a9dcf386496d97317323603d4ec6dd6cf5ee349dd31606c27fac",
+    "observedExitCode": 0,
+    "observedSession": 63994,
+    "includedInCurrent1209FullRegression": false
+  }
+}

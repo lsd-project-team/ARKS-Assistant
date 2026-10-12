@@ -85,11 +85,12 @@ class SourceBackend(BackendProtocol):
 
     def glob(self, pattern: str, path: str | None = None) -> GlobResult:
         try:
-            folder = self.workspace.resolve(self.relative(path))
+            relative = self.relative(path)
+            folder = self.workspace.resolve(relative)
             matches = [
                 {"path": "/" + self.workspace.relative(target), "is_dir": False}
                 for target in self.workspace.files()
-                if target.is_relative_to(folder)
+                if (not relative or target.is_relative_to(folder))
                 and (
                     fnmatch.fnmatch(self.workspace.relative(target), pattern)
                     or fnmatch.fnmatch(target.name, pattern)

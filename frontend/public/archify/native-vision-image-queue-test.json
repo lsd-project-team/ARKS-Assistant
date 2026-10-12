@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 1,
+  "status": "full-original-vision-image-queue-native-preparation-passed-with-pr-encoding-gap",
+  "normalChecks": 41,
+  "closedProducerChecks": 12,
+  "faultChecks": [
+    10,
+    8,
+    9
+  ],
+  "distinctAssertions": 56,
+  "sourceAssembliesBound": 16,
+  "originalMainCompileFiles": 1137,
+  "selectedIlMethods": 23,
+  "sourceMethodBodiesScanned": 18286,
+  "visionDirectOrDelegateSites": 6,
+  "callbackFieldSites": 8,
+  "parentFrozenBindings": 3491,
+  "newFrozenInputs": 88,
+  "totalFrozenBindings": 3579,
+  "parent": {
+    "file": "native-statistics-producer-test.json",
+    "sha256": "ae033e1c1953ef878375a6aeed6b3058a8d1c9409c69f64b8e9ecf2453beb924",
+    "progress": "native-statistics-producer-progress.json",
+    "progressSha256": "d291c701460baef77c0b2dce1eff32ef7379d1b596a8bf8d21f8355e0cf883e4",
+    "frozenBindings": 3491
+  },
+  "input": {
+    "file": ".archify-work/native-vision-image-queue/compile-input.json",
+    "sha256": "e14ddc931a203b2aa6d398fbeb3227539d5cb55da2a70c37f66236970dee3d07"
+  },
+  "artifact": {
+    "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-vision-image-queue/Probe.exe",
+    "sha256": "c376353991c15e3b080d655346ff7d601307ee489bb2161feb28ae4d86a02e04"
+  },
+  "replayArtifactSha256": "c376353991c15e3b080d655346ff7d601307ee489bb2161feb28ae4d86a02e04",
+  "normalCases": [
+    "actual native image host startup root is isolated",
+    "fixture process current directory belongs to isolated image host",
+    "actual original image queue starts empty open and unbounded",
+    "original VisionService static initialization starts no saver Thread",
+    "actual main database Lazy remains uncreated before image service methods",
+    "actual public monitoring ThreadFlag is false before image saver start",
+    "whole original producer creates each nonempty directory segment",
+    "original producer enqueues and returns before saver creates file",
+    "original tuple can be read through unchanged public queue",
+    "producer retains exact bitmap ownership reference and concatenated path",
+    "bitmap still readable and mutable after original producer returns",
+    "producer may create earlier folder before later rooted segment resets path",
+    "later rooted path segment accepts second original image tuple",
+    "original producer does not validate filename characters before enqueue",
+    "enqueue-only invalid filename input is not disposed by producer",
+    "empty path list produces double slash destination without creating parent",
+    "whole original producer catches null path list and returns without enqueue",
+    "producer failure sends original SDK Error InFileAndUI PR log",
+    "producer caught directory-input failure leaves caller bitmap readable",
+    "invalid path exception occurs before sanitization and is caught by producer",
+    "original exception-bearing SDK Post retains error diagnostic text",
+    "caught invalid-directory failure does not dispose bitmap",
+    "original producer accepts null bitmap after creating destination directory",
+    "actual original image saver starts with monitoring flag false",
+    "original worker uses production background status and name",
+    "whole original consumer writes actual image then disposes same caller bitmap",
+    "original saver writes rooted-segment image and drains null input",
+    "null image tuple is consumed without file creation",
+    "actual image uses BMP signature and independently checked file-size header",
+    "actual BMP pixel offset and DIB header match fixture expectation",
+    "actual BMP is uncompressed three by two twenty-four-bit pixels",
+    "independent BMP BGR bottom-up bytes prove queued reference mutation is saved",
+    "consumer always writes BMP despite JPG filename extension",
+    "real persisted BMP loads and reflects mutation before worker start",
+    "successful original writes transfer ownership by disposing both original inputs",
+    "twenty sequential starts retain same live original image consumer",
+    "original image saver waits on empty queue after successful writes",
+    "false monitoring flag does not stop waiting image saver in bounded observation",
+    "original unbounded image queue identity remains unchanged",
+    "main and SDK database initialization never executes during image and Error logging checks",
+    "normal fixture leaves original consumer alive and queue open at Main return"
+  ],
+  "closedProducerCases": [
+    "actual native image host startup root is isolated",
+    "fixture process current directory belongs to isolated image host",
+    "actual original image queue starts empty open and unbounded",
+    "original VisionService static initialization starts no saver Thread",
+    "actual main database Lazy remains uncreated before image service methods",
+    "actual public monitoring ThreadFlag is false before image saver start",
+    "explicit empty producer queue completion fixture is active before producer call",
+    "original producer catches completed-queue Add error and returns normally",
+    "producer commits directory creation before completed queue rejects image",
+    "completed-queue producer failure does not release original caller bitmap",
+    "completed-queue failure produces actual original SDK Error InFileAndUI PR record",
+    "producer-only completion child starts no worker or database accessor"
+  ],
+  "faultCases": {
+    "missing-parent": [
+      "actual native image host startup root is isolated",
+      "fixture process current directory belongs to isolated image host",
+      "actual original image queue starts empty open and unbounded",
+      "original VisionService static initialization starts no saver Thread",
+      "actual main database Lazy remains uncreated before image service methods",
+      "actual public monitoring ThreadFlag is false before image saver start",
+      "image failure fixture nested destination parent absent",
+      "whole original producer returns before deferred missing-parent image write",
+      "original producer creates base folder and enqueues live bitmap without nested parent",
+      "later original queue item follows deferred failing bitmap"
+    ],
+    "reused": [
+      "actual native image host startup root is isolated",
+      "fixture process current directory belongs to isolated image host",
+      "actual original image queue starts empty open and unbounded",
+      "original VisionService static initialization starts no saver Thread",
+      "actual main database Lazy remains uncreated before image service methods",
+      "actual public monitoring ThreadFlag is false before image saver start",
+      "same original bitmap object can be enqueued twice by complete producer",
+      "later item follows both original queued ownership references"
+    ],
+    "complete": [
+      "actual native image host startup root is isolated",
+      "fixture process current directory belongs to isolated image host",
+      "actual original image queue starts empty open and unbounded",
+      "original VisionService static initialization starts no saver Thread",
+      "actual main database Lazy remains uncreated before image service methods",
+      "actual public monitoring ThreadFlag is false before image saver start",
+      "original image consumer starts despite false monitoring flag",
+      "actual image consumer has original name and background status",
+      "original image consumer waits on empty Take before completion"
+    ]
+  },
+  "frozenInputs": [
+    {
+      "file": ".archify-work/audit-native-vision-image-source-encoding.ps1",
+      "sha256": "b109d20392224468b96b896c78ba1419d6a24e0058c28c4e062d1f7241cf16f4",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0000-audit-native-vision-image-source-encoding.ps1"
+    },
+    {
+      "file": ".archify-work/audit-vision-image-modern-decoder.ps1",
+      "sha256": "f9b8c2c6e2ab53e70fcaad3b7a500621e1fb74d2a00cc77ce581ae7bfd945faa",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0001-audit-vision-image-modern-decoder.ps1"
+    },
+    {
+      "file": ".archify-work/clarify-native-vision-image-preparation.cjs",
+      "sha256": "aec6835fe297c8e50389610b055f72b852c935874f3ab3167c6624e819ce7c4f",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0002-clarify-native-vision-image-preparation.cjs"
+    },
+    {
+      "file": ".archify-work/freeze-native-vision-image-queue.cjs",
+      "sha256": "92feff0ab2113f2942caef5f808ff1eb5f71ee17c50d9971c90c86dc48d2d0c5",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0003-freeze-native-vision-image-queue.cjs"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\Cases.cs",
+      "sha256": "7ed68b2e7b658ac0b10570738657a7155d71c46eefee30870bb9edb2cfa06502",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0004-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\Host.cs",
+      "sha256": "4fedb229a42a84722177ac4ed38e9fe6f80bf3016977699607910dcb48281284",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0005-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\Probe.exe",
+      "sha256": "c376353991c15e3b080d655346ff7d601307ee489bb2161feb28ae4d86a02e04",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0006-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\case-progress.log",
+      "sha256": "81bd073d0a64adf44523f9f00d8101e982d6d04d2a9200622b61b5b9fa91e2af",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0007-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\compile-input.json",
+      "sha256": "e14ddc931a203b2aa6d398fbeb3227539d5cb55da2a70c37f66236970dee3d07",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0008-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\compile.log",
+      "sha256": "89147ae7e87a29455386da5ebbe693dc6e5bac9137ee0b1e6ed8d9bbe93d879b",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0009-compile.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\complete-progress.log",
+      "sha256": "457dc5ea2c4f6ac1f1065a39a6b9eb71f7f0e8137c8d73d6cc6bbddab150b9df",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0010-complete-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\complete-unhandled.json",
+      "sha256": "f8516b292792a7ef73ef83634446bd9f8e70f1ea782c736036e56eaf81ea43f0",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0011-complete-unhandled.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\encoding-audit.json",
+      "sha256": "cf897497bb8557c843b6958be04a33a98e8cf7e9291567f90940ae402b93e48b",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0012-encoding-audit.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\error-view-failure.json",
+      "sha256": "965e7cd31a3e8ee597fb438e3287642e83af62d8464a2444c0933f6f70965edf",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0013-error-view-failure.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\failed-error-view-cases.cs.txt",
+      "sha256": "a2eb82eb8824e7d9fd4344d6cc6ada5371e7e14cbcbd02dabc0e25556e737f3b",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0014-failed-error-view-cases.cs.txt"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\failed-error-view-process.json",
+      "sha256": "4df8cf161233a7bc49d87a456900c79cc3107c627ee32e56cdf9e506ad4d60f4",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0015-failed-error-view-process.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\failed-error-view-runtime.log",
+      "sha256": "875c01792ed377c88efb6cf4e28e43e36e77c6a576692c7c06802c66bf1085d1",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0016-failed-error-view-runtime.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\fault-reused\\first.bmp",
+      "sha256": "c60417ee1a293a576379e89751458c53c4565327b2ec2ff04023d1f41a022419",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0017-first.bmp"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\images\\job\\native-bmp.jpg",
+      "sha256": "02c790d3b844618b4960afbbcfca8f4756a3354b67aef07572d962b236623a1b",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0018-native-bmp.jpg"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\missing-parent-progress.log",
+      "sha256": "dca22a61de42a567006054867f21363bd1349c071d7dbd3bb85b3b85ce02f54c",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0019-missing-parent-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\missing-parent-unhandled.json",
+      "sha256": "6c121ccf0f17c1dbee3b6303c4f4c2d7be28832be0e8c063648d045f5d5097ff",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0020-missing-parent-unhandled.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\modern-decoder-audit.json",
+      "sha256": "4ed8518af1128e4c0556a9e7daf62ecd70d2b18e157d2f8bc7f05950dbbd7f9c",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0021-modern-decoder-audit.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\original-il-v1-19.json",
+      "sha256": "eb08b7f473572a9a8f4cd84ecf05da59012771480bd52e328534c42b9546f882",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0022-original-il-v1-19.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\original-il.json",
+      "sha256": "9a3c38d5c661b2b3881c0ef1a000236d57c80d95ce2b063a9cf6af63b7273e3c",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0023-original-il.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\passed-41-v1-runtime.log",
+      "sha256": "a50070e1fb59a29d7ede6f69b9ff4138803f57c27ff833c8cbd44250accb4ccb",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0024-passed-41-v1-runtime.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\passed-v1-compile-input.json",
+      "sha256": "302d4a529be5110a988cef33b98f61af196d24969a34a4c4f01bd90e861db5a9",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0025-passed-v1-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\passed-v1-host.cs.txt",
+      "sha256": "f0527737c6d0c467b2c37f6024535ddeee3ed93e15b3870d00f077331db0a6ca",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0026-passed-v1-host.cs.txt"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\passed-v1-prepare.cjs.txt",
+      "sha256": "e3160eb85dbf8a58f51e4931d186efe721d70435198d78034ece8c8c9933a10b",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0027-passed-v1-prepare.cjs.txt"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-complete-process.json",
+      "sha256": "56385ccc84eddca423a8a2667c0cc5692188edb8dfb5cf9a329a3b950c1fc747",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0028-primary-complete-process.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-complete-progress.log",
+      "sha256": "457dc5ea2c4f6ac1f1065a39a6b9eb71f7f0e8137c8d73d6cc6bbddab150b9df",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0029-primary-complete-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-complete-stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0030-primary-complete-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-complete-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0031-primary-complete-stdout.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-complete-unhandled.json",
+      "sha256": "f8516b292792a7ef73ef83634446bd9f8e70f1ea782c736036e56eaf81ea43f0",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0032-primary-complete-unhandled.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-execution.json",
+      "sha256": "8d9ba138e926d544b89d72cf52167f866ef6de8570119ba3b4c3814c6631a938",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0033-primary-execution.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-missing-parent-process.json",
+      "sha256": "56385ccc84eddca423a8a2667c0cc5692188edb8dfb5cf9a329a3b950c1fc747",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0034-primary-missing-parent-process.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-missing-parent-progress.log",
+      "sha256": "dca22a61de42a567006054867f21363bd1349c071d7dbd3bb85b3b85ce02f54c",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0035-primary-missing-parent-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-missing-parent-stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0036-primary-missing-parent-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-missing-parent-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0037-primary-missing-parent-stdout.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-missing-parent-unhandled.json",
+      "sha256": "6c121ccf0f17c1dbee3b6303c4f4c2d7be28832be0e8c063648d045f5d5097ff",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0038-primary-missing-parent-unhandled.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-normal-process.json",
+      "sha256": "58c2215d89b7db8c03fc4e421d6a0aa7617878411e6b2db2ad02a5fd80dd6373",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0039-primary-normal-process.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-normal-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0040-primary-normal-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-normal-stdout.log",
+      "sha256": "b07236d9b5edfcaf376eb91c2667c1499e98e63ef2b8386bb93c258154ce02d6",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0041-primary-normal-stdout.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-producer-closed-process.json",
+      "sha256": "58c2215d89b7db8c03fc4e421d6a0aa7617878411e6b2db2ad02a5fd80dd6373",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0042-primary-producer-closed-process.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-producer-closed-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0043-primary-producer-closed-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-producer-closed-stdout.log",
+      "sha256": "c46b6080aaf6fdc36195a773f63695cd6140e5fe20374f6135c59af6feebe968",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0044-primary-producer-closed-stdout.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-reused-process.json",
+      "sha256": "56385ccc84eddca423a8a2667c0cc5692188edb8dfb5cf9a329a3b950c1fc747",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0045-primary-reused-process.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-reused-progress.log",
+      "sha256": "b50e76e8b2f7b4563a76447ae8ed6564ab4632e57f73529ecb797841e66f7a13",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0046-primary-reused-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-reused-stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0047-primary-reused-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-reused-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0048-primary-reused-stdout.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\primary-reused-unhandled.json",
+      "sha256": "a19c00d6d96907b76b7759e9d861eff9f608c3a4358209986dbd11d7f50cbb5e",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0049-primary-reused-unhandled.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\producer-closed-progress.log",
+      "sha256": "4a69ad8faeaf4ef97f2ac2275a1ade72027b681937261a8489603439cbb3c353",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0050-producer-closed-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\replacement-root\\rooted.bmp",
+      "sha256": "c60417ee1a293a576379e89751458c53c4565327b2ec2ff04023d1f41a022419",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0051-rooted.bmp"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\reused-progress.log",
+      "sha256": "b50e76e8b2f7b4563a76447ae8ed6564ab4632e57f73529ecb797841e66f7a13",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0052-reused-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\reused-unhandled.json",
+      "sha256": "a19c00d6d96907b76b7759e9d861eff9f608c3a4358209986dbd11d7f50cbb5e",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0053-reused-unhandled.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\runtime-map.json",
+      "sha256": "fb5b441c771f4d19331becf8ca45caf5d661ed951e59a44fe19c8e98f4f02aae",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0054-runtime-map.json"
+    },
+    {
+      "file": ".archify-work\\native-vision-image-queue\\runtime-map.tsv",
+      "sha256": "1f460797ba32ccb3e1bedfff1c418a59fd78631b596fdc5f708d85fa2455c225",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0055-runtime-map.tsv"
+    },
+    {
+      "file": "C:\\WINDOWS\\Microsoft.Net\\assembly\\GAC_MSIL\\System.Drawing\\v4.0_4.0.0.0__b03f5f7f11d50a3a\\System.Drawing.dll",
+      "sha256": "e16f7abead4afde7f03b82e5869c5544043be2eae29647a9de5f565d61a3bd29",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0056-System.Drawing.dll"
+    },
+    {
+      "file": "scripts/inspect-native-vision-image-queue.ps1",
+      "sha256": "dd2d840fc6dd526cb94ceddfbabd0de44bcc711a5fdef124150280ac09589abb",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0057-inspect-native-vision-image-queue.ps1"
+    },
+    {
+      "file": "scripts/native-vision-image-queue-cases.cs.txt",
+      "sha256": "7ed68b2e7b658ac0b10570738657a7155d71c46eefee30870bb9edb2cfa06502",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0058-native-vision-image-queue-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-vision-image-queue.cjs",
+      "sha256": "2a67fdc2ba906aac5f156ce5332f64483f53bf5a797d6f9c6c75e6df4924c6a3",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0059-prepare-native-vision-image-queue.cjs"
+    },
+    {
+      "file": "scripts/run-native-vision-image-queue.cjs",
+      "sha256": "cd2d2e236dbdd8ce7a3c780a123ac4ff382afcb5ab4ffb238302e4a092dd0d7a",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0060-run-native-vision-image-queue.cjs"
+    },
+    {
+      "file": "scripts/verify-native-vision-image-queue.cjs",
+      "sha256": "94da2a3d38bd57467b517b1981385fc9a711ef0c6c9fc130b933452864fd18f0",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0061-verify-native-vision-image-queue.cjs"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-compile.log",
+      "sha256": "2e370c976fb0ff09f4e5eb8fc9ef589d46b8b04913089ccef16fd1fd83d19701",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0062-replay-compile.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-complete-process.json",
+      "sha256": "56385ccc84eddca423a8a2667c0cc5692188edb8dfb5cf9a329a3b950c1fc747",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0063-replay-complete-process.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-complete-progress.log",
+      "sha256": "457dc5ea2c4f6ac1f1065a39a6b9eb71f7f0e8137c8d73d6cc6bbddab150b9df",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0064-replay-complete-progress.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-complete-stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0065-replay-complete-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-complete-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0066-replay-complete-stdout.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-complete-unhandled.json",
+      "sha256": "f8516b292792a7ef73ef83634446bd9f8e70f1ea782c736036e56eaf81ea43f0",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0067-replay-complete-unhandled.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-encoding-audit.json",
+      "sha256": "cf897497bb8557c843b6958be04a33a98e8cf7e9291567f90940ae402b93e48b",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0068-replay-encoding-audit.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-execution.json",
+      "sha256": "5b4c6296b72f2b7b760213e164cd27addf8be8882794ccaca23e2e41799bce22",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0069-replay-execution.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-il.json",
+      "sha256": "9a3c38d5c661b2b3881c0ef1a000236d57c80d95ce2b063a9cf6af63b7273e3c",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0070-replay-il.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-missing-parent-process.json",
+      "sha256": "56385ccc84eddca423a8a2667c0cc5692188edb8dfb5cf9a329a3b950c1fc747",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0071-replay-missing-parent-process.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-missing-parent-progress.log",
+      "sha256": "dca22a61de42a567006054867f21363bd1349c071d7dbd3bb85b3b85ce02f54c",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0072-replay-missing-parent-progress.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-missing-parent-stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0073-replay-missing-parent-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-missing-parent-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0074-replay-missing-parent-stdout.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-missing-parent-unhandled.json",
+      "sha256": "6c121ccf0f17c1dbee3b6303c4f4c2d7be28832be0e8c063648d045f5d5097ff",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0075-replay-missing-parent-unhandled.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-normal-process.json",
+      "sha256": "58c2215d89b7db8c03fc4e421d6a0aa7617878411e6b2db2ad02a5fd80dd6373",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0076-replay-normal-process.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-normal-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0077-replay-normal-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-normal-stdout.log",
+      "sha256": "b07236d9b5edfcaf376eb91c2667c1499e98e63ef2b8386bb93c258154ce02d6",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0078-replay-normal-stdout.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-observed-execution.json",
+      "sha256": "ac94a6983913f6518c51f33045f7a9768ff2451236820a3b95a48bdb877fa995",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0079-replay-observed-execution.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-producer-closed-process.json",
+      "sha256": "58c2215d89b7db8c03fc4e421d6a0aa7617878411e6b2db2ad02a5fd80dd6373",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0080-replay-producer-closed-process.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-producer-closed-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0081-replay-producer-closed-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-producer-closed-stdout.log",
+      "sha256": "c46b6080aaf6fdc36195a773f63695cd6140e5fe20374f6135c59af6feebe968",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0082-replay-producer-closed-stdout.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-reused-process.json",
+      "sha256": "56385ccc84eddca423a8a2667c0cc5692188edb8dfb5cf9a329a3b950c1fc747",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0083-replay-reused-process.json"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-reused-progress.log",
+      "sha256": "b50e76e8b2f7b4563a76447ae8ed6564ab4632e57f73529ecb797841e66f7a13",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0084-replay-reused-progress.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-reused-stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0085-replay-reused-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-reused-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0086-replay-reused-stdout.log"
+    },
+    {
+      "file": ".archify-work/native-vision-image-queue/replay-reused-unhandled.json",
+      "sha256": "a19c00d6d96907b76b7759e9d861eff9f608c3a4358209986dbd11d7f50cbb5e",
+      "frozenCopy": ".archify-work/native-vision-image-queue-baseline/inputs/0087-replay-reused-unhandled.json"
+    }
+  ],
+  "primaryObservedChunk": "b8df15",
+  "primaryObservedExitCode": 0,
+  "readonlyIlObservedSession": 80652,
+  "readonlyIlExitCode": 0,
+  "replay": {
+    "observedSession": 84045,
+    "observedCompletionChunk": "313348",
+    "observedExitCode": 0,
+    "normalHostExitCodes": [
+      0,
+      0
+    ],
+    "fatalChildExitCodes": [
+      3762504530,
+      3762504530,
+      3762504530
+    ],
+    "nativeChecksByProcess": [
+      41,
+      12,
+      10,
+      8,
+      9
+    ],
+    "readonlyIlAndEncodingReplayPassed": true,
+    "scope": "Outer0 records three deliberately failing original background-consumer children; not child success. Native and readonly replay after62 inputs frozen. PR source decoding fidelity gap retained, not repaired by host success."
+  },
+  "normalResult": {
+    "mode": "normal",
+    "originalProducerExecuted": true,
+    "originalSaverStarted": true,
+    "originalQueueCapacity": -1,
+    "originalQueueIdentityPreserved": true,
+    "bitmapReferencePreserved": true,
+    "callerMutationPersisted": true,
+    "bitmapDisposedAfterSuccessfulSave": true,
+    "producerFailureLeavesBitmapReadable": true,
+    "filenameValidationBeforeEnqueue": false,
+    "emptyListDestination": "//no-parent.bmp",
+    "nullBitmapConsumedWithoutFile": true,
+    "threadFlagStopsSaver": false,
+    "repeatedSequentialStarts": 20,
+    "workerAliveAtMainReturn": true,
+    "gracefulSaverStopExecuted": false,
+    "mainDbCreated": false,
+    "sdkDbInitializationAttempted": false,
+    "sqlWritesExecuted": false,
+    "hardwareActionExecuted": false,
+    "uiControlsConstructed": false,
+    "bitmapRuntimeAssembly": "C:\\WINDOWS\\Microsoft.Net\\assembly\\GAC_MSIL\\System.Drawing\\v4.0_4.0.0.0__b03f5f7f11d50a3a\\System.Drawing.dll",
+    "bmpFiles": [
+      {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-vision-image-queue\\images\\job\\native-bmp.jpg",
+        "bytes": 78,
+        "sha256": "02c790d3b844618b4960afbbcfca8f4756a3354b67aef07572d962b236623a1b"
+      },
+      {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-vision-image-queue\\replacement-root\\rooted.bmp",
+        "bytes": 78,
+        "sha256": "c60417ee1a293a576379e89751458c53c4565327b2ec2ff04023d1f41a022419"
+      }
+    ]
+  },
+  "closedProducerResult": {
+    "mode": "producer-closed",
+    "completedQueueProducerReturnsNormally": true,
+    "directoryCreatedBeforeRejectedAdd": true,
+    "callerBitmapReadableBeforeFixtureCleanup": true,
+    "workerStarted": false,
+    "queueCount": 0,
+    "mainDbCreated": false,
+    "sdkDbInitializationAttempted": false,
+    "sqlWritesExecuted": false
+  },
+  "fatalChildExitCode": 3762504530,
+  "fatalChildSignedExitCode": -532462766,
+  "fatalChildren": 3,
+  "originalQueueCapacity": -1,
+  "originalSaverStarted": true,
+  "threadFlagStopsSaver": false,
+  "sharedBitmapOwnershipVerified": true,
+  "deferredSaveFailureTerminatesChild": true,
+  "missingParentBitmapStillReadableAtFailure": true,
+  "reusedBitmapSecondSaveFails": true,
+  "producerClosedQueueReturnsNormally": true,
+  "producerDelegateRegistrationIlVerified": true,
+  "productionStartupExecuted": false,
+  "prCameraVmExecuted": false,
+  "sourceEncodingFidelityGapObserved": true,
+  "wholeSourceStringFidelityCertified": false,
+  "encodingAudit": {
+    "file": ".archify-work/native-vision-image-queue/encoding-audit.json",
+    "sha256": "cf897497bb8557c843b6958be04a33a98e8cf7e9291567f90940ae402b93e48b",
+    "modernFile": ".archify-work/native-vision-image-queue/modern-decoder-audit.json",
+    "modernSha256": "4ed8518af1128e4c0556a9e7daf62ecd70d2b18e157d2f8bc7f05950dbbd7f9c"
+  },
+  "productionEdits": false,
+  "fixturesInOriginalAssemblies": false,
+  "privateStateWrites": false,
+  "queueOrThreadSubstitutes": false,
+  "pathOrSingletonSubstitutes": false,
+  "sqlWritesExecuted": false,
+  "hardwareActionExecuted": false,
+  "uiControlsConstructed": false,
+  "originalFullMsbuildBuild": false,
+  "weavingExecuted": false,
+  "wholeGoalComplete": false,
+  "earlierFailures": [
+    {
+      "file": ".archify-work/native-vision-image-queue/error-view-failure.json",
+      "observedChunk": "80060d",
+      "observedExitCode": 1,
+      "checks": 17
+    }
+  ],
+  "scope": "Complete original VisionService producer/start/consumer with actual unbounded queue, shared Bitmap ownership and Framework BMP save/dispose in isolated native host. SDK Error InFileAndUI3 branch and readonly database guards, positive independent BMP header/pixels, producer-completed-queue and three fatal child modes verified. Sixteen-source IL scan includes startup delegate registration, PR callback invocation and synchronous test UI entry; whole startup/PR/camera/VM/UI unexecuted. PR nonUTF8 source literal fidelity gap in frozen UTF8 compile helper explicitly retained for next encoding audit/rebuild. No original source/IL/private state/queue/thread/type/path replacement or SQL/hardware execution."
+}

@@ -1,0 +1,544 @@
+{
+  "schemaVersion": 1,
+  "status": "original-task-input-gates-and-s2-entry-fault-native-preparation-passed",
+  "parent": {
+    "file": "native-s1-working-pause-test.json",
+    "sha256": "8015054370cc04cb56023bc373697da10d151b8065db791ee9ca7f9786c04e60"
+  },
+  "parentFrozenBindings": 5200,
+  "newFrozenInputs": 72,
+  "totalFrozenBindings": 5272,
+  "acceptedProcesses": 2,
+  "checksPerPass": 54,
+  "distinctLabels": 54,
+  "selectedMethods": 31,
+  "fixtureWaitThreadsPerPass": 5,
+  "originalS2StartedTasksPerPass": 2,
+  "originalS2FaultedTasksPerPass": 2,
+  "runtime": "4.0.30319.42000",
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "stateOnlyS1EventConsumptionObserved": true,
+  "s2ActualEventConsumed": true,
+  "s1PreDispenseRunsUnderStop": true,
+  "untrainedDispenserOffModeSucceeded": true,
+  "s2ActualWorkingEntryExecuted": true,
+  "s2FullWorkingCycleExecuted": false,
+  "compensateStopCommitsStateBeforeHardwareFault": true,
+  "originalPrivateMethodsInvokedDirectly": true,
+  "publicCallbacksUsedForSynchronization": true,
+  "publicCallbacksUsedForFaultInjection": true,
+  "nonSuccessPreDispenseReturnBranchExecuted": false,
+  "preDispensePhysicalActionExecuted": false,
+  "originalOnlineS1TaskExecuted": false,
+  "sqlWritesExecuted": false,
+  "hardwareActionExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "failedCompiles": [
+      {
+        "chunk": "4275b8",
+        "exitCode": 1
+      },
+      {
+        "chunk": "eb6faf",
+        "exitCode": 1
+      }
+    ],
+    "invalidExecutableLaunch": {
+      "chunk": "75a713",
+      "outerExitCode": 1,
+      "childExitCode": null,
+      "error": "EFTYPE",
+      "clrProcessStarted": false
+    },
+    "initialRuntime": {
+      "chunk": "3438de",
+      "exitCode": 1,
+      "checksBeforeFailure": 38,
+      "originalFailure": "Machine.Stop CompensateWork calls missing eject Electric"
+    },
+    "initialSuccessfulCompile": {
+      "chunk": "0b9274",
+      "exitCode": 0
+    },
+    "acceptedCompile": {
+      "chunk": "055acc",
+      "exitCode": 0
+    },
+    "replayCompile": {
+      "chunk": "291700",
+      "exitCode": 0
+    },
+    "primaryRuntime": {
+      "chunk": "6f4049",
+      "exitCode": 0
+    },
+    "replayRuntime": {
+      "chunk": "e70281",
+      "exitCode": 0
+    },
+    "il": {
+      "chunk": "fbd731",
+      "exitCode": 0
+    },
+    "parentS1Validation": {
+      "chunk": "71a5a3",
+      "exitCode": 0
+    },
+    "parentResourcesValidation": {
+      "session": 2004,
+      "chunk": "33a9dc",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+      "sha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/MachineStateModel.cs",
+      "sha256": "59da8981e1c287ed9e57fc7ecaff5d27cabdcf89b049d75af811aae3a0f3f8cb"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/PreDispenseAction.cs",
+      "sha256": "2afb4eff3ecdd88caea9bcf009884a8432c914b7cd8f34d61a7d923557ababb8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/DispenserProgram.cs",
+      "sha256": "d31d3b70e94842d211fd40a7f9d456043beda12f124673da9fe34e68c2ae5414"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/DispenserRepository.cs",
+      "sha256": "5a04707571c492d43057e695fcab07e4892a14587866e230b498e7fd09cbccb6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/PreDispense.cs",
+      "sha256": "9e25ec21cb25cdce971675b46cc70c3cab04db359fdd0be2a99c9c24c434afc8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "sha256": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/EjectController.cs",
+      "sha256": "6b8b5c39db4cafa4733115067315de929257ff38a174e29f9d5ec3963046c254"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/WaferSubController.cs",
+      "sha256": "888eda4628482a3daa3ebdaf5e0095c7aff235276c09e60507938940ef3b45b3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "sha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs",
+      "sha256": "df946ef5fd34e83b541f34cbcd6a84a499fd6b38e4c831f453f81bc9f7f6e35e"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-task-input-gates.cjs",
+      "sha256": "7761612784cf566533dbffbe279835fa8e7f843175894a598b166f88c8b185e8",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0000-freeze-native-task-input-gates.cjs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\Cases.cs",
+      "sha256": "e6f3a76fb245304d53698efd7a897cc14ea401c1b66cc45a4e3da8bd037af998",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\Host.cs",
+      "sha256": "f31123095097266732d3eb9dd8f14acb1de4da084d2b3e9bba59273696522373",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\Probe.exe",
+      "sha256": "3b669012823b11c6f6e04fa0c73f25c067884d4f838e9fdcce8bcb407f9684c6",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\compile-input.json",
+      "sha256": "f37fefa10a1397704bc904e2adbcdce22e364fc0fbf218e09c1c7920b1757775",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\compile-v1.json",
+      "sha256": "5c865408bbd8972767d98a96b4772b75c532c1e0eb0dc823aa80a114dc357016",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0005-compile-v1.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\compile-v2.json",
+      "sha256": "03cf97e0c9391ecf9b289e12ab2dad7f51c0094a9f6c440f0108efe3e3162884",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0006-compile-v2.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\compile-v3.json",
+      "sha256": "e06073e00fe6396269dbf523feae3138e0af65d1a4df5be44b1f1cc4a250102e",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0007-compile-v3.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\compile-v4.json",
+      "sha256": "140431d59ba0e922100ea7812c84e29a5f60fa8a48efb287f3f621ca2cdc0718",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0008-compile-v4.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\failed-compile-v1-Cases.cs",
+      "sha256": "92199e16b96ed0daf5f2f3aff546f33a2712cf2e9b0cf471e12c9246a10dea47",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0009-failed-compile-v1-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\failed-compile-v2-Cases.cs",
+      "sha256": "31209226f78abb2dbd2f9289d757f7c5d8831c0384208331474bbbeb315ececc",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0010-failed-compile-v2-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\failed-invalid-probe-runner-v1.cjs",
+      "sha256": "632ba8d4551da751a0c7723ba8bd948384394d49c4cd985257b449263257dd1d",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0011-failed-invalid-probe-runner-v1.cjs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\failed-runtime-v1-Cases.cs",
+      "sha256": "0968966bb4a7fc3442b859bbcdccbea1d498fa389f1386a30f0a1b04691edffd",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0012-failed-runtime-v1-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\failed-runtime-v1-runner.cjs",
+      "sha256": "dbd00f884447bfc3fc87a3c95b4764b2bc79f112c6f5a3a4721d34cefb0ab424",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0013-failed-runtime-v1-runner.cjs"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\il.json",
+      "sha256": "b051850ef4e82b2f127b4626e787062dd57a6884d236db303467acfa42fe1e70",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0014-il.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\initial-il.json",
+      "sha256": "1d032a507ec2023190b15c268480b4f4f770d74b3ec31a95d8fed0d732389dd3",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0015-initial-il.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0016-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\parent-s1-verification.log",
+      "sha256": "186a526e47febe58da5ac518da62a5d70f39fd221ef7b32910a0f06ec975cbda",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0017-parent-s1-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\preflight.log",
+      "sha256": "1c48fd7eb7f2f9f448d20aa32b6ba5f2da838f2f063abaccf06a512c02e43167",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0018-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-Probe.exe",
+      "sha256": "3b669012823b11c6f6e04fa0c73f25c067884d4f838e9fdcce8bcb407f9684c6",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0019-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\Probe.exe",
+      "sha256": "3b669012823b11c6f6e04fa0c73f25c067884d4f838e9fdcce8bcb407f9684c6",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0020-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0021-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\case-progress.log",
+      "sha256": "3ba21cd3feb8e3ede2781d59ccea9ed1f2ebf5896fdad682e99301187cbe46fe",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0022-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\process.json",
+      "sha256": "9a41f845932b9f0688772cd55fc4079c4e517c517b18734ab5ce9dff6dbdc157",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0023-process.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0024-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0025-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-accepted\\stdout.json",
+      "sha256": "013f487ad525eb8fef73e3be4f785eca80870484393a8586d10782895cc7da8f",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0026-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\Probe.exe",
+      "sha256": "cb71106bba74969c98688d265018b13217c438df637c72aa8f467c16cf0fd40e",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0027-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0028-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\case-progress.log",
+      "sha256": "54075ca766dc759a22065ed8bdff01d81d5284991ec8427dfaf2ca2bd7351cf6",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0029-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\process.json",
+      "sha256": "59d71ef78b162bc29ec2f02674b8043fff2f8f10f0fb889111d7ecd842fd74ac",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0030-process.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0031-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0032-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary-final\\stdout.json",
+      "sha256": "1a442fa81ea145218bc612dcf2e564c6efacf83f1e5e6506950df20f6f3cab7b",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0033-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary\\Probe.exe",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0034-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary\\process.json",
+      "sha256": "79e80f9b42d5f0bf3ae319eb420b1d2afe47aa64553199414c2aa4dfc3212298",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0035-process.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0036-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0037-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\primary\\stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0038-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\Probe.exe",
+      "sha256": "3b669012823b11c6f6e04fa0c73f25c067884d4f838e9fdcce8bcb407f9684c6",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0039-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0040-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\case-progress.log",
+      "sha256": "3ba21cd3feb8e3ede2781d59ccea9ed1f2ebf5896fdad682e99301187cbe46fe",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0041-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\process.json",
+      "sha256": "9a41f845932b9f0688772cd55fc4079c4e517c517b18734ab5ce9dff6dbdc157",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0042-process.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0043-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0044-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-accepted\\stdout.json",
+      "sha256": "a05ad87b42dd331f079872643058c94831483f8a8299901577e848bb2a1c86cc",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0045-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\replay-compile.json",
+      "sha256": "37207fe430db541bf492538699cb782bf3ead5dc6ef535563b4c460efb8cd19c",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0046-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-task-input-gates\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0047-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-task-input-gates.ps1",
+      "sha256": "087760b4e2b609bf36ed68842702165ad654ebec89fbbcd85b59afb4be89577d",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0048-inspect-native-task-input-gates.ps1"
+    },
+    {
+      "file": "scripts/native-task-input-gates-cases.cs.txt",
+      "sha256": "e6f3a76fb245304d53698efd7a897cc14ea401c1b66cc45a4e3da8bd037af998",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0049-native-task-input-gates-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-task-input-gates.cjs",
+      "sha256": "dd97ba0d5bbe023e7153b89fcff7dbb0e2902bc2a12857cfdcd369456001bf2f",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0050-prepare-native-task-input-gates.cjs"
+    },
+    {
+      "file": "scripts/run-native-task-input-gates.cjs",
+      "sha256": "6d903165c14bd8eb5b530f31469d0f9bcee67d6fb80ff23a112564d18f1d9f38",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0051-run-native-task-input-gates.cjs"
+    },
+    {
+      "file": "scripts/verify-native-task-input-gates.cjs",
+      "sha256": "b139cf7fb7411e553f5d832696fe280482be1e66ccc0676fc4b5e0d538b64df7",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0052-verify-native-task-input-gates.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/MachineStateModel.cs",
+      "sha256": "59da8981e1c287ed9e57fc7ecaff5d27cabdcf89b049d75af811aae3a0f3f8cb",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0053-MachineStateModel.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0054-Signal.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+      "sha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0055-SignalPool.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0056-NozzleShelfController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "sha256": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0057-System2RunTimeProvider.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0058-System2Domain.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0059-NozzleShelfModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0060-BondTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/PreDispenseAction.cs",
+      "sha256": "2afb4eff3ecdd88caea9bcf009884a8432c914b7cd8f34d61a7d923557ababb8",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0061-PreDispenseAction.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/DispenserProgram.cs",
+      "sha256": "d31d3b70e94842d211fd40a7f9d456043beda12f124673da9fe34e68c2ae5414",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0062-DispenserProgram.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0063-Dispenser.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/DispenserRepository.cs",
+      "sha256": "5a04707571c492d43057e695fcab07e4892a14587866e230b498e7fd09cbccb6",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0064-DispenserRepository.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/PreDispense.cs",
+      "sha256": "9e25ec21cb25cdce971675b46cc70c3cab04db359fdd0be2a99c9c24c434afc8",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0065-PreDispense.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0066-DispenseWorkTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs",
+      "sha256": "df946ef5fd34e83b541f34cbcd6a84a499fd6b38e4c831f453f81bc9f7f6e35e",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0067-UcmainSystem.Action.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0068-Machine.Operate.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "sha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0069-Machine.StateRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/EjectController.cs",
+      "sha256": "6b8b5c39db4cafa4733115067315de929257ff38a174e29f9d5ec3963046c254",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0070-EjectController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/WaferSubController.cs",
+      "sha256": "888eda4628482a3daa3ebdaf5e0095c7aff235276c09e60507938940ef3b45b3",
+      "frozenCopy": ".archify-work/native-task-input-gates-baseline/inputs/0071-WaferSubController.cs"
+    }
+  ],
+  "scope": "Original private input methods bound directly to actual receivers; public configuration/callbacks/invalid signal state/5 fixture threads isolate actual disabled predispense and signal state/event semantics. Whole original enabled/disabled S2 Start Working entry faults at actual missing nozzle shelf axis, not successful production. CompensateWork actual Stop fails on absent eject output after state commit. No private/action/SDK substitutes or source edits, no physical predispense/fullonlineS1/S2cycle/UI/SQL/device success."
+}

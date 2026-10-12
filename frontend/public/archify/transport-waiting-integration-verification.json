@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T07:05:19.161Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-transport-waiting-integration.log",
+    "sha256": "1bcb17eab4e000b19685277c32869b817245e6388be42f06dfc266ec2f59251d"
+  },
+  "specialized": {
+    "checks": 1076,
+    "completeMethods": 105,
+    "properties": 42,
+    "enums": 6,
+    "fields": 13,
+    "signalBindings": 23,
+    "topicSnapshots": 67,
+    "auditSha256": "e86d3081078ce0531466148f70253753cf0c5778cb1ecf279c3ed2e72cb46db2",
+    "evidenceSha256": "f182cadb3a9ed6027d9ea195337bec102af4f73cd1bc90297f8e00694e830bbf"
+  },
+  "browser": {
+    "log": ".archify-work/browser-transport-waiting-integration.log",
+    "sha256": "319100de4c3a8e3ea59c929d12ea5794df3c1deef97e62d0b90526b9f31de8b0",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "e2ed45a66f2270047f51d08283b7a33250c201f28c9da9e964812ca78426a763",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 26,
+    "topicSnapshots": 474,
+    "moduleSnapshots": 940
+  },
+  "continuation": {
+    "nextEvidence": "transport-bin-next-evidence.json",
+    "nextEvidenceSha256": "71fe1ac3f2d29c7df3316b827ef4bcf2970547056570c8f955d43b090288865d",
+    "fragments": 15,
+    "staticCaptureCheck": {
+      "command": "node scripts/build-transport-bin-next-evidence.cjs --check",
+      "log": ".archify-work/transport-bin-next-capture.log",
+      "sha256": "b6ecb76b6d17be712f1869846cadb74a977db10e83943f09b08c406cd43543f0",
+      "scope": "Separately checked source capture only; runtime pending; not part of this unified regression"
+    },
+    "remainingEvidence": "transport-waiting-next-evidence.json",
+    "remainingEvidenceSha256": "fac712236e22cd5706720394bf631f917d60daa871062b42935d8bad9530e37f",
+    "previousControllerCaptureSha256": "ebbfcf723a97479d15c52097b361f9111007bcef2e313c596657b4406db51b24",
+    "next": "Original waiting-to-unload-bin and LoaderBin producer path, then other six transfers and program/pool/domain/SDK/native acceptance."
+  },
+  "sdkStaticContract": {
+    "evidence": "transport-sdk-predicates-evidence.json",
+    "sha256": "7688f731fb9152338bacf87dfc70e9149135873df7f5831c94c0397f9d24c634",
+    "methods": 5,
+    "assemblies": 2,
+    "scope": "Repository DLL metadata/IL only; not SDK/device execution"
+  },
+  "fixtureCorrections": {
+    "initialSharedSensorLog": ".archify-work/waiting-integration-initial.log",
+    "continueMoveInputLog": ".archify-work/waiting-integration-expanded.log",
+    "passedSpecializedLog": ".archify-work/waiting-integration-expanded-v2.log",
+    "scope": "Fixture input timelines corrected; original method bodies unchanged"
+  },
+  "scope": "Complete original waiting-to-unload-belt and Bond-to-waiting controllers, shared original moving/stop/material wrappers, original settings and child tasks compose with full transport producer/UI/readiness/real-wafer Task/Stop. SDK axis states/stop/input results, I/O/log/program lifecycle, other seven transfers and native UI/domain/SDK/build/configuration/DLL/equipment remain fixture boundaries or pending."
+}

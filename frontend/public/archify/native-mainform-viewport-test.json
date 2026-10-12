@@ -1,0 +1,3073 @@
+{
+  "schemaVersion": 1,
+  "status": "original-mainform-viewport-matrix-captured",
+  "scope": "Two fresh original MainForm UI processes on private STA desktops. Six public Form.ClientSize requests, original SDK document, PrintWindow and control geometry recorded. No production source edits, physical display/DPI changes, Program.Main, device, SQL, image consumer or business task execution.",
+  "checksPerPass": 71,
+  "passes": 2,
+  "viewportsPerPass": 6,
+  "sourceDeclarations": 360,
+  "sourceFiles": 242,
+  "sourceAssemblies": 16,
+  "observedOverflow": {
+    "right": 384,
+    "bottom": 206
+  },
+  "compactOverflow": {
+    "right": 896,
+    "bottom": 399
+  },
+  "documentMinimumSize": "1920, 999",
+  "autoScroll": false,
+  "dpi": 96,
+  "queryControlCountPerMode": 1,
+  "stableGeometryAndImageHashes": true,
+  "sourceLedgerUnchanged": 19106,
+  "formalRuntimeChecksUnchanged": 1328,
+  "wholeGoalComplete": false,
+  "summary": {
+    "file": ".archify-work/native-mainform-viewport/summary.json",
+    "sha256": "c7c361d38b53942f137cfe7d3690abfbd4783e77237ea19ad0ebaa8cef19915f"
+  },
+  "receipts": {
+    "bound": {
+      "process": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/process.json",
+        "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6"
+      },
+      "stdout": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/stdout.json",
+        "sha256": "cb1815ff55d0d8e9d2be1528072782c384b28f9e037d7b23fb355692f36f7ca0"
+      },
+      "stderr": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "progress": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/case-progress.log",
+        "sha256": "c2e525385f21fb31d5420ac91d8145cceaa245686524e98f4e8e2456a737fe51"
+      },
+      "matrix": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-matrix.json",
+        "sha256": "5438bc38aed1baebe90f2b1d8e91827761bfb08be4687fa94d918198d16f66ed"
+      },
+      "images": [
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-compact.png",
+          "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e",
+          "bytes": 150393
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-observed.png",
+          "sha256": "6a28135ed8c70191761ce383342abee5308715b9885c0b544d15022185680429",
+          "bytes": 305997
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-document-size.png",
+          "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5",
+          "bytes": 307308
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-document-plus-header.png",
+          "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5",
+          "bytes": 307308
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-large.png",
+          "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5",
+          "bytes": 307308
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/bound/viewport-return-compact.png",
+          "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e",
+          "bytes": 150393
+        }
+      ]
+    },
+    "replay": {
+      "process": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/process.json",
+        "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6"
+      },
+      "stdout": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/stdout.json",
+        "sha256": "b805b526e747601f535dc65241e97e74ca7a76c64c521979db728639a02c7311"
+      },
+      "stderr": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "progress": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/case-progress.log",
+        "sha256": "c2e525385f21fb31d5420ac91d8145cceaa245686524e98f4e8e2456a737fe51"
+      },
+      "matrix": {
+        "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-matrix.json",
+        "sha256": "caa18c900e6546b51b151be883284852db3f191cfe530dfda62a1b388cd93226"
+      },
+      "images": [
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-compact.png",
+          "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e",
+          "bytes": 150393
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-observed.png",
+          "sha256": "6a28135ed8c70191761ce383342abee5308715b9885c0b544d15022185680429",
+          "bytes": 305997
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-document-size.png",
+          "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5",
+          "bytes": 307308
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-document-plus-header.png",
+          "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5",
+          "bytes": 307308
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-large.png",
+          "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5",
+          "bytes": 307308
+        },
+        {
+          "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-mainform-viewport/replay/viewport-return-compact.png",
+          "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e",
+          "bytes": 150393
+        }
+      ]
+    }
+  },
+  "frozenInputs": [
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/case-progress.log",
+      "bytes": 4552,
+      "sha256": "c2e525385f21fb31d5420ac91d8145cceaa245686524e98f4e8e2456a737fe51"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/desktop-evidence.json",
+      "bytes": 269,
+      "sha256": "999d4bd24399759072ad25baf8d76dd4c1b0a5714591576fa7b420b57e723bc9"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/desktop-setup.json",
+      "bytes": 153,
+      "sha256": "f1d4090012664c70a7cf4e046677ef4ebeb44abd58dd24dfcd1f8fe4232ff033"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-after-container.json",
+      "bytes": 20547,
+      "sha256": "6c73d1d133dcee8696e9fbab48b3a5029278984ff9b73c17d735db70b7010c79"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-after-document.json",
+      "bytes": 20548,
+      "sha256": "29bbed087da839809e58814ba9ab54aec75cdcfe30b75a0d7e3cab0c18ab4a8f"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-before-activation.json",
+      "bytes": 4816,
+      "sha256": "25b4ca9613c2711364066e5d891d9090cda37cf83a5f9e1d0e7b93f43a26546c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-document-return.json",
+      "bytes": 20549,
+      "sha256": "04c9d2b673f428f53cd7a1a649d26c23f2fe0e0f90ac2278d782bd0d7cfc9c53"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-home-after-document.json",
+      "bytes": 20509,
+      "sha256": "4ebe554769790a9fce29eef7aba9f308ead08a4a2674bf394387dae25c0e23ae"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-viewport-compact.json",
+      "bytes": 20556,
+      "sha256": "03c1d50075a723e56c2d5547ce1be1ec1dd8ec45599d4cefef3403df091aa0da"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-viewport-document-plus-header.json",
+      "bytes": 20541,
+      "sha256": "709f6021c43735474116a59cbb49e446585088706f10b849eec070cbfd9e5e9a"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-viewport-document-size.json",
+      "bytes": 20534,
+      "sha256": "9dc5b1d785717ab80d11b87cc078433ee4d06fd7badafe5a1e9b9f8b82c40f05"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-viewport-large.json",
+      "bytes": 20526,
+      "sha256": "e58ed3286ab045f8b99d33c626158d46c2c2f8f3880530db935d1ce91a35941d"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-viewport-observed.json",
+      "bytes": 20529,
+      "sha256": "7e4bf6d4995ec62e0cb372bf8833f5b6eaace6324fe159cce1529163a102ad86"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/layout-viewport-return-compact.json",
+      "bytes": 20535,
+      "sha256": "75ddbd5a7a403bad1875d050b259dd546010866c5cb7bd137a35d66870ccc03a"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/mainform-state.json",
+      "bytes": 724,
+      "sha256": "30736ca7fce6ecee7dc63334d4f271152eb2490138848a1b606d0c16ba3507bb"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/native-document-return.png",
+      "bytes": 274189,
+      "sha256": "690b36f876555ed0367ab364e31637a28d8e98bb6c46e4d96bd3b2a0c791911c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/native-document-return.png.json",
+      "bytes": 120,
+      "sha256": "68cbd8cb02baaa7c1db35ce49d319dcaf9ed34a8219de53e15e729e3c0cbb679"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/native-document.png",
+      "bytes": 274189,
+      "sha256": "690b36f876555ed0367ab364e31637a28d8e98bb6c46e4d96bd3b2a0c791911c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/native-document.png.json",
+      "bytes": 120,
+      "sha256": "68cbd8cb02baaa7c1db35ce49d319dcaf9ed34a8219de53e15e729e3c0cbb679"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/native-home.png",
+      "bytes": 29421,
+      "sha256": "164c77addf4c10cfbcb9c27f6e75b6d1e061ba5e6e1474c355033101b4345c7f"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/native-home.png.json",
+      "bytes": 120,
+      "sha256": "68cbd8cb02baaa7c1db35ce49d319dcaf9ed34a8219de53e15e729e3c0cbb679"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/offline-home.png",
+      "bytes": 7512,
+      "sha256": "f10dfa3cf35e971dcc0c973c2ac2b52c3dda53bdbc40ce6f0cb4df77afc8fe2b"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/offline-main-control.png",
+      "bytes": 347165,
+      "sha256": "f74e6b9211bf1291510e0bde878f808bab7d7ac96749899837604da2dbeaf2c3"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/offline-main-system.png",
+      "bytes": 8761,
+      "sha256": "8a091c7a6c8a280f3e666954dd0ead93faceec2f6ca20dc454982e70cee8e4fe"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/presentation-defaults.json",
+      "bytes": 488,
+      "sha256": "1d89b47d5cc9ffef1676943acb9bfbc00d6f660c74b2918e67c84d92d0b7ffad"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Probe.exe",
+      "bytes": 95744,
+      "sha256": "4e77cdbbff335013768611f933a8cea37fad3836ddcb936d97c7edab62af4103"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/process.json",
+      "bytes": 55,
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/query-controls.log",
+      "bytes": 60,
+      "sha256": "4514cd9eeb20ea15e0cbc923e5f5e7eea17ed8bd90e3b208a10340da1e72ad81"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/reset-gate.png",
+      "bytes": 7512,
+      "sha256": "f10dfa3cf35e971dcc0c973c2ac2b52c3dda53bdbc40ce6f0cb4df77afc8fe2b"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/runtime-map.tsv",
+      "bytes": 21047,
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/scenario.txt",
+      "bytes": 13,
+      "sha256": "f93c178ff860b6a8583249770125f3c6d9d8e6dd1717cf26150f9fea7e2d07f4"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/sdk-identity-map.tsv",
+      "bytes": 4118,
+      "sha256": "92a81ade486651259749687c805bff180559aa64e152b56e78ebcf3ddbec2e15"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/sdk-missing-identities.txt",
+      "bytes": 76,
+      "sha256": "614e914c1719161536f9dd38dc42ccc6f8a7d2d370acca56e8b96c2f5eae0216"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/BondinsertSettingRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/EpoxyApplicationRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/EpoxyMaterialRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/InOutPutSettingRepositoryFilePath.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/LoaderBinRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/NozzleRepositoryPath.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/NozzleShelfRepositoryPath.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/PostBondInspectionRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/TransportBeltSettingRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/UnLoaderBinRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/AdapterRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/CarrierRepository.json",
+      "bytes": 159,
+      "sha256": "3c7bb22dde7f0295030ad509a062dfa5d472bcb4f491de3bb2eeca81ceede40a"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/EjectionBankRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/EjectionRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/FlipToolRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/MagazineAllocationsRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/MagazineBoxGeoRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/MagazineBoxRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSub/WaferSubDevicePara.json",
+      "bytes": 10318,
+      "sha256": "8939d9790aa8a5d4597ec1207a9708e8dcd66d6f56a82a25e5626ef8e3849365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/DeviceParams/WaferSubBaks/WaferSubDevicePara1006213858.json",
+      "bytes": 10318,
+      "sha256": "8939d9790aa8a5d4597ec1207a9708e8dcd66d6f56a82a25e5626ef8e3849365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/MachineConfig.json",
+      "bytes": 160,
+      "sha256": "3af29a32138497b2e4345f8e6b93f58c8008b80eeddcabca87dd31fea4f84730"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeList.json",
+      "bytes": 407,
+      "sha256": "bd845b8ec7f765d6deec115e2021b40ae04b1106ae1b79165475669cc924cc07"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/BondProgram.json",
+      "bytes": 2895,
+      "sha256": "00ffa2f4f266aeee90f8a06299d31e740049f01f91b15349fdfd6ee6fa8f87be"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/DispenseProgram.json",
+      "bytes": 1121,
+      "sha256": "111839307d9ff5251138e41787c0391b96212bc99f315bed1544bf012dab1370"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/ProcessProgram.json",
+      "bytes": 2754,
+      "sha256": "d5446bf5a671a4567c642ba4775be49969b1edf123521256023947f746f513f3"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/ProductConfiguration.json",
+      "bytes": 37936,
+      "sha256": "3420f72d822d13873d831779099825e13e4cc7bc02c700749c3cac7f2cdea879"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/TransportSystemProgram.json",
+      "bytes": 2011,
+      "sha256": "af00abd448174fba8b23c473acc1eb27a5f832b06a811f3862fbde59f7754481"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/WaferSystemProgram.json",
+      "bytes": 849,
+      "sha256": "4a8f2f368c096867d8e4a12d4a3d67e2006b9e70604e14512a8226a2e4bfd069"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/stdout.json",
+      "bytes": 13550,
+      "sha256": "cb1815ff55d0d8e9d2be1528072782c384b28f9e037d7b23fb355692f36f7ca0"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-compact.png",
+      "bytes": 150393,
+      "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-compact.png.json",
+      "bytes": 120,
+      "sha256": "112f98bf9ba4473ec399a8c1712e48f21e764fe296ff774561d36cce63855851"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-document-plus-header.png",
+      "bytes": 307308,
+      "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-document-plus-header.png.json",
+      "bytes": 120,
+      "sha256": "b6869e66a9e913ee616a75b72a4a8ebad647077dafa39a4f45d0084fb3bf5365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-document-size.png",
+      "bytes": 307308,
+      "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-document-size.png.json",
+      "bytes": 120,
+      "sha256": "b6869e66a9e913ee616a75b72a4a8ebad647077dafa39a4f45d0084fb3bf5365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-large.png",
+      "bytes": 307308,
+      "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-large.png.json",
+      "bytes": 120,
+      "sha256": "b6869e66a9e913ee616a75b72a4a8ebad647077dafa39a4f45d0084fb3bf5365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-matrix.json",
+      "bytes": 150330,
+      "sha256": "5438bc38aed1baebe90f2b1d8e91827761bfb08be4687fa94d918198d16f66ed"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-observed.png",
+      "bytes": 305997,
+      "sha256": "6a28135ed8c70191761ce383342abee5308715b9885c0b544d15022185680429"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-observed.png.json",
+      "bytes": 120,
+      "sha256": "2e2b04ab8c56d7b4d35d0cc349f4d423ae9af8aaee3f4d4294833e370b2ac67c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-return-compact.png",
+      "bytes": 150393,
+      "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/bound/viewport-return-compact.png.json",
+      "bytes": 120,
+      "sha256": "112f98bf9ba4473ec399a8c1712e48f21e764fe296ff774561d36cce63855851"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/Cases.cs",
+      "bytes": 27851,
+      "sha256": "ce510c84dc03114f759b52f118a317923b7b80d503bb9c3cb5aa1b9fdf89e66b"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/compile-input.json",
+      "bytes": 18825,
+      "sha256": "85d681058d34bda468f07c1595b2ba13067ceeed5d82ed63ea6b901e801e81ac"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/compile.json",
+      "bytes": 4033,
+      "sha256": "d6044148871289dcb9d068dc13484e8f3e03f5e8438fe28d0139a617a4d45c7d"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/compile.log",
+      "bytes": 3713,
+      "sha256": "de7f6f58e365d4e5b6b7e77010f068ceacbc8b59c7efc96811556e7ef1f4e1b4"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/compile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/Host.cs",
+      "bytes": 3534,
+      "sha256": "2e8d655f9f4fd1300dca093e638f0c62ed92f266337da15d89fb3fe98aec868f"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/il-process.json",
+      "bytes": 55,
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/il.json",
+      "bytes": 3007410,
+      "sha256": "ce3374f9ec1e49afc93968610f6d212c69a0581076b110d2642b1a6020386117"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/input-bindings.json",
+      "bytes": 47507,
+      "sha256": "eb7346b0ada0d4d5a23072be9883beba74c86d16b5415c51cdbc06827e9f79ac"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/Probe.exe",
+      "bytes": 95744,
+      "sha256": "4e77cdbbff335013768611f933a8cea37fad3836ddcb936d97c7edab62af4103"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/case-progress.log",
+      "bytes": 4552,
+      "sha256": "c2e525385f21fb31d5420ac91d8145cceaa245686524e98f4e8e2456a737fe51"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/desktop-evidence.json",
+      "bytes": 271,
+      "sha256": "76bd558870d7681c70774c95355e5d5d589c289d1d5d7af8bf47049db6de2db3"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/desktop-setup.json",
+      "bytes": 155,
+      "sha256": "96e8da84c2c02deee93908c8f967a87543ec72ead8b68cf83152651020eefca3"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-after-container.json",
+      "bytes": 20547,
+      "sha256": "6c73d1d133dcee8696e9fbab48b3a5029278984ff9b73c17d735db70b7010c79"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-after-document.json",
+      "bytes": 20548,
+      "sha256": "29bbed087da839809e58814ba9ab54aec75cdcfe30b75a0d7e3cab0c18ab4a8f"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-before-activation.json",
+      "bytes": 4816,
+      "sha256": "25b4ca9613c2711364066e5d891d9090cda37cf83a5f9e1d0e7b93f43a26546c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-document-return.json",
+      "bytes": 20549,
+      "sha256": "04c9d2b673f428f53cd7a1a649d26c23f2fe0e0f90ac2278d782bd0d7cfc9c53"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-home-after-document.json",
+      "bytes": 20509,
+      "sha256": "4ebe554769790a9fce29eef7aba9f308ead08a4a2674bf394387dae25c0e23ae"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-viewport-compact.json",
+      "bytes": 20551,
+      "sha256": "ccc9fd7b5a07089fffaf40c4b1cb8365c7fb2b8960d84c6dd825414ca2a84383"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-viewport-document-plus-header.json",
+      "bytes": 20536,
+      "sha256": "34af0e6980821192f9fc2101d18c6ef433f81a707f29a86265682c5b8c645f06"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-viewport-document-size.json",
+      "bytes": 20529,
+      "sha256": "c545e41ee70d94be5ec3b2eba63f5fc07ad4b7c0af94fdea67ce4a59c987d682"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-viewport-large.json",
+      "bytes": 20521,
+      "sha256": "4deabd51c7fed0f9e7edc6f0fe35145494079a4466fbb7623a03a6f2ca6e8480"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-viewport-observed.json",
+      "bytes": 20524,
+      "sha256": "330f61d7cffbd8e4aeacd0081ec9a7f53507ba19f403474e7705ef0905254039"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/layout-viewport-return-compact.json",
+      "bytes": 20530,
+      "sha256": "b06ec9aeaa0084475668a6e909cd8396fc1d74b4158305738c05071173bc66cf"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/mainform-state.json",
+      "bytes": 724,
+      "sha256": "30736ca7fce6ecee7dc63334d4f271152eb2490138848a1b606d0c16ba3507bb"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/native-document-return.png",
+      "bytes": 274189,
+      "sha256": "690b36f876555ed0367ab364e31637a28d8e98bb6c46e4d96bd3b2a0c791911c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/native-document-return.png.json",
+      "bytes": 120,
+      "sha256": "68cbd8cb02baaa7c1db35ce49d319dcaf9ed34a8219de53e15e729e3c0cbb679"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/native-document.png",
+      "bytes": 274189,
+      "sha256": "690b36f876555ed0367ab364e31637a28d8e98bb6c46e4d96bd3b2a0c791911c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/native-document.png.json",
+      "bytes": 120,
+      "sha256": "68cbd8cb02baaa7c1db35ce49d319dcaf9ed34a8219de53e15e729e3c0cbb679"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/native-home.png",
+      "bytes": 29421,
+      "sha256": "164c77addf4c10cfbcb9c27f6e75b6d1e061ba5e6e1474c355033101b4345c7f"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/native-home.png.json",
+      "bytes": 120,
+      "sha256": "68cbd8cb02baaa7c1db35ce49d319dcaf9ed34a8219de53e15e729e3c0cbb679"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/offline-home.png",
+      "bytes": 7512,
+      "sha256": "f10dfa3cf35e971dcc0c973c2ac2b52c3dda53bdbc40ce6f0cb4df77afc8fe2b"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/offline-main-control.png",
+      "bytes": 347095,
+      "sha256": "40ffb1e1f99b3ccc23cb4eef4b3dc9f96251c14304d00591d06eceb45ebc711d"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/offline-main-system.png",
+      "bytes": 8761,
+      "sha256": "8a091c7a6c8a280f3e666954dd0ead93faceec2f6ca20dc454982e70cee8e4fe"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/presentation-defaults.json",
+      "bytes": 488,
+      "sha256": "1d89b47d5cc9ffef1676943acb9bfbc00d6f660c74b2918e67c84d92d0b7ffad"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Probe.exe",
+      "bytes": 95744,
+      "sha256": "4e77cdbbff335013768611f933a8cea37fad3836ddcb936d97c7edab62af4103"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/process.json",
+      "bytes": 55,
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/query-controls.log",
+      "bytes": 60,
+      "sha256": "4514cd9eeb20ea15e0cbc923e5f5e7eea17ed8bd90e3b208a10340da1e72ad81"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/reset-gate.png",
+      "bytes": 7512,
+      "sha256": "f10dfa3cf35e971dcc0c973c2ac2b52c3dda53bdbc40ce6f0cb4df77afc8fe2b"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/runtime-map.tsv",
+      "bytes": 21063,
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/scenario.txt",
+      "bytes": 13,
+      "sha256": "f93c178ff860b6a8583249770125f3c6d9d8e6dd1717cf26150f9fea7e2d07f4"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/sdk-identity-map.tsv",
+      "bytes": 4118,
+      "sha256": "92a81ade486651259749687c805bff180559aa64e152b56e78ebcf3ddbec2e15"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/sdk-missing-identities.txt",
+      "bytes": 76,
+      "sha256": "614e914c1719161536f9dd38dc42ccc6f8a7d2d370acca56e8b96c2f5eae0216"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/BondinsertSettingRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/EpoxyApplicationRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/EpoxyMaterialRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/InOutPutSettingRepositoryFilePath.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/LoaderBinRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/NozzleRepositoryPath.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/NozzleShelfRepositoryPath.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/PostBondInspectionRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/TransportBeltSettingRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/UnLoaderBinRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/AdapterRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/CarrierRepository.json",
+      "bytes": 159,
+      "sha256": "3c7bb22dde7f0295030ad509a062dfa5d472bcb4f491de3bb2eeca81ceede40a"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/EjectionBankRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/EjectionRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/FlipToolRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/MagazineAllocationsRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/MagazineBoxGeoRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/MagazineBoxRepository.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSub/WaferSubDevicePara.json",
+      "bytes": 10318,
+      "sha256": "3185c5800f43dbe70e2a20a49043d00b49b20437b9d96b7578d79aa5232238fc"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/DeviceParams/WaferSubBaks/WaferSubDevicePara1006213919.json",
+      "bytes": 10318,
+      "sha256": "3185c5800f43dbe70e2a20a49043d00b49b20437b9d96b7578d79aa5232238fc"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/MachineConfig.json",
+      "bytes": 160,
+      "sha256": "3af29a32138497b2e4345f8e6b93f58c8008b80eeddcabca87dd31fea4f84730"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeList.json",
+      "bytes": 407,
+      "sha256": "bd845b8ec7f765d6deec115e2021b40ae04b1106ae1b79165475669cc924cc07"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/BondProgram.json",
+      "bytes": 2898,
+      "sha256": "2660e66c52b88afbd7f4e5cbfb32028ba3e7321abaade02dab9585ed6ec7e441"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/DispenseProgram.json",
+      "bytes": 1121,
+      "sha256": "111839307d9ff5251138e41787c0391b96212bc99f315bed1544bf012dab1370"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/ProcessProgram.json",
+      "bytes": 2754,
+      "sha256": "d5446bf5a671a4567c642ba4775be49969b1edf123521256023947f746f513f3"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/ProductConfiguration.json",
+      "bytes": 37936,
+      "sha256": "3420f72d822d13873d831779099825e13e4cc7bc02c700749c3cac7f2cdea879"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/TransportSystemProgram.json",
+      "bytes": 2011,
+      "sha256": "af00abd448174fba8b23c473acc1eb27a5f832b06a811f3862fbde59f7754481"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/Settings/RecipeParams/91919191-1111-2222-3333-444444444444/WaferSystemProgram.json",
+      "bytes": 849,
+      "sha256": "4a8f2f368c096867d8e4a12d4a3d67e2006b9e70604e14512a8226a2e4bfd069"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/stdout.json",
+      "bytes": 13583,
+      "sha256": "b805b526e747601f535dc65241e97e74ca7a76c64c521979db728639a02c7311"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-compact.png",
+      "bytes": 150393,
+      "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-compact.png.json",
+      "bytes": 120,
+      "sha256": "112f98bf9ba4473ec399a8c1712e48f21e764fe296ff774561d36cce63855851"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-document-plus-header.png",
+      "bytes": 307308,
+      "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-document-plus-header.png.json",
+      "bytes": 120,
+      "sha256": "b6869e66a9e913ee616a75b72a4a8ebad647077dafa39a4f45d0084fb3bf5365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-document-size.png",
+      "bytes": 307308,
+      "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-document-size.png.json",
+      "bytes": 120,
+      "sha256": "b6869e66a9e913ee616a75b72a4a8ebad647077dafa39a4f45d0084fb3bf5365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-large.png",
+      "bytes": 307308,
+      "sha256": "d240e83aed2eb7b62e8ad57c60e3610d4f042b85502b3ca1a250118ceec340b5"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-large.png.json",
+      "bytes": 120,
+      "sha256": "b6869e66a9e913ee616a75b72a4a8ebad647077dafa39a4f45d0084fb3bf5365"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-matrix.json",
+      "bytes": 150000,
+      "sha256": "caa18c900e6546b51b151be883284852db3f191cfe530dfda62a1b388cd93226"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-observed.png",
+      "bytes": 305997,
+      "sha256": "6a28135ed8c70191761ce383342abee5308715b9885c0b544d15022185680429"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-observed.png.json",
+      "bytes": 120,
+      "sha256": "2e2b04ab8c56d7b4d35d0cc349f4d423ae9af8aaee3f4d4294833e370b2ac67c"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-return-compact.png",
+      "bytes": 150393,
+      "sha256": "865ea4dc831775faf0f82e2a6d060296b4b4fd82af2fd10f47cce7ab638bab8e"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/replay/viewport-return-compact.png.json",
+      "bytes": 120,
+      "sha256": "112f98bf9ba4473ec399a8c1712e48f21e764fe296ff774561d36cce63855851"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/runtime-map.json",
+      "bytes": 33403,
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/source-evidence.json",
+      "bytes": 4733323,
+      "sha256": "4ab1ceed091241ab5c8bd68b3dd0d3a8f142660c5db9f985fd39bda86359b5ac"
+    },
+    {
+      "file": ".archify-work/native-mainform-viewport/summary.json",
+      "bytes": 14565,
+      "sha256": "c7c361d38b53942f137cfe7d3690abfbd4783e77237ea19ad0ebaa8cef19915f"
+    },
+    {
+      "file": ".archify-work/register-native-mainform-viewport.cjs",
+      "bytes": 5987,
+      "sha256": "69cdc1148a58272658efaff30cb62894bbed717c29e402ee28912a9cc1a9c2db"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Calibration/AKRS.Calibration.dll",
+      "bytes": 38400,
+      "sha256": "a9d1c842ab884023fc901c9f2ccc384d7882219258ca56e7fb01b44b2f614467"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy.SoftKey/AKRS.Galaxy.SoftKey.exe",
+      "bytes": 12800,
+      "sha256": "29af28bdf44fba15620dc306dccd1e3d39e814be2187c480b42a0489b2eead24"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.AutoFocusing/AKRS.Galaxy2.AutoFocusing.dll",
+      "bytes": 11264,
+      "sha256": "327f772557320b99768db971d3003f1aa88f3b7a52778dcb95d68a27a1a98a99"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.AxisCompensate/AKRS.Galaxy2.AxisCompensate.exe",
+      "bytes": 9728,
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.Component.TestDemo/AKRS.Galaxy2.Component.TestDemo.dll",
+      "bytes": 8704,
+      "sha256": "1020430893550fe1894212103f421ee0cffea157aa47340581b189a178e981cf"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.CoordinateSystems/AKRS.Galaxy2.CoordinateSystems.dll",
+      "bytes": 29184,
+      "sha256": "4f0cc47f9330bb48f55ef2a30a47fcf87ad4eb4e750d135331a9072c69018923"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.Dispense/AKRS.Galaxy2.Dispense.dll",
+      "bytes": 284160,
+      "sha256": "579908a6c83df839732272043bac0ca5d79c41dd50aa15599fd2493a12983a82"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.LogTest/AKRS.Galaxy2.LogTest.exe",
+      "bytes": 9216,
+      "sha256": "3e3705a67a541f96c62a98fd733745d0d842c54413e6e86069a08ad4fea5518d"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.Machine/AKRS.Galaxy2.Machine.dll",
+      "bytes": 17408,
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.MachineSupport/AKRS.Galaxy2.MachineSupport.dll",
+      "bytes": 7680,
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.PR.Test/AKRS.Galaxy2.PR.Test.exe",
+      "bytes": 7680,
+      "sha256": "9f211dac423ca18c3e52fb53964f73e07dcb1789c87a1ae2b0b4b6dfa849637d"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.PR/AKRS.Galaxy2.PR.dll",
+      "bytes": 369152,
+      "sha256": "e18f2a088424f83c999b0ed913336782f304b29662812931301f50c18731dee6"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.TeachTest/AKRS.Galaxy2.TeachTest.dll",
+      "bytes": 98304,
+      "sha256": "2de74ce904687e89d35be881d9aed9b7b81639acd545dd9dcd2ed17280f3ddfe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.ZX2200/AKRS.ZX2200.exe",
+      "bytes": 16729088,
+      "sha256": "99351b5fde6a8b400bcac8d5f71c5b39ac45ecc5c25facf5fc43e05ad96d5a9f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/DXApplication1/DXApplication1.exe",
+      "bytes": 23040,
+      "sha256": "b1bf45d813b4cc8a0f1a071b5a48de6068dcc3be89240e5714a46a14e48a7207"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/WindowsFormsApp1/WindowsFormsApp1.exe",
+      "bytes": 43520,
+      "sha256": "ae37a83f1316e99ed8de1940b44f942a2ce31d311bf647e1bb2bee7dd4b58afd"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.dll",
+      "bytes": 131072,
+      "sha256": "d36c225a84415c01bc2a8e84096590a7206dfc3d36173e3c7b6a62a04c0a33a9"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.Math.Core.dll",
+      "bytes": 1441792,
+      "sha256": "777da4849d8f7897a13818eb9fab05b2ecb80de848b3019aafefd34b28f791a8"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.Math.dll",
+      "bytes": 2220032,
+      "sha256": "1b1c40f63b7b98e82878ce8656390c12d9a2ed72ca451d6e7adcb46555cccbf2"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.Statistics.dll",
+      "bytes": 897024,
+      "sha256": "5230d2cb7a0b48eea0fb369b6ef40197f148af6fbda3652e6f01bef4ab0f5d00"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.BonusSkins.v21.2.dll",
+      "bytes": 22615552,
+      "sha256": "7e1772af9309c00f45003bd8704bece2cb0be0a83b005709a72420d0c3fba8c9"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Charts.v21.2.Core.dll",
+      "bytes": 1047040,
+      "sha256": "4a410169650fb1cfeea4904860ebc8b407cc4d1671592565ef82ae67bc04da40"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.CodeParser.v21.2.dll",
+      "bytes": 1737216,
+      "sha256": "d527dec03693ff2413aad867abf228eaa3c6974945ea3a7ef22a68703854d0ce"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Dashboard.v21.2.Core.dll",
+      "bytes": 8028160,
+      "sha256": "b9259be2944f53718166243af9df2291e2b97f71b7752e8c54374935b5bbee6f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Dashboard.v21.2.Win.dll",
+      "bytes": 6526464,
+      "sha256": "cf519f7b0fc78a258ed021759826705796eaa30f3e5e2e555382456b01f4af6f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Data.Desktop.v21.2.dll",
+      "bytes": 698880,
+      "sha256": "5bc4cd8e123fa2da983ca2509c3223d67f6ae9083accff3880307af1bcce5291"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Data.v21.2.dll",
+      "bytes": 5365248,
+      "sha256": "0fdbeac56dfbabdc47945a22616ca41a8d8b0a81167f65669535de4e57cd3072"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.DataAccess.v21.2.dll",
+      "bytes": 2306560,
+      "sha256": "ae9f173fe6e9ac5f811bb002f69dbc919e73e957188d7a2b46b495a7c379ec29"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.DataAccess.v21.2.UI.dll",
+      "bytes": 1153024,
+      "sha256": "62f65b4cea9b92ee70b02130666957b9c74ad00ce3bce52ad422af69807bcbc1"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.DemoData.v21.2.dll",
+      "bytes": 10551808,
+      "sha256": "62756a9dd8a939881a7a6bfde68f948b832afc988eed8170f63694337a0c568b"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Dialogs.v21.2.Core.dll",
+      "bytes": 945152,
+      "sha256": "3b51cf29a2a5b3e4400a828b87e14441ee67d462ff923e29144fd64abc43cade"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.ExpressApp.v21.2.dll",
+      "bytes": 2210816,
+      "sha256": "4a3f34cca29d6dc3acc6a02dcf45b039f7a13d9ba1620a6883ff891c721394aa"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Images.v21.2.dll",
+      "bytes": 8782848,
+      "sha256": "f2b08561e75721f5f598bf06ad6965b6c079f81d3a73f35fd7c1fa5b03ae7ee7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Map.v21.2.Core.dll",
+      "bytes": 1709056,
+      "sha256": "c4481374ad44b35d5db8f387455fde0e510dfd63a18030e06529fb8f1b2f90a4"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Office.v21.2.Core.dll",
+      "bytes": 3865600,
+      "sha256": "b4c3b1cf631174f053a7b53ccb77193a601c7464e229de05928a2a1213da9423"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Persistent.Base.v21.2.dll",
+      "bytes": 345600,
+      "sha256": "f12e6d9a911bae23fb43d63b9b69692e72396e191867461a40d9ffa2e8bc1427"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.PivotGrid.v21.2.Core.dll",
+      "bytes": 3771392,
+      "sha256": "4406b99a8f6ba44c20307b13e43b344e170f6f9123318fa0326cd8050fbb9156"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Printing.v21.2.Core.dll",
+      "bytes": 4542464,
+      "sha256": "1b431d80639a6f44b3c0d830ab0f85f6cde9eed6922aca292bb4c018a3f32b40"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.RichEdit.v21.2.Core.dll",
+      "bytes": 8770048,
+      "sha256": "f8624a6fefe7ee45e98c98529d7bd1db2e96c8e17a295202af158127d1e6f77e"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Snap.v21.2.Core.dll",
+      "bytes": 955904,
+      "sha256": "802129b85cb8a8383e4e596ed93258bd5021278932cdd01a5dca5b0c30ee6373"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Snap.v21.2.dll",
+      "bytes": 228352,
+      "sha256": "062eb96245cea58d00a74b779736bc5b84419897f9dd71fe69a842d9f43298fe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Snap.v21.2.Extensions.dll",
+      "bytes": 250880,
+      "sha256": "528b3573289600ca51306d2ca0fd31788b0fe69ba2f181783727cab040f891c7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Sparkline.v21.2.Core.dll",
+      "bytes": 89088,
+      "sha256": "a39d26349f8f79d299e942cd5ec8b643392954fbcc246c8859bb82bc12c76eed"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.TreeMap.v21.2.Core.dll",
+      "bytes": 38912,
+      "sha256": "1c3b17174cd2eb6e13344db74f72558cb02990aeece7eb027ed8eb7095532418"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Tutorials.v21.2.dll",
+      "bytes": 1200128,
+      "sha256": "72b267bd2ddfed5838b32ab1f4192c1d4e30e5dbf8c83017d2f25a85fb6be97e"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Utils.v21.2.dll",
+      "bytes": 18606592,
+      "sha256": "fdf069da8c6859d064314e302dfc678320468df5b14500940e47d166064dfead"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Utils.v21.2.UI.dll",
+      "bytes": 374272,
+      "sha256": "1538d070c30e73099723a7f112058aac47f864aa6eae119892389cccbdcd0bf0"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Xpo.v21.2.dll",
+      "bytes": 2340864,
+      "sha256": "85d7f0f300145cdca4be7d9359a54ae921460293867649046e6c9f2f7881d5af"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraBars.v21.2.dll",
+      "bytes": 6784000,
+      "sha256": "bc9f2b10c730cb07e8adc6112f0947f6af8f68d93983dfce77065fe7006b0910"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraCharts.v21.2.dll",
+      "bytes": 5174272,
+      "sha256": "cb4d1e7c419faf93a3c04b3a3e2cabffe195722908d10f2eaf92900170b352a5"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraCharts.v21.2.UI.dll",
+      "bytes": 544768,
+      "sha256": "95e2150cca9cc66baa2943f07c3ae5cbd3d968bfb5a0b3c4ae91ebdcd11e364e"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraCharts.v21.2.Wizard.dll",
+      "bytes": 8669696,
+      "sha256": "929267099a1e52e5a1e3a0f8a49dfc4d3319e57117fa922b86456c13659e045a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraDialogs.v21.2.dll",
+      "bytes": 802816,
+      "sha256": "cfb36ef058c8e3c30a07e6fed7302f022464a6d2677b63523c93119fe05fdaaf"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraEditors.v21.2.dll",
+      "bytes": 7880704,
+      "sha256": "45f6098bc699d29fcd72942d1de882aab04abe31135ca30092aa51b192a6944f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGauges.v21.2.Core.dll",
+      "bytes": 1942528,
+      "sha256": "a3e09ce385ec0e84ffcee0956e4f263721610676896bfeff8d0a9d85613de685"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGauges.v21.2.Presets.dll",
+      "bytes": 1172992,
+      "sha256": "ee911f817f4425266bc14b4fc7e36d066a9694dfb8380579b6c7da967656a8a3"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGauges.v21.2.Win.dll",
+      "bytes": 264192,
+      "sha256": "f1e2a149ddfacc7c3a8f3ab45ea7c2b8efd220abcc037d85e958288bb4da1665"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGrid.v21.2.dll",
+      "bytes": 3736576,
+      "sha256": "3b2e3c0a1fd3c8d105bd35d3f2347a51124d0e822dfbfcff5b6a2d69ec161b79"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraLayout.v21.2.dll",
+      "bytes": 2138624,
+      "sha256": "234796f37a97f5c4583e1d2ea0a30ca4d679f31113be21f311db6a644224ae9c"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraMap.v21.2.dll",
+      "bytes": 1696768,
+      "sha256": "b19a1fc2202b74130af5d28869948250f3f1b2a94ea4d9d3d2cec90f78a9fa9d"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraNavBar.v21.2.dll",
+      "bytes": 438272,
+      "sha256": "0e7ec803c9269716020348fe065eb3bac87ee944e6c4e932ce03eeac406e1cfe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraPivotGrid.v21.2.dll",
+      "bytes": 914432,
+      "sha256": "d903d90423c2517e114a94983a2ac98d8be8f45c5065cc770a9c7f0d5d22ef1a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraPrinting.v21.2.dll",
+      "bytes": 1116672,
+      "sha256": "60307e2c88f563464f66a32494310c2321fd05cfbfc3a71cc431f2b1b362bff0"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraReports.v21.2.dll",
+      "bytes": 4485632,
+      "sha256": "c36eb41e6fc2fd778e2a8d2a233ce24cffe88ab219f95f55e247c94dbf284254"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraRichEdit.v21.2.dll",
+      "bytes": 3014144,
+      "sha256": "0e33607f7e0207b812a233ec95edf8a24e5e271266355d4c53497acbd98a52e9"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraTreeList.v21.2.dll",
+      "bytes": 1645568,
+      "sha256": "cf3603bd109b7b686a4eb7b7afebded63e8bcc34caa484898389b7229607c4a8"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraTreeMap.v21.2.dll",
+      "bytes": 284672,
+      "sha256": "2fa32541e148ef8bf43ef6e1ebd5ac222b53aacc072c544335442741f0f0fb8b"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraTreeMap.v21.2.UI.dll",
+      "bytes": 54272,
+      "sha256": "746fae8dce800e6156c975bed96ec4ec4bcc85fb1c4c77d163d0f8f938a09105"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraVerticalGrid.v21.2.dll",
+      "bytes": 1235456,
+      "sha256": "c130fd36da4bb35135a9e760c424773c62b6abd3a1410bc2819e3a03f5b125be"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraWizard.v21.2.dll",
+      "bytes": 102912,
+      "sha256": "8817be4e1b2ec478ff0a5e3fe12b2c6adb2c421dec76fba1591308571eae4efb"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Microsoft.IO.RecyclableMemoryStream.dll",
+      "bytes": 63016,
+      "sha256": "2559c95d063f6c241e8f0647ff5e919fc4e8966e2f511361aff7947fe161501b"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/System.Buffers.dll",
+      "bytes": 20856,
+      "sha256": "accccfbe45d9f08ffeed9916e37b33e98c65be012cfff6e7fa7b67210ce1fefb"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/System.Runtime.CompilerServices.Unsafe.dll",
+      "bytes": 16768,
+      "sha256": "66409f670315afe8610f17a4d3a1ee52d72b6a46c544cec97544e8385f90ad74"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/System.Threading.Tasks.Extensions.dll",
+      "bytes": 27944,
+      "sha256": "692c324c02a922f890aaf5948c54ec9758f5ab7019b8e8ab169c106ddd3231f4"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.AccessControl.dll",
+      "bytes": 74240,
+      "sha256": "75e0b7fd3ca80200091e7587fcbaa3a88a9fcef5fa3a75dd6aa3272d30e0d3da"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.AccessControl.Interface.dll",
+      "bytes": 4096,
+      "sha256": "d5ddd29bac8e61fffd2547507890fa960e9e4569932b10c0c604756d66418a69"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Base.dll",
+      "bytes": 67584,
+      "sha256": "a4b8b8696d3a3f9f00b78de847a7319a9f2dc12ddcab7084269151b4148591a7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.DispensingPattern.dll",
+      "bytes": 111616,
+      "sha256": "86a3e1e740195dcc452c5e7958bf8b3ac3d3e6d9306213a8392f8e07e72dd465"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.AlgebraGeometry.dll",
+      "bytes": 6144,
+      "sha256": "741eb17e0694329be6f5444d9ee06975a20108aeba98b0624f7c66d4bf1c0e1a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Aop.dll",
+      "bytes": 5632,
+      "sha256": "0bc2dd066e37856d6633f058d88ae650a4edd933be7c45f025162fc9748cc3f6"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.BackgroundWorkThread.dll",
+      "bytes": 11264,
+      "sha256": "620cafdd6b50a6dccd42886307aa0c34e6e779e731c233f68dabc2331db19b77"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Communication.dll",
+      "bytes": 19968,
+      "sha256": "1c1fcbd69ad6ecee6a90cfd7303afbe1e11aa094cb57daf4f51b3ac08f27a202"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Component.Simple.dll",
+      "bytes": 375808,
+      "sha256": "25064c57bb2f0fd4f413f4afc241c8e9888750b9e34fb88fb28255da25d96f88"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Consumables.dll",
+      "bytes": 64000,
+      "sha256": "caee8b4318ab54db6e8be708b2d4a5e93f052fb1bd455d644a79ae42dd03177b"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Drive.dll",
+      "bytes": 484352,
+      "sha256": "110c57d1dc48f94ee6c32ef223f48e78bc03ef3ad4aeb9986c76306f0d41ae79"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Force.dll",
+      "bytes": 29696,
+      "sha256": "a975df651ea2ef87128dd3ccfbd2faf063b758d7b75ccfe12a6d671f8bc9c35f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.HardwareEditor.exe",
+      "bytes": 397312,
+      "sha256": "5e05ce518136f7ba1591923322c2737336198ff595853ae38aaa47247564d19e"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+      "bytes": 135680,
+      "sha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.IOControl.dll",
+      "bytes": 14848,
+      "sha256": "0b0f0efb041d7947a62fa4249961d7d3a7c7a5dece8d4366bb8b275c5ec253fb"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Log.dll",
+      "bytes": 21504,
+      "sha256": "f507a2068760753f09ecfd22713e411c649c76fb2e73f8732b3c0d072bb16fa2"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Log.TestDemo.exe",
+      "bytes": 12800,
+      "sha256": "a42162717392aeec46e2d366dbfd6cb6795e6031e498276bb9f843ef903472e1"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+      "bytes": 184320,
+      "sha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.MeasureHeight.dll",
+      "bytes": 42496,
+      "sha256": "0b5b4d5d7436d8fd116e5265007b9f3f07cd624bfb405ba81e5e257c3077574c"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.ModulePublic.dll",
+      "bytes": 12288,
+      "sha256": "076ea434f48bc42a499af106071a3d9c4f18b74be2b896bb2e98847671288322"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Recipe.dll",
+      "bytes": 39424,
+      "sha256": "5f6eeb8e14ceeb7fc35aa9f24068758f304becc7c2ed50e690ad82701e0aaaf7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.ShowAccuary.dll",
+      "bytes": 4096,
+      "sha256": "b8f284796beebcbef9c304c664976d7befe82eff4fbbed0dc6de3af6b3e61515"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.ShowAccuracyControl.dll",
+      "bytes": 24576,
+      "sha256": "4e63bd73fce9c2a48818d87dc9ce3f4dcc9c4e2c77f79eaa4c9e923f531e29b7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Statistics.dll",
+      "bytes": 3584,
+      "sha256": "9fc2f4eaee5693dfa82af8a90f0f00482b7c9e2e9cdec04e503c88a33b1a8fc0"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.UserManager.dll",
+      "bytes": 120320,
+      "sha256": "e5e96959d38020d7c824561cf3d20a67fc90d0fa2eb62a268d547046e730382a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Logs.dll",
+      "bytes": 9728,
+      "sha256": "7922d8a077601d2df0a7192eb21c15a1b423c5d44436f843f33f4bf1fc98b71a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.FileParser.dll",
+      "bytes": 39424,
+      "sha256": "bd58061b1d95e48a2f6dac22e1fe77c56867d5e1bb428db6c58f17def0f0de02"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMap.dll",
+      "bytes": 245760,
+      "sha256": "9f3a3b00bdd36877f608f2f1d79341fd4aa507b8bee4743c90ea100fece6ac89"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMapCtrl.dll",
+      "bytes": 83968,
+      "sha256": "fd4e40455d0f112c3faea424e2473f180bdc116258f78b48ec01a8e464fb18b6"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMapForm.dll",
+      "bytes": 1257984,
+      "sha256": "0a2f91c8409a7e8310a1b18798720c42024005517e4208c8a0f685cf65b3d6e4"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMapHelper.dll",
+      "bytes": 20992,
+      "sha256": "4eb54ab12e5bf92289b5e3d7e15c6c8f19f92290399873fc9c2eab4a6854fc6a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AuthenticatorBG_x86.exe",
+      "bytes": 7168,
+      "sha256": "c83f425f335b22e596063d7902b82233e7b9075253967af59fa5668fe868dbbe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/DataAnalysis.Acquisition.dll",
+      "bytes": 15872,
+      "sha256": "58142c8479d71876a00a24fc58e6ad2ecf0e0e5406b909a9a87e7984405aebca"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/DevComponents.DotNetBar2.dll",
+      "bytes": 4620288,
+      "sha256": "b0beb2173453302e87fc568117b2a558b9f7f75d6ca349d9ea20a8de57ed7d56"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/dex40net.dll",
+      "bytes": 61952,
+      "sha256": "417f58ffd7385b24b4697af89c4b4a5b25bc535f67d24e9e00b79915d53ce8b1"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/dmd40net.dll",
+      "bytes": 54272,
+      "sha256": "9867f3f34fe13e8bcaf84b512c14144b3ba231c55b2fae0c40c70ad38b7aaafa"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/dsa40net.dll",
+      "bytes": 598016,
+      "sha256": "c181e35fc9543d7263ea350e1280d006165a024b2d5a412f6899ac8a3d4a58d5"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EasyModbus.dll",
+      "bytes": 72704,
+      "sha256": "83bcad0825ca511240ccbd90f79faa07bc26fcf6fb1af53b735dc0e75d795f89"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EPPlus.dll",
+      "bytes": 3523584,
+      "sha256": "93613a9303e2bff72e49cc8a58fbcb83d450fd53e4b9e2f05a7ef09f4ab88bfc"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EPPlus.Interfaces.dll",
+      "bytes": 6656,
+      "sha256": "ff96bf2475e44f10647f8641bbac12aaf686ff6060080651923ba57bb80c57c0"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EPPlus.System.Drawing.dll",
+      "bytes": 7168,
+      "sha256": "875137c5b89fb678a5bb78dfe90becc2366750beb44bb98a6990db48ef79cabc"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/esc40net.dll",
+      "bytes": 17920,
+      "sha256": "06ce93b5b13da7648a0d1af03f2c679f584241beaeb05ab16afa6426b3b43246"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/etb40net.dll",
+      "bytes": 46080,
+      "sha256": "64b271ace126dce68c1804cc7e44f9618949024a98fea8f45d34865a833591ab"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/etne40net.dll",
+      "bytes": 8704,
+      "sha256": "036d9a490569ab5619d62ce4d64c91661b15a24562da001e1d3b4f8139b60917"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/FluentModbus.dll",
+      "bytes": 187392,
+      "sha256": "fb8f020bc59bf434eddec84c246f2b01843f91a4e630873801273806c49462d6"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/halcondotnet.dll",
+      "bytes": 1440400,
+      "sha256": "134a08394666d16f0140f001fd5c814b25cbb7fc351ddbe4a7a4ec0457b58725"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/IMVSCalibTransformModuCs.dll",
+      "bytes": 11776,
+      "sha256": "1e21b69f4b400b62eb2e218d3d20779d5b048f71f92697785bfdc73200514abf"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/IMVSIntensityMeasureModuCs.dll",
+      "bytes": 12800,
+      "sha256": "8f72e1001c29b3659e2c6d86951ae9145b745e9792b9ffc2c17105c60a49b276"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/IMVSNPointCalibModuCs.dll",
+      "bytes": 17408,
+      "sha256": "a04bc857c75a5a35429dadc784af6faeacc6797ec72c9bd5cde21db288f44f1d"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/MVDCore.Net.dll",
+      "bytes": 156160,
+      "sha256": "a1c93d610a9d499447a9f9f376cb663fc99b5037e09bc0e02175edd88a5a2f38"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.Controls.dll",
+      "bytes": 760320,
+      "sha256": "b2f62bedf2430c6da2e98276e0eee30a075de8f03d50591878b981cf88a7a333"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.Core.dll",
+      "bytes": 340480,
+      "sha256": "26c530291567003b55519550e423d59e7e89b04192412e45761cdbbb894c56d3"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.ModuleControl.dll",
+      "bytes": 178176,
+      "sha256": "966665f42c1d62e3572991e13b201927af2a31030773be3728288c73bcb9ba62"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.PlatformSDKCS.dll",
+      "bytes": 422400,
+      "sha256": "40052e62fbb133840004228f51365a9dc95d8b25bd216a5d921040694d9ec15b"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM算子/MVDCalibTrans.Net.dll",
+      "bytes": 12800,
+      "sha256": "7ea6cb84be44fa42dc8f6743d366ad863f72426dd9b89ac9f9f1c5c55daca3d4"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM算子/MVDNPointCalib.Net.dll",
+      "bytes": 22016,
+      "sha256": "280cf8a2bb5b781670e36c4487fbd0d5fe3c0a53bbd2ca5bd1e200092e3b05bb"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.BaseInterface.dll",
+      "bytes": 5632,
+      "sha256": "292e9bce6a0f3d848db09be15524faf4a7ec191a5cba73c6ec5b73ab523d41e6"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.Interface.dll",
+      "bytes": 28160,
+      "sha256": "aa8d883a9adcf6a261a331d2a9b85ff53d2eecae7e6bafc966219cf2c35a7737"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.RenderInterface.dll",
+      "bytes": 16384,
+      "sha256": "421af81923850a1c66629876516e0d96e7638e39a3287f7db87857e219e6dbc4"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.Winform.Release.dll",
+      "bytes": 83968,
+      "sha256": "1381ae996dc81b98d9f1ab60bdd359bd70889fef37ef93045af0020c38e740f2"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.WPF.dll",
+      "bytes": 2099200,
+      "sha256": "b4c39d7d4434b7a48f34a168243da20d3fb42265c68548327c049f9f6a4ad2ff"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/LanguageExt.Core.dll",
+      "bytes": 11331584,
+      "sha256": "01f966b12486fa347a3136e8efa17385bfbffe14e9b7722e7eb2759db6eb18e7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/log4net.dll",
+      "bytes": 270336,
+      "sha256": "55b2fe686bc8f739ce845d1689fd08cbca20381c8e0d2417185d1a0018d8a938"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/MathNet.Numerics.dll",
+      "bytes": 1590272,
+      "sha256": "4c9803a4b0673b93a99a2237e35543be2f6741fbd54b0ff045cf92e877be09d4"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/Microsoft.ML.OnnxRuntime.dll",
+      "bytes": 197192,
+      "sha256": "df2e5e95fdd361de2adf0030d3ed5bed3ed5b73859d6848fa25db4542d17304c"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/MWArray.dll",
+      "bytes": 122368,
+      "sha256": "9c624ad8cb364fe1c6f0eff1234ef7eba31e61ba565c08f11dac4baf98efc98a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/Newtonsoft.Json.dll",
+      "bytes": 701992,
+      "sha256": "b624949df8b0e3a6153fdfb730a7c6f4990b6592ee0d922e1788433d276610f3"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/PostSharp.dll",
+      "bytes": 252504,
+      "sha256": "a964e3a41000606ca7ee8b00208396ad00679f9b12c069a5dd9fbd85ad0cb173"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/predictPDNative.dll",
+      "bytes": 152064,
+      "sha256": "0c02af7fdf13aad27e7bf29a3d3a2e28f914073b0e7194598c4cecebfa77171f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/SqlSugar.dll",
+      "bytes": 2836480,
+      "sha256": "cc9234954163838c42a4e85eca869deef2b6cb3b02ab48ac7b15cb31a32ae8c7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/System.IO.Ports.dll",
+      "bytes": 32640,
+      "sha256": "ecfe778503bf57d4abc70a72528bb2167550c065624b6485aa8a01d54d650ea3"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/System.Memory.dll",
+      "bytes": 141184,
+      "sha256": "8e76318e8b06692abf7dab1169d27d15557f7f0a34d36af6463eff0fe21213c7"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/System.Threading.Tasks.Dataflow.dll",
+      "bytes": 178816,
+      "sha256": "61213ff924139a7425ccd675f39acfc2f44cca6a90f13ed7a5a1095e74588ca0"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/ZedGraph.dll",
+      "bytes": 295424,
+      "sha256": "25fc9def11bb77772cbad751a59da5a69eeeffdb91ffc40fb3638e77595c263a"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/packages/Lib.Harmony.2.3.6/lib/net48/0Harmony.dll",
+      "bytes": 2219008,
+      "sha256": "df043f05c6e43602fa8e8f38f52a3a2cf962aab7a65a9d85573ea25f01a63e80"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/packages/MethodBoundaryAspect.Fody.2.0.145/lib/net452/MethodBoundaryAspect.dll",
+      "bytes": 9216,
+      "sha256": "29b237803faed307a4099c1454397c22daa89469145c1a2559a861e2d8123c8f"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/packages/PropertyChanged.Fody.4.1.0/lib/net40/PropertyChanged.dll",
+      "bytes": 6656,
+      "sha256": "e607e238dc35aa428d80f42e258908aaddbc9607095feb1299a2c422e9b11780"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/assembly/GAC_MSIL/netstandard/v4.0_2.0.0.0__cc7b13ffcd2ddd51/netstandard.dll",
+      "bytes": 102856,
+      "sha256": "bbc58e1e5b1976b8093116007dbc428b09495c7c810a1350d4a379b87716c4bb"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/Microsoft.CSharp.dll",
+      "bytes": 483736,
+      "sha256": "32aa1df7e38adee2251f1d022352c21942bddb420fe9d45bd970948a071facf1"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/mscorlib.dll",
+      "bytes": 5445432,
+      "sha256": "5bffb20e1217bad314143d7e5c4c809bf9f522e8a0a063c8e7e9b25113de26eb"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.ComponentModel.Annotations.dll",
+      "bytes": 26568,
+      "sha256": "b7fc949db8ab5fe8341f529617e7fe5bec8b41cab6c708e2eb3c5b45a6a80efa"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.ComponentModel.DataAnnotations.dll",
+      "bytes": 123824,
+      "sha256": "820c1b8cbf53763c12124557d7e74e887419b01daf51fe72f015ec97c87232dd"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Core.dll",
+      "bytes": 1551024,
+      "sha256": "fd1097aed825d392a5dc8d19384381d4bb2a43498ea1c9d917f5d80c66600e1b"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Data.DataSetExtensions.dll",
+      "bytes": 68040,
+      "sha256": "2566404f021a33d50693a6cda947e00efdd059e8fb8d324a1c46e030e84180e8"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Data.dll",
+      "bytes": 3535416,
+      "sha256": "44ef042fa9fbca676466cf9ddd7541ec00c8887c10672880702cc5a4a8182606"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Deployment.dll",
+      "bytes": 1601944,
+      "sha256": "49487a1dc191b6e5702873fb8d2df4209f870d9820b732828cbe8479a78dc463"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.dll",
+      "bytes": 3545264,
+      "sha256": "2b3c17c6208a0b4b6beb94e1a066f99ba06cdb2ea919479e99d47e8c6d96dc71"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Drawing.dll",
+      "bytes": 597400,
+      "sha256": "e16f7abead4afde7f03b82e5869c5544043be2eae29647a9de5f565d61a3bd29"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Net.Http.dll",
+      "bytes": 200368,
+      "sha256": "d7ce24424f16bd410179bd202b3e375b2b731a6bd57d5d03a8d38cf9062a14db"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Numerics.dll",
+      "bytes": 135064,
+      "sha256": "f3ac2b250bf7662d5f0511a7a516d6b46dbf4d4f4b2c86328f9ef0290dd0ff67"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Numerics.Vectors.dll",
+      "bytes": 27592,
+      "sha256": "36772363dd860aa9cdedcf7fd364aff542806e127b51549e39c6476e3fef328b"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.ValueTuple.dll",
+      "bytes": 25544,
+      "sha256": "62216986c754ad8f0ee68412c42cfc3fc6e025bd908ae1fef1a3a8d528b1495a"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Windows.Forms.dll",
+      "bytes": 6002072,
+      "sha256": "8c0f533e089647aeffb3ce0868f01d696a3fd2893ced5c3570e8438c96613a98"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Xaml.dll",
+      "bytes": 636672,
+      "sha256": "c9f76d7722e69b1957f79c3e08b8a3536b5bdb1783d9e351fa5beb5ff4689fa6"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Xml.dll",
+      "bytes": 2629808,
+      "sha256": "83e2bfce895a7ba9138c470e5983d05ada404cb7c4cabc0d3c7f52a2d08b80af"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Xml.Linq.dll",
+      "bytes": 159640,
+      "sha256": "abc96c873a7447c9d8857eb30cda54afe9b4aa069b0762f6535197025a1f8807"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/WPF/PresentationCore.dll",
+      "bytes": 3717432,
+      "sha256": "cadfe078b758434c9a3866ed1b832e39a4964047ff6c268353a7731499ee11aa"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/WPF/WindowsBase.dll",
+      "bytes": 1303904,
+      "sha256": "8f4279029e756c0158a699b91df17aa98b11960624c5566c4092074206619fd8"
+    },
+    {
+      "file": "docs/archify/native-mainform-viewport-review.md",
+      "bytes": 1934,
+      "sha256": "fb5ba1b32c73fdab557ea3b9dd6f9ebb613b7a67ac7ade946607c06d3b2ce993"
+    },
+    {
+      "file": "scripts/native-mainform-viewport-cases.cs.txt",
+      "bytes": 2543,
+      "sha256": "c048e7177b9244f59523b6ef1af1c5b9b9c9639a50beb8c687b971cc44503a4a"
+    },
+    {
+      "file": "scripts/prepare-native-mainform-viewport.cjs",
+      "bytes": 3398,
+      "sha256": "bccbf84004a0056efe94826b0a4049a7a5f6eb3d8768b8ec1bb02016c360369e"
+    },
+    {
+      "file": "scripts/run-native-mainform-viewport.cjs",
+      "bytes": 2426,
+      "sha256": "2b36f148c7af8d03e8fadbbb8588b0d071d4a1efbf9fca9fddb77a8cbe531045"
+    },
+    {
+      "file": "scripts/summarize-native-mainform-viewport.cjs",
+      "bytes": 3916,
+      "sha256": "19a9448811eefb02acb5e827734f2f56962703eef1f53da44f1685a7b0cb6fe5"
+    },
+    {
+      "file": "scripts/verify-native-mainform-viewport.cjs",
+      "bytes": 2053,
+      "sha256": "c707c8febd1cfc3e7b8c8b7acdc06c086e36be59166e0c887ee4ecd6e7d4b442"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Enums/MachineEnum.cs",
+      "bytes": 4029,
+      "sha256": "02493827037579944b7c4218890a3ba9eb95c16f5ce3d64e61eeb94547f89e0b"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/MachineStateModel.cs",
+      "bytes": 6724,
+      "sha256": "59da8981e1c287ed9e57fc7ecaff5d27cabdcf89b049d75af811aae3a0f3f8cb"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "bytes": 7225,
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+      "bytes": 8073,
+      "sha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.MachineSupport/RuntimeProvider.cs",
+      "bytes": 1780,
+      "sha256": "d0a188a15221673c972767915afd06cfeddeded6a09fd3b897de7fe0da016b38"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR/Models/Algs/BaseAlg.cs",
+      "bytes": 11893,
+      "sha256": "cb1606008b4a44b2adc0f119b526aae44596f5b23e2a048ccd8e971383862be5"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR/Models/Entities/PREntity.cs",
+      "bytes": 32787,
+      "sha256": "6debe43da1428a6c964d9c02abac0e114c7d358018ea9a5a8587128ef5f606f9"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR/Models/Entities/PRHardware.cs",
+      "bytes": 2418,
+      "sha256": "d4b665090c3c8228d3a14fb8302a6778b5c4ad79aba7543c1b41dc84e9fc461f"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR/Resipository/VisionEntityRepository.cs",
+      "bytes": 4610,
+      "sha256": "79e066c4bc381c44dc132f277365a0111fc656e1adb41566a4df35c68305f9a6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs",
+      "bytes": 8601,
+      "sha256": "873905192c5f525b5e078cf17b3261691ac4a482c879b9854077040993ad6afa"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "bytes": 14701,
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.cs",
+      "bytes": 45991,
+      "sha256": "854d4b6dca4b79a67d215129e471efbc159be07dd2ce25f06e4deb6a8bdb29a1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "bytes": 52356,
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.GasIORelated.cs",
+      "bytes": 8036,
+      "sha256": "7b3e088527aa384d060fea73f583ed75a7d9fd819125ca55a1e6abba4c4460dd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.MovementRelated.cs",
+      "bytes": 14777,
+      "sha256": "49b0850e94f5d40745b593a59f57d166d12eeb3db1a3059819be7f420bb82904"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs",
+      "bytes": 36122,
+      "sha256": "3bf39c978ecbe8a63625fdd656c09004ab4496a6978e2b3187702cd1942acd25"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs",
+      "bytes": 37482,
+      "sha256": "5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "bytes": 10954,
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/SlideFluxerController.cs",
+      "bytes": 4677,
+      "sha256": "e98305e1825c0ccb73f521073cdd01a0c56b67e69ffab9c9045cd1e008e2e0df"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+      "bytes": 79912,
+      "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.AutoCali.cs",
+      "bytes": 34596,
+      "sha256": "def094238d7d2ce6d197b1ea8e925c10ae91999c79a8d4a1da7ac311082db894"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.cs",
+      "bytes": 61623,
+      "sha256": "8219bbc4f0b225020a31da8c3d0ef44ae9c142e63dd2292f14051e3af5185597"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+      "bytes": 36005,
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+      "bytes": 5847,
+      "sha256": "b881dfd2360e51aaca2ed2ca26828b4b28fe312b70e19168a9d432fd46119aaf"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+      "bytes": 5616,
+      "sha256": "c26a814b5492210abc4e78345a99448d67e601378f4e8c8facae91747d22996b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+      "bytes": 5726,
+      "sha256": "fbe942a1faaae0d5c38e41809234a2a449e7b0f4c3d2670cb48935ecd9e3f431"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "bytes": 5818,
+      "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BondActionNodeRepository.cs",
+      "bytes": 12044,
+      "sha256": "5d421c598701ab1f7945d4da706f8b0aeaa831eed97cb938e008a92ce8ddc3e4"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+      "bytes": 35661,
+      "sha256": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "bytes": 21647,
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.MoveHelper.cs",
+      "bytes": 19711,
+      "sha256": "3a7d9cb9d8518f1e7dbd44b347052fcb74ff826e639befc92c946fd76e7095ec"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "bytes": 28772,
+      "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+      "bytes": 33665,
+      "sha256": "b8e26d65d77adbcfdc19ceebceb61d4ee8cbad48eedcd0b2048333ff75bf3758"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "bytes": 28606,
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+      "bytes": 46321,
+      "sha256": "80d93ff799d106152f1c5e7b4a93c52a46eafcbdd586bea979ec29372558ca3b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "bytes": 31203,
+      "sha256": "7907bbbb2e06f9d0b54dac33c334f700c50f0a79df6f35c99a80ca64e93a7f33"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "bytes": 37467,
+      "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+      "bytes": 47621,
+      "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "bytes": 4841,
+      "sha256": "73bbe54ab96120045e09f69c80c6382d795894c914298c97a99a3d508e4d8414"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "bytes": 96901,
+      "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/DispenseAction/S2DispenseActionNode.cs",
+      "bytes": 8830,
+      "sha256": "c1144d0309ca13b8b0288e2726c899252c704a0f855b0b096834c61f900dff6a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/DispenseAction/S2PreDispenseActionNode.cs",
+      "bytes": 13013,
+      "sha256": "3085a5fb340192a6716ad1eb2e5472d664c5e34d689f9714a188b5e5c9a9de0c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2BondPositionMeasureHeightActionNode.cs",
+      "bytes": 3841,
+      "sha256": "fabf30ee5bfc1dc56c4cdedee51f5aa0a14ae9001376a9eb02b50b5378b6a3ab"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2CarrierMeasureHeightActionNode.cs",
+      "bytes": 5136,
+      "sha256": "44b5b81d2d58fc341b23243b1a74a61f2f0768d2ec2e5b7452ed16bdfe2d5854"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2ModuleMeasureHeightActionNode.cs",
+      "bytes": 4913,
+      "sha256": "cf4c752e63c013bc141f95fb2b604e051216755b45ba34a2725792c756ce0536"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2SubstrateMeasureHeightActionNode.cs",
+      "bytes": 3787,
+      "sha256": "aa65f1f5d74278228228aad3f74f63b8c6ef0d596f2d72626a66c6c8b9926c1e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2BondPositionIdentityActionNode.cs",
+      "bytes": 3626,
+      "sha256": "7ae40d26ebd6591fde2ca7274e828158677909e23dd28ea0ef14707f068a1c07"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2ModuleIdentityActionNode.cs",
+      "bytes": 3605,
+      "sha256": "ea8ca18b0f535ba794251858bdff1434448c8aabc8c195ba47d1cffdbb0720e6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2SubstrateIdentityActionNode.cs",
+      "bytes": 3888,
+      "sha256": "a14a666b625eb3f3df9ac3608f9fd32847fcec71eeeea49c42e85fb54ad6429d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2TransportIdentityActionNode.cs",
+      "bytes": 3732,
+      "sha256": "4ad31d70efea55e1636b95f3ccb79016b21acc4b8e64a40820673e1af8261382"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/DeviceParams/BondHeadParam.cs",
+      "bytes": 7577,
+      "sha256": "5bc6277667f53874810ca55b03e1e9a95b16dfd2fe0e69c5917119d177427830"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/DeviceParams/NozzleShelfParam.cs",
+      "bytes": 8187,
+      "sha256": "70f887b4b6ade304a2f0ecf0c5c62ead0a6634b4969ae00c72834e857a28173e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/DeviceParams/ULMPara.cs",
+      "bytes": 23163,
+      "sha256": "ae18c594d739405f5340e2bbfa67e9e433b020bdc452e4d5b77a8dd99b30bda2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Enums/BondEnum.cs",
+      "bytes": 13636,
+      "sha256": "301c50d0d0a5e721eceab087f542a4a9c4981d021dc58912d0e8f03b5b5a5c43"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2Configuration.cs",
+      "bytes": 11696,
+      "sha256": "41855abc5da74b6950712b936130b3ead4baa26c9766a05c305277393ad9f679"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "bytes": 15443,
+      "sha256": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/BondProgram.cs",
+      "bytes": 11186,
+      "sha256": "261095632b6703ac2fe26c5c03243562bdf9e24628c4fca6e0328f5544cadae2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/NozzleShelfProgram.cs",
+      "bytes": 9003,
+      "sha256": "d198315022ce1605ef27bf13f22aa86399a690ff65015b55e6e12a5132166221"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/PostBondProgram.cs",
+      "bytes": 3859,
+      "sha256": "8ee8b51d4a10fcfac6aa03388e56b758caf8771ac9c6e445e990e64c1f5186e9"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/SlideFluxerProgram.cs",
+      "bytes": 1600,
+      "sha256": "2d202328416d3f2827ec39be0e52fb3515dd5aec8f133dfd3c6c5e7489668bc6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/NozzleShelf/NozzleShelf.cs",
+      "bytes": 8970,
+      "sha256": "e5d227b449e24d58139427abb3218e0e570f6b786020bfcafd6655f87a7a7c90"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/NozzleShelf/NozzleShelfRepository.cs",
+      "bytes": 1820,
+      "sha256": "bde7353c4533dee9caa73bdbd3abfffba77e6645094f4b4f79a8a80c67c84b87"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/PostBondInspection/PostBondInspection.cs",
+      "bytes": 24378,
+      "sha256": "76c2db26a07c5391135b88475c74068a73360d36acfdb6556169d89fcf10d321"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/PostBondInspection/PostBondInspectionRepository.cs",
+      "bytes": 5052,
+      "sha256": "4c3fde0c6853c320700d8b59619a168c21340dbfde8e2b5517af822c006cd738"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "bytes": 48369,
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "bytes": 7327,
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/SlideFluxer.cs",
+      "bytes": 2379,
+      "sha256": "bf4bc51a2b6e1746ca092f387b0d5f3c14dc82b875c48d66da35a53cc084e410"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Services/System2CommonService.cs",
+      "bytes": 13510,
+      "sha256": "7a3d083178ed6539cf073fb76cd56a7fd22eff84aea7d712da62a9307c0bb7d6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "bytes": 20393,
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+      "bytes": 9878,
+      "sha256": "68a5bb1f05a1b89218bb20eee68421b663fd43137a06ff4a13085590e502012d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateRunPara.cs",
+      "bytes": 10274,
+      "sha256": "6de30a1616d81261702c4159f78c7e643ce584e5756bc16fda7a588d17835699"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "bytes": 47889,
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseMeasureHeightController.cs",
+      "bytes": 19013,
+      "sha256": "36adb9650521da7a1418b68aa09491252f75d05758548fc8374667594a22c451"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseVisionController.cs",
+      "bytes": 11782,
+      "sha256": "5e5a178e1f117df6afcc6036aa3dec3b168f569cf3a8f1b76775186755b6644a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs",
+      "bytes": 9556,
+      "sha256": "4d5e6f5746a3d90a25899260fef0f8d1d3f53df62ae388714454194842a9df3b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs",
+      "bytes": 8691,
+      "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+      "bytes": 5980,
+      "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseDefectActionNode.cs",
+      "bytes": 10278,
+      "sha256": "faf46a3a0976bd9c7a67addddd6e28a80649fdadc45fb1969a1de827d29b1ef4"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseMeasureActionNode.cs",
+      "bytes": 4770,
+      "sha256": "908f1e9be91f04085523848dc6dbd3c862e833a16ad2054516c05cd654db4e35"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+      "bytes": 5370,
+      "sha256": "c3f0c97946b6d83324209a167a3d0f77756ba93595999a2b732cbea9c4daa367"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+      "bytes": 5077,
+      "sha256": "0b93b50df40d6858da8214fa19858271eff5d711a14a93217942e8e6569ecd2a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+      "bytes": 5235,
+      "sha256": "33a8e5078fc86c1d1c214919d3f339ba2f4b6599f5be50767a9ca8669432816a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1CarrierMeasureHeightActionNode.cs",
+      "bytes": 3990,
+      "sha256": "30ff1eaa3df972c29e923bca0123ea84b062abadc58c36a974ac5b81be5709bf"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1ModuleMeasureHeightActionNode.cs",
+      "bytes": 3845,
+      "sha256": "8d8501524369884af0a512d531f1d729063025d73350d376a91e8a76418d7979"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1SubstrateMeasureHeightActionNode.cs",
+      "bytes": 4306,
+      "sha256": "e04887167267051e3c30186d79e5730049efb64a293e26e083fcbb491bebcaf8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1BondPositionIdentityActionNode.cs",
+      "bytes": 3657,
+      "sha256": "46b3bac3e58d3aa39926264d25e2934b3495f4db56f99413e112c25a4133871f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1ModuleIdentityActionNode.cs",
+      "bytes": 3609,
+      "sha256": "357fa63d12206636d8609555047b954dfff8b100a3b504f348fff108ff6a3024"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs",
+      "bytes": 3894,
+      "sha256": "7e760c785adbd5652a9ad30a6281846ce9e2ccb22ad6a3e083db0a7130fdd301"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1TransportIdentityActionNode.cs",
+      "bytes": 3743,
+      "sha256": "03af1c1a5d34fb255d8e7e1ecb60333694fb4da98bbb23fc8f39f70aa43ceaff"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/InteractiveAction.cs",
+      "bytes": 3297,
+      "sha256": "53d8ec538e99a8bf00fdfd8227a2719f8c8eb92a2da97ad768b5d1713d4675a3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/PredispenseAction.cs",
+      "bytes": 13267,
+      "sha256": "2afb4eff3ecdd88caea9bcf009884a8432c914b7cd8f34d61a7d923557ababb8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/DispenseRunTimeProvider.cs",
+      "bytes": 5729,
+      "sha256": "105e1dd97059728f5f5beeb24d0a59ca173c341e35d7b5404827aeb42addd2be"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/DispenserProgram.cs",
+      "bytes": 2629,
+      "sha256": "d31d3b70e94842d211fd40a7f9d456043beda12f124673da9fe34e68c2ae5414"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/EpoxyMaterialProgram.cs",
+      "bytes": 1868,
+      "sha256": "ea1f5735a4419989873f95234a45f47af1347def171d072ae19e28d9f0b991cc"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "bytes": 4324,
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/EpoxyMaterial/EpoxyMaterial.cs",
+      "bytes": 3113,
+      "sha256": "6cc20bc6936b519c980627c57828bad384aac09b00e84faf584f5e2965cb16a1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Pattern/EpoxyApplication.cs",
+      "bytes": 11615,
+      "sha256": "521085379fd47662ed25f7f7ae3372e22d8d58330b9ba6a9391fa5c39abce0ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "bytes": 24730,
+      "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Program.cs",
+      "bytes": 2958,
+      "sha256": "9fe64aac4c568f4acf1c38ee416346c51f62c04c5f8bf4ad2e4fa241ba986ee7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/DispenseModule.cs",
+      "bytes": 20378,
+      "sha256": "ff5b68be21e0ba15364e604ec0f70ab2a39647aa2257a5b0aebe0df7a87b51c1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/MeasureHeightModule.cs",
+      "bytes": 4264,
+      "sha256": "0cd2fff6e67172e02093da3441af1dab8cb4b51e639229f02978417f9b077766"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/VisionModule.cs",
+      "bytes": 1830,
+      "sha256": "9d217923f4ad245c3751baea64c5a300385d81896b5d97a69061a4c471d2ae68"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "bytes": 10474,
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "bytes": 10709,
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.Designer.cs",
+      "bytes": 1499,
+      "sha256": "c184421111a5fed30d2e2f235861a10f75ffd351b6f6903ec0d94eebe34223e8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "bytes": 57044,
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/BaseControl.cs",
+      "bytes": 1879,
+      "sha256": "8c89dc619e3bdc6555229b580d3b9f662aa8edcc99f63209f382823b530195ff"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/BaseModels/BaseDsSetting.cs",
+      "bytes": 3315,
+      "sha256": "89dda8a9efc1b500fa3ecc77c441035d503a9ff54d3ca753c0416509f1484415"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/BaseModels/BaseSettingRepository.cs",
+      "bytes": 4216,
+      "sha256": "ee7df2eada69984b33f9e86cc2547fd77aa500460afc057605570e98be72cf78"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ActionNode.cs",
+      "bytes": 4377,
+      "sha256": "cdad52ca31f21d4b3454e597c90e1615e889ea22abbb270c8291915d1169fa5f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ActionNodeMessage.cs",
+      "bytes": 2033,
+      "sha256": "dd202801af33c493c6c7a0df11611020ca84ebd859a222b6bcfbaf7df2c66161"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ParameterChangeLogEntity.cs",
+      "bytes": 2067,
+      "sha256": "1bb28df274ca3c9390f3cdab540fb04cfb4dae0a9bd594db4e712323d2366b51"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "bytes": 12896,
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/ExportService.cs",
+      "bytes": 6071,
+      "sha256": "4f048abda823d8c82a7e4e13fc0c6a380c0cd8b4da814abec9d1ce7a6f836635"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "bytes": 14693,
+      "sha256": "71aa2134a158c2a404f29ee3646a7de383f8f1ba386a3f6555bb2467960f010d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Localization/FormLocalizer.cs",
+      "bytes": 15274,
+      "sha256": "b3dd81a3434eec28ac8748f3c0d4d75c895426bd97533ca597977b6c62603315"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Localization/LanguageSettings.cs",
+      "bytes": 825,
+      "sha256": "b328ca0e4a5258b1ef21a3360430cdaaae4b3c3cff8f34159594014c86561b30"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Localization/LocalizationCache.cs",
+      "bytes": 15726,
+      "sha256": "30fb02dab0a68dcc466f2af4b17f2c1b474fc39353b61c0dd710165a0ff482e4"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Localization/LocalizationManager.cs",
+      "bytes": 5680,
+      "sha256": "f9736990b2a55fcbadb2a52dfaf4f69db04befc544645ea89964d57d0bd28fce"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "bytes": 10431,
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.designer.cs",
+      "bytes": 25616,
+      "sha256": "b00be486492295674dbf14c362d81fb01ddd6f91b65fab88121f68fe24f943dd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs",
+      "bytes": 15581,
+      "sha256": "df946ef5fd34e83b541f34cbcd6a84a499fd6b38e4c831f453f81bc9f7f6e35e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "bytes": 84045,
+      "sha256": "03ac03cbf6340faa7de0bc345f6bccab605f42575d33f36495e6062cb8618ae2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.DataAdministrator.cs",
+      "bytes": 8195,
+      "sha256": "066d8701b4f0802c4513eb218757a21fc97bb4d1be5798b8be444cfb5f89c024"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.designer.cs",
+      "bytes": 219503,
+      "sha256": "daeb9e873322c4be5203e954b8846b901ad83aaff6826d577b8ef825e34f27ca"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Diagnosis.cs",
+      "bytes": 7473,
+      "sha256": "c754dec87d6217dfe241cc6ea567d450b854dd432b9a2c0d5aa7c19f43b53e24"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.HotKeyManage.cs",
+      "bytes": 3716,
+      "sha256": "757bcd321d64cf33421b73fe425ce1672c25a749d5a76b212a82f523b01adcfb"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Machine.cs",
+      "bytes": 2057,
+      "sha256": "83b1e0e46a17bae5923aaa8977ceae1be0009432eb2e66e54d9f14ee31053b79"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Manual.cs",
+      "bytes": 9816,
+      "sha256": "bb529cd2d6e0617e34308c121327754cc915bd2d3b5cd9b4783ba98adc3683a7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "bytes": 7801,
+      "sha256": "db4a0051b926beeda4b85fe2905acbf2e630a3bedf47545c3347e1134b19dfe9"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "bytes": 12425,
+      "sha256": "f1779ebecc01ec731a0e46a66f6e6ec850e2fca156682e0e89c507c0d07fa5eb"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.System.cs",
+      "bytes": 809,
+      "sha256": "82024dd6888b61bb231067914e04020fc8a42353bf74cf318fa7c06c9ec23112"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.UIState.cs",
+      "bytes": 21573,
+      "sha256": "fb98c32b496826c959af2824baeefaea54a910ddcc0a6e6e56d73c2f0f8bd971"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/UcModule.cs",
+      "bytes": 20901,
+      "sha256": "7be504a4f58047738ca1ae7306ccf5675f687aa9715ca39c01724d99644a079f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/UcModule.Designer.cs",
+      "bytes": 46515,
+      "sha256": "fbd8f128084e066b2f128f00c88e1ad9c1b8542d7f2b3bd2b435de65f1cf990a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.cs",
+      "bytes": 16426,
+      "sha256": "7df9dc7d0c07b6ca488d424f79e5eed166a64b5b857a815e7073f0e13f118968"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "bytes": 29039,
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.SelfCheck.cs",
+      "bytes": 26525,
+      "sha256": "7962cbe30353b9d6f272ecdbdb445ea8c7f0a35f843d45e2826f6b4fe940b5ab"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "bytes": 2451,
+      "sha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Sustain.cs",
+      "bytes": 15666,
+      "sha256": "5385795e853bd2b65af0472190b280824405c41dfe6e1981323f374f988e0851"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/MachineHardwareConfiguration.cs",
+      "bytes": 9256,
+      "sha256": "a875936c21af8b6b7c5c15d1f2d6fafe66827a209e609ec3ad349cbde7a9b628"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/MachineSoftwareConfiguration.cs",
+      "bytes": 6920,
+      "sha256": "37edff01fcf859cf4e0eefaf684ae1e82faece0bb4f761bc9e4d7c8008b7f3a1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "bytes": 16057,
+      "sha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+      "bytes": 36507,
+      "sha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "bytes": 64379,
+      "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/SingleProcessStep.cs",
+      "bytes": 1696,
+      "sha256": "3b810e1d5360f692e58e0139ef8d0d6a107d2c88917a836b4c086b21b3c4f29a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Program.cs",
+      "bytes": 15769,
+      "sha256": "612f00e342d8b9af5bdd6708fdf5b2ca91e9de9495f729f912ff9d2bc0c33c32"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Consumables/BaseConsumable.cs",
+      "bytes": 1864,
+      "sha256": "4f151951db4504859f2d2af0c0fd87f13b2794774710a80a95e9e01bbc240500"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Consumables/ConsumablesProgram.cs",
+      "bytes": 4352,
+      "sha256": "15894c930cb2721feb3e675c21e98470be59bd569b94134540403510371eae39"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Consumables/TimeConsumable.cs",
+      "bytes": 2597,
+      "sha256": "f4c8bffeb4ffcbd62f1ade27c895f1e2d962ead19a610626410372c40cca1c12"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/SensorCheckScan/NeedScanSensorPool.cs",
+      "bytes": 3442,
+      "sha256": "aec98eae867b6e759d622a6d4db13d3e7063b4ddeab3643240dcc9637f5c97d6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "bytes": 16109,
+      "sha256": "2f28e39648d034261ae5d57be4cb9e1908f4bec971d80d00120e9a3af6baa4ca"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "bytes": 6597,
+      "sha256": "b327f38b5596f4f61d63d85a98d8e5dc3637cf1876764a52c2dddd4db783a094"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/BaseSubSectionController.cs",
+      "bytes": 2739,
+      "sha256": "18e02721017e85e1c52718bd39ec5449a7b92ef9c0c75c558d9427b3e3b17dd9"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/BondSubSectionController.cs",
+      "bytes": 38146,
+      "sha256": "d2211e2ca723ae3cd05c5e5f541a31c5c338b90a5bcfa156fba9d9882b5eb3e9"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/DispenseSubSectionController.cs",
+      "bytes": 24677,
+      "sha256": "47816b9d687d21a5272f6cf9250ebe29d2689398ac43e9dba6965991ecc02328"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/LoaderBinController.cs",
+      "bytes": 21457,
+      "sha256": "3cbfeef73a4f868ef283636c95f00f90378f6191fdd44ee4633f20938a4e84bc"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/LoadingSubSectionController.cs",
+      "bytes": 4535,
+      "sha256": "14fa897de9020aa6d6b81e2aa105359c9f914ace4dd991cb831e776450f84cae"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs",
+      "bytes": 113835,
+      "sha256": "d180b07735e4952f5f9aafafe3eb1b385f621e8d1b4686c6b2aa35534ba11086"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/UnLoaderBinController.cs",
+      "bytes": 19630,
+      "sha256": "b6f018fcc8915e709014f9ed4daf5d71f4abc17069b6aa1831384599427f98e6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/UnloadingSubSectionController.cs",
+      "bytes": 6566,
+      "sha256": "df6051b539bd10b9d397060f18bfb474c4771bf08106bf4b9966b49ad534b76f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controllers/WaitingUnloadSubSectionController.cs",
+      "bytes": 6116,
+      "sha256": "875f89ed33857b7ee8f575eb9f3440bf298ea55a221109a49f4470806877f9e3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/Bondinsert/BondinsertSetting.cs",
+      "bytes": 3365,
+      "sha256": "7fc1433c5f5c2e309a7308a73748da6bcccdbdb5cf23e61e74ef202f7fbf643e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/Bondinsert/BondinsertSettingRepository.cs",
+      "bytes": 2313,
+      "sha256": "be2715feb7e3a157afc7c19a245e3f0371aaa40a40fac0c0beef091186698fa3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/InOutPut/InOutPutBeltSetting.cs",
+      "bytes": 1662,
+      "sha256": "e55b3ff24f646099c8efab9aafaa4c2789d2fc856a1b04d710abae7da486e845"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/InOutPut/InOutPutBeltSettingRepository.cs",
+      "bytes": 2278,
+      "sha256": "bd7678974b21c1d116d9ad74b0aa04d940d616a49838016ba17f10781ae33d21"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/StockBin/LoaderBin.cs",
+      "bytes": 3697,
+      "sha256": "efee13f34e0e0fb02ea488764223675fbebe75b3b10bba96d4f18914a06bc5dd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/StockBin/LoaderBinRepository.cs",
+      "bytes": 1782,
+      "sha256": "2a6d9ed08597b69cb845feaf4f6a8c06620a073571e2b21885768b3fe09e7f93"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/StockBin/UnloaderBin.cs",
+      "bytes": 3738,
+      "sha256": "21dd84ed1a3e590d0adb85d7a5bf20ac748fc70ecffbbb1070e68e97a407b69b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/StockBin/UnLoaderBinRepository.cs",
+      "bytes": 1800,
+      "sha256": "28f594fb9a32cccfdc5d67cae7f0e0bec7d7e7f59e3e8091711d746dc9a645c0"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/TansportBelt/TransportBeltSetting.cs",
+      "bytes": 2400,
+      "sha256": "f115d6f8f793b9346270927406aa180fc9b639e2dd9e52fcd4a550a447eaf17b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/DatasetModels/TansportBelt/TransportBeltSettingRepository.cs",
+      "bytes": 2503,
+      "sha256": "dfe2352e756678ca9bc86792d87a10fc2179fadc0ea0f091c01498d3a1db5b87"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Enums/SubstrateRunnerEnum.cs",
+      "bytes": 4987,
+      "sha256": "e0f9ad735d2d136a9238eb3255dfe2efed50093648ccc673604376184d783d4a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/BaseSubSectionProgram.cs",
+      "bytes": 3236,
+      "sha256": "66821242156235eaa2f9bd81608bbbf43599d122d7f8cc8c60beb13f215d6f06"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/BondSubSectionProgram.cs",
+      "bytes": 4188,
+      "sha256": "d70fb9046eccb5732b005b69a47ce5ee51c59c269f8cf55a7e4ee6c49fc0dd42"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/DispenseSubSectionProgram.cs",
+      "bytes": 2893,
+      "sha256": "b34f69428483155f70c935a5e38ead4271514d969f888768ff489b888437e289"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/LoaderBinProgram.cs",
+      "bytes": 1147,
+      "sha256": "32fc4d0477cda4c6a79628e4d128c720df9dc3719af3cb3a83222504ca0e6885"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/LoadingSubSectionProgram.cs",
+      "bytes": 2144,
+      "sha256": "1357290f58feb3a6350d5c2c49984aa65f530184625169c548a81e93cdc0195a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/UnLoaderBinProgram.cs",
+      "bytes": 1286,
+      "sha256": "6cabb359c35ebb376af72f314b5c5a3b2051c262c238e39bd946f4228e4087c2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/UnloadingSubSectionProgram.cs",
+      "bytes": 2409,
+      "sha256": "ab870d4639219d2b1e8666b61fd5ce2c54217ee96dcaced2a9d7a76065a1a9ba"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/WaitingUnloadSubSectionProgram.cs",
+      "bytes": 2158,
+      "sha256": "d71e5551730486f0fdd8d51558da8e4e82bedcfa4b2b85391c31a1f365eba963"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDevicePara.cs",
+      "bytes": 2468,
+      "sha256": "ab2498117a42ae99af7536e300b6623ddfba74df097c91227efd42627c5ae0e1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+      "bytes": 5571,
+      "sha256": "daf2c09966a3874673df23590d8d058d6fc6f81d1f4fe7e02e9bd0c2991b338e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportModule.cs",
+      "bytes": 2731,
+      "sha256": "5c4d18fbaeca6e3c32fe50dfa956c276c9389f8d77c511f8a4c9116b93cd0dbc"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProgram.cs",
+      "bytes": 5734,
+      "sha256": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProvider.cs",
+      "bytes": 2171,
+      "sha256": "5224990bf6ab6a74168c9e40ae16681c3f3b3a2e41113f23a24b6635f220efca"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/BaseSubSectionModule.cs",
+      "bytes": 3448,
+      "sha256": "652c24ea9f610b393720dbf2f6b94ece70f608180f56894cc21271c9288c6696"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/BondSubSectionModule.cs",
+      "bytes": 5891,
+      "sha256": "a1e6bcb01792edcef080088b17f8c504fdd69f3e2ff2e47d5b82f7172b64ad7b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/DispenseSubSectionModule.cs",
+      "bytes": 6744,
+      "sha256": "e9c221bf9313bb2baf8758947bc405fd4614907d8b30f09dfce1cba2d9a4456b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/LoaderBinModule.cs",
+      "bytes": 7066,
+      "sha256": "418ac48e9ce3eb036a1684587f68399f08329fa4131ff20d49630f0ff955a6cb"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/LoadingSubSectionModule.cs",
+      "bytes": 2874,
+      "sha256": "60418eee12de5ee1cb4a484bb7360f61edab1fc18683fa047aa959ebe53a0532"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/UnloaderBinModule.cs",
+      "bytes": 5734,
+      "sha256": "f1cfdd59948fa5fa0907237c9d70cf73e8e246192554b8e46105c1b928969090"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/UnloadingSubSectionModule.cs",
+      "bytes": 3375,
+      "sha256": "dbf37076e6dd3026d81aa5219ed6d4cafef7f7baff47884d540a61410a7dcef2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Modules/WaitingUnloadSubSectionModule.cs",
+      "bytes": 2019,
+      "sha256": "ec22c1fbf3dcc95724b8794ed2d027e16ae4dc83c85fd55864f026d82fd2db7c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Tasks/LoaderTask.cs",
+      "bytes": 4456,
+      "sha256": "600159b679f82b98dd267129c2018c9848ed7c68f07f48377235c0ec54ac5525"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+      "bytes": 42937,
+      "sha256": "b9a0b273ecc335c68f5cd58585d35a62dfe9d8a9bc31753a06a677f96b7f1234"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Tasks/UnloaderTask.cs",
+      "bytes": 4436,
+      "sha256": "8147a31ddae0525d08516b05e0791b316545e3faa456f9c34ccb8b176cba5e20"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Model/TuEnum.cs",
+      "bytes": 10472,
+      "sha256": "c43ddaf54945f2579e2ec415ffa2447f6e94ec54b3239b74c3c3ee3d77ef2e76"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/BondPositionConfig.cs",
+      "bytes": 1239,
+      "sha256": "655935afbebf5e29ea526c98f74b342874a8ec52cc91c539fda4a4bc593a60c5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OppositeConfig.cs",
+      "bytes": 4471,
+      "sha256": "46f9fb896656f6cb1a4a50b7bc2c8a9a46a7a39d747d5cf8020177aac68334b2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Information/BaseInformation.cs",
+      "bytes": 1158,
+      "sha256": "df47137b5f4846740fe900434a28b19762e7bd12f02dd965367bc242d2f8f295"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Information/BondPositionInfo.cs",
+      "bytes": 6502,
+      "sha256": "6bd63b789cffdd7231e03a0ebaaa70e618dff79518b4c8e199ebae578d297828"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BaseMatter.cs",
+      "bytes": 4335,
+      "sha256": "0bdd3a663fe39b8e3e64584f43f40b9ab9710d7d8e38be79edcc5b18caa4b175"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+      "bytes": 9829,
+      "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+      "bytes": 11747,
+      "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+      "bytes": 11982,
+      "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "bytes": 22604,
+      "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "bytes": 4426,
+      "sha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+      "bytes": 86951,
+      "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/EjectController.cs",
+      "bytes": 47537,
+      "sha256": "6b8b5c39db4cafa4733115067315de929257ff38a174e29f9d5ec3963046c254"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/FlipTableController.cs",
+      "bytes": 8108,
+      "sha256": "6a17e433053f2e8da2841bebe3fde1a67ac213debf8c3834effb8a125049bb4c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/MagazineController.cs",
+      "bytes": 22868,
+      "sha256": "28fdb28ba33982eeb4bc1590e12ae59d9a4467f834fa1d900f2d99542f7f2b5d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/WaferSubController.cs",
+      "bytes": 26573,
+      "sha256": "888eda4628482a3daa3ebdaf5e0095c7aff235276c09e60507938940ef3b45b3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/WaferTableController.cs",
+      "bytes": 91469,
+      "sha256": "2cd81cb347fe3bcfe5e656d402d13cf6e536f3271cd4b6fbb9671db40f27dff5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/DeviceParams/MagazineBoxDevicePara.cs",
+      "bytes": 5104,
+      "sha256": "a08cd0f4d7afc89c7bba98bf9a40dcb6e3bbeb8c2f96bae97435f64643fc115e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/DeviceParams/WaferSubDevicePara.cs",
+      "bytes": 3370,
+      "sha256": "17ed459d32b343583736fcad523a850837fa661d3e83a1ac9dd5a7630e9111c7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/DeviceParams/WaferTableDevicePara.cs",
+      "bytes": 20586,
+      "sha256": "04aabddd6850724b4a377a2c660e93d1dffa13b84c8aeb63295da1c5b5c6cd28"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+      "bytes": 80048,
+      "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+      "bytes": 10330,
+      "sha256": "1afc14108540072e5d4a276cb71148b2481bc043d66da21224b776d224e4066b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+      "bytes": 32453,
+      "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+      "bytes": 39863,
+      "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+      "bytes": 23690,
+      "sha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/Tablet/AdapterTablet.cs",
+      "bytes": 2002,
+      "sha256": "6f97bd5c022889355737e57d4ec9995d327c7f7947c08769943515b6ce6d3e3f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/Tablet/WaferTablet.cs",
+      "bytes": 2056,
+      "sha256": "7e8e3c618e08193c775b648425e852d24f6b9bd939ace53df7e81ddcda606a92"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Programs/MagazineAllocationsProgram.cs",
+      "bytes": 3209,
+      "sha256": "f0b5ea3aec1753401462f9d7fe7b57aa8d3c7d802be1dd854a9762ac6b99f8ef"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Programs/StaticAdapterProgram.cs",
+      "bytes": 2866,
+      "sha256": "7c591dea6d1300780be1d6ebb6eb2d283dbf4cf8275d96868edf13dabfc9f77b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Adapter/AdapterConfig.cs",
+      "bytes": 7896,
+      "sha256": "90d949f5c0b3ab8bf94f8af619e719169ca8d1b43789bf093ddf8b0a739f893d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Adapter/AdapterConfigRepository.cs",
+      "bytes": 1507,
+      "sha256": "33b9f6771491b9b91dec4b962ea9cfa9b8d5fb683791129082715c4b86529619"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Adapter/AdapterSlotConfig.cs",
+      "bytes": 1625,
+      "sha256": "cb06e2083df67aa96e35e2aebcc60661851084cb9a4e12cb48e12c737b58b343"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/BaseCarrierConfig.cs",
+      "bytes": 54496,
+      "sha256": "9d41f35fdd56c99bf8e7faf52185dfb6057ae2523d1d15014921b4a62c16e0b7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/CarrierConfigRepository.cs",
+      "bytes": 5631,
+      "sha256": "22f1b387cf9022306c3789bf3d49f6ff694244878d9e83318e4577147609c046"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/CarrierWithWaferConfig.cs",
+      "bytes": 10075,
+      "sha256": "6a6baf796531e8a09dd88d6086e6b2c67906e535c121391d0f26b19a073bda06"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/CarrierWithWaffleConfig.cs",
+      "bytes": 3987,
+      "sha256": "d0e989acd7c8ab1978a5d834e20a6e9bf6d06a2f486d79ba9087994c87fedad3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/MagazineAllocations/MagazineAllocationsConfig.cs",
+      "bytes": 6758,
+      "sha256": "12648c6507209d9c48e6016b6cd368dfa609e2c11d923152962bd4fbff1788d3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/MagazineAllocations/MagazineAllocationsConfigRepository.cs",
+      "bytes": 1615,
+      "sha256": "c1c06025fa1dc5036567fac3b7cf289dfb3ed52b3263c59c158bb93ba241efa8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/WaferSystemDomain.cs",
+      "bytes": 26529,
+      "sha256": "4c585699e813d3b23f2b12ba34ffd91bb3a89d156f449e827e17eb8b8e1a7eef"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/WaferSystemProgram.cs",
+      "bytes": 10757,
+      "sha256": "609b690af824cf126ceb66a4dcf8c8c22fe14565ee9334df6a5e8be788dce38e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Modules/FlipModule.cs",
+      "bytes": 4171,
+      "sha256": "938ea23e9ae0d3725db7c3fe8c5cde6c073f758c8dbad89a8feec143f487735b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Modules/WaferTableModule.cs",
+      "bytes": 7566,
+      "sha256": "94f9635b7d8f98d4b9c8182473cb9698b31a558218d330f6abad878ea5c7ed85"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Services/Static.cs",
+      "bytes": 2853,
+      "sha256": "47824506098ad8a95007c47d39080e20559ad042da95e8f06cb06ab110894079"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+      "bytes": 12074,
+      "sha256": "40ecc8b86316619109de02bfa1c62d246c36d0d1b578ba761e1eecbc4fada8c0"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+      "bytes": 81017,
+      "sha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b"
+    }
+  ]
+}

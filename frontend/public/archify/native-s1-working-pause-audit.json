@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "status": "original-enabled-s1-working-pause-native-preparation-passed",
+  "command": "node scripts/verify-native-s1-working-pause.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "00c3cc",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-s1-working-pause.log",
+  "logSha256": "186a526e47febe58da5ac518da62a5d70f39fd221ef7b32910a0f06ec975cbda",
+  "testSha256": "8015054370cc04cb56023bc373697da10d151b8065db791ee9ca7f9786c04e60",
+  "parentValidation": {
+    "command": "node scripts/verify-encoding-preserving-resources.cjs",
+    "observedSession": 9757,
+    "observedCompletionChunk": "33fcb8",
+    "observedExitCode": 0,
+    "log": ".archify-work/native-s1-working-pause/parent-verification.log",
+    "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3"
+  },
+  "processes": 8,
+  "assertionExecutionsPerPass": 70,
+  "distinctLabels": 29,
+  "selectedOriginalMethods": 29,
+  "newFrozenInputs": 87,
+  "totalFrozenBindings": 5200,
+  "wholeGoalComplete": false
+}

@@ -1,0 +1,1998 @@
+{
+  "schemaVersion": 1,
+  "status": "exact-original-native-recipe-action-selection-and-source-bindings-passed",
+  "parent": {
+    "file": "docs/archify/native-action-selection-test.json",
+    "sha256": "93cbf6d66c65ddd5dcaaf7584e87209717475dacaed97503235b502c39742b99",
+    "totalFrozenBindings": 9659
+  },
+  "parentFrozenBindings": 9659,
+  "newFrozenInputs": 75,
+  "totalFrozenBindings": 9734,
+  "reusedParentInputs": 275,
+  "frozenInputs": [
+    {
+      "file": ".archify-work/bootstrap-native-recipe-action-evidence.cjs",
+      "sha256": "eed2bc1fcc57c98540c96771ee4c9d06b39d2c216e0d5392e41a6cf115fbc948",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0000-bootstrap-native-recipe-action-evidence.cjs"
+    },
+    {
+      "file": ".archify-work/bootstrap-native-recipe-action-freeze.cjs",
+      "sha256": "e2b5ef5e9ea3198a8ef004b35c96a92a090983f87b947b4bd1fc72b21356dc9c",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0001-bootstrap-native-recipe-action-freeze.cjs"
+    },
+    {
+      "file": ".archify-work/bootstrap-native-recipe-action-selection.cjs",
+      "sha256": "6f97db59ed773c51d21b3cdfd2223c2f62d6b8573d460383bdd9e68468a8a0a0",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0002-bootstrap-native-recipe-action-selection.cjs"
+    },
+    {
+      "file": ".archify-work/capture-native-recipe-action-selection-il.cjs",
+      "sha256": "d7e546b3a0b58a1f74eb82b52ad02b6cc270767a70efde73310061c94734d61b",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0003-capture-native-recipe-action-selection-il.cjs"
+    },
+    {
+      "file": ".archify-work/compile-native-recipe-action-selection.cjs",
+      "sha256": "cf57c8bf2131271970526c721f52b32ac859128dcfaddb90fd75eda3a5c5caeb",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0004-compile-native-recipe-action-selection.cjs"
+    },
+    {
+      "file": ".archify-work/freeze-native-recipe-action-selection.cjs",
+      "sha256": "9afeba2dcb4774d18249ec070c3b8e80a922073eb6fc9e51c9e96eb020e5d2f9",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0005-freeze-native-recipe-action-selection.cjs"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/Cases.cs",
+      "sha256": "d4d4138f605188616fde708cc7e3adde54118a50702ce9d5951cf162d4ea3a24",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0006-Cases.cs"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/Host.cs",
+      "sha256": "75febd134621f6deb66cd51da7fcf85dfab6d1115d4c7b97a65e7424a1654513",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0007-Host.cs"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/Probe.exe",
+      "sha256": "ba1fabacfc4e6ebe324af7dfb59ee4e7206bd3b9ffe527887180e522b6b80e65",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0008-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/bound/Probe.exe",
+      "sha256": "ba1fabacfc4e6ebe324af7dfb59ee4e7206bd3b9ffe527887180e522b6b80e65",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0009-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/bound/Settings/DeviceParams/WaferSub/CarrierRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0010-CarrierRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/bound/process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0011-process.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/bound/runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0012-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/bound/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0013-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/bound/stdout.json",
+      "sha256": "92a2ae5c8bf48a49d8e936174cfb1311d41bbc041ace000f205f6a40530bfff8",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0014-stdout.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/candidate-scripts/native-recipe-action-selection-cases.cs.txt",
+      "sha256": "d4d4138f605188616fde708cc7e3adde54118a50702ce9d5951cf162d4ea3a24",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0015-native-recipe-action-selection-cases.cs.txt"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/compile-input.json",
+      "sha256": "53b440049d8c8811ca8169351921f2a1b9c45ebe42fe23b73f022e2f076fae19",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0016-compile-input.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/compile.json",
+      "sha256": "03ec65279b1776aac910b92025534a62b9dc8944c9b62c78ae2991a5268142d7",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0017-compile.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/compile.log",
+      "sha256": "0b017f86d65242e1b05d9d280e74e29327e67d8664049de298edd3c544e047f9",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0018-compile.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0019-compile.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection-candidate-v1/runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0020-runtime-map.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/Cases.cs",
+      "sha256": "71d5239c0dc86eb121b16795e4a3902126deb421c120a69ad96ac6395dd806d5",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0021-Cases.cs"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/Host.cs",
+      "sha256": "75febd134621f6deb66cd51da7fcf85dfab6d1115d4c7b97a65e7424a1654513",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0022-Host.cs"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/Probe.exe",
+      "sha256": "82c551be0e0076c31af1170957056f34c88cf909b72f166ffb0befef7ffc953a",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0023-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/action-parent-verification.log",
+      "sha256": "7b4bc8411a1eced99e29c946fdafa8e1a2ca8b9fa2d1ad91434454a134bdc5f7",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0024-action-parent-verification.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/action-parent-verification.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0025-action-parent-verification.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/algorithm-parent-verification.log",
+      "sha256": "77f24935b570cb6717561fb6ee64b412d26d36cd7ad6b462691d3ad365b037c4",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0026-algorithm-parent-verification.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/algorithm-parent-verification.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0027-algorithm-parent-verification.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/Probe.exe",
+      "sha256": "82c551be0e0076c31af1170957056f34c88cf909b72f166ffb0befef7ffc953a",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0028-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/Settings/DeviceParams/EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0029-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/Settings/DeviceParams/PostBondInspectionRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0030-PostBondInspectionRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/Settings/DeviceParams/WaferSub/CarrierRepository.json",
+      "sha256": "87b8acbed11e65bc21a25123190dad7025fce1f3f682963ec22fe84b4357fd1e",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0031-CarrierRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0032-process.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0033-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0034-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/bound/stdout.json",
+      "sha256": "df745133e247f1de9665ceb4cb6360af20b1c34aaaa67792de1aca9d32ce41a6",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0035-stdout.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/compile-input.json",
+      "sha256": "53b440049d8c8811ca8169351921f2a1b9c45ebe42fe23b73f022e2f076fae19",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0036-compile-input.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/compile.json",
+      "sha256": "8c51a7180c2f74d95d96ca48c6d9812cb2fa16dbba9aceccc2868380b81bc301",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0037-compile.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/compile.log",
+      "sha256": "68a5be62afde42834c390d56ff7df4de0f3bf34c5287cff1ef878ba6addfc736",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0038-compile.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0039-compile.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/il-process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0040-il-process.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/il.json",
+      "sha256": "7073c024e305bd9799c13ee563e5eba7ba34bb6e732373a5d910ea51f2e6f435",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0041-il.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/il.log",
+      "sha256": "2e904346e2699382bac74eecc4f416477c5234d1fe926a7d2a1f842628a9d5fd",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0042-il.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/il.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0043-il.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/native-selection-verification.log",
+      "sha256": "32c9deac5ec1c21bc5258a65f4cba5e3636707f9a54e3df010dfa2a6fbc90599",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0044-native-selection-verification.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/native-selection-verification.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0045-native-selection-verification.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/observations.json",
+      "sha256": "604284bfe17a921d06ba4075ef904d9d8dbf2f32696b81ce3f8645108188e6ec",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0046-observations.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/reader-parent-verification.log",
+      "sha256": "b15ee21c5dd410b0d8d4380a6c4bfcb42ae6e809c567fab7b051f88d58d132b7",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0047-reader-parent-verification.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/reader-parent-verification.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0048-reader-parent-verification.stderr"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/Probe.exe",
+      "sha256": "82c551be0e0076c31af1170957056f34c88cf909b72f166ffb0befef7ffc953a",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0049-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/Settings/DeviceParams/EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0050-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/Settings/DeviceParams/PostBondInspectionRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0051-PostBondInspectionRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/Settings/DeviceParams/WaferSub/CarrierRepository.json",
+      "sha256": "41c4cc34e0168b601a1ac362bc2a6a6cf24058a3eb7afd78177f102ca2a0a873",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0052-CarrierRepository.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0053-process.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0054-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0055-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/replay/stdout.json",
+      "sha256": "4fa921fa135179fcc47d6b8db0da4cfc5477258be338d7b8d4c71119137c0df9",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0056-stdout.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0057-runtime-map.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/source-evidence.json",
+      "sha256": "8b9deaa534538993e12c30d0bbf3a3413b71862636c9961867596cf63612b322",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0058-source-evidence.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/summary.json",
+      "sha256": "0dc1ea8dc9e88e16473e7caadca2c3bb15f58c2ca4e9e01b21036698fe8b22e9",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0059-summary.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/verification-results.json",
+      "sha256": "275787f39e6ff67f33f2c83fa58808db9c307a1a1659a67f28f9e9011548d2d5",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0060-verification-results.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/verifier-draft-v1/failure.json",
+      "sha256": "73e77b96348fb7611df1aacded4c1833fb43297abadb8e887bf2298a61371da0",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0061-failure.json"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/verifier-draft-v1/verify-native-recipe-action-selection.cjs",
+      "sha256": "c5035cd46b5d09e7f6f5ec8d7ac0364991a2ee86f46841c969be276be7c5ca84",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0062-verify-native-recipe-action-selection.cjs"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/virtual-parent-verification.log",
+      "sha256": "0a46b2d374843671a50f8729d839528e0db6077dc64ceb51043a23355e0f70aa",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0063-virtual-parent-verification.log"
+    },
+    {
+      "file": ".archify-work/native-recipe-action-selection/virtual-parent-verification.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0064-virtual-parent-verification.stderr"
+    },
+    {
+      "file": ".archify-work/record-native-recipe-action-selection-observations.cjs",
+      "sha256": "55afc6dae489c18a0173f29aa7c3a7b899b171c836bf473d0f96a65c54b15f28",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0065-record-native-recipe-action-selection-observations.cjs"
+    },
+    {
+      "file": ".archify-work/repair-native-recipe-action-verifier.cjs",
+      "sha256": "65d754bbce900ac52762b32c54ae9057d098ac620f713b8964ac3cf41d609d59",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0066-repair-native-recipe-action-verifier.cjs"
+    },
+    {
+      "file": ".archify-work/verify-native-recipe-action-selection-stage.cjs",
+      "sha256": "c38cc5298cd582ea0d1fedf2e4a7ea7df516a5e5712c8be6cd3d3f07f00397df",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0067-verify-native-recipe-action-selection-stage.cjs"
+    },
+    {
+      "file": "scripts/inspect-native-recipe-action-selection.ps1",
+      "sha256": "0b03c04785ca1fc1e4ee5c03e1dec65a2b250ff8e60140233aa2d661289ab2b6",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0068-inspect-native-recipe-action-selection.ps1"
+    },
+    {
+      "file": "scripts/native-recipe-action-selection-cases.cs.txt",
+      "sha256": "71d5239c0dc86eb121b16795e4a3902126deb421c120a69ad96ac6395dd806d5",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0069-native-recipe-action-selection-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-recipe-action-selection-source.cjs",
+      "sha256": "5124ec6c16daf576ac0afef1ae9d953895eac4bd6b26c1e90f8f4ebe676584c9",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0070-prepare-native-recipe-action-selection-source.cjs"
+    },
+    {
+      "file": "scripts/prepare-native-recipe-action-selection.cjs",
+      "sha256": "4d058e00e0dfde2894ab3848ceb8bc83054013b321229201cedc76c63e3ff028",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0071-prepare-native-recipe-action-selection.cjs"
+    },
+    {
+      "file": "scripts/run-native-recipe-action-selection.cjs",
+      "sha256": "e3bcb735767b2453cab9c879eea0ea70dfb82a0847c4a404edc06023be65caee",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0072-run-native-recipe-action-selection.cjs"
+    },
+    {
+      "file": "scripts/verify-native-recipe-action-selection-bindings.cjs",
+      "sha256": "88e8db04196d34b3cd8b9e22da5d83aa91b22b0cd9d6d1051d18344ba111a435",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0073-verify-native-recipe-action-selection-bindings.cjs"
+    },
+    {
+      "file": "scripts/verify-native-recipe-action-selection.cjs",
+      "sha256": "4a519d89e9b1744b895954058ac1a97b01c19517a09d28bf07afea0d1a1e59b7",
+      "frozenCopy": ".archify-work/native-recipe-action-selection-baseline/inputs/0074-verify-native-recipe-action-selection.cjs"
+    }
+  ],
+  "reusedParentBindings": [
+    {
+      "file": "docs/archify/native-action-selection-test.json",
+      "sha256": "93cbf6d66c65ddd5dcaaf7584e87209717475dacaed97503235b502c39742b99",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/native-action-selection-test.json"
+    },
+    {
+      "file": ".archify-work/lexical-semantic-graph/source-symbol-index.json",
+      "sha256": "d121fb37cdd65be2b7545eac26a23b075554d59c42707c7036667dfd1b3e0eac",
+      "frozenCopy": ".archify-work/lexical-source-reader-baseline/inputs/0110-source-symbol-index.json"
+    },
+    {
+      "file": ".archify-work/lexical-source-reader/semantic-data.json",
+      "sha256": "47ca80bd738433012191ed99a5b6dc6606783b43620cc42b5cf9da0521f7f87e",
+      "frozenCopy": ".archify-work/lexical-source-reader-baseline/inputs/0141-semantic-data.json"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/audit/files.json",
+      "sha256": "8969ba630b623b249c1190790261bd5c66f1ead19a27edc422336b0fba194a7b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0177-files.json"
+    },
+    {
+      "file": ".archify-work/virtual-dispatch-provenance/summary.json",
+      "sha256": "04d10fa6d2246cf64828a68150ff435e960f39c2c1d97d4aaa18ac14818cbd0e",
+      "frozenCopy": ".archify-work/virtual-dispatch-provenance-baseline/inputs/0352-summary.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1028-BondTask.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1429-S2ActionNodeController.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1170-DispenseWorkTask.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+      "sha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1428-S1ActionNodeController.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+      "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1131-S1DispenseCorrectionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseMeasureActionNode.cs",
+      "sha256": "908f1e9be91f04085523848dc6dbd3c862e833a16ad2054516c05cd654db4e35",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1133-S1DispenseMeasureActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs",
+      "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1130-S1DispenseActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseDefectActionNode.cs",
+      "sha256": "faf46a3a0976bd9c7a67addddd6e28a80649fdadc45fb1969a1de827d29b1ef4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1132-S1DispenseDefectActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+      "sha256": "0b93b50df40d6858da8214fa19858271eff5d711a14a93217942e8e6569ecd2a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1135-S1ModuleVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1ModuleMeasureHeightActionNode.cs",
+      "sha256": "8d8501524369884af0a512d531f1d729063025d73350d376a91e8a76418d7979",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1138-S1ModuleMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+      "sha256": "33a8e5078fc86c1d1c214919d3f339ba2f4b6599f5be50767a9ca8669432816a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1136-S1SubstrateVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1SubstrateMeasureHeightActionNode.cs",
+      "sha256": "e04887167267051e3c30186d79e5730049efb64a293e26e083fcbb491bebcaf8",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1139-S1SubstrateMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+      "sha256": "c3f0c97946b6d83324209a167a3d0f77756ba93595999a2b732cbea9c4daa367",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1134-S1CarrierVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1CarrierMeasureHeightActionNode.cs",
+      "sha256": "30ff1eaa3df972c29e923bca0123ea84b062abadc58c36a974ac5b81be5709bf",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1137-S1CarrierMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/InteractiveAction.cs",
+      "sha256": "53d8ec538e99a8bf00fdfd8227a2719f8c8eb92a2da97ad768b5d1713d4675a3",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1144-InteractiveAction.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1TransportIdentityActionNode.cs",
+      "sha256": "03af1c1a5d34fb255d8e7e1ecb60333694fb4da98bbb23fc8f39f70aa43ceaff",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1143-S1TransportIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs",
+      "sha256": "7e760c785adbd5652a9ad30a6281846ce9e2ccb22ad6a3e083db0a7130fdd301",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1142-S1SubstrateIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1ModuleIdentityActionNode.cs",
+      "sha256": "357fa63d12206636d8609555047b954dfff8b100a3b504f348fff108ff6a3024",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1141-S1ModuleIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1BondPositionIdentityActionNode.cs",
+      "sha256": "46b3bac3e58d3aa39926264d25e2934b3495f4db56f99413e112c25a4133871f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1140-S1BondPositionIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+      "sha256": "c26a814b5492210abc4e78345a99448d67e601378f4e8c8facae91747d22996b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0954-S2CarrierVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2CarrierMeasureHeightActionNode.cs",
+      "sha256": "44b5b81d2d58fc341b23243b1a74a61f2f0768d2ec2e5b7452ed16bdfe2d5854",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0982-S2CarrierMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2TransportIdentityActionNode.cs",
+      "sha256": "4ad31d70efea55e1636b95f3ccb79016b21acc4b8e64a40820673e1af8261382",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0988-S2TransportIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0956-S2SubstrateVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2SubstrateMeasureHeightActionNode.cs",
+      "sha256": "aa65f1f5d74278228228aad3f74f63b8c6ef0d596f2d72626a66c6c8b9926c1e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0984-S2SubstrateMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2SubstrateIdentityActionNode.cs",
+      "sha256": "a14a666b625eb3f3df9ac3608f9fd32847fcec71eeeea49c42e85fb54ad6429d",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0987-S2SubstrateIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+      "sha256": "fbe942a1faaae0d5c38e41809234a2a449e7b0f4c3d2670cb48935ecd9e3f431",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0955-S2ModuleVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2ModuleMeasureHeightActionNode.cs",
+      "sha256": "cf4c752e63c013bc141f95fb2b604e051216755b45ba34a2725792c756ce0536",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0983-S2ModuleMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2ModuleIdentityActionNode.cs",
+      "sha256": "ea8ca18b0f535ba794251858bdff1434448c8aabc8c195ba47d1cffdbb0720e6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0986-S2ModuleIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/HeightMeasurementActionNode/S2BondPositionMeasureHeightActionNode.cs",
+      "sha256": "fabf30ee5bfc1dc56c4cdedee51f5aa0a14ae9001376a9eb02b50b5378b6a3ab",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0981-S2BondPositionMeasureHeightActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+      "sha256": "b881dfd2360e51aaca2ed2ca26828b4b28fe312b70e19168a9d432fd46119aaf",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0952-BondPositionVisionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/DispenseAction/S2DispenseActionNode.cs",
+      "sha256": "c1144d0309ca13b8b0288e2726c899252c704a0f855b0b096834c61f900dff6a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0978-S2DispenseActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "sha256": "7907bbbb2e06f9d0b54dac33c334f700c50f0a79df6f35c99a80ca64e93a7f33",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0964-PickActionNode.Provider.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+      "sha256": "80d93ff799d106152f1c5e7b4a93c52a46eafcbdd586bea979ec29372558ca3b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0963-PickActionNode.MoveHelper.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0965-PickActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0969-UpLookCorrectionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+      "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0966-SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "sha256": "73bbe54ab96120045e09f69c80c6382d795894c914298c97a99a3d508e4d8414",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0967-SubstrateCameraCorrectionActionNode.Provider.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0968-SubstrateCameraCorrectionActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.MoveHelper.cs",
+      "sha256": "3a7d9cb9d8518f1e7dbd44b347052fcb74ff826e639befc92c946fd76e7095ec",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0958-BondActionNode.MoveHelper.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0959-BondActionNode.Provider.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0960-BondActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2BondPositionIdentityActionNode.cs",
+      "sha256": "7ae40d26ebd6591fde2ca7274e828158677909e23dd28ea0ef14707f068a1c07",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0985-S2BondPositionIdentityActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+      "sha256": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0957-AfterBondCheckActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+      "sha256": "b8e26d65d77adbcfdc19ceebceb61d4ee8cbad48eedcd0b2048333ff75bf3758",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0962-DipFluxActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ActionNode.cs",
+      "sha256": "cdad52ca31f21d4b3454e597c90e1615e889ea22abbb270c8291915d1169fa5f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1324-ActionNode.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BondActionNodeRepository.cs",
+      "sha256": "5d421c598701ab1f7945d4da706f8b0aeaa831eed97cb938e008a92ce8ddc3e4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0970-BondActionNodeRepository.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1016-System2Domain.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "sha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1427-ProcessDomain.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/SingleProcessStep.cs",
+      "sha256": "3b810e1d5360f692e58e0139ef8d0d6a107d2c88917a836b4c086b21b3c4f29a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1430-SingleProcessStep.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs",
+      "sha256": "4d5e6f5746a3d90a25899260fef0f8d1d3f53df62ae388714454194842a9df3b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1129-DispenseActionNodes.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0048-System1Domain.cs",
+      "reusedFromTest": "docs/archify/native-dispense-controller-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/BaseSubSectionProgram.cs",
+      "sha256": "66821242156235eaa2f9bd81608bbbf43599d122d7f8cc8c60beb13f215d6f06",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1657-BaseSubSectionProgram.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+      "sha256": "daf2c09966a3874673df23590d8d058d6fc6f81d1f4fe7e02e9bd0c2991b338e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1666-TransportDomain.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProgram.cs",
+      "sha256": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1668-TransportProgram.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+      "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1780-BondPosition.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+      "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1781-Module.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+      "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1782-Substrate.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1783-TransportUnit.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "sha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1784-ProductConfiguration.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/BaseModels/BaseSettingRepository.cs",
+      "sha256": "ee7df2eada69984b33f9e86cc2547fd77aa500460afc057605570e98be72cf78",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1322-BaseSettingRepository.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Enums/BondEnum.cs",
+      "sha256": "301c50d0d0a5e721eceab087f542a4a9c4981d021dc58912d0e8f03b5b5a5c43",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0999-BondEnum.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+      "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1785-TuService.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Model/TuEnum.cs",
+      "sha256": "c43ddaf54945f2579e2ec415ffa2447f6e94ec54b3239b74c3c3ee3d77ef2e76",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1757-TuEnum.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/BaseCarrierConfig.cs",
+      "sha256": "9d41f35fdd56c99bf8e7faf52185dfb6057ae2523d1d15014921b4a62c16e0b7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1929-BaseCarrierConfig.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/CarrierConfigRepository.cs",
+      "sha256": "22f1b387cf9022306c3789bf3d49f6ff694244878d9e83318e4577147609c046",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/1930-CarrierConfigRepository.cs",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Consumables.dll",
+      "sha256": "caee8b4318ab54db6e8be708b2d4a5e93f052fb1bd455d644a79ae42dd03177b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0271-AKRS.Galaxy2.Consumables.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.HardwareEditor.exe",
+      "sha256": "5e05ce518136f7ba1591923322c2737336198ff595853ae38aaa47247564d19e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0274-AKRS.Galaxy2.HardwareEditor.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.MeasureHeight.dll",
+      "sha256": "0b5b4d5d7436d8fd116e5265007b9f3f07cd624bfb405ba81e5e257c3077574c",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0280-AKRS.Galaxy2.MeasureHeight.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.ModulePublic.dll",
+      "sha256": "076ea434f48bc42a499af106071a3d9c4f18b74be2b896bb2e98847671288322",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0281-AKRS.Galaxy2.ModulePublic.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMap.dll",
+      "sha256": "9f3a3b00bdd36877f608f2f1d79341fd4aa507b8bee4743c90ea100fece6ac89",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0289-AKRS.WM.WaferMap.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMapForm.dll",
+      "sha256": "0a2f91c8409a7e8310a1b18798720c42024005517e4208c8a0f685cf65b3d6e4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0291-AKRS.WM.WaferMapForm.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMapHelper.dll",
+      "sha256": "4eb54ab12e5bf92289b5e3d7e15c6c8f19f92290399873fc9c2eab4a6854fc6a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0292-AKRS.WM.WaferMapHelper.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AuthenticatorBG_x86.exe",
+      "sha256": "c83f425f335b22e596063d7902b82233e7b9075253967af59fa5668fe868dbbe",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0294-AuthenticatorBG_x86.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/DataAnalysis.Acquisition.dll",
+      "sha256": "58142c8479d71876a00a24fc58e6ad2ecf0e0e5406b909a9a87e7984405aebca",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0295-DataAnalysis.Acquisition.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Dashboard.v21.2.Core.dll",
+      "sha256": "b9259be2944f53718166243af9df2291e2b97f71b7752e8c54374935b5bbee6f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0209-DevExpress.Dashboard.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Dashboard.v21.2.Win.dll",
+      "sha256": "cf519f7b0fc78a258ed021759826705796eaa30f3e5e2e555382456b01f4af6f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0210-DevExpress.Dashboard.v21.2.Win.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Dialogs.v21.2.Core.dll",
+      "sha256": "3b51cf29a2a5b3e4400a828b87e14441ee67d462ff923e29144fd64abc43cade",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0216-DevExpress.Dialogs.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.ExpressApp.v21.2.dll",
+      "sha256": "4a3f34cca29d6dc3acc6a02dcf45b039f7a13d9ba1620a6883ff891c721394aa",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0217-DevExpress.ExpressApp.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Map.v21.2.Core.dll",
+      "sha256": "c4481374ad44b35d5db8f387455fde0e510dfd63a18030e06529fb8f1b2f90a4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0219-DevExpress.Map.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Persistent.Base.v21.2.dll",
+      "sha256": "f12e6d9a911bae23fb43d63b9b69692e72396e191867461a40d9ffa2e8bc1427",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0221-DevExpress.Persistent.Base.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.PivotGrid.v21.2.Core.dll",
+      "sha256": "4406b99a8f6ba44c20307b13e43b344e170f6f9123318fa0326cd8050fbb9156",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0222-DevExpress.PivotGrid.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Xpo.v21.2.dll",
+      "sha256": "85d7f0f300145cdca4be7d9359a54ae921460293867649046e6c9f2f7881d5af",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0233-DevExpress.Xpo.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraDialogs.v21.2.dll",
+      "sha256": "cfb36ef058c8e3c30a07e6fed7302f022464a6d2677b63523c93119fe05fdaaf",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0238-DevExpress.XtraDialogs.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGauges.v21.2.Core.dll",
+      "sha256": "a3e09ce385ec0e84ffcee0956e4f263721610676896bfeff8d0a9d85613de685",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0240-DevExpress.XtraGauges.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGauges.v21.2.Presets.dll",
+      "sha256": "ee911f817f4425266bc14b4fc7e36d066a9694dfb8380579b6c7da967656a8a3",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0241-DevExpress.XtraGauges.v21.2.Presets.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGauges.v21.2.Win.dll",
+      "sha256": "f1e2a149ddfacc7c3a8f3ab45ea7c2b8efd220abcc037d85e958288bb4da1665",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0242-DevExpress.XtraGauges.v21.2.Win.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraMap.v21.2.dll",
+      "sha256": "b19a1fc2202b74130af5d28869948250f3f1b2a94ea4d9d3d2cec90f78a9fa9d",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0245-DevExpress.XtraMap.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraPivotGrid.v21.2.dll",
+      "sha256": "d903d90423c2517e114a94983a2ac98d8be8f45c5065cc770a9c7f0d5d22ef1a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0247-DevExpress.XtraPivotGrid.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraReports.v21.2.dll",
+      "sha256": "c36eb41e6fc2fd778e2a8d2a233ce24cffe88ab219f95f55e247c94dbf284254",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0249-DevExpress.XtraReports.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EasyModbus.dll",
+      "sha256": "83bcad0825ca511240ccbd90f79faa07bc26fcf6fb1af53b735dc0e75d795f89",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0300-EasyModbus.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EPPlus.dll",
+      "sha256": "93613a9303e2bff72e49cc8a58fbcb83d450fd53e4b9e2f05a7ef09f4ab88bfc",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0299-EPPlus.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/FluentModbus.dll",
+      "sha256": "fb8f020bc59bf434eddec84c246f2b01843f91a4e630873801273806c49462d6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0301-FluentModbus.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/IMVSIntensityMeasureModuCs.dll",
+      "sha256": "8f72e1001c29b3659e2c6d86951ae9145b745e9792b9ffc2c17105c60a49b276",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0384-IMVSIntensityMeasureModuCs.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/IMVSNPointCalibModuCs.dll",
+      "sha256": "a04bc857c75a5a35429dadc784af6faeacc6797ec72c9bd5cde21db288f44f1d",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0406-IMVSNPointCalibModuCs.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/MathNet.Numerics.dll",
+      "sha256": "4c9803a4b0673b93a99a2237e35543be2f6741fbd54b0ff045cf92e877be09d4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0486-MathNet.Numerics.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/packages/MethodBoundaryAspect.Fody.2.0.145/lib/net452/MethodBoundaryAspect.dll",
+      "sha256": "29b237803faed307a4099c1454397c22daa89469145c1a2559a861e2d8123c8f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0506-MethodBoundaryAspect.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/Microsoft.ML.OnnxRuntime.dll",
+      "sha256": "df2e5e95fdd361de2adf0030d3ed5bed3ed5b73859d6848fa25db4542d17304c",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0487-Microsoft.ML.OnnxRuntime.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM算子/MVDCalibTrans.Net.dll",
+      "sha256": "7ea6cb84be44fa42dc8f6743d366ad863f72426dd9b89ac9f9f1c5c55daca3d4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0480-MVDCalibTrans.Net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/MWArray.dll",
+      "sha256": "9c624ad8cb364fe1c6f0eff1234ef7eba31e61ba565c08f11dac4baf98efc98a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0485-MWArray.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/PostSharp.dll",
+      "sha256": "a964e3a41000606ca7ee8b00208396ad00679f9b12c069a5dd9fbd85ad0cb173",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0489-PostSharp.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/predictPDNative.dll",
+      "sha256": "0c02af7fdf13aad27e7bf29a3d3a2e28f914073b0e7194598c4cecebfa77171f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0504-predictPDNative.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/packages/PropertyChanged.Fody.4.1.0/lib/net40/PropertyChanged.dll",
+      "sha256": "e607e238dc35aa428d80f42e258908aaddbc9607095feb1299a2c422e9b11780",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0507-PropertyChanged.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/System.IO.Ports.dll",
+      "sha256": "ecfe778503bf57d4abc70a72528bb2167550c065624b6485aa8a01d54d650ea3",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0491-System.IO.Ports.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/System.Threading.Tasks.Dataflow.dll",
+      "sha256": "61213ff924139a7425ccd675f39acfc2f44cca6a90f13ed7a5a1095e74588ca0",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0493-System.Threading.Tasks.Dataflow.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.Controls.dll",
+      "sha256": "b2f62bedf2430c6da2e98276e0eee30a075de8f03d50591878b981cf88a7a333",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0459-VM.Controls.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.Core.dll",
+      "sha256": "26c530291567003b55519550e423d59e7e89b04192412e45761cdbbb894c56d3",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0460-VM.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Logs.dll",
+      "sha256": "7922d8a077601d2df0a7192eb21c15a1b423c5d44436f843f33f4bf1fc98b71a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0287-AKRS.Logs.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Charts.v21.2.Core.dll",
+      "sha256": "4a410169650fb1cfeea4904860ebc8b407cc4d1671592565ef82ae67bc04da40",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0207-DevExpress.Charts.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.DataAccess.v21.2.dll",
+      "sha256": "ae9f173fe6e9ac5f811bb002f69dbc919e73e957188d7a2b46b495a7c379ec29",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0214-DevExpress.DataAccess.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.DataAccess.v21.2.UI.dll",
+      "sha256": "62f65b4cea9b92ee70b02130666957b9c74ad00ce3bce52ad422af69807bcbc1",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0213-DevExpress.DataAccess.v21.2.UI.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Images.v21.2.dll",
+      "sha256": "f2b08561e75721f5f598bf06ad6965b6c079f81d3a73f35fd7c1fa5b03ae7ee7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0218-DevExpress.Images.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Snap.v21.2.dll",
+      "sha256": "062eb96245cea58d00a74b779736bc5b84419897f9dd71fe69a842d9f43298fe",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0227-DevExpress.Snap.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Snap.v21.2.Core.dll",
+      "sha256": "802129b85cb8a8383e4e596ed93258bd5021278932cdd01a5dca5b0c30ee6373",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0225-DevExpress.Snap.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Snap.v21.2.Extensions.dll",
+      "sha256": "528b3573289600ca51306d2ca0fd31788b0fe69ba2f181783727cab040f891c7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0226-DevExpress.Snap.v21.2.Extensions.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.TreeMap.v21.2.Core.dll",
+      "sha256": "1c3b17174cd2eb6e13344db74f72558cb02990aeece7eb027ed8eb7095532418",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0229-DevExpress.TreeMap.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Utils.v21.2.UI.dll",
+      "sha256": "1538d070c30e73099723a7f112058aac47f864aa6eae119892389cccbdcd0bf0",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0231-DevExpress.Utils.v21.2.UI.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraCharts.v21.2.dll",
+      "sha256": "cb4d1e7c419faf93a3c04b3a3e2cabffe195722908d10f2eaf92900170b352a5",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0237-DevExpress.XtraCharts.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraCharts.v21.2.UI.dll",
+      "sha256": "95e2150cca9cc66baa2943f07c3ae5cbd3d968bfb5a0b3c4ae91ebdcd11e364e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0235-DevExpress.XtraCharts.v21.2.UI.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraCharts.v21.2.Wizard.dll",
+      "sha256": "929267099a1e52e5a1e3a0f8a49dfc4d3319e57117fa922b86456c13659e045a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0236-DevExpress.XtraCharts.v21.2.Wizard.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraTreeMap.v21.2.dll",
+      "sha256": "2fa32541e148ef8bf43ef6e1ebd5ac222b53aacc072c544335442741f0f0fb8b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0253-DevExpress.XtraTreeMap.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraTreeMap.v21.2.UI.dll",
+      "sha256": "746fae8dce800e6156c975bed96ec4ec4bcc85fb1c4c77d163d0f8f938a09105",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0252-DevExpress.XtraTreeMap.v21.2.UI.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraWizard.v21.2.dll",
+      "sha256": "8817be4e1b2ec478ff0a5e3fe12b2c6adb2c421dec76fba1591308571eae4efb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0255-DevExpress.XtraWizard.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/dex40net.dll",
+      "sha256": "417f58ffd7385b24b4697af89c4b4a5b25bc535f67d24e9e00b79915d53ce8b1",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0495-dex40net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/dmd40net.dll",
+      "sha256": "9867f3f34fe13e8bcaf84b512c14144b3ba231c55b2fae0c40c70ad38b7aaafa",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0496-dmd40net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/dsa40net.dll",
+      "sha256": "c181e35fc9543d7263ea350e1280d006165a024b2d5a412f6899ac8a3d4a58d5",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0497-dsa40net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/esc40net.dll",
+      "sha256": "06ce93b5b13da7648a0d1af03f2c679f584241beaeb05ab16afa6426b3b43246",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0498-esc40net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/etb40net.dll",
+      "sha256": "64b271ace126dce68c1804cc7e44f9618949024a98fea8f45d34865a833591ab",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0499-etb40net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/etne40net.dll",
+      "sha256": "036d9a490569ab5619d62ce4d64c91661b15a24562da001e1d3b4f8139b60917",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0500-etne40net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/halcondotnet.dll",
+      "sha256": "134a08394666d16f0140f001fd5c814b25cbb7fc351ddbe4a7a4ec0457b58725",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0501-halcondotnet.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.AccessControl.dll",
+      "sha256": "75e0b7fd3ca80200091e7587fcbaa3a88a9fcef5fa3a75dd6aa3272d30e0d3da",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0261-AKRS.AccessControl.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.AccessControl.Interface.dll",
+      "sha256": "d5ddd29bac8e61fffd2547507890fa960e9e4569932b10c0c604756d66418a69",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0260-AKRS.AccessControl.Interface.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Base.dll",
+      "sha256": "a4b8b8696d3a3f9f00b78de847a7319a9f2dc12ddcab7084269151b4148591a7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0262-AKRS.Base.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.DispensingPattern.dll",
+      "sha256": "86a3e1e740195dcc452c5e7958bf8b3ac3d3e6d9306213a8392f8e07e72dd465",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0263-AKRS.DispensingPattern.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.FileParser.dll",
+      "sha256": "bd58061b1d95e48a2f6dac22e1fe77c56867d5e1bb428db6c58f17def0f0de02",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0288-AKRS.WM.FileParser.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.WM.WaferMapCtrl.dll",
+      "sha256": "fd4e40455d0f112c3faea424e2473f180bdc116258f78b48ec01a8e464fb18b6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0290-AKRS.WM.WaferMapCtrl.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.AlgebraGeometry.dll",
+      "sha256": "741eb17e0694329be6f5444d9ee06975a20108aeba98b0624f7c66d4bf1c0e1a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0265-AKRS.Galaxy2.AlgebraGeometry.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Aop.dll",
+      "sha256": "0bc2dd066e37856d6633f058d88ae650a4edd933be7c45f025162fc9748cc3f6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0266-AKRS.Galaxy2.Aop.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.BackgroundWorkThread.dll",
+      "sha256": "620cafdd6b50a6dccd42886307aa0c34e6e779e731c233f68dabc2331db19b77",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0267-AKRS.Galaxy2.BackgroundWorkThread.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Communication.dll",
+      "sha256": "1c1fcbd69ad6ecee6a90cfd7303afbe1e11aa094cb57daf4f51b3ac08f27a202",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0268-AKRS.Galaxy2.Communication.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Component.Simple.dll",
+      "sha256": "25064c57bb2f0fd4f413f4afc241c8e9888750b9e34fb88fb28255da25d96f88",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0269-AKRS.Galaxy2.Component.Simple.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Drive.dll",
+      "sha256": "110c57d1dc48f94ee6c32ef223f48e78bc03ef3ad4aeb9986c76306f0d41ae79",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0272-AKRS.Galaxy2.Drive.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Force.dll",
+      "sha256": "a975df651ea2ef87128dd3ccfbd2faf063b758d7b75ccfe12a6d671f8bc9c35f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0273-AKRS.Galaxy2.Force.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+      "sha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0276-AKRS.Galaxy2.Infrastructure.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.IOControl.dll",
+      "sha256": "0b0f0efb041d7947a62fa4249961d7d3a7c7a5dece8d4366bb8b275c5ec253fb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0275-AKRS.Galaxy2.IOControl.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Log.dll",
+      "sha256": "f507a2068760753f09ecfd22713e411c649c76fb2e73f8732b3c0d072bb16fa2",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0278-AKRS.Galaxy2.Log.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Log.TestDemo.exe",
+      "sha256": "a42162717392aeec46e2d366dbfd6cb6795e6031e498276bb9f843ef903472e1",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0277-AKRS.Galaxy2.Log.TestDemo.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+      "sha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0279-AKRS.Galaxy2.LogicHardware.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Recipe.dll",
+      "sha256": "5f6eeb8e14ceeb7fc35aa9f24068758f304becc7c2ed50e690ad82701e0aaaf7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0282-AKRS.Galaxy2.Recipe.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.ShowAccuary.dll",
+      "sha256": "b8f284796beebcbef9c304c664976d7befe82eff4fbbed0dc6de3af6b3e61515",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0283-AKRS.Galaxy2.ShowAccuary.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.ShowAccuracyControl.dll",
+      "sha256": "4e63bd73fce9c2a48818d87dc9ce3f4dcc9c4e2c77f79eaa4c9e923f531e29b7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0284-AKRS.Galaxy2.ShowAccuracyControl.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Statistics.dll",
+      "sha256": "9fc2f4eaee5693dfa82af8a90f0f00482b7c9e2e9cdec04e503c88a33b1a8fc0",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0285-AKRS.Galaxy2.Statistics.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.UserManager.dll",
+      "sha256": "e5e96959d38020d7c824561cf3d20a67fc90d0fa2eb62a268d547046e730382a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0286-AKRS.Galaxy2.UserManager.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/DevComponents.DotNetBar2.dll",
+      "sha256": "b0beb2173453302e87fc568117b2a558b9f7f75d6ca349d9ea20a8de57ed7d56",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0296-DevComponents.DotNetBar2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.BonusSkins.v21.2.dll",
+      "sha256": "7e1772af9309c00f45003bd8704bece2cb0be0a83b005709a72420d0c3fba8c9",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0206-DevExpress.BonusSkins.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.CodeParser.v21.2.dll",
+      "sha256": "d527dec03693ff2413aad867abf228eaa3c6974945ea3a7ef22a68703854d0ce",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0208-DevExpress.CodeParser.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Data.Desktop.v21.2.dll",
+      "sha256": "5bc4cd8e123fa2da983ca2509c3223d67f6ae9083accff3880307af1bcce5291",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0211-DevExpress.Data.Desktop.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Data.v21.2.dll",
+      "sha256": "0fdbeac56dfbabdc47945a22616ca41a8d8b0a81167f65669535de4e57cd3072",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0212-DevExpress.Data.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.DemoData.v21.2.dll",
+      "sha256": "62756a9dd8a939881a7a6bfde68f948b832afc988eed8170f63694337a0c568b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0215-DevExpress.DemoData.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Office.v21.2.Core.dll",
+      "sha256": "b4c3b1cf631174f053a7b53ccb77193a601c7464e229de05928a2a1213da9423",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0220-DevExpress.Office.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.RichEdit.v21.2.Core.dll",
+      "sha256": "f8624a6fefe7ee45e98c98529d7bd1db2e96c8e17a295202af158127d1e6f77e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0224-DevExpress.RichEdit.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Tutorials.v21.2.dll",
+      "sha256": "72b267bd2ddfed5838b32ab1f4192c1d4e30e5dbf8c83017d2f25a85fb6be97e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0230-DevExpress.Tutorials.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Utils.v21.2.dll",
+      "sha256": "fdf069da8c6859d064314e302dfc678320468df5b14500940e47d166064dfead",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0232-DevExpress.Utils.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Sparkline.v21.2.Core.dll",
+      "sha256": "a39d26349f8f79d299e942cd5ec8b643392954fbcc246c8859bb82bc12c76eed",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0228-DevExpress.Sparkline.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraBars.v21.2.dll",
+      "sha256": "bc9f2b10c730cb07e8adc6112f0947f6af8f68d93983dfce77065fe7006b0910",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0234-DevExpress.XtraBars.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraEditors.v21.2.dll",
+      "sha256": "45f6098bc699d29fcd72942d1de882aab04abe31135ca30092aa51b192a6944f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0239-DevExpress.XtraEditors.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.Printing.v21.2.Core.dll",
+      "sha256": "1b431d80639a6f44b3c0d830ab0f85f6cde9eed6922aca292bb4c018a3f32b40",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0223-DevExpress.Printing.v21.2.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraGrid.v21.2.dll",
+      "sha256": "3b2e3c0a1fd3c8d105bd35d3f2347a51124d0e822dfbfcff5b6a2d69ec161b79",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0243-DevExpress.XtraGrid.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraLayout.v21.2.dll",
+      "sha256": "234796f37a97f5c4583e1d2ea0a30ca4d679f31113be21f311db6a644224ae9c",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0244-DevExpress.XtraLayout.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraNavBar.v21.2.dll",
+      "sha256": "0e7ec803c9269716020348fe065eb3bac87ee944e6c4e932ce03eeac406e1cfe",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0246-DevExpress.XtraNavBar.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraPrinting.v21.2.dll",
+      "sha256": "60307e2c88f563464f66a32494310c2321fd05cfbfc3a71cc431f2b1b362bff0",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0248-DevExpress.XtraPrinting.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraRichEdit.v21.2.dll",
+      "sha256": "0e33607f7e0207b812a233ec95edf8a24e5e271266355d4c53497acbd98a52e9",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0250-DevExpress.XtraRichEdit.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraTreeList.v21.2.dll",
+      "sha256": "cf3603bd109b7b686a4eb7b7afebded63e8bcc34caa484898389b7229607c4a8",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0251-DevExpress.XtraTreeList.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/DevExpress.XtraVerticalGrid.v21.2.dll",
+      "sha256": "c130fd36da4bb35135a9e760c424773c62b6abd3a1410bc2819e3a03f5b125be",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0254-DevExpress.XtraVerticalGrid.v21.2.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/LanguageExt.Core.dll",
+      "sha256": "01f966b12486fa347a3136e8efa17385bfbffe14e9b7722e7eb2759db6eb18e7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0484-LanguageExt.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/log4net.dll",
+      "sha256": "55b2fe686bc8f739ce845d1689fd08cbca20381c8e0d2417185d1a0018d8a938",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0502-log4net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/Newtonsoft.Json.dll",
+      "sha256": "b624949df8b0e3a6153fdfb730a7c6f4990b6592ee0d922e1788433d276610f3",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0488-Newtonsoft.Json.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/WPF/PresentationCore.dll",
+      "sha256": "cadfe078b758434c9a3866ed1b832e39a4964047ff6c268353a7731499ee11aa",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0531-PresentationCore.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/SqlSugar.dll",
+      "sha256": "cc9234954163838c42a4e85eca869deef2b6cb3b02ab48ac7b15cb31a32ae8c7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0490-SqlSugar.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.dll",
+      "sha256": "2b3c17c6208a0b4b6beb94e1a066f99ba06cdb2ea919479e99d47e8c6d96dc71",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0530-System.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.ComponentModel.DataAnnotations.dll",
+      "sha256": "820c1b8cbf53763c12124557d7e74e887419b01daf51fe72f015ec97c87232dd",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0510-System.ComponentModel.DataAnnotations.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Core.dll",
+      "sha256": "fd1097aed825d392a5dc8d19384381d4bb2a43498ea1c9d917f5d80c66600e1b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0512-System.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/System.Threading.Tasks.Extensions.dll",
+      "sha256": "692c324c02a922f890aaf5948c54ec9758f5ab7019b8e8ab169c106ddd3231f4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0259-System.Threading.Tasks.Extensions.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Xaml.dll",
+      "sha256": "c9f76d7722e69b1957f79c3e08b8a3536b5bdb1783d9e351fa5beb5ff4689fa6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0527-System.Xaml.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Xml.Linq.dll",
+      "sha256": "abc96c873a7447c9d8857eb30cda54afe9b4aa069b0762f6535197025a1f8807",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0528-System.Xml.Linq.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Data.DataSetExtensions.dll",
+      "sha256": "2566404f021a33d50693a6cda947e00efdd059e8fb8d324a1c46e030e84180e8",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0513-System.Data.DataSetExtensions.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/Microsoft.CSharp.dll",
+      "sha256": "32aa1df7e38adee2251f1d022352c21942bddb420fe9d45bd970948a071facf1",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0508-Microsoft.CSharp.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Data.dll",
+      "sha256": "44ef042fa9fbca676466cf9ddd7541ec00c8887c10672880702cc5a4a8182606",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0515-System.Data.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Deployment.dll",
+      "sha256": "49487a1dc191b6e5702873fb8d2df4209f870d9820b732828cbe8479a78dc463",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0516-System.Deployment.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Drawing.dll",
+      "sha256": "e16f7abead4afde7f03b82e5869c5544043be2eae29647a9de5f565d61a3bd29",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0518-System.Drawing.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Windows.Forms.dll",
+      "sha256": "8c0f533e089647aeffb3ce0868f01d696a3fd2893ced5c3570e8438c96613a98",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0526-System.Windows.Forms.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Xml.dll",
+      "sha256": "83e2bfce895a7ba9138c470e5983d05ada404cb7c4cabc0d3c7f52a2d08b80af",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0529-System.Xml.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.ModuleControl.dll",
+      "sha256": "966665f42c1d62e3572991e13b201927af2a31030773be3728288c73bcb9ba62",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0465-VM.ModuleControl.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM.PlatformSDKCS.dll",
+      "sha256": "40052e62fbb133840004228f51365a9dc95d8b25bd216a5d921040694d9ec15b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0467-VM.PlatformSDKCS.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.BaseInterface.dll",
+      "sha256": "292e9bce6a0f3d848db09be15524faf4a7ec191a5cba73c6ec5b73ab523d41e6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0474-VMControls.BaseInterface.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.Interface.dll",
+      "sha256": "aa8d883a9adcf6a261a331d2a9b85ff53d2eecae7e6bafc966219cf2c35a7737",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0476-VMControls.Interface.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.RenderInterface.dll",
+      "sha256": "421af81923850a1c66629876516e0d96e7638e39a3287f7db87857e219e6dbc4",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0477-VMControls.RenderInterface.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.Winform.Release.dll",
+      "sha256": "1381ae996dc81b98d9f1ab60bdd359bd70889fef37ef93045af0020c38e740f2",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0479-VMControls.Winform.Release.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VMControls.WPF.dll",
+      "sha256": "b4c39d7d4434b7a48f34a168243da20d3fb42265c68548327c049f9f6a4ad2ff",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0478-VMControls.WPF.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/WPF/WindowsBase.dll",
+      "sha256": "8f4279029e756c0158a699b91df17aa98b11960624c5566c4092074206619fd8",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0533-WindowsBase.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/ZedGraph.dll",
+      "sha256": "25fc9def11bb77772cbad751a59da5a69eeeffdb91ffc40fb3638e77595c263a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0494-ZedGraph.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Calibration/AKRS.Calibration.dll",
+      "sha256": "a9d1c842ab884023fc901c9f2ccc384d7882219258ca56e7fb01b44b2f614467",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0189-AKRS.Calibration.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy.SoftKey/AKRS.Galaxy.SoftKey.exe",
+      "sha256": "29af28bdf44fba15620dc306dccd1e3d39e814be2187c480b42a0489b2eead24",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0190-AKRS.Galaxy.SoftKey.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.AutoFocusing/AKRS.Galaxy2.AutoFocusing.dll",
+      "sha256": "327f772557320b99768db971d3003f1aa88f3b7a52778dcb95d68a27a1a98a99",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0191-AKRS.Galaxy2.AutoFocusing.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.AxisCompensate/AKRS.Galaxy2.AxisCompensate.exe",
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0192-AKRS.Galaxy2.AxisCompensate.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.CoordinateSystems/AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "4f0cc47f9330bb48f55ef2a30a47fcf87ad4eb4e750d135331a9072c69018923",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0193-AKRS.Galaxy2.CoordinateSystems.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.Dispense/AKRS.Galaxy2.Dispense.dll",
+      "sha256": "579908a6c83df839732272043bac0ca5d79c41dd50aa15599fd2493a12983a82",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0194-AKRS.Galaxy2.Dispense.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.MachineSupport/AKRS.Galaxy2.MachineSupport.dll",
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0196-AKRS.Galaxy2.MachineSupport.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.Machine/AKRS.Galaxy2.Machine.dll",
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0195-AKRS.Galaxy2.Machine.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.PR/AKRS.Galaxy2.PR.dll",
+      "sha256": "e18f2a088424f83c999b0ed913336782f304b29662812931301f50c18731dee6",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0197-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.dll",
+      "sha256": "d36c225a84415c01bc2a8e84096590a7206dfc3d36173e3c7b6a62a04c0a33a9",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0205-Accord.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.Math.Core.dll",
+      "sha256": "777da4849d8f7897a13818eb9fab05b2ecb80de848b3019aafefd34b28f791a8",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0202-Accord.Math.Core.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.Math.dll",
+      "sha256": "1b1c40f63b7b98e82878ce8656390c12d9a2ed72ca451d6e7adcb46555cccbf2",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0203-Accord.Math.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Accord.Statistics.dll",
+      "sha256": "5230d2cb7a0b48eea0fb369b6ef40197f148af6fbda3652e6f01bef4ab0f5d00",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0204-Accord.Statistics.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EPPlus.Interfaces.dll",
+      "sha256": "ff96bf2475e44f10647f8641bbac12aaf686ff6060080651923ba57bb80c57c0",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0297-EPPlus.Interfaces.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/EPPlus.System.Drawing.dll",
+      "sha256": "875137c5b89fb678a5bb78dfe90becc2366750beb44bb98a6990db48ef79cabc",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0298-EPPlus.System.Drawing.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/packages/Lib.Harmony.2.3.6/lib/net48/0Harmony.dll",
+      "sha256": "df043f05c6e43602fa8e8f38f52a3a2cf962aab7a65a9d85573ea25f01a63e80",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0505-0Harmony.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/Microsoft.IO.RecyclableMemoryStream.dll",
+      "sha256": "2559c95d063f6c241e8f0647ff5e919fc4e8966e2f511361aff7947fe161501b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0256-Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/System.Buffers.dll",
+      "sha256": "accccfbe45d9f08ffeed9916e37b33e98c65be012cfff6e7fa7b67210ce1fefb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0257-System.Buffers.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.ComponentModel.Annotations.dll",
+      "sha256": "b7fc949db8ab5fe8341f529617e7fe5bec8b41cab6c708e2eb3c5b45a6a80efa",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0509-System.ComponentModel.Annotations.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/System.Memory.dll",
+      "sha256": "8e76318e8b06692abf7dab1169d27d15557f7f0a34d36af6463eff0fe21213c7",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0492-System.Memory.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Numerics.Vectors.dll",
+      "sha256": "36772363dd860aa9cdedcf7fd364aff542806e127b51549e39c6476e3fef328b",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0520-System.Numerics.Vectors.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/bin/Debug/System.Runtime.CompilerServices.Unsafe.dll",
+      "sha256": "66409f670315afe8610f17a4d3a1ee52d72b6a46c544cec97544e8385f90ad74",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0258-System.Runtime.CompilerServices.Unsafe.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.ValueTuple.dll",
+      "sha256": "62216986c754ad8f0ee68412c42cfc3fc6e025bd908ae1fef1a3a8d528b1495a",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0523-System.ValueTuple.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Numerics.dll",
+      "sha256": "f3ac2b250bf7662d5f0511a7a516d6b46dbf4d4f4b2c86328f9ef0290dd0ff67",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0521-System.Numerics.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/mscorlib.dll",
+      "sha256": "5bffb20e1217bad314143d7e5c4c809bf9f522e8a0a063c8e7e9b25113de26eb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0534-mscorlib.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/assembly/GAC_MSIL/netstandard/v4.0_2.0.0.0__cc7b13ffcd2ddd51/netstandard.dll",
+      "sha256": "bbc58e1e5b1976b8093116007dbc428b09495c7c810a1350d4a379b87716c4bb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0535-netstandard.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.ZX2200/AKRS.ZX2200.exe",
+      "sha256": "99351b5fde6a8b400bcac8d5f71c5b39ac45ecc5c25facf5fc43e05ad96d5a9f",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0198-AKRS.ZX2200.exe",
+      "reusedFromTest": "docs/archify/original-semantic-graph-test.json"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/IMVSCalibTransformModuCs.dll",
+      "sha256": "1e21b69f4b400b62eb2e218d3d20779d5b048f71f92697785bfdc73200514abf",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0336-IMVSCalibTransformModuCs.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/MVDCore.Net.dll",
+      "sha256": "a1c93d610a9d499447a9f9f376cb663fc99b5037e09bc0e02175edd88a5a2f38",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0437-MVDCore.Net.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/trunk/AKRS.ZX2200/libs/HikVision/VM算子/MVDNPointCalib.Net.dll",
+      "sha256": "280cf8a2bb5b781670e36c4487fbd0d5fe3c0a53bbd2ca5bd1e200092e3b05bb",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0482-MVDNPointCalib.Net.dll"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/System.Net.Http.dll",
+      "sha256": "d7ce24424f16bd410179bd202b3e375b2b731a6bd57d5d03a8d38cf9062a14db",
+      "frozenCopy": ".archify-work/original-semantic-graph-baseline/inputs/0519-System.Net.Http.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/DXApplication1/DXApplication1.exe",
+      "sha256": "b1bf45d813b4cc8a0f1a071b5a48de6068dcc3be89240e5714a46a14e48a7207",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0069-DXApplication1.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.LogTest/AKRS.Galaxy2.LogTest.exe",
+      "sha256": "3e3705a67a541f96c62a98fd733745d0d842c54413e6e86069a08ad4fea5518d",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0066-AKRS.Galaxy2.LogTest.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.PR.Test/AKRS.Galaxy2.PR.Test.exe",
+      "sha256": "9f211dac423ca18c3e52fb53964f73e07dcb1789c87a1ae2b0b4b6dfa849637d",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0067-AKRS.Galaxy2.PR.Test.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.Component.TestDemo/AKRS.Galaxy2.Component.TestDemo.dll",
+      "sha256": "1020430893550fe1894212103f421ee0cffea157aa47340581b189a178e981cf",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0065-AKRS.Galaxy2.Component.TestDemo.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/AKRS.Galaxy2.TeachTest/AKRS.Galaxy2.TeachTest.dll",
+      "sha256": "2de74ce904687e89d35be881d9aed9b7b81639acd545dd9dcd2ed17280f3ddfe",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0068-AKRS.Galaxy2.TeachTest.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/bound/WindowsFormsApp1/WindowsFormsApp1.exe",
+      "sha256": "ae37a83f1316e99ed8de1940b44f942a2ce31d311bf647e1bb2bee7dd4b58afd",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0070-WindowsFormsApp1.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Calibration/AKRS.Calibration.dll",
+      "sha256": "a9d1c842ab884023fc901c9f2ccc384d7882219258ca56e7fb01b44b2f614467",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0071-AKRS.Calibration.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy.SoftKey/AKRS.Galaxy.SoftKey.exe",
+      "sha256": "29af28bdf44fba15620dc306dccd1e3d39e814be2187c480b42a0489b2eead24",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0072-AKRS.Galaxy.SoftKey.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.AutoFocusing/AKRS.Galaxy2.AutoFocusing.dll",
+      "sha256": "327f772557320b99768db971d3003f1aa88f3b7a52778dcb95d68a27a1a98a99",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0073-AKRS.Galaxy2.AutoFocusing.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.AxisCompensate/AKRS.Galaxy2.AxisCompensate.exe",
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0074-AKRS.Galaxy2.AxisCompensate.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.Component.TestDemo/AKRS.Galaxy2.Component.TestDemo.dll",
+      "sha256": "1020430893550fe1894212103f421ee0cffea157aa47340581b189a178e981cf",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0075-AKRS.Galaxy2.Component.TestDemo.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.CoordinateSystems/AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "4f0cc47f9330bb48f55ef2a30a47fcf87ad4eb4e750d135331a9072c69018923",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0076-AKRS.Galaxy2.CoordinateSystems.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.Dispense/AKRS.Galaxy2.Dispense.dll",
+      "sha256": "579908a6c83df839732272043bac0ca5d79c41dd50aa15599fd2493a12983a82",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0077-AKRS.Galaxy2.Dispense.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.LogTest/AKRS.Galaxy2.LogTest.exe",
+      "sha256": "3e3705a67a541f96c62a98fd733745d0d842c54413e6e86069a08ad4fea5518d",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0078-AKRS.Galaxy2.LogTest.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.Machine/AKRS.Galaxy2.Machine.dll",
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0079-AKRS.Galaxy2.Machine.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.MachineSupport/AKRS.Galaxy2.MachineSupport.dll",
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0080-AKRS.Galaxy2.MachineSupport.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.PR/AKRS.Galaxy2.PR.dll",
+      "sha256": "e18f2a088424f83c999b0ed913336782f304b29662812931301f50c18731dee6",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0082-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.PR.Test/AKRS.Galaxy2.PR.Test.exe",
+      "sha256": "9f211dac423ca18c3e52fb53964f73e07dcb1789c87a1ae2b0b4b6dfa849637d",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0081-AKRS.Galaxy2.PR.Test.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.Galaxy2.TeachTest/AKRS.Galaxy2.TeachTest.dll",
+      "sha256": "2de74ce904687e89d35be881d9aed9b7b81639acd545dd9dcd2ed17280f3ddfe",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0083-AKRS.Galaxy2.TeachTest.dll"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/AKRS.ZX2200/AKRS.ZX2200.exe",
+      "sha256": "99351b5fde6a8b400bcac8d5f71c5b39ac45ecc5c25facf5fc43e05ad96d5a9f",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0084-AKRS.ZX2200.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/DXApplication1/DXApplication1.exe",
+      "sha256": "b1bf45d813b4cc8a0f1a071b5a48de6068dcc3be89240e5714a46a14e48a7207",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0085-DXApplication1.exe"
+    },
+    {
+      "file": "C:/Users/akrs/Documents/ChatGPT/archify/.archify-work/encoding-preserving-resources/builds/replay/WindowsFormsApp1/WindowsFormsApp1.exe",
+      "sha256": "ae37a83f1316e99ed8de1940b44f942a2ce31d311bf647e1bb2bee7dd4b58afd",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0086-WindowsFormsApp1.exe"
+    },
+    {
+      "file": ".archify-work/native-algorithm-selection/compile-input.json",
+      "sha256": "a0db02fc4e969c2e8b8c387b995a251192cc46c1ea05df19ab1e28e700e1377f",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0031-compile-input.json"
+    },
+    {
+      "file": ".archify-work/encoding-preserving-resources/runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0002-runtime-map.json"
+    },
+    {
+      "file": "scripts/native-program-readiness-cases.cs.txt",
+      "sha256": "4a15777ed9a6bdb5df2ffa1507fac0d0590a12e7f61b2bd6aa3e1fb5d0a6ddcd",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0090-native-program-readiness-cases.cs.txt"
+    },
+    {
+      "file": "scripts/compile-original-project-source.ps1",
+      "sha256": "2d93e4bf9af8f9da1f9d6e6fdec9757f28ad76519b34247865aa2f4867c6c675",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0087-compile-original-project-source.ps1"
+    },
+    {
+      "file": "scripts/verify-native-algorithm-selection-bindings.cjs",
+      "sha256": "0ba79bc5df1865247a2eb7c44d69858a8875728878b340194da3f7422e90c5b2",
+      "frozenCopy": ".archify-work/native-algorithm-selection-baseline/inputs/0094-verify-native-algorithm-selection-bindings.cjs"
+    },
+    {
+      "file": "scripts/verify-dispatch-source-reader-bindings.cjs",
+      "sha256": "ef1791dfc94fc4a43702135833c562ee8c0a9670df55f158b1c785097dc52031",
+      "frozenCopy": ".archify-work/dispatch-source-reader-baseline/inputs/0036-verify-dispatch-source-reader-bindings.cjs"
+    },
+    {
+      "file": "scripts/verify-virtual-dispatch-provenance-bindings.cjs",
+      "sha256": "cf3614eaa5938dbba41788d3e8d9312051e03e13b27e5957bbfd529e1703a4b3",
+      "frozenCopy": ".archify-work/virtual-dispatch-provenance-baseline/inputs/0360-verify-virtual-dispatch-provenance-bindings.cjs"
+    },
+    {
+      "file": "trunk/packages/Fody.6.0.5/netclassictask/Mono.Cecil.dll",
+      "sha256": "d882d6746eb8029b23d39af0865a0543294e324c539ea72155f4a0e18418cd11",
+      "frozenCopy": ".archify-work/semantic-source-reader-baseline/inputs/0061-Mono.Cecil.dll"
+    },
+    {
+      "file": "scripts/prepare-native-action-selection.cjs",
+      "sha256": "3bbc1563fa6df791cc4f86756766b11b6ec2316d88bf6d18ee0107ae2856f160",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0046-prepare-native-action-selection.cjs"
+    },
+    {
+      "file": "scripts/run-native-action-selection.cjs",
+      "sha256": "1eb88ba69130167de5247084c5e88b0f8d5e7f85daae9206c3802e35be2f080f",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0047-run-native-action-selection.cjs"
+    },
+    {
+      "file": "scripts/prepare-native-action-selection-source.cjs",
+      "sha256": "a85c513d2179ee5a80fa154822ec0f520e324e8525a78d1c670f2ddb545b16c1",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0045-prepare-native-action-selection-source.cjs"
+    },
+    {
+      "file": "scripts/inspect-native-action-selection.ps1",
+      "sha256": "192883dbc9dbe11d63dbea907471eed7a4771e26529139d7d3ec50c23a931d24",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0043-inspect-native-action-selection.ps1"
+    },
+    {
+      "file": "scripts/verify-native-action-selection-bindings.cjs",
+      "sha256": "66eb3959b5b5e3163db9987f25ca7c4bf2d9179a261bbf051f00899d99625e8e",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0048-verify-native-action-selection-bindings.cjs"
+    },
+    {
+      "file": ".archify-work/compile-native-action-selection.cjs",
+      "sha256": "e296250c196882ea433cd031baede60f9a9169e7d708cffb3a5187f2e16d3a1d",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0001-compile-native-action-selection.cjs"
+    },
+    {
+      "file": ".archify-work/capture-native-action-selection-il.cjs",
+      "sha256": "958abcbd292905fe3c5e18312ff37c8224ab6803066344416a5176e4bc463148",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0000-capture-native-action-selection-il.cjs"
+    },
+    {
+      "file": ".archify-work/verify-native-action-selection-stage.cjs",
+      "sha256": "d25ef92d72b9a0fc1b5199f1aeeae5982e8eea1d579f622698a84191fab4dcbf",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0042-verify-native-action-selection-stage.cjs"
+    },
+    {
+      "file": ".archify-work/freeze-native-action-selection.cjs",
+      "sha256": "afb03f73c568c9f3863e68a061d736b13485d5502345579c524806642fbe1c1f",
+      "frozenCopy": ".archify-work/native-action-selection-baseline/inputs/0002-freeze-native-action-selection.cjs"
+    }
+  ],
+  "checksPerPass": 31655,
+  "passes": 2,
+  "placements": 63310,
+  "sortSchedulesPerPass": 88,
+  "s1SortSchedulesPerPass": 24,
+  "s2SortSchedulesPerPass": 64,
+  "selectedMessagesPerPass": 5888,
+  "repeatedSelectionsPerPass": 5376,
+  "specialRetriesSkippedPerPass": 512,
+  "catalogRegisteredReceivers": 34,
+  "selectedReceiverTypes": 34,
+  "persistedComponentConfigurations": 8,
+  "interactiveSelectionsPerPass": 8,
+  "interactiveDoWorkCallsPerPass": 5,
+  "executedConcreteDoWorkTypes": 1,
+  "sourceDeclarations": 102,
+  "sourceFiles": 65,
+  "ilMethods": 544,
+  "originalRuntimeAssembliesPerPass": 16,
+  "exactTaskSelectors": 2,
+  "originalSourceRuntimeExecuted": true,
+  "selectorsRuntimeExecuted": true,
+  "currentMessageContextRuntimeExecuted": true,
+  "componentRepositorySaveLoadExecuted": true,
+  "carrierRepositoryAddPrWorkflowExecuted": false,
+  "privateMessageDataWritten": false,
+  "allRegisteredReceiversSelected": true,
+  "invalidDipModeFallsIntoBeforeOrderObserved": true,
+  "disabledCarrierStillUsedForSelectionObserved": true,
+  "divideWithInvertedNoInteractiveMessageObserved": true,
+  "interactiveStartFaultSkipsFinallyObserved": true,
+  "interactiveStopFaultOverridesSuccessObserved": true,
+  "nodeDoWorkExecuted": true,
+  "onlyInteractiveShortDoWorkExecuted": true,
+  "otherConcreteNodeDoWorkExecuted": false,
+  "nodeIsDoWorkExecuted": false,
+  "specialRepeatWarningBranchExecuted": false,
+  "findModelExecuted": false,
+  "vmInitializationExecuted": false,
+  "productionTaskExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "deviceExecuted": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "summary": {
+    "file": ".archify-work/native-recipe-action-selection/summary.json",
+    "sha256": "0dc1ea8dc9e88e16473e7caadca2c3bb15f58c2ca4e9e01b21036698fe8b22e9"
+  },
+  "sourceEvidence": {
+    "file": ".archify-work/native-recipe-action-selection/source-evidence.json",
+    "sha256": "8b9deaa534538993e12c30d0bbf3a3413b71862636c9961867596cf63612b322"
+  },
+  "il": {
+    "file": ".archify-work/native-recipe-action-selection/il.json",
+    "sha256": "7073c024e305bd9799c13ee563e5eba7ba34bb6e732373a5d910ea51f2e6f435"
+  },
+  "verificationResults": {
+    "file": ".archify-work/native-recipe-action-selection/verification-results.json",
+    "sha256": "275787f39e6ff67f33f2c83fa58808db9c307a1a1659a67f28f9e9011548d2d5"
+  },
+  "observations": {
+    "schemaVersion": 1,
+    "previousGoalTurn": "progress",
+    "codeGraph": {
+      "directoryPresent": false,
+      "observedCompletionChunk": "fd3ed6",
+      "indexCreated": false
+    },
+    "candidate": {
+      "directory": ".archify-work/native-recipe-action-selection-candidate-v1/",
+      "prepare": {
+        "observedCompletionChunk": "ce8058",
+        "observedExitCode": 0
+      },
+      "compile": {
+        "observedCompletionChunk": "e9ed80",
+        "observedExitCode": 0
+      },
+      "bound": {
+        "observedCompletionChunk": "cd6904",
+        "observedExitCode": 1,
+        "completedChecks": 4
+      },
+      "archive": {
+        "observedCompletionChunk": "8b947e",
+        "resolvedPathsVerifiedInsideWorkspace": true
+      },
+      "reason": "Harness incorrectly expected CarrierRepository file absent after original repository constructor. Actual SDK ReadGenericList creates zero-byte missing file: observed8f8035. Preserve complete candidate and check absent before constructor, empty file/list after constructor. Production sources and original assemblies unchanged."
+    },
+    "accepted": {
+      "prepare": {
+        "command": "node scripts/prepare-native-recipe-action-selection.cjs",
+        "observedCompletionChunk": "952416",
+        "observedSession": null,
+        "observedExitCode": 0
+      },
+      "compile": {
+        "command": "node .archify-work/compile-native-recipe-action-selection.cjs",
+        "observedCompletionChunk": "15d0f0",
+        "observedSession": null,
+        "observedExitCode": 0
+      },
+      "bound": {
+        "command": "node scripts/run-native-recipe-action-selection.cjs bound",
+        "observedCompletionChunk": "14b079",
+        "observedSession": null,
+        "observedExitCode": 0,
+        "checks": 31655
+      },
+      "replay": {
+        "command": "node scripts/run-native-recipe-action-selection.cjs replay",
+        "observedCompletionChunk": "415106",
+        "observedSession": null,
+        "observedExitCode": 0,
+        "checks": 31655
+      },
+      "sourceEvidence": {
+        "command": "node --max-old-space-size=4096 scripts/prepare-native-recipe-action-selection-source.cjs",
+        "observedCompletionChunk": "c0b329",
+        "observedSession": null,
+        "observedExitCode": 0
+      },
+      "il": {
+        "command": "node .archify-work/capture-native-recipe-action-selection-il.cjs",
+        "observedCompletionChunk": "e823cb",
+        "observedSession": null,
+        "observedExitCode": 0
+      },
+      "summary": {
+        "command": "node --max-old-space-size=4096 scripts/verify-native-recipe-action-selection.cjs --write-summary",
+        "observedCompletionChunk": "95b9ab",
+        "observedSession": null,
+        "observedExitCode": 0
+      },
+      "stageVerification": {
+        "command": "node --max-old-space-size=4096 .archify-work/verify-native-recipe-action-selection-stage.cjs",
+        "observedCompletionChunk": "10ca5c",
+        "observedSession": null,
+        "observedExitCode": 0,
+        "steps": 5
+      }
+    },
+    "verifierDraft": {
+      "observedCompletionChunk": "190bc7",
+      "observedExitCode": 1,
+      "archive": ".archify-work/native-recipe-action-selection/verifier-draft-v1/",
+      "repairObservedCompletionChunk": "e3e7f9",
+      "limitation": "Verifier assumed raw JSON array. SDK SaveGenericList actually emits typed $type/$values list envelope, confirmed76ad23. Both native processes already passed; verifier corrected to validate original typed format. No production or native output edited."
+    },
+    "selectorsRuntimeExecuted": true,
+    "componentRepositorySaveLoadExecuted": true,
+    "carrierRepositoryAddPrWorkflowExecuted": false,
+    "privateMessageDataWritten": false,
+    "nodeDoWorkExecuted": true,
+    "onlyInteractiveShortDoWorkExecuted": true,
+    "otherConcreteNodeDoWorkExecuted": false,
+    "specialRepeatWarningBranchExecuted": false,
+    "productionTaskExecuted": false,
+    "wholeGoalComplete": false
+  },
+  "scope": "Original complete S1/S2 registered receiver selection via public real component/configuration messages and actual SDK component Save/Load. Read-only reflection inspects private message properties. Public repository list seeded without CarrierConfigRepository.Add PR copying workflow. 34 registered receiver types selected, not34 DoWork implementations run. Only original Interactive DoWork no-transfer/other-enum short branches and public WorkStart/WorkStop event faults invoked; no axis/signal/wait, other concrete DoWork, IsDoWork, warning-repeat UI, production tasks, PR/VM/SQL/realUI/device/fullbuild or deployment. Host uses public Finish to advance messages."
+}

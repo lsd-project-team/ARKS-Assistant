@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "DoFocusingNew/New2 and shared fields extracted unchanged. Camera, bitmap, scoring, axis and repository are controlled stubs. Fixture exhaustion bounds the rising-score case; it is not a production timeout. DoFocusing is source-only, not executed. No hardware, SDK, UI, production reachability or focus quality verified.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "start": 30,
+      "end": 147,
+      "sha256": "1cb5226408f301638a900b1dcf9eaccd5b35aabce185a2d97afa0d0156f34ea0",
+      "snippetSha256": "522ac79e90ee2d65e68bfc6b14c02f098afe915b3f0e73b4fd5693fc3753a04a",
+      "code": "        public double DoFocusing(string CameraName, Axis AxisZ, double Plimit, double Nlimit)\n        {\n            AKRSCamera Camera = HardwareRepositoryService.GetHardware<AKRSCamera>(CameraName);\n\n            Bitmap bitmap = null;\n            if (AxisZ != null)\n            {\n                (bool IsEnable, double N, double P) = AxisZ.GetSoftLimit();\n                if (IsEnable)\n                {\n                    // 第一次步进距离\n                    double FirOffset = (Plimit - Nlimit) / 5;\n                    List<double> FirFocusRes = new List<double>();\n                    List<double> FirPosition = new List<double>();\n                    for (int Firindex = 0; Firindex < 6; Firindex++)\n                    {\n                        FirPosition.Add(Nlimit + Firindex * FirOffset);\n                        AxisZ.AbsoluteMove(Nlimit + Firindex * FirOffset);\n\n                        bitmap = Camera.SnapImage(false, false);\n                        FirFocusRes.Add(this.CalSharpnessVm(bitmap));\n\n                        if (Firindex != 0 && FirFocusRes[Firindex] < FirFocusRes[Firindex - 1])\n                        {\n                            break;\n                        }\n                    }\n\n                    // 获取清晰度值最大的索引，移动到第一聚焦位置              \n                    double FirStation = 0;\n                    if(FirFocusRes.Count() < 3)\n                    {\n                        FirStation= FirPosition[FirPosition.Count - 1];\n                    }\n                    else\n                    {\n                        if (FirFocusRes[FirFocusRes.Count - 1] < FirFocusRes[FirFocusRes.Count - 3])\n                        {\n                            FirStation = FirPosition[FirPosition.Count - 2];\n                        }\n                        else\n                        {\n                            FirStation = FirPosition[FirPosition.Count - 1];\n                        }\n                    }\n                    \n\n                    // 第二次步进距离\n                    double SecondOffset = (Plimit - Nlimit) / (5 * 5);\n                    List<double> SecFocusRes = new List<double>();\n                    List<double> SecPosition = new List<double>();\n                    for (int Secindex = 0; Secindex < 6; Secindex++)\n                    {\n                        SecPosition.Add(FirStation - Secindex * SecondOffset);\n                        AxisZ.AbsoluteMove(FirStation - Secindex * SecondOffset);\n\n                        bitmap = Camera.SnapImage(false, false);\n                        SecFocusRes.Add(this.CalSharpnessVm(bitmap));\n\n                        if (Secindex != 0 && SecFocusRes[Secindex] < SecFocusRes[Secindex - 1])\n                        {\n                            break;\n                        }\n                    }\n\n                    double[] ThirdFocusRes = new double[9];\n                    double[] ThirdPosition = new double[9];\n\n                    // 第三次步进距离\n                    double ThirdOffset = (Plimit - Nlimit) / (5 * 5 * 5);\n                    double SecStation = 0;\n                    if (SecFocusRes[SecFocusRes.Count - 1] < SecFocusRes[SecFocusRes.Count - 3])\n                    {\n                        SecStation = SecPosition[SecFocusRes.Count - 2];\n                        ThirdFocusRes[0] = SecFocusRes[SecFocusRes.Count - 2];\n                    }\n                    else\n                    {\n                        SecStation = SecPosition[SecFocusRes.Count - 1];\n                        ThirdFocusRes[0] = SecFocusRes[SecFocusRes.Count - 1];\n                    }\n                    ThirdPosition[0] = SecStation;\n\n                    for (int Thirindex = 0; Thirindex < 8; Thirindex++)\n                    {\n                        ThirdPosition[Thirindex+1] = SecStation-0.5* SecondOffset + Thirindex * ThirdOffset;\n                        AxisZ.AbsoluteMove(SecStation - 0.5 * SecondOffset + Thirindex * ThirdOffset);\n\n                        bitmap = Camera.SnapImage(false, false);\n                        ThirdFocusRes[Thirindex+1] = this.CalSharpnessVm(bitmap);\n                    }\n\n                    double[] Parameters = Fit.Polynomial(ThirdPosition, ThirdFocusRes, 2);\n                    if (Parameters[2] != 0)\n                    {\n                        double FocusPosition = -Parameters[1] / (2 * Parameters[2]);\n                        AxisZ.AbsoluteMove(FocusPosition);\n                        return FocusPosition;\n                    }\n                    else\n                    {\n                        XtraMessageBox.Show(\"拟合多项式失败!\", \"提示\", MessageBoxButtons.OK, MessageBoxIcon.Information);\n                        return 0;\n                    }\n                }\n                else\n                {\n                    XtraMessageBox.Show(\"Z轴无法使用!\", \"提示\", MessageBoxButtons.OK, MessageBoxIcon.Information);\n                    return 0;\n                }\n            }\n            else\n            {\n                XtraMessageBox.Show(\"Z轴没有配置!\", \"提示\", MessageBoxButtons.OK, MessageBoxIcon.Information);\n                return 0;\n            }\n\n        }"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "start": 149,
+      "end": 206,
+      "sha256": "1cb5226408f301638a900b1dcf9eaccd5b35aabce185a2d97afa0d0156f34ea0",
+      "snippetSha256": "e2ba46e9da5680b5951602c05426373631f4f492dc3a56040e9f573b3bd00e78",
+      "code": "        private bool stopAdjusting = false;\n\n        private double maxSharpnessScore = 0;\n\n        private double stepSize1 = 1;\n\n        public void DoFocusingNew(string CameraName, Axis AxisZ, double Plimit, double Nlimit)\n        {\n            AKRSCamera Camera = HardwareRepositoryService.GetHardware<AKRSCamera>(CameraName);\n            int directionChangeCount = 0;\n            AxisZ.AbsoluteMove(Plimit);\n            while (!stopAdjusting)\n            {\n                // 获取当前图像\n                Bitmap bitmap = Camera.SnapImage(false, false);\n\n                // 计算清晰度得分\n                double sharpnessScore = this.CalSharpnessVm(bitmap);\n\n                // 根据清晰度得分调整阈值和轴位置\n                AdjustThreshold(0);\n\n                // 计算轴移动方向\n                var direction = sharpnessScore >= this.maxSharpnessScore ? 1 : -1;\n\n                // 移动轴\n                AxisZ.RelativeMove(direction * stepSize1);\n\n                // 判断是否停止调整\n                if (sharpnessScore < maxSharpnessScore)\n                {\n                    directionChangeCount++;\n                    if (directionChangeCount >= 2)\n                    {\n                        stopAdjusting = true;\n                    }\n                    else\n                    {\n                        stepSize1 /= 2; // 缩小步长\n                    }\n                }\n                else\n                {\n                    directionChangeCount = 0;\n                    maxSharpnessScore = sharpnessScore;\n                    stepSize1 = 1; // 恢复初始步长\n                }\n\n                if (AxisZ.GetRealPosition() <= Nlimit)\n                {\n                    stopAdjusting = true;\n                }\n            }\n        }\n\n        public void AdjustThreshold(double threshold)\n        {\n        }"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "start": 316,
+      "end": 366,
+      "sha256": "1cb5226408f301638a900b1dcf9eaccd5b35aabce185a2d97afa0d0156f34ea0",
+      "snippetSha256": "6363cadf8d67fb8065450ddac10bd5241147029a6d2db79823be19c3ca807d97",
+      "code": "        private double stepSize = 4;\n\n        // 轴方向\n        private int direction = 1;\n\n\n        public void DoFocusingNew2(string CameraName, Axis AxisZ, double Plimit, double Nlimit)\n        {\n\n            // 结束的判断是？当前的清晰度值-最大清晰度值 < 1\n\n            AKRSCamera Camera = HardwareRepositoryService.GetHardware<AKRSCamera>(CameraName);\n\n            AxisZ.AbsoluteMove(Plimit);\n\n            while (!stopAdjusting)\n            {\n                // 获取当前图像\n                Bitmap bitmap = Camera.SnapImage(false, false);\n\n                // 计算清晰度得分\n                double sharpnessScore = this.CalSharpnessVm(bitmap);\n\n                // 判断是否停止调整\n                if (sharpnessScore < this.maxSharpnessScore)\n                {\n\n                    stepSize /= 3; // 缩小步长\n                    direction = -direction;\n                }\n\n                if (sharpnessScore-this.maxSharpnessScore<1)\n                {\n                    AxisZ.RelativeMove(-direction * stepSize * 3);\n                    stopAdjusting = true;\n                    break;\n                }\n                this.maxSharpnessScore = sharpnessScore;\n\n                // 移动轴\n               \n                AxisZ.RelativeMove(direction * stepSize);\n\n                if (AxisZ.GetRealPosition() <= Nlimit)\n                {\n                    stopAdjusting = true;\n                    break;\n                }\n            }\n\n        }"
+    }
+  ],
+  "references": [
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "line": 30,
+      "text": "public double DoFocusing(string CameraName, Axis AxisZ, double Plimit, double Nlimit)"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "line": 155,
+      "text": "public void DoFocusingNew(string CameraName, Axis AxisZ, double Plimit, double Nlimit)"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "line": 169,
+      "text": "AdjustThreshold(0);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "line": 204,
+      "text": "public void AdjustThreshold(double threshold)"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.AutoFocusing/Model/AutoFocusing.cs",
+      "line": 322,
+      "text": "public void DoFocusingNew2(string CameraName, Axis AxisZ, double Plimit, double Nlimit)"
+    }
+  ],
+  "checks": [
+    "PASS New stops after two consecutive scores below historical maximum",
+    "PASS New reused instance still moves absolute but skips loop after stop",
+    "PASS New and New2 share retained stop flag",
+    "PASS New rising scores cross supplied upper value in bounded fixture",
+    "PASS New2 first score below one triggers negative twelve move",
+    "PASS New2 reused stopped instance skips scoring after absolute move",
+    "PASS New2 declining score reverses direction then applies opposite recovery move",
+    "PASS New2 early recovery branch exits before lower-bound check",
+    "TOTAL 8"
+  ]
+}

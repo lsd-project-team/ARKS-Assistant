@@ -1,0 +1,22 @@
+/* 分界线只在悬停、聚焦和拖动时显现，保持导航的日常视觉干净。 */
+.navigation-divider {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 7px;
+  z-index: 2;
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+.navigation-divider::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 2px;
+  background: transparent;
+}
+.navigation-divider:hover::after,
+.navigation-divider:focus-visible::after,
+.navigation-divider.dragging::after {
+  background: var(--text-secondary);
+}

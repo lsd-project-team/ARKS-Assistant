@@ -10,8 +10,28 @@ def normalized(text: str) -> str:
 
 def terms(text: str) -> set[str]:
     text = unicodedata.normalize("NFKC", text).casefold()
-    result = set(re.findall(r"[a-z_][a-z0-9_]{2,}", text))
+    # S1、S2、K9 等短标识符也需要精确匹配，避免完全依赖向量相似度。
+    result = set(re.findall(r"[a-z_][a-z0-9_]+", text))
     ignored = {"源码", "代码", "项目", "函数", "解释", "什么", "如何", "一下", "请问", "问题"}
+    ignored |= {
+        "cs",
+        "md",
+        "ts",
+        "js",
+        "py",
+        "json",
+        "the",
+        "and",
+        "is",
+        "to",
+        "of",
+        "in",
+        "on",
+        "an",
+        "as",
+        "by",
+        "or",
+    }
     for fragment in re.findall(r"[\u4e00-\u9fff]+", text):
         result.update(fragment[index : index + 2] for index in range(len(fragment) - 1))
     return result - ignored
@@ -66,7 +86,7 @@ def related_memories(rows, request) -> list[dict]:
     return sorted(matches, key=lambda row: (order[row["kind"]], row["name"]))
 
 
-def rank_memories(rows, query: str | None):
+def rank_memories(rows, query: str | None, semantic_scores=None):
     query_terms = terms(query or "")
     ranked = []
     seen = set()
@@ -74,21 +94,29 @@ def rank_memories(rows, query: str | None):
         source_text = " ".join(source["path"] for source in row["sources"])
         title_score = 3 * len(query_terms & terms(row["name"] + " " + source_text))
         score = title_score + len(query_terms & terms(row["content"]))
-        if row["scope"] != "user" and query is not None and score == 0:
+        semantic = (semantic_scores or {}).get(f"{row['scope']}/{row['name']}", 0)
+        if row["scope"] != "user" and query is not None and score == 0 and semantic < 0.5:
             continue
         ranked.append(
             {
                 **row,
                 "relevance": score,
+                "semantic_relevance": round(semantic, 4),
                 "inclusion_reason": "稳定用户偏好"
                 if row["scope"] == "user"
-                else "与问题或选区路径匹配"
+                else ("与问题或选区路径匹配" if score else "与问题含义相近（本机语义检索）")
                 if query is not None
                 else "全部记忆预览",
             }
         )
     ranked.sort(
-        key=lambda row: (row["scope"] != "user", -row["relevance"], -row["updated_at"], row["name"])
+        key=lambda row: (
+            row["scope"] != "user",
+            -row["relevance"],
+            -row["semantic_relevance"],
+            -row["updated_at"],
+            row["name"],
+        )
     )
     indexed = [(row, facts(row["content"])) for row in ranked]
     for row, current in indexed:

@@ -1,0 +1,39 @@
+{
+  "schema": "archify-native-action-selection-current-v1",
+  "status": "current-native-action-selection-verified",
+  "recordedAt": "2026-10-07T04:26:24.649Z",
+  "verification": {
+    "command": "node scripts/verify-native-action-selection.cjs",
+    "checks": 11310,
+    "checksPerPass": 5655,
+    "passes": 2,
+    "placements": 11310,
+    "selectedMessagesPerPass": 848,
+    "repeatedSelectionsPerPass": 848,
+    "catalogRegisteredReceivers": 34,
+    "selectedReceiverTypes": 26,
+    "sourceDeclarations": 95,
+    "sourceFiles": 59,
+    "ilMethods": 161,
+    "originalRuntimeAssembliesPerPass": 16,
+    "exactTaskSelectors": 2,
+    "sourceEvidence": {
+      "file": ".archify-work/native-action-selection/source-evidence.json",
+      "sha256": "858481c6b24e3896adb13eba6a353e16c659345213f22e5f24af11662038afeb"
+    },
+    "ilEvidence": {
+      "file": ".archify-work/native-action-selection/il.json",
+      "sha256": "0da6bcaa30676b81b51a63a1153b93c7731dd7f71eb435c86403682c81ffe561"
+    },
+    "summaryEvidence": {
+      "file": ".archify-work/native-action-selection/summary.json",
+      "sha256": "ac033e4b675375d56faac6fdbdcd0683e1daa4e25aadf8e44f7855d5c6b91ea8"
+    },
+    "progressArtifactSha256": "6909b0a20d698f086ddac3480f72a4c5f9adcfc7cd49b765a942ff5fdfaba7c7"
+  },
+  "boundaries": [
+    "Two identical isolated passes executed the original S1/S2 selector and current-message context methods against the 2x2 transport tree, 34 registered receiver instances, 16 original runtime assemblies per pass and 53-message schedules.",
+    "The 11,310 placements cover 848 selected and 848 repeated selections per pass with 26 selected receiver types; private reads and public Finish delimit the probe. IsDoWork/DoWork, production Task waits, real UI, SQL, VM, device, full MSBuild/Fody and deployment remain unexecuted.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

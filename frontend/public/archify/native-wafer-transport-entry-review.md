@@ -1,0 +1,37 @@
+# 原晶圆与传输任务入口复核
+
+两轮各660项检查通过，共1320项。来源台账10974+191=11165，425个父级输入复用；289个声明、177份源文件、200个原IL方法、3个IL程序集。原16项目资源程序集和实际SDK在隔离进程加载，生产C#及项目文件没有修改。29组仍为partial，13项总清单保留；整体目标未完成。
+
+## 任务来源与结果
+
+每轮434个原启动创建且捕获句柄的任务：7个由原WaferSubSystemTask.Start创建，427个由原TransportTask.Start/StartDryRun创建，全部完成。另有40个显式宿主任务，通过只读Delegate.CreateDelegate绑定真实对象上的原私有Dowork，35个完成、5个故障；这40个不是原Start创建的任务。另1个公开任务持有字段的Running夹具单独记录。计入宿主后的捕获任务为469完成、5故障。
+
+35次原TransportModule.Init各有5个无条件StartNew，由原IL推算175个子任务；没有捕获这些子句柄，不能把它们加入434或分别宣称状态。原WaitAll返回，随后前置检查失败。没有S1/S2新任务或节点DoWork调用。
+
+## 晶圆入口
+
+35条原Start矩阵覆盖5种工作模式和7种初始状态。28条非离线调用在Block.StartInit→StartInitNine→ResetNineDiesData→WaferTableRealPositionToG0→get_WaferTableG0Pos读取缺失AxisX时失败；两个公开地图UI分派先出现，但回调没有执行。启动catch进入原Alarm分派，观察器读取文本后抛共享标记，停在真实UI/SQL之前。原状态保持，任务为空。7条离线调用的原坐标getter先返回零坐标，原Start确实建立LongRunning任务、设Working、清空PreviousChipName；任务等待Bond需求，由公开Stop释放。此结果不代表真实找片成功。
+
+5条直接Block.StartInit检查中4条非离线故障、1条离线成功；九宫数据及部分标志在在线故障前已重置。35个显式宿主原Dowork在无需求时等待：空AbortWaferSubThread返回而不取消；Pause后再次原Start仍提交Working并保持相同Running任务，没有重复Init。公开Stop释放这35个任务。另5个宿主任务收到需求后发现载具不存在，原报警路径在观察器标记处故障，Machine仍Working；没有执行报警后续Stop、UI或SQL。
+
+地图分派首回调故障同样早于新状态和任务。最后CompleteAdding封闭原日志队列，公开Running夹具下再次原Start先提交Working，再因原队列Add失败进入启动catch，保持同一任务；释放夹具并恢复Stop。此夹具不能算原启动创建任务。
+
+## 传输入口与状态顺序
+
+70条直接Stop状态Start矩阵覆盖5工作模式×7 LoadConfig×2配置开关。原直接Start不检查IsTransportConfigured；370个原Task.Run保持Stop并完成。None为3个通用任务，LoaderBin加料仓入/出各1个为5，普通皮带/未知999为5，Online为7，OnlineWithAutoLoader和OnlineWithAutoUnloader各6；旧LoadBeltToBond任务未创建。
+
+7组实际Pause任务共37个，重复Start保持任务引用和Pause。LoaderBin的IsAlive错误要求transferLoadBeltToDispense1Task，尽管5个料仓任务正在运行仍为false；None亦因缺少皮带入口为false，其余为true。转Working后，5种皮带出料拓扑的原TransferWaitingUnloadToUnloadBelt先记住模块状态，再读取HasMaterialInModule，之后才检查记住的NoMaterial；实际缺失WaitingUnloadSensor导致故障，经原catch返回Exception、原任务调用Machine.Stop。Online的原Stop先提交Stop，再因缺失SMEMA输出而异常，进入外层分派，任务仍完成。另2种None/LoaderBin保持等待，随后公开Stop释放；37个任务全部完成。
+
+70条TransportDomain.StartTask矩阵中35条配置关闭提前返回；35条配置开启执行原TransportModule.Init，其175个子任务仅为IL推算。28条非Dry模式在原CheckCarrierBeforeLoaderMove先读取实际出口传感器，早于LoadConfig分支而故障；7条Dry模式在原Bond.Clamp缺少皮带设置的Alarm分派处故障。Domain catch的Xtra回调被观察器跳过；没有新传输/Loader/Unloader任务。
+
+10条直接StartDryRun覆盖5模式×Stop/Pause，公开关闭S1/传输配置允许原Clamp提前返回；每条原启动2任务，共20个。原2个TU及2个完成信号在Stop/Pause/Running保护门之前提交，初始状态保持。5条Pause重启保持原Running任务引用，却在保护门前重建2个TU；转Working后观察原许可信号重置，再Stop释放。没有物理搬运。
+
+## 观察边界与证据
+
+每轮81次地图、42次Alarm、41次Xtra公开分派，46个原状态日志实体。地图及普通Xtra回调跳过，Alarm读取文本后抛标记；只读闭包检查，没有执行真实UI继续体或日志SQL消费线程。没有私有字段写入、SDK/节点替身、轴注入、物理设备、视觉/VM、完整业务循环、Retry、Machine.Start、Prepare、CleanFile或完整MSBuild/LC/Fody/部署。
+
+最终编译2ac479退出0且非零exe；bound初始9794bf/session14974、write_stdin终结3d08a6退出0；replay初始bd64f9/session54119、终结e61b94退出0。源/IL829049退出0；核心42d638退出0；18项阶段校验初始b1fe20/session33848、终结38305d退出0。冻结6268a0、绑定129223均退出0。
+
+6份候选完整保留：compile-v1/compile-v4为编译失败、未执行CLR；compile-v4的ba7c80被运行器保护门拒绝。其余4份真实CLR候选分别通过4/4/32/460项后因观察器假设失败，其中working-sensor-v6初始2160bf/session96171、终结9ded1e退出1。所有候选均未冒充通过。3份校验草稿2466bc/2c739c/38b6dd退出1保留，最终42d638通过；先前源/IL资料保留。仓库.codegraph不存在，5ddef5确认，未索引。
+
+下一步继续原Loader/Unloader启动、重置、停止保护门与首故障语义，再推进完整业务、构建部署、真实UI和设备验收。整体目标未完成。

@@ -2,11 +2,17 @@ trunk/
 data/
 output/
 .venv/
+.tools/
+backend/tools/**/bin/
+backend/tools/**/obj/
 **/__pycache__/
 **/.pytest_cache/
 **/.ruff_cache/
 **/node_modules/
 frontend/dist/
+frontend/dist-*/
+# 本地历史参考仓库不作为嵌套 Git 仓库提交。
+其他模块/
 *.log
 *.tsbuildinfo
 .env

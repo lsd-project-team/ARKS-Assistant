@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
+import time
+from collections import OrderedDict
 from pathlib import Path
 from threading import RLock
 
 from app.config import Paths, dump_json
 from app.context import fit_text, text_tokens
 from app.database import Database
+from app.memory_conflicts import review_pairs
 from app.memory_history import MemoryHistory
 from app.memory_matching import rank_memories, related_memories
 from app.models import MemoryRecord, Thread, now_iso
 from app.schemas import MemoryRestore, MemoryWrite
+from app.semantic_retrieval import SemanticRetrieval
 from app.workspace import Workspace, content_version
 
 
@@ -23,6 +28,8 @@ class MemoryService:
         self.workspace = workspace
         self.lock = RLock()
         self.history = MemoryHistory(database, workspace.id)
+        self.retrieval = SemanticRetrieval(paths.data / "retrieval.sqlite3")
+        self.semantic_reviews = OrderedDict()
 
     def folder(self, scope: str) -> Path:
         folder = self.paths.memories / (self.workspace.id if scope == "project" else "user")
@@ -66,6 +73,18 @@ class MemoryService:
             source_thread = row.source_thread_id if row else None
             source = session.get(Thread, source_thread) if source_thread else None
             source_status = source.state if source else "deleted" if source_thread else None
+            lifecycle = row.lifecycle if row else "valid"
+            metadata_version = content_version(
+                dump_json(
+                    {
+                        "content": content_version(data),
+                        "lifecycle": lifecycle,
+                        "sources": sources,
+                        "thread": source_thread,
+                        "updated_at": row.updated_at if row else None,
+                    }
+                ).encode()
+            )
         checked = []
         for source in sources:
             try:
@@ -74,23 +93,110 @@ class MemoryService:
             except (ValueError, OSError):
                 stale = True
             checked.append({**source, "stale": stale})
+        effective = (
+            "invalid"
+            if lifecycle == "invalid"
+            else "needs_review"
+            if any(item["stale"] for item in checked)
+            else lifecycle
+        )
         return {
             "name": name,
             "scope": scope,
             "content": data.decode("utf-8"),
             "version": content_version(data),
+            "record_version": metadata_version,
             "source_thread_id": source_thread,
             "source_thread_status": source_status,
             "sources": checked,
             "updated_at": target.stat().st_mtime,
+            "lifecycle": effective,
+            "saved_lifecycle": lifecycle,
         }
 
     def save(self, request: MemoryWrite) -> dict:
         return self._write(request)
 
+    @staticmethod
+    def review_key(request):
+        return content_version(
+            request.model_dump_json(
+                include={"name", "scope", "content", "version", "record_version"}
+            ).encode()
+        )
+
     def review(self, request: MemoryWrite) -> list[dict]:
         with self.lock:
-            return related_memories(self.list(), request)
+            matches = related_memories(
+                [row for row in self.list() if row["lifecycle"] != "invalid"], request
+            )
+            cached = self.semantic_reviews.get(self.review_key(request))
+            if cached and time.monotonic() - cached[0] < 300:
+                merged = {row["name"]: row for row in matches}
+                for row in cached[1]:
+                    if row["name"] not in merged or row["kind"] == "conflict":
+                        merged[row["name"]] = row
+                return list(merged.values())
+            return matches
+
+    async def semantic_review(self, request, model=None, emit=None):
+        available = await asyncio.to_thread(self.list)
+        candidates = [
+            row
+            for row in available
+            if row["scope"] == request.scope
+            and row["name"] != request.name
+            and row["lifecycle"] != "invalid"
+        ]
+        scores = (
+            await asyncio.to_thread(
+                self.retrieval.scores,
+                request.content,
+                {row["name"]: row["content"] for row in candidates},
+            )
+            if candidates
+            else {}
+        )
+        candidates = sorted(
+            [row for row in candidates if scores.get(row["name"], 0) >= 0.5],
+            key=lambda row: -scores[row["name"]],
+        )[:5]
+        checked = {}
+        if candidates and model is not None:
+            try:
+                checked, response = await review_pairs(model, request.content, candidates)
+                if emit:
+                    from app.provider_usage import reported_usage
+
+                    emit("provider_usage", {**reported_usage(response), "purpose": "memory_review"})
+            except Exception:
+                checked = {}
+        rows = []
+        for row in candidates:
+            result = checked.get(
+                row["name"], {"relation": "unknown", "reason": "自然语言条件尚未核实"}
+            )
+            if result["relation"] == "compatible":
+                continue
+            rows.append(
+                {
+                    **row,
+                    "kind": "conflict" if result["relation"] == "conflict" else "similar",
+                    "reason": (
+                        "AI 发现潜在矛盾，需人工核对："
+                        if result["relation"] == "conflict"
+                        else "含义相关，需复核："
+                    )
+                    + result["reason"],
+                    "basis": "semantic_review",
+                }
+            )
+        with self.lock:
+            key = self.review_key(request)
+            self.semantic_reviews[key] = (time.monotonic(), rows)
+            while len(self.semantic_reviews) > 64:
+                self.semantic_reviews.popitem(last=False)
+        return await asyncio.to_thread(self.review, request)
 
     def _write(self, request: MemoryWrite, *, sources_override=None, action=None) -> dict:
         if not request.content.strip():
@@ -103,7 +209,21 @@ class MemoryService:
             )
             if current_version != request.version:
                 raise ValueError("记忆已被更新，请重新打开后编辑")
+            if request.record_version and (
+                not target.exists()
+                or self.read(request.scope, request.name)["record_version"]
+                != request.record_version
+            ):
+                raise ValueError("记忆状态或来源已更新，请重新打开后编辑")
             matches = self.review(request)
+            for match in matches:
+                if match.get("basis") == "semantic_review":
+                    current = self.read(match["scope"], match["name"])
+                    if (
+                        current["record_version"] != match["record_version"]
+                        or current["lifecycle"] != match["lifecycle"]
+                    ):
+                        raise ValueError("相关记忆已更新，请重新复核后保存")
             duplicates = [row["name"] for row in matches if row["kind"] == "duplicate"]
             if duplicates:
                 raise ValueError(f"内容已保存在 {', '.join(duplicates)}，请编辑已有记忆")
@@ -125,6 +245,11 @@ class MemoryService:
                 ]
             )
             previous = self.read(request.scope, request.name) if target.exists() else None
+            if not request.confirm_conflicts and any(
+                row.get("basis") == "semantic_review" and row["kind"] == "similar"
+                for row in matches
+            ):
+                request = request.model_copy(update={"lifecycle": "needs_review"})
             temporary = target.with_suffix(".tmp")
             # 字节写入保留 CRLF / LF；历史恢复不能经过 Windows 文本换行转换。
             temporary.write_bytes(request.content.encode("utf-8"))
@@ -160,6 +285,7 @@ class MemoryService:
             session.add(row)
         row.source_thread_id = request.source_thread_id
         row.source_paths_json = dump_json(sources)
+        row.lifecycle = request.lifecycle
         row.updated_at = now_iso()
 
     def delete(self, scope: str, name: str, version: str):
@@ -191,9 +317,11 @@ class MemoryService:
                     scope=scope,
                     content=revision["content"],
                     version=request.version,
+                    record_version=request.record_version,
                     source_thread_id=revision["source_thread_id"],
                     confirm_conflicts=request.confirm_conflicts,
                     reviewed_versions=request.reviewed_versions,
+                    lifecycle=revision.get("lifecycle", "valid"),
                 ),
                 sources_override=revision["sources"],
                 action="restored",
@@ -202,9 +330,23 @@ class MemoryService:
     def prompt_snapshot(
         self, query: str | None = None, *, max_tokens: int = 8000
     ) -> tuple[str, list[dict]]:
-        rows = list(rank_memories(self.list(), query))
+        available = self.list()
+        available = [row for row in available if row["lifecycle"] != "invalid"]
+        semantic = (
+            self.retrieval.scores(
+                query,
+                {
+                    f"{row['scope']}/{row['name']}": row["name"] + "\n" + row["content"]
+                    for row in available
+                },
+            )
+            if query
+            else {}
+        )
+        rows = list(rank_memories(available, query, semantic))
         chunks = [
-            f"[{row['scope']}/{row['name']}]\n源码来源：{dump_json(row['sources'])}\n"
+            f"[{row['scope']}/{row['name']}]\n记忆状态：{row['lifecycle']}"
+            f"（needs_review 不能当作已核实事实）\n源码来源：{dump_json(row['sources'])}\n"
             + (
                 f"记忆核对：相关条目包括 {', '.join(row['conflicts'][:5])}，"
                 f"共 {len(row['conflicts'])} 条同字段不同值，回答前需核对。\n"
@@ -225,9 +367,7 @@ class MemoryService:
                 continue
             chosen = fit_text(chunk, remaining)
             accepted.append(chosen)
-            included.append(
-                {**row, "partial": len(chosen) < len(chunk), "injected_text": chosen}
-            )
+            included.append({**row, "partial": len(chosen) < len(chunk), "injected_text": chosen})
         return "\n\n".join(accepted), included
 
     def prompt(self) -> str:

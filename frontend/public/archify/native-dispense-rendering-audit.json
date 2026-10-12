@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-background-rendering-snapshot-and-gdi-lifecycle-native-preparation-passed",
+  "command": "node scripts/verify-native-dispense-rendering.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "bc89d3",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-dispense-rendering.log",
+  "logSha256": "45dbbd6b1cc71e5c3c3254c18f6b84e0d5aea51f2cbf1c2844f5c7bef40127e7",
+  "testSha256": "73cd6a06b8622f10ecf66d80228e2bca2c4c0922a5022d9480b8d9cafcfbf96b",
+  "parentValidation": {
+    "command": "guarded original dispense control → encoding-preserving resources validation pipeline",
+    "observedSession": 98065,
+    "observedCompletionChunk": "d5dc69",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-dispense-control.cjs",
+        "log": ".archify-work/native-dispense-rendering/parent-control-verification.log",
+        "sha256": "eb9f52f9c399ff97e8af27faafed08ccd0dd197efa9a918d87cfdf4afd671c21"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-dispense-rendering/parent-resources-verification.log",
+        "sha256": "b4f55d80e8bb696722d21257a5878399bf7c198aebeb1e15ea8edc7991090769"
+      }
+    ]
+  },
+  "acceptedProcesses": 2,
+  "checksPerPass": 42,
+  "distinctLabels": 42,
+  "selectedMethods": 45,
+  "selectedTypeMetadata": 6,
+  "originalSources": 12,
+  "actualPngFilesPerPass": 14,
+  "newFrozenInputs": 163,
+  "totalFrozenBindings": 6326,
+  "wholeGoalComplete": false,
+  "diagnostics": {
+    "failedCompile": {
+      "chunk": "ac02b0",
+      "compilerStatus": "failed",
+      "wrapperExitCode": 1,
+      "clrExecuted": false,
+      "cause": "Probe Action lambda used bare Matrix.Elements property expression; zero emit preserved and guarded skip."
+    },
+    "failedNativeAssertions": [
+      {
+        "chunk": "2b98e3",
+        "phase": "primary",
+        "checks": 16,
+        "cause": "Probe exact pure blue count incorrect for actual antialias blended outline pixels; image inspected; fixed red/blue dominant channel delta >30."
+      },
+      {
+        "chunk": "d43ef8",
+        "phase": "primary-v2",
+        "checks": 20,
+        "cause": "Probe assumed base OnPaint leaves untouched target magenta; native vendor base produces240 gray before public Paint callback. Callback same exception and Lime pixels correctly expose later cached background not drawn."
+      },
+      {
+        "chunk": "8cbeb0",
+        "phase": "primary-v3",
+        "checks": 21,
+        "cause": "Probe expected Graphics.SmoothingMode getter HighQuality; actual GDI getter AntiAlias after HighQuality set; caller transform retained1/2."
+      },
+      {
+        "chunk": "113559",
+        "phase": "primary-v4",
+        "checks": 21,
+        "cause": "Probe incorrectly expected PixelOffsetMode.Half despite actual getter HighQuality; explicit direct original drawing delegate separates original cache method from vendor base, corrected to observed HighQuality."
+      }
+    ],
+    "acceptedCompileAndPrimary": {
+      "chunk": "794e3b",
+      "exitCode": 0,
+      "checks": 42
+    },
+    "replayCompileRuntime": {
+      "chunk": "cd6d45",
+      "exitCode": 0,
+      "checks": 42
+    },
+    "finalIl": {
+      "chunk": "0da7ad",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 98065,
+      "chunk": "d5dc69",
+      "exitCode": 0
+    }
+  }
+}

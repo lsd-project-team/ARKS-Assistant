@@ -1,0 +1,103 @@
+/* 欢迎页占满可用阅读区，居中随面板变化；历史消息沿用原来的滚动排版。 */
+.app-shell .chat-pane[data-empty='true'] .chat-scroll {
+  display: flex;
+  flex-direction: column;
+  padding-block: 24px;
+}
+.app-shell .chat-pane[data-empty='true'] .chat-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.app-shell .chat-welcome {
+  display: grid;
+  flex: 1;
+  /* 图标与标题独立居中，下面的推荐问题不会把视觉中心挤到上方。 */
+  grid-template-rows: minmax(24px, 1fr) auto minmax(min-content, 1fr);
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+.welcome-hero {
+  grid-row: 2;
+  width: 100%;
+  min-width: 0;
+}
+.welcome-support {
+  grid-row: 3;
+  align-self: start;
+  min-width: 0;
+}
+.welcome-mark {
+  display: block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin: 0 auto 22px;
+}
+.app-shell .chat-welcome h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.app-shell .chat-welcome p {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  text-wrap: balance;
+}
+.welcome-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 28px;
+}
+.welcome-suggestions button {
+  min-width: 0;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.welcome-suggestions button:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-subtle);
+  color: var(--text);
+}
+.welcome-suggestions button:active {
+  background: var(--selection-background);
+}
+.app-shell .chat-pane[data-empty='true'] .composer-area {
+  background: transparent;
+}
+/* 分屏变窄时允许按钮自然换行，标题保持可读字号，不能拉伸或截断。 */
+@container (max-width: 440px) {
+  .app-shell .chat-welcome h2 {
+    font-size: 22px;
+  }
+  .app-shell .chat-welcome p {
+    font-size: 13px;
+  }
+  .welcome-suggestions {
+    gap: 6px;
+    margin-top: 22px;
+  }
+  .welcome-suggestions button {
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+}

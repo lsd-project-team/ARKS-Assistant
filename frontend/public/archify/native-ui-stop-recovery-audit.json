@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "status": "exact-original-native-ui-stop-recovery-and-source-bindings-passed",
+  "command": "node .archify-work/capture-native-ui-stop-recovery-bindings.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "0807fd",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-ui-stop-recovery-bindings.log",
+  "logSha256": "eedb29b7b5221c39b585ca68b68516dd0300d361125ff7a9f840097fccdc5401",
+  "testSha256": "c7ed75e19d2a66f2315c9c5eeb6a048291e07ec5036c980f38bc57bcc5f0bfb3",
+  "freeze": {
+    "observedCompletionChunk": "a1d934",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "prepare": {
+    "observedSession": null,
+    "observedCompletionChunk": "081365",
+    "observedExitCode": 0
+  },
+  "compile": {
+    "observedSession": null,
+    "observedCompletionChunk": "0d1833",
+    "observedExitCode": 0
+  },
+  "bound": {
+    "observedSession": 12843,
+    "observedCompletionChunk": "73c4d8",
+    "observedExitCode": 0,
+    "observedInitialChunk": "b81718"
+  },
+  "replay": {
+    "observedSession": 10219,
+    "observedCompletionChunk": "78f295",
+    "observedExitCode": 0,
+    "observedInitialChunk": "a6a944"
+  },
+  "preRuntimeIl": {
+    "observedSession": null,
+    "observedCompletionChunk": "710291",
+    "observedExitCode": 0
+  },
+  "il": {
+    "observedSession": null,
+    "observedCompletionChunk": "710291",
+    "observedExitCode": 0
+  },
+  "sourceEvidence": {
+    "observedSession": null,
+    "observedCompletionChunk": "5cbbdc",
+    "observedExitCode": 0
+  },
+  "coreVerification": {
+    "observedSession": null,
+    "observedCompletionChunk": "c098c2",
+    "observedExitCode": 0
+  },
+  "stageVerification": {
+    "observedSession": 87944,
+    "observedCompletionChunk": "994546",
+    "observedExitCode": 0,
+    "observedInitialChunk": "fdd592",
+    "steps": [
+      {
+        "name": "recipe-ui-reload-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-recipe-ui-reload-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/recipe-ui-reload-parent-verification.log",
+        "logSha256": "637e426a03d18acc83e8b5930daf675367831d0f122021c39587b83cd642f936",
+        "stderr": ".archify-work/native-ui-stop-recovery/recipe-ui-reload-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "recipe-live-reload-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-recipe-live-reload-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/recipe-live-reload-parent-verification.log",
+        "logSha256": "533e7e757a4fa4635c079cdbabeed1a4c054ec6062b5f33d392bf74bc54def7a",
+        "stderr": ".archify-work/native-ui-stop-recovery/recipe-live-reload-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "transport-environment-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-transport-environment-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/transport-environment-parent-verification.log",
+        "logSha256": "7885017bf83bfbf9cfc761dc7a8c3374f89b71b7e1101ce8e5609d5e89d1f67d",
+        "stderr": ".archify-work/native-ui-stop-recovery/transport-environment-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "inout-handshake-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-inout-handshake-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/inout-handshake-parent-verification.log",
+        "logSha256": "9ed264474a37b705a43b39638778f9f7b5b8d3a27ff4b16afc16eea918da5629",
+        "stderr": ".archify-work/native-ui-stop-recovery/inout-handshake-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "bin-handshake-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-bin-handshake-readiness-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/bin-handshake-parent-verification.log",
+        "logSha256": "3363783a70445d6af8c4103749f3ace5e53af4a7eede0170f7a9b0db0eda133f",
+        "stderr": ".archify-work/native-ui-stop-recovery/bin-handshake-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "loader-unloader-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-loader-unloader-entry-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/loader-unloader-parent-verification.log",
+        "logSha256": "30f464b3a3f045cd769238676ffc59ae4c7a4504ce7f3d6517cdf04d769f4d85",
+        "stderr": ".archify-work/native-ui-stop-recovery/loader-unloader-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "wafer-transport-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-wafer-transport-entry-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/wafer-transport-parent-verification.log",
+        "logSha256": "630501b1f9a1032320b6abac3a7f135604b584547a7a7ae6cd42c221ada0642a",
+        "stderr": ".archify-work/native-ui-stop-recovery/wafer-transport-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "aux-task-entry-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-aux-task-entry-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/aux-task-entry-parent-verification.log",
+        "logSha256": "c6c74ae310a4934d404ac94e6137719d6619357b8c77736484fc89cfa38c4e17",
+        "stderr": ".archify-work/native-ui-stop-recovery/aux-task-entry-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "s2-task-entry-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-s2-task-entry-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/s2-task-entry-parent-verification.log",
+        "logSha256": "119be27eed165e969209d6567e2ce6ff5e9dbaa6dc3e2515892e45beeaa8a5d4",
+        "stderr": ".archify-work/native-ui-stop-recovery/s2-task-entry-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "task-closure-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-machine-task-closure-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/task-closure-parent-verification.log",
+        "logSha256": "f2f433a7e0be36b81cf8c44f4cec23015525878b0c54d7206bceb14ac6029fcb",
+        "stderr": ".archify-work/native-ui-stop-recovery/task-closure-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "machine-environment-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-machine-environment-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/machine-environment-parent-verification.log",
+        "logSha256": "85f16ec50b5542e133e0e81560a7d9d475bc8a7641e8d3381679ba779ab0e8a3",
+        "stderr": ".archify-work/native-ui-stop-recovery/machine-environment-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "carrier-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-carrier-readiness-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/carrier-parent-verification.log",
+        "logSha256": "dc6fd677517c9e6760ec0fc531ac99bd8acc753020038cca7ed7d24316c5d600",
+        "stderr": ".archify-work/native-ui-stop-recovery/carrier-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "s2-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-s2-readiness-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/s2-parent-verification.log",
+        "logSha256": "88ff3f5ead0cf7ec352541c87614039335f2fc09fdbb2d0f898a598208dba229",
+        "stderr": ".archify-work/native-ui-stop-recovery/s2-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "inspection-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-inspection-readiness-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/inspection-parent-verification.log",
+        "logSha256": "cebd256e3b4d6f1c7cf0988bc2842f471cabcb57ebd0107998da7e39a2bcdb32",
+        "stderr": ".archify-work/native-ui-stop-recovery/inspection-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "defect-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-s1-defect-outcomes-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/defect-parent-verification.log",
+        "logSha256": "2822d81a5605a22700c5636a419c34561b026e24ace2fdd55831027fcb1b6149",
+        "stderr": ".archify-work/native-ui-stop-recovery/defect-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "recovery-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-s1-stop-recovery-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/recovery-parent-verification.log",
+        "logSha256": "66fdf23ab3cfdde2a8f0eebb3f51db1cd83c214e557a743c99134f323115b074",
+        "stderr": ".archify-work/native-ui-stop-recovery/recovery-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "step-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-s1-step-commit-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/step-parent-verification.log",
+        "logSha256": "f675ab8d5584f179c02369e247157064fa9a09c29300783e3dc7c865213af5fd",
+        "stderr": ".archify-work/native-ui-stop-recovery/step-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "task-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-s1-task-loop-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/task-parent-verification.log",
+        "logSha256": "36374fd4ba9ac9f162b4b1dfcb2f9d9fc192abac097857199e7701fbc507421c",
+        "stderr": ".archify-work/native-ui-stop-recovery/task-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "node-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-node-preconditions-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/node-parent-verification.log",
+        "logSha256": "4a07b77d1ae7113840c6a90c851543faafa87d725a2b61987363db2ad910059c",
+        "stderr": ".archify-work/native-ui-stop-recovery/node-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "recipe-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-recipe-action-selection-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/recipe-parent-verification.log",
+        "logSha256": "61fd360f1c13420cc3fde8b3e7dac600ee5424d8bda0f53fc238d95a5df7cb47",
+        "stderr": ".archify-work/native-ui-stop-recovery/recipe-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "native-selection",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-ui-stop-recovery.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/native-selection-verification.log",
+        "logSha256": "59d1e8733ef1e093a4acbc56e75c9e4f58b2fbbcccd143d2a9964bb0ffb1d660",
+        "stderr": ".archify-work/native-ui-stop-recovery/native-selection-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "action-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-action-selection-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/action-parent-verification.log",
+        "logSha256": "7b4bc8411a1eced99e29c946fdafa8e1a2ca8b9fa2d1ad91434454a134bdc5f7",
+        "stderr": ".archify-work/native-ui-stop-recovery/action-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "algorithm-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-algorithm-selection-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/algorithm-parent-verification.log",
+        "logSha256": "77f24935b570cb6717561fb6ee64b412d26d36cd7ad6b462691d3ad365b037c4",
+        "stderr": ".archify-work/native-ui-stop-recovery/algorithm-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "reader-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-dispatch-source-reader-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/reader-parent-verification.log",
+        "logSha256": "b15ee21c5dd410b0d8d4380a6c4bfcb42ae6e809c567fab7b051f88d58d132b7",
+        "stderr": ".archify-work/native-ui-stop-recovery/reader-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "virtual-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-provenance-bindings.cjs",
+        "log": ".archify-work/native-ui-stop-recovery/virtual-parent-verification.log",
+        "logSha256": "0a46b2d374843671a50f8729d839528e0db6077dc64ceb51043a23355e0f70aa",
+        "stderr": ".archify-work/native-ui-stop-recovery/virtual-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      }
+    ]
+  },
+  "candidates": [
+    {
+      "directory": ".archify-work/native-ui-stop-recovery-failed-compile-3de18e",
+      "observedSession": null,
+      "observedCompletionChunk": "3de18e",
+      "observedExitCode": 1,
+      "reason": "Compiler rejected nonexistent infrastructure namespace import; repaired import only and host assembly name. No CLR. Runner27c2aa rejected compile before spawn. Source1ec08d and pre-IL629604 retained."
+    }
+  ],
+  "preparationFailures": [
+    {
+      "observedCompletionChunk": "27c2aa",
+      "observedExitCode": 1,
+      "reason": "Deliberate runner check stopped at failed compile status; no child CLR process or phase directory."
+    },
+    {
+      "observedCompletionChunk": "b94965",
+      "observedExitCode": 1,
+      "reason": "Readonly rg command used invalid Windows wildcard path after reading known source. Repeated using directory -g; no file mutation or runtime action."
+    }
+  ],
+  "codegraph": {
+    "observedCompletionChunk": "7344a7",
+    "exists": false,
+    "indexingRequested": false
+  },
+  "evidenceExtension": {
+    "reason": "125 originalIL/7assemblies captured before both successful runs, including real UI cancel/state routines, closure and original SDK PerformClick.346source declarations230files. Accepted runtime hosts not rerun after readonly verifier."
+  },
+  "diagnosticEvidence": {
+    "publicPerformClickMetadataReceipt": "82ccf9",
+    "firstResultProjectionReceipt": "0c4349",
+    "finalPreRuntimeIlReceipt": "710291",
+    "publicHeldFixtureTaskStates": 8,
+    "publicHolderRows": 256,
+    "actualMachineStateValues": 6,
+    "stateTransitionRows": 12,
+    "originalBusinessTasksPerPass": 1,
+    "originalBusinessFaultedTasksPerPass": 1,
+    "actualPublicWorkStartFaultBeforeNodeBody": true,
+    "actualCancelEventsPerPass": 261,
+    "actualOriginalStateLogsPerPass": 261,
+    "actualRefreshCallsPerPass": 570,
+    "recipeFailureRows": 4,
+    "stickyStopTipRestoresPartialPrFalseRows": 1,
+    "actualLoadRecipeModalExecuted": false,
+    "actualSecondaryLoadEmptyHandlerExecuted": true,
+    "physicalUiClicksExecuted": false,
+    "publicPerformClickIsProgrammatic": true,
+    "sourceAndProjectEdits": false,
+    "allFixtureAndBusinessTasksTerminal": true,
+    "originalSdkInfrastructureWorkerHandlesCaptured": false,
+    "originalSdkInfrastructureWorkerGracefulStopProved": false,
+    "fixedDirectoryPreexistsAcceptedRuns": true,
+    "originalRuntimeMap172Unchanged": true
+  },
+  "verifierDrafts": [],
+  "failedStage": null,
+  "verifierDraft": null,
+  "newFrozenInputs": 155,
+  "reusedParentInputs": 481,
+  "totalFrozenBindings": 12534,
+  "actualRecipeHelperExecuted": true,
+  "actualUiEntryExecuted": true,
+  "actualMachineStopExecuted": true,
+  "actualLogQueueConsumerExecuted": false,
+  "productionTaskExecuted": true,
+  "nodeDoWorkExecuted": true,
+  "nodeDoWorkBodyPassedWorkStart": false,
+  "wholeGoalComplete": false
+}

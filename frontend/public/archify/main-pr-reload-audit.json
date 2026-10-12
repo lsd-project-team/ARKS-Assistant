@@ -1,0 +1,94 @@
+{
+  "schema": "archify-main-pr-reload-audit-v1",
+  "status": "source-confirmed-partial",
+  "recordedAt": "2026-10-06T21:33:16.404Z",
+  "sourceHashes": {
+    "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs": "db4a0051b926beeda4b85fe2905acbf2e630a3bedf47545c3347e1134b19dfe9",
+    "AKRS.ZX2200/BondSystem/Services/System2CommonService.cs": "7a3d083178ed6539cf073fb76cd56a7fd22eff84aea7d712da62a9307c0bb7d6",
+    "AKRS.ZX2200/DispenseSystem/Models/DispensePara/DispenseRunTimeProvider.cs": "105e1dd97059728f5f5beeb24d0a59ca173c341e35d7b5404827aeb42addd2be",
+    "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+    "AKRS.Galaxy2.PR/Models/Entities/PREntity.cs": "6debe43da1428a6c964d9c02abac0e114c7d358018ea9a5a8587128ef5f606f9",
+    "AKRS.Galaxy2.PR/Models/Algs/BaseAlg.cs": "cb1606008b4a44b2adc0f119b526aae44596f5b23e2a048ccd8e971383862be5",
+    "AKRS.Galaxy2.PR/Resipository/VisionEntityRepository.cs": "79e066c4bc381c44dc132f277365a0111fc656e1adb41566a4df35c68305f9a6"
+  },
+  "entry": {
+    "file": "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+    "reloadRecipeLine": 137,
+    "currentPrListLine": 171,
+    "initVmProcedureLine": 178,
+    "dispenseLoadLine": 187,
+    "conclusion": "missing PREntity is logged and skipped; InitVmProcedure catches and logs internally; PrInitSuccess is set after the loop; LoadDispensePr has no executable statements"
+  },
+  "currentPrList": {
+    "file": "AKRS.ZX2200/BondSystem/Services/System2CommonService.cs",
+    "line": 37,
+    "sources": [
+      "wafer component carriers when allocations config exists",
+      "wafer ejection names when bank config exists",
+      "post-bond inspection names",
+      "nozzle PR names",
+      "opposite-sex locate names or standard TU/substrate/module/single-bond-position locate names",
+      "literal IPTCenterCircle"
+    ],
+    "failure": "catch shows a message and executes throw ex, which rethrows with a reset stack boundary"
+  },
+  "loadDispensePr": {
+    "file": "AKRS.ZX2200/DispenseSystem/Models/DispensePara/DispenseRunTimeProvider.cs",
+    "line": 85,
+    "executableStatementsAfterCommentRemoval": 0,
+    "conclusion": "the intended clone-and-hardware-copy implementation is entirely commented out; current call is a no-op"
+  },
+  "copyOldRecipePr": {
+    "file": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+    "line": 1081,
+    "steps": [
+      "find old recipe ID and temporarily point ProductConfiguration.FilePath into RecipeRootDirPath/<recipeID>",
+      "clear ProductConfiguration singleton and build opposite-sex or fixed-name PR candidate list",
+      "restore default ProductConfiguration path and clear singleton again",
+      "scan PRVisionList using exact name equality",
+      "replace oldName with newName, call PREntity.CopyPREntity for every match, then save repository"
+    ],
+    "fixedNameCount": 17,
+    "oppositeSexMarksPerLocate": 4,
+    "perBondPositionNames": 5,
+    "uncheckedResults": [
+      "GetRecipeIDByName(...).ToString()",
+      "PREntity.CopyPREntity return value",
+      "CopyFile/Clone/InitVmProcedure failures"
+    ],
+    "fileEffects": "CopyPREntity copies the source .prc before cloning and adding the new entity; Delete/Save behavior remains external"
+  },
+  "copyPreEntity": {
+    "file": "AKRS.Galaxy2.PR/Models/Entities/PREntity.cs",
+    "line": 740,
+    "steps": [
+      "Find source entity; return null when absent",
+      "copy source .prc to destination name",
+      "clone entity and assign algorithm name",
+      "call InitVmProcedure",
+      "set entity name and add to repository"
+    ],
+    "failure": "no catch at this method; lower InitVmProcedure catches its own failures"
+  },
+  "initVmProcedure": {
+    "file": "AKRS.Galaxy2.PR/Models/Algs/BaseAlg.cs",
+    "line": 291,
+    "steps": [
+      "lock shared algorithm gate",
+      "use local saved .prc when present",
+      "otherwise load SourcePR template based on AlgFlowType",
+      "assign VmProcedureName, ProcedureParam, ImageSourceModuleTool and SaveImageTool"
+    ],
+    "failure": "catch logs and swallows exception, so caller cannot distinguish successful load from a failed initialization by return value"
+  },
+  "repository": {
+    "file": "AKRS.Galaxy2.PR/Resipository/VisionEntityRepository.cs",
+    "findLine": 136,
+    "replaceSemantics": "AddVisionEntity removes an existing same-name entity before adding the new one"
+  },
+  "boundaries": [
+    "Source facts are bound to current trunk hashes and line anchors.",
+    "No production PR repository, VM solution, .prc file, UI, SDK or device was invoked in this audit.",
+    "The Main module remains partial; PrInitSuccess does not prove every listed PR loaded successfully."
+  ]
+}

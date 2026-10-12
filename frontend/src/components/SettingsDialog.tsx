@@ -1,74 +1,81 @@
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, Cable, Cpu, HardDrive, Download, LoaderCircle } from 'lucide-react';
-import { api, jsonBody } from '../lib/api';
-import type { Settings, ModelSettings } from '../types';
-import { Button, Modal, ErrorText } from './ui';
+import { BookOpen, Brain, Cable, Check, Cpu, HardDrive, LoaderCircle, Palette } from 'lucide-react';
+import { useSettingsDraft } from '../hooks/useSettingsDraft';
+import { Button, ErrorText, Modal } from './ui';
+import { ModelSettingsPanel } from './ModelSettingsPanel';
+import { McpSettingsPanel } from './McpSettingsPanel';
+import { SettingsDataPanel } from './SettingsDataPanel';
+import { UnsavedNotice } from './UnsavedNotice';
+import { ConfirmationNotice } from './ConfirmationNotice';
+import { AppearanceSettings } from './AppearanceSettings';
+import { MemorySettingsPanel } from './MemorySettingsPanel';
+import { useMemoryDraft } from '../hooks/useMemoryDraft';
+import { useSourcePreferences } from '../hooks/useSourcePreferences';
+import { KnowledgeSourceSettings } from './KnowledgeSourceSettings';
 
-export function SettingsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const cache = useQueryClient();
-  const saved = useQuery({ queryKey: ['settings'], queryFn: () => api<Settings>('/settings') });
-  const [settings, setSettings] = useState<Settings>();
-  const [mcp, setMcp] = useState('[]');
-  const [tab, setTab] = useState('model');
-  const [busy, setBusy] = useState(false);
-  const [feedback, setFeedback] = useState('');
-  const [error, setError] = useState<unknown>();
+export function SettingsDialog({
+  open,
+  onClose,
+  initialTab = 'model',
+}: {
+  open: boolean;
+  onClose: () => void;
+  initialTab?: string;
+}) {
+  const [tab, setTab] = useState(initialTab);
+  const [advancedDirty, setAdvancedDirty] = useState(false);
+  const [mcpEditorVersion, setMcpEditorVersion] = useState(0);
+  const controller = useSettingsDraft(open, onClose, advancedDirty);
+  const memoryController = useMemoryDraft(open && tab === 'memory', closeSettings);
+  const sourceController = useSourcePreferences(open && tab === 'sources');
+  const configurationTab = tab === 'model' || tab === 'mcp' || tab === 'data';
+  // 未应用的 JSON 也是草稿，切换标签页前要避免把它留在已卸载的编辑器里。
+  const [pendingTab, setPendingTab] = useState<string>();
   useEffect(() => {
-    if (open && saved.data && !settings) {
-      setSettings(structuredClone(saved.data));
-      setMcp(JSON.stringify(saved.data.mcp_servers, null, 2));
-      setFeedback('');
-      setError(undefined);
+    if (open) setTab(initialTab);
+    else {
+      setAdvancedDirty(false);
+      setPendingTab(undefined);
     }
-  }, [open, saved.data, settings]);
-  function modelChange<K extends keyof ModelSettings>(name: K, value: ModelSettings[K]) {
-    setSettings((current) =>
-      current ? { ...current, model: { ...current.model, [name]: value } } : current,
-    );
-  }
-  async function save() {
-    if (!settings) return;
-    const updated = { ...settings, mcp_servers: JSON.parse(mcp) };
-    const response = await api<Settings>('/settings', {
-      method: 'PUT',
-      body: jsonBody({ settings: updated }),
-    });
-    cache.setQueryData(['settings'], response);
-    setFeedback('配置已保存');
-  }
-  async function perform(action: () => Promise<void>) {
-    setBusy(true);
-    setError(undefined);
-    setFeedback('');
-    try {
-      await action();
-    } catch (reason) {
-      setError(reason);
-    } finally {
-      setBusy(false);
+  }, [open, initialTab]);
+  const { draft, busy } = controller;
+  function closeSettings() {
+    if (advancedDirty) {
+      setPendingTab('close');
+      return;
     }
+    sourceController.leave(controller.close);
   }
   return (
     <Modal
       open={open}
-      onClose={() => {
-        setSettings(undefined);
-        onClose();
-      }}
+      onClose={memoryController.close}
       title="工作区设置"
-      description="模型连接、知识来源与本地数据"
+      className="settings-dialog"
+      description="外观、模型配置、知识来源、长期记忆与本地数据"
     >
       <div className="dialog-tabs">
         {[
+          { id: 'appearance', title: '外观', icon: Palette },
           { id: 'model', title: '模型', icon: Cpu },
           { id: 'mcp', title: 'MCP', icon: Cable },
+          { id: 'sources', title: '知识来源', icon: BookOpen },
+          { id: 'memory', title: '长期记忆', icon: Brain },
           { id: 'data', title: '数据', icon: HardDrive },
         ].map((item) => (
           <button
             key={item.id}
             className={tab === item.id ? 'selected' : ''}
-            onClick={() => setTab(item.id)}
+            disabled={busy || memoryController.busy || sourceController.busy}
+            onClick={() => {
+              if (tab === item.id) return;
+              memoryController.leave(() => {
+                sourceController.leave(() => {
+                  if (advancedDirty) setPendingTab(item.id);
+                  else setTab(item.id);
+                });
+              });
+            }}
           >
             <item.icon size={14} />
             {item.title}
@@ -76,191 +83,137 @@ export function SettingsDialog({ open, onClose }: { open: boolean; onClose: () =
         ))}
       </div>
       <div className="dialog-body">
-        {settings && tab === 'model' && (
-          <div className="settings-fields">
-            <label>
-              接口协议
-              <select
-                value={settings.model.protocol}
-                onChange={(e) =>
-                  modelChange('protocol', e.target.value as ModelSettings['protocol'])
-                }
-              >
-                <option value="openai">OpenAI Chat Completions</option>
-                <option value="anthropic">Anthropic Messages</option>
-              </select>
-            </label>
-            <label>
-              接口地址
-              <input
-                value={settings.model.base_url}
-                onChange={(e) => modelChange('base_url', e.target.value)}
-                placeholder="https://example.com/v1"
-              />
-            </label>
-            <label>
-              模型名称
-              <input
-                value={settings.model.model}
-                onChange={(e) => modelChange('model', e.target.value)}
-              />
-            </label>
-            <label>
-              API 密钥
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={settings.model.api_key}
-                onChange={(e) => modelChange('api_key', e.target.value)}
-                placeholder={settings.model.has_api_key ? '已保存 · 留空保留当前密钥' : '输入密钥'}
-              />
-            </label>
-            <div className="field-pair">
-              <label>
-                上下文容量
-                <input
-                  type="number"
-                  min={2048}
-                  value={settings.model.context_tokens}
-                  onChange={(e) => modelChange('context_tokens', Number(e.target.value))}
-                />
-              </label>
-              <label>
-                最大回复 token
-                <input
-                  type="number"
-                  min={256}
-                  value={settings.model.output_tokens}
-                  onChange={(e) => modelChange('output_tokens', Number(e.target.value))}
-                />
-              </label>
-            </div>
-            <label>
-              压缩模型（可选）
-              <input
-                value={settings.model.summary_model}
-                onChange={(e) => modelChange('summary_model', e.target.value)}
-                placeholder="留空使用对话模型"
-              />
-            </label>
-            <Button
-              disabled={busy}
-              onClick={() =>
-                void perform(async () => {
-                  await save();
-                  const result = await api<{ reply: string }>('/settings/probe', {
-                    method: 'POST',
-                  });
-                  setFeedback(`连接成功 · ${result.reply}`);
-                })
-              }
-            >
-              <Cable size={14} />
-              保存并测试连接
-            </Button>
-          </div>
+        {tab === 'appearance' && <AppearanceSettings />}
+        {tab === 'sources' && <KnowledgeSourceSettings controller={sourceController} />}
+        {tab === 'memory' && (
+          <MemorySettingsPanel
+            controller={memoryController}
+            onNavigate={(action) => memoryController.leave(() => controller.navigate(action))}
+          />
         )}
-        {settings && tab === 'mcp' && (
-          <div className="settings-fields">
-            <label>
-              DeepWiki 仓库
-              <input
-                value={settings.deepwiki_repo}
-                onChange={(e) => setSettings({ ...settings, deepwiki_repo: e.target.value })}
-                placeholder="owner/repository"
+        {configurationTab && controller.saved.isPending && <p className="muted">正在读取设置…</p>}
+        {configurationTab && draft && (
+          <fieldset className="settings-content" disabled={busy}>
+            {tab === 'model' && (
+              <ModelSettingsPanel
+                settings={draft}
+                onChange={controller.setDraft}
+                clearKeys={controller.clearKeys}
+                onClearKeys={controller.setClearKeys}
+                probes={controller.probes}
+                busy={busy}
+                onProbe={(id) => void controller.perform(() => controller.probeModel(id))}
               />
-            </label>
-            <label>
-              MCP 服务器配置
-              <textarea
-                className="json-editor"
-                rows={12}
-                value={mcp}
-                onChange={(e) => setMcp(e.target.value)}
-                spellCheck={false}
+            )}
+            {tab === 'mcp' && (
+              <McpSettingsPanel
+                key={mcpEditorVersion}
+                settings={draft}
+                onChange={controller.setDraft}
+                probes={controller.mcpProbes}
+                busy={busy}
+                onProbe={(server) => void controller.perform(() => controller.probeMcp(server))}
+                onAdvancedDirty={(dirty) => {
+                  setAdvancedDirty(dirty);
+                  if (dirty) controller.setFeedback('');
+                }}
               />
-            </label>
-            <p className="muted">
-              支持 Streamable HTTP、SSE 和本地 stdio。headers/env 中的掩码保留已保存值。
-            </p>
-            <div className="button-row">
-              {settings.mcp_servers.map((server) => (
-                <Button
-                  key={server.id}
-                  disabled={busy}
-                  onClick={() =>
-                    void perform(async () => {
-                      await save();
-                      const result = await api<{ tools: { name: string }[] }>(
-                        `/mcp/${server.id}/probe`,
-                        { method: 'POST' },
-                      );
-                      setFeedback(`${server.name} 已连接 · ${result.tools.length} 个工具`);
-                    })
-                  }
-                >
-                  <Cable size={14} />
-                  测试 {server.name}
-                </Button>
-              ))}
-            </div>
-          </div>
+            )}
+            {tab === 'data' && (
+              <SettingsDataPanel
+                settings={draft}
+                onChange={controller.setDraft}
+                busy={busy}
+                perform={controller.perform}
+              />
+            )}
+          </fieldset>
         )}
-        {settings && tab === 'data' && (
-          <div className="settings-fields">
-            <div className="data-card">
-              <HardDrive size={22} />
-              <div>
-                <strong>对话存储在本机</strong>
-                <p>原始消息、代码选区和运行事件保存在 SQLite；上下文压缩后仍可找回原文。</p>
-              </div>
-            </div>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={settings.auto_memory}
-                onChange={(e) => setSettings({ ...settings, auto_memory: e.target.checked })}
-              />
-              允许 Agent 主动保存稳定的项目事实
-            </label>
-            <Button
-              disabled={busy}
-              onClick={() =>
-                void perform(async () => {
-                  const response = await fetch('/api/backup', { method: 'POST' });
-                  if (!response.ok) throw new Error('备份失败');
-                  const blob = await response.blob();
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.download = `trunk-agent-${new Date().toISOString().slice(0, 10)}.zip`;
-                  link.click();
-                  setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  setFeedback('备份已导出（不包含 API 密钥）');
-                })
-              }
-            >
-              <Download size={14} />
-              导出本地备份
-            </Button>
-            <p className="muted">
-              包含对话、检查点、长期记忆和压缩档案。恢复时停止服务，将内容解压至 data 目录。
-            </p>
-          </div>
+        {configurationTab && !!controller.errors.length && (
+          <ul className="settings-validation" role="alert">
+            {controller.errors.map((message) => (
+              <li key={message}>{message}</li>
+            ))}
+          </ul>
         )}
-        <ErrorText error={error || saved.error} />
-        {feedback && (
+        {tab !== 'memory' && tab !== 'sources' && (
+          <ErrorText
+            error={controller.error || controller.saved.error}
+            reveal={!!controller.error}
+          />
+        )}
+        {tab !== 'memory' && tab !== 'sources' && !!controller.error && (
+          <Button disabled={busy} onClick={controller.reload}>
+            读取最新设置
+          </Button>
+        )}
+        {tab !== 'memory' && tab !== 'sources' && controller.feedback && (
           <p className="success-text">
             <Check size={14} />
-            {feedback}
+            {controller.feedback}
           </p>
         )}
+        <UnsavedNotice guard={controller.guard} />
+        <UnsavedNotice guard={memoryController.guard} />
+        <UnsavedNotice guard={sourceController.guard} />
+        {pendingTab && (
+          <ConfirmationNotice>
+            <span>JSON 修改尚未应用到表单。</span>
+            <Button onClick={() => setPendingTab(undefined)}>继续编辑 JSON</Button>
+            <Button
+              onClick={() => {
+                const target = pendingTab;
+                setPendingTab(undefined);
+                setAdvancedDirty(false);
+                setMcpEditorVersion((version) => version + 1);
+                if (target === 'close') controller.close();
+                else setTab(target);
+              }}
+            >
+              放弃 JSON 修改
+            </Button>
+          </ConfirmationNotice>
+        )}
       </div>
-      <div className="modal-footer">
-        <span>密钥仅保存在本机配置文件</span>
-        <Button className="primary" disabled={busy || !settings} onClick={() => void perform(save)}>
-          {busy ? <LoaderCircle size={14} className="spin" /> : <Check size={14} />}保存配置
-        </Button>
+      <div className={tab === 'memory' ? 'modal-footer memory-footer' : 'modal-footer'}>
+        <span>
+          {tab === 'appearance'
+            ? '外观已自动保存到本机'
+            : tab === 'sources'
+              ? sourceController.dirty
+                ? '有未保存的知识来源修改'
+                : '按项目保存，后续新问题自动使用'
+              : tab === 'memory'
+                ? memoryController.dirty
+                  ? '有未保存的记忆修改'
+                  : '记忆保存在本机，用于后续对话'
+                : controller.dirty || advancedDirty
+                  ? '有未保存的修改'
+                  : '密钥仅保存在本机'}
+        </span>
+        {tab === 'sources' && (
+          <Button
+            className="primary"
+            disabled={sourceController.busy || !sourceController.draft}
+            onClick={() => void sourceController.save()}
+          >
+            {sourceController.busy ? (
+              <LoaderCircle size={14} className="spin" />
+            ) : (
+              <Check size={14} />
+            )}
+            保存知识来源
+          </Button>
+        )}
+        {configurationTab && (
+          <Button
+            className="primary"
+            disabled={busy || !draft || !!controller.errors.length || advancedDirty}
+            onClick={() => void controller.perform(controller.save)}
+          >
+            {busy ? <LoaderCircle size={14} className="spin" /> : <Check size={14} />}保存配置
+          </Button>
+        )}
       </div>
     </Modal>
   );

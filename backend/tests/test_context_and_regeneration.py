@@ -35,14 +35,18 @@ async def test_regenerate_keeps_original_question_and_reply_versions(services, m
     }
     original = repository.create_run(thread["id"], "解释选区", [selection])
     repository.finish(original["id"], await runtime.execute(original, lambda *_event: None))
+    old_answer = repository.run(original["id"])["answer"]
     regenerated = repository.regenerate(original["id"])
     assert regenerated["message_id"] == original["message_id"]
     with pytest.raises(ValueError):
         repository.regenerate(original["id"])
     repository.finish(regenerated["id"], await runtime.execute(regenerated, lambda *_event: None))
-    assert "独立选区快照" in calls[-1][-1].text
-    assert calls[-1][-1].text.startswith("请重新回答")
-    assert "回复版本1" not in "".join(message.text for message in calls[-1])
+    instruction = next(
+        message for message in calls[-1] if (message.id or "").startswith("regenerate:")
+    )
+    assert "独立选区快照" in instruction.text
+    assert instruction.text.startswith("请重新回答")
+    assert old_answer not in "".join(message.text for message in calls[-1])
     conversation = repository.thread(thread["id"])
     assert [message["role"] for message in conversation["messages"]] == [
         "user",

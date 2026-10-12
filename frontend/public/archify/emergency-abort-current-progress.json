@@ -1,0 +1,34 @@
+{
+  "schema": "archify-static-audit-current-v1",
+  "audit": "emergency-abort",
+  "status": "current-emergency-abort-verified",
+  "recordedAt": "2026-10-07T00:14:24.356Z",
+  "verification": {
+    "testCommand": "node scripts/test-emergency-abort.cjs",
+    "auditCommand": "node scripts/build-emergency-abort-audit.cjs --check",
+    "result": {
+      "status": "passed",
+      "checks": 87,
+      "members": 44
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/emergency-abort-test.json",
+      "sha256": "bbbdc723e434338999e46d177e1df30d3fb5205924b84fe937898ff18f265fbf"
+    },
+    {
+      "path": "docs/archify/emergency-abort-audit.json",
+      "sha256": "1c558d11b0e0da8eb3ea95609f3f2095f39806fe9fb62dfb8ead60f6c358c567"
+    },
+    {
+      "path": "docs/archify/emergency-abort-review.md",
+      "sha256": "ca8c9e244a62c4341f850a1b5a0eb15c6028d6efe2076fe4cd06d42615b8511e"
+    }
+  ],
+  "boundaries": [
+    "Current isolated audit evidence is recorded separately from historical reports.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked.",
+    "The fixtures do not prove a complete online production cycle or physical device behavior."
+  ]
+}

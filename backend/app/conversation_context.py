@@ -22,7 +22,9 @@ class ConversationContext:
                 thread_id, saver, lambda *_event: None, inspection=True
             )
             # LangGraph 增量通道不会在每个检查点重复保存全部消息，必须由图还原状态。
-            state = await graph.aget_state({"configurable": {"thread_id": thread_id}})
+            state = await graph.aget_state(
+                {"configurable": {"thread_id": self.runtime.checkpoint_id(thread_id)}}
+            )
         values = state.values
         event = values.get("_summarization_event")
         messages = values.get("messages", [])
@@ -46,7 +48,7 @@ class ConversationContext:
         if not request.summary.strip():
             raise ValueError("摘要不能为空")
         owned_models = []
-        config = {"configurable": {"thread_id": thread_id}}
+        config = {"configurable": {"thread_id": self.runtime.checkpoint_id(thread_id)}}
         try:
             async with AsyncSqliteSaver.from_conn_string(self.checkpoints) as saver:
                 # 仅装配状态通道，不连接 MCP，也不调用模型生成文本。
@@ -95,6 +97,13 @@ class ConversationContext:
         snapshot = None
         budget = None
         tools = []
+        evidence = []
+        usage = []
+        validation = None
+        wiki, knowledge = [], []
+        source_review = None
+        completion, progress, plan = None, None, None
+        tool_ends = {}
         cursor = 0
         while True:
             events = self.repository.events(run_id, cursor)
@@ -105,6 +114,34 @@ class ConversationContext:
                     budget = event["payload"]
                 if event["kind"] == "tool_start":
                     tools.append(event["payload"])
+                if event["kind"] == "tool_end":
+                    tool_ends[event["payload"]["id"]] = event["payload"]
+                if event["kind"] == "run_completion":
+                    completion = event["payload"]
+                if event["kind"] == "analysis_progress":
+                    progress = event["payload"]
+                if event["kind"] == "analysis_plan":
+                    plan = event["payload"]
+                if event["kind"] == "source_evidence":
+                    row = dict(event["payload"])
+                    try:
+                        source = self.runtime.workspace.read(row["path"])
+                        row["current_status"] = (
+                            "match" if source["version"] == row["version"] else "changed"
+                        )
+                    except (OSError, ValueError):
+                        row["current_status"] = "unavailable"
+                    evidence.append(row)
+                if event["kind"] == "provider_usage":
+                    usage.append(event["payload"])
+                if event["kind"] == "answer_validation":
+                    validation = event["payload"]
+                if event["kind"] == "wiki_provenance":
+                    wiki.append(event["payload"])
+                if event["kind"] == "knowledge_retrieval":
+                    knowledge.append(event["payload"])
+                if event["kind"] == "source_review":
+                    source_review = event["payload"]
             if len(events) < 500:
                 break
             cursor = events[-1]["sequence"]
@@ -112,7 +149,18 @@ class ConversationContext:
             "model": run["model_snapshot"],
             "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
+            "materials": snapshot.get("materials", []) if snapshot else [],
             "recorded": snapshot is not None,
             "selections": message["selections"],
-            "tools": tools,
+            "tools": [{**tool, **tool_ends.get(tool["id"], {})} for tool in tools],
+            "completion": completion,
+            "analysis_progress": progress,
+            "analysis_plan": plan,
+            "source_evidence": evidence,
+            "provider_usage": usage,
+            "answer_validation": validation,
+            "source_options": snapshot.get("source_options") if snapshot else None,
+            "wiki_provenance": wiki,
+            "knowledge_retrieval": knowledge,
+            "source_review": source_review,
         }

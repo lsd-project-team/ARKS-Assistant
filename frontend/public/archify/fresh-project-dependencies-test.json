@@ -1,0 +1,1330 @@
+{
+  "schemaVersion": 1,
+  "status": "fresh-source-project-reference-preparation-passed",
+  "updatedAt": "2026-10-02T00:10:02.381Z",
+  "projects": 16,
+  "originalCompileFiles": 1410,
+  "sourceProjectReferencePlacements": 130,
+  "changedReferencePaths": 115,
+  "productionEdits": false,
+  "fixturesInOriginalAssemblies": false,
+  "fullMsbuildBuild": false,
+  "parent": {
+    "file": "all-project-source-build-test.json",
+    "sha256": "bb949f811498ac250edf7bbea8fd2636ef63d9faa059593e979cf3bde73640d8",
+    "progress": "all-project-source-build-progress.json",
+    "progressSha256": "88ed25f634f6ed0e9c00359e8b98ca1b995b5d2d7459300571b8869be455e31c",
+    "frozenBindings": 1949
+  },
+  "builds": [
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\AKRS.ZX2200.csproj",
+      "assemblyName": "AKRS.ZX2200",
+      "sourceCount": 1137,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\main-original-source-build\\AKRS.ZX2200.exe",
+      "previousArtifactSha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 422,
+      "inputSha256": "c181030d14da8770f3e25a5e630556f3e62f25614407e692327f1afd7b18c9c7",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\compile-v1.log",
+      "logSha256": "1fa3f27339e2afeb009f2d24dda0613655181798768070255db884dcd21d7622",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "artifactSha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "artifactBytes": 4651520,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.csproj",
+      "assemblyName": "AKRS.Galaxy2.PR",
+      "sourceCount": 85,
+      "metadataReferences": 83,
+      "sourceProjectReferences": 2,
+      "changedReferencePaths": 2,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\pr-original-source-build\\AKRS.Galaxy2.PR.dll",
+      "previousArtifactSha256": "ba156b8c975a095ff2292120a7040284d1382f926188f261105fc1be0b9b4b83",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 4,
+      "inputSha256": "8928e87519a641eab9ac84dfa61bb9230f2fc927fc8eff95abbd49883e18462c",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\compile-v1.log",
+      "logSha256": "61148d3443c002e7b093f86dd19ffc968063c41309bcf19dc4e7cd9129133ccf",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "artifactSha256": "ba156b8c975a095ff2292120a7040284d1382f926188f261105fc1be0b9b4b83",
+      "artifactBytes": 319488,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Calibration\\AKRS.Calibration.csproj",
+      "assemblyName": "AKRS.Calibration",
+      "sourceCount": 12,
+      "metadataReferences": 170,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "previousArtifactSha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 1,
+      "inputSha256": "1a8830a305f53341ee2a78962e261d96251e5658fc6930097881fa2050e8a03f",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\compile-v1.log",
+      "logSha256": "6343696df8f65caa1c31aaa4c0e1a4020be823cd61b0131f0f422c8c6e599b51",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "artifactSha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "artifactBytes": 37888,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\Akrs.ChangeJson\\Akrs.ChangeJson.csproj",
+      "assemblyName": "DXApplication1",
+      "sourceCount": 12,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\Akrs.ChangeJson\\DXApplication1.exe",
+      "previousArtifactSha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 1,
+      "inputSha256": "c35cdc26ddde0002533c8d122ffd57073f4fb46449f0b7df5335b016783480e3",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\compile-v1.log",
+      "logSha256": "3e2b131f748f75708b2ba5e23f1c02f2ccdf7913b51f3e31075271c0a23b1232",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\DXApplication1.exe",
+      "artifactSha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "artifactBytes": 22016,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.csproj",
+      "assemblyName": "AKRS.Galaxy.SoftKey",
+      "sourceCount": 6,
+      "metadataReferences": 167,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "previousArtifactSha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "0c3599570dce294336b35f38c40a9d95fdf23d498b5da4a6b67483ad1e8fb0c4",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\compile-v1.log",
+      "logSha256": "fd67f0f033f9df3569770ee482baeb47d44c1f74e0f8b9f568e942f7da6dfb36",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "artifactSha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "artifactBytes": 12288,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.csproj",
+      "assemblyName": "AKRS.Galaxy2.AutoFocusing",
+      "sourceCount": 4,
+      "metadataReferences": 163,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "previousArtifactSha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 2,
+      "inputSha256": "57d1d3c989c4e88e12b319fad973dc065561c335b38ca9e47f7080f64c61a4b0",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\compile-v1.log",
+      "logSha256": "1af95d76846e71c0b0c25afd964fea064ac4829179096c0a1be16fe341f29d32",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "artifactSha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "artifactBytes": 10752,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.csproj",
+      "assemblyName": "AKRS.Galaxy2.AxisCompensate",
+      "sourceCount": 7,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "previousArtifactSha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "b7db33f80e5d1836b9f81665b4c02f5f513354dacad821b0838c6a81a06fc478",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\compile-v1.log",
+      "logSha256": "32e81028c90ee00013ed1a35fc580c4bf8800e7faf94896a93b96223006c49ad",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "artifactSha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "artifactBytes": 9728,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.csproj",
+      "assemblyName": "AKRS.Galaxy2.CoordinateSystems",
+      "sourceCount": 13,
+      "metadataReferences": 164,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "previousArtifactSha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "fc810776feb4d8ddc2480b2d45187fc58d9fa6b19d30674a444bd1c4f8ace8a5",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\compile-v1.log",
+      "logSha256": "4817f0f5467e9ce8ebe7d2b0c3bd108b8b7a29bb5bfe8c657cdbabf68f7353da",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "artifactSha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "artifactBytes": 28160,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.csproj",
+      "assemblyName": "AKRS.Galaxy2.Dispense",
+      "sourceCount": 81,
+      "metadataReferences": 163,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "previousArtifactSha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 8,
+      "inputSha256": "dc58cee25711ae682c4b9225bb27a610b8dbc7bc2eb3a0180a15f699a3abaf28",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\compile-v1.log",
+      "logSha256": "adc0ef7a738890d12920079d4b50c33eef733b8f1da9d054c096e4b84336318b",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "artifactSha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "artifactBytes": 157184,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.csproj",
+      "assemblyName": "AKRS.Galaxy2.LogTest",
+      "sourceCount": 6,
+      "metadataReferences": 164,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "previousArtifactSha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "709266f4faeb3600709f00814c1cfb81ec56a5876722347f828df8f10579d671",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\compile-v1.log",
+      "logSha256": "77f06bfc2408dd7a20d334e092f583f7146bd9d81009d8b915b1d9ceb6665655",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "artifactSha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "artifactBytes": 8704,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.csproj",
+      "assemblyName": "AKRS.Galaxy2.Machine",
+      "sourceCount": 6,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "previousArtifactSha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "b9cf3f3489e9c498e7100d696ae2b0a9b8bb4cc5d91ab9db77a3ae8ab509f2a0",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\compile-v1.log",
+      "logSha256": "926b281ee16c46ea6080a711e18126a75bdaa1c23c38b1984d601fdf1085a22d",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "artifactSha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "artifactBytes": 17408,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.csproj",
+      "assemblyName": "AKRS.Galaxy2.MachineSupport",
+      "sourceCount": 4,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "previousArtifactSha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "c896d12434da9c5474256c3cf7bf14bacb290e73eebd37f5b9476c043153ccf1",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\compile-v1.log",
+      "logSha256": "c060d38baa93720f7a79d6f17a7fbc83bd11da03772112c1d15f6f98acde9dec",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "artifactSha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "artifactBytes": 7680,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.csproj",
+      "assemblyName": "AKRS.Galaxy2.PR.Test",
+      "sourceCount": 6,
+      "metadataReferences": 329,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "previousArtifactSha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "fd09ae98d3076cb0047d5f5cd6ee1d030d00ba80d71519f7b869e8e906c9c123",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\compile-v1.log",
+      "logSha256": "e69c20689fd8bbaa908775c050f2c27d69adafd773e9221350d5bee075868dff",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "artifactSha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "artifactBytes": 7168,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.RealtimeCurve.TestDemo.csproj",
+      "assemblyName": "AKRS.Galaxy2.Component.TestDemo",
+      "sourceCount": 6,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.RealtimeCurve.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "previousArtifactSha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "05989353864a16112d0dd34108b86e280b6158bcacfada639846f96759e9ad67",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\compile-v1.log",
+      "logSha256": "b46f284ea359a06e8e089eb946d2a845b34bd40aaeac4eb211b058597ea3f940",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "artifactSha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "artifactBytes": 8192,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.csproj",
+      "assemblyName": "AKRS.Galaxy2.TeachTest",
+      "sourceCount": 17,
+      "metadataReferences": 162,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "previousArtifactSha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 45,
+      "inputSha256": "a7021440c26bfd8ebae957fadd71f2e387b1cd1c4e6afefac811edd2b03e700a",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\compile-v1.log",
+      "logSha256": "dd91c4b8f41545404b523bdf7412de6c9b6b20c258615ca4b75a0e7b06ac1712",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "artifactSha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "artifactBytes": 63488,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\InterpolationMovementTest\\InterpolationMovementTest.csproj",
+      "assemblyName": "WindowsFormsApp1",
+      "sourceCount": 8,
+      "metadataReferences": 166,
+      "sourceProjectReferences": 10,
+      "changedReferencePaths": 9,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\InterpolationMovementTest\\WindowsFormsApp1.exe",
+      "previousArtifactSha256": "a58120d7c2e204949d514bec8b9ff39f92a98fd157e080a3a2aaaf3942f3370f",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 4,
+      "inputSha256": "b527fa9b2701dda8da605d14121e3457469a1debb46f3c2b2fca933f3abc288b",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\compile-v1.log",
+      "logSha256": "3e881d8eec63878b098e2eeae220f0c82cc0363214152248609e635e8ff29a91",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\WindowsFormsApp1.exe",
+      "artifactSha256": "a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8",
+      "artifactBytes": 43008,
+      "identicalToPreviousIndependentArtifact": false
+    }
+  ],
+  "initialBatch": {
+    "file": ".archify-work/compile-fresh-project-dependencies-v1.log",
+    "sha256": "540241495e07774e8a5f1d4fef7acaaebab0339bfae5b5e2208d8f753ead0353",
+    "observedExitCode": 0,
+    "observedSession": 27657
+  },
+  "metadata": {
+    "file": ".archify-work/fresh-project-dependencies/changed-emission-metadata.json",
+    "sha256": "80e466a551be6e4f7c063911cf89af9894f62a23f950d6fcdcc002fde0b00693",
+    "observedExitCode": 0
+  },
+  "native": {
+    "checks": 98,
+    "mainChecks": 61,
+    "axisChecks": 37,
+    "input": {
+      "file": ".archify-work/fresh-source-native-models/compile-input.json",
+      "sha256": "bf3e47023545b0f24aaba085609eae96b7afcafb30206ea2c052bd94f3ac959d"
+    },
+    "artifact": {
+      "file": ".archify-work/fresh-source-native-models/Probe.dll",
+      "sha256": "da9e120e268b9137d58683b6bb51612d737daa6e87144d9461dd45548bdfa64f"
+    },
+    "compile": {
+      "file": ".archify-work/fresh-source-native-models/compile-v1.log",
+      "sha256": "ae1f99ae6931647640219df821387f8d066977db27438437abca8831a0ad55ef",
+      "observedExitCode": 0
+    },
+    "runtime": {
+      "file": ".archify-work/fresh-source-native-models/runtime-v1.log",
+      "sha256": "10bc9b514b84ab4900cd1e66ea38804bc9095eb678f7b727df960e83c32de0a9",
+      "observedExitCode": 0
+    },
+    "replay": {
+      "compile": {
+        "file": ".archify-work/fresh-source-native-models/replay-compile.log",
+        "sha256": "ae1f99ae6931647640219df821387f8d066977db27438437abca8831a0ad55ef",
+        "observedExitCode": 0
+      },
+      "runtime": {
+        "file": ".archify-work/fresh-source-native-models/replay-runtime.log",
+        "sha256": "10bc9b514b84ab4900cd1e66ea38804bc9095eb678f7b727df960e83c32de0a9",
+        "observedExitCode": 0
+      },
+      "artifactSha256": "da9e120e268b9137d58683b6bb51612d737daa6e87144d9461dd45548bdfa64f"
+    }
+  },
+  "frozenInputs": [
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\compile-fresh-project-dependencies-v1.log",
+      "sha256": "540241495e07774e8a5f1d4fef7acaaebab0339bfae5b5e2208d8f753ead0353",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/540241495e07774e8a5f1d4fef7acaaebab0339bfae5b5e2208d8f753ead0353.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "sha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\compile-input.json",
+      "sha256": "1a8830a305f53341ee2a78962e261d96251e5658fc6930097881fa2050e8a03f",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/1a8830a305f53341ee2a78962e261d96251e5658fc6930097881fa2050e8a03f.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\compile-v1.log",
+      "sha256": "6343696df8f65caa1c31aaa4c0e1a4020be823cd61b0131f0f422c8c6e599b51",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/6343696df8f65caa1c31aaa4c0e1a4020be823cd61b0131f0f422c8c6e599b51.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\reference-resolution.json",
+      "sha256": "7a309a61976272bdd11fc3fd3a5092da48f4d985f3501c79005278c0fe512c3e",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/7a309a61976272bdd11fc3fd3a5092da48f4d985f3501c79005278c0fe512c3e.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "sha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\compile-input.json",
+      "sha256": "0c3599570dce294336b35f38c40a9d95fdf23d498b5da4a6b67483ad1e8fb0c4",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/0c3599570dce294336b35f38c40a9d95fdf23d498b5da4a6b67483ad1e8fb0c4.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\compile-v1.log",
+      "sha256": "fd67f0f033f9df3569770ee482baeb47d44c1f74e0f8b9f568e942f7da6dfb36",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/fd67f0f033f9df3569770ee482baeb47d44c1f74e0f8b9f568e942f7da6dfb36.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\reference-resolution.json",
+      "sha256": "b58022253cefc8d160ee4e542dd0719d34b1ef51852a067d6c9e649487c87e4f",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b58022253cefc8d160ee4e542dd0719d34b1ef51852a067d6c9e649487c87e4f.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "sha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\compile-input.json",
+      "sha256": "57d1d3c989c4e88e12b319fad973dc065561c335b38ca9e47f7080f64c61a4b0",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/57d1d3c989c4e88e12b319fad973dc065561c335b38ca9e47f7080f64c61a4b0.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\compile-v1.log",
+      "sha256": "1af95d76846e71c0b0c25afd964fea064ac4829179096c0a1be16fe341f29d32",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/1af95d76846e71c0b0c25afd964fea064ac4829179096c0a1be16fe341f29d32.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\reference-resolution.json",
+      "sha256": "5573f503b6858b2953649060143471d484a131a49a0d1047702b3188d0fec5e4",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/5573f503b6858b2953649060143471d484a131a49a0d1047702b3188d0fec5e4.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\compile-input.json",
+      "sha256": "b7db33f80e5d1836b9f81665b4c02f5f513354dacad821b0838c6a81a06fc478",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b7db33f80e5d1836b9f81665b4c02f5f513354dacad821b0838c6a81a06fc478.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\compile-v1.log",
+      "sha256": "32e81028c90ee00013ed1a35fc580c4bf8800e7faf94896a93b96223006c49ad",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/32e81028c90ee00013ed1a35fc580c4bf8800e7faf94896a93b96223006c49ad.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\reference-resolution.json",
+      "sha256": "948f72207b23ea979dc57c2441bf9bfa59dcfc0449ea3037e8d9abbeef50d209",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/948f72207b23ea979dc57c2441bf9bfa59dcfc0449ea3037e8d9abbeef50d209.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "sha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\compile-input.json",
+      "sha256": "05989353864a16112d0dd34108b86e280b6158bcacfada639846f96759e9ad67",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/05989353864a16112d0dd34108b86e280b6158bcacfada639846f96759e9ad67.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\compile-v1.log",
+      "sha256": "b46f284ea359a06e8e089eb946d2a845b34bd40aaeac4eb211b058597ea3f940",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b46f284ea359a06e8e089eb946d2a845b34bd40aaeac4eb211b058597ea3f940.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\reference-resolution.json",
+      "sha256": "9df06be0453a88f14da62b23afef3fda9d6e032dcc0a5e071ef734b587b4726d",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/9df06be0453a88f14da62b23afef3fda9d6e032dcc0a5e071ef734b587b4726d.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\compile-input.json",
+      "sha256": "fc810776feb4d8ddc2480b2d45187fc58d9fa6b19d30674a444bd1c4f8ace8a5",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/fc810776feb4d8ddc2480b2d45187fc58d9fa6b19d30674a444bd1c4f8ace8a5.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\compile-v1.log",
+      "sha256": "4817f0f5467e9ce8ebe7d2b0c3bd108b8b7a29bb5bfe8c657cdbabf68f7353da",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/4817f0f5467e9ce8ebe7d2b0c3bd108b8b7a29bb5bfe8c657cdbabf68f7353da.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\reference-resolution.json",
+      "sha256": "b010686310c156cddf84737aa4088afe77ebaa650b007dc190ee6dccc3e8c069",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b010686310c156cddf84737aa4088afe77ebaa650b007dc190ee6dccc3e8c069.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "sha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\compile-input.json",
+      "sha256": "dc58cee25711ae682c4b9225bb27a610b8dbc7bc2eb3a0180a15f699a3abaf28",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/dc58cee25711ae682c4b9225bb27a610b8dbc7bc2eb3a0180a15f699a3abaf28.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\compile-v1.log",
+      "sha256": "adc0ef7a738890d12920079d4b50c33eef733b8f1da9d054c096e4b84336318b",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/adc0ef7a738890d12920079d4b50c33eef733b8f1da9d054c096e4b84336318b.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\reference-resolution.json",
+      "sha256": "92229c9f777e52c5a8c6111e2765b84945839491883223ee91dbb38c99179f19",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/92229c9f777e52c5a8c6111e2765b84945839491883223ee91dbb38c99179f19.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "sha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\compile-input.json",
+      "sha256": "709266f4faeb3600709f00814c1cfb81ec56a5876722347f828df8f10579d671",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/709266f4faeb3600709f00814c1cfb81ec56a5876722347f828df8f10579d671.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\compile-v1.log",
+      "sha256": "77f06bfc2408dd7a20d334e092f583f7146bd9d81009d8b915b1d9ceb6665655",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/77f06bfc2408dd7a20d334e092f583f7146bd9d81009d8b915b1d9ceb6665655.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\reference-resolution.json",
+      "sha256": "7f97b3f6b9af362d97ea4969c8a35fca6cc9a2bd0734a9e9c33e9d18a935f769",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/7f97b3f6b9af362d97ea4969c8a35fca6cc9a2bd0734a9e9c33e9d18a935f769.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\compile-input.json",
+      "sha256": "c896d12434da9c5474256c3cf7bf14bacb290e73eebd37f5b9476c043153ccf1",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/c896d12434da9c5474256c3cf7bf14bacb290e73eebd37f5b9476c043153ccf1.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\compile-v1.log",
+      "sha256": "c060d38baa93720f7a79d6f17a7fbc83bd11da03772112c1d15f6f98acde9dec",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/c060d38baa93720f7a79d6f17a7fbc83bd11da03772112c1d15f6f98acde9dec.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\reference-resolution.json",
+      "sha256": "ab68112c8e6d53c6e5fdc8606efab9e112b2696289129b6e945a507099760999",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/ab68112c8e6d53c6e5fdc8606efab9e112b2696289129b6e945a507099760999.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\compile-input.json",
+      "sha256": "b9cf3f3489e9c498e7100d696ae2b0a9b8bb4cc5d91ab9db77a3ae8ab509f2a0",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b9cf3f3489e9c498e7100d696ae2b0a9b8bb4cc5d91ab9db77a3ae8ab509f2a0.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\compile-v1.log",
+      "sha256": "926b281ee16c46ea6080a711e18126a75bdaa1c23c38b1984d601fdf1085a22d",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/926b281ee16c46ea6080a711e18126a75bdaa1c23c38b1984d601fdf1085a22d.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\reference-resolution.json",
+      "sha256": "e5a804a57e0729663549488d6ede8330d31076ec37243b674d8e10ceb509c38c",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e5a804a57e0729663549488d6ede8330d31076ec37243b674d8e10ceb509c38c.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "sha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\compile-input.json",
+      "sha256": "fd09ae98d3076cb0047d5f5cd6ee1d030d00ba80d71519f7b869e8e906c9c123",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/fd09ae98d3076cb0047d5f5cd6ee1d030d00ba80d71519f7b869e8e906c9c123.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\compile-v1.log",
+      "sha256": "e69c20689fd8bbaa908775c050f2c27d69adafd773e9221350d5bee075868dff",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e69c20689fd8bbaa908775c050f2c27d69adafd773e9221350d5bee075868dff.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\reference-resolution.json",
+      "sha256": "898b312d9309e080b4287d5527e08599fd869e8913504862e4072068f9b4468d",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/898b312d9309e080b4287d5527e08599fd869e8913504862e4072068f9b4468d.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "sha256": "ba156b8c975a095ff2292120a7040284d1382f926188f261105fc1be0b9b4b83",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/ba156b8c975a095ff2292120a7040284d1382f926188f261105fc1be0b9b4b83.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\compile-input.json",
+      "sha256": "8928e87519a641eab9ac84dfa61bb9230f2fc927fc8eff95abbd49883e18462c",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/8928e87519a641eab9ac84dfa61bb9230f2fc927fc8eff95abbd49883e18462c.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\compile-v1.log",
+      "sha256": "61148d3443c002e7b093f86dd19ffc968063c41309bcf19dc4e7cd9129133ccf",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/61148d3443c002e7b093f86dd19ffc968063c41309bcf19dc4e7cd9129133ccf.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\reference-resolution.json",
+      "sha256": "d870ec977ccf83329165803634d6884fca9b9b5cd55a52d40e6ca967f3129ba3",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/d870ec977ccf83329165803634d6884fca9b9b5cd55a52d40e6ca967f3129ba3.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "sha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\compile-input.json",
+      "sha256": "a7021440c26bfd8ebae957fadd71f2e387b1cd1c4e6afefac811edd2b03e700a",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/a7021440c26bfd8ebae957fadd71f2e387b1cd1c4e6afefac811edd2b03e700a.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\compile-v1.log",
+      "sha256": "dd91c4b8f41545404b523bdf7412de6c9b6b20c258615ca4b75a0e7b06ac1712",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/dd91c4b8f41545404b523bdf7412de6c9b6b20c258615ca4b75a0e7b06ac1712.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\reference-resolution.json",
+      "sha256": "bd13be48fdf3bd12a70638c3b756f7ccf40b763d0102015fcf6024f289aaafdd",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/bd13be48fdf3bd12a70638c3b756f7ccf40b763d0102015fcf6024f289aaafdd.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "sha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\compile-input.json",
+      "sha256": "c181030d14da8770f3e25a5e630556f3e62f25614407e692327f1afd7b18c9c7",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/c181030d14da8770f3e25a5e630556f3e62f25614407e692327f1afd7b18c9c7.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\compile-v1.log",
+      "sha256": "1fa3f27339e2afeb009f2d24dda0613655181798768070255db884dcd21d7622",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/1fa3f27339e2afeb009f2d24dda0613655181798768070255db884dcd21d7622.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\reference-resolution.json",
+      "sha256": "e5080c24781fd95e9d1844b494054a6f7cc07b56bacb07333f73e8b1ee87ca91",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e5080c24781fd95e9d1844b494054a6f7cc07b56bacb07333f73e8b1ee87ca91.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\DXApplication1.exe",
+      "sha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\compile-input.json",
+      "sha256": "c35cdc26ddde0002533c8d122ffd57073f4fb46449f0b7df5335b016783480e3",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/c35cdc26ddde0002533c8d122ffd57073f4fb46449f0b7df5335b016783480e3.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\compile-v1.log",
+      "sha256": "3e2b131f748f75708b2ba5e23f1c02f2ccdf7913b51f3e31075271c0a23b1232",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/3e2b131f748f75708b2ba5e23f1c02f2ccdf7913b51f3e31075271c0a23b1232.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\reference-resolution.json",
+      "sha256": "488e573ecc6709a1bf9197644cf17d795b17ce629689ce5b92e82c40f0e2483b",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/488e573ecc6709a1bf9197644cf17d795b17ce629689ce5b92e82c40f0e2483b.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\WindowsFormsApp1.exe",
+      "sha256": "a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8.exe"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\compile-input.json",
+      "sha256": "b527fa9b2701dda8da605d14121e3457469a1debb46f3c2b2fca933f3abc288b",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b527fa9b2701dda8da605d14121e3457469a1debb46f3c2b2fca933f3abc288b.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\compile-v1.log",
+      "sha256": "3e881d8eec63878b098e2eeae220f0c82cc0363214152248609e635e8ff29a91",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/3e881d8eec63878b098e2eeae220f0c82cc0363214152248609e635e8ff29a91.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\reference-resolution.json",
+      "sha256": "4cf45874a53a0fd0a958e5fdc2825e84f280a5a9c7a551351dc3805d7147c585",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/4cf45874a53a0fd0a958e5fdc2825e84f280a5a9c7a551351dc3805d7147c585.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\changed-emission-metadata.json",
+      "sha256": "80e466a551be6e4f7c063911cf89af9894f62a23f950d6fcdcc002fde0b00693",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/80e466a551be6e4f7c063911cf89af9894f62a23f950d6fcdcc002fde0b00693.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\compile-results.json",
+      "sha256": "38ae8d4dcc64ab90f082ea91bab51504467a0d3127134e4f63db63c7f613750f",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/38ae8d4dcc64ab90f082ea91bab51504467a0d3127134e4f63db63c7f613750f.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\inventory.json",
+      "sha256": "0f0fb3dd58be55d7566e05ca9069dfb5b1cdb9a61c268c02e64b0bd29e1061d7",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/0f0fb3dd58be55d7566e05ca9069dfb5b1cdb9a61c268c02e64b0bd29e1061d7.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\AxisCases.cs",
+      "sha256": "5777cc19d8560b5394dcdf5f9af36636efa9a4aafbf6e4ac9a7b259683ef9ecf",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/5777cc19d8560b5394dcdf5f9af36636efa9a4aafbf6e4ac9a7b259683ef9ecf.cs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\MainCases.cs",
+      "sha256": "787318ba121ade6219e2d1f911db2f0311dfd9116757000e029aed460ca97987",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/787318ba121ade6219e2d1f911db2f0311dfd9116757000e029aed460ca97987.cs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\Probe.dll",
+      "sha256": "da9e120e268b9137d58683b6bb51612d737daa6e87144d9461dd45548bdfa64f",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/da9e120e268b9137d58683b6bb51612d737daa6e87144d9461dd45548bdfa64f.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\compile-input.json",
+      "sha256": "bf3e47023545b0f24aaba085609eae96b7afcafb30206ea2c052bd94f3ac959d",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/bf3e47023545b0f24aaba085609eae96b7afcafb30206ea2c052bd94f3ac959d.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\compile-v1.log",
+      "sha256": "ae1f99ae6931647640219df821387f8d066977db27438437abca8831a0ad55ef",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/ae1f99ae6931647640219df821387f8d066977db27438437abca8831a0ad55ef.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\harness-adaptation.json",
+      "sha256": "a8070772674f9b0b6061cbebca3fca3ef8857f3ad2bde7c9e965b3c1f9520b1a",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/a8070772674f9b0b6061cbebca3fca3ef8857f3ad2bde7c9e965b3c1f9520b1a.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-source-native-models\\runtime-v1.log",
+      "sha256": "10bc9b514b84ab4900cd1e66ea38804bc9095eb678f7b727df960e83c32de0a9",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/10bc9b514b84ab4900cd1e66ea38804bc9095eb678f7b727df960e83c32de0a9.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\docs\\archify\\axis-numeric-test.json",
+      "sha256": "a608bc0d810472d6edc7ff8428d4653faf910bc2071ea3985aef8abf4de97781",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/a608bc0d810472d6edc7ff8428d4653faf910bc2071ea3985aef8abf4de97781.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\axis-numeric-harness.cs",
+      "sha256": "e202932a08d4f3dfee33c2a5289ceb83bd03f0fab9f61dfe8547f9c097925e0b",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e202932a08d4f3dfee33c2a5289ceb83bd03f0fab9f61dfe8547f9c097925e0b.cs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\compile-fresh-project-dependencies.cjs",
+      "sha256": "410b6c6bcc14314003b055089b668d384e6453aa7aebf9a27d3274db4c8872c3",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/410b6c6bcc14314003b055089b668d384e6453aa7aebf9a27d3274db4c8872c3.cjs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\inspect-source-dependency-emission.ps1",
+      "sha256": "9fb5c44e951ddcc7d29bc76d33d43c165882831612742f80001c2c06f5353830",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/9fb5c44e951ddcc7d29bc76d33d43c165882831612742f80001c2c06f5353830.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\prepare-fresh-project-dependencies.cjs",
+      "sha256": "aa69502f23f5be471d490f834c29274ad6c144c5b15cb84c91cd7aa837ca030e",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/aa69502f23f5be471d490f834c29274ad6c144c5b15cb84c91cd7aa837ca030e.cjs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\prepare-fresh-source-native-models.cjs",
+      "sha256": "fd461aca3233b2ab9f263dc03805e76f9371a44773be371386394abd02eb4445",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/fd461aca3233b2ab9f263dc03805e76f9371a44773be371386394abd02eb4445.cjs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\test-fresh-source-native-models.ps1",
+      "sha256": "b7e8198b1f534fd46a20d74653b29c59b36ab3cd84f85bfce56d037ef7448126",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b7e8198b1f534fd46a20d74653b29c59b36ab3cd84f85bfce56d037ef7448126.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\verify-fresh-project-dependencies.cjs",
+      "sha256": "7231b21552c8af1969d8fe1e68d47a3f328c2e2a72ce8727cfd27756fe809bf5",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/7231b21552c8af1969d8fe1e68d47a3f328c2e2a72ce8727cfd27756fe809bf5.cjs"
+    },
+    {
+      "file": ".archify-work/fresh-project-dependencies/replay-results.json",
+      "sha256": "7c27b90577b16e55a7912779110faf132dbee48da2d9d707f2f92092ce240bc3",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/7c27b90577b16e55a7912779110faf132dbee48da2d9d707f2f92092ce240bc3.json"
+    },
+    {
+      "file": ".archify-work/compile-fresh-project-dependencies-replay.log",
+      "sha256": "540241495e07774e8a5f1d4fef7acaaebab0339bfae5b5e2208d8f753ead0353",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/540241495e07774e8a5f1d4fef7acaaebab0339bfae5b5e2208d8f753ead0353.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\replay-compile.log",
+      "sha256": "7881027b49304a2e71808eb7c0a63ed66077fe9d42a9ccd072ab416c2d1024fd",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/7881027b49304a2e71808eb7c0a63ed66077fe9d42a9ccd072ab416c2d1024fd.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\replay-compile.log",
+      "sha256": "2da7889e9e8b14347d8b077440b9e1de5f23c308c04ca810c9ba71645fb8d593",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/2da7889e9e8b14347d8b077440b9e1de5f23c308c04ca810c9ba71645fb8d593.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\replay-compile.log",
+      "sha256": "be1974226b21ded66c2d1868aa9566c8025f6412677d078f686d65abe6847879",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/be1974226b21ded66c2d1868aa9566c8025f6412677d078f686d65abe6847879.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\replay-compile.log",
+      "sha256": "3e2b131f748f75708b2ba5e23f1c02f2ccdf7913b51f3e31075271c0a23b1232",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/3e2b131f748f75708b2ba5e23f1c02f2ccdf7913b51f3e31075271c0a23b1232.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\replay-compile.log",
+      "sha256": "aeab6b609166132ea7799eaaddff144ba9b487c274baea35ef11e113ea28751f",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/aeab6b609166132ea7799eaaddff144ba9b487c274baea35ef11e113ea28751f.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\replay-compile.log",
+      "sha256": "e0c524a6029559f0b592a8e35b9e3c02252c8ab06696a1fdc7db141b03239b5b",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e0c524a6029559f0b592a8e35b9e3c02252c8ab06696a1fdc7db141b03239b5b.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\replay-compile.log",
+      "sha256": "32e81028c90ee00013ed1a35fc580c4bf8800e7faf94896a93b96223006c49ad",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/32e81028c90ee00013ed1a35fc580c4bf8800e7faf94896a93b96223006c49ad.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\replay-compile.log",
+      "sha256": "4817f0f5467e9ce8ebe7d2b0c3bd108b8b7a29bb5bfe8c657cdbabf68f7353da",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/4817f0f5467e9ce8ebe7d2b0c3bd108b8b7a29bb5bfe8c657cdbabf68f7353da.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\replay-compile.log",
+      "sha256": "736b5a0abafa0393a5c1e17b909f0c1b47a357396a3202fc136d762b3a245393",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/736b5a0abafa0393a5c1e17b909f0c1b47a357396a3202fc136d762b3a245393.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\replay-compile.log",
+      "sha256": "79bf22a63f9c5b42cb28accee2150c2f1c349bbd22e294306a6c967aa0c81b56",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/79bf22a63f9c5b42cb28accee2150c2f1c349bbd22e294306a6c967aa0c81b56.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\replay-compile.log",
+      "sha256": "926b281ee16c46ea6080a711e18126a75bdaa1c23c38b1984d601fdf1085a22d",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/926b281ee16c46ea6080a711e18126a75bdaa1c23c38b1984d601fdf1085a22d.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\replay-compile.log",
+      "sha256": "c06b1189c8f14b0302a14d6108b97861460ff288a1ca93788b8dbd6d5b260b65",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/c06b1189c8f14b0302a14d6108b97861460ff288a1ca93788b8dbd6d5b260b65.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\replay-compile.log",
+      "sha256": "e69c20689fd8bbaa908775c050f2c27d69adafd773e9221350d5bee075868dff",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/e69c20689fd8bbaa908775c050f2c27d69adafd773e9221350d5bee075868dff.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\replay-compile.log",
+      "sha256": "b46f284ea359a06e8e089eb946d2a845b34bd40aaeac4eb211b058597ea3f940",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/b46f284ea359a06e8e089eb946d2a845b34bd40aaeac4eb211b058597ea3f940.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\replay-compile.log",
+      "sha256": "aba0842e72152cbd30febfe314211ca39be41f8fb0db95c0c75fd54550d9f963",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/aba0842e72152cbd30febfe314211ca39be41f8fb0db95c0c75fd54550d9f963.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\replay-compile.log",
+      "sha256": "3646eba4d1ccc4f810dbbf9f78e87219997bc29136cc3495af128c7a68a490a4",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/3646eba4d1ccc4f810dbbf9f78e87219997bc29136cc3495af128c7a68a490a4.log"
+    },
+    {
+      "file": ".archify-work/fresh-source-native-models/replay-compile.log",
+      "sha256": "ae1f99ae6931647640219df821387f8d066977db27438437abca8831a0ad55ef",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/ae1f99ae6931647640219df821387f8d066977db27438437abca8831a0ad55ef.log"
+    },
+    {
+      "file": ".archify-work/fresh-source-native-models/replay-runtime.log",
+      "sha256": "10bc9b514b84ab4900cd1e66ea38804bc9095eb678f7b727df960e83c32de0a9",
+      "frozenCopy": ".archify-work/fresh-project-dependencies-baseline/10bc9b514b84ab4900cd1e66ea38804bc9095eb678f7b727df960e83c32de0a9.log"
+    }
+  ],
+  "scope": "Every present source-project reference uses original-source artifacts of16 projects, all1410 Compile items unchanged.130 reference placements/115 path replacements,16 successful independent API compatibility emissions. Not full MSBuild/resources/weaving/targeting pack/missing Parameters/complete vendor runtime/UI/device or all29 groups/13 requirements acceptance. Separate98 native data/numeric assertions preserve old61 and37 labels, remove3 test SDK/path declarations, load5 fresh source-project assemblies; no file Save/Load, hardware, program entrypoint or vision procedures executed.",
+  "replay": [
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\AKRS.ZX2200.csproj",
+      "assemblyName": "AKRS.ZX2200",
+      "sourceCount": 1137,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\main-original-source-build\\AKRS.ZX2200.exe",
+      "previousArtifactSha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 422,
+      "inputSha256": "c181030d14da8770f3e25a5e630556f3e62f25614407e692327f1afd7b18c9c7",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\replay-compile.log",
+      "logSha256": "7881027b49304a2e71808eb7c0a63ed66077fe9d42a9ccd072ab416c2d1024fd",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "artifactSha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "artifactBytes": 4651520,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.csproj",
+      "assemblyName": "AKRS.Galaxy2.PR",
+      "sourceCount": 85,
+      "metadataReferences": 83,
+      "sourceProjectReferences": 2,
+      "changedReferencePaths": 2,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\pr-original-source-build\\AKRS.Galaxy2.PR.dll",
+      "previousArtifactSha256": "ba156b8c975a095ff2292120a7040284d1382f926188f261105fc1be0b9b4b83",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 4,
+      "inputSha256": "8928e87519a641eab9ac84dfa61bb9230f2fc927fc8eff95abbd49883e18462c",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\replay-compile.log",
+      "logSha256": "2da7889e9e8b14347d8b077440b9e1de5f23c308c04ca810c9ba71645fb8d593",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "artifactSha256": "ba156b8c975a095ff2292120a7040284d1382f926188f261105fc1be0b9b4b83",
+      "artifactBytes": 319488,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Calibration\\AKRS.Calibration.csproj",
+      "assemblyName": "AKRS.Calibration",
+      "sourceCount": 12,
+      "metadataReferences": 170,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "previousArtifactSha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 1,
+      "inputSha256": "1a8830a305f53341ee2a78962e261d96251e5658fc6930097881fa2050e8a03f",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\replay-compile.log",
+      "logSha256": "be1974226b21ded66c2d1868aa9566c8025f6412677d078f686d65abe6847879",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "artifactSha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "artifactBytes": 37888,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\Akrs.ChangeJson\\Akrs.ChangeJson.csproj",
+      "assemblyName": "DXApplication1",
+      "sourceCount": 12,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\Akrs.ChangeJson\\DXApplication1.exe",
+      "previousArtifactSha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 1,
+      "inputSha256": "c35cdc26ddde0002533c8d122ffd57073f4fb46449f0b7df5335b016783480e3",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\replay-compile.log",
+      "logSha256": "3e2b131f748f75708b2ba5e23f1c02f2ccdf7913b51f3e31075271c0a23b1232",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\DXApplication1\\DXApplication1.exe",
+      "artifactSha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "artifactBytes": 22016,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.csproj",
+      "assemblyName": "AKRS.Galaxy.SoftKey",
+      "sourceCount": 6,
+      "metadataReferences": 167,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "previousArtifactSha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "0c3599570dce294336b35f38c40a9d95fdf23d498b5da4a6b67483ad1e8fb0c4",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\replay-compile.log",
+      "logSha256": "aeab6b609166132ea7799eaaddff144ba9b487c274baea35ef11e113ea28751f",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "artifactSha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "artifactBytes": 12288,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.csproj",
+      "assemblyName": "AKRS.Galaxy2.AutoFocusing",
+      "sourceCount": 4,
+      "metadataReferences": 163,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "previousArtifactSha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 2,
+      "inputSha256": "57d1d3c989c4e88e12b319fad973dc065561c335b38ca9e47f7080f64c61a4b0",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\replay-compile.log",
+      "logSha256": "e0c524a6029559f0b592a8e35b9e3c02252c8ab06696a1fdc7db141b03239b5b",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "artifactSha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "artifactBytes": 10752,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.csproj",
+      "assemblyName": "AKRS.Galaxy2.AxisCompensate",
+      "sourceCount": 7,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "previousArtifactSha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "b7db33f80e5d1836b9f81665b4c02f5f513354dacad821b0838c6a81a06fc478",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\replay-compile.log",
+      "logSha256": "32e81028c90ee00013ed1a35fc580c4bf8800e7faf94896a93b96223006c49ad",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "artifactSha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "artifactBytes": 9728,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.csproj",
+      "assemblyName": "AKRS.Galaxy2.CoordinateSystems",
+      "sourceCount": 13,
+      "metadataReferences": 164,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "previousArtifactSha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "fc810776feb4d8ddc2480b2d45187fc58d9fa6b19d30674a444bd1c4f8ace8a5",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\replay-compile.log",
+      "logSha256": "4817f0f5467e9ce8ebe7d2b0c3bd108b8b7a29bb5bfe8c657cdbabf68f7353da",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "artifactSha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "artifactBytes": 28160,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.csproj",
+      "assemblyName": "AKRS.Galaxy2.Dispense",
+      "sourceCount": 81,
+      "metadataReferences": 163,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "previousArtifactSha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 8,
+      "inputSha256": "dc58cee25711ae682c4b9225bb27a610b8dbc7bc2eb3a0180a15f699a3abaf28",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\replay-compile.log",
+      "logSha256": "736b5a0abafa0393a5c1e17b909f0c1b47a357396a3202fc136d762b3a245393",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "artifactSha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "artifactBytes": 157184,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.csproj",
+      "assemblyName": "AKRS.Galaxy2.LogTest",
+      "sourceCount": 6,
+      "metadataReferences": 164,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "previousArtifactSha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "709266f4faeb3600709f00814c1cfb81ec56a5876722347f828df8f10579d671",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\replay-compile.log",
+      "logSha256": "79bf22a63f9c5b42cb28accee2150c2f1c349bbd22e294306a6c967aa0c81b56",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "artifactSha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "artifactBytes": 8704,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.csproj",
+      "assemblyName": "AKRS.Galaxy2.Machine",
+      "sourceCount": 6,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "previousArtifactSha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "b9cf3f3489e9c498e7100d696ae2b0a9b8bb4cc5d91ab9db77a3ae8ab509f2a0",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\replay-compile.log",
+      "logSha256": "926b281ee16c46ea6080a711e18126a75bdaa1c23c38b1984d601fdf1085a22d",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "artifactSha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "artifactBytes": 17408,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.csproj",
+      "assemblyName": "AKRS.Galaxy2.MachineSupport",
+      "sourceCount": 4,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 8,
+      "changedReferencePaths": 7,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "previousArtifactSha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "c896d12434da9c5474256c3cf7bf14bacb290e73eebd37f5b9476c043153ccf1",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\replay-compile.log",
+      "logSha256": "c06b1189c8f14b0302a14d6108b97861460ff288a1ca93788b8dbd6d5b260b65",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "artifactSha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "artifactBytes": 7680,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.csproj",
+      "assemblyName": "AKRS.Galaxy2.PR.Test",
+      "sourceCount": 6,
+      "metadataReferences": 329,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "previousArtifactSha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "fd09ae98d3076cb0047d5f5cd6ee1d030d00ba80d71519f7b869e8e906c9c123",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\replay-compile.log",
+      "logSha256": "e69c20689fd8bbaa908775c050f2c27d69adafd773e9221350d5bee075868dff",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "artifactSha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "artifactBytes": 7168,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.RealtimeCurve.TestDemo.csproj",
+      "assemblyName": "AKRS.Galaxy2.Component.TestDemo",
+      "sourceCount": 6,
+      "metadataReferences": 161,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.RealtimeCurve.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "previousArtifactSha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "inputSha256": "05989353864a16112d0dd34108b86e280b6158bcacfada639846f96759e9ad67",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\replay-compile.log",
+      "logSha256": "b46f284ea359a06e8e089eb946d2a845b34bd40aaeac4eb211b058597ea3f940",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "artifactSha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "artifactBytes": 8192,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.csproj",
+      "assemblyName": "AKRS.Galaxy2.TeachTest",
+      "sourceCount": 17,
+      "metadataReferences": 162,
+      "sourceProjectReferences": 9,
+      "changedReferencePaths": 8,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "previousArtifactSha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 45,
+      "inputSha256": "a7021440c26bfd8ebae957fadd71f2e387b1cd1c4e6afefac811edd2b03e700a",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\replay-compile.log",
+      "logSha256": "aba0842e72152cbd30febfe314211ca39be41f8fb0db95c0c75fd54550d9f963",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "artifactSha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "artifactBytes": 63488,
+      "identicalToPreviousIndependentArtifact": true
+    },
+    {
+      "project": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\InterpolationMovementTest\\InterpolationMovementTest.csproj",
+      "assemblyName": "WindowsFormsApp1",
+      "sourceCount": 8,
+      "metadataReferences": 166,
+      "sourceProjectReferences": 10,
+      "changedReferencePaths": 9,
+      "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\compile-input.json",
+      "resolution": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\reference-resolution.json",
+      "previousArtifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\remaining-original-projects\\InterpolationMovementTest\\WindowsFormsApp1.exe",
+      "previousArtifactSha256": "a58120d7c2e204949d514bec8b9ff39f92a98fd157e080a3a2aaaf3942f3370f",
+      "status": "passed",
+      "observedExitCode": 0,
+      "errors": 0,
+      "warnings": 4,
+      "inputSha256": "b527fa9b2701dda8da605d14121e3457469a1debb46f3c2b2fca933f3abc288b",
+      "log": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\replay-compile.log",
+      "logSha256": "3646eba4d1ccc4f810dbbf9f78e87219997bc29136cc3495af128c7a68a490a4",
+      "artifact": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\WindowsFormsApp1\\WindowsFormsApp1.exe",
+      "artifactSha256": "a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8",
+      "artifactBytes": 43008,
+      "identicalToPreviousIndependentArtifact": false
+    }
+  ],
+  "replayBatch": {
+    "file": ".archify-work/compile-fresh-project-dependencies-replay.log",
+    "sha256": "540241495e07774e8a5f1d4fef7acaaebab0339bfae5b5e2208d8f753ead0353",
+    "observedExitCode": 0,
+    "observedSession": 67104
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "archify-native-recipe-task-lifecycle-current-v1",
+  "status": "current-native-recipe-task-lifecycle-verified",
+  "recordedAt": "2026-10-06T23:37:58.908Z",
+  "progressVerification": {
+    "command": "node scripts/verify-native-recipe-task-lifecycle-progress.cjs",
+    "result": {
+      "status": "native-recipe-task-lifecycle-progress-bindings-passed",
+      "checks": 100,
+      "originalStartedTasks": 6,
+      "pausedBusinessTasks": 0,
+      "recipeSingletons": 6,
+      "totalFrozenBindings": 3376,
+      "waferJsonByteReplayIdentical": false,
+      "wholeGoalComplete": false
+    },
+    "verifierSha256": "7ed3af8566344289f7f23ea0c348c24067f7e62b9d1c4833ec7e4e7a329ef1fe"
+  },
+  "runtimeVerification": {
+    "command": "node scripts/verify-native-recipe-task-lifecycle.cjs",
+    "result": {
+      "status": "native-recipe-task-lifecycle-bindings-passed",
+      "checks": 100,
+      "originalStartedTasks": 6,
+      "completedTasks": 5,
+      "faultedTasks": 1,
+      "directSignalGateThreads": 2,
+      "pausedBusinessTasks": 0,
+      "recipeHelperCalls": 4,
+      "recipeSingletons": 6,
+      "sourceAssembliesBound": 16,
+      "hardwareCount": 0,
+      "newFrozenInputs": 54,
+      "totalFrozenBindings": 3376,
+      "hostIlRuntimeReplayIdentical": true,
+      "waferJsonSemanticReplayIdentical": true,
+      "waferJsonByteReplayIdentical": false,
+      "dynamicDatePaths": 2,
+      "wholeGoalComplete": false
+    },
+    "verifierSha256": "ffd798fa27bafdc5a259f3e41e9a512978f830205dfa4d2a689eece8f6e96b47"
+  },
+  "boundaries": [
+    "Current revalidation of the existing isolated original task/lifecycle evidence; no production task or fixture expansion.",
+    "Six original task starts and the recipe initialization helper were observed with five completed tasks and one original initialization fault; this does not prove a production online run or successful hardware path.",
+    "Hardware repository remained empty; no production source, project file, SQL, VM, device path, or deployment was modified or invoked."
+  ]
+}

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from sqlalchemy import delete, exists, func, or_, select
+from sqlalchemy import and_, delete, exists, func, or_, select
 
 from app.database import Database
 from app.models import Message, Run, Thread, now_iso
@@ -49,11 +49,32 @@ class ConversationCatalog:
             Message.selections_json.icontains(query, autoescape=True),
         )
 
-    def list(self, state="active", query="", limit=100, offset=0) -> list[dict]:
+    def list(
+        self,
+        state="active",
+        query="",
+        limit=100,
+        offset=0,
+        *,
+        workspace_ids=None,
+        chronological=False,
+        archived_workspace_ids=None,
+    ) -> list[dict]:
         if state not in {"active", "archived", "deleted"}:
             raise ValueError("无效的会话列表类型")
         query = query.strip()[:300]
-        predicate = [Thread.workspace_id == self.workspace_id, Thread.state == state]
+        workspace = (
+            Thread.workspace_id == self.workspace_id
+            if workspace_ids is None
+            else Thread.workspace_id.in_(workspace_ids)
+        )
+        status = Thread.state == state
+        if state == "archived" and archived_workspace_ids:
+            status = or_(
+                status,
+                and_(Thread.state == "active", Thread.workspace_id.in_(archived_workspace_ids)),
+            )
+        predicate = [workspace, status]
         if query:
             predicate.append(
                 or_(
@@ -81,7 +102,18 @@ class ConversationCatalog:
         statement = (
             select(Thread, latest_status, latest_finished, count)
             .where(*predicate)
-            .order_by(Thread.pinned_order.is_(None), Thread.pinned_order, Thread.updated_at.desc())
+            .order_by(
+                *(
+                    [Thread.updated_at.desc(), Thread.id]
+                    if chronological
+                    else [
+                        Thread.pinned_order.is_(None),
+                        Thread.pinned_order,
+                        Thread.updated_at.desc(),
+                        Thread.id,
+                    ]
+                )
+            )
             .offset(max(0, offset))
             .limit(min(200, max(1, limit)))
         )

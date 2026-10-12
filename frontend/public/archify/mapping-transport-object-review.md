@@ -1,0 +1,29 @@
+# 恢复对象经过输送搜索、刷新与交接
+
+更新：2026-09-28。源码静态复核；未执行皮带、真空、传感器或现场确认对话框。
+
+## 搜索并非总会重建载具
+
+S1和S2 MapBelt均有早退条件：不反向搜索、自动工作、当前载具非null时直接return。S2启用输送时调用SearchBelt；搜索有料且已有对象，保留对象并Refresh；搜索有料但无对象，用户确认有料才new对应系统载具。搜索无料但已有对象时，确认有料保留对象，确认没有则清空对象并标无料。
+
+S2未启用输送时改用OpenVacuumAndCheck；成功且已有对象只标有料，不调用该分支中的Refresh。失败且无对象时提供重试/退出，重试goto RetryCommand再次检测，没有本方法内的次数上限；退出清空、标无料并CloseVacuum。已有对象但检测失败则由用户确认保留或清空。
+
+S1搜索无料但已有对象且用户确认有料时，若IsTuInDispense1为false，会调用System1BackMoveDistance；方法末尾将IsTuInDispense1设true。早退路径不会走到该赋值。以上均是代码条件，未证明现场传感器准确性或对话框选择结果。
+
+## Refresh改变定位上下文
+
+TransportUnit.Refresh依次初始化载具坐标、RefreshSubstrate、ClearVision、ClearMeasureHeight，并将IsSystem1Offset和IsSystem2Offset置false。逐层Substrate.Refresh→Module.Refresh→BondPosition.Refresh，更新索引/工作排序及CreateMatterCoordinate；不直接new载具、基板、模块或焊点。ClearVision与ClearMeasureHeight分别清除根对象和GetAllBaseMatter返回对象的定位/测高标志。
+
+当前列出的Refresh方法没有直接清空RemainingSteps字典；不能仅凭这一点断言整个调用树绝无副作用，CreateMatterCoordinate及坐标实现仍需确认。定位标志清除也不等于制程完成字典清除。
+
+## 交接使用引用赋值
+
+- TransferDispenseToBond在等待相关任务后，将S1.TransportUnit直接赋给S2；若结果null且isManual则new System2对象，然后无条件Refresh，再清空S1引用并更新载台状态。自动模式源为null时不走这个new兜底，随后的Refresh存在空引用失败条件。
+- TransferBondToWaitingUnload将S2对象直接赋到等待下料区，使用?.Refresh，然后清空S2引用。
+- TransferWaitingUnloadToUnloadBelt将等待区对象直接赋到下料区，无条件Refresh，再清空等待区引用。
+
+这三处代码为同一对象引用转移，不是克隆或从Mapping重新反序列化。Refresh抛错时，赋值已发生而源清空可能尚未执行；本轮未将这一局部顺序宣称为事务或并发安全。方法更早的运动/传感器握手与异常后的恢复另见既有输送分析。
+
+## 缺失项
+
+CreateMatterCoordinate的全部作用、上下游任务并发和异常时双引用状态、完整Mapping文件往返样本、现场续跑仍未验收。精确证据将以restoretransfer前缀登记到源码阅读器。

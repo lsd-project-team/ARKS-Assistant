@@ -1,13 +1,17 @@
+import { useProjectApi } from '../hooks/useProjectApi';
 import { useQuery } from '@tanstack/react-query';
 import { Check, ChevronDown } from 'lucide-react';
-import { api } from '../lib/api';
-import type { ToolEvent } from '../types';
+import type { ToolEvent, RunCompletion, AnalysisProgress } from '../types';
+import { ToolActivity } from './ToolActivity';
+import { toolSummary } from '../lib/runCompletion';
+import { AnalysisRunDetails } from './AnalysisRunDetails';
 
 interface Event {
   kind: string;
-  payload: ToolEvent;
+  payload: Record<string, unknown>;
 }
 export function RunTrace({ runId }: { runId: string }) {
+  const api = useProjectApi();
   const trace = useQuery({
     queryKey: ['trace', runId],
     queryFn: () => api<Event[]>(`/runs/${runId}/trace`),
@@ -19,28 +23,27 @@ export function RunTrace({ runId }: { runId: string }) {
       const end = trace.data?.find(
         (row) => row.kind === 'tool_end' && row.payload.id === event.payload.id,
       );
-      return { ...event.payload, ...end?.payload };
+      return { ...event.payload, ...end?.payload } as unknown as ToolEvent;
     });
-  if (!tools?.length) return null;
+  const completion = trace.data
+    ?.slice()
+    .reverse()
+    .find((event) => event.kind === 'run_completion')?.payload as RunCompletion | undefined;
+  const progress = trace.data
+    ?.slice()
+    .reverse()
+    .find((event) => event.kind === 'analysis_progress')?.payload as AnalysisProgress | undefined;
+  if (!tools?.length && !completion) return null;
   return (
     <details className="saved-trace">
       <summary>
         <Check size={12} />
-        已调用 {tools.length} 个工具
+        {tools?.length ? toolSummary(tools) : completion?.label}
+        {tools?.length && completion && <span>{completion.label}</span>}
         <ChevronDown size={12} />
       </summary>
-      <div className="tool-activity">
-        {tools.map((tool) => (
-          <details key={tool.id}>
-            <summary>
-              <Check size={12} />
-              {tool.name}
-            </summary>
-            <pre>{JSON.stringify(tool.arguments, null, 2)}</pre>
-            <pre>{tool.result}</pre>
-          </details>
-        ))}
-      </div>
+      <AnalysisRunDetails completion={completion} progress={progress} />
+      <ToolActivity tools={tools || []} />
     </details>
   );
 }

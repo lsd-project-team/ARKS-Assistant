@@ -19,10 +19,76 @@ class Base(DeclarativeBase):
     pass
 
 
+class Project(Base):
+    __tablename__ = "projects"
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(120))
+    description: Mapped[str] = mapped_column(Text, default="", server_default="")
+    source_root: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source_folders_json: Mapped[str] = mapped_column(Text, default="[]", server_default="[]")
+    instructions: Mapped[str] = mapped_column(Text, default="", server_default="")
+    deepwiki_repo: Mapped[str] = mapped_column(String(200), default="", server_default="")
+    state: Mapped[str] = mapped_column(String(20), default="active", server_default="active")
+    pinned_order: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
+class SourceWorkspace(Base):
+    """引用保存源码根目录身份，移动对话不会把旧链接指向另一个项目。"""
+
+    __tablename__ = "source_workspaces"
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    root: Mapped[str] = mapped_column(Text)
+
+
+class SourcePreference(Base):
+    """按项目保存默认来源；独立对话使用独立 scope_id，不共享项目配置。"""
+
+    __tablename__ = "source_preferences"
+    scope_id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    options_json: Mapped[str] = mapped_column(Text)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class ProjectMaterial(Base):
+    __tablename__ = "project_materials"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    kind: Mapped[str] = mapped_column(String(20), default="document")
+    source_name: Mapped[str] = mapped_column(String(250), default="")
+    content: Mapped[str] = mapped_column(Text)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    state: Mapped[str] = mapped_column(String(20), default="active")
+    origin_thread_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    origin_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
+class ProjectMaterialRevision(Base):
+    """不可变的资料快照，让旧回答的引用不随资料编辑而变化。"""
+
+    __tablename__ = "project_material_revisions"
+    __table_args__ = (Index("ix_material_version", "material_id", "version", unique=True),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    material_id: Mapped[str] = mapped_column(ForeignKey("project_materials.id"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    title: Mapped[str] = mapped_column(String(200))
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
 class Thread(Base):
     __tablename__ = "threads"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     workspace_id: Mapped[str] = mapped_column(String(32), index=True)
+    project_id: Mapped[str | None] = mapped_column(
+        ForeignKey("projects.id"), nullable=True, index=True
+    )
+    context_generation: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     title: Mapped[str] = mapped_column(String(120))
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
@@ -43,10 +109,12 @@ class Message(Base):
     role: Mapped[str] = mapped_column(String(20))
     content: Mapped[str] = mapped_column(Text)
     selections_json: Mapped[str] = mapped_column(Text, default="[]")
+    source_options_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     context_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
     replaces_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     origin_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    source_workspace_id: Mapped[str | None] = mapped_column(String(32), nullable=True)
 
 
 class Run(Base):
@@ -64,6 +132,7 @@ class Run(Base):
     stage: Mapped[str] = mapped_column(String(40), default="queued", server_default="queued")
     error_code: Mapped[str] = mapped_column(String(40), default="", server_default="")
     model_snapshot_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
+    project_snapshot_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     started_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     finished_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
@@ -87,6 +156,7 @@ class QueuedQuestion(Base):
     thread_id: Mapped[str] = mapped_column(ForeignKey("threads.id", ondelete="CASCADE"), index=True)
     content: Mapped[str] = mapped_column(Text)
     selections_json: Mapped[str] = mapped_column(Text, default="[]")
+    source_options_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
@@ -99,6 +169,7 @@ class MemoryRecord(Base):
     name: Mapped[str] = mapped_column(String(100))
     source_thread_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     source_paths_json: Mapped[str] = mapped_column(Text, default="[]")
+    lifecycle: Mapped[str] = mapped_column(String(20), default="valid")
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
 
@@ -113,5 +184,6 @@ class MemoryRevision(Base):
     version: Mapped[str] = mapped_column(String(64))
     source_thread_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     source_paths_json: Mapped[str] = mapped_column(Text, default="[]")
+    lifecycle: Mapped[str] = mapped_column(String(20), default="valid")
     action: Mapped[str] = mapped_column(String(20))
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)

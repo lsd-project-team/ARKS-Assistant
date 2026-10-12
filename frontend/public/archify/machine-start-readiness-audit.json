@@ -1,0 +1,151 @@
+{
+  "schema": "archify-machine-start-readiness-audit-v1",
+  "status": "source-confirmed-partial",
+  "recordedAt": "2026-10-06T21:49:49.585Z",
+  "sourceHashes": {
+    "AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+    "AKRS.ZX2200/Main/Machine/MachineSupport/Machine.cs": "7df9dc7d0c07b6ca488d424f79e5eed166a64b5b857a815e7073f0e13f118968",
+    "AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a",
+    "AKRS.ZX2200/BondSystem/Models/System2Domain.cs": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+    "AKRS.ZX2200/WaferSubSystem/Models/WaferSystemDomain.cs": "4c585699e813d3b23f2b12ba34ffd91bb3a89d156f449e827e17eb8b8e1a7eef",
+    "AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+    "AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789",
+    "AKRS.ZX2200/BondSystem/Tasks/BondTask.cs": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+    "AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs": "68a5bb1f05a1b89218bb20eee68421b663fd43137a06ff4a13085590e502012d",
+    "AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs": "40ecc8b86316619109de02bfa1c62d246c36d0d1b578ba761e1eecbc4fada8c0",
+    "AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs": "daf2c09966a3874673df23590d8d058d6fc6f81d1f4fe7e02e9bd0c2991b338e",
+    "AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b"
+  },
+  "environment": {
+    "file": "AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+    "methodLine": 89,
+    "order": [
+      "WaferSystemDomain.CheckIsReady",
+      "System2Domain.CheckIsReady",
+      "System1Domain.CheckIsReady",
+      "ProductConfiguration.IsTransportUnitReady",
+      "BondPositionConfig.IsBpAssistanceFinish",
+      "ProcessDomain.CheckIsReady"
+    ],
+    "conclusion": "All six readiness calls return false directly from the aggregate method; no later readiness domain is reached after a failure."
+  },
+  "prepare": {
+    "file": "AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+    "methodLine": 185,
+    "order": [
+      "CleanFile",
+      "ResetMachineSignal",
+      "AllAxisReset",
+      "IsAllowTaskClosed",
+      "MachineInitSuccess",
+      "safe-door check",
+      "IsWorking",
+      "safe-position moves",
+      "CheckOperatingEnvironment"
+    ],
+    "machineInitSuccess": {
+      "line": 408,
+      "checks": [
+        "conditional AllAxisReset",
+        "PrInitSuccess",
+        "disk capacity",
+        "configured transport heater preheating"
+      ],
+      "disabledOrCommented": [
+        "LaserEncoderCheck block is commented out"
+      ]
+    },
+    "conclusion": "PrepareMachineReadyToStart performs cleanup and readiness checks before the Working state; the cleanup and safe-position calls can have device side effects when the real method executes."
+  },
+  "start": {
+    "file": "AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+    "methodLine": 261,
+    "prepareLine": 266,
+    "workingStateLine": 272,
+    "taskStartLines": {
+      "transport": 276,
+      "wafer": 277,
+      "system1": 284,
+      "actionInit": 289,
+      "bond": 290,
+      "slide": 295,
+      "flip": 303
+    },
+    "ignoredBooleanStarts": [
+      "DispenseWorkTask.Start()",
+      "BondTask.Start()",
+      "SlideFluxerTask.Start()",
+      "FlipTask.Start()"
+    ],
+    "conclusion": "Start returns void, returns early when preparation is false, sets Working, then launches domain tasks. The boolean task-start return values are not consumed, and ActionNodesService.Init runs after transport/wafer starts but before BondTask.Start."
+  },
+  "domainChecks": {
+    "system2": {
+      "file": "AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "line": 594,
+      "bypassLine": 599,
+      "checks": [
+        "BondProgram.SelfCheck",
+        "ActionNodesService.SelfCheck",
+        "ULM/BondHead/NozzleShelf parameters",
+        "force-control calibration when used",
+        "drift/pickup positions when enabled",
+        "tool-bank configuration and tool consistency",
+        "material on bondhead",
+        "pre-dispense alarm"
+      ],
+      "sideEffectBeforeBypass": "OpenBondHeadVaccum executes before the IsActiveSelfCheck bypass."
+    },
+    "system1": {
+      "file": "AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "line": 481,
+      "bypassLine": 483,
+      "checks": [
+        "dispenser readiness",
+        "pre-dispense plate and epoxy readiness when enabled",
+        "epoxy material readiness"
+      ]
+    },
+    "wafer": {
+      "file": "AKRS.ZX2200/WaferSubSystem/Models/WaferSystemDomain.cs",
+      "line": 159,
+      "checks": [
+        "magazine and assistant state",
+        "carrier constraints",
+        "force/flip/camera compatibility",
+        "magazine and wafer-table safety conditions"
+      ]
+    },
+    "process": {
+      "file": "AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "line": 179,
+      "checks": [
+        "flip-module process count",
+        "step names and indexes",
+        "bond-position references",
+        "process parameter ranges"
+      ]
+    }
+  },
+  "failurePropagation": {
+    "transportStart": {
+      "file": "AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+      "line": 84,
+      "catchesAndShows": true,
+      "rethrows": false,
+      "mayCallStop": 104
+    },
+    "waferStart": {
+      "file": "AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+      "line": 1373,
+      "catchesAndShows": true,
+      "rethrows": false
+    },
+    "sourceSequenceRisk": "TransportDomain.StartTask can call Machine.Stop and return on a carrier precheck failure; Machine.Start then proceeds to WaferSubSystemTask.Start, whose source sets Working. This is a source-level sequence risk, not a runtime reproduction."
+  },
+  "boundaries": [
+    "This audit records current source hashes and order only; it does not call PrepareMachineReadyToStart, Machine.Start, SelfCheck, CleanFile, motion, vacuum, signal, VM, or hardware APIs.",
+    "It does not establish that any readiness domain succeeds on a real recipe or that task threads reach a healthy running state.",
+    "The aggregate checks and failure catches remain partial evidence; full concurrency, cancellation, exception observation, and device acceptance are still open."
+  ]
+}

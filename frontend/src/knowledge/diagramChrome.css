@@ -1,0 +1,109 @@
+/* Embedded diagrams share the workspace chrome; semantic node colors stay intact. */
+body,
+button,
+input,
+select,
+.node-title,
+.lane-label,
+.minimap-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC Variable', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button {
+  border-radius: 8px;
+  font-weight: 500;
+}
+/* 图内浮层以 iframe 视口为边界，避免页面滚动后标题或关闭按钮被裁切。 */
+.diagram-guide,
+.node-finder,
+.semantic-lens {
+  box-sizing: border-box;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: min(512px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+}
+svg text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC Variable', sans-serif;
+}
+:root[data-theme='dark'][data-preset='classic'] {
+  --bg: #171d1a;
+  --grid: #2b3730;
+  --text: #eef2ec;
+  --text-muted: #a5b3a9;
+  --text-faint: #a0aea4;
+  --panel: #1f2722;
+  --panel-border: #344239;
+  --lane-fill: rgba(32, 42, 35, 0.5);
+  --lane-stroke: #4c6154;
+  --toolbar-bg: rgba(31, 39, 34, 0.95);
+  --toolbar-border: #405046;
+  --toolbar-text: #d7e2d8;
+  --toolbar-hover: #2c3830;
+  --toolbar-menu-bg: #1f2722;
+}
+:root[data-theme='light'][data-preset='classic'] {
+  --bg: #f9fbf8;
+  --grid: #e5ebe4;
+  --text: #26352c;
+  --text-muted: #64746a;
+  --text-faint: #64746a;
+  --panel: #fff;
+  --panel-border: #dce5dc;
+  --lane-fill: rgba(240, 245, 238, 0.6);
+  --lane-stroke: #c8d5c9;
+  --toolbar-bg: rgba(255, 255, 255, 0.95);
+  --toolbar-border: #d6e1d6;
+  --toolbar-text: #475b4c;
+  --toolbar-hover: #eef4ed;
+  --toolbar-menu-bg: #fff;
+}
+
+:root[data-theme='light'][data-appearance='white'] {
+  --bg: #f9f9f9;
+  --bg-deep: #f3f3f3;
+  --panel: #ffffff;
+  --panel-soft: #f3f3f3;
+  --panel-deep: #f9f9f9;
+  --line: #d4d4d4;
+  --line-soft: #e8e8e8;
+  --ink: #282828;
+  --muted: #5d5d5d;
+  --muted-2: #737373;
+  --text: #282828;
+  --text-muted: #5d5d5d;
+  --text-faint: #737373;
+  --canvas-bg: #f9f9f9;
+  --canvas-grid: #ededed;
+  --lane-bg: #f9f9f9;
+  --lane-border: #e8e8e8;
+  --toolbar-text: #5d5d5d;
+  --toolbar-hover: #ededed;
+  --grid: #ededed;
+  --panel-border: #e8e8e8;
+  --lane-fill: rgba(243, 243, 243, 0.6);
+  --lane-stroke: #d4d4d4;
+  --toolbar-bg: rgba(255, 255, 255, 0.95);
+  --toolbar-border: #e8e8e8;
+  --toolbar-menu-bg: #fff;
+}
+/* 加强图内文字与工具按钮的反馈，不改变节点的业务语义颜色。 */
+.node-title,
+.lane-label {
+  font-weight: 500;
+}
+button:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--toolbar-text, var(--text));
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}

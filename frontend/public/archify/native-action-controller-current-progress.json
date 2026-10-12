@@ -1,0 +1,43 @@
+{
+  "schema": "archify-native-action-controller-current-v1",
+  "status": "current-native-action-controller-verified",
+  "recordedAt": "2026-10-07T12:04:34.347Z",
+  "progressVerification": {
+    "command": "node scripts/verify-native-action-controller-progress.cjs",
+    "exitCode": 0,
+    "result": {
+      "status": "native-action-controller-progress-bindings-passed",
+      "checks": 251,
+      "concreteNodeTypes": 37,
+      "completeDomains": 2,
+      "controllerSchedules": 16,
+      "totalFrozenBindings": 3292,
+      "wholeGoalComplete": false
+    },
+    "verifierSha256": "2e28626ffa071b3e4f73e19a9d45d74994d0b3270fcc707f3f35da3520321390"
+  },
+  "runtimeVerification": {
+    "command": "node scripts/verify-native-action-controller.cjs",
+    "exitCode": 0,
+    "result": {
+      "status": "native-action-controller-bindings-passed",
+      "checks": 251,
+      "catalogChecks": 119,
+      "concreteNodeTypes": 37,
+      "completeDomains": 2,
+      "controllerSchedules": 16,
+      "sourceAssembliesBound": 16,
+      "hardwareCount": 0,
+      "newFrozenInputs": 33,
+      "totalFrozenBindings": 3292,
+      "replayIdentical": true,
+      "wholeGoalComplete": false
+    },
+    "verifierSha256": "12c499b14669a9d1c27acaab7d14698ea31ec651f7ec3a3f5e53fb50be7eed72"
+  },
+  "boundaries": [
+    "This is a current revalidation of the existing isolated original-runtime controller evidence; it does not execute production tasks or expand the frozen fixture.",
+    "The two original public action controllers were initialized across 16 schedules and 37 concrete node constructors; concrete DoWork outside the separately bounded branch evidence remains outside this record.",
+    "No production source, project file, SQL, VM, device path, or deployment was modified or invoked; hardware repository count remained zero."
+  ]
+}

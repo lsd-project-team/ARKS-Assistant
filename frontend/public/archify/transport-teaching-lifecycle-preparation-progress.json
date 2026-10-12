@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "standalone-and-focused-ui-passed-full-composition-integration-pending",
+  "updatedAt": "2026-10-01",
+  "preparedContext": {
+    "report": "transport-coordinate-product-integration-review.md",
+    "checks": 1031,
+    "testSha256": "59d96963e113f8ab6f9398d3e1cf02c735e0b95a1cd763b4af795d030d838a02"
+  },
+  "standalone": {
+    "checks": 93,
+    "methods": 7,
+    "properties": 24,
+    "enums": 2,
+    "sourceFragments": 33,
+    "sourceInputs": 12,
+    "test": "transport-teaching-lifecycle-test.json",
+    "testSha256": "ce1ea7050e1d6d5ba0e42193fe527df4d30b7b1aa65fa052d34a9622a5955f2c",
+    "audit": "transport-teaching-lifecycle-audit.json",
+    "auditSha256": "c85943a3f3801e72a4dabe58eb8579ad120ac4251249dd72903ecaf753e86bf7",
+    "log": ".archify-work/transport-teaching-lifecycle-baseline-v3.log",
+    "logSha256": "13c332d36992e8f402c22824d938ed503199b06b46f4b575662d0caf89c0f9e1",
+    "observedExitCode": 0
+  },
+  "continuation": {
+    "file": "transport-teaching-next-evidence.json",
+    "sha256": "4fe22e4581cbc3e51669c277d1de7097af2f45edb103d49fb956106a8279b4de",
+    "matchedCaptures": 29
+  },
+  "findings": [
+    "Ordinary sixteen-state aggregate rejects only UnAble; Forbidden and unknown enum values pass. A null state throws unless an earlier UnAble short-circuits.",
+    "Opposite leaf checks AfterBond/Epoxy/height/PR config before AssistantPos; missing config may be added and Saved even when position remains untaught. Empty subtrees return false and null children/roots throw.",
+    "Readiness Save failure leaves added config; retry bypasses still-failing Save through cache and may return true. Reentrant Save can evaluate readiness without another Save.",
+    "GetAssistantResult uses current global product IsOppositeSex even on an old receiver; ordinary branch reads receiver states, opposite branch reads current global tree.",
+    "Both original UI handlers with true teaching readiness: ordinary UnAble/null, opposite empty/null/untaught position stop before module/producer/wafer. Untaught opposite position still creates and Saves config during readiness; unknown state enums reach running startup.",
+    "Both UI Save faults occur before domain startup/catch and wafer creation; outer UI cleanup leaves Stop. On repeat start, existing config bypasses still-failing Save and starts the actual one-leaf tree and producers. This differs from the 1031 composition whose teaching result is an input adapter."
+  ],
+  "scope": "Independent 93-case teaching aggregate probe and 20-case focused original UI startup preparation; not included in current 1031 full regression or added reader topic counts. Prior 1031 Run is retained in focused compilation but not invoked. Full assertion integration/migration remains pending; inspection/repository/Save/singleton/dialog/native UI/build/deployed configuration/DLL/equipment and the whole task list remain incomplete.",
+  "focusedUi": {
+    "checks": 20,
+    "compiledFragments": 449,
+    "uniqueCompiledFragments": 448,
+    "priorChecksExecuted": false,
+    "test": "transport-teaching-startup-preparation-test.json",
+    "testSha256": "9ae7936b74d3662882e788636d780dc35e1653ea4d4e4707a3b699e320f89b35",
+    "audit": "transport-teaching-startup-preparation-audit.json",
+    "auditSha256": "12e03eb9376b138447ab213101062302512a2e028a958d5341fa87513b482972",
+    "log": ".archify-work/teaching-startup-preparation-baseline-v1.log",
+    "logSha256": "c5e03db95b2448f26c8673fa1fb0d5771c2cc19a82b385382bdcb31630a765fe",
+    "observedExitCode": 0,
+    "observedSession": 22654
+  }
+}

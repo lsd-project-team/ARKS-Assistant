@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Exact OtherConfig.ChangeBpName and ProcessDomain.ChangeBpName with production state structs, offset class and enum. Two struct constructors add : this() for C#5 compilation. Process containers and Save are stubs. No UI, PR operations, disk writes, hardware or end-to-end rename.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OtherConfig.cs",
+      "start": 62,
+      "end": 89,
+      "sha256": "ffea1f4913fb6958c57bc196b3d92f0437dfee6d3962ef448d9b7547a3c24433",
+      "snippetSha256": "817b9876bf919fdc8e82f20448789ec83576139c2ed3af12446db5456f4c8b3b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "start": 259,
+      "end": 278,
+      "sha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "8b3e615ab931a9ce8fc2fceefb2c5d4737a6007daf921f0618a5b457d3edafb7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OtherConfig.cs",
+      "start": 157,
+      "end": 294,
+      "sha256": "ffea1f4913fb6958c57bc196b3d92f0437dfee6d3962ef448d9b7547a3c24433",
+      "snippetSha256": "e53668c5799d6b6371d297e2ded42be0a57ac2a70fce20a9cd84020fa814e4ed"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Model/TuEnum.cs",
+      "start": 278,
+      "end": 302,
+      "sha256": "c43ddaf54945f2579e2ec415ffa2447f6e94ec54b3239b74c3c3ee3d77ef2e76",
+      "snippetSha256": "c47593bea725349e9c862fa73e33187050d11d963bc4767218e969410bba4916"
+    }
+  ],
+  "checks": [
+    "PASS separate offset is renamed",
+    "PASS ordinary state list keeps old name",
+    "PASS large state array keeps old name",
+    "PASS both process systems rename matches",
+    "PASS unmatched process step retained and save called once",
+    "PASS save exception propagates after in-memory rename",
+    "TOTAL 6"
+  ]
+}

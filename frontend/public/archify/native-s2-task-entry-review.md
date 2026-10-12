@@ -1,0 +1,37 @@
+# 原S2任务入口、运行信息重置与吸嘴架首步故障核验
+
+两轮各497项通过，共994项。每轮122个真实原S2 Task：20正常结束、102故障。实际加载16个未改动原资源程序集及SDK，并核对源路径与哈希。257个声明/147个原文件严格解码并绑定字节、UTF16位置；137个IL方法来自3个程序集。十六项新旧绑定检查通过。96新增冻结输入，391父输入复用，10761+96=10857。整体目标未完成。
+
+## 实际原任务入口矩阵
+
+原BondTask.Start/DoWork在5种工作模式×6种机器状态×2种Enable×2种ToolBank配置下实际执行120个任务。模式为NormalWork、DryCycle、OffLineWork、DeBugWork、CompensateWork；状态为Stop、Working、Operate、Teaching、Preparing及未定义999。单步开关明确false，真实SDK硬件仓库为空，硬件文件隔离且未存在。
+
+20个Stop任务先执行原ResetInformation，再在Signal.WaitStart返回false后正常RanToCompletion。另100个都进入循环，在第一步NozzleShelfController.MoveShelfToHome→NozzleShelfModule.MoveShelfToHome→AxisY原getter查找“焊头放置架Y”后，因实际SDK返回null而NullReferenceException，Task Faulted，Wait产生AggregateException。原异常栈实际包含NozzleShelfModule.MoveShelfToHome。没有进入Axis.AbsoluteMove方法正文、后续焊头/力控初始化或动作节点选择，没有设备运动或节点DoWork。
+
+Enable=false和IsToolBankEnable=false未跳过这一首步；OffLineWork同样故障。手动、示教、准备及999也通过原WaitStart门进入首步，说明该门没有限制仅Working。原NozzleShelf控制器只检查WaitSingleStep，模组直接调用轴，无离线或ToolBank检查；原任务到首步之后才检查Enable。任务首步异常没有整段catch来调用Machine.Stop；每个矩阵任务的机器状态都保留原值，原排程对象、已完成标志保留，Machine.IsAllowTaskClosed接受Faulted任务。
+
+这证明空硬件环境的实际原失败路径，不证明实际设备现场故障频率或正常生产成功。完整S2动作循环、换吸嘴、取片/贴片、重试、在线视觉及设备仍待验收。
+
+## 实际暂停与空AbortThread
+
+另外2个原Task分别在Enable=false/true及OffLineWork、Pause状态启动，先完成运行信息重置，再保持Running等待。150ms有界等待尚未完成，整机关闭查询false。再次原Start保留同一Running任务。原BondTask.AbortThread为空方法；实际调用返回成功，但任务仍Running、关闭查询仍false，没有取消或释放暂停。
+
+公开机器状态改为Working后，两任务实际进入上述首步并故障，机器仍Working，关闭查询返回true。共102故障任务由100矩阵任务及2暂停释放任务组成；生产Task本轮122个，没有替换SDK、节点、线程状态或单例。本轮未做Pause→Stop的整任务释放，前序原Signal窄窗口证据保留，不推断所有调度结果相同。
+
+## 重置范围及计时器
+
+两次直接完整原DoWork在Stop、Enable=false/true下执行，不创建Task。通过公开赋值播种21个原标量字段/属性后，实际ResetInformation仅重置10个：IsBondTaskFirstStart、IsFinishRefreshMap、IsSetUpLookLightSuccess、IsChangeToolBlowFinish、IsRepickComponent、IsNeedDip、UpLookAutoSkipCount、StaticWaffleComponentAutoSkipCount、BeforeTouchForce、IsBondArriveSearchPos。另11个保留：IsFirstDispense、IsMaterialOnBondhead、RePickType、IsPreDispense、PickupNumAfterLastCleanNozzle、IsSlideFluxerManual、WatchFluxCount、DipOnTUCount、BondHeadInitialVal、IsNewProduct、IsWaferCheckSucceed。
+
+原现有S2排程和已完成消息未重建或清空。4个公开Stopwatch引用仍为原测试播种对象，均未启动；EjectionLiftTime/EjectToReadyLiftTime原记录保留，ReadBondForceTask的公开Created任务引用也保留。只读反射仅用于快照原WorkMessages及公共标量，没有反射写入。
+
+原ResetInformation末尾调用Stopwatch.StartNew但丢弃返回值，原IL下一条为pop；没有读取或设置System2Stopwatch属性。因此确实新建了一个运行的临时计时器，但未保存它，也未启动所检查的4个现有计时器。不能把这个结果描述为所有可能计时器都不运行。
+
+原任务首步的MoveShelfToHome返回ExcuteResult，以及ResetBondhead返回bool，都被原IL直接pop丢弃。后者及后续动作本轮未执行，此项是原源码/IL顺序证据，不能认定实际力控清零成功或已覆盖其错误处理。
+
+## 回执及边界
+
+原生产C#/csproj未修改。未执行整Machine.Start/私有Prepare/固定D盘CleanFile、回零Hardware SelfCheck、真实Axis运动、PR/VM、UI/SQL/设备、Retry、完整MSBuild/LC/Fody或部署。正常返回发生在Stop入口，不能作为完整生产成功证明。SDK空仓库、原状态门及首步null查找构成动态边界，没有使用替身设备。
+
+两版宿主编译候选因ActionNodeMessage/RepickTypeEnum命名空间写错失败，保留原输出及归档；第二版运行器调用被编译守卫拒绝，两版均未进入CLR。修正宿主后编译7d8bd1，原生d3d25a/d353e8、核心340941、阶段54488d、冻结c63657、绑定eb9505均同步exit0。运行器旧摘要仅打印S1计数0；完整原JSON明确originalS2StartedTasks=122，独立核验按此字段断言。
+
+下一步继续原Flip/Slide任务启动前硬件动作和状态门，连接真实任务故障与整机退出判断；再推进完整S2/输送/视觉/设备和构建验收。16工程、29组、1436文件、13项任务保持原范围，整体目标未完成。

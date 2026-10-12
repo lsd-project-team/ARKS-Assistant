@@ -1,4 +1,4 @@
-﻿param([switch]$SkipFrontend)
+﻿param([switch]$SkipFrontend, [switch]$SkipSemanticModels)
 $ErrorActionPreference = 'Stop'
 $env:PYTHONUTF8 = '1'
 $projectDirectory = $PSScriptRoot
@@ -8,6 +8,12 @@ Push-Location (Join-Path $projectDirectory 'backend')
 try {
     uv sync --frozen
     if ($LASTEXITCODE -ne 0) { throw 'Python 依赖安装失败' }
+    if (-not $SkipSemanticModels) {
+        uv run python -m app.retrieval_setup
+        if ($LASTEXITCODE -ne 0) { throw '本地检索模型准备失败，可离线使用 -SkipSemanticModels' }
+        uv run python -m app.analysis_setup
+        if ($LASTEXITCODE -ne 0) { throw 'Roslyn 分析器准备失败，可离线使用 -SkipSemanticModels' }
+    }
 } finally { Pop-Location }
 
 if (-not $SkipFrontend) {

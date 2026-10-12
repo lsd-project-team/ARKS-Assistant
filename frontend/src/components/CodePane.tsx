@@ -1,158 +1,85 @@
-import { useEffect, useRef, useState } from 'react';
-import Editor, { type OnMount, loader } from '@monaco-editor/react';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import 'monaco-editor/esm/vs/basic-languages/csharp/csharp.contribution';
-import 'monaco-editor/esm/vs/basic-languages/xml/xml.contribution';
-import 'monaco-editor/esm/vs/language/json/monaco.contribution';
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+import { useProjectApi } from '../hooks/useProjectApi';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  FileCode2,
-  X,
-  MessageSquarePlus,
-  LockKeyhole,
-  ChevronRight,
-  RefreshCw,
-  PanelRight,
-} from 'lucide-react';
-import { api, query } from '../lib/api';
+import { FileCode2, LockKeyhole, ChevronRight, X } from 'lucide-react';
+import { query } from '../lib/api';
 import { useWorkspace } from '../lib/store';
-import { SOURCE_THEME, registerSourceTheme } from '../lib/editorTheme';
 import type { SourceFile } from '../types';
-import { Button, ErrorText } from './ui';
+import { ErrorText } from './ui';
+import { SourceViewer } from './SourceViewer';
+import { MarkdownPreview } from './MarkdownPreview';
+import { FileToolbar } from './FileToolbar';
+import { FileTabs } from './FileTabs';
 
-// worker 和编辑器均来自本地构建，避免 Windows 离线时依赖 CDN。
-(self as typeof self & { MonacoEnvironment: unknown }).MonacoEnvironment = {
-  getWorker: (_module: string, label: string) =>
-    label === 'json' ? new JsonWorker() : new EditorWorker(),
-};
-loader.config({ monaco });
-const languageFor = (path: string) =>
-  path.endsWith('.cs')
-    ? 'csharp'
-    : /\.(csproj|resx|config|xml)$/.test(path)
-      ? 'xml'
-      : path.endsWith('.json')
-        ? 'json'
-        : 'plaintext';
-
-export function CodePane({
-  explorerOpen,
-  onToggleExplorer,
-}: {
-  explorerOpen: boolean;
-  onToggleExplorer: () => void;
-}) {
-  const { paths, activePath, openFile, closeFile, addSelection, jump } = useWorkspace();
-  const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const [hasSelection, setHasSelection] = useState(false);
+export function CodePane({ onSearch }: { onSearch: () => void }) {
+  const api = useProjectApi();
+  const { activePath, wordWrap, sourceModes, navigateHistory, setLayout } = useWorkspace();
+  const markdown = /\.(md|markdown)$/i.test(activePath);
+  const showSource = !markdown || !!sourceModes[activePath];
   const source = useQuery({
     queryKey: ['source', activePath],
     queryFn: () => api<SourceFile>(`/file?path=${query(activePath)}`),
     enabled: !!activePath,
   });
-  const onMount: OnMount = (instance) => {
-    editor.current = instance;
-    instance.onDidChangeCursorSelection((event) => setHasSelection(!event.selection.isEmpty()));
-    instance.revealLineInCenter(jump.line);
-    instance.setPosition({ lineNumber: jump.line, column: 1 });
-  };
   useEffect(() => {
-    if (source.data && editor.current) {
-      editor.current.revealLineInCenter(jump.line);
-      editor.current.setPosition({ lineNumber: jump.line, column: 1 });
-    }
-  }, [jump, source.data]);
-  function attachSelection() {
-    const selection = editor.current?.getSelection();
-    const model = editor.current?.getModel();
-    if (!selection || selection.isEmpty() || !model || !source.data) return;
-    addSelection({
-      path: activePath,
-      start_line: selection.startLineNumber,
-      end_line: selection.endLineNumber,
-      start_column: selection.startColumn,
-      end_column: selection.endColumn,
-      content: model.getValueInRange(selection),
-      version: source.data.version,
-    });
-  }
+    const shortcut = (event: KeyboardEvent) => {
+      const editing = (event.target as HTMLElement)?.closest(
+        'input, textarea, [contenteditable="true"], [role="dialog"]',
+      );
+      if (editing || !event.altKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      event.preventDefault();
+      navigateHistory(event.key === 'ArrowLeft' ? -1 : 1);
+    };
+    window.addEventListener('keydown', shortcut);
+    return () => window.removeEventListener('keydown', shortcut);
+  }, [navigateHistory]);
   return (
-    <section className="code-pane">
-      <div className="code-tabs">
-        {paths.map((path) => (
-          <div key={path} className={`code-tab ${path === activePath ? 'active' : ''}`}>
-            <button title={path} onClick={() => openFile(path)}>
-              <FileCode2 size={14} />
-              <span>{path.split('/').at(-1)}</span>
-            </button>
-            <button aria-label={`关闭${path.split('/').at(-1)}`} onClick={() => closeFile(path)}>
-              <X size={12} />
-            </button>
-          </div>
-        ))}
-        {!paths.length && <span className="empty-tab">源码浏览器</span>}
-        <div className="code-tab-tools">
-          <button
-            aria-label="切换文件树"
-            aria-pressed={explorerOpen}
-            title="切换文件树"
-            onClick={onToggleExplorer}
-          >
-            <PanelRight size={16} />
-          </button>
-        </div>
+    <section className="code-pane" aria-label="源码显示区">
+      <div className="code-heading">
+        <FileTabs />
+        <button
+          className="close-code-pane"
+          aria-label="关闭源码显示区"
+          title="关闭源码显示区"
+          onClick={() => setLayout({ codeOpen: false })}
+        >
+          <X size={16} />
+        </button>
       </div>
-      {activePath && (
-        <div className="code-breadcrumb">
-          <span>trunk</span>
-          {activePath.split('/').map((segment, index) => (
-            <span key={index}>
-              <ChevronRight size={12} />
-              {segment}
-            </span>
-          ))}
-          <button
-            title="重新读取文件"
-            aria-label="重新读取文件"
-            onClick={() => void source.refetch()}
-          >
-            <RefreshCw size={13} />
-          </button>
-        </div>
-      )}
-      <div className="editor-container">
+      <FileToolbar
+        markdown={markdown}
+        showSource={showSource}
+        onSearch={onSearch}
+        onRefresh={() => {
+          useWorkspace.getState().restoreReadingPosition();
+          void source.refetch();
+        }}
+        loading={source.isFetching}
+        lineCount={source.data?.line_count || 0}
+      />
+      <div
+        className="editor-container"
+        id="source-reading-panel"
+        role="tabpanel"
+        aria-label={activePath || '文件阅读区'}
+      >
         <ErrorText error={source.error} />
         {source.data ? (
-          <Editor
-            key={activePath}
-            path={activePath}
-            language={languageFor(activePath)}
-            value={source.data.content}
-            theme={SOURCE_THEME}
-            beforeMount={registerSourceTheme}
-            onMount={onMount}
-            loading={<span className="muted padded">正在加载编辑器…</span>}
-            options={{
-              readOnly: true,
-              domReadOnly: true,
-              minimap: { enabled: false },
-              fontFamily: 'Cascadia Code, Consolas, monospace',
-              fontSize: 14,
-              lineHeight: 24,
-              padding: { top: 22, bottom: 22 },
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              renderLineHighlight: 'none',
-              lineNumbersMinChars: 3,
-              glyphMargin: false,
-              selectionHighlight: true,
-              folding: true,
-              smoothScrolling: true,
-              stickyScroll: { enabled: false },
-            }}
-          />
+          showSource ? (
+            <SourceViewer
+              key={`${activePath}:${source.data.version}`}
+              source={source.data}
+              wordWrap={wordWrap}
+            />
+          ) : (
+            <MarkdownPreview key={`${activePath}:${source.data.version}`} source={source.data} />
+          )
+        ) : activePath ? (
+          <div className="editor-empty">
+            <p>
+              {source.isPending ? '正在读取文件…' : '暂时无法打开这个文件，请重试或选择其他文件。'}
+            </p>
+          </div>
         ) : (
           <div className="editor-empty">
             <div className="empty-code-icon">
@@ -169,17 +96,11 @@ export function CodePane({
             </div>
           </div>
         )}
-        {hasSelection && source.data && (
-          <Button className="selection-action" onClick={attachSelection}>
-            <MessageSquarePlus size={14} />
-            将选区加入对话
-          </Button>
-        )}
       </div>
       <div className="code-status">
         <span>
           <LockKeyhole size={11} />
-          源码只读
+          {markdown && !showSource ? '文档预览 · 只读' : '源码只读'}
         </span>
         <span>
           {source.data?.encoding || 'UTF-8'}

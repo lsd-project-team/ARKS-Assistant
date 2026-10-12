@@ -1,0 +1,318 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 S2 动作入口、模式门控与步骤提交",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "dispatch",
+      "label": "消息完成与步骤提交分属不同层"
+    },
+    {
+      "id": "pick",
+      "label": "取晶 Pick：OffLine 提前退出"
+    },
+    {
+      "id": "bond",
+      "label": "固晶 Bond：提交先于统计与刷新"
+    },
+    {
+      "id": "after",
+      "label": "焊后检测 AfterBond：按分支提交"
+    },
+    {
+      "id": "dip",
+      "label": "蘸胶 DipFlux：先硬件门控，空跑入口抛异常"
+    },
+    {
+      "id": "pre",
+      "label": "预点胶 PreDispense：来自 S2 点胶内层调用"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "message",
+      "lane": "dispatch",
+      "col": 0,
+      "type": "backend",
+      "label": "选择未完成消息",
+      "sublabel": "更新当前动作上下文",
+      "width": 180
+    },
+    {
+      "id": "execute",
+      "lane": "dispatch",
+      "col": 1,
+      "type": "backend",
+      "label": "按门控执行",
+      "sublabel": "IsDoWork → 可选 DoWork",
+      "width": 180
+    },
+    {
+      "id": "finished",
+      "lane": "dispatch",
+      "col": 2,
+      "type": "backend",
+      "label": "外层标消息 Finished",
+      "sublabel": "不等于焊点步骤已提交",
+      "width": 180
+    },
+    {
+      "id": "pick-entry",
+      "lane": "pick",
+      "col": 0,
+      "type": "backend",
+      "label": "DoWork 入口",
+      "sublabel": "OffLine 在 try 外 Success",
+      "width": 180
+    },
+    {
+      "id": "pick-work",
+      "lane": "pick",
+      "col": 1,
+      "type": "backend",
+      "label": "其余模式先准备",
+      "sublabel": "换嘴 / 清嘴后判断 DryCycle",
+      "width": 180
+    },
+    {
+      "id": "pick-final",
+      "lane": "pick",
+      "col": 2,
+      "type": "backend",
+      "label": "进入 try 才执行 finally",
+      "sublabel": "Stop → WorkStop",
+      "width": 180
+    },
+    {
+      "id": "bond-entry",
+      "lane": "bond",
+      "col": 0,
+      "type": "backend",
+      "label": "WorkStart → Running",
+      "sublabel": "回调在 try 之前",
+      "width": 180
+    },
+    {
+      "id": "bond-work",
+      "lane": "bond",
+      "col": 1,
+      "type": "backend",
+      "label": "先准备，再选模式",
+      "sublabel": "OffLine / 空跑有步骤提交",
+      "width": 180
+    },
+    {
+      "id": "bond-final",
+      "lane": "bond",
+      "col": 2,
+      "type": "backend",
+      "label": "finally Stop → WorkStop",
+      "sublabel": "正常提交早于统计和刷新",
+      "width": 180
+    },
+    {
+      "id": "after-entry",
+      "lane": "after",
+      "col": 0,
+      "type": "backend",
+      "label": "上下文与频率",
+      "sublabel": "非编辑测试先判断是否检测",
+      "width": 180
+    },
+    {
+      "id": "after-work",
+      "lane": "after",
+      "col": 1,
+      "type": "backend",
+      "label": "按检测用途和模式分支",
+      "sublabel": "参考点模式没有独立 case",
+      "width": 180
+    },
+    {
+      "id": "after-final",
+      "lane": "after",
+      "col": 2,
+      "type": "backend",
+      "label": "finally 不统一提交",
+      "sublabel": "清测试 → Stop → 回调 → 刷新",
+      "width": 180
+    },
+    {
+      "id": "dip-entry",
+      "lane": "dip",
+      "col": 0,
+      "type": "backend",
+      "label": "WorkStart → Running",
+      "sublabel": "try 内先检查胶盘硬件",
+      "width": 180
+    },
+    {
+      "id": "dip-work",
+      "lane": "dip",
+      "col": 1,
+      "type": "backend",
+      "label": "模式与蘸胶许可",
+      "sublabel": "空跑抛异常 / 普通路径 Wait",
+      "width": 180
+    },
+    {
+      "id": "dip-final",
+      "lane": "dip",
+      "col": 2,
+      "type": "backend",
+      "label": "catch / finally",
+      "sublabel": "Exception 或原结果 → Stop",
+      "width": 180
+    },
+    {
+      "id": "pre-entry",
+      "lane": "pre",
+      "col": 0,
+      "type": "backend",
+      "label": "S2 点胶直接调用",
+      "sublabel": "预点胶先 WorkStart / Running",
+      "width": 180
+    },
+    {
+      "id": "pre-work",
+      "lane": "pre",
+      "col": 1,
+      "type": "backend",
+      "label": "IsDispense 决定是否执行",
+      "sublabel": "false 也返回 Success",
+      "width": 180
+    },
+    {
+      "id": "pre-final",
+      "lane": "pre",
+      "col": 2,
+      "type": "backend",
+      "label": "finally 清 IsManual",
+      "sublabel": "然后 Stop → WorkStop",
+      "width": 180
+    }
+  ],
+  "edges": [
+    {
+      "id": "message-execute",
+      "from": "message",
+      "to": "execute",
+      "label": "选择完成",
+      "role": "main"
+    },
+    {
+      "id": "execute-finished",
+      "from": "execute",
+      "to": "finished",
+      "label": "可继续推进",
+      "role": "main"
+    },
+    {
+      "id": "pick-entry-pick-work",
+      "from": "pick-entry",
+      "to": "pick-work",
+      "label": "非 OffLine",
+      "role": "main"
+    },
+    {
+      "id": "pick-work-pick-final",
+      "from": "pick-work",
+      "to": "pick-final",
+      "label": "try 退出",
+      "role": "main"
+    },
+    {
+      "id": "bond-entry-bond-work",
+      "from": "bond-entry",
+      "to": "bond-work",
+      "label": "进入 try",
+      "role": "main"
+    },
+    {
+      "id": "bond-work-bond-final",
+      "from": "bond-work",
+      "to": "bond-final",
+      "label": "try 退出",
+      "role": "main"
+    },
+    {
+      "id": "after-entry-after-work",
+      "from": "after-entry",
+      "to": "after-work",
+      "label": "通过模式门控",
+      "role": "main"
+    },
+    {
+      "id": "after-work-after-final",
+      "from": "after-work",
+      "to": "after-final",
+      "label": "try 退出",
+      "role": "main"
+    },
+    {
+      "id": "dip-entry-dip-work",
+      "from": "dip-entry",
+      "to": "dip-work",
+      "label": "进入 try",
+      "role": "main"
+    },
+    {
+      "id": "dip-work-dip-final",
+      "from": "dip-work",
+      "to": "dip-final",
+      "label": "try 退出",
+      "role": "main"
+    },
+    {
+      "id": "pre-entry-pre-work",
+      "from": "pre-entry",
+      "to": "pre-work",
+      "label": "进入 try",
+      "role": "main"
+    },
+    {
+      "id": "pre-work-pre-final",
+      "from": "pre-work",
+      "to": "pre-final",
+      "label": "try 退出",
+      "role": "main"
+    }
+  ],
+  "mainPath": [
+    "message",
+    "execute",
+    "finished"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "六行分别阅读，不是六步生产顺序",
+      "items": [
+        "首行是 BondTask 的消息处理；其余五行分别比较节点入口和收尾，没有跨行的生产顺序箭头。",
+        "预点胶由 S2DispenseActionNode 直接调用，不在普通 ActionNodes 消息列表里。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "返回、消息与步骤不能混用",
+      "items": [
+        "Pick OffLine 不进入 finally，但外层仍可能完成该消息；不能写成消息永远未完成。",
+        "Bond 普通路径提交后才统计和刷新；AfterBond 只在部分分支提交，finally 不统一提交。",
+        "检测 Fail 可禁用焊点后转 Success；Success 不统一表示检测合格。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "当前实现限制",
+      "items": [
+        "AfterBondCheck 用途只有 WithoutReferenceSearch case；参考点模式没有独立入口，不能按 region 标题补画。",
+        "DipFlux 空跑第一句直接抛“待验证”异常；普通路径等待 IsAllowDipFluxSignal，等待返回 false 就 Abort。",
+        "本图依据当前节点和线程源码；具体运动、视觉算法与硬件结果仍需继续复核。"
+      ]
+    }
+  ]
+}

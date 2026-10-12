@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 相对贴片动作排序与视觉步骤重排",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "config",
+      "label": "初始化与相对配置"
+    },
+    {
+      "id": "order",
+      "label": "删除和重新插入消息"
+    },
+    {
+      "id": "boundary",
+      "label": "缺项边界"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "filter",
+      "lane": "config",
+      "col": 0,
+      "type": "backend",
+      "label": "先生成与过滤消息",
+      "sublabel": "异形 → 条件禁用过滤",
+      "width": 180
+    },
+    {
+      "id": "relative",
+      "lane": "config",
+      "col": 1,
+      "type": "backend",
+      "label": "读取相对贴片配置",
+      "sublabel": "RelativeBondPosition=true",
+      "width": 180
+    },
+    {
+      "id": "step",
+      "lane": "config",
+      "col": 2,
+      "type": "backend",
+      "label": "查首个启用步骤",
+      "sublabel": "按 BondPositionName",
+      "width": 180
+    },
+    {
+      "id": "none",
+      "lane": "config",
+      "col": 3,
+      "type": "backend",
+      "label": "不执行相对重排",
+      "sublabel": "相对配置为空",
+      "width": 180
+    },
+    {
+      "id": "remove",
+      "lane": "order",
+      "col": 0,
+      "type": "backend",
+      "label": "删除原视觉消息",
+      "sublabel": "同 ProcessStepName",
+      "width": 180
+    },
+    {
+      "id": "pick",
+      "lane": "order",
+      "col": 1,
+      "type": "backend",
+      "label": "扫描取晶消息",
+      "sublabel": "同一步骤的每个 Pick",
+      "width": 180
+    },
+    {
+      "id": "insert",
+      "lane": "order",
+      "col": 2,
+      "type": "backend",
+      "label": "在 Pick 前插入视觉",
+      "sublabel": "同基板、基岛、步骤",
+      "width": 180
+    },
+    {
+      "id": "nopick",
+      "lane": "boundary",
+      "col": 1,
+      "type": "security",
+      "label": "无取晶消息",
+      "sublabel": "没有备用插入路径",
+      "width": 180
+    },
+    {
+      "id": "nostep",
+      "lane": "boundary",
+      "col": 2,
+      "type": "security",
+      "label": "缺少匹配步骤",
+      "sublabel": "空项可能在后续被读取",
+      "width": 180
+    }
+  ],
+  "edges": [
+    {
+      "id": "filter-relative",
+      "from": "filter",
+      "to": "relative",
+      "label": "最后才相对排序",
+      "role": "main"
+    },
+    {
+      "id": "relative-step",
+      "from": "relative",
+      "to": "step",
+      "label": "存在配置",
+      "role": "main"
+    },
+    {
+      "id": "relative-none",
+      "from": "relative",
+      "to": "none",
+      "label": "配置为空",
+      "role": "return"
+    },
+    {
+      "id": "step-remove",
+      "from": "step",
+      "to": "remove",
+      "label": "使用步骤名",
+      "role": "main"
+    },
+    {
+      "id": "step-nostep",
+      "from": "step",
+      "to": "nostep",
+      "label": "未找到仍加入 null",
+      "role": "branch"
+    },
+    {
+      "id": "remove-pick",
+      "from": "remove",
+      "to": "pick",
+      "label": "删除后扫描",
+      "role": "main"
+    },
+    {
+      "id": "pick-insert",
+      "from": "pick",
+      "to": "insert",
+      "label": "找到 Pick",
+      "role": "main"
+    },
+    {
+      "id": "pick-nopick",
+      "from": "pick",
+      "to": "nopick",
+      "label": "未找到",
+      "role": "branch"
+    }
+  ],
+  "mainPath": [
+    "filter",
+    "relative",
+    "step",
+    "remove",
+    "pick",
+    "insert"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "实际调用顺序",
+      "items": [
+        "Init 先生成消息，再 RemoveOtherStep、RemoveDisableActionNode，最后 SortRelativeBond；禁用过滤只在 LagerNumber 且当前载具非空时执行。",
+        "相对配置查首个启用步骤，按步骤名删除原视觉消息，再在每条匹配 Pick 之前插入同基板、基岛和步骤的视觉消息。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "缺项与过滤边界",
+      "items": [
+        "步骤查找结果即使为 null 也会加入列表，随后读取 ProcessStepName 可能异常；列表非空不证明每项有效。",
+        "找不到 Pick 时删除后没有备用插入；新插入消息之后不再经过 Init 的禁用过滤。这里调整消息顺序，不代表贴片或视觉已经完成。"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "当前源码依据",
+      "items": [
+        "S2ActionNodeController.Init、RemoveOtherStep、RemoveDisableActionNode、SortRelativeBond。",
+        "配方排序和生产动作的内部条件分别阅读，不能把消息存在当作该动作一定执行。"
+      ]
+    }
+  ]
+}

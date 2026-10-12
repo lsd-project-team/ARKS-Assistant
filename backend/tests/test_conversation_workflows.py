@@ -8,7 +8,7 @@ from langchain_core.tools import tool
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from sqlalchemy import func, select
 
-from app.config import AppSettings, ModelSettings
+from app.config import AppSettings, McpSettings, ModelSettings
 from app.main import create_app
 from app.models import QueuedQuestion
 from app.repository import Repository
@@ -363,6 +363,12 @@ def test_feedback_categories_redact_keys(status, code):
 
 async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, monkeypatch):
     paths, _, workspace, repository, memories, settings = services
+    settings.save(
+        AppSettings(
+            deepwiki_repo="example/project",
+            mcp_servers=[McpSettings(id="wiki", name="DeepWiki", url="https://example.com/mcp")],
+        )
+    )
 
     @tool
     def mcp_wiki_lookup():
@@ -372,7 +378,7 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
     def generate(_self, messages, *_a, **_kw):
         last = messages[-1]
         if getattr(last, "name", "") == "mcp_wiki_lookup":
-            answer = AIMessage(content="核对完成")
+            answer = AIMessage(content="核对完成。[Program.cs:2](source:Program.cs#L2)")
         elif getattr(last, "name", "") == "read_source":
             answer = AIMessage(
                 content="查阅架构",
@@ -399,8 +405,8 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
     events = []
     answer = await runtime.execute(run, lambda *event: events.append(event))
     stages = [payload["stage"] for kind, payload in events if kind == "stage"]
-    assert answer == "核对完成"
+    assert answer.startswith("核对完成。[Program.cs:2](source:Program.cs#L2)")
     assert stages[:2] == ["connecting_model", "connecting_mcp"]
     assert "reading_source" in stages and "reading_wiki" in stages
-    assert stages.count("generating") == 3 and stages[-1] == "generating"
+    assert stages.count("generating") == 3 and stages[-1] == "checking_sources"
     assert len([kind for kind, _ in events if kind == "tool_end"]) == 2

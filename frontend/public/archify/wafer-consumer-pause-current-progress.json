@@ -1,0 +1,57 @@
+{
+  "schema": "archify-wafer-consumer-pause-current-v1",
+  "status": "current-wafer-consumer-pause-verified",
+  "recordedAt": "2026-10-07T00:57:48.785Z",
+  "verification": {
+    "command": "node scripts/test-wafer-consumer-pause.cjs",
+    "checks": 212,
+    "sourceFragments": [
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "kind": "method",
+        "anchor": "private void Dowork()",
+        "startOffset": 2494,
+        "endOffset": 18707,
+        "start": 64,
+        "end": 386,
+        "fileSha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+        "snippetSha256": "0b39378f767b1c37c58799e0d10a804d420f707b478b673124f2aaf49c082aa5"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "kind": "property",
+        "anchor": "private bool IsNeedChange =>",
+        "startOffset": 78337,
+        "endOffset": 78408,
+        "start": 1506,
+        "end": 1506,
+        "fileSha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+        "snippetSha256": "2b7f3b0451f13fd98469d7d348ec6d85abe88ec75650d9ee28999008d677e4ad"
+      }
+    ],
+    "signalBindings": [
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "IsBondNeedChipSignal",
+        "line": 147,
+        "initializer": "new Signal(\"Bond需料信号\", 100, EventResetMode.ManualReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "4feeab61d06c4a3bf62e7cf42b202d6b9037f9fd0f3ef38bab8eba42b20009d1"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "IsWaferAllowPickSignal",
+        "line": 142,
+        "initializer": "new Signal(\"晶圆允许取料信号\", 100, EventResetMode.AutoReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "61743e655e7548700f79b9eab02f1d295ab5786dbe3128898b77ce42cc45ed4f"
+      }
+    ],
+    "testArtifactSha256": "adb81998c0ec7b874666d0c6b348604b315b62cc2619f440a2198b8fede73c7a"
+  },
+  "boundaries": [
+    "The complete original wafer Dowork method, IsNeedChange property, Signal/enum sources and bound signal initializers were used with real thread/event coordination and explicit fixtures for machine state, carrier selection, search/vision, motion, vacuum, dialogs, database and Excel.",
+    "The 212 checks cover entry and in-wait Pause/Stop, signal consumption, four carrier modes, change/retry branches, catch propagation and publication/reset boundaries; original Stop integration, drivers, UI, filesystem persistence and equipment acceptance remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

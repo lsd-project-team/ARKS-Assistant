@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-06T14:00:21.838Z",
+  "status": "original-vdproj-read-only-inventory",
+  "records": 465,
+  "existing": 393,
+  "missing": 72,
+  "dependencies": 195,
+  "projectOutputLikeEntries": 289,
+  "launchConditions": [
+    ".NETFramework,Version=v4.7.2"
+  ],
+  "installerBuildAccepted": false,
+  "deploymentAccepted": false,
+  "sourceInputsFrozen": true,
+  "frozenEvidenceInputs": 279,
+  "sourceLedgerUnchanged": 19106,
+  "formalRuntimeChecksUnchanged": 1328,
+  "wholeGoalComplete": false,
+  "test": {
+    "file": "native-setup-vdproj-test.json",
+    "sha256": "f9bcaff34ebb2635dff7f07824a97b9ced8b25afb7c63f9940203c95b563630c"
+  },
+  "audit": {
+    "file": "native-setup-vdproj-audit.json",
+    "sha256": "2c750dd21011174212ad2022ce446f95d56a36c986ffedfefca72e0ae311cc72"
+  },
+  "report": {
+    "file": "native-setup-vdproj-review.md",
+    "sha256": "39238e45d89da5e08cfccc36de2b4282345a388bac9c2e5d7a9bf52a6b4a0a95"
+  },
+  "nextRequired": "Install matching Visual Studio deployment tooling and vendor VM inputs only in an authorized deployment environment; resolve 72 missing current-workspace inputs, generate MSI, then perform supervised install verification."
+}

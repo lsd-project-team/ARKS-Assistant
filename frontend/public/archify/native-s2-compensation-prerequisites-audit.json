@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "status": "original-s2-compensation-math-and-modbus-prerequisites-native-preparation-passed",
+  "command": "node scripts/verify-native-s2-compensation-prerequisites.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "d9d795",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-s2-compensation-prerequisites.log",
+  "logSha256": "b30d20a746a1b4e222b7154d9797ebd7fe3a0343d32ebb486b94eb061f0ea4a8",
+  "testSha256": "6cf4957b96ea2a49bb65ff3337ee1885f2b931435cfe4d51b9c52d732bcf7878",
+  "parentValidation": {
+    "command": "guarded S2 shelf → encoding-preserving resources validation pipeline",
+    "observedSession": 99748,
+    "observedCompletionChunk": "884010",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-s2-shelf-gates.cjs",
+        "log": ".archify-work/native-s2-compensation-prerequisites/parent-shelf-verification.log",
+        "sha256": "135c234cd3305ad9af764609900756d266c947463bdf9ee1e55a998ddf4b5477"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-s2-compensation-prerequisites/parent-resources-verification.log",
+        "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3"
+      }
+    ]
+  },
+  "acceptedProcesses": 2,
+  "checksPerPass": 51,
+  "distinctLabels": 51,
+  "selectedMethods": 31,
+  "originalSources": 14,
+  "newFrozenInputs": 53,
+  "totalFrozenBindings": 5770,
+  "wholeGoalComplete": false
+}

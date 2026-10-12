@@ -1,0 +1,186 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 配置与配方生命周期",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "l0",
+      "label": "文件与加载"
+    },
+    {
+      "id": "l1",
+      "label": "编辑与检查"
+    },
+    {
+      "id": "l2",
+      "label": "运行与保存"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "paths",
+      "lane": "l0",
+      "col": 0,
+      "type": "database",
+      "label": "确定 Recipe 路径",
+      "width": 170
+    },
+    {
+      "id": "load",
+      "lane": "l0",
+      "col": 1,
+      "type": "backend",
+      "label": "加载 Product / Process",
+      "width": 170
+    },
+    {
+      "id": "edit",
+      "lane": "l1",
+      "col": 2,
+      "type": "frontend",
+      "label": "编辑产品与步骤",
+      "width": 170
+    },
+    {
+      "id": "save",
+      "lane": "l1",
+      "col": 3,
+      "type": "database",
+      "label": "保存 JSON 配置",
+      "width": 170
+    },
+    {
+      "id": "ready",
+      "lane": "l1",
+      "col": 4,
+      "type": "security",
+      "label": "就绪检查通过？",
+      "width": 170
+    },
+    {
+      "id": "reject",
+      "lane": "l2",
+      "col": 3,
+      "type": "security",
+      "label": "返回并提示错误",
+      "width": 170
+    },
+    {
+      "id": "expand",
+      "lane": "l2",
+      "col": 4,
+      "type": "backend",
+      "label": "展开 S1 / S2 动作消息",
+      "width": 170
+    },
+    {
+      "id": "run",
+      "lane": "l2",
+      "col": 5,
+      "type": "messagebus",
+      "label": "生产任务消费配置",
+      "width": 170
+    },
+    {
+      "id": "record",
+      "lane": "l2",
+      "col": 2,
+      "type": "database",
+      "label": "统计与运行记录",
+      "width": 170
+    }
+  ],
+  "edges": [
+    {
+      "id": "paths-load",
+      "from": "paths",
+      "to": "load",
+      "label": "文件路径"
+    },
+    {
+      "id": "load-edit",
+      "from": "load",
+      "to": "edit",
+      "label": "当前对象"
+    },
+    {
+      "id": "edit-save",
+      "from": "edit",
+      "to": "save",
+      "label": "修改"
+    },
+    {
+      "id": "save-ready",
+      "from": "save",
+      "to": "ready",
+      "label": "重新检查"
+    },
+    {
+      "id": "ready-expand",
+      "from": "ready",
+      "to": "expand",
+      "label": "通过"
+    },
+    {
+      "id": "ready-reject",
+      "from": "ready",
+      "to": "reject",
+      "label": "失败",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "expand-run",
+      "from": "expand",
+      "to": "run",
+      "label": "动作消息"
+    },
+    {
+      "id": "run-record",
+      "from": "run",
+      "to": "record",
+      "label": "统计 / 状态",
+      "role": "async",
+      "variant": "dashed"
+    },
+    {
+      "id": "reject-edit",
+      "from": "reject",
+      "to": "edit",
+      "label": "修正后再保存",
+      "role": "return",
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "paths",
+    "load",
+    "edit",
+    "save",
+    "ready",
+    "expand",
+    "run"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "源码边界",
+      "items": [
+        "ProductConfiguration 默认指向 RecipeDirPath/ProductConfiguration.json。",
+        "ProcessDomain 保存 ProcessProgram.json，S1/S2 步骤在运行前展开为动作消息。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "检查规则",
+      "items": [
+        "步骤名称、序号、焊点、功能互斥和胶压范围参与 CheckIsReady。",
+        "Machine.DataSave 会集中保存多类设备、配方和运行配置。"
+      ]
+    }
+  ]
+}

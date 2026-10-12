@@ -107,6 +107,23 @@ class McpSettings(BaseModel):
         return self
 
 
+class AnalysisSettings(BaseModel):
+    mode: Literal["auto", "standard", "deep"] = "auto"
+    standard_calls: int = Field(default=24, ge=8, le=128)
+    deep_calls: int = Field(default=64, ge=16, le=192)
+    verification_reserve: int = Field(default=8, ge=2, le=32)
+    long_output_tokens: int = Field(default=8192, ge=1024, le=65536)
+    max_continuations: int = Field(default=2, ge=0, le=2)
+
+    @model_validator(mode="after")
+    def validate_limits(self):
+        if self.deep_calls < self.standard_calls:
+            raise ValueError("深度分析预算不能小于普通分析预算")
+        if self.verification_reserve >= min(self.standard_calls, self.deep_calls):
+            raise ValueError("复核预留次数必须小于工具调用预算")
+        return self
+
+
 class AppSettings(BaseModel):
     model: ModelSettings = Field(default_factory=ModelSettings)
     model_profiles: list[ModelProfile] = Field(default_factory=list, max_length=20)
@@ -114,6 +131,7 @@ class AppSettings(BaseModel):
     mcp_servers: list[McpSettings] = Field(default_factory=list, max_length=20)
     auto_memory: bool = True
     deepwiki_repo: str = ""
+    analysis: AnalysisSettings = Field(default_factory=AnalysisSettings)
 
     @model_validator(mode="before")
     @classmethod

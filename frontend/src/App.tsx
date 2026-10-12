@@ -1,114 +1,266 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense, type CSSProperties } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Home, Files, MessageSquare, Brain, Settings2, Code2 } from 'lucide-react';
+import { MessageSquare, Code2 } from 'lucide-react';
+import { WorkspaceNavigation } from './components/WorkspaceNavigation';
+import { useKnowledgeNavigation } from './hooks/useKnowledgeNavigation';
+import { useAppearance } from './lib/appearance';
 import { Sidebar } from './components/Sidebar';
 import { FileExplorer } from './components/FileExplorer';
 import { ChatPane } from './components/ChatPane';
 import { PaneDivider } from './components/PaneDivider';
 import { SettingsDialog } from './components/SettingsDialog';
-import { MemoryDialog } from './components/MemoryDialog';
 import { useWorkspace } from './lib/store';
 import { api } from './lib/api';
+import { QuickOpen } from './components/QuickOpen';
+import { Toasts } from './components/Toasts';
+import { WorkspaceSearch } from './components/WorkspaceSearch';
+import { useWindowSync } from './hooks/useWindowSync';
+import { useNavigationLayout } from './hooks/useNavigationLayout';
+import { useLayoutMotion } from './hooks/useLayoutMotion';
+import { WorkspaceLoadBoundary } from './components/WorkspaceLoadBoundary';
+import { ProjectHome } from './components/ProjectHome';
+import { useCurrentProject } from './hooks/useProjects';
+import { useNewConversation } from './hooks/useNewConversation';
+import { HistoricalSourceDialog } from './components/HistoricalSourceDialog';
+import './styles/conversations.css';
+import './styles/chat-experience.css';
+import './styles/conversation-workflows.css';
+import './styles/settings.css';
+
+const KnowledgeWorkspace = lazy(() => import('./knowledge/KnowledgeWorkspace'));
 
 const CodePane = lazy(() =>
   import('./components/CodePane').then((module) => ({ default: module.CodePane })),
 );
 
 export default function App() {
-  const [dialog, setDialog] = useState('');
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [explorerOpen, setExplorerOpen] = useState(true);
-  const { mobile, setMobile, jump, threadId } = useWorkspace();
+  useWindowSync();
+  const project = useCurrentProject();
+  const startConversation = useNewConversation();
+  const { route, navigate, knowledgeOpen } = useKnowledgeNavigation();
+  const appearance = useAppearance((state) => state.mode);
   useEffect(() => {
-    setMobileSidebarOpen(false);
-    // 窄屏文件树是浮层，打开源码后收起，让编辑器恢复完整宽度。
-    if (window.matchMedia('(max-width: 800px)').matches) setExplorerOpen(false);
-  }, [jump.time, threadId]);
+    document.documentElement.dataset.appearance = appearance;
+  }, [appearance]);
+  // 第一次融合后显示左上角的完整导航；后续仍尊重用户的折叠偏好。
+  useEffect(() => {
+    if (localStorage.getItem('trunk-knowledge-navigation-v1')) return;
+    useWorkspace.setState({ collapsed: false, readingFocused: false });
+    localStorage.setItem('trunk-knowledge-navigation-v1', '1');
+  }, []);
+  const [dialog, setDialog] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  useEffect(() => {
+    const shortcut = (event: KeyboardEvent) => {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.shiftKey &&
+        event.key.toLowerCase() === 'f' &&
+        !(event.target as HTMLElement).closest('[role="dialog"]')
+      ) {
+        event.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', shortcut);
+    return () => window.removeEventListener('keydown', shortcut);
+  }, []);
+  const {
+    mobile,
+    setMobile,
+    navigationVersion,
+    threadId,
+    projectPage,
+    collapsed,
+    codeOpen,
+    explorerOpen,
+    chatRatio,
+    explorerWidth,
+    navigationWidth,
+    setLayout,
+    readingFocused,
+    focusChatRatio,
+    toggleReadingFocus,
+    setWorkspaceOpen,
+  } = useWorkspace();
+  const navigationLayout = useNavigationLayout(navigationWidth);
+  const motion = useLayoutMotion(
+    { collapsed, codeOpen, explorerOpen },
+    `${collapsed}:${codeOpen}:${explorerOpen}:${readingFocused}:${chatRatio}:${focusChatRatio}:${explorerWidth}:${navigationLayout.width}`,
+  );
+  const setCollapsed = (collapsed: boolean) => setLayout({ collapsed });
+  const setExplorerOpen = (explorerOpen: boolean) => setLayout({ explorerOpen });
+  // 导航只由持久化的 collapsed 控制，切页和源码专注模式都不改变展开状态。
+  const expandNavigation = () => setCollapsed(false);
+  const previousNavigation = useRef({ navigationVersion, threadId });
+  useEffect(() => {
+    const previous = previousNavigation.current;
+    previousNavigation.current = { navigationVersion, threadId };
+    // 刷新时保留工作区开关状态；只有实际切换文件或会话才调整文件树。
+    if (previous.navigationVersion === navigationVersion && previous.threadId === threadId) return;
+    // 中小窗口的文件树使用浮层，打开源码后收起，让阅读区恢复完整宽度。
+    if (window.matchMedia('(max-width: 1100px)').matches) setExplorerOpen(false);
+  }, [navigationVersion, threadId]);
   const health = useQuery({
     queryKey: ['health'],
     queryFn: () => api<{ ok: boolean; workspace: string }>('/health'),
     retry: 1,
+    refetchInterval: 15000,
   });
   function showSource() {
-    setMobileSidebarOpen(false);
-    setMobile('code');
-    setExplorerOpen(true);
+    void navigate({ kind: 'chat' });
+    setWorkspaceOpen(true);
+    setLayout({ codeOpen: true });
+  }
+  function toggleWorkspace() {
+    const visible = (codeOpen || explorerOpen) && (window.innerWidth > 800 || mobile === 'code');
+    setWorkspaceOpen(!visible);
   }
   return (
     <div
-      className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''} mobile-${mobile} ${mobileSidebarOpen ? 'show-mobile-sidebar' : ''}`}
+      ref={motion.root}
+      data-explorer-open={explorerOpen}
+      style={
+        {
+          '--chat-ratio': chatRatio,
+          '--navigation-width': `${navigationLayout.width}px`,
+          '--focus-chat-ratio': focusChatRatio,
+          ...(explorerWidth ? { '--explorer-width': `${explorerWidth}px` } : {}),
+        } as CSSProperties
+      }
+      className={`app-shell legacy-visual ${collapsed ? 'sidebar-collapsed' : ''} ${readingFocused ? 'reading-focused' : ''} ${!codeOpen ? 'code-closed' : ''} ${!codeOpen && !explorerOpen ? 'source-closed' : ''} mobile-${mobile}`}
     >
-      <nav className="navigation-rail" aria-label="工作区导航">
-        <button className="rail-home" aria-label="问答" onClick={() => setMobile('chat')}>
-          <Home size={18} fill="currentColor" />
-        </button>
-        <button
-          aria-label="对话列表"
-          onClick={() => {
-            setCollapsed(false);
-            setMobileSidebarOpen(!mobileSidebarOpen);
-            setMobile('chat');
-          }}
-        >
-          <MessageSquare size={19} />
-        </button>
-        <button aria-label="文件浏览器" onClick={showSource}>
-          <Files size={19} />
-        </button>
-        <div className="rail-spacer" />
-        <button aria-label="长期记忆" onClick={() => setDialog('memory')}>
-          <Brain size={19} />
-        </button>
-        <button aria-label="设置" onClick={() => setDialog('settings')}>
-          <Settings2 size={19} />
-        </button>
-        <div className="user-avatar" title="本地工作区">
-          W
-        </div>
-      </nav>
-      {!collapsed && (
-        <Sidebar
-          onCollapse={() => {
-            setCollapsed(true);
-            setMobileSidebarOpen(false);
-          }}
-          onNavigate={() => setMobileSidebarOpen(false)}
-          onShowSource={showSource}
-          connected={!health.error}
-        />
+      <WorkspaceNavigation
+        route={route}
+        compact={!motion.navigationExpanded}
+        hasSelectedThread={!!threadId}
+        layout={navigationLayout}
+        onExpand={expandNavigation}
+        onCollapse={() => setCollapsed(true)}
+        navigate={(next) => {
+          if (readingFocused) toggleReadingFocus();
+          if (next.kind === 'chat') {
+            if (!startConversation()) return;
+            requestAnimationFrame(() =>
+              document
+                .querySelector<HTMLTextAreaElement>('textarea[aria-label="对话输入"]')
+                ?.focus(),
+            );
+          }
+          void navigate(next);
+          setMobile('chat');
+        }}
+        onSettings={() => {
+          setDialog('settings');
+        }}
+      >
+        {motion.navigationExpanded && (
+          <Sidebar
+            onNavigate={() => {
+              void navigate({ kind: 'chat' });
+            }}
+            connected={!!health.data?.ok && !health.error}
+            checking={health.isPending}
+          />
+        )}
+      </WorkspaceNavigation>
+      {projectPage && !knowledgeOpen && <ProjectHome onMaterials={() => setDialog('memory')} />}
+      {knowledgeOpen && !project.data?.knowledge_available && (
+        <section className="project-home">
+          <div className="project-empty">
+            <h2>此项目还没有流程与功能资料</h2>
+            <p>关联源码后，可以在对话中分析当前项目。已复核图谱属于原来的源码项目。</p>
+            <button
+              className="button"
+              onClick={() => {
+                if (!startConversation()) return;
+                void navigate({ kind: 'chat' });
+              }}
+            >
+              开始新对话
+            </button>
+          </div>
+        </section>
       )}
-      <main className="workspace-main">
+      {knowledgeOpen && project.data?.knowledge_available && (
+        <WorkspaceLoadBoundary kind="knowledge">
+          <Suspense
+            fallback={
+              <section className="knowledge-workspace padded muted">
+                正在加载流程与功能资料…
+              </section>
+            }
+          >
+            <KnowledgeWorkspace
+              route={route}
+              navigate={(next) => {
+                void navigate(next);
+              }}
+              onNavigation={expandNavigation}
+            />
+          </Suspense>
+        </WorkspaceLoadBoundary>
+      )}
+      <main className="workspace-main" hidden={knowledgeOpen || projectPage}>
         <div className="mobile-switch">
           <button className={mobile === 'chat' ? 'selected' : ''} onClick={() => setMobile('chat')}>
             <MessageSquare size={14} />
             问答
           </button>
-          <button className={mobile === 'code' ? 'selected' : ''} onClick={() => setMobile('code')}>
+          <button
+            className={mobile === 'code' ? 'selected' : ''}
+            aria-label="切换工作区视图"
+            aria-pressed={mobile === 'code' && (codeOpen || explorerOpen)}
+            onClick={toggleWorkspace}
+          >
             <Code2 size={14} />
-            源码
+            工作区
           </button>
         </div>
         <ChatPane
+          onSettings={(tab) => setDialog(tab === 'mcp' ? 'mcp' : 'settings')}
           onShowSource={showSource}
-          onShowSidebar={() => {
-            setCollapsed(false);
-            setMobileSidebarOpen(!mobileSidebarOpen);
-          }}
+          onToggleWorkspace={toggleWorkspace}
         />
-        <PaneDivider />
-        <section className="source-workspace" aria-label="源码工作区">
-          <Suspense fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}>
-            <CodePane
-              explorerOpen={explorerOpen}
-              onToggleExplorer={() => setExplorerOpen(!explorerOpen)}
-            />
-          </Suspense>
-          {explorerOpen && <FileExplorer onClose={() => setExplorerOpen(false)} />}
+        {(motion.codeMounted || motion.filesMounted) && (
+          <PaneDivider kind={motion.codeMounted ? 'chat' : 'files'} />
+        )}
+        <section
+          className="source-workspace"
+          aria-label="源码工作区"
+          hidden={!motion.codeMounted && !motion.filesMounted}
+          inert={!codeOpen && !explorerOpen}
+        >
+          {motion.codeMounted && (
+            <WorkspaceLoadBoundary kind="source">
+              <Suspense
+                fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}
+              >
+                <CodePane onSearch={() => setSearchOpen(true)} />
+              </Suspense>
+            </WorkspaceLoadBoundary>
+          )}
+          {motion.codeMounted && motion.filesMounted && <PaneDivider kind="files" />}
+          <FileExplorer
+            hidden={!motion.filesMounted}
+            onClose={() => setExplorerOpen(false)}
+            onQuickOpen={() => setDialog('files')}
+          />
         </section>
       </main>
-      <SettingsDialog open={dialog === 'settings'} onClose={() => setDialog('')} />
-      <MemoryDialog open={dialog === 'memory'} onClose={() => setDialog('')} />
+      <SettingsDialog
+        open={dialog === 'settings' || dialog === 'mcp' || dialog === 'memory'}
+        initialTab={dialog === 'mcp' ? 'mcp' : dialog === 'memory' ? 'memory' : 'model'}
+        onClose={() => setDialog('')}
+      />
+      <QuickOpen
+        open={dialog === 'files'}
+        onClose={() => setDialog('')}
+        onOpen={() => setDialog('files')}
+      />
+      <Toasts />
+      <HistoricalSourceDialog />
+      {searchOpen && <WorkspaceSearch onClose={() => setSearchOpen(false)} />}
     </div>
   );
 }

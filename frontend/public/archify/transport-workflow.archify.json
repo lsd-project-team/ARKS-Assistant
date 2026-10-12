@@ -1,0 +1,262 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "02 · 载具输送与上下料",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "操作员"
+        },
+        "backend": {
+          "label": "执行动作"
+        },
+        "security": {
+          "label": "条件 / 结果"
+        },
+        "messagebus": {
+          "label": "信号交接"
+        },
+        "external": {
+          "label": "硬件 / 物料"
+        },
+        "database": {
+          "label": "文件 / 数据"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "l0",
+      "label": "进料方式"
+    },
+    {
+      "id": "l1",
+      "label": "工位交接"
+    },
+    {
+      "id": "l2",
+      "label": "出口与异常"
+    },
+    {
+      "id": "l3",
+      "label": "料仓出料"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "lane": "l0",
+      "col": 0,
+      "label": "输送启动与映射",
+      "type": "backend",
+      "width": 146
+    },
+    {
+      "id": "mode",
+      "lane": "l0",
+      "col": 1,
+      "label": "上料配置？",
+      "type": "security",
+      "width": 146
+    },
+    {
+      "id": "belt",
+      "lane": "l0",
+      "col": 2,
+      "label": "皮带或在线进料",
+      "type": "external",
+      "width": 146
+    },
+    {
+      "id": "bin",
+      "lane": "l1",
+      "col": 0,
+      "label": "料仓定位与传送",
+      "type": "external",
+      "width": 146
+    },
+    {
+      "id": "s1",
+      "lane": "l1",
+      "col": 2,
+      "label": "S1 来料与加工",
+      "type": "messagebus",
+      "width": 146
+    },
+    {
+      "id": "s2",
+      "lane": "l1",
+      "col": 3,
+      "label": "放行并传入 S2",
+      "type": "messagebus",
+      "width": 146
+    },
+    {
+      "id": "wait",
+      "lane": "l1",
+      "col": 4,
+      "label": "传入等待下料区",
+      "type": "messagebus",
+      "width": 146
+    },
+    {
+      "id": "out",
+      "lane": "l2",
+      "col": 4,
+      "label": "按配置选下料",
+      "type": "security",
+      "width": 146
+    },
+    {
+      "id": "online",
+      "lane": "l2",
+      "col": 5,
+      "label": "联机出口交接",
+      "type": "external",
+      "width": 146
+    },
+    {
+      "id": "unloader",
+      "lane": "l3",
+      "col": 5,
+      "label": "下料仓交接",
+      "type": "external",
+      "width": 144
+    },
+    {
+      "id": "alarm",
+      "lane": "l0",
+      "col": 3,
+      "label": "局部报警处理",
+      "type": "frontend",
+      "width": 146
+    }
+  ],
+  "edges": [
+    {
+      "id": "start-mode",
+      "from": "start",
+      "to": "mode",
+      "label": "普通模式",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "mode-belt",
+      "from": "mode",
+      "to": "belt",
+      "label": "非 None / 料仓",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "mode-bin",
+      "from": "mode",
+      "to": "bin",
+      "label": "料仓",
+      "role": "branch",
+      "variant": "default"
+    },
+    {
+      "id": "belt-s1",
+      "from": "belt",
+      "to": "s1",
+      "label": "来料信号",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "bin-s1",
+      "from": "bin",
+      "to": "s1",
+      "label": "来料信号",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "s1-s2",
+      "from": "s1",
+      "to": "s2",
+      "label": "物料与放行条件",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "s2-wait",
+      "from": "s2",
+      "to": "wait",
+      "label": "S2 放行与空闲",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "wait-out",
+      "from": "wait",
+      "to": "out",
+      "label": "等待区有料",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "out-online",
+      "from": "out",
+      "to": "online",
+      "label": "联机收板配置",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "out-unloader",
+      "from": "out",
+      "to": "unloader",
+      "label": "LoaderBin",
+      "role": "branch",
+      "variant": "default"
+    },
+    {
+      "id": "belt-alarm",
+      "from": "belt",
+      "to": "alarm",
+      "label": "进料超 5 秒",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "alarm-belt",
+      "from": "alarm",
+      "to": "belt",
+      "label": "该处选择 Retry",
+      "role": "return",
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "start",
+    "mode"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "并发与配置边界",
+      "items": [
+        "图线是物料/信号主链，不是一个串行任务。",
+        "上下料选择共用 LoadConfiguration；Belt 不等于联机收板。",
+        "None、DryCycle 和已有物料复用按源码分支处理。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "软件成功不等于机械确认",
+      "items": [
+        "Ignore 可能仍迁移状态、清对象或递增层号。",
+        "各处 Retry 位置与 Exception 处理不同，不能合并成统一恢复。",
+        "本图末端是局部交接，任务通常继续等待下一片。"
+      ]
+    }
+  ]
+}

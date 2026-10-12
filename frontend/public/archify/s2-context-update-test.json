@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "scope": "Unmodified InitCurrentMessage; minimal containers, repository stubs, equivalent enabled-step filter and message-box counter. Local state mutation and exception boundaries only; not real recipes, repository implementation, task integration, Fody weaving or hardware execution.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "start": 930,
+      "end": 974,
+      "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "9982fbaafbd5beb6b4e3dc89690302e084260968a624d276c9e32b44ccaa5bcb"
+    }
+  ],
+  "fixture": {
+    "file": "scripts/s2-context-fixture.cs.txt",
+    "sha256": "9ae28a8126c13ac9440109d58c57d8f5bce270a6bcf055c73a70c836b6ca7f11"
+  },
+  "checks": [
+    "PASS matching message binds repository and hierarchy references",
+    "PASS disabled step clears ProcessStep but retains inspection epoxy and bond position",
+    "PASS missing substrate retains prior hierarchy",
+    "PASS new substrate without matching module mixes old children",
+    "PASS new module without matching bond retains old bond",
+    "PASS duplicate process name chooses first enabled match",
+    "PASS duplicate bond name chooses first within module",
+    "PASS duplicate module index overwrites earlier match",
+    "PASS duplicate substrate index overwrites earlier match",
+    "PASS traversal exception swallowed with old children retained",
+    "PASS epoxy repository exception escapes before traversal catch",
+    "PASS repository null results do not stop hierarchy update",
+    "PASS null current message escapes before local catch",
+    "PASS null source steps escapes before local catch",
+    "TOTAL 14"
+  ]
+}

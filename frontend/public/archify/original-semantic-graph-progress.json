@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05T01:21:30.364Z",
+  "status": "original16-project-semantic-graph-bound-replay-verified",
+  "parent": {
+    "file": "native-dispense-controller-test.json",
+    "sha256": "8ee707affa4eb9d7bb1e8c0310d4d0b67871ea42a86b4a1c7b605b4838b02051"
+  },
+  "parentFrozenBindings": 6653,
+  "newFrozenInputs": 1982,
+  "totalFrozenBindings": 8635,
+  "projects": 16,
+  "extractions": 32,
+  "compileFiles": 1410,
+  "inventoryFiles": 1436,
+  "excludedSyntaxFiles": 26,
+  "modules": 29,
+  "declarations": 29764,
+  "sourceSymbols": 32112,
+  "operationEdges": 384201,
+  "declaredRelations": 4581,
+  "edgeKinds": {
+    "constructs": 37250,
+    "invokes": 65401,
+    "property-reference": 143674,
+    "field-reference": 130113,
+    "event-reference": 2658,
+    "method-reference": 2719,
+    "operator-call": 1082,
+    "conversion-call": 1304
+  },
+  "attributeMetadataEdges": 3252,
+  "crossProjectEdges": 5187,
+  "virtualDeclaredTargets": 17518,
+  "delegateRuntimeTargetsUnresolved": 546,
+  "dynamicUnresolved": 0,
+  "rawByteEqualProjects": 6,
+  "semanticEqualProjects": 16,
+  "metadataReferenceFiles": 357,
+  "queries": 3,
+  "summary": {
+    "file": ".archify-work/original-semantic-graph/summary.json",
+    "sha256": "655e973b07ba657e45ec86e476305eca3e9c988ac56f1c0797313189ea70c9e3"
+  },
+  "verificationResults": {
+    "file": ".archify-work/original-semantic-graph/verification-results.json",
+    "sha256": "bd5e19f90f31c1b73ada41d3008b475fea311304eb8a88f1ca500af310389236"
+  },
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "productionAssemblyLoaded": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "deviceExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "includedInFormal1328": false,
+  "fullBusinessSemanticCoverage": false,
+  "runtimeDynamicDispatchResolved": false,
+  "wholeGoalComplete": false,
+  "scope": "All1410 original compile files semantically bound with exact audited decoding and frozen real metadata references. Every edge/declaration range and symbol checked; all16 independent replay graphs semantically equal after sorting complete diagnostic records only.26 inventory files excluded from original compile scope remain explicitly excluded. IOperation calls/references and declared inheritance/override/interface relations only; no runtime delegate/virtual/reflection dispatch or full business interpretation claim.",
+  "runtime": {
+    "test": "original-semantic-graph-test.json",
+    "testSha256": "d4801bcee77a85990d1f180aa4d590d80cad5956c89ed1c8d0db68a30778c76e",
+    "audit": "original-semantic-graph-audit.json",
+    "auditSha256": "0d6cdf5f49beedf9644060954173806b09f31d7765321e0fd97ed77d752a6017",
+    "report": "original-semantic-graph-review.md",
+    "reportSha256": "47d70a352a466f67d496afae79cd1a43701f2a8d65041822437c3f270489c3c8"
+  },
+  "nextRequired": "Integrate exact symbol/operation graph and latest verified reports into a derived source handoff; continue full business/dynamic relation explanation, build/toolchain dependencies, native modal/SQL/device production acceptance."
+}

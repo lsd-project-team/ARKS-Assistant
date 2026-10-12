@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const cn = (...values: ClassValue[]) => twMerge(clsx(values));
 export function Button({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -14,18 +15,20 @@ export function Modal({
   title,
   description,
   children,
+  className,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   description?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={(value) => !value && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className="modal-content">
+        <Dialog.Content className={cn('modal-content', className)}>
           <div className="modal-heading">
             <div>
               <Dialog.Title>{title}</Dialog.Title>
@@ -43,9 +46,16 @@ export function Modal({
     </Dialog.Root>
   );
 }
-export function ErrorText({ error }: { error: unknown }) {
+export function ErrorText({ error, reveal = false }: { error: unknown; reveal?: boolean }) {
+  const alert = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!error || !reveal) return;
+    // 长表单提交失败时，错误不能留在看不见的位置，让按钮看起来没有响应。
+    alert.current?.scrollIntoView({ block: 'nearest' });
+    alert.current?.focus({ preventScroll: true });
+  }, [error, reveal]);
   return error ? (
-    <div className="error-text" role="alert">
+    <div ref={alert} tabIndex={reveal ? -1 : undefined} className="error-text" role="alert">
       {error instanceof Error ? error.message : String(error)}
     </div>
   ) : null;

@@ -1,0 +1,97 @@
+{
+  "schema": "archify-axis-numeric-current-v1",
+  "status": "current-axis-numeric-verified",
+  "recordedAt": "2026-10-07T01:53:19.739Z",
+  "verification": {
+    "command": "node scripts/test-axis-numeric.cjs",
+    "checks": 37,
+    "sourceFiles": [
+      {
+        "file": "trunk/AKRS.Galaxy2.AxisCompensate/AxisCompensate/AxisCompensateProgram.cs",
+        "sha256": "e46e8b65d4ab789d17d53f3143bdb96cdf0d7f0d8870c6b37370f06b26060e21"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.AxisCompensate/AxisCompensate/BaseCompensate.cs",
+        "sha256": "e27fef9e365897d820edbcbd760e95526a29b5b1fcc382e719c273829efb5e8b"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.AxisCompensate/AxisCompensate/LsmCompensate.cs",
+        "sha256": "abe3077e658fd092df393ab673cc87afa42ec1263df970315ad23c952693f9ef"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.AxisCompensate/AxisCompensate/MathService.cs",
+        "sha256": "3c2295e0e4edb9f358e17920513994095ff0e5753f8cfa580c4abbd59cefb02b"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.AxisCompensate/AxisCompensate/SegmentedCompensation.cs",
+        "sha256": "7c4d3d3197fe8a98d012524989fc1faca53e77c60f4702ddc20c447058d39433"
+      },
+      {
+        "file": "scripts/axis-numeric-harness.cs",
+        "sha256": "e202932a08d4f3dfee33c2a5289ceb83bd03f0fab9f61dfe8547f9c097925e0b"
+      },
+      {
+        "file": "trunk/packages/MathNet.Numerics.5.0.0/lib/net48/MathNet.Numerics.dll",
+        "sha256": "4c9803a4b0673b93a99a2237e35543be2f6741fbd54b0ff045cf92e877be09d4"
+      },
+      {
+        "file": "scripts/test-axis-numeric.ps1",
+        "sha256": "422e46d05c31d0f1436931fbc618feb3b607be84d01c6a40b53a22c199447f2f"
+      }
+    ],
+    "observations": [
+      "duplicate-x: returned; replaced=True; coefficients=5200308914369309,1.4341829369545257E+31,-1.4341829369545264E+31",
+      "nan-x: returned; replaced=True; coefficients=NaN,NaN,NaN",
+      "infinity-y: returned; replaced=True; coefficients=NaN,NaN,-Infinity",
+      "circle: 1,2",
+      "collinear: NaN,NaN",
+      "empty: NaN,NaN"
+    ],
+    "cases": [
+      "false enable flag does not bypass compensation",
+      "both inner boundary equalities apply compensation",
+      "positions outside inner interval bypass compensation",
+      "exact positive and negative half-unit corrections accepted",
+      "corrections beyond half unit throw",
+      "interval narrower than one bypasses finite midpoint",
+      "one-unit interval retains exact midpoint",
+      "reversed interval bypasses interior-looking input",
+      "missing axis throws",
+      "duplicate axis reads first match",
+      "NaN coefficient bypasses magnitude comparison and propagates",
+      "NaN input reaches polynomial and propagates",
+      "infinite input bypasses through range check",
+      "infinite output from finite input rejected",
+      "empty coefficients evaluate to zero",
+      "null coefficients throw",
+      "polynomial coefficients evaluated in ascending powers",
+      "negative-one order returns empty sum even with null coefficients",
+      "order beyond coefficients throws",
+      "ragged rows average each column using different sample counts",
+      "empty sample matrix returns empty vector",
+      "null sample row throws",
+      "segmented implementation returns unchanged values regardless of calibration data",
+      "null segmented array short-circuits below start but throws above it",
+      "single-list real-to-axis fit uses axis bounds",
+      "multi-list identical fit uses real bounds",
+      "replacement removes only first duplicate leaving older duplicate effective",
+      "unequal fit vector lengths rejected by MathNet",
+      "failed fit leaves compensation list unchanged",
+      "empty fitting input throws",
+      "null input list throws",
+      "duplicate-x replaces configuration with unstable or nonfinite coefficients",
+      "nan-x replaces configuration with unstable or nonfinite coefficients",
+      "infinity-y replaces configuration with unstable or nonfinite coefficients",
+      "circle circle-fit result",
+      "collinear circle-fit result",
+      "empty circle-fit result"
+    ],
+    "mathNetAssembly": "MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "testArtifactSha256": "a608bc0d810472d6edc7ff8428d4653faf910bc2071ea3985aef8abf4de97781"
+  },
+  "boundaries": [
+    "Five complete original axis compensation classes and the project-declared MathNet binary were exercised with inert Singleton/PathConfig substitutes and controlled numeric inputs.",
+    "The 37 checks cover compensation gates, interval boundaries, NaN/Infinity propagation, polynomial evaluation, segmented behavior, least-squares fitting, duplicate replacement and circle-fit degeneracy; disk save, UI, production startup, .NET Framework build, physical motion and equipment acceptance remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

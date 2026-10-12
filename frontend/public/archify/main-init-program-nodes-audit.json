@@ -1,0 +1,142 @@
+{
+  "schema": "archify-main-init-program-nodes-v2",
+  "status": "source-confirmed-partial",
+  "recordedAt": "2026-10-06T21:33:17.829Z",
+  "sourceRoot": "trunk/AKRS.ZX2200",
+  "sourceHashes": {
+    "Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs": "db4a0051b926beeda4b85fe2905acbf2e630a3bedf47545c3347e1134b19dfe9",
+    "TransportUnitSystem/ProductConfiguration.cs": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+    "TransportSystem/Models/TransportProgram.cs": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba",
+    "BondSystem/Models/Programs/BondProgram.cs": "261095632b6703ac2fe26c5c03243562bdf9e24628c4fca6e0328f5544cadae2",
+    "DispenseSystem/Models/System1Program.cs": "9fe64aac4c568f4acf1c38ee416346c51f62c04c5f8bf4ad2e4fa241ba986ee7",
+    "WaferSubSystem/Models/WaferSystemProgram.cs": "609b690af824cf126ceb66a4dcf8c8c22fe14565ee9334df6a5e8be788dce38e",
+    "Main/Machine/Process/ProcessDomain.cs": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+    "Infrastructure/Models/Path/ZX2200PathConfig.cs": "338964dc0e8b7d89d3a8aa5643c8a3609d02e017ca8319ab626b104143732a67"
+  },
+  "singletonMetadata": {
+    "schema": "archify-singleton-metadata-v1",
+    "status": "metadata-read-only",
+    "assembly": "trunk/AKRS.ZX2200/bin/Debug/AKRS.Galaxy2.Infrastructure.dll",
+    "assemblyFullName": "AKRS.Galaxy2.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "type": "AKRS.Galaxy2.Infrastructure.CommonModel.Singleton`1",
+    "attributes": "AutoLayout, AnsiClass, Class, Public, Abstract, BeforeFieldInit",
+    "genericArguments": [
+      {
+        "name": "T",
+        "attributes": "ReferenceTypeConstraint, DefaultConstructorConstraint",
+        "constraints": []
+      }
+    ],
+    "staticFields": [
+      {
+        "name": "locker",
+        "fieldType": "System.Object",
+        "isStatic": true
+      },
+      {
+        "name": "instance",
+        "fieldType": "T",
+        "isStatic": true
+      },
+      {
+        "name": "FilePath",
+        "fieldType": "System.String",
+        "isStatic": true
+      }
+    ],
+    "declaredStaticMethods": [
+      {
+        "name": "GetInstance",
+        "signature": "T GetInstance()",
+        "isStatic": true
+      },
+      {
+        "name": "Load",
+        "signature": "Void Load()",
+        "isStatic": true
+      }
+    ],
+    "boundaries": [
+      "Metadata inspection only; GetInstance and Load were not invoked.",
+      "No production source or configuration file was changed.",
+      "The runtime Load implementation and actual JSON behavior remain unexecuted."
+    ]
+  },
+  "entry": {
+    "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+    "method": "InitProgramNodes",
+    "line": 124,
+    "callOrder": [
+      "ProductConfiguration.GetInstance().InitProductConfiguration();",
+      "TransportProgram.GetInstance().InitTransportSystemProgram();",
+      "BondProgram.GetInstance().InitBondProgram();",
+      "System1Program.GetInstance().InitSystem1Program();",
+      "WaferSystemProgram.GetInstance().InitWaferSystemProgram();",
+      "ProcessDomain.GetInstance().InitProcessProgram();"
+    ],
+    "behavior": "six singleton program objects are fetched in Product, Transport, Bond, System1, Wafer, Process order"
+  },
+  "resets": {
+    "product": {
+      "file": "TransportUnitSystem/ProductConfiguration.cs",
+      "line": 71,
+      "setsInheritedInstanceNull": true,
+      "filePathExpression": "Path.Combine(PathConfig.RecipeDirPath, \"ProductConfiguration.json\")"
+    },
+    "transport": {
+      "file": "TransportSystem/Models/TransportProgram.cs",
+      "line": 71,
+      "setsInheritedInstanceNull": true,
+      "filePathExpression": "ZX2200PathConfig.TransportSystemProgramFilePath"
+    },
+    "bond": {
+      "file": "BondSystem/Models/Programs/BondProgram.cs",
+      "line": 216,
+      "setsInheritedInstanceNull": true,
+      "filePathExpression": "ZX2200PathConfig.BondProgramFilePath"
+    },
+    "system1": {
+      "file": "DispenseSystem/Models/System1Program.cs",
+      "line": 56,
+      "setsInheritedInstanceNull": true,
+      "filePathExpression": "ZX2200PathConfig.DispenseProgramPath"
+    },
+    "wafer": {
+      "file": "WaferSubSystem/Models/WaferSystemProgram.cs",
+      "line": 70,
+      "setsInheritedInstanceNull": true,
+      "filePathExpression": "ZX2200PathConfig.WaferSystemProgram"
+    },
+    "process": {
+      "file": "Main/Machine/Process/ProcessDomain.cs",
+      "line": 37,
+      "setsInheritedInstanceNull": true,
+      "filePathExpression": "ZX2200PathConfig.ProcessProgramFilePath"
+    }
+  },
+  "waferSideEffect": {
+    "file": "WaferSubSystem/Models/WaferSystemProgram.cs",
+    "line": 70,
+    "whenIsClearStaticAdapterTrue": "ClearWaferSubMemory()",
+    "whenFalse": "ClearWaferSubMemory(true, false)",
+    "ordering": "memory clear occurs before inherited singleton reset",
+    "exception": "catch rethrows a new Exception with only Message"
+  },
+  "pathDefinitions": {
+    "file": "Infrastructure/Models/Path/ZX2200PathConfig.cs",
+    "values": {
+      "product": "ProductConfiguration.json",
+      "transport": "TransportSystemProgram.json",
+      "bond": "BondProgram.json",
+      "system1": "DispenseProgram.json",
+      "wafer": "WaferSystemProgram.json",
+      "process": "ProcessProgram.json"
+    }
+  },
+  "boundaries": [
+    "Source behavior and line bindings are verified against the current trunk snapshot.",
+    "Singleton<T> type metadata was read without invoking GetInstance or Load.",
+    "JSON deserialization, file existence, SDK side effects, and runtime recipe reload were not executed in this audit.",
+    "This audit does not upgrade the Main module from partial review to complete acceptance."
+  ]
+}

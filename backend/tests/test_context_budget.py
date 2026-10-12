@@ -7,7 +7,7 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import StructuredTool
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
-from app.config import AppSettings, ModelSettings
+from app.config import AppSettings, McpSettings, ModelSettings
 from app.context import estimate_tokens, fit_text, input_budget, request_budget, text_tokens
 from app.conversation_context import ConversationContext
 from app.run_feedback import error_feedback
@@ -103,7 +103,8 @@ async def test_framework_budget_snapshot_survives_configuration_change(services,
     settings.save(AppSettings(model=ModelSettings(context_tokens=32768)))
     restored = await ConversationContext(runtime).read(thread["id"])
     assert restored["limit"] == 16384 and restored["output_reserved"] == 512
-    assert restored["tokens"] >= snapshot["tokens"]
+    # 引用纠正可包含临时提示；下一轮状态预算应和运行收尾一致，而非保留临时开销。
+    assert restored["tokens"] == repository.latest_event(thread["id"], "context")["tokens"]
 
 
 async def test_tool_overhead_triggers_native_compaction_without_losing_originals(
@@ -191,7 +192,15 @@ async def test_tool_overhead_triggers_native_compaction_without_losing_originals
 @pytest.mark.parametrize("oversized", ["tools", "selection"])
 async def test_irreducible_request_is_not_sent_and_keeps_original(services, monkeypatch, oversized):
     paths, _, workspace, repository, memories, settings = services
-    settings.save(AppSettings(model=ModelSettings(context_tokens=8192, output_tokens=512)))
+    settings.save(
+        AppSettings(
+            model=ModelSettings(context_tokens=8192, output_tokens=512),
+            deepwiki_repo="example/project" if oversized == "tools" else "",
+            mcp_servers=[McpSettings(id="wiki", name="DeepWiki", url="https://example.com/mcp")]
+            if oversized == "tools"
+            else [],
+        )
+    )
     called = []
 
     def generate(*_args, **_kwargs):

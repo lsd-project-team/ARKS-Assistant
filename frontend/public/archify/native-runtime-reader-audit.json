@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "status": "original-native-runtime-report-source-reader-and-browser-passed",
+  "command": "node scripts/verify-native-runtime-reader.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "b172db",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-runtime-reader.log",
+  "logSha256": "0d416034a7cf464cad33d7d7e3aa9400c8eb9fa5253c085813d265642b36fa3f",
+  "testSha256": "7c861004f7c14f94ddb0ad5b18bd9211620f9a122f1a8ef88379bdb4c9ecfd8b",
+  "parentValidation": {
+    "command": "guarded force calibration → source encoding fidelity validation pipeline",
+    "observedSession": 12590,
+    "observedCompletionChunk": "76dd70",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-force-calibration.cjs",
+        "log": ".archify-work/native-runtime-reader/parent-force-verification.log",
+        "sha256": "bcb0c6862d25ff0c8c73b236182fc05b4014b64e05597d22fa7dbb86b03f4428"
+      },
+      {
+        "command": "node scripts/verify-source-encoding-fidelity.cjs",
+        "log": ".archify-work/native-runtime-reader/parent-encoding-verification.log",
+        "sha256": "8aa4f0e582c9e9d69cf5dcc485a1e0bedc56887118e0afe8436ade7b03f67127"
+      }
+    ]
+  },
+  "browser": {
+    "command": "node scripts/verify-native-runtime-source-explorer-browser.cjs",
+    "observedSession": null,
+    "observedCompletionChunk": "d14896",
+    "observedExitCode": 0,
+    "result": ".archify-work/native-runtime-reader/browser-results.json",
+    "resultSha256": "6ac2442a53efd93738c37eef590a1986b51fa55818c130671f07d9c83e7f8a81",
+    "log": ".archify-work/native-runtime-reader/browser.log",
+    "logSha256": "fcad0be9b63dbd527caae19d25a1dfe2920aa9204c3b168a13ca7621e3708b8e"
+  },
+  "newRuntimeTopics": 7,
+  "newRuntimeSnapshots": 240,
+  "totalTopics": 47,
+  "totalSnapshots": 4997,
+  "originalSources": 63,
+  "newFrozenInputs": 82,
+  "totalFrozenBindings": 6043,
+  "wholeGoalComplete": false
+}

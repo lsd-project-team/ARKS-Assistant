@@ -26,18 +26,20 @@ class ConversationLifecycle:
         async with AsyncSqliteSaver.from_conn_string(
             str(services.paths.data / "checkpoints.sqlite3")
         ) as saver:
-            config = {"configurable": {"thread_id": thread_id}}
             sessions = set()
             # 旧版压缩档案使用随机 session 文件名，检查所有检查点才能完整归属。
-            async for saved in saver.alist(config):
-                identifier = saved.checkpoint.get("channel_values", {}).get(
-                    "_summarization_session_id"
-                )
-                if isinstance(identifier, str) and re.fullmatch(
-                    r"session_[a-f0-9]{32}", identifier
-                ):
-                    sessions.add(identifier)
-            await saver.adelete_thread(thread_id)
+            for generation in range(row.get("context_generation", 0) + 1):
+                checkpoint_id = f"{thread_id}:project:{generation}" if generation else thread_id
+                config = {"configurable": {"thread_id": checkpoint_id}}
+                async for saved in saver.alist(config):
+                    identifier = saved.checkpoint.get("channel_values", {}).get(
+                        "_summarization_session_id"
+                    )
+                    if isinstance(identifier, str) and re.fullmatch(
+                        r"session_[a-f0-9]{32}", identifier
+                    ):
+                        sessions.add(identifier)
+                await saver.adelete_thread(checkpoint_id)
         root = services.paths.scratch.resolve()
         for identifier in sessions:
             archive = (root / "conversation_history" / f"{identifier}.md").resolve()

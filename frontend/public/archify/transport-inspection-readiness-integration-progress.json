@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "inspection-readiness-controlled-verified-full-regression-passed",
+  "checks": 1209,
+  "assertionMigration": {
+    "priorChecksRerun": 1144,
+    "changedPriorAssertions": 0,
+    "healthyFixtureHelpers": 2,
+    "focusedUiChecks": 20,
+    "aggregateChecks": 45
+  },
+  "sourceFragments": 469,
+  "uniqueSourceFragments": 468,
+  "sharedFragmentPlacements": 1,
+  "completeMethods": 251,
+  "properties": 177,
+  "enums": 17,
+  "fields": 22,
+  "structs": 2,
+  "signalBindings": 23,
+  "sourceFileCounts": {
+    "declaredDependencyFiles": 180,
+    "fragmentOnlyFiles": 46,
+    "uniqueFiles": 226
+  },
+  "topicSnapshots": 369,
+  "compiledContinuationCaptures": 20,
+  "test": "transport-inspection-readiness-integration-test.json",
+  "testSha256": "52ef95d045f8ab421aea134c31f279144add80bbd3f5aacf5d704fd7fd1013e9",
+  "audit": "transport-inspection-readiness-integration-audit.json",
+  "auditSha256": "bd18555895f27e13a39ad0f7f4391d372cd1a59ca1d189722bd2565f49d66b9a",
+  "report": "transport-inspection-readiness-integration-review.md",
+  "reportSha256": "27ea4cfb22e5991e772f94307dcdc27d6aa1c195bb9419e5192ecbeb7d9c4f31",
+  "evidence": "transport-inspection-readiness-integration-evidence.json",
+  "evidenceSha256": "9879669500d98f5adfceb16a7792490f76210c1ef8ee01986968a1185afb4473",
+  "sdk": "transport-coordinate-product-sdk-evidence.json",
+  "sdkSha256": "a1513bceebb74c6d79f6cb8f02857d8a0eca2a9f5fc6c457948a291af47d2216",
+  "specialized": {
+    "command": "node scripts/test-transport-inspection-readiness-integration.cjs",
+    "exitCode": 0,
+    "observedSession": 67574,
+    "log": ".archify-work/inspection-integration-baseline-v1.log",
+    "sha256": "8871a1d0c9ba33d760d972401e6d56900ebaecda2500088ada263936dcb8c47a"
+  },
+  "continuation": {
+    "evidence": "transport-inspection-repository-next-evidence.json",
+    "sha256": "43c8d09f30ea57f1a1717c455d4a3182d3e9a557460809b8273abcedddbb8740",
+    "pendingCaptures": 19,
+    "next": [
+      "Execute original PostBondInspectionRepository singleton/GetFileName/typed lookup and BaseSettingRepository constructor/Load/Find/Filter/recipe/existence/Save. Validate failed construction retry, first duplicate and null elements, current recipe and JSON helper boundaries, then replace lookup adapter in full original UI readiness composition.",
+      "Execute original PostBondInspectionRepository Add/Remove/PR name enumeration with ordered PR copy/delete and vision Save/remove adapters; validate partial side effects and source-specific suffix differences before integrating actual downstream PR repository and SDK.",
+      "Continue complete product/config declarations, actual singleton loading/Save, VM/action/SDK/native build/deployed configuration/DLL/native UI/equipment and all 29 groups/13 requirements."
+    ],
+    "preparation": {
+      "file": "inspection-repository-preparation-progress.json",
+      "sha256": "3e89782fb13aeb1f7cbe148d60a3e8c8e1c721e088eb5444f385adb95f3d2cd4",
+      "standaloneChecks": 50,
+      "focusedUIChecks": 44,
+      "matchedCaptures": 19,
+      "includedInThisFullRegression": false,
+      "scope": "Independent standalone50/focused-UI44 preparation and complete 1303 source-audited branch are outside current 1209 full regression and reader topic counts. The 44-case probe only compiles prior RunPrevious; the separate 1303 branch executes prior 1209 plus44/50 with 12 migrated runtime assertions. JSON/path/recipe/AOP/PR/vision extension, formal branch registration/regression, real persistence/PR SDK/product singleton/VM/action/native build/deployment/UI/equipment and all 29-group/13-requirement goals remain pending.",
+      "branchCheckpoint": {
+        "checks": 1303,
+        "compiledFragments": 498,
+        "uniqueCompiledFragments": 497,
+        "prior1209ChecksExecuted": true,
+        "changedStaticAssertionSites": 7,
+        "changedRuntimeAssertions": 12,
+        "changedLabels": 4,
+        "test": "transport-inspection-repository-integration-test.json",
+        "testSha256": "3c5bb8cd4548cc10df497c5178d143f46669c952ebda78fae50c3bb8036c2648",
+        "audit": "transport-inspection-repository-integration-checkpoint.json",
+        "auditSha256": "09e1459de257edb21cbe858e6668193ec5d2f10ed1d5a899e6ab8f7423774958",
+        "log": ".archify-work/inspection-repository-integration-baseline-v1.log",
+        "logSha256": "5886d9a9c490a9dcf386496d97317323603d4ec6dd6cf5ee349dd31606c27fac",
+        "observedExitCode": 0,
+        "observedSession": 63994,
+        "includedInCurrent1209FullRegression": false
+      }
+    }
+  },
+  "scope": "Complete previous 1144 entity/coordinate/teaching/UI/producer/wafer/five-stage transport assertions plus original bond/inspection readiness aggregates and focused two-UI startup cases execute in one Run. Healthy Setup and Grid explicitly teach original bond states; raw constructor and Reset defaults remain unchanged. Repository, singleton loading/Save, VM, dialogs, actions, SDK and class declarations remain adapters. Native build/deployed config/DLL/native UI/equipment and whole 29-group/13-requirement acceptance remain pending. Counts describe whole compiled composition, with 1209 executed assertions: all 1144 prior assertions rerun with identical labels, order and predicates and explicitly taught healthy fixture inputs, plus 20 UI and 45 aggregate assertions. Historical and previously prepared suites are not additive coverage.",
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-inspection-readiness-integration.log",
+    "sha256": "65ce9ed8e9ce65e52310012860652f43dd5092523e5155e5633e6ed80acadacb",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "1c80c00087923b855c0d5e5e66013a5b689b500e0a101ce926a0fa72689efafd",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 38,
+    "topicSnapshots": 3007,
+    "moduleSnapshots": 940
+  },
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 60167,
+    "log": ".archify-work/verify-transport-inspection-readiness-integration.log",
+    "sha256": "b9cbcfe4b046390122777eb6044744cc4c1cd9ee167b7fcab5cb3e8390eef183",
+    "snapshotDirectory": ".archify-work/inspection-readiness-full-regression/",
+    "frozenBindings": {
+      "testSha256": "52ef95d045f8ab421aea134c31f279144add80bbd3f5aacf5d704fd7fd1013e9",
+      "auditSha256": "bd18555895f27e13a39ad0f7f4391d372cd1a59ca1d189722bd2565f49d66b9a",
+      "evidenceSha256": "9879669500d98f5adfceb16a7792490f76210c1ef8ee01986968a1185afb4473",
+      "reportSha256": "27ea4cfb22e5991e772f94307dcdc27d6aa1c195bb9419e5192ecbeb7d9c4f31",
+      "readerSha256": "1c80c00087923b855c0d5e5e66013a5b689b500e0a101ce926a0fa72689efafd",
+      "modulesSha256": "61f13e2b8b2bff20d45bef397220708ea28ef62718a94d2b4cc8757a640bf118"
+    }
+  },
+  "verification": "transport-inspection-readiness-integration-verification.json",
+  "verificationSha256": "0353a24ef59b9ea59f9f135a4dd564df8afcc258d4c7945d3a806096006b6862",
+  "postRegressionDocumentationUpdate": {
+    "checkedAt": "2026-09-30T23:09:07.207Z",
+    "command": "node .archify-work/verify-inspection-docs.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-inspection-final-documentation.log",
+    "sha256": "feda95b758d55ded8a6f4088389272abe661daaee28099a93e03c38df31ddb5f",
+    "scope": "Receipt links and task-list/handoff closure only. Next standalone50/focused-UI44 preparation remains outside regression. All 180 runtime inputs and test/audit/evidence/report/reader/modules remain identical to full regression.",
+    "readerSha256": "1c80c00087923b855c0d5e5e66013a5b689b500e0a101ce926a0fa72689efafd",
+    "planSha256": "6cae5acef97f238f0f88b5e6bb167686d4b3032eb6c769e4debb2fb6359e6144",
+    "handoffSha256": "7bf49d10a17071626ef4f2c8f1370270787c35cf10949bc2e7926906f4f73aa3",
+    "preparationSha256": "3e89782fb13aeb1f7cbe148d60a3e8c8e1c721e088eb5444f385adb95f3d2cd4",
+    "snapshotDirectory": ".archify-work/inspection-readiness-post-documentation/"
+  }
+}

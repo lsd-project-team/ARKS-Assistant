@@ -1,0 +1,12 @@
+{
+  "schema_version":2,"diagram_type":"workflow",
+  "meta":{"title":"ZX2200 手动维护、报警与标定","locale":"zh-CN","quality_profile":"showcase"},
+  "lanes":[{"id":"l0","label":"进入维护"},{"id":"l1","label":"操作与校准"},{"id":"l2","label":"保存与恢复"}],
+  "nodes":[
+    {"id":"alarm","lane":"l0","col":0,"type":"security","label":"报警 / 维护入口","width":170},{"id":"pause","lane":"l0","col":1,"type":"frontend","label":"Pause 或停止生产","width":170},{"id":"guide","lane":"l1","col":2,"type":"frontend","label":"GuideMove / 手动面板","width":170},{"id":"jog","lane":"l1","col":3,"type":"external","label":"点动轴与 IO","width":170},{"id":"vision","lane":"l1","col":4,"type":"backend","label":"视觉灯光 / PR 调整","width":170},{"id":"calib","lane":"l1","col":5,"type":"backend","label":"标定或补偿动作","width":170},{"id":"save","lane":"l2","col":4,"type":"database","label":"保存参数与模板","width":170},{"id":"resume","lane":"l2","col":5,"type":"messagebus","label":"Continue 或重新启动","width":170}
+  ],
+  "edges":[{"id":"alarm-pause","from":"alarm","to":"pause","label":"阻止继续动作"},{"id":"pause-guide","from":"pause","to":"guide","label":"进入手动"},{"id":"guide-jog","from":"guide","to":"jog","label":"低速点动"},{"id":"guide-vision","from":"guide","to":"vision","label":"打开相机"},{"id":"vision-calib","from":"vision","to":"calib","label":"定位 / 测量"},{"id":"calib-save","from":"calib","to":"save","label":"参数结果"},{"id":"save-resume","from":"save","to":"resume","label":"保存成功"},{"id":"resume-guide","from":"resume","to":"guide","label":"继续调整","role":"return","variant":"dashed"}],
+  "mainPath":["alarm","pause","guide","vision","calib"],
+  "cards":[{"dot":"cyan","title":"实际边界","items":["UcGuideMove 的点动覆盖点胶、Bond、晶圆、顶针、上下料仓和翻转轴。","视觉报警窗口可暂停/停止，并支持灯光调整和模板保存。"]},{"dot":"amber","title":"恢复条件","items":["Continue 会检查门状态并设置 Working；源码没有证明它会重建已退出的全部线程。","标定结果保存到对应配置对象或模板仓库，非统一事务。"]}]
+}
+

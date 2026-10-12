@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "reportSha256": "6e37d746f8b431d237a3de716745357db80b9c247881451ed4b6ab927889f129",
+  "scope": "Selected manual change window methods and Designer bindings; stubs do not verify real UI lifecycle, persistence or hardware.",
+  "evidence": [
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.cs",
+      "start": 112,
+      "end": 129,
+      "fileSha256": "599b54036acaf926c9450921bf3d0b3799e45312d9d64f5e5ec5335c6f8f1577",
+      "code": "        public FrmChangeTabletTeach(string tabletName = null)\r\n        {\r\n            this.InitializeComponent();\r\n            this.tabletName = tabletName;\r\n            if (WaferSubDevicePara.GetInstance().MagazineDevicePara.IsUseMagazineLift)\r\n            {\r\n                AKRSMessageBoxExt.Show($\"更换料片的方式不是手动模式！\", \"Prompt\", new string[] { \"OK\" }, new DialogResult[] { DialogResult.OK });\r\n                this.Close();\r\n                return;\r\n            }\r\n\r\n            this.tempTablet =\r\n                (BaseTablet)JsonFormatHelper<BaseTablet>.DeepCopy(this.WaferTableDevicePara.CurrentTablet);\r\n            this.tabletArray = new BaseTablet[] { this.tempTablet };\r\n            this.Grc1.DataSource = this.tabletArray;\r\n            this.BindingAdapterData();\r\n            this.InitControl();\r\n        }\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.cs",
+      "start": 134,
+      "end": 235,
+      "fileSha256": "599b54036acaf926c9450921bf3d0b3799e45312d9d64f5e5ec5335c6f8f1577",
+      "code": "        public void InitControl()\r\n        {\r\n            try\r\n            {\r\n                Machine.GetInstance().OpenAlarm();\r\n\r\n                // 无所需芯片提示\r\n                this.res = AKRSMessageBoxExt.Show($\"当前料片不存在Bond需要的芯片 -{WaferSystemDomain.GetInstance().WaferSubSystemTask.GetCurrentNeedChipName()} , 请更换料片！\\r\\n\" + \"晶圆台将移动到手动换料位！\\r\\n\" + \"继续请点击 OK.\\r\\n\" + \"停止请点击 CANCEL.\", \"Prompt\", new string[] { \"OK\", \"Cancel\" }, new DialogResult[] { DialogResult.OK, DialogResult.Cancel });\r\n                switch (this.res)\r\n                {\r\n                    case DialogResult.OK:\r\n                        break;\r\n                    case DialogResult.Cancel:\r\n                        this.DialogResult = DialogResult.Abort;\r\n                        this.Close();\r\n                        return;\r\n                }\r\n\r\n                // 顶针\r\n                WaferSubController.GetInstance().EjectController.ReturnEjection();\r\n\r\n                // 扩晶到低位\r\n                WaferSubController.GetInstance().WaferTableController.MoveExpandToDownPosition();\r\n\r\n                if (WaferTableDevicePara.IsUseWaferTableWaffleVacuum)\r\n                {\r\n                    this.res = AKRSMessageBoxExt.Show($\"是否降下晶圆夹持气缸？\\r\\n\" + \"降下请点击 OK.\\r\\n\" + \"不降请点击 CANCEL.\", \"Prompt\", new string[] { \"OK\", \"Cancel\" }, new DialogResult[] { DialogResult.OK, DialogResult.Cancel });\r\n                    switch (this.res)\r\n                    {\r\n                        case DialogResult.OK:\r\n                            WaferSubController.GetInstance().WaferTableController.ResetBlockCylinder();\r\n                            break;\r\n                        case DialogResult.Cancel:\r\n                            break;\r\n                    }\r\n                }\r\n                else\r\n                {\r\n                    // 放下晶圆夹持气缸\r\n                    WaferSubController.GetInstance().WaferTableController.ResetBlockCylinder();\r\n                }\r\n\r\n                // 晶圆夹去安全位\r\n                WaferSubController.GetInstance().WaferTableController.MoveWaferClampToSafePosition();\r\n\r\n                // 晶圆台到达手动换料位\r\n                WaferSubController.GetInstance().WaferTableController.MoveWaferTableToManualChangePosition();\r\n\r\n                if (WaferTableDevicePara.IsUseWaferTableWaffleVacuum & WaferSubModule.GetInstance().WaferTable.WaffleVacuum != null)\r\n                {\r\n                    WaferSubController.GetInstance().WaferTableController.CloseWaffleVacuum();\r\n                }\r\n\r\n                // 将晶圆台中的料片拿走\r\n                this.res = AKRSMessageBoxExt.Show($\"请从晶圆台移除料片！\\r\\n\" + \"继续请点击 OK.\\r\\n\" + \"停止请点击 CANCEL.\", \"Prompt\", new string[] { \"OK\", \"Cancel\" }, new DialogResult[] { DialogResult.OK, DialogResult.Cancel });\r\n                switch (this.res)\r\n                {\r\n                    case DialogResult.OK:\r\n                        break;\r\n                    case DialogResult.Cancel:\r\n                        this.DialogResult = DialogResult.Abort;\r\n                        this.Close();\r\n                        return;\r\n                }\r\n\r\n                // Save\r\n                WaferTableDevicePara.CurrentTablet = new NullTablet();\r\n                WaferSubDevicePara.GetInstance().Save();\r\n\r\n            // 放置新的料片在晶圆台中\r\n            Prompt:\r\n                this.res = AKRSMessageBoxExt.Show($\"请放置一片新料到晶圆台！\\r\\n\" + \"继续请点击 OK.\\r\\n\" + \"停止请点击 CANCEL.\", \"Prompt\", new string[] { \"OK\", \"Cancel\" }, new DialogResult[] { DialogResult.OK, DialogResult.Cancel });\r\n                switch (this.res)\r\n                {\r\n                    case DialogResult.OK:\r\n                        if (!WaferSubController.GetInstance().WaferTableController.IsWaferSensor)\r\n                        {\r\n                            goto Prompt;\r\n                        }\r\n\r\n                        break;\r\n                    case DialogResult.Cancel:\r\n                        this.DialogResult = DialogResult.Abort;\r\n                        this.Close();\r\n                        return;\r\n                }\r\n\r\n                AKRSMessageBoxExt.Show($\"请选择料片！\", \"Prompt\", new string[] { \"OK\" }, new DialogResult[] { DialogResult.OK });\r\n                this.ShowDialog();\r\n            }\r\n            catch (Exception e)\r\n            {\r\n                if (Machine.GetInstance().IsWorking())\r\n                {\r\n                    throw new Exception(e.Message);\r\n                }\r\n                else \r\n                {\r\n                    AKRSMessageBoxExt.Show(e.Message, \"Error\", new string[] { \"OK\" }, new DialogResult[] { DialogResult.OK });\r\n                }                               \r\n            }           \r\n        }\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.cs",
+      "start": 242,
+      "end": 268,
+      "fileSha256": "599b54036acaf926c9450921bf3d0b3799e45312d9d64f5e5ec5335c6f8f1577",
+      "code": "        private void BtnOK_Click(object sender, EventArgs e)\r\n        {\r\n            if (this.CmbTabletName.EditValue == null)\r\n            {\r\n                AKRSMessageBoxExt.Show(\"请选择料片！\", \"Prompt\", new string[] { \"OK\" }, new DialogResult[] { DialogResult.OK });\r\n                return;\r\n            }\r\n\r\n            this.Save();\r\n            AKRSMessageBoxExt.Show(\"晶圆台即将移动！\", \"Prompt\", new string[] { \"OK\" }, new DialogResult[] { DialogResult.OK });\r\n\r\n            // 晶圆夹持气缸抬起\r\n            WaferSubController.GetInstance().WaferTableController.SetBlockCylinder();\r\n            if (WaferTableDevicePara.CurrentTablet is WaferTablet wt)\r\n            {\r\n                // 晶圆台到准备位\r\n                WaferSubController.GetInstance().WaferTableController.MoveWaferTableToReadyPosition();\r\n\r\n                // 扩晶到扩晶位\r\n                WaferSubController.GetInstance().WaferTableController.MoveExpandToUpPosition(wt.CarrierConfigWithWafer);\r\n            }\r\n\r\n            WaferSubController.GetInstance().WaferTableController.CheckAndOpenWaffleVacuum();\r\n\r\n            this.DialogResult = DialogResult.OK;\r\n            this.Close();\r\n        }\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.cs",
+      "start": 396,
+      "end": 402,
+      "fileSha256": "599b54036acaf926c9450921bf3d0b3799e45312d9d64f5e5ec5335c6f8f1577",
+      "code": "        private void Save()\r\n        {\r\n            WaferTableDevicePara.CurrentTablet = this.tempTablet;\r\n            WaferSubDevicePara.GetInstance().Save();\r\n\r\n            this.RefreshPncCarrierMapping();\r\n        }\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.cs",
+      "start": 275,
+      "end": 279,
+      "fileSha256": "599b54036acaf926c9450921bf3d0b3799e45312d9d64f5e5ec5335c6f8f1577",
+      "code": "        private void BtnAbort_Click(object sender, EventArgs e)\r\n        {\r\n            this.DialogResult = DialogResult.Abort;\r\n            this.Close();\r\n        }\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.cs",
+      "start": 573,
+      "end": 581,
+      "fileSha256": "599b54036acaf926c9450921bf3d0b3799e45312d9d64f5e5ec5335c6f8f1577",
+      "code": "        private void FrmChangeTabletTeach_FormClosing(object sender, FormClosingEventArgs e)\r\n        {\r\n            if (ucCarrierMapping != null)\r\n            {\r\n                ucCarrierMapping.Dispose();\r\n            }\r\n\r\n            Machine.GetInstance().ResetAlarm();\r\n        }\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.Designer.cs",
+      "start": 308,
+      "end": 308,
+      "fileSha256": "5a4455c5de37951daa580566a68208fd189db69330d26638f8ae3455ccb74505",
+      "code": "            this.BtnOK.Click += new System.EventHandler(this.BtnOK_Click);\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.Designer.cs",
+      "start": 331,
+      "end": 331,
+      "fileSha256": "5a4455c5de37951daa580566a68208fd189db69330d26638f8ae3455ccb74505",
+      "code": "            this.BtnAbort.Click += new System.EventHandler(this.BtnAbort_Click);\r"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Assistant/ChangeMapTeach/FrmChangeTabletTeach.Designer.cs",
+      "start": 641,
+      "end": 642,
+      "fileSha256": "5a4455c5de37951daa580566a68208fd189db69330d26638f8ae3455ccb74505",
+      "code": "            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmChangeTabletTeach_FormClosing);\r\n            this.Load += new System.EventHandler(this.FrmChangeTabletTeach_Load);\r"
+    }
+  ]
+}

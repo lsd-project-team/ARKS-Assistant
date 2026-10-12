@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Root>
+    <SoftVersion>
+        <Version CurrentVersion="V4.3.0" />
+    </SoftVersion>
+    <SaveInfo>
+        <SaveInfo Time="2025-12-29 10:21:11" Name="VisionMaster.exe" />
+    </SaveInfo>
+    <MainInterfaceInfo>
+        <MainInterface FileName="ProcedureInterface" />
+    </MainInterfaceInfo>
+    <GlobalModuleInfo>
+        <Module Index="13000" Name="GlobalVariableModule" Type="5" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="全局变量1" EnableModule="1" EnableCallBack="1" Guid="2DCB82DCA3C94F8DA1C9F3D3639768B5" />
+    </GlobalModuleInfo>
+    <ExportProcedureInfo>
+        <Procedure Index="10002" DisplayName="多胶点胶量检测" ShieldGlobalCtrl="0" ContinueExecuteTimGap="100" Guid="30359D776E634DA09DAF0CBB92BCD7F3" StopWhenNG="0" RunTimeout="0" />
+    </ExportProcedureInfo>
+    <ModulesInfo>
+        <ModuleBase>
+            <Module Index="11" Name="ImageSourceModule" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="图像源1" EnableModule="1" EnableCallBack="1" Guid="4340EF1C95644D99A919DC600E577B31" />
+            <Module Index="12" Name="ShellModule" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="脚本1" EnableModule="1" EnableCallBack="1" Guid="FCC6964760214300A92EFD3BF5F9D771" />
+            <Module Index="13" Name="IMVSFastFeatureMatchModu" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="快速匹配1" EnableModule="1" EnableCallBack="1" Guid="7AB95BB1F1BF4881B5F05B5B8EEEB68F" />
+            <Module Index="14" Name="BranchModule_STD" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="分支模块1" EnableModule="1" EnableCallBack="1" Guid="0B62A8006AE84D2DBD1B73E5B3F4C7F0" />
+            <Module Index="15" Name="IMVSFixtureModu" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="位置修正1" EnableModule="1" EnableCallBack="1" Guid="0A4719468C6E4ADA8C0E35BA7A732BE3" />
+            <Module Index="16" Name="ShellModule" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="脚本2" EnableModule="1" EnableCallBack="1" Guid="67466ABB6FEC41F99ED2B844E2C70E79" />
+            <Module Index="17" Name="BranchModule_STD" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="初定位方式" EnableModule="1" EnableCallBack="1" Guid="901E88843ABE441FBB4038AD26C0F017" />
+            <Module Index="18" Name="IMVSHPFeatureMatchModu" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="高精度匹配1" EnableModule="1" EnableCallBack="1" Guid="3C791A08644E49DF93EAE35B9A0E8479" />
+            <Module Index="19" Name="IMVSBlobFindModu" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="BLOB分析2" EnableModule="1" EnableCallBack="1" Guid="4C42E6923B2F45ABB4AD32469FA5C823" />
+            <Module Index="20" Name="IMVSGrayMatchModuVA" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="灰度匹配1" EnableModule="1" EnableCallBack="1" Guid="44CEF934C8484B31A2382B45EE136568" />
+            <Module Index="21" Name="IMVSContourMatchModu" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="轮廓匹配1" EnableModule="1" EnableCallBack="1" Guid="0ED8977E7189482B92B02CF02D073449" />
+            <Module Index="22" Name="IMVSBlobFindModu" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="BLOB分析1" EnableModule="1" EnableCallBack="1" Guid="24BA95DEAAE94FFA9352361BB4F1D414" />
+            <Module Index="23" Name="ShellModule" Type="0" IsSlave="0" ServerAddr="" ModuleFile="" DisplayName="脚本3" EnableModule="1" EnableCallBack="1" Guid="22D92D2941D843F0B8F5C2DF2B0E9E80" />
+        </ModuleBase>
+        <ModuleCommonConnect>
+            <Module Index="11">
+                <FrontModules />
+                <FollowingModules>
+                    <Following Index="14" />
+                </FollowingModules>
+            </Module>
+            <Module Index="12">
+                <FrontModules>
+                    <Front Index="13" />
+                    <Front Index="18" />
+                    <Front Index="20" />
+                    <Front Index="21" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="15" />
+                </FollowingModules>
+            </Module>
+            <Module Index="13">
+                <FrontModules>
+                    <Front Index="17" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="12" />
+                </FollowingModules>
+            </Module>
+            <Module Index="14">
+                <FrontModules>
+                    <Front Index="11" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="17" />
+                    <Following Index="19" />
+                </FollowingModules>
+            </Module>
+            <Module Index="15">
+                <FrontModules>
+                    <Front Index="12" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="22" />
+                </FollowingModules>
+            </Module>
+            <Module Index="16">
+                <FrontModules>
+                    <Front Index="22" />
+                </FrontModules>
+                <FollowingModules />
+            </Module>
+            <Module Index="17">
+                <FrontModules>
+                    <Front Index="14" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="13" />
+                    <Following Index="18" />
+                    <Following Index="20" />
+                    <Following Index="21" />
+                </FollowingModules>
+            </Module>
+            <Module Index="18">
+                <FrontModules>
+                    <Front Index="17" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="12" />
+                </FollowingModules>
+            </Module>
+            <Module Index="19">
+                <FrontModules>
+                    <Front Index="14" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="23" />
+                </FollowingModules>
+            </Module>
+            <Module Index="20">
+                <FrontModules>
+                    <Front Index="17" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="12" />
+                </FollowingModules>
+            </Module>
+            <Module Index="21">
+                <FrontModules>
+                    <Front Index="17" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="12" />
+                </FollowingModules>
+            </Module>
+            <Module Index="22">
+                <FrontModules>
+                    <Front Index="15" />
+                </FrontModules>
+                <FollowingModules>
+                    <Following Index="16" />
+                </FollowingModules>
+            </Module>
+            <Module Index="23">
+                <FrontModules>
+                    <Front Index="19" />
+                </FrontModules>
+                <FollowingModules />
+            </Module>
+        </ModuleCommonConnect>
+        <ModuleSubscribe>
+            <Subscribe Relation="12 . %in0% . 20 . ModuStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in1% . 21 . ModuStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in2% . 13 . ModuStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in3% . 18 . ModuStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in4% . 20 . MatchPointX . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in5% . 20 . MatchPointY . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in6% . 20 . MatchBoxAngle . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in7% . 21 . MatchPointX . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in8% . 21 . MatchPointY . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in9% . 21 . MatchBoxAngle . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in10% . 21 . MatchScaleX . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in11% . 21 . MatchScaleY . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in12% . 13 . MatchPointX . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in13% . 13 . MatchPointY . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in14% . 13 . MatchBoxAngle . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in15% . 13 . MatchScale . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in16% . 18 . MatchPointX . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in17% . 18 . MatchPointY . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in18% . 18 . MatchBoxAngle . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in19% . 18 . MatchScaleX . 0 . 0 . All . 1" />
+            <Subscribe Relation="12 . %in20% . 18 . MatchScaleY . 0 . 0 . All . 1" />
+            <Subscribe Relation="13 . InImage . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="13 . InImageWidth . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="13 . InImageHeight . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="13 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="14 . inputint . 10002 . %IsFirPR% . 0 . 0 . All . 1" />
+            <Subscribe Relation="15 . InPointX . 12 . %outX% . 0 . 0 . All . 1" />
+            <Subscribe Relation="15 . InPointY . 12 . %outY% . 0 . 0 . All . 1" />
+            <Subscribe Relation="15 . InAngle . 12 . %outA% . 0 . 0 . All . 1" />
+            <Subscribe Relation="15 . MatchScaleX . 12 . %outSx% . 0 . 0 . All . 1" />
+            <Subscribe Relation="15 . MatchScaleY . 12 . %outSy% . 0 . 0 . All . 1" />
+            <Subscribe Relation="16 . %in0% . 22 . ModuStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="16 . %in1% . 22 . CentroidX . 0 . 0 . All . 1" />
+            <Subscribe Relation="16 . %in2% . 22 . CentroidY . 0 . 0 . All . 1" />
+            <Subscribe Relation="16 . %in3% . 22 . BlobNum . 0 . 0 . All . 1" />
+            <Subscribe Relation="16 . %in4% . 22 . Area . 0 . 0 . All . 1" />
+            <Subscribe Relation="17 . inputint . 10002 . %FirPRType% . 0 . 0 . All . 1" />
+            <Subscribe Relation="18 . InImage . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="18 . InImageWidth . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="18 . InImageHeight . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="18 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="19 . InImage . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="19 . InImageWidth . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="19 . InImageHeight . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="19 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="20 . InImage . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="20 . InImageWidth . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="20 . InImageHeight . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="20 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="21 . InImage . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="21 . InImageWidth . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="21 . InImageHeight . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="21 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . InImage . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . InImageWidth . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . InImageHeight . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureInitPointX . 15 . FixtureInitPointX . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureInitPointY . 15 . FixtureInitPointY . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureInitAngle . 15 . FixtureInitAngle . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureInitScaleX . 15 . FixtureInitScaleX . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureInitScaleY . 15 . FixtureInitScaleY . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureRunPointX . 15 . FixtureRunPointX . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureRunPointY . 15 . FixtureRunPointY . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureRunAngle . 15 . FixtureRunAngle . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureRunScaleX . 15 . FixtureRunScaleX . 0 . 0 . All . 1" />
+            <Subscribe Relation="22 . FixtureRunScaleY . 15 . FixtureRunScaleY . 0 . 0 . All . 1" />
+            <Subscribe Relation="23 . %in1% . 19 . CentroidX . 0 . 0 . All . 1" />
+            <Subscribe Relation="23 . %in2% . 19 . CentroidY . 0 . 0 . All . 1" />
+            <Subscribe Relation="23 . %in3% . 19 . BlobNum . 0 . 0 . All . 1" />
+            <Subscribe Relation="23 . %in4% . 19 . Area . 0 . 0 . All . 1" />
+            <Subscribe Relation="23 . %in0% . 19 . ModuStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %Imageout0% . 11 . Image . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %ImageWidthout0% . 11 . Width . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %ImageHeightout0% . 11 . Height . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %ImagePixelFormatout0% . 11 . PixelFormat . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %1BlobArea% . 16 . %outa% . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %1BlobCenterX% . 16 . %outx% . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %1BlobCenterY% . 16 . %outy% . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %2BlobArea% . 23 . %outa% . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %2BlobCenterX% . 23 . %outx% . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %2BlobCenterY% . 23 . %outy% . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %ContourInfoout% . 22 . ContourInfo . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %CentroidXout% . 22 . CentroidX . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %CentroidYout% . 22 . CentroidY . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %Areaout% . 22 . Area . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %BlobStatusout% . 22 . BlobStatus . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %ContourInfoout0% . 19 . ContourInfo . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %CentroidXout0% . 19 . CentroidX . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %CentroidYout0% . 19 . CentroidY . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %Areaout0% . 19 . Area . 0 . 0 . All . 1" />
+            <Subscribe Relation="10002 . %BlobStatusout0% . 19 . BlobStatus . 0 . 0 . All . 1" />
+        </ModuleSubscribe>
+    </ModulesInfo>
+</Root>

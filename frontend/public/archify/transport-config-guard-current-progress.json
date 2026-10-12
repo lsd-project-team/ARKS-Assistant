@@ -1,0 +1,59 @@
+{
+  "schema": "archify-static-audit-current-v1",
+  "audit": "transport-config-guard",
+  "status": "current-transport-config-guard-verified",
+  "recordedAt": "2026-10-07T00:27:16.857Z",
+  "verification": {
+    "testCommand": "node scripts/test-transport-config-guard.cjs",
+    "auditCommand": "node scripts/null --check",
+    "result": [
+      "PASS mask=0 aggregate=True saves=0 nullReference=False",
+      "PASS mask=1 aggregate=False saves=1 nullReference=False",
+      "PASS mask=2 aggregate=False saves=0 nullReference=True",
+      "PASS mask=3 aggregate=False saves=1 nullReference=False",
+      "PASS mask=4 aggregate=False saves=0 nullReference=True",
+      "PASS mask=5 aggregate=False saves=1 nullReference=False",
+      "PASS mask=6 aggregate=False saves=0 nullReference=True",
+      "PASS mask=7 aggregate=False saves=1 nullReference=False",
+      "PASS mask=8 aggregate=False saves=0 nullReference=True",
+      "PASS mask=9 aggregate=False saves=1 nullReference=False",
+      "PASS mask=10 aggregate=False saves=0 nullReference=True",
+      "PASS mask=11 aggregate=False saves=1 nullReference=False",
+      "PASS mask=12 aggregate=False saves=0 nullReference=True",
+      "PASS mask=13 aggregate=False saves=1 nullReference=False",
+      "PASS mask=14 aggregate=False saves=0 nullReference=True",
+      "PASS mask=15 aggregate=False saves=1 nullReference=False",
+      "PASS mask=16 aggregate=False saves=0 nullReference=True",
+      "PASS mask=17 aggregate=False saves=1 nullReference=False",
+      "PASS mask=18 aggregate=False saves=0 nullReference=True",
+      "PASS mask=19 aggregate=False saves=1 nullReference=False",
+      "PASS mask=20 aggregate=False saves=0 nullReference=True",
+      "PASS mask=21 aggregate=False saves=1 nullReference=False",
+      "PASS mask=22 aggregate=False saves=0 nullReference=True",
+      "PASS mask=23 aggregate=False saves=1 nullReference=False",
+      "PASS mask=24 aggregate=False saves=0 nullReference=True",
+      "PASS mask=25 aggregate=False saves=1 nullReference=False",
+      "PASS mask=26 aggregate=False saves=0 nullReference=True",
+      "PASS mask=27 aggregate=False saves=1 nullReference=False",
+      "PASS mask=28 aggregate=False saves=0 nullReference=True",
+      "PASS mask=29 aggregate=False saves=1 nullReference=False",
+      "PASS mask=30 aggregate=False saves=0 nullReference=True",
+      "PASS mask=31 aggregate=False saves=1 nullReference=False",
+      "PASS root transport program null throws",
+      "PASS child subsection null aggregate throws",
+      "PASS child subsection null confirm throws",
+      "TOTAL 35"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/transport-config-guard-test.json",
+      "sha256": "e0e4ed21cc94ef7d6fde60a97aa18c4f97964be423dec3e6540971d9b6caecfe"
+    }
+  ],
+  "boundaries": [
+    "Current isolated audit evidence is recorded separately from historical reports.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked.",
+    "The fixtures do not prove a complete online production cycle or physical device behavior."
+  ]
+}

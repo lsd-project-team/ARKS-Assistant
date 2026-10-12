@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "料仓配置：加载与名称解析",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1400,
+      710
+    ]
+  },
+  "participants": [
+    {
+      "id": "caller",
+      "type": "frontend",
+      "label": "设置 / 生产调用方"
+    },
+    {
+      "id": "program",
+      "type": "backend",
+      "label": "料仓程序参数"
+    },
+    {
+      "id": "repo",
+      "type": "database",
+      "label": "料仓配置仓库"
+    },
+    {
+      "id": "json",
+      "type": "external",
+      "label": "JSON 存储边界"
+    }
+  ],
+  "messages": [
+    {
+      "id": "openrepo",
+      "from": "caller",
+      "to": "repo",
+      "y": 180,
+      "label": "首次 GetInstance → 构造 → Load"
+    },
+    {
+      "id": "readjson",
+      "from": "repo",
+      "to": "json",
+      "y": 233,
+      "label": "ReadGenericList(GetFileName())"
+    },
+    {
+      "id": "listreturn",
+      "from": "json",
+      "to": "repo",
+      "y": 286,
+      "label": "返回集合；null 时建立空集合",
+      "variant": "return"
+    },
+    {
+      "id": "filter",
+      "from": "caller",
+      "to": "repo",
+      "y": 339,
+      "label": "刷新下拉列表：Filter(空查询, false)"
+    },
+    {
+      "id": "enabled",
+      "from": "repo",
+      "to": "caller",
+      "y": 392,
+      "label": "返回 IsEnable 项的名称",
+      "variant": "return"
+    },
+    {
+      "id": "getbin",
+      "from": "caller",
+      "to": "program",
+      "y": 445,
+      "label": "后续调用料仓对象 getter"
+    },
+    {
+      "id": "find",
+      "from": "program",
+      "to": "repo",
+      "y": 498,
+      "label": "GetLoaderBin(当前名称) → Find(name)"
+    },
+    {
+      "id": "match",
+      "from": "repo",
+      "to": "program",
+      "y": 551,
+      "label": "首个名称精确匹配项；未找到则 null",
+      "variant": "return"
+    },
+    {
+      "id": "result",
+      "from": "program",
+      "to": "caller",
+      "y": 604,
+      "label": "返回对象或 null；不再次筛选启用 / 配方",
+      "variant": "return"
+    }
+  ]
+}

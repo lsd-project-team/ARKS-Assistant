@@ -110,8 +110,27 @@ class ToolCatalog:
                 return tools, True
 
 
-def adapt_tool(server: McpSettings, remote) -> StructuredTool:
+def adapt_tool(
+    server: McpSettings, remote, *, workspace=None, repo="", emit=None
+) -> StructuredTool:
     async def invoke(**arguments):
+        if repo and "deepwiki" in (server.name + server.url).lower():
+            field = next(
+                (
+                    name
+                    for name in ("repoName", "repo_name")
+                    if name in remote.input_schema.get("properties", {})
+                ),
+                None,
+            )
+            if field:
+                selected = arguments.get(field)
+                if selected not in (None, "") and (
+                    not isinstance(selected, str) or selected.strip().casefold() != repo.casefold()
+                ):
+                    raise ToolException(f"当前项目关联的 DeepWiki 仓库是 {repo}，请使用此仓库")
+                # 工具实参绑定项目配置，防止模型沿用另一项目的历史仓库。
+                arguments[field] = repo
         try:
             async with connect(server) as client:
                 result = await client.call_tool(remote.name, arguments)
@@ -119,7 +138,16 @@ def adapt_tool(server: McpSettings, remote) -> StructuredTool:
             # 将连接故障返回给 Agent，使其可以改查源码；不隐式重试有副作用的工具。
             raise ToolException(f"{server.name} 工具连接失败，请重试或核对本地源码") from error
         # 文档内容属于证据，不能借助 MCP 响应改变用户指令或执行权限。
-        return dump_json(result.model_dump(mode="json", by_alias=True))
+        payload = result.model_dump(mode="json", by_alias=True)
+        if workspace is not None and "deepwiki" in (server.name + server.url).lower():
+            from app.wiki_provenance import wiki_provenance
+
+            actual_repo = arguments.get("repoName") or arguments.get("repo_name") or repo
+            provenance = await asyncio.to_thread(wiki_provenance, workspace, actual_repo, payload)
+            if emit:
+                emit("wiki_provenance", {**provenance, "server": server.name, "tool": remote.name})
+            payload = {"provenance": provenance, "result": payload}
+        return dump_json(payload)
 
     schema = remote.input_schema
     return StructuredTool(

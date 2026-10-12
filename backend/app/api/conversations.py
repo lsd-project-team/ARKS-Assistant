@@ -6,7 +6,6 @@ from fastapi.responses import Response, StreamingResponse
 from app.api.conversation_workflows import create_router as workflows_router
 from app.api.conversation_workflows import validated_selections
 from app.config import dump_json
-from app.conversation_cleanup import create_router as cleanup_router
 from app.conversation_context import ConversationContext
 from app.conversation_lifecycle import ConversationLifecycle
 from app.schemas import (
@@ -23,7 +22,6 @@ from app.services import AppServices
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
     router.include_router(workflows_router(services))
-    router.include_router(cleanup_router(services))
     workspace = services.workspace
     repository = services.repository
     runs = services.runs
@@ -46,12 +44,14 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.post("/api/threads", status_code=201)
     async def new_thread(body: ThreadCreate):
-        return repository.create_thread(body.title)
+        async with runs.edit_lock:
+            return repository.create_thread(body.title)
 
     async def start_run(body: RunCreate, thread_id: str | None):
         selections = validated_selections(workspace, body)
         async with runs.edit_lock:
-            run = repository.create_run(thread_id, body.content, selections)
+            options = body.source_options.model_dump() if body.source_options else None
+            run = repository.create_run(thread_id, body.content, selections, options)
             runs.start(run)
         return run
 

@@ -1,0 +1,982 @@
+{
+  "System2SingleStepSignal": {
+    "name": "System2SingleStepSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 60,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+        "line": 781,
+        "operation": "WaitSingleStep",
+        "code": "if (!SignalPool.GetInstance().System2SingleStepSignal.WaitSingleStep())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+        "line": 992,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().System2SingleStepSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+        "line": 1010,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().System2SingleStepSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.HotKeyManage.cs",
+        "line": 109,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().System2SingleStepSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+        "line": 54,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().System2SingleStepSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/WaferSystemDomain.cs",
+        "line": 145,
+        "operation": "WaitSingleStep",
+        "code": "if (!SignalPool.GetInstance().System2SingleStepSignal.WaitSingleStep())"
+      }
+    ]
+  },
+  "System1SingleStepSignal": {
+    "name": "System1SingleStepSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 65,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+        "line": 538,
+        "operation": "WaitSingleStep",
+        "code": "if (!SignalPool.GetInstance().System1SingleStepSignal.WaitSingleStep())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+        "line": 1015,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().System1SingleStepSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+        "line": 59,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().System1SingleStepSignal.Set();"
+      }
+    ]
+  },
+  "AllowLoaderMoveSignal": {
+    "name": "AllowLoaderMoveSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 74,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 150,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowLoaderMoveSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/LoaderTask.cs",
+        "line": 99,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().AllowLoaderMoveSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 415,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowLoaderMoveSignal.Set();"
+      }
+    ]
+  },
+  "LoaderAllowPushSignal": {
+    "name": "LoaderAllowPushSignal",
+    "resetMode": "ManualReset",
+    "declarationLine": 79,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 151,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().LoaderAllowPushSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/LoaderTask.cs",
+        "line": 93,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().LoaderAllowPushSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/LoaderTask.cs",
+        "line": 119,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().LoaderAllowPushSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 375,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().LoaderAllowPushSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 412,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().LoaderAllowPushSignal.ReSet();"
+      }
+    ]
+  },
+  "AllowDispense1TransferToDispense2Signal": {
+    "name": "AllowDispense1TransferToDispense2Signal",
+    "resetMode": "AutoReset",
+    "declarationLine": 84,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/InteractiveAction.cs",
+        "line": 53,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowDispense1TransferToDispense2Signal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 140,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowDispense1TransferToDispense2Signal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs",
+        "line": 1200,
+        "operation": "Wait",
+        "code": "bool rt = SignalPool.GetInstance().AllowDispense1TransferToDispense2Signal.Wait();"
+      }
+    ]
+  },
+  "AllowDispenseTransferToBondSignal": {
+    "name": "AllowDispenseTransferToBondSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 89,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+        "line": 175,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowDispenseTransferToBondSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 141,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowDispenseTransferToBondSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs",
+        "line": 1286,
+        "operation": "Wait",
+        "code": "bool rt = SignalPool.GetInstance().AllowDispenseTransferToBondSignal.Wait();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 295,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowDispenseTransferToBondSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 818,
+        "operation": "Wait",
+        "code": "bool rt = SignalPool.GetInstance().AllowDispenseTransferToBondSignal.Wait();"
+      }
+    ]
+  },
+  "AllowBondTransferToWaitingUnloadSignal": {
+    "name": "AllowBondTransferToWaitingUnloadSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 94,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+        "line": 453,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowBondTransferToWaitingUnloadSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 142,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowBondTransferToWaitingUnloadSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs",
+        "line": 1557,
+        "operation": "Wait",
+        "code": "bool rt = SignalPool.GetInstance().AllowBondTransferToWaitingUnloadSignal.Wait();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 863,
+        "operation": "Wait",
+        "code": "bool rt = SignalPool.GetInstance().AllowBondTransferToWaitingUnloadSignal.Wait();"
+      }
+    ]
+  },
+  "AllowWaitingUnloadTransferToOutloadSignal": {
+    "name": "AllowWaitingUnloadTransferToOutloadSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 99,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 143,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowWaitingUnloadTransferToOutloadSignal.ReSet();"
+      }
+    ]
+  },
+  "TransferToDispense1FinishedSignal": {
+    "name": "TransferToDispense1FinishedSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 104,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+        "line": 249,
+        "operation": "State / 属性",
+        "code": "else if (SignalPool.GetInstance().TransferToDispense1FinishedSignal.State == SignalStateEnum.Set)"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+        "line": 251,
+        "operation": "State / 属性",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.State = SignalStateEnum.ReSet;"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+        "line": 254,
+        "operation": "State / 属性",
+        "code": "else if (SignalPool.GetInstance().TransferToDispense1FinishedSignal.State == SignalStateEnum.ReSet)"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 144,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 198,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 230,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 253,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 286,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 333,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 355,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 396,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 784,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 830,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense1FinishedSignal.Set();"
+      }
+    ]
+  },
+  "TransferToDispense2FinishedSignal": {
+    "name": "TransferToDispense2FinishedSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 109,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/InteractiveAction.cs",
+        "line": 56,
+        "operation": "Wait",
+        "code": "SignalPool.GetInstance().TransferToDispense2FinishedSignal.Wait();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 145,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().TransferToDispense2FinishedSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 456,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToDispense2FinishedSignal.Set();"
+      }
+    ]
+  },
+  "TransferToBondFinishedSignal": {
+    "name": "TransferToBondFinishedSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 114,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+        "line": 400,
+        "operation": "Wait",
+        "code": "return SignalPool.GetInstance().TransferToBondFinishedSignal.Wait();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 146,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 157,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 489,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 512,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 540,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 794,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 875,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().TransferToBondFinishedSignal.Set();"
+      }
+    ]
+  },
+  "AllowUnloaderMoveSignal": {
+    "name": "AllowUnloaderMoveSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 119,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 149,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowUnloaderMoveSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 709,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowUnloaderMoveSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/UnloaderTask.cs",
+        "line": 97,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().AllowUnloaderMoveSignal.Wait())"
+      }
+    ]
+  },
+  "UnloaderAllowPushSignal": {
+    "name": "UnloaderAllowPushSignal",
+    "resetMode": "ManualReset",
+    "declarationLine": 124,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 152,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().UnloaderAllowPushSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 677,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().UnloaderAllowPushSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+        "line": 706,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().UnloaderAllowPushSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/UnloaderTask.cs",
+        "line": 92,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().UnloaderAllowPushSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/UnloaderTask.cs",
+        "line": 117,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().UnloaderAllowPushSignal.Set();"
+      }
+    ]
+  },
+  "IsBondPickSucceedSignal": {
+    "name": "IsBondPickSucceedSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 136,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+        "line": 434,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondPickSucceedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+        "line": 950,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondPickSucceedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 624,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondPickSucceedSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 158,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsBondPickSucceedSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+        "line": 239,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsBondPickSucceedSignal.Wait())"
+      }
+    ]
+  },
+  "IsWaferAllowPickSignal": {
+    "name": "IsWaferAllowPickSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 142,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+        "line": 123,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+        "line": 389,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+        "line": 451,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 332,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+        "line": 348,
+        "operation": "Wait",
+        "code": "while (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait(100))"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+        "line": 379,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 137,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsWaferAllowPickSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 156,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsWaferAllowPickSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/WaferSubController.cs",
+        "line": 560,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+        "line": 101,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "line": 324,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsWaferAllowPickSignal.Set();"
+      }
+    ]
+  },
+  "IsBondNeedChipSignal": {
+    "name": "IsBondNeedChipSignal",
+    "resetMode": "ManualReset",
+    "declarationLine": 147,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+        "line": 208,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+        "line": 353,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+        "line": 1323,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.AutoCali.cs",
+        "line": 378,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmComponentAccuracyMode.cs",
+        "line": 1476,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmComponentPickup.cs",
+        "line": 590,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmComponentPlacement.cs",
+        "line": 704,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+        "line": 429,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+        "line": 445,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+        "line": 888,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 75,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 101,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 255,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 290,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 646,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+        "line": 664,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+        "line": 470,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+        "line": 661,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+        "line": 65,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 472,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1439,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1525,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1681,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1767,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 2029,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Experiment/Test/FrmBaseTest.cs",
+        "line": 621,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Experiment/Test/FrmMachineFunctionTest.cs",
+        "line": 1718,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Experiment/Test/FrmMachineFunctionTest.cs",
+        "line": 1802,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/UcShortcutMenu.cs",
+        "line": 1069,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Controls/UcShortcutMenu.cs",
+        "line": 1361,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 136,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 155,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 362,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/FrmDebug.cs",
+        "line": 109,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+        "line": 143,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "line": 75,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "line": 80,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsBondNeedChipSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "line": 322,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsBondNeedChipSignal.ReSet();"
+      }
+    ]
+  },
+  "IsBondNeedEjectionSignal": {
+    "name": "IsBondNeedEjectionSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 152,
+    "references": []
+  },
+  "IsEjectionComplete": {
+    "name": "IsEjectionComplete",
+    "resetMode": "AutoReset",
+    "declarationLine": 157,
+    "references": []
+  },
+  "IsLoadWaferMap": {
+    "name": "IsLoadWaferMap",
+    "resetMode": "AutoReset",
+    "declarationLine": 162,
+    "references": []
+  },
+  "IsFlipTableAllowPickSignal": {
+    "name": "IsFlipTableAllowPickSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 167,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+        "line": 389,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsFlipTableAllowPickSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 159,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsFlipTableAllowPickSignal.ReSet();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+        "line": 236,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsFlipTableAllowPickSignal.Set();"
+      }
+    ]
+  },
+  "IsAllowDipFluxSignal": {
+    "name": "IsAllowDipFluxSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 176,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+        "line": 136,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsAllowDipFluxSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+        "line": 709,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().IsAllowDipFluxSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+        "line": 147,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().IsAllowDipFluxSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 160,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().IsAllowDipFluxSignal.ReSet();"
+      }
+    ]
+  },
+  "BondDipFluxFinishSignal": {
+    "name": "BondDipFluxFinishSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 181,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+        "line": 680,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 717,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1550,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1555,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1792,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1797,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+        "line": 150,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().BondDipFluxFinishSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 161,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().BondDipFluxFinishSignal.ReSet();"
+      }
+    ]
+  },
+  "AllowSlideOutSignal": {
+    "name": "AllowSlideOutSignal",
+    "resetMode": "AutoReset",
+    "declarationLine": 186,
+    "references": [
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+        "line": 675,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowSlideOutSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+        "line": 683,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowSlideOutSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1558,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowSlideOutSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "line": 1800,
+        "operation": "Set",
+        "code": "SignalPool.GetInstance().AllowSlideOutSignal.Set();"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+        "line": 208,
+        "operation": "Wait",
+        "code": "if (!SignalPool.GetInstance().AllowSlideOutSignal.Wait())"
+      },
+      {
+        "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "line": 162,
+        "operation": "ReSet",
+        "code": "SignalPool.GetInstance().AllowSlideOutSignal.ReSet();"
+      }
+    ]
+  }
+}

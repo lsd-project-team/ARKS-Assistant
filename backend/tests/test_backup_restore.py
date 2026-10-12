@@ -27,6 +27,7 @@ def zip_variant(source, destination, changes=None, omit=()):
         ZipFile(source) as incoming,
         ZipFile(destination, "w", compression=ZIP_DEFLATED) as outgoing,
     ):
+
         def write(name, value):
             # Windows 的 ZipInfo 构造器会替换反斜杠；保留恶意原名，才能真实验证拒绝逻辑。
             member = ZipInfo(name)
@@ -68,6 +69,7 @@ async def test_full_backup_restore_preserves_graph_messages_memory_and_private_s
     )
     archive = paths.scratch / "原文档案.md"
     archive.write_text("必须保留的原文\r\n", encoding="utf-8", newline="")
+    expected_messages = repository.thread(thread["id"])["messages"]
     backup = create_backup(paths)
     preview = validate_backup(backup)
     assert preview["format_version"] == 1 and preview["counts"]["messages"] == 2
@@ -86,10 +88,7 @@ async def test_full_backup_restore_preserves_graph_messages_memory_and_private_s
     assert (target.scratch / archive.name).read_bytes() == archive.read_bytes()
     with TestClient(create_app(target)) as client:
         restored = client.get(f"/api/threads/{thread['id']}").json()
-        assert [message["content"] for message in restored["messages"]] == [
-            "说明 Program.cs",
-            "测试回复",
-        ]
+        assert restored["messages"] == expected_messages
         assert client.get(f"/api/threads/{thread['id']}/context").json()["complete"]
         rows = client.get("/api/memories").json()
         assert rows[0]["name"] == "恢复事实.md" and not rows[0]["sources"][0]["stale"]
@@ -255,7 +254,7 @@ def test_api_backup_validation_storage_and_active_run_guard(services):
             content=exported.content,
             headers={"Content-Type": "application/zip"},
         )
-        assert checked.status_code == 200 and checked.json()["database_revision"] == "0006"
+        assert checked.status_code == 200 and checked.json()["database_revision"] == "0012"
         assert client.post("/api/backup/validate", content=b"invalid").status_code == 409
         stats = client.get("/api/storage").json()
         assert stats["counts"]["messages"] == 2 and stats["groups"]["backups"] > 0

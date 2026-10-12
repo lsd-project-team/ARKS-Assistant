@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 任务关闭门控与停止提示",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "entry", "label": "停止入口" },
+    { "id": "gate", "label": "任务状态门" },
+    { "id": "ui", "label": "界面状态" },
+    { "id": "outcome", "label": "关闭结果" }
+  ],
+  "nodes": [
+    { "id": "stop", "lane": "entry", "col": 0, "type": "security", "label": "Stop / Start准备", "sublabel": "进入关闭查询", "width": 145 },
+    { "id": "collect", "lane": "gate", "col": 1, "type": "backend", "label": "收集 16 个任务引用", "sublabel": "按配置重建 WorkTasks", "width": 145 },
+    { "id": "status", "lane": "gate", "col": 2, "type": "security", "label": "Running？", "sublabel": "只检查 TaskStatus", "width": 145 },
+    { "id": "blocked", "lane": "outcome", "col": 3, "type": "security", "label": "返回 false", "sublabel": "关闭仍被阻断", "width": 145 },
+    { "id": "allow", "lane": "gate", "col": 3, "type": "backend", "label": "返回 true", "sublabel": "其余状态均放行", "width": 145 },
+    { "id": "close", "lane": "outcome", "col": 4, "type": "backend", "label": "允许关闭", "sublabel": "不等于所有 Task 已完成", "width": 145 },
+    { "id": "uiBlocked", "lane": "ui", "col": 3, "type": "frontend", "label": "停止提示 + 禁用", "sublabel": "仅 Running 保持", "width": 145 },
+    { "id": "uiEnabled", "lane": "ui", "col": 4, "type": "frontend", "label": "恢复界面", "sublabel": "其他 7 种状态均恢复", "width": 145 }
+  ],
+  "edges": [
+    { "id": "stop-collect", "from": "stop", "to": "collect", "label": "查询", "role": "main" },
+    { "id": "collect-status", "from": "collect", "to": "status", "label": "逐字段读取", "role": "main" },
+    { "id": "status-blocked", "from": "status", "to": "blocked", "label": "Running", "role": "error" },
+    { "id": "status-allow", "from": "status", "to": "allow", "label": "其他状态", "role": "main" },
+    { "id": "allow-close", "from": "allow", "to": "close", "label": "放行", "role": "main" },
+    { "id": "status-uiBlocked", "from": "status", "to": "uiBlocked", "label": "Running", "role": "branch" },
+    { "id": "allow-uiEnabled", "from": "allow", "to": "uiEnabled", "label": "非 Running", "role": "return" }
+  ],
+  "mainPath": ["stop", "collect", "status", "allow", "close"],
+  "cards": [
+    { "dot": "amber", "title": "状态矩阵", "items": ["Created、WaitingForActivation、WaitingToRun、WaitingForChildrenToComplete、RanToCompletion、Canceled、Faulted 都返回 true。", "只有 Running 返回 false；未完成但尚未 Running 的 Task 不会阻断关闭。"] },
+    { "dot": "cyan", "title": "证据范围", "items": ["task-closure-review.md。", "任务体、真实 UI 控件、状态持久化、现场调度和设备停稳仍未验收。"] }
+  ]
+}

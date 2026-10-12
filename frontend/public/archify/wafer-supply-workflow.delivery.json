@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\docs\\archify\\wafer-supply-workflow.archify.json",
+  "output": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\docs\\archify\\wafer-supply-workflow.html",
+  "specification": {
+    "sha256": "b82a7bc21c71010eb008c3177e401af31b16a63e10e612bdfa07d86258817897",
+    "bytes": 5837
+  },
+  "artifact": {
+    "sha256": "0cbd1e88862a7ffeb23b88f83ffe47dc2bf18f832439d8098237383aed1d6d5f",
+    "bytes": 814861
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

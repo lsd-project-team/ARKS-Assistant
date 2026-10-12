@@ -34,6 +34,7 @@ class PinMove(BaseModel):
 
 
 class CodeSelection(BaseModel):
+    source_workspace_id: str | None = Field(default=None, max_length=32)
     path: str = Field(min_length=1, max_length=500)
     start_line: int = Field(ge=1)
     end_line: int = Field(ge=1)
@@ -51,9 +52,21 @@ class CodeSelection(BaseModel):
         return self
 
 
+class SourceOptions(BaseModel):
+    use_deepwiki: bool = True
+    use_knowledge: bool = True
+    use_memory: bool = True
+
+
+class SourcePreferencesWrite(BaseModel):
+    source_options: SourceOptions
+    version: int = Field(ge=0)
+
+
 class RunCreate(BaseModel):
     content: str = Field(min_length=1, max_length=30000)
     selections: list[CodeSelection] = Field(default_factory=list, max_length=8)
+    source_options: SourceOptions | None = None
 
     @model_validator(mode="after")
     def validate_content(self):
@@ -76,15 +89,18 @@ class MemoryWrite(BaseModel):
     content: str = Field(max_length=50000)
     scope: str = Field(default="project", pattern=r"^(project|user)$")
     version: str | None = None
+    record_version: str | None = None
     source_thread_id: str | None = None
     source_paths: list[str] = Field(default_factory=list)
     confirm_conflicts: bool = False
     reviewed_versions: dict[str, str] = Field(default_factory=dict, max_length=1000)
+    lifecycle: str = Field(default="valid", pattern=r"^(valid|needs_review|invalid)$")
 
 
 class MemoryRestore(BaseModel):
     revision_id: int = Field(ge=1)
     version: str | None = None
+    record_version: str | None = None
     confirm_conflicts: bool = False
     reviewed_versions: dict[str, str] = Field(default_factory=dict, max_length=1000)
 

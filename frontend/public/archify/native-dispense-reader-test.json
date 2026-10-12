@@ -1,0 +1,564 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-native-report-source-reader-and-browser-passed",
+  "parent": {
+    "file": "native-dispense-form-test.json",
+    "sha256": "7b22dafe5dfca47e0ee1a28cf77dfda1651b1d1a505658d0c898ecec6de939f6"
+  },
+  "parentFrozenBindings": 6444,
+  "newFrozenInputs": 91,
+  "totalFrozenBindings": 6535,
+  "newRuntimeTopics": 5,
+  "newRuntimeSnapshots": 260,
+  "originalTopics": 47,
+  "originalSnapshots": 4997,
+  "totalTopics": 52,
+  "totalSnapshots": 5257,
+  "totalRuntimeTopics": 12,
+  "totalRuntimeSnapshots": 500,
+  "modules": 29,
+  "representativeRelationships": 552,
+  "originalSources": 41,
+  "parsedDeclarations": 567,
+  "operatorDeclarations": 6,
+  "parseErrors": 0,
+  "browserViewports": 4,
+  "browserErrors": 0,
+  "exactRenderedSnapshots": 5257,
+  "exactRenderedNativeBoundaryNotices": 500,
+  "newDispenseBoundaryNotices": 260,
+  "selectedOriginalIlMethods": 267,
+  "unmatchedSelectedIlMethods": 0,
+  "originalReaderModified": false,
+  "originalEncodingReaderModified": false,
+  "oldModuleRelationshipsModified": false,
+  "oldEvidenceJsonValuesModified": false,
+  "originalNativeReportsModified": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionRuntimeExecutedInThisReaderPhase": false,
+  "fullSemanticCoverage": false,
+  "allDeclaredCandidatesExecuted": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "failedBrowserAssertionAttemptsPreserved": 1,
+  "failedPreflightAssertionAttemptsPreserved": 1,
+  "reader": {
+    "file": "module-source-explorer-native-dispense.html",
+    "sha256": "05eec98dc8e9e133ef1fbe26cbdc3ec42fa9782ba9b23cd5d8802831d291f481"
+  },
+  "evidence": {
+    "file": "native-dispense-reader-evidence.json",
+    "sha256": "54e64dd59b791f4eed290adce1516f4625bb31ff5c6eb9c8a866e3c4a1de0b90"
+  },
+  "observations": {
+    "scriptSetupFirstAttempt": {
+      "chunk": "f12a11",
+      "exitCode": 1,
+      "cause": "Cloner attempted target artifact replacement in preparer before target filename existed; no inputs emitted. Setup repaired and b05b42 passed."
+    },
+    "acceptedInputPreparation": {
+      "chunk": "b05b42",
+      "exitCode": 0
+    },
+    "initialDeclarationsAndBuilder": {
+      "chunk": "5ad486",
+      "exitCode": 0,
+      "declarations": 561,
+      "newSnapshots": 254
+    },
+    "acceptedParserAndBuilderWithOperators": {
+      "chunk": "6bf3b0",
+      "exitCode": 0,
+      "declarations": 567,
+      "newSnapshots": 260
+    },
+    "failedBrowser": {
+      "chunk": "b496ad",
+      "exitCode": 1,
+      "cause": "Probe used nonexistent ClearCurves instead of original RemoveAllCurves; failed candidate/log preserved."
+    },
+    "initialAcceptedBrowser": {
+      "chunk": "d267d8",
+      "exitCode": 0
+    },
+    "finalBuilderAndBrowser": {
+      "chunk": "be9219",
+      "exitCode": 0,
+      "cause": "Derived footer corrected to derived generation --check and verifier; all browser checks repeated."
+    },
+    "parentValidation": {
+      "session": null,
+      "chunk": "bf558a",
+      "exitCode": 0
+    },
+    "failedPreflight": {
+      "chunk": "7c71d2",
+      "exitCode": 1,
+      "cause": "Probe expected Cecil signature Clone<T> but actual frozen member is T ObjectHelper::Clone(T); source generic syntax and actual IL signature now both verified, original candidate/log preserved."
+    },
+    "acceptedPreflight": {
+      "chunk": "1698b2",
+      "exitCode": 0
+    }
+  },
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-dispense-reader.cjs",
+      "sha256": "217fc0f3523c646b2bb72d8a9e3b046aa173994ee122fb0dc1f6718b5d861e97",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0000-freeze-native-dispense-reader.cjs"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/browser-results.json",
+      "sha256": "19a1e7a84bbe7d3656ec2de7ce5b5156ae2076fb54d74967942d8b73daac7b35",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0001-browser-results.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/browser.log",
+      "sha256": "d2d8aec1935c9d60d074f0192c04e1b85d0df309c16f9a4824316ce31eb97f28",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0002-browser.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/builder.log",
+      "sha256": "551f1c08756fa4a2436364a5de12aff51343b1e42d14333ab1788c2a9fdf01b5",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0003-builder.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/declarations.json",
+      "sha256": "e3ea1c61b7c80aa9dfc90adf578ae4430013118364d24d5e5da5ced7fc834c7a",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0004-declarations.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/failed-browser-v1/browser.cjs",
+      "sha256": "9d890327c114f9b6f6b96437cf24419772efa8faa9a86904c07403a4d22d0c2d",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0005-browser.cjs"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/failed-browser-v1/browser.log",
+      "sha256": "8afac52e6114cd282ef3eba56d78246446ab22f0a2e0f55ada05c9339d118ada",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0006-browser.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/failed-preflight-v1/preflight.log",
+      "sha256": "cc7eeb790d4373e9b5dcb3a78fcb19733e9a50d560dbd7017657d1e6d4227014",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0007-preflight.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/failed-preflight-v1/verify.cjs",
+      "sha256": "13e11ffe822ee1aab59d144dfd1bb0214146aee56a07af393bbda6c50d202284",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0008-verify.cjs"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/browser-results.json",
+      "sha256": "84202bd2e46eda449f853d490807a50919e7ab622f6f5356d874fffa02f3e0ae",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0009-browser-results.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/browser.log",
+      "sha256": "178340fe2e8b570d2ba081ac11c51ff0f4355ca5224bdda3d004797a5a1d553a",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0010-browser.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/build-native-dispense-source-explorer.cjs",
+      "sha256": "a1c176d4bca4112ff32d4b79238054ef2ec4cd1b76b9a62460ee44bf46e921ec",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0011-build-native-dispense-source-explorer.cjs"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/builder.log",
+      "sha256": "551f1c08756fa4a2436364a5de12aff51343b1e42d14333ab1788c2a9fdf01b5",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0012-builder.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/module-source-explorer-native-dispense.html",
+      "sha256": "0977fed7d2dc80fd08778de36d2daf35ab4b1e3aacf7ee78a5fbec3d0fd52570",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0013-module-source-explorer-native-dispense.html"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/native-dispense-reader-evidence.json",
+      "sha256": "54e64dd59b791f4eed290adce1516f4625bb31ff5c6eb9c8a866e3c4a1de0b90",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0014-native-dispense-reader-evidence.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/reader-browser.png",
+      "sha256": "56b995a957ae6b57027050dc270c66d39fdae6c6d2ffcc1dd8748f19cbb5db1b",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0015-reader-browser.png"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/reader-results.json",
+      "sha256": "bdc999cca962f842cf46f7ffd81a59b23b9450a0ef6633905aaaaf4b92ab2ac0",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0016-reader-results.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-accepted-browser/verify-native-dispense-source-explorer-browser.cjs",
+      "sha256": "e644d9c0bc741302942e4a15e57f029af48218e1ce5c2bc34e9402b9cee18b19",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0017-verify-native-dispense-source-explorer-browser.cjs"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/builder.log",
+      "sha256": "4b3092523a3ff430c5adeb4e7481fe1dbb3f8d236cbf13901d329056adb39f0c",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0018-builder.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/declarations.json",
+      "sha256": "7ec70c04e1e64681181de6e6a9a815819052ba7b858fcd24122903c6017197e1",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0019-declarations.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/module-source-explorer-native-dispense.html",
+      "sha256": "17a0518572c8c21962e92060291348df5cbfba8a6abdca61d2b75718e75c0074",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0020-module-source-explorer-native-dispense.html"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/native-dispense-reader-evidence.json",
+      "sha256": "3ddc3767d7adda8b0ce776d901ae221c30f6faf44467bc9a706dbe9873708fc4",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0021-native-dispense-reader-evidence.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/original-extractor.ps1",
+      "sha256": "73b9400fc0d4a7b6c3fde6346d4418edfe7d3b94dabcdc61aa4f365298aad0be",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0022-original-extractor.ps1"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/parser.log",
+      "sha256": "5e9c54c4f22bf2bad8300299168d3d78a879ed85d7026bacc6464bfbd445f431",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0023-parser.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/initial-method-property-candidate/reader-results.json",
+      "sha256": "93ebe1342c2347009e8f26d5ab83fae3972574289f4c90ca136f21a026e56b26",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0024-reader-results.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/input.json",
+      "sha256": "bd695f274d005df49a65d44a4a1df2c1aa0c92fa504815d4f56c297806fe4d63",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0025-input.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-form-verification.log",
+      "sha256": "a5cff040e86eac81dcbc0af89747f094c1267648863c435b8d1a81ea2c4556be",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0026-parent-form-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-native-dispense-control-verification.log",
+      "sha256": "c58517591fa46e3fef2fa975184a63512c2deb6595cae1aa0c78cabe693bc1ac",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0027-parent-native-dispense-control-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-native-dispense-form-verification.log",
+      "sha256": "ec6f07e9263a8b7ce781aedbedb6785c39ce8ad87c295c5825a6f5917bafb2ea",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0028-parent-native-dispense-form-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-native-dispense-geometry-verification.log",
+      "sha256": "9d973e9edab893a9c8608f69db676eca723f0ed58b393db91f17f922dc7fa349",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0029-parent-native-dispense-geometry-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-native-dispense-input-verification.log",
+      "sha256": "a14bf004936ad1a82961e82d9034c802a2157ee8cdee380f32473e7900d84a6f",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0030-parent-native-dispense-input-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-native-dispense-rendering-verification.log",
+      "sha256": "a66246c63e3c5891fd0f5a7a55bd61a653aed593f9f1118d2a53cfb82aa73737",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0031-parent-native-dispense-rendering-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-native-runtime-reader-verification.log",
+      "sha256": "0d416034a7cf464cad33d7d7e3aa9400c8eb9fa5253c085813d265642b36fa3f",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0032-parent-native-runtime-reader-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parent-reader-verification.log",
+      "sha256": "7ef690fda6b5e5f88cc3faef32b30f796566395e41fcf03bdff40920f04aba37",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0033-parent-reader-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/parser.log",
+      "sha256": "b08b50eded66f688d266c180bf96ed098014af810cc20379e3910a7f1520ba07",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0034-parser.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/preflight.log",
+      "sha256": "9bc40c8ffbca8fa201c465dbf629f05232e5a73894542ac68e4d621e9a34f767",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0035-preflight.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/reader-browser.png",
+      "sha256": "b48fa15548989bdb72ec2fa44916b74667e2a39b6ac8fd53b12586b068376469",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0036-reader-browser.png"
+    },
+    {
+      "file": ".archify-work/native-dispense-reader/reader-results.json",
+      "sha256": "adfd1f390c9a6cf2244c8e8148b4bdedad4c8c4ee784141c0a1f9a8057060edb",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0037-reader-results.json"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/audit/files.json",
+      "sha256": "8969ba630b623b249c1190790261bd5c66f1ead19a27edc422336b0fba194a7b",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0038-files.json"
+    },
+    {
+      "file": ".archify-work/verify-native-dispense-reader-parents.cjs",
+      "sha256": "9d469ba0b22866a5504bb1052bb3d480f0b8fa3d7fde1ecea05564a5288a2271",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0039-verify-native-dispense-reader-parents.cjs"
+    },
+    {
+      "file": "docs/archify/module-source-explorer-native-dispense.html",
+      "sha256": "05eec98dc8e9e133ef1fbe26cbdc3ec42fa9782ba9b23cd5d8802831d291f481",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0040-module-source-explorer-native-dispense.html"
+    },
+    {
+      "file": "docs/archify/module-source-explorer-native-runtime.html",
+      "sha256": "84540916ac0c5a670ff2b1ac91667b07724a5704bfef06fc2eeb1d0d85338155",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0041-module-source-explorer-native-runtime.html"
+    },
+    {
+      "file": "docs/archify/native-dispense-reader-evidence.json",
+      "sha256": "54e64dd59b791f4eed290adce1516f4625bb31ff5c6eb9c8a866e3c4a1de0b90",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0042-native-dispense-reader-evidence.json"
+    },
+    {
+      "file": "docs/archify/source-module-inventory.json",
+      "sha256": "da45960bd0b4be7e5e1b5dc07a87f3b45e66d12ce13d18be1c9ba796e4b171a6",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0043-source-module-inventory.json"
+    },
+    {
+      "file": "scripts/build-native-dispense-source-explorer.cjs",
+      "sha256": "d05dc6f3dc092e2f5c31cb7303284690ab5b375c49af807305b719a2c6e2848f",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0044-build-native-dispense-source-explorer.cjs"
+    },
+    {
+      "file": "scripts/extract-native-dispense-reader.ps1",
+      "sha256": "fbf385b99817cdba96c3a19d3672766b2b0a187a3de0268805d406ef50fabea3",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0045-extract-native-dispense-reader.ps1"
+    },
+    {
+      "file": "scripts/module-source-explorer.template.html",
+      "sha256": "75f2d9d5e8d4aa98ecf52ba70fe22454c674cdecf46c2c307fae323b26973952",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0046-module-source-explorer.template.html"
+    },
+    {
+      "file": "scripts/prepare-native-dispense-reader.cjs",
+      "sha256": "24c9cb9451b555721822f4508fee366aac4b0a9bb61b8428b348ee7ee28fa6c9",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0047-prepare-native-dispense-reader.cjs"
+    },
+    {
+      "file": "scripts/verify-native-dispense-reader.cjs",
+      "sha256": "6c02f353740d9a6ad2544d3fd31bf7662dd93ef0402cc29d9f3535f03952ad3c",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0048-verify-native-dispense-reader.cjs"
+    },
+    {
+      "file": "scripts/verify-native-dispense-source-explorer-browser.cjs",
+      "sha256": "e644d9c0bc741302942e4a15e57f029af48218e1ce5c2bc34e9402b9cee18b19",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0049-verify-native-dispense-source-explorer-browser.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionEnum.cs",
+      "sha256": "77bf2e300ba11630e90e97f159a0f4c5d71661b2b9a5087d5eef132a601ccaf2",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0050-ActionEnum.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/ActionHandler.cs",
+      "sha256": "482c32d1637430467dcac77c21a79f9880569e3bc176df3506b99f0cc9b2ecb0",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0051-ActionHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/AppendPointHandler.cs",
+      "sha256": "9c4cad712a11abbfbb8f2b84fe88040336be39622886b183189051a6e1bd1b26",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0052-AppendPointHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/ErasePointHandler.cs",
+      "sha256": "b38ca69ae54b252bb292ad5aee730383c69321c90212b4aafca0ae0f99236a17",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0053-ErasePointHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/InsertPointHandler.cs",
+      "sha256": "42231a4858c73d65a442bfae83d1982ed3565c883239f2fa095a2b776c1b8899",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0054-InsertPointHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/MovePointHandler.cs",
+      "sha256": "c8205b14c1eaa076f517b8da62f6e011404f00a9c6669058f7472c942119f0bb",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0055-MovePointHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/PaintCurveHandler.cs",
+      "sha256": "af29f34ec4928653c8a4f3690edf7ccd5805d7f881ca4524aa565f27d0d0949a",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0056-PaintCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/SelectObjectHandler.cs",
+      "sha256": "b05f255403eef5e69d93e7482dd24c4e1ac652f413875fd4a1f525f3c92b457e",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0057-SelectObjectHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/AffineTransformCurveHandler.cs",
+      "sha256": "dd48a6e0fda9dca2d35cb8c70fcb0e1e17b42c1ce99227cc5970799beeb2bcd3",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0058-AffineTransformCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/RotateCurveHandler.cs",
+      "sha256": "c17eca1ffc1aa8f87a43b455021ac1b0afcaf646b25d070f196524e64a533a69",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0059-RotateCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/ScaleCurveHandler.cs",
+      "sha256": "2c7c704906a348e68ad2382b783dc0df5aca5b982c6644532b904d7110fd83cc",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0060-ScaleCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/TranslateCurveHandler.cs",
+      "sha256": "41151cac68861e1195495524bec327afa2224a49ba83f3417e51379199d4a628",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0061-TranslateCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/NullHandler.cs",
+      "sha256": "5bb41fdbea93dceafa8129ed9ccfbf8a84002862c6099a5ba6bba5b13a4d2235",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0062-NullHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/BackgroundImageInfo.cs",
+      "sha256": "891358ec066e23ce5e2fab4eaf17f7dd1597654c45f08379739dca54567fb84c",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0063-BackgroundImageInfo.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Curve.cs",
+      "sha256": "74496920c0c0eb56859d34175ccf1b41149cf12da12b0af11bb96c094e3db9c4",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0064-Curve.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEData.cs",
+      "sha256": "fabe1158c192fd7a29627c856d0c3c0e1027a382034116faf2d465993369d890",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0065-EPEData.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEPointData.cs",
+      "sha256": "35e2139336b5c93da463b0d10f2e4f3605059c7055a0d3fe29ff4e01db76d783",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0066-EPEPointData.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Endpoint.cs",
+      "sha256": "9e2eeb018edc8f105159bc4f9768d594875aa271cebd30b8bd7b112561edab7b",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0067-Endpoint.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointFlags.cs",
+      "sha256": "5f3176108a14a0733075079db905f223ff37682dbf6922b9831f91afc7238720",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0068-EndpointFlags.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointSetting.cs",
+      "sha256": "f916969e89df6c9dfb1f1767d26445bd032cd908213b0b4cb2165cf68f72c1ad",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0069-EndpointSetting.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointUnit.cs",
+      "sha256": "0eac9026e89d5c3043e48493e0f5112dbb96e4200c32f117b49ac35c7acc60f3",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0070-EndpointUnit.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternControl.Designer.cs",
+      "sha256": "0664d4fa398d5f6ac4467a3a12baa85800d177d1df2352c4968774892fcfb90f",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0071-EpoxyPatternControl.Designer.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternControl.cs",
+      "sha256": "7bcd3ebb353fefa72bd4425b73465f61b390ddd638a80eb3704bff98cca02705",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0072-EpoxyPatternControl.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternForm.Designer.cs",
+      "sha256": "9639b6de04e62056776e2d6d8873cf8f17b5ec430c07eaddb14aee6260d73dff",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0073-EpoxyPatternForm.Designer.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternForm.cs",
+      "sha256": "7a961d0f1f6ce3637bf70d4f121b43e938be582cd5f6af46a492af2700d5fb3a",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0074-EpoxyPatternForm.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/EndpointEventArgs.cs",
+      "sha256": "1a77ccecb40d7ecaadb57157e171c1e2aa535eb75127df10d4e7331dec6ed7e1",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0075-EndpointEventArgs.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/MousePointChangedEventArgs.cs",
+      "sha256": "a81627a764f86ff637df132ce922f6bce5743aa69dfcfcc72169845cd466a049",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0076-MousePointChangedEventArgs.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PaintingToolSet.cs",
+      "sha256": "10bfcfca01d2b9e3cd04026076b1ce8e09dc9945df41a01edee4b1d50203a579",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0077-PaintingToolSet.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PatternFile.cs",
+      "sha256": "f2a6dab6e9b75eb70aacfeaa7075f70c6110a03730d03972c6982ff35cf8b335",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0078-PatternFile.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Point2D.cs",
+      "sha256": "d7a61de58fa876768c7629bf345df13e96d1d9277a39854b5a88a637ac69f491",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0079-Point2D.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/TextResource.Designer.cs",
+      "sha256": "aed969e3b237583da8c48cce985bd962c52f990b1d641e53816f36b1be5537ec",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0080-TextResource.Designer.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Utility.cs",
+      "sha256": "ac7e04d63488b95101cfb55d9dd5e64a2068857fda392f9df0946bf8b040aac7",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0081-Utility.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseMeasureHeightController.cs",
+      "sha256": "36adb9650521da7a1418b68aa09491252f75d05758548fc8374667594a22c451",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0082-DispenseMeasureHeightController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.Designer.cs",
+      "sha256": "bc4d34d8a3748186885a6b34020dfb5adc301a9e129631483a23f96dee4c0d0f",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0083-UcEpoxyApplication.Designer.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0084-UcEpoxyApplication.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/EpoxyApplicationLocation.cs",
+      "sha256": "9374c16d315f7ee0f17613178ae9add6ad43da6fb95cdf22b89ad56c80cd7660",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0085-EpoxyApplicationLocation.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0086-DispenseEnum.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Pattern/EpoxyApplication.cs",
+      "sha256": "521085379fd47662ed25f7f7ae3372e22d8d58330b9ba6a9391fa5c39abce0ad",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0087-EpoxyApplication.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/MeasureHeightModule.cs",
+      "sha256": "0cd2fff6e67172e02093da3441af1dab8cb4b51e639229f02978417f9b077766",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0088-MeasureHeightModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Services/DispenserMoveHelper.cs",
+      "sha256": "265981cd1e4ef2987860def252b439124e02c04b795a85e2700b7443938a25d5",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0089-DispenserMoveHelper.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/ObjectHelper.cs",
+      "sha256": "921dab2a9abd77984ca1d2b2a70c50fa142de022b90567943dbda9bb713df49b",
+      "frozenCopy": ".archify-work/native-dispense-reader-baseline/inputs/0090-ObjectHelper.cs"
+    }
+  ],
+  "scope": "Separate derived reader preserves frozen runtime reader29modules552relationships47topics4997snapshots JSON values; adds five prior dispense native report topics with260 original source declarations, total52topics5257snapshots12native topics500native notices. Audited41sources strict encoding; Roslyn567syntax declarations including6Point2D conversion/equality declarations,0errors. All267 selected IL member signatures have qualified-type/member source candidates; overloads/generic names/property accessors are candidates not exact semantic/runtime coverage. Actual Edge eight module/topic/source selections distinguish original input Form static-only and new Form native Set/Get; original controls/synthetic event args/no OS input/modal static-only boundaries explicit. Full5257 exact rendered text500notices/four widths/no browser errors, old force topics preserved, generic repository Clone deep link reload. No source/old report/old reader/module-relationship edits or new native/SQL/UI/device production execution; entire16projects29groups1436files13requirements incomplete."
+}

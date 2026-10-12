@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "teaching-controlled-verified-full-regression-passed",
+  "checks": 1144,
+  "assertionMigration": {
+    "priorChecksRerun": 1031,
+    "changedPriorAssertions": 6,
+    "focusedUiChecks": 20,
+    "aggregateChecks": 93
+  },
+  "sourceFragments": 449,
+  "uniqueSourceFragments": 448,
+  "sharedFragmentPlacements": 1,
+  "completeMethods": 242,
+  "properties": 166,
+  "enums": 17,
+  "fields": 22,
+  "structs": 2,
+  "signalBindings": 23,
+  "sourceFileCounts": {
+    "declaredDependencyFiles": 171,
+    "fragmentOnlyFiles": 44,
+    "uniqueFiles": 215
+  },
+  "topicSnapshots": 349,
+  "compiledContinuationCaptures": 29,
+  "test": "transport-teaching-integration-test.json",
+  "testSha256": "5e77571030b98059eaf60d3fcad6dff6eb1be4fbed6d2c8a44df769566fee995",
+  "audit": "transport-teaching-integration-audit.json",
+  "auditSha256": "d98eead09ec5d562876178ddb11ac1627bb0e4f94adca01e1e71738fea163365",
+  "report": "transport-teaching-integration-review.md",
+  "reportSha256": "20287356d695c231c0a8e62387487d54f4bcf6c233e2e5739c9e6f80b9812a63",
+  "evidence": "transport-teaching-integration-evidence.json",
+  "evidenceSha256": "6b859dfa3480245a8f7735e556baef63c731a04e5f7e1058bf048d6a486d1dba",
+  "sdk": "transport-coordinate-product-sdk-evidence.json",
+  "sdkSha256": "a1513bceebb74c6d79f6cb8f02857d8a0eca2a9f5fc6c457948a291af47d2216",
+  "specialized": {
+    "command": "node scripts/test-transport-teaching-integration.cjs",
+    "exitCode": 0,
+    "observedSession": 83323,
+    "log": ".archify-work/teaching-integration-baseline-v4.log",
+    "sha256": "7e54bc85a98a61d9704947a9fbf33138019be7b99ba1e06e92bcd3c16771bc1a"
+  },
+  "continuation": {
+    "evidence": "transport-inspection-readiness-next-evidence.json",
+    "sha256": "15117e533f3f723ed72d7bfbd4cb74c7bb44a8128114b01349ea2acc29cd1576",
+    "pendingCaptures": 20,
+    "next": [
+      "Replace original bond preparation wrapper and five-state SingleBondPositionConfig aggregate/constructor/reset; validate original defaults, null states versus TU null behavior, empty list success, null collection/element and early warning/short-circuit, then actual UI and entity startup.",
+      "Replace inspection IsAssistantSucceed input with original two-state aggregate/constructor/reset; verify disabled BacksideCrack flag versus explicit state, null and unknown values, optional lookup short-circuit and real UI failure stage.",
+      "Continue true repository/config declaration/singleton load-save and VM/action/SDK/native build/deployed configuration/DLL/native UI/equipment, preserving all 29 groups and 13 requirements."
+    ],
+    "preparation": {
+      "file": "bond-inspection-readiness-preparation-progress.json",
+      "sha256": "35fccc56eff9e856b22713703d900d644ccdf40c667c2aca443aaba8a047d1a5",
+      "standaloneChecks": 45,
+      "focusedUIChecks": 20,
+      "matchedCaptures": 20,
+      "includedInThisFullRegression": false,
+      "scope": "Independent 45-case bond/inspection probe and 20-case focused original UI preparation; outside current 1144 full regression and reader topic counts. Prior 1144 RunPrevious compiles but is not invoked. Full assertion migration, real repository/singleton/VM/action/SDK/native build/deployed configuration/DLL/native UI/equipment and all 29-group/13-requirement goals remain pending."
+    }
+  },
+  "scope": "Full entity/coordinate/product/UI/producer/real wafer Task/Stop/five-stage transport composition executes original teaching aggregate, sixteen default states, recursive opposite readiness and optional inspection lookup bodies. Prior 1031 assertions are rerun with source-accurate readiness failure timing, followed by focused UI and aggregate cases. Inspection result/repository, singleton reads/loading, Save, dialogs, VM calibration, action injection, hardware SDK and some declarations remain adapters. Native build, deployed config/DLL, native UI, equipment and whole 29-group/13-requirement acceptance remain pending. Independent historical suites are not additive coverage. Counts describe whole compiled composition, with 1144 executed assertions: all 1031 prior assertions rerun with six source-accurate migrations, plus 20 UI and 93 aggregate assertions. Historical and previously prepared suites are not additive coverage.",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 61687,
+    "log": ".archify-work/verify-transport-teaching-integration.log",
+    "sha256": "3ab3c6a189f0022d1b1654ff61cb3e009236d79b3051ea3ead31048d3094f45b",
+    "snapshotDirectory": ".archify-work/teaching-full-regression/",
+    "frozenBindings": {
+      "testSha256": "5e77571030b98059eaf60d3fcad6dff6eb1be4fbed6d2c8a44df769566fee995",
+      "auditSha256": "d98eead09ec5d562876178ddb11ac1627bb0e4f94adca01e1e71738fea163365",
+      "evidenceSha256": "6b859dfa3480245a8f7735e556baef63c731a04e5f7e1058bf048d6a486d1dba",
+      "reportSha256": "20287356d695c231c0a8e62387487d54f4bcf6c233e2e5739c9e6f80b9812a63",
+      "readerSha256": "35a6f4a77ad453476ae384843a19539b4459643196aeac9c5efe0d85b905608c",
+      "modulesSha256": "40d5b7fde61288087e4ec1bd9168885520a27ec585347567e82d9bb70f1d55d2"
+    }
+  },
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-teaching-integration.log",
+    "sha256": "5a4df588fb6370b55dd9ad348c380988db869026699181c3921273371a10598f",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "35a6f4a77ad453476ae384843a19539b4459643196aeac9c5efe0d85b905608c",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 37,
+    "topicSnapshots": 2638,
+    "moduleSnapshots": 940
+  },
+  "verification": "transport-teaching-integration-verification.json",
+  "verificationSha256": "7bcf12a1e23150f343b86def75d9ddc47e0d9ce653007c377d9750ae16562e22",
+  "postRegressionDocumentationUpdate": {
+    "checkedAt": "2026-09-30T21:34:11.979Z",
+    "command": "node .archify-work/verify-teaching-docs.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-teaching-final-documentation.log",
+    "sha256": "6214d6c2744323292e0f50557e5fd0d7d4ab46486a37ff351bc7e0bebbc8bfc1",
+    "scope": "Receipt links, task-list/handoff closure and next standalone45/focused-UI20 preparation disclosures only. All 171 runtime inputs and test/audit/evidence/report/reader/modules remain identical to full regression.",
+    "readerSha256": "35a6f4a77ad453476ae384843a19539b4459643196aeac9c5efe0d85b905608c",
+    "planSha256": "7f9d0d1d65421717f3dc0caa250ca0cb74d028e8faa5bfe6097a264f5b8bee1b",
+    "handoffSha256": "c9f12ad94c850f4f4e99a63a217f117f1367a9ba2749ff5c573ca5c964832383",
+    "preparationSha256": "35fccc56eff9e856b22713703d900d644ccdf40c667c2aca443aaba8a047d1a5",
+    "snapshotDirectory": ".archify-work/teaching-post-documentation/"
+  }
+}

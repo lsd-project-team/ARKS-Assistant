@@ -12,14 +12,24 @@ from app.conversation_queue import ConversationQueue
 from app.database import Database
 from app.models import Message, QueuedQuestion, Run, RunEvent, Thread, now_iso
 from app.records import record_dict
+from app.source_preferences import SourcePreferences
 
 TERMINAL = {"completed", "failed", "cancelled", "interrupted"}
 
 
 class Repository:
-    def __init__(self, database: Database, workspace_id: str):
+    def __init__(
+        self, database: Database, workspace_id: str, *, project_id=None, source_workspace_id=""
+    ):
         self.database = database
         self.workspace_id = workspace_id
+        self.project_id = project_id
+        self.source_workspace_id = (
+            workspace_id if source_workspace_id == "" else source_workspace_id
+        )
+        self.creation_guard = lambda: None
+        self.source_workspace_ids = {self.source_workspace_id}
+        self.source_preferences = SourcePreferences(database, workspace_id)
         self.lock = RLock()
         self.catalog = ConversationCatalog(database, workspace_id)
         self.history = ConversationHistory(database, self.catalog)
@@ -30,8 +40,14 @@ class Repository:
         return self.catalog.list(state, query, limit, offset)
 
     def create_thread(self, title: str) -> dict:
+        self.creation_guard()
         with self.database.session.begin() as session:
-            row = Thread(title=title, workspace_id=self.workspace_id, auto_title=title == "新对话")
+            row = Thread(
+                title=title,
+                workspace_id=self.workspace_id,
+                project_id=self.project_id,
+                auto_title=title == "新对话",
+            )
             session.add(row)
             session.flush()
             return record_dict(row)
@@ -91,17 +107,21 @@ class Repository:
         with self.database.session.begin() as session:
             session.get(Run, run_id).model_snapshot_json = dump_json(snapshot)
 
-    def create_run(self, thread_id: str | None, content: str, selections: list[dict]) -> dict:
+    def create_run(
+        self, thread_id: str | None, content: str, selections: list[dict], source_options=None
+    ) -> dict:
         if thread_id:
             self.catalog.get(thread_id)
         with self.lock, self.database.session.begin() as session:
             if not thread_id:
                 # 首次发送与会话创建在同一事务内，失败不会留下空会话。
-                new_thread = Thread(title="新对话", workspace_id=self.workspace_id)
+                new_thread = Thread(
+                    title="新对话", workspace_id=self.workspace_id, project_id=self.project_id
+                )
                 session.add(new_thread)
                 session.flush()
                 thread_id = new_thread.id
-            return self.add_run(session, thread_id, content, selections)
+            return self.add_run(session, thread_id, content, selections, source_options)
 
     @staticmethod
     def ensure_idle(session, thread_id):
@@ -110,8 +130,11 @@ class Repository:
         ):
             raise ValueError("此对话正在回复，请先停止或等待完成")
 
-    def add_run(self, session, thread_id, content, selections):
+    def add_run(self, session, thread_id, content, selections, source_options=None):
+        self.creation_guard()
         self.ensure_idle(session, thread_id)
+        if source_options is None:
+            source_options = self.source_preferences.read(session)["source_options"]
         thread = self.catalog.row(session, thread_id)
         if (
             thread.auto_title
@@ -123,7 +146,12 @@ class Repository:
             thread.title = title_from_question(content, selections)
         thread.state, thread.updated_at = "active", now_iso()
         message = Message(
-            thread_id=thread_id, role="user", content=content, selections_json=dump_json(selections)
+            thread_id=thread_id,
+            role="user",
+            content=content,
+            selections_json=dump_json(selections),
+            source_options_json=dump_json(source_options or {}),
+            source_workspace_id=self.source_workspace_id,
         )
         session.add(message)
         session.flush()
@@ -176,6 +204,8 @@ class Repository:
             if kind == "token":
                 run = session.get(Run, run_id)
                 run.answer += payload["text"]
+            elif kind == "answer_replace":
+                session.get(Run, run_id).answer = payload["text"]
             elif kind == "stage":
                 session.get(Run, run_id).stage = payload["stage"]
             session.flush()
@@ -204,14 +234,30 @@ class Repository:
             )
             return record_dict(event)["payload"] if event else None
 
-    def finish(self, run_id: str, answer: str):
+    def run_event(self, run_id: str, kind: str) -> dict | None:
+        self.run(run_id)
+        with self.database.session() as session:
+            event = session.scalar(
+                select(RunEvent)
+                .where(RunEvent.run_id == run_id, RunEvent.kind == kind)
+                .order_by(RunEvent.sequence.desc())
+                .limit(1)
+            )
+            return record_dict(event)["payload"] if event else None
+
+    def finish(self, run_id: str, answer: str, completion=None):
         with self.database.session.begin() as session:
             run = session.get(Run, run_id)
             run.status = "completed"
             run.answer = answer
             run.updated_at = now_iso()
-            run.finished_at, run.stage = now_iso(), "completed"
-            response = Message(thread_id=run.thread_id, role="assistant", content=answer)
+            run.finished_at, run.stage = now_iso(), (completion or {}).get("stage", "completed")
+            response = Message(
+                thread_id=run.thread_id,
+                role="assistant",
+                content=answer,
+                source_workspace_id=self.source_workspace_id,
+            )
             session.add(response)
             session.flush()
             run.response_message_id = response.id
@@ -242,7 +288,9 @@ class Repository:
             )
 
     def resume(self, run_id: str):
+        self.creation_guard()
         previous = self.run(run_id)
+        self.ensure_source_compatible(previous["message_id"])
         if previous["status"] not in {"interrupted", "failed", "cancelled"}:
             raise ValueError("此运行不能继续")
         source = previous
@@ -303,7 +351,9 @@ class Repository:
             )
 
     def regenerate(self, run_id: str) -> dict:
+        self.creation_guard()
         previous = self.run(run_id)
+        self.ensure_source_compatible(previous["message_id"])
         with self.lock, self.database.session.begin() as session:
             latest = session.scalar(
                 select(Run)
@@ -321,3 +371,15 @@ class Repository:
             session.add(run)
             session.flush()
             return record_dict(run)
+
+    def ensure_source_compatible(self, message_id):
+        message = self.message(message_id)
+        source_id = message.get("source_workspace_id")
+        if source_id and source_id != self.source_workspace_id:
+            raise ValueError("此问题来自其他源码目录，请在当前项目重新提问；原问题和答案仍保留")
+        if any(
+            item.get("source_workspace_id")
+            and item["source_workspace_id"] not in self.source_workspace_ids
+            for item in message.get("selections", [])
+        ):
+            raise ValueError("原问题的源码目录已解除关联，请重新提问；历史引用仍保留")

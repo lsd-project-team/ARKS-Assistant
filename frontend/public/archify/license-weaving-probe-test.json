@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "status": "original-license-targets-and-fody-compatibility-failed",
+  "updatedAt": "2026-10-02T01:23:55.498Z",
+  "licenseCompilationAccepted": false,
+  "weavingAccepted": false,
+  "productionEdits": false,
+  "fullMsbuildBuild": false,
+  "originalProgramsUiHardwareExecuted": false,
+  "wholeGoalComplete": false,
+  "runnerObservedExitCode": 0,
+  "parent": {
+    "file": "project-resources-test.json",
+    "sha256": "4a8bfed17bf6fde6b3798043268ccc07ccd1a7e0209eddc63d08046e74641a37",
+    "progress": "project-resources-progress.json",
+    "progressSha256": "00751a8beca595ffa1ae1598619a2e3122988a0ab41d1570fb6535b397b26635",
+    "frozenBindings": 3178
+  },
+  "results": {
+    "file": ".archify-work/license-weaving-probe/results.json",
+    "sha256": "7cf5abe92dd35b886c284e6da72e5cc50960e29e322c8ed89df46c2b4aba1123"
+  },
+  "replay": {
+    "file": ".archify-work/license-weaving-probe/replay-results.json",
+    "sha256": "0b0fe9a9ac38a269e0f103aca91e6c4b99d9e3d734796cc1bef472691224bcf2"
+  },
+  "metadata": {
+    "file": ".archify-work/license-weaving-probe/license-type-metadata.log",
+    "sha256": "4f45515773e847ec4fbb5896e8ffd5a52b537d943b0dce2c4c537445749279e4",
+    "observedExitCode": 0
+  },
+  "metadataReplay": {
+    "file": ".archify-work/license-weaving-probe/replay-license-type-metadata.log",
+    "sha256": "4f45515773e847ec4fbb5896e8ffd5a52b537d943b0dce2c4c537445749279e4",
+    "observedExitCode": 0
+  },
+  "frozenInputs": [
+    {
+      "file": ".archify-work/license-weaving-probe-v1.log",
+      "sha256": "bd73900dc2af9e4c1580e5d28f66d72b4832a9763d636a0b17f79dba414757db",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0000-license-weaving-probe-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\license-type-metadata.log",
+      "sha256": "4f45515773e847ec4fbb5896e8ffd5a52b537d943b0dce2c4c537445749279e4",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0001-license-type-metadata.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.Component.TestDemo\\compile-v1.log",
+      "sha256": "be4d0b42b27c09ae42340c323b0c7c22a96871e4db1d2c85cab3100e5105d6a0",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0002-compile-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.Component.TestDemo\\references.txt",
+      "sha256": "e697b15edf1fffa811f5379da40da5b10ab805d103b1f3423726b1ab491c8533",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0003-references.txt"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.Dispense\\compile-v1.log",
+      "sha256": "fb4ee23f19601bf0e8eeb625f4661c1f4f9c89c6135eacd9b4e0c98e71291e0e",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0004-compile-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.Dispense\\references.txt",
+      "sha256": "cf34a5b8c53eaaa7ceb6cfd42a8933a53be808f85e8b95a5d8871c67c27a32a9",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0005-references.txt"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.PR\\compile-v1.log",
+      "sha256": "1dcc697996e4a91e513ed2b0e6845cecf42b6b99b284d3c9c8966b00ef204845",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0006-compile-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.PR\\references.txt",
+      "sha256": "041b302febeedb99269451db5b9b7a9e9dbbae4e9501a67bcd0d6c941f254464",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0007-references.txt"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.ZX2200\\compile-v1.log",
+      "sha256": "0bf9409e2233f0b0a6fd6fdf2cc5b0622fc2b6a34060d4fbf97a89e2ec72e2f0",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0008-compile-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\AKRS.ZX2200\\references.txt",
+      "sha256": "1b7874ece93e0e10784aeb430a14a432475df1e1da307eb5fcc90472cf3f0231",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0009-references.txt"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\DXApplication1\\compile-v1.log",
+      "sha256": "2ebcafea2d3ea40d733dc8e1afaa60b7b7bbbc478c88f48d2bfd3f1ff5b880dc",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0010-compile-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\licenses\\DXApplication1\\references.txt",
+      "sha256": "45e277bd068fcd24f02a7bb5fc2fb95d33b04d3d41939e50f72ae739ee2ba05a",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0011-references.txt"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\results.json",
+      "sha256": "7cf5abe92dd35b886c284e6da72e5cc50960e29e322c8ed89df46c2b4aba1123",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0012-results.json"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\weaving\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "sha256": "953ce5f0014e37a1e57eb0e92dace5fa8e105ed5228db96b689c249840b172dd",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0013-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\weaving\\AKRS.Galaxy2.PR\\probe.proj",
+      "sha256": "ec1a59e7759d9342822414884c0ccbf4b0f84f12be31077a64f29b5914dc4000",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0014-probe.proj"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\weaving\\AKRS.Galaxy2.PR\\weave-v1.log",
+      "sha256": "7754730ee0a85ec8a79c7c6a4908113b09d1ff853b4b3d64c10e771c2cb9e3ea",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0015-weave-v1.log"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\weaving\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "sha256": "99351b5fde6a8b400bcac8d5f71c5b39ac45ecc5c25facf5fc43e05ad96d5a9f",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0016-AKRS.ZX2200.exe"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\weaving\\AKRS.ZX2200\\probe.proj",
+      "sha256": "48ae8ed8dcb0d56313a6f466a15c9e68f392ce532489ca0f94a646a245623d27",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0017-probe.proj"
+    },
+    {
+      "file": ".archify-work\\license-weaving-probe\\weaving\\AKRS.ZX2200\\weave-v1.log",
+      "sha256": "c3f93e83648303a2629e35f698fa199b065b701f6192357e83350d0083601a93",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0018-weave-v1.log"
+    },
+    {
+      "file": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/Microsoft.Build.Tasks.v4.0.dll",
+      "sha256": "a04f296f645950a5ea87af9b5e97731c46ef5a8c023009642b3e5969a74148cd",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0019-Microsoft.Build.Tasks.v4.0.dll"
+    },
+    {
+      "file": "scripts/inspect-license-type-metadata.ps1",
+      "sha256": "1b86380a86c89e8617aba5982b10b9d97065773d93b8d1a0b164b8cc30bdd3d7",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0020-inspect-license-type-metadata.ps1"
+    },
+    {
+      "file": "scripts/msbuild-probe-license-target.targets",
+      "sha256": "71a7f98323d3a7a1375ad4988ad6cbca6ced39a8f38995d6722548bb1fe3c331",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0021-msbuild-probe-license-target.targets"
+    },
+    {
+      "file": "scripts/probe-original-license-weaving.cjs",
+      "sha256": "5de88214d0bf8903c5ff45d9f705b20bfaf812275334b17fb197ed0538a0e009",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0022-probe-original-license-weaving.cjs"
+    },
+    {
+      "file": "scripts/verify-license-weaving-probe.cjs",
+      "sha256": "e669e4d144fc92d45982dfd491696e57d0e48cca6d317a54f25817dde89e7a61",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0023-verify-license-weaving-probe.cjs"
+    },
+    {
+      "file": "trunk/packages/Fody.6.0.5/build/Fody.targets",
+      "sha256": "162ae5cbd88f48297563a13d36d586aee0a7f17362a7987647cdee3c71e96ff7",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0024-Fody.targets"
+    },
+    {
+      "file": "trunk/packages/MethodBoundaryAspect.Fody.2.0.145/weaver/MethodBoundaryAspect.Fody.dll",
+      "sha256": "e24d6a22007458832d3ddcb1f0e7373940a74786b21108d360fec557b7dd6d6e",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0025-MethodBoundaryAspect.Fody.dll"
+    },
+    {
+      "file": "trunk/packages/PropertyChanged.Fody.4.1.0/weaver/PropertyChanged.Fody.dll",
+      "sha256": "8d4ba3d81fbbaaca3165c227425b952bf83cb235f69669c30a3b596ee50191cf",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0026-PropertyChanged.Fody.dll"
+    },
+    {
+      "file": ".archify-work/license-weaving-probe/replay-results.json",
+      "sha256": "0b0fe9a9ac38a269e0f103aca91e6c4b99d9e3d734796cc1bef472691224bcf2",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0027-replay-results.json"
+    },
+    {
+      "file": ".archify-work/license-weaving-probe/replay-license-type-metadata.log",
+      "sha256": "4f45515773e847ec4fbb5896e8ffd5a52b537d943b0dce2c4c537445749279e4",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0028-replay-license-type-metadata.log"
+    },
+    {
+      "file": ".archify-work/license-weaving-probe-replay.log",
+      "sha256": "bd73900dc2af9e4c1580e5d28f66d72b4832a9763d636a0b17f79dba414757db",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0029-license-weaving-probe-replay.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\licenses\\DXApplication1\\replay-compile.log",
+      "sha256": "13d618b2f1761c326c33987d4c46042ee591bb432765872f3051b7303480d867",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0030-replay-compile.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.Component.TestDemo\\replay-compile.log",
+      "sha256": "e8bb5bf6e934fdfc25ba4ba72c55f4e0d5ead6ff033610b1bc423fb56e7e5d53",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0031-replay-compile.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.Dispense\\replay-compile.log",
+      "sha256": "2a3d74989312396d0fc10c65c561ea615ce1929c0597ed2817168c7945b2b0ef",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0032-replay-compile.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\licenses\\AKRS.Galaxy2.PR\\replay-compile.log",
+      "sha256": "0b1f1d9f46d4dd48bdb5da501e037618ba6dfd09a3f85656482473e9d359e051",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0033-replay-compile.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\licenses\\AKRS.ZX2200\\replay-compile.log",
+      "sha256": "85d9172df31306465242293cecf329bd30a92b54c1c26793f1524462acb0f546",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0034-replay-compile.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\weaving\\AKRS.ZX2200\\replay-weave.log",
+      "sha256": "30f0c4ab27f8dcfbfa27be0c41ec4a848006d83be69804606a331138b8cd9764",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0035-replay-weave.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\license-weaving-probe\\weaving\\AKRS.Galaxy2.PR\\replay-weave.log",
+      "sha256": "286002e8535f1c0a2034eed715b9e2aeccbeb36b2f2f647699b4ada1d331b94f",
+      "frozenCopy": ".archify-work/license-weaving-probe-baseline/inputs/0036-replay-weave.log"
+    }
+  ],
+  "scope": "5 actual original CompileLicxFiles target attempts all nativeMSBuild exit1 missingLC.exe, no .licenses outputs. Read-only20 licensed type entries/12 unique resolve exactDevExpress21.2.7 metadata, not license validity.2 isolated Fody6.0.5 compatibility targets rejected before WeavingTask by minimumMSBuild16 guard; reported15 is target default, not actual installedMSBuild version. Diagnostic differs from recordedMain NuGet Fody6.6.4 pipeline. No guard bypass or downloads/installs, no production/source/resource changes/UI/hardware. Parent resources/replays remain accepted, wholebuild/weaving/licenses not accepted."
+}

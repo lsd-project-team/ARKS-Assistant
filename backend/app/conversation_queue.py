@@ -28,10 +28,13 @@ class ConversationQueue:
             )
             return {"paused": thread.queue_paused, "items": [record_dict(row) for row in rows]}
 
-    def add(self, thread_id, content, selections):
+    def add(self, thread_id, content, selections, source_options=None):
+        self.repository.creation_guard()
         with self.repository.lock, self.repository.database.session.begin() as session:
             thread = self.repository.catalog.row(session, thread_id)
             thread.state = "active"
+            if source_options is None:
+                source_options = self.repository.source_preferences.read(session)["source_options"]
             count = session.scalar(
                 select(func.count())
                 .select_from(QueuedQuestion)
@@ -40,18 +43,23 @@ class ConversationQueue:
             if count >= 20:
                 raise ValueError("等待发送队列最多保留 20 个问题")
             row = QueuedQuestion(
-                thread_id=thread_id, content=content, selections_json=dump_json(selections)
+                thread_id=thread_id,
+                content=content,
+                selections_json=dump_json(selections),
+                source_options_json=dump_json(source_options or {}),
             )
             session.add(row)
             session.flush()
             return record_dict(row)
 
-    def update(self, item_id, content, selections, version):
+    def update(self, item_id, content, selections, version, source_options=None):
         with self.repository.lock, self.repository.database.session.begin() as session:
             row = self.row(session, item_id)
             if row.updated_at != version:
                 raise ValueError("问题已在其他窗口更新，请重新打开后编辑")
             row.content, row.selections_json = content, dump_json(selections)
+            if source_options is not None:
+                row.source_options_json = dump_json(source_options)
             row.updated_at = now_iso()
             session.flush()
             return record_dict(row)
@@ -86,6 +94,8 @@ class ConversationQueue:
             if not row:
                 return None
             item = record_dict(row)
-            run = self.repository.add_run(session, thread_id, row.content, item["selections"])
+            run = self.repository.add_run(
+                session, thread_id, row.content, item["selections"], item["source_options"]
+            )
             session.delete(row)
             return run

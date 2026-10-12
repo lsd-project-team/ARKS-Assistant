@@ -1,0 +1,54 @@
+{
+  "schema": "archify-transport-inspection-startup-preparation-current-rebind-v1",
+  "status": "current-transport-inspection-startup-preparation-rebound",
+  "recordedAt": "2026-10-07T15:48:08.428Z",
+  "currentHarnessSha256": "9da5544beee7205d4463a45f29f75cef69022f7c49e0e997fa34c67c525da7aa",
+  "artifacts": [
+    {
+      "file": "transport-teaching-startup-preparation-test.json",
+      "checks": 20,
+      "sourceFiles": 165,
+      "sourceFragments": 449,
+      "historicalSha256": "9ae7936b74d3662882e788636d780dc35e1653ea4d4e4707a3b699e320f89b35",
+      "reboundSha256": "e8d90cbdbeda2bc0bfd444c6ca2abf887f7741ad603b8c5f32e38f7471e1a094",
+      "drift": [
+        {
+          "file": "scripts/transport-loading-belt-integration-harness.cs.txt",
+          "historicalSha256": "02aebc2f0b4af99a26b951f51bb5f2e37e556f8b1fb7f405cd63040aafdaf131",
+          "currentSha256": "9da5544beee7205d4463a45f29f75cef69022f7c49e0e997fa34c67c525da7aa"
+        }
+      ]
+    },
+    {
+      "file": "transport-inspection-readiness-startup-preparation-test.json",
+      "checks": 20,
+      "sourceFiles": 176,
+      "sourceFragments": 469,
+      "historicalSha256": "2df5fc01d45519a2278d881f0ef920bd222b4f97578fa9126bfc5db79507b25e",
+      "reboundSha256": "2df5fc01d45519a2278d881f0ef920bd222b4f97578fa9126bfc5db79507b25e",
+      "drift": []
+    },
+    {
+      "file": "transport-inspection-repository-startup-preparation-test.json",
+      "checks": 44,
+      "sourceFiles": 186,
+      "sourceFragments": 498,
+      "historicalSha256": "55b0ca34a724ddd3d1408984461775e9f0c07235dddb1fb87a87bfb5682e9835",
+      "reboundSha256": "2ce4f63a2e20bcb8e71c7b75f515195175c1df791411099d2b0947d5dd947bb9",
+      "drift": [
+        {
+          "file": "scripts/transport-loading-belt-integration-harness.cs.txt",
+          "historicalSha256": "02aebc2f0b4af99a26b951f51bb5f2e37e556f8b1fb7f405cd63040aafdaf131",
+          "currentSha256": "9da5544beee7205d4463a45f29f75cef69022f7c49e0e997fa34c67c525da7aa"
+        }
+      ]
+    }
+  ],
+  "historicalSnapshotsPreserved": true,
+  "boundaries": [
+    "This is a source-accurate current rebind of three static startup-preparation snapshots: teaching 20 checks, inspection readiness 20 checks and inspection repository 44 checks.",
+    "The snapshots are rebound and hash-verified; this receipt does not claim a new native UI/device runtime execution.",
+    "Real SDK, production scheduling, SQL, VM, equipment, joint build and deployment acceptance remain pending."
+  ],
+  "wholeGoalComplete": false
+}

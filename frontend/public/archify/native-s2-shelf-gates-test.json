@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "status": "original-s2-shelf-single-step-and-outgoing-helper-native-preparation-passed",
+  "parent": {
+    "file": "native-predispense-prerequisites-test.json",
+    "sha256": "9c3de9b204729e2afda5c1d695782d547324498b901b8b7f8d27a59121527280"
+  },
+  "parentFrozenBindings": 5661,
+  "newFrozenInputs": 56,
+  "totalFrozenBindings": 5717,
+  "acceptedProcesses": 2,
+  "checksPerPass": 58,
+  "distinctLabels": 58,
+  "selectedMethods": 31,
+  "originalSources": 13,
+  "fixtureWaitThreadsJoinedPerPass": 3,
+  "validSensorMissingFaultsPerPass": 12,
+  "configuredShelfSlots": 12,
+  "fixedCheckedSlots": 7,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "realControllerSingleStepAbortExecuted": true,
+  "originalShelfMissingAxisExecuted": true,
+  "fixedSevenToolBankCheckObserved": true,
+  "pauseOutgoingReleaseObserved": true,
+  "timedWaitRetainedPublicStateObserved": true,
+  "originalTaskHomeAndResetReturnDiscardStatic": true,
+  "privateMethodsBoundToOriginalReceiver": true,
+  "publicNamedSlotsFixtureUsed": true,
+  "wholeOriginalProductionTaskExecuted": false,
+  "forceResetExecuted": false,
+  "modbusExecuted": false,
+  "hardwareActionExecuted": false,
+  "axisMovementExecuted": false,
+  "physicalBondExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "initialCompileAndFailedNative": {
+      "chunk": "2caede",
+      "exitCode": 1,
+      "passedChecks": 51,
+      "reason": "incorrect fixture expectation that timed Wait resets public state"
+    },
+    "acceptedCompileAndPrimary": {
+      "chunk": "c1251c",
+      "exitCode": 0
+    },
+    "replayCompileAndRuntime": {
+      "chunk": "cedfe4",
+      "exitCode": 0
+    },
+    "initialIl": {
+      "chunk": "20fed4",
+      "exitCode": 0
+    },
+    "finalIl": {
+      "chunk": "584daa",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 18986,
+      "chunk": "1968ac",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/NozzleShelfProgram.cs",
+      "sha256": "d198315022ce1605ef27bf13f22aa86399a690ff65015b55e6e12a5132166221"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/NozzleShelf/NozzleShelf.cs",
+      "sha256": "e5d227b449e24d58139427abb3218e0e570f6b786020bfcafd6655f87a7a7c90"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/S2DispenseController.cs",
+      "sha256": "5a6e43e64cf90edb2489defecfa642f97533ab132c9687cf8682c20762a83d75"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs",
+      "sha256": "5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-s2-shelf-gates.cjs",
+      "sha256": "a82682d193a99e3fb3a7865dac354edb39235012c3e82c8f525e523b20a12341",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0000-freeze-native-s2-shelf-gates.cjs"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\Cases.cs",
+      "sha256": "e1c1e93c997e3b1f8253afdb09fd082d2b39afe4284a75481f57ec4c992cf9bd",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\Host.cs",
+      "sha256": "008d9fe9d3fbf9f4173f7ec408783d72169f5e735dd88b0c06acad69fc119f93",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\Probe.exe",
+      "sha256": "a171cae11fad51fed3576677bd3ef70156e53bb01a5402f4030319579851fb2c",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\compile-input.json",
+      "sha256": "f0959665e481b715e9e3ed4652418c8a71240a805fa113115183f9fbabc1b228",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\compile.json",
+      "sha256": "b028d0aeac16b2fde1480402194f34a036d3305fe75ea508867129ccac73782b",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\failed-runtime-v1-Cases.cs",
+      "sha256": "cd2a49c76885343dd200a744a2785199ef70d77e1627fab1e498694104425249",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0006-failed-runtime-v1-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\failed-runtime-v1-Probe.exe",
+      "sha256": "12dacae8d59da9417af7b6741b223e4b45303f51e270699287e24556299af562",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0007-failed-runtime-v1-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\failed-runtime-v1-compile.json",
+      "sha256": "39502d539705f659bc0c93cf6ae45607b63518e1886f0cbdd81e8b6f1946a832",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0008-failed-runtime-v1-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\il-initial-26.json",
+      "sha256": "2828d358b103ac7993268b9842e983be9628c099cfcbc9c7f08d310b4a416e4e",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0009-il-initial-26.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\il.json",
+      "sha256": "1cdf2d0caf19aedca43ad62271ac5800f1f4518c098629341858b6180a95a8ed",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0010-il.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\parent-predispense-verification.log",
+      "sha256": "38ab6cd5222b857efe8d80a3c5b98fef6e3f336cbb88d0059a375842541de88f",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0011-parent-predispense-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0012-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\preflight.log",
+      "sha256": "d476ca33207ad289a9e747f948e25261836f2f8964b5cb2d23bfc7302e5f4b34",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0013-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-Probe.exe",
+      "sha256": "a171cae11fad51fed3576677bd3ef70156e53bb01a5402f4030319579851fb2c",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0014-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\Probe.exe",
+      "sha256": "a171cae11fad51fed3576677bd3ef70156e53bb01a5402f4030319579851fb2c",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0015-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\Settings\\DeviceParams\\NozzleShelfRepositoryPath.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0016-NozzleShelfRepositoryPath.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\case-progress.log",
+      "sha256": "768af7d83cbd7b99aed247a830255cfa781a2731e3c478f47172973489c1e206",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0017-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0018-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0019-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0020-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary-accepted-v2\\stdout.json",
+      "sha256": "697a5571a32821aa4dc0362044f10ccc82830d45d6c861346b1ea17a5ab12254",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0021-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\Probe.exe",
+      "sha256": "12dacae8d59da9417af7b6741b223e4b45303f51e270699287e24556299af562",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0022-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\Settings\\DeviceParams\\NozzleShelfRepositoryPath.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0023-NozzleShelfRepositoryPath.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\case-progress.log",
+      "sha256": "dde8de59abf8c34c4f2dbc9ec11720fea0e19579310ba909336a419f0fa4ca12",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0024-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0025-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0026-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0027-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\primary\\stdout.json",
+      "sha256": "9bd17e5eec9462bdbb890348fc198a21da3c99b60dabe1393b93666b3e2b580a",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0028-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\Probe.exe",
+      "sha256": "a171cae11fad51fed3576677bd3ef70156e53bb01a5402f4030319579851fb2c",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0029-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\Settings\\DeviceParams\\NozzleShelfRepositoryPath.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0030-NozzleShelfRepositoryPath.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\case-progress.log",
+      "sha256": "768af7d83cbd7b99aed247a830255cfa781a2731e3c478f47172973489c1e206",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0031-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0032-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0033-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0034-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-accepted-v2\\stdout.json",
+      "sha256": "1e76537ce17101fdc94c7708202fe410682d349e330c6748b8cb252c2740c81b",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0035-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\replay-compile.json",
+      "sha256": "615d07a085aef7cb58ac77e2daded5da56e50bf77d86c09e20636c3a4d687302",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0036-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-shelf-gates\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0037-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-s2-shelf-gates.ps1",
+      "sha256": "d69d25d03c5ca73cae17d64e53ce92e8b9c2030043a2ad7fb4fb35c46c5e458a",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0038-inspect-native-s2-shelf-gates.ps1"
+    },
+    {
+      "file": "scripts/native-s2-shelf-gates-cases.cs.txt",
+      "sha256": "e1c1e93c997e3b1f8253afdb09fd082d2b39afe4284a75481f57ec4c992cf9bd",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0039-native-s2-shelf-gates-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-s2-shelf-gates.cjs",
+      "sha256": "82e67f0b2136a5da60d79fc71da64a78950bd6c57b141bfdd068bf55206f6bbe",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0040-prepare-native-s2-shelf-gates.cjs"
+    },
+    {
+      "file": "scripts/run-native-s2-shelf-gates.cjs",
+      "sha256": "647ba9d63f289d4a5a632da9a81e43973495d2e1b821c102cde55d73b5d85e32",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0041-run-native-s2-shelf-gates.cjs"
+    },
+    {
+      "file": "scripts/verify-native-s2-shelf-gates.cjs",
+      "sha256": "6b3092be3fe9315eced11242be383a929f2f8a0d831cda49ef7bb65b95ad5abb",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0042-verify-native-s2-shelf-gates.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0043-Signal.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0044-ForceConfig.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0045-BondHeadController.ForceRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs",
+      "sha256": "5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0046-BondModuleController.MovementRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0047-NozzleShelfController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/S2DispenseController.cs",
+      "sha256": "5a6e43e64cf90edb2489defecfa642f97533ab132c9687cf8682c20762a83d75",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0048-S2DispenseController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/NozzleShelfProgram.cs",
+      "sha256": "d198315022ce1605ef27bf13f22aa86399a690ff65015b55e6e12a5132166221",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0049-NozzleShelfProgram.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/NozzleShelf/NozzleShelf.cs",
+      "sha256": "e5d227b449e24d58139427abb3218e0e570f6b786020bfcafd6655f87a7a7c90",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0050-NozzleShelf.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0051-System2Domain.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0052-NozzleShelfModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0053-BondTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0054-AKRSMessageBoxExt.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "frozenCopy": ".archify-work/native-s2-shelf-gates-baseline/inputs/0055-DBService.cs"
+    }
+  ],
+  "scope": "Original direct S2 shelf/module natural missing coordinate/axis/sensors, actual public 12-slot config model/fixed seven-slot check, three original single-step gates joined, direct actual SendAway signal/state under Stop Working Pause. Full production Task not started. Original BondTask discards shelf/reset return values only IL, force reset/Modbus/SQL/UI/hardware not executed. Preserve initial51checks failure from timed Wait state expectation. No original implementation/state substitution/private writes."
+}

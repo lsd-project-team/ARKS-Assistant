@@ -1,0 +1,119 @@
+[
+  {
+    "id": "TransportSystem/Models/TransportDomain.cs:97",
+    "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+    "line": 97,
+    "kind": "direct-call",
+    "source": "                    this.transportTask.StartDryRun();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "TransportSystem/Models/TransportDomain.cs:104",
+    "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+    "line": 104,
+    "kind": "direct-call",
+    "source": "                        Machine.GetInstance().Stop();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "TransportSystem/Models/TransportDomain.cs:126",
+    "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+    "line": 126,
+    "kind": "direct-call",
+    "source": "                        this.LoaderTask.Start();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "TransportSystem/Models/TransportDomain.cs:127",
+    "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+    "line": 127,
+    "kind": "direct-call",
+    "source": "                        this.UnloaderTask.Start();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "TransportSystem/Models/TransportDomain.cs:133",
+    "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+    "line": 133,
+    "kind": "direct-call",
+    "source": "                    this.transportTask.Start();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "WaferSubSystem/Tasks/FlipTask.cs:101",
+    "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+    "line": 101,
+    "kind": "signal-wait",
+    "source": "                        if (!SignalPool.GetInstance().IsWaferAllowPickSignal.Wait())",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "WaferSubSystem/Tasks/FlipTask.cs:236",
+    "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+    "line": 236,
+    "kind": "signal-set",
+    "source": "                    SignalPool.GetInstance().IsFlipTableAllowPickSignal.Set();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "WaferSubSystem/Tasks/FlipTask.cs:239",
+    "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+    "line": 239,
+    "kind": "signal-wait",
+    "source": "                    if (!SignalPool.GetInstance().IsBondPickSucceedSignal.Wait())",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "WaferSubSystem/Tasks/FlipTask.cs:265",
+    "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/FlipTask.cs",
+    "line": 265,
+    "kind": "task-launch",
+    "source": "                this.FlipTableTask = Task.Factory.StartNew(",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "BondSystem/Tasks/SlideFluxerTask.cs:147",
+    "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+    "line": 147,
+    "kind": "signal-set",
+    "source": "                    SignalPool.GetInstance().IsAllowDipFluxSignal.Set();",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "BondSystem/Tasks/SlideFluxerTask.cs:150",
+    "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+    "line": 150,
+    "kind": "signal-wait",
+    "source": "                    if (!SignalPool.GetInstance().BondDipFluxFinishSignal.Wait())",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "BondSystem/Tasks/SlideFluxerTask.cs:208",
+    "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+    "line": 208,
+    "kind": "signal-wait",
+    "source": "                    if (!SignalPool.GetInstance().AllowSlideOutSignal.Wait())",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  },
+  {
+    "id": "BondSystem/Tasks/SlideFluxerTask.cs:238",
+    "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/SlideFluxerTask.cs",
+    "line": 238,
+    "kind": "task-launch",
+    "source": "                this.SlideFluxTask = Task.Factory.StartNew(",
+    "reviewStatus": "callsite-read",
+    "runtimeStatus": "not-tested"
+  }
+]

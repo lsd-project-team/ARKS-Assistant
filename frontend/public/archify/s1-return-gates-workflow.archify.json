@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 S1 点胶 Abort/Fail、外层早退与 finally 刷新",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "task", "label": "S1 动作" },
+    { "id": "gate", "label": "等待门" },
+    { "id": "result", "label": "返回结果" },
+    { "id": "outer", "label": "外层任务" },
+    { "id": "fault", "label": "异常传播" }
+  ],
+  "nodes": [
+    { "id": "start", "lane": "task", "col": 0, "type": "backend", "label": "S1DispenseAction", "sublabel": "启用离线步骤", "width": 145 },
+    { "id": "gate", "lane": "gate", "col": 1, "type": "security", "label": "WaitSingleStep", "sublabel": "模式与 SDK 等待", "width": 145 },
+    { "id": "abort", "lane": "outer", "col": 2, "type": "security", "label": "动作 Abort", "sublabel": "等待被 Stop 释放", "width": 145 },
+    { "id": "predispense", "lane": "task", "col": 2, "type": "external", "label": "预点胶 Off/Off", "sublabel": "公开 WorkStop 调 Stop", "width": 145 },
+    { "id": "fail", "lane": "result", "col": 3, "type": "security", "label": "动作 Fail", "sublabel": "WaitStart=false", "width": 145 },
+    { "id": "finally", "lane": "result", "col": 4, "type": "backend", "label": "finally / nodeStop", "sublabel": "保留当前未完成消息", "width": 145 },
+    { "id": "refresh", "lane": "result", "col": 5, "type": "external", "label": "刷新委托 Invoke", "sublabel": "没有 null 检查", "width": 145 },
+    { "id": "outer", "lane": "outer", "col": 5, "type": "backend", "label": "nonSuccess 外层路径", "sublabel": "MoveSafe → Machine.Stop", "width": 145 },
+    { "id": "fault", "lane": "fault", "col": 5, "type": "external", "label": "Task Faulted", "sublabel": "null 或委托异常", "width": 145 },
+    { "id": "state", "lane": "task", "col": 5, "type": "backend", "label": "停止并返回", "sublabel": "不执行 Finish / BondRelease", "width": 145 }
+  ],
+  "edges": [
+    { "id": "start-gate", "from": "start", "to": "gate", "label": "进入单步门", "role": "main" },
+    { "id": "gate-abort", "from": "gate", "to": "abort", "label": "等待后关闭模式", "role": "branch" },
+    { "id": "gate-predispense", "from": "gate", "to": "predispense", "label": "未启用单步", "role": "main" },
+    { "id": "predispense-fail", "from": "predispense", "to": "fail", "label": "Stop → WaitStart=false", "role": "main" },
+    { "id": "abort-finally", "from": "abort", "to": "finally", "label": "Abort 仍执行收尾", "role": "return" },
+    { "id": "fail-finally", "from": "fail", "to": "finally", "label": "Fail 进入收尾", "role": "return" },
+    { "id": "finally-refresh", "from": "finally", "to": "refresh", "label": "finally 刷新", "role": "main" },
+    { "id": "refresh-outer", "from": "refresh", "to": "outer", "label": "委托成功", "role": "main" },
+    { "id": "refresh-fault", "from": "refresh", "to": "fault", "label": "null / throw", "role": "error" },
+    { "id": "outer-state", "from": "outer", "to": "state", "label": "正常返回", "role": "main" },
+    { "id": "fault-state", "from": "fault", "to": "state", "label": "保留未完成状态", "role": "error" }
+  ],
+  "mainPath": ["start", "gate", "predispense", "fail", "finally", "refresh", "outer", "state"],
+  "cards": [
+    { "dot": "amber", "title": "返回边界", "items": ["实际 Abort/Fail 都在离线步骤先提交后发生；当前消息仍可能 pending，FinishCurrent 与 BondRelease 尚未执行。", "Retry 只在外层静态分支可见，本轮没有把未运行的 ReDispense→Retry 当作实际结果。"] },
+    { "dot": "rose", "title": "异常边界", "items": ["finally 中刷新委托没有 null 检查；自然 null 或明确 throw 会让原 Task Faulted，catch 不会吞掉该异常。", "Machine.Stop 能清除单步标志，但不代表所有等待都能被同样方式释放。"] },
+    { "dot": "cyan", "title": "证据范围", "items": ["native-s1-return-gates-review.md；与 S1 胶检结果专题分开登记。", "相机、轴、在线 IO、真实预点胶配置、完整工程构建和设备闭环仍未验收。"] }
+  ]
+}

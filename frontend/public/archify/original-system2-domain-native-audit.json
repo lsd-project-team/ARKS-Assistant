@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "original-binary-system2-domain-relative-rework-boundary-captured",
+  "updatedAt": "2026-10-06",
+  "scope": "Two isolated processes load the existing AKRS.ZX2200.exe from trunk/AKRS.ZX2200/bin/Debug. Each creates the real System2Domain singleton and reads the original action repository/controller. SortRelativeBond, Init, and both SetActionNodeReWork overloads execute against the original controller with empty typed lists. SelfCheck lifecycle evidence remains the separate native S2 action boundary baseline because the controller SelfCheck enters the original DevExpress UI path in this headless host.",
+  "binary": {
+    "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\bin\\Debug\\AKRS.ZX2200.exe",
+    "sha256": "ea7c14767e29420d54f00c2070bb66f833980147156123a77a7925946b0f4ad8",
+    "assembly": "AKRS.ZX2200, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null"
+  },
+  "bondActionNodeCount": 19,
+  "counts": {
+    "ActionNodes": 19,
+    "ProcessSteps": 0,
+    "WorkMessages": 0,
+    "TransportPreActionNodes": 3,
+    "SubstrateActonNodes": 3,
+    "ModuleActonNodes": 3,
+    "BondPositionActonNodes": 3
+  },
+  "afterInit": {
+    "ActionNodes": 19,
+    "ProcessSteps": 0,
+    "WorkMessages": 0
+  },
+  "sortRelativeBond": {
+    "label": "ActionNodesService.SortRelativeBond",
+    "status": "passed",
+    "returnValue": null
+  },
+  "init": {
+    "label": "ActionNodesService.Init",
+    "status": "passed",
+    "returnValue": null
+  },
+  "emptyRework": [
+    {
+      "label": "SetActionNodeReWork:Void SetActionNodeReWork(System.Collections.Generic.List`1[AKRS.ZX2200.Infrastructure.Models.CommonModels.ActionNode])",
+      "status": "passed",
+      "parameterType": "System.Collections.Generic.List`1[[AKRS.ZX2200.Infrastructure.Models.CommonModels.ActionNode, AKRS.ZX2200, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null]]"
+    },
+    {
+      "label": "SetActionNodeReWork:Void SetActionNodeReWork(System.Collections.Generic.List`1[System.ValueTuple`2[AKRS.ZX2200.Infrastructure.Models.CommonModels.ActionNode,System.String]])",
+      "status": "passed",
+      "parameterType": "System.Collections.Generic.List`1[[System.ValueTuple`2[[AKRS.ZX2200.Infrastructure.Models.CommonModels.ActionNode, AKRS.ZX2200, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+    }
+  ],
+  "lifecycleEvidence": {
+    "source": ".archify-work/native-s2-action-boundaries-baseline/native-s2-action-boundaries-progress.json",
+    "status": "separate-native-boundary-baseline"
+  },
+  "primary": {
+    "file": ".archify-work/native-original-system2-domain/primary.json",
+    "sha256": "216fe42baf55aa353b3a23572a7d66d81fb702656502cf4b2bb65ca59297429f"
+  },
+  "replay": {
+    "file": ".archify-work/native-original-system2-domain/replay.json",
+    "sha256": "216fe42baf55aa353b3a23572a7d66d81fb702656502cf4b2bb65ca59297429f"
+  },
+  "deterministicReplay": true,
+  "formalRegressionChecks": 1328,
+  "includedInFormalRegression": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "hardwareExecuted": false,
+  "sqlExecuted": false,
+  "wholeGoalComplete": false,
+  "nextTask": {
+    "objective": "继续补齐原 S2 SelfCheck 的可控 UI/设备边界，并推进相对贴片、PR/相机/校准/测量、输送握手与原始构建验收。"
+  }
+}

@@ -5,11 +5,14 @@ from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.exceptions import ContextOverflowError
 from langchain_core.messages import HumanMessage
 
-from app.context import estimate_tokens, input_budget, request_budget
+from app.context import estimate_tokens, fit_text, input_budget, request_budget
+from app.source_evidence import deduplicate_source_results
+from app.summary_quality import SUMMARY_PROMPT, summary_report
 
 
 class BudgetedSummarization(SummarizationMiddleware):
     def __init__(self, *args, limit: int, output: int, emit, memory_prompt="", **kwargs):
+        kwargs.setdefault("summary_prompt", SUMMARY_PROMPT)
         super().__init__(*args, **kwargs)
         self.limit, self.output, self.emit = limit, output, emit
         self.memory_prompt = memory_prompt
@@ -23,7 +26,9 @@ class BudgetedSummarization(SummarizationMiddleware):
         return input_budget(self.limit, self.output)
 
     async def awrap_model_call(self, request, handler):
-        effective = request.override(messages=self._get_effective_messages(request))
+        effective = request.override(
+            messages=deduplicate_source_results(self._get_effective_messages(request))
+        )
         snapshot = request_budget(effective, self.limit, self.output, self.memory_prompt)
         self.emit("context_budget", {**snapshot, "phase": "before_compaction"})
         return await super().awrap_model_call(request, handler)
@@ -32,6 +37,49 @@ class BudgetedSummarization(SummarizationMiddleware):
         self.emit("stage", {"stage": "compacting"})
         self.emit("compaction", {"text": "正在压缩完整请求上下文，原始对话保留"})
         helper = self._lc_helper
+        original_prompt = helper._format_summary_prompt(messages)
+        if estimate_tokens([HumanMessage(content=original_prompt)]) > input_budget(
+            self.limit, self.output
+        ):
+            # 从头逐片累积摘要，不能只保留最后几轮而静默丢掉最初目标和约束。
+            cap = max(256, input_budget(self.limit, self.output) // 3)
+            fragments = []
+            for message in messages:
+                remaining = f"[{message.type}]\n{message.text}"
+                while remaining:
+                    piece = fit_text(remaining, cap)
+                    if not piece:
+                        raise ContextOverflowError("上下文预算不足以分片压缩")
+                    fragments.append(piece)
+                    remaining = remaining[len(piece) :]
+            summary = ""
+            previous_trim = helper.trim_tokens_to_summarize
+            helper.trim_tokens_to_summarize = None
+            try:
+                for fragment in fragments:
+                    batch = [
+                        HumanMessage(
+                            content="此前累计的六部分摘要（保留仍有效的目标与约束）：\n" + summary
+                        ),
+                        HumanMessage(content="接续历史片段：\n" + fragment),
+                    ]
+                    prompt = helper._format_summary_prompt(batch)
+                    if estimate_tokens([HumanMessage(content=prompt)]) > input_budget(
+                        self.limit, self.output
+                    ):
+                        raise ContextOverflowError("累计摘要超过输入预算，请增大上下文配置")
+                    summary = await super()._acreate_summary(batch)
+            finally:
+                helper.trim_tokens_to_summarize = previous_trim
+            self.emit(
+                "summary_quality",
+                {
+                    **summary_report(summary),
+                    "history_fragments": len(fragments),
+                    "coverage": "all supplied history",
+                },
+            )
+            return summary
         trimmed = False
         while True:
             selected = helper._trim_messages_for_summary(messages)
@@ -51,7 +99,9 @@ class BudgetedSummarization(SummarizationMiddleware):
                 "compaction",
                 {"text": "摘要请求已按预算缩短，完整历史仍保存在原文档案中"},
             )
-        return await super()._acreate_summary(messages)
+        summary = await super()._acreate_summary(messages)
+        self.emit("summary_quality", summary_report(summary))
+        return summary
 
 
 class ContextBudget(AgentMiddleware):
@@ -60,6 +110,7 @@ class ContextBudget(AgentMiddleware):
         self.memory_prompt, self.emit = memory_prompt, emit
 
     async def awrap_model_call(self, request, handler):
+        request = request.override(messages=deduplicate_source_results(request.messages))
         budget = {
             **request_budget(request, self.limit, self.output, self.memory_prompt),
             "phase": "model_request",

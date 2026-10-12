@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05T09:08:54.759Z",
+  "status": "exact-original-native-node-preconditions-and-source-bindings-passed",
+  "parent": {
+    "file": "docs/archify/native-recipe-action-selection-test.json",
+    "sha256": "9ef4343454102fe1d21fb07dc7abe2fdebcdafb0d136c30973fc2f682d81eec3",
+    "totalFrozenBindings": 9734
+  },
+  "parentFrozenBindings": 9734,
+  "newFrozenInputs": 102,
+  "totalFrozenBindings": 9836,
+  "reusedParentInputs": 283,
+  "checksPerPass": 584,
+  "passes": 2,
+  "placements": 1168,
+  "isDoWorkCallsPerPass": 544,
+  "ordinaryStateCallsPerPass": 510,
+  "publicStateScenarios": 15,
+  "detachedTransportCallsPerPass": 34,
+  "detachedTransportExceptionsPerPass": 17,
+  "s2DetachedCachedAcceptancePerPass": 16,
+  "catalogRegisteredReceivers": 34,
+  "executedIsDoWorkReceiverTypes": 34,
+  "originalOverrideMethods": 33,
+  "inheritedBaseMethods": 1,
+  "pickOfflineDoWorkCallsPerPass": 1,
+  "executedConcreteDoWorkTypes": 1,
+  "sourceDeclarations": 146,
+  "sourceFiles": 71,
+  "ilMethods": 35,
+  "originalRuntimeAssembliesPerPass": 16,
+  "originalSourceRuntimeExecuted": true,
+  "nodeIsDoWorkExecuted": true,
+  "onlyPickOfflineDoWorkExecuted": true,
+  "nodeDoWorkExecuted": true,
+  "otherConcreteNodeDoWorkExecuted": false,
+  "privateMessageDataWritten": false,
+  "s2OnlyBondHeightGuardMismatchObserved": true,
+  "offlineIsDoWorkNotUniformObserved": true,
+  "s2DetachedTransportCachedContextAcceptedObserved": true,
+  "pickOfflineSkipsEventsAndStateObserved": true,
+  "productionTaskExecuted": false,
+  "specialRepeatWarningBranchExecuted": false,
+  "findModelExecuted": false,
+  "vmInitializationExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "deviceExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "summary": {
+    "file": ".archify-work/native-node-preconditions/summary.json",
+    "sha256": "c1fb0984d223bb1b09c5a8b5bf64ac6444093243f34877a976cf614d1f70742f"
+  },
+  "sourceEvidence": {
+    "file": ".archify-work/native-node-preconditions/source-evidence.json",
+    "sha256": "e2d94a026945508b764b83fba26fd3a363e86753444f373674900c631e2c44b4"
+  },
+  "il": {
+    "file": ".archify-work/native-node-preconditions/il.json",
+    "sha256": "31819606220487f81de83cddaf362b0f1951878426523a31728acae3ecb068f4"
+  },
+  "verificationResults": {
+    "file": ".archify-work/native-node-preconditions/verification-results.json",
+    "sha256": "dbe488ed85cf4d53d01549641f78640bc199b8752a1a4b352b1cd082bf697471"
+  },
+  "scope": "34 actual registered receiver IsDoWork implementations (33 overrides plus Interactive inherited base) invoked across15 public tree/config/mode/remaining-step scenarios and34 detached-public-transport context cases, selected by original public Init/GetNext. Public ordinary fixture state only; no private writes/SDK substitutions. One original Pick offline early DoWork return executes logging but no event/state/preparation/axis/camera/VM/signal/wait; other concrete DoWork and original production tasks/UI/SQL/device/fullbuild remain pending.",
+  "runtime": {
+    "test": "native-node-preconditions-test.json",
+    "testSha256": "207cd575b2a0ca0eb3c6922711c4cf0e7ef6ee71072cf631781b79b8ec618662",
+    "audit": "native-node-preconditions-audit.json",
+    "auditSha256": "9c4d10b82fb64e708450295329af2062f13029612b8c05dce74f992d1c46a56b",
+    "report": "native-node-preconditions-review.md",
+    "reportSha256": "3f14949af259ef5f42ef3e919b7a39dc25497b76f173457700f4f27dcb0bc3f7"
+  },
+  "nextRequired": "Trace original Task condition/context/DoWork/Retry/Pause/exception paths and execute eligible non-device branches. Other33 concrete DoWork, carrier Add PR lifecycle, VM/SQL/UI/device/fullbuild/deployment/full29-group business remain pending."
+}

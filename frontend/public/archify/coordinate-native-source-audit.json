@@ -1,0 +1,19 @@
+{
+  "status": "coordinate-native-source-bindings-passed",
+  "wholeOriginalCompileItems": 13,
+  "geometryChecks": 124,
+  "correctedMetadataReferences": 162,
+  "vmAttempts": 5,
+  "vmObservedExitCode": 1,
+  "vmRuntimeAccepted": false,
+  "frozenInputs": 36,
+  "replayIdentical": true,
+  "wholeGoalComplete": false,
+  "checkedAt": "2026-10-02T00:37:40.198Z",
+  "test": "coordinate-native-source-test.json",
+  "testSha256": "a9fae3d98783ff4d4229bf59985bc265a966cb16e0e9bd18fd3e5c00e97cba44",
+  "command": "node scripts/verify-coordinate-native-source.cjs",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-coordinate-native-source.log",
+  "logSha256": "1e914dab2b6f4f5dc0a9233188b2c882b460212511d1e03c88307b6dfb58d8ca"
+}

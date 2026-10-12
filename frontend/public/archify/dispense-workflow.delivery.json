@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\docs\\archify\\dispense-workflow.archify.json",
+  "output": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\docs\\archify\\dispense-workflow.html",
+  "specification": {
+    "sha256": "4d4f85cc8e2653c808dd765665a03960f0d1518f9c9174f011b03e8e3ad951d2",
+    "bytes": 5171
+  },
+  "artifact": {
+    "sha256": "7e8083f9bc7e8a5bb9a6ee29bafd3bdab12285b9c57855c83acd6d40627822f9",
+    "bytes": 809004
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

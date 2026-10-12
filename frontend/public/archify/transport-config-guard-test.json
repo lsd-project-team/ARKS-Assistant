@@ -1,0 +1,94 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "scope": "Original five child IsSettingNull methods, aggregate and UcInput.Confirm; 32 combinations of whole-subsection validity. Settings, UI and repository Save are stubs. Does not test individual partial fields, real persistence or hardware.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/LoadingSubSectionProgram.cs",
+      "start": 57,
+      "end": 66,
+      "sha256": "1357290f58feb3a6350d5c2c49984aa65f530184625169c548a81e93cdc0195a",
+      "snippetSha256": "6df7b6b61a6866fdc6754942a18ed302daf1bf74f1738ba5c4c21dec429b5630"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/DispenseSubSectionProgram.cs",
+      "start": 73,
+      "end": 88,
+      "sha256": "b34f69428483155f70c935a5e38ead4271514d969f888768ff489b888437e289",
+      "snippetSha256": "ecbaadb1a1fcc418382081c764108ce1614833a1d2b66eaa463b853e0594ead7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/BondSubSectionProgram.cs",
+      "start": 100,
+      "end": 115,
+      "sha256": "d70fb9046eccb5732b005b69a47ce5ee51c59c269f8cf55a7e4ee6c49fc0dd42",
+      "snippetSha256": "5b979b6ba249041d8ad4015617136bb91c96eb145e68bece3346b469a94d7423"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/WaitingUnloadSubSectionProgram.cs",
+      "start": 56,
+      "end": 65,
+      "sha256": "d71e5551730486f0fdd8d51558da8e4e82bedcfa4b2b85391c31a1f365eba963",
+      "snippetSha256": "3d5faf313888aaa29ecabf879b51e1e0475afaf276cddab22dfa18fe08f76156"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/UnloadingSubSectionProgram.cs",
+      "start": 66,
+      "end": 75,
+      "sha256": "ab870d4639219d2b1e8666b61fd5ce2c54217ee96dcaced2a9d7a76065a1a9ba",
+      "snippetSha256": "f47f4f688ef87ef78020371324a8d351258484e1d1ebc720e239807eaa39e1b8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProgram.cs",
+      "start": 146,
+      "end": 179,
+      "sha256": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba",
+      "snippetSha256": "16b9918b373a1852e2f809e2b10fe9f66319d0a8b6251bac9771148b5b8964ae"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcInput.cs",
+      "start": 36,
+      "end": 47,
+      "sha256": "a0101691bafbbeed2de1424deecbea0cc74f3fbf1f276922c5acabd9e3ad9817",
+      "snippetSha256": "8089e0150b198e1a8fae6897cde646184eb839dc1b011a6da3b19f8a58cd7a70"
+    }
+  ],
+  "checks": [
+    "PASS mask=0 aggregate=True saves=0 nullReference=False",
+    "PASS mask=1 aggregate=False saves=1 nullReference=False",
+    "PASS mask=2 aggregate=False saves=0 nullReference=True",
+    "PASS mask=3 aggregate=False saves=1 nullReference=False",
+    "PASS mask=4 aggregate=False saves=0 nullReference=True",
+    "PASS mask=5 aggregate=False saves=1 nullReference=False",
+    "PASS mask=6 aggregate=False saves=0 nullReference=True",
+    "PASS mask=7 aggregate=False saves=1 nullReference=False",
+    "PASS mask=8 aggregate=False saves=0 nullReference=True",
+    "PASS mask=9 aggregate=False saves=1 nullReference=False",
+    "PASS mask=10 aggregate=False saves=0 nullReference=True",
+    "PASS mask=11 aggregate=False saves=1 nullReference=False",
+    "PASS mask=12 aggregate=False saves=0 nullReference=True",
+    "PASS mask=13 aggregate=False saves=1 nullReference=False",
+    "PASS mask=14 aggregate=False saves=0 nullReference=True",
+    "PASS mask=15 aggregate=False saves=1 nullReference=False",
+    "PASS mask=16 aggregate=False saves=0 nullReference=True",
+    "PASS mask=17 aggregate=False saves=1 nullReference=False",
+    "PASS mask=18 aggregate=False saves=0 nullReference=True",
+    "PASS mask=19 aggregate=False saves=1 nullReference=False",
+    "PASS mask=20 aggregate=False saves=0 nullReference=True",
+    "PASS mask=21 aggregate=False saves=1 nullReference=False",
+    "PASS mask=22 aggregate=False saves=0 nullReference=True",
+    "PASS mask=23 aggregate=False saves=1 nullReference=False",
+    "PASS mask=24 aggregate=False saves=0 nullReference=True",
+    "PASS mask=25 aggregate=False saves=1 nullReference=False",
+    "PASS mask=26 aggregate=False saves=0 nullReference=True",
+    "PASS mask=27 aggregate=False saves=1 nullReference=False",
+    "PASS mask=28 aggregate=False saves=0 nullReference=True",
+    "PASS mask=29 aggregate=False saves=1 nullReference=False",
+    "PASS mask=30 aggregate=False saves=0 nullReference=True",
+    "PASS mask=31 aggregate=False saves=1 nullReference=False",
+    "PASS root transport program null throws",
+    "PASS child subsection null aggregate throws",
+    "PASS child subsection null confirm throws",
+    "TOTAL 35"
+  ]
+}

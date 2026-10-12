@@ -1,0 +1,83 @@
+{
+  "schema": "archify-mapping-action-gates-current-v1",
+  "status": "current-mapping-action-gates-verified",
+  "recordedAt": "2026-10-07T01:10:12.055Z",
+  "verification": {
+    "command": "node scripts/test-mapping-action-gates.cjs",
+    "checks": 30,
+    "sourceCount": 8,
+    "sourceSha256": [
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+        "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+        "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+        "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+        "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+        "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+        "sha256": "b8e26d65d77adbcfdc19ceebceb61d4ee8cbad48eedcd0b2048333ff75bf3758"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+        "sha256": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs",
+        "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41"
+      }
+    ],
+    "testArtifactSha256": "06dede546c113dba277c6c0870dcb37116a5a097cd18aba8d3f767a5d80e11e4",
+    "cases": [
+      "PASS Pick pending step executes",
+      "PASS Bond pending step executes",
+      "PASS Up pending step executes",
+      "PASS Down pending step executes",
+      "PASS Dip pending step executes",
+      "PASS After pending step executes",
+      "PASS S1 pending step executes",
+      "PASS Pick completed step skips",
+      "PASS Bond completed step skips",
+      "PASS Up completed step skips",
+      "PASS Down completed step skips",
+      "PASS Dip completed step skips",
+      "PASS After completed step skips",
+      "PASS S1 completed step skips",
+      "PASS Pick disabled bypasses missing key",
+      "PASS Bond disabled bypasses missing key",
+      "PASS Up disabled bypasses missing key",
+      "PASS Down disabled bypasses missing key",
+      "PASS Dip disabled bypasses missing key",
+      "PASS After disabled bypasses missing key",
+      "PASS S1 disabled bypasses missing key",
+      "PASS Pick enabled missing key throws",
+      "PASS Bond enabled missing key throws",
+      "PASS Up enabled missing key throws",
+      "PASS Down enabled missing key throws",
+      "PASS Dip enabled missing key throws",
+      "PASS After enabled missing key throws",
+      "PASS S1 enabled missing key throws",
+      "PASS Bond rejects non Process entity",
+      "PASS Pick gate does not check EntityState",
+      "TOTAL 30"
+    ]
+  },
+  "boundaries": [
+    "Seven original IsDoWork methods and two dictionary lookup methods were extracted unchanged and checked against synthetic containers and configuration enums.",
+    "The 30 checks cover pending/completed/disabled/missing-step gates, non-Process entity rejection and the Pick EntityState omission; no production constructors, hardware, vendor DLLs, startup, codec, full task or device execution occurred.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

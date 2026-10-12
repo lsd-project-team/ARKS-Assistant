@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "status": "catalog-init-native-preparation-passed",
+  "updatedAt": "2026-10-01T14:14:26.746Z",
+  "distinctAssertions": 119,
+  "placements": 238,
+  "wholeOriginalFiles": 5,
+  "boundaryNodes": 37,
+  "frozenInputs": 86,
+  "runtime": {
+    "observedExitCode": 0,
+    "test": "catalog-init-sdk-test.json",
+    "testSha256": "3edaace458c63c60db160c654dc4a22ee4f6db3197b11c266856433a21b03906",
+    "audit": "catalog-init-sdk-audit.json",
+    "auditSha256": "24efe2b309d2fc59d1b71ee5e1173f82630d05e1db959b1585a80e6a2bbcd5a5",
+    "report": "catalog-init-sdk-review.md",
+    "reportSha256": "26ca19469eddf04c32a6c451d8b7052e5ae0e6c237816aa2271fb74dfd8eca7e"
+  },
+  "completeNodeCombination": {
+    "file": "whole-node-source-compile-progress.json",
+    "sha256": "55c2d30c20998ff8df81aa581569ab8ff47530eba129a0601c51ded681a03f1a",
+    "status": "compile-failed",
+    "wholeOriginalFiles": 122,
+    "compiledUnits": 123,
+    "references": 53,
+    "observedExitCode": 1,
+    "errorCount": 642,
+    "runtimeExecuted": false
+  },
+  "parentWholeActionPreparation": {
+    "file": "transport-whole-action-sdk-progress.json",
+    "sha256": "e76933b16895daeb38e7a4a82c73227e768417e30bc131b15c9dc82edb436148",
+    "unchanged": true
+  },
+  "includedInFormal1328": false,
+  "includedInWholeAction278": false,
+  "wholeGoalComplete": false
+}

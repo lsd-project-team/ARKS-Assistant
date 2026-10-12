@@ -1,0 +1,526 @@
+{
+  "schemaVersion": 1,
+  "status": "original-force-calibration-math-config-json-and-export-native-preparation-passed",
+  "parent": {
+    "file": "native-s2-action-boundaries-test.json",
+    "sha256": "7fd33cdde0122d2013585d618f9f9c9ac5105c9e359456a894aaaf79cc01ba65"
+  },
+  "parentFrozenBindings": 5886,
+  "newFrozenInputs": 75,
+  "totalFrozenBindings": 5961,
+  "acceptedProcesses": 2,
+  "checksPerPass": 46,
+  "distinctLabels": 46,
+  "selectedMethods": 64,
+  "staticXtraOverloads": 45,
+  "originalSources": 11,
+  "actualJsonFilesPerPass": 2,
+  "actualExportFilesPerPass": 1,
+  "exportSheetsPerPass": 2,
+  "exportDataRowsPerSheet": 6,
+  "uiCallbacksCollectedPerPass": 2,
+  "uiCallbacksExecuted": 0,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "wholeOriginalProductionTaskExecuted": false,
+  "successfulProductionCycleExecuted": false,
+  "physicalCalibrationExecuted": false,
+  "originalForceForwardAndInverseExecuted": true,
+  "originalNearestAngleNoWrapObserved": true,
+  "originalEmptyForwardPreGuardFailureObserved": true,
+  "originalEmptyInverseSentinel999Observed": true,
+  "originalDuplicateAbscissasNaNObserved": true,
+  "originalNonFiniteNotFullyRejectedObserved": true,
+  "originalSmallAndLargeThresholdsExecuted": true,
+  "originalPidSortedListReplacementObserved": true,
+  "originalPidInteriorGapNullObserved": true,
+  "originalSdkJsonSaveLoadExecuted": true,
+  "originalSdkLoadReplacesSingletonObserved": true,
+  "originalLockedSaveWrappedExceptionObserved": true,
+  "originalLockedSavePreservesBytesObserved": true,
+  "originalExcelExportExecuted": true,
+  "originalEmptyExportNoFileObserved": true,
+  "originalDuplicateSheetExportFaultObserved": true,
+  "originalPhysicalCallersStaticOnly": true,
+  "originalInverseLogMethodGroupStaticObserved": true,
+  "publicNumericCalibrationFixturesUsed": true,
+  "publicUiDispatcherFaultFixtureUsed": true,
+  "publicUiActionsNeverInvoked": true,
+  "failedNativeAttemptsPreserved": 2,
+  "acceptedComparisonExplicitLinq": true,
+  "physicalBondExecuted": false,
+  "realVisionExecuted": false,
+  "hardwareActionExecuted": false,
+  "axisMovementExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "dbLazyCreated": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "failedNativeV1": {
+      "chunk": "23379a",
+      "exitCode": 1,
+      "checks": 37,
+      "cause": "Probe expected IOException, original SDK wraps it into plain Exception."
+    },
+    "failedNativeV2": {
+      "session": 22895,
+      "chunk": "17e5c9",
+      "exitCode": 1,
+      "checks": 38,
+      "cause": "Probe byte comparison bound System.Memory Span extension requiring unavailable System.Numerics.Vector; production force code unedited."
+    },
+    "compileAndPrimary": {
+      "chunk": "c2ac18",
+      "exitCode": 0,
+      "checks": 46
+    },
+    "replayCompileRuntime": {
+      "chunk": "9f7d00",
+      "exitCode": 0,
+      "checks": 46
+    },
+    "il": {
+      "chunk": "c36ffb",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 89663,
+      "chunk": "3dfcd9",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Services/ForceCalibrationService.cs",
+      "sha256": "13c1ecc5f01b53efbba01be0e6b0f843cceb3d1ee404248005e8e986350205f6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/ClosedLoopModels/ForceCalibrationData.cs",
+      "sha256": "41db0a9ccf4856001afab6b6f7d7c96e93c0a80fc66f7e6ded29409827fe7391"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/ClosedLoopModels/ForceRelateAngleItem.cs",
+      "sha256": "7ed051ce50d510e3e80c695171f0535f2ee65c4d2d9b750a4cf10d7799e76e97"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "sha256": "7907bbbb2e06f9d0b54dac33c334f700c50f0a79df6f35c99a80ca64e93a7f33"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/Path/ZX2200PathConfig.cs",
+      "sha256": "338964dc0e8b7d89d3a8aa5643c8a3609d02e017ca8319ab626b104143732a67"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-force-calibration.cjs",
+      "sha256": "a0474762c2de8e530e405253c498957f779523c209ae048761df4919e6018668",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0000-freeze-native-force-calibration.cjs"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\Cases.cs",
+      "sha256": "6a2633ab573800f0feaedf4b535900c7fe7b2e5ef1aea36c385936d25b9e2cef",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\Host.cs",
+      "sha256": "60aea279e27edccd2f52458d28c66f8eaaacb6fb1301e16813c5cc23971c3f1a",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\Probe.exe",
+      "sha256": "44a4ce3379d4d06d8e18c7b36b1e037fd9a0707beb170f084c21b57b1932d821",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\compile-input.json",
+      "sha256": "6ad9351348c1b87554127061cc3b350397c7b97d5b6668c85e766dab7905d502",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\compile.json",
+      "sha256": "b55f237108bed4e82fce12fe42c95c4ef17e0c1d481eb76c79e3284a68789598",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v1\\Cases.cs",
+      "sha256": "cc7e3bbd309e388430b31d411b5e87004fa75492912fd14c3c37ab3ee792c2d5",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0006-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v1\\Host.cs",
+      "sha256": "60aea279e27edccd2f52458d28c66f8eaaacb6fb1301e16813c5cc23971c3f1a",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0007-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v1\\Probe.exe",
+      "sha256": "35a9101366955b6e7772a61a022234378573e2db85a7ef757351c6acf8736853",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0008-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v1\\cases-script.cs.txt",
+      "sha256": "cc7e3bbd309e388430b31d411b5e87004fa75492912fd14c3c37ab3ee792c2d5",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0009-cases-script.cs.txt"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v1\\compile-input.json",
+      "sha256": "6ad9351348c1b87554127061cc3b350397c7b97d5b6668c85e766dab7905d502",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0010-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v1\\compile.json",
+      "sha256": "4123645a6e84d5e2911c4ab5304779087be006497bca735ad1fea2121b636313",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0011-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v2\\Cases.cs",
+      "sha256": "ddc427cbf5ae1c491ffb62e691694b65fafb56a82d716f31c6d3f1c20372725c",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0012-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v2\\Probe.exe",
+      "sha256": "53e82975412b59a7359f75ceef3ff205e4f2372267f4d642363d0cda7f4a1a89",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0013-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\failed-native-v2\\compile.json",
+      "sha256": "92ff15a22e6efee509ae0e6364bd0321755fbbfc043571a7358a5c32370c7b82",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0014-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\il.json",
+      "sha256": "8968b0ad7d4518ec0c3354b0ff47bf0c27ab6a2428b1cd31421ea299419a8e32",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0015-il.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\parent-actions-verification.log",
+      "sha256": "4d27c0012de919c08401dc327c8a8df2872c7c82ae6e64b9d9c388126543c862",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0016-parent-actions-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0017-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\preflight.log",
+      "sha256": "b291132b2e2a2b305158e8b7f6263b2e361c175ced1a5cdd649b36695312232b",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0018-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-Probe.exe",
+      "sha256": "44a4ce3379d4d06d8e18c7b36b1e037fd9a0707beb170f084c21b57b1932d821",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0019-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2-run.log",
+      "sha256": "c3e965261569dd5edac2437a5786dc041c28f5e2c20e9bff90e3c1252d769de5",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0020-primary-v2-run.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\Probe.exe",
+      "sha256": "53e82975412b59a7359f75ceef3ff205e4f2372267f4d642363d0cda7f4a1a89",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0021-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\Settings\\DeviceParams\\ForceCalibrationDataFilePath\\ForceCalibrationData.json",
+      "sha256": "1ab7009c689c9734cb3ddcc4e7fabc6ff8815d3ec7b84fd3c26a0f30e6cbc934",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0022-ForceCalibrationData.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\Settings\\DeviceParams\\ForceConfig.json",
+      "sha256": "107a47dc248e46d19bd4f7d02d2fb380d431213026217c096ea6e519988740ec",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0023-ForceConfig.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\case-progress.log",
+      "sha256": "97a761185601de15e0c188d62f05c9a44ae65deb205686ab3bd9d349f2f34508",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0024-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0025-process.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0026-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0027-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v2\\stdout.json",
+      "sha256": "8db489bf7d75bd76a94b4a8a31a4764fed79f83ea5fe2488e1e8525b59269f41",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0028-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3-run.log",
+      "sha256": "6f540c3bea70980aae5dc396c2e8ccec0a8dd1d499eec2718eee143b7b850dcb",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0029-primary-v3-run.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\Probe.exe",
+      "sha256": "44a4ce3379d4d06d8e18c7b36b1e037fd9a0707beb170f084c21b57b1932d821",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0030-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\Settings\\DeviceParams\\ForceCalibrationDataFilePath\\ForceCalibrationData.json",
+      "sha256": "1ab7009c689c9734cb3ddcc4e7fabc6ff8815d3ec7b84fd3c26a0f30e6cbc934",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0031-ForceCalibrationData.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\Settings\\DeviceParams\\ForceConfig.json",
+      "sha256": "107a47dc248e46d19bd4f7d02d2fb380d431213026217c096ea6e519988740ec",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0032-ForceConfig.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\calibration.xlsx",
+      "sha256": "04c1e708d8835ab6f4bbea41eaaa4a5a7cfe7b9835546eb694b39ae3a2bf2a42",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0033-calibration.xlsx"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\case-progress.log",
+      "sha256": "36f99f92cb7a9f5a5a7517109e2e63d85f18a05cbf601b182fead957eeee3a2e",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0034-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0035-process.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0036-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0037-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary-v3\\stdout.json",
+      "sha256": "029ac80e317c3a2e15c76a7e0b0e03ea2d0d9539fad64077b15ba807fe61a0a6",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0038-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\Probe.exe",
+      "sha256": "35a9101366955b6e7772a61a022234378573e2db85a7ef757351c6acf8736853",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0039-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\Settings\\DeviceParams\\ForceCalibrationDataFilePath\\ForceCalibrationData.json",
+      "sha256": "1ab7009c689c9734cb3ddcc4e7fabc6ff8815d3ec7b84fd3c26a0f30e6cbc934",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0040-ForceCalibrationData.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\Settings\\DeviceParams\\ForceConfig.json",
+      "sha256": "107a47dc248e46d19bd4f7d02d2fb380d431213026217c096ea6e519988740ec",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0041-ForceConfig.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\case-progress.log",
+      "sha256": "2298f3e85127ef697fa806bae364f059203d31013aa90ef13eaf2584a65dbafe",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0042-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0043-process.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0044-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0045-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\primary\\stdout.json",
+      "sha256": "8a5b951b1ce1bbb8186d2f65387027e0810d5c54e44bcee69aa574e7f5adfa1d",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0046-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay-compile.json",
+      "sha256": "4f46d5fe5b231fee37057175cb5c5bc42544bb7d23967138de10371623bf928e",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0047-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay-run.log",
+      "sha256": "dddbcca29167a69e0572fe38994c0670aed79ccf090b0edc4540aa569358852b",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0048-replay-run.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\Probe.exe",
+      "sha256": "44a4ce3379d4d06d8e18c7b36b1e037fd9a0707beb170f084c21b57b1932d821",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0049-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\Settings\\DeviceParams\\ForceCalibrationDataFilePath\\ForceCalibrationData.json",
+      "sha256": "1ab7009c689c9734cb3ddcc4e7fabc6ff8815d3ec7b84fd3c26a0f30e6cbc934",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0050-ForceCalibrationData.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\Settings\\DeviceParams\\ForceConfig.json",
+      "sha256": "107a47dc248e46d19bd4f7d02d2fb380d431213026217c096ea6e519988740ec",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0051-ForceConfig.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\calibration.xlsx",
+      "sha256": "81fff254b1d25311a63697a63c98f06837f18bfb15bac80c2c2f7b9f8ad390f2",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0052-calibration.xlsx"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\case-progress.log",
+      "sha256": "36f99f92cb7a9f5a5a7517109e2e63d85f18a05cbf601b182fead957eeee3a2e",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0053-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0054-process.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0055-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0056-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\replay\\stdout.json",
+      "sha256": "0ceac67494cb59688df802603148710907daa627321f4837e4ff3bfe9def206c",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0057-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-force-calibration\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0058-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-force-calibration.ps1",
+      "sha256": "7b6545cffd19d569e4b1d1ad6274ae9246bdd264983badd895dfae03665fc993",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0059-inspect-native-force-calibration.ps1"
+    },
+    {
+      "file": "scripts/native-force-calibration-cases.cs.txt",
+      "sha256": "6a2633ab573800f0feaedf4b535900c7fe7b2e5ef1aea36c385936d25b9e2cef",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0060-native-force-calibration-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-force-calibration.cjs",
+      "sha256": "e0124f3a4b390b847ea30238d32a4f39c22b87ffdaba3c6bdbe60bbffd99b24b",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0061-prepare-native-force-calibration.cjs"
+    },
+    {
+      "file": "scripts/run-native-force-calibration.cjs",
+      "sha256": "8e7358f4218eccfcc9097c0b10e652585a6d966cf53d061b2b573537cdc6902c",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0062-run-native-force-calibration.cjs"
+    },
+    {
+      "file": "scripts/verify-native-force-calibration.cjs",
+      "sha256": "dce90bdd80ebc920b930f7a1aa898f9717456022ac1784a63ed86337d1d4e479",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0063-verify-native-force-calibration.cjs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/ClosedLoopModels/ForceCalibrationData.cs",
+      "sha256": "41db0a9ccf4856001afab6b6f7d7c96e93c0a80fc66f7e6ded29409827fe7391",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0064-ForceCalibrationData.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/ClosedLoopModels/ForceRelateAngleItem.cs",
+      "sha256": "7ed051ce50d510e3e80c695171f0535f2ee65c4d2d9b750a4cf10d7799e76e97",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0065-ForceRelateAngleItem.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0066-ForceConfig.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Services/ForceCalibrationService.cs",
+      "sha256": "13c1ecc5f01b53efbba01be0e6b0f843cceb3d1ee404248005e8e986350205f6",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0067-ForceCalibrationService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0068-BondHeadController.ForceRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0069-BondActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "sha256": "7907bbbb2e06f9d0b54dac33c334f700c50f0a79df6f35c99a80ca64e93a7f33",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0070-PickActionNode.Provider.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0071-PickActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0072-AKRSXtraMessageBox.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/Path/ZX2200PathConfig.cs",
+      "sha256": "338964dc0e8b7d89d3a8aa5643c8a3609d02e017ca8319ab626b104143732a67",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0073-ZX2200PathConfig.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39",
+      "frozenCopy": ".archify-work/native-force-calibration-baseline/inputs/0074-MainForm.cs"
+    }
+  ],
+  "scope": "Original force service functions use actual public calibration/config objects numeric samples: forward/inverse interpolation, nearest angle ties/no wrap, empty/duplicate/nonfinite and thresholds, original PID sort/replacement/clamp/gaps. Actual SDK JSON Save/Load with locked save original plain Exception and retained bytes, original singleton replacement and postLoad conversion. Original EPPlus Export two sheets six sample rows each, empty nofile and duplicate sheet fault. Two public warning dispatchers collect original Actions then throw fixture same exception;no real UI/SQL. Three physical caller bodies and45Xtra overloads IL/static only. No physical calibration/serial/axis/bond/vision/whole production or source/private/SDK/action substitutes."
+}

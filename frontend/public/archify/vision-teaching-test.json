@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "scope": "Original search handler, UpLook retry wrapper, coordinate composition and XY step gate; vision service, coordinate transform, hardware, UI and lower movement are stubs; not camera or autofocus algorithm verification",
+  "sourceAdaptations": [
+    "Interpolated diagnostic strings replaced by constant diagnostics for C#5"
+  ],
+  "fixturePath": "scripts/vision-teaching-fixture.cs.txt",
+  "fixtureSha256": "54d61dc258f1f1b65dd491069e912d173988b0cb271e7f762419ff9a3298957d",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmToolAlignmentTeach.cs",
+      "start": 407,
+      "end": 467,
+      "sha256": "0ae8e5d837ec469e149a7877fa0c609a4e9a8fb54e616d9a61c5f6ac4503ff95",
+      "snippetSha256": "746b8a58e6f4cf209e86abda7d4c99367b04ce8e2f26f3ee69bcbde030db22ed"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+      "start": 506,
+      "end": 561,
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+      "snippetSha256": "73105143f68b7c77b06c075920688a785d1173f0f70532cd93b7bb64c593818e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+      "start": 689,
+      "end": 700,
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+      "snippetSha256": "50f99f892ac32524ec179c3d1d3b3a6447b59fc391482d9e337cd505f8847c82"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs",
+      "start": 533,
+      "end": 542,
+      "sha256": "5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022",
+      "snippetSha256": "c0e8c85aecfda889dfdb3793ff62e4cc8e1d496d8a4b77ca9da791292fd7a2f7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/../AKRS.Galaxy2.PR/Models/MatchResults/MatchResult.cs",
+      "start": 82,
+      "end": 87,
+      "sha256": "6678ea6350f01a05d3a5cc96885060385d100a68d2c2a8103d007527d8e026c2",
+      "snippetSha256": "6877d24b3975d74690fd329a1ca1a50c68d5f1b227fb4f41f41efbc39786ce0e"
+    }
+  ],
+  "checks": [
+    "PASS missing template prevents capture and motion",
+    "PASS valid result reaches XY command",
+    "PASS X displacement above three blocks motion",
+    "PASS Y displacement above three blocks motion",
+    "PASS inclusive per-axis boundary accepts diagonal three by three",
+    "PASS two null results then Cancel prevents motion",
+    "PASS manual Retry restarts wrapper after exhausted attempts",
+    "PASS zero retry limit makes no vision call",
+    "PASS fractional retry limit compares against integer counter",
+    "PASS DryCycle real default center reaches distance check with identity calibration stub",
+    "PASS single-step refusal silently returns from void XY wrapper",
+    "PASS NaN passes local distance guard to lower motion boundary",
+    "PASS infinite displacement rejected by local guard",
+    "PASS wrong non-null result type throws before motion",
+    "PASS vision exception escapes without null-result retry",
+    "PASS lower motion exception propagates from search handler",
+    "PASS rectangle selects shared template by fixed name"
+  ]
+}

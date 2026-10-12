@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T14:37:02.218Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 57707,
+    "log": ".archify-work/verify-transport-loading-belt-integration.log",
+    "sha256": "b43146e9027a3c5a24f832a3c5afe3e4fc5893908cda1a3904ffda213bfe4e81"
+  },
+  "specialized": {
+    "checks": 252,
+    "completeMethods": 156,
+    "properties": 94,
+    "enums": 10,
+    "fields": 15,
+    "signalBindings": 23,
+    "sourceFragments": 275,
+    "sources": 118,
+    "topicSnapshots": 176,
+    "auditSha256": "6d5396db6d3866d553663c8435ad48b47b23229907df81d7944ff528be3b957f",
+    "evidenceSha256": "db1a000b0edc5e32e09bf319565a4c33dab4f92b9fdae2338f5b2b769e3a3fd2"
+  },
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-loading-belt-integration.log",
+    "sha256": "d984d347fd217edd5359f96c547444f7ba3240166ba5af6cec4c9d1d234bcbba",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "1d70fcde0fd062a118ddad8ae2850d3dee8be2b2fcc16bdc41aa781a802995fa",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 31,
+    "topicSnapshots": 1053,
+    "moduleSnapshots": 940
+  },
+  "sdkStaticContract": {
+    "evidence": "transport-loading-output-sdk-evidence.json",
+    "sha256": "f34bc2c211160231cf4279ce9920b5f47108f54134fcce7e98e985895320f35b",
+    "methods": 2,
+    "assemblies": 1,
+    "selectedParameters": [
+      "value"
+    ],
+    "returnType": "System.Void",
+    "optional": false,
+    "scope": "Mono.Cecil metadata and IL only; no SDK/device execution, deployed DLL version or hardware proof"
+  },
+  "fixtureCorrections": {
+    "passedBaselineLog": ".archify-work/loading-belt-integration-baseline-v2.log",
+    "failedExpandedLogs": [
+      ".archify-work/loading-belt-integration-expanded.log",
+      ".archify-work/loading-belt-integration-expanded-v2.log",
+      ".archify-work/loading-belt-integration-expanded-v3.log"
+    ],
+    "passedExpandedLogs": [
+      ".archify-work/loading-belt-integration-expanded-v4.log",
+      ".archify-work/loading-belt-integration-expanded-v5.log"
+    ],
+    "scope": "Fixed fixture enum name, initial false SMEMA output, tree enumeration excludes Unit, and wait after actual completion event for later PrepareFeeding write. Original production bodies unchanged. Unit constructors/Init/Refresh are raw; Config alias/getter, SDK coordinate and child entities, TuService/row-column/action services, BaseInformation type, repository/config/program/domain lifecycle and I/O/log/dialog/save remain explicit fixtures."
+  },
+  "continuation": {
+    "nextEvidence": "transport-auto-loader-next-evidence.json",
+    "nextEvidenceSha256": "a39fe709ad9a15e2cca39dc741107592e82e7547edb67e7e215feac05b8e72d9",
+    "fragments": 11,
+    "loadingCaptureSha256": "f76a8bb03fb7627fce740b9feb03984511edcbbd6f0e6141a5a3193b950ed36a",
+    "controllerCaptureSha256": "505ba4e17eefa29763695740c35213cac28061535df58ecbeca7094018682891",
+    "waitingCaptureSha256": "2d4df4abcacc6f60a635136177082efb76e134bef4b07a5bdcbf27173dff5c70",
+    "next": "Original auto-loader-to-loading with front getter/sensor, real five-second timeout and first parent; then load-bin-to-dispense and actual carrier/map/unit services/product/program/pool/domain/SDK/native acceptance."
+  },
+  "scope": "Original loading-to-dispense controller, loading/dispense hardware getters, setting/SMEMA wrappers, constructors/Init/Refresh, coordinate/substrate creation and refresh, tree vision/height clearing, offset methods and config/information declarations compose with full producer/UI/readiness/real wafer Task/Stop and existing downstream controllers. Typed coordinate/child entities, TuService/row-column/action injection, configuration/repository/SDK/log/dialog/save/program/domain lifecycle, other two loading transfers and native UI/build/configuration/DLL/equipment remain fixtures or pending."
+}

@@ -61,6 +61,7 @@ def create_model(settings: ModelSettings, *, summary: bool = False):
     return ChatOpenAI(
         **common,
         use_responses_api=False,
+        stream_usage=True,
         http_client=httpx.Client(),
         http_async_client=httpx.AsyncClient(),
     )

@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "scope": "Original Confirm with only SelectedItem null-conditional expression lowered to equivalent C#5 ternary. UI, model fields and Save targets are controlled substitutes. Tests prove assignment order, local conversions and save delegation/failure boundaries; not DevExpress input constraints, property weaving, JSON writes, Singleton internals or actual device work.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "start": 483,
+      "end": 546,
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "snippetSha256": "d00dbcbcaee428679200db288d5a8e97424829f97b3e87400bff2767087b7c36"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "start": 162,
+      "end": 181,
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8",
+      "snippetSha256": "db936aa65c0aa5bb163a4d5a2c582834055a291b7b98397044723cb79b4ea41a"
+    }
+  ],
+  "fixture": {
+    "file": "scripts/epoxy-confirm-fixture.cs.txt",
+    "sha256": "a063741d8668e10793465422882aec4286a3dc0874c059b724a8df0c8620dfb6"
+  },
+  "checks": [
+    "PASS fields updated before repository then System1 save",
+    "PASS null nozzle writes literal Null",
+    "PASS empty nozzle writes literal Null",
+    "PASS whitespace nozzle is not normalized",
+    "PASS decimal speed percentage cast truncates toward zero",
+    "PASS Confirm itself accepts negative percentage and zero size",
+    "PASS first save failure retains fields and skips System1 save",
+    "PASS second save failure follows first call without rollback",
+    "PASS null strategy fails after earlier mutations but before later fields or saves",
+    "PASS integer overflow preserves earlier fields and prevents saves",
+    "PASS null editor object fails before saves",
+    "TOTAL 11"
+  ]
+}

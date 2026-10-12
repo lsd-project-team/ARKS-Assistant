@@ -1,0 +1,3427 @@
+{
+  "generatedBy": "scripts/extract-motion-arrival.ps1 (Mono.Cecil; metadata inspection only)",
+  "source": {
+    "path": "trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs",
+    "sha256": "d74c8d97badf37ee7972ab431baa2f74ca87f294b25d6060c5ed33d2d36fa188",
+    "calls": [
+      {
+        "line": 495,
+        "text": "MotionService.WaitAxesArrival("
+      },
+      {
+        "line": 578,
+        "text": "MotionService.WaitAxesArrival("
+      },
+      {
+        "line": 626,
+        "text": "MotionService.WaitAxesArrival("
+      },
+      {
+        "line": 683,
+        "text": "MotionService.WaitAxesArrival("
+      },
+      {
+        "line": 765,
+        "text": "MotionService.WaitAxesArrival("
+      },
+      {
+        "line": 814,
+        "text": "MotionService.WaitAxesArrival("
+      },
+      {
+        "line": 846,
+        "text": "MotionService.WaitAxesArrival((this.BondHead.AxisZ, true, pos.Z, AccuracyMode.HighAccuracy));"
+      },
+      {
+        "line": 860,
+        "text": "MotionService.WaitAxesArrival("
+      }
+    ]
+  },
+  "assemblies": [
+    {
+      "path": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+      "sha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250"
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Drive.dll",
+      "sha256": "110c57d1dc48f94ee6c32ef223f48e78bc03ef3ad4aeb9986c76306f0d41ae79"
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+      "sha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb"
+    }
+  ],
+  "methods": {
+    "waitAxesArrival": {
+      "name": "System.Void AKRS.Galaxy2.LogicHardware.Services.MotionService::WaitAxesArrival(System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[])",
+      "token": "[Method:0x00a5]",
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "newobj",
+          "operand": "System.Void System.Collections.Generic.List`1<System.Exception>::.ctor()"
+        },
+        {
+          "offset": "IL_0006",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000b",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000c",
+          "opcode": "br.s",
+          "operand": "IL_007f"
+        },
+        {
+          "offset": "IL_000e",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000f",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0010",
+          "opcode": "ldelem.any",
+          "operand": "System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>"
+        },
+        {
+          "offset": "IL_0015",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0016",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0017",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0018",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0019",
+          "opcode": "ldfld",
+          "operand": "!0 System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>::Item1"
+        },
+        {
+          "offset": "IL_001e",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001f",
+          "opcode": "ldfld",
+          "operand": "!1 System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>::Item2"
+        },
+        {
+          "offset": "IL_0024",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0025",
+          "opcode": "ldfld",
+          "operand": "!2 System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>::Item3"
+        },
+        {
+          "offset": "IL_002a",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002b",
+          "opcode": "ldfld",
+          "operand": "!3 System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>::Item4"
+        },
+        {
+          "offset": "IL_0030",
+          "opcode": "callvirt",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::WaitForArrival(System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)"
+        },
+        {
+          "offset": "IL_0035",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0037",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0039",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003a",
+          "opcode": "ceq",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003c",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003d",
+          "opcode": "ceq",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003f",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0041",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0043",
+          "opcode": "brfalse.s",
+          "operand": "IL_0068"
+        },
+        {
+          "offset": "IL_0045",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0046",
+          "opcode": "ldc.i4.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0047",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0048",
+          "opcode": "ldfld",
+          "operand": "!0 System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>::Item1"
+        },
+        {
+          "offset": "IL_004d",
+          "opcode": "callvirt",
+          "operand": "System.Int32 AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_CardNum()"
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0053",
+          "opcode": "ldfld",
+          "operand": "!0 System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>::Item1"
+        },
+        {
+          "offset": "IL_0058",
+          "opcode": "callvirt",
+          "operand": "System.Int32 AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisNum()"
+        },
+        {
+          "offset": "IL_005d",
+          "opcode": "ldstr",
+          "operand": "轴等待到位异常！"
+        },
+        {
+          "offset": "IL_0062",
+          "opcode": "newobj",
+          "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,System.String)"
+        },
+        {
+          "offset": "IL_0067",
+          "opcode": "throw",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0069",
+          "opcode": "leave.s",
+          "operand": "IL_007a"
+        },
+        {
+          "offset": "IL_006b",
+          "opcode": "stloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006e",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006f",
+          "opcode": "ldloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0071",
+          "opcode": "callvirt",
+          "operand": "System.Void System.Collections.Generic.List`1<System.Exception>::Add(!0)"
+        },
+        {
+          "offset": "IL_0076",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0077",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "leave.s",
+          "operand": "IL_007a"
+        },
+        {
+          "offset": "IL_007a",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007b",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007c",
+          "opcode": "ldc.i4.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007d",
+          "opcode": "add",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007e",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007f",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0080",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0081",
+          "opcode": "ldlen",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0082",
+          "opcode": "conv.i4",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0083",
+          "opcode": "blt.s",
+          "operand": "IL_000e"
+        },
+        {
+          "offset": "IL_0085",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0086",
+          "opcode": "call",
+          "operand": "System.Boolean System.Linq.Enumerable::Any<System.Exception>(System.Collections.Generic.IEnumerable`1<!!0>)"
+        },
+        {
+          "offset": "IL_008b",
+          "opcode": "stloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_008d",
+          "opcode": "ldloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_008f",
+          "opcode": "brfalse.s",
+          "operand": "IL_00b1"
+        },
+        {
+          "offset": "IL_0091",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0092",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0093",
+          "opcode": "newobj",
+          "operand": "System.Void System.AggregateException::.ctor(System.Collections.Generic.IEnumerable`1<System.Exception>)"
+        },
+        {
+          "offset": "IL_0098",
+          "opcode": "stloc.s",
+          "operand": "V_8"
+        },
+        {
+          "offset": "IL_009a",
+          "opcode": "ldsfld",
+          "operand": "log4net.Core.Level log4net.Core.Level::Error"
+        },
+        {
+          "offset": "IL_009f",
+          "opcode": "ldstr",
+          "operand": "轴等待到位异常！"
+        },
+        {
+          "offset": "IL_00a4",
+          "opcode": "ldloc.s",
+          "operand": "V_8"
+        },
+        {
+          "offset": "IL_00a6",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00a7",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00a8",
+          "opcode": "call",
+          "operand": "System.Void AKRS.Galaxy2.Log.LogHelper::Post(log4net.Core.Level,System.String,System.Exception,AKRS.Galaxy2.Log.LogCategory,AKRS.Galaxy2.Log.ViewType)"
+        },
+        {
+          "offset": "IL_00ad",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00ae",
+          "opcode": "ldloc.s",
+          "operand": "V_8"
+        },
+        {
+          "offset": "IL_00b0",
+          "opcode": "throw",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00b1",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ],
+      "handlers": [
+        {
+          "type": "Catch",
+          "tryStart": "IL_0017",
+          "handlerStart": "IL_006b"
+        }
+      ]
+    },
+    "axisWaitForArrival": {
+      "name": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::WaitForArrival(System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "token": "[Method:0x01ca]",
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "newarr",
+          "operand": "System.Object"
+        },
+        {
+          "offset": "IL_0006",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "box",
+          "operand": "System.Boolean"
+        },
+        {
+          "offset": "IL_000f",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0010",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0011",
+          "opcode": "ldc.i4.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0012",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_0018",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0019",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001a",
+          "opcode": "ldc.i4.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001b",
+          "opcode": "ldarg.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001c",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+        },
+        {
+          "offset": "IL_0021",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0022",
+          "opcode": "newobj",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::.ctor()"
+        },
+        {
+          "offset": "IL_0027",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0028",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0029",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002a",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Arguments(System.Object[])"
+        },
+        {
+          "offset": "IL_002f",
+          "opcode": "ldsfld",
+          "operand": "System.Reflection.MethodBase OnMethodBoundaryAspectCompile.MethodInfos::_methodInfo_F9C2A9DDC81A61B9296BFD2D870D0B6AECACC697DC89EA4519DE9193E37F6774"
+        },
+        {
+          "offset": "IL_0034",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0035",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0036",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0037",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Method(System.Reflection.MethodBase)"
+        },
+        {
+          "offset": "IL_003c",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003d",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003e",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003f",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0040",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Instance(System.Object)"
+        },
+        {
+          "offset": "IL_0045",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0046",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_004b",
+          "opcode": "newobj",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::.ctor(System.Object)"
+        },
+        {
+          "offset": "IL_0050",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0054",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0055",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnEntry(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)"
+        },
+        {
+          "offset": "IL_005a",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_005b",
+          "opcode": "call",
+          "operand": "MethodBoundaryAspect.Fody.Attributes.FlowBehavior MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_FlowBehavior()"
+        },
+        {
+          "offset": "IL_0060",
+          "opcode": "stloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0062",
+          "opcode": "ldloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0064",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0065",
+          "opcode": "bne.un.s",
+          "operand": "IL_0077"
+        },
+        {
+          "offset": "IL_0067",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "call",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_ReturnValue()"
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "unbox.any",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_0072",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0074",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0076",
+          "opcode": "ret",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0077",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0079",
+          "opcode": "stloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_007b",
+          "opcode": "ldloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_007d",
+          "opcode": "ldarg.s",
+          "operand": "isCheckPostion"
+        },
+        {
+          "offset": "IL_007f",
+          "opcode": "ldarg.s",
+          "operand": "targetPosition"
+        },
+        {
+          "offset": "IL_0081",
+          "opcode": "ldarg.s",
+          "operand": "accuracyMode"
+        },
+        {
+          "offset": "IL_0083",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::$_executor_WaitForArrival(System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)"
+        },
+        {
+          "offset": "IL_0088",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_008a",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_008b",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_008d",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_0092",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_ReturnValue(System.Object)"
+        },
+        {
+          "offset": "IL_0097",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0099",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_009a",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnExit(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)"
+        },
+        {
+          "offset": "IL_009f",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00a0",
+          "opcode": "call",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_ReturnValue()"
+        },
+        {
+          "offset": "IL_00a5",
+          "opcode": "unbox.any",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_00aa",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_00ac",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_00ae",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ],
+      "handlers": []
+    },
+    "axisExecutorWaitForArrival": {
+      "name": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::$_executor_WaitForArrival(System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "token": "[Method:0x0208]",
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0002",
+          "opcode": "ldfld",
+          "operand": "System.Object AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::SynSymbolize"
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000b",
+          "opcode": "ldloca.s",
+          "operand": "V_1"
+        },
+        {
+          "offset": "IL_000d",
+          "opcode": "call",
+          "operand": "System.Void System.Threading.Monitor::Enter(System.Object,System.Boolean&)"
+        },
+        {
+          "offset": "IL_0012",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0014",
+          "opcode": "ldarg.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0015",
+          "opcode": "ldc.i4.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0016",
+          "opcode": "ceq",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0018",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0019",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001a",
+          "opcode": "brfalse.s",
+          "operand": "IL_002c"
+        },
+        {
+          "offset": "IL_001c",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001d",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001e",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionControllerInterface.IAxisDrive AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisDrive()"
+        },
+        {
+          "offset": "IL_0023",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionControllerInterface.IAxisDrive::WaitInCommandPosition()"
+        },
+        {
+          "offset": "IL_0028",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0029",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002a",
+          "opcode": "br.s",
+          "operand": "IL_0042"
+        },
+        {
+          "offset": "IL_002c",
+          "opcode": "ldarg.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002d",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002e",
+          "opcode": "ceq",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0030",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0031",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0032",
+          "opcode": "brfalse.s",
+          "operand": "IL_0042"
+        },
+        {
+          "offset": "IL_0034",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0035",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0036",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionControllerInterface.IAxisDrive AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisDrive()"
+        },
+        {
+          "offset": "IL_003b",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionControllerInterface.IAxisDrive::WaitInRealPosition()"
+        },
+        {
+          "offset": "IL_0040",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0041",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0042",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0043",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0045",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0047",
+          "opcode": "brfalse.s",
+          "operand": "IL_00b4"
+        },
+        {
+          "offset": "IL_0049",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004a",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004b",
+          "opcode": "callvirt",
+          "operand": "System.Double AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::GetRealPosition()"
+        },
+        {
+          "offset": "IL_0050",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0054",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0055",
+          "opcode": "sub",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0056",
+          "opcode": "call",
+          "operand": "System.Double System.Math::Abs(System.Double)"
+        },
+        {
+          "offset": "IL_005b",
+          "opcode": "ldc.r8",
+          "operand": "2"
+        },
+        {
+          "offset": "IL_0064",
+          "opcode": "cgt",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0066",
+          "opcode": "stloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "ldloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_006a",
+          "opcode": "brfalse.s",
+          "operand": "IL_00b3"
+        },
+        {
+          "offset": "IL_006c",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "ldstr",
+          "operand": "{0} INP 信号已经接收到，但当前位置({1})和目标位置({2})相差超过2mm，请联系设备供应商确认问题所在"
+        },
+        {
+          "offset": "IL_0072",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0073",
+          "opcode": "call",
+          "operand": "System.String AKRS.Galaxy2.LogicHardware.Hardwares.HardwareBase::get_HardwareName()"
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_007a",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_007f",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0080",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_0085",
+          "opcode": "call",
+          "operand": "System.String System.String::Format(System.String,System.Object,System.Object,System.Object)"
+        },
+        {
+          "offset": "IL_008a",
+          "opcode": "call",
+          "operand": "System.Windows.Forms.DialogResult DevExpress.XtraEditors.XtraMessageBox::Show(System.String)"
+        },
+        {
+          "offset": "IL_008f",
+          "opcode": "pop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0090",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0091",
+          "opcode": "call",
+          "operand": "System.String AKRS.Galaxy2.LogicHardware.Hardwares.HardwareBase::get_HardwareName()"
+        },
+        {
+          "offset": "IL_0096",
+          "opcode": "ldstr",
+          "operand": "INP 信号已经接收到，但当前位置({0})和目标位置({1})相差超过0.5mm，请联系设备供应商确认问题所在"
+        },
+        {
+          "offset": "IL_009b",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_009d",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_00a2",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00a3",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_00a8",
+          "opcode": "call",
+          "operand": "System.String System.String::Format(System.String,System.Object,System.Object)"
+        },
+        {
+          "offset": "IL_00ad",
+          "opcode": "newobj",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Exceptions.LogicHardwareException::.ctor(System.String,System.String)"
+        },
+        {
+          "offset": "IL_00b2",
+          "opcode": "throw",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00b3",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00b4",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00b5",
+          "opcode": "stloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_00b7",
+          "opcode": "leave.s",
+          "operand": "IL_00c4"
+        },
+        {
+          "offset": "IL_00b9",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00ba",
+          "opcode": "brfalse.s",
+          "operand": "IL_00c3"
+        },
+        {
+          "offset": "IL_00bc",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00bd",
+          "opcode": "call",
+          "operand": "System.Void System.Threading.Monitor::Exit(System.Object)"
+        },
+        {
+          "offset": "IL_00c2",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00c3",
+          "opcode": "endfinally",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00c4",
+          "opcode": "ldloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_00c6",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ],
+      "handlers": [
+        {
+          "type": "Finally",
+          "tryStart": "IL_000a",
+          "handlerStart": "IL_00b9"
+        }
+      ]
+    },
+    "judgeInitOnEntry": {
+      "name": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnEntry(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)",
+      "token": "[Method:0x0468]",
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.LogicHardware.Repository.HardwareRepository AKRS.Galaxy2.LogicHardware.Repository.HardwareRepository::GetInstance()"
+        },
+        {
+          "offset": "IL_0006",
+          "opcode": "callvirt",
+          "operand": "System.Boolean AKRS.Galaxy2.LogicHardware.Repository.HardwareRepository::get_IsHardwareOnProductState()"
+        },
+        {
+          "offset": "IL_000b",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000c",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000d",
+          "opcode": "brfalse.s",
+          "operand": "IL_0012"
+        },
+        {
+          "offset": "IL_000f",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0010",
+          "opcode": "br.s",
+          "operand": "IL_0082"
+        },
+        {
+          "offset": "IL_0012",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0014",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0015",
+          "opcode": "callvirt",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_Instance()"
+        },
+        {
+          "offset": "IL_001a",
+          "opcode": "isinst",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.MotionController"
+        },
+        {
+          "offset": "IL_001f",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0020",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0021",
+          "opcode": "ldnull",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0022",
+          "opcode": "cgt.un",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0024",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0025",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0026",
+          "opcode": "brfalse.s",
+          "operand": "IL_003d"
+        },
+        {
+          "offset": "IL_0028",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0029",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002a",
+          "opcode": "callvirt",
+          "operand": "System.Int32 AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.MotionController::get_CardNum()"
+        },
+        {
+          "offset": "IL_002f",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.AxisCard AKRS.Galaxy2.LogicHardware.Repository.HardwareRepositoryService::GetAxisCard(System.Int32)"
+        },
+        {
+          "offset": "IL_0034",
+          "opcode": "callvirt",
+          "operand": "System.Boolean AKRS.Galaxy2.LogicHardware.Hardwares.HardwareBase::get_IsInit()"
+        },
+        {
+          "offset": "IL_0039",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003a",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003b",
+          "opcode": "br.s",
+          "operand": "IL_0061"
+        },
+        {
+          "offset": "IL_003d",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003e",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003f",
+          "opcode": "callvirt",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_Instance()"
+        },
+        {
+          "offset": "IL_0044",
+          "opcode": "castclass",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.HardwareBase"
+        },
+        {
+          "offset": "IL_0049",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_004b",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_004d",
+          "opcode": "ldnull",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004e",
+          "opcode": "cgt.un",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0050",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0054",
+          "opcode": "brfalse.s",
+          "operand": "IL_0060"
+        },
+        {
+          "offset": "IL_0056",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0057",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0059",
+          "opcode": "callvirt",
+          "operand": "System.Boolean AKRS.Galaxy2.LogicHardware.Hardwares.HardwareBase::get_IsInit()"
+        },
+        {
+          "offset": "IL_005e",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_005f",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0060",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0061",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0062",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0063",
+          "opcode": "ceq",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0065",
+          "opcode": "stloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0067",
+          "opcode": "ldloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0069",
+          "opcode": "brfalse.s",
+          "operand": "IL_0082"
+        },
+        {
+          "offset": "IL_006b",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006c",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006e",
+          "opcode": "ldfld",
+          "operand": "System.Object AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::returnValue"
+        },
+        {
+          "offset": "IL_0073",
+          "opcode": "callvirt",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_ReturnValue(System.Object)"
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0079",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007a",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007b",
+          "opcode": "callvirt",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_FlowBehavior(MethodBoundaryAspect.Fody.Attributes.FlowBehavior)"
+        },
+        {
+          "offset": "IL_0080",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0081",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0082",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ],
+      "handlers": []
+    },
+    "drivers": [
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::WaitInCommandPosition()",
+        "token": "[Method:0x06d5]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "call",
+            "operand": "System.Diagnostics.Stopwatch System.Diagnostics.Stopwatch::StartNew()"
+          },
+          {
+            "offset": "IL_0006",
+            "opcode": "stloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0007",
+            "opcode": "br.s",
+            "operand": "IL_0053"
+          },
+          {
+            "offset": "IL_0009",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000a",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000b",
+            "opcode": "callvirt",
+            "operand": "System.Int64 System.Diagnostics.Stopwatch::get_ElapsedMilliseconds()"
+          },
+          {
+            "offset": "IL_0010",
+            "opcode": "ldc.i4",
+            "operand": "30000"
+          },
+          {
+            "offset": "IL_0015",
+            "opcode": "conv.i8",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0016",
+            "opcode": "cgt",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0018",
+            "opcode": "stloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0019",
+            "opcode": "ldloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001a",
+            "opcode": "brfalse.s",
+            "operand": "IL_0052"
+          },
+          {
+            "offset": "IL_001c",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001d",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001e",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001f",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNum"
+          },
+          {
+            "offset": "IL_0024",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0025",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_002a",
+            "opcode": "ldc.i4.4",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002b",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002c",
+            "opcode": "ldstr",
+            "operand": "dmc_check_done({0},{1}) 超时"
+          },
+          {
+            "offset": "IL_0031",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0032",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNumShort"
+          },
+          {
+            "offset": "IL_0037",
+            "opcode": "box",
+            "operand": "System.UInt16"
+          },
+          {
+            "offset": "IL_003c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_003d",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::axisNumShort"
+          },
+          {
+            "offset": "IL_0042",
+            "opcode": "box",
+            "operand": "System.UInt16"
+          },
+          {
+            "offset": "IL_0047",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object,System.Object)"
+          },
+          {
+            "offset": "IL_004c",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String)"
+          },
+          {
+            "offset": "IL_0051",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0052",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0053",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0054",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNumShort"
+          },
+          {
+            "offset": "IL_0059",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_005a",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::axisNumShort"
+          },
+          {
+            "offset": "IL_005f",
+            "opcode": "call",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LTDMC::dmc_check_done(System.UInt16,System.UInt16)"
+          },
+          {
+            "offset": "IL_0064",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0065",
+            "opcode": "ceq",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0067",
+            "opcode": "stloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0068",
+            "opcode": "ldloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0069",
+            "opcode": "brtrue.s",
+            "operand": "IL_0009"
+          },
+          {
+            "offset": "IL_006b",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_006c",
+            "opcode": "callvirt",
+            "operand": "System.Void System.Diagnostics.Stopwatch::Restart()"
+          },
+          {
+            "offset": "IL_0071",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0072",
+            "opcode": "br.s",
+            "operand": "IL_00be"
+          },
+          {
+            "offset": "IL_0074",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0075",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0076",
+            "opcode": "callvirt",
+            "operand": "System.Int64 System.Diagnostics.Stopwatch::get_ElapsedMilliseconds()"
+          },
+          {
+            "offset": "IL_007b",
+            "opcode": "ldc.i4",
+            "operand": "3000"
+          },
+          {
+            "offset": "IL_0080",
+            "opcode": "conv.i8",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0081",
+            "opcode": "cgt",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0083",
+            "opcode": "stloc.3",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0084",
+            "opcode": "ldloc.3",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0085",
+            "opcode": "brfalse.s",
+            "operand": "IL_00bd"
+          },
+          {
+            "offset": "IL_0087",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0088",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0089",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_008a",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNum"
+          },
+          {
+            "offset": "IL_008f",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0090",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_0095",
+            "opcode": "ldc.i4.4",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0096",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0097",
+            "opcode": "ldstr",
+            "operand": "dmc_check_success_pulse({0},{1}) 指令到位超时"
+          },
+          {
+            "offset": "IL_009c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_009d",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNumShort"
+          },
+          {
+            "offset": "IL_00a2",
+            "opcode": "box",
+            "operand": "System.UInt16"
+          },
+          {
+            "offset": "IL_00a7",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00a8",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::axisNumShort"
+          },
+          {
+            "offset": "IL_00ad",
+            "opcode": "box",
+            "operand": "System.UInt16"
+          },
+          {
+            "offset": "IL_00b2",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object,System.Object)"
+          },
+          {
+            "offset": "IL_00b7",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String)"
+          },
+          {
+            "offset": "IL_00bc",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00bd",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00be",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00bf",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNumShort"
+          },
+          {
+            "offset": "IL_00c4",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00c5",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::axisNumShort"
+          },
+          {
+            "offset": "IL_00ca",
+            "opcode": "call",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LTDMC::dmc_check_success_pulse(System.UInt16,System.UInt16)"
+          },
+          {
+            "offset": "IL_00cf",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00d0",
+            "opcode": "ceq",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00d2",
+            "opcode": "stloc.s",
+            "operand": "V_4"
+          },
+          {
+            "offset": "IL_00d4",
+            "opcode": "ldloc.s",
+            "operand": "V_4"
+          },
+          {
+            "offset": "IL_00d6",
+            "opcode": "brtrue.s",
+            "operand": "IL_0074"
+          },
+          {
+            "offset": "IL_00d8",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": []
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::WaitInRealPosition()",
+        "token": "[Method:0x06d6]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "call",
+            "operand": "System.Diagnostics.Stopwatch System.Diagnostics.Stopwatch::StartNew()"
+          },
+          {
+            "offset": "IL_0006",
+            "opcode": "stloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0007",
+            "opcode": "br.s",
+            "operand": "IL_0053"
+          },
+          {
+            "offset": "IL_0009",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000a",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000b",
+            "opcode": "callvirt",
+            "operand": "System.Int64 System.Diagnostics.Stopwatch::get_ElapsedMilliseconds()"
+          },
+          {
+            "offset": "IL_0010",
+            "opcode": "ldc.i4",
+            "operand": "30000"
+          },
+          {
+            "offset": "IL_0015",
+            "opcode": "conv.i8",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0016",
+            "opcode": "cgt",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0018",
+            "opcode": "stloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0019",
+            "opcode": "ldloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001a",
+            "opcode": "brfalse.s",
+            "operand": "IL_0052"
+          },
+          {
+            "offset": "IL_001c",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001d",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001e",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001f",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNum"
+          },
+          {
+            "offset": "IL_0024",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0025",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_002a",
+            "opcode": "ldc.i4.4",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002b",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002c",
+            "opcode": "ldstr",
+            "operand": "dmc_check_done({0},{1}) 超时"
+          },
+          {
+            "offset": "IL_0031",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0032",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNumShort"
+          },
+          {
+            "offset": "IL_0037",
+            "opcode": "box",
+            "operand": "System.UInt16"
+          },
+          {
+            "offset": "IL_003c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_003d",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::axisNumShort"
+          },
+          {
+            "offset": "IL_0042",
+            "opcode": "box",
+            "operand": "System.UInt16"
+          },
+          {
+            "offset": "IL_0047",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object,System.Object)"
+          },
+          {
+            "offset": "IL_004c",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String)"
+          },
+          {
+            "offset": "IL_0051",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0052",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0053",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0054",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNumShort"
+          },
+          {
+            "offset": "IL_0059",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_005a",
+            "opcode": "ldfld",
+            "operand": "System.UInt16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::axisNumShort"
+          },
+          {
+            "offset": "IL_005f",
+            "opcode": "call",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LTDMC::dmc_check_done(System.UInt16,System.UInt16)"
+          },
+          {
+            "offset": "IL_0064",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0065",
+            "opcode": "ceq",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0067",
+            "opcode": "stloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0068",
+            "opcode": "ldloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0069",
+            "opcode": "brtrue.s",
+            "operand": "IL_0009"
+          },
+          {
+            "offset": "IL_006b",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_006c",
+            "opcode": "callvirt",
+            "operand": "System.Void System.Diagnostics.Stopwatch::Restart()"
+          },
+          {
+            "offset": "IL_0071",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0072",
+            "opcode": "br.s",
+            "operand": "IL_00a3"
+          },
+          {
+            "offset": "IL_0074",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0075",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0076",
+            "opcode": "callvirt",
+            "operand": "System.Int64 System.Diagnostics.Stopwatch::get_ElapsedMilliseconds()"
+          },
+          {
+            "offset": "IL_007b",
+            "opcode": "ldc.i4",
+            "operand": "10000"
+          },
+          {
+            "offset": "IL_0080",
+            "opcode": "conv.i8",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0081",
+            "opcode": "cgt",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0083",
+            "opcode": "stloc.3",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0084",
+            "opcode": "ldloc.3",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0085",
+            "opcode": "brfalse.s",
+            "operand": "IL_00a2"
+          },
+          {
+            "offset": "IL_0087",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0088",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0089",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_008a",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::cardNum"
+          },
+          {
+            "offset": "IL_008f",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0090",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_0095",
+            "opcode": "ldc.i4.4",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0096",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0097",
+            "opcode": "ldstr",
+            "operand": "this.GetState().InPosition() 编码器到位超时"
+          },
+          {
+            "offset": "IL_009c",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String)"
+          },
+          {
+            "offset": "IL_00a1",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00a2",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00a3",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00a4",
+            "opcode": "call",
+            "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.LeadShine.E5032.LeadShineE5032Axis::GetState()"
+          },
+          {
+            "offset": "IL_00a9",
+            "opcode": "ldfld",
+            "operand": "System.Boolean AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState::InPosition"
+          },
+          {
+            "offset": "IL_00ae",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00af",
+            "opcode": "ceq",
+            "operand": ""
+          },
+          {
+            "offset": "IL_00b1",
+            "opcode": "stloc.s",
+            "operand": "V_4"
+          },
+          {
+            "offset": "IL_00b3",
+            "opcode": "ldloc.s",
+            "operand": "V_4"
+          },
+          {
+            "offset": "IL_00b5",
+            "opcode": "brtrue.s",
+            "operand": "IL_0074"
+          },
+          {
+            "offset": "IL_00b7",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": []
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::WaitInCommandPosition()",
+        "token": "[Method:0x0a36]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0002",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0003",
+            "opcode": "ldfld",
+            "operand": "ACS.SPiiPlusNET.Api AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::ch"
+          },
+          {
+            "offset": "IL_0008",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0009",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::axisNum"
+          },
+          {
+            "offset": "IL_000e",
+            "opcode": "ldc.i4.s",
+            "operand": "30"
+          },
+          {
+            "offset": "IL_0010",
+            "opcode": "callvirt",
+            "operand": "System.Void ACS.SPiiPlusNET.Api::WaitLogicalMotionEnd(ACS.SPiiPlusNET.Axis,System.Int32)"
+          },
+          {
+            "offset": "IL_0015",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0016",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0017",
+            "opcode": "leave.s",
+            "operand": "IL_003b"
+          },
+          {
+            "offset": "IL_0019",
+            "opcode": "stloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001a",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001b",
+            "opcode": "ldc.i4.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001d",
+            "opcode": "ldfld",
+            "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSController AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::parentController"
+          },
+          {
+            "offset": "IL_0022",
+            "opcode": "callvirt",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSController::get_CardNum()"
+          },
+          {
+            "offset": "IL_0027",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0028",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_002d",
+            "opcode": "ldc.i4.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002e",
+            "opcode": "ldc.i4.m1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002f",
+            "opcode": "ldstr",
+            "operand": "等到指令到位异常：WaitLogicalMotionEnd():"
+          },
+          {
+            "offset": "IL_0034",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0035",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String,System.Exception)"
+          },
+          {
+            "offset": "IL_003a",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_003b",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": [
+          {
+            "type": "Catch",
+            "tryStart": "IL_0001",
+            "handlerStart": "IL_0019"
+          }
+        ]
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::WaitInRealPosition()",
+        "token": "[Method:0x0a37]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0002",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0003",
+            "opcode": "ldfld",
+            "operand": "ACS.SPiiPlusNET.Api AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::ch"
+          },
+          {
+            "offset": "IL_0008",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0009",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::axisNum"
+          },
+          {
+            "offset": "IL_000e",
+            "opcode": "ldc.i4.s",
+            "operand": "30"
+          },
+          {
+            "offset": "IL_0010",
+            "opcode": "callvirt",
+            "operand": "System.Void ACS.SPiiPlusNET.Api::WaitMotionEnd(ACS.SPiiPlusNET.Axis,System.Int32)"
+          },
+          {
+            "offset": "IL_0015",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0016",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0017",
+            "opcode": "leave.s",
+            "operand": "IL_003b"
+          },
+          {
+            "offset": "IL_0019",
+            "opcode": "stloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001a",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001b",
+            "opcode": "ldc.i4.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001d",
+            "opcode": "ldfld",
+            "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSController AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::parentController"
+          },
+          {
+            "offset": "IL_0022",
+            "opcode": "callvirt",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSController::get_CardNum()"
+          },
+          {
+            "offset": "IL_0027",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0028",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ACS.ACSAxis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_002d",
+            "opcode": "ldc.i4.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002e",
+            "opcode": "ldc.i4.m1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002f",
+            "opcode": "ldstr",
+            "operand": "等到到位异常：WaitMotionEnd():"
+          },
+          {
+            "offset": "IL_0034",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0035",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String,System.Exception)"
+          },
+          {
+            "offset": "IL_003a",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_003b",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": [
+          {
+            "type": "Catch",
+            "tryStart": "IL_0001",
+            "handlerStart": "IL_0019"
+          }
+        ]
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::WaitInCommandPosition()",
+        "token": "[Method:0x0ac6]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "call",
+            "operand": "System.Diagnostics.Stopwatch System.Diagnostics.Stopwatch::StartNew()"
+          },
+          {
+            "offset": "IL_0006",
+            "opcode": "stloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0007",
+            "opcode": "br.s",
+            "operand": "IL_0082"
+          },
+          {
+            "offset": "IL_0009",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000a",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000b",
+            "opcode": "callvirt",
+            "operand": "System.Int64 System.Diagnostics.Stopwatch::get_ElapsedMilliseconds()"
+          },
+          {
+            "offset": "IL_0010",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0011",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::get_WaitMoveDoneTimeout()"
+          },
+          {
+            "offset": "IL_0016",
+            "opcode": "conv.i8",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0017",
+            "opcode": "cgt",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0019",
+            "opcode": "stloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001a",
+            "opcode": "ldloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001b",
+            "opcode": "brfalse.s",
+            "operand": "IL_0081"
+          },
+          {
+            "offset": "IL_001d",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001e",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001f",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0020",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::cardNum"
+          },
+          {
+            "offset": "IL_0025",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0026",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_002b",
+            "opcode": "ldc.i4.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002c",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002d",
+            "opcode": "ldstr",
+            "operand": "{0}({1}, "
+          },
+          {
+            "offset": "IL_0032",
+            "opcode": "call",
+            "operand": "System.Reflection.MethodBase System.Reflection.MethodBase::GetCurrentMethod()"
+          },
+          {
+            "offset": "IL_0037",
+            "opcode": "callvirt",
+            "operand": "System.String System.Reflection.MemberInfo::get_Name()"
+          },
+          {
+            "offset": "IL_003c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_003d",
+            "opcode": "ldfld",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::cardNumShort"
+          },
+          {
+            "offset": "IL_0042",
+            "opcode": "box",
+            "operand": "System.Int16"
+          },
+          {
+            "offset": "IL_0047",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object,System.Object)"
+          },
+          {
+            "offset": "IL_004c",
+            "opcode": "ldstr",
+            "operand": "{0}) execute fail!\n"
+          },
+          {
+            "offset": "IL_0051",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0052",
+            "opcode": "ldfld",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::axisNumShort"
+          },
+          {
+            "offset": "IL_0057",
+            "opcode": "box",
+            "operand": "System.Int16"
+          },
+          {
+            "offset": "IL_005c",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object)"
+          },
+          {
+            "offset": "IL_0061",
+            "opcode": "ldstr",
+            "operand": "Timeout:{0}ms"
+          },
+          {
+            "offset": "IL_0066",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0067",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::get_WaitMoveDoneTimeout()"
+          },
+          {
+            "offset": "IL_006c",
+            "opcode": "box",
+            "operand": "System.Int32"
+          },
+          {
+            "offset": "IL_0071",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object)"
+          },
+          {
+            "offset": "IL_0076",
+            "opcode": "call",
+            "operand": "System.String System.String::Concat(System.String,System.String,System.String)"
+          },
+          {
+            "offset": "IL_007b",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String)"
+          },
+          {
+            "offset": "IL_0080",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0081",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0082",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0083",
+            "opcode": "call",
+            "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::GetState()"
+          },
+          {
+            "offset": "IL_0088",
+            "opcode": "ldfld",
+            "operand": "System.Boolean AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState::Moving"
+          },
+          {
+            "offset": "IL_008d",
+            "opcode": "stloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_008e",
+            "opcode": "ldloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_008f",
+            "opcode": "brtrue",
+            "operand": "IL_0009"
+          },
+          {
+            "offset": "IL_0094",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": []
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::WaitInRealPosition()",
+        "token": "[Method:0x0ac7]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0002",
+            "opcode": "call",
+            "operand": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::WaitInCommandPosition()"
+          },
+          {
+            "offset": "IL_0007",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0008",
+            "opcode": "call",
+            "operand": "System.Diagnostics.Stopwatch System.Diagnostics.Stopwatch::StartNew()"
+          },
+          {
+            "offset": "IL_000d",
+            "opcode": "stloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_000e",
+            "opcode": "br.s",
+            "operand": "IL_0089"
+          },
+          {
+            "offset": "IL_0010",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0011",
+            "opcode": "ldloc.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0012",
+            "opcode": "callvirt",
+            "operand": "System.Int64 System.Diagnostics.Stopwatch::get_ElapsedMilliseconds()"
+          },
+          {
+            "offset": "IL_0017",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0018",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::get_WaitMoveDoneTimeout()"
+          },
+          {
+            "offset": "IL_001d",
+            "opcode": "conv.i8",
+            "operand": ""
+          },
+          {
+            "offset": "IL_001e",
+            "opcode": "cgt",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0020",
+            "opcode": "stloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0021",
+            "opcode": "ldloc.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0022",
+            "opcode": "brfalse.s",
+            "operand": "IL_0088"
+          },
+          {
+            "offset": "IL_0024",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0025",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0026",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0027",
+            "opcode": "ldfld",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::cardNum"
+          },
+          {
+            "offset": "IL_002c",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_002d",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::get_AxisNum()"
+          },
+          {
+            "offset": "IL_0032",
+            "opcode": "ldc.i4.1",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0033",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0034",
+            "opcode": "ldstr",
+            "operand": "{0}({1}, "
+          },
+          {
+            "offset": "IL_0039",
+            "opcode": "call",
+            "operand": "System.Reflection.MethodBase System.Reflection.MethodBase::GetCurrentMethod()"
+          },
+          {
+            "offset": "IL_003e",
+            "opcode": "callvirt",
+            "operand": "System.String System.Reflection.MemberInfo::get_Name()"
+          },
+          {
+            "offset": "IL_0043",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0044",
+            "opcode": "ldfld",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::cardNumShort"
+          },
+          {
+            "offset": "IL_0049",
+            "opcode": "box",
+            "operand": "System.Int16"
+          },
+          {
+            "offset": "IL_004e",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object,System.Object)"
+          },
+          {
+            "offset": "IL_0053",
+            "opcode": "ldstr",
+            "operand": "{0}) execute fail!\n"
+          },
+          {
+            "offset": "IL_0058",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0059",
+            "opcode": "ldfld",
+            "operand": "System.Int16 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::axisNumShort"
+          },
+          {
+            "offset": "IL_005e",
+            "opcode": "box",
+            "operand": "System.Int16"
+          },
+          {
+            "offset": "IL_0063",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object)"
+          },
+          {
+            "offset": "IL_0068",
+            "opcode": "ldstr",
+            "operand": "Timeout:{0}ms"
+          },
+          {
+            "offset": "IL_006d",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_006e",
+            "opcode": "call",
+            "operand": "System.Int32 AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::get_WaitMoveDoneTimeout()"
+          },
+          {
+            "offset": "IL_0073",
+            "opcode": "box",
+            "operand": "System.Int32"
+          },
+          {
+            "offset": "IL_0078",
+            "opcode": "call",
+            "operand": "System.String System.String::Format(System.String,System.Object)"
+          },
+          {
+            "offset": "IL_007d",
+            "opcode": "call",
+            "operand": "System.String System.String::Concat(System.String,System.String,System.String)"
+          },
+          {
+            "offset": "IL_0082",
+            "opcode": "newobj",
+            "operand": "System.Void AKRS.Galaxy2.Drive.Exceptions.DriveMotionException::.ctor(AKRS.Galaxy2.Drive.Common.HardwareType,System.Int32,System.Int32,AKRS.Galaxy2.Drive.Common.MotionControllerType,System.Int32,System.String)"
+          },
+          {
+            "offset": "IL_0087",
+            "opcode": "throw",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0088",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0089",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_008a",
+            "opcode": "call",
+            "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.GT.GTAxis::GetState()"
+          },
+          {
+            "offset": "IL_008f",
+            "opcode": "ldfld",
+            "operand": "System.Boolean AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState::InPosition"
+          },
+          {
+            "offset": "IL_0094",
+            "opcode": "ldc.i4.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0095",
+            "opcode": "ceq",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0097",
+            "opcode": "stloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0098",
+            "opcode": "ldloc.2",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0099",
+            "opcode": "brtrue",
+            "operand": "IL_0010"
+          },
+          {
+            "offset": "IL_009e",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": []
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ETEL.ETELAxis::WaitInCommandPosition()",
+        "token": "[Method:0x0b0f]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0002",
+            "opcode": "ldfld",
+            "operand": "ch.etel.edi.dsa.v40.DsaDrive AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ETEL.ETELAxis::dsaDrive"
+          },
+          {
+            "offset": "IL_0007",
+            "opcode": "ldc.i4",
+            "operand": "30000"
+          },
+          {
+            "offset": "IL_000c",
+            "opcode": "callvirt",
+            "operand": "System.Void ch.etel.edi.dsa.v40.DsaDrive::waitMovement(System.Int32)"
+          },
+          {
+            "offset": "IL_0011",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0012",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": []
+      },
+      {
+        "name": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ETEL.ETELAxis::WaitInRealPosition()",
+        "token": "[Method:0x0b10]",
+        "instructions": [
+          {
+            "offset": "IL_0000",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0001",
+            "opcode": "ldarg.0",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0002",
+            "opcode": "ldfld",
+            "operand": "ch.etel.edi.dsa.v40.DsaDrive AKRS.Galaxy2.Drive.MotionControllerDrive.MotionModule.ETEL.ETELAxis::dsaDrive"
+          },
+          {
+            "offset": "IL_0007",
+            "opcode": "ldc.i4",
+            "operand": "30000"
+          },
+          {
+            "offset": "IL_000c",
+            "opcode": "callvirt",
+            "operand": "System.Void ch.etel.edi.dsa.v40.DsaDrive::waitWindow(System.Int32)"
+          },
+          {
+            "offset": "IL_0011",
+            "opcode": "nop",
+            "operand": ""
+          },
+          {
+            "offset": "IL_0012",
+            "opcode": "ret",
+            "operand": ""
+          }
+        ],
+        "handlers": []
+      }
+    ]
+  },
+  "enums": {
+    "result": [
+      {
+        "name": "None",
+        "value": 0
+      },
+      {
+        "name": "NoStart",
+        "value": 1
+      },
+      {
+        "name": "Running",
+        "value": 2
+      },
+      {
+        "name": "Success",
+        "value": 3
+      },
+      {
+        "name": "Fail",
+        "value": 4
+      },
+      {
+        "name": "Alarm",
+        "value": 5
+      },
+      {
+        "name": "TimeOut",
+        "value": 6
+      },
+      {
+        "name": "Exception",
+        "value": 7
+      },
+      {
+        "name": "ParaError",
+        "value": 8
+      },
+      {
+        "name": "ExceptionStop",
+        "value": 9
+      },
+      {
+        "name": "Scram",
+        "value": 10
+      },
+      {
+        "name": "Retry",
+        "value": 11
+      },
+      {
+        "name": "Abort",
+        "value": 12
+      }
+    ],
+    "accuracy": [
+      {
+        "name": "None",
+        "value": -1
+      },
+      {
+        "name": "HighAccuracy",
+        "value": 0
+      },
+      {
+        "name": "HighSpeed",
+        "value": 1
+      }
+    ]
+  }
+}

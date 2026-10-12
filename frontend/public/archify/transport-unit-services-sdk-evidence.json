@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "scope": "Mono.Cecil metadata only; no SDK execution or deployed assembly/device acceptance",
+  "assemblies": [
+    {
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+      "sha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "e58cc3cd8205768bef8c05c82538fee1b4f210c61a815c0dc4c62c334bf76584"
+    }
+  ],
+  "methods": [
+    {
+      "assembly": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+      "fullName": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::GoHome(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.HomePara)",
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "token": "[Method:0x01e2]",
+      "parameters": [
+        {
+          "name": "homePara",
+          "type": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.HomePara",
+          "optional": true,
+          "hasConstant": true,
+          "constant": null
+        }
+      ]
+    },
+    {
+      "assembly": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "fullName": "System.Void AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.BaseCoordinateSystem::Init(AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D,AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D,System.Double,AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.TransformTool/CalibModuleEnum)",
+      "returnType": "System.Void",
+      "token": "[Method:0x002e]",
+      "parameters": [
+        {
+          "name": "upperPoint3D",
+          "type": "AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "ownPoint3D",
+          "type": "AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "degree",
+          "type": "System.Double",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        },
+        {
+          "name": "moduleEnum",
+          "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.TransformTool/CalibModuleEnum",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ]
+    },
+    {
+      "assembly": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "fullName": "System.Void AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.BaseCoordinateSystem::Init(AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.ElementCoordinate,AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.TransformTool/CalibModuleEnum)",
+      "returnType": "System.Void",
+      "token": "[Method:0x002f]",
+      "parameters": [
+        {
+          "name": "elementCoordinate",
+          "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.ElementCoordinate",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "moduleEnum",
+          "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.TransformTool/CalibModuleEnum",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ]
+    },
+    {
+      "assembly": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "fullName": "System.Void AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.BaseCoordinateSystem::Init(System.Collections.Generic.List`1<AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D>,System.Collections.Generic.List`1<AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D>,AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.TransformTool/CalibModuleEnum)",
+      "returnType": "System.Void",
+      "token": "[Method:0x0030]",
+      "parameters": [
+        {
+          "name": "upperPoint3D",
+          "type": "System.Collections.Generic.List`1<AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D>",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "ownPoint3D",
+          "type": "System.Collections.Generic.List`1<AKRS.Galaxy2.Infrastructure.CommonModel.AKRSPoint3D>",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "moduleEnum",
+          "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.TransformTool/CalibModuleEnum",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ]
+    },
+    {
+      "assembly": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "fullName": "System.Void AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.GeneralCoordinateSystem::.ctor(System.String,AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.CoordinateSystemTypeEnum,AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.BaseCoordinateSystem)",
+      "returnType": "System.Void",
+      "token": "[Method:0x003e]",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "System.String",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "coordinateSystemType",
+          "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.CoordinateSystemTypeEnum",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "upperCoordinateSystem",
+          "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.BaseCoordinateSystem",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        }
+      ]
+    },
+    {
+      "assembly": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "fullName": "System.Void AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.GeneralCoordinateSystem::.ctor()",
+      "returnType": "System.Void",
+      "token": "[Method:0x003f]",
+      "parameters": []
+    }
+  ],
+  "enums": [
+    {
+      "assembly": "trunk/AKRS.Galaxy2.CoordinateSystems/obj/Debug/AKRS.Galaxy2.CoordinateSystems.dll",
+      "type": "AKRS.Galaxy2.CoordinateSystems.CoordinateSystems.CoordinateSystemTypeEnum",
+      "fields": [
+        {
+          "name": "Vm",
+          "value": 0
+        },
+        {
+          "name": "General",
+          "value": 1
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "file": "scripts/extract-transport-unit-services-sdk.ps1",
+      "sha256": "92c0a06b02d27f9a3d0490ffa9d06545e6a3dbeec34144c267e6c8776e802b5b"
+    },
+    {
+      "file": "scripts/transport-unit-services-integration-compose.cjs",
+      "sha256": "230473b78a9c100fc2bd2b9b5a6ce9afa80c627a06ae420c5536d165b382b5f6"
+    },
+    {
+      "file": "scripts/transport-unit-services-integration-dependencies.cs.txt",
+      "sha256": "8e19609fc2401c6d45b1e506c6c201b26333a09d3c488a53ffcf8da900f608a1"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+      "sha256": "c6e5ae892f8617da2fa1809e9e5793382d9712106e2932d15cb3844de60bedff"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/AKRS.ZX2200.csproj",
+      "sha256": "50509da43e7a02d8f59a04ce017ca65b56aa9b8e5116d603a3fbe076e1b2d3a5"
+    }
+  ],
+  "adapterScope": "Axis HomePara and coordinate parent/Init arguments are typed interface adapters in the harness; native results and coordinate transformations are not executed. Raw BeltInit ignores GoHome ExcuteResult, including Abort. Coordinate obj/Debug DLL metadata is a repository build artifact, not deployed-assembly proof."
+}

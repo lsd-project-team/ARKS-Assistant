@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T04:22:59.012Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-transport-producer.log",
+    "sha256": "6d308115bbc2d73483a30ad9bc1d9c1c5eefaa133424d9d87406f631f80cc3df"
+  },
+  "specialized": {
+    "checks": 870,
+    "completeMethods": 81,
+    "properties": 31,
+    "enums": 4,
+    "fields": 13,
+    "signalBindings": 23,
+    "topicSnapshots": 30,
+    "auditSha256": "626f3b60b60f5fe4af28bf2717960a78ab264a11e44e789172adf91dd5cad88b",
+    "evidenceSha256": "69f992db98164cf951256036bafff97f2bc22b0c728670208ac29e5024d20db2"
+  },
+  "browser": {
+    "log": ".archify-work/browser-transport-producer.log",
+    "sha256": "2a92b818cd6b2eeb332097d5ae47653b01d0d8cc2e861b17dad97508d7f1871d",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "d74434a078d6d0e143fcc9037d18fdeea55c977e17b347d88a6b454b07be45f4",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 24,
+    "topicSnapshots": 361,
+    "moduleSnapshots": 940
+  },
+  "continuation": {
+    "nextEvidence": "transport-controller-next-evidence.json",
+    "nextEvidenceSha256": "325e2833c9370c21b448f7008351c765308307771e33bf322b7eb8b7d88c1c71",
+    "fragments": 16,
+    "previousProducerCaptureSha256": "5b9cc569744e4c268fbaf08a46e8035a11b3abb9955747b244f99d879e182e44",
+    "next": "Reconnect original Bond-to-waiting transfer, axis/unclamp/signal chain in complete producer/UI/real-wafer composition, then remaining original controllers/SDK."
+  },
+  "scope": "Complete original TransportTask.Start and nine original task fields integrated with original UI/readiness/Machine.Start/TransportDomain and real wafer producer/consumer/Stop. Task.Run, task status checks and real Signal waits are original. Task entry, controller transfer results and warning controls are fixtures. Provider flag properties and section state declarations are original; transport logging/program lifecycle, other domains/SDK/configuration are fixtures; native UI/equipment and actual transfer-controller chain remain pending."
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "archify-official-net48-zx2200-parameters-repair-v1",
+  "status": "failed-preserved",
+  "recordedAt": "2026-10-06T21:12:13.648Z",
+  "project": {
+    "sourceMirror": ".archify-work/native-msbuild-build/source/trunk/AKRS.ZX2200",
+    "candidateProjectFile": ".archify-work/native-msbuild-build/source/trunk/AKRS.ZX2200/AKRS.ZX2200.parameters-repair.csproj",
+    "removedProjectReference": "..\\AKRS.Galaxy2.Parameters\\AKRS.Galaxy2.Parameters.csproj",
+    "targetFramework": "v4.8",
+    "configuration": "Debug|AnyCPU"
+  },
+  "inputs": {
+    "referencePath": ".archify-work/official-net48-build-toolchain/vendor-devexpress-from-zx2200-bin",
+    "vendorFiles": 23
+  },
+  "toolchain": {
+    "msbuild": "C:/Windows/Microsoft.NET/Framework64/v4.0.30319/MSBuild.exe",
+    "compilerPackage": "Microsoft.Net.Compilers.Toolset 4.14.0",
+    "referencePackage": "Microsoft.NETFramework.ReferenceAssemblies.net48 1.0.3"
+  },
+  "result": {
+    "msbuildExitCode": 1,
+    "log": ".archify-work/official-net48-build-toolchain/zx2200-build-parameters-repair-zxvendor/build.log",
+    "logSha256": "B61B5776D4E886D9E18C672CEF8BCCEDAB7C4FF30FBBE18950BAE168BEA49A72",
+    "staleParametersReferenceReachedBuild": false,
+    "unresolvedReferenceWarnings": 0,
+    "lcErrorOccurrences": 4,
+    "logicalLcFailures": 2,
+    "warningCount": 13,
+    "cs1617Present": false
+  },
+  "conclusion": "Removing the stale Parameters ProjectReference in an isolated candidate does not change the full closure failure: the same two real LC.exe prerequisites remain."
+}

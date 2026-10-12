@@ -13,7 +13,7 @@ if (-not (Test-Path -LiteralPath $pythonExecutable) -or -not (Test-Path -Literal
 $address = "http://127.0.0.1:$Port"
 $health = $null
 try {
-    $health = Invoke-RestMethod -Uri "$address/api/health" -TimeoutSec 2
+    $health = Get-LocalServerHealth $address 2
 } catch { }
 if ($health.ok) {
     Save-ServerProcess $health $projectDirectory $dataDirectory $Port
@@ -29,7 +29,7 @@ for ($attempt = 0; $attempt -lt 40; $attempt++) {
     if ($process.HasExited) { throw '服务启动失败，请查看 data/server.stderr.log。' }
     $health = $null
     try {
-        $health = Invoke-RestMethod -Uri "$address/api/health" -TimeoutSec 1
+        $health = Get-LocalServerHealth $address 1
     } catch { }
     if ($health.ok) {
         Save-ServerProcess $health $projectDirectory $dataDirectory $Port

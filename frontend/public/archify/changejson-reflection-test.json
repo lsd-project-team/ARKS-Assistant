@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "source": "trunk/Akrs.ChangeJson/ReflectionHelper.cs",
+  "checks": 7,
+  "scope": "Original complete helper in bundled .NET; no UI, migration writes or product Framework runtime",
+  "sha256": "f9994135a3872ba875a083e8ae0b9b45d59440351ce3f5d0b392bb5b8a1cd3c2"
+}

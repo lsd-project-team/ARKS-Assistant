@@ -1,0 +1,229 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 · 安全移动2D/3D/4D",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "backend": {
+          "label": "程序与运动"
+        },
+        "security": {
+          "label": "门控与异常"
+        },
+        "external": {
+          "label": "外部到位边界"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "flow",
+      "label": "入口和门控"
+    },
+    {
+      "id": "action",
+      "label": "按条件执行动作"
+    },
+    {
+      "id": "exit",
+      "label": "返回与异常",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "request",
+    "height",
+    "limit",
+    "step",
+    "compare",
+    "lift",
+    "move",
+    "finish"
+  ],
+  "nodes": [
+    {
+      "id": "request",
+      "lane": "flow",
+      "col": 0,
+      "label": "选择移动入口",
+      "sublabel": "XY / XYZ / XYZT",
+      "type": "backend",
+      "width": 156
+    },
+    {
+      "id": "height",
+      "lane": "flow",
+      "col": 1,
+      "label": "计算安全高度",
+      "sublabel": "各维度独立重载",
+      "type": "backend",
+      "width": 156
+    },
+    {
+      "id": "limit",
+      "lane": "flow",
+      "col": 2,
+      "label": "检查目标限位",
+      "sublabel": "按点位维度判断",
+      "type": "backend",
+      "width": 156
+    },
+    {
+      "id": "step",
+      "lane": "flow",
+      "col": 3,
+      "label": "单步门控",
+      "sublabel": "WaitSingleStep",
+      "type": "security",
+      "width": 156
+    },
+    {
+      "id": "compare",
+      "lane": "flow",
+      "col": 4,
+      "label": "比较当前Z",
+      "sublabel": "相对安全高度",
+      "type": "security",
+      "width": 156
+    },
+    {
+      "id": "lift",
+      "lane": "action",
+      "col": 4,
+      "label": "先移动Z",
+      "sublabel": "安全Z或目标Z",
+      "type": "backend",
+      "width": 156
+    },
+    {
+      "id": "move",
+      "lane": "action",
+      "col": 5,
+      "label": "XY/XYT与收尾",
+      "sublabel": "按入口可选目标Z或原Z",
+      "type": "backend",
+      "width": 156
+    },
+    {
+      "id": "finish",
+      "lane": "exit",
+      "col": 5,
+      "label": "方法返回",
+      "sublabel": "非设备到位证明",
+      "type": "external",
+      "width": 156
+    },
+    {
+      "id": "refuse",
+      "lane": "exit",
+      "col": 3,
+      "label": "拒绝返回",
+      "sublabel": "门控false",
+      "type": "security",
+      "width": 156
+    },
+    {
+      "id": "error",
+      "lane": "exit",
+      "col": 4,
+      "label": "异常中断",
+      "sublabel": "限位或轴抛出",
+      "type": "security",
+      "width": 156
+    }
+  ],
+  "edges": [
+    {
+      "id": "a",
+      "from": "request",
+      "to": "height",
+      "role": "main"
+    },
+    {
+      "id": "b",
+      "from": "height",
+      "to": "limit",
+      "role": "main"
+    },
+    {
+      "id": "c",
+      "from": "limit",
+      "to": "step",
+      "role": "main"
+    },
+    {
+      "id": "d",
+      "from": "step",
+      "to": "compare",
+      "role": "main"
+    },
+    {
+      "id": "e",
+      "from": "compare",
+      "to": "lift",
+      "role": "main"
+    },
+    {
+      "id": "f",
+      "from": "lift",
+      "to": "move",
+      "role": "main"
+    },
+    {
+      "id": "high",
+      "from": "compare",
+      "to": "move",
+      "role": "branch"
+    },
+    {
+      "id": "finish-step",
+      "from": "move",
+      "to": "finish",
+      "role": "main",
+      "label": "完成调用"
+    },
+    {
+      "id": "refused",
+      "from": "step",
+      "to": "refuse",
+      "role": "branch"
+    },
+    {
+      "id": "limit-error",
+      "from": "limit",
+      "to": "error",
+      "role": "error"
+    },
+    {
+      "id": "z-error",
+      "from": "lift",
+      "to": "error",
+      "role": "error"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "分支差异",
+      "items": [
+        "二维低位：安全Z→XY→原Z",
+        "三四维目标Z决定Z收尾",
+        "四维水平动作传递T"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "失败语义",
+      "items": [
+        "Z返回Abort/Fail仍可能调用XY或XYT",
+        "异常中断，外层单步false直接返回",
+        "XYT下层没有本地T限位判断"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,502 @@
+{
+  "date": "2026-09-28",
+  "scope": "two manual handlers, static source evidence; no production or hardware acceptance",
+  "specSha256": "afe1a9b64d8e2d00effa9850af40dccb6dc9565904a18344cabd4e694cea0ab8",
+  "artifactSha256": "4f0537c6dac784f561744282f08171edaba4dabc2b0ab6f64a26c3a3f2b6d146",
+  "nodes": [
+    {
+      "id": "trial-click",
+      "lane": "ordinary",
+      "col": 0,
+      "label": "点击普通试胶",
+      "sublabel": "Confirm → 系统分流",
+      "type": "frontend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 483,
+          "end": 546,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "        public void Confirm()\n        {\n            this.EpoxyApplication.TearOff1Open = this.CkTearOff1On.Checked;\n\n            this.EpoxyApplication.TearOff2Open = this.CkTearOff2On.Checked;\n\n            this.EpoxyApplication.TearOff1Height = (double)this.SpTearOff1Height.Value;\n            this.EpoxyApplication.TearOff1Speed = (double)this.SpTearOff1Speed.Value;\n            this.EpoxyApplication.TearOff1Delay = (int)this.SpTearOff1Delay.Value;\n\n            this.EpoxyApplication.TearOff2Height = (double)this.SpTearOff2Height.Value;\n            this.EpoxyApplication.TearOff2Speed = (double)this.SpTearOff2Speed.Value;\n            this.EpoxyApplication.TearOff2Delay = (int)this.SpTearOff2Delay.Value;\n\n            this.EpoxyApplication.SecurityHeightForEpoxyApplication =\n                (double)this.SpSecurityHeightForEpoxyApplication.Value;\n            this.EpoxyApplication.SlowTravelSpeedBeforeDispensing = (double)this.SpSlowTravel.Value;\n\n            this.EpoxyApplication.DispenserLeadTime = (int)this.SpWaitingTime.Value;\n            this.EpoxyApplication.IsDispenserLeadTimeOpen = this.ChWaitIsDispense.Checked;\n            \n            this.EpoxyApplication.SpindleSpeedPercentage = (int)this.SpSpindleSpeed.Value;\n            this.EpoxyApplication.OffsetX = (double)this.SpOffSetX.Value;\n            this.EpoxyApplication.OffsetY = (double)this.SpOffSetY.Value;\n            this.EpoxyApplication.OffsetZ = (double)this.SpOffSetZ.Value;\n            this.EpoxyApplication.AdvanceOpenDistanceNew = (double)this.SpAdvance.Value;\n            this.EpoxyApplication.PrePlantOffSetZ = (double)this.SpPrePlantOffSetZ.Value;\n\n            this.EpoxyApplication.SizeX = (double)this.SpSizeX.Value;\n            this.EpoxyApplication.SizeY = (double)this.SpSizeY.Value;\n            this.EpoxyApplication.Angle = (double)this.SpAngle.Value;\n\n            this.EpoxyApplication.ComponentSizeX = (double)this.SpComponentX.Value;\n            this.EpoxyApplication.ComponentSizeY = (double)this.SpComponentY.Value;\n\n            this.EpoxyApplication.DispensePressure = (double)this.SpDispensingPressure.Value;\n\n            this.EpoxyApplication.Vacuum = (double)this.SpVacuum.Value;\n\n            this.EpoxyApplication.EpoxyApplicationStrategy = (EpoxyApplicationTypeEnum)this.LueEpoxyType.EditValue;\n\n            this.EpoxyApplication.PrintSlowDownHeight = (double)this.SpPrintSlowDownHeight.Value;\n            this.EpoxyApplication.PrintSlowDownSpeed = (double)this.SpPrintSlowDownSpeed.Value;\n            this.EpoxyApplication.PrintDelayTime = (int)this.SpPrintDelay.Value;\n            this.EpoxyApplication.PrintOffsetZ = (double)this.SpPrintingOffset.Value;\n            this.EpoxyApplication.PrintSlowUpHeight = (double)this.SpPrintSlowUpHeight.Value;\n            this.EpoxyApplication.PrintSlowUpSpeed = (double)this.SpPrintSlowUpSpeed.Value;\n            this.EpoxyApplication.PrintSlowUpDelayTime = (int)this.SpPrintSlowUpDelay.Value;\n\n            string printNozzleName = this.CmbNozzleName.SelectedItem?.ToString();\n\n            // 判断是否为空\n            if (string.IsNullOrEmpty(printNozzleName))\n            {\n                this.EpoxyApplication.PrintNozzleName = \"Null\";\n            }\n            else\n            {\n                this.EpoxyApplication.PrintNozzleName = printNozzleName;\n            }\n\n            EpoxyApplicationRepository.GetInstance().Save();\n            System1Program.GetInstance().Save();\n        }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 595,
+          "end": 602,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "        private void BtTest_Click(object sender, EventArgs e)\n        {\n            try\n            {\n                this.Confirm();\n                bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2\n              && (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense\n                  || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool && this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));"
+        }
+      ]
+    },
+    {
+      "id": "trial-gate",
+      "lane": "ordinary",
+      "col": 1,
+      "label": "设备与载具门控",
+      "sublabel": "未通过即 return",
+      "type": "security",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 604,
+          "end": 646,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                if (isDispenseInsystem2)\n                {\n                    #region 条件验证\n                    TransportUnit transportUnit =\n                    TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;\n\n                    if (this.CmbBondPositon.SelectedItem == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先选择焊点\");\n                        return;\n                    }\n\n                    // 判断点胶头是否准备好\n                    if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                    {\n                        Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it => it.Name == this.EpoxyApplication.PrintNozzleName);\n                        if (nozzle == null)\n                        {\n                            AKRSXtraMessageBox.Show(\"蘸胶吸嘴为空，请重新选择\");\n                            return;\n                        }\n                        else if (!nozzle.IsAssistantSucceed)\n                        {\n                            AKRSXtraMessageBox.Show(\"蘸胶吸嘴未示教完成，请示教完后重试\");\n                            return;\n                        }\n                    }\n                    else\n                    {\n                        // 如果点胶头没有示教完成，退出\n                        if (!BondProgram.GetInstance().S2DispenserProgram.IsReady())\n                        {\n                            return;\n                        }\n                    }\n\n                    if (transportUnit == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"系统2载台上没有载具，请重试\");\n                        return;\n                    }\n\n                    transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 788,
+          "end": 844,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    #region 条件验证\n                    \n                    TransportUnit transportUnit =\n                    TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit;\n\n                    if (this.CmbBondPositon.SelectedItem == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先选择焊点\");\n                        return;\n                    }\n\n                    // 如果点胶头没有示教完成，退出\n                    if (!System1Domain.GetInstance().System1Program.DispenserProgram.IsReady())\n                    {\n                        return;\n                    }\n\n                    if (transportUnit == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"系统1载台上没有载具，请重试\");\n                        return;\n                    }\n\n                    transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);\n\n                    transportUnit.SetSystem1OffSet();\n\n                    #endregion\n\n                    #region 按照配置执行定位和测高\n\n                    Substrate substrate = transportUnit.Substrates.Find(it => it.Name == this.CmbSubstrateName.SelectedItem.ToString());\n\n                    // 如果是分离的\n                    if (transportUnit.TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n                    {\n                        // 如果在点胶前半段\n                        if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1)\n                        {\n                            // 判断当前是否在前半段\n                            if (!ProductConfiguration.GetInstance().SubstrateConfig.GetBackSubstrateIndex().Contains(substrate.Index))\n                            {\n                                AKRSXtraMessageBox.Show(\"请先传送载具到点胶2平台\", \"提示\");\n                                return;\n                            }\n                        }\n                        else\n                        {\n                            // 判断当前是否在前半段\n                            if (!ProductConfiguration.GetInstance().SubstrateConfig.GetFrontSubstrateIndex().Contains(substrate.Index))\n                            {\n                                AKRSXtraMessageBox.Show(\"载具在点胶2平台,无法执行.请先将载具移动到点胶1平台\", \"提示\");\n                                return;\n                            }\n\n                            transportUnit.System1MoveDistance();\n                        }"
+        }
+      ]
+    },
+    {
+      "id": "trial-prepare",
+      "lane": "ordinary",
+      "col": 2,
+      "label": "逐层定位与测高",
+      "sublabel": "再预点胶 / 换嘴",
+      "type": "backend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 652,
+          "end": 765,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    #region 按照配置执行定位和测高\n\n                    #region substrate\n\n                    List<Substrate> substrates = transportUnit.Substrates;\n                    Substrate substrate = substrates.Find(it => it.Name == this.CmbSubstrateName.SelectedItem?.ToString());\n\n                    if (substrate == null)\n                    {\n                        AKRSXtraMessageBox.Show($\"未找到:{this.CmbSubstrateName.SelectedItem?.ToString()},请重新选择\");\n                        return;\n                    }\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"寻找{substrate?.Name}\");\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"寻找到{substrate.Name}\");\n\n                    if (!System2Domain.GetInstance().System2MatterVision(substrate, false))\n                    {\n                        return;\n                    }\n\n                    if (System2Domain.GetInstance().MatterHeightMeasurePoints(substrate) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"基板{substrate.Name}矫正完成\");\n\n                    #endregion\n\n                    #region module\n\n                    Module module = substrate.Modules.Find(it => it.Name == this.CmbModuleName.SelectedItem.ToString());\n\n                    if (module == null)\n                    {\n                        AKRSXtraMessageBox.Show($\"未找到:{this.CmbModuleName.SelectedItem.ToString()},请重新选择\");\n                        return;\n                    }\n\n                    if (!System2Domain.GetInstance().System2MatterVision(module, false))\n                    {\n                        return;\n                    }\n\n                    if (System2Domain.GetInstance().MatterHeightMeasurePoints(module) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"基岛{module.Name}矫正完成\");\n\n                    #endregion\n\n                    #region bondPosition\n\n                    BondPosition bondPosition =\n                       module.BondPositions.Find(it => it.Name == (string)this.CmbBondPositon.SelectedItem);\n\n                    if (bondPosition == null)\n                    {\n                        AKRSXtraMessageBox.Show($\"未找到:{this.CmbModuleName.SelectedItem.ToString()},请重新选择\");\n                        return;\n                    }\n\n                    if (!System2Domain.GetInstance().System2MatterVision(bondPosition, false))\n                    {\n                        return;\n                    }\n\n                    if (System2Domain.GetInstance().MatterHeightMeasurePoints(bondPosition) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"焊点{bondPosition.Name}矫正完成\");\n                    #endregion\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"对象矫正完成\");\n\n                    #endregion\n\n                    #region 预点胶\n\n                    if (this.EpoxyApplication.EpoxyApplicationStrategy != EpoxyApplicationTypeEnum.Printting)\n                    {\n                        System2Domain.GetInstance().BondActionNodeRepository.S2PreDispenseActionNode.DoWork();\n                        System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"预点胶完成\");\n                    }\n\n                    #endregion\n\n                    #region 点胶并查看效果\n\n                    AKRSPoint3D point = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));\n\n                    point += bondPosition.GetDispensePositionCompensate();\n\n                    // 空跑模式不出胶\n                    bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;\n\n                    double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();\n\n                    // 如果是蘸胶头则更换吸嘴\n                    if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                    {\n                        // 换吸嘴动作\n                        bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);\n                        if (!ret)\n                        {\n                            return;\n                        }\n                    }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 817,
+          "end": 899,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    #region 按照配置执行定位和测高\n\n                    Substrate substrate = transportUnit.Substrates.Find(it => it.Name == this.CmbSubstrateName.SelectedItem.ToString());\n\n                    // 如果是分离的\n                    if (transportUnit.TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n                    {\n                        // 如果在点胶前半段\n                        if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1)\n                        {\n                            // 判断当前是否在前半段\n                            if (!ProductConfiguration.GetInstance().SubstrateConfig.GetBackSubstrateIndex().Contains(substrate.Index))\n                            {\n                                AKRSXtraMessageBox.Show(\"请先传送载具到点胶2平台\", \"提示\");\n                                return;\n                            }\n                        }\n                        else\n                        {\n                            // 判断当前是否在前半段\n                            if (!ProductConfiguration.GetInstance().SubstrateConfig.GetFrontSubstrateIndex().Contains(substrate.Index))\n                            {\n                                AKRSXtraMessageBox.Show(\"载具在点胶2平台,无法执行.请先将载具移动到点胶1平台\", \"提示\");\n                                return;\n                            }\n\n                            transportUnit.System1MoveDistance();\n                        }\n                    }\n\n                    if (!System1Domain.GetInstance().System1MatterVision(substrate,false))\n                    {\n                        return;\n                    }\n\n                    if (System1Domain.GetInstance().MatterHeightMeasurePoints(substrate, true) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    Module module = substrate.Modules.Find(it => it.Name == this.CmbModuleName.SelectedItem.ToString());\n\n                    if (!System1Domain.GetInstance().System1MatterVision(module, false))\n                    {\n                        return;\n                    }\n\n                    if (System1Domain.GetInstance().MatterHeightMeasurePoints(module, true) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    BondPosition bondPosition =\n                        module.BondPositions.Find(it => it.Name == (string)this.CmbBondPositon.SelectedItem);\n\n                    if (!System1Domain.GetInstance().System1MatterVision(bondPosition, false))\n                    {\n                        return;\n                    }\n\n                    if (System1Domain.GetInstance().MatterHeightMeasurePoints(bondPosition, true) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    #endregion\n\n                    #region 预点胶\n\n                    System1Domain.GetInstance().DispenseActionNodes.PreDispenseAction.DoWork();\n\n                    #endregion\n\n                    #region 点胶并查看效果\n\n                    AKRSPoint3D dispensePoint3D = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));\n\n                    dispensePoint3D += bondPosition.GetDispensePositionCompensate() + DispenseDevicePara.GetInstance().DispenseModulePara.DispenseOffset;\n\n                    double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();\n\n                    // 空跑模式不出胶\n                    bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;"
+        }
+      ]
+    },
+    {
+      "id": "trial-result",
+      "lane": "ordinary",
+      "col": 3,
+      "label": "插补返回判断",
+      "sublabel": "是否为 Success？",
+      "type": "security",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 767,
+          "end": 772,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    // 执行点胶\n                    if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this\n                        .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 901,
+          "end": 905,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    // 执行点胶\n                    if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        }
+      ]
+    },
+    {
+      "id": "trial-view",
+      "lane": "ordinary",
+      "col": 5,
+      "label": "移动观察并显示",
+      "sublabel": "处理器正常结束",
+      "type": "frontend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 774,
+          "end": 782,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"点/画胶胶完成\");\n\n                    System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();\n\n                    System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point);\n\n                    UcMainSystem.VmVisionShow();\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"Bond点胶完成\");"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 907,
+          "end": 911,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(dispensePoint3D);\n\n                    System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);\n\n                    UcMainSystem.VmVisionShow();"
+        }
+      ]
+    },
+    {
+      "id": "trial-return",
+      "lane": "failure",
+      "col": 4,
+      "label": "直接返回",
+      "sublabel": "不进入后续观察",
+      "type": "security",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 768,
+          "end": 772,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this\n                        .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 902,
+          "end": 905,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        }
+      ]
+    },
+    {
+      "id": "plate-click",
+      "lane": "plate",
+      "col": 0,
+      "label": "点击板上试胶",
+      "sublabel": "Confirm → 首次标志",
+      "type": "frontend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 483,
+          "end": 546,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "        public void Confirm()\n        {\n            this.EpoxyApplication.TearOff1Open = this.CkTearOff1On.Checked;\n\n            this.EpoxyApplication.TearOff2Open = this.CkTearOff2On.Checked;\n\n            this.EpoxyApplication.TearOff1Height = (double)this.SpTearOff1Height.Value;\n            this.EpoxyApplication.TearOff1Speed = (double)this.SpTearOff1Speed.Value;\n            this.EpoxyApplication.TearOff1Delay = (int)this.SpTearOff1Delay.Value;\n\n            this.EpoxyApplication.TearOff2Height = (double)this.SpTearOff2Height.Value;\n            this.EpoxyApplication.TearOff2Speed = (double)this.SpTearOff2Speed.Value;\n            this.EpoxyApplication.TearOff2Delay = (int)this.SpTearOff2Delay.Value;\n\n            this.EpoxyApplication.SecurityHeightForEpoxyApplication =\n                (double)this.SpSecurityHeightForEpoxyApplication.Value;\n            this.EpoxyApplication.SlowTravelSpeedBeforeDispensing = (double)this.SpSlowTravel.Value;\n\n            this.EpoxyApplication.DispenserLeadTime = (int)this.SpWaitingTime.Value;\n            this.EpoxyApplication.IsDispenserLeadTimeOpen = this.ChWaitIsDispense.Checked;\n            \n            this.EpoxyApplication.SpindleSpeedPercentage = (int)this.SpSpindleSpeed.Value;\n            this.EpoxyApplication.OffsetX = (double)this.SpOffSetX.Value;\n            this.EpoxyApplication.OffsetY = (double)this.SpOffSetY.Value;\n            this.EpoxyApplication.OffsetZ = (double)this.SpOffSetZ.Value;\n            this.EpoxyApplication.AdvanceOpenDistanceNew = (double)this.SpAdvance.Value;\n            this.EpoxyApplication.PrePlantOffSetZ = (double)this.SpPrePlantOffSetZ.Value;\n\n            this.EpoxyApplication.SizeX = (double)this.SpSizeX.Value;\n            this.EpoxyApplication.SizeY = (double)this.SpSizeY.Value;\n            this.EpoxyApplication.Angle = (double)this.SpAngle.Value;\n\n            this.EpoxyApplication.ComponentSizeX = (double)this.SpComponentX.Value;\n            this.EpoxyApplication.ComponentSizeY = (double)this.SpComponentY.Value;\n\n            this.EpoxyApplication.DispensePressure = (double)this.SpDispensingPressure.Value;\n\n            this.EpoxyApplication.Vacuum = (double)this.SpVacuum.Value;\n\n            this.EpoxyApplication.EpoxyApplicationStrategy = (EpoxyApplicationTypeEnum)this.LueEpoxyType.EditValue;\n\n            this.EpoxyApplication.PrintSlowDownHeight = (double)this.SpPrintSlowDownHeight.Value;\n            this.EpoxyApplication.PrintSlowDownSpeed = (double)this.SpPrintSlowDownSpeed.Value;\n            this.EpoxyApplication.PrintDelayTime = (int)this.SpPrintDelay.Value;\n            this.EpoxyApplication.PrintOffsetZ = (double)this.SpPrintingOffset.Value;\n            this.EpoxyApplication.PrintSlowUpHeight = (double)this.SpPrintSlowUpHeight.Value;\n            this.EpoxyApplication.PrintSlowUpSpeed = (double)this.SpPrintSlowUpSpeed.Value;\n            this.EpoxyApplication.PrintSlowUpDelayTime = (int)this.SpPrintSlowUpDelay.Value;\n\n            string printNozzleName = this.CmbNozzleName.SelectedItem?.ToString();\n\n            // 判断是否为空\n            if (string.IsNullOrEmpty(printNozzleName))\n            {\n                this.EpoxyApplication.PrintNozzleName = \"Null\";\n            }\n            else\n            {\n                this.EpoxyApplication.PrintNozzleName = printNozzleName;\n            }\n\n            EpoxyApplicationRepository.GetInstance().Save();\n            System1Program.GetInstance().Save();\n        }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 968,
+          "end": 976,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "        private void BtTestInPrePlant_Click(object sender, EventArgs e)\n        {\n            this.Confirm();\n\n            DispenseRunTimeProvider.IsFirstDispense = true;\n\n            bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2\n                && (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense \n                    || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool && this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));"
+        }
+      ]
+    },
+    {
+      "id": "plate-gate",
+      "lane": "plate",
+      "col": 1,
+      "label": "胶头与板门控",
+      "sublabel": "系统分流；失败返回",
+      "type": "security",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 974,
+          "end": 1016,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "            bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2\n                && (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense \n                    || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool && this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));\n\n            if (isDispenseInsystem2)\n            {\n                if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                {\n                    Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it => it.Name == this.EpoxyApplication.PrintNozzleName);\n                    if (nozzle == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"蘸胶吸嘴为空，请重新选择\");\n                        return;\n                    }\n                    else if (!nozzle.IsAssistantSucceed)\n                    {\n                        AKRSXtraMessageBox.Show(\"蘸胶吸嘴未示教完成，请示教完后重试\");\n                        return;\n                    }\n\n                    // 换吸嘴动作\n                    bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);\n                    if (!ret)\n                    {\n                        return;\n                    }\n                }\n                else\n                {\n                    if (BondProgram.GetInstance().S2DispenserProgram.Dispenser == null\n                      || BondProgram.GetInstance().S2DispenserProgram.Dispenser.Name == string.Empty)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先配置点胶头\");\n                        return;\n                    }\n                }\n\n                // 如果预点胶板没有完成示教，退出\n                if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统2预点胶板未示教完成\");\n                    return;\n                }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1040,
+          "end": 1053,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "            else\n            {\n                if (System1Program.GetInstance().DispenserProgram.Dispenser == null\n                    || System1Program.GetInstance().DispenserProgram.Dispenser.Name == string.Empty)\n                {\n                    AKRSXtraMessageBox.Show(\"请先配置点胶头\");\n                    return;\n                }\n\n                if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统1预点胶板位置未示教完成，请先示教\");\n                    return;\n                }"
+        }
+      ]
+    },
+    {
+      "id": "plate-point",
+      "lane": "plate",
+      "col": 2,
+      "label": "取得板上位置",
+      "sublabel": "GetEpoxy；null 返回",
+      "type": "backend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1018,
+          "end": 1025,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                // 获取位置\n                AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1055,
+          "end": 1061,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }"
+        }
+      ]
+    },
+    {
+      "id": "plate-call",
+      "lane": "plate",
+      "col": 3,
+      "label": "执行插补委托",
+      "sublabel": "未检查返回值",
+      "type": "backend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1027,
+          "end": 1028,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                // 点/画胶\n                System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1063,
+          "end": 1068,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                System1Domain.GetInstance().DispenseController.InterpolationApplication(\n                    this.EpoxyApplication,\n                    point3D,\n                    true,\n                    true,\n                    0);"
+        }
+      ]
+    },
+    {
+      "id": "plate-view",
+      "lane": "plate",
+      "col": 5,
+      "label": "移动并切换相机",
+      "sublabel": "正常返回后继续",
+      "type": "frontend",
+      "width": 160,
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1030,
+          "end": 1038,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();\n\n                point3D.Z += this.EpoxyApplication.PrePlantOffSetZ;\n\n                System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point3D);\n\n                UcMainSystem.VmVisionShow();\n\n                UcMainSystem.ChangeCameraVision(CameraEnum.BondCamera.GetDescription());"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1070,
+          "end": 1079,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                System1Domain.GetInstance().DispenseController.MoveZToSafePos();\n\n                AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(point3D);\n\n                visionPos.Z += this.EpoxyApplication.PrePlantOffSetZ;\n\n                System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);\n\n                UcMainSystem.VmVisionShow();\n                UcMainSystem.ChangeCameraVision(CameraEnum.DispenseCamera.GetDescription());"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "ordinary-start",
+      "from": "trial-click",
+      "to": "trial-gate",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 595,
+          "end": 646,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "        private void BtTest_Click(object sender, EventArgs e)\n        {\n            try\n            {\n                this.Confirm();\n                bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2\n              && (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense\n                  || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool && this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));\n\n                if (isDispenseInsystem2)\n                {\n                    #region 条件验证\n                    TransportUnit transportUnit =\n                    TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;\n\n                    if (this.CmbBondPositon.SelectedItem == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先选择焊点\");\n                        return;\n                    }\n\n                    // 判断点胶头是否准备好\n                    if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                    {\n                        Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it => it.Name == this.EpoxyApplication.PrintNozzleName);\n                        if (nozzle == null)\n                        {\n                            AKRSXtraMessageBox.Show(\"蘸胶吸嘴为空，请重新选择\");\n                            return;\n                        }\n                        else if (!nozzle.IsAssistantSucceed)\n                        {\n                            AKRSXtraMessageBox.Show(\"蘸胶吸嘴未示教完成，请示教完后重试\");\n                            return;\n                        }\n                    }\n                    else\n                    {\n                        // 如果点胶头没有示教完成，退出\n                        if (!BondProgram.GetInstance().S2DispenserProgram.IsReady())\n                        {\n                            return;\n                        }\n                    }\n\n                    if (transportUnit == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"系统2载台上没有载具，请重试\");\n                        return;\n                    }\n\n                    transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 788,
+          "end": 815,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    #region 条件验证\n                    \n                    TransportUnit transportUnit =\n                    TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit;\n\n                    if (this.CmbBondPositon.SelectedItem == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先选择焊点\");\n                        return;\n                    }\n\n                    // 如果点胶头没有示教完成，退出\n                    if (!System1Domain.GetInstance().System1Program.DispenserProgram.IsReady())\n                    {\n                        return;\n                    }\n\n                    if (transportUnit == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"系统1载台上没有载具，请重试\");\n                        return;\n                    }\n\n                    transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);\n\n                    transportUnit.SetSystem1OffSet();\n\n                    #endregion"
+        }
+      ]
+    },
+    {
+      "id": "ordinary-ready",
+      "from": "trial-gate",
+      "to": "trial-prepare",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 640,
+          "end": 674,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (transportUnit == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"系统2载台上没有载具，请重试\");\n                        return;\n                    }\n\n                    transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"生产产品完成\");\n\n                    #endregion\n\n                    #region 按照配置执行定位和测高\n\n                    #region substrate\n\n                    List<Substrate> substrates = transportUnit.Substrates;\n                    Substrate substrate = substrates.Find(it => it.Name == this.CmbSubstrateName.SelectedItem?.ToString());\n\n                    if (substrate == null)\n                    {\n                        AKRSXtraMessageBox.Show($\"未找到:{this.CmbSubstrateName.SelectedItem?.ToString()},请重新选择\");\n                        return;\n                    }\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"寻找{substrate?.Name}\");\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"寻找到{substrate.Name}\");\n\n                    if (!System2Domain.GetInstance().System2MatterVision(substrate, false))\n                    {\n                        return;\n                    }\n\n                    if (System2Domain.GetInstance().MatterHeightMeasurePoints(substrate) != ExcuteResult.Success)"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 805,
+          "end": 852,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (transportUnit == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"系统1载台上没有载具，请重试\");\n                        return;\n                    }\n\n                    transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);\n\n                    transportUnit.SetSystem1OffSet();\n\n                    #endregion\n\n                    #region 按照配置执行定位和测高\n\n                    Substrate substrate = transportUnit.Substrates.Find(it => it.Name == this.CmbSubstrateName.SelectedItem.ToString());\n\n                    // 如果是分离的\n                    if (transportUnit.TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n                    {\n                        // 如果在点胶前半段\n                        if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1)\n                        {\n                            // 判断当前是否在前半段\n                            if (!ProductConfiguration.GetInstance().SubstrateConfig.GetBackSubstrateIndex().Contains(substrate.Index))\n                            {\n                                AKRSXtraMessageBox.Show(\"请先传送载具到点胶2平台\", \"提示\");\n                                return;\n                            }\n                        }\n                        else\n                        {\n                            // 判断当前是否在前半段\n                            if (!ProductConfiguration.GetInstance().SubstrateConfig.GetFrontSubstrateIndex().Contains(substrate.Index))\n                            {\n                                AKRSXtraMessageBox.Show(\"载具在点胶2平台,无法执行.请先将载具移动到点胶1平台\", \"提示\");\n                                return;\n                            }\n\n                            transportUnit.System1MoveDistance();\n                        }\n                    }\n\n                    if (!System1Domain.GetInstance().System1MatterVision(substrate,false))\n                    {\n                        return;\n                    }\n\n                    if (System1Domain.GetInstance().MatterHeightMeasurePoints(substrate, true) != ExcuteResult.Success)"
+        }
+      ]
+    },
+    {
+      "id": "ordinary-positioned",
+      "from": "trial-prepare",
+      "to": "trial-result",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 735,
+          "end": 772,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    #region 预点胶\n\n                    if (this.EpoxyApplication.EpoxyApplicationStrategy != EpoxyApplicationTypeEnum.Printting)\n                    {\n                        System2Domain.GetInstance().BondActionNodeRepository.S2PreDispenseActionNode.DoWork();\n                        System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"预点胶完成\");\n                    }\n\n                    #endregion\n\n                    #region 点胶并查看效果\n\n                    AKRSPoint3D point = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));\n\n                    point += bondPosition.GetDispensePositionCompensate();\n\n                    // 空跑模式不出胶\n                    bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;\n\n                    double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();\n\n                    // 如果是蘸胶头则更换吸嘴\n                    if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                    {\n                        // 换吸嘴动作\n                        bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);\n                        if (!ret)\n                        {\n                            return;\n                        }\n                    }\n\n                    // 执行点胶\n                    if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this\n                        .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 884,
+          "end": 905,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    #region 预点胶\n\n                    System1Domain.GetInstance().DispenseActionNodes.PreDispenseAction.DoWork();\n\n                    #endregion\n\n                    #region 点胶并查看效果\n\n                    AKRSPoint3D dispensePoint3D = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));\n\n                    dispensePoint3D += bondPosition.GetDispensePositionCompensate() + DispenseDevicePara.GetInstance().DispenseModulePara.DispenseOffset;\n\n                    double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();\n\n                    // 空跑模式不出胶\n                    bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;\n\n                    // 执行点胶\n                    if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        }
+      ]
+    },
+    {
+      "id": "ordinary-success",
+      "from": "trial-result",
+      "to": "trial-view",
+      "label": "Success",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 768,
+          "end": 780,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this\n                        .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    System2RunTimeProvider.RecordTime(\"Bond点胶测试\", $\"点/画胶胶完成\");\n\n                    System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();\n\n                    System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point);\n\n                    UcMainSystem.VmVisionShow();"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 902,
+          "end": 911,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }\n\n                    AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(dispensePoint3D);\n\n                    System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);\n\n                    UcMainSystem.VmVisionShow();"
+        }
+      ]
+    },
+    {
+      "id": "ordinary-fail",
+      "from": "trial-result",
+      "to": "trial-return",
+      "label": "非 Success",
+      "role": "error",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 768,
+          "end": 772,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this\n                        .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 902,
+          "end": 905,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                    if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)\n                    {\n                        return;\n                    }"
+        }
+      ]
+    },
+    {
+      "id": "plate-start",
+      "from": "plate-click",
+      "to": "plate-gate",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 968,
+          "end": 1016,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "        private void BtTestInPrePlant_Click(object sender, EventArgs e)\n        {\n            this.Confirm();\n\n            DispenseRunTimeProvider.IsFirstDispense = true;\n\n            bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2\n                && (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense \n                    || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool && this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));\n\n            if (isDispenseInsystem2)\n            {\n                if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                {\n                    Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it => it.Name == this.EpoxyApplication.PrintNozzleName);\n                    if (nozzle == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"蘸胶吸嘴为空，请重新选择\");\n                        return;\n                    }\n                    else if (!nozzle.IsAssistantSucceed)\n                    {\n                        AKRSXtraMessageBox.Show(\"蘸胶吸嘴未示教完成，请示教完后重试\");\n                        return;\n                    }\n\n                    // 换吸嘴动作\n                    bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);\n                    if (!ret)\n                    {\n                        return;\n                    }\n                }\n                else\n                {\n                    if (BondProgram.GetInstance().S2DispenserProgram.Dispenser == null\n                      || BondProgram.GetInstance().S2DispenserProgram.Dispenser.Name == string.Empty)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先配置点胶头\");\n                        return;\n                    }\n                }\n\n                // 如果预点胶板没有完成示教，退出\n                if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统2预点胶板未示教完成\");\n                    return;\n                }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1040,
+          "end": 1053,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "            else\n            {\n                if (System1Program.GetInstance().DispenserProgram.Dispenser == null\n                    || System1Program.GetInstance().DispenserProgram.Dispenser.Name == string.Empty)\n                {\n                    AKRSXtraMessageBox.Show(\"请先配置点胶头\");\n                    return;\n                }\n\n                if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统1预点胶板位置未示教完成，请先示教\");\n                    return;\n                }"
+        }
+      ]
+    },
+    {
+      "id": "plate-ready",
+      "from": "plate-gate",
+      "to": "plate-point",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1011,
+          "end": 1025,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                // 如果预点胶板没有完成示教，退出\n                if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统2预点胶板未示教完成\");\n                    return;\n                }\n\n                // 获取位置\n                AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1049,
+          "end": 1061,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统1预点胶板位置未示教完成，请先示教\");\n                    return;\n                }\n\n                AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }"
+        }
+      ]
+    },
+    {
+      "id": "plate-positioned",
+      "from": "plate-point",
+      "to": "plate-call",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1018,
+          "end": 1028,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                // 获取位置\n                AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }\n\n                // 点/画胶\n                System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1055,
+          "end": 1068,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }\n\n                System1Domain.GetInstance().DispenseController.InterpolationApplication(\n                    this.EpoxyApplication,\n                    point3D,\n                    true,\n                    true,\n                    0);"
+        }
+      ]
+    },
+    {
+      "id": "plate-returned",
+      "from": "plate-call",
+      "to": "plate-view",
+      "label": "含 Fail 正常返回",
+      "role": "main",
+      "evidence": [
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1028,
+          "end": 1038,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);\n\n                System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();\n\n                point3D.Z += this.EpoxyApplication.PrePlantOffSetZ;\n\n                System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point3D);\n\n                UcMainSystem.VmVisionShow();\n\n                UcMainSystem.ChangeCameraVision(CameraEnum.BondCamera.GetDescription());"
+        },
+        {
+          "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+          "start": 1063,
+          "end": 1079,
+          "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+          "code": "                System1Domain.GetInstance().DispenseController.InterpolationApplication(\n                    this.EpoxyApplication,\n                    point3D,\n                    true,\n                    true,\n                    0);\n\n                System1Domain.GetInstance().DispenseController.MoveZToSafePos();\n\n                AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(point3D);\n\n                visionPos.Z += this.EpoxyApplication.PrePlantOffSetZ;\n\n                System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);\n\n                UcMainSystem.VmVisionShow();\n                UcMainSystem.ChangeCameraVision(CameraEnum.DispenseCamera.GetDescription());"
+        }
+      ]
+    }
+  ],
+  "exceptions": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "start": 916,
+      "end": 920,
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "code": "            catch (Exception exception)\n            {\n                AKRSXtraMessageBox.Show(\"Dispense error \\r\\n\" + exception.StackTrace);\n                LogHelper.Post(Level.Error, $\"Dispense error\",exception, LogCategory.MainSoftWare, ViewType.InFileAndUI);\n                throw;"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "start": 968,
+      "end": 1081,
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "code": "        private void BtTestInPrePlant_Click(object sender, EventArgs e)\n        {\n            this.Confirm();\n\n            DispenseRunTimeProvider.IsFirstDispense = true;\n\n            bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2\n                && (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense \n                    || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool && this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));\n\n            if (isDispenseInsystem2)\n            {\n                if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)\n                {\n                    Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it => it.Name == this.EpoxyApplication.PrintNozzleName);\n                    if (nozzle == null)\n                    {\n                        AKRSXtraMessageBox.Show(\"蘸胶吸嘴为空，请重新选择\");\n                        return;\n                    }\n                    else if (!nozzle.IsAssistantSucceed)\n                    {\n                        AKRSXtraMessageBox.Show(\"蘸胶吸嘴未示教完成，请示教完后重试\");\n                        return;\n                    }\n\n                    // 换吸嘴动作\n                    bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);\n                    if (!ret)\n                    {\n                        return;\n                    }\n                }\n                else\n                {\n                    if (BondProgram.GetInstance().S2DispenserProgram.Dispenser == null\n                      || BondProgram.GetInstance().S2DispenserProgram.Dispenser.Name == string.Empty)\n                    {\n                        AKRSXtraMessageBox.Show(\"请先配置点胶头\");\n                        return;\n                    }\n                }\n\n                // 如果预点胶板没有完成示教，退出\n                if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统2预点胶板未示教完成\");\n                    return;\n                }\n\n                // 获取位置\n                AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }\n\n                // 点/画胶\n                System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);\n\n                System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();\n\n                point3D.Z += this.EpoxyApplication.PrePlantOffSetZ;\n\n                System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point3D);\n\n                UcMainSystem.VmVisionShow();\n\n                UcMainSystem.ChangeCameraVision(CameraEnum.BondCamera.GetDescription());\n            }\n            else\n            {\n                if (System1Program.GetInstance().DispenserProgram.Dispenser == null\n                    || System1Program.GetInstance().DispenserProgram.Dispenser.Name == string.Empty)\n                {\n                    AKRSXtraMessageBox.Show(\"请先配置点胶头\");\n                    return;\n                }\n\n                if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())\n                {\n                    AKRSXtraMessageBox.Show(\"系统1预点胶板位置未示教完成，请先示教\");\n                    return;\n                }\n\n                AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram\n                    .GetEpoxy();\n\n                if (point3D == null)\n                {\n                    return;\n                }\n\n                System1Domain.GetInstance().DispenseController.InterpolationApplication(\n                    this.EpoxyApplication,\n                    point3D,\n                    true,\n                    true,\n                    0);\n\n                System1Domain.GetInstance().DispenseController.MoveZToSafePos();\n\n                AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(point3D);\n\n                visionPos.Z += this.EpoxyApplication.PrePlantOffSetZ;\n\n                System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);\n\n                UcMainSystem.VmVisionShow();\n                UcMainSystem.ChangeCameraVision(CameraEnum.DispenseCamera.GetDescription());\n            }\n        }"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "schema": "archify-whole-node-v120-small-candidate-probes-v1",
+  "recordedAt": "2026-10-07T08:17:43.470Z",
+  "baseline": {
+    "version": "v120",
+    "sourceInputs": 177,
+    "referenceInputs": 70,
+    "errors": 448,
+    "diagnostics": 902,
+    "exitCode": 1,
+    "formalBaselineErrors": 642
+  },
+  "method": "Each candidate was appended alone to compile-input-v120.json and compiled in an isolated output/log; candidate DLLs were not accepted as whole-node builds.",
+  "candidates": [
+    {
+      "slug": "uplook-controller",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Controllers/UpLookController.cs",
+      "errors": 449,
+      "diagnostics": 904,
+      "decision": "rejected-error-increase",
+      "sha256": "3279b6a3f5d7524cedc6af6dcd06e4b4cccd499293afa1055bf8f935a3fa2fd5"
+    },
+    {
+      "slug": "ipt-controller",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Controllers/IPTController.cs",
+      "errors": 448,
+      "diagnostics": 902,
+      "decision": "rejected-no-error-reduction",
+      "sha256": "abf939f69d89c57a93e97382f1952a7f1acb387ea3e89b1f161c9efac2f6d49f"
+    },
+    {
+      "slug": "system2-module",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Modules/System2Module.cs",
+      "errors": 459,
+      "diagnostics": 914,
+      "decision": "rejected-error-increase",
+      "sha256": "91cbaac84aad924c01648bebf9f092aa7394b5c998c07e217aac59698d0fde67"
+    },
+    {
+      "slug": "bond-head-module",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Modules/BondHead.cs",
+      "errors": 461,
+      "diagnostics": 915,
+      "decision": "rejected-error-increase",
+      "sha256": "0383b7df762ef8cb9e29fc87b45df2690a346768c0bc8b9beee36df4e9f67ad2"
+    },
+    {
+      "slug": "epoxy-material-program",
+      "source": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/EpoxyMaterialProgram.cs",
+      "errors": 448,
+      "diagnostics": 902,
+      "decision": "rejected-no-error-reduction",
+      "sha256": "ea1f5735a4419989873f95234a45f47af1347def171d072ae19e28d9f0b991cc"
+    },
+    {
+      "slug": "epoxy-application-program",
+      "source": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/EpoxyApplicationProgram.cs",
+      "errors": 448,
+      "diagnostics": 902,
+      "decision": "already-present-in-v120",
+      "sha256": "6dc47477aef1291bbd6e8072addf2362d4564bd695a34b988caaf31d996b9826"
+    },
+    {
+      "slug": "s2-dispenser-program",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/S2DispenserProgram.cs",
+      "errors": 451,
+      "diagnostics": 905,
+      "decision": "rejected-error-increase",
+      "sha256": "066f958680efba1444cffbd664fe1dbb5811f3dba6ab86d21eb9c56cbb4d7921"
+    },
+    {
+      "slug": "bond-head-param",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Models/DeviceParams/BondHeadParam.cs",
+      "errors": 448,
+      "diagnostics": 902,
+      "decision": "already-present-in-v120",
+      "sha256": "5bc6277667f53874810ca55b03e1e9a95b16dfd2fe0e69c5917119d177427830"
+    },
+    {
+      "slug": "nozzle-shelf-controller",
+      "source": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "errors": 455,
+      "diagnostics": 911,
+      "decision": "rejected-error-increase",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37"
+    },
+    {
+      "slug": "system1-other-program",
+      "source": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/System1OtherProgram.cs",
+      "errors": 448,
+      "diagnostics": 902,
+      "decision": "already-present-in-v120",
+      "sha256": "ee6a6e80603027cefb11cd8897c1864b21ac80287b19cc9acd7158c9b5c4e6dd"
+    }
+  ],
+  "conclusion": "No tested candidate reduced the v120 error count. v120 remains the experimental best; the formal 122-file / 123-source / 53-reference baseline remains frozen at 642 errors.",
+  "wholeGoalComplete": false
+}

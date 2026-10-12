@@ -1,0 +1,253 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "03 · S1 配方、点胶与分段交接",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "操作员"
+        },
+        "backend": {
+          "label": "执行动作"
+        },
+        "security": {
+          "label": "条件 / 结果"
+        },
+        "messagebus": {
+          "label": "信号交接"
+        },
+        "external": {
+          "label": "硬件 / 物料"
+        },
+        "database": {
+          "label": "文件 / 数据"
+        }
+      }
+    },
+    "subtitle": "S1 主执行链；禁用、离线、异常与硬件边界见源码复核"
+  },
+  "lanes": [
+    {
+      "id": "l0",
+      "label": "等待与调度"
+    },
+    {
+      "id": "l1",
+      "label": "动作执行"
+    },
+    {
+      "id": "l2",
+      "label": "恢复与放行"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "sort",
+      "lane": "l0",
+      "col": 0,
+      "label": "生成配方动作",
+      "type": "backend",
+      "width": 146
+    },
+    {
+      "id": "wait",
+      "lane": "l0",
+      "col": 1,
+      "label": "等来料并预点胶",
+      "type": "backend",
+      "width": 146
+    },
+    {
+      "id": "inject",
+      "lane": "l0",
+      "col": 2,
+      "label": "注入焊点步骤",
+      "type": "backend",
+      "width": 146
+    },
+    {
+      "id": "next",
+      "lane": "l0",
+      "col": 3,
+      "label": "查未完成动作",
+      "type": "security",
+      "width": 146
+    },
+    {
+      "id": "gate",
+      "lane": "l1",
+      "col": 2,
+      "label": "需要执行？",
+      "type": "security",
+      "width": 146
+    },
+    {
+      "id": "work",
+      "lane": "l1",
+      "col": 3,
+      "label": "执行当前动作",
+      "type": "backend",
+      "width": 146
+    },
+    {
+      "id": "result",
+      "lane": "l1",
+      "col": 4,
+      "label": "返回结果？",
+      "type": "security",
+      "width": 146
+    },
+    {
+      "id": "finish",
+      "lane": "l2",
+      "col": 1,
+      "label": "标当前消息完成",
+      "type": "backend",
+      "width": 146
+    },
+    {
+      "id": "stop",
+      "lane": "l2",
+      "col": 5,
+      "label": "安全位并 Stop",
+      "type": "security",
+      "width": 146
+    },
+    {
+      "id": "release",
+      "lane": "l0",
+      "col": 5,
+      "label": "条件放行与重置",
+      "type": "messagebus",
+      "width": 146
+    }
+  ],
+  "edges": [
+    {
+      "id": "sort-wait",
+      "from": "sort",
+      "to": "wait",
+      "label": "",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "wait-inject",
+      "from": "wait",
+      "to": "inject",
+      "label": "来料",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "inject-next",
+      "from": "inject",
+      "to": "next",
+      "label": "",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "next-gate",
+      "from": "next",
+      "to": "gate",
+      "label": "有动作",
+      "role": "main",
+      "variant": "default",
+      "fromSide": "bottom"
+    },
+    {
+      "id": "next-release",
+      "from": "next",
+      "to": "release",
+      "label": "空结果",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "gate-work",
+      "from": "gate",
+      "to": "work",
+      "label": "是",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "gate-finish",
+      "from": "gate",
+      "to": "finish",
+      "label": "否",
+      "role": "branch",
+      "variant": "default"
+    },
+    {
+      "id": "work-result",
+      "from": "work",
+      "to": "result",
+      "label": "",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "result-finish",
+      "from": "result",
+      "to": "finish",
+      "label": "成功",
+      "role": "main",
+      "variant": "default"
+    },
+    {
+      "id": "finish-next",
+      "from": "finish",
+      "to": "next",
+      "label": "下一步",
+      "role": "return",
+      "variant": "dashed",
+      "toSide": "top"
+    },
+    {
+      "id": "result-next",
+      "from": "result",
+      "to": "next",
+      "label": "Retry",
+      "role": "return",
+      "variant": "dashed"
+    },
+    {
+      "id": "result-stop",
+      "from": "result",
+      "to": "stop",
+      "label": "其他失败",
+      "role": "error",
+      "variant": "security"
+    }
+  ],
+  "mainPath": [
+    "sort",
+    "wait"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "选择与重做",
+      "items": [
+        "按配置排序；点胶 / 检测映射为 if / else if。",
+        "空结果也可能是动作名未匹配；Retry 重取未完成项。",
+        "检测可重置早期消息；Fail 也可禁用焊点后返回 Success。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "不可省略的边界",
+      "items": [
+        "等料预点胶失败直接退出；禁用 S1 则绕过动作。",
+        "分段 Wait、定位 bool 未检查；异常不保证 Stop。",
+        "仅未 Stop 才放行；底层动作与现场结果未全部验收。"
+      ]
+    }
+  ]
+}

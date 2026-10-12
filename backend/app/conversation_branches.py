@@ -45,6 +45,7 @@ class ConversationBranches:
             ]
 
     def fork(self, thread_id, message_id):
+        self.repository.creation_guard()
         with self.repository.lock, self.repository.database.session.begin() as session:
             parent = self.repository.catalog.row(session, thread_id)
             cursor = self.repository.history.cursor(session, thread_id, message_id)
@@ -62,6 +63,7 @@ class ConversationBranches:
             branch = Thread(
                 title=f"{parent.title[:108]} · 分支",
                 workspace_id=parent.workspace_id,
+                project_id=parent.project_id,
                 auto_title=False,
                 origin_thread_id=thread_id,
                 origin_message_id=message_id,
@@ -75,14 +77,16 @@ class ConversationBranches:
                         role=row.role,
                         content=row.content,
                         selections_json=row.selections_json,
+                        source_options_json=row.source_options_json,
                         created_at=row.created_at,
                         origin_message_id=row.id,
+                        source_workspace_id=row.source_workspace_id,
                     )
                 )
             session.flush()
             return record_dict(branch)
 
-    def edit_latest(self, thread_id, message_id, content, selections):
+    def edit_latest(self, thread_id, message_id, content, selections, source_options=None):
         with self.repository.lock, self.repository.database.session.begin() as session:
             self.repository.catalog.row(session, thread_id)
             latest = session.scalar(
@@ -101,7 +105,12 @@ class ConversationBranches:
                 )
             ):
                 row.context_active = False
-            run = self.repository.add_run(session, thread_id, content, selections)
+            options = (
+                source_options
+                if source_options is not None
+                else record_dict(latest)["source_options"]
+            )
+            run = self.repository.add_run(session, thread_id, content, selections, options)
             session.get(Message, run["message_id"]).replaces_id = message_id
             session.get(Run, run["id"]).reset_context = True
             session.get(Thread, thread_id).updated_at = now_iso()

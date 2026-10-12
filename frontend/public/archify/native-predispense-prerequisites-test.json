@@ -1,0 +1,616 @@
+{
+  "schemaVersion": 1,
+  "status": "original-predispense-predicate-plate-and-lower-failure-native-preparation-passed",
+  "parent": {
+    "file": "native-s1-rework-context-test.json",
+    "sha256": "f288e6d15f1ac97d0673fef1402eecd6d9a62d900dd6bb3827b70de41df81115"
+  },
+  "parentFrozenBindings": 5571,
+  "newFrozenInputs": 90,
+  "totalFrozenBindings": 5661,
+  "acceptedProcesses": 2,
+  "checksPerPass": 30,
+  "distinctLabels": 30,
+  "selectedMethods": 61,
+  "staticXtraShowOverloads": 45,
+  "originalSources": 18,
+  "originalPreDispenseCallsPerPass": 5,
+  "originalPreDispenseAlarmReturnsPerPass": 4,
+  "originalInputHelperCallsPerPass": 1,
+  "uiCallbacksCollectedPerPass": 4,
+  "uiCallbacksExecuted": 0,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "beforeEveryTimingAloneDoesNotTriggerObserved": true,
+  "originalEnabledPreDispenseFailureExecuted": true,
+  "realNonSuccessInputBranchExecuted": true,
+  "locationConsumedBeforeFailureObserved": true,
+  "lastTimePreservedOnFailureObserved": true,
+  "columnFirstPlateAllocationObserved": true,
+  "invalidIndexCommitsBeforeArrayFaultObserved": true,
+  "publicReadyFlagsFixtureUsed": true,
+  "publicSdkCoordinateFixtureUsed": true,
+  "publicZeroCalibrationPointsFixtureUsed": true,
+  "publicUiDispatcherCollectsWithoutExecution": true,
+  "privateMethodsBoundToOriginalReceiver": true,
+  "wholeOriginalProductionTaskExecuted": false,
+  "physicalDispenseExecuted": false,
+  "physicalPreDispenseExecuted": false,
+  "axisMovementExecuted": false,
+  "epoxySqueezeExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "dbLazyCreated": false,
+  "hardwareActionExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "failedRuntimeV1": {
+      "chunk": "2f4274",
+      "exitCode": 1,
+      "passedChecks": 21
+    },
+    "failedRuntimeV2": {
+      "chunk": "4f18e7",
+      "exitCode": 1,
+      "passedChecks": 21
+    },
+    "failedRuntimeV3": {
+      "chunk": "1db7f5",
+      "exitCode": 1,
+      "passedChecks": 25
+    },
+    "acceptedCompileAndPrimary": {
+      "chunk": "5cedfd",
+      "exitCode": 0
+    },
+    "replayCompileAndRuntime": {
+      "chunk": "5d73dc",
+      "exitCode": 0
+    },
+    "il": {
+      "chunk": "a5e6b7",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 85770,
+      "chunk": "0f8521",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/PredispenseAction.cs",
+      "sha256": "2afb4eff3ecdd88caea9bcf009884a8432c914b7cd8f34d61a7d923557ababb8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/PreDispensePlateProgram.cs",
+      "sha256": "b1b3dead5c44aea6d1db14993fdc492b72b9483fbbabf440ce68990e8fa52705"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/PreDispensePlatePara.cs",
+      "sha256": "6aed34e5385cd1662741a381265f3d882aa3bbc0c56e7a895ebcca472579d410"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/PreDispense.cs",
+      "sha256": "9e25ec21cb25cdce971675b46cc70c3cab04db359fdd0be2a99c9c24c434afc8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/DispenseModule.cs",
+      "sha256": "ff5b68be21e0ba15364e604ec0f70ab2a39647aa2257a5b0aebe0df7a87b51c1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Pattern/EpoxyApplication.cs",
+      "sha256": "521085379fd47662ed25f7f7ae3372e22d8d58330b9ba6a9391fa5c39abce0ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Services/DispenserMoveHelper.cs",
+      "sha256": "265981cd1e4ef2987860def252b439124e02c04b795a85e2700b7443938a25d5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateRunPara.cs",
+      "sha256": "6de30a1616d81261702c4159f78c7e643ce584e5756bc16fda7a588d17835699"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/MachineCoordinateSystem.cs",
+      "sha256": "39f986f1efe0bf5916f037eb272ccae9024ab6494ac9286afa97830b59c9abe3"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-predispense-prerequisites.cjs",
+      "sha256": "e985cebecd6277376dc420e9b885096a084e80f70a6dde760dbb1f730f3548f2",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0000-freeze-native-predispense-prerequisites.cjs"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\Cases.cs",
+      "sha256": "5c7e3f65d67fcb1a8711b3dd1a771febff4eb122c6479b205598d900682aacac",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\Host.cs",
+      "sha256": "4991fef1f4ae071ccbf561296669327e14c429105def3ab1de19a7648caa4ad9",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\Probe.exe",
+      "sha256": "c28524e130105386431182fe3acff7b9aea590a07ce6dc81625b4907cf61d7fb",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\compile-input.json",
+      "sha256": "af93463dbb40a1966ebda9b07e34862022f4c4d160b5e5bb9bb39cc7620572b7",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\compile.json",
+      "sha256": "56a12aa5fa2a3418eeb066e0da7779e7b37e53f291a548a3802ceee6408b6357",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v1-Cases.cs",
+      "sha256": "39a3d247120ad45d41571b2d9d5974bc7b92d9463e9f83be80f481dc9a4eb9bc",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0006-failed-runtime-v1-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v1-Probe.exe",
+      "sha256": "8ec99f04dc77e40ade7f74e9161db4971e556fd57d43b78ca227081414829216",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0007-failed-runtime-v1-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v1-compile.json",
+      "sha256": "22a8859af7a962b6aab31bc6575803b16d47206157b1bc48496644ee27f1ee1a",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0008-failed-runtime-v1-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v2-Cases.cs",
+      "sha256": "c963a08d142960cf61d36819653f8b33ae91fafdf5b70376ca891c6845660da2",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0009-failed-runtime-v2-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v2-Probe.exe",
+      "sha256": "656af921b2934a55093840ca95fb9e573e37fae7c7ebd15d86d8028e03965e8e",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0010-failed-runtime-v2-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v2-compile.json",
+      "sha256": "0bddfd1007030fc25439ef7e17719fff89e96bb31f62be78f1e5ad971a45b71f",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0011-failed-runtime-v2-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v3-Cases.cs",
+      "sha256": "b1e6e42dc38002a0c1d14f25068581abc692aa0eefbff9f8b9b68438fc84e28a",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0012-failed-runtime-v3-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v3-Probe.exe",
+      "sha256": "db463af55781f14c8f855f4d32649c39d45cc80a6cd45353beb715bbb30cb585",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0013-failed-runtime-v3-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\failed-runtime-v3-compile.json",
+      "sha256": "3c4f2db0be429af5ce2ea508683f072279bb181bcf220881d3f95abc97467b74",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0014-failed-runtime-v3-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\il.json",
+      "sha256": "a74dfd8cb39bedcd382408b781fc3d524f1a284cdaaf39d7f00315418177b791",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0015-il.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0016-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\parent-rework-verification.log",
+      "sha256": "4d6873487bcf9581b4ec400af1675659be6c5cbe0a6140e1dd37804b51f437b4",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0017-parent-rework-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\preflight.log",
+      "sha256": "53584d53b40e44a63955fa54317ded0c22b5ee2095533b36f7678f1d0357b9f2",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0018-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-Probe.exe",
+      "sha256": "c28524e130105386431182fe3acff7b9aea590a07ce6dc81625b4907cf61d7fb",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0019-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\Probe.exe",
+      "sha256": "db463af55781f14c8f855f4d32649c39d45cc80a6cd45353beb715bbb30cb585",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0020-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0021-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\Settings\\DeviceParams\\EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0022-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\Settings\\RecipeParams\\12345678-3333-9999-aaaa-bbbbbbbbbbbb\\DispenseProgram.json",
+      "sha256": "02f518399aecca413f273eb95c2ad8b29be69054925c73dad22db94a138eab79",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0023-DispenseProgram.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\case-progress.log",
+      "sha256": "70bdfb8e8c5fbb821c7db993abfa7c982f79f8739d0b2488118f1db935b0ff70",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0024-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0025-process.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0026-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0027-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v3\\stdout.json",
+      "sha256": "9c75e321416fc4c4fbe518bb0fd3461a1b836a55b9d74efaee05846397ff82ac",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0028-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\Probe.exe",
+      "sha256": "c28524e130105386431182fe3acff7b9aea590a07ce6dc81625b4907cf61d7fb",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0029-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0030-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\Settings\\DeviceParams\\EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0031-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\Settings\\RecipeParams\\12345678-3333-9999-aaaa-bbbbbbbbbbbb\\DispenseProgram.json",
+      "sha256": "f614b09223eb58c38c63cb1cb2be552a750d03b8bf0db4d48c4a61f8fb20c2ee",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0032-DispenseProgram.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\case-progress.log",
+      "sha256": "8403dde596ffad1961253870c48937737795e0a523b6a5150b2cccff254722aa",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0033-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0034-process.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0035-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0036-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted-v4\\stdout.json",
+      "sha256": "5450c965a145fed3d1d13f057f5ad5298c62c89b1e612ea76e1b341bbf7daf6a",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0037-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\Probe.exe",
+      "sha256": "656af921b2934a55093840ca95fb9e573e37fae7c7ebd15d86d8028e03965e8e",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0038-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0039-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\Settings\\DeviceParams\\EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0040-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\Settings\\RecipeParams\\12345678-3333-9999-aaaa-bbbbbbbbbbbb\\DispenseProgram.json",
+      "sha256": "c4cac86415173f7bbd4d8eb2efa0cda3fd8bb330b68f991c1cd1d307b8ea6f70",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0041-DispenseProgram.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\case-progress.log",
+      "sha256": "b260c92ffa6ac975bafff164c4b6669e11991eee9d5fa308647c853d0b34dc70",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0042-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0043-process.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0044-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0045-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary-accepted\\stdout.json",
+      "sha256": "479dc654c706e1734047828993b920da5375ea24a2afabe908fe7206dd3266da",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0046-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\Probe.exe",
+      "sha256": "8ec99f04dc77e40ade7f74e9161db4971e556fd57d43b78ca227081414829216",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0047-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0048-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\Settings\\DeviceParams\\EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0049-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\Settings\\RecipeParams\\12345678-3333-9999-aaaa-bbbbbbbbbbbb\\DispenseProgram.json",
+      "sha256": "c4cac86415173f7bbd4d8eb2efa0cda3fd8bb330b68f991c1cd1d307b8ea6f70",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0050-DispenseProgram.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\case-progress.log",
+      "sha256": "3cdd2ffaada21c04a1f83112e9b2b468575145a13fc30ffba1df5b0b5ab10d25",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0051-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\process.json",
+      "sha256": "87a5168a6c15ac183f4274005ffa09bd86abf6c237dd84dde645c2e5569731a5",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0052-process.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0053-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0054-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\primary\\stdout.json",
+      "sha256": "4e9361614731587ffbad50e59407ba104aea68bccbff3a17f748fa2c9c9c12ed",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0055-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\Probe.exe",
+      "sha256": "c28524e130105386431182fe3acff7b9aea590a07ce6dc81625b4907cf61d7fb",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0056-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\Settings\\DeviceParams\\DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0057-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\Settings\\DeviceParams\\EpoxyApplicationRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0058-EpoxyApplicationRepository.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\Settings\\RecipeParams\\12345678-3333-9999-aaaa-bbbbbbbbbbbb\\DispenseProgram.json",
+      "sha256": "f614b09223eb58c38c63cb1cb2be552a750d03b8bf0db4d48c4a61f8fb20c2ee",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0059-DispenseProgram.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\case-progress.log",
+      "sha256": "8403dde596ffad1961253870c48937737795e0a523b6a5150b2cccff254722aa",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0060-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0061-process.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0062-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0063-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-accepted-v4\\stdout.json",
+      "sha256": "84858d86fe352b12b1df7b1f23cfd2d647131647e28baa5b132bdd505b6ce40d",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0064-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\replay-compile.json",
+      "sha256": "df7ae8f75e971690fedaa1492b6198b7c59cc291b838f3eae490a2b7cf3ed947",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0065-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-predispense-prerequisites\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0066-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-predispense-prerequisites.ps1",
+      "sha256": "62feb540bd50f570f409bd3eb04a057d6940b63f9236eae69b406afb23af2097",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0067-inspect-native-predispense-prerequisites.ps1"
+    },
+    {
+      "file": "scripts/native-predispense-prerequisites-cases.cs.txt",
+      "sha256": "5c7e3f65d67fcb1a8711b3dd1a771febff4eb122c6479b205598d900682aacac",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0068-native-predispense-prerequisites-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-predispense-prerequisites.cjs",
+      "sha256": "6f0b76c774ff7075112cc8e0909e45b8acd52b1ab9b87aefc766ca0783eb9029",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0069-prepare-native-predispense-prerequisites.cjs"
+    },
+    {
+      "file": "scripts/run-native-predispense-prerequisites.cjs",
+      "sha256": "7cb654ad5bdad8091ab8dfe63a0c6496ca53f917004b76f3ea16fa38349177cd",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0070-run-native-predispense-prerequisites.cjs"
+    },
+    {
+      "file": "scripts/verify-native-predispense-prerequisites.cjs",
+      "sha256": "9032a665bacaebabffe6f1b90f1b0734a899527140bd056220511e53f086943f",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0071-verify-native-predispense-prerequisites.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0072-GeneralCoordinateSystem.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/MachineCoordinateSystem.cs",
+      "sha256": "39f986f1efe0bf5916f037eb272ccae9024ab6494ac9286afa97830b59c9abe3",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0073-MachineCoordinateSystem.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateRunPara.cs",
+      "sha256": "6de30a1616d81261702c4159f78c7e643ce584e5756bc16fda7a588d17835699",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0074-CalibrateRunPara.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0075-DispenseController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/PreDispensePlatePara.cs",
+      "sha256": "6aed34e5385cd1662741a381265f3d882aa3bbc0c56e7a895ebcca472579d410",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0076-PreDispensePlatePara.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/PredispenseAction.cs",
+      "sha256": "2afb4eff3ecdd88caea9bcf009884a8432c914b7cd8f34d61a7d923557ababb8",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0077-PredispenseAction.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0078-DispenseEnum.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/PreDispensePlateProgram.cs",
+      "sha256": "b1b3dead5c44aea6d1db14993fdc492b72b9483fbbabf440ce68990e8fa52705",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0079-PreDispensePlateProgram.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0080-Dispenser.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/PreDispense.cs",
+      "sha256": "9e25ec21cb25cdce971675b46cc70c3cab04db359fdd0be2a99c9c24c434afc8",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0081-PreDispense.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Pattern/EpoxyApplication.cs",
+      "sha256": "521085379fd47662ed25f7f7ae3372e22d8d58330b9ba6a9391fa5c39abce0ad",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0082-EpoxyApplication.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/DispenseModule.cs",
+      "sha256": "ff5b68be21e0ba15364e604ec0f70ab2a39647aa2257a5b0aebe0df7a87b51c1",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0083-DispenseModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Services/DispenserMoveHelper.cs",
+      "sha256": "265981cd1e4ef2987860def252b439124e02c04b795a85e2700b7443938a25d5",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0084-DispenserMoveHelper.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0085-DispenseWorkTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0086-AKRSMessageBoxExt.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0087-AKRSXtraMessageBox.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0088-DBService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39",
+      "frozenCopy": ".archify-work/native-predispense-prerequisites-baseline/inputs/0089-MainForm.cs"
+    }
+  ],
+  "scope": "Original predicate and full PreDispense DoWork, actual ready flags/empty epoxy fixture, original grid allocation and natural missing coordinate/calibration/Z-axis failures. Real original input helper nonSuccess branch returns false with incoming state retained/machineWorking. Public real SDK unparented coordinate and zero calibration points are explicit models, not measured calibration. UI dispatcher collects not executes; only Xtra wrapper/DB Lazy uncreated. No private/source/action/hardware substitution, physical movement, SQL/UI/full production acceptance."
+}

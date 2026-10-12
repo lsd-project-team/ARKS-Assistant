@@ -1,72 +1,79 @@
-import { useEffect, useState } from 'react';
+import { useProjectApi } from '../hooks/useProjectApi';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronRight, ChevronDown, File, Search, PanelRightClose, Folder } from 'lucide-react';
-import { api, query } from '../lib/api';
+import {
+  ChevronRight,
+  ChevronDown,
+  Search,
+  Folder,
+  LocateFixed,
+  ListCollapse,
+  X,
+} from 'lucide-react';
+import { query } from '../lib/api';
 import { useWorkspace } from '../lib/store';
 import type { FileEntry } from '../types';
 import { ErrorText } from './ui';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { useExplorerScroll } from '../hooks/useExplorerScroll';
+import { FileNode } from './FileNode';
+import { useCurrentProject } from '../hooks/useProjects';
 
-function FileNode({ entry, depth }: { entry: FileEntry; depth: number }) {
-  const activePath = useWorkspace((state) => state.activePath);
-  const openFile = useWorkspace((state) => state.openFile);
-  const [expanded, setExpanded] = useState(false);
-  useEffect(() => {
-    if (entry.is_dir && activePath.startsWith(`${entry.path}/`)) setExpanded(true);
-  }, [activePath, entry.is_dir, entry.path]);
-  const children = useQuery({
-    queryKey: ['files', entry.path],
-    queryFn: () => api<FileEntry[]>(`/files?path=${query(entry.path)}`),
-    enabled: expanded && !!entry.is_dir,
-  });
-  return (
-    <>
-      <button
-        className={`file-row ${activePath === entry.path ? 'active' : ''}`}
-        style={{ paddingLeft: 10 + depth * 16 }}
-        title={entry.path}
-        aria-expanded={entry.is_dir ? expanded : undefined}
-        onClick={() => (entry.is_dir ? setExpanded(!expanded) : openFile(entry.path))}
-      >
-        {entry.is_dir ? (
-          expanded ? (
-            <ChevronDown size={12} />
-          ) : (
-            <ChevronRight size={12} />
-          )
-        ) : (
-          <File size={14} strokeWidth={1.5} />
-        )}
-        <span>{entry.name}</span>
-      </button>
-      {expanded && (
-        <>
-          <ErrorText error={children.error} />
-          {children.data?.map((child) => (
-            <FileNode key={child.path} entry={child} depth={depth + 1} />
-          ))}
-        </>
-      )}
-    </>
-  );
-}
-
-export function FileExplorer({ onClose }: { onClose: () => void }) {
+export function FileExplorer({
+  hidden = false,
+  onClose,
+  onQuickOpen,
+}: {
+  hidden?: boolean;
+  onClose: () => void;
+  onQuickOpen: () => void;
+}) {
+  const api = useProjectApi();
   const [filter, setFilter] = useState('');
-  const [rootExpanded, setRootExpanded] = useState(true);
+  const project = useCurrentProject();
+  const rootName = project.data?.source_folders?.length
+    ? project.data.name
+    : project.data?.source_root?.split(/[\\/]/).filter(Boolean).at(-1) || '源码';
+  const settledFilter = useDebouncedValue(filter.trim());
+  const rootExpanded = useWorkspace((state) => state.rootExpanded);
+  const revealTime = useWorkspace((state) => state.revealTime);
+  const activePath = useWorkspace((state) => state.activePath);
+  const scroll = useRef<HTMLDivElement>(null);
+  const onScroll = useExplorerScroll(scroll, settledFilter);
+  useEffect(() => {
+    if (revealTime) setFilter('');
+  }, [revealTime]);
   const files = useQuery({
-    queryKey: ['files', '', filter],
-    queryFn: () => api<FileEntry[]>(`/files?query=${query(filter)}`),
+    queryKey: ['files', '', settledFilter],
+    queryFn: () => api<FileEntry[]>(`/files?query=${query(settledFilter)}`),
   });
   return (
-    <aside className="file-explorer" aria-label="源码文件树">
+    <aside className="file-explorer" aria-label="源码文件树" hidden={hidden}>
       <div className="explorer-heading">
         <span>
           <Folder size={15} />
           文件
         </span>
-        <button aria-label="收起文件树" onClick={onClose}>
-          <PanelRightClose size={16} />
-        </button>
+        <div className="explorer-tools">
+          <button
+            aria-label="定位当前文件"
+            title="定位当前文件"
+            disabled={!activePath}
+            onClick={() => useWorkspace.getState().revealFile()}
+          >
+            <LocateFixed size={15} />
+          </button>
+          <button
+            aria-label="全部折叠"
+            title="全部折叠"
+            onClick={() => useWorkspace.getState().collapseDirectories()}
+          >
+            <ListCollapse size={15} />
+          </button>
+          <button aria-label="关闭文件列表" title="关闭文件列表" onClick={onClose}>
+            <X size={16} />
+          </button>
+        </div>
       </div>
       <label className="search-box">
         <Search size={14} />
@@ -76,20 +83,64 @@ export function FileExplorer({ onClose }: { onClose: () => void }) {
           value={filter}
           onChange={(event) => setFilter(event.target.value)}
         />
+        {filter && (
+          <button aria-label="清除文件筛选" onClick={() => setFilter('')}>
+            <X size={13} />
+          </button>
+        )}
       </label>
-      <div className="explorer-scroll">
-        <button
-          className="tree-root"
-          aria-expanded={rootExpanded}
-          onClick={() => setRootExpanded(!rootExpanded)}
-        >
-          {rootExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}trunk
-        </button>
+      <button className="quick-open-trigger" onClick={onQuickOpen}>
+        快速打开<kbd>Ctrl P</kbd>
+      </button>
+      <div
+        className={`explorer-scroll ${settledFilter ? 'filtered' : ''}`}
+        ref={scroll}
+        onScroll={onScroll}
+        role="tree"
+        aria-label={settledFilter ? '筛选结果' : `${rootName} 文件`}
+        onKeyDown={(event) => {
+          if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+          const rows = Array.from(
+            event.currentTarget.querySelectorAll<HTMLElement>('[role="treeitem"]'),
+          );
+          const index = rows.indexOf(document.activeElement as HTMLElement);
+          const next =
+            event.key === 'Home'
+              ? 0
+              : event.key === 'End'
+                ? rows.length - 1
+                : index + (event.key === 'ArrowDown' ? 1 : -1);
+          event.preventDefault();
+          rows[Math.max(0, Math.min(rows.length - 1, next))]?.focus();
+        }}
+      >
+        {!settledFilter && (
+          <button
+            className="tree-root"
+            aria-expanded={rootExpanded}
+            role="treeitem"
+            aria-level={1}
+            data-path=""
+            onClick={() => useWorkspace.getState().setRootExpanded(!rootExpanded)}
+          >
+            {rootExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+            {rootName}
+          </button>
+        )}
         <ErrorText error={files.error} />
-        {files.isPending && <p className="muted padded">正在读取文件…</p>}
-        {rootExpanded &&
+        {files.isPending && (
+          <p className="muted padded" data-tree-loading>
+            正在读取文件…
+          </p>
+        )}
+        {(rootExpanded || !!settledFilter) &&
           files.data?.map((entry) => (
-            <FileNode key={entry.path} entry={entry} depth={filter ? 0 : 1} />
+            <FileNode
+              key={entry.path}
+              entry={entry}
+              depth={settledFilter ? 0 : 1}
+              highlightQuery={settledFilter}
+            />
           ))}
         {files.data?.length === 0 && <p className="muted padded">没有匹配的文件</p>}
       </div>

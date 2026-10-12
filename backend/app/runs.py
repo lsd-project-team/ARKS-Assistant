@@ -2,7 +2,10 @@
 
 import asyncio
 
-from app.config import SettingsStore
+from app.analysis_policy import configured_analysis
+from app.config import SettingsStore, dump_json
+from app.models import Run
+from app.project_context import bind_project
 from app.repository import TERMINAL, Repository
 from app.run_configuration import bind_configuration, model_snapshot
 from app.run_feedback import error_feedback
@@ -17,9 +20,23 @@ class RunManager:
         # 检查点纠错与新运行入队互斥，避免读完摘要后又被另一次执行覆盖。
         self.edit_lock = asyncio.Lock()
         self.closing = False
+        self.project_snapshot = lambda: {}
 
     def start(self, run: dict):
+        project = self.project_snapshot()
+        with self.repository.database.session.begin() as session:
+            session.get(Run, run["id"]).project_snapshot_json = dump_json(project)
+        run["project_snapshot"] = project
         configuration = self.settings.load()
+        if project:
+            configuration = configuration.model_copy(
+                update={"deepwiki_repo": project.get("deepwiki_repo", "")}
+            )
+        configuration, _policy = configured_analysis(
+            configuration,
+            self.repository.message(run["message_id"])["content"],
+            self.repository.latest_event(run["thread_id"], "analysis_plan"),
+        )
         snapshot = model_snapshot(configuration)
         self.repository.record_model(run["id"], snapshot)
         run["model_snapshot"] = snapshot
@@ -31,7 +48,7 @@ class RunManager:
         task.add_done_callback(lambda _task: self.tasks.pop(run["id"], None))
 
     async def _execute_bound(self, run, configuration):
-        with bind_configuration(configuration):
+        with bind_configuration(configuration), bind_project(run.get("project_snapshot", {})):
             await self._execute(run, configuration)
 
     async def _execute(self, run: dict, configuration):
@@ -44,13 +61,16 @@ class RunManager:
                 self.repository.set_status(run["id"], "running")
                 emit("status", {"status": "running"})
                 answer = await self.runtime.execute(run, emit)
-                self.repository.finish(run["id"], answer)
+                completion = self.repository.run_event(run["id"], "run_completion")
+                self.repository.finish(run["id"], answer, completion)
                 emit(
                     "done",
                     {
                         "status": "completed",
                         "answer": answer,
                         "finished_at": self.repository.run(run["id"])["finished_at"],
+                        "stage": (completion or {}).get("stage", "completed"),
+                        "completion": completion,
                     },
                 )
                 completed = True

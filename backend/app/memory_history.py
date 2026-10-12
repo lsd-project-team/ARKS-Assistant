@@ -28,6 +28,7 @@ class MemoryHistory:
                 source_thread_id=memory.get("source_thread_id"),
                 source_paths_json=dump_json(memory.get("sources", [])),
                 action=action,
+                lifecycle=memory.get("lifecycle", "valid"),
             )
         )
 
@@ -54,6 +55,7 @@ class MemoryHistory:
             "sources": json.loads(row.source_paths_json),
             "source_thread_id": row.source_thread_id,
             "action": row.action,
+            "lifecycle": row.lifecycle,
             "created_at": row.created_at,
         }
 

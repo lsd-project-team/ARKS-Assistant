@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "ZX2200 · 主界面后台刷新",
+    "subtitle": "trunk 调用源码 + 随附 DLL 静态 IL；不代表现场执行",
+    "locale": "zh-CN",
+    "viewBox": [1080, 610],
+    "column_fit": "spread",
+    "animation": "none",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase"
+  },
+  "participants": [
+    {"id":"window","type":"frontend","label":"主界面","sublabel":"UcMainSystem"},
+    {"id":"service","type":"backend","label":"后台服务","sublabel":"RegisterTask / Activate"},
+    {"id":"loop","type":"backend","label":"循环线程","sublabel":"20 ms 扫描"},
+    {"id":"task","type":"backend","label":"刷新任务","sublabel":"1000 ms 门控"},
+    {"id":"ui","type":"frontend","label":"UI 队列","sublabel":"BeginInvoke"}
+  ],
+  "segments": [
+    {"from":155,"to":245,"label":"窗体加载 · 注册"},
+    {"from":260,"to":405,"label":"循环扫描 · 间隔门控"},
+    {"from":430,"to":560,"label":"后续激活 · 不绕过周期"}
+  ],
+  "messages": [
+    {"id":"register","from":"window","to":"service","y":170,"label":"RegisterTask(1, 1000, false)","variant":"emphasis"},
+    {"id":"loopstart","from":"service","to":"loop","y":200,"label":"首次 GetInstance → StartNew"},
+    {"id":"storetask","from":"service","to":"task","y":230,"label":"按名称登记 · StartTime"},
+    {"id":"tick","from":"loop","to":"task","y":280,"label":"周期任务 Execute","variant":"emphasis"},
+    {"id":"gate","from":"task","to":"loop","y":310,"label":"未达间隔/暂停 → 返回","variant":"dashed"},
+    {"id":"enqueue","from":"task","to":"ui","y":355,"label":"达到间隔 → BeginInvoke","variant":"emphasis"},
+    {"id":"refresh","from":"ui","to":"window","y":390,"label":"状态/配置/登出/标题刷新"},
+    {"id":"activate","from":"window","to":"service","y":450,"label":"配方操作后 Activate()"},
+    {"id":"setflag","from":"service","to":"loop","y":485,"label":"单次标志置 true","variant":"dashed"},
+    {"id":"nexttick","from":"loop","to":"task","y":520,"label":"false 型任务仍按 1000 ms 门控","variant":"emphasis"}
+  ]
+}

@@ -8,6 +8,18 @@ function Test-ServerCommand([string]$CommandLine) {
     return $CommandLine -match '\s-m\s+uvicorn\s+app\.main:app\b' -and $CommandLine -match '--host\s+127\.0\.0\.1\b'
 }
 
+function Get-LocalServerHealth([string]$Address, [int]$TimeoutSeconds = 2) {
+    # 本地健康检查绕过系统代理，不能把已就绪的本机服务误判为未启动。
+    $request = [Net.WebRequest]::CreateHttp("$Address/api/health")
+    $request.Proxy = $null
+    $request.Timeout = $TimeoutSeconds * 1000
+    $request.ReadWriteTimeout = $TimeoutSeconds * 1000
+    $response = $request.GetResponse()
+    $reader = [IO.StreamReader]::new($response.GetResponseStream())
+    try { return ($reader.ReadToEnd() | ConvertFrom-Json) }
+    finally { $reader.Dispose(); $response.Dispose() }
+}
+
 function Save-ServerProcess($Health, [string]$ProjectDirectory, [string]$DataDirectory, [int]$Port) {
     if (-not $Health.project_directory -or -not $Health.data_directory -or -not $Health.process_id) {
         throw '运行的是旧版服务，请先运行 Stop.ps1，再重新启动。'

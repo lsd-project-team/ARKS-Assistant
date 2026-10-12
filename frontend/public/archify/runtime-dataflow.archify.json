@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "ZX2200 运行数据与持久化流",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1250,
+      720
+    ]
+  },
+  "stages": [
+    {
+      "label": "输入与配置"
+    },
+    {
+      "label": "生产运行"
+    },
+    {
+      "label": "异步缓冲"
+    },
+    {
+      "label": "持久化与查询"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "config",
+      "type": "database",
+      "label": "Recipe / Settings JSON",
+      "stage": 0,
+      "row": 0,
+      "width": 140
+    },
+    {
+      "id": "operator",
+      "type": "frontend",
+      "label": "操作员与设备事件",
+      "stage": 0,
+      "row": 1,
+      "width": 140
+    },
+    {
+      "id": "actions",
+      "type": "backend",
+      "label": "动作节点与运行状态",
+      "stage": 1,
+      "row": 0,
+      "width": 140
+    },
+    {
+      "id": "vision",
+      "type": "backend",
+      "label": "视觉结果与图片",
+      "stage": 1,
+      "row": 1,
+      "width": 140
+    },
+    {
+      "id": "stats",
+      "type": "messagebus",
+      "label": "统计 BlockingCollection",
+      "stage": 2,
+      "row": 0,
+      "width": 140
+    },
+    {
+      "id": "images",
+      "type": "messagebus",
+      "label": "图片 BlockingCollection",
+      "stage": 2,
+      "row": 1,
+      "width": 140
+    },
+    {
+      "id": "sql",
+      "type": "database",
+      "label": "SQL Server / DBService",
+      "stage": 3,
+      "row": 0,
+      "width": 140
+    },
+    {
+      "id": "files",
+      "type": "database",
+      "label": "本地图片与 JSON",
+      "stage": 3,
+      "row": 1,
+      "width": 140
+    }
+  ],
+  "flows": [
+    {
+      "from": "operator",
+      "to": "actions",
+      "label": "flow",
+      "labelDy": 28
+    },
+    {
+      "from": "actions",
+      "to": "stats",
+      "label": "flow",
+      "labelDy": 28
+    },
+    {
+      "from": "actions",
+      "to": "vision",
+      "label": "flow",
+      "labelDy": 28
+    },
+    {
+      "from": "vision",
+      "to": "images",
+      "label": "flow",
+      "labelDy": 28
+    },
+    {
+      "from": "stats",
+      "to": "sql",
+      "label": "flow",
+      "labelDy": 28
+    },
+    {
+      "from": "images",
+      "to": "files",
+      "label": "flow",
+      "labelDy": 28
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "源码事实",
+      "items": [
+        "StatisticsService 的实体队列容量为 500；后台线程按实体类型调用 DBService.Insert。",
+        "VisionService 的图片队列由独立线程写 BMP，图片保存不作为动作成功的提交屏障。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "一致性边界",
+      "items": [
+        "Machine.DataSave 依次保存多类 Singleton 配置，catch 只记录并弹窗，没有跨文件事务。",
+        "部分统计 SQL 直接查询数据库；源码不证明存在消息队列或自动回滚。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,650 @@
+{
+  "schemaVersion": 1,
+  "scope": "Current registered coverage and requirement audit. No inference of exhaustive semantic or runtime completion from counts.",
+  "inputs": {
+    "source-module-inventory.json": "da45960bd0b4be7e5e1b5dc07a87f3b45e66d12ce13d18be1c9ba796e4b171a6",
+    "automation-traceability.json": "7d08b2aea191f98af9d86145fb095f23f296175cbd15f250a6dcd2267e08667d",
+    "module-reviews.json": "e8ffff119908392bdb6bc1f41078bae67853f6680abd60946c531b0a2222f6b5",
+    "module-review-evidence.json": "8a6c86071e93bff1f0cf9abb80bc020cbe1a7883797bd762d3d6cca3d90b5e2c",
+    "semantic-reviews.json": "c695e245608dbc733995085e07c89e0ede12dc504cd5b895436b3951317ffcd9",
+    "project-dependency-baseline.json": "f1840d4caffd44bc0ca0d7111820c14f597ec83d2b958d8d9beeb8bfc6572d2c",
+    "recipe-readiness-start-gate-evidence.json": "2835141855a56e34775cf2c5d2754a6e25b210585eb2505357240bbd668884df"
+  },
+  "inventoryScope": "文件系统清单，排除 bin/obj/.git；含 Designer 等生成源码；不等于 csproj 编译项或业务覆盖率",
+  "counts": {
+    "projects": 16,
+    "sourceGroups": 29,
+    "csharpFiles": 1436,
+    "partialGroups": 29,
+    "pendingGroups": 0,
+    "chapters": 8,
+    "workflowSteps": 89,
+    "workflowRelationships": 101,
+    "semanticRegistrations": 89,
+    "moduleRepresentativeRelationships": 552,
+    "moduleSnapshots": 940
+  },
+  "requirements": [
+    {
+      "id": "source-import",
+      "requirement": "导入源码并界定解析范围",
+      "status": "基准已建立",
+      "proof": "source-module-inventory.md",
+      "limit": "排除bin/obj/.git；含Designer；不等于MSBuild求值后的编译项"
+    },
+    {
+      "id": "dependencies",
+      "requirement": "识别项目、外部依赖与缺失项",
+      "status": "声明级基准已建立",
+      "proof": "project-dependency-baseline.md",
+      "limit": "XML声明不代表实际加载版本；条件和imports未求值，缺失项目仍须解决"
+    },
+    {
+      "id": "framework",
+      "requirement": "模块职责、框架入口和边界清楚",
+      "status": "部分完成",
+      "proof": "module-review-status.md",
+      "limit": "全部分组均有登记不等于全部文件和方法已复核"
+    },
+    {
+      "id": "automation",
+      "requirement": "优先理解软件自动工作的真实步骤",
+      "status": "主图限定外层已复核，内部继续",
+      "proof": "automation-traceability.md",
+      "limit": "主图步骤是聚合业务步骤，不是整个工程所有执行路径"
+    },
+    {
+      "id": "calls",
+      "requirement": "模块调用关系与业务链路清楚",
+      "status": "部分完成",
+      "proof": "module-source-explorer.html",
+      "limit": "代表关系、信号握手和控制流不能合并为全量静态调用图"
+    },
+    {
+      "id": "decisions",
+      "requirement": "触发、顺序、条件、重试与异常可溯源",
+      "status": "主链及多个专题已复核",
+      "proof": "business-branch-coverage.md",
+      "limit": "还需逐项补齐深层分支、动态分派和外部行为"
+    },
+    {
+      "id": "data",
+      "requirement": "输入输出、配置、文件、队列和数据库清楚",
+      "status": "部分完成",
+      "proof": "async-persistence-ingress-review.md",
+      "limit": "仓库源码/随附DLL静态证据不证明现场写入成功或全部数据源已穷尽"
+    },
+    {
+      "id": "visualization",
+      "requirement": "Archify交互图和有用的时序图",
+      "status": "已有主图及专题交付",
+      "proof": "index.html",
+      "limit": "每张图以自己的交付和浏览器收据为准；本审计不替代图形验收"
+    },
+    {
+      "id": "traceability",
+      "requirement": "工程师能从结论直接回看源代码",
+      "status": "主台账与已登记专题可追溯",
+      "proof": "source-explorer-handoff.md",
+      "limit": "独立专题尚未全部合并到模块阅读器；入口文件存在不代表全部结论均经人工复核"
+    },
+    {
+      "id": "progress",
+      "requirement": "已完成、当前进度、未完成项清楚",
+      "status": "本审计由当前台账自动生成",
+      "proof": "project-plan-status.md",
+      "limit": "历史增量保留原范围；模块原始缺口须结合后续专题复核，不能用文件数推算完成百分比"
+    },
+    {
+      "id": "regeneration",
+      "requirement": "源码更新后能自动重建和发现漂移",
+      "status": "有生成器和回归；语义解析部分完成",
+      "proof": "verification-runbook.md",
+      "limit": "已有脚本不是无人值守、任意源码均可用的全量自动理解工具"
+    },
+    {
+      "id": "build-runtime",
+      "requirement": "构建与真实运行验证边界清楚",
+      "status": "完整构建及设备闭环未验收",
+      "proof": "project-dependency-baseline.md",
+      "limit": "原方法替身测试仅证明限定场景；不能计作设备或SDK测试"
+    },
+    {
+      "id": "handoff",
+      "requirement": "形成工程师可接手的完整成果",
+      "status": "可用于已复核范围交接，整体未完成",
+      "proof": "module-review-status.md",
+      "limit": "所有未复核业务与现场依赖仍保留；不宣称全项目完成"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "startup-workflow",
+      "title": "01 · 启动、回零与生产放行",
+      "nodes": 12,
+      "relationships": 10,
+      "reviewedNodes": 12,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "transport-workflow",
+      "title": "02 · 载具输送与上下料",
+      "nodes": 11,
+      "relationships": 12,
+      "reviewedNodes": 11,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "dispense-workflow",
+      "title": "03 · S1 配方、点胶与分段交接",
+      "nodes": 10,
+      "relationships": 12,
+      "reviewedNodes": 10,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "wafer-supply-workflow",
+      "title": "04 · 晶圆供料、换料与翻转",
+      "nodes": 12,
+      "relationships": 15,
+      "reviewedNodes": 12,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "bonding-workflow",
+      "title": "05 · S2 配方调度与载具完成",
+      "nodes": 12,
+      "relationships": 15,
+      "reviewedNodes": 12,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "pickup-workflow",
+      "title": "06 · 取晶动作与漏晶恢复",
+      "nodes": 10,
+      "relationships": 13,
+      "reviewedNodes": 10,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "bond-action-workflow",
+      "title": "07 · 固晶动作与回带恢复",
+      "nodes": 10,
+      "relationships": 11,
+      "reviewedNodes": 10,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    },
+    {
+      "id": "failure-recovery-workflow",
+      "title": "08 · 暂停、重试、停止与线程边界",
+      "nodes": 12,
+      "relationships": 13,
+      "reviewedNodes": 12,
+      "runtimeStatuses": [
+        "not-tested"
+      ]
+    }
+  ],
+  "moduleRows": [
+    {
+      "module": "AKRS.Calibration",
+      "status": "partial",
+      "document": "calibration-tool-module-review.md",
+      "inventoryFiles": 12,
+      "registeredReviewedFiles": 7,
+      "representativeRelationships": 44,
+      "registeredGaps": [
+        "主要行为方法已分段阅读；完整模块覆盖、动态调用与退化数值/空矩阵运行行为尚未验收",
+        "主工程实际标定段已作对照；动态调用、完整生产调用闭环与实际构建环境待核验",
+        "源码包缺少固定依赖的1个SOL和4个PRC；SDK引用DLL存在但版本/许可/原生依赖及关闭/日志/输出故障未验证"
+      ]
+    },
+    {
+      "module": "Akrs.ChangeJson",
+      "status": "partial",
+      "document": "change-json-module-review.md",
+      "inventoryFiles": 12,
+      "registeredReviewedFiles": 7,
+      "representativeRelationships": 8,
+      "registeredGaps": [
+        "辅助方法、生成资源及全仓调用关系未完整复核",
+        "构建和程序集加载兼容性未验收",
+        "原更新方法9项临时文件检查（含同窗口两个Task旧快照覆盖）及反射辅助类7项检查已通过；真实UI、其余并发、ACL/磁盘故障与完整迁移验收尚未完成"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy.SoftKey",
+      "status": "partial",
+      "document": "authorization-background-source-review.md",
+      "inventoryFiles": 6,
+      "registeredReviewedFiles": 3,
+      "representativeRelationships": 7,
+      "registeredGaps": [
+        "外部Authenticator库及辅助进程内部实现未复核",
+        "窗口取消结果、持续故障传递和线程异常进程行为待运行验证",
+        "未对授权设备或生产硬件执行测试"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.AutoFocusing",
+      "status": "partial",
+      "document": "autofocus-module-review.md",
+      "inventoryFiles": 4,
+      "registeredReviewedFiles": 1,
+      "representativeRelationships": 8,
+      "registeredGaps": [
+        "其他对焦算法和完整UI/标定/晶圆调用链待复核",
+        "真实配方、相机选择、参数范围方向及SDK契约待验证",
+        "停止急停、边界输入、长期资源和焦点质量未运行验证；专题图待补齐"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.AxisCompensate",
+      "status": "partial",
+      "document": "axis-compensate-module-review.md",
+      "inventoryFiles": 7,
+      "registeredReviewedFiles": 5,
+      "representativeRelationships": 4,
+      "registeredGaps": [
+        "外部Singleton反序列化/保存未验收；项目指定MathNet二进制在现代.NET下37项原类隔离检查通过，不证明现场版本一致",
+        "仅确认文本可见测试调用，未证明真实生产接入；反射和外部调用未覆盖",
+        "37项数值原类检查及108组高阶/坐标尺度实验已完成；有限矩阵不能替代全域稳定性、噪声/条件数、现场公差、完整产品构建和设备验收"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.Component.TestDemo",
+      "status": "partial",
+      "document": "component-demo-module-review.md",
+      "inventoryFiles": 6,
+      "registeredReviewedFiles": 3,
+      "representativeRelationships": 6,
+      "registeredGaps": [
+        "类库真实加载和生产接入尚未证明",
+        "ChartService内部行为、外部依赖及生成资源未完整复核",
+        "构建、UI运行与长期点数/内存表现未验收"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.CoordinateSystems",
+      "status": "partial",
+      "document": "coordinate-system-module-review.md",
+      "inventoryFiles": 13,
+      "registeredReviewedFiles": 6,
+      "representativeRelationships": 6,
+      "registeredGaps": [
+        "展开坐标创建/更新、标定与补偿全调用方及实际配置",
+        "验证缺父/成环、固定像素中心和从属父级层数",
+        "追踪机械目标到驱动的安全、超时、停止与SDK运行"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.Dispense",
+      "status": "partial",
+      "document": "dispense-pattern-editor-source-review.md",
+      "inventoryFiles": 82,
+      "registeredReviewedFiles": 3,
+      "representativeRelationships": 4,
+      "registeredGaps": [
+        "管理删除20项、核心几何30项、插删缩放27项、追加移动绘制24项、旋转平移选择34项、模式取消表格链34项、参数往返38项及背景动作39项隔离检查完成；82个源文件未全覆盖，原生UI事件、实际位图重建和绘制仍待验收",
+        "完整GuGao79项及节点/安全移动/单步域六方法68项隔离检查完成；异常传播和任务分派已回链，但仍未端到端执行完整控制器与调度任务，SDK指针、物理关阀、部署与运行中编辑一致性未验收。",
+        "真实SXml和Bitmap模板往返22项检查完成，已复现测高标志丢失、缺图回读失败、旧图复用和保存非原子提交；跨区域格式、全部XML故障、原生提交与实际图像控件、部署Framework兼容性仍待验收",
+        "S1任务、入料等待、节点门控/执行、安全移动、单步域六原方法已串联30项同步隔离检查；任务恢复安全Z异常截断后续Stop已复现。动作服务、Machine.Stop内部、信号并发、完整控制器与设备仍未集成验收。"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.LogTest",
+      "status": "partial",
+      "document": "log-test-module-review.md",
+      "inventoryFiles": 6,
+      "registeredReviewedFiles": 4,
+      "representativeRelationships": 6,
+      "registeredGaps": [
+        "外部日志库过滤、队列、写盘/UI和失败行为未取得源码证据",
+        "配置实际加载、全部appender及程序集绑定未验证",
+        "生成资源、构建与隔离运行验收未完成"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.Machine",
+      "status": "partial",
+      "document": "machine-framework-module-review.md",
+      "inventoryFiles": 7,
+      "registeredReviewedFiles": 7,
+      "representativeRelationships": 6,
+      "registeredGaps": [
+        "全部信号生产/消费点、状态并发时序与单步协议未逐条验收",
+        "JSON helper内部实现和机器状态持久化恢复对启动的影响待核实",
+        "BaseMachine词法检索未见ZX2200直接继承/调用；外部DLL或反射未排除",
+        "源码项目与DLL引用的实际构建解析、运行加载版本未验证",
+        "原Stop五方法及真实EventWaitHandle信号已接入S1六方法，复现停止部分清理、暂停读序列窗口、超时参数忽略和State/事件不一致；状态单例/日志队列/硬件仍为替身，真实并发、全部调用方、完整工程与设备未验收。"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.MachineSupport",
+      "status": "partial",
+      "document": "machine-framework-module-review.md",
+      "inventoryFiles": 4,
+      "registeredReviewedFiles": 4,
+      "representativeRelationships": 6,
+      "registeredGaps": [
+        "配方重载全过程和配置null/损坏对生产入口的影响待核实",
+        "RecipeRepository、JsonFormatHelper、UserManager外部实现缺少源码级证明",
+        "重复RecipeID路径方法未找到trunk显式调用；外部调用仍未知",
+        "ThreadFlag全消费方与退出时序未验收；构建与运行未验证",
+        "本地DLL/PDB/config已建立漂移基准；实际类型所有权、运行加载版本、JSON异常/原子保存与并发契约仍需匹配依赖源码或独立证据。"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.PR",
+      "status": "partial",
+      "document": "vision-recipe-module-review.md",
+      "inventoryFiles": 87,
+      "registeredReviewedFiles": 5,
+      "representativeRelationships": 14,
+      "registeredGaps": [
+        "运行主入口已复核；继续派生算法、结果生命周期、坐标标定和UI生命周期",
+        "核实P4清单遗漏及PostBond名称移除对实际配方的影响",
+        "获取JSON/文件helper实现与依赖版本，完成异常、构建及SDK验证"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.PR.Test",
+      "status": "partial",
+      "document": "pr-test-module-review.md",
+      "inventoryFiles": 6,
+      "registeredReviewedFiles": 3,
+      "representativeRelationships": 10,
+      "registeredGaps": [
+        "硬件初始化实现和实际设备动作仍为外部DLL边界",
+        "编辑器全部按钮、算法与配置路径内部未完整复核",
+        "完整构建、生成资源、后台关闭并发和保存输出未运行验收"
+      ]
+    },
+    {
+      "module": "AKRS.Galaxy2.TeachTest",
+      "status": "partial",
+      "document": "teach-test-module-review.md",
+      "inventoryFiles": 17,
+      "registeredReviewedFiles": 4,
+      "representativeRelationships": 8,
+      "registeredGaps": [
+        "五类测试窗口有效步骤、22处事件绑定及55项原类隔离检查已完成；真实UI输入/取消契约、事件重入和关闭生命周期仍未验收",
+        "实际加载入口与生产接入尚未证明，项目声明为Library",
+        "资源嵌入、完整产品构建和真实控件下导航异常验收未完成；已有替身测试不替代这些验收"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/BondSystem",
+      "status": "partial",
+      "document": "bond-system-module-review.md",
+      "inventoryFiles": 227,
+      "registeredReviewedFiles": 26,
+      "representativeRelationships": 46,
+      "registeredGaps": [
+        "继续补偿、换嘴、取贴、视觉、运动轨迹和力控内部并对齐已有专题",
+        "核实数组Find扩展、仓库和保存实现及吸嘴槽位与实际硬件映射",
+        "验证自检副作用、失败后状态、SDK版本、构建和设备运行",
+        "原安全Z方法和单步域包装已验证相等高度、华夫盒边界及关闭单步旁路；其余重载、外部Axis/MotionService契约、完整任务Alarm选择与并发仍待验收。",
+        "输送固晶异常专题已补；仍需补偿false内部副作用、全局任务异常观察、供晶握手与Stop并发时序验证",
+        "供晶取片握手已补；仍需非晶圆相机等待、视觉切换请求、后台通知竞争、顶针外部运动契约与运行验证",
+        "已补BondCamera等待、StaticWaffle跳过和一点上视重取；剩余两点/读码/辅助工艺、异步共享字段竞争与全局异常监督待查",
+        "异步通知共享字段交错、其余通知写入路径、外部异常监督和停止回收尚需隔离运行验证；当前仅静态证据。",
+        "上视双点/读码/空跑已限定复核；读码报警按钮门控、SetHardware/关灯、码值导入导出与运行测试仍待完成。",
+        "视觉报警门控及硬件名称绑定已限定复核；实际PR/相机配置、后台异常等待和关灯并发仍需隔离验证。",
+        "码值Mapping导出/导入已静态串联；样本往返、保留标记、构造注入副作用、槽位门控和保存失败恢复仍待验证。",
+        "已盘点32种编程页面主类型并限定复核事件保存；20种直接接口页面方法体、其他partial/继承、对话框内保存和实际UI仍未全量验收。",
+        "S2原任务与来料/送走、节点、安全Z及Stop已串联59项检查，区分两种Retry、Fail落空、Ignore未标记、Stop后收尾、注入旧对象和人工保存异常。真实动作服务/对象绑定、补偿控制器、UI文件、多线程及设备仍未验收。",
+        "动作控制器本轮51项仅覆盖预设消息、步骤和替身依赖；完整初始化排序/过滤、任务联合运行、真实几何配置与并发设备仍待验证。",
+        "排序专项80项使用域配置和载具几何夹具；准备消息全排列、真实配置校验、分段矩阵及异形数量助手、完整任务联合运行仍待验证。正总数且非正批次的原分批算法无法推进仅作源码推导，上游可达性待查。",
+        "批次数配置32项使用控件/保存替身及真实内存JSON；真实DevExpress钳制、Singleton文件加载、所有门控到排序的端到端可达性仍待验证。",
+        "真实单例27项执行派生包装器和临时文件，未连接完整ProcessDomain生产门控；原生UI、读取异常消息框、并发Load/Save、全任务及设备仍待验证。",
+        "加载到启动已补63项有界集成；Task.Start及硬件等依赖为替身，非正批次被测试代理提前阻断。完整线程、启动入口异常承接、配方切换互斥、原生UI、完整构建及设备仍待验证。",
+        "启动入口和配方UI状态方法已补43项；原生DevExpress事件、异步消息循环、真实任务结束、配方实际保存重载及并发互斥仍未验证，直接调用禁用事件与受控模态交错不代表现场可达。",
+        "任务关闭门控已补真实Task状态及消费者验证；生产任务体结束条件、实际并发引用替换、异步通知、原生UI、硬件和完整构建仍未验收，受控任务不是生产线程闭环。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/CalibSystem",
+      "status": "partial",
+      "document": "calibration-module-review.md",
+      "inventoryFiles": 65,
+      "registeredReviewedFiles": 8,
+      "representativeRelationships": 71,
+      "registeredGaps": [
+        "旧全局主要模式已限定复核；其他标定窗口/工具、Ex列表编辑排序及拟合数值细节、配置单位约束、外部SDK/Binding/日志/持久化契约仍未全部覆盖",
+        "居中bool、放片bool、反向对焦和阈值接受策略需工艺确认",
+        "标定主链图已整合；测高/运动包装已限定复核，外部DoWork/运动SDK、停止恢复、保存恢复与实机质量未验证"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Common.cs",
+      "status": "partial",
+      "document": "common-types-module-review.md",
+      "inventoryFiles": 1,
+      "registeredReviewedFiles": 1,
+      "representativeRelationships": 0,
+      "registeredGaps": [
+        "符号绑定和反射/序列化使用未完整检查",
+        "有效编译项及业务单位仍未验证"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/DispenseSystem",
+      "status": "partial",
+      "document": "dispense-system-module-review.md",
+      "inventoryFiles": 75,
+      "registeredReviewedFiles": 17,
+      "representativeRelationships": 31,
+      "registeredGaps": [
+        "核实BeforeEveryDispense实际效果和空跑配置组合",
+        "核实DripElectric/压力控制器驱动与异常后的物理关阀状态",
+        "补齐视觉测高、胶量、胶材存储、运动SDK及设备验证",
+        "验证预点胶复用System2坐标、null焊点导出与返回码未传播的实际影响",
+        "安全移动原方法及单步域包装已隔离验证；S1安全移动异常可截断其后Stop的静态调用顺序，完整任务异常观察、MotionService契约及物理阀状态仍待验收。",
+        "已盘点32种编程页面主类型并限定复核事件保存；20种直接接口页面方法体、其他partial/继承、对话框内保存和实际UI仍未全量验收。",
+        "S1任务、入料等待、节点门控/执行、安全移动、单步域六原方法已串联30项同步隔离检查；任务恢复安全Z异常截断后续Stop已复现。动作服务、Machine.Stop内部、信号并发、完整控制器与设备仍未集成验收。",
+        "原Stop五方法及真实EventWaitHandle信号已接入S1六方法，复现停止部分清理、暂停读序列窗口、超时参数忽略和State/事件不一致；状态单例/日志队列/硬件仍为替身，真实并发、全部调用方、完整工程与设备未验收。",
+        "动作控制器本轮51项仅覆盖预设消息、步骤和替身依赖；完整初始化排序/过滤、任务联合运行、真实几何配置与并发设备仍待验证。",
+        "排序专项80项使用域配置和载具几何夹具；准备消息全排列、真实配置校验、分段矩阵及异形数量助手、完整任务联合运行仍待验证。正总数且非正批次的原分批算法无法推进仅作源码推导，上游可达性待查。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Experiment",
+      "status": "partial",
+      "document": "axis-compensate-module-review.md",
+      "inventoryFiles": 68,
+      "registeredReviewedFiles": 2,
+      "representativeRelationships": 2,
+      "registeredGaps": [
+        "仅覆盖一个实验窗口中的BtnTest链路；其他处理器和实验文件未复核",
+        "窗口打开入口、任务异常观测及运动安全联锁待追踪",
+        "未运行设备测试或导出；不能将测试调用当作生产接入"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Infrastructure",
+      "status": "partial",
+      "document": "vision-runtime-module-review.md",
+      "inventoryFiles": 126,
+      "registeredReviewedFiles": 13,
+      "representativeRelationships": 18,
+      "registeredGaps": [
+        "展开其余基础服务、DistanceCheck调用方及对象队列消费者",
+        "展开派生算法、相机/灯光SDK及结果对象生命周期",
+        "验证退出排空、磁盘错误、全局异常策略和设备重试/停止",
+        "视觉报警门控及硬件名称绑定已限定复核；实际PR/相机配置、后台异常等待和关灯并发仍需隔离验证。",
+        "设置Confirm及示教入口已限定复核；需实际UI生命周期、逐页接口实现、外部Singleton加载保存和认证配方运行验证，不能把提示或8项隔离测试视为完成。",
+        "已盘点32种编程页面主类型并限定复核事件保存；20种直接接口页面方法体、其他partial/继承、对话框内保存和实际UI仍未全量验收。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Localization",
+      "status": "partial",
+      "document": "localization-module-review.md",
+      "inventoryFiles": 4,
+      "registeredReviewedFiles": 4,
+      "representativeRelationships": 9,
+      "registeredGaps": [
+        "全翻译文件与键覆盖、消息/通用类别未完整复核",
+        "复杂控件定位、额外属性、缓存并发及各ILanguage实现尚未闭合",
+        "外部Singleton持久化与UI运行验收未完成"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Main",
+      "status": "partial",
+      "document": "main-module-review.md",
+      "inventoryFiles": 76,
+      "registeredReviewedFiles": 14,
+      "representativeRelationships": 88,
+      "registeredGaps": [
+        "核实Singleton<T>与文件复制helper实际依赖版本及实现，确认JSON读取、迁移和覆盖规则",
+        "继续PR清单子方法、槽位构造和窗口提交语义；Clone、同名处理与重建消费方已在PR/供片模块展开",
+        "继续Main其余文件、程序入口连接、权限及运行中切换限制",
+        "启动状态门控、供晶初始化、日志队列与Stop截断已有受控检查；继续完整构建、真实UI恢复、其余异常与设备运行验收，详见task-start-concurrency-review.md及state-queue-failure-review.md",
+        "已补停止恢复对料仓任务的静态影响；需验证循环边界、报警注册/清除、后台缩回Task与轴停止并发时序",
+        "普通与Production启动关窗范围不同；验证既有编程窗口、方向盘名称匹配、异步刷新及第三方Close取消/异常。",
+        "隔离验证快捷扫描重入/异常清理、快捷输送并发等待、全局与窗口F9目标差异；不将Working状态当作生产任务存活证明。",
+        "异步通知共享字段交错、其余通知写入路径、外部异常监督和停止回收尚需隔离运行验证；当前仅静态证据。",
+        "停止/关闭路径已作限定静态复核；激光检测调度、任务回收和外部硬件关闭契约仍待展开及隔离验证。",
+        "上视双点/读码/空跑已限定复核；读码报警按钮门控、SetHardware/关灯、码值导入导出与运行测试仍待完成。",
+        "激光串行调度和故障返回已复核；预热接入、现场报警表现、关闭并发及LogicHardware外部实现契约仍待验证。",
+        "点胶节点/安全移动六方法68项检查已完成；S1先安全移动后Stop、S2报警选项及Stop清单步另有静态回链，尚未运行完整生产链路或确认物理关胶状态。",
+        "S1任务、入料等待、节点门控/执行、安全移动、单步域六原方法已串联30项同步隔离检查；任务恢复安全Z异常截断后续Stop已复现。动作服务、Machine.Stop内部、信号并发、完整控制器与设备仍未集成验收。",
+        "原Stop五方法及真实EventWaitHandle信号已接入S1六方法，复现停止部分清理、暂停读序列窗口、超时参数忽略和State/事件不一致；状态单例/日志队列/硬件仍为替身，真实并发、全部调用方、完整工程与设备未验收。",
+        "S2原任务与来料/送走、节点、安全Z及Stop已串联59项检查，区分两种Retry、Fail落空、Ignore未标记、Stop后收尾、注入旧对象和人工保存异常。真实动作服务/对象绑定、补偿控制器、UI文件、多线程及设备仍未验收。",
+        "动作控制器本轮51项仅覆盖预设消息、步骤和替身依赖；完整初始化排序/过滤、任务联合运行、真实几何配置与并发设备仍待验证。",
+        "排序专项80项使用域配置和载具几何夹具；准备消息全排列、真实配置校验、分段矩阵及异形数量助手、完整任务联合运行仍待验证。正总数且非正批次的原分批算法无法推进仅作源码推导，上游可达性待查。",
+        "批次数配置32项使用控件/保存替身及真实内存JSON；真实DevExpress钳制、Singleton文件加载、所有门控到排序的端到端可达性仍待验证。",
+        "真实单例27项执行派生包装器和临时文件，未连接完整ProcessDomain生产门控；原生UI、读取异常消息框、并发Load/Save、全任务及设备仍待验证。",
+        "加载到启动已补63项有界集成；Task.Start及硬件等依赖为替身，非正批次被测试代理提前阻断。完整线程、启动入口异常承接、配方切换互斥、原生UI、完整构建及设备仍待验证。",
+        "启动入口和配方UI状态方法已补43项；原生DevExpress事件、异步消息循环、真实任务结束、配方实际保存重载及并发互斥仍未验证，直接调用禁用事件与受控模态交错不代表现场可达。",
+        "任务关闭门控已补真实Task状态及消费者验证；生产任务体结束条件、实际并发引用替换、异步通知、原生UI、硬件和完整构建仍未验收，受控任务不是生产线程闭环。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Program.cs",
+      "status": "partial",
+      "document": "application-entry-module-review.md",
+      "inventoryFiles": 1,
+      "registeredReviewedFiles": 1,
+      "representativeRelationships": 10,
+      "registeredGaps": [
+        "授权库与持续监控、硬件初始化外部实现、迁移提示及Harmony兼容性待核",
+        "后台线程生命周期与关闭恢复、配置及PR就绪契约待完整验证",
+        "未作构建、跨进程互斥和设备运行验收",
+        "异步通知共享字段交错、其余通知写入路径、外部异常监督和停止回收尚需隔离运行验证；当前仅静态证据。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/Properties",
+      "status": "partial",
+      "document": "properties-module-review.md",
+      "inventoryFiles": 3,
+      "registeredReviewedFiles": 3,
+      "representativeRelationships": 3,
+      "registeredGaps": [
+        "全部资源getter及消费点尚未映射",
+        "构建嵌入、解码、语言变体和异常未运行验证",
+        "COM暴露、部署版本和控件许可环境未核验"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/SupportFeature",
+      "status": "partial",
+      "document": "statistics-data-module-review.md",
+      "inventoryFiles": 160,
+      "registeredReviewedFiles": 8,
+      "representativeRelationships": 20,
+      "registeredGaps": [
+        "已补报警直写、属性/UI日志和退出序列；继续AOP实际织入、参数覆盖与产能/时间数据全链",
+        "验证满队列阻塞、写库失败丢记录、退出排空与指标零值实际影响",
+        "展开缺陷回调订阅者/补偿与共享数据并发，其他支持功能待覆盖",
+        "确认SQL Server/SqlSugar配置和版本，完成构建及真实运行验证",
+        "补偿链已区分Bond提前返回与TU生产消费；列表顺序、配置加载、网格边界、清除持久化和软硬补偿叠加仍待验证"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/TransportSystem",
+      "status": "partial",
+      "document": "transport-system-module-review.md",
+      "inventoryFiles": 73,
+      "registeredReviewedFiles": 24,
+      "representativeRelationships": 61,
+      "registeredGaps": [
+        "联查Machine.Stop/Pause/Continue对料仓轮询、后台缩回Task及轴停止的影响，验证异常及重复Start时序",
+        "展开层位移动、完整硬件配置、SDK等待契约和数据保存失败恢复",
+        "补齐其他搬运模式控制器全部分支，完成构建与隔离运行/实机验收",
+        "已补层位公式、切仓和Save调用顺序；料仓参数仓库Find/加载和保存契约、失败恢复及图内下层语义仍待对齐",
+        "料仓名称选择、Find及库关闭保存已限定复核；父界面运行门控、其他编辑入口、helper与文件异常仍待验证",
+        "输送固晶异常专题已补；仍需补偿false内部副作用、全局任务异常观察、供晶握手与Stop并发时序验证",
+        "S2原任务与来料/送走、节点、安全Z及Stop已串联59项检查，区分两种Retry、Fail落空、Ignore未标记、Stop后收尾、注入旧对象和人工保存异常。真实动作服务/对象绑定、补偿控制器、UI文件、多线程及设备仍未验收。",
+        "动作控制器本轮51项仅覆盖预设消息、步骤和替身依赖；完整初始化排序/过滤、任务联合运行、真实几何配置与并发设备仍待验证。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/TransportUnitSystem",
+      "status": "partial",
+      "document": "transport-unit-module-review.md",
+      "inventoryFiles": 104,
+      "registeredReviewedFiles": 24,
+      "representativeRelationships": 25,
+      "registeredGaps": [
+        "原产品初始化/真实枚举与默认树已接受控启动组合；实际SDK Singleton/JSON、完整配置/AOP/VM、原生/设备仍待验证。",
+        "全部ProcessSteps生成/消费、视觉计算、示教及存储调用方仍需逐项闭合。",
+        "14项ModifyMatter/ClearInformation原方法测试确认局部异常行为；真实单例、AOP、磁盘保存、完整构造及实机未执行。",
+        "Mapping受控编解码25项、步骤8项、门控30项不能合并为端到端恢复验收；实际配方与历史文件未认证。",
+        "本次trunk材料盘点未发现七类核心配方同名文件；须补真实配置/文件及R01–R13运行记录。",
+        "已更正状态结构体缺名行为：默认Enable；已确认改名不更新两类状态列表。需认证配方与其余编辑/加载入口验证，未修改生产源码。",
+        "设置Confirm及示教入口已限定复核；需实际UI生命周期、逐页接口实现、外部Singleton加载保存和认证配方运行验证，不能把提示或8项隔离测试视为完成。",
+        "已盘点32种编程页面主类型并限定复核事件保存；20种直接接口页面方法体、其他partial/继承、对话框内保存和实际UI仍未全量验收。",
+        "动作控制器本轮51项仅覆盖预设消息、步骤和替身依赖；完整初始化排序/过滤、任务联合运行、真实几何配置与并发设备仍待验证。"
+      ]
+    },
+    {
+      "module": "AKRS.ZX2200/WaferSubSystem",
+      "status": "partial",
+      "document": "wafer-rebuild-module-review.md",
+      "inventoryFiles": 174,
+      "registeredReviewedFiles": 16,
+      "representativeRelationships": 23,
+      "registeredGaps": [
+        "继续供片选择、进出料、搜索和配置仓库内部并对齐已有专题",
+        "核实数组配置一致性、映射控件回调及保存失败后的内存状态",
+        "获取保存helper及SDK版本，完成异常、构建与硬件验证",
+        "供晶取片握手已补；仍需非晶圆相机等待、视觉切换请求、后台通知竞争、顶针外部运动契约与运行验证",
+        "已补BondCamera等待、StaticWaffle跳过和一点上视重取；剩余两点/读码/辅助工艺、异步共享字段竞争与全局异常监督待查",
+        "停止/关闭路径已作限定静态复核；激光检测调度、任务回收和外部硬件关闭契约仍待展开及隔离验证。"
+      ]
+    },
+    {
+      "module": "InterpolationMovementTest",
+      "status": "partial",
+      "document": "interpolation-test-module-review.md",
+      "inventoryFiles": 10,
+      "registeredReviewedFiles": 5,
+      "representativeRelationships": 8,
+      "registeredGaps": [
+        "其他PT/PVT和插补方法、其他采点及初始化尚未完整复核",
+        "硬件仓库就绪、ETEL SDK等待/单位/互锁与Singleton持久化实现未验证",
+        "构建求值、资源及设备/模拟器运行未验收"
+      ]
+    }
+  ],
+  "dependencyDeclarationProjects": 16,
+  "readinessReferenceScanFiles": 1452
+}

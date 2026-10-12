@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 运行中配方重载与任务边界",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "reload", "label": "配方重载" },
+    { "id": "tasks", "label": "运行中任务" },
+    { "id": "outcome", "label": "重载结果" }
+  ],
+  "nodes": [
+    { "id": "running", "lane": "reload", "col": 0, "type": "frontend", "label": "生产任务运行中", "sublabel": "输送任务仍持有句柄", "width": 140 },
+    { "id": "saveA", "lane": "reload", "col": 1, "type": "database", "label": "保存当前配方 A", "sublabel": "固定配置与步骤", "width": 140 },
+    { "id": "reloadB", "lane": "reload", "col": 2, "type": "backend", "label": "重载配方 A 或 B", "sublabel": "六个单例重建", "width": 140 },
+    { "id": "cache", "lane": "tasks", "col": 3, "type": "security", "label": "任务缓存是否更新？", "sublabel": "控制器与域对象不同步", "width": 140 },
+    { "id": "continue", "lane": "tasks", "col": 4, "type": "backend", "label": "任务继续等待", "sublabel": "旧实体与新单例并存", "width": 140 },
+    { "id": "savefail", "lane": "outcome", "col": 3, "type": "security", "label": "保存失败？", "sublabel": "前四个单例可能已提交", "width": 140 },
+    { "id": "stop", "lane": "outcome", "col": 4, "type": "backend", "label": "Stop / 任务故障", "sublabel": "外层调度可进入 Faulted", "width": 140 },
+    { "id": "rebuild", "lane": "outcome", "col": 5, "type": "backend", "label": "释放后重试重建", "sublabel": "六个单例重新一致", "width": 140 }
+  ],
+  "edges": [
+    { "id": "running-save", "from": "running", "to": "saveA", "label": "重载前", "role": "main" },
+    { "id": "save-reload", "from": "saveA", "to": "reloadB", "label": "选择同 ID 或新 ID", "role": "main" },
+    { "id": "reload-cache", "from": "reloadB", "to": "cache", "label": "替换单例", "role": "main" },
+    { "id": "cache-continue", "from": "cache", "to": "continue", "label": "任务句柄未替换", "role": "branch" },
+    { "id": "cache-stop", "from": "cache", "to": "stop", "label": "调度或传感器异常", "role": "error", "route": "drop" },
+    { "id": "reload-savefail", "from": "reloadB", "to": "savefail", "label": "晶圆文件占用", "role": "error" },
+    { "id": "savefail-rebuild", "from": "savefail", "to": "rebuild", "label": "释放锁后重试", "role": "return" },
+    { "id": "continue-rebuild", "from": "continue", "to": "rebuild", "label": "停止后重建", "role": "return" }
+  ],
+  "mainPath": ["running", "saveA", "reloadB", "cache", "continue", "rebuild"],
+  "cards": [
+    { "dot": "amber", "title": "关键边界", "items": ["重载帮助方法不会停止或替换五个正在等待的输送 Task。", "同一 RecipeID 也会替换六类单例，但任务缓存可能仍指向首次 A。"] },
+    { "dot": "cyan", "title": "源码证据", "items": ["native-recipe-live-reload-review.md：两轮各 93 项检查。", "晶圆 Save 失败时前四个单例可能已提交，释放锁后重试才恢复一致。"] }
+  ]
+}

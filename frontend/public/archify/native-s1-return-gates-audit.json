@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "original-enabled-s1-return-gates-and-finally-refresh-native-preparation-passed",
+  "command": "node scripts/verify-native-s1-return-gates.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "7b8fde",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-s1-return-gates.log",
+  "logSha256": "6c6bf505ae557387cf6f708adcf99be802f27a742710f51a36ce9a9c04ea61e0",
+  "testSha256": "08a78cc01c9caa0bedbf2568787c3e664000c71351fa0c728d25ae8bcb411eeb",
+  "parentValidation": {
+    "command": "guarded S1 segment → task input gates → encoding-preserving resources validation pipeline",
+    "observedSession": 51051,
+    "observedCompletionChunk": "e20a09",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-s1-segment-interaction.cjs",
+        "log": ".archify-work/native-s1-return-gates/parent-segment-verification.log",
+        "sha256": "fbcb89a8387ea5e89bea01f1d2ac336781c52daaae96a14ac286e691b63e386b"
+      },
+      {
+        "command": "node scripts/verify-native-task-input-gates.cjs",
+        "log": ".archify-work/native-s1-return-gates/parent-input-verification.log",
+        "sha256": "3e20683fa857b262ad2fc87037905f3c8fd7f127c5df5fa90affc3c5d8a7862a"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-s1-return-gates/parent-resources-verification.log",
+        "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3"
+      }
+    ]
+  },
+  "processes": 12,
+  "assertionExecutionsPerPass": 120,
+  "distinctLabels": 34,
+  "selectedMethods": 26,
+  "originalSources": 12,
+  "newFrozenInputs": 117,
+  "totalFrozenBindings": 5500,
+  "wholeGoalComplete": false
+}

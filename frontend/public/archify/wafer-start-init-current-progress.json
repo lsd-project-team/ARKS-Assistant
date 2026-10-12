@@ -1,0 +1,36 @@
+{
+  "schema": "archify-static-audit-current-v1",
+  "audit": "wafer-start-init",
+  "status": "current-wafer-start-init-verified",
+  "recordedAt": "2026-10-07T00:19:35.829Z",
+  "verification": {
+    "testCommand": "node scripts/test-wafer-start-init.cjs",
+    "auditCommand": "node scripts/build-wafer-start-init-evidence.cjs --check",
+    "result": [
+      "PASS failure-and-retry-create",
+      "PASS failure-and-retry-wafer-show",
+      "PASS failure-and-retry-wafer-hide",
+      "PASS failure-and-retry-waffle-show",
+      "PASS failure-and-retry-waffle-hide",
+      "PASS failure-and-retry-single",
+      "PASS failure-and-retry-nine",
+      "PASS missing-ui-delegate",
+      "PASS normal-sequence"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/wafer-start-init-evidence.json",
+      "sha256": "b6d82b29be8fc3546f449d557e5f9841c3f72a2379743f3c923bc27a73148c5c"
+    },
+    {
+      "path": "docs/archify/wafer-start-init-review.md",
+      "sha256": "f60b156605b4551be427f4971ccd63f4870ed9eea48c353868de2086de5b9729"
+    }
+  ],
+  "boundaries": [
+    "Current isolated audit evidence is recorded separately from historical reports.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked.",
+    "The fixtures do not prove a complete online production cycle or physical device behavior."
+  ]
+}

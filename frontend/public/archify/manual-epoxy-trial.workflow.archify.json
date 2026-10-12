@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 · 手动试胶执行与退出",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "backend": {
+          "label": "程序逻辑"
+        },
+        "security": {
+          "label": "条件判断"
+        },
+        "frontend": {
+          "label": "用户界面"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "ordinary",
+      "label": "普通试胶"
+    },
+    {
+      "id": "failure",
+      "label": "提前退出",
+      "variant": "exception"
+    },
+    {
+      "id": "plate",
+      "label": "预点胶板试胶"
+    }
+  ],
+  "mainPath": [
+    "trial-click",
+    "trial-gate",
+    "trial-prepare",
+    "trial-result",
+    "trial-view"
+  ],
+  "nodes": [
+    {
+      "id": "trial-click",
+      "lane": "ordinary",
+      "col": 0,
+      "label": "点击普通试胶",
+      "sublabel": "Confirm → 系统分流",
+      "type": "frontend",
+      "width": 160
+    },
+    {
+      "id": "trial-gate",
+      "lane": "ordinary",
+      "col": 1,
+      "label": "设备与载具门控",
+      "sublabel": "未通过即 return",
+      "type": "security",
+      "width": 160
+    },
+    {
+      "id": "trial-prepare",
+      "lane": "ordinary",
+      "col": 2,
+      "label": "逐层定位与测高",
+      "sublabel": "再预点胶 / 换嘴",
+      "type": "backend",
+      "width": 160
+    },
+    {
+      "id": "trial-result",
+      "lane": "ordinary",
+      "col": 3,
+      "label": "插补返回判断",
+      "sublabel": "是否为 Success？",
+      "type": "security",
+      "width": 160
+    },
+    {
+      "id": "trial-view",
+      "lane": "ordinary",
+      "col": 5,
+      "label": "移动观察并显示",
+      "sublabel": "处理器正常结束",
+      "type": "frontend",
+      "width": 160
+    },
+    {
+      "id": "trial-return",
+      "lane": "failure",
+      "col": 4,
+      "label": "直接返回",
+      "sublabel": "不进入后续观察",
+      "type": "security",
+      "width": 160
+    },
+    {
+      "id": "plate-click",
+      "lane": "plate",
+      "col": 0,
+      "label": "点击板上试胶",
+      "sublabel": "Confirm → 首次标志",
+      "type": "frontend",
+      "width": 160
+    },
+    {
+      "id": "plate-gate",
+      "lane": "plate",
+      "col": 1,
+      "label": "胶头与板门控",
+      "sublabel": "系统分流；失败返回",
+      "type": "security",
+      "width": 160
+    },
+    {
+      "id": "plate-point",
+      "lane": "plate",
+      "col": 2,
+      "label": "取得板上位置",
+      "sublabel": "GetEpoxy；null 返回",
+      "type": "backend",
+      "width": 160
+    },
+    {
+      "id": "plate-call",
+      "lane": "plate",
+      "col": 3,
+      "label": "执行插补委托",
+      "sublabel": "未检查返回值",
+      "type": "backend",
+      "width": 160
+    },
+    {
+      "id": "plate-view",
+      "lane": "plate",
+      "col": 5,
+      "label": "移动并切换相机",
+      "sublabel": "正常返回后继续",
+      "type": "frontend",
+      "width": 160
+    }
+  ],
+  "edges": [
+    {
+      "id": "ordinary-start",
+      "from": "trial-click",
+      "to": "trial-gate",
+      "role": "main"
+    },
+    {
+      "id": "ordinary-ready",
+      "from": "trial-gate",
+      "to": "trial-prepare",
+      "role": "main"
+    },
+    {
+      "id": "ordinary-positioned",
+      "from": "trial-prepare",
+      "to": "trial-result",
+      "role": "main"
+    },
+    {
+      "id": "ordinary-success",
+      "from": "trial-result",
+      "to": "trial-view",
+      "label": "Success",
+      "role": "main"
+    },
+    {
+      "id": "ordinary-fail",
+      "from": "trial-result",
+      "to": "trial-return",
+      "label": "非 Success",
+      "role": "error"
+    },
+    {
+      "id": "plate-start",
+      "from": "plate-click",
+      "to": "plate-gate",
+      "role": "main"
+    },
+    {
+      "id": "plate-ready",
+      "from": "plate-gate",
+      "to": "plate-point",
+      "role": "main"
+    },
+    {
+      "id": "plate-positioned",
+      "from": "plate-point",
+      "to": "plate-call",
+      "role": "main"
+    },
+    {
+      "id": "plate-returned",
+      "from": "plate-call",
+      "to": "plate-view",
+      "label": "含 Fail 正常返回",
+      "role": "main"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "前置副作用与出胶参数",
+      "items": [
+        "Confirm 先修改对象，再依次委托两次 Save。",
+        "普通试胶按 DryCycle 传出胶参数；板上入口传 true。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "退出不等于重试或设备验收",
+      "items": [
+        "定位/测高失败也提前返回；预点胶 DoWork 返回未检查。",
+        "普通入口异常记录后重抛；板上入口无本地 catch。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "源码范围与溯源",
+      "items": [
+        "UcEpoxyApplication.cs：483–546、595–922、968–1081。",
+        "详见同目录 manual-epoxy-trial-summary.md；硬件未验收。"
+      ]
+    }
+  ]
+}

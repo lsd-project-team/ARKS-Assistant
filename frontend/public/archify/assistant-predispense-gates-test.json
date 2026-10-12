@@ -1,0 +1,78 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "scope": "Original assistant enums/default fields, dispenser/nozzle state aggregation and reset, S2 IsAlarm and plate IsReady. State property initializers moved into C#5 constructor; diagnostic strings replaced and override removed for isolated wrapper. Explicit program/hardware-configuration/UI substitutes; no actual hardware, repository lookup, UI teaching or persistence.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/Enums/CommonEnum.cs",
+      "start": 74,
+      "end": 90,
+      "sha256": "6e7433fc4b73ab68863e731425ddd2ed0b7df982413a3636925210db19308cab",
+      "snippetSha256": "931977e0dddc025a30fc589a6ce8ee04504cfbe92c413f183d013f7bebbed57c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "start": 73,
+      "end": 111,
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8",
+      "snippetSha256": "8962e1f8a789af2da4919cb5e361a8b3035c51511fc6898c7114b2a80b320e22"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/AssistantState.cs",
+      "start": 14,
+      "end": 24,
+      "sha256": "11d4a0d83292cfc9457c8cb5ffd034978c7771c4e24d170f1922fa30f0ffb481",
+      "snippetSha256": "18a58f1f392c65f74d8d1132222f45de7cfa97555135f8cd2220e224dd632b43"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "start": 110,
+      "end": 147,
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57",
+      "snippetSha256": "67bac3d13a41058d7aee72abcd56301448499dea894e32ed7cd70ea8a7036814"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/Nozzle/Nozzle.cs",
+      "start": 229,
+      "end": 270,
+      "sha256": "39cf74dfda75ca9c211d12e6dfc78b835fc35b35ff25fc0a5a1f4993dc52f3cc",
+      "snippetSha256": "e3198bfb140fc8cbf63f5579c57417ac30078a23b0617c15de9305726d6ff16d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/DispenseAction/S2PreDispenseActionNode.cs",
+      "start": 211,
+      "end": 260,
+      "sha256": "3085a5fb340192a6716ad1eb2e5472d664c5e34d689f9714a188b5e5c9a9de0c",
+      "snippetSha256": "6f5a490475483b8be63f56226c37e98afd895c5497f93631a77c5db014bede74"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Programs/S2PreDispensePlateProgram.cs",
+      "start": 191,
+      "end": 194,
+      "sha256": "4d04414ffd2bbd2bac826d02d5734568a10c1bb8abd56c8f4a1103e635920772",
+      "snippetSha256": "517a9d0d4337cfc48175225d86471dfbaed0f91c8750c3ca008c84cbcf8cc8eb"
+    }
+  ],
+  "checks": [
+    "PASS dispenser reset UnAble rejected",
+    "PASS missing dispenser state rejected",
+    "PASS ForBidden dispenser state accepted",
+    "PASS Able dispenser state accepted",
+    "PASS nozzle reset rejected",
+    "PASS all Able nozzle accepted",
+    "PASS geometry UnAble blocks nozzle",
+    "PASS missing geometry blocks nozzle",
+    "PASS all ForBidden nozzle accepted",
+    "PASS S2 dispense disabled skips missing dispenser",
+    "PASS enabled missing dispenser throws before alarm result",
+    "PASS both Off skips untaught dispenser",
+    "PASS periodic with timing Off still checks teaching",
+    "PASS timing with mode Off still checks teaching",
+    "PASS empty epoxy name alarms",
+    "PASS unfinished plate alarms",
+    "PASS nonempty name not resolved by IsAlarm",
+    "PASS whitespace name not rejected here",
+    "PASS missing plate parameter throws",
+    "TOTAL 19"
+  ]
+}
