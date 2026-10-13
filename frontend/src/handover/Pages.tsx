@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from '../components/ui';
+import { HandoverSelect } from './Controls';
 import { RecordCard } from './RecordView';
 import type { Definitions, Event, HandoverRecord, Kind, Overview, Payload, Tab } from './types';
 import { text } from './types';
@@ -208,36 +209,35 @@ export function TaskPage({
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <select
-          aria-label="工作状态"
+        <HandoverSelect
+          label="工作状态"
           value={status}
-          onChange={(event) => setStatus(event.target.value)}
-        >
-          <option value="">所有工作状态</option>
-          {statuses.map((value) => (
-            <option key={value} value={value}>
-              {definitions.values[value]}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="工作类别"
+          onValueChange={setStatus}
+          options={[
+            { value: '', label: '所有工作状态' },
+            ...statuses.map((value) => ({ value, label: definitions.values[value] })),
+          ]}
+        />
+        <HandoverSelect
+          label="工作类别"
           value={category}
-          onChange={(event) => setCategory(event.target.value)}
-        >
-          <option value="">所有类别</option>
-          {['feature', 'bug', 'untested', 'site'].map((value) => (
-            <option key={value} value={value}>
-              {definitions.values[value]}
-            </option>
-          ))}
-        </select>
-        <Button aria-pressed={mode === 'list'} onClick={() => setMode('list')}>
-          列表
-        </Button>
-        <Button aria-pressed={mode === 'board'} onClick={() => setMode('board')}>
-          看板
-        </Button>
+          onValueChange={setCategory}
+          options={[
+            { value: '', label: '所有类别' },
+            ...['feature', 'bug', 'untested', 'site'].map((value) => ({
+              value,
+              label: definitions.values[value],
+            })),
+          ]}
+        />
+        <div className="handover-view-switch" aria-label="工作视图">
+          <Button aria-pressed={mode === 'list'} onClick={() => setMode('list')}>
+            列表
+          </Button>
+          <Button aria-pressed={mode === 'board'} onClick={() => setMode('board')}>
+            看板
+          </Button>
+        </div>
       </div>
       {mode === 'board' ? (
         <div className="handover-board">

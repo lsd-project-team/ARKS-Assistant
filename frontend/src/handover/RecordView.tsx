@@ -1,11 +1,13 @@
+import { HandoverModal } from './HandoverModal';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Button, ErrorText, Modal } from '../components/ui';
+import { Button, ErrorText } from '../components/ui';
 import type { Client } from './client';
 import type { Definitions, HandoverRecord, Kind, Payload } from './types';
 import { ids, refs, text } from './types';
 import { localTime } from './format';
 import { workStatusLabel } from './workStatus';
+import { HandoverSelect } from './Controls';
 
 export function Status({ row, definitions }: { row: HandoverRecord; definitions: Definitions }) {
   return (
@@ -267,19 +269,18 @@ export function RecordView({
       relatedKinds[section]?.includes(item.kind),
   );
   return (
-    <Modal
-      open
+    <HandoverModal
       title={row?.title || '交接记录'}
       description={version ? '正在查看固定历史版本' : '复核内容、关联证据和接续条件'}
       onClose={onClose}
-      className="handover-modal handover-detail"
+      className="handover-detail"
     >
       {query.isPending && <p role="status">正在读取记录…</p>}
       <ErrorText error={query.error || error} reveal />
       {query.error && <Button onClick={() => void query.refetch()}>重试</Button>}
       {row && (
         <>
-          <div className="handover-actions">
+          <div className="handover-actions handover-detail-toolbar">
             <Status row={row} definitions={definitions} />
             <span>
               v{row.version} · {definitions.values[text(row.payload.origin)] || '人工整理'}
@@ -426,24 +427,29 @@ export function RecordView({
               {Array.isArray(row.payload.files) && row.payload.files.length > 0 && (
                 <label className="handover-file-select">
                   <span>查看快照文件</span>
-                  <select
-                    defaultValue=""
-                    onChange={(event) =>
+                  <HandoverSelect
+                    label="查看快照文件"
+                    value={snapshot?.path || ''}
+                    onValueChange={(path) => {
+                      if (!path) {
+                        setSnapshot(undefined);
+                        return;
+                      }
                       void client
                         .get<{ path: string; content: string; sha256: string }>(
-                          `/sources/${row.id}/file?path=${encodeURIComponent(event.target.value)}`,
+                          `/sources/${row.id}/file?path=${encodeURIComponent(path)}`,
                         )
                         .then(setSnapshot)
-                        .catch(setError)
-                    }
-                  >
-                    <option value="">选择文件</option>
-                    {(row.payload.files as { path: string }[]).map((file) => (
-                      <option key={file.path} value={file.path}>
-                        {file.path}
-                      </option>
-                    ))}
-                  </select>
+                        .catch(setError);
+                    }}
+                    options={[
+                      { value: '', label: '选择文件' },
+                      ...(row.payload.files as { path: string }[]).map((file) => ({
+                        value: file.path,
+                        label: file.path,
+                      })),
+                    ]}
+                  />
                 </label>
               )}
               {snapshot && (
@@ -546,12 +552,14 @@ export function RecordView({
                   />
                 </label>
               </div>
-              <Button disabled={busy} type="submit">
-                {busy ? '正在处理…' : '提交'}
-              </Button>
-              <Button type="button" onClick={() => setAction('')}>
-                取消
-              </Button>
+              <div className="handover-confirm-actions">
+                <Button type="button" disabled={busy} onClick={() => setAction('')}>
+                  取消
+                </Button>
+                <Button className="primary" disabled={busy} type="submit">
+                  {busy ? '正在处理…' : '提交'}
+                </Button>
+              </div>
             </form>
           )}
           <details className="handover-form-section">
@@ -570,6 +578,6 @@ export function RecordView({
           </details>
         </>
       )}
-    </Modal>
+    </HandoverModal>
   );
 }

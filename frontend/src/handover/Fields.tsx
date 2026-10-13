@@ -1,4 +1,6 @@
 import { Button } from '../components/ui';
+import { HandoverSelect } from './Controls';
+import { HandoverMultiSelect } from './MultiSelect';
 import type { Definitions, Evidence, HandoverRecord, Kind, Payload, Property } from './types';
 import { ids, refs, text } from './types';
 
@@ -82,39 +84,39 @@ export function Fields({
           return (
             <label key={key} className={wide ? 'handover-field-wide' : ''}>
               <span>{label}</span>
-              {relation ? (
-                <select
-                  aria-label={label}
-                  multiple={property.type === 'array'}
-                  value={property.type === 'array' ? ids(value[key]) : text(value[key])}
-                  onChange={(event) =>
-                    set(
-                      key,
-                      property.type === 'array'
-                        ? Array.from(event.currentTarget.selectedOptions, (option) => option.value)
-                        : event.target.value,
-                    )
-                  }
-                >
-                  {property.type !== 'array' && <option value="">未关联</option>}
-                  {options.map((row) => (
-                    <option key={row.id} value={row.id}>
-                      {row.title} · v{row.version} · {definitions.states[row.state]}
-                    </option>
-                  ))}
-                </select>
+              {relation && property.type === 'array' ? (
+                <HandoverMultiSelect
+                  label={label}
+                  value={ids(value[key])}
+                  onValueChange={(next) => set(key, next)}
+                  options={options.map((row) => ({
+                    value: row.id,
+                    label: `${row.title} · v${row.version} · ${definitions.states[row.state]}`,
+                  }))}
+                />
+              ) : relation ? (
+                <HandoverSelect
+                  label={label}
+                  value={text(value[key])}
+                  onValueChange={(next) => set(key, next)}
+                  options={[
+                    { value: '', label: '未关联' },
+                    ...options.map((row) => ({
+                      value: row.id,
+                      label: `${row.title} · v${row.version} · ${definitions.states[row.state]}`,
+                    })),
+                  ]}
+                />
               ) : property.enum ? (
-                <select
-                  aria-label={label}
+                <HandoverSelect
+                  label={label}
                   value={text(value[key]) || text(property.default)}
-                  onChange={(event) => set(key, event.target.value)}
-                >
-                  {property.enum.map((option) => (
-                    <option value={option} key={option}>
-                      {definitions.values[option] || option}
-                    </option>
-                  ))}
-                </select>
+                  onValueChange={(next) => set(key, next)}
+                  options={property.enum.map((option) => ({
+                    value: option,
+                    label: definitions.values[option] || option,
+                  }))}
+                />
               ) : property.type === 'integer' ? (
                 <input
                   aria-label={label}
@@ -140,7 +142,7 @@ export function Fields({
                   onChange={(event) => set(key, event.target.value)}
                 />
               )}
-              {property.type === 'array' && relation && <small>按住 Ctrl 或 Command 多选</small>}
+              {property.type === 'array' && relation && <small>可勾选多条记录，支持搜索</small>}
             </label>
           );
         })}
@@ -255,26 +257,23 @@ export function EvidenceFields({
           <div className="handover-fields">
             <label>
               <span>来源记录</span>
-              <select
+              <HandoverSelect
                 required
-                aria-label="来源记录"
+                label="来源记录"
                 value={item.record_id}
-                onChange={(event) => {
-                  const row = available.find((row) => row.id === event.target.value);
+                onValueChange={(next) => {
+                  const row = available.find((row) => row.id === next);
                   set(index, {
-                    record_id: event.target.value,
+                    record_id: next,
                     version: row?.version || 1,
                     quote: '',
                   });
                 }}
-              >
-                <option value="">选择来源</option>
-                {available.map((row) => (
-                  <option key={row.id} value={row.id}>
-                    {row.title}
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { value: '', label: '选择来源' },
+                  ...available.map((row) => ({ value: row.id, label: row.title })),
+                ]}
+              />
             </label>
             <label>
               <span>来源版本</span>
