@@ -28,11 +28,11 @@ export default function LoginPage() {
           </span>
         </a>
         <div className="login-header-tools">
+          <AppearanceSwitch />
           <span className="login-network-badge">
             <Network size={16} />
             公司内网
           </span>
-          <AppearanceSwitch />
         </div>
       </header>
       <main className="login-main">
