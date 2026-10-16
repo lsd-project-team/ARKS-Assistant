@@ -13,7 +13,7 @@ from pathlib import Path, PurePosixPath
 from app.modules.source_analysis.workspace import IGNORED, MAX_FILE_BYTES, decode_source
 
 MAX_COPY_FILES = 30000
-MAX_COPY_BYTES = 300_000_000
+MAX_COPY_BYTES = 1_000_000_000
 
 
 def digest(data):
@@ -86,7 +86,9 @@ def inventory(root, *, bounded=True):
                 raise ValueError("副本只允许普通文件")
             total += target.stat().st_size
             if bounded and (total > MAX_COPY_BYTES or len(manifest) >= MAX_COPY_FILES):
-                raise ValueError("源码副本超过 300 MB 或 30000 个文件的限制")
+                raise ValueError(
+                    f"源码副本超过 {MAX_COPY_BYTES:,} 字节或 {MAX_COPY_FILES} 个文件的限制"
+                )
             manifest[target.relative_to(root).as_posix()] = digest(target.read_bytes())
     return manifest
 

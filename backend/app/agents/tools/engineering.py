@@ -29,7 +29,21 @@ EDIT_REQUEST = re.compile(
     + r"|(?:^|[。！\n；;])\s*(?:按照|按|把|将).{1,30}"
     + _EDIT_ACTION
 )
-READ_REQUEST = re.compile(r"通读|全量阅读|项目阅读|阅读项目|阅读全部|继续阅读")
+READ_REQUEST = re.compile(
+    r"^(?:(?:请(?:你)?|帮我|麻烦(?:你)?|现在|立即|直接|先)\s*)*"
+    r"(?:(?:把|将).{1,40})?"
+    r"(?:通读(?!功能|能力|需求|原理|方案|机制)|全量阅读|完整阅读|从头阅读"
+    r"|阅读(?:整个|全部|所有|本|这个)?项目|阅读全部"
+    r"|(?:开始|启动|继续|恢复|重新(?:开始)?)\s*(?:进行\s*)?"
+    r"(?:项目阅读|(?:全量|完整|从头)?阅读|通读))"
+)
+READ_INQUIRY = re.compile(
+    r"如何|怎样|怎么|为什么|为何|是否|能否|可否|什么|有何|多少|多久|何时|有没有|是不是"
+    r"|吗|么|能不能|可不可以|会不会|并不|并非|不代表|不意味着|[?？]"
+)
+READ_CONTINUATION = re.compile(
+    r"(?:好的[，, ]*)?(?:继续|接着|continue)[吧。.!！ ]*\n此前已授权的请求：(.+)", re.I | re.S
+)
 DISCUSSION_ONLY = re.compile(
     r"先讨论|先回答|先(?:给|提供|看).{0,20}方案|只(?:要|做|需|是)?.{0,8}(?:分析|解释|方案)"
     r"|(?:不要|不需要|不用|暂不|先不|别).{0,10}(?:修改|实现|编写|修复|通读|阅读|开始|动代码)"
@@ -37,6 +51,20 @@ DISCUSSION_ONLY = re.compile(
 VERIFICATION_CANCEL_TIMEOUT = 30
 _verification_cleanups = set()
 _logger = logging.getLogger(__name__)
+
+
+def _explicit_read_request(request_text):
+    inherited = READ_CONTINUATION.fullmatch(request_text.strip())
+    text = inherited.group(1) if inherited else request_text
+    # 在动作分句内识别命令；“如何开始通读”不能因命中名词或动词子串触发付费任务。
+    clauses = re.split(
+        r"[，,。！!\n；;]|并(?:且)?(?=总结|分析|说明|解释|告诉|给出|列出|梳理|开始|继续|通读)"
+        r"|然后|接着|后(?=分析|说明|解释|总结|告诉)",
+        text,
+    )
+    return any(
+        READ_REQUEST.match(clause.strip()) and not READ_INQUIRY.search(clause) for clause in clauses
+    )
 
 
 def _retain_verification_cleanup(task):
@@ -116,7 +144,7 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
     @tool
     async def start_project_reading(job_id: str = "", title: str = "项目阅读") -> str:
         """Start/resume a persistent whole-project analysis only when the user requested it."""
-        if not READ_REQUEST.search(request_text) or discussion:
+        if not _explicit_read_request(request_text) or discussion:
             raise ValueError("本轮用户没有要求启动全项目阅读，可先查看阅读状态")
         async with runtime.project_lock:
             await asyncio.to_thread(runtime.repository.creation_guard)
