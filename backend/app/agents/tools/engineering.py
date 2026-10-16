@@ -7,6 +7,11 @@ import re
 from langchain_core.tools import tool
 
 from app.agents.context.tokens import fit_text
+from app.agents.tools.engineering_intent import (
+    effective_request,
+    explicit_edit_request,
+    is_discussion,
+)
 from app.agents.tools.guards import safe_source_tools
 from app.core.config import dump_json
 
@@ -15,20 +20,11 @@ CHANGE_TOOLS = {
     "create_code_change",
     "read_change_file",
     "edit_change_file",
+    "update_code_change_requirements",
     "get_change_diff",
     "list_verification_profiles",
     "verify_code_change",
 }
-_EDIT_ACTION = r"(?:修改|改一下|修复|实现|编写|写代码|生成补丁|尝试开发|继续开发)"
-EDIT_REQUEST = re.compile(
-    r"(?:^|[。！\n；;])\s*"
-    + _EDIT_ACTION
-    + r"|(?:请(?:你)?|帮我|给我|尝试|开始|继续|直接|现在|需要|我要|我想)"
-    r"(?:来|去|帮我)?\s*"
-    + _EDIT_ACTION
-    + r"|(?:^|[。！\n；;])\s*(?:按照|按|把|将).{1,30}"
-    + _EDIT_ACTION
-)
 READ_REQUEST = re.compile(
     r"^(?:(?:请(?:你)?|帮我|麻烦(?:你)?|现在|立即|直接|先)\s*)*"
     r"(?:(?:把|将).{1,40})?"
@@ -41,21 +37,13 @@ READ_INQUIRY = re.compile(
     r"如何|怎样|怎么|为什么|为何|是否|能否|可否|什么|有何|多少|多久|何时|有没有|是不是"
     r"|吗|么|能不能|可不可以|会不会|并不|并非|不代表|不意味着|[?？]"
 )
-READ_CONTINUATION = re.compile(
-    r"(?:好的[，, ]*)?(?:继续|接着|continue)[吧。.!！ ]*\n此前已授权的请求：(.+)", re.I | re.S
-)
-DISCUSSION_ONLY = re.compile(
-    r"先讨论|先回答|先(?:给|提供|看).{0,20}方案|只(?:要|做|需|是)?.{0,8}(?:分析|解释|方案)"
-    r"|(?:不要|不需要|不用|暂不|先不|别).{0,10}(?:修改|实现|编写|修复|通读|阅读|开始|动代码)"
-)
 VERIFICATION_CANCEL_TIMEOUT = 30
 _verification_cleanups = set()
 _logger = logging.getLogger(__name__)
 
 
 def _explicit_read_request(request_text):
-    inherited = READ_CONTINUATION.fullmatch(request_text.strip())
-    text = inherited.group(1) if inherited else request_text
+    text = effective_request(request_text)
     # 在动作分句内识别命令；“如何开始通读”不能因命中名词或动词子串触发付费任务。
     clauses = re.split(
         r"[，,。！!\n；;]|并(?:且)?(?=总结|分析|说明|解释|告诉|给出|列出|梳理|开始|继续|通读)"
@@ -117,9 +105,33 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
     if not runtime.repository.project_id:
         return []
     changes, reading = runtime.code_changes, runtime.project_reading
-    discussion = bool(DISCUSSION_ONLY.search(request_text))
-    can_edit = bool(EDIT_REQUEST.search(request_text)) and not discussion
+    discussion = is_discussion(request_text, reading=True)
+    can_edit = explicit_edit_request(request_text)
+    seen_contracts = {}
     attempts = 0
+
+    def remember_contract(current):
+        identifier = current["id"]
+        result = {
+            key: current[key]
+            for key in (
+                "id",
+                "title",
+                "goal",
+                "acceptance_criteria",
+                "constraints",
+                "allowed_paths",
+            )
+        }
+        seen_contracts[identifier] = current["requirements_version"]
+        return {
+            **result,
+            "change_version": current["change_version"],
+            "requirements_version": current["requirements_version"],
+        }
+
+    async def contract(identifier):
+        return remember_contract(await asyncio.to_thread(changes.get, identifier))
 
     async def mutate(operation, *arguments, **options):
         async with runtime.project_lock:
@@ -153,6 +165,9 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
                 job = (await asyncio.to_thread(reading.list))["latest"]
             if job is None:
                 job = await asyncio.to_thread(reading.create, title)
+            elif job["status"] not in {"running", "pausing"}:
+                # 显式恢复付费阅读时刷新源码快照；原 analyzed 状态不能遮住已变化的源码。
+                await asyncio.to_thread(reading.refresh, job["id"])
             return dump_json(await reading.start(job["id"]))
 
     @tool
@@ -171,16 +186,16 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         """Create a requested isolated change with criteria, constraints and relative glob scope."""
         if not can_edit:
             raise ValueError("本轮用户只要求分析，尚未要求修改或实现代码")
-        return dump_json(
-            await mutate(
-                changes.create,
-                title,
-                goal,
-                acceptance_criteria=acceptance_criteria or [],
-                constraints=constraints,
-                allowed_paths=allowed_paths or [],
-            )
+        result = await mutate(
+            changes.create,
+            title,
+            goal,
+            acceptance_criteria=acceptance_criteria or [],
+            constraints=constraints,
+            allowed_paths=allowed_paths or [],
         )
+        remember_contract(result)
+        return dump_json(result)
 
     @tool
     async def read_change_file(
@@ -190,12 +205,14 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         if start_line < 1 or end_line < start_line or end_line - start_line >= 500:
             raise ValueError("请读取1–500行范围，行号从1开始")
         result = await asyncio.to_thread(changes.read_file, change_id, path)
+        requirements = await contract(change_id)
         lines = result["content"].splitlines(keepends=True)
         selected = "".join(lines[start_line - 1 : end_line])
         bounded = fit_text(selected, 6000)
         return dump_json(
             {
                 **result,
+                "contract": requirements,
                 "content": bounded,
                 "start_line": start_line,
                 "end_line": min(end_line, len(lines)),
@@ -212,14 +229,65 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         """Replace exact old context in an isolated file using its current hash; conflicts fail."""
         if not can_edit:
             raise ValueError("本轮用户没有要求修改代码")
-        return dump_json(await mutate(changes.edit_file, change_id, path, before, after, version))
+        expected = seen_contracts.get(change_id)
+        if expected is None:
+            raise ValueError("请先读取副本文件或差异，核对本次需求、验收标准与修改范围")
+        return dump_json(
+            await mutate(
+                changes.edit_file,
+                change_id,
+                path,
+                before,
+                after,
+                version,
+                expected_requirements=expected,
+            )
+        )
+
+    @tool
+    async def update_code_change_requirements(
+        change_id: str,
+        change_version: str,
+        requirements_version: str,
+        title: str,
+        goal: str,
+        acceptance_criteria: list[str],
+        constraints: str,
+        allowed_paths: list[str],
+    ) -> str:
+        """Update requested requirements after reading contract; invalidates tests and review."""
+        if not can_edit:
+            raise ValueError("本轮用户没有要求实施修改或更新需求约定")
+        if change_id not in seen_contracts:
+            raise ValueError("请先读取副本文件或差异，核对当前需求约定")
+        return dump_json(
+            await mutate(
+                changes.update_requirements,
+                change_id,
+                change_version,
+                requirements_version,
+                title=title,
+                goal=goal,
+                acceptance_criteria=acceptance_criteria,
+                constraints=constraints,
+                allowed_paths=allowed_paths,
+            )
+        )
 
     @tool
     async def get_change_diff(change_id: str) -> str:
         """Inspect patch and base conflicts. A patch is not a passing test or device acceptance."""
         result = await asyncio.to_thread(changes.diff, change_id)
+        requirements = await contract(change_id)
         bounded = fit_text(result["diff"], 6000)
-        return dump_json({**result, "diff": bounded, "truncated": bounded != result["diff"]})
+        return dump_json(
+            {
+                **result,
+                "contract": requirements,
+                "diff": bounded,
+                "truncated": bounded != result["diff"],
+            }
+        )
 
     @tool
     async def list_verification_profiles() -> str:
@@ -258,6 +326,7 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
             create_code_change,
             read_change_file,
             edit_change_file,
+            update_code_change_requirements,
             get_change_diff,
             list_verification_profiles,
             verify_code_change,

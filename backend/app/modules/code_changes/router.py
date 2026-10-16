@@ -15,6 +15,7 @@ from app.modules.code_changes.schemas import (
     CodeWorkPolicy,
     FileEdit,
     ProfileWrite,
+    RequirementsWrite,
     ReviewWrite,
     VerificationWrite,
 )
@@ -81,8 +82,11 @@ def create_router(services: AppServices):
         if profile["executor"]["kind"] != "container":
             return {"available": False, "error": "此配置使用宿主权限，属于非沙箱执行"}
         from app.infrastructure.execution import probe_executor
+        from app.modules.code_changes.files import digest
 
-        return await asyncio.to_thread(probe_executor, profile["executor"])
+        limits = await asyncio.to_thread(changes.policy.limits)
+        executor = {**profile["executor"], "owner_id": digest(str(changes.paths.data).encode())}
+        return await asyncio.to_thread(probe_executor, executor, limits)
 
     @router.get("/{identifier}")
     async def get_change(identifier: str):
@@ -91,6 +95,16 @@ def create_router(services: AppServices):
     @router.get("/{identifier}/file")
     async def read_file(identifier: str, path: str):
         return await asyncio.to_thread(changes.read_file, identifier, path)
+
+    @router.put("/{identifier}/requirements")
+    async def update_requirements(identifier: str, body: RequirementsWrite):
+        return await mutate(
+            changes.update_requirements,
+            identifier,
+            body.change_version,
+            body.requirements_version,
+            **body.model_dump(exclude={"change_version", "requirements_version"}),
+        )
 
     @router.patch("/{identifier}/file")
     async def edit_file(identifier: str, body: FileEdit):
@@ -101,6 +115,7 @@ def create_router(services: AppServices):
             body.before,
             body.after,
             body.version,
+            expected_requirements=body.requirements_version,
         )
 
     @router.get("/{identifier}/diff")
@@ -132,7 +147,13 @@ def create_router(services: AppServices):
         # 审核人取当前登录身份，表单和模型工具均不能冒名。
         actor = identity(request)["user"]["id"]
         return await mutate(
-            review_change, changes, identifier, body.change_version, body.notes, actor
+            review_change,
+            changes,
+            identifier,
+            body.change_version,
+            body.requirements_version,
+            body.notes,
+            actor,
         )
 
     @router.post("/{identifier}/delivery")

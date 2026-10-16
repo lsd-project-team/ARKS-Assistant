@@ -115,6 +115,7 @@ const defaultReadiness = {
   },
   policy: {
     max_storage_mb: 4096,
+    windows_scratch_mb: 32768,
     min_free_mb: 1024,
     max_log_mb: 16,
     max_active_verifications: 1,
@@ -495,7 +496,7 @@ test('前置报告诚实展示Windows缺项，普通用户仍可阅读修改但�
     createElement(ReadinessPanel, { projectId: 'project-a', readOnly: false }),
   );
   assert.match(html, /独立 Windows 执行节点/);
-  assert.match(html, /还需实现并验收 Windows 执行适配/);
+  assert.match(html, /完成 Windows 执行与原版本构建验收/);
   assert.match(html, /私有 DLL 缺失/);
   assert.match(html, /仍可阅读、修改隔离副本与导出草稿补丁/);
   assert.match(html, /静态检查不能证明可构建/);
@@ -531,9 +532,9 @@ test('可信宿主明确非沙箱，容器配置必须指定固定镜像与节�
   );
   assert.match(container, /固定镜像 digest/);
   assert.match(container, /Docker context/);
-  assert.match(container, /仅保存配置不代表节点或镜像已准备/);
-  assert.match(container, /Windows 执行适配仍待实现与验收/);
-  assert.match(container, /填写 Windows context 不会启用执行/);
+  assert.match(container, /保存配置不代表实际构建已通过/);
+  assert.match(container, /Hyper-V 容器能力的独立节点/);
+  assert.match(container, /SSH context 与可用磁盘探测/);
 });
 
 test('交付要求固定当前审核和沙箱证明，旧审核不能解锁ZIP，原草稿补丁仍保留', () => {
@@ -541,6 +542,7 @@ test('交付要求固定当前审核和沙箱证明，旧审核不能解锁ZIP�
     ...base,
     status: 'passed',
     change_version: 'current',
+    requirements_version: 'requirements-current',
     acceptance_criteria: ['返回值符合要求'],
     review: { change_version: 'old', actor: '审核账号', reviewed_at: 'now' },
     latest_verification: {
@@ -566,7 +568,11 @@ test('交付要求固定当前审核和沙箱证明，旧审核不能解锁ZIP�
   assert.match(html, /<button[^>]*disabled=""[^>]*>下载已审核交付包/);
   const approved = {
     ...change,
-    review: { ...change.review, change_version: 'current' },
+    review: {
+      ...change.review,
+      change_version: 'current',
+      requirements_version: 'requirements-current',
+    },
     latest_verification: {
       ...change.latest_verification,
       executor: { kind: 'container', platform: 'windows' },

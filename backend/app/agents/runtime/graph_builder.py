@@ -1,14 +1,13 @@
 """Agent 运行职责拆分，依赖通过运行实例显式传入。"""
 
 import asyncio
-import re
 
 from deepagents import create_deep_agent
 from deepagents.backends import CompositeBackend, FilesystemBackend
 from deepagents.middleware.filesystem import FilesystemMiddleware
 from deepagents.middleware.summarization import SummarizationToolMiddleware
 
-from app.agents.analysis.policy import REPORT_GUIDANCE
+from app.agents.analysis.policy import CONTINUE_QUESTION, REPORT_GUIDANCE
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.budget import BudgetedSummarization, ContextBudget
 from app.agents.context.tokens import estimate_tokens, input_budget
@@ -90,9 +89,7 @@ class AgentGraphBuilder:
         if (
             policy
             and policy.get("continuing")
-            and re.fullmatch(
-                r"(?:好的[，, ]*)?(?:继续|接着|continue)[吧。.!！ ]*", requested_work.strip(), re.I
-            )
+            and CONTINUE_QUESTION.fullmatch(requested_work.strip())
         ):
             requested_work += "\n此前已授权的请求：" + policy["question"]
         tools += engineering_tools(
@@ -203,6 +200,11 @@ class AgentGraphBuilder:
                 "\n项目阅读的已索引、已读取、模型分析、人工复核是不同状态，不能把覆盖率称为完全理解。"
                 "用户只问方案时分析即可；明确要求修改/实现时，"
                 "可用 create_code_change 建立隔离副本，"
+                "创建时保留用户的验收标准、限制和修改范围，不得自行放宽；"
+                "继续已有修改前，先读取 read_change_file 或 get_change_diff 返回的 contract，"
+                "按该需求约定实施，缺少验收标准时先从已明确的用户目标整理，不能编造设备验收。"
+                "用户要求补齐或调整需求时可用 update_code_change_requirements，保存后必须重新验证；"
+                "不得为获得通过而擅自降低验收标准或放宽允许路径。"
                 "用 read_change_file/edit_change_file 修改副本，get_change_diff 检查差异。"
                 "原源码始终只读；不得用 scratch 文件假装已修改业务源码。"
                 "有已配置验证命令时，调用 verify_code_change 获取真实退出码和日志，"

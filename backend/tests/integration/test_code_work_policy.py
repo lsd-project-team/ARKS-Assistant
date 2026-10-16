@@ -51,6 +51,22 @@ def test_quota_persists_across_service_and_database_restart(policy):
         restored.close()
 
 
+def test_windows_scratch_budget_defaults_persist_and_reject_unrealistic_small_layer(policy):
+    from pydantic import ValidationError
+
+    assert policy.get().windows_scratch_mb == 32768
+    assert policy.limits()["windows_scratch_mb"] == 32768
+    policy.save({"windows_scratch_mb": 65536})
+    assert (
+        WorkPolicy(policy.paths, policy.database, "project-a").limits()["windows_scratch_mb"]
+        == 65536
+    )
+    for invalid in (1024, 20479, 1_048_577):
+        with pytest.raises(ValidationError):
+            policy.save({"windows_scratch_mb": invalid})
+    assert policy.get().windows_scratch_mb == 65536
+
+
 def test_parallel_reservations_never_overspend_and_failed_claims_roll_back(policy):
     barrier = Barrier(12)
 

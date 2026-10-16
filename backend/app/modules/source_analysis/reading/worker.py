@@ -6,6 +6,7 @@ import json
 from app.core.config import dump_json
 from app.core.identifiers import now_iso
 from app.modules.source_analysis.reading import sources
+from app.modules.source_analysis.reading.dependencies import analysis_metadata
 from app.modules.source_analysis.reading.models import (
     ProjectReadingDocument,
     ProjectReadingFile,
@@ -221,7 +222,13 @@ def save_analysis(service, job_id, project_id, file_id, metadata, analysis):
                 end_line=metadata["end_line"],
                 summary=analysis.summary,
                 entrypoints_json=dump_json(analysis.entrypoints),
-                dependencies_json=dump_json(analysis.dependencies),
+                dependencies_json=dump_json(
+                    analysis_metadata(
+                        analysis,
+                        {row.path: row for row in service._files(session, job_id, project_id)},
+                        service._job(session, job_id, project_id).snapshot_version,
+                    )
+                ),
                 unknowns_json=dump_json(analysis.unknowns),
                 references_json=dump_json(references),
             )

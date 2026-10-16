@@ -27,6 +27,7 @@ class CodeWorkPolicy(BaseModel):
     max_storage_mb: int = Field(default=4096, ge=100, le=1_000_000)
     min_free_mb: int = Field(default=1024, ge=0, le=1_000_000)
     max_log_mb: int = Field(default=16, ge=1, le=1024)
+    windows_scratch_mb: int = Field(default=32768, ge=20480, le=1_048_576)
     max_active_verifications: int = Field(default=1, ge=1, le=16)
     retention_days: int = Field(default=30, ge=1, le=3650)
     reading_token_limit: int = Field(default=500000, ge=1000, le=100_000_000)
@@ -72,6 +73,12 @@ class FileEdit(BaseModel):
     before: str = Field(max_length=2_000_000)
     after: str = Field(max_length=2_000_000)
     version: str = Field(max_length=64)
+    requirements_version: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+class RequirementsWrite(ChangeWrite):
+    change_version: str = Field(pattern=r"^[a-f0-9]{64}$")
+    requirements_version: str = Field(pattern=r"^[a-f0-9]{64}$")
 
 
 class ProfileWrite(BaseModel):
@@ -95,6 +102,7 @@ class VerificationWrite(BaseModel):
 class ReviewWrite(BaseModel):
     model_config = ConfigDict(extra="forbid")
     change_version: str = Field(min_length=64, max_length=64, pattern=r"^[a-f0-9]+$")
+    requirements_version: str = Field(pattern=r"^[a-f0-9]{64}$")
     notes: str = Field(default="", max_length=5000)
 
 

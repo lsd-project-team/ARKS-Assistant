@@ -18,6 +18,7 @@ import { ChangeFileEditor } from './ChangeFileEditor';
 import { VerificationProfiles } from './VerificationProfiles';
 import { ChangeExperience } from './ChangeExperience';
 import { ChangeDelivery } from './ChangeDelivery';
+import { ChangeRequirements } from './ChangeRequirements';
 import { executionLabel, requirementsPayload } from '../lib/codeReadiness';
 
 const verificationLabels = {
@@ -293,6 +294,13 @@ export function CodeChangesPanel({
                 <span>修改 {change.files_changed} 个文件</span>
               </div>
               <p className="code-work-prose">{change.goal}</p>
+              <ChangeRequirements
+                key={`${projectId}:${change.id}`}
+                projectId={projectId}
+                change={change}
+                disabled={readOnly || !!busy || dirty}
+                onSaved={changed}
+              />
               {!!change.acceptance_criteria?.length && (
                 <details>
                   <summary>验收标准与实现约束</summary>

@@ -1,0 +1,67 @@
+"""只从本轮用户命令和受控的续接问题恢复实施意图，不读取模型或资料授权。"""
+
+import re
+
+from app.agents.analysis.policy import CONTINUE_QUESTION
+
+ACTION = (
+    r"(?:修改|改一下|修复|实现|编写|写代码|生成补丁|尝试开发|继续开发"
+    r"|新增|添加|删除|移除|去掉|重命名|重构|调整|改成|改为|更新|完善|补充)"
+)
+EDIT_REQUEST = re.compile(
+    r"^(?:(?:请(?:你)?|帮我|给我|尝试|开始|继续|直接|现在|需要|我要|我想)\s*)*"
+    r"(?:(?:在|对|针对).{1,30}?)?"
+    r"(?:" + ACTION + r"|(?:按照|按|把|将).{1,30}" + ACTION + r")"
+)
+DISCUSSION_ONLY = re.compile(
+    r"先讨论|先回答|先(?:给|提供|看).{0,20}方案|只(?:要|做|需|是)?.{0,8}(?:分析|解释|方案)"
+)
+NEGATIVE = r"(?:不(?:要|需要|用|能|允许)?|暂不|先不|别|禁止).{0,10}"
+EDIT_NEGATIVE = re.compile(
+    NEGATIVE + r"(?:修改|实现|编写|写代码|修复|新增|添加|删除|重构|动代码|动手|实施|开发)"
+)
+READ_NEGATIVE = re.compile(NEGATIVE + r"(?:通读|阅读|开始|执行)")
+INQUIRY = re.compile(
+    r"如何|怎样|怎么|为什么|为何|哪些|哪种|多少|多久|何时|什么|是否|能否|可否|有没有|是不是|吗|么|[?？]"
+)
+TEMPORARY_DISCUSSION = re.compile(
+    r"先讨论|先回答(?:我)?|先(?:给|提供|看).{0,20}?方案"
+    r"|先(?:不|不要|不用)(?:开始|修改|动代码|实现|编写)"
+)
+
+
+def effective_request(request_text):
+    inherited = re.fullmatch(r"([^\n]+)\n此前已授权的请求：(.+)", request_text.strip(), re.S)
+    if not inherited or not CONTINUE_QUESTION.fullmatch(inherited.group(1)):
+        return request_text
+    command, previous = inherited.groups()
+    # “开始吧”解除前轮的临时讨论阶段；“继续”仍可能只是继续讨论，不能自动升级权限。
+    if re.search(r"开始|动手", command):
+        return TEMPORARY_DISCUSSION.sub("", previous)
+    return previous
+
+
+def is_discussion(request_text, *, reading=False):
+    text = effective_request(request_text)
+    if re.search(r"副本|隔离", text):
+        # 用户明确要求改副本并保护原件时，原件限制仍由文件服务强制执行。
+        text = re.sub(
+            r"(?:不要|不需要|不用|不|别)(?:再)?(?:修改|改动|改)(?:原件|原文件|原始文件)", "", text
+        )
+    return bool(
+        DISCUSSION_ONLY.search(text)
+        or READ_NEGATIVE.search(text)
+        or (not reading and EDIT_NEGATIVE.search(text))
+    )
+
+
+def explicit_edit_request(request_text):
+    text = effective_request(request_text)
+    if is_discussion(request_text):
+        return False
+    if re.search(r"[，,]\s*(?:需要|要|有)(?:哪些|什么|多少|多久|何时)", text):
+        return False
+    return any(
+        EDIT_REQUEST.match(clause.strip()) and not INQUIRY.search(clause)
+        for clause in re.split(r"[，,。！!\n；;]", text)
+    )

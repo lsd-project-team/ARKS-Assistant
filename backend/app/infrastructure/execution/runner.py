@@ -233,6 +233,10 @@ def return_files(task, executor, container, root, temporary, maximum):
 
 def run_container(task, argv, cwd, log_path, timeout_seconds, executor, limits):
     """只操作调用者给定的副本；失败不会回退到宿主命令。"""
+    if executor.get("platform") == "windows":
+        from .windows import run_windows
+
+        return run_windows(task, argv, cwd, log_path, timeout_seconds, executor, limits)
     container = None
     stage_volume = None
     log_path = Path(log_path)
@@ -248,6 +252,7 @@ def run_container(task, argv, cwd, log_path, timeout_seconds, executor, limits):
         if not probe["available"]:
             raise ExecutionError(probe["error"])
         # 镜像名称在探测后固定成不可变 ID，避免标签或配置竞态。
+        configured_image = executor["image"]
         executor = {**executor, "image": probe["image_id"]}
         with tempfile.TemporaryDirectory(prefix="arks-transfer-", dir=Path(cwd).parent) as temp:
             temporary = Path(temp)
@@ -289,6 +294,8 @@ def run_container(task, argv, cwd, log_path, timeout_seconds, executor, limits):
                 "platform": executor["platform"],
                 "protocol": 2,
                 "isolated": True,
+                "configured_image": configured_image,
+                "configured_context": executor.get("context", "default"),
             }
             result = wait_result(
                 task, executor, container, timeout_seconds, log_path, limits["max_log_bytes"]

@@ -149,6 +149,7 @@ class WorkPolicy:
             "pids": 128,
             "max_log_bytes": policy.max_log_mb * MEBIBYTE,
             "max_output_bytes": output,
+            "windows_scratch_mb": policy.windows_scratch_mb,
         }
 
     def _storage_scope(self, scope):

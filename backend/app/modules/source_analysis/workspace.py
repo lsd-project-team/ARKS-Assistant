@@ -229,31 +229,37 @@ class Workspace:
 
     @staticmethod
     def _parse_symbols(source):
-        from app.modules.source_analysis.csharp import DOTNET, HELPER
+        from app.modules.source_analysis.csharp import analysis_command
+        from app.modules.source_analysis.dotnet_runtime import dotnet_environment
 
-        command = (
-            [str(DOTNET), str(HELPER)]
-            if DOTNET.is_file() and HELPER.is_file()
-            else [sys.executable, "-m", "app.modules.source_analysis.symbol_parser"]
-        )
-        try:
-            response = subprocess.run(
-                command,
-                input=json.dumps({**source, "action": "syntax"}) + "\n",
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                timeout=20,
-                cwd=Path(__file__).resolve().parents[3],
-                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-            )
-            if response.returncode == 0:
-                parsed = json.loads(response.stdout)
-                for item in parsed.get("symbols", []):
-                    item["kind"] = re.sub(r"(?<!^)(?=[A-Z])", "_", item["kind"]).lower()
-                return {**parsed, "version": source["version"]}
-        except (OSError, ValueError, subprocess.TimeoutExpired):
-            pass
+        command, _reason = analysis_command()
+        fallback = [sys.executable, "-m", "app.modules.source_analysis.symbol_parser"]
+        for arguments in [command, fallback] if command else [fallback]:
+            try:
+                response = subprocess.run(
+                    arguments,
+                    input=json.dumps({**source, "action": "syntax"}) + "\n",
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    timeout=20,
+                    cwd=Path(__file__).resolve().parents[3],
+                    env=dotnet_environment(arguments[0]) if arguments == command else None,
+                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+                )
+                if response.returncode == 0:
+                    parsed = json.loads(response.stdout)
+                    if not isinstance(parsed, dict):
+                        raise ValueError("语法解析器返回格式无效")
+                    for item in parsed.get("symbols", []):
+                        item["kind"] = re.sub(r"(?<!^)(?=[A-Z])", "_", item["kind"]).lower()
+                    return {
+                        **parsed,
+                        "version": source["version"],
+                        "syntax_engine": "roslyn" if arguments == command else "tree_sitter",
+                    }
+            except (OSError, ValueError, subprocess.TimeoutExpired):
+                continue
         return {
             "symbols": [],
             "version": source["version"],

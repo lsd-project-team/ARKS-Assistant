@@ -72,7 +72,12 @@ async def test_real_sandbox_baseline_edit_test_review_and_delivery(services):
         assert proof["protocol"] == 2 and proof["isolated"]
         assert proof["image_id"] == IMAGE
         review_change(
-            service, change["id"], passed["change_version"], "按实际结果复核", "test-reviewer"
+            service,
+            change["id"],
+            passed["change_version"],
+            passed["requirements_version"],
+            "按实际结果复核",
+            "test-reviewer",
         )
         with ZipFile(io.BytesIO(delivery_package(service, change["id"]))) as archive:
             manifest = json.loads(archive.read("manifest.json"))

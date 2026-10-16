@@ -84,7 +84,14 @@ async def approved_host_change(service, **details):
     change = edit_entry(service, create_change(service, **details))
     result = await verify_complete(service, change, host_profile(service))
     assert result["status"] == "passed"
-    reviewed = review_change(service, change["id"], result["change_version"], "核对差异", "tester")
+    reviewed = review_change(
+        service,
+        change["id"],
+        result["change_version"],
+        result["requirements_version"],
+        "核对差异",
+        "tester",
+    )
     assert reviewed["review"]["change_version"] == result["change_version"]
     return reviewed
 
@@ -130,11 +137,192 @@ async def test_missing_acceptance_blocks_review_but_keeps_draft_export(delivery_
     result = await verify_complete(service, change, host_profile(service))
     assert result["status"] == "passed"
     with pytest.raises(ValueError, match="验收标准"):
-        review_change(service, change["id"], result["change_version"], "", "tester")
+        review_change(
+            service,
+            change["id"],
+            result["change_version"],
+            result["requirements_version"],
+            "",
+            "tester",
+        )
     assert service.get(change["id"])["review"] is None
     assert "+ static void Start()" in service.export(change["id"])
     with pytest.raises(ValueError, match="验收标准"):
         delivery_package(service, change["id"])
+
+
+def update_contract(service, change, **updates):
+    details = {
+        key: change[key]
+        for key in ("title", "goal", "acceptance_criteria", "constraints", "allowed_paths")
+    }
+    return service.update_requirements(
+        change["id"],
+        change["change_version"],
+        change["requirements_version"],
+        **{**details, **updates},
+    )
+
+
+async def test_missing_criteria_can_be_filled_without_losing_patch_and_need_reverification(
+    delivery_changes,
+):
+    service = delivery_changes
+    set_policy(service, require_sandbox_delivery=False)
+    change = edit_entry(service, create_change(service, acceptance_criteria=[]))
+    profile = host_profile(service)
+    passed = await verify_complete(service, change, profile)
+    patch = service.export(change["id"])
+    updated = update_contract(service, passed, acceptance_criteria=["入口名称为 Start"])
+    assert updated["requirements_version"] != passed["requirements_version"]
+    assert updated["change_version"] == passed["change_version"]
+    assert updated["status"] == "editing" and updated["latest_verification"]["stale"]
+    assert service.export(change["id"]) == patch
+    with pytest.raises(ValueError, match="尚未验证"):
+        review_change(
+            service,
+            change["id"],
+            updated["change_version"],
+            updated["requirements_version"],
+            "",
+            "tester",
+        )
+    verified = await verify_complete(service, updated, profile)
+    assert not verified["latest_verification"]["stale"]
+    review_change(
+        service,
+        change["id"],
+        verified["change_version"],
+        verified["requirements_version"],
+        "新增验收后重新测试",
+        "tester",
+    )
+    manifest = json.loads(
+        ZipFile(io.BytesIO(delivery_package(service, change["id"]))).read("manifest.json")
+    )
+    assert manifest["requirements_version"] == updated["requirements_version"]
+    assert manifest["acceptance_criteria"] == ["入口名称为 Start"]
+
+
+async def test_contract_update_rejects_stale_identity_and_invalid_scope_then_clears_review(
+    delivery_changes,
+):
+    service = delivery_changes
+    reviewed = await approved_host_change(service)
+    delivery_package(service, reviewed["id"])
+    with pytest.raises(ValueError, match="超出新的路径范围"):
+        update_contract(service, reviewed, allowed_paths=["other/**"])
+    assert service.get(reviewed["id"])["requirements_version"] == reviewed["requirements_version"]
+    assert service.get(reviewed["id"])["review"]
+    updated = update_contract(service, reviewed, constraints="必须保留原文件")
+    assert updated["review"] is None and updated["delivered_at"] is None
+    with pytest.raises(ValueError, match="需求已变化"):
+        update_contract(service, reviewed, goal="旧窗口不能覆盖需求")
+    assert service.get(reviewed["id"])["constraints"] == "必须保留原文件"
+    current = service.read_file(reviewed["id"], "Program.cs")
+    service.edit_file(reviewed["id"], "Program.cs", "Start", "New", current["version"])
+    with pytest.raises(ValueError, match="副本或需求已变化"):
+        update_contract(service, updated, goal="旧文件版本不能保存")
+
+
+async def test_review_requires_displayed_requirements_even_after_same_patch_is_reverified(
+    delivery_changes,
+):
+    service = delivery_changes
+    set_policy(service, require_sandbox_delivery=False)
+    change = edit_entry(service, create_change(service))
+    profile = host_profile(service)
+    displayed = await verify_complete(service, change, profile)
+    updated = update_contract(service, displayed, acceptance_criteria=["入口为 Start 且仍保留接口"])
+    current = await verify_complete(service, updated, profile)
+    assert current["change_version"] == displayed["change_version"]
+    assert current["requirements_version"] != displayed["requirements_version"]
+
+    with pytest.raises(ValueError, match="需求约定已变化"):
+        review_change(
+            service,
+            change["id"],
+            displayed["change_version"],
+            displayed["requirements_version"],
+            "旧页面仍看到原来的验收标准",
+            "tester",
+        )
+    assert service.get(change["id"])["review"] is None
+    with pytest.raises(ValueError, match="尚未审核"):
+        delivery_package(service, change["id"])
+    reviewed = review_change(
+        service,
+        change["id"],
+        current["change_version"],
+        current["requirements_version"],
+        "已查看新的需求约定",
+        "tester",
+    )
+    assert reviewed["review"]["requirements_version"] == current["requirements_version"]
+    with ZipFile(io.BytesIO(delivery_package(service, change["id"]))) as archive:
+        manifest = json.loads(archive.read("manifest.json"))
+    assert manifest["review"]["requirements_version"] == manifest["requirements_version"]
+
+
+@pytest.mark.parametrize("stored_requirements", [None, "a" * 64])
+async def test_legacy_or_different_requirements_review_cannot_deliver(
+    delivery_changes, stored_requirements
+):
+    service = delivery_changes
+    reviewed = await approved_host_change(service)
+    with service.database.session.begin() as session:
+        row = session.get(CodeChangeRecord, reviewed["id"])
+        review = json.loads(row.review_json)
+        if stored_requirements is None:
+            del review["requirements_version"]
+        else:
+            assert stored_requirements != reviewed["requirements_version"]
+            review["requirements_version"] = stored_requirements
+        row.review_json = json.dumps(review)
+    with pytest.raises(ValueError, match="尚未审核"):
+        delivery_package(service, reviewed["id"])
+
+
+@pytest.mark.parametrize(
+    "proof",
+    [
+        {},
+        {"isolated": True, "protocol": 2},
+        {"isolated": True, "protocol": 3, "platform": "windows", "image_id": "sha256:" + "a" * 64},
+        {"isolated": True, "protocol": 2, "platform": "linux", "image_id": "sha256:" + "b" * 64},
+    ],
+)
+async def test_zero_exit_without_matching_trusted_execution_proof_cannot_pass(
+    delivery_changes, monkeypatch, proof
+):
+    service = delivery_changes
+    change = edit_entry(service, create_change(service))
+    profile = service.save_profile(
+        "拒绝伪证明",
+        ["python", "-c", "print('passed')"],
+        executor={"kind": "container", "platform": "linux", "image": "sha256:" + "a" * 64},
+        baseline_required=False,
+    )
+
+    def untrusted_result(task, *_args, **_kwargs):
+        task.executor_evidence = proof
+        return "passed", 0, ""
+
+    # 只替换外部执行边界；真实服务、SQLite与副本仍核对退出码以外的证明。
+    monkeypatch.setattr("app.infrastructure.execution.run_container", untrusted_result)
+    service.verify(change["id"], profile["id"])
+    result = await service.wait(change["id"], 10)
+    assert result["status"] == "failed"
+    assert "缺少可信隔离执行证明" in result["latest_verification"]["error"]
+    with pytest.raises(ValueError, match="尚未验证"):
+        review_change(
+            service,
+            change["id"],
+            result["change_version"],
+            result["requirements_version"],
+            "",
+            "tester",
+        )
 
 
 async def test_out_of_scope_external_edit_never_launches_verification(delivery_changes, tmp_path):
@@ -180,7 +368,14 @@ async def test_baseline_reads_original_in_disposable_clone_and_keeps_work_edit(d
     assert temporary.parent == folder and temporary.name not in {"base", "work", "logs"}
     assert not await asyncio.to_thread(temporary.exists)
     with pytest.raises(ValueError, match="尚未验证通过"):
-        review_change(service, change["id"], result["change_version"], "", "tester")
+        review_change(
+            service,
+            change["id"],
+            result["change_version"],
+            result["requirements_version"],
+            "",
+            "tester",
+        )
 
 
 async def test_baseline_command_modifying_source_fails_without_touching_base(delivery_changes):
@@ -210,13 +405,25 @@ async def test_required_baseline_is_independent_of_changed_work_version(delivery
     profile = host_profile(service, baseline_required=True)
     passed = await verify_complete(service, change, profile)
     with pytest.raises(ValueError, match="基线"):
-        review_change(service, change["id"], passed["change_version"], "", "tester")
+        review_change(
+            service,
+            change["id"],
+            passed["change_version"],
+            passed["requirements_version"],
+            "",
+            "tester",
+        )
     baseline = await verify_complete(service, change, profile, "baseline")
     baseline_id = baseline["latest_verification"]["id"]
     change = edit_entry(service, change, "Start", "StartAgain")
     passed = await verify_complete(service, change, profile)
     review = review_change(
-        service, change["id"], passed["change_version"], "已有原版验证", "tester"
+        service,
+        change["id"],
+        passed["change_version"],
+        passed["requirements_version"],
+        "已有原版验证",
+        "tester",
     )
     assert review["review"]["verification_id"] == passed["latest_verification"]["id"]
     history = service.verification_history(change["id"])["verifications"]
@@ -250,7 +457,14 @@ async def test_profile_command_change_invalidates_old_baseline(delivery_changes)
     )
     passed = await verify_complete(service, change, profile)
     with pytest.raises(ValueError, match="基线"):
-        review_change(service, change["id"], passed["change_version"], "", "tester")
+        review_change(
+            service,
+            change["id"],
+            passed["change_version"],
+            passed["requirements_version"],
+            "",
+            "tester",
+        )
     assert service.get(change["id"])["review"] is None
     history = service.verification_history(change["id"])["verifications"]
     assert next(item for item in history if item["id"] == baseline["latest_verification"]["id"])[
@@ -265,9 +479,23 @@ async def test_sandbox_delivery_default_rejects_real_trusted_host_result(deliver
     passed = await verify_complete(service, change, host_profile(service))
     assert passed["status"] == "passed" and passed["latest_verification"]["exit_code"] == 0
     with pytest.raises(ValueError, match="沙箱"):
-        review_change(service, change["id"], passed["change_version"], "", "tester")
+        review_change(
+            service,
+            change["id"],
+            passed["change_version"],
+            passed["requirements_version"],
+            "",
+            "tester",
+        )
     set_policy(service, require_sandbox_delivery=False)
-    review_change(service, change["id"], passed["change_version"], "显式接受可信宿主", "tester")
+    review_change(
+        service,
+        change["id"],
+        passed["change_version"],
+        passed["requirements_version"],
+        "显式接受可信宿主",
+        "tester",
+    )
     assert delivery_package(service, change["id"]).startswith(b"PK")
     set_policy(service, require_sandbox_delivery=True)
     with pytest.raises(ValueError, match="沙箱"):
@@ -283,12 +511,24 @@ async def test_new_edit_and_revalidation_cannot_reuse_old_review(delivery_change
     assert change["change_version"] != old_version
     passed = await verify_complete(service, change, host_profile(service))
     with pytest.raises(ValueError, match="版本已变化"):
-        review_change(service, change["id"], old_version, "旧界面仍打开", "tester")
+        review_change(
+            service,
+            change["id"],
+            old_version,
+            reviewed["requirements_version"],
+            "旧界面仍打开",
+            "tester",
+        )
     with pytest.raises(ValueError, match="尚未审核"):
         delivery_package(service, change["id"])
     assert service.get(change["id"])["review"] is None
     reviewed = review_change(
-        service, change["id"], passed["change_version"], "核对新差异", "tester"
+        service,
+        change["id"],
+        passed["change_version"],
+        passed["requirements_version"],
+        "核对新差异",
+        "tester",
     )
     assert reviewed["review"]["change_version"] != old_version
     assert delivery_package(service, change["id"]).startswith(b"PK")
@@ -325,7 +565,14 @@ async def test_review_delivery_and_policy_are_isolated_by_project(delivery_chang
     assert service.policy.get().require_sandbox_delivery is False
     assert other.policy.get().require_sandbox_delivery is True
     with pytest.raises(FileNotFoundError):
-        review_change(other, reviewed["id"], reviewed["change_version"], "越权审核", "tester")
+        review_change(
+            other,
+            reviewed["id"],
+            reviewed["change_version"],
+            reviewed["requirements_version"],
+            "越权审核",
+            "tester",
+        )
     with pytest.raises(FileNotFoundError):
         delivery_package(other, reviewed["id"])
     assert other.list() == [] and other.profiles() == []
@@ -349,7 +596,14 @@ async def test_delivery_zip_patch_really_applies_and_reverses(delivery_changes, 
     passed = await verify_complete(service, change, host_profile(service))
     with pytest.raises(ValueError, match="尚未审核"):
         delivery_package(service, change["id"])
-    review_change(service, change["id"], passed["change_version"], "人工核对", "tester")
+    review_change(
+        service,
+        change["id"],
+        passed["change_version"],
+        passed["requirements_version"],
+        "人工核对",
+        "tester",
+    )
     with ZipFile(io.BytesIO(delivery_package(service, change["id"]))) as archive:
         assert set(archive.namelist()) == {"changes.patch", "manifest.json", "README.md"}
         manifest = json.loads(archive.read("manifest.json"))

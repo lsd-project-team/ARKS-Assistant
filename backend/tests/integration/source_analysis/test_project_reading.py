@@ -153,6 +153,8 @@ async def test_refresh_only_invalidates_changed_and_dependent_knowledge(reading)
         result = await analysis(text, metadata)
         result["summary"] = metadata["path"]
         result["dependencies"] = ["Program.cs"] if metadata["path"] == "Dependent.cs" else []
+        # 这个替身只陈述当前文件及明确的路径依赖，不把空依赖当静态完备证明。
+        result["dependency_paths"] = [metadata["path"]]
         return result
 
     job = reading.create()
@@ -363,6 +365,7 @@ async def test_transitive_dependency_changes_are_invalidated_before_and_after_re
         return {
             "summary": metadata["path"],
             "dependencies": {"B.cs": ["A.cs"], "C.cs": ["B.cs"]}.get(metadata["path"], []),
+            "dependency_paths": [metadata["path"]],
         }
 
     job = reading.create()

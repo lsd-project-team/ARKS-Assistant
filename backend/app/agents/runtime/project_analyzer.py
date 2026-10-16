@@ -31,6 +31,10 @@ class ModelReadingAnalyzer:
             "只描述当前片段能支持的内容，不能据此声称整个模块已理解或功能已经验证。"
             "缺失的被调用实现、外部组件和设备行为列入 unknowns；不要补造实现。"
             "references 只使用所给文件版本和实际行范围，不能虚构其他文件的已读证据。"
+            "dependency_paths 只填写能从所给 workspace 元数据或源码确定的实际相对文件路径；"
+            "附加源码根使用 @sources/<source_id>/... 前缀，不得用类型名或方法名代替路径。"
+            "类型、方法或外部组件线索仍记入 dependencies；无法定位的依赖列入 unknowns，"
+            "不要猜测路径或宣称依赖已完整分析。"
             "说明跨片段关系时区分观察与推断；summary 不超过1500字。\n结构："
             + json.dumps(ReadingAnalysis.model_json_schema(), ensure_ascii=False)
         )

@@ -11,6 +11,7 @@ from pathlib import Path
 from sqlalchemy import func, select
 
 from app.core.identifiers import new_id, now_iso
+from app.infrastructure.execution import sandbox_evidence_valid
 from app.modules.code_changes.files import (
     changes_diff,
     copy_snapshot,
@@ -34,6 +35,7 @@ from app.modules.code_changes.requirements import (
     path_allowed,
     requirement_payload,
     requirements,
+    requirements_version,
     scope_conflicts,
 )
 from app.modules.code_changes.schemas import ChangeWrite, ProfileWrite
@@ -188,12 +190,45 @@ class CodeChanges:
             row = self._row(session, identifier)
             if row.status == "discarded":
                 raise ValueError("副本已丢弃")
-            return read_text(self._work(row), path)
+            return {
+                **read_text(self._work(row), path),
+                "requirements_version": requirements_version(row),
+            }
 
-    def edit_file(self, identifier, path, before, after, version):
+    def update_requirements(self, identifier, change_version, expected_requirements, **details):
+        body = ChangeWrite(**details)
         with self._lock, self.database.session.begin() as session:
             row = self._row(session, identifier)
             self._editable(row)
+            if (
+                self._refresh(row) != change_version
+                or requirements_version(row) != expected_requirements
+            ):
+                raise ValueError("副本或需求已变化，请刷新后再保存需求约定")
+            previous = requirements_version(row)
+            row.title, row.goal = body.title, body.goal
+            row.requirements_json = json.dumps(requirement_payload(body), ensure_ascii=False)
+            _, files, _ = changes_diff(
+                safe_path(self._folder(row), "base"), self._work(row), json.loads(row.manifest_json)
+            )
+            if scope_conflicts(row, files):
+                raise ValueError("现有修改超出新的路径范围，需求未保存；请先核对已有差异")
+            if previous != requirements_version(row):
+                # 源码没变也不能沿用旧验收标准的通过/审核结果；历史记录继续保留。
+                row.review_json, row.delivered_at = "{}", ""
+                row.status = "editing" if row.files_changed else "ready"
+                row.error, row.updated_at = "需求约定已变化，请重新验证", now_iso()
+            return self._serialize(session, row)
+
+    def edit_file(self, identifier, path, before, after, version, *, expected_requirements=None):
+        with self._lock, self.database.session.begin() as session:
+            row = self._row(session, identifier)
+            self._editable(row)
+            if (
+                expected_requirements is not None
+                and requirements_version(row) != expected_requirements
+            ):
+                raise ValueError("需求约定已变化，请重新读取约定和副本文件后再修改")
             original = safe_path(Path(row.source_root), path)
             path = original.relative_to(Path(row.source_root)).as_posix()
             if not path_allowed(row, path):
@@ -369,7 +404,9 @@ class CodeChanges:
                     timeout_seconds=profile.timeout_seconds,
                     change_version=version,
                     purpose=purpose,
-                    executor_json=profile.executor_json,
+                    executor_json=json.dumps(
+                        {**snapshot["executor"], "requirements_version": requirements_version(row)}
+                    ),
                     source_version=tree_version(json.loads(row.manifest_json)),
                     profile_version=profile_version(snapshot),
                 )
@@ -410,6 +447,10 @@ class CodeChanges:
                 if verification.status != "running":
                     return
                 try:
+                    if json.loads(verification.executor_json).get(
+                        "requirements_version"
+                    ) != requirements_version(row):
+                        status, error = "failed", "验证期间需求约定发生改变，请重新验证"
                     if self._refresh(row) != verification.change_version:
                         status, error = "failed", "验证期间副本发生改变，请重新检查并验证"
                     if self._source_conflicts(row):
@@ -427,10 +468,10 @@ class CodeChanges:
                 if profile["executor"]["kind"] == "container":
                     evidence = getattr(task, "executor_evidence", {})
                     verification.executor_json = json.dumps(
-                        {**profile["executor"], "evidence": evidence}
+                        {**json.loads(verification.executor_json), "evidence": evidence}
                     )
-                    if status == "passed" and not (
-                        evidence.get("isolated") and evidence.get("protocol") == 2
+                    if status == "passed" and not sandbox_evidence_valid(
+                        evidence, profile["executor"]
                     ):
                         status, error = "failed", "缺少可信隔离执行证明，不能记录为通过"
                         verification.status = status
@@ -571,6 +612,7 @@ class CodeChanges:
             "updated_at": row.updated_at,
             "files_changed": row.files_changed,
             "change_version": row.change_version,
+            "requirements_version": requirements_version(row),
             "latest_verification": latest,
             "error": row.error,
             **requirements(row),
@@ -602,6 +644,11 @@ class CodeChanges:
             "ended_at": verification.ended_at,
             "change_version": verification.change_version,
             "stale": not environment_current
+            or (
+                verification.purpose != "baseline"
+                and json.loads(verification.executor_json).get("requirements_version")
+                != requirements_version(row)
+            )
             or (
                 verification.source_version != tree_version(json.loads(row.manifest_json))
                 if verification.purpose == "baseline"

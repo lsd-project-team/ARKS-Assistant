@@ -9,7 +9,9 @@ DEEP_QUESTION = re.compile(
     re.I,
 )
 CONTINUE_QUESTION = re.compile(
-    r"^(?:好的[，, ]*)?(?:继续|接着|继续核查|继续分析|继续未完成的部分|continue)[吧。.!！ ]*$", re.I
+    r"^(?:(?:好的?|对|可以)[，, ]*)?(?:继续|接着|继续核查|继续分析|继续未完成的部分"
+    r"|开始|现在开始|动手|continue)[吧。.!！ ]*$",
+    re.I,
 )
 
 REPORT_GUIDANCE = """项目进度问题先给当前可确认的进度和主要缺口，再按模块说明影响与下一步。

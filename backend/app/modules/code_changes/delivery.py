@@ -5,10 +5,15 @@ import json
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from app.core.identifiers import now_iso
+from app.infrastructure.execution import sandbox_evidence_valid
 from app.modules.code_changes.files import changes_diff, export_patch, safe_path
 from app.modules.code_changes.models import VerificationProfileRecord, VerificationRecord
 from app.modules.code_changes.policy import profile_version
-from app.modules.code_changes.requirements import requirements, scope_conflicts
+from app.modules.code_changes.requirements import (
+    requirements,
+    requirements_version,
+    scope_conflicts,
+)
 from app.modules.code_changes.verification import baseline_current
 
 
@@ -32,6 +37,8 @@ def deliverable(service, session, row):
         or verification.purpose != "change"
         or verification.status != "passed"
         or verification.change_version != version
+        or json.loads(verification.executor_json).get("requirements_version")
+        != requirements_version(row)
     ):
         raise ValueError("本次修改验证已失效，请重新验证")
     profile_row = session.get(VerificationProfileRecord, (verification.profile_id, row.project_id))
@@ -44,24 +51,23 @@ def deliverable(service, session, row):
         evidence = json.loads(verification.executor_json).get("evidence", {})
         if profile["executor"]["kind"] != "container":
             raise ValueError("当前验证使用宿主机权限，未在沙箱验证，不能标记为可交付")
-        if (
-            not evidence.get("isolated")
-            or evidence.get("protocol") != 2
-            or not evidence.get("image_id")
-        ):
+        if not sandbox_evidence_valid(evidence, profile["executor"]):
             raise ValueError("缺少实际镜像与隔离执行证明，请重新验证")
     return verification, profile
 
 
-def review_change(service, identifier, version, notes, actor):
+def review_change(service, identifier, version, expected_requirements, notes, actor):
     with service.lock, service.database.session.begin() as session:
         row = service._row(session, identifier)
         verification, profile = deliverable(service, session, row)
         if row.change_version != version:
             raise ValueError("修改版本已变化，请重新查看差异后审核")
+        if requirements_version(row) != expected_requirements:
+            raise ValueError("需求约定已变化，请重新查看需求和差异后审核")
         row.review_json = json.dumps(
             {
                 "change_version": version,
+                "requirements_version": expected_requirements,
                 "verification_id": verification.id,
                 "profile_version": profile_version(profile),
                 "actor": actor,
@@ -81,6 +87,7 @@ def delivery_package(service, identifier):
         review = json.loads(row.review_json or "{}")
         if (
             review.get("change_version") != row.change_version
+            or review.get("requirements_version") != requirements_version(row)
             or review.get("verification_id") != verification.id
         ):
             raise ValueError("当前版本尚未审核，仍可导出草稿补丁供核对")
@@ -97,6 +104,7 @@ def delivery_package(service, identifier):
             "goal": row.goal,
             **requirements(row),
             "change_version": row.change_version,
+            "requirements_version": requirements_version(row),
             "source_version": verification.source_version,
             "verification_id": verification.id,
             "verification": verification_metadata(verification),

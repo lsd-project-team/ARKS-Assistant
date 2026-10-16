@@ -26,6 +26,7 @@ class ReadingAnalysis(BaseModel):
     summary: str = Field(min_length=1, max_length=12000)
     entrypoints: list[str] = Field(default_factory=list, max_length=50)
     dependencies: list[str] = Field(default_factory=list, max_length=100)
+    dependency_paths: list[str] = Field(default_factory=list, max_length=100)
     unknowns: list[str] = Field(default_factory=list, max_length=100)
     references: list[ReadingReference] = Field(default_factory=list, max_length=100)
 

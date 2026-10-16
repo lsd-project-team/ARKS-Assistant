@@ -10,6 +10,11 @@ from sqlalchemy import select, update
 from app.core.config import dump_json
 from app.core.identifiers import now_iso
 from app.modules.source_analysis.reading import sources
+from app.modules.source_analysis.reading.dependencies import (
+    dependency_graph,
+    guarded_snapshot_matches,
+    public_metadata,
+)
 from app.modules.source_analysis.reading.knowledge import knowledge_prompt
 from app.modules.source_analysis.reading.models import (
     ProjectReadingDocument,
@@ -197,8 +202,9 @@ class ProjectReading:
                 "reviewed_at",
             )
         }
-        for name in ("entrypoints", "dependencies", "unknowns", "references"):
+        for name in ("entrypoints", "unknowns", "references"):
             result[name] = json.loads(getattr(row, name + "_json"))
+        result.update(public_metadata(row))
         return result
 
     def documents(self, identifier):
@@ -261,6 +267,16 @@ class ProjectReading:
             for dependency in graph.get(queue.pop(), set()) - required:
                 required.add(dependency)
                 queue.append(dependency)
+        if any(None in graph.snapshot_guards.get(path, set()) for path in required):
+            return False
+        if any(graph.snapshot_guards.get(path) for path in required):
+            key = ("project_snapshot",)
+            if key not in versions:
+                current_files = sources.snapshot(self.workspace)
+                versions[key] = self._snapshot_version(current_files)
+                versions.update({row["path"]: row["source_version"] for row in current_files})
+            if not guarded_snapshot_matches(graph, required, versions[key]):
+                return False
         for path in required:
             expected = files.get(path)
             if not expected or not expected.indexed:
@@ -279,16 +295,7 @@ class ProjectReading:
 
     @staticmethod
     def _dependency_graph(files, documents):
-        modules, graph = defaultdict(set), defaultdict(set)
-        for path, file in files.items():
-            modules[file.module].add(path)
-        for document in documents:
-            for dependency in json.loads(document.dependencies_json):
-                if dependency in files:
-                    graph[document.path].add(dependency)
-                else:
-                    graph[document.path].update(modules.get(dependency, set()))
-        return graph
+        return dependency_graph(files, documents)
 
     def refresh(self, identifier):
         with self.lock, self.database.session() as session:
@@ -310,18 +317,24 @@ class ProjectReading:
                 or (files[path].status == "excluded") != (incoming[path]["status"] == "excluded")
             }
             documents = self._documents(session, identifier)
-            affected = set(changed)
+            graph = self._dependency_graph(files, documents)
+            snapshot_version = self._snapshot_version(rows)
+            affected = changed | {
+                path
+                for path in graph.snapshot_guards
+                if not guarded_snapshot_matches(graph, {path}, snapshot_version)
+            }
             # 反向依赖闭包：A 变更也使依赖 B→A 的 C→B 成果待重读，循环依赖会收敛。
             while True:
                 before = len(affected)
-                modules = {sources.module_name(path) for path in affected}
-                for document in documents:
-                    dependencies = set(json.loads(document.dependencies_json))
-                    if document.path in affected or dependencies & (affected | modules):
-                        document.status = "stale"
-                        affected.add(document.path)
+                for path, dependencies in graph.items():
+                    if dependencies & affected:
+                        affected.add(path)
                 if len(affected) == before:
                     break
+            for document in documents:
+                if document.path in affected:
+                    document.status = "stale"
             for path, row in incoming.items():
                 file = files.get(path)
                 if file is None:

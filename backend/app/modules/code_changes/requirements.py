@@ -3,6 +3,7 @@
 import fnmatch
 import json
 
+from app.modules.code_changes.files import digest
 from app.modules.code_changes.schemas import ChangeWrite
 
 
@@ -17,6 +18,11 @@ def requirements(row):
         "allowed_paths": [],
         **json.loads(row.requirements_json or "{}"),
     }
+
+
+def requirements_version(row):
+    payload = {"title": row.title, "goal": row.goal, **requirements(row)}
+    return digest(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8"))
 
 
 def path_allowed(row, path):

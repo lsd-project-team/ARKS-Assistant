@@ -48,11 +48,11 @@ def test_old_or_unsafe_image_is_rejected(monkeypatch, config_update):
     assert result["error"]
 
 
-def test_windows_remains_fail_closed_even_with_matching_node(monkeypatch):
+def test_windows_matching_node_without_trusted_image_fails_closed(monkeypatch):
     monkeypatch.setattr(cli, "object_result", lambda *args: {"OSType": "windows"})
     result = probe_executor({**executor(), "platform": "windows"})
     assert result["available"] is False
-    assert "监督身份" in result["error"]
+    assert result["error"] == "镜像配置不完整"
 
 
 def test_cleanup_checks_owner_and_active_verification_for_containers_and_volumes(monkeypatch):

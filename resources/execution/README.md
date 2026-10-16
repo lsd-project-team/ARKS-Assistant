@@ -1,6 +1,6 @@
 # 可信隔离执行模板
 
-当前可执行平台为 Linux。Windows 配置会明确拒绝执行，不能用本模板宣称 ZX2200 / .NET Framework 4.8 已完成构建。`Dockerfile.windows` 只是后续节点实现的草稿；独立监督身份、受保护证明、Windows SDK 和私有依赖均未验收。
+Linux 协议2已执行真实容器回归。Windows 协议3已有 Hyper-V 适配、停止态传输与32位原生退出码桥接；本机只验证了原生进程与只读容量子组件，尚无Windows容器节点，不能宣称Windows、SDK或ZX2200 / .NET Framework 4.8构建已验收。Windows节点准备与实际限制见[Windows执行说明](../../docs/architecture/windows-executor.md)。
 
 Linux 基础镜像须由管理员提前准备，提供 `/usr/local/bin/python`。使用已存在的固定 digest 或完整镜像 ID：
 

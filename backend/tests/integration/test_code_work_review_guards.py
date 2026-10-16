@@ -29,7 +29,14 @@ async def test_cleanup_keeps_work_saved_externally_while_counting_expired_copy(
         service.verify(change["id"], profile["id"])
         passed = await service.wait(change["id"], 10)
         assert passed["status"] == "passed"
-        review_change(service, change["id"], passed["change_version"], "核对", "reviewer")
+        review_change(
+            service,
+            change["id"],
+            passed["change_version"],
+            passed["requirements_version"],
+            "核对",
+            "reviewer",
+        )
         delivery_package(service, change["id"])
         now = datetime(2030, 1, 31, tzinfo=UTC)
         with database.session.begin() as session:

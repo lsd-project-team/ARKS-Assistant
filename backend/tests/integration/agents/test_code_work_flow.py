@@ -102,11 +102,20 @@ class RepairModel(DeterministicModel):
         return ChatResult(generations=[ChatGeneration(message=message)])
 
 
-@pytest.mark.parametrize("continuing", [False, True])
+@pytest.mark.parametrize(
+    ("question", "previous"),
+    [
+        ("请修复返回值并运行测试", None),
+        ("继续", "请修复返回值并运行测试"),
+        ("好的开始吧", "请修复返回值并运行测试，先给我方案"),
+        ("请在隔离副本修改calc.py，将answer改为2，检查差异，不改原件", None),
+    ],
+)
 async def test_agent_reads_failed_exit_then_repairs_and_reverifies_original_unchanged(
     services,
     monkeypatch,
-    continuing,
+    question,
+    previous,
 ):
     from app.bootstrap import create_services
 
@@ -142,15 +151,15 @@ async def test_agent_reads_failed_exit_then_repairs_and_reverifies_original_unch
                 saver,
                 lambda *_: None,
                 owned,
-                question_text="继续" if continuing else "请修复返回值并运行测试",
+                question_text=question,
                 policy={
                     "continuing": True,
-                    "question": "请修复返回值并运行测试",
+                    "question": previous,
                     "mode": "standard",
                     "limit": 24,
                     "reserve": 0,
                 }
-                if continuing
+                if previous
                 else None,
                 memory_query="返回值",
                 source_options={"use_memory": False, "use_knowledge": False, "use_deepwiki": False},
@@ -249,6 +258,7 @@ def test_confirmed_experience_keeps_fixed_change_and_verification_then_is_recall
                 "before": file["content"],
                 "after": file["content"] + "// change",
                 "version": file["version"],
+                "requirements_version": file["requirements_version"],
             },
         )
         assert (

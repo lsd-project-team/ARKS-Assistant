@@ -1,12 +1,12 @@
 # escape=`
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
-LABEL io.arks.executor.version="2" io.arks.executor.platform="windows"
+LABEL io.arks.executor.version="3" io.arks.executor.platform="windows"
 USER ContainerAdministrator
-RUN powershell -NoProfile -Command "New-Item -ItemType Directory -Force C:\arks,C:\stage,C:\work | Out-Null; icacls C:\work /grant 'ContainerUser:(OI)(CI)F' | Out-Null"
-COPY supervisor.py transport.py C:/arks/
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
-WORKDIR C:/work
-USER ContainerUser
-ENTRYPOINT ["python", "C:\\arks\\supervisor.py"]
+RUN powershell -NoProfile -Command "New-Item -ItemType Directory -Force C:\arks,C:\work,C:\arks-temp | Out-Null"
+COPY windows-supervisor.ps1 C:/arks/
+RUN ["C:\\Windows\\System32\\icacls.exe", "C:\\arks", "/inheritance:r", "/grant:r", "*S-1-5-32-544:(OI)(CI)F", "*S-1-5-18:(OI)(CI)F", "/T", "/Q"]
+WORKDIR C:/arks
+USER ContainerAdministrator
+ENTRYPOINT ["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive", "-File", "C:\\arks\\windows-supervisor.ps1"]
 CMD []

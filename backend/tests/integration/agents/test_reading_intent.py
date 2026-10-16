@@ -107,6 +107,8 @@ async def test_explanation_capability_and_negation_never_create_or_start(reading
         "请通读项目并总结模块如何协作",
         "请先通读项目，然后告诉我入口在哪里",
         "这是当前项目。请开始项目阅读",
+        "请通读项目，不要修改代码",
+        "请阅读整个项目，不要写代码",
     ],
 )
 async def test_explicit_reading_command_starts_actual_temporary_job(reading_runtime, prompt):
@@ -165,3 +167,25 @@ async def test_continue_resumes_latest_saved_chunks_without_duplicate_job(readin
     assert len(reading.list()["jobs"]) == 1
     assert reading.documents(initial["id"])[0]["id"] == first_document["id"]
     assert all(row["path"] != "Long.cs" or row["chunk_index"] > 0 for row in resumed_calls)
+
+
+async def test_continue_refreshes_changed_source_before_reusing_completed_job(reading_runtime):
+    reading = reading_runtime.project_reading
+    first = json.loads(await reading_tool(reading_runtime, "请通读项目").ainvoke({}))
+    await finish(reading)
+    assert reading.get(first["id"])["status"] == "completed"
+    (reading.workspace.root / "Program.cs").write_text("class Revised {}", encoding="utf-8")
+    resumed = json.loads(await reading_tool(reading_runtime, "继续阅读").ainvoke({}))
+    assert resumed["id"] == first["id"]
+    await finish(reading)
+    assert len(reading_runtime.reading_calls) == 2
+    assert (
+        reading_runtime.reading_calls[-1]["source_version"]
+        != reading_runtime.reading_calls[0]["source_version"]
+    )
+    latest_version = reading_runtime.reading_calls[-1]["source_version"]
+    documents = reading.documents(first["id"])
+    assert any(
+        row["source_version"] == latest_version and row["status"] != "stale" for row in documents
+    )
+    assert reading.get(first["id"])["counts"]["analyzed"] == 1

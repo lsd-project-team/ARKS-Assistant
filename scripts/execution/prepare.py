@@ -14,9 +14,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-image", required=True, help="已存在的基础镜像 sha256 ID 或 digest")
     parser.add_argument("--context", default="default")
+    parser.add_argument("--platform", choices=["linux", "windows"], default="linux")
+    parser.add_argument("--windows-scratch-mb", type=int, default=32768)
     arguments = parser.parse_args()
     try:
-        result = prepare_executor(arguments.base_image, context=arguments.context)
+        result = prepare_executor(
+            arguments.base_image,
+            context=arguments.context,
+            platform=arguments.platform,
+            limits={"windows_scratch_mb": arguments.windows_scratch_mb},
+        )
     except ExecutionError as exc:
         print(json.dumps({"available": False, "error": str(exc)}, ensure_ascii=False))
         return 1

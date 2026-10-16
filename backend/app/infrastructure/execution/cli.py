@@ -64,7 +64,7 @@ def validate_executor(executor):
         raise ExecutionError("执行镜像必须固定为 sha256 digest，不能使用浮动标签")
 
 
-def probe_executor(executor):
+def probe_executor(executor, limits=None, *, check_runtime=True):
     """只探测已有镜像；不拉取、不构建、不执行项目。"""
     result = {"available": False, "platform": executor.get("platform"), "image_id": ""}
     try:
@@ -72,29 +72,37 @@ def probe_executor(executor):
         info = object_result(executor, "info", "--format", "{{json .}}")
         if info.get("OSType") != executor["platform"]:
             raise ExecutionError("执行节点系统与配置平台不匹配，需要对应的独立执行节点")
-        if executor["platform"] == "windows":
-            raise ExecutionError("Windows 尚缺独立监督身份与受保护证明，当前禁止执行")
         images = object_result(executor, "image", "inspect", executor["image"])
         image = images[0]
         config = image.get("Config") or {}
         labels = config.get("Labels") or {}
         if image.get("Os") != executor["platform"]:
             raise ExecutionError("镜像系统与配置平台不匹配")
+        version = "3" if executor["platform"] == "windows" else "2"
         if (
-            labels.get(f"{LABEL}.version") != "2"
+            labels.get(f"{LABEL}.version") != version
             or labels.get(f"{LABEL}.platform") != executor["platform"]
         ):
             raise ExecutionError("镜像尚未使用本项目可信执行模板准备")
         expected = ["/usr/local/bin/python", "-I", "/opt/arks/supervisor.py"]
+        user = "0:0"
         if executor["platform"] == "windows":
-            expected = ["python", "C:\\arks\\supervisor.py"]
+            from .windows import ENTRYPOINT
+
+            expected = ENTRYPOINT
+            user = "ContainerAdministrator"
         if (
             config.get("Entrypoint") != expected
             or config.get("Volumes")
-            or config.get("User") != "0:0"
+            or config.get("User") != user
         ):
             raise ExecutionError("镜像入口或内置挂载不符合可信执行模板")
         result.update(available=True, image_id=image["Id"], error="")
+        if executor["platform"] == "windows" and check_runtime:
+            from .windows import probe_windows
+
+            result.update(probe_windows({**executor, "image": image["Id"]}, info, limits))
     except (ExecutionError, IndexError, KeyError, TypeError) as exc:
+        result["available"] = False
         result["error"] = str(exc) if isinstance(exc, ExecutionError) else "镜像配置不完整"
     return result

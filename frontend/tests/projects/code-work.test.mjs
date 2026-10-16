@@ -87,27 +87,55 @@ test('副本路径接受目录相对路径，拒绝越界、绝对路径与空�
 });
 
 test('保存补丁固定读取时的路径、完整旧正文和版本，保留换行和空文件', () => {
-  const file = { path: 'src/A.cs', content: 'a\r\nb\r\n', version: 'read-hash' };
+  const file = {
+    path: 'src/A.cs',
+    content: 'a\r\nb\r\n',
+    version: 'read-hash',
+    requirements_version: 'req-hash',
+  };
   assert.deepEqual(filePatchRequest(file, 'a\r\nc\r\n'), {
     path: 'src/A.cs',
     before: 'a\r\nb\r\n',
     after: 'a\r\nc\r\n',
     version: 'read-hash',
+    requirements_version: 'req-hash',
   });
   assert.equal(file.content, 'a\r\nb\r\n');
   assert.deepEqual(
-    filePatchRequest({ path: 'empty.txt', content: '', version: 'empty-hash' }, 'new'),
-    { path: 'empty.txt', before: '', after: 'new', version: 'empty-hash' },
+    filePatchRequest(
+      { path: 'empty.txt', content: '', version: 'empty-hash', requirements_version: 'req-hash' },
+      'new',
+    ),
+    {
+      path: 'empty.txt',
+      before: '',
+      after: 'new',
+      version: 'empty-hash',
+      requirements_version: 'req-hash',
+    },
   );
   assert.throws(() => filePatchRequest({ ...file, version: '' }, 'x'), /重新读取/);
   assert.deepEqual(
-    filePatchRequest({ path: 'new.txt', content: '', version: '', exists: false }, 'new'),
-    { path: 'new.txt', before: '', after: 'new', version: '' },
+    filePatchRequest(
+      {
+        path: 'new.txt',
+        content: '',
+        version: '',
+        exists: false,
+        requirements_version: 'req-hash',
+      },
+      'new',
+    ),
+    { path: 'new.txt', before: '', after: 'new', version: '', requirements_version: 'req-hash' },
   );
   assert.throws(
     () =>
       filePatchRequest({ path: 'new.txt', content: '旧正文', version: '', exists: false }, 'new'),
     /重新读取/,
+  );
+  assert.throws(
+    () => filePatchRequest({ ...file, requirements_version: undefined }, 'new'),
+    /缺少需求版本/,
   );
 });
 

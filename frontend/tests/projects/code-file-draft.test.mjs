@@ -8,7 +8,13 @@ import {
 
 const scope = { accountId: 'account-a', projectId: 'project-a', changeId: 'change-a' };
 const value = {
-  file: { path: 'src/A.cs', content: '旧正文\r\n', version: 'a'.repeat(64), exists: true },
+  file: {
+    path: 'src/A.cs',
+    content: '旧正文\r\n',
+    version: 'a'.repeat(64),
+    requirements_version: 'b'.repeat(64),
+    exists: true,
+  },
   draft: '尚未保存\n',
 };
 function storage() {

@@ -95,12 +95,20 @@ export interface CodeChange {
   error?: string | null;
   change_version?: string;
   acceptance_criteria?: string[];
+  requirements_version?: string;
   constraints?: string;
   allowed_paths?: string[];
-  review?: { change_version: string; actor: string; notes: string; reviewed_at: string } | null;
+  review?: {
+    change_version: string;
+    requirements_version: string;
+    actor: string;
+    notes: string;
+    reviewed_at: string;
+  } | null;
 }
 
 export interface CodeWorkPolicy {
+  windows_scratch_mb: number;
   max_storage_mb: number;
   min_free_mb: number;
   max_log_mb: number;
@@ -137,6 +145,7 @@ export interface ChangeFile {
   path: string;
   content: string;
   version: string;
+  requirements_version?: string;
   exists?: boolean;
 }
 

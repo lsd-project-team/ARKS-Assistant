@@ -23,8 +23,8 @@ export function ReadinessPanel({ projectId, readOnly }: { projectId: string; rea
       </div>
       <p className="muted">
         应用可部署在 Linux；Linux 沙箱执行通道已接入，节点与镜像是否可用需探测。传统 .NET Framework
-        4.8 项目还需实现并验收 Windows 执行适配、独立 Windows 执行节点、SDK
-        和私有依赖。静态检查不能证明可构建。
+        4.8 项目还需独立 Windows 执行节点、SDK 和私有依赖，并完成 Windows 执行与原版本构建验收。
+        静态检查不能证明可构建。
       </p>
       <ErrorText error={query.error} />
       {query.isPending ? (

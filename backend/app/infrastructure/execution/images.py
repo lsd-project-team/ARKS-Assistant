@@ -7,15 +7,19 @@ from pathlib import Path
 from .cli import IMAGE_ID, ExecutionError, call, command, object_result, options, probe_executor
 
 
-def prepare_executor(base_image, context="default", platform="linux"):
+def prepare_executor(base_image, context="default", platform="linux", limits=None):
     if platform not in {"linux", "windows"} or not IMAGE_ID.fullmatch(str(base_image)):
         raise ExecutionError("准备镜像必须指定平台和固定 sha256 基础镜像")
-    if platform == "windows":
-        raise ExecutionError("Windows 独立监督身份尚未验收，当前禁止准备为可用执行镜像")
     executor = {"kind": "container", "context": context, "platform": platform, "image": base_image}
     info = object_result(executor, "info", "--format", "{{json .}}")
     if info.get("OSType") != platform:
         raise ExecutionError("基础镜像准备需要对应平台的执行节点")
+    extra = []
+    if platform == "windows":
+        from .windows import admit_windows_node
+
+        _, reserved = admit_windows_node(executor, info, limits or {})
+        extra = ["--isolation=hyperv", "--storage-opt", f"size={reserved}"]
     # 基础镜像必须由管理员提前准备；验证运行不会联网拉取依赖。
     base = object_result(executor, "image", "inspect", base_image)[0]
     if base.get("Os") != platform or (base.get("Config") or {}).get("Volumes"):
@@ -43,6 +47,7 @@ def prepare_executor(base_image, context="default", platform="linux"):
                 "--iidfile",
                 str(identity_file),
                 "--quiet",
+                *extra,
                 str(resources),
             ),
             stdout=subprocess.DEVNULL,
@@ -52,10 +57,10 @@ def prepare_executor(base_image, context="default", platform="linux"):
             **options(),
         )
         if result.returncode or not identity_file.is_file():
-            raise ExecutionError("可信执行镜像准备失败，请检查基础镜像是否提供 Python 运行时")
+            raise ExecutionError("可信执行镜像准备失败，请检查基础镜像运行时与平台环境")
         image_id = identity_file.read_text().strip()
     executor["image"] = image_id
-    probe = probe_executor(executor)
+    probe = probe_executor(executor, limits)
     if not probe["available"]:
         raise ExecutionError(probe["error"])
     return {"executor": executor, **probe}

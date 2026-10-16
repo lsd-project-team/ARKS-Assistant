@@ -9,6 +9,7 @@ const fields = [
   ['max_storage_mb', '空间上限（MB）', 100, 1000000],
   ['min_free_mb', '最少空闲空间（MB）', 0, 1000000],
   ['max_log_mb', '单次日志上限（MB）', 1, 1024],
+  ['windows_scratch_mb', 'Windows 验证临时磁盘预算（MB）', 20480, 1048576],
   ['max_active_verifications', '同时验证上限', 1, 16],
   ['retention_days', '临时文件保留天数', 1, 3650],
   ['reading_token_limit', '项目每日模型 token 上限（UTC）', 1000, 100000000],
@@ -68,7 +69,8 @@ export function CodeWorkPolicyPanel({
     <details className="code-work-config">
       <summary>本项目用量与清理（管理员）</summary>
       <p className="muted">
-        策略仅作用于当前项目；聊天和项目阅读共享按 UTC 日结算的模型 token 额度。
+        策略仅作用于当前项目；聊天和项目阅读共享按 UTC 日结算的模型 token 额度。 Windows
+        临时磁盘预算包含系统写入层，执行前核对节点可用空间。
       </p>
       <form
         onSubmit={(event) => {

@@ -11,23 +11,49 @@ from pathlib import Path
 
 from langchain_core.tools import tool
 
-from app.core.config import PROJECT_ROOT, dump_json
+from app.core.config import dump_json
+from app.modules.source_analysis.dotnet_runtime import (
+    DOTNET,
+    HELPER,
+    dotnet_environment,
+    roslyn_command,
+    setup_instruction,
+)
+from app.modules.source_analysis.dotnet_runtime import DOTNET as DEFAULT_DOTNET
 from app.modules.source_analysis.workspace import content_version
 
-DOTNET = PROJECT_ROOT / ".tools/dotnet/dotnet.exe"
-HELPER = PROJECT_ROOT / "backend/tools/SourceAnalysis/bin/Release/net8.0/SourceAnalysis.dll"
+
+def analysis_command():
+    return roslyn_command(
+        default_dotnet=DOTNET if DOTNET != DEFAULT_DOTNET else None, default_helper=HELPER
+    )
 
 
 class CSharpAnalysis:
     def __init__(self, workspace):
         self.workspace, self.lock, self.process = workspace, threading.RLock(), None
+        self.command = None
 
     def close(self):
         with self.lock:
-            if self.process and self.process.poll() is None:
-                self.process.terminate()
-                self.process.wait(timeout=10)
+            process = self.process
             self.process = None
+            self.command = None
+            if process is None:
+                return
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+            for stream in (process.stdin, process.stdout):
+                if stream:
+                    try:
+                        stream.close()
+                    except OSError:
+                        pass
 
     def project(self, target):
         for parent in [target.parent, *target.parents]:
@@ -134,8 +160,9 @@ class CSharpAnalysis:
         source = self.workspace.read(path)
         if target.suffix.lower() != ".cs" or not 1 <= line <= source["line_count"]:
             raise ValueError("语义工具需要 C# 文件和有效行号")
-        if not DOTNET.is_file() or not HELPER.is_file():
-            return {"analysis": "unavailable", "reason": "请运行 Setup.ps1 准备 Roslyn 分析器"}
+        command, error = analysis_command()
+        if error:
+            return {"analysis": "unavailable", "reason": error}
         notes = []
         with self.lock:
             projects = self.manifest(self.project(target), set(), notes)
@@ -146,32 +173,18 @@ class CSharpAnalysis:
                 > 50_000_000
             ):
                 return {"analysis": "partial", "reason": "项目引用超过有界索引范围"}
-            if not self.process or self.process.poll() is not None:
-                self.process = subprocess.Popen(
-                    [str(DOTNET), str(HELPER)],
-                    stdin=subprocess.PIPE,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.DEVNULL,
-                    text=True,
-                    encoding="utf-8",
-                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
-                )
             payload = dict(
                 projects=projects, project=projects[-1]["id"], path=source["path"], line=line
             )
-            self.process.stdin.write(dump_json(payload) + "\n")
-            self.process.stdin.flush()
-            replies = queue.Queue()
-            worker = self.process
-            threading.Thread(
-                target=lambda: replies.put(worker.stdout.readline()), daemon=True
-            ).start()
             try:
-                result = json.loads(replies.get(timeout=90))
-            except queue.Empty as error:
-                worker.terminate()
-                worker.wait(timeout=10)
-                raise ValueError("语义分析超过 90 秒处理期限，当前关系仍为未知") from error
+                result = self._request(command, payload)
+            except (OSError, ValueError, subprocess.TimeoutExpired):
+                self.close()
+                return {
+                    "analysis": "unavailable",
+                    "reason": "Roslyn 进程未返回有效结果；请检查 .NET 8 运行时和分析器版本。"
+                    + setup_instruction(),
+                }
             if "error" in result:
                 result = {"analysis": "unknown", "reason": result["error"]}
         result.update(
@@ -183,6 +196,34 @@ class CSharpAnalysis:
             result["completeness"] = (
                 "partial: static project configuration; see configuration_notes"
             )
+        return result
+
+    def _request(self, command, payload):
+        if self.process and self.command != command:
+            self.close()
+        if not self.process or self.process.poll() is not None:
+            self.process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                encoding="utf-8",
+                env=dotnet_environment(command[0]),
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            )
+            self.command = command
+        self.process.stdin.write(dump_json(payload) + "\n")
+        self.process.stdin.flush()
+        replies, worker = queue.Queue(), self.process
+        threading.Thread(target=lambda: replies.put(worker.stdout.readline()), daemon=True).start()
+        try:
+            result = json.loads(replies.get(timeout=90))
+        except queue.Empty as error:
+            self.close()
+            raise ValueError("语义分析超过 90 秒处理期限，当前关系仍为未知") from error
+        if not isinstance(result, dict):
+            raise ValueError("Roslyn 返回格式无效")
         return result
 
     def tools(self):

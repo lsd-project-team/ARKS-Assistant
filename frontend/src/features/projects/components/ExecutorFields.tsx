@@ -36,7 +36,7 @@ export function ExecutorFields({
           }
         >
           <option value="linux">Linux</option>
-          <option value="windows">Windows（执行支持待接入）</option>
+          <option value="windows">Windows（Hyper-V 隔离）</option>
         </Select>
       </label>
       {value.kind === 'container' ? (
@@ -60,9 +60,8 @@ export function ExecutorFields({
             />
           </label>
           <p className="muted">
-            不挂载宿主目录或凭据，固定无网络。Linux 沙箱需探测节点与固定镜像；Windows
-            执行适配仍待实现与验收，填写 Windows context
-            不会启用执行。仅保存配置不代表节点或镜像已准备。
+            不挂载宿主目录或凭据，固定无网络。Windows 需要具备 Hyper-V 容器能力的独立节点， SSH
+            context 与可用磁盘探测；配置后先探测节点及固定镜像。保存配置不代表实际构建已通过。
           </p>
         </>
       ) : (

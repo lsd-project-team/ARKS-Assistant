@@ -64,8 +64,15 @@ export function normalizeChangePath(value: string) {
 export function filePatchRequest(file: ChangeFile, after: string) {
   const newFile = file.exists === false && file.content === '' && file.version === '';
   if (!file.version && !newFile) throw new Error('缺少文件版本，请重新读取文件后保存');
+  if (!file.requirements_version) throw new Error('缺少需求版本，请重新读取文件后保存');
   // 基线必须来自同一次读取；路径输入或轮询不能覆盖正在编辑的旧正文。
-  return { path: file.path, before: file.content, after, version: file.version };
+  return {
+    path: file.path,
+    before: file.content,
+    after,
+    version: file.version,
+    requirements_version: file.requirements_version,
+  };
 }
 
 export function parseCommandArgv(value: string): string[] {

@@ -4,12 +4,35 @@ import { jsonBody } from '../../../app/api/client';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useProjectApi } from '../hooks/useProjectApi';
 import { deliveryVersionCurrent, executionLabel, reviewMissing } from '../lib/codeReadiness';
+import type { ProjectRequest } from '../lib/projectRequest';
 import type {
   CodeChange,
   ReadinessReport,
   Verification,
   VerificationProfile,
 } from '../types/codeWork';
+
+export async function writeChangeReview(
+  api: ProjectRequest,
+  projectId: string,
+  change: CodeChange,
+  notes: string,
+) {
+  if (!change.change_version || !change.requirements_version)
+    throw new Error('当前副本缺少版本信息，请刷新后重试');
+  return api<CodeChange>(
+    `/code-changes/${encodeURIComponent(change.id)}/review`,
+    {
+      method: 'POST',
+      body: jsonBody({
+        change_version: change.change_version,
+        requirements_version: change.requirements_version,
+        notes,
+      }),
+    },
+    projectId,
+  );
+}
 
 export function ChangeDelivery({
   projectId,
@@ -59,12 +82,7 @@ export function ChangeDelivery({
     setBusy(true);
     setError(undefined);
     try {
-      onChanged(
-        await api<CodeChange>(`/code-changes/${encodeURIComponent(change.id)}/review`, {
-          method: 'POST',
-          body: jsonBody({ change_version: change.change_version, notes }),
-        }),
-      );
+      onChanged(await writeChangeReview(api, projectId, change, notes));
     } catch (reason) {
       setError(reason);
     } finally {
@@ -76,6 +94,9 @@ export function ChangeDelivery({
       <h3>当前版本审核与交付</h3>
       <p className="code-work-source-version">
         当前修改版本：{change.change_version || '尚未提供'}
+      </p>
+      <p className="code-work-source-version">
+        当前需求版本：{change.requirements_version || '尚未提供'}
       </p>
       {!!missing.length && (
         <ul className="muted">
@@ -91,7 +112,7 @@ export function ChangeDelivery({
       ) : (
         <>
           <p className="muted">
-            审核绑定当前版本；文件或源码变化后需重新验证与审核。未审核仍可下载草稿补丁。
+            审核绑定当前修改及需求版本；文件、源码或需求变化后需重新验证与审核。未审核仍可下载草稿补丁。
           </p>
           <label>
             审核说明

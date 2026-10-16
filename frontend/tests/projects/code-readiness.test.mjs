@@ -30,7 +30,7 @@ test('可信宿主必须显式kind且始终标记非沙箱，不沿用容器镜�
   assert.equal(host.image, '');
   assert.match(executionLabel(host), /windows.*非沙箱/);
   assert.match(executionLabel(undefined), /未提供/);
-  assert.match(executionLabel({ ...container, platform: 'windows' }), /执行支持待接入/);
+  assert.match(executionLabel({ ...container, platform: 'windows' }), /Hyper-V 容器配置/);
 });
 test('修改验收信息保留独立条目并拒绝越界glob', () => {
   assert.deepEqual(
@@ -47,6 +47,7 @@ test('修改验收信息保留独立条目并拒绝越界glob', () => {
 const change = {
   status: 'passed',
   change_version: 'current',
+  requirements_version: 'requirements-current',
   acceptance_criteria: ['实际标准'],
   latest_verification: {
     status: 'passed',
@@ -91,8 +92,22 @@ test('要求基线时核对同一配置的有效原版本结果', () => {
   );
 });
 test('审核精确绑定当前版本，旧版本与缺失版本不能交付', () => {
-  assert.equal(deliveryVersionCurrent({ ...change, review: { change_version: 'current' } }), true);
+  const review = { change_version: 'current', requirements_version: 'requirements-current' };
+  assert.equal(deliveryVersionCurrent({ ...change, review }), true);
+  assert.equal(
+    deliveryVersionCurrent({ ...change, review: { ...review, requirements_version: 'old' } }),
+    false,
+  );
+  assert.equal(deliveryVersionCurrent({ ...change, review: { change_version: 'current' } }), false);
   assert.equal(deliveryVersionCurrent({ ...change, review: { change_version: 'old' } }), false);
+  assert.equal(
+    deliveryVersionCurrent({ ...change, requirements_version: undefined, review }),
+    false,
+  );
   assert.equal(deliveryVersionCurrent({ review: { change_version: undefined } }), false);
+  assert.match(
+    reviewMissing({ ...change, requirements_version: undefined }).join(),
+    /缺少需求版本/,
+  );
   assert.equal(bytesLabel(1048576), '1.0 MB');
 });

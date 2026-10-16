@@ -57,6 +57,9 @@ export function readCodeFileDraft(
         path: file.path,
         content: file.content,
         version: file.version,
+        ...(typeof file.requirements_version === 'string'
+          ? { requirements_version: file.requirements_version }
+          : {}),
         ...(typeof file.exists === 'boolean' ? { exists: file.exists } : {}),
       },
       draft: saved.draft,

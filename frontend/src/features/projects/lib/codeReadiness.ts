@@ -24,7 +24,7 @@ export function executionLabel(executor?: VerificationExecutor) {
   if (!executor) return '执行环境未提供';
   return executor.kind === 'trusted_host'
     ? `${executor.platform || '宿主平台未记录'} · 可信宿主（非沙箱）`
-    : `${executor.platform} · ${executor.platform === 'windows' ? '容器配置（执行支持待接入）' : '隔离容器'} · ${executor.context || 'default'}`;
+    : `${executor.platform} · ${executor.platform === 'windows' ? 'Hyper-V 容器配置' : '隔离容器'} · ${executor.context || 'default'}`;
 }
 
 export function requirementsPayload(criteria: string, constraints: string, paths: string) {
@@ -51,7 +51,12 @@ export function requirementsPayload(criteria: string, constraints: string, paths
 }
 
 export function deliveryVersionCurrent(change: CodeChange) {
-  return !!change.change_version && change.review?.change_version === change.change_version;
+  return (
+    !!change.change_version &&
+    !!change.requirements_version &&
+    change.review?.change_version === change.change_version &&
+    change.review?.requirements_version === change.requirements_version
+  );
 }
 
 export function reviewMissing(
@@ -60,6 +65,7 @@ export function reviewMissing(
   history: Verification[] = [],
 ) {
   const missing = [];
+  if (!change.requirements_version) missing.push('缺少需求版本，请刷新后审核');
   if (!change.acceptance_criteria?.some((item) => item.trim()))
     missing.push('尚未填写明确验收标准');
   const result = change.latest_verification;

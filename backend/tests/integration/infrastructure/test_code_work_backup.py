@@ -124,7 +124,12 @@ async def test_restore_keeps_code_work(tmp_path, monkeypatch):
         await run_verification(changes, change["id"], profile, "baseline")
         passed = await run_verification(changes, change["id"], profile, "change")
         review_change(
-            changes, change["id"], passed["change_version"], "核对当前补丁", "test-reviewer"
+            changes,
+            change["id"],
+            passed["change_version"],
+            passed["requirements_version"],
+            "核对当前补丁",
+            "test-reviewer",
         )
         package = delivery_package(changes, change["id"])
         (paths.scratch / "delivery.zip").write_bytes(package)

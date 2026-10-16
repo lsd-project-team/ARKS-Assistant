@@ -150,6 +150,11 @@ export function ChangeFileEditor({
       {restoredNotice && (
         <p className="muted">已恢复本账号在此项目和副本中的会话草稿；保存时仍会核对原读取版本。</p>
       )}
+      {file && !file.requirements_version && (
+        <p role="alert">
+          旧草稿缺少需求版本，请先复制保留修改后的正文，再放弃本次编辑并重新读取文件。
+        </p>
+      )}
       {dirty && (
         <p className="muted">
           {draftStorageError

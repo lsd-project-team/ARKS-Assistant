@@ -214,6 +214,7 @@ def test_readiness_policy_executor_requirements_and_review_guards_over_http(api)
             f"/api/code-changes/{identifier}/review",
             json={
                 "change_version": created["change_version"],
+                "requirements_version": created["requirements_version"],
                 "notes": "没有验证不能审核",
             },
         ).status_code
@@ -276,3 +277,81 @@ def test_readiness_policy_executor_requirements_and_review_guards_over_http(api)
     saved = client.put("/api/code-changes/policy", json={**policy, "max_log_mb": 2})
     assert saved.status_code == 200 and saved.json()["max_log_mb"] == 2
     assert client.post("/api/code-changes/cleanup", json={"dry_run": True}).json()["removed"] == 0
+
+
+def test_review_http_binds_the_displayed_requirements_and_requires_explicit_hash(api):
+    client, changes = api
+    sign_in(client, "user")
+    changes.policy.save({"min_free_mb": 0, "require_sandbox_delivery": False})
+    change = client.post(
+        "/api/code-changes",
+        json={
+            "title": "审核需求身份",
+            "goal": "只审核已查看的验收",
+            "acceptance_criteria": ["入口为 Start"],
+        },
+    ).json()
+    url = f"/api/code-changes/{change['id']}"
+    for invalid in ({}, {"requirements_version": ""}, {"requirements_version": "g" * 64}):
+        result = client.post(
+            f"{url}/review", json={"change_version": change["change_version"], **invalid}
+        )
+        assert result.status_code == 422, result.text
+    source = changes.read_file(change["id"], "Program.cs")
+    changes.edit_file(
+        change["id"],
+        "Program.cs",
+        "Main",
+        "Start",
+        source["version"],
+        expected_requirements=source["requirements_version"],
+    )
+    profile = changes.save_profile(
+        "真实临时 Python",
+        [sys.executable, "-c", "print('verified')"],
+        5,
+        executor={"kind": "trusted_host"},
+        baseline_required=False,
+    )
+    changes.verify(change["id"], profile["id"])
+    displayed = asyncio.run(changes.wait(change["id"], 10))
+    assert displayed["status"] == "passed"
+    updated = client.put(
+        f"{url}/requirements",
+        json={
+            **{
+                key: displayed[key]
+                for key in (
+                    "title",
+                    "goal",
+                    "constraints",
+                    "allowed_paths",
+                    "change_version",
+                    "requirements_version",
+                )
+            },
+            "acceptance_criteria": ["入口为 Start 且接口不变"],
+        },
+    )
+    assert updated.status_code == 200, updated.text
+    changes.verify(change["id"], profile["id"])
+    current = asyncio.run(changes.wait(change["id"], 10))
+    assert current["status"] == "passed"
+    assert current["change_version"] == displayed["change_version"]
+    old_review = client.post(
+        f"{url}/review",
+        json={key: displayed[key] for key in ("change_version", "requirements_version")},
+    )
+    assert old_review.status_code == 409, old_review.text
+    assert "需求约定已变化" in old_review.json()["detail"]
+    assert client.get(url).json()["review"] is None
+    assert client.post(f"{url}/delivery").status_code == 409
+    current_review = client.post(
+        f"{url}/review",
+        json={key: current[key] for key in ("change_version", "requirements_version")},
+    )
+    assert current_review.status_code == 200, current_review.text
+    assert (
+        current_review.json()["review"]["requirements_version"] == current["requirements_version"]
+    )
+    assert client.post(f"{url}/delivery").status_code == 200
