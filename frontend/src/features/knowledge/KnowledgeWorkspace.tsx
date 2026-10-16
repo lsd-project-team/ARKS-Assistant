@@ -1,5 +1,6 @@
 import { useMemo, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Layers3, Workflow } from 'lucide-react';
 import { useProjectApi } from '../projects/hooks/useProjectApi';
 import { useAppearance } from '../settings/lib/appearance';
 import { EngineeringContext, BaselineContext, useResource } from './engineeringData';
@@ -115,6 +116,7 @@ export default function KnowledgeWorkspace({
     scroller.current?.scrollTo({ top: 0 });
   }, [route]);
   const theme = mode === 'dark' ? 'dark' : 'light';
+  const HeadingIcon = ['graphs', 'graph', 'catalog'].includes(route.kind) ? Workflow : Layers3;
   let page;
   switch (route.kind) {
     case 'graphs':
@@ -161,7 +163,8 @@ export default function KnowledgeWorkspace({
   return (
     <section className="knowledge-workspace" aria-label="流程与功能资料" ref={scroller}>
       <WorkspaceHeading className="knowledge-page-heading">
-        <div className="breadcrumb">
+        <div className="breadcrumb knowledge-heading-title">
+          <HeadingIcon size={23} aria-hidden="true" />
           <strong>{routeNames[route.kind]}</strong>
         </div>
       </WorkspaceHeading>

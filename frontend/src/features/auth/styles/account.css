@@ -73,6 +73,21 @@
 .workspace-topbar .knowledge-page-heading {
   font-size: 14px;
 }
+.workspace-topbar .knowledge-heading-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.workspace-topbar .knowledge-heading-title > svg {
+  flex-shrink: 0;
+}
+.workspace-topbar .knowledge-heading-title strong {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+}
 .account-control {
   flex: 0 0 auto;
   padding-left: 16px;
@@ -253,7 +268,8 @@
   .workspace-topbar :is(.handover-header, .project-home-header) p {
     display: none;
   }
-  .workspace-topbar :is(.handover-header, .project-home-header) h1 {
+  .workspace-topbar :is(.handover-header, .project-home-header) h1,
+  .workspace-topbar .knowledge-heading-title strong {
     font-size: 14px;
   }
   .workspace-topbar .handover-actions .button {
