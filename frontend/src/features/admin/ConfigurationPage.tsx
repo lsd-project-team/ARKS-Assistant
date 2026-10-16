@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { SettingsDialog } from '../settings/components/SettingsDialog';
 import { ProjectEditor } from '../projects/components/ProjectEditor';
 import { ProjectDocuments } from '../projects/components/ProjectDocuments';
+import { ProjectVerificationProfiles } from '../projects/components/ProjectVerificationProfiles';
 import { Button, ErrorText } from '../../shared/ui/ui';
 import { Select } from '../../shared/ui/Select';
 import { useWorkspace } from '../../app/state/store';
@@ -115,6 +116,11 @@ export function ConfigurationPage({
               readOnly={current.data?.state !== 'active'}
             />
           )}
+        </section>
+      )}
+      {!dataOnly && (
+        <section className="admin-panel">
+          <ProjectVerificationProfiles projects={projects.data?.projects || []} />
         </section>
       )}
       <SettingsDialog

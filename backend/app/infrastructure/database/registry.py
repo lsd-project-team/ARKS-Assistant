@@ -4,10 +4,22 @@ from app.infrastructure.database.base import Base
 from app.modules.admin import models as admin
 from app.modules.auth import models as auth
 from app.modules.chat import models as chat
+from app.modules.code_changes import models as code_changes
 from app.modules.handover.infrastructure.persistence import models as handover
 from app.modules.memory import models as memory
 from app.modules.projects import models as projects
 from app.modules.source_analysis import models as source_analysis
+from app.modules.source_analysis.reading import models as project_reading
 
-REGISTERED_MODELS = (projects, chat, source_analysis, memory, auth, admin, handover)
+REGISTERED_MODELS = (
+    projects,
+    chat,
+    source_analysis,
+    memory,
+    auth,
+    admin,
+    handover,
+    project_reading,
+    code_changes,
+)
 __all__ = ["Base"]

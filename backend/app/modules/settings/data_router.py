@@ -12,6 +12,8 @@ from app.infrastructure.storage.backup import create_backup
 from app.infrastructure.storage.manifest import MAX_ARCHIVE_BYTES
 from app.infrastructure.storage.validation import validate_backup
 from app.modules.chat.models import Run
+from app.modules.code_changes.models import CodeChangeRecord
+from app.modules.source_analysis.reading.models import ProjectReadingJob
 
 
 def create_router(services) -> APIRouter:
@@ -22,6 +24,11 @@ def create_router(services) -> APIRouter:
             with services.database.session() as session:
                 if session.query(Run).filter(Run.status.in_(("running", "queued"))).first():
                     raise ValueError("请等待当前回复完成或停止后导出备份")
+                if (
+                    session.query(ProjectReadingJob).filter_by(status="running").first()
+                    or session.query(CodeChangeRecord).filter_by(status="verifying").first()
+                ):
+                    raise ValueError("请先暂停项目阅读或取消验证，再导出一致的备份")
             return create_backup(services.paths)
 
     @router.post("/api/backup")

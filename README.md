@@ -26,9 +26,10 @@ ARKS 将源码、项目资料和历史调试记录放在同一个工作区。你
 - **复用调试经验**：通过页面或 `/记录问题` 保存现场描述、排查过程与处理结果，后续按设备、版本和工况检索。
 - **按项目组织工作**：集中管理对话、源码目录、资料和回答指令；个人项目与对话按账号隔离。
 - **持续进行长对话**：支持历史搜索、跨会话记忆、上下文压缩，以及中断后的继续运行。
+- **持续阅读与尝试实现**：按快照阅读项目并维护成果，在隔离副本中修改、检查差异、运行已配置测试并导出补丁。
 - **整理资料与交接**：在交接工作台维护共享资料、任务进度和调试问题，生成交接包并保留版本历史。
 
-> 源码工作区保持只读。助手可以提供分析与修改建议，尚不支持自动修改业务源码并完成构建验证。
+> 原源码工作区保持只读。“项目 → 代码工作”支持独立副本修改与配置命令验证；测试通过不代表设备验收。项目阅读会调用配置的模型，具体边界见[代码工作说明](docs/features/code-work.md)。
 
 ## 快速开始
 
@@ -84,6 +85,7 @@ API 密钥保存在本机 `data/settings.private.json`，Git 和应用导出的�
 | 日常操作、知识问答与调试记录 | [使用指南](docs/features/user-guide.md)                                                                                          |
 | 安装选项、启动排查与开发检查 | [本地运行与开发](docs/development/local-development.md)                                                                          |
 | 项目、源码目录与资料管理     | [项目功能](docs/features/projects.md)                                                                                            |
+| 项目阅读、隔离修改与测试验证 | [代码工作](docs/features/code-work.md) |
 | 账号角色与数据访问范围       | [账号与访问控制](docs/features/accounts-and-handover-access.md) · [项目与对话隔离](docs/features/account-workspace-isolation.md) |
 | 本地数据备份与停服恢复       | [备份与恢复](docs/development/backup-and-restore.md)                                                                             |
 | 代码结构与模块依赖           | [工程结构](docs/architecture/overview.md)                                                                                        |

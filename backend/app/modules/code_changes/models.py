@@ -1,0 +1,54 @@
+"""隔离修改和验证记录；每个入口均额外限定项目身份。"""
+
+from sqlalchemy import ForeignKey, Integer, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.core.identifiers import new_id, now_iso
+from app.infrastructure.database.base import Base
+
+
+class CodeChangeRecord(Base):
+    __tablename__ = "code_changes"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(String(160))
+    goal: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(20), default="ready")
+    source_root: Mapped[str] = mapped_column(Text)
+    manifest_json: Mapped[str] = mapped_column(Text, default="{}")
+    change_version: Mapped[str] = mapped_column(String(64), default="")
+    files_changed: Mapped[int] = mapped_column(Integer, default=0)
+    latest_verification_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    error: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
+class VerificationProfileRecord(Base):
+    __tablename__ = "code_verification_profiles"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(120))
+    argv_json: Mapped[str] = mapped_column(Text)
+    timeout_seconds: Mapped[int] = mapped_column(Integer, default=120)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
+class VerificationRecord(Base):
+    __tablename__ = "code_verifications"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    project_id: Mapped[str] = mapped_column(String(64), index=True)
+    change_id: Mapped[str] = mapped_column(ForeignKey("code_changes.id"), index=True)
+    status: Mapped[str] = mapped_column(String(20), default="running")
+    profile_id: Mapped[str] = mapped_column(String(64))
+    argv_json: Mapped[str] = mapped_column(Text)
+    timeout_seconds: Mapped[int] = mapped_column(Integer)
+    change_version: Mapped[str] = mapped_column(String(64))
+    exit_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    error: Mapped[str] = mapped_column(Text, default="")
+    started_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    ended_at: Mapped[str | None] = mapped_column(String(40), nullable=True)

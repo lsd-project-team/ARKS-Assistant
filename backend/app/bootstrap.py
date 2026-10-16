@@ -67,6 +67,8 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 usage.initialize()
                 projects.initialize()
                 services.repository.recover()
+                services.runtime.project_reading.recover(all_projects=True)
+                services.runtime.code_changes.recover(all_projects=True)
                 handover_ai.recover()
                 yield
             finally:
@@ -133,4 +135,5 @@ def create_services(paths: Paths) -> AppServices:
     memories = MemoryService(paths, database, workspace)
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     runs = RunManager(repository, runtime, settings)
+    runtime.project_lock = runs.edit_lock
     return AppServices(paths, settings, database, workspace, repository, memories, runtime, runs)

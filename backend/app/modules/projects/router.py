@@ -11,13 +11,16 @@ from pydantic import BaseModel, Field, field_validator
 from app.modules.auth.ownership import require_source, require_thread
 from app.modules.auth.router import require_admin
 from app.modules.chat import router as conversations
+from app.modules.code_changes import router as code_changes
 from app.modules.knowledge import router as knowledge
 from app.modules.memory import router as memories
+from app.modules.projects import code_experiences
 from app.modules.projects.association import repository_name
 from app.modules.projects.materials_router import create_router as materials_router
 from app.modules.projects.service import Projects
 from app.modules.source_analysis import router as workspace
 from app.modules.source_analysis.collection import source_prefix
+from app.modules.source_analysis.reading import router as project_reading
 from app.modules.source_analysis.workspace import Workspace
 
 
@@ -233,7 +236,10 @@ class ProjectDispatcher:
         entry = self.apps.get(project_id)
         if not entry or entry[0] is not services:
             app = FastAPI(exception_handlers=self.exception_handlers)
-            for module in (workspace, conversations, memories, knowledge):
+            modules = [workspace, conversations, memories, knowledge]
+            if services.repository.project_id:
+                modules += [project_reading, code_changes, code_experiences]
+            for module in modules:
                 app.include_router(module.create_router(services))
             self.apps[project_id] = (services, app)
         app = self.apps[project_id][1]

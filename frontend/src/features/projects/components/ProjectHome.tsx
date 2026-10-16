@@ -15,6 +15,7 @@ import { toast } from '../../../shared/utils/toasts';
 import { useDebouncedValue } from '../../../shared/hooks/useDebouncedValue';
 import { ProjectDocuments } from './ProjectDocuments';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
+import { CodeWork } from './CodeWork';
 
 export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
   const api = useProjectApi();
@@ -22,7 +23,8 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
   const projects = useProjects();
   const startConversation = useNewConversation();
   const { projectId, selectThread, switchProject } = useWorkspace();
-  const [tab, setTab] = useState<'chats' | 'materials'>('chats');
+  const [tab, setTab] = useState<'chats' | 'materials' | 'code'>('chats');
+  const [codeVisited, setCodeVisited] = useState(false);
   const [filter, setFilter] = useState('');
   const [state, setState] = useState('active');
   const [editor, setEditor] = useState(false);
@@ -140,6 +142,15 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
             <button aria-pressed={tab === 'materials'} onClick={() => setTab('materials')}>
               资料与指令
             </button>
+            <button
+              aria-pressed={tab === 'code'}
+              onClick={() => {
+                setCodeVisited(true);
+                setTab('code');
+              }}
+            >
+              代码工作
+            </button>
           </div>
           {project?.state === 'archived' ? (
             <Button
@@ -245,7 +256,7 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
               </div>
             )}
           </>
-        ) : (
+        ) : tab === 'code' ? null : (
           <div className="project-materials">
             <ProjectDocuments
               projectId={projectId}
@@ -303,6 +314,15 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
                 <p>此源码项目保留了已复核的生产流程和功能资料。</p>
               </article>
             )}
+          </div>
+        )}
+        {codeVisited && (
+          <div hidden={tab !== 'code'}>
+            <CodeWork
+              key={projectId}
+              projectId={projectId}
+              readOnly={project?.state === 'archived' || !project}
+            />
           </div>
         )}
         <footer className="project-home-footer">

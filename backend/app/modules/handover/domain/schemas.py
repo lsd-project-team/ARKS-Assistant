@@ -167,6 +167,9 @@ class DebugIssue(Payload):
     source_thread_id: str = Field(default="", max_length=36)
     source_message_id: str = Field(default="", max_length=36)
     source_project_id: Short = ""
+    source_change_id: str = Field(default="", max_length=36)
+    source_change_version: str = Field(default="", max_length=64)
+    source_verification_id: str = Field(default="", max_length=36)
 
 
 class PlanStep(BaseModel):
