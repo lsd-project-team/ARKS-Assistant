@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { ArrowUpRight, BookOpen, CircleDot, Package, Activity } from 'lucide-react';
+import { ArrowUpRight, BookOpen, CircleDot, Package, Activity, NotebookPen } from 'lucide-react';
 import { InteractiveRing, OperationBars, PackageBars } from './DashboardCharts';
 import { DashboardEventList, DashboardRecordList, SelectionHeading } from './DashboardRecords';
 import {
@@ -8,6 +8,7 @@ import {
   selectEvents,
   selectMaterials,
   selectTasks,
+  selectIssues,
   type ChartDatum,
 } from './overviewData';
 import { tabs, type Definitions, type Event, type Overview, type Tab } from '../shared/types';
@@ -221,6 +222,48 @@ export function PackagesPanel({ data, onOpen, onNavigate }: PanelProps) {
         </div>
       </div>
       <p className="dashboard-chart-note">收录数量随包内固定版本保存；点击横条查看内容与来源。</p>
+    </DashboardPanel>
+  );
+}
+
+export function IssuesPanel({ data, definitions, onOpen, onNavigate }: PanelProps) {
+  const [recordType, setRecordType] = useState('all');
+  const selectedRows = selectIssues(data.issues, recordType);
+  const active = data.issueTypes.find((item) => item.id === recordType);
+  return (
+    <DashboardPanel
+      tab="issues"
+      icon={<NotebookPen size={17} />}
+      count={data.issues.length}
+      unit="条"
+      summary={`未解决 ${data.issueOpen} · 已解决 ${data.issueResolved} · 已记录 ${data.issueRecorded}`}
+      onNavigate={onNavigate}
+    >
+      <div className="dashboard-chart-heading">
+        <span>记录类型分布</span>
+        <small>类型与记录联动</small>
+      </div>
+      <InteractiveRing
+        data={data.issueTypes}
+        selected={recordType}
+        onSelect={setRecordType}
+        label="问题与经验类型分布"
+        unit="条"
+        totalLabel="记录总数"
+      />
+      <SelectionHeading
+        label={active ? active.label + '记录' : '最近记录'}
+        count={selectedRows.length}
+        filtered={recordType !== 'all'}
+        onReset={() => setRecordType('all')}
+      />
+      <DashboardRecordList
+        key={recordType}
+        rows={selectedRows}
+        definitions={definitions}
+        onOpen={onOpen}
+        empty="此类型暂无问题与经验记录"
+      />
     </DashboardPanel>
   );
 }

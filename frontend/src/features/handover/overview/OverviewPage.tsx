@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { MaterialsPanel, TasksPanel, PackagesPanel, ActivityPanel } from './DashboardPanels';
+import {
+  MaterialsPanel,
+  TasksPanel,
+  IssuesPanel,
+  PackagesPanel,
+  ActivityPanel,
+} from './DashboardPanels';
 import { overviewSummary } from './overviewData';
 import { localTime } from '../shared/format';
 import type { Definitions, Event, Overview, Tab } from '../shared/types';
@@ -34,7 +40,7 @@ export function OverviewPage({
       <div className="dashboard-intro">
         <div>
           <h2>交接概况</h2>
-          <p>掌握资料、工作进度与最新交接动态</p>
+          <p>掌握资料、工作进度、问题与经验和最新交接动态</p>
         </div>
         <div
           className="dashboard-sync"
@@ -54,6 +60,7 @@ export function OverviewPage({
       <div className="dashboard-grid">
         <MaterialsPanel {...panelProps} />
         <TasksPanel {...panelProps} />
+        <IssuesPanel {...panelProps} />
         <PackagesPanel {...panelProps} />
         {canReview && (
           <ActivityPanel

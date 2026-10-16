@@ -7,6 +7,7 @@ import {
   selectEvents,
   selectMaterials,
   selectTasks,
+  selectIssues,
 } from '../../src/features/handover/overview/overviewData.ts';
 
 function record(id, kind, state = 'draft', payload = {}) {
@@ -119,10 +120,91 @@ test('空交接范围保留零值，不产生假记录或图表数据', () => {
   assert.equal(result.unfinished.length, 0);
   assert.deepEqual(result.packageBars, []);
   assert.deepEqual(result.recentEvents, []);
+  assert.deepEqual(result.issues, []);
+  assert.equal(result.issueOpen, 0);
+  assert.equal(result.issueResolved, 0);
+  assert.equal(result.issueRecorded, 0);
+  assert.deepEqual(
+    result.issueTypes.map((item) => item.value),
+    [0, 0, 0, 0],
+  );
   assert.equal(
     result.eventBars.reduce((sum, bar) => sum + bar.value, 0),
     0,
   );
+});
+
+test('问题与经验概况按类型统计，普通进展不计作未解决问题，归档和其他记录不混入', () => {
+  const rows = [
+    record('open', 'debug_issue', 'draft', { record_type: 'problem', resolution_status: 'open' }),
+    record('resolved', 'debug_issue', 'draft', {
+      record_type: 'problem',
+      resolution_status: 'resolved',
+    }),
+    record('legacy', 'debug_issue'),
+    record('experience', 'debug_issue', 'draft', {
+      record_type: 'experience',
+      resolution_status: 'open',
+    }),
+    record('progress', 'debug_issue', 'draft', {
+      record_type: 'progress',
+      resolution_status: 'recorded',
+    }),
+    record('archive-event', 'debug_issue', 'draft', {
+      record_type: 'archive',
+      resolution_status: 'resolved',
+    }),
+    record('archived', 'debug_issue', 'archived', {
+      record_type: 'problem',
+      resolution_status: 'resolved',
+    }),
+    record('other', 'task', 'draft', { record_type: 'problem', resolution_status: 'open' }),
+  ];
+  const original = structuredClone(rows);
+  const result = overviewSummary(overview(rows));
+  assert.equal(result.issues.length, 6);
+  assert.equal(result.issueOpen, 2);
+  assert.equal(result.issueResolved, 1);
+  assert.equal(result.issueRecorded, 3);
+  assert.deepEqual(
+    result.issueTypes.map(({ id, value }) => [id, value]),
+    [
+      ['problem', 3],
+      ['experience', 1],
+      ['progress', 1],
+      ['archive', 1],
+    ],
+  );
+  assert.equal(
+    result.issueTypes.reduce((total, item) => total + item.value, 0),
+    6,
+  );
+  assert.deepEqual(rows, original);
+});
+
+test('问题与经验图表筛选使用同一分类，按最近更新排序并保留旧问题记录', () => {
+  const rows = [
+    record('older', 'debug_issue', 'draft', { record_type: 'experience' }),
+    {
+      ...record('newer', 'debug_issue', 'draft', { record_type: 'experience' }),
+      updated_at: '2026-10-14T08:00:00Z',
+    },
+    record('legacy', 'debug_issue'),
+    record('archived', 'debug_issue', 'archived', { record_type: 'experience' }),
+    record('task', 'task', 'draft', { record_type: 'experience' }),
+  ];
+  const original = structuredClone(rows);
+  assert.deepEqual(
+    selectIssues(rows, 'experience').map((row) => row.id),
+    ['newer', 'older'],
+  );
+  assert.deepEqual(
+    selectIssues(rows, 'problem').map((row) => row.id),
+    ['legacy'],
+  );
+  assert.equal(selectIssues(rows, 'all').length, 3);
+  assert.deepEqual(selectIssues(rows, 'unknown'), []);
+  assert.deepEqual(rows, original);
 });
 
 test('资料类型与确认状态组合筛选，不改变全局记录及其顺序', () => {

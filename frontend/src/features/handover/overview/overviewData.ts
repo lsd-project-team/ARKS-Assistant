@@ -1,6 +1,7 @@
 import type { Event, HandoverRecord, Overview } from '../shared/types';
 import { refs } from '../shared/types.ts';
 import { taskStage } from '../tasks/taskProgress.ts';
+import { debugRecordType, debugRecordTypes } from '../debug_issues/debugIssues.ts';
 
 export type ChartTone = 'green' | 'blue' | 'red' | 'amber' | 'gray';
 export interface ChartDatum {
@@ -16,6 +17,12 @@ const workStages: Omit<ChartDatum, 'value'>[] = [
   { id: 'blocked', label: '阻塞', tone: 'amber' },
   { id: 'done', label: '已完成', tone: 'green' },
 ];
+const issueTypeTones = {
+  problem: 'amber',
+  experience: 'green',
+  progress: 'blue',
+  archive: 'gray',
+} as const;
 const eventGroups: Omit<ChartDatum, 'value'>[] = [
   { id: 'created', label: '新增', tone: 'green' },
   { id: 'updated', label: '修改', tone: 'blue' },
@@ -52,6 +59,15 @@ export function selectTasks(records: HandoverRecord[], stage: string) {
         Number(taskStage(b.payload) === 'blocked') - Number(taskStage(a.payload) === 'blocked') ||
         b.updated_at.localeCompare(a.updated_at),
     );
+}
+
+export function selectIssues(records: HandoverRecord[], recordType: string) {
+  return newestRecords(records).filter(
+    (row) =>
+      row.kind === 'debug_issue' &&
+      row.state !== 'archived' &&
+      (recordType === 'all' || debugRecordType(row.payload).value === recordType),
+  );
 }
 
 export function eventsInRange(events: Event[], days: number, now = Date.now()) {
@@ -94,6 +110,17 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
   const materials = [...sources, ...interviews];
   const materialConfirmed = materials.filter((row) => row.state === 'confirmed').length;
   const tasks = records.filter((row) => row.kind === 'task');
+  const issues = selectIssues(records, 'all');
+  const problems = issues.filter((row) => debugRecordType(row.payload).value === 'problem');
+  const issueResolved = problems.filter(
+    (row) => row.payload.resolution_status === 'resolved',
+  ).length;
+  const issueTypes: ChartDatum[] = debugRecordTypes.map(({ value, label }) => ({
+    id: value,
+    label,
+    tone: issueTypeTones[value],
+    value: issues.filter((row) => debugRecordType(row.payload).value === value).length,
+  }));
   const unfinished = tasks.filter((row) => taskStage(row.payload) !== 'done');
   const completed = tasks.filter((row) => taskStage(row.payload) === 'done');
   const isBlocked = (row: HandoverRecord) => taskStage(row.payload) === 'blocked';
@@ -133,6 +160,11 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
     latestSource: newestRecords(sources)[0],
     latestInterview: newestRecords(interviews)[0],
     tasks,
+    issues,
+    issueTypes,
+    issueResolved,
+    issueOpen: problems.length - issueResolved,
+    issueRecorded: issues.length - problems.length,
     unfinished,
     completed,
     blocked: tasks.filter(isBlocked),

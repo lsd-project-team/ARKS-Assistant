@@ -144,6 +144,9 @@
 .dashboard-panel-updates .dashboard-panel-icon {
   color: var(--dashboard-amber);
 }
+.dashboard-panel-issues .dashboard-panel-icon {
+  color: var(--dashboard-amber);
+}
 .dashboard-panel-heading p {
   color: var(--text-secondary);
   font-size: 11px;
@@ -480,6 +483,22 @@
   font-size: 10px;
   white-space: nowrap;
 }
+.dashboard-issue-status {
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  background: var(--surface-subtle);
+}
+.dashboard-issue-status.open[data-record-type='problem'] {
+  color: var(--warning-text);
+  background: var(--warning-surface);
+}
+.dashboard-issue-status.resolved[data-record-type='problem'] {
+  color: var(--success-text);
+  background: color-mix(in srgb, var(--success-text) 10%, var(--panel));
+}
 .dashboard-row-arrow {
   opacity: 0;
   position: absolute;
@@ -496,7 +515,8 @@
   opacity: 1;
 }
 .dashboard-record-row:hover .handover-status,
-.dashboard-record-row:hover .task-status {
+.dashboard-record-row:hover .task-status,
+.dashboard-record-row:hover .dashboard-issue-status {
   transform: translateX(-15px);
 }
 .dashboard-package-chart {

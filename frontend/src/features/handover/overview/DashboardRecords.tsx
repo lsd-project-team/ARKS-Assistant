@@ -5,12 +5,14 @@ import {
   CircleDot,
   FileText,
   MessageSquare,
+  NotebookPen,
 } from 'lucide-react';
 import { useState } from 'react';
 import { localTime } from '../shared/format';
 import { Status } from '../shared/RecordCard';
 import { text, type Definitions, type Event, type HandoverRecord } from '../shared/types';
 import { eventActionLabels } from './overviewData';
+import { debugRecordType, debugStatus } from '../debug_issues/debugIssues';
 
 export function compactTime(value: string) {
   const date = new Date(value);
@@ -116,6 +118,8 @@ export function DashboardRecordList({
               <MessageSquare size={15} />
             ) : row.kind === 'task' ? (
               <CircleDot size={15} />
+            ) : row.kind === 'debug_issue' ? (
+              <NotebookPen size={15} />
             ) : (
               <FileText size={15} />
             )}
@@ -123,16 +127,43 @@ export function DashboardRecordList({
           <div>
             <strong title={row.title}>{row.title}</strong>
             <span>
-              {row.kind === 'task'
-                ? text(row.payload.owner) || '未指定负责人'
-                : definitions.kinds[row.kind]}
-              <i>·</i>
-              <time dateTime={row.updated_at} title={localTime(row.updated_at)}>
-                {compactTime(row.updated_at)}
-              </time>
+              {row.kind === 'debug_issue' ? (
+                <>
+                  {text(row.payload.recorded_by) ||
+                    text(row.payload.reported_by) ||
+                    debugRecordType(row.payload).label}
+                  <i>·</i>
+                  <span>
+                    {text(row.payload.recorded_at) ||
+                      text(row.payload.occurred_on) ||
+                      compactTime(row.updated_at)}
+                  </span>
+                </>
+              ) : (
+                <>
+                  {row.kind === 'task'
+                    ? text(row.payload.owner) || '未指定负责人'
+                    : definitions.kinds[row.kind]}
+                  <i>·</i>
+                  <time dateTime={row.updated_at} title={localTime(row.updated_at)}>
+                    {compactTime(row.updated_at)}
+                  </time>
+                </>
+              )}
             </span>
           </div>
-          <Status row={row} definitions={definitions} />
+          {row.kind === 'debug_issue' ? (
+            <span
+              className={
+                'dashboard-issue-status ' + (text(row.payload.resolution_status) || 'open')
+              }
+              data-record-type={debugRecordType(row.payload).value}
+            >
+              {debugStatus(row.payload)}
+            </span>
+          ) : (
+            <Status row={row} definitions={definitions} />
+          )}
           <ArrowUpRight className="dashboard-row-arrow" size={14} />
         </button>
       ))}
