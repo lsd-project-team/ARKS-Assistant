@@ -47,9 +47,6 @@ export function DebugIssuePage({
         />
         <span className="handover-muted">{matches.length} 条记录</span>
       </div>
-      <p className="debug-issue-tip">
-        也可以在对话中输入 <code>/记录问题</code>，再粘贴问题、经验或工作进展，由 AI 整理录入。
-      </p>
       <div className="debug-issue-grid">
         {matches.map((row) => (
           <button key={row.id} className="debug-issue-card" onClick={() => onOpen(row.id)}>
@@ -92,14 +89,7 @@ export function DebugIssuePage({
       {!matches.length && (
         <div className="handover-empty-state">
           <NotebookPen size={26} />
-          <strong>
-            {search || status || recordType ? '没有匹配的记录' : '记录工作中遇到的问题与经验'}
-          </strong>
-          <p>
-            {search || status || recordType
-              ? '试试其他关键词、类型或状态。'
-              : '点击“添加记录”开始，或在对话中使用 /记录问题。'}
-          </p>
+          <strong>{search || status || recordType ? '没有匹配的记录' : '暂无记录'}</strong>
         </div>
       )}
     </section>

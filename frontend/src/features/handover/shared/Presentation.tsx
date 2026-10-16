@@ -2,11 +2,10 @@ import type { ReactNode } from 'react';
 import { RecordCard } from './RecordCard';
 import type { Definitions, HandoverRecord, Kind, Tab } from './types';
 
-export const pageDescriptions: Record<Tab, string> = {
+export const pageDescriptions: Partial<Record<Tab, string>> = {
   overview: '查看交接现状，安排下一步工作。',
   materials: '集中保存文档、文字记录和项目资料，供后续查阅与问答。',
   tasks: '记录工作项、负责人和进度，随时更新状态与备注。',
-  issues: '保存问题处理、优化经验、工作进展和归档事项，供后续查阅与问答。',
   packages: '汇总固定版本的交接内容，供查阅与下载。',
   updates: '追踪内容变更与人工确认，及时复核受影响的记录。',
 };
@@ -29,14 +28,16 @@ export function PageHeading({
   children,
 }: {
   title: string;
-  description: string;
+  description?: string;
   children?: ReactNode;
 }) {
   return (
-    <header className="handover-page-heading">
+    <header
+      className={`handover-page-heading${description ? '' : ' handover-page-heading-compact'}`}
+    >
       <div>
         <h2>{title}</h2>
-        <p>{description}</p>
+        {description && <p>{description}</p>}
       </div>
       {children && <div className="handover-actions">{children}</div>}
     </header>

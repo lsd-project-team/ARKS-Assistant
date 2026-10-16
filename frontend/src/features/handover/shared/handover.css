@@ -292,6 +292,12 @@
   font-size: 18px;
   font-weight: 600;
 }
+.handover-page-heading-compact {
+  align-items: center;
+}
+.handover-page-heading-compact h2 {
+  margin: 0;
+}
 .handover-page-heading p,
 .handover-group-heading p {
   margin: 0;
