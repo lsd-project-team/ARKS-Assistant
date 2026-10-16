@@ -40,7 +40,7 @@ export function ComposerContext({
         : '读取上下文…';
   const details = usage
     ? `估算 ${usage.tokens.toLocaleString()} / ${(usage.input_limit || usage.limit).toLocaleString()} 输入 tokens${usage.complete ? ` · 已预留 ${usage.output_reserved?.toLocaleString()} 回复 tokens` : ' · 旧记录缺少系统和工具预算'} · 点击查看详情`
-    : '查看带入资料和压缩摘要';
+    : '查看当前对话的用量与压缩摘要';
   return (
     <div className="composer-context">
       <div className="composer-context-actions">

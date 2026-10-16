@@ -285,7 +285,7 @@ export function ChatPane({
     const submitted = matchingCommands(draft).length ? conversationDraft : undefined;
     if (command === 'context' && canContext) {
       if (submitted) consumeCommand(draftKey(threadId, projectId), submitted);
-      setContext({ runId: latest?.id });
+      setContext({});
     } else if (command === 'compact' && canCompact) {
       compact.mutate({ id: threadId, submitted });
     }
@@ -591,7 +591,7 @@ export function ChatPane({
                     (active?.id === compactRun?.id ? stream.error : undefined)
                   : undefined
               }
-              onView={() => setContext({ runId: latest?.id })}
+              onView={() => setContext({})}
             />
           }
         />

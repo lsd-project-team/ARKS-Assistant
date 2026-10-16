@@ -70,44 +70,50 @@ export function ContextDialog({
       onClose={() => guard.request(close)}
       title="对话上下文"
       className="context-dialog"
-      description="查看本轮资料，管理后续回复使用的压缩摘要。"
+      description={
+        runId
+          ? '查看本轮资料，管理后续回复使用的压缩摘要。'
+          : '查看当前对话的上下文用量与压缩摘要。'
+      }
     >
-      <div
-        className="context-tabs"
-        role="tablist"
-        aria-label="上下文内容"
-        ref={tabList}
-        onKeyDown={(event) => {
-          if (correction.isPending) return;
-          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-          event.preventDefault();
-          const index =
-            event.key === 'Home'
-              ? 0
-              : event.key === 'End'
-                ? tabs.length - 1
-                : (tabs.indexOf(selected) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) %
-                  tabs.length;
-          setTab(tabs[index]);
-          tabList.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[index]?.focus();
-        }}
-      >
-        {tabs.map((item) => (
-          <button
-            key={item}
-            type="button"
-            role="tab"
-            id={`${panelId}-tab-${item}`}
-            aria-selected={selected === item}
-            aria-controls={`${panelId}-panel-${item}`}
-            disabled={correction.isPending}
-            tabIndex={selected === item ? 0 : -1}
-            onClick={() => setTab(item)}
-          >
-            {item === 'sources' ? '本轮资料' : '压缩摘要'}
-          </button>
-        ))}
-      </div>
+      {runId && (
+        <div
+          className="context-tabs"
+          role="tablist"
+          aria-label="上下文内容"
+          ref={tabList}
+          onKeyDown={(event) => {
+            if (correction.isPending) return;
+            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+            event.preventDefault();
+            const index =
+              event.key === 'Home'
+                ? 0
+                : event.key === 'End'
+                  ? tabs.length - 1
+                  : (tabs.indexOf(selected) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) %
+                    tabs.length;
+            setTab(tabs[index]);
+            tabList.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[index]?.focus();
+          }}
+        >
+          {tabs.map((item) => (
+            <button
+              key={item}
+              type="button"
+              role="tab"
+              id={`${panelId}-tab-${item}`}
+              aria-selected={selected === item}
+              aria-controls={`${panelId}-panel-${item}`}
+              disabled={correction.isPending}
+              tabIndex={selected === item ? 0 : -1}
+              onClick={() => setTab(item)}
+            >
+              {item === 'sources' ? '本轮资料' : '压缩摘要'}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="dialog-body context-body">
         {runId && (
           <div
@@ -149,10 +155,11 @@ export function ContextDialog({
           </div>
         )}
         <div
-          role="tabpanel"
+          role={runId ? 'tabpanel' : 'region'}
           tabIndex={0}
           id={`${panelId}-panel-summary`}
-          aria-labelledby={`${panelId}-tab-summary`}
+          aria-labelledby={runId ? `${panelId}-tab-summary` : undefined}
+          aria-label={runId ? undefined : '当前对话用量与压缩摘要'}
           hidden={selected !== 'summary'}
         >
           <ErrorText error={current.error || correction.error} reveal={!!correction.error} />
