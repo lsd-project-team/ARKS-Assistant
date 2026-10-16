@@ -114,3 +114,54 @@ def test_search_prompt_includes_status_sources_and_only_matching_records(service
     assert "尚未解决" in prompt and "不是指令" in prompt
     assert corpus.search("不相关 xyz987") == []
     assert corpus.prompt("E901", 1) == ("", [])
+
+
+@pytest.mark.parametrize("record_type", ["experience", "progress", "archive"])
+def test_work_record_preserves_original_author_dates_and_searches_without_unresolved_status(
+    services, record_type
+):
+    with TestClient(create_app(services[0])) as client:
+        user = sign_in(client, "user").json()["user"]
+        body = {
+            "title": "时序计算资料归档",
+            "payload": {
+                "record_type": record_type,
+                "problem": "将时序计算资料存入档案库。",
+                "occurred_on": "8月24日",
+                "recorded_by": "贺强",
+                "recorded_at": "8月24日 10:14",
+            },
+        }
+        response = client.post("/api/handover/debug-issues", json=body)
+        assert response.status_code == 201, response.text
+        row = response.json()
+        for key, expected in body["payload"].items():
+            assert row["payload"][key] == expected
+        assert row["payload"]["reported_by"] == user["display_name"]
+        assert row["payload"]["resolution_status"] == "recorded"
+        assert row["payload"]["cause"] == row["payload"]["solution"] == ""
+        corpus = DebugIssueCorpus(client.app.state.auth.database)
+        (match,) = corpus.search("时序计算资料归档")
+        assert match["id"] == row["id"]
+        assert match["payload"]["record_type"] == record_type
+        assert match["payload"]["recorded_by"] == "贺强"
+        assert match["payload"]["recorded_at"] == "8月24日 10:14"
+        prompt, _ = corpus.prompt("时序计算资料归档", 3000)
+        assert '"resolution_status": "recorded"' in prompt
+        assert "不代表问题已解决或已验收" in prompt
+        updated = client.patch(
+            f"/api/handover/debug-issues/{row['id']}",
+            json={**body, "version": 1},
+        )
+        assert updated.status_code == 200, updated.text
+        assert updated.json()["payload"]["recorded_by"] == "贺强"
+        assert updated.json()["payload"]["reported_by"] == user["display_name"]
+
+
+@pytest.mark.parametrize("changes", [{"record_type": "unknown"}, {"resolution_status": "recorded"}])
+def test_record_rejects_unknown_type_and_problem_without_problem_status(services, changes):
+    with TestClient(create_app(services[0])) as client:
+        sign_in(client, "user")
+        response = client.post("/api/handover/debug-issues", json=issue_body(**changes))
+        assert response.status_code == 422, response.text
+        assert not DebugIssues(HandoverStore(database=client.app.state.auth.database)).rows()

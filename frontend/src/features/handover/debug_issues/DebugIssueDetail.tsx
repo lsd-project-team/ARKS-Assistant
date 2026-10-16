@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { HandoverModal } from '../shared/HandoverModal';
-import { debugIssueFields, debugStatus } from './debugIssues';
+import { debugIssueFields, debugRecordType, debugStatus } from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
 
@@ -34,7 +34,7 @@ export function DebugIssueDetail({
       await client.send(`/records/${row.id}/${action}`, {
         version: row.version,
         actor: session?.user.display_name || session?.user.username,
-        opinion: action === 'archive' ? '归档调试问题' : '恢复调试问题',
+        opinion: action === 'archive' ? '归档问题与经验记录' : '恢复问题与经验记录',
       });
       onChanged();
       onClose();
@@ -47,19 +47,20 @@ export function DebugIssueDetail({
   return (
     <HandoverModal
       title={row.title}
-      description={version ? `固定历史版本 v${row.version}` : '回看问题现象、排查过程与处理结果'}
+      description={version ? `固定历史版本 v${row.version}` : '回看事项原文、处理经过与结果'}
       onClose={onClose}
       className="handover-detail debug-issue-detail"
     >
       <ErrorText error={error} reveal />
       <div className="handover-actions handover-detail-toolbar">
+        <span>{debugRecordType(row.payload).label}</span>
         <span
-          className={`debug-status ${row.payload.resolution_status === 'resolved' ? 'resolved' : ''}`}
+          className={`debug-status ${row.payload.resolution_status === 'recorded' ? 'recorded' : row.payload.resolution_status === 'resolved' ? 'resolved' : ''}`}
         >
           {debugStatus(row.payload)}
         </span>
         <span className="handover-muted">
-          v{row.version} · {row.payload.origin === 'ai' ? 'AI 整理' : '手动录入'} ·{' '}
+          v{row.version} · {row.payload.origin === 'ai' ? 'AI 整理' : '手动录入'} · 录入人：
           {text(row.payload.reported_by) || '未记录姓名'}
         </span>
         {!version && row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
@@ -71,16 +72,20 @@ export function DebugIssueDetail({
         )}
       </div>
       <dl className="debug-issue-detail-fields">
-        {debugIssueFields.map(({ key, label }) => (
-          <div key={key}>
-            <dt>{label}</dt>
-            <dd>{text(row.payload[key]) || '待补充'}</dd>
+        {debugIssueFields
+          .filter(({ key }) => text(row.payload[key]))
+          .map(({ key, label }) => (
+            <div key={key}>
+              <dt>{label}</dt>
+              <dd>{text(row.payload[key])}</dd>
+            </div>
+          ))}
+        {!!ids(row.payload.keywords).length && (
+          <div>
+            <dt>关键词</dt>
+            <dd>{ids(row.payload.keywords).join('、')}</dd>
           </div>
-        ))}
-        <div>
-          <dt>关键词</dt>
-          <dd>{ids(row.payload.keywords).join('、') || '待补充'}</dd>
-        </div>
+        )}
       </dl>
       {text(row.payload.original_text) && (
         <details className="debug-issue-original">

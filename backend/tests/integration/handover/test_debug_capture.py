@@ -9,7 +9,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
-from app.agents.tools.debug_capture import command_text
+from app.agents.tools.debug_capture import ExtractedIssue, command_text, grounded
 from app.main import create_app
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
@@ -159,3 +159,22 @@ def test_only_explicit_leading_command_is_a_write_request():
         "```\n/记录问题 abc\n```",
     ):
         assert command_text(content) is None
+
+
+def test_capture_classifies_work_progress_but_requires_original_author_and_date_to_be_grounded():
+    original = "贺强 9月1日 15:49：8月28日，来料延期，已与销售沟通。"
+    value = ExtractedIssue(
+        title="来料延期",
+        payload={
+            "record_type": "progress",
+            "problem": "来料延期，已与销售沟通",
+            "recorded_by": "贺强",
+            "recorded_at": "9月1日 15:49",
+            "occurred_on": "8月28日",
+        },
+    )
+    assert grounded(value, original).payload.resolution_status == "recorded"
+    invented = value.model_copy(deep=True)
+    invented.payload.recorded_at = "2026年9月1日 15:49"
+    with pytest.raises(ValueError, match="recorded_at"):
+        grounded(invented, original)

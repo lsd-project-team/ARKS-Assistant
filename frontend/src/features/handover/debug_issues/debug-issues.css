@@ -101,6 +101,13 @@
   background: color-mix(in srgb, var(--success-text) 10%, var(--panel));
   color: var(--success-text);
 }
+.debug-status.recorded {
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+}
+.debug-issue-card-top .debug-status {
+  margin-left: auto;
+}
 .debug-issue-solution {
   font-size: 12px;
   line-height: 1.7;

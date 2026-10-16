@@ -88,7 +88,7 @@ export function ChangeExperience({
           <a
             href={`#handover/issues?record=${encodeURIComponent(record.id)}&version=${record.version}`}
           >
-            查看调试问题
+            查看问题与经验
           </a>
         </p>
       ) : (

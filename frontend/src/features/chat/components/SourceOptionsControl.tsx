@@ -4,7 +4,11 @@ import '../../settings/styles/source-options.css';
 
 const choices = [
   ['use_deepwiki', 'DeepWiki', '查阅远端架构说明'],
-  ['use_knowledge', '知识资料', '检索交接资料、调试记录、项目文档与共享结论，以及已接入的流程说明'],
+  [
+    'use_knowledge',
+    '知识资料',
+    '检索交接资料、问题与经验、项目文档与共享结论，以及已接入的流程说明',
+  ],
   ['use_memory', '长期记忆', '带入相关记忆，并允许按设置保存记忆'],
 ] as const;
 

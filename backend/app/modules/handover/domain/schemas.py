@@ -150,6 +150,10 @@ class Issue(Payload):
 
 
 class DebugIssue(Payload):
+    record_type: Literal["problem", "experience", "progress", "archive"] = "problem"
+    occurred_on: Short = ""
+    recorded_by: Short = ""
+    recorded_at: Short = ""
     problem: Text = ""
     conditions: Text = ""
     environment: Text = ""
@@ -160,7 +164,7 @@ class DebugIssue(Payload):
     cause: Text = ""
     solution: Text = ""
     verification: Text = ""
-    resolution_status: Literal["open", "resolved"] = "open"
+    resolution_status: Literal["open", "resolved", "recorded"] = "open"
     keywords: list[Short] = Field(default_factory=list, max_length=20)
     original_text: Text = ""
     reported_by: Short = ""

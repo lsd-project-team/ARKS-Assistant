@@ -46,7 +46,7 @@ export function RunContextPanel({
             className="context-source"
             onClick={() => onDebug(issue.id, issue.version)}
           >
-            调试记录 · {issue.title} · v{issue.version}
+            问题与经验 · {issue.title} · v{issue.version}
           </button>
         ))}
       <section className="context-card">

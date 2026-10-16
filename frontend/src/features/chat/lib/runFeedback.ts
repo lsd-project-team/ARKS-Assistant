@@ -6,7 +6,7 @@ export const runStages: Record<string, string> = {
   connecting_mcp: '连接知识服务',
   thinking: '正在思考',
   reading_source: '读取源码',
-  reading_debug: '检索调试记录',
+  reading_debug: '检索问题与经验',
   reading_materials: '检索资料正文',
   checking_sources: '核对源码引用',
   reading_wiki: '查阅 DeepWiki',

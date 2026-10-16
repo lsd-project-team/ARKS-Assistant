@@ -88,7 +88,7 @@ export const tabs: { id: Tab; label: string }[] = [
   { id: 'overview', label: '概览' },
   { id: 'materials', label: '资料' },
   { id: 'tasks', label: '任务与进度' },
-  { id: 'issues', label: '调试问题' },
+  { id: 'issues', label: '问题与经验' },
   { id: 'packages', label: '交接包' },
   { id: 'updates', label: '复核与追溯' },
 ];

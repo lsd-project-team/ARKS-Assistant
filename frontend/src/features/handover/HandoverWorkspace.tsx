@@ -352,7 +352,7 @@ export default function HandoverWorkspace({
                     {tab === 'issues' && (
                       <Button className="primary" onClick={() => create('debug_issue')}>
                         <Plus size={15} />
-                        记录调试问题
+                        添加记录
                       </Button>
                     )}
                   </>

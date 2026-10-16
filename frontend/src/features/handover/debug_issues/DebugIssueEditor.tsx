@@ -4,7 +4,7 @@ import { Button, ErrorText } from '../../../shared/ui/ui';
 import { HandoverModal } from '../shared/HandoverModal';
 import { HandoverSelect } from '../shared/Controls';
 import { useHandoverDraft } from '../shared/drafts';
-import { debugEditablePayload, debugIssueFields } from './debugIssues';
+import { debugEditablePayload, debugIssueFields, debugRecordTypes } from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
 
@@ -60,8 +60,8 @@ export function DebugIssueEditor({
   }
   return (
     <HandoverModal
-      title={row ? '编辑调试问题' : '记录调试问题'}
-      description="记录现象和处理经过，未明确的信息可以先留空。"
+      title={row ? '编辑记录' : '添加记录'}
+      description="保存问题、经验和工作进展，按原文填写记录人及时间。"
       onClose={onClose}
       onSubmit={(event) => {
         event.preventDefault();
@@ -80,7 +80,7 @@ export function DebugIssueEditor({
         </>
       }
     >
-      {state.restored && <p className="handover-notice">已恢复未保存的调试问题，请检查后继续。</p>}
+      {state.restored && <p className="handover-notice">已恢复未保存的记录，请检查后继续。</p>}
       <ErrorText error={error || state.warning} reveal />
       {error instanceof ApiError && error.status === 409 && row && (
         <div className="handover-conflict">
@@ -112,28 +112,47 @@ export function DebugIssueEditor({
       )}
       <label className="debug-issue-field">
         <span>
-          问题标题 <b>*</b>
+          记录标题 <b>*</b>
         </span>
         <input
           required
           maxLength={200}
           value={draft.title}
           onChange={(event) => setDraft({ ...draft, title: event.target.value })}
-          placeholder="用一句话描述问题"
+          placeholder="用一句话描述事项"
         />
       </label>
       <label className="debug-issue-field">
-        <span>处理状态</span>
+        <span>记录类型</span>
         <HandoverSelect
-          value={text(draft.payload.resolution_status)}
-          onValueChange={(value) => update('resolution_status', value)}
-          label="处理状态"
-          options={[
-            { value: 'open', label: '未解决' },
-            { value: 'resolved', label: '已解决' },
-          ]}
+          value={text(draft.payload.record_type)}
+          onValueChange={(record_type) =>
+            setDraft({
+              ...draft,
+              payload: {
+                ...draft.payload,
+                ...debugEditablePayload({ ...draft.payload, record_type }),
+              },
+            })
+          }
+          label="记录类型"
+          options={[...debugRecordTypes]}
         />
       </label>
+      {draft.payload.record_type === 'problem' && (
+        <label className="debug-issue-field">
+          <span>处理状态</span>
+          <HandoverSelect
+            value={text(draft.payload.resolution_status)}
+            onValueChange={(value) => update('resolution_status', value)}
+            label="处理状态"
+            options={[
+              { value: 'open', label: '未解决' },
+              { value: 'resolved', label: '已解决' },
+            ]}
+          />
+        </label>
+      )}
       <div className="debug-issue-editor-fields">
         {debugIssueFields.map((field) => (
           <label key={field.key} className={`debug-issue-field ${'short' in field ? 'short' : ''}`}>
