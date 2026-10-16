@@ -1,7 +1,6 @@
 import type { RunContext } from '../../../shared/types/api';
 import { Markdown } from '../../../app/components/Markdown';
 import { AnalysisRunDetails } from './AnalysisRunDetails';
-import { KnowledgeFeedback } from './RunKnowledgeSummary';
 
 export function RunEvidenceDetails({
   context,
@@ -17,12 +16,6 @@ export function RunEvidenceDetails({
     reported.reduce((total, item) => total + (item[field] ?? 0), 0).toLocaleString();
   return (
     <>
-      <KnowledgeFeedback
-        mode="context"
-        references={context.references}
-        searches={context.searches}
-        saves={context.memory_saves}
-      />
       <AnalysisRunDetails completion={context.completion} progress={context.analysis_progress} />
       {context.analysis_plan && (
         <p className="muted">
