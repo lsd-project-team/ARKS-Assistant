@@ -8,6 +8,7 @@ import { useAuth } from '../auth/AuthContext';
 import { DebugIssueEditor } from './debug_issues/DebugIssueEditor';
 import { DebugIssuePage } from './debug_issues/DebugIssuePage';
 import { SourceImport } from './materials/SourceImport';
+import { MaterialsPage } from './materials/MaterialsPage';
 import { OverviewPage } from './overview/OverviewPage';
 import { PackageBuilder } from './packages/PackageBuilder';
 import { PackageList } from './packages/PackageList';
@@ -17,7 +18,7 @@ import { ActivityPage } from './reviews/ActivityPage';
 import { allowedHandoverTab, canReview, handoverTabs } from './shared/access';
 import { handoverClient } from './shared/client';
 import './shared/handover.css';
-import { PageHeading, RecordGroup, pageDescriptions } from './shared/Presentation';
+import { PageHeading, pageDescriptions } from './shared/Presentation';
 import {
   handoverScope,
   tabs,
@@ -206,14 +207,6 @@ export default function HandoverWorkspace({
   const current = rows.filter((row) =>
     archive ? row.state === 'archived' : row.state !== 'archived',
   );
-  const groups: Record<Tab, Kind[]> = {
-    overview: [],
-    materials: ['source'],
-    tasks: ['task'],
-    issues: ['debug_issue'],
-    packages: ['package'],
-    updates: [],
-  };
   if (!pageAllowed)
     return (
       <section className="handover-workbench" role="status">
@@ -312,6 +305,7 @@ export default function HandoverWorkspace({
                     {tab === 'materials' && (
                       <>
                         <Button className="primary" onClick={() => setOperation('import')}>
+                          <Plus size={15} />
                           添加资料
                         </Button>
                       </>
@@ -326,6 +320,7 @@ export default function HandoverWorkspace({
                     )}
                     {tab === 'packages' && (
                       <Button className="primary" onClick={() => setOperation('package')}>
+                        <Plus size={15} />
                         生成交接包
                       </Button>
                     )}
@@ -353,6 +348,7 @@ export default function HandoverWorkspace({
               <PackageList
                 rows={current}
                 definitions={definitions.data}
+                archived={archive}
                 client={client}
                 actor={actor}
 
@@ -362,18 +358,12 @@ export default function HandoverWorkspace({
               />
             )}
             {tab === 'materials' && (
-              <>
-                {groups[tab].map((kind) => (
-                  <RecordGroup
-                    key={kind}
-                    kind={kind}
-                    includedKinds={kind === 'source' ? ['source', 'interview'] : undefined}
-                    rows={current}
-                    definitions={definitions.data!}
-                    onOpen={open}
-                  />
-                ))}
-              </>
+              <MaterialsPage
+                rows={current}
+                definitions={definitions.data}
+                archived={archive}
+                onOpen={open}
+              />
             )}
             {tab === 'updates' && reviewAccess && (
               <ActivityPage
