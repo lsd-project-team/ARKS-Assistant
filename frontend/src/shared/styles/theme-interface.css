@@ -1,9 +1,120 @@
-/* 灰绿与深色共用组件规则，主题差异由语义变量控制，包含 Portal 浮层。 */
+/* 外观差异由根节点的语义颜色及主题规则控制，包含 Portal 浮层。 */
 :root {
   --success-text: #357153;
   --warning-text: #986022;
   --warning-surface: color-mix(in srgb, var(--warning-text) 9%, var(--panel));
   --danger-surface: color-mix(in srgb, var(--danger-text) 9%, var(--panel));
+}
+
+/* 白色保持柔和的中性灰阶；限定外观，切换主题时不会沿用这套表面和字重。 */
+:root[data-appearance='white'] {
+  --text: #2b2b2a;
+  --text-secondary: #646461;
+  --muted: #70706c;
+  --text-muted: #70706c;
+  --text-faint: #747470;
+  --border: #e7e7e3;
+  --border-strong: #c9c9c4;
+  --panel: #fcfcfb;
+  --surface: #fcfcfb;
+  --surface-warm: #fcfcfb;
+  --surface-subtle: #f6f6f4;
+  --surface-muted: #f1f1ef;
+  --surface-hover: #e9e9e6;
+  --canvas: #fcfcfb;
+  --navigation-background: #f4f4f2;
+  --reading-background: #fcfcfb;
+  --reading-hero: #f6f6f4;
+  --composer-background: #f2f2f0;
+  --shadow-panel: none;
+  --shadow-raised: 0 6px 24px #24242014;
+  --selection-background: #e7e7e3;
+  --selection-hover: #deded9;
+  --selection-border: #d0d0c9;
+}
+
+:root[data-appearance='white'] .workspace-brand strong {
+  font-weight: 550;
+}
+
+:root[data-appearance='white'] .workspace-sections > button {
+  font-weight: 400;
+}
+
+:root[data-appearance='white'] .workspace-sections > button.active {
+  font-weight: 500;
+}
+
+:root[data-appearance='white'] .sidebar-views {
+  background: transparent;
+}
+
+:root[data-appearance='white'] .sidebar-views button.selected {
+  background: var(--panel);
+  box-shadow: none;
+}
+
+:root[data-appearance='white'] .chat-heading strong {
+  font-weight: 500;
+}
+
+:root[data-appearance='white'] .chat-welcome h2 {
+  font-size: clamp(22px, 4cqw, 24px);
+  font-weight: 500;
+}
+
+:root[data-appearance='white'] .welcome-mark {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 18px;
+}
+
+:root[data-appearance='white'] .welcome-suggestions button {
+  border-radius: 8px;
+  background: transparent;
+}
+
+:root[data-appearance='white'] .welcome-suggestions button:hover {
+  background: var(--surface-subtle);
+}
+
+:root[data-appearance='white'] .button {
+  box-shadow: var(--surface-stroke);
+}
+
+:root[data-appearance='white'] .button.primary,
+:root[data-appearance='white'] .send-button {
+  box-shadow: none;
+}
+
+/* 输入区用填色融入页面，焦点只强调轮廓，避免再叠加发光和浮起的阴影。 */
+:root[data-appearance='white'] .composer-area {
+  background: transparent;
+}
+
+:root[data-appearance='white'] .composer {
+  border-color: transparent;
+  border-radius: 18px;
+  background: var(--composer-background);
+  box-shadow: none;
+}
+
+:root[data-appearance='white'] .composer:focus-within {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+:root[data-appearance='white'] .composer textarea {
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-appearance='white'] .composer textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+:root[data-appearance='white'] .composer-context {
+  border-top-color: transparent;
 }
 
 :root[data-appearance='dark'] {
