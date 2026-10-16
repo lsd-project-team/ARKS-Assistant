@@ -12,7 +12,6 @@ const fields = [
   ['windows_scratch_mb', 'Windows 验证临时磁盘预算（MB）', 20480, 1048576],
   ['max_active_verifications', '同时验证上限', 1, 16],
   ['retention_days', '临时文件保留天数', 1, 3650],
-  ['reading_token_limit', '项目每日模型 token 上限（UTC）', 1000, 100000000],
 ] as const;
 
 export function CodeWorkPolicyPanel({
@@ -93,6 +92,41 @@ export function CodeWorkPolicyPanel({
             />
           </label>
         ))}
+        <div className="code-work-token-policy">
+          <span>项目每日模型 token 上限（UTC）</span>
+          <label className="code-work-check">
+            <input
+              type="checkbox"
+              aria-label="项目每日模型 token 无上限"
+              checked={draft.reading_token_limit === null}
+              disabled={disabled || busy}
+              onChange={(event) =>
+                setDraft({
+                  ...draft,
+                  reading_token_limit: event.target.checked
+                    ? null
+                    : (policy.reading_token_limit ?? 500000),
+                })
+              }
+            />
+            无上限
+          </label>
+          {draft.reading_token_limit !== null && (
+            <input
+              aria-label="项目每日模型 token 上限（UTC）"
+              type="number"
+              min={1000}
+              max={100000000}
+              step={1}
+              value={draft.reading_token_limit}
+              disabled={disabled || busy}
+              onChange={(event) =>
+                setDraft({ ...draft, reading_token_limit: Number(event.target.value) })
+              }
+              required
+            />
+          )}
+        </div>
         <label className="code-work-check">
           <input
             type="checkbox"

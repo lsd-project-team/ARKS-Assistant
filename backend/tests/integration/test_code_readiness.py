@@ -279,6 +279,29 @@ def test_readiness_policy_executor_requirements_and_review_guards_over_http(api)
     assert client.post("/api/code-changes/cleanup", json={"dry_run": True}).json()["removed"] == 0
 
 
+@pytest.mark.authentication
+def test_unlimited_policy_roundtrip_requires_admin_and_preserves_usage(api):
+    client, changes = api
+    sign_in(client, "user")
+    original = client.get("/api/code-changes/policy").json()
+    request = {**original, "reading_token_limit": None}
+    assert client.put("/api/code-changes/policy", json=request).status_code == 403
+    assert changes.policy.get().reading_token_limit == 500000
+    receipt = changes.policy.reserve(500000)
+    before = changes.policy.tokens()
+    sign_in(client, "admin")
+    saved = client.put("/api/code-changes/policy", json=request)
+    assert saved.status_code == 200
+    assert saved.json() == request
+    assert client.get("/api/code-changes/policy").json()["reading_token_limit"] is None
+    report = client.get("/api/code-changes/readiness")
+    assert report.status_code == 200
+    assert report.json()["usage"]["reading_token_limit"] is None
+    assert changes.policy.tokens() == before
+    changes.policy.settle(receipt, 100000)
+    assert changes.policy.reserve(1_000_000)["maximum"] == 1_000_000
+
+
 def test_review_http_binds_the_displayed_requirements_and_requires_explicit_hash(api):
     client, changes = api
     sign_in(client, "user")

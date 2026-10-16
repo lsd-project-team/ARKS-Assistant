@@ -155,6 +155,52 @@ def test_policy_and_usage_are_project_scoped(policy):
     assert other.tokens()["reserved_tokens"] == 1500
 
 
+def test_unlimited_policy_persists_preserves_usage_and_can_restore_finite_limit(policy):
+    first = policy.reserve(1000)
+    before = policy.tokens()
+    policy.save({**policy.get().model_dump(), "reading_token_limit": None})
+    restored = WorkPolicy(policy.paths, policy.database, "project-a")
+    assert restored.get().reading_token_limit is None
+    assert restored.tokens() == before
+    second = restored.reserve(2_000_000)
+    restored.settle(second, 1_500_000)
+    restored.settle(second, 0)
+    restored.settle(first, None)
+    assert restored.tokens() == {
+        "day": "2026-10-16",
+        "reserved_tokens": 1_501_000,
+        "actual_tokens": 1_500_000,
+        "calls": 2,
+    }
+    other = WorkPolicy(policy.paths, policy.database, "project-b")
+    assert other.get().reading_token_limit == 500000
+    with pytest.raises(ValueError, match="预算不足"):
+        other.reserve(500001)
+    restored.save({**restored.get().model_dump(), "reading_token_limit": 1000})
+    with pytest.raises(ValueError, match="预算不足"):
+        restored.reserve(1)
+    assert restored.tokens()["actual_tokens"] == 1_500_000
+    assert restored.tokens()["calls"] == 2
+
+
+def test_unlimited_parallel_reservations_still_accumulate_atomically(policy):
+    policy.save({**policy.get().model_dump(), "reading_token_limit": None})
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        receipts = list(pool.map(lambda _: policy.reserve(1_000_000), range(16)))
+    assert len({receipt["id"] for receipt in receipts}) == 16
+    assert policy.tokens()["reserved_tokens"] == 16_000_000
+    assert policy.tokens()["calls"] == 16
+
+
+@pytest.mark.parametrize("value", [-1, 0, 999, 100_000_001])
+def test_finite_token_limit_validation_is_unchanged(policy, value):
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        policy.save({"reading_token_limit": value})
+    assert policy.get().reading_token_limit == 1000
+
+
 def test_tokens_uses_one_day_snapshot_even_at_utc_rollover(policy, monkeypatch):
     policy.reserve(500)
     days = iter(["2026-10-16", "2026-10-17"])

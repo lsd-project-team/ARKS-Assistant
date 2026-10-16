@@ -100,6 +100,10 @@
 .code-work-create > .button {
   justify-self: start;
 }
+.code-work-token-policy {
+  display: grid;
+  gap: 7px;
+}
 .code-work-summary {
   flex-wrap: wrap;
   margin: 18px 0 12px;
@@ -272,6 +276,10 @@
 .code-work .code-work-check {
   flex-direction: row;
   align-items: center;
+}
+.code-work .code-work-check input[type='checkbox'] {
+  width: auto;
+  flex: 0 0 auto;
 }
 .code-work-executor {
   display: grid;

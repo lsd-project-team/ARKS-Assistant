@@ -30,7 +30,7 @@ class CodeWorkPolicy(BaseModel):
     windows_scratch_mb: int = Field(default=32768, ge=20480, le=1_048_576)
     max_active_verifications: int = Field(default=1, ge=1, le=16)
     retention_days: int = Field(default=30, ge=1, le=3650)
-    reading_token_limit: int = Field(default=500000, ge=1000, le=100_000_000)
+    reading_token_limit: int | None = Field(default=500000, ge=1000, le=100_000_000)
     require_sandbox_delivery: bool = True
 
 

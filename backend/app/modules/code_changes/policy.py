@@ -72,14 +72,15 @@ class WorkPolicy:
                 .values(project_id=project, day=day, reserved_tokens=0, actual_tokens=0, calls=0)
                 .on_conflict_do_nothing()
             )
+            claim = update(CodeWorkUsageRecord).where(
+                CodeWorkUsageRecord.project_id == project,
+                CodeWorkUsageRecord.day == day,
+            )
+            # 无上限仅跳过额度拦截；用量仍原子累计，保留结算和跨项目边界。
+            if limit is not None:
+                claim = claim.where(CodeWorkUsageRecord.reserved_tokens + maximum <= limit)
             claimed = session.execute(
-                update(CodeWorkUsageRecord)
-                .where(
-                    CodeWorkUsageRecord.project_id == project,
-                    CodeWorkUsageRecord.day == day,
-                    CodeWorkUsageRecord.reserved_tokens + maximum <= limit,
-                )
-                .values(
+                claim.values(
                     reserved_tokens=CodeWorkUsageRecord.reserved_tokens + maximum,
                     calls=CodeWorkUsageRecord.calls + 1,
                 )

@@ -114,7 +114,7 @@ export interface CodeWorkPolicy {
   max_log_mb: number;
   max_active_verifications: number;
   retention_days: number;
-  reading_token_limit: number;
+  reading_token_limit: number | null;
   require_sandbox_delivery: boolean;
 }
 
@@ -136,7 +136,7 @@ export interface ReadinessReport {
     changes: number;
     active_verifications: number;
     reading_reserved_tokens: number;
-    reading_token_limit: number;
+    reading_token_limit: number | null;
   };
   unresolved: string[];
 }

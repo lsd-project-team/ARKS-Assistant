@@ -319,6 +319,20 @@ async def test_duplicate_callbacks_and_zero_usage_only_settle_once(ledger):
     assert ledger.tokens()["reserved_tokens"] == 0 and ledger.tokens()["calls"] == 1
 
 
+async def test_unlimited_project_allows_large_provider_calls_and_records_actual_usage(ledger):
+    ledger.save({"reading_token_limit": None})
+    model = ObservedProvider(
+        usage={"input_tokens": 1_200_000, "output_tokens": 1000, "total_tokens": 1_201_000},
+        callbacks=[ProjectModelBudget(ledger, 2_000_000)],
+    )
+    for _ in range(2):
+        assert (await model.ainvoke([HumanMessage(content="继续分析")])).content == "完成"
+    assert len(model.seen) == 2
+    assert ledger.tokens()["reserved_tokens"] == 2_402_000
+    assert ledger.tokens()["actual_tokens"] == 2_402_000
+    assert ledger.tokens()["calls"] == 2
+
+
 def test_reservation_estimation_includes_tools_and_generation_limit(ledger):
     callback = ProjectModelBudget(ledger, 1_000_000, output_tokens=256)
     messages = [[HumanMessage(content="简短问题")]]

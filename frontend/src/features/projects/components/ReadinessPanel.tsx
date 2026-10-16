@@ -117,7 +117,8 @@ export function ReadinessPanel({ projectId, readOnly }: { projectId: string; rea
               <div>
                 <dt>当日模型预留 token（UTC）</dt>
                 <dd>
-                  {report.usage.reading_reserved_tokens} / {report.usage.reading_token_limit}
+                  {report.usage.reading_reserved_tokens} /{' '}
+                  {report.usage.reading_token_limit ?? '无上限'}
                 </dd>
               </div>
             </dl>

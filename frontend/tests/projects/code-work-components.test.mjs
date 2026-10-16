@@ -381,6 +381,32 @@ test('管理员系统配置的命令入口先选择项目，显式查询不沿�
   assert.deepEqual(calls, [{ path: '/code-changes/profiles', projectId: 'project-b' }]);
 });
 
+test('无上限策略显示明确标记和真实用量，管理员可配置，普通用户只查看', () => {
+  const readiness = {
+    ...defaultReadiness,
+    policy: { ...defaultReadiness.policy, reading_token_limit: null },
+    usage: {
+      ...defaultReadiness.usage,
+      reading_reserved_tokens: 455726,
+      reading_token_limit: null,
+    },
+  };
+  const render = () =>
+    renderToStaticMarkup(
+      createElement(ReadinessPanel, { projectId: 'project-a', readOnly: false }),
+    );
+  setup({ role: 'admin', readiness });
+  const unlimited = render();
+  assert.match(unlimited, /455726.*无上限/);
+  assert.match(unlimited, /aria-label="项目每日模型 token 无上限"[^>]*checked=""/);
+  assert.doesNotMatch(unlimited, /aria-label="项目每日模型 token 上限（UTC）"/);
+  setup({ role: 'admin' });
+  assert.match(render(), /aria-label="项目每日模型 token 上限（UTC）"[^>]*value="500000"/);
+  setup({ role: 'user', readiness });
+  assert.match(render(), /455726.*无上限/);
+  assert.doesNotMatch(render(), /保存本项目资源策略/);
+});
+
 test('管理员系统配置实际挂载项目验证命令入口，数据维护页不混入该功能', () => {
   setup({ role: 'admin' });
   const html = renderToStaticMarkup(createElement(ConfigurationPage, { dataOnly: false }));
