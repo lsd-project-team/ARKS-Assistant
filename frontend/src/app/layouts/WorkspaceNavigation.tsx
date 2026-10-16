@@ -3,7 +3,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import type { Route } from '../../features/knowledge/routes';
 import { AppearanceSwitch } from '../../features/settings/components/AppearanceSwitch';
 import { NavigationDivider } from './NavigationDivider';
-import { NavigationIcon } from './NavigationIcon';
+import { NavigationIcon } from '../../shared/ui/NavigationIcon';
 
 export function WorkspaceNavigation({
   route,
