@@ -190,3 +190,24 @@
     pointer-events: auto;
   }
 }
+
+/* 外观与设置均分底栏，两者共用尺寸；收起导航仍沿用单列居中规则。 */
+.app-navigation[data-compact='false'] .navigation-tools {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+.app-navigation .navigation-tools > button {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  min-height: 38px;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  font: 450 13px/1.5 var(--font-ui);
+}
+.app-navigation .navigation-tools > button > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}

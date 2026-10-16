@@ -12,9 +12,6 @@
 .appearance-switch > svg {
   flex-shrink: 0;
 }
-.app-navigation[data-compact='false'] .navigation-tools {
-  grid-template-columns: minmax(0, 1fr) auto;
-}
 .navigation-tools .appearance-switch .nav-copy {
   min-width: 0;
   overflow: hidden;

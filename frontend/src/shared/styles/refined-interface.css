@@ -1,6 +1,7 @@
 /* 视觉参考 Codex 的浅色桌面界面；各工作区仍负责自身布局和功能。 */
 :root {
-  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC Variable', sans-serif;
+  /* 三套外观共用已打包的字体，颜色切换不再改变中英文的字形。 */
+  --font-ui: 'Noto Sans SC Variable', 'Segoe UI', sans-serif;
   --font-code: 'Geist Mono Variable', Consolas, 'Noto Sans SC Variable', monospace;
   --surface-shadow: var(--shadow-panel);
   --surface-stroke: inset 0 0 0 1px var(--border);
