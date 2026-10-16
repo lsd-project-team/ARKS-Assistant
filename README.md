@@ -1,90 +1,97 @@
-# ARKS智能助手
+<p align="center">
+  <img src="frontend/public/brand/arks-assistant-icon.png" width="88" alt="ARKS 智能助手图标" />
+</p>
 
-Windows 本机运行、浏览器访问的源码助手。使用 Deep Agents，支持源码阅读问答、普通聊天、多轮对话、跨会话长期记忆和上下文压缩。
+<h1 align="center">ARKS 智能助手</h1>
 
-## 工程结构
+<p align="center">
+  <strong>面向源码阅读、问题排查与调试经验复用的 AI 工作区</strong>
+</p>
 
-项目采用模块化单体，详细依赖约定见 [工程结构](docs/architecture/overview.md)，实施与验收记录见 [重构清单](docs/architecture/refactoring.md)。
+<p align="center">Windows 本机运行 · 浏览器访问 · 自选模型服务</p>
 
-| 目录 | 职责 |
-| --- | --- |
-| `backend/app/modules/` | 账号、项目、聊天、源码分析、知识、记忆、交接、设置和管理业务 |
-| `backend/app/agents/` | Agent 图构建、执行、工具、上下文和提示词 |
-| `backend/app/infrastructure/` | 数据库、模型协议、MCP、备份恢复和缓存 |
-| `frontend/src/app/` | 应用入口、布局、跨业务协调和状态装配 |
-| `frontend/src/features/` | 各业务的组件、交互、状态和样式 |
-| `frontend/src/shared/` | 通用 UI、HTTP、基础类型和主题 |
-| `resources/knowledge/` | 自带图谱、功能说明和生成的知识索引 |
-| `scripts/` | 开发启动、维护和显式验证工具 |
-| `skills/` | 开发、项目结构和测试规范 |
-| `docs/` | 架构、功能、开发与验收文档 |
-| `trunk/`、`data/` | 只读业务源码与正式运行数据 |
-| `output/` | 测试报告、临时产物和历史构建 |
+<p align="center">
+  <a href="#快速开始">快速开始</a> ·
+  <a href="docs/features/user-guide.md">使用指南</a> ·
+  <a href="docs/development/local-development.md">开发指南</a> ·
+  <a href="https://github.com/lsd-project-team/ARKS-Assistant/issues">问题反馈</a>
+</p>
 
-项目规范统一放在 `skills/` 下，每项规范有独立的 `SKILL.md`：
+ARKS 将源码、项目资料和历史调试记录放在同一个工作区。你可以一边阅读代码，一边让助手分析实现、梳理调用关系、提出修改建议，再把排查过程和处理办法保存下来，供后续检索和交接。
 
-- [开发规范](skills/project-development/SKILL.md)：保留原根目录开发规范。
-- [项目结构规范](skills/project-structure/SKILL.md)：规定目录归属、业务边界、分层和依赖方向。
-- [测试规范](skills/project-testing/SKILL.md)：以用户提供的新版 Python 测试规范为依据，附本项目测试配置与执行说明。
+## 核心功能
 
-## 启动
+- **结合源码分析问题**：搜索文件与符号，选中代码直接提问；C# 项目支持基于 Roslyn 的调用关系分析。
+- **查看回答依据**：从回答跳转到源码位置或资料的固定版本，核对分析所依据的原文。
+- **复用调试经验**：通过页面或 `/记录问题` 保存现场描述、排查过程与处理结果，后续按设备、版本和工况检索。
+- **按项目组织工作**：集中管理对话、源码目录、资料和回答指令；个人项目与对话按账号隔离。
+- **持续进行长对话**：支持历史搜索、跨会话记忆、上下文压缩，以及中断后的继续运行。
+- **整理资料与交接**：在交接工作台维护共享资料、任务进度和调试问题，生成交接包并保留版本历史。
 
-已安装 Node.js 22.12+ 与 uv 后，在项目根目录执行：
+> 源码工作区保持只读。助手可以提供分析与修改建议，尚不支持自动修改业务源码并完成构建验证。
+
+## 快速开始
+
+### 1. 准备环境
+
+使用 Windows 和 PowerShell，并安装 **Git、Node.js 22.12+、uv**。后端要求 Python 3.12 或 3.13，依赖由 uv 管理。
+
+### 2. 安装并启动
 
 ```powershell
+git clone https://github.com/lsd-project-team/ARKS-Assistant.git
+cd ARKS-Assistant
 .\Setup.ps1
 .\Start.ps1
 ```
 
-依赖已准备好时可直接双击 `Start.cmd`，默认打开 http://127.0.0.1:8765。`Stop.ps1` 关闭由启动脚本创建的后台服务。应用只监听本机地址。
+`Setup.ps1` 安装依赖、准备本地检索模型与 C# 分析器，并构建前端；首次运行需要联网下载相关依赖。
 
-## 使用
+启动后浏览器会打开 **[http://127.0.0.1:8765](http://127.0.0.1:8765/)**。以后可直接双击 `Start.cmd`；停止服务运行 `.\Stop.ps1`。
 
-首次启动或升级会建立管理员 `admin` 和普通用户 `user`，随机初始密码保存在服务端本机 `data/auth.initial-accounts.json`。未登录先进入登录页；已登录时可通过右上角账号菜单退出或访问 `/#login` 切换账号。管理员进入独立管理工作区，提供管理概览、用户管理、AI 问答记录、交接管理、复核与追溯、系统配置和数据维护，不显示聊天输入及会话侧栏。普通用户继续使用 AI 问答和日常交接业务，不显示复核入口。首页五项统计自动采集实际使用行为，历史访问和时长不补造。账号维护、统计口径及访问范围见 [账号与交接访问控制](docs/features/accounts-and-handover-access.md)。
+### 3. 登录并连接模型
 
-1. 点击左侧顶部“新对话”开始聊天，已有对话从下方会话列表打开。点击会话旁的搜索图标打开居中弹框，查看最近对话，或搜索标题、正文和代码选区；搜索包含已归档对话，正文命中可直接定位。右侧文件树单击文件临时预览，双击保留标签。筛选结果显示父目录，同名标签自动补足路径。Ctrl+P 可按文件名或路径快速打开，方向键选择、Enter 确认。
-2. 在编辑器拖选代码，点击“将选区加入对话”，输入问题。引用包含文件、行列、内容快照和文件版本。
-3. 回复中的源码引用可点击定位；工具调用可展开查看。Enter 发送，Shift + Enter 换行。
-4. 问答与文件树的分隔线均可拖动或用方向键调整，布局、文件阅读位置、目录展开和文件树滚动位置自动保存。源码区和文件树可分别关闭，通过顶部“工作区”重新打开。输入草稿与代码选区按会话保存；切换会话、刷新后恢复。流式回复时向上读历史不会被拉回，点击“回到最新”恢复跟随。输入框的加号保留为文件上传入口，目前暂未开放。
-5. 回复可复制；最近完成的回复支持重新生成，原问题、选区与旧版回复保留。失败可重试，停止后可继续，进行中的回复从持久化事件重放。
-6. 在“设置 → 长期记忆”查看、编辑、删除项目事实和用户偏好，显示更新时间并支持跳转到来源对话。源码变化后，对应记忆标记为需核对。回复旁“上下文”显示本轮实际带入的记忆版本和资料记录。
-7. 输入框底部显示估算上下文用量，点击可查看带入资料和压缩摘要；输入 `/` 展开命令列表，`/context` 查看详情，`/compact` 请求压缩，方向键选择、Enter 执行、Esc 收起。压缩进度、完成和错误显示在输入框附近。上下文接近容量时自动压缩，过短时原生工具会说明无需压缩。“对话上下文”可纠正实际摘要，纠正后用于后续回复；原始消息继续保留，Agent 可通过历史检索工具找回。
-8. Markdown 文件默认预览，顶部可切换源码；预览选区引用对应原始文件行号，代码块可复制。顶部集中提供复制路径、文件树开关、前进后退；Alt+方向键导航。“更多文件操作”包含重新读取、自动换行、保留标签和关闭其他标签。文件树提供定位当前文件和全部折叠。
-9. 对话标题栏右侧的“工作区”按钮统一展开或收起源码区与文件树，保留文件标签、阅读位置及分栏设置；窄屏顶部“工作区”切换同样支持展开与收起。
+1. 在本机 `data/auth.initial-accounts.json` 查看首次生成的 `admin`、`user` 账号密码。
+2. 使用 `admin` 登录，在“系统配置”中填写模型服务地址、模型名称和 API 密钥。支持 **OpenAI Chat Completions** 与 **Anthropic Messages** 协议。
+3. 通过右上角账号菜单退出，使用普通用户账号进入日常工作区。管理员负责系统配置、账号和数据维护。
 
-设置页可配置 OpenAI Chat Completions 或 Anthropic Messages 协议、供应商地址、模型、密钥、上下文容量和压缩模型。当前供应商的 Anthropic 地址可直接使用。DeepWiki MCP 使用 Streamable HTTP；创建项目时根据所选源码目录自动识别 GitHub 仓库或复用该目录已有的关联，无法识别时可手动填写。源码、仓库及可用的流程说明随项目切换，“设置 → 知识来源”显示当前关联。原有 ZX2200 项目继续使用 `lsd-ff/AKRS.ZX2200`。
+安装、端口或启动遇到问题，参见[本地运行与开发](docs/development/local-development.md)。
 
-## 数据与边界
+## 开始使用
 
-- `trunk/` 为只读源码，不包含应用生成文件；默认排除 `.git`、`.vs`、`bin`、`obj`、`packages` 等生成目录。
-- `data/app.sqlite3` 保存完整对话、选区、运行事件和记忆来源；`data/checkpoints.sqlite3` 保存 Agent 检查点。
-- `data/memories/` 保存跨会话 Markdown 记忆；`data/scratch/` 保存大工具结果和压缩档案。
-- 密钥保存在本机 `data/settings.private.json`，接口返回掩码，Git 和导出备份排除密钥配置。
-- 备份通过管理员“数据维护”导出。恢复时先停止服务，使用 `scripts/RestoreData.ps1` 校验和应用备份，再启动；现有密钥保留。完整步骤见 [本地备份与恢复](docs/development/backup-and-restore.md)。
-- 同一会话串行执行，全局最多三个运行。断线不取消任务；停止或重启后的运行可点击“继续运行”。
-- 同一个数据目录只运行一个服务实例，避免并发服务干扰检查点和恢复状态。
-- C# 符号定位优先使用 Roslyn；语义分析可核对重载、调用者与接口候选实现，缺失依赖明确显示未知。备用 Tree-sitter 在独立子进程解析。源码保持只读，不执行业务项目构建。
+1. **打开项目**：选择已有项目，或新建项目并关联源码目录；暂时不需要项目时，也可以直接开始独立对话。
+2. **围绕代码提问**：在右侧文件树打开文件，选中代码并点击“将选区加入对话”，描述要分析的问题。
+3. **保留有用经验**：在交接工作台登记调试问题，或在对话中输入 `/记录问题`，保存原始描述与处理过程。
 
-开发时后端在 `backend` 中运行 `.venv/Scripts/python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765`；前端在 `frontend` 中运行 `npm run dev`，Vite 将 `/api` 代理至后端。API 文档位于 `/docs`。
+你可以这样提问：
 
-## 检查
+> 这个方法由哪些入口调用？请结合当前源码说明执行过程，并标出关键位置。
+>
+> 历史调试记录里有没有相同报警？请核对设备、版本和发生条件是否一致。
 
-```powershell
-cd backend
-uv run pytest -q
-uv run ruff check app tests migrations
-cd ../frontend
-npm test
-npm run build
-npx prettier --check src vite.config.ts
-```
+文件阅读、资料导入、知识来源、记忆和常用快捷键，详见[使用指南](docs/features/user-guide.md)。
 
-测试模型用于确定性的框架回归，真实供应商和 DeepWiki 的历史验收另记在 [开发与验收记录](docs/archive/development.md)。代码开发、结构调整与测试分别遵循 `skills/` 下的对应规范，关键边界逻辑使用中文注释。
+## 数据与模型服务
 
-本次工程重构与功能回归见 [重构验收记录](docs/verification/engineering-refactor.md)。此前清理验收见 [旧代码清理与功能验收](docs/verification/cleanup-validation.md)，回答质量优化见 [12 项完成记录](docs/verification/answer-quality-upgrade.md)，历史界面与框架记录见 [开发与验收记录](docs/archive/development.md)。
+应用默认仅监听本机地址，对话、资料、记忆和设置保存在 `data/`。模型问答与 DeepWiki 查询会访问配置的服务；发送给外部模型的内容取决于本轮使用的源码、资料和上下文。
 
-在“设置 → 知识来源”选择 DeepWiki、知识资料、长期记忆，或仅使用本地源码。知识资料包含交接资料、调试记录、项目文档与共享结论，以及原先已接入的复核说明。默认值按项目保存，独立对话单独配置；新问题和新加入队列的问题自动使用，历史问题、重生成和已排队的问题保留原配置。回复的“本轮参考”和“上下文”显示实际参考资料、当前源码证据、结论复核状态，以及供应商实报用量。引用有效只代表位置与版本核对通过，未读取的外部实现仍可能未知。
+API 密钥保存在本机 `data/settings.private.json`，Git 和应用导出的备份均排除该文件。备份与恢复操作见[本地备份与恢复](docs/development/backup-and-restore.md)。
 
-“设置 → 长期记忆”支持有效、待复核、失效和历史恢复。相关自然语言陈述由模型逐对核对，潜在矛盾需要人工确认；含义相近或条件不同不会自动认定为冲突。Setup 默认准备本地多语言检索模型和 Roslyn 工具；离线安装可用 `-SkipSemanticModels` 跳过，缺少依赖时有明确降级提示。
+## 文档导航
 
-个人偏好按登录账号隔离，项目记忆继续在项目内共享。旧公共偏好原件保留，未自动分配给个人账号。资料接入、混合检索、故障条件匹配、记忆反馈和验收结果见 [对话知识优化](docs/features/chat-knowledge-improvements.md)。流程图谱和功能说明本次暂不调整。
+| 想了解什么                   | 从这里开始                                                                                                                       |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 日常操作、知识问答与调试记录 | [使用指南](docs/features/user-guide.md)                                                                                          |
+| 安装选项、启动排查与开发检查 | [本地运行与开发](docs/development/local-development.md)                                                                          |
+| 项目、源码目录与资料管理     | [项目功能](docs/features/projects.md)                                                                                            |
+| 账号角色与数据访问范围       | [账号与访问控制](docs/features/accounts-and-handover-access.md) · [项目与对话隔离](docs/features/account-workspace-isolation.md) |
+| 本地数据备份与停服恢复       | [备份与恢复](docs/development/backup-and-restore.md)                                                                             |
+| 代码结构与模块依赖           | [工程结构](docs/architecture/overview.md)                                                                                        |
+
+## 参与开发
+
+项目采用 **React + TypeScript + Vite** 前端、**Python + FastAPI** 后端，基于 **Deep Agents** 编排问答与工具调用，使用 **SQLite** 持久化业务数据。
+
+应用代码位于 `frontend/` 和 `backend/`，知识资源位于 `resources/knowledge/`。详细目录和依赖方向见[工程结构](docs/architecture/overview.md)；`trunk/` 为被分析的只读业务源码，`data/` 为本机运行数据。
+
+开始修改前请阅读[项目协作说明](agent.md)、[开发规范](skills/project-development/SKILL.md)、[项目结构规范](skills/project-structure/SKILL.md)和[测试规范](skills/project-testing/SKILL.md)。开发命令见[开发指南](docs/development/local-development.md#开发与检查)，历史重构与验收记录见[重构清单](docs/architecture/refactoring.md)。
