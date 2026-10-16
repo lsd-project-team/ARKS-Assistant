@@ -306,8 +306,6 @@ export default function HandoverWorkspace({
                 syncing={overview.isFetching || events.isFetching}
                 onOpen={open}
                 onNavigate={navigate}
-                onImport={() => setOperation('import')}
-
                 canReview={reviewAccess}
               />
             )}

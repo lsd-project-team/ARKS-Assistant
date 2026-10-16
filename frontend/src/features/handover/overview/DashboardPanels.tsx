@@ -1,6 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { ArrowUpRight, BookOpen, CircleDot, Package, Activity } from 'lucide-react';
-import { Button } from '../../../shared/ui/ui';
 import { InteractiveRing, OperationBars, PackageBars } from './DashboardCharts';
 import { DashboardEventList, DashboardRecordList, SelectionHeading } from './DashboardRecords';
 import {
@@ -68,15 +67,7 @@ function DashboardPanel({
   );
 }
 
-export function MaterialsPanel({
-  data,
-  definitions,
-  onOpen,
-  onNavigate,
-  onImport,
-}: PanelProps & {
-  onImport: () => void;
-}) {
+export function MaterialsPanel({ data, definitions, onOpen, onNavigate }: PanelProps) {
   const [state, setState] = useState('all');
   const typedRows = data.materials;
   const selectedRows = selectMaterials(data.materials, 'all', state);
@@ -140,11 +131,6 @@ export function MaterialsPanel({
         onOpen={onOpen}
         empty="此筛选范围暂无资料"
       />
-      {!data.materials.length && (
-        <div className="handover-actions dashboard-onboarding">
-          <Button onClick={onImport}>添加资料</Button>
-        </div>
-      )}
     </DashboardPanel>
   );
 }

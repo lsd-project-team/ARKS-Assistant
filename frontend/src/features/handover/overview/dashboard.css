@@ -778,9 +778,6 @@
   align-items: center;
   justify-content: center;
 }
-.dashboard-onboarding {
-  margin-top: 8px;
-}
 @keyframes dashboard-enter {
   from {
     opacity: 0;

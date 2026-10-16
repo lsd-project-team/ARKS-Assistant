@@ -13,7 +13,6 @@ export function OverviewPage({
   eventsError = false,
   onOpen,
   onNavigate,
-  onImport,
   syncedAt = 0,
   syncing = false,
   canReview = false,
@@ -24,7 +23,6 @@ export function OverviewPage({
   eventsError?: boolean;
   onOpen: (id: string, version?: number) => void;
   onNavigate: (tab: Tab) => void;
-  onImport: () => void;
   syncedAt?: number;
   syncing?: boolean;
   canReview?: boolean;
@@ -54,7 +52,7 @@ export function OverviewPage({
         </div>
       </div>
       <div className="dashboard-grid">
-        <MaterialsPanel {...panelProps} onImport={onImport} />
+        <MaterialsPanel {...panelProps} />
         <TasksPanel {...panelProps} />
         <PackagesPanel {...panelProps} />
         {canReview && (
