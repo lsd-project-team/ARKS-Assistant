@@ -16,12 +16,6 @@ class Capture(BaseModel):
     device: str = Field(default="", max_length=2000)
 
 
-class AIStart(BaseModel):
-    actor: str = Field(min_length=1, max_length=120)
-    action: str
-    record_ids: list[str] = Field(min_length=1, max_length=20)
-
-
 class TextSourceInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     title: str = Field(min_length=1, max_length=200)
@@ -51,11 +45,6 @@ class TextSourceInput(BaseModel):
 class MaterialCapture(Action):
     source_project_id: str = Field(min_length=1, max_length=32)
     supersedes: str = Field(default="", max_length=36)
-
-
-class Promotion(Action):
-    title: str = Field(min_length=1, max_length=200)
-    proposed: dict
 
 
 class PackageCreate(BaseModel):

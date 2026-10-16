@@ -24,8 +24,6 @@ from app.modules.auth.router import create_router as auth_router
 from app.modules.auth.service import AuthService
 from app.modules.chat.repository import Repository
 from app.modules.chat.runs import RunManager
-from app.modules.handover.application.extraction import HandoverAI
-from app.modules.handover.infrastructure.ai import ModelCandidateGenerator
 from app.modules.handover.infrastructure.exporters.archive import DocumentPackageExporter
 from app.modules.handover.infrastructure.parsers.documents import DocumentParser
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
@@ -49,10 +47,6 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     def handover_store():
         return HandoverStore(projects)
 
-    def candidate_generator():
-        return ModelCandidateGenerator(services.settings.load().model)
-
-    handover_ai = HandoverAI(handover_store, candidate_generator)
     auth = AuthService(services.database, paths)
     usage = UsageTracking(services.database)
 
@@ -69,10 +63,8 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 services.repository.recover()
                 services.runtime.project_reading.recover(all_projects=True)
                 services.runtime.code_changes.recover(all_projects=True)
-                handover_ai.recover()
                 yield
             finally:
-                await handover_ai.shutdown()
                 await projects.shutdown()
                 services.database.close()
 
@@ -80,7 +72,6 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     app.state.runs = services.runs
     app.state.repository = services.repository
     app.state.projects = projects
-    app.state.handover_ai = handover_ai
     app.state.auth = auth
     app.state.usage = usage
     install_authentication(app, auth, usage)
@@ -109,9 +100,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
         app.include_router(module.create_router(services))
     app.include_router(projects_router(projects))
     app.include_router(
-        handover_router(
-            projects, handover_ai, handover_store, DocumentParser(), DocumentPackageExporter()
-        )
+        handover_router(projects, handover_store, DocumentParser(), DocumentPackageExporter())
     )
     app.mount("/api/p", ProjectDispatcher(projects, app.exception_handlers))
 

@@ -1,16 +1,11 @@
-"""补充更新影响、接收记录、AI 中断与格式修正的业务验收。"""
+"""资料更新影响、接收记录与设备验收门槛。"""
 
-import asyncio
 import io
-import json
-from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 from pypdf import PdfWriter
 
 from app.main import create_app
-from app.modules.handover.infrastructure.ai import generate
-from app.modules.handover.infrastructure.candidate_format import candidate_data
 from app.modules.handover.infrastructure.parsers.docx import parse_docx
 from app.modules.handover.infrastructure.parsers.pdf import parse_pdf
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
@@ -150,32 +145,6 @@ def test_scanned_pdf_records_missing_text_instead_of_fake_success():
     assert status == "needs_ocr" and "[1]" in notes and "第 1 页" in content
 
 
-def test_running_job_recovery_preserves_fixed_inputs(services):
-    app = create_app(services[0])
-    with TestClient(app) as client:
-        project = client.post("/api/projects", json={"name": "恢复"}).json()["id"]
-        store = HandoverStore(app.state.projects)
-        row = store.create("interview", "固定输入", {"transcript": "待完成"}, "人")
-        job = store.create(
-            "job",
-            "中断作业",
-            {
-                "action": "extract",
-                "record_ids": [row["id"]],
-                "input_versions": {row["id"]: 1},
-                "status": "running",
-            },
-            "人",
-            internal=True,
-        )
-        app.state.handover_ai.recover()
-        recovered = store.get(job["id"])
-        assert recovered["payload"]["status"] == "interrupted"
-        assert recovered["payload"]["input_versions"] == {row["id"]: 1}
-        client.patch(f"/api/projects/{project}", json={"state": "archived"})
-        assert store.job_status(job["id"], status="cancelled")["payload"]["status"] == "cancelled"
-
-
 def test_replaced_source_keeps_original_and_requires_downstream_review(services):
     with TestClient(create_app(services[0])) as client:
         root = "/api/handover"
@@ -222,71 +191,6 @@ def test_replaced_source_keeps_original_and_requires_downstream_review(services)
             == "confirmed"
         )
         assert client.get(root + f"/sources/{source['id']}/original").content.decode() == "原版说明"
-
-
-async def test_supplier_format_repair_does_not_weaken_payload_validation():
-    candidate = {
-        "candidates": [
-            {
-                "title": "工作",
-                "payload": {
-                    "target_kind": "task",
-                    "proposed": {"dependencies": "", "required_layer": ""},
-                },
-            }
-        ]
-    }
-
-    class Model:
-        calls = 0
-
-        async def ainvoke(self, _messages):
-            self.calls += 1
-            if self.calls > 1:
-                candidate["candidates"][0]["payload"]["proposed"] = {
-                    "dependencies": [],
-                    "required_layer": "device",
-                }
-            return SimpleNamespace(text=json.dumps(candidate))
-
-    model = Model()
-    result = await generate(model, "只分析固定来源", 5)
-    assert model.calls == 2 and result.candidates[0].payload.proposed["required_layer"] == "device"
-
-
-async def test_supplier_generation_can_be_cancelled():
-    started = asyncio.Event()
-
-    class Model:
-        async def ainvoke(self, _messages):
-            started.set()
-            await asyncio.Event().wait()
-
-    task = asyncio.create_task(generate(Model(), "输入", 10))
-    await started.wait()
-    task.cancel()
-    result = await asyncio.gather(task, return_exceptions=True)
-    assert isinstance(result[0], asyncio.CancelledError)
-
-
-def test_flat_supplier_fields_are_moved_without_changing_evidence_or_values():
-    original = {
-        "candidates": [
-            {
-                "title": "培训",
-                "payload": {
-                    "target_kind": "training",
-                    "conditions": "停止状态",
-                    "operation": "复核反馈",
-                    "evidence": [{"record_id": "fixed-id", "version": 2, "quote": "原文"}],
-                },
-            }
-        ]
-    }
-    result = candidate_data(json.dumps(original))
-    payload = result["candidates"][0]["payload"]
-    assert payload["proposed"] == {"conditions": "停止状态", "operation": "复核反馈"}
-    assert payload["evidence"] == original["candidates"][0]["payload"]["evidence"]
 
 
 def test_device_acceptance_cannot_use_release_checks_and_archived_proof(services):

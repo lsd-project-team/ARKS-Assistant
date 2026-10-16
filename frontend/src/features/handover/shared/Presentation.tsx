@@ -4,7 +4,7 @@ import type { Definitions, HandoverRecord, Kind, Tab } from './types';
 
 export const pageDescriptions: Record<Tab, string> = {
   overview: '查看交接现状，安排下一步工作。',
-  materials: '集中保存文档、文字记录和项目资料，审核 AI 提取结果。',
+  materials: '集中保存文档、文字记录和项目资料，供后续查阅与问答。',
   tasks: '记录工作项、负责人和进度，随时更新状态与备注。',
   issues: '保存问题处理、优化经验、工作进展和归档事项，供后续查阅与问答。',
   packages: '汇总固定版本的交接内容，供查阅与下载。',
@@ -14,7 +14,6 @@ export const pageDescriptions: Record<Tab, string> = {
 export const kindDescriptions: Partial<Record<Kind, string>> = {
   source: '保存文档、源码或项目资料的原始版本。',
   interview: '记录原作者的说明、问答及后续更正。',
-  candidate: '逐条核对 AI 提取的内容与来源，再合并为交接记录。',
   decision: '交代设计意图、备选方案与取舍依据。',
   constraint: '明确设备、工艺与安全边界，以及停止条件。',
   baseline: '固定代码版本、固件、SDK、配方、标定与构建环境。',
@@ -88,9 +87,7 @@ export function RecordGroup({
           ))}
         </div>
       ) : (
-        <p className="handover-group-empty">
-          暂无记录{kind === 'candidate' ? '，运行 AI 分析后可在这里审核候选。' : '。'}
-        </p>
+        <p className="handover-group-empty">暂无记录。</p>
       )}
     </section>
   );

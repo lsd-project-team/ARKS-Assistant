@@ -884,22 +884,4 @@
   vertical-align: middle;
   margin: 4px 0;
 }
-.handover-job {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--border);
-}
-.handover-job p {
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-.handover-job small {
-  display: block;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  max-width: 600px;
-}
 /* 桌面区域充足时，将进度阶段并列显示。 */

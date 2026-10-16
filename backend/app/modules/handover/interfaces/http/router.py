@@ -3,7 +3,6 @@
 from fastapi import APIRouter
 
 from app.modules.handover.interfaces.http import (
-    candidates,
     debug_issues,
     materials,
     overview,
@@ -14,9 +13,9 @@ from app.modules.handover.interfaces.http import (
 from app.modules.handover.interfaces.http.context import HandoverHTTPContext
 
 
-def create_router(projects, ai, repository_factory, parser, exporter):
+def create_router(projects, repository_factory, parser, exporter):
     router = APIRouter(prefix="/api/handover", tags=["handover"])
-    context = HandoverHTTPContext(projects, ai, repository_factory, parser, exporter)
-    for module in (overview, records, debug_issues, reviews, materials, candidates, packages):
+    context = HandoverHTTPContext(projects, repository_factory, parser, exporter)
+    for module in (overview, records, debug_issues, reviews, materials, packages):
         module.register(router, context)
     return router

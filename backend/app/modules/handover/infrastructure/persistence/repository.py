@@ -69,16 +69,6 @@ class HandoverStore:
                 )
             ]
 
-    def pending_job_ids(self):
-        with self.database.session() as session:
-            return [
-                row.id
-                for row in session.scalars(
-                    select(HandoverRecord).where(HandoverRecord.kind == "job")
-                )
-                if json.loads(row.payload_json)["status"] in {"queued", "running"}
-            ]
-
     def _get(self, session, identifier):
         row = session.get(HandoverRecord, identifier)
         if not row:
@@ -189,12 +179,10 @@ class HandoverStore:
             dependency_cycle(identifier, payload, rows)
         if kind == "issue" and payload["status"] == "resolved":
             confirmation_gate({"kind": kind, "payload": payload, "id": identifier}, rows)
-        if kind == "candidate":
-            validate_payload(payload["target_kind"], payload["proposed"])
 
-    def create(self, kind, title, payload, actor, *, blob=None, internal=False):
-        if kind in {"job", "candidate"} and not internal:
-            raise ValueError("此记录只能由交接 AI 流程创建")
+    def create(self, kind, title, payload, actor, *, blob=None):
+        if kind in {"job", "candidate"}:
+            raise ValueError("AI 候选与作业功能已移除")
         value = validate_payload(kind, payload)
         with self.lock, self.database.session.begin() as session:
             identifier = new_id()
@@ -226,7 +214,7 @@ class HandoverStore:
         if row.version != version:
             raise ValueError("记录已被更新。草稿已保留，请读取新版本后合并修改")
 
-    def update(self, identifier, body, *, internal=False):
+    def update(self, identifier, body):
         with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
             self._version(row, body.version)
@@ -234,8 +222,8 @@ class HandoverStore:
                 raise ValueError("不能改变记录类型")
             if row.kind in {"source", "package"}:
                 raise ValueError("资料与交接包是固定快照，请创建新版本记录")
-            if row.kind in {"job", "candidate"} and not internal:
-                raise ValueError("运行及候选记录请通过对应操作更新")
+            if row.kind in {"job", "candidate"}:
+                raise ValueError("历史 AI 候选与作业仅可查看")
             value = validate_payload(row.kind, body.payload)
             self._validate(session, identifier, row.kind, value)
             old = json.loads(row.payload_json)
@@ -288,6 +276,8 @@ class HandoverStore:
     def action(self, identifier, action, body):
         with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
+            if row.kind in {"job", "candidate"}:
+                raise ValueError("历史 AI 候选与作业仅可查看")
             self._version(row, body.version)
             records = self._rows(session) if action == "confirm" else {}
             outcome = Record.from_mapping(record_dict(row)).review(action, records)
@@ -330,96 +320,3 @@ class HandoverStore:
                 "sha256": row.sha256,
                 "content": row.content,
             }
-
-    def promote(self, identifier, body, title, proposed):
-        with self.lock, self.database.session.begin() as session:
-            candidate = self._get(session, identifier)
-            self._version(candidate, body.version)
-            value = json.loads(candidate.payload_json)
-            if (
-                candidate.kind != "candidate"
-                or candidate.state == "archived"
-                or value["promoted_id"]
-            ):
-                raise ValueError("此候选已合并或不可合并")
-            target = value["target_kind"]
-            payload = validate_payload(
-                target, {**proposed, "origin": "ai", "evidence": value["evidence"]}
-            )
-            new_identifier = new_id()
-            self._validate(session, new_identifier, target, payload)
-            row = HandoverRecord(
-                id=new_identifier,
-                kind=target,
-                title=title,
-                payload_json=dump(payload),
-            )
-            session.add(row)
-            session.flush()
-            self._snapshot(
-                session, row, "merged", body.actor, f"审核候选 {identifier}：{body.opinion}"
-            )
-            value["promoted_id"] = new_identifier
-            candidate.payload_json, candidate.state = dump(value), "confirmed"
-            candidate.version += 1
-            candidate.updated_at = now_iso()
-            self._snapshot(
-                session,
-                candidate,
-                "promoted",
-                body.actor,
-                body.opinion,
-                {
-                    "actor": body.actor,
-                    "role": body.role,
-                    "opinion": body.opinion,
-                    "time": now_iso(),
-                },
-            )
-            self._invalidate(
-                session,
-                new_identifier,
-                body.actor,
-                "合并新的关联证据",
-                related=payload if target in {"issue", "constraint"} else None,
-            )
-            return record_dict(row)
-
-    def job_status(self, identifier, **changes):
-        # 项目在运行期间归档或删除，也必须记录作业的终态，不能遗留“运行中”。
-        with self.lock, self.database.session.begin() as session:
-            row = self._get(session, identifier)
-            if row.kind != "job":
-                raise ValueError("不是 AI 作业")
-            value = validate_payload("job", {**json.loads(row.payload_json), **changes})
-            row.payload_json, row.version, row.updated_at = dump(value), row.version + 1, now_iso()
-            self._snapshot(session, row, "job_status", "AI 作业", value["status"])
-            return record_dict(row)
-
-    def complete_job(self, identifier, candidates):
-        with self.lock, self.database.session.begin() as session:
-            job = self._get(session, identifier)
-            if job.kind != "job" or json.loads(job.payload_json)["status"] != "running":
-                raise ValueError("作业已停止，未保存候选")
-            rows = []
-            for title, value in candidates:
-                value = validate_payload("candidate", value)
-                value["promoted_id"] = ""
-                proposed = validate_payload(value["target_kind"], value["proposed"])
-                self._validate(session, new_id(), value["target_kind"], proposed)
-                row = HandoverRecord(
-                    id=new_id(),
-                    kind="candidate",
-                    title=title,
-                    payload_json=dump(value),
-                )
-                session.add(row)
-                rows.append(row)
-            session.flush()
-            for row in rows:
-                self._snapshot(session, row, "created", "AI 作业", f"作业 {identifier} 候选")
-            value = json.loads(job.payload_json)
-            value.update(status="succeeded", result_ids=[row.id for row in rows])
-            job.payload_json, job.version, job.updated_at = dump(value), job.version + 1, now_iso()
-            self._snapshot(session, job, "job_status", "AI 作业", "候选已生成，待人工审核")
-            return record_dict(job)

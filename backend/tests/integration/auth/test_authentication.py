@@ -162,7 +162,7 @@ def test_user_cannot_read_or_modify_review_but_business_operations_remain(servic
                 "/api/handover/candidates/not-found/promote",
                 json={**body, "title": "候选", "proposed": {}},
             ).status_code
-            == 403
+            == 404
         )
         assert client.post("/api/backup").status_code == 403
         for suffix in ("", "?version=1", f"?version={source['version']}"):

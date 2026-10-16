@@ -10,7 +10,6 @@ from app.modules.handover.application.ports import MaterialParser, PackageExport
 @dataclass(frozen=True, slots=True)
 class HandoverHTTPContext:
     projects: Any
-    ai: Any
     repository_factory: Callable[[], RecordRepository]
     parser: MaterialParser
     exporter: PackageExporter

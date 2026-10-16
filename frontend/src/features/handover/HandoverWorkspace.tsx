@@ -5,7 +5,6 @@ import { WorkspaceHeading } from '../../app/layouts/WorkspaceHeader';
 import { draftFor, useWorkspace } from '../../app/state/store';
 import { Button, ErrorText } from '../../shared/ui/ui';
 import { useAuth } from '../auth/AuthContext';
-import { AIOperation } from './candidates/AIOperation';
 import { DebugIssueEditor } from './debug_issues/DebugIssueEditor';
 import { DebugIssuePage } from './debug_issues/DebugIssuePage';
 import { SourceImport } from './materials/SourceImport';
@@ -21,7 +20,6 @@ import './shared/handover.css';
 import { PageHeading, RecordGroup, pageDescriptions } from './shared/Presentation';
 import {
   handoverScope,
-  ids,
   tabs,
   text,
   type Definitions,
@@ -107,7 +105,6 @@ export default function HandoverWorkspace({
   const [actor, setActorState] = useState(
     () => localStorage.getItem(`arks-handover-actor:${scopeId}`) || '',
   );
-  const [error, setError] = useState<unknown>();
   const [archive, setArchive] = useState(false);
   const rows = overview.data?.records || [];
   function setActor(value: string) {
@@ -206,26 +203,12 @@ export default function HandoverWorkspace({
     workspace.setMobile('code');
     onWorkspaceNavigate?.('chat');
   }
-  async function jobAction(row: HandoverRecord, cancel: boolean) {
-    try {
-      if (cancel) await client.send(`/ai/${row.id}/cancel`, {});
-      else
-        await client.send('/ai', {
-          action: row.payload.action,
-          record_ids: ids(row.payload.record_ids),
-          actor,
-        });
-      changed();
-    } catch (error) {
-      setError(error);
-    }
-  }
   const current = rows.filter((row) =>
     archive ? row.state === 'archived' : row.state !== 'archived',
   );
   const groups: Record<Tab, Kind[]> = {
     overview: [],
-    materials: ['source', 'candidate'],
+    materials: ['source'],
     tasks: ['task'],
     issues: ['debug_issue'],
     packages: ['package'],
@@ -282,7 +265,7 @@ export default function HandoverWorkspace({
       )}
       <div className="handover-body">
         <ErrorText
-          error={error || overview.error || definitions.error || context.error || events.error}
+          error={overview.error || definitions.error || context.error || events.error}
           reveal
         />
         {(overview.error || definitions.error) && <Button onClick={refresh}>重试加载</Button>}
@@ -331,7 +314,6 @@ export default function HandoverWorkspace({
                         <Button className="primary" onClick={() => setOperation('import')}>
                           添加资料
                         </Button>
-                        <Button onClick={() => setOperation('extract')}>AI 提取候选</Button>
                       </>
                     )}
                     {tab === 'tasks' && (
@@ -393,59 +375,6 @@ export default function HandoverWorkspace({
                 ))}
               </>
             )}
-            {tab === 'materials' && (
-              <section className="handover-panel">
-                <h3>AI 作业</h3>
-                {rows
-                  .filter((row) => row.kind === 'job')
-                  .sort((a, b) => b.created_at.localeCompare(a.created_at))
-                  .map((row) => (
-                    <div className="handover-job" key={row.id}>
-                      <div>
-                        <strong>{row.title}</strong>
-                        <p>
-                          {
-                            (
-                              {
-                                queued: '等待运行',
-                                running: '正在分析',
-                                succeeded: ids(row.payload.result_ids).length
-                                  ? '候选已生成，请审核'
-                                  : '分析完成，未找到有来源支持的候选',
-                                failed: '运行失败',
-                                cancelled: '已取消',
-                                interrupted: '服务重启中断',
-                              } as Record<string, string>
-                            )[text(row.payload.status)]
-                          }
-                        </p>
-                        <small>{text(row.payload.error)}</small>
-                      </div>
-                      {
-                        <Button
-                          disabled={
-                            !actor.trim() &&
-                            !['running', 'queued'].includes(text(row.payload.status))
-                          }
-                          onClick={() =>
-                            void jobAction(
-                              row,
-                              ['running', 'queued'].includes(text(row.payload.status)),
-                            )
-                          }
-                        >
-                          {['running', 'queued'].includes(text(row.payload.status))
-                            ? '取消运行'
-                            : '使用当前版本重新生成'}
-                        </Button>
-                      }
-                    </div>
-                  ))}
-                {!rows.some((row) => row.kind === 'job') && (
-                  <p className="handover-empty handover-empty-small">尚未运行 AI 分析。</p>
-                )}
-              </section>
-            )}
             {tab === 'updates' && reviewAccess && (
               <ActivityPage
                 events={events.data || []}
@@ -473,8 +402,7 @@ export default function HandoverWorkspace({
                 onEdit={(row) =>
                   setEditor({
                     row,
-                    kind:
-                      row.kind === 'candidate' ? (text(row.payload.target_kind) as Kind) : row.kind,
+                    kind: row.kind,
                   })
                 }
                 onChanged={changed}
@@ -490,7 +418,7 @@ export default function HandoverWorkspace({
                   onSaved={(row) => saved(row, { editor })}
                   onClose={() => setEditor(undefined)}
                 />
-              ) : editor.kind === 'task' && editor.row?.kind !== 'candidate' ? (
+              ) : editor.kind === 'task' ? (
                 <TaskEditor
                   key={editor.row?.id || 'new-task'}
                   scopeId={scopeId}
@@ -524,28 +452,6 @@ export default function HandoverWorkspace({
                 actor={actor}
                 onActor={setActor}
                 onSaved={(row) => saved(row, { generation: currentOperationGeneration })}
-                onClose={() => setOperation('')}
-              />
-            )}
-            {['extract', 'plan', 'framework', 'training'].includes(operation) && (
-              <AIOperation
-                client={client}
-                records={rows}
-                definitions={definitions.data}
-                action={operation}
-                actor={actor}
-                onActor={setActor}
-                onSaved={() => {
-                  changed();
-                  if (
-                    !alive.current ||
-                    activeTab.current !== tab ||
-                    operationGeneration.current !== currentOperationGeneration
-                  )
-                    return;
-                  setOperation('');
-                  navigate('materials');
-                }}
                 onClose={() => setOperation('')}
               />
             )}

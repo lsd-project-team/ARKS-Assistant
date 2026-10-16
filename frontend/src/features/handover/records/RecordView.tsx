@@ -283,14 +283,8 @@ export function RecordView({
               </span>
               {!version &&
                 !readOnly &&
-                (row.kind !== 'candidate' || canReview) &&
-                !['source', 'package', 'job'].includes(row.kind) &&
-                !(row.kind === 'candidate' && text(row.payload.promoted_id)) &&
-                row.state !== 'archived' && (
-                  <Button onClick={() => onEdit(row)}>
-                    {row.kind === 'candidate' ? '审核并合并' : '编辑'}
-                  </Button>
-                )}
+                !['source', 'package', 'job', 'candidate'].includes(row.kind) &&
+                row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
               {onDiscuss && <Button onClick={() => onDiscuss(row)}>在对话中讨论</Button>}
             </div>
           )}
@@ -385,7 +379,7 @@ export function RecordView({
                 )}
               </section>
             )}
-          {!readOnly && !version && row.kind !== 'job' && (
+          {!readOnly && !version && !['job', 'candidate'].includes(row.kind) && (
             <div className="handover-actions handover-form-section">
               <Button
                 disabled={busy}

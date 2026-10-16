@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from contextlib import AbstractContextManager
 from typing import Any, Protocol
 
@@ -26,18 +25,7 @@ class RecordRepository(Protocol):
 
     def blob(self, identifier) -> dict[str, Any]: ...
 
-    def promote(self, identifier, body, title, proposed) -> dict: ...
-
     def debug_rows(self, include_archived: bool = False) -> list[dict]: ...
-
-    def pending_job_ids(self) -> list[str]: ...
-
-    def job_status(self, identifier: str, **changes) -> dict: ...
-
-    def complete_job(self, identifier: str, candidates: list[tuple[str, dict]]) -> dict: ...
-
-
-RepositoryFactory = Callable[[], RecordRepository]
 
 
 class MaterialParser(Protocol):
@@ -48,10 +36,3 @@ class MaterialParser(Protocol):
 
 class PackageExporter(Protocol):
     def render(self, package: dict, records: list[dict], blobs: dict, zipped: bool) -> bytes: ...
-
-
-class CandidateGenerator(Protocol):
-    async def __call__(self, records: list[dict], action: str) -> Any: ...
-
-
-CandidateGeneratorFactory = Callable[[], CandidateGenerator]

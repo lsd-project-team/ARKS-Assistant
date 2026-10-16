@@ -195,7 +195,7 @@ export function SourceImport({
                 onChange={(event) => field('content', event.target.value)}
               />
               <div className="source-import-text-meta">
-                <small>原文会完整保存，后续可通过“AI 提取候选”整理。</small>
+                <small>原文会完整保存，供后续查阅与问答检索。</small>
                 <small className={tooLong ? 'source-import-limit' : undefined}>
                   {characterCount.toLocaleString('zh-CN')} / 100,000 字符
                 </small>

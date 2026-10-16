@@ -15,9 +15,9 @@
 
 交接模块分为 `domain`、`application`、`infrastructure` 和 `interfaces`。领域规则不导入 FastAPI、SQLAlchemy、供应商 SDK 或应用启动代码。HTTP 接收请求后调用应用用例，持久化实现调用领域规则保护版本与状态。
 
-交接应用层通过 `application/ports.py` 接收仓储、文档解析、交接包导出和候选生成接口。Word/PDF/ZIP 解析位于 `infrastructure/parsers/`，OOXML/ZIP 导出位于 `infrastructure/exporters/`，模型连接与输出适配位于 `infrastructure/ai.py`。应用层不创建 SQLAlchemy 会话或具体仓储，不直接连接模型供应商。请求命令归 `application/commands.py`，业务内容约束归 `domain/`。
+交接应用层通过 `application/ports.py` 接收仓储、文档解析和交接包导出接口。Word/PDF/ZIP 解析位于 `infrastructure/parsers/`，OOXML/ZIP 导出位于 `infrastructure/exporters/`；`infrastructure/ai.py` 仅保留问题与经验命令使用的结构化模型适配。资料提取候选、作业调度与合并流程已移除。应用层不创建 SQLAlchemy 会话或具体仓储，不直接连接模型供应商。请求命令归 `application/commands.py`，业务内容约束归 `domain/`。
 
-`interfaces/http/` 按概览、记录、资料、调试问题、候选、交接包和复核拆分；对外仍使用原来的 `/api/handover` 地址。任务通过通用记录用例处理，统计规则保留在领域层，不为空建一套重复接口。
+`interfaces/http/` 按概览、记录、资料、问题与经验、交接包和复核拆分；对外仍使用原来的 `/api/handover` 地址。任务通过通用记录用例处理，统计规则保留在领域层，不为空建一套重复接口。
 
 Agent 的入口、图构建、执行器和提示词分别维护。聊天、源码和调试录入工具按职责分开；运行取消、断线事件重放、检查点恢复与模型连接释放继续沿用原协议。
 
@@ -31,7 +31,7 @@ Agent 的入口、图构建、执行器和提示词分别维护。聊天、源�
 
 聊天、项目、源码阅读和布局状态分别维护，通过应用层组合。原持久化键、账号隔离、草稿及文件阅读恢复行为继续保留。
 
-交接前端的资料、任务、调试问题、候选、交接包和复核分别归类。记录查看与编辑由 `records/` 协调，共用卡片放在交接模块内部的 `shared/`。全应用的 `src/shared/` 不导入 `app/` 或 `features/`；带源码引用等业务交互的 Markdown 组合组件归应用层。
+交接前端的资料、任务、问题与经验、交接包和复核分别归类。记录查看与编辑由 `records/` 协调，共用卡片放在交接模块内部的 `shared/`。全应用的 `src/shared/` 不导入 `app/` 或 `features/`；带源码引用等业务交互的 Markdown 组合组件归应用层。
 
 ## 资源与脚本
 

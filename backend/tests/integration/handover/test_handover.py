@@ -1,10 +1,7 @@
 """交接业务的隔离、验收门槛、固定证据和原模块边界。"""
 
 import io
-import json
-import time
 import zipfile
-from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -372,73 +369,3 @@ def test_zip_readonly_paths_docx_and_project_material_capture(client):
     )
     assert captured.status_code == 201
     assert client.get(f"/api/projects/{identifier}/materials/{material['id']}").json() == material
-
-
-def poll_job(client, identifier, job):
-    for _ in range(100):
-        result = client.get(url(identifier) + f"/records/{job['id']}").json()
-        if result["payload"]["status"] not in {"queued", "running"}:
-            return result
-        time.sleep(0.01)
-    pytest.fail("AI 作业未结束")
-
-
-def test_ai_candidates_need_human_merge_and_reject_invented_sources(client, monkeypatch):
-    identifier = project(client)
-    raw = source(client, identifier)
-    proposal = {
-        "candidates": [
-            {
-                "title": "待实现复位",
-                "payload": {
-                    "target_kind": "task",
-                    "proposed": {"goal": "复位"},
-                    "evidence": [
-                        {"record_id": raw["id"], "version": 1, "quote": "设备必须停止后才能复位。"}
-                    ],
-                },
-            }
-        ]
-    }
-
-    class Model:
-        async def ainvoke(self, _messages):
-            return SimpleNamespace(text=json.dumps(proposal))
-
-    monkeypatch.setattr(
-        "app.modules.handover.infrastructure.ai.create_model", lambda _settings: Model()
-    )
-    monkeypatch.setattr("app.modules.handover.infrastructure.ai.close_models", no_close)
-    job = client.post(
-        url(identifier) + "/ai",
-        json={"action": "extract", "record_ids": [raw["id"]], "actor": "人"},
-    ).json()
-    completed = poll_job(client, identifier, job)
-    assert completed["payload"]["status"] == "succeeded", completed
-    candidate_id = completed["payload"]["result_ids"][0]
-    candidate = client.get(url(identifier) + f"/records/{candidate_id}").json()
-    assert action(client, identifier, candidate).status_code == 409
-    body = {
-        "version": 1,
-        "actor": "审核人",
-        "opinion": "核对原文并修订目标",
-        "title": "复位工作",
-        "proposed": {"goal": "人工修订后复位", "owner": "接手人"},
-    }
-    merged = client.post(url(identifier) + f"/candidates/{candidate_id}/promote", json=body)
-    assert merged.status_code == 201 and merged.json()["state"] == "draft"
-    assert merged.json()["payload"]["origin"] == "ai"
-    assert (
-        client.post(url(identifier) + f"/candidates/{candidate_id}/promote", json=body).status_code
-        == 409
-    )
-    proposal["candidates"][0]["payload"]["evidence"][0]["record_id"] = "fake"
-    failed = client.post(
-        url(identifier) + "/ai",
-        json={"action": "extract", "record_ids": [raw["id"]], "actor": "人"},
-    ).json()
-    assert poll_job(client, identifier, failed)["payload"]["status"] == "failed"
-
-
-async def no_close(_models):
-    pass
