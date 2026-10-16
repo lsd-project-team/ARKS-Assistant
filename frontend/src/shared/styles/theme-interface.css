@@ -8,11 +8,13 @@
 
 /* 白色保持柔和的中性灰阶；限定外观，切换主题时不会沿用这套表面和字重。 */
 :root[data-appearance='white'] {
-  --text: #2b2b2a;
-  --text-secondary: #646461;
-  --muted: #70706c;
-  --text-muted: #70706c;
-  --text-faint: #747470;
+  /* 中英文共用已随应用打包的可变字体，让细小界面的字形与笔画重量保持一致。 */
+  --font-ui: 'Noto Sans SC Variable', 'Segoe UI', sans-serif;
+  --text: #242424;
+  --text-secondary: #545451;
+  --muted: #646461;
+  --text-muted: #646461;
+  --text-faint: #6e6e6a;
   --border: #e7e7e3;
   --border-strong: #c9c9c4;
   --panel: #fcfcfb;
@@ -33,12 +35,16 @@
   --selection-border: #d0d0c9;
 }
 
+:root[data-appearance='white'] body {
+  font-weight: 450;
+}
+
 :root[data-appearance='white'] .workspace-brand strong {
-  font-weight: 550;
+  font-weight: 600;
 }
 
 :root[data-appearance='white'] .workspace-sections > button {
-  font-weight: 400;
+  font-weight: 500;
 }
 
 :root[data-appearance='white'] .workspace-sections > button.active {
@@ -49,18 +55,42 @@
   background: transparent;
 }
 
+:root[data-appearance='white'] .sidebar-views button {
+  font-size: 13px;
+}
+
 :root[data-appearance='white'] .sidebar-views button.selected {
   background: var(--panel);
   box-shadow: none;
 }
 
-:root[data-appearance='white'] .chat-heading strong {
+:root[data-appearance='white'] .project-name {
+  font-size: 14px;
   font-weight: 500;
+}
+
+/* 保留列表行高和截断规则，增加字号及真实字重，不用描边或阴影模拟加粗。 */
+:root[data-appearance='white'] .app-navigation .sidebar .thread-select {
+  font-size: 14px;
+  font-weight: 450;
+}
+
+:root[data-appearance='white'] .sidebar-footer {
+  font-size: 12px;
+}
+
+:root[data-appearance='white'] .chat-heading strong {
+  font-weight: 550;
 }
 
 :root[data-appearance='white'] .chat-welcome h2 {
   font-size: clamp(22px, 4cqw, 24px);
-  font-weight: 500;
+  font-weight: 550;
+}
+
+:root[data-appearance='white'] .chat-welcome p {
+  font-size: 15px;
+  font-weight: 450;
 }
 
 :root[data-appearance='white'] .welcome-mark {
@@ -70,6 +100,8 @@
 }
 
 :root[data-appearance='white'] .welcome-suggestions button {
+  font-size: 14px;
+  font-weight: 500;
   border-radius: 8px;
   background: transparent;
 }
@@ -105,6 +137,8 @@
 }
 
 :root[data-appearance='white'] .composer textarea {
+  font-size: 15px;
+  font-weight: 450;
   background: transparent;
   box-shadow: none;
 }
@@ -115,6 +149,10 @@
 
 :root[data-appearance='white'] .composer-context {
   border-top-color: transparent;
+}
+
+:root[data-appearance='white'] .markdown {
+  font-weight: 450;
 }
 
 :root[data-appearance='dark'] {
