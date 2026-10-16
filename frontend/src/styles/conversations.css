@@ -17,7 +17,7 @@
 .sidebar-views button.selected {
   background: var(--surface, #fff);
   color: var(--text, #242320);
-  box-shadow: 0 1px 3px #211c1208;
+  box-shadow: 0 1px 3px var(--surface-hover);
 }
 .thread-row {
   position: relative;
@@ -63,7 +63,7 @@
   background: var(--muted);
 }
 .thread-more:hover {
-  background: #211c1209;
+  background: var(--surface-hover);
 }
 .thread-indicators {
   display: flex;
@@ -76,7 +76,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #494640;
+  background: var(--text-secondary);
 }
 .thread-menu {
   position: fixed;
@@ -98,11 +98,11 @@
 }
 .thread-menu button:hover,
 .thread-menu button:focus-visible {
-  background: #211c1208;
+  background: var(--surface-hover);
   outline: none;
 }
 .thread-menu .danger {
-  color: #ab3c34;
+  color: var(--danger-text);
 }
 .thread-rename {
   width: 100%;
@@ -110,14 +110,9 @@
 }
 .thread-rename small {
   display: block;
-  color: #ab3c34;
+  color: var(--danger-text);
   font-size: 11px;
   padding: 4px;
-}
-.thread-load-more {
-  margin: 8px 12px;
-  width: calc(100% - 24px);
-  justify-content: center;
 }
 .danger-button {
   background: #a13932;
@@ -168,11 +163,11 @@
   border-radius: 8px;
 }
 .load-earlier:hover {
-  background: #efede8;
+  background: var(--surface-hover);
 }
 .message-search-hit {
   border-radius: 12px;
-  outline: 2px solid #d8cdb3;
+  outline: 2px solid var(--accent);
   outline-offset: 5px;
 }
 @media (hover: none) {

@@ -5,7 +5,6 @@ import json
 import time
 import zipfile
 from types import SimpleNamespace
-from xml.etree import ElementTree as ET
 
 import pytest
 from fastapi.testclient import TestClient
@@ -25,7 +24,7 @@ def project(client, name="A", root=None):
 
 
 def url(project_id):
-    return f"/api/projects/{project_id}/handover"
+    return "/api/handover"
 
 
 def create(client, project_id, kind, title, **payload):
@@ -105,7 +104,7 @@ def baseline(client, project_id):
     return confirmed.json()
 
 
-def test_isolation_history_optimistic_version_and_archive(client):
+def test_global_history_optimistic_version_and_dialog_project_archive(client):
     first, second = project(client), project(client, "B")
     row = create(
         client,
@@ -116,7 +115,7 @@ def test_isolation_history_optimistic_version_and_archive(client):
         date="2026-10-12",
         transcript="报警恢复尚未设备验证",
     )
-    assert client.get(url(second) + f"/records/{row['id']}").status_code == 404
+    assert client.get(url(second) + f"/records/{row['id']}").json()["scope_id"] == "global"
     confirmed = action(client, first, row).json()
     edited = update(client, first, confirmed, correction="先离线验证").json()
     assert edited["state"] == "needs_review"
@@ -126,7 +125,7 @@ def test_isolation_history_optimistic_version_and_archive(client):
     assert update(client, first, confirmed, correction="过期编辑").status_code == 409
     assert action(client, first, confirmed).status_code == 409
     client.patch(f"/api/projects/{first}", json={"state": "archived"})
-    assert update(client, first, edited, correction="归档编辑").status_code == 409
+    assert update(client, first, edited, correction="对话项目归档后仍可编辑").status_code == 200
     assert client.get(url(first)).status_code == 200
     assert client.get(url(first) + "/events").json()[0]["actor"] == "更正人"
 
@@ -268,6 +267,7 @@ def test_source_files_fixed_versions_quotations_and_exports(client, services):
         url(identifier) + "/sources/capture",
         json={
             "path": "Program.cs",
+            "source_project_id": identifier,
             "actor": "整理人",
             "provider": "仓库",
             "source_version": "固定快照",
@@ -330,10 +330,6 @@ def test_source_files_fixed_versions_quotations_and_exports(client, services):
     assert "handover.docx" in archive.namelist() and any(
         name.endswith("Program.cs") for name in archive.namelist()
     )
-    for kind in ("interview", "task", "plan"):
-        template = client.get(url(identifier) + f"/templates/{kind}")
-        assert template.status_code == 200
-        ET.fromstring(zipfile.ZipFile(io.BytesIO(template.content)).read("word/document.xml"))
 
 
 def test_zip_readonly_paths_docx_and_project_material_capture(client):
@@ -367,7 +363,12 @@ def test_zip_readonly_paths_docx_and_project_material_capture(client):
     ).json()
     captured = client.post(
         url(identifier) + f"/sources/material/{material['id']}",
-        json={"version": 1, "actor": "人", "opinion": "选择固定版本"},
+        json={
+            "version": 1,
+            "actor": "人",
+            "opinion": "选择固定版本",
+            "source_project_id": identifier,
+        },
     )
     assert captured.status_code == 201
     assert client.get(f"/api/projects/{identifier}/materials/{material['id']}").json() == material

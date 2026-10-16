@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import { useWorkspace } from '../lib/store';
+import { draftFor, useWorkspace } from '../lib/store';
 import type { ProjectList, Project } from '../types';
 import { Button, ErrorText } from './ui';
 import App from '../App';
@@ -20,6 +20,16 @@ export function ProjectShell() {
       list.data.projects.find((project) => project.id === list.data.default_project_id) ||
       list.data.projects[0];
     useWorkspace.getState().initializeProject(preferred?.id || 'independent');
+    const current = useWorkspace.getState();
+    const draft = draftFor(current);
+    if (
+      current.projectId === 'independent' &&
+      !current.threadId &&
+      !draft.content &&
+      !draft.selections.length &&
+      preferred
+    )
+      current.switchProject(preferred.id);
     const selected = useWorkspace.getState().projectId;
     if (selected === 'independent') return;
     void api<Project>(`/projects/${selected}`)

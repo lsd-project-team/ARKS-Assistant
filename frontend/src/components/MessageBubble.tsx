@@ -21,6 +21,7 @@ import { toast } from '../lib/toasts';
 import { elapsedRun } from '../lib/runFeedback';
 import { useCurrentProject } from '../hooks/useProjects';
 import { MaterialEditor } from './MaterialEditor';
+import { RunKnowledgeSummary } from './RunKnowledgeSummary';
 
 export function MessageBubble({
   message,
@@ -31,6 +32,7 @@ export function MessageBubble({
   onEdit,
   onFork,
   forking = false,
+  recent = false,
 }: {
   message: Message;
   run?: Run;
@@ -40,6 +42,7 @@ export function MessageBubble({
   onEdit?: () => void;
   onFork?: (messageId: string) => void;
   forking?: boolean;
+  recent?: boolean;
 }) {
   const setDraft = useWorkspace((state) => state.setDraft);
   const draft = useWorkspace((state) => draftFor(state).content);
@@ -106,6 +109,13 @@ export function MessageBubble({
           sourceId={message.source_workspace_id || undefined}
         />
       </div>
+      {message.role === 'assistant' && run?.status === 'completed' && (
+        <RunKnowledgeSummary
+          runId={run.id}
+          projectId={project.data?.id || useWorkspace.getState().projectId}
+          recent={recent}
+        />
+      )}
       {quote && (
         <button
           className="quote-answer"

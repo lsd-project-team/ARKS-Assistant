@@ -30,16 +30,20 @@ import { MessageArchive } from './MessageArchive';
 import { RunArchive } from './RunArchive';
 import { ModelPicker } from './ModelPicker';
 import { ChatWelcome } from './ChatWelcome';
+import { KnowledgeFeedback } from './RunKnowledgeSummary';
 import { useCurrentProject } from '../hooks/useProjects';
+import { WorkspaceHeading } from './WorkspaceHeader';
 
 export function ChatPane({
-  onShowSource,
+  onUploadFiles,
   onToggleWorkspace,
   onSettings,
+  showHeader,
 }: {
-  onShowSource: () => void;
+  onUploadFiles?: () => void;
   onToggleWorkspace: () => void;
   onSettings: (tab: 'model' | 'mcp') => void;
+  showHeader: boolean;
 }) {
   const {
     projectId,
@@ -268,6 +272,11 @@ export function ChatPane({
             ? '压缩未完成，可在对话中重试或继续'
             : '';
   function executeCommand(command: ComposerCommand) {
+    if (command === '记录问题') {
+      setDraft('/记录问题 ');
+      composerInput.current?.focus();
+      return;
+    }
     const submitted = matchingCommands(draft).length ? conversationDraft : undefined;
     if (command === 'context' && canContext) {
       if (submitted) consumeCommand(draftKey(threadId, projectId), submitted);
@@ -278,7 +287,7 @@ export function ChatPane({
   }
   return (
     <section className="chat-pane" data-empty={showWelcome || undefined}>
-      <div className="chat-heading">
+      <WorkspaceHeading className="chat-heading" active={showHeader}>
         <div>
           {project.data && (
             <button
@@ -311,7 +320,7 @@ export function ChatPane({
             <Folders size={17} aria-hidden="true" />
           </Button>
         </div>
-      </div>
+      </WorkspaceHeading>
       {conversation.data?.origin_thread_id && (
         <div className="branch-origin">
           此对话来自历史消息的分支 ·{' '}
@@ -405,6 +414,7 @@ export function ChatPane({
                 }
                 onFork={archivedProject ? undefined : forkMessage}
                 forking={fork.isPending}
+                recent={run?.id === latest?.id}
               />
             );
             return (
@@ -456,6 +466,11 @@ export function ChatPane({
                   onContext={() => setContext({ runId: active.id })}
                 />
               )}
+              <KnowledgeFeedback
+                references={stream.references}
+                searches={stream.searches}
+                saves={stream.memorySaves}
+              />
             </div>
           )}
           {interrupted && (
@@ -541,7 +556,7 @@ export function ChatPane({
           onSend={submitDraft}
           onCommand={executeCommand}
           onStop={() => active && cancel.mutate(active.id)}
-          onShowSource={onShowSource}
+          onUploadFiles={onUploadFiles}
           sending={send.isPending}
           busy={busy}
           queueing={!!queue.query.data?.items.length}

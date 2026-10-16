@@ -10,7 +10,7 @@ export function ChatComposer({
   onSend,
   onCommand,
   onStop,
-  onShowSource,
+  onUploadFiles,
   sending,
   busy,
   queueing = false,
@@ -29,7 +29,8 @@ export function ChatComposer({
   onSend: () => void;
   onCommand: (command: ComposerCommand) => void;
   onStop: () => void;
-  onShowSource: () => void;
+  /** 文件上传预留回调，未接入时保持入口禁用。 */
+  onUploadFiles?: () => void;
   sending: boolean;
   busy: boolean;
   queueing?: boolean;
@@ -55,7 +56,8 @@ export function ChatComposer({
   const matches = matchingCommands(draft);
   const menuOpen = !dismissed && matches.length > 0;
   const selectedCommand = matches[Math.min(selected, matches.length - 1)];
-  const available = (command: ComposerCommand) => (command === 'context' ? canContext : canCompact);
+  const available = (command: ComposerCommand) =>
+    command === '记录问题' || (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
   const canSubmit = !sending && !readOnly && (command ? available(command) : !!draft.trim());
   function submit() {
@@ -149,10 +151,11 @@ export function ChatComposer({
         <div className="composer-tools">
           <button
             type="button"
-            className="attach-code"
-            aria-label="选择源码"
-            title="打开源码文件树"
-            onClick={onShowSource}
+            className="attach-file"
+            aria-label={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
+            title={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
+            disabled={!onUploadFiles || sending || readOnly}
+            onClick={onUploadFiles}
           >
             <Plus size={18} />
           </button>

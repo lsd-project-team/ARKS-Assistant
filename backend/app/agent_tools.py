@@ -7,8 +7,8 @@ from langchain_core.tools import ToolException, tool
 
 from app.config import dump_json
 from app.memory import MemoryService
+from app.memory_capture import remember_fact
 from app.repository import Repository
-from app.schemas import MemoryWrite
 from app.source_evidence import enclosing_excerpt, source_excerpt
 from app.source_location import resolve_source_path
 from app.source_reads import SourceRange, batch_source
@@ -126,6 +126,8 @@ def conversation_tools(
     review_model=None,
     emit=None,
     evidence=None,
+    allow_automatic=True,
+    request_text="",
 ):
     @tool
     async def recall_conversation(query: str, offset: int = 0, limit: int = 10) -> str:
@@ -150,58 +152,25 @@ def conversation_tools(
     ) -> str:
         """Save durable preferences or verified facts as a named .md memory.
 
+        Use scope='user' for personal preferences. Use scope='project' for shared project facts.
         Include source paths for project facts. Never save credentials or guesses.
         Duplicate content is rejected; related conflicting fields require user review.
         """
-        source_paths = [source_path(path) for path in source_paths or []]
-        try:
-            previous = memories.read(scope, name)
-            version = previous["version"]
-            if previous.get("lifecycle") in {"invalid", "needs_review"}:
-                return dump_json(
-                    {
-                        "saved": False,
-                        "requires_review": True,
-                        "reason": "已有记忆处于失效或待复核状态，请到记忆管理核对后更新",
-                    }
-                )
-        except FileNotFoundError:
-            version = None
-        request = MemoryWrite(
-            name=name,
-            content=content,
-            scope=scope,
-            version=version,
-            source_thread_id=thread_id,
-            source_paths=source_paths or [],
-            record_version=previous.get("record_version") if version else None,
-            lifecycle="valid"
-            if scope == "user"
-            or (
-                evidence
-                and source_paths
-                and all(
-                    any(
-                        row["path"] == path
-                        and row["version"] == memories.workspace.read(path)["version"]
-                        for row in evidence.reads
-                    )
-                    for path in source_paths
-                )
+        return dump_json(
+            await remember_fact(
+                memories,
+                thread_id,
+                evidence,
+                review_model,
+                emit,
+                name=name,
+                content=content,
+                scope=scope,
+                source_paths=source_paths,
+                allow_automatic=allow_automatic,
+                request_text=request_text,
             )
-            else "needs_review",
         )
-        matches = await memories.semantic_review(request, review_model, emit)
-        if any(row["kind"] == "conflict" for row in matches):
-            return dump_json(
-                {
-                    "saved": False,
-                    "requires_review": True,
-                    "matches": matches,
-                    "reason": "存在潜在矛盾，请用户到记忆管理核对；不可自行确认",
-                }
-            )
-        return dump_json(await asyncio.to_thread(memories.save, request))
 
     return safe_source_tools(
         [recall_conversation, read_conversation_message, *([remember] if use_memory else [])],

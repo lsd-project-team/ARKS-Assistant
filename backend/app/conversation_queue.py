@@ -2,6 +2,7 @@
 
 from sqlalchemy import func, select
 
+from app.admin.identity import question_actor
 from app.config import dump_json
 from app.models import QueuedQuestion, Run, now_iso
 from app.records import record_dict
@@ -47,6 +48,7 @@ class ConversationQueue:
                 content=content,
                 selections_json=dump_json(selections),
                 source_options_json=dump_json(source_options or {}),
+                **question_actor(),
             )
             session.add(row)
             session.flush()
@@ -58,6 +60,8 @@ class ConversationQueue:
             if row.updated_at != version:
                 raise ValueError("问题已在其他窗口更新，请重新打开后编辑")
             row.content, row.selections_json = content, dump_json(selections)
+            for key, value in question_actor().items():
+                setattr(row, key, value)
             if source_options is not None:
                 row.source_options_json = dump_json(source_options)
             row.updated_at = now_iso()
@@ -95,7 +99,12 @@ class ConversationQueue:
                 return None
             item = record_dict(row)
             run = self.repository.add_run(
-                session, thread_id, row.content, item["selections"], item["source_options"]
+                session,
+                thread_id,
+                row.content,
+                item["selections"],
+                item["source_options"],
+                actor={"actor_id": row.actor_id, "actor_json": row.actor_json},
             )
             session.delete(row)
             return run

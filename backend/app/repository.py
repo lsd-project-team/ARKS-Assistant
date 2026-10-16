@@ -4,6 +4,7 @@ from threading import RLock
 
 from sqlalchemy import func, select, update
 
+from app.admin.identity import question_actor
 from app.config import dump_json
 from app.conversation_branches import ConversationBranches
 from app.conversation_catalog import ConversationCatalog, title_from_question
@@ -13,6 +14,7 @@ from app.database import Database
 from app.models import Message, QueuedQuestion, Run, RunEvent, Thread, now_iso
 from app.records import record_dict
 from app.source_preferences import SourcePreferences
+from app.workspace_access import current_owner
 
 TERMINAL = {"completed", "failed", "cancelled", "interrupted"}
 
@@ -43,6 +45,7 @@ class Repository:
         self.creation_guard()
         with self.database.session.begin() as session:
             row = Thread(
+                owner_id=current_owner(),
                 title=title,
                 workspace_id=self.workspace_id,
                 project_id=self.project_id,
@@ -116,7 +119,10 @@ class Repository:
             if not thread_id:
                 # 首次发送与会话创建在同一事务内，失败不会留下空会话。
                 new_thread = Thread(
-                    title="新对话", workspace_id=self.workspace_id, project_id=self.project_id
+                    title="新对话",
+                    workspace_id=self.workspace_id,
+                    project_id=self.project_id,
+                    owner_id=current_owner(),
                 )
                 session.add(new_thread)
                 session.flush()
@@ -130,7 +136,7 @@ class Repository:
         ):
             raise ValueError("此对话正在回复，请先停止或等待完成")
 
-    def add_run(self, session, thread_id, content, selections, source_options=None):
+    def add_run(self, session, thread_id, content, selections, source_options=None, actor=None):
         self.creation_guard()
         self.ensure_idle(session, thread_id)
         if source_options is None:
@@ -152,6 +158,7 @@ class Repository:
             selections_json=dump_json(selections),
             source_options_json=dump_json(source_options or {}),
             source_workspace_id=self.source_workspace_id,
+            **(actor if actor is not None else question_actor()),
         )
         session.add(message)
         session.flush()
@@ -174,6 +181,7 @@ class Repository:
             row = session.get(Message, message_id)
             if not row:
                 raise FileNotFoundError("消息不存在")
+            self.catalog.row(session, row.thread_id)
             return record_dict(row)
 
     def set_status(self, run_id: str, status: str, error: str = "", error_code: str = ""):
@@ -248,6 +256,8 @@ class Repository:
     def finish(self, run_id: str, answer: str, completion=None):
         with self.database.session.begin() as session:
             run = session.get(Run, run_id)
+            if run.status == "completed":
+                return
             run.status = "completed"
             run.answer = answer
             run.updated_at = now_iso()
@@ -261,6 +271,10 @@ class Repository:
             session.add(response)
             session.flush()
             run.response_message_id = response.id
+            # 同一问题的恢复、重生成共用提交键，不将内部调用计为新任务。
+            from app.admin.tracking import record_answer_submission
+
+            record_answer_submission(session, session.get(Message, run.message_id))
             session.execute(
                 update(Thread).where(Thread.id == run.thread_id).values(updated_at=now_iso())
             )

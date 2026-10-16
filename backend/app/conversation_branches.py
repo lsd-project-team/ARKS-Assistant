@@ -61,6 +61,7 @@ class ConversationBranches:
             )
             runs = list(session.scalars(select(Run).where(Run.thread_id == thread_id)))
             branch = Thread(
+                owner_id=parent.owner_id,
                 title=f"{parent.title[:108]} · 分支",
                 workspace_id=parent.workspace_id,
                 project_id=parent.project_id,
@@ -81,6 +82,8 @@ class ConversationBranches:
                         created_at=row.created_at,
                         origin_message_id=row.id,
                         source_workspace_id=row.source_workspace_id,
+                        actor_id=row.actor_id,
+                        actor_json=row.actor_json,
                     )
                 )
             session.flush()

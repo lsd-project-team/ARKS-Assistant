@@ -8,6 +8,7 @@ from app.api.conversation_workflows import validated_selections
 from app.config import dump_json
 from app.conversation_context import ConversationContext
 from app.conversation_lifecycle import ConversationLifecycle
+from app.memory_visibility import run_memory_actor, visible_run_event
 from app.schemas import (
     PinMove,
     PinnedOrder,
@@ -187,24 +188,35 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.get("/api/runs/{run_id}/trace")
     async def trace(run_id: str):
+        run = repository.run(run_id)
+        actor_id = run_memory_actor(repository, run)
         rows = []
         cursor = 0
         while True:
             events = repository.events(run_id, cursor)
-            rows.extend(row for row in events if row["kind"] != "token")
+            rows.extend(
+                visible
+                for row in events
+                if row["kind"] != "token"
+                and (visible := visible_run_event(row, actor_id)) is not None
+            )
             if len(events) < 500:
                 return rows
             cursor = events[-1]["sequence"]
 
     @router.get("/api/runs/{run_id}/events")
     async def events(run_id: str, request: Request, after: int = 0):
-        repository.run(run_id)
+        run = repository.run(run_id)
+        actor_id = run_memory_actor(repository, run)
         cursor = max(after, int(request.headers.get("last-event-id", "0")))
 
         async def output():
             async for event in runs.stream(run_id, cursor):
                 if await request.is_disconnected():
                     return
+                event = visible_run_event(event, actor_id)
+                if event is None:
+                    continue
                 yield (
                     f"id: {event['sequence']}\nevent: {event['kind']}\n"
                     f"data: {dump_json(event['payload'])}\n\n"

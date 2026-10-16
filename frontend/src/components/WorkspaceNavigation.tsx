@@ -1,7 +1,7 @@
-import { Settings2, Menu, Palette, ClipboardList } from 'lucide-react';
+import { Settings2, Menu, ClipboardList } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { Route } from '../knowledge/routes';
-import { appearanceModes, useAppearance } from '../lib/appearance';
+import { AppearanceSwitch } from './AppearanceSwitch';
 import { NavigationDivider } from './NavigationDivider';
 import { NavigationIcon } from './NavigationIcon';
 
@@ -36,7 +36,6 @@ export function WorkspaceNavigation({
     // 收缩和展开会替换按钮，把键盘焦点交给新出现的对应入口。
     navigationControl.current?.focus();
   }, [compact]);
-  const { mode, setMode } = useAppearance();
   const active = handover?.active
     ? undefined
     : route.kind === 'chat'
@@ -123,22 +122,7 @@ export function WorkspaceNavigation({
       </nav>
       <div className="navigation-conversations">{children}</div>
       <div className="navigation-tools">
-        <button
-          title={`切换外观（当前：${appearanceModes.find((item) => item.id === mode)?.title}）`}
-          aria-label="切换外观"
-          onClick={() =>
-            setMode(
-              appearanceModes[
-                (appearanceModes.findIndex((item) => item.id === mode) + 1) % appearanceModes.length
-              ].id,
-            )
-          }
-        >
-          <Palette size={17} />
-          <span className="nav-copy">
-            外观 · {appearanceModes.find((item) => item.id === mode)?.title}
-          </span>
-        </button>
+        <AppearanceSwitch />
         <button title="设置" aria-label="设置" onClick={onSettings}>
           <Settings2 size={17} />
           <span className="nav-copy">设置</span>

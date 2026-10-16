@@ -1,11 +1,50 @@
 import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import select
 
+from app.auth.models import Account
 from app.config import Paths, SettingsStore
 from app.database import Database
 from app.memory import MemoryService
 from app.models import Base
 from app.repository import Repository
 from app.workspace import Workspace
+
+
+@pytest.fixture(autouse=True)
+def authenticate_business_clients(request, monkeypatch, tmp_path):
+    """原有业务回归通过真实管理员登录；认证用例自行控制所有登录状态。"""
+    if request.node.get_closest_marker("authentication"):
+        return
+    original = TestClient.__enter__
+
+    def enter(client):
+        result = original(client)
+        auth = getattr(client.app.state, "auth", None)
+        if not auth:
+            return result
+        if not auth.initial_accounts.parent.is_relative_to(tmp_path):
+            raise RuntimeError("测试账号只能建立在当前用例的临时数据目录")
+        password = "test-admin-only-2026"
+        with auth.database.session.begin() as session:
+            account = session.scalar(select(Account).where(Account.username == "test-admin"))
+            if not account:
+                session.add(
+                    Account(
+                        username="test-admin",
+                        display_name="测试管理员",
+                        role="admin",
+                        password_hash=auth.hasher.hash(password),
+                    )
+                )
+        response = client.post(
+            "/api/auth/login", json={"username": "test-admin", "password": password}
+        )
+        assert response.status_code == 200, response.text
+        client.headers["X-Arks-CSRF"] = response.json()["csrf_token"]
+        return result
+
+    monkeypatch.setattr(TestClient, "__enter__", enter)
 
 
 @pytest.fixture

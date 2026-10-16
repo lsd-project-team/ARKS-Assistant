@@ -8,6 +8,9 @@ import type { RunContext, ProjectMaterial } from '../types';
 import { toast } from '../lib/toasts';
 import { useWorkspace } from '../lib/store';
 import { MaterialViewer } from './MaterialViewer';
+import { HandoverMaterialViewer } from './HandoverMaterialViewer';
+import type { HandoverRecord } from '../handover/types';
+import { isKnowledgeReference } from '../lib/knowledgeReference';
 
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
@@ -22,6 +25,51 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
   const sourceId = useContext(CitationSource);
   const projectId = useWorkspace((state) => state.projectId);
   const [material, setMaterial] = useState<ProjectMaterial>();
+  const [handoverMaterial, setHandoverMaterial] = useState<HandoverRecord>();
+  const handoverReference = href?.match(/^handover-source:([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
+  if (handoverReference)
+    return (
+      <>
+        <button
+          className="source-link"
+          onClick={async () => {
+            try {
+              setHandoverMaterial(
+                await api<HandoverRecord>(
+                  `/handover/records/${handoverReference[1]}?version=${handoverReference[2]}`,
+                  undefined,
+                  '',
+                ),
+              );
+            } catch {
+              toast('无法读取这份交接资料的引用版本', undefined, 'error');
+            }
+          }}
+        >
+          {children}
+        </button>
+        {handoverMaterial && (
+          <HandoverMaterialViewer
+            row={handoverMaterial}
+            start={Number(handoverReference[3])}
+            end={Number(handoverReference[4] || handoverReference[3])}
+            onClose={() => setHandoverMaterial(undefined)}
+          />
+        )}
+      </>
+    );
+  const debugIssue = href?.match(/^debug-issue:([\w-]+)\/(\d+)$/);
+  if (debugIssue)
+    return (
+      <button
+        className="source-link"
+        onClick={() => {
+          window.location.hash = `handover/issues?record=${encodeURIComponent(debugIssue[1])}&version=${debugIssue[2]}`;
+        }}
+      >
+        {children}
+      </button>
+    );
   const reference = href?.match(/^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
   if (reference)
     return (
@@ -119,11 +167,7 @@ export function Markdown({
         <div className="markdown">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            urlTransform={(url) =>
-              url.startsWith('source:') || url.startsWith('material:')
-                ? url
-                : defaultUrlTransform(url)
-            }
+            urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
             components={markdownComponents}
           >
             {content}

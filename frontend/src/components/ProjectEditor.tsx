@@ -8,8 +8,11 @@ import { toast } from '../lib/toasts';
 import { useProjects } from '../hooks/useProjects';
 import { useProjectAssociation } from '../hooks/useProjectAssociation';
 import { Select } from './Select';
+import { useAuth } from '../auth/AuthContext';
 
 export function ProjectEditor({ project, onClose }: { project?: Project; onClose: () => void }) {
+  const canConfigureSource = useAuth().session?.user.role === 'admin';
+  const availableProjects = useProjects();
   const [name, setName] = useState(project?.name || '');
   const [description, setDescription] = useState(project?.description || '');
   const [root, setRoot] = useState(project?.source_root || '');
@@ -19,7 +22,11 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
   const [instructions, setInstructions] = useState(project?.instructions || '');
   const [wiki, setWiki] = useState(project?.deepwiki_repo || '');
   const [automatic, setAutomatic] = useState(!project);
-  const availableProjects = useProjects();
+  const effectiveRoot =
+    root ||
+    (!project && !canConfigureSource
+      ? availableProjects.data?.default_source?.source_root || ''
+      : '');
   const sourceChoices = [
     ...new Map(
       (availableProjects.data?.projects || [])
@@ -28,7 +35,7 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
     ).values(),
   ];
   const association = useProjectAssociation(
-    root,
+    effectiveRoot,
     folders.map((folder) => folder.root),
     automatic,
   );
@@ -44,7 +51,7 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
         body: jsonBody({
           name: name.trim(),
           description,
-          source_root: root.trim() || null,
+          source_root: effectiveRoot.trim() || null,
           source_folders: folders.map((folder) => ({
             root: folder.root.trim(),
             label: folder.label.trim(),
@@ -118,9 +125,10 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
             />
           </label>
           <label>
-            主源码目录 <span className="muted">可选</span>
+            主源码目录 {canConfigureSource && <span className="muted">可选</span>}
             <input
-              value={root}
+              value={effectiveRoot}
+              readOnly={!canConfigureSource}
               maxLength={1024}
               onChange={(event) => setRoot(event.target.value)}
               placeholder={'本机目录，如 D:\\projects\\ZX2200'}
@@ -130,8 +138,13 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
             <label>
               选择已关联的源码目录
               <Select
+                disabled={!canConfigureSource}
                 aria-label="选择已关联的源码目录"
-                value={sourceChoices.some((row) => row.source_root === root) ? root : '__manual__'}
+                value={
+                  sourceChoices.some((row) => row.source_root === effectiveRoot)
+                    ? effectiveRoot
+                    : '__manual__'
+                }
                 onValueChange={(value) => setRoot(value === '__manual__' ? '' : value)}
               >
                 <option value="__manual__">填写其他目录</option>
@@ -143,13 +156,18 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
               </Select>
             </label>
           )}
-          <p className="muted form-hint">可以先创建空项目，之后再关联源码目录。</p>
+          <p className="muted form-hint">
+            {canConfigureSource
+              ? '可以先创建空项目，之后再关联源码目录。'
+              : '自动关联公司 ZX2200 源码，项目和对话仅自己可见。'}
+          </p>
           {folders.map((folder, index) => (
             <div className="source-folder-fields" key={index}>
               <label>
                 目录显示名称
                 <input
                   maxLength={80}
+                  readOnly={!canConfigureSource}
                   value={folder.label}
                   onChange={(event) =>
                     setFolders(
@@ -166,6 +184,7 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
                 <input
                   required
                   maxLength={1024}
+                  readOnly={!canConfigureSource}
                   value={folder.root}
                   onChange={(event) =>
                     setFolders(
@@ -179,6 +198,7 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
               </label>
               <Button
                 type="button"
+                disabled={!canConfigureSource}
                 onClick={() => setFolders(folders.filter((_, position) => position !== index))}
               >
                 解除此目录关联
@@ -187,7 +207,7 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
           ))}
           <Button
             type="button"
-            disabled={folders.length >= 8}
+            disabled={!canConfigureSource || folders.length >= 8}
             onClick={() => setFolders([...folders, { root: '', label: '' }])}
           >
             添加源码目录

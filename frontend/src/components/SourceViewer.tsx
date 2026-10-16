@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from '@pierre/diffs/react';
 import type { CodeViewItem } from '@pierre/diffs';
 import { MessageSquarePlus } from 'lucide-react';
-import { SOURCE_THEME } from '../lib/editorTheme';
+import { SOURCE_DARK_THEME, SOURCE_THEME } from '../lib/editorTheme';
+import { useAppearance } from '../lib/appearance';
 import {
   indexSource,
   readSourceSelection,
@@ -15,12 +16,13 @@ import { Button } from './ui';
 import { SourceSearch } from './SourceSearch';
 
 const readingCSS = `
-  [data-file] { --diffs-bg: #fff; --diffs-bg-hover-override: #f7f7f7; }
+  [data-file] { --diffs-bg: var(--source-background); --diffs-bg-hover-override: var(--surface-hover); }
   [data-code] { scrollbar-gutter: auto; }
-  ::selection { background: #dfebff; }
+  ::selection { background: var(--source-selection); }
 `;
 
 export function SourceViewer({ source, wordWrap }: { source: SourceFile; wordWrap: boolean }) {
+  const dark = useAppearance((state) => state.mode === 'dark');
   const viewer = useRef<CodeViewHandle<undefined, undefined>>(null);
   const container = useRef<HTMLDivElement>(null);
   const scrollFrame = useRef<number | undefined>(undefined);
@@ -104,8 +106,8 @@ export function SourceViewer({ source, wordWrap }: { source: SourceFile; wordWra
   );
   const options = useMemo<CodeViewReactOptions<undefined, undefined>>(
     () => ({
-      theme: SOURCE_THEME,
-      themeType: 'light',
+      theme: dark ? SOURCE_DARK_THEME : SOURCE_THEME,
+      themeType: dark ? 'dark' : 'light',
       overflow: wordWrap ? 'wrap' : 'scroll',
       disableFileHeader: true,
       enableLineSelection: true,
@@ -117,7 +119,7 @@ export function SourceViewer({ source, wordWrap }: { source: SourceFile; wordWra
         if (phase !== 'unmount') saveReadingPosition();
       },
     }),
-    [wordWrap, saveReadingPosition, fontSize, lineHeight],
+    [dark, wordWrap, saveReadingPosition, fontSize, lineHeight],
   );
 
   useEffect(() => {

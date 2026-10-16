@@ -1,0 +1,51 @@
+.modal-content.handover-modal.source-detail {
+  width: min(840px, calc(100vw - 32px));
+}
+.source-detail-organizer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 20px;
+  font-size: 13px;
+}
+.source-detail-organizer > span {
+  color: var(--text-secondary);
+}
+.source-detail-notes {
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.source-detail-notes h3 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.source-detail-notes p,
+.source-detail-text pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.source-detail-notes p {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.source-detail-text pre {
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  overflow: visible;
+}
+.source-detail-preview-note {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+.source-detail .handover-form-footer {
+  flex-wrap: wrap;
+}

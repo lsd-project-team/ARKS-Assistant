@@ -11,16 +11,22 @@ import { Select } from './Select';
 export function MemorySettingsPanel({
   controller,
   onNavigate,
+  onOpenThread,
+  onOpenSource,
 }: {
   controller: ReturnType<typeof useMemoryDraft>;
   onNavigate: (action: () => void) => void;
+  onOpenThread?: (id: string) => void;
+  onOpenSource?: (path: string) => void;
 }) {
   const { draft, setDraft, memories, error, busy } = controller;
   const openFile = useWorkspace((state) => state.openFile);
   const selectThread = useWorkspace((state) => state.selectThread);
   return (
     <section className="settings-memory-panel" aria-label="长期记忆管理">
-      <p className="muted">跨对话保留偏好与项目事实，可以查看、编辑或删除。</p>
+      <p className="muted">
+        个人偏好仅当前账号使用，项目记忆由项目内的对话共享。可以查看、编辑或删除。
+      </p>
       <div className="memory-layout">
         <div className="memory-list">
           <Button disabled={busy} onClick={() => controller.select(blankMemory())}>
@@ -114,7 +120,13 @@ export function MemorySettingsPanel({
             {draft.source_thread_id && draft.source_thread_status !== 'deleted' && (
               <button
                 className="memory-source"
-                onClick={() => onNavigate(() => selectThread(draft.source_thread_id!))}
+                onClick={() =>
+                  onNavigate(() =>
+                    onOpenThread
+                      ? onOpenThread(draft.source_thread_id!)
+                      : selectThread(draft.source_thread_id!),
+                  )
+                }
               >
                 打开来源对话 · {draft.source_thread_id.slice(0, 8)}
               </button>
@@ -131,7 +143,11 @@ export function MemorySettingsPanel({
               <button
                 className="memory-source"
                 key={source.path}
-                onClick={() => onNavigate(() => openFile(source.path))}
+                onClick={() =>
+                  onNavigate(() =>
+                    onOpenSource ? onOpenSource(source.path) : openFile(source.path),
+                  )
+                }
               >
                 <FileCode2 size={12} />
                 {source.path}

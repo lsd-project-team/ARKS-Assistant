@@ -40,6 +40,15 @@ def error_feedback(error, settings):
 
 
 def tool_stage(name):
+    if name in {
+        "search_handover_materials",
+        "read_handover_material",
+        "search_project_materials",
+        "read_project_material",
+    }:
+        return "reading_materials"
+    if name in {"search_debug_issues", "read_debug_issue"}:
+        return "reading_debug"
     if name.startswith("mcp_"):
         return "reading_wiki"
     if name in {"recall_conversation", "read_conversation_message", "remember"}:

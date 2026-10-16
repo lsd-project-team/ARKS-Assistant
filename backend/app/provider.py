@@ -74,20 +74,6 @@ def safe_error(error: BaseException, settings: ModelSettings) -> str:
     return text[:1000] or type(error).__name__
 
 
-async def probe_model(settings: ModelSettings) -> dict:
-    model = create_model(settings)
-    try:
-        reply = await model.ainvoke("请仅回复：连接成功")
-        return {
-            "ok": True,
-            "model": settings.model,
-            "protocol": settings.protocol,
-            "reply": reply.text[:200],
-        }
-    finally:
-        await close_models([model])
-
-
 async def close_models(models):
     for model in models:
         # Anthropic 客户端是惰性属性，读取缓存避免为了关闭而新建客户端。

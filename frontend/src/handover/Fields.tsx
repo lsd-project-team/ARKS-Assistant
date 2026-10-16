@@ -1,41 +1,10 @@
 import { Button } from '../components/ui';
 import { HandoverSelect } from './Controls';
 import { HandoverMultiSelect } from './MultiSelect';
-import type { Definitions, Evidence, HandoverRecord, Kind, Payload, Property } from './types';
+import type { Definitions, Evidence, HandoverRecord, Kind, Payload } from './types';
 import { ids, refs, text } from './types';
+import { fieldSections, relations, shortFields } from './fieldLayout';
 
-const relations: Record<string, Kind> = {
-  task_id: 'task',
-  task_ids: 'task',
-  dependencies: 'task',
-  constraints: 'constraint',
-  baseline_id: 'baseline',
-  source_id: 'source',
-  package_id: 'package',
-};
-const shortFields = new Set([
-  'author',
-  'interviewer',
-  'date',
-  'topic',
-  'owner',
-  'due',
-  'location',
-  'authority',
-  'software_version',
-  'commit',
-  'firmware',
-  'sdk',
-  'device',
-  'recipe',
-  'calibration',
-  'tester',
-  'audience',
-  'receiver',
-  'trainer',
-  'provider',
-  'source_version',
-]);
 export function defaults(definitions: Definitions, kind: Kind): Payload {
   const result: Payload = {};
   for (const [key, property] of Object.entries(definitions.schemas[kind]?.properties || {})) {
@@ -62,91 +31,105 @@ export function Fields({
 }) {
   const properties = definitions.schemas[kind]?.properties || {};
   const set = (field: string, next: unknown) => onChange({ ...value, [field]: next });
+  const keys = Object.keys(properties).filter(
+    (key) => !['origin', 'evidence', 'steps', ...exclude].includes(key) && definitions.fields[key],
+  );
+  const sections = fieldSections(kind, keys, properties);
   return (
-    <div className="handover-fields">
-      {Object.entries(properties)
-        .filter(([key]) => !['origin', 'evidence', 'steps', ...exclude].includes(key))
-        .map(([key, property]) => {
-          const label = definitions.fields[key];
-          if (!label) return null;
-          const relation = relations[key];
-          const options = records.filter(
-            (row) =>
-              row.kind === relation &&
-              row.state !== 'archived' &&
-              !(
-                kind === 'baseline' &&
-                key === 'source_id' &&
-                !['source', 'zip', 'cs', 'cpp', 'c', 'h'].includes(text(row.payload.format))
-              ),
-          );
-          const wide = !shortFields.has(key) && !property.enum && !relation;
-          return (
-            <label key={key} className={wide ? 'handover-field-wide' : ''}>
-              <span>{label}</span>
-              {relation && property.type === 'array' ? (
-                <HandoverMultiSelect
-                  label={label}
-                  value={ids(value[key])}
-                  onValueChange={(next) => set(key, next)}
-                  options={options.map((row) => ({
-                    value: row.id,
-                    label: `${row.title} · v${row.version} · ${definitions.states[row.state]}`,
-                  }))}
-                />
-              ) : relation ? (
-                <HandoverSelect
-                  label={label}
-                  value={text(value[key])}
-                  onValueChange={(next) => set(key, next)}
-                  options={[
-                    { value: '', label: '未关联' },
-                    ...options.map((row) => ({
-                      value: row.id,
-                      label: `${row.title} · v${row.version} · ${definitions.states[row.state]}`,
-                    })),
-                  ]}
-                />
-              ) : property.enum ? (
-                <HandoverSelect
-                  label={label}
-                  value={text(value[key]) || text(property.default)}
-                  onValueChange={(next) => set(key, next)}
-                  options={property.enum.map((option) => ({
-                    value: option,
-                    label: definitions.values[option] || option,
-                  }))}
-                />
-              ) : property.type === 'integer' ? (
-                <input
-                  aria-label={label}
-                  type="number"
-                  min={1}
-                  value={Number(value[key] || 1)}
-                  onChange={(event) => set(key, Number(event.target.value))}
-                />
-              ) : wide ? (
-                <textarea
-                  aria-label={label}
-                  rows={key === 'transcript' ? 9 : 3}
-                  maxLength={property.maxLength || 100000}
-                  value={text(value[key])}
-                  onChange={(event) => set(key, event.target.value)}
-                />
-              ) : (
-                <input
-                  aria-label={label}
-                  value={text(value[key])}
-                  maxLength={property.maxLength || 2000}
-                  type={['date', 'due'].includes(key) ? 'date' : 'text'}
-                  onChange={(event) => set(key, event.target.value)}
-                />
-              )}
-              {property.type === 'array' && relation && <small>可勾选多条记录，支持搜索</small>}
-            </label>
-          );
-        })}
-    </div>
+    <>
+      {sections.map((section) => {
+        return (
+          <section className="handover-editor-section" key={section.id}>
+            <h3>{section.title}</h3>
+            <div className="handover-fields">
+              {section.keys.map((key) => {
+                const property = properties[key];
+                const label = definitions.fields[key];
+                if (!label) return null;
+                const relation = relations[key];
+                const options = records.filter(
+                  (row) =>
+                    row.kind === relation &&
+                    row.state !== 'archived' &&
+                    !(
+                      kind === 'baseline' &&
+                      key === 'source_id' &&
+                      !['source', 'zip', 'cs', 'cpp', 'c', 'h'].includes(text(row.payload.format))
+                    ),
+                );
+                const multiline = !shortFields.has(key) && !property.enum && !relation;
+                return (
+                  <label key={key} className={key === 'transcript' ? 'handover-field-wide' : ''}>
+                    <span>{label}</span>
+                    {relation && property.type === 'array' ? (
+                      <HandoverMultiSelect
+                        label={label}
+                        value={ids(value[key])}
+                        onValueChange={(next) => set(key, next)}
+                        options={options.map((row) => ({
+                          value: row.id,
+                          label: `${row.title} · v${row.version} · ${definitions.states[row.state]}`,
+                        }))}
+                      />
+                    ) : relation ? (
+                      <HandoverSelect
+                        label={label}
+                        value={text(value[key])}
+                        onValueChange={(next) => set(key, next)}
+                        options={[
+                          { value: '', label: '未关联' },
+                          ...options.map((row) => ({
+                            value: row.id,
+                            label: `${row.title} · v${row.version} · ${definitions.states[row.state]}`,
+                          })),
+                        ]}
+                      />
+                    ) : property.enum ? (
+                      <HandoverSelect
+                        label={label}
+                        value={text(value[key]) || text(property.default)}
+                        onValueChange={(next) => set(key, next)}
+                        options={property.enum.map((option) => ({
+                          value: option,
+                          label: definitions.values[option] || option,
+                        }))}
+                      />
+                    ) : property.type === 'integer' ? (
+                      <input
+                        aria-label={label}
+                        type="number"
+                        min={1}
+                        value={Number(value[key] || 1)}
+                        onChange={(event) => set(key, Number(event.target.value))}
+                      />
+                    ) : multiline ? (
+                      <textarea
+                        aria-label={label}
+                        rows={key === 'transcript' ? 9 : 3}
+                        maxLength={property.maxLength || 100000}
+                        value={text(value[key])}
+                        onChange={(event) => set(key, event.target.value)}
+                      />
+                    ) : (
+                      <input
+                        aria-label={label}
+                        value={text(value[key])}
+                        maxLength={property.maxLength || 2000}
+                        type={['date', 'due'].includes(key) ? 'date' : 'text'}
+                        onChange={(event) => set(key, event.target.value)}
+                      />
+                    )}
+                    {property.type === 'array' && relation && (
+                      <small>可勾选多条记录，支持搜索</small>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
+    </>
   );
 }
 

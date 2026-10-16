@@ -7,6 +7,7 @@ from threading import RLock
 
 from sqlalchemy import func, select, update
 
+from app.account_projects import AccountProjects
 from app.config import Paths
 from app.memory import MemoryService
 from app.models import Message, Project, QueuedQuestion, Run, SourceWorkspace, Thread, now_iso
@@ -18,6 +19,14 @@ from app.runtime import AgentRuntime
 from app.services import AppServices
 from app.source_collection import ProjectAnalysis, SourceCollection
 from app.workspace import Workspace
+from app.workspace_access import (
+    current_owner,
+    owner_filter,
+    require_project,
+    require_thread,
+    thread_filter,
+    unrestricted,
+)
 
 INDEPENDENT = "independent"
 
@@ -64,6 +73,7 @@ class Projects:
         self.edit_lock = base.runs.edit_lock
         self.contexts = {}
         self.retired = []
+        self.account_defaults = AccountProjects(self)
 
     def initialize(self):
         with self.database.session.begin() as session:
@@ -116,14 +126,17 @@ class Projects:
 
     def get(self, project_id, *, include_deleted=False):
         with self.database.session() as session:
-            row = session.get(Project, project_id)
-            if not row or (row.state == "deleted" and not include_deleted):
-                raise FileNotFoundError("项目不存在")
+            row = require_project(session, project_id, include_deleted=include_deleted)
             return record_dict(row)
 
     def snapshot(self, project_id):
         if project_id == INDEPENDENT:
-            return {"id": None, "name": "独立对话", "instructions": ""}
+            return {
+                "id": None,
+                "name": "独立对话",
+                "instructions": "",
+                **self.account_defaults.source(),
+            }
         project = self.get(project_id)
         if project["state"] != "active":
             raise ValueError("请先恢复项目，再创建或继续对话")
@@ -146,10 +159,10 @@ class Projects:
         with self.database.session() as session:
             count = (
                 select(func.count(Thread.id))
-                .where(Thread.project_id == Project.id, Thread.state != "deleted")
+                .where(Thread.project_id == Project.id, Thread.state != "deleted", thread_filter())
                 .scalar_subquery()
             )
-            statement = select(Project, count).where(Project.state == state)
+            statement = select(Project, count).where(Project.state == state, owner_filter(Project))
             if query.strip():
                 statement = statement.where(Project.name.icontains(query.strip(), autoescape=True))
             return [
@@ -179,7 +192,9 @@ class Projects:
                 {"source_root": source, "deepwiki_repo": repo}
                 for source, repo in session.execute(
                     select(Project.source_root, Project.deepwiki_repo).where(
-                        Project.state != "deleted", Project.source_root.is_not(None)
+                        Project.state != "deleted",
+                        Project.source_root.is_not(None),
+                        owner_filter(Project),
                     )
                 )
             ]
@@ -199,13 +214,19 @@ class Projects:
 
     def create(self, body):
         root = source_root(body.source_root)
+        binding = self.account_defaults.source() if not unrestricted() and not root else None
+        if binding:
+            root = binding["source_root"]
         folders = source_folders(body.source_folders, root)
         repo = body.deepwiki_repo
+        if binding and not repo:
+            repo = binding["deepwiki_repo"]
         if body.auto_associate and not repo:
             repo = self.association(root, [item["root"] for item in folders])["deepwiki_repo"]
         with self.database.session.begin() as session:
             self.register_sources(session, root, folders)
             row = Project(
+                owner_id=current_owner(),
                 id=uuid.uuid4().hex,
                 name=body.name,
                 description=body.description,
@@ -213,7 +234,13 @@ class Projects:
                 deepwiki_repo=repo,
                 source_root=root,
                 source_folders_json=json.dumps(folders, ensure_ascii=False),
-                sort_order=(session.scalar(select(func.max(Project.sort_order))) or 0) + 1,
+                sort_order=(
+                    session.scalar(
+                        select(func.max(Project.sort_order)).where(owner_filter(Project))
+                    )
+                    or 0
+                )
+                + 1,
             )
             session.add(row)
             session.flush()
@@ -239,9 +266,7 @@ class Projects:
         if "source_root" in changes:
             changes["source_root"] = source_root(changes["source_root"])
         with self.lock, self.database.session.begin() as session:
-            row = session.get(Project, project_id)
-            if not row or row.state == "deleted":
-                raise FileNotFoundError("项目不存在")
+            row = require_project(session, project_id)
             primary = changes.get("source_root", row.source_root)
             if "source_folders" in changes:
                 changes["source_folders_json"] = json.dumps(
@@ -270,7 +295,12 @@ class Projects:
                 self.ensure_idle(session, project_id)
             pinned = changes.pop("pinned", None)
             if pinned is not None:
-                maximum = session.scalar(select(func.max(Project.pinned_order))) or 0
+                maximum = (
+                    session.scalar(
+                        select(func.max(Project.pinned_order)).where(owner_filter(Project))
+                    )
+                    or 0
+                )
                 row.pinned_order = (row.pinned_order or maximum + 1) if pinned else None
             for key, value in changes.items():
                 setattr(row, key, value)
@@ -288,9 +318,7 @@ class Projects:
 
     def position(self, project_id, direction):
         with self.lock, self.database.session.begin() as session:
-            row = session.get(Project, project_id)
-            if not row or row.state == "deleted":
-                raise FileNotFoundError("项目不存在")
+            row = require_project(session, project_id)
             pinned = row.pinned_order is not None
             same_group = (
                 Project.pinned_order.is_not(None) if pinned else Project.pinned_order.is_(None)
@@ -299,7 +327,7 @@ class Projects:
             rows = list(
                 session.scalars(
                     select(Project)
-                    .where(Project.state == row.state, same_group)
+                    .where(Project.state == row.state, same_group, owner_filter(Project))
                     .order_by(order, Project.id)
                 )
             )
@@ -312,7 +340,8 @@ class Projects:
             return {"ok": True}
 
     def move(self, ids, destination):
-        if destination:
+        target = self.get(destination) if destination else None
+        if target:
             self.snapshot(destination)
         context_id = destination or INDEPENDENT
         with self.lock, self.database.session.begin() as session:
@@ -320,6 +349,9 @@ class Projects:
             if len(rows) != len(set(ids)):
                 raise FileNotFoundError("部分对话不存在，请刷新列表")
             for row in rows:
+                require_thread(session, row)
+                if target and row.owner_id is not None and row.owner_id != target["owner_id"]:
+                    raise ValueError("只能将对话移动到同一账号的项目")
                 if row.state == "deleted":
                     raise ValueError("请先恢复回收站中的对话")
                 Repository.ensure_idle(session, row.id)
@@ -338,9 +370,7 @@ class Projects:
         if disposition not in {"independent", "trash"}:
             raise ValueError("请选择将对话移至独立对话或回收站")
         with self.lock, self.database.session.begin() as session:
-            project = session.get(Project, project_id)
-            if not project or project.state == "deleted":
-                raise FileNotFoundError("项目不存在")
+            project = require_project(session, project_id)
             self.ensure_idle(session, project_id)
             rows = list(session.scalars(select(Thread).where(Thread.project_id == project_id)))
             if session.scalar(
@@ -361,14 +391,24 @@ class Projects:
             project = None if project_id == INDEPENDENT else self.get(project_id)
             if project_id in self.contexts:
                 return self.contexts[project_id]
-            root = Path(project["source_root"]) if project and project["source_root"] else None
+            root = (
+                self.base.workspace.root
+                if project_id == INDEPENDENT
+                else Path(project["source_root"])
+                if project and project["source_root"]
+                else None
+            )
             if root is None:
                 root = self.base.paths.data / "empty-workspaces" / project_id
                 root.mkdir(parents=True, exist_ok=True)
             paths = Paths(self.base.paths.data, root)
             folders = project["source_folders"] if project else []
             workspace = SourceCollection(root, folders) if folders else Workspace(root)
-            source_id = workspace.id if project and project["source_root"] else None
+            source_id = (
+                workspace.id
+                if project_id == INDEPENDENT or (project and project["source_root"])
+                else None
+            )
             if source_id or folders:
                 with self.database.session.begin() as session:
                     for key, folder in [
@@ -391,7 +431,7 @@ class Projects:
             runtime = AgentRuntime(paths, self.base.settings, workspace, repository, memories)
             if folders:
                 runtime.semantic = ProjectAnalysis(workspace)
-            if not project or not self.knowledge_available(project["source_root"]):
+            if not self.knowledge_available(str(root)):
                 runtime.knowledge.path = paths.data / "unconfigured-project-knowledge.json"
             runs = RunManager(repository, runtime, self.base.settings)
             runs.capacity, runs.edit_lock = self.base.runs.capacity, self.edit_lock

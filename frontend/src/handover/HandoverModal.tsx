@@ -20,8 +20,8 @@ export function HandoverModal({
 }) {
   const content = (
     <>
-      <div className="handover-modal-body">{children}</div>
-      {footer && <div className="handover-form-footer">{footer}</div>}
+      <div className="dialog-body handover-modal-body">{children}</div>
+      {footer && <div className="modal-footer handover-form-footer">{footer}</div>}
     </>
   );
   return (

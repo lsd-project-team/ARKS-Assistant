@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense, type CSSProperties } from 
 import { useQuery } from '@tanstack/react-query';
 import { MessageSquare, Code2 } from 'lucide-react';
 import { WorkspaceNavigation } from './components/WorkspaceNavigation';
+import { WorkspaceHeader, WorkspaceHeadingTarget } from './components/WorkspaceHeader';
 import { useKnowledgeNavigation } from './hooks/useKnowledgeNavigation';
 import { useAppearance } from './lib/appearance';
 import { Sidebar } from './components/Sidebar';
@@ -41,7 +42,6 @@ export default function App() {
   const startConversation = useNewConversation();
   const { route, navigate, knowledgeOpen } = useKnowledgeNavigation();
   const handover = useHandoverNavigation();
-  const projectId = useWorkspace((state) => state.projectId);
   const appearance = useAppearance((state) => state.mode);
   useEffect(() => {
     document.documentElement.dataset.appearance = appearance;
@@ -53,6 +53,7 @@ export default function App() {
     localStorage.setItem('trunk-knowledge-navigation-v1', '1');
   }, []);
   const [dialog, setDialog] = useState('');
+  const [headingTarget, setHeadingTarget] = useState<HTMLDivElement | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   useEffect(() => {
     const shortcut = (event: KeyboardEvent) => {
@@ -111,179 +112,178 @@ export default function App() {
     retry: 1,
     refetchInterval: 15000,
   });
-  function showSource() {
-    void navigate({ kind: 'chat' });
-    setWorkspaceOpen(true);
-    setLayout({ codeOpen: true });
-  }
   function toggleWorkspace() {
     const visible = (codeOpen || explorerOpen) && (window.innerWidth > 800 || mobile === 'code');
     setWorkspaceOpen(!visible);
   }
   return (
-    <div
-      ref={motion.root}
-      data-explorer-open={explorerOpen}
-      style={
-        {
-          '--chat-ratio': chatRatio,
-          '--navigation-width': `${navigationLayout.width}px`,
-          '--focus-chat-ratio': focusChatRatio,
-          ...(explorerWidth ? { '--explorer-width': `${explorerWidth}px` } : {}),
-        } as CSSProperties
-      }
-      className={`app-shell legacy-visual ${collapsed ? 'sidebar-collapsed' : ''} ${readingFocused ? 'reading-focused' : ''} ${!codeOpen ? 'code-closed' : ''} ${!codeOpen && !explorerOpen ? 'source-closed' : ''} mobile-${mobile}`}
-    >
-      <WorkspaceNavigation
-        route={route}
-        compact={!motion.navigationExpanded}
-        hasSelectedThread={!!threadId}
-        layout={navigationLayout}
-        onExpand={expandNavigation}
-        onCollapse={() => setCollapsed(true)}
-        navigate={(next) => {
-          if (readingFocused) toggleReadingFocus();
-          if (next.kind === 'chat') {
-            if (!startConversation()) return;
-            requestAnimationFrame(() =>
-              document
-                .querySelector<HTMLTextAreaElement>('textarea[aria-label="对话输入"]')
-                ?.focus(),
-            );
-          }
-          void navigate(next);
-          setMobile('chat');
-        }}
-        onSettings={() => {
-          setDialog('settings');
-        }}
-        handover={{ active: handover.open, onOpen: () => handover.navigate() }}
+    <WorkspaceHeadingTarget.Provider value={headingTarget}>
+      <div
+        ref={motion.root}
+        data-explorer-open={explorerOpen}
+        style={
+          {
+            '--chat-ratio': chatRatio,
+            '--navigation-width': `${navigationLayout.width}px`,
+            '--focus-chat-ratio': focusChatRatio,
+            ...(explorerWidth ? { '--explorer-width': `${explorerWidth}px` } : {}),
+          } as CSSProperties
+        }
+        className={`app-shell legacy-visual has-account-header ${collapsed ? 'sidebar-collapsed' : ''} ${readingFocused ? 'reading-focused' : ''} ${!codeOpen ? 'code-closed' : ''} ${!codeOpen && !explorerOpen ? 'source-closed' : ''} mobile-${mobile}`}
       >
-        {motion.navigationExpanded && (
-          <Sidebar
-            onNavigate={() => {
-              void navigate({ kind: 'chat' });
-            }}
-            connected={!!health.data?.ok && !health.error}
-            checking={health.isPending}
-          />
-        )}
-      </WorkspaceNavigation>
-      {projectPage && !knowledgeOpen && !handover.open && (
-        <ProjectHome onMaterials={() => setDialog('memory')} />
-      )}
-      {handover.open && (
-        <Suspense
-          fallback={<section className="project-home padded muted">正在加载交接工作台…</section>}
+        <WorkspaceHeader headingRef={setHeadingTarget} />
+        <WorkspaceNavigation
+          route={route}
+          compact={!motion.navigationExpanded}
+          hasSelectedThread={!!threadId}
+          layout={navigationLayout}
+          onExpand={expandNavigation}
+          onCollapse={() => setCollapsed(true)}
+          navigate={(next) => {
+            if (readingFocused) toggleReadingFocus();
+            if (next.kind === 'chat') {
+              if (!startConversation()) return;
+              requestAnimationFrame(() =>
+                document
+                  .querySelector<HTMLTextAreaElement>('textarea[aria-label="对话输入"]')
+                  ?.focus(),
+              );
+            }
+            void navigate(next);
+            setMobile('chat');
+          }}
+          onSettings={() => {
+            setDialog('settings');
+          }}
+          handover={{ active: handover.open, onOpen: () => handover.navigate() }}
         >
-          <HandoverWorkspace
-            key={projectId}
-            tab={handover.tab}
-            recordId={handover.recordId}
-            version={handover.version}
-            navigate={handover.navigate}
-            onLegacyNavigate={(kind) => {
-              void navigate({ kind });
-            }}
-          />
-        </Suspense>
-      )}
-      {knowledgeOpen && !project.data?.knowledge_available && (
-        <section className="project-home">
-          <div className="project-empty">
-            <h2>此项目还没有流程与功能资料</h2>
-            <p>关联源码后，可以在对话中分析当前项目。已复核图谱属于原来的源码项目。</p>
-            <button
-              className="button"
-              onClick={() => {
-                if (!startConversation()) return;
+          {motion.navigationExpanded && (
+            <Sidebar
+              onNavigate={() => {
                 void navigate({ kind: 'chat' });
               }}
-            >
-              开始新对话
-            </button>
-          </div>
-        </section>
-      )}
-      {knowledgeOpen && project.data?.knowledge_available && (
-        <WorkspaceLoadBoundary kind="knowledge">
+              connected={!!health.data?.ok && !health.error}
+              checking={health.isPending}
+            />
+          )}
+        </WorkspaceNavigation>
+        {projectPage && !knowledgeOpen && !handover.open && (
+          <ProjectHome onMaterials={() => setDialog('memory')} />
+        )}
+        {handover.open && (
           <Suspense
-            fallback={
-              <section className="knowledge-workspace padded muted">
-                正在加载流程与功能资料…
-              </section>
-            }
+            fallback={<section className="project-home padded muted">正在加载交接工作台…</section>}
           >
-            <KnowledgeWorkspace
-              route={route}
-              navigate={(next) => {
-                void navigate(next);
+            <HandoverWorkspace
+              tab={handover.tab}
+              recordId={handover.recordId}
+              version={handover.version}
+              navigate={handover.navigate}
+              onWorkspaceNavigate={(kind) => {
+                void navigate({ kind });
               }}
-              onNavigation={expandNavigation}
             />
           </Suspense>
-        </WorkspaceLoadBoundary>
-      )}
-      <main className="workspace-main" hidden={knowledgeOpen || projectPage || handover.open}>
-        <div className="mobile-switch">
-          <button className={mobile === 'chat' ? 'selected' : ''} onClick={() => setMobile('chat')}>
-            <MessageSquare size={14} />
-            问答
-          </button>
-          <button
-            className={mobile === 'code' ? 'selected' : ''}
-            aria-label="切换工作区视图"
-            aria-pressed={mobile === 'code' && (codeOpen || explorerOpen)}
-            onClick={toggleWorkspace}
-          >
-            <Code2 size={14} />
-            工作区
-          </button>
-        </div>
-        <ChatPane
-          onSettings={(tab) => setDialog(tab === 'mcp' ? 'mcp' : 'settings')}
-          onShowSource={showSource}
-          onToggleWorkspace={toggleWorkspace}
-        />
-        {(motion.codeMounted || motion.filesMounted) && (
-          <PaneDivider kind={motion.codeMounted ? 'chat' : 'files'} />
         )}
-        <section
-          className="source-workspace"
-          aria-label="源码工作区"
-          hidden={!motion.codeMounted && !motion.filesMounted}
-          inert={!codeOpen && !explorerOpen}
-        >
-          {motion.codeMounted && (
-            <WorkspaceLoadBoundary kind="source">
-              <Suspense
-                fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}
+        {knowledgeOpen && !project.data?.knowledge_available && (
+          <section className="project-home">
+            <div className="project-empty">
+              <h2>此项目还没有流程与功能资料</h2>
+              <p>关联源码后，可以在对话中分析当前项目。已复核图谱属于原来的源码项目。</p>
+              <button
+                className="button"
+                onClick={() => {
+                  if (!startConversation()) return;
+                  void navigate({ kind: 'chat' });
+                }}
               >
-                <CodePane onSearch={() => setSearchOpen(true)} />
-              </Suspense>
-            </WorkspaceLoadBoundary>
-          )}
-          {motion.codeMounted && motion.filesMounted && <PaneDivider kind="files" />}
-          <FileExplorer
-            hidden={!motion.filesMounted}
-            onClose={() => setExplorerOpen(false)}
-            onQuickOpen={() => setDialog('files')}
+                开始新对话
+              </button>
+            </div>
+          </section>
+        )}
+        {knowledgeOpen && project.data?.knowledge_available && (
+          <WorkspaceLoadBoundary kind="knowledge">
+            <Suspense
+              fallback={
+                <section className="knowledge-workspace padded muted">
+                  正在加载流程与功能资料…
+                </section>
+              }
+            >
+              <KnowledgeWorkspace
+                route={route}
+                navigate={(next) => {
+                  void navigate(next);
+                }}
+              />
+            </Suspense>
+          </WorkspaceLoadBoundary>
+        )}
+        <main className="workspace-main" hidden={knowledgeOpen || projectPage || handover.open}>
+          <div className="mobile-switch">
+            <button
+              className={mobile === 'chat' ? 'selected' : ''}
+              onClick={() => setMobile('chat')}
+            >
+              <MessageSquare size={14} />
+              问答
+            </button>
+            <button
+              className={mobile === 'code' ? 'selected' : ''}
+              aria-label="切换工作区视图"
+              aria-pressed={mobile === 'code' && (codeOpen || explorerOpen)}
+              onClick={toggleWorkspace}
+            >
+              <Code2 size={14} />
+              工作区
+            </button>
+          </div>
+          <ChatPane
+            showHeader={!knowledgeOpen && !projectPage && !handover.open}
+            onSettings={(tab) => setDialog(tab === 'mcp' ? 'mcp' : 'settings')}
+            onToggleWorkspace={toggleWorkspace}
           />
-        </section>
-      </main>
-      <SettingsDialog
-        open={dialog === 'settings' || dialog === 'mcp' || dialog === 'memory'}
-        initialTab={dialog === 'mcp' ? 'mcp' : dialog === 'memory' ? 'memory' : 'model'}
-        onClose={() => setDialog('')}
-      />
-      <QuickOpen
-        open={dialog === 'files'}
-        onClose={() => setDialog('')}
-        onOpen={() => setDialog('files')}
-      />
-      <Toasts />
-      <HistoricalSourceDialog />
-      {searchOpen && <WorkspaceSearch onClose={() => setSearchOpen(false)} />}
-    </div>
+          {(motion.codeMounted || motion.filesMounted) && (
+            <PaneDivider kind={motion.codeMounted ? 'chat' : 'files'} />
+          )}
+          <section
+            className="source-workspace"
+            aria-label="源码工作区"
+            hidden={!motion.codeMounted && !motion.filesMounted}
+            inert={!codeOpen && !explorerOpen}
+          >
+            {motion.codeMounted && (
+              <WorkspaceLoadBoundary kind="source">
+                <Suspense
+                  fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}
+                >
+                  <CodePane onSearch={() => setSearchOpen(true)} />
+                </Suspense>
+              </WorkspaceLoadBoundary>
+            )}
+            {motion.codeMounted && motion.filesMounted && <PaneDivider kind="files" />}
+            <FileExplorer
+              hidden={!motion.filesMounted}
+              onClose={() => setExplorerOpen(false)}
+              onQuickOpen={() => setDialog('files')}
+            />
+          </section>
+        </main>
+        <SettingsDialog
+          open={dialog === 'settings' || dialog === 'mcp' || dialog === 'memory'}
+          initialTab={dialog === 'mcp' ? 'mcp' : dialog === 'memory' ? 'memory' : 'model'}
+          onClose={() => setDialog('')}
+        />
+        <QuickOpen
+          open={dialog === 'files'}
+          onClose={() => setDialog('')}
+          onOpen={() => setDialog('files')}
+        />
+        <Toasts />
+        <HistoricalSourceDialog />
+        {searchOpen && <WorkspaceSearch onClose={() => setSearchOpen(false)} />}
+      </div>
+    </WorkspaceHeadingTarget.Provider>
   );
 }

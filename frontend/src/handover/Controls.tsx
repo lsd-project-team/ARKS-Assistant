@@ -1,6 +1,5 @@
-import * as Select from '@radix-ui/react-select';
-import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
+import { Select } from '../components/Select';
 import './controls.css';
 
 export interface Choice {
@@ -8,8 +7,6 @@ export interface Choice {
   label: string;
   disabled?: boolean;
 }
-
-const emptyChoice = '__handover_empty_choice__';
 
 export function HandoverSelect({
   value,
@@ -26,7 +23,6 @@ export function HandoverSelect({
   required?: boolean;
   disabled?: boolean;
 }) {
-  const placeholder = options.find((option) => !option.value)?.label || '请选择';
   const [invalid, setInvalid] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const errorId = useId();
@@ -44,66 +40,26 @@ export function HandoverSelect({
         trigger.current?.focus();
       }}
     >
-      <Select.Root
+      <Select
         value={value}
         onValueChange={(next) => {
           setInvalid(false);
-          onValueChange(next === emptyChoice ? '' : next);
+          onValueChange(next);
         }}
         required={required}
         disabled={disabled}
+        triggerRef={trigger}
+        className="handover-select-trigger"
+        aria-label={label}
+        aria-invalid={invalid || undefined}
+        aria-describedby={invalid ? errorId : undefined}
       >
-        <Select.Trigger
-          ref={trigger}
-          className="ui-select-trigger handover-select-trigger"
-          aria-label={label}
-          aria-invalid={invalid || undefined}
-          aria-describedby={invalid ? errorId : undefined}
-        >
-          <span className="ui-select-value">
-            <Select.Value placeholder={placeholder} />
-          </span>
-          <Select.Icon>
-            <ChevronDown size={14} />
-          </Select.Icon>
-        </Select.Trigger>
-        <Select.Portal>
-          <Select.Content
-            className="ui-select-content handover-select-content"
-            position="popper"
-            sideOffset={6}
-            align="start"
-            collisionPadding={12}
-          >
-            <Select.ScrollUpButton className="ui-select-scroll">
-              <ChevronUp size={14} />
-            </Select.ScrollUpButton>
-            <Select.Viewport className="ui-select-viewport">
-              {choices.map((option) => (
-                <Select.Item
-                  className="ui-select-item"
-                  key={option.value}
-                  value={option.value || emptyChoice}
-                  disabled={option.disabled}
-                >
-                  <Select.ItemText>{option.label}</Select.ItemText>
-                  <Select.ItemIndicator className="ui-select-indicator">
-                    <Check size={14} />
-                  </Select.ItemIndicator>
-                  {!value && !option.value && (
-                    <span className="ui-select-indicator">
-                      <Check size={14} />
-                    </span>
-                  )}
-                </Select.Item>
-              ))}
-            </Select.Viewport>
-            <Select.ScrollDownButton className="ui-select-scroll">
-              <ChevronDown size={14} />
-            </Select.ScrollDownButton>
-          </Select.Content>
-        </Select.Portal>
-      </Select.Root>
+        {choices.map((option) => (
+          <option key={option.value} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </option>
+        ))}
+      </Select>
       {invalid && (
         <span className="handover-select-error" id={errorId}>
           请选择{label}

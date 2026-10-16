@@ -10,6 +10,7 @@ KINDS = {
     "baseline": "源码与接收环境基线",
     "verification": "分层验证",
     "issue": "问题与阻塞",
+    "debug_issue": "调试问题",
     "plan": "接续计划",
     "framework": "软件框架",
     "training": "功能讲解与培训",
@@ -21,6 +22,7 @@ STATES = {
     "draft": "待确认",
     "confirmed": "已确认",
     "needs_review": "待重新复核",
+    "rejected": "已拒绝",
     "archived": "已归档",
 }
 VALUES = {
@@ -159,4 +161,17 @@ FIELDS = {
     "remaining": "仍需补充",
     "recipient": "接收对象",
     "gaps": "交接缺项",
+    "problem": "问题现象",
+    "investigation": "排查过程",
+    "cause": "原因",
+    "solution": "解决办法",
+    "verification": "验证结果",
+    "module": "所属模块",
+    "resolution_status": "处理状态",
+    "keywords": "关键词",
+    "original_text": "原始描述",
+    "reported_by": "录入人",
+    "source_thread_id": "来源对话",
+    "source_message_id": "来源消息",
+    "source_project_id": "来源项目",
 }

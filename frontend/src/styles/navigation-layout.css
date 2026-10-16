@@ -16,7 +16,6 @@
   background: transparent;
 }
 .navigation-divider:hover::after,
-.navigation-divider:focus-visible::after,
-.navigation-divider.dragging::after {
+.navigation-divider:focus-visible::after {
   background: var(--text-secondary);
 }

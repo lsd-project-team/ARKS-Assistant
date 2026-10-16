@@ -2,6 +2,7 @@
 
 import hashlib
 import io
+import re
 import stat
 import zipfile
 from pathlib import PurePosixPath
@@ -169,6 +170,34 @@ def import_source(store, data, filename, metadata, actor):
             "media_type": "application/octet-stream",
             "sha256": payload["sha256"],
             "content": data,
+        },
+    )
+
+
+def import_text(store, title, content, metadata, actor):
+    # 正文不裁剪、不规范化换行，保留聊天记录、缩进和原始引用；超限由入口拒绝。
+    raw = content.encode("utf-8")
+    filename = re.sub(r'[\\/:*?"<>|\r\n]', "_", title) + ".txt"
+    payload = {
+        **metadata,
+        "origin": "human",
+        "filename": filename,
+        "format": "text",
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "content": content,
+        "parse_status": "readable",
+        "parse_notes": "直接输入的文本，原文完整保存；以行号定位。",
+    }
+    return store.create(
+        "source",
+        title,
+        payload,
+        actor,
+        blob={
+            "name": filename,
+            "media_type": "text/plain; charset=utf-8",
+            "sha256": payload["sha256"],
+            "content": raw,
         },
     )
 

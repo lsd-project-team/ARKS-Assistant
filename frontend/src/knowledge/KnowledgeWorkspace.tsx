@@ -1,6 +1,5 @@
 import { useMemo, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Menu } from 'lucide-react';
 import { useProjectApi } from '../hooks/useProjectApi';
 import { useAppearance } from '../lib/appearance';
 import { EngineeringContext, BaselineContext, useResource } from './engineeringData';
@@ -8,6 +7,7 @@ import type { EngineeringManifest } from './engineeringTypes';
 import { refreshSnapshot, type FileChecks } from './freshness';
 import { sourceCheckId, sourceEvidence, sourceReviewVersion } from './sourceGuides';
 import { routeNames, workspacePath, type Route } from './routes';
+import { WorkspaceHeading } from '../components/WorkspaceHeader';
 import { GraphAtlas, DiagramDetail, TopicDetail, diagramRoute } from './KnowledgePages';
 import { ShowcaseHome } from './PresentationViews';
 import {
@@ -22,11 +22,9 @@ const EMPTY_CHECKS: FileChecks = {};
 export default function KnowledgeWorkspace({
   route,
   navigate,
-  onNavigation,
 }: {
   route: Route;
   navigate: (route: Route) => void;
-  onNavigation: () => void;
 }) {
   const api = useProjectApi();
   const mode = useAppearance((state) => state.mode);
@@ -162,21 +160,11 @@ export default function KnowledgeWorkspace({
   }
   return (
     <section className="knowledge-workspace" aria-label="流程与功能资料" ref={scroller}>
-      <header className="topbar">
-        <div className="knowledge-topbar-inner">
-          <button
-            className="knowledge-menu"
-            title="显示导航"
-            aria-label="显示导航"
-            onClick={onNavigation}
-          >
-            <Menu size={18} />
-          </button>
-          <div className="breadcrumb">
-            <strong>{routeNames[route.kind]}</strong>
-          </div>
+      <WorkspaceHeading className="knowledge-page-heading">
+        <div className="breadcrumb">
+          <strong>{routeNames[route.kind]}</strong>
         </div>
-      </header>
+      </WorkspaceHeading>
       <div className="knowledge-content">
         {manifest.error ? (
           <div className="card panel" role="alert">

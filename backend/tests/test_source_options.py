@@ -4,6 +4,7 @@ from app.config import AppSettings, ModelSettings
 from app.conversation_context import ConversationContext
 from app.runtime import AgentRuntime
 from app.schemas import MemoryWrite, RunCreate, SourceOptions, SourcePreferencesWrite
+from tests.api_paths import project_api
 from tests.test_compaction import DeterministicModel
 
 LOCAL = {"use_deepwiki": False, "use_knowledge": False, "use_memory": False}
@@ -118,7 +119,8 @@ def test_source_preferences_scope_restart_and_stale_save(services):
         stale = {"source_options": SourceOptions().model_dump(), "version": 9}
         assert client.put(endpoint, json=stale).status_code == 409
         assert (
-            client.get("/api/source-options").json()["source_options"] == defaults["source_options"]
+            client.get(project_api(client, "/source-options")).json()["source_options"]
+            == defaults["source_options"]
         )
         independent = "/api/p/independent/source-options"
         assert client.get(independent).json()["source_options"] == defaults["source_options"]

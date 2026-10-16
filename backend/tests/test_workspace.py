@@ -1,3 +1,6 @@
+import os
+import subprocess
+
 import pytest
 
 from app.source_backend import SourceBackend
@@ -33,6 +36,33 @@ def test_symlink_cannot_escape(services, tmp_path):
         pytest.skip("Windows 未启用创建符号链接权限")
     with pytest.raises(ValueError):
         workspace.read("linked.txt")
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows 目录联接安全检查")
+def test_windows_junction_cannot_escape(services, tmp_path):
+    workspace = services[2]
+    outside = tmp_path / "private-folder"
+    outside.mkdir()
+    (outside / "private.cs").write_text("private", encoding="utf-8")
+    link = workspace.root / "linked-folder"
+    # 目录联接不需要符号链接权限，Windows 上仍可实际检查重解析点越界防护。
+    subprocess.run(
+        [
+            "powershell",
+            "-NoProfile",
+            "-Command",
+            "New-Item -ItemType Junction -Path $env:ARKS_TEST_LINK "
+            "-Target $env:ARKS_TEST_OUTSIDE | Out-Null",
+        ],
+        check=True,
+        capture_output=True,
+        env={**os.environ, "ARKS_TEST_LINK": str(link), "ARKS_TEST_OUTSIDE": str(outside)},
+    )
+    try:
+        with pytest.raises(ValueError):
+            workspace.read("linked-folder/private.cs")
+    finally:
+        link.rmdir()
 
 
 @pytest.mark.parametrize("encoding", ["utf-8-sig", "utf-16", "gb18030"])

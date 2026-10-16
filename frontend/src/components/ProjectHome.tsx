@@ -14,6 +14,7 @@ import { Select } from './Select';
 import { toast } from '../lib/toasts';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { ProjectDocuments } from './ProjectDocuments';
+import { WorkspaceHeading } from './WorkspaceHeader';
 
 export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
   const api = useProjectApi();
@@ -106,7 +107,7 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
   return (
     <section className="project-home" aria-label="项目首页">
       <div className="project-home-content">
-        <header className="project-home-header">
+        <WorkspaceHeading className="project-home-header">
           <div>
             <div className="project-eyebrow">
               <Folder size={16} />
@@ -129,7 +130,7 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
               项目设置
             </Button>
           </div>
-        </header>
+        </WorkspaceHeading>
         <ErrorText error={current.error || error} />
         <div className="project-home-bar">
           <div className="project-home-tabs">

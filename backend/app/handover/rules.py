@@ -240,7 +240,8 @@ def confirmation_gate(record, records):
             for row in records.values()
         ):
             raise ValueError("资料已有替代版本，请复核并确认新版本")
-        required(payload, [("provider", "提供者"), ("source_version", "资料版本")])
+        # 添加表单已简化；原件名称、哈希与系统修订足以标识固定资料。
+        required(payload, [("filename", "资料名称"), ("sha256", "原文标识")])
         if payload["parse_status"] != "readable":
             raise ValueError("资料存在未解析内容，请补充可读版本后确认")
     elif kind == "framework":

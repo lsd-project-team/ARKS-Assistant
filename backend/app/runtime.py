@@ -17,6 +17,10 @@ from app.config import Paths, SettingsStore
 from app.context import current_budget, estimate_tokens, input_budget
 from app.context_budget import BudgetedSummarization, ContextBudget
 from app.csharp_analysis import CSharpAnalysis
+from app.handover.debug_capture import capture_command
+from app.handover.debug_corpus import DebugIssueCorpus
+from app.handover.material_corpus import HandoverMaterialCorpus
+from app.knowledge_citations import canonical_knowledge_citations
 from app.mcp_client import ToolCatalog, adapt_tool
 from app.memory import MemoryService
 from app.project_context import project_prompt
@@ -118,6 +122,7 @@ class AgentRuntime:
         *,
         inspection=False,
         memory_query=None,
+        question_text=None,
         evidence=None,
         source_options=None,
         verified_context="",
@@ -152,16 +157,35 @@ class AgentRuntime:
             review_model=None if inspection else model,
             emit=emit,
             evidence=evidence,
+            allow_automatic=settings.auto_memory,
+            request_text=question_text if question_text is not None else memory_query or "",
         )
         if options.use_knowledge:
             tools += self.knowledge.tools(evidence)
-        materials = (
-            MaterialCorpus(self.repository.database, self.repository.project_id)
+        materials, handover_materials, debug_issues = (
+            (
+                await asyncio.gather(
+                    asyncio.to_thread(
+                        MaterialCorpus, self.repository.database, self.repository.project_id, emit
+                    ),
+                    asyncio.to_thread(HandoverMaterialCorpus, self.repository.database, emit),
+                    asyncio.to_thread(
+                        DebugIssueCorpus,
+                        self.repository.database,
+                        emit,
+                        question_text if question_text is not None else memory_query or "",
+                    ),
+                )
+            )
             if options.use_knowledge
-            else None
+            else (None, None, None)
         )
         if materials:
             tools += materials.tools()
+        if handover_materials:
+            tools += handover_materials.tools()
+        if debug_issues:
+            tools += debug_issues.tools()
         servers = [
             server
             for server in settings.mcp_servers
@@ -212,11 +236,47 @@ class AgentRuntime:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         material_prompt, included_materials = (
-            materials.prompt(memory_query or "", min(2000, available // 10))
+            await asyncio.to_thread(
+                materials.prompt, memory_query or "", min(2000, available // 10)
+            )
             if materials
             else ("", [])
         )
         prompt += material_prompt
+        handover_prompt, included_handover = (
+            await asyncio.to_thread(
+                handover_materials.prompt, memory_query or "", min(2000, available // 10)
+            )
+            if handover_materials
+            else ("", [])
+        )
+        prompt += handover_prompt
+        debug_prompt, included_debug_issues = (
+            await asyncio.to_thread(
+                debug_issues.prompt, memory_query or "", min(2500, available // 8)
+            )
+            if debug_issues
+            else ("", [])
+        )
+        prompt += debug_prompt
+        if debug_issues:
+            prompt += (
+                "\n用户询问故障、调试现象或处理经验时，优先检索调试问题库。"
+                "自动带入没有合适记录时，调用 search_debug_issues，尝试现象、报警码或模块关键词。"
+                "根据本轮记录的版本引用；不得把未解决记录、历史条件或用户陈述当成当前设备验证。"
+                "相同报警不代表同一原因，条件未核对时说明是历史相似经验。"
+                "使用搜索返回的 compatibility 判断适用性；needs_confirmation 时先列出缺少条件，"
+                "提供经验参考并追问关键设备、版本和工况，不得称为当前已验证方案。"
+                "用户只要以前的处理方案时，先忠实返回历史记录；除非用户要求进一步分析，否则不扩展源码排查。"
+                "excluded_records 是已经找到但条件不符的历史记录，不能回答成库里没有记录。"
+                "解释条件差异时可读取其原文作为对照；不得忽略 compatibility 把它套用到当前设备。"
+            )
+        if handover_materials:
+            prompt += (
+                "\n用户询问交接资料、文档或访谈内容时，"
+                "使用 search_handover_materials/read_handover_material；"
+                "未检索到就明确说明，不编造资料。"
+            )
         prompt += (
             "\n涉及生产流程或模块协作时，可调用 search_project_knowledge 查询本地人工复核资料。"
         )
@@ -226,6 +286,8 @@ class AgentRuntime:
                 {
                     "memories": included_memories,
                     "materials": included_materials,
+                    "handover_materials": included_handover,
+                    "debug_issues": included_debug_issues,
                     "source_options": options.model_dump(),
                 },
             )
@@ -237,6 +299,10 @@ class AgentRuntime:
             prompt += "\n可主动调用 remember 保存已核实且适合后续使用的项目事实。"
         else:
             prompt += "\n只有用户明确要求记住时才调用 remember。"
+        prompt += (
+            "\n个人偏好以当前登录账号带入的记忆为准，"
+            "不把其他人在共享对话里的偏好当作本账号长期偏好。"
+        )
         graph = create_deep_agent(
             model=model,
             tools=tools,
@@ -313,15 +379,21 @@ class AgentRuntime:
         run = {**run, "analysis_policy": policy}
         try:
             with bind_configuration(configuration):
+                captured = await capture_command(self, run, emit, owned_models)
+                if captured is not None:
+                    return captured
                 return await self._execute(run, emit, owned_models)
         finally:
             await close_models(owned_models)
 
     async def _execute(self, run, emit, owned_models):
         original_emit, observed = emit, {}
+        knowledge_references = []
 
         def emit(kind, payload):
             observed[kind] = payload
+            if kind == "knowledge_reference":
+                knowledge_references.append(payload)
             return original_emit(kind, payload)
 
         async with AsyncSqliteSaver.from_conn_string(
@@ -421,6 +493,7 @@ class AgentRuntime:
                 emit,
                 owned_models,
                 memory_query=memory_query,
+                question_text=message["content"],
                 evidence=evidence,
                 source_options=message.get("source_options"),
                 verified_context=verified_context,
@@ -589,6 +662,10 @@ class AgentRuntime:
                 effective, snapshot, settings.context_tokens, settings.output_tokens
             )
             emit("context", current)
+            formatted = canonical_knowledge_citations(answer, knowledge_references)
+            if formatted != answer:
+                emit("answer_replace", {"text": formatted})
+                answer = formatted
             return answer
 
     @staticmethod

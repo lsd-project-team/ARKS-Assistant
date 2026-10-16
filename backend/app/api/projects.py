@@ -4,17 +4,18 @@ import asyncio
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, FastAPI, Query
+from fastapi import APIRouter, FastAPI, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
-from app.api import configuration, conversations, knowledge, workspace
+from app.api import conversations, knowledge, memories, workspace
 from app.api.project_materials import create_router as materials_router
-from app.models import SourceWorkspace
+from app.auth.router import require_admin
 from app.project_association import repository_name
 from app.projects import Projects
 from app.source_collection import source_prefix
 from app.workspace import Workspace
+from app.workspace_access import require_source, require_thread
 
 
 class SourceFolder(BaseModel):
@@ -97,10 +98,25 @@ def create_router(projects: Projects):
 
     @router.get("/api/projects")
     async def list_projects(state: str = "active", query: str = ""):
-        return {"projects": projects.list(state, query), "default_project_id": projects.default_id}
+        rows = projects.list(state, query)
+        available = {row["id"] for row in rows}
+        default = (
+            projects.default_id
+            if projects.default_id in available
+            else (projects.account_defaults.preferred(rows) or (rows[0]["id"] if rows else None))
+        )
+        return {
+            "projects": rows,
+            "default_project_id": default,
+            "default_source": projects.account_defaults.source(),
+        }
 
     @router.post("/api/projects", status_code=201)
-    async def create(body: ProjectCreate):
+    async def create(body: ProjectCreate, request: Request):
+        if (body.source_root or body.source_folders) and not projects.account_defaults.permits(
+            body.source_root, body.source_folders
+        ):
+            require_admin(request)
         async with projects.edit_lock:
             return projects.create(body)
 
@@ -142,6 +158,7 @@ def create_router(projects: Projects):
 
         with projects.database.session() as session:
             thread = session.get(Thread, thread_id)
+            require_thread(session, thread)
             if not thread or thread.state == "deleted":
                 raise FileNotFoundError("来源对话不存在或已移入回收站")
             return {"project_id": thread.project_id, "id": thread.id}
@@ -156,7 +173,23 @@ def create_router(projects: Projects):
         }
 
     @router.patch("/api/projects/{project_id}")
-    async def edit(project_id: str, body: ProjectUpdate):
+    async def edit(project_id: str, body: ProjectUpdate, request: Request):
+        existing = projects.get(project_id)
+        changing_root = (
+            "source_root" in body.model_fields_set and body.source_root != existing["source_root"]
+        )
+        changing_folders = (
+            "source_folders" in body.model_fields_set
+            and [item.model_dump() for item in body.source_folders] != existing["source_folders"]
+        )
+        if (changing_root or changing_folders) and not projects.account_defaults.permits(
+            body.source_root if "source_root" in body.model_fields_set else existing["source_root"],
+            body.source_folders
+            if "source_folders" in body.model_fields_set
+            else existing["source_folders"],
+        ):
+            # 源码目录决定服务器文件可读范围，普通用户不能把它改为账号数据目录。
+            require_admin(request)
         async with projects.edit_lock:
             return projects.update(project_id, body)
 
@@ -173,9 +206,7 @@ def create_router(projects: Projects):
     @router.get("/api/sources/{source_id}/file")
     async def original_source(source_id: str, path: str):
         with projects.database.session() as session:
-            source = session.get(SourceWorkspace, source_id)
-            if not source:
-                raise FileNotFoundError("原始源码工作区不存在")
+            source = require_source(session, source_id)
             root = source.root
         return Workspace(Path(root)).read(path.removeprefix(source_prefix(source_id)))
 
@@ -199,7 +230,7 @@ class ProjectDispatcher:
         entry = self.apps.get(project_id)
         if not entry or entry[0] is not services:
             app = FastAPI(exception_handlers=self.exception_handlers)
-            for module in (workspace, conversations, configuration, knowledge):
+            for module in (workspace, conversations, memories, knowledge):
                 app.include_router(module.create_router(services))
             self.apps[project_id] = (services, app)
         app = self.apps[project_id][1]

@@ -15,6 +15,7 @@ from app.repository import Repository
 from app.run_feedback import error_feedback
 from app.runs import RunManager
 from app.runtime import AgentRuntime
+from tests.api_paths import project_api
 from tests.test_compaction import DeterministicModel
 
 
@@ -302,8 +303,10 @@ def test_workflow_routes_validate_and_keep_failed_edit_input(services, monkeypat
 
     monkeypatch.setattr("app.runtime.AgentRuntime.execute", waiting)
     with TestClient(create_app(services[0])) as client:
-        run = client.post("/api/threads/start", json={"content": "初始问题"}).json()
-        base = f"/api/threads/{run['thread_id']}"
+        run = client.post(
+            project_api(client, "/threads/start"), json={"content": "初始问题"}
+        ).json()
+        base = project_api(client, f"/threads/{run['thread_id']}")
         assert (
             client.post(
                 f"{base}/messages/{run['message_id']}/edit", json={"content": "修改"}
@@ -315,20 +318,20 @@ def test_workflow_routes_validate_and_keep_failed_edit_input(services, monkeypat
         item = queued["item"]
         assert (
             client.patch(
-                f"/api/queue/{item['id']}",
+                project_api(client, f"/queue/{item['id']}"),
                 json={"content": "已修改等待问题", "version": item["updated_at"]},
             ).status_code
             == 200
         )
         assert (
             client.patch(
-                f"/api/queue/{item['id']}",
+                project_api(client, f"/queue/{item['id']}"),
                 json={"content": "旧版本", "version": item["updated_at"]},
             ).status_code
             == 409
         )
         assert client.post(f"{base}/queue", json={"content": "  "}).status_code == 422
-        assert client.post(f"/api/runs/{run['id']}/cancel").status_code == 200
+        assert client.post(project_api(client, f"/runs/{run['id']}/cancel")).status_code == 200
         assert client.get(f"{base}/queue").json()["paused"]
         assert (
             client.post(f"{base}/fork", json={"message_id": run["message_id"]}).status_code == 201
@@ -337,7 +340,7 @@ def test_workflow_routes_validate_and_keep_failed_edit_input(services, monkeypat
             f"{base}/messages/{run['message_id']}/edit", json={"content": "新版本问题"}
         )
         assert edited.status_code == 201 and edited.json()["reset_context"]
-        assert client.delete(f"/api/queue/{item['id']}").status_code == 200
+        assert client.delete(project_api(client, f"/queue/{item['id']}")).status_code == 200
 
 
 @pytest.mark.parametrize(

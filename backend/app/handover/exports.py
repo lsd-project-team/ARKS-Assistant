@@ -8,7 +8,6 @@ from xml.sax.saxutils import escape
 
 from app.handover.labels import FIELDS, KINDS, STATES, VALUES
 from app.handover.rules import linked_ids
-from app.handover.schemas import PAYLOADS
 from app.handover.word_styles import CONTENT_TYPES, DOCUMENT_RELS, ROOT_RELS, STYLES
 
 W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -76,44 +75,6 @@ def word_document(title, introduction, sections):
     return stream.getvalue()
 
 
-def template(kind):
-    if kind not in {"interview", "task", "plan"}:
-        raise ValueError("可用模板为原作者访谈、未完成工作和接续计划")
-    defaults = PAYLOADS[kind]().model_dump()
-    paragraphs = [
-        f"{FIELDS[key]}：________________"
-        for key in defaults
-        if key in FIELDS and key not in {"origin", "notes"}
-    ]
-    paragraphs += [
-        "来源与版本：________________",
-        "确认人及职责：________________",
-        "确认意见与日期：________________",
-    ]
-    sections = [("填写内容", paragraphs)]
-    if kind == "plan":
-        sections.append(
-            (
-                "接续步骤 1",
-                [
-                    "前提：________________",
-                    "执行动作：________________",
-                    "输出：________________",
-                    "验证方式：________________",
-                    "停止条件：________________",
-                    "回退方式：________________",
-                    "负责人：________________",
-                    "需要更多步骤时，复制本节并按实际顺序填写。",
-                ],
-            )
-        )
-    return word_document(
-        KINDS[kind] + "模板",
-        "填写实际信息。未知条件请明确记录，完成后由相应人员复核确认。",
-        sections,
-    )
-
-
 def record_paragraphs(record, lookup):
     payload = record["payload"]
     output = [
@@ -153,11 +114,12 @@ def record_paragraphs(record, lookup):
             f"来源：{lookup.get(ref['record_id'], ref['record_id'])}  v{ref['version']}  "
             f"{ref['locator']}\n原文：{ref['quote'] or '无逐字引文'}"
         )
-    confirmation = record.get("confirmation", {})
-    output.append(
-        f"确认：{confirmation.get('actor', '尚未确认')}  {confirmation.get('role', '')}  "
-        f"{confirmation.get('time', '')}\n意见：{confirmation.get('opinion', '待复核')}"
-    )
+    if "confirmation" in record:
+        confirmation = record["confirmation"]
+        output.append(
+            f"确认：{confirmation.get('actor', '尚未确认')}  {confirmation.get('role', '')}  "
+            f"{confirmation.get('time', '')}\n意见：{confirmation.get('opinion', '待复核')}"
+        )
     return output
 
 
@@ -167,7 +129,6 @@ def export_package(store, identifier, zipped=False, version=None):
         raise ValueError("请选择交接包")
     records = [store.get(ref["record_id"], ref["version"]) for ref in package["payload"]["records"]]
     lookup = {row["id"]: row["title"] for row in records}
-    project = store.guard()
     sections = [
         (
             "交接范围与缺项",
@@ -198,7 +159,7 @@ def export_package(store, identifier, zipped=False, version=None):
         for row in selected:
             sections.append((KINDS[kind] + " " + row["title"], record_paragraphs(row, lookup)))
     content = word_document(
-        project["name"] + "设备软件交接包",
+        "全局设备软件交接包",
         f"交接包记录 {package['id']}  版本 {package['version']}  {STATES[package['state']]}。"
         "本包提供接手所需的框架、未完成工作、设计约束、验证证据和接续步骤。"
         "每条记录的确认状态独立显示，接收人应先处理缺项与阻塞条件。",

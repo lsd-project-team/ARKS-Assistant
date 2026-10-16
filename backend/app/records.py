@@ -12,6 +12,7 @@ def record_dict(record) -> dict:
         "source_options_json",
         "project_snapshot_json",
         "source_folders_json",
+        "actor_json",
     ):
         if field in result:
             result[field.removesuffix("_json")] = json.loads(result.pop(field))

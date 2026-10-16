@@ -8,8 +8,19 @@ import { ids, refs, text } from './types';
 import { localTime } from './format';
 import { workStatusLabel } from './workStatus';
 import { HandoverSelect } from './Controls';
+import { fieldSections } from './fieldLayout';
+import { TaskDetail } from './TaskDetail';
+import { TaskStatus } from './TaskStatus';
+import { taskLegacyPayload } from './taskProgress';
+import { SourceImport } from './SourceImport';
+import { RecordReview } from './RecordReview';
+import { PackageDetail } from './PackageDetail';
+import { RecordHistory, type RecordRevision } from './RecordHistory';
+import { DebugIssueDetail } from './DebugIssueDetail';
+import { SourceContent, SourceDetailFooter } from './SourceContent';
 
 export function Status({ row, definitions }: { row: HandoverRecord; definitions: Definitions }) {
+  if (row.kind === 'task') return <TaskStatus row={row} />;
   return (
     <span className={`handover-status handover-status-${row.state}`}>
       {definitions.states[row.state]}
@@ -20,13 +31,20 @@ export function RecordCard({
   row,
   definitions,
   onOpen,
+  compact = false,
+  reviewReason,
 }: {
   row: HandoverRecord;
   definitions: Definitions;
   onOpen: (id: string) => void;
+  compact?: boolean;
+  reviewReason?: string;
 }) {
   return (
-    <button className="handover-record-card" onClick={() => onOpen(row.id)}>
+    <button
+      className={`handover-record-card${compact ? ' handover-record-compact' : ''}`}
+      onClick={() => onOpen(row.id)}
+    >
       <div>
         <span className="handover-eyebrow">
           {definitions.kinds[row.kind]} · v{row.version}
@@ -48,6 +66,12 @@ export function RecordCard({
             row.payload.understanding,
         ) || '打开查看内容与来源'}
       </p>
+      {reviewReason && (
+        <span className="handover-review-reason">
+          <b>复核原因</b>
+          {reviewReason}
+        </span>
+      )}
       <small>
         {text(
           row.payload.owner || row.payload.author || row.payload.receiver || row.payload.provider,
@@ -63,12 +87,21 @@ export function RecordContent({
   records,
   definitions,
   onOpen,
+  showConfirmation = true,
 }: {
   row: HandoverRecord;
   records: HandoverRecord[];
   definitions: Definitions;
   onOpen: (id: string, version?: number) => void;
+  showConfirmation?: boolean;
 }) {
+  if (row.kind === 'source') return <SourceContent row={row} />;
+  const properties = definitions.schemas[row.kind]?.properties || {};
+  const sections = fieldSections(
+    row.kind,
+    Object.keys(row.payload).filter((key) => definitions.fields[key] && key !== 'origin'),
+    properties,
+  ).sort((a, b) => Number(b.id === 'content') - Number(a.id === 'content'));
   function valueText(value: unknown, field?: string) {
     if (typeof value === 'number') return String(value);
     if (Array.isArray(value))
@@ -76,6 +109,7 @@ export function RecordContent({
         .map((id) => records.find((item) => item.id === id)?.title || id)
         .join('、');
     const valueString = text(value);
+    if (field && properties[field]?.enum) return definitions.values[valueString] || valueString;
     if (field === 'format')
       return (
         (
@@ -93,20 +127,23 @@ export function RecordContent({
   }
   return (
     <>
-      <dl className="handover-record-fields">
-        {Object.entries(row.payload)
-          .filter(([key]) => definitions.fields[key] && !['origin'].includes(key))
-          .map(([key, value]) => (
-            <div key={key}>
-              <dt>{definitions.fields[key]}</dt>
-              <dd>
-                {key === 'work_status'
-                  ? workStatusLabel(row, definitions.values)
-                  : valueText(value, key) || '未填写'}
-              </dd>
-            </div>
-          ))}
-      </dl>
+      {sections.map((section) => (
+        <section className="handover-content-section" key={section.id}>
+          <h3>{section.title}</h3>
+          <dl className="handover-record-fields">
+            {section.keys.map((key) => (
+              <div key={key}>
+                <dt>{definitions.fields[key]}</dt>
+                <dd>
+                  {key === 'work_status'
+                    ? workStatusLabel(row, definitions.values)
+                    : valueText(row.payload[key], key) || '未填写'}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
       {Array.isArray(row.payload.steps) && (
         <section>
           <h3>接续步骤</h3>
@@ -138,7 +175,10 @@ export function RecordContent({
             <h3>包内固定版本</h3>
             <div className="handover-actions">
               {refs(row.payload.records).map((item) => (
-                <Button key={item.record_id} onClick={() => onOpen(item.record_id, item.version)}>
+                <Button
+                  key={`${item.record_id}:${item.version}`}
+                  onClick={() => onOpen(item.record_id, item.version)}
+                >
                   {records.find((record) => record.id === item.record_id)?.title || item.record_id}{' '}
                   · v{item.version}
                 </Button>
@@ -159,10 +199,10 @@ export function RecordContent({
           </div>
         ))}
       </section>
-      {row.confirmation && (
+      {showConfirmation && row.confirmation?.actor && (
         <p className="handover-notice">
-          确认人：{row.confirmation.actor} · {row.confirmation.role} ·{' '}
-          {localTime(row.confirmation.time)}
+          {row.confirmation.decision === 'reject' ? '拒绝审核人' : '确认人'}：
+          {row.confirmation.actor} · {row.confirmation.role} · {localTime(row.confirmation.time)}
           <br />
           {row.confirmation.opinion}
         </p>
@@ -172,70 +212,74 @@ export function RecordContent({
 }
 
 export function RecordView({
-  projectId,
+  scopeId,
   identifier,
   version,
   client,
   definitions,
   records,
-  blocks,
-  readOnly,
+  reviewOnly = false,
+  canReview = false,
   actor,
   onActor,
   onClose,
   onOpen,
   onEdit,
-  onNew,
   onChanged,
   onDiscuss,
   onCurrentSource,
 }: {
-  projectId: string;
+  scopeId: string;
   identifier: string;
   version?: number;
   client: Client;
   definitions: Definitions;
   records: HandoverRecord[];
-  blocks: string[];
-  readOnly: boolean;
+  reviewOnly?: boolean;
+  canReview?: boolean;
   actor: string;
   onActor: (value: string) => void;
   onClose: () => void;
   onOpen: (id: string, version?: number) => void;
   onEdit: (row: HandoverRecord) => void;
-  onNew: (kind: Kind, initial: Payload) => void;
   onChanged: () => void;
-  onDiscuss: (row: HandoverRecord) => void;
-  onCurrentSource: (row: HandoverRecord) => Promise<void>;
+  onDiscuss?: (row: HandoverRecord) => void;
+  onCurrentSource?: (row: HandoverRecord) => Promise<void>;
 }) {
+  const readOnly = version !== undefined;
+
   const query = useQuery({
-    queryKey: ['handover-record', projectId, identifier, version],
+    queryKey: ['handover-record', scopeId, identifier, version],
     queryFn: () =>
       client.get<HandoverRecord>(`/records/${identifier}${version ? `?version=${version}` : ''}`),
   });
   const history = useQuery({
-    queryKey: ['handover-history', projectId, identifier],
-    queryFn: () =>
-      client.get<
-        {
-          version: number;
-          state: string;
-          created_at: string;
-          confirmation: HandoverRecord['confirmation'];
-        }[]
-      >(`/records/${identifier}/history`),
+    queryKey: ['handover-history', scopeId, identifier],
+    queryFn: () => client.get<RecordRevision[]>(`/records/${identifier}/history`),
+    enabled: canReview,
   });
-  const [section, setSection] = useState('summary');
-  const [action, setAction] = useState('');
+  const [action, setAction] = useState<'' | 'archive' | 'restore'>('');
   const [opinion, setOpinion] = useState('');
   const [role, setRole] = useState('');
   const [error, setError] = useState<unknown>();
   const [busy, setBusy] = useState(false);
   const [snapshot, setSnapshot] = useState<{ path: string; content: string; sha256: string }>();
   const [comparison, setComparison] = useState<{ changed: boolean }>();
+  const [updatingSource, setUpdatingSource] = useState(false);
   const row = query.data;
+  const historyContent = canReview ? (
+    <RecordHistory
+      identifier={identifier}
+      history={history.data}
+      error={history.error}
+      loading={history.isPending}
+      definitions={definitions}
+      onOpen={onOpen}
+      onRetry={() => void history.refetch()}
+    />
+  ) : null;
   async function act() {
-    if (!row) return;
+    if (!row || !action) return;
     setBusy(true);
     setError(undefined);
     try {
@@ -248,84 +292,201 @@ export function RecordView({
       setAction('');
       onChanged();
       void query.refetch();
-      void history.refetch();
+      if (canReview) void history.refetch();
     } catch (error) {
       setError(error);
     } finally {
       setBusy(false);
     }
   }
-  const relatedKinds: Record<string, Kind[]> = {
-    evidence: ['verification'],
-    issues: ['issue', 'decision', 'constraint'],
-    plan: ['plan'],
-  };
-  const related = records.filter(
-    (item) =>
-      item.state !== 'archived' &&
-      (text(item.payload.task_id) === identifier ||
-        ids(item.payload.task_ids).includes(identifier) ||
-        ids(row?.payload.constraints).includes(item.id)) &&
-      relatedKinds[section]?.includes(item.kind),
-  );
+  if (row && reviewOnly && canReview) {
+    return (
+      <RecordReview
+        key={`${row.id}:${version || 'current'}`}
+        scopeId={scopeId}
+        row={row}
+        version={version}
+        readOnly={readOnly}
+        client={client}
+        definitions={definitions}
+        actor={actor}
+        onActor={onActor}
+        onClose={onClose}
+        onOpen={onOpen}
+        history={history.data}
+        historyError={history.error}
+        onReload={async () => {
+          onChanged();
+          const [recordResult, historyResult] = await Promise.all([
+            query.refetch(),
+            history.refetch(),
+          ]);
+          if (recordResult.error) throw recordResult.error;
+          if (historyResult.error) throw historyResult.error;
+          if (!recordResult.data) throw new Error('未能读取记录，请重试。');
+          return recordResult.data;
+        }}
+        renderContent={(displayed) => (
+          <RecordContent
+            row={
+              displayed.kind === 'candidate'
+                ? {
+                    ...displayed,
+                    kind: text(displayed.payload.target_kind) as Kind,
+                    payload: displayed.payload.proposed as Payload,
+                  }
+                : displayed
+            }
+            records={records}
+            definitions={definitions}
+            onOpen={onOpen}
+            showConfirmation={false}
+          />
+        )}
+      />
+    );
+  }
+  if (row?.kind === 'task') {
+    const legacy = taskLegacyPayload(row.payload);
+    return (
+      <TaskDetail
+        row={row}
+        version={version}
+        client={client}
+        actor={actor}
+        readOnly={readOnly}
+        history={history.data}
+        historyError={history.error}
+        showHistory={canReview}
+        onClose={onClose}
+        onEdit={onEdit}
+        onOpen={onOpen}
+        onChanged={() => {
+          onChanged();
+          void query.refetch();
+          if (canReview) void history.refetch();
+        }}
+        legacy={
+          version && (Object.keys(legacy).length || row.confirmation?.actor) ? (
+            <RecordContent
+              row={{ ...row, payload: legacy }}
+              records={records}
+              definitions={definitions}
+              onOpen={onOpen}
+            />
+          ) : undefined
+        }
+      />
+    );
+  }
+  if (row?.kind === 'debug_issue') {
+    return (
+      <DebugIssueDetail
+        row={row}
+        version={version}
+        client={client}
+        onEdit={onEdit}
+        onChanged={onChanged}
+        onOpen={onOpen}
+        onClose={onClose}
+      />
+    );
+  }
+  if (row?.kind === 'package') {
+    return (
+      <PackageDetail
+        row={row}
+        version={version}
+        records={records}
+        definitions={definitions}
+        client={client}
+        readError={query.error}
+        history={historyContent}
+        onClose={onClose}
+        onOpen={onOpen}
+      />
+    );
+  }
+  if (
+    updatingSource &&
+    row?.kind === 'source' &&
+    !readOnly &&
+    !version &&
+    row.state !== 'archived'
+  ) {
+    return (
+      <SourceImport
+        key={row.id}
+        scopeId={scopeId}
+        replacing={row}
+        client={client}
+        actor={actor}
+        onActor={onActor}
+        onClose={() => setUpdatingSource(false)}
+        onSaved={(updated) => {
+          setUpdatingSource(false);
+          onChanged();
+          onOpen(updated.id);
+        }}
+      />
+    );
+  }
   return (
     <HandoverModal
       title={row?.title || '交接记录'}
-      description={version ? '正在查看固定历史版本' : '复核内容、关联证据和接续条件'}
+      description={
+        version
+          ? '正在查看固定历史版本'
+          : row?.kind === 'source'
+            ? '查看资料内容'
+            : '复核内容、关联证据和接续条件'
+      }
       onClose={onClose}
-      className="handover-detail"
+      className={row?.kind === 'source' ? 'source-detail' : 'handover-detail'}
+      footer={
+        row?.kind === 'source' && (
+          <SourceDetailFooter
+            row={row}
+            version={version}
+            readOnly={readOnly}
+            onUpdate={() => setUpdatingSource(true)}
+            onDownload={() =>
+              void client
+                .download(
+                  `/sources/${row.id}/original`,
+                  text(row.payload.filename).split(/[\\/]/).pop() || '原始资料',
+                )
+                .catch(setError)
+            }
+            onClose={onClose}
+            onOpen={onOpen}
+          />
+        )
+      }
     >
       {query.isPending && <p role="status">正在读取记录…</p>}
       <ErrorText error={query.error || error} reveal />
       {query.error && <Button onClick={() => void query.refetch()}>重试</Button>}
       {row && (
         <>
-          <div className="handover-actions handover-detail-toolbar">
-            <Status row={row} definitions={definitions} />
-            <span>
-              v{row.version} · {definitions.values[text(row.payload.origin)] || '人工整理'}
-            </span>
-            {!version &&
-              !readOnly &&
-              !['source', 'package', 'job'].includes(row.kind) &&
-              !(row.kind === 'candidate' && text(row.payload.promoted_id)) &&
-              row.state !== 'archived' && (
-                <Button onClick={() => onEdit(row)}>
-                  {row.kind === 'candidate' ? '审核并合并' : '编辑'}
-                </Button>
-              )}
-            <Button onClick={() => onDiscuss(row)}>在对话中讨论</Button>
-          </div>
-          {row.kind === 'task' && (
-            <>
-              <nav className="handover-detail-tabs" aria-label="工作项详情">
-                {[
-                  ['summary', '目标与现状'],
-                  ['evidence', '证据与验证'],
-                  ['issues', '问题与依赖'],
-                  ['plan', '接续计划'],
-                ].map(([id, label]) => (
-                  <Button
-                    key={id}
-                    className={section === id ? 'active' : ''}
-                    aria-pressed={section === id}
-                    onClick={() => setSection(id)}
-                  >
-                    {label}
+          {row.kind !== 'source' && (
+            <div className="handover-actions handover-detail-toolbar">
+              <Status row={row} definitions={definitions} />
+              <span>
+                v{row.version} · {definitions.values[text(row.payload.origin)] || '人工整理'}
+              </span>
+              {!version &&
+                !readOnly &&
+                (row.kind !== 'candidate' || canReview) &&
+                !['source', 'package', 'job'].includes(row.kind) &&
+                !(row.kind === 'candidate' && text(row.payload.promoted_id)) &&
+                row.state !== 'archived' && (
+                  <Button onClick={() => onEdit(row)}>
+                    {row.kind === 'candidate' ? '审核并合并' : '编辑'}
                   </Button>
-                ))}
-              </nav>
-              {blocks.length > 0 && (
-                <div className="handover-notice handover-risk">
-                  <strong>接续前需要处理</strong>
-                  <ul>
-                    {blocks.map((block) => (
-                      <li key={block}>{block}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </>
+                )}
+              {onDiscuss && <Button onClick={() => onDiscuss(row)}>在对话中讨论</Button>}
+            </div>
           )}
           {row.kind === 'candidate' ? (
             <>
@@ -335,170 +496,91 @@ export function RecordView({
                 {text(row.payload.reason)}
               </p>
               <RecordContent
-                row={{ ...row, payload: row.payload.proposed as Payload }}
+                row={{
+                  ...row,
+                  kind: text(row.payload.target_kind) as Kind,
+                  payload: row.payload.proposed as Payload,
+                }}
                 records={records}
                 definitions={definitions}
                 onOpen={onOpen}
               />
             </>
-          ) : section === 'summary' || row.kind !== 'task' ? (
-            <RecordContent row={row} records={records} definitions={definitions} onOpen={onOpen} />
           ) : (
-            <>
-              <div className="handover-actions">
-                {!readOnly &&
-                  relatedKinds[section]?.map((kind) => (
-                    <Button
-                      key={kind}
-                      onClick={() =>
-                        onNew(kind, {
-                          ...(kind === 'constraint' ? {} : { task_id: identifier }),
-                          ...(kind === 'plan' || kind === 'verification'
-                            ? { baseline_id: text(row.payload.baseline_id) }
-                            : {}),
-                          ...(kind === 'constraint' ? { task_ids: [identifier] } : {}),
-                        })
-                      }
-                    >
-                      新增{definitions.kinds[kind]}
-                    </Button>
-                  ))}
-              </div>
-              {section === 'issues' && (
-                <p>
-                  依赖工作：
-                  {ids(row.payload.dependencies).map((id) => (
-                    <Button key={id} onClick={() => onOpen(id)}>
-                      {records.find((item) => item.id === id)?.title || id}
-                    </Button>
-                  ))}
-                </p>
-              )}
-              <div className="handover-cards">
-                {related.map((item) => (
-                  <RecordCard row={item} definitions={definitions} onOpen={onOpen} key={item.id} />
-                ))}
-              </div>
-              {!related.length && (
-                <p className="handover-empty">尚无相关记录。补充真实信息后再确认。</p>
-              )}
-            </>
+            <RecordContent row={row} records={records} definitions={definitions} onOpen={onOpen} />
           )}
-          {row.kind === 'source' && (
-            <section className="handover-form-section">
-              <div className="handover-actions">
-                <Button
-                  onClick={() =>
-                    void client
-                      .download(
-                        `/sources/${row.id}/original`,
-                        text(row.payload.filename).split(/[\\/]/).pop() || '原始资料',
-                      )
-                      .catch(setError)
-                  }
-                >
-                  下载原始附件
-                </Button>
-                {text(row.payload.path) && (
-                  <>
-                    <Button
-                      onClick={() =>
+          {row.kind === 'source' &&
+            (text(row.payload.path) ||
+              (Array.isArray(row.payload.files) && row.payload.files.length > 0)) && (
+              <section className="handover-form-section">
+                <div className="handover-actions">
+                  {text(row.payload.path) && (
+                    <>
+                      <Button
+                        onClick={() =>
+                          void client
+                            .get<{ changed: boolean }>(`/sources/${row.id}/compare`)
+                            .then(setComparison)
+                            .catch(setError)
+                        }
+                      >
+                        比对当前版本
+                      </Button>
+                      {onCurrentSource && (
+                        <Button onClick={() => void onCurrentSource(row).catch(setError)}>
+                          在源码阅读器打开
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </div>
+                {comparison && (
+                  <p className="handover-notice" role="status">
+                    {comparison.changed
+                      ? '当前源码已经变化，交接记录仍保留原快照。'
+                      : '比对完成：当前源码与固定快照一致。'}
+                  </p>
+                )}
+                {Array.isArray(row.payload.files) && row.payload.files.length > 0 && (
+                  <label className="handover-file-select">
+                    <span>查看快照文件</span>
+                    <HandoverSelect
+                      label="查看快照文件"
+                      value={snapshot?.path || ''}
+                      onValueChange={(path) => {
+                        if (!path) {
+                          setSnapshot(undefined);
+                          return;
+                        }
                         void client
-                          .get<{ changed: boolean }>(`/sources/${row.id}/compare`)
-                          .then(setComparison)
-                          .catch(setError)
-                      }
-                    >
-                      比对当前版本
-                    </Button>
-                    <Button onClick={() => void onCurrentSource(row).catch(setError)}>
-                      在源码阅读器打开
-                    </Button>
+                          .get<{ path: string; content: string; sha256: string }>(
+                            `/sources/${row.id}/file?path=${encodeURIComponent(path)}`,
+                          )
+                          .then(setSnapshot)
+                          .catch(setError);
+                      }}
+                      options={[
+                        { value: '', label: '选择文件' },
+                        ...(row.payload.files as { path: string }[]).map((file) => ({
+                          value: file.path,
+                          label: file.path,
+                        })),
+                      ]}
+                    />
+                  </label>
+                )}
+                {snapshot && (
+                  <>
+                    <p>
+                      {snapshot.path} · SHA256 {snapshot.sha256}
+                    </p>
+                    <pre className="handover-source">{snapshot.content}</pre>
                   </>
                 )}
-              </div>
-              {comparison && (
-                <p className="handover-notice" role="status">
-                  {comparison.changed
-                    ? '当前源码已经变化，交接记录仍保留原快照。'
-                    : '比对完成：当前源码与固定快照一致。'}
-                </p>
-              )}
-              {Array.isArray(row.payload.files) && row.payload.files.length > 0 && (
-                <label className="handover-file-select">
-                  <span>查看快照文件</span>
-                  <HandoverSelect
-                    label="查看快照文件"
-                    value={snapshot?.path || ''}
-                    onValueChange={(path) => {
-                      if (!path) {
-                        setSnapshot(undefined);
-                        return;
-                      }
-                      void client
-                        .get<{ path: string; content: string; sha256: string }>(
-                          `/sources/${row.id}/file?path=${encodeURIComponent(path)}`,
-                        )
-                        .then(setSnapshot)
-                        .catch(setError);
-                    }}
-                    options={[
-                      { value: '', label: '选择文件' },
-                      ...(row.payload.files as { path: string }[]).map((file) => ({
-                        value: file.path,
-                        label: file.path,
-                      })),
-                    ]}
-                  />
-                </label>
-              )}
-              {snapshot && (
-                <>
-                  <p>
-                    {snapshot.path} · SHA256 {snapshot.sha256}
-                  </p>
-                  <pre className="handover-source">{snapshot.content}</pre>
-                </>
-              )}
-            </section>
-          )}
-          {row.kind === 'package' && (
-            <div className="handover-actions">
-              {['docx', 'zip'].map((format) => (
-                <Button
-                  key={format}
-                  onClick={() =>
-                    void client
-                      .download(
-                        `/packages/${row.id}/export?format=${format}&version=${row.version}`,
-                        `${row.title}.${format}`,
-                      )
-                      .catch(setError)
-                  }
-                >
-                  下载{format === 'docx' ? ' Word 交接包' : '完整归档含原始附件'}
-                </Button>
-              ))}
-              {!readOnly && (
-                <Button
-                  onClick={() =>
-                    onNew('receipt', { package_id: row.id, package_version: row.version })
-                  }
-                >
-                  记录接收与复述
-                </Button>
-              )}
-            </div>
-          )}
+              </section>
+            )}
           {!readOnly && !version && row.kind !== 'job' && (
             <div className="handover-actions handover-form-section">
-              {row.state !== 'archived' &&
-                row.state !== 'confirmed' &&
-                row.kind !== 'candidate' && (
-                  <Button disabled={busy} onClick={() => setAction('confirm')}>
-                    人工确认此版本
-                  </Button>
-                )}
               <Button
                 disabled={busy}
                 onClick={() => setAction(row.state === 'archived' ? 'restore' : 'archive')}
@@ -515,17 +597,11 @@ export function RecordView({
                 void act();
               }}
             >
-              <h3>
-                {action === 'confirm'
-                  ? '确认当前版本'
-                  : action === 'archive'
-                    ? '归档记录'
-                    : '恢复记录'}
-              </h3>
-              <p>请填写实际姓名和复核意见；确认会留下版本记录。</p>
+              <h3>{action === 'archive' ? '归档记录' : '恢复记录'}</h3>
+              <p>请填写操作人和说明，操作会保留到历史记录。</p>
               <div className="handover-fields">
                 <label>
-                  <span>确认人</span>
+                  <span>操作人</span>
                   <input
                     required
                     maxLength={120}
@@ -542,7 +618,7 @@ export function RecordView({
                   />
                 </label>
                 <label className="handover-field-wide">
-                  <span>复核意见</span>
+                  <span>操作说明</span>
                   <textarea
                     required
                     maxLength={2000}
@@ -562,20 +638,7 @@ export function RecordView({
               </div>
             </form>
           )}
-          <details className="handover-form-section">
-            <summary>修改与确认历史</summary>
-            <ErrorText error={history.error} />
-            {history.data?.map((item) => (
-              <div className="handover-history" key={item.version}>
-                <Button onClick={() => onOpen(identifier, item.version)}>
-                  v{item.version} · {definitions.states[item.state]}
-                </Button>
-                <span>
-                  {item.confirmation?.actor || '草稿保存'} · {localTime(item.created_at)}
-                </span>
-              </div>
-            ))}
-          </details>
+          {historyContent}
         </>
       )}
     </HandoverModal>

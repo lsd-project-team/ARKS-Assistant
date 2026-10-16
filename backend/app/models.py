@@ -21,7 +21,9 @@ class Base(DeclarativeBase):
 
 class Project(Base):
     __tablename__ = "projects"
+    __table_args__ = (Index("ix_projects_owner_state", "owner_id", "state"),)
     id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    owner_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     name: Mapped[str] = mapped_column(String(120))
     description: Mapped[str] = mapped_column(Text, default="", server_default="")
     source_root: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -83,7 +85,11 @@ class ProjectMaterialRevision(Base):
 
 class Thread(Base):
     __tablename__ = "threads"
+    __table_args__ = (
+        Index("ix_threads_owner_workspace_state", "owner_id", "workspace_id", "state"),
+    )
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    owner_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     workspace_id: Mapped[str] = mapped_column(String(32), index=True)
     project_id: Mapped[str | None] = mapped_column(
         ForeignKey("projects.id"), nullable=True, index=True
@@ -115,6 +121,8 @@ class Message(Base):
     replaces_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     origin_message_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     source_workspace_id: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    actor_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
 
 
 class Run(Base):
@@ -159,6 +167,8 @@ class QueuedQuestion(Base):
     source_options_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    actor_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
 
 
 class MemoryRecord(Base):

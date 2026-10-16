@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 
 export const cn = (...values: ClassValue[]) => twMerge(clsx(values));
 export function Button({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -24,15 +24,21 @@ export function Modal({
   children: ReactNode;
   className?: string;
 }) {
+  const descriptionId = useId();
   return (
     <Dialog.Root open={open} onOpenChange={(value) => !value && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className={cn('modal-content', className)}>
+        <Dialog.Content
+          className={cn('modal-content', className)}
+          aria-describedby={description ? descriptionId : undefined}
+        >
           <div className="modal-heading">
             <div>
               <Dialog.Title>{title}</Dialog.Title>
-              <Dialog.Description>{description || title}</Dialog.Description>
+              {description && (
+                <Dialog.Description id={descriptionId}>{description}</Dialog.Description>
+              )}
             </div>
             <Dialog.Close asChild>
               <Button className="icon-button" aria-label="关闭">

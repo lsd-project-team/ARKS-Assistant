@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { mergedStorage } from './mergedStorage.ts';
+import { accountWorkspaceStorage, changeWorkspaceAccount } from './accountWorkspace.ts';
 import { workspaceVisibility, type PaneWidths, type WorkspaceVisibility } from './paneLayout.ts';
 import type { Selection, SourceOptions, SourceFile } from '../types';
 import { restoredMessageJump, type ChatPosition, type MessageJump } from './chatNavigation.ts';
@@ -467,7 +468,8 @@ export const useWorkspace = create<WorkspaceState>()(
     }),
     {
       name: 'trunk-workspace',
-      storage: createJSONStorage(() => mergedStorage(localStorage)),
+      storage: createJSONStorage(() => mergedStorage(accountWorkspaceStorage)),
+      skipHydration: true,
       merge: (persisted, current) => {
         const state = { ...current, ...(persisted as Partial<WorkspaceState>) };
         const history = state.history.length
@@ -527,3 +529,10 @@ export const useWorkspace = create<WorkspaceState>()(
     },
   ),
 );
+
+export function activateWorkspaceAccount(id: string) {
+  changeWorkspaceAccount(id, () => {
+    useWorkspace.setState(useWorkspace.getInitialState(), true);
+    void useWorkspace.persist.rehydrate();
+  });
+}

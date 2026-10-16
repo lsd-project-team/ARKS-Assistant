@@ -27,37 +27,75 @@ button {
 svg text {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC Variable', sans-serif;
 }
-:root[data-theme='dark'][data-preset='classic'] {
-  --bg: #171d1a;
-  --grid: #2b3730;
-  --text: #eef2ec;
-  --text-muted: #a5b3a9;
-  --text-faint: #a0aea4;
-  --panel: #1f2722;
-  --panel-border: #344239;
-  --lane-fill: rgba(32, 42, 35, 0.5);
-  --lane-stroke: #4c6154;
-  --toolbar-bg: rgba(31, 39, 34, 0.95);
-  --toolbar-border: #405046;
-  --toolbar-text: #d7e2d8;
-  --toolbar-hover: #2c3830;
-  --toolbar-menu-bg: #1f2722;
+:root[data-theme='dark'][data-appearance='dark'] {
+  /* 图谱预设只决定语义节点颜色；画布、工具栏与浮层遵循应用深色外观。 */
+  --bg: #181818;
+  --bg-deep: #111;
+  --panel: #212121;
+  --panel-soft: #282828;
+  --panel-deep: #181818;
+  --line: #484848;
+  --line-soft: #303030;
+  --ink: #dfdfdf;
+  --muted: #b4b4b4;
+  --muted-2: #949494;
+  --text: #dfdfdf;
+  --text-muted: #b4b4b4;
+  --text-faint: #949494;
+  --canvas-bg: #181818;
+  --canvas-grid: #282828;
+  --lane-bg: #212121;
+  --lane-border: #484848;
+  --grid: #282828;
+  --panel-border: #303030;
+  --lane-fill: #21212180;
+  --lane-stroke: #484848;
+  --toolbar-bg: #212121f2;
+  --toolbar-border: #303030;
+  --toolbar-text: #dfdfdf;
+  --toolbar-hover: #303030;
+  --toolbar-menu-bg: #212121;
+  --chrome-accent: #63a8f8;
+  --chrome-selection: #303030;
+  --chrome-selection-border: #484848;
+  --chrome-shadow: 0 8px 28px #00000040, 0 2px 6px #00000026;
+  color-scheme: dark;
+  scrollbar-color: var(--lane-stroke) var(--bg);
 }
-:root[data-theme='light'][data-preset='classic'] {
-  --bg: #f9fbf8;
-  --grid: #e5ebe4;
-  --text: #26352c;
-  --text-muted: #64746a;
-  --text-faint: #64746a;
-  --panel: #fff;
-  --panel-border: #dce5dc;
-  --lane-fill: rgba(240, 245, 238, 0.6);
-  --lane-stroke: #c8d5c9;
-  --toolbar-bg: rgba(255, 255, 255, 0.95);
-  --toolbar-border: #d6e1d6;
-  --toolbar-text: #475b4c;
-  --toolbar-hover: #eef4ed;
-  --toolbar-menu-bg: #fff;
+:root[data-theme='light'][data-appearance='classic'] {
+  /* 页面配色与图内预设解耦，切换节点风格后工具栏仍保持柔和灰绿。 */
+  --bg: #f4f6f2;
+  --bg-deep: #f0f4ee;
+  --panel: #fafcf9;
+  --panel-soft: #e8eee6;
+  --panel-deep: #f0f4ee;
+  --line: #bdccba;
+  --line-soft: #d7e0d4;
+  --ink: #293a2f;
+  --muted: #526556;
+  --muted-2: #5d6b5e;
+  --text: #293a2f;
+  --text-muted: #526556;
+  --text-faint: #5d6b5e;
+  --canvas-bg: #f4f6f2;
+  --canvas-grid: #e3eadf;
+  --lane-bg: #f0f4ee;
+  --lane-border: #d7e0d4;
+  --grid: #e3eadf;
+  --panel-border: #d7e0d4;
+  --lane-fill: #f0f4ee99;
+  --lane-stroke: #bdccba;
+  --toolbar-bg: #fafcf9f2;
+  --toolbar-border: #d7e0d4;
+  --toolbar-text: #526556;
+  --toolbar-hover: #e1e9df;
+  --toolbar-menu-bg: #fafcf9;
+  --chrome-accent: #386548;
+  --chrome-selection: #e1eadd;
+  --chrome-selection-border: #b8c9b2;
+  --chrome-shadow: 0 8px 28px #233c2618, 0 2px 6px #233c260a;
+  color-scheme: light;
+  scrollbar-color: var(--lane-stroke) var(--bg);
 }
 
 :root[data-theme='light'][data-appearance='white'] {
@@ -89,6 +127,31 @@ svg text {
   --toolbar-menu-bg: #fff;
 }
 /* 加强图内文字与工具按钮的反馈，不改变节点的业务语义颜色。 */
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(.toolbar, .diagram-nav) {
+  /* 原图控件借用节点色作为反馈色；只在工具栏内映射，SVG 节点仍沿用原有语义色。 */
+  --frontend-stroke: var(--chrome-accent, var(--toolbar-text));
+  --backend-stroke: var(--chrome-accent, var(--toolbar-text));
+  --arrow-emphasis: var(--chrome-accent, var(--toolbar-text));
+  --arrow: var(--toolbar-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .toolbar button {
+  border-radius: 8px;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .toolbar
+  .preset-option[aria-checked='true'] {
+  background: var(--chrome-selection, var(--toolbar-hover));
+  border-color: var(--chrome-selection-border, var(--toolbar-border));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.preset-menu, .export-menu, .diagram-guide, .node-finder, .semantic-lens, .overview-map) {
+  border-color: var(--toolbar-border);
+  box-shadow: var(--chrome-shadow, 0 8px 28px #0003);
+}
+
 .node-title,
 .lane-label {
   font-weight: 500;

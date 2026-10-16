@@ -12,18 +12,33 @@ import { MemorySettingsPanel } from './MemorySettingsPanel';
 import { useMemoryDraft } from '../hooks/useMemoryDraft';
 import { useSourcePreferences } from '../hooks/useSourcePreferences';
 import { KnowledgeSourceSettings } from './KnowledgeSourceSettings';
+import { useAuth } from '../auth/AuthContext';
+import { api } from '../lib/api';
 
 export function SettingsDialog({
   open,
   onClose,
   initialTab = 'model',
+  embedded = false,
+  allowedTabs,
+  onDirtyChange,
 }: {
   open: boolean;
   onClose: () => void;
   initialTab?: string;
+  embedded?: boolean;
+  allowedTabs?: string[];
+  onDirtyChange?: (dirty: boolean) => void;
 }) {
-  const [tab, setTab] = useState(initialTab);
+  const canConfigure = useAuth().session?.user.role === 'admin';
+  const startingTab = initialTab;
+  const [tab, setTab] = useState(startingTab);
   const [advancedDirty, setAdvancedDirty] = useState(false);
+  const [sourcePreview, setSourcePreview] = useState<{
+    path: string;
+    content?: string;
+    error?: unknown;
+  }>();
   const [mcpEditorVersion, setMcpEditorVersion] = useState(0);
   const controller = useSettingsDraft(open, onClose, advancedDirty);
   const memoryController = useMemoryDraft(open && tab === 'memory', closeSettings);
@@ -32,13 +47,25 @@ export function SettingsDialog({
   // 未应用的 JSON 也是草稿，切换标签页前要避免把它留在已卸载的编辑器里。
   const [pendingTab, setPendingTab] = useState<string>();
   useEffect(() => {
-    if (open) setTab(initialTab);
+    if (open) setTab(startingTab);
     else {
       setAdvancedDirty(false);
       setPendingTab(undefined);
     }
-  }, [open, initialTab]);
+  }, [open, startingTab]);
   const { draft, busy } = controller;
+  useEffect(() => {
+    onDirtyChange?.(
+      controller.dirty || memoryController.dirty || sourceController.dirty || advancedDirty,
+    );
+  }, [
+    controller.dirty,
+    memoryController.dirty,
+    sourceController.dirty,
+    advancedDirty,
+    onDirtyChange,
+  ]);
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
   function closeSettings() {
     if (advancedDirty) {
       setPendingTab('close');
@@ -46,8 +73,9 @@ export function SettingsDialog({
     }
     sourceController.leave(controller.close);
   }
+  const Container = embedded ? EmbeddedSettings : Modal;
   return (
-    <Modal
+    <Container
       open={open}
       onClose={memoryController.close}
       title="工作区设置"
@@ -62,25 +90,27 @@ export function SettingsDialog({
           { id: 'sources', title: '知识来源', icon: BookOpen },
           { id: 'memory', title: '长期记忆', icon: Brain },
           { id: 'data', title: '数据', icon: HardDrive },
-        ].map((item) => (
-          <button
-            key={item.id}
-            className={tab === item.id ? 'selected' : ''}
-            disabled={busy || memoryController.busy || sourceController.busy}
-            onClick={() => {
-              if (tab === item.id) return;
-              memoryController.leave(() => {
-                sourceController.leave(() => {
-                  if (advancedDirty) setPendingTab(item.id);
-                  else setTab(item.id);
+        ]
+          .filter((item) => !allowedTabs || allowedTabs.includes(item.id))
+          .map((item) => (
+            <button
+              key={item.id}
+              className={tab === item.id ? 'selected' : ''}
+              disabled={busy || memoryController.busy || sourceController.busy}
+              onClick={() => {
+                if (tab === item.id) return;
+                memoryController.leave(() => {
+                  sourceController.leave(() => {
+                    if (advancedDirty) setPendingTab(item.id);
+                    else setTab(item.id);
+                  });
                 });
-              });
-            }}
-          >
-            <item.icon size={14} />
-            {item.title}
-          </button>
-        ))}
+              }}
+            >
+              <item.icon size={14} />
+              {item.title}
+            </button>
+          ))}
       </div>
       <div className="dialog-body">
         {tab === 'appearance' && <AppearanceSettings />}
@@ -89,11 +119,36 @@ export function SettingsDialog({
           <MemorySettingsPanel
             controller={memoryController}
             onNavigate={(action) => memoryController.leave(() => controller.navigate(action))}
+            onOpenThread={
+              embedded
+                ? (id) => {
+                    window.location.hash = `admin/questions/${id}`;
+                  }
+                : undefined
+            }
+            onOpenSource={
+              embedded
+                ? (path) => {
+                    setSourcePreview({ path });
+                    void api<{ content: string }>(`/file?path=${encodeURIComponent(path)}`)
+                      .then((saved) =>
+                        setSourcePreview((current) =>
+                          current?.path === path ? { path, content: saved.content } : current,
+                        ),
+                      )
+                      .catch((error) =>
+                        setSourcePreview((current) =>
+                          current?.path === path ? { path, error } : current,
+                        ),
+                      );
+                  }
+                : undefined
+            }
           />
         )}
         {configurationTab && controller.saved.isPending && <p className="muted">正在读取设置…</p>}
         {configurationTab && draft && (
-          <fieldset className="settings-content" disabled={busy}>
+          <fieldset className="settings-content" disabled={busy || !canConfigure}>
             {tab === 'model' && (
               <ModelSettingsPanel
                 settings={draft}
@@ -177,19 +232,21 @@ export function SettingsDialog({
       </div>
       <div className={tab === 'memory' ? 'modal-footer memory-footer' : 'modal-footer'}>
         <span>
-          {tab === 'appearance'
-            ? '外观已自动保存到本机'
-            : tab === 'sources'
-              ? sourceController.dirty
-                ? '有未保存的知识来源修改'
-                : '按项目保存，后续新问题自动使用'
-              : tab === 'memory'
-                ? memoryController.dirty
-                  ? '有未保存的记忆修改'
-                  : '记忆保存在本机，用于后续对话'
-                : controller.dirty || advancedDirty
-                  ? '有未保存的修改'
-                  : '密钥仅保存在本机'}
+          {!canConfigure && configurationTab
+            ? '系统配置由管理员维护'
+            : tab === 'appearance'
+              ? '外观已自动保存到本机'
+              : tab === 'sources'
+                ? sourceController.dirty
+                  ? '有未保存的知识来源修改'
+                  : '按项目保存，后续新问题自动使用'
+                : tab === 'memory'
+                  ? memoryController.dirty
+                    ? '有未保存的记忆修改'
+                    : '记忆保存在本机，用于后续对话'
+                  : controller.dirty || advancedDirty
+                    ? '有未保存的修改'
+                    : '密钥仅保存在本机'}
         </span>
         {tab === 'sources' && (
           <Button
@@ -208,13 +265,42 @@ export function SettingsDialog({
         {configurationTab && (
           <Button
             className="primary"
-            disabled={busy || !draft || !!controller.errors.length || advancedDirty}
+            disabled={
+              !canConfigure || busy || !draft || !!controller.errors.length || advancedDirty
+            }
             onClick={() => void controller.perform(controller.save)}
           >
             {busy ? <LoaderCircle size={14} className="spin" /> : <Check size={14} />}保存配置
           </Button>
         )}
       </div>
-    </Modal>
+      {sourcePreview && (
+        <Modal open title={sourcePreview.path} onClose={() => setSourcePreview(undefined)}>
+          <div className="dialog-body">
+            <ErrorText error={sourcePreview.error} />
+            {sourcePreview.content === undefined && !sourcePreview.error ? (
+              <p>正在读取当前源码…</p>
+            ) : (
+              <>
+                <p className="muted">当前源码，仅供核对记忆依据。</p>
+                <pre className="admin-reference-text">{sourcePreview.content}</pre>
+              </>
+            )}
+          </div>
+          <div className="modal-footer">
+            <Button onClick={() => setSourcePreview(undefined)}>关闭</Button>
+          </div>
+        </Modal>
+      )}
+    </Container>
   );
+}
+
+function EmbeddedSettings({
+  children,
+}: {
+  children?: import('react').ReactNode;
+  [key: string]: unknown;
+}) {
+  return <section className="settings-dialog admin-settings-panel">{children}</section>;
 }

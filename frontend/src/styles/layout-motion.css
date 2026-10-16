@@ -30,12 +30,6 @@
   min-width: 0;
   white-space: nowrap;
 }
-.app-navigation .project-row span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .app-navigation .navigation-tools > button {
   min-width: 0;
 }
@@ -54,7 +48,7 @@
   max-width: 100%;
   flex: 0 1 auto;
 }
-.composer-tools > .attach-code,
+.composer-tools > .attach-file,
 .composer-send-actions {
   flex-shrink: 0;
 }

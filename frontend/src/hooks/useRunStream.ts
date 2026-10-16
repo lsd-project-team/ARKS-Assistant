@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import type { ContextUsage, ErrorFeedback, Run, ToolEvent } from '../types';
+import type {
+  ContextUsage,
+  ErrorFeedback,
+  Run,
+  ToolEvent,
+  KnowledgeReference,
+  KnowledgeSearch,
+  MemorySaveFeedback,
+} from '../types';
 import { apiUrl } from '../lib/api';
 import { useWorkspace } from '../lib/store';
 
@@ -18,6 +26,9 @@ export function useRunStream(run: Run | undefined) {
   const [detail, setDetail] = useState('');
   const [context, setContext] = useState<ContextUsage>();
   const [finished, setFinished] = useState(false);
+  const [references, setReferences] = useState<KnowledgeReference[]>([]);
+  const [searches, setSearches] = useState<KnowledgeSearch[]>([]);
+  const [memorySaves, setMemorySaves] = useState<MemorySaveFeedback[]>([]);
   useEffect(() => {
     setAnswer('');
     setTools([]);
@@ -29,6 +40,9 @@ export function useRunStream(run: Run | undefined) {
     setStage(run?.stage || 'queued');
     setDetail('');
     setFinished(false);
+    setReferences([]);
+    setSearches([]);
+    setMemorySaves([]);
     setContext(undefined);
     if (!run || !['queued', 'running'].includes(run.status)) return;
     const source = new EventSource(apiUrl(`/runs/${run.id}/events`, projectId));
@@ -45,6 +59,15 @@ export function useRunStream(run: Run | undefined) {
       });
     };
     listen('token', (payload) => setAnswer((previous) => previous + String(payload.text)));
+    listen('knowledge_reference', (payload) =>
+      setReferences((previous) => [...previous, payload as unknown as KnowledgeReference]),
+    );
+    listen('knowledge_search', (payload) =>
+      setSearches((previous) => [...previous, payload as unknown as KnowledgeSearch]),
+    );
+    listen('memory_save', (payload) =>
+      setMemorySaves((previous) => [...previous, payload as unknown as MemorySaveFeedback]),
+    );
     listen('answer_replace', (payload) => setAnswer(String(payload.text)));
     listen('retrieval_budget', (payload) => setNotice(String(payload.text)));
     listen('answer_completion', (payload) => {
@@ -98,6 +121,9 @@ export function useRunStream(run: Run | undefined) {
     return () => source.close();
   }, [run?.id, run?.status, cache, projectId]);
   return {
+    references,
+    searches,
+    memorySaves,
     answer,
     tools,
     notice: connectionNotice || notice,

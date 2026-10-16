@@ -52,6 +52,7 @@ class SemanticRetrieval:
         self.database = database
         self.lock = RLock()
         self.cache = VersionCache(max_entries=256, max_bytes=2_000_000)
+        self.matrices = VersionCache(max_entries=16, max_bytes=64_000_000)
         self.error = None
 
     def _vectors(self, texts, *, persist=False):
@@ -109,18 +110,28 @@ class SemanticRetrieval:
             with self.lock:
                 query_chunks = chunks(query)[:4]
                 vectors = self._vectors(query_chunks)
-                sections = {key: chunks(text) for key, text in documents.items()}
-                values = self._vectors(
-                    [text for rows in sections.values() for text in rows], persist=True
-                )
-                scores = {
-                    key: max(
-                        float(np.dot(vectors[question], values[text]))
-                        for question in query_chunks
-                        for text in rows
+
+                # 内容指纹也支持原位修改映射，不依赖对象身份或文件时间。
+                def prepare():
+                    sections = {key: chunks(text) for key, text in documents.items()}
+                    values = self._vectors(
+                        [text for rows in sections.values() for text in rows], persist=True
                     )
-                    for key, rows in sections.items()
-                }
+                    keys = [key for key, rows in sections.items() for _ in rows]
+                    matrix = np.stack([values[text] for rows in sections.values() for text in rows])
+                    return documents, keys, matrix
+
+                weight = sum(len(chunks(text)) for text in documents.values()) * 1536
+                signature = tuple(
+                    (key, hashlib.sha256(text.encode()).digest()) for key, text in documents.items()
+                )
+                _, keys, matrix = self.matrices.get_or_create(signature, prepare, weight)
+                similarities = np.max(
+                    matrix @ np.stack([vectors[q] for q in query_chunks]).T, axis=1
+                )
+                scores = {}
+                for key, similarity in zip(keys, similarities, strict=True):
+                    scores[key] = max(scores.get(key, -1), float(similarity))
                 self.error = None
                 return scores
         except (OSError, ValueError, RuntimeError, sqlite3.Error) as error:

@@ -176,9 +176,6 @@ textarea::placeholder {
   font-weight: 500;
   letter-spacing: 0;
 }
-.legacy-visual .app-navigation .project-row {
-  font-size: 13px;
-}
 .navigation-tools {
   border-top-color: color-mix(in srgb, var(--border) 60%, transparent);
 }
@@ -458,12 +455,10 @@ textarea::placeholder {
 .profile-toolbar label,
 .mcp-settings-panel > label,
 .mcp-server-fields label,
-.secret-fields legend,
-.form-grid label {
+.secret-fields legend {
   color: var(--text-secondary);
 }
 .profile-current,
-.model-help,
 .capability-results > small,
 .mcp-server-list small,
 .add-secret-field {
@@ -758,7 +753,7 @@ textarea::placeholder {
 }
 /* 工具栏保持轻量，但悬停和键盘聚焦必须能看出可操作区域。 */
 .legacy-visual
-  :is(.icon-button, .navigation-toggle, .thread-more, .attach-code):hover:not(:disabled),
+  :is(.icon-button, .navigation-toggle, .thread-more, .attach-file):hover:not(:disabled),
 .legacy-visual .sidebar-heading button:hover:not(:disabled) {
   background: var(--surface-hover);
   color: var(--text);

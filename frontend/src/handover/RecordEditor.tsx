@@ -9,7 +9,7 @@ import type { Definitions, HandoverRecord, Kind, Payload } from './types';
 import { text } from './types';
 
 export function RecordEditor({
-  projectId,
+  scopeId,
   client,
   definitions,
   records,
@@ -21,7 +21,7 @@ export function RecordEditor({
   onSaved,
   onClose,
 }: {
-  projectId: string;
+  scopeId: string;
   client: Client;
   definitions: Definitions;
   records: HandoverRecord[];
@@ -35,15 +35,11 @@ export function RecordEditor({
 }) {
   const candidate = row?.kind === 'candidate';
   const payload = candidate ? (row.payload.proposed as Payload) : row?.payload;
-  const draftState = useHandoverDraft(
-    projectId,
-    row?.id || `new:${kind}:${text(initial.task_id)}`,
-    {
-      title: row?.title || '',
-      payload: { ...defaults(definitions, kind), ...payload, ...initial },
-      version: row?.version,
-    },
-  );
+  const draftState = useHandoverDraft(scopeId, row?.id || `new:${kind}:${text(initial.task_id)}`, {
+    title: row?.title || '',
+    payload: { ...defaults(definitions, kind), ...payload, ...initial },
+    version: row?.version,
+  });
   const { draft, setDraft } = draftState;
   const [error, setError] = useState<unknown>();
   const [busy, setBusy] = useState(false);
@@ -90,14 +86,14 @@ export function RecordEditor({
           : `${row ? '编辑' : '新增'}${definitions.kinds[kind]}`
       }
       onClose={onClose}
-      description="保存为草稿后可继续复核。关闭页面会保留本机草稿，已确认内容的旧版本保留。"
+      description="整理内容并保存为草稿。关闭时保留本机草稿。"
       onSubmit={(event) => {
         event.preventDefault();
         void save();
       }}
       footer={
         <>
-          <span className="handover-muted">保存后另行人工确认</span>
+          <span className="handover-muted">保存后到“复核与追溯”审核</span>
           <Button type="button" disabled={busy} onClick={onClose}>
             关闭并保留草稿
           </Button>
@@ -108,7 +104,7 @@ export function RecordEditor({
       }
     >
       {draftState.restored && (
-        <p className="handover-notice">已恢复此项目的本机草稿，请检查内容与版本后保存。</p>
+        <p className="handover-notice">已恢复交接工作台的本机草稿，请检查内容与版本后保存。</p>
       )}
       {candidate && (
         <p className="handover-notice">
@@ -151,7 +147,15 @@ export function RecordEditor({
           <Button
             type="button"
             onClick={() => {
-              setDraft({ ...draft, version: incoming.version });
+              setDraft({
+                ...draft,
+                version: incoming.version,
+                // 访谈表单不再编辑引用，冲突重试保留服务器最新的关联，避免隐藏字段覆盖。
+                payload:
+                  kind === 'interview' && !candidate
+                    ? { ...draft.payload, evidence: incoming.payload.evidence }
+                    : draft.payload,
+              });
               setIncoming(undefined);
               setError(undefined);
             }}
@@ -161,35 +165,38 @@ export function RecordEditor({
         </section>
       )}
       <fieldset disabled={busy}>
-        <div className="handover-fields">
-          <label className="handover-field-wide">
-            <span>标题</span>
-            <input
-              required
-              maxLength={200}
-              value={draft.title}
-              onChange={(event) => setDraft({ ...draft, title: event.target.value })}
-            />
-          </label>
-          <label>
-            <span>整理人</span>
-            <input
-              required
-              maxLength={120}
-              value={actor}
-              onChange={(event) => onActor(event.target.value)}
-            />
-          </label>
-          <label>
-            <span>{candidate ? '审核意见' : '修改说明'}</span>
-            <input
-              required={candidate}
-              maxLength={2000}
-              value={opinion}
-              onChange={(event) => setOpinion(event.target.value)}
-            />
-          </label>
-        </div>
+        <section className="handover-editor-section">
+          <h3>记录信息</h3>
+          <div className="handover-fields">
+            <label className="handover-field-wide">
+              <span>标题</span>
+              <input
+                required
+                maxLength={200}
+                value={draft.title}
+                onChange={(event) => setDraft({ ...draft, title: event.target.value })}
+              />
+            </label>
+            <label>
+              <span>整理人</span>
+              <input
+                required
+                maxLength={120}
+                value={actor}
+                onChange={(event) => onActor(event.target.value)}
+              />
+            </label>
+            <label>
+              <span>{candidate ? '审核意见' : '修改说明'}</span>
+              <input
+                required={candidate}
+                maxLength={2000}
+                value={opinion}
+                onChange={(event) => setOpinion(event.target.value)}
+              />
+            </label>
+          </div>
+        </section>
         <Fields
           kind={kind}
           value={draft.payload}
@@ -203,7 +210,8 @@ export function RecordEditor({
             onChange={(steps) => setPayload({ ...draft.payload, steps })}
           />
         )}
-        {!candidate && (
+        {/* 访谈原文自身就是来源；隐藏手工证据输入，保存时仍保留已有引用。 */}
+        {!candidate && kind !== 'interview' && (
           <EvidenceFields
             value={draft.payload.evidence}
             onChange={(evidence) => setPayload({ ...draft.payload, evidence })}

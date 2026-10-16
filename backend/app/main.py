@@ -5,15 +5,21 @@ from contextlib import asynccontextmanager
 
 from alembic import command
 from alembic.config import Config
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
-from app.api import configuration, conversations, data, knowledge, workspace
+from app.admin.router import create_router as admin_router
+from app.admin.router import usage_router
+from app.admin.tracking import UsageTracking
+from app.api import configuration, data, health
 from app.api.projects import ProjectDispatcher
 from app.api.projects import create_router as projects_router
+from app.auth.middleware import install_authentication
+from app.auth.router import create_router as auth_router
+from app.auth.service import AuthService
 from app.config import PROJECT_ROOT, Paths
 from app.handover.ai import HandoverAI
 from app.handover.router import create_router as handover_router
@@ -29,6 +35,8 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     services = create_services(paths)
     projects = Projects(services)
     handover_ai = HandoverAI(projects)
+    auth = AuthService(services.database, paths)
+    usage = UsageTracking(services.database)
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -37,6 +45,8 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 migration = Config(str(PROJECT_ROOT / "backend/alembic.ini"))
                 migration.attributes["connection"] = services.database.engine
                 command.upgrade(migration, "head")
+                auth.initialize()
+                usage.initialize()
                 projects.initialize()
                 services.repository.recover()
                 handover_ai.recover()
@@ -50,16 +60,12 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     app.state.runs = services.runs
     app.state.repository = services.repository
     app.state.projects = projects
-
-    @app.middleware("http")
-    async def local_origin(request: Request, call_next):
-        origin = request.headers.get("origin")
-        if origin:
-            from urllib.parse import urlparse
-
-            if urlparse(origin).hostname not in {"localhost", "127.0.0.1", "::1"}:
-                return JSONResponse({"detail": "仅允许本机页面访问"}, status_code=403)
-        return await call_next(request)
+    app.state.auth = auth
+    app.state.usage = usage
+    install_authentication(app, auth, usage)
+    app.include_router(auth_router(auth, projects))
+    app.include_router(admin_router(auth, usage))
+    app.include_router(usage_router(usage))
 
     @app.exception_handler(ValueError)
     async def invalid_request(_request, error):
@@ -78,11 +84,18 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     async def not_found(_request, error):
         return JSONResponse({"detail": str(error)}, status_code=404)
 
-    for module in (workspace, conversations, configuration, data, knowledge):
+    for module in (health, configuration, data):
         app.include_router(module.create_router(services))
     app.include_router(projects_router(projects))
     app.include_router(handover_router(projects, handover_ai))
     app.mount("/api/p", ProjectDispatcher(projects, app.exception_handlers))
+
+    @app.api_route(
+        "/api/{unmatched:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]
+    )
+    async def unknown_api(unmatched: str):
+        return JSONResponse({"detail": "接口不存在"}, status_code=404)
+
     frontend = PROJECT_ROOT / "frontend/dist"
     if frontend.is_dir():
         app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")

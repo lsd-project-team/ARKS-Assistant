@@ -1,6 +1,10 @@
 import { QueryClient } from '@tanstack/react-query';
 
 const caches = new Map<string, QueryClient>();
+export function clearProjectCaches() {
+  for (const cache of caches.values()) cache.clear();
+  caches.clear();
+}
 export function projectCache(id: string) {
   if (!caches.has(id))
     caches.set(

@@ -55,6 +55,7 @@ export interface Run {
   model_snapshot?: ModelSnapshot;
 }
 export interface Thread {
+  owner_id?: string | null;
   project_state?: 'active' | 'archived' | null;
   project_name?: string;
   project_id?: string | null;
@@ -73,6 +74,7 @@ export interface Thread {
   origin_message_id?: string | null;
 }
 export interface Project {
+  owner_id?: string | null;
   source_folders: { root: string; label: string; source_id: string }[];
   deepwiki_repo: string;
   id: string;
@@ -105,7 +107,8 @@ export interface ProjectMaterial {
 }
 export interface ProjectList {
   projects: Project[];
-  default_project_id: string;
+  default_project_id: string | null;
+  default_source?: Pick<Project, 'source_root' | 'source_folders' | 'deepwiki_repo'>;
 }
 export interface Conversation extends Thread {
   messages: Message[];
@@ -307,6 +310,10 @@ export interface ConversationContext extends ContextUsage {
   message_count: number;
 }
 export interface RunContext {
+  references?: KnowledgeReference[];
+  searches?: KnowledgeSearch[];
+  memory_saves?: MemorySaveFeedback[];
+  handover_materials?: KnowledgeReference[];
   completion?: RunCompletion | null;
   analysis_progress?: AnalysisProgress | null;
   analysis_plan?: { mode: string; limit: number; reserve: number; output_tokens: number } | null;
@@ -325,6 +332,7 @@ export interface RunContext {
   }[];
   knowledge_retrieval?: { titles: string[]; injected: boolean }[];
   materials?: { id: string; title: string; version: number; citation: string }[];
+  debug_issues?: { id: string; title: string; version: number; citation: string }[];
   model?: ModelSnapshot;
   budget?: ContextUsage | null;
   memories: Memory[];
@@ -340,6 +348,31 @@ export interface RunContext {
     citations: { target: string; valid: boolean; reason?: string }[];
     scope: string;
   } | null;
+}
+
+export interface KnowledgeReference {
+  kind: 'material' | 'handover_material' | 'debug_issue';
+  id: string;
+  title: string;
+  version: number;
+  citation: string;
+  compatibility?: { status: string; missing?: string[]; reason?: string };
+  resolution_status?: string;
+}
+
+export interface KnowledgeSearch {
+  kind: KnowledgeReference['kind'];
+  matched: number;
+  excluded_conditions?: number;
+  unreadable?: number;
+  degraded?: boolean;
+}
+
+export interface MemorySaveFeedback {
+  name: string;
+  scope: string;
+  status: 'saved' | 'needs_review' | 'not_saved';
+  text: string;
 }
 
 export interface SourceOptions {

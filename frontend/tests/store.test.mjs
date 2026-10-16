@@ -8,7 +8,9 @@ globalThis.localStorage = {
   removeItem: (key) => saved.delete(key),
 };
 globalThis.window = { localStorage: globalThis.localStorage };
-const { useWorkspace, draftFor, draftKey } = await import('../src/lib/store.ts');
+const { useWorkspace, draftFor, draftKey, activateWorkspaceAccount } =
+  await import('../src/lib/store.ts');
+activateWorkspaceAccount('store-test');
 const store = useWorkspace;
 beforeEach(() => {
   saved.clear();
@@ -301,9 +303,9 @@ test('草稿和选区按会话隔离，并在重新加载后恢复', async () =>
   assert.equal(draftFor(store.getState()).content, '');
   assert.equal(draftFor(store.getState()).selections.length, 0);
   store.getState().setDraft('B 的草稿');
-  const persisted = saved.get('trunk-workspace');
+  const persisted = saved.get('trunk-workspace:account:store-test');
   store.setState({ drafts: {} });
-  saved.set('trunk-workspace', persisted);
+  saved.set('trunk-workspace:account:store-test', persisted);
   await store.persist.rehydrate();
   store.getState().selectThread('A');
   assert.equal(draftFor(store.getState()).content, 'A 的未发送问题');

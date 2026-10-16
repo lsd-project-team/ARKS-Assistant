@@ -1,24 +1,45 @@
+/* 交接使用桌面网格，显式覆盖公共样式中的小窗口侧栏浮层。 */
+.app-shell.legacy-visual:has(> .handover-workbench) {
+  --navigation-target-width: var(--navigation-width, 252px);
+  grid-template-columns:
+    var(--drag-navigation-width, var(--motion-navigation-width, var(--navigation-target-width)))
+    minmax(0, 1fr);
+  padding: 0;
+}
+.app-shell.legacy-visual.sidebar-collapsed:has(> .handover-workbench) {
+  --navigation-target-width: 68px;
+}
+.app-shell.legacy-visual:has(> .handover-workbench) > .app-navigation {
+  position: relative;
+  inset: auto;
+  width: auto;
+  max-width: none;
+  box-shadow: none;
+}
+.app-shell.legacy-visual:has(> .handover-workbench) > .app-navigation[data-compact='true'] {
+  padding: 24px 10px 16px;
+}
 .handover-workbench {
   grid-column: 2;
   grid-row: 1;
   min-width: 0;
   height: 100dvh;
   overflow: auto;
+  container-type: inline-size;
   color: var(--text);
   background: var(--surface-warm);
-  font-size: 13px;
+  font-size: 14px;
 }
 .handover-workbench,
 .handover-modal {
-  --handover-success: #357153;
-  --handover-warning: #986022;
+  --handover-success: var(--success-text);
+  --handover-warning: var(--warning-text);
   --handover-danger: var(--danger-text);
-  line-height: 1.6;
+  line-height: 1.65;
 }
-:root[data-appearance='dark'] .handover-workbench,
-:root[data-appearance='dark'] .handover-modal {
-  --handover-success: #9ecfae;
-  --handover-warning: #e4bb80;
+.handover-workbench *,
+.handover-modal * {
+  box-sizing: border-box;
 }
 .handover-workbench .button,
 .handover-modal .button {
@@ -33,20 +54,22 @@
   flex-shrink: 0;
 }
 .handover-header {
+  min-width: 740px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 28px 34px 22px;
+  padding: 26px 32px 20px;
   background: var(--panel);
 }
 .handover-header h1 {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 23px;
-  margin: 8px 0;
-  letter-spacing: -0.5px;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
 }
 .handover-header > div:first-child {
   min-width: 0;
@@ -55,18 +78,19 @@
 .handover-panel header p {
   color: var(--text-secondary);
   margin: 4px 0;
-  font-size: 12px;
+  font-size: 13px;
 }
 .handover-eyebrow {
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 .handover-tabs {
+  min-width: 740px;
   display: flex;
-  gap: 26px;
+  gap: 24px;
   overflow-x: auto;
   white-space: nowrap;
-  padding: 0 34px;
+  padding: 0 32px;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -88,8 +112,9 @@
   font-weight: 600;
 }
 .handover-body {
-  padding: 24px 34px 48px;
-  max-width: 1700px;
+  min-width: 740px;
+  padding: 24px 32px 48px;
+  max-width: none;
   margin: auto;
 }
 .handover-actions {
@@ -98,76 +123,69 @@
   flex-wrap: wrap;
   gap: 8px;
 }
-.handover-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.handover-metrics button {
-  text-align: left;
-  padding: 20px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 12px;
-}
-.handover-metrics button:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-subtle);
-}
-.handover-metrics span {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 12px;
-}
-.handover-metrics strong {
-  display: block;
-  font-size: 30px;
-  margin-top: 8px;
-  font-weight: 500;
-}
-.handover-overview-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 20px;
-}
-.handover-panel,
-.handover-onboarding {
-  padding: 22px;
+.handover-panel {
+  padding: 24px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
-.handover-panel h2,
-.handover-onboarding h2 {
+.handover-panel h2 {
   font-size: 16px;
-  margin: 0 0 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 16px;
 }
 .handover-panel h3,
 .handover-group h3 {
   font-size: 14px;
-  margin: 16px 0 12px;
+  font-weight: 600;
+  margin: 20px 0 12px;
 }
-.handover-panel header {
+.handover-panel > h3:first-child {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+.handover-panel > header {
   display: flex;
   gap: 12px;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
-.handover-panel header h2 {
+.handover-panel > header h2 {
   margin-bottom: 4px;
 }
-.handover-onboarding p {
+.handover-panel > header > div,
+.handover-group-heading > div {
+  flex: 1;
+  min-width: 0;
+}
+.handover-panel > header > .button,
+.handover-group-heading > .button {
+  flex-shrink: 0;
+}
+.handover-empty-state {
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--surface-subtle);
   color: var(--text-secondary);
-  line-height: 1.8;
-  max-width: 760px;
+}
+.handover-empty-state strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.handover-empty-state p {
+  margin: 6px 0 0;
+  max-width: 65ch;
+  font-size: 13px;
 }
 .handover-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 12px;
 }
 .handover-record-card {
@@ -177,7 +195,7 @@
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 15px;
+  padding: 18px;
   min-width: 0;
 }
 .handover-record-card:hover {
@@ -193,34 +211,54 @@
 }
 .handover-record-card strong {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.55;
   margin: 12px 0 8px;
   overflow-wrap: anywhere;
 }
 .handover-record-card p {
   margin: 0 0 12px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.7;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .handover-record-card small {
+  font-size: 12px;
   color: var(--text-secondary);
 }
-.handover-priority-row {
-  margin-bottom: 12px;
+.handover-record-compact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px 12px;
+  padding: 14px;
 }
-.handover-priority-row > small {
-  display: block;
-  padding: 8px 12px 0;
+.handover-record-compact > div {
+  grid-column: 2;
+  grid-row: 1;
+}
+.handover-record-compact > div > .handover-eyebrow,
+.handover-record-compact p {
+  display: none;
+}
+.handover-record-compact strong {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-size: 14px;
+}
+.handover-record-compact small {
+  grid-column: 1 / -1;
 }
 .handover-panel > .handover-record-card {
   margin-bottom: 12px;
 }
 .handover-status {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   padding: 3px 7px;
   border-radius: 5px;
@@ -238,43 +276,57 @@
   background: color-mix(in srgb, var(--handover-warning) 9%, var(--panel));
   border-color: color-mix(in srgb, var(--handover-warning) 22%, var(--panel));
 }
-.handover-coverage {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+.handover-page-heading,
+.handover-group-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px 24px;
 }
-.handover-coverage > div {
-  padding: 12px 0;
-  display: grid;
-  gap: 7px;
-  border-bottom: 1px solid var(--border);
+.handover-page-heading {
+  margin-bottom: 24px;
 }
-.handover-coverage span,
-.handover-coverage small {
+.handover-page-heading h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.handover-page-heading p,
+.handover-group-heading p {
+  margin: 0;
+  font-size: 13px;
   color: var(--text-secondary);
 }
-.handover-coverage small {
-  font-size: 11px;
+.handover-page-heading > .handover-actions {
+  gap: 10px;
+}
+.handover-page-heading .handover-checkbox {
+  margin-right: 6px;
+  min-height: 38px;
+  font-size: 13px;
+}
+.handover-count {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
 }
 .handover-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
-  padding: 14px;
+  margin-bottom: 12px;
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--panel);
 }
-.handover-toolbar h2 {
-  font-size: 16px;
-  margin: 0 auto 0 0;
-}
 .handover-toolbar > input {
   flex: 1;
   min-width: 180px;
-  max-width: 360px;
+  max-width: none;
 }
 .handover-toolbar > .handover-select-control {
   width: 170px;
@@ -318,7 +370,7 @@
   flex-shrink: 0;
 }
 .handover-empty {
-  padding: 36px 20px;
+  padding: 24px 20px;
   text-align: center;
   color: var(--text-secondary);
   line-height: 1.8;
@@ -331,17 +383,40 @@
   background: var(--surface-subtle);
 }
 .handover-group {
-  margin-bottom: 20px;
-  padding: 20px;
+  margin-bottom: 16px;
+  padding: 22px 24px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
 }
-.handover-group > h3 {
+.handover-group-heading {
+  margin-bottom: 16px;
+}
+.handover-group-heading h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+.handover-group-empty {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.handover-result-count {
+  color: var(--text-secondary);
+  font-size: 12px;
   margin: 0 0 16px;
 }
-.handover-group > .handover-empty {
-  margin: 0;
+.handover-board-empty {
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+  margin: 24px 0;
 }
 .handover-table-wrap {
   overflow: auto;
@@ -358,7 +433,7 @@
 .handover-task-table th {
   background: var(--surface-subtle);
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   padding: 12px 16px;
 }
@@ -367,6 +442,9 @@
   padding: 15px 16px;
   max-width: 300px;
   overflow-wrap: anywhere;
+}
+.handover-task-table td[colspan] {
+  padding: 24px;
 }
 .handover-task-table td button {
   padding: 0;
@@ -380,7 +458,7 @@
   display: block;
   margin-top: 7px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 .handover-board {
   display: grid;
@@ -414,23 +492,16 @@
 .handover-muted {
   color: var(--text-secondary);
   line-height: 1.8;
-  font-size: 12px;
+  font-size: 13px;
 }
 .handover-notice {
   padding: 12px 15px;
   border: 1px solid var(--border);
   border-radius: 9px;
   background: var(--surface-subtle);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.8;
   margin: 14px 0;
-}
-.handover-risk {
-  border-color: color-mix(in srgb, var(--handover-warning) 30%, var(--panel));
-  background: color-mix(in srgb, var(--handover-warning) 6%, var(--panel));
-}
-.handover-risk-text {
-  color: var(--handover-warning);
 }
 .handover-modal {
   display: flex;
@@ -441,6 +512,7 @@
   overflow: hidden;
   color: var(--text);
   background: var(--panel);
+  font-size: 14px;
 }
 .handover-modal > .modal-heading {
   padding: 22px 24px 18px;
@@ -452,7 +524,8 @@
   overflow-wrap: anywhere;
 }
 .handover-modal > .modal-heading p {
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.7;
 }
 .handover-modal .modal-heading .icon-button {
   min-height: 32px;
@@ -468,7 +541,7 @@
 .handover-modal-body {
   min-height: 0;
   overflow: auto;
-  padding: 22px 24px 24px;
+  padding: 24px 28px 28px;
   scrollbar-width: thin;
   overscroll-behavior: contain;
 }
@@ -533,7 +606,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px 20px;
-  margin: 16px 0;
+  margin: 16px 0 0;
 }
 .handover-fields label,
 .handover-file-select {
@@ -544,16 +617,26 @@
 }
 .handover-fields label > span,
 .handover-file-select > span {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   font-weight: 500;
 }
 .handover-fields small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 .handover-field-wide {
   grid-column: 1 / -1;
+}
+.handover-editor-section + .handover-editor-section {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.handover-editor-section h3 {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 600;
 }
 .handover-form-section {
   margin-top: 22px;
@@ -570,6 +653,10 @@
   border-radius: 10px;
   margin-bottom: 16px;
   padding: 14px;
+}
+.handover-form-section fieldset > .button,
+.handover-form-section fieldset > .handover-actions {
+  margin-top: 16px;
 }
 .handover-form-section legend {
   font-size: 12px;
@@ -589,13 +676,16 @@
 }
 .handover-form-footer > span {
   margin-right: auto;
-  font-size: 11px;
+  font-size: 12px;
 }
 .handover-selection-list {
   max-height: 350px;
   overflow: auto;
   border: 1px solid var(--border);
   border-radius: 10px;
+}
+.handover-selection-list:empty {
+  display: none;
 }
 .handover-selection-list label {
   display: flex;
@@ -624,12 +714,20 @@
 }
 .handover-selection-list small {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin-top: 6px;
 }
 .handover-record-fields {
-  margin-top: 20px;
+  margin: 10px 0 0;
+}
+.handover-content-section {
+  margin-top: 24px;
+}
+.handover-content-section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
 }
 .handover-record-fields > div,
 .handover-conflict dl > div {
@@ -641,7 +739,7 @@
 }
 .handover-record-fields dt {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 .handover-record-fields dd,
 .handover-conflict dd {
@@ -649,32 +747,10 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   line-height: 1.8;
-  font-size: 12px;
-}
-.handover-detail-tabs {
-  display: flex;
-  gap: 4px;
-  overflow: auto;
-  margin: 20px 0 14px;
-  padding: 4px;
-  background: var(--surface-subtle);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-.handover-detail-tabs .button {
-  flex: 1;
-  box-shadow: none;
-  background: transparent;
-  border: 0;
-  color: var(--text-secondary);
-}
-.handover-detail-tabs .button.active {
-  background: var(--panel);
-  box-shadow: var(--surface-stroke), var(--shadow-panel);
-  color: var(--text);
+  font-size: 14px;
 }
 .handover-detail-toolbar > span:not(.handover-status) {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 .handover-evidence {
@@ -685,7 +761,7 @@
 }
 .handover-evidence > span {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin: 8px 0;
 }
@@ -706,7 +782,7 @@
 }
 .handover-step p {
   white-space: pre-wrap;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.8;
 }
 .handover-confirm,
@@ -725,7 +801,7 @@
 .handover-confirm p,
 .handover-conflict p {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 .handover-confirm-actions {
   display: flex;
@@ -750,7 +826,7 @@
   outline-offset: 4px;
 }
 .handover-source {
-  font-size: 11px;
+  font-size: 12px;
   max-height: 500px;
   overflow: auto;
   padding: 15px;
@@ -764,7 +840,7 @@
   gap: 10px;
   align-items: center;
   margin-top: 10px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 .handover-timeline {
@@ -796,11 +872,11 @@
 .handover-timeline time,
 .handover-timeline small {
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 .handover-timeline p {
   line-height: 1.8;
-  font-size: 12px;
+  font-size: 13px;
   overflow-wrap: anywhere;
 }
 .handover-timeline p .button {
@@ -817,7 +893,7 @@
   border-bottom: 1px solid var(--border);
 }
 .handover-job p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 .handover-job small {
@@ -826,145 +902,4 @@
   overflow-wrap: anywhere;
   max-width: 600px;
 }
-.handover-template-row {
-  margin: 0;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-.handover-template-row > span {
-  min-width: 140px;
-  font-weight: 500;
-}
-@media (max-width: 1100px) {
-  .handover-header {
-    padding: 22px;
-  }
-  .handover-body {
-    padding: 22px;
-  }
-  .handover-tabs {
-    padding: 0 22px;
-    gap: 20px;
-  }
-  .handover-overview-grid {
-    grid-template-columns: 1fr;
-  }
-  .handover-metrics {
-    gap: 10px;
-  }
-  .handover-metrics button {
-    padding: 15px;
-  }
-  .handover-coverage {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (max-width: 640px) {
-  .handover-header {
-    padding: 18px 16px;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .handover-header h1 {
-    font-size: 21px;
-  }
-  .handover-header p {
-    font-size: 11px;
-  }
-  .handover-body {
-    padding: 16px;
-  }
-  .handover-tabs {
-    padding: 0 16px;
-    gap: 22px;
-  }
-  .handover-metrics,
-  .handover-coverage {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .handover-panel,
-  .handover-onboarding,
-  .handover-group {
-    padding: 16px;
-  }
-  .handover-fields {
-    grid-template-columns: 1fr;
-  }
-  .handover-modal {
-    width: calc(100vw - 20px);
-    max-height: calc(100dvh - 20px);
-  }
-  .handover-modal > .modal-heading {
-    padding: 18px 16px 14px;
-  }
-  .handover-modal > .modal-heading h2 {
-    font-size: 18px;
-  }
-  .handover-modal-body {
-    padding: 16px;
-  }
-  .handover-form-footer {
-    padding: 12px 16px;
-    gap: 8px;
-  }
-  .handover-toolbar {
-    padding: 12px;
-  }
-  .handover-toolbar h2 {
-    flex-basis: 100%;
-  }
-  .handover-toolbar > input {
-    flex-basis: 100%;
-    max-width: none;
-    min-width: 0;
-  }
-  .handover-toolbar > .handover-select-control {
-    flex: 1 1 calc(50% - 5px);
-    width: 0;
-  }
-  .handover-view-switch {
-    width: 100%;
-  }
-  .handover-view-switch .button {
-    flex: 1;
-  }
-  .handover-record-fields > div,
-  .handover-conflict dl > div {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
-  .handover-form-footer {
-    flex-wrap: wrap;
-  }
-  .handover-form-footer > span {
-    width: 100%;
-    display: block;
-  }
-  .handover-form-footer > .button {
-    flex: 1;
-    white-space: normal;
-  }
-  .handover-detail-tabs {
-    gap: 4px;
-  }
-  .handover-detail-tabs .button {
-    padding: 7px 10px;
-    flex: 0 0 auto;
-  }
-  .handover-template-row > span {
-    width: 100%;
-  }
-  .handover-job {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-@media (max-width: 800px) {
-  .app-shell.legacy-visual:has(> .handover-workbench) .app-navigation {
-    position: relative;
-    inset: auto;
-    width: auto;
-    box-shadow: none;
-  }
-}
+/* 桌面区域充足时，将进度阶段并列显示。 */

@@ -4,8 +4,8 @@ import { persist } from 'zustand/middleware';
 export type Appearance = 'white' | 'classic' | 'dark';
 export const appearanceModes: { id: Appearance; title: string; description: string }[] = [
   { id: 'white', title: '纯白', description: '白色画面、浅灰层次与深灰文字' },
-  { id: 'classic', title: '柔和灰绿', description: '旧版的浅色配比，适合长时间阅读' },
-  { id: 'dark', title: '深色', description: '旧版的深绿底色与柔和亮色文字' },
+  { id: 'classic', title: '柔和灰绿', description: '柔和灰绿底色、清晰的文字层次与绿色操作反馈' },
+  { id: 'dark', title: '深色', description: '中性深灰层次、柔和灰白文字与蓝色操作反馈' },
 ];
 export const useAppearance = create<{ mode: Appearance; setMode: (mode: Appearance) => void }>()(
   persist((set) => ({ mode: 'white', setMode: (mode) => set({ mode }) }), {

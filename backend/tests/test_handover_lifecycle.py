@@ -1,4 +1,4 @@
-"""补充更新影响、接收记录、模板回填、AI 中断与格式修正的业务验收。"""
+"""补充更新影响、接收记录、AI 中断与格式修正的业务验收。"""
 
 import asyncio
 import io
@@ -15,10 +15,9 @@ from app.handover.store import HandoverStore
 from app.main import create_app
 
 
-def test_templates_framework_training_decision_receipt_and_package_sources(services):
+def test_framework_training_decision_receipt_and_package_sources(services):
     with TestClient(create_app(services[0])) as client:
-        project = client.post("/api/projects", json={"name": "完整交接"}).json()["id"]
-        root = f"/api/projects/{project}/handover"
+        root = "/api/handover"
 
         def create(kind, title, payload):
             result = client.post(
@@ -96,10 +95,6 @@ def test_templates_framework_training_decision_receipt_and_package_sources(servi
                 },
             )
         )
-        for kind in ("interview", "task", "plan"):
-            template = client.get(root + f"/templates/{kind}?format=json").json()
-            response = client.post(root + "/templates/import", json={**template, "actor": "回填人"})
-            assert response.status_code == 201 and response.json()["state"] == "draft"
         package = client.post(
             root + "/packages",
             json={
@@ -158,7 +153,7 @@ def test_running_job_recovery_preserves_fixed_inputs(services):
     app = create_app(services[0])
     with TestClient(app) as client:
         project = client.post("/api/projects", json={"name": "恢复"}).json()["id"]
-        store = HandoverStore(app.state.projects, project)
+        store = HandoverStore(app.state.projects)
         row = store.create("interview", "固定输入", {"transcript": "待完成"}, "人")
         job = store.create(
             "job",
@@ -182,8 +177,7 @@ def test_running_job_recovery_preserves_fixed_inputs(services):
 
 def test_replaced_source_keeps_original_and_requires_downstream_review(services):
     with TestClient(create_app(services[0])) as client:
-        project = client.post("/api/projects", json={"name": "来源更新"}).json()["id"]
-        root = f"/api/projects/{project}/handover"
+        root = "/api/handover"
         source = client.post(
             root + "/sources/import?filename=original.txt&actor=人&provider=作者&source_version=1",
             content="原版说明".encode(),
@@ -301,10 +295,10 @@ def test_device_acceptance_cannot_use_release_checks_and_archived_proof(services
             "/api/projects",
             json={"name": "设备验收门槛", "source_root": str(services[0].workspace)},
         ).json()["id"]
-        store = HandoverStore(app.state.projects, project)
+        store = HandoverStore(app.state.projects)
         source = client.post(
-            f"/api/projects/{project}/handover/sources/capture",
-            json={"path": "Program.cs", "actor": "验收人员"},
+            "/api/handover/sources/capture",
+            json={"path": "Program.cs", "actor": "验收人员", "source_project_id": project},
         ).json()
         base = store.create(
             "baseline",

@@ -12,6 +12,7 @@ from app.models import Message, Run, RunEvent, Thread
 from app.runs import RunManager
 from app.schemas import MemoryWrite
 from app.services import AppServices
+from tests.api_paths import project_api
 
 
 def test_archive_trash_restore_pin_and_unread(services):
@@ -117,21 +118,33 @@ async def test_trash_stops_active_reply_and_purge_cleans_checkpoints_and_preserv
 
 def test_management_api_and_workspace_scope(services):
     with TestClient(create_app(services[0])) as client:
-        thread = client.post("/api/threads", json={}).json()
+        thread = client.post(project_api(client, "/threads"), json={}).json()
         identifier = thread["id"]
-        response = client.patch(f"/api/threads/{identifier}", json={"pinned": True})
+        response = client.patch(
+            project_api(client, f"/threads/{identifier}"), json={"pinned": True}
+        )
         assert response.json()["pinned_order"] is not None
-        assert client.patch(f"/api/threads/{identifier}", json={"title": "  "}).status_code == 422
         assert (
-            client.patch(f"/api/threads/{identifier}", json={"state": "archived"}).status_code
+            client.patch(
+                project_api(client, f"/threads/{identifier}"), json={"title": "  "}
+            ).status_code
+            == 422
+        )
+        assert (
+            client.patch(
+                project_api(client, f"/threads/{identifier}"), json={"state": "archived"}
+            ).status_code
             == 200
         )
-        assert len(client.get("/api/threads?state=archived").json()) == 1
-        assert client.delete(f"/api/threads/{identifier}").status_code == 200
-        assert client.get(f"/api/threads/{identifier}").status_code == 404
-        assert client.post(f"/api/threads/{identifier}/restore").status_code == 200
-        assert client.delete(f"/api/threads/{identifier}/permanent").status_code == 409
-        assert client.delete("/api/threads/missing").status_code == 404
+        assert len(client.get(project_api(client, "/threads?state=archived")).json()) == 1
+        assert client.delete(project_api(client, f"/threads/{identifier}")).status_code == 200
+        assert client.get(project_api(client, f"/threads/{identifier}")).status_code == 404
+        assert client.post(project_api(client, f"/threads/{identifier}/restore")).status_code == 200
+        assert (
+            client.delete(project_api(client, f"/threads/{identifier}/permanent")).status_code
+            == 409
+        )
+        assert client.delete(project_api(client, "/threads/missing")).status_code == 404
 
 
 def test_first_send_validation_and_export(services, monkeypatch):
@@ -140,13 +153,22 @@ def test_first_send_validation_and_export(services, monkeypatch):
 
     monkeypatch.setattr("app.runtime.AgentRuntime.execute", answer)
     with TestClient(create_app(services[0])) as client:
-        assert client.post("/api/threads/start", json={"content": "  "}).status_code == 422
-        assert client.get("/api/threads").json() == []
-        result = client.post("/api/threads/start", json={"content": "  首次发送  "})
+        assert (
+            client.post(project_api(client, "/threads/start"), json={"content": "  "}).status_code
+            == 422
+        )
+        assert client.get(project_api(client, "/threads")).json() == []
+        result = client.post(
+            project_api(client, "/threads/start"), json={"content": "  首次发送  "}
+        )
         assert result.status_code == 201
         identifier = result.json()["thread_id"]
-        assert client.get(f"/api/threads/{identifier}").json()["title"] == "首次发送"
-        exported = client.get(f"/api/threads/{identifier}/export?format=json").json()
+        assert (
+            client.get(project_api(client, f"/threads/{identifier}")).json()["title"] == "首次发送"
+        )
+        exported = client.get(
+            project_api(client, f"/threads/{identifier}/export?format=json")
+        ).json()
         assert exported["schema_version"] == 1
         assert exported["conversation"]["messages"][0]["content"] == "首次发送"
-        assert "首次发送" in client.get(f"/api/threads/{identifier}/export").text
+        assert "首次发送" in client.get(project_api(client, f"/threads/{identifier}/export")).text

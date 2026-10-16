@@ -1,0 +1,27 @@
+.source-import-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.source-import-modes {
+  display: inline-flex;
+}
+.source-import-modes .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding-inline: 14px;
+}
+.source-import-text-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.source-import-text-meta > small:last-child {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.handover-modal .source-import-limit {
+  color: var(--danger-text);
+}

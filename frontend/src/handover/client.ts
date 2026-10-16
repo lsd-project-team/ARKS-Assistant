@@ -1,9 +1,10 @@
 import { ApiError } from '../lib/api';
+import { sessionFetch } from '../auth/session';
 
-export function handoverClient(projectId: string) {
-  const root = `/api/projects/${encodeURIComponent(projectId)}/handover`;
+export function handoverClient() {
+  const root = '/api/handover';
   async function request<T>(path = '', options?: RequestInit): Promise<T> {
-    const response = await fetch(root + path, options);
+    const response = await sessionFetch(root + path, options);
     if (!response.ok) {
       const body = await response.json().catch(() => null);
       throw new ApiError(
@@ -28,7 +29,7 @@ export function handoverClient(projectId: string) {
         body: file,
       }),
     download: async (path: string, filename: string) => {
-      const response = await fetch(root + path);
+      const response = await sessionFetch(root + path);
       if (!response.ok) {
         const body = await response.json().catch(() => null);
         throw new Error(body?.detail || '下载失败，请重试');

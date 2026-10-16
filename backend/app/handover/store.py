@@ -1,13 +1,17 @@
-"""短事务、乐观版本与不可变确认快照；旧模块的数据只读。"""
+"""全局交接记录的短事务、乐观版本与不可变确认快照。"""
 
 import json
+from threading import RLock
 
 from sqlalchemy import select
 
+from app.auth.context import can_read_review
 from app.handover.models import HandoverBlob, HandoverEvent, HandoverRecord, HandoverRevision
 from app.handover.rules import confirmation_gate, dependency_cycle, linked_ids, validate_links
 from app.handover.schemas import validate_payload
 from app.models import new_id, now_iso
+
+_standalone_lock = RLock()
 
 
 def dump(value):
@@ -17,7 +21,8 @@ def dump(value):
 def record_dict(row):
     return {
         "id": row.id,
-        "project_id": row.project_id,
+        "scope_id": "global",
+        "source_project_id": row.source_project_id,
         "kind": row.kind,
         "title": row.title,
         "version": row.version,
@@ -29,32 +34,21 @@ def record_dict(row):
 
 
 class HandoverStore:
-    def __init__(self, projects, project_id):
-        self.projects, self.project_id = projects, project_id
-        self.database = projects.database
-
-    def guard(self, write=False):
-        project = self.projects.get(self.project_id)
-        if write and project["state"] != "active":
-            raise ValueError("归档项目的交接记录只读，请先恢复项目")
-        return project
+    def __init__(self, projects=None, *, database=None):
+        self.database = database if database is not None else projects.database
+        self.lock = projects.lock if projects is not None else _standalone_lock
+        self.include_review = can_read_review()
 
     def _rows(self, session):
-        return {
-            row.id: record_dict(row)
-            for row in session.scalars(
-                select(HandoverRecord).where(HandoverRecord.project_id == self.project_id)
-            )
-        }
+        return {row.id: record_dict(row) for row in session.scalars(select(HandoverRecord))}
 
     def list(self):
-        self.guard()
         with self.database.session() as session:
             return list(self._rows(session).values())
 
     def _get(self, session, identifier):
         row = session.get(HandoverRecord, identifier)
-        if not row or row.project_id != self.project_id:
+        if not row:
             raise FileNotFoundError("交接记录不存在")
         return row
 
@@ -67,7 +61,7 @@ class HandoverStore:
         )
         if not revision:
             raise FileNotFoundError("交接记录版本不存在")
-        return {
+        result = {
             **record_dict(row),
             "title": revision.title,
             "version": revision.version,
@@ -76,15 +70,28 @@ class HandoverStore:
             "confirmation": json.loads(revision.confirmation_json),
             "updated_at": revision.created_at,
         }
+        if row.kind == "source":
+            # 仅展示上传时填写的整理人；不借用当前登录人或后续审核人。
+            result["created_by"] = (
+                session.scalar(
+                    select(HandoverEvent.actor)
+                    .where(HandoverEvent.record_id == identifier, HandoverEvent.action == "created")
+                    .order_by(HandoverEvent.id)
+                    .limit(1)
+                )
+                or ""
+            )
+        return result
 
     def get(self, identifier, version=None):
-        self.guard()
         with self.database.session() as session:
             row = self._get(session, identifier)
-            return self._revision(session, identifier, version or row.version)
+            result = self._revision(session, identifier, version or row.version)
+            if not self.include_review:
+                result.pop("confirmation", None)
+            return result
 
     def history(self, identifier):
-        self.guard()
         with self.database.session() as session:
             self._get(session, identifier)
             versions = session.scalars(
@@ -104,13 +111,9 @@ class HandoverStore:
             ]
 
     def events(self):
-        self.guard()
         with self.database.session() as session:
             rows = session.scalars(
-                select(HandoverEvent)
-                .where(HandoverEvent.project_id == self.project_id)
-                .order_by(HandoverEvent.id.desc())
-                .limit(1000)
+                select(HandoverEvent).order_by(HandoverEvent.id.desc()).limit(1000)
             )
             return [
                 {
@@ -138,7 +141,6 @@ class HandoverStore:
         )
         session.add(
             HandoverEvent(
-                project_id=self.project_id,
                 record_id=row.id,
                 action=action,
                 actor=actor,
@@ -161,13 +163,11 @@ class HandoverStore:
         if kind in {"job", "candidate"} and not internal:
             raise ValueError("此记录只能由交接 AI 流程创建")
         value = validate_payload(kind, payload)
-        with self.projects.lock, self.database.session.begin() as session:
-            self.guard(True)
+        with self.lock, self.database.session.begin() as session:
             identifier = new_id()
             self._validate(session, identifier, kind, value)
             row = HandoverRecord(
                 id=identifier,
-                project_id=self.project_id,
                 kind=kind,
                 title=title,
                 payload_json=dump(value),
@@ -194,8 +194,7 @@ class HandoverStore:
             raise ValueError("记录已被更新。草稿已保留，请读取新版本后合并修改")
 
     def update(self, identifier, body, *, internal=False):
-        with self.projects.lock, self.database.session.begin() as session:
-            self.guard(True)
+        with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
             self._version(row, body.version)
             if row.kind != body.kind:
@@ -254,8 +253,7 @@ class HandoverStore:
                 )
 
     def action(self, identifier, action, body):
-        with self.projects.lock, self.database.session.begin() as session:
-            self.guard(True)
+        with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
             self._version(row, body.version)
             if row.kind == "job":
@@ -265,13 +263,27 @@ class HandoverStore:
                     raise ValueError("此版本已经确认；内容变化时请先编辑并保存新版本")
                 if row.state == "archived":
                     raise ValueError("请先恢复记录")
+                if row.state == "rejected":
+                    raise ValueError("此内容已被拒绝，请补充并保存新版本后重新审核")
                 records = self._rows(session)
+                payload = json.loads(row.payload_json)
+                # 替换目标是历史链路，旧资料被拒绝不能阻止补充后的新原文重新审核。
+                current_links = linked_ids({**payload, "supersedes": ""})
+                if any(records[key]["state"] == "rejected" for key in current_links):
+                    raise ValueError("关联内容已被拒绝，请复核来源后再确认")
                 confirmation_gate(record_dict(row), records)
                 # 已过期的引用仍可阅读，但再次确认必须明确改用当前版本。
                 for reference in json.loads(row.payload_json).get("evidence", []):
                     if records[reference["record_id"]]["version"] != reference["version"]:
                         raise ValueError("来源有新版本，请复核并更新引用后确认")
                 row.state = "confirmed"
+            elif action == "reject":
+                if row.kind in {"task", "candidate"}:
+                    raise ValueError("工作项和 AI 候选请使用各自的处理入口")
+                if row.state not in {"draft", "needs_review"}:
+                    raise ValueError("仅待确认或待重新复核的内容可以拒绝")
+                # 拒绝是独立审核结果，不归档、不修改正文；下游确认仍需重新复核。
+                row.state = "rejected"
             elif action == "archive":
                 row.state = "archived"
             elif action == "restore":
@@ -285,12 +297,15 @@ class HandoverStore:
                     **body.model_dump(exclude={"version"}),
                     "time": row.updated_at,
                     "version": row.version,
+                    "decision": action,
                     "linked_versions": {
                         key: records[key]["version"]
                         for key in linked_ids(json.loads(row.payload_json))
-                    },
+                    }
+                    if action == "confirm"
+                    else {},
                 }
-                if action == "confirm"
+                if action in {"confirm", "reject"}
                 else None
             )
             self._snapshot(session, row, action, body.actor, body.opinion, confirmation)
@@ -307,7 +322,6 @@ class HandoverStore:
             return record_dict(row)
 
     def blob(self, identifier):
-        self.guard()
         with self.database.session() as session:
             self._get(session, identifier)
             row = session.get(HandoverBlob, identifier)
@@ -321,8 +335,7 @@ class HandoverStore:
             }
 
     def promote(self, identifier, body, title, proposed):
-        with self.projects.lock, self.database.session.begin() as session:
-            self.guard(True)
+        with self.lock, self.database.session.begin() as session:
             candidate = self._get(session, identifier)
             self._version(candidate, body.version)
             value = json.loads(candidate.payload_json)
@@ -340,7 +353,6 @@ class HandoverStore:
             self._validate(session, new_identifier, target, payload)
             row = HandoverRecord(
                 id=new_identifier,
-                project_id=self.project_id,
                 kind=target,
                 title=title,
                 payload_json=dump(payload),
@@ -378,7 +390,7 @@ class HandoverStore:
 
     def job_status(self, identifier, **changes):
         # 项目在运行期间归档或删除，也必须记录作业的终态，不能遗留“运行中”。
-        with self.projects.lock, self.database.session.begin() as session:
+        with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
             if row.kind != "job":
                 raise ValueError("不是 AI 作业")
@@ -388,8 +400,7 @@ class HandoverStore:
             return record_dict(row)
 
     def complete_job(self, identifier, candidates):
-        with self.projects.lock, self.database.session.begin() as session:
-            self.guard(True)
+        with self.lock, self.database.session.begin() as session:
             job = self._get(session, identifier)
             if job.kind != "job" or json.loads(job.payload_json)["status"] != "running":
                 raise ValueError("作业已停止，未保存候选")
@@ -401,7 +412,6 @@ class HandoverStore:
                 self._validate(session, new_id(), value["target_kind"], proposed)
                 row = HandoverRecord(
                     id=new_id(),
-                    project_id=self.project_id,
                     kind="candidate",
                     title=title,
                     payload_json=dump(value),

@@ -8,6 +8,7 @@ export type Kind =
   | 'baseline'
   | 'verification'
   | 'issue'
+  | 'debug_issue'
   | 'plan'
   | 'framework'
   | 'training'
@@ -23,15 +24,23 @@ export interface Evidence {
 }
 export interface HandoverRecord {
   id: string;
-  project_id: string;
+  scope_id: 'global';
+  source_project_id?: string | null;
   kind: Kind;
   title: string;
   version: number;
-  state: 'draft' | 'confirmed' | 'needs_review' | 'archived';
+  state: 'draft' | 'confirmed' | 'needs_review' | 'rejected' | 'archived';
   payload: Payload;
   created_at: string;
   updated_at: string;
-  confirmation?: { actor?: string; role?: string; time?: string; opinion?: string };
+  created_by?: string;
+  confirmation?: {
+    actor?: string;
+    role?: string;
+    time?: string;
+    opinion?: string;
+    decision?: string;
+  };
 }
 export interface Property {
   type?: string;
@@ -54,7 +63,7 @@ export interface Definitions {
   schemas: Record<string, Schema>;
 }
 export interface Overview {
-  project_id: string;
+  scope_id: 'global';
   records: HandoverRecord[];
   blocks: Record<string, string[]>;
 }
@@ -67,14 +76,21 @@ export interface Event {
   version: number;
   created_at: string;
 }
-export type Tab = 'overview' | 'materials' | 'tasks' | 'design' | 'packages' | 'updates';
+export type Tab = 'overview' | 'materials' | 'tasks' | 'issues' | 'packages' | 'updates';
+export const handoverScope = 'global';
+export interface HandoverContext {
+  scope_id: 'global';
+  source_root: string;
+  knowledge_available: boolean;
+  source_projects: { id: string; name: string; source_available: boolean }[];
+}
 export const tabs: { id: Tab; label: string }[] = [
   { id: 'overview', label: '概览' },
-  { id: 'materials', label: '资料与访谈' },
-  { id: 'tasks', label: '未完成工作' },
-  { id: 'design', label: '设计与约束' },
+  { id: 'materials', label: '资料' },
+  { id: 'tasks', label: '任务与进度' },
+  { id: 'issues', label: '调试问题' },
   { id: 'packages', label: '交接包' },
-  { id: 'updates', label: '更新记录' },
+  { id: 'updates', label: '复核与追溯' },
 ];
 export const text = (value: unknown) => (typeof value === 'string' ? value : '');
 export const ids = (value: unknown) =>

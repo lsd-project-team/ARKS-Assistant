@@ -9,6 +9,7 @@ from sqlalchemy import and_, delete, exists, func, or_, select
 from app.database import Database
 from app.models import Message, Run, Thread, now_iso
 from app.records import record_dict
+from app.workspace_access import owner_filter, require_thread, thread_filter
 
 
 def title_from_question(content: str, selections: list[dict]) -> str:
@@ -34,6 +35,7 @@ class ConversationCatalog:
         row = session.get(Thread, thread_id)
         if not row or row.workspace_id != self.workspace_id:
             raise FileNotFoundError("对话不存在")
+        require_thread(session, row)
         if row.state == "deleted" and not include_deleted:
             raise FileNotFoundError("对话已移入回收站，可以恢复后继续")
         return row
@@ -74,7 +76,7 @@ class ConversationCatalog:
                 status,
                 and_(Thread.state == "active", Thread.workspace_id.in_(archived_workspace_ids)),
             )
-        predicate = [workspace, status]
+        predicate = [workspace, status, thread_filter()]
         if query:
             predicate.append(
                 or_(
@@ -171,7 +173,7 @@ class ConversationCatalog:
                 return record_dict(row)
             maximum = session.scalar(
                 select(func.max(Thread.pinned_order)).where(
-                    Thread.workspace_id == self.workspace_id
+                    Thread.workspace_id == self.workspace_id, owner_filter(Thread)
                 )
             )
             row.pinned_order = (maximum or 0) + 1 if pinned else None
@@ -187,6 +189,7 @@ class ConversationCatalog:
                         Thread.workspace_id == self.workspace_id,
                         Thread.state == "active",
                         Thread.pinned_order.is_not(None),
+                        thread_filter(),
                     )
                 )
             )
@@ -210,6 +213,7 @@ class ConversationCatalog:
                         Thread.workspace_id == self.workspace_id,
                         Thread.state == "active",
                         Thread.pinned_order.is_not(None),
+                        thread_filter(),
                     )
                     .order_by(Thread.pinned_order, Thread.updated_at.desc())
                 )

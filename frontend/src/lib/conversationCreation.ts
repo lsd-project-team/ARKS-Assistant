@@ -6,6 +6,7 @@ export function newConversationProject(
   requestedId?: string,
 ) {
   const active = list?.projects.filter((project) => project.state === 'active') || [];
+  if (list && active.length === 0 && !requestedId) return 'independent';
   // 项目内的入口固定该项目；公共入口才在没有当前项目时回退到默认项目。
   if (requestedId) return active.find((project) => project.id === requestedId)?.id;
   return (

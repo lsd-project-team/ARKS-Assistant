@@ -252,10 +252,6 @@
   text-decoration: underline;
   cursor: pointer;
 }
-.project-new-chat:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
 .project-editor > form {
   display: flex;
   flex-direction: column;

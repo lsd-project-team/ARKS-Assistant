@@ -1,0 +1,275 @@
+/* 灰绿与深色共用组件规则，主题差异由语义变量控制，包含 Portal 浮层。 */
+:root {
+  --success-text: #357153;
+  --warning-text: #986022;
+  --warning-surface: color-mix(in srgb, var(--warning-text) 9%, var(--panel));
+  --danger-surface: color-mix(in srgb, var(--danger-text) 9%, var(--panel));
+}
+
+:root[data-appearance='dark'] {
+  --source-background: #111;
+  --source-selection: #264f78;
+  --selection-background: #303030;
+  --selection-hover: #383838;
+  --selection-border: #484848;
+  --success-text: #91c99c;
+  --warning-text: #e4bb80;
+  --danger-text: #f0a6a1;
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  --surface-shadow: var(--shadow-panel);
+  --surface-stroke: inset 0 0 0 1px var(--border);
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) ::selection {
+  background: var(--source-selection);
+  color: var(--text);
+}
+
+/* 普通控件、编辑区域和浮层各用对应表面，避免组件散落固定颜色。 */
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(input, select, textarea) {
+  background-color: var(--control-background, var(--surface-muted));
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .ui-select-trigger {
+  background: var(--control-background, var(--surface-muted));
+  border-color: var(--border-strong);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .ui-select-trigger:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .ui-select-trigger:focus-visible,
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .ui-select-trigger[data-state='open'] {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(input[type='checkbox'], input[type='radio']) {
+  accent-color: var(--accent);
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .button {
+  background: var(--surface-subtle);
+  box-shadow: var(--surface-stroke);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .button.primary {
+  background: var(--primary-background, var(--text));
+  border-color: var(--primary-background, var(--text));
+  color: var(--primary-foreground, var(--panel));
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .button.primary:hover:not(:disabled) {
+  background: var(--primary-hover, #f9f9f9);
+  color: var(--primary-foreground, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button {
+  background: var(--primary-background, var(--text));
+  color: var(--primary-foreground, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button:disabled {
+  background: var(--surface-hover);
+  color: var(--text-faint);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button:hover:not(:disabled),
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button:active:not(:disabled) {
+  background: var(--primary-hover, var(--text-secondary));
+  color: var(--primary-foreground, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .icon-button {
+  background: transparent;
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .icon-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .composer {
+  background: var(--composer-background, var(--surface-muted));
+  box-shadow:
+    inset 0 0 0 1px var(--border-strong),
+    var(--shadow-panel);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .composer:focus-within {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    var(--shadow-panel);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .composer textarea,
+:root:is([data-appearance='classic'], [data-appearance='dark']) .model-picker select {
+  background: transparent;
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .model-picker option {
+  background: var(--surface-subtle);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .modal-overlay,
+:root:is([data-appearance='classic'], [data-appearance='dark']) .conversation-search-overlay {
+  background: var(--overlay-background, #0009);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(
+    .modal-content,
+    .ui-select-content,
+    .handover-multi-content,
+    .thread-menu,
+    .composer-commands,
+    .toast
+  ) {
+  background: var(--surface);
+  box-shadow: var(--surface-stroke), var(--shadow-raised);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(.modal-heading, .modal-footer) {
+  background: var(--surface);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.source-search, .selection-chip, .quote-answer) {
+  background: var(--surface-subtle);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .unread-dot {
+  background: var(--text-secondary);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .message-search-hit {
+  outline-color: var(--accent);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .message.user .context-citation {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .run-recovery {
+  border-color: var(--border);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) mark {
+  background: var(--selection-background);
+  color: var(--text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .markdown-preview a {
+  color: var(--reading-accent);
+}
+
+/* 原有状态提示仍表达成功、待核对与失败，亮度适配深色表面。 */
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(
+    .error-text,
+    .run-feedback,
+    .settings-validation,
+    .field-error,
+    .thread-rename small,
+    .thread-menu .danger,
+    .toast.error > svg,
+    .button.danger
+  ) {
+  color: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(.error-text, .run-feedback) {
+  background: var(--danger-surface);
+  border-color: color-mix(in srgb, var(--danger-text) 24%, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.run-feedback.notice, .selection-stale, .unsaved-notice) {
+  background: var(--warning-surface);
+  color: var(--warning-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.success-text, .capability-results .passed small) {
+  color: var(--success-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .capability-results .failed small {
+  color: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .tiny-dot {
+  background: var(--success-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .offline .tiny-dot {
+  background: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .sidebar-footer.checking .tiny-dot {
+  background: var(--muted);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .danger-button {
+  background: #913737;
+  border-color: #913737;
+  color: #fff;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .danger-button:hover:not(:disabled) {
+  background: #ac4242;
+  color: #fff;
+}
+
+/* 阅读区的局部变量继承公共状态色，交接卡片用次级表面形成层次。 */
+:root:is([data-appearance='classic'], [data-appearance='dark']) .knowledge-workspace {
+  --blue: var(--accent);
+  --amber: var(--warning-text);
+  --red: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .knowledge-workspace
+  .source-warning {
+  color: var(--warning-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .knowledge-workspace
+  .original-diagram
+  iframe {
+  background: var(--reading-background);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.handover-workbench, .handover-modal) {
+  --panel: var(--surface);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .handover-tabs button.active {
+  border-color: var(--text);
+}

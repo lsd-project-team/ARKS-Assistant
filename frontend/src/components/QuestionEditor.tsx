@@ -65,12 +65,7 @@ export function QuestionEditor({
       description="保留原始记录，修改不会覆盖输入框里的草稿。"
     >
       <div className="dialog-body question-editor">
-        <SourceOptionsControl
-          compact={false}
-          value={sources}
-          onChange={setSources}
-          disabled={busy}
-        />
+        <SourceOptionsControl value={sources} onChange={setSources} disabled={busy} />
         <label>
           问题内容
           <textarea

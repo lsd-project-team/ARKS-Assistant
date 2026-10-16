@@ -10,6 +10,7 @@ from app.config import SECRET_MASK, AppSettings, ModelProfile, ModelSettings
 from app.main import create_app
 from app.run_configuration import current_configuration
 from app.runs import RunManager
+from tests.api_paths import project_api
 
 
 def profiles():
@@ -259,7 +260,9 @@ async def test_running_configuration_snapshot_survives_global_switch(services, f
 
 def test_blank_memory_write_is_rejected_and_original_preserved(services):
     with TestClient(create_app(services[0])) as client:
-        memory = client.put("/api/memories", json={"name": "验收.md", "content": "原内容"}).json()
-        invalid = client.put("/api/memories", json={**memory, "content": " \n "})
+        memory = client.put(
+            project_api(client, "/memories"), json={"name": "验收.md", "content": "原内容"}
+        ).json()
+        invalid = client.put(project_api(client, "/memories"), json={**memory, "content": " \n "})
         assert invalid.status_code == 409
-        assert client.get("/api/memories").json()[0]["content"] == "原内容"
+        assert client.get(project_api(client, "/memories")).json()[0]["content"] == "原内容"

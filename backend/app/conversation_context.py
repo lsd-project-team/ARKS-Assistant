@@ -3,6 +3,7 @@
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.context import current_budget
+from app.memory_visibility import run_memory_actor, visible_run_event
 from app.provider import close_models
 from app.runtime import AgentRuntime
 from app.schemas import SummaryCorrection
@@ -93,6 +94,7 @@ class ConversationContext:
 
     def run_sources(self, run_id: str) -> dict:
         run = self.repository.run(run_id)
+        actor_id = run_memory_actor(self.repository, run)
         message = self.repository.message(run["message_id"])
         snapshot = None
         budget = None
@@ -104,10 +106,21 @@ class ConversationContext:
         source_review = None
         completion, progress, plan = None, None, None
         tool_ends = {}
+        references, searches, memory_saves = {}, [], []
         cursor = 0
         while True:
             events = self.repository.events(run_id, cursor)
-            for event in events:
+            for original in events:
+                event = visible_run_event(original, actor_id)
+                if event is None:
+                    continue
+                if event["kind"] == "knowledge_reference":
+                    row = event["payload"]
+                    references[(row["kind"], row["id"], row["version"], row["citation"])] = row
+                if event["kind"] == "knowledge_search":
+                    searches.append(event["payload"])
+                if event["kind"] == "memory_save":
+                    memory_saves.append(event["payload"])
                 if event["kind"] == "context_sources":
                     snapshot = event["payload"]
                 if event["kind"] == "context_budget":
@@ -145,11 +158,22 @@ class ConversationContext:
             if len(events) < 500:
                 break
             cursor = events[-1]["sequence"]
+        # 兼容升级前已经记录的自动带入快照，不把“允许使用”冒充实际来源。
+        for field, kind in (
+            ("materials", "material"),
+            ("handover_materials", "handover_material"),
+            ("debug_issues", "debug_issue"),
+        ):
+            for row in (snapshot or {}).get(field, []):
+                key = (kind, row["id"], row["version"], row["citation"])
+                references.setdefault(key, {"kind": kind, **row})
         return {
             "model": run["model_snapshot"],
             "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
             "materials": snapshot.get("materials", []) if snapshot else [],
+            "handover_materials": snapshot.get("handover_materials", []) if snapshot else [],
+            "debug_issues": snapshot.get("debug_issues", []) if snapshot else [],
             "recorded": snapshot is not None,
             "selections": message["selections"],
             "tools": [{**tool, **tool_ends.get(tool["id"], {})} for tool in tools],
@@ -162,5 +186,8 @@ class ConversationContext:
             "source_options": snapshot.get("source_options") if snapshot else None,
             "wiki_provenance": wiki,
             "knowledge_retrieval": knowledge,
+            "references": list(references.values()),
+            "searches": searches,
+            "memory_saves": memory_saves,
             "source_review": source_review,
         }

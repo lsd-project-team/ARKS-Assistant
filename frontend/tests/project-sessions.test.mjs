@@ -32,11 +32,14 @@ test('公共新对话入口沿用当前项目，项目内入口明确指定所�
   assert.equal(newConversationProject(creationProjects, 'B', 'removed'), undefined);
 });
 
-test('独立对话或失效项目的新建入口回到默认项目，没有可用项目时不创建独立对话', () => {
+test('独立对话或失效项目的新建入口回到默认项目，新账号无项目时可创建独立对话', () => {
   for (const current of ['', 'independent', 'removed', 'archived'])
     assert.equal(newConversationProject(creationProjects, current), 'A');
   assert.equal(newConversationProject(undefined, 'independent'), undefined);
-  assert.equal(newConversationProject({ projects: [], default_project_id: 'A' }, ''), undefined);
+  assert.equal(
+    newConversationProject({ projects: [], default_project_id: null }, ''),
+    'independent',
+  );
   assert.equal(
     newConversationProject({ ...creationProjects, default_project_id: 'archived' }, 'independent'),
     'A',

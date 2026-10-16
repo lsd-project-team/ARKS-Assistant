@@ -1,0 +1,22 @@
+.package-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.package-list-item > .handover-record-card {
+  flex: 1;
+}
+.handover-workbench .package-list-archive {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  min-height: 30px;
+  padding: 4px 8px;
+  align-self: flex-end;
+  color: var(--text-secondary);
+}
+.modal-content.handover-modal.package-archive {
+  width: min(560px, calc(100vw - 32px));
+}

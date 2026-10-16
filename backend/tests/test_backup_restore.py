@@ -8,17 +8,20 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 import pytest
+from alembic.config import Config
+from alembic.script import ScriptDirectory
 from fastapi.testclient import TestClient
 
 from app.backup import create_backup
 from app.backup_restore import restore_backup, restore_journal, rollback_restore
 from app.backup_validation import validate_backup
-from app.config import AppSettings, ModelSettings, Paths, SettingsStore
+from app.config import PROJECT_ROOT, AppSettings, ModelSettings, Paths, SettingsStore
 from app.main import create_app
 from app.process_lock import service_lock
 from app.runtime import AgentRuntime
 from app.schemas import MemoryWrite
 from app.storage import storage_stats
+from tests.api_paths import project_api
 from tests.test_compaction import DeterministicModel
 
 
@@ -87,12 +90,14 @@ async def test_full_backup_restore_preserves_graph_messages_memory_and_private_s
     assert (recovery / "memories" / "旧事实.md").read_bytes() == b"old-memory"
     assert (target.scratch / archive.name).read_bytes() == archive.read_bytes()
     with TestClient(create_app(target)) as client:
-        restored = client.get(f"/api/threads/{thread['id']}").json()
+        restored = client.get(project_api(client, f"/threads/{thread['id']}")).json()
         assert restored["messages"] == expected_messages
-        assert client.get(f"/api/threads/{thread['id']}/context").json()["complete"]
-        rows = client.get("/api/memories").json()
+        assert client.get(project_api(client, f"/threads/{thread['id']}/context")).json()[
+            "complete"
+        ]
+        rows = client.get(project_api(client, "/memories")).json()
         assert rows[0]["name"] == "恢复事实.md" and not rows[0]["sources"][0]["stale"]
-        assert client.get("/api/memories/project/恢复事实.md/history").json()
+        assert client.get(project_api(client, "/memories/project/恢复事实.md/history")).json()
         stats = client.get("/api/storage").json()
         assert stats["counts"]["messages"] == 2 and stats["groups"]["recovery"] > 0
 
@@ -254,7 +259,9 @@ def test_api_backup_validation_storage_and_active_run_guard(services):
             content=exported.content,
             headers={"Content-Type": "application/zip"},
         )
-        assert checked.status_code == 200 and checked.json()["database_revision"] == "0013"
+        migration = Config(str(PROJECT_ROOT / "backend/alembic.ini"))
+        head = ScriptDirectory.from_config(migration).get_current_head()
+        assert checked.status_code == 200 and checked.json()["database_revision"] == head
         assert client.post("/api/backup/validate", content=b"invalid").status_code == 409
         stats = client.get("/api/storage").json()
         assert stats["counts"]["messages"] == 2 and stats["groups"]["backups"] > 0

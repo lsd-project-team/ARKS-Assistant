@@ -39,6 +39,6 @@
 
 ## 会话整理与单会话导出
 
-会话菜单可导出 Markdown；API `/api/threads/{id}/export?format=json` 返回 `schema_version=1` 的完整原始会话和选区。
+会话菜单可导出 Markdown；API `/api/p/{project_id}/threads/{id}/export?format=json` 返回 `schema_version=1` 的完整原始会话和选区。独立对话使用 `project_id=independent`，访问仍校验登录账号。
 
 会话侧栏的“整理空会话”先展示预览，只选择没有消息、运行、等待问题和来源记忆的未置顶会话。当前窗口有未发送草稿的会话不可选择。执行时重新检查空会话条件和预览版本；任一会话已变化时整个批次不执行。整理结果进入回收站，可通过轻提示撤销或逐个恢复，不自动清理历史记录。

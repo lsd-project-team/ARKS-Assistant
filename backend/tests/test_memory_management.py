@@ -10,6 +10,7 @@ from app.main import create_app
 from app.memory import MemoryService
 from app.runtime import AgentRuntime
 from app.schemas import MemoryRestore, MemoryWrite
+from tests.api_paths import project_api
 from tests.test_compaction import DeterministicModel
 
 
@@ -131,26 +132,34 @@ def test_concurrent_identical_content_does_not_create_duplicates(services):
 
 def test_memory_api_review_history_and_recovery(services):
     with TestClient(create_app(services[0])) as client:
-        first = client.put("/api/memories", json={"name": "偏好.md", "content": "简洁中文"}).json()
+        first = client.put(
+            project_api(client, "/memories"), json={"name": "偏好.md", "content": "简洁中文"}
+        ).json()
         matches = client.post(
-            "/api/memories/review", json={"name": "重复.md", "content": "简洁中文"}
+            project_api(client, "/memories/review"), json={"name": "重复.md", "content": "简洁中文"}
         )
         assert matches.json()[0]["kind"] == "duplicate"
         assert (
-            client.put("/api/memories", json={"name": "重复.md", "content": "简洁中文"}).status_code
+            client.put(
+                project_api(client, "/memories"), json={"name": "重复.md", "content": "简洁中文"}
+            ).status_code
             == 409
         )
-        history = client.get("/api/memories/project/偏好.md/history").json()
+        history = client.get(project_api(client, "/memories/project/偏好.md/history")).json()
         assert len(history) == 1
         assert (
-            client.delete(f"/api/memories/project/偏好.md?version={first['version']}").status_code
+            client.delete(
+                project_api(client, f"/memories/project/偏好.md?version={first['version']}")
+            ).status_code
             == 200
         )
-        assert client.get("/api/memories").json() == []
-        assert client.get("/api/memories?include_deleted=true").json()[0]["deleted"]
+        assert client.get(project_api(client, "/memories")).json() == []
+        assert client.get(project_api(client, "/memories?include_deleted=true")).json()[0][
+            "deleted"
+        ]
         assert (
             client.post(
-                "/api/memories/project/偏好.md/restore",
+                project_api(client, "/memories/project/偏好.md/restore"),
                 json={
                     "revision_id": history[0]["id"],
                     "version": None,
@@ -158,7 +167,7 @@ def test_memory_api_review_history_and_recovery(services):
             ).json()["content"]
             == "简洁中文"
         )
-        assert client.get("/api/memories/user/偏好.md/history").json() == []
+        assert client.get(project_api(client, "/memories/user/偏好.md/history")).json() == []
 
 
 async def test_runtime_records_only_selected_memory_snapshot(services, monkeypatch):

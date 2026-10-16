@@ -7,6 +7,8 @@ from pathlib import Path
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
+import app.admin.models  # noqa: F401 — 独立执行时注册使用记录的关联表。
+import app.auth.models  # noqa: F401 — 个人记忆与使用记录依赖账号表。
 from app.config import Paths, SettingsStore
 from app.database import Database
 from app.memory import MemoryService

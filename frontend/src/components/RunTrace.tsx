@@ -39,7 +39,7 @@ export function RunTrace({ runId }: { runId: string }) {
       <summary>
         <Check size={12} />
         {tools?.length ? toolSummary(tools) : completion?.label}
-        {tools?.length && completion && <span>{completion.label}</span>}
+        {!!tools?.length && completion && <span>{completion.label}</span>}
         <ChevronDown size={12} />
       </summary>
       <AnalysisRunDetails completion={completion} progress={progress} />

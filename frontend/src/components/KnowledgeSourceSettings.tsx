@@ -23,7 +23,6 @@ export function KnowledgeSourceSettings({
       {controller.saved.isPending && <p className="muted">正在读取知识来源…</p>}
       {controller.draft && (
         <SourceOptionsControl
-          compact={false}
           legend="默认知识来源"
           description="本地源码始终可读。保存后，新问题自动使用这些资料；历史回复和已排队的问题保留原来的配置。"
           value={controller.draft.source_options}

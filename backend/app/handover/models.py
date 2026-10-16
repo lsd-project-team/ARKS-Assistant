@@ -9,7 +9,8 @@ from app.models import Base, new_id, now_iso
 class HandoverRecord(Base):
     __tablename__ = "handover_records"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
-    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
+    # 只保留旧资料的来源项目身份；交接记录不再归属于对话项目。
+    source_project_id: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
     kind: Mapped[str] = mapped_column(String(24), index=True)
     title: Mapped[str] = mapped_column(String(200))
     version: Mapped[int] = mapped_column(Integer, default=1)
@@ -45,7 +46,7 @@ class HandoverBlob(Base):
 class HandoverEvent(Base):
     __tablename__ = "handover_events"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
+    source_project_id: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
     record_id: Mapped[str] = mapped_column(ForeignKey("handover_records.id"), index=True)
     action: Mapped[str] = mapped_column(String(40))
     actor: Mapped[str] = mapped_column(String(120))

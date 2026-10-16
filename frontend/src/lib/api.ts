@@ -9,14 +9,15 @@ export class ApiError extends Error {
 import { useWorkspace } from './store';
 import { invalidateProjectCaches } from './projectCache';
 import { queryGroups } from './querySync';
+import { sessionFetch } from '../auth/session';
+import { scopedApiUrl } from './apiRoutes';
 
-const globalPath = /^\/(projects|sources|health|settings|backup|storage|data)(\/|\?|$)/;
 export function apiUrl(path: string, projectId = useWorkspace.getState().projectId) {
-  return `/api${projectId && !globalPath.test(path) ? `/p/${projectId}` : ''}${path}`;
+  return scopedApiUrl(path, projectId);
 }
 
 export async function api<T>(path: string, options?: RequestInit, projectId?: string): Promise<T> {
-  const response = await fetch(apiUrl(path, projectId), {
+  const response = await sessionFetch(apiUrl(path, projectId), {
     ...options,
     headers: { 'Content-Type': 'application/json', ...options?.headers },
   });

@@ -6,6 +6,7 @@ import { api } from '../lib/api';
 import { Button, ErrorText } from './ui';
 import { toast } from '../lib/toasts';
 import { BackupPreview } from './BackupPreview';
+import { sessionFetch } from '../auth/session';
 
 function bytes(value: number) {
   if (value < 1024) return `${value} B`;
@@ -51,7 +52,7 @@ export function SettingsDataPanel({
     toast('备份校验通过，当前数据未更改');
   }
   async function backup() {
-    const response = await fetch('/api/backup', { method: 'POST' });
+    const response = await sessionFetch('/api/backup', { method: 'POST' });
     if (!response.ok) {
       const reason = await response.json().catch(() => undefined);
       throw new Error(reason?.detail || '备份失败，请重试');

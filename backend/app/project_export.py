@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from app.models import Message, ProjectMaterial, ProjectMaterialRevision, Thread
 from app.records import record_dict
+from app.workspace_access import thread_filter
 
 
 def export_project(projects, project_id):
@@ -29,7 +30,7 @@ def export_project(projects, project_id):
         )
         for thread in session.scalars(
             select(Thread)
-            .where(Thread.project_id == project_id)
+            .where(Thread.project_id == project_id, thread_filter())
             .order_by(Thread.created_at, Thread.id)
         ):
             messages = [

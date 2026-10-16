@@ -8,11 +8,22 @@ from sqlalchemy.exc import IntegrityError
 from app.config import dump_json
 from app.models import SourcePreference
 from app.schemas import SourceOptions
+from app.workspace_access import current_owner
 
 
 class SourcePreferences:
     def __init__(self, database, scope_id):
-        self.database, self.scope_id = database, scope_id
+        self.database, self.project_scope_id = database, scope_id
+
+    @property
+    def scope_id(self):
+        # 所有独立对话共用服务对象，但默认来源不能共用另一个账号的选择。
+        owner = current_owner()
+        return (
+            f"independent:{owner}"
+            if owner and self.project_scope_id == "independent"
+            else self.project_scope_id
+        )
 
     def read(self, session):
         row = session.get(SourcePreference, self.scope_id)

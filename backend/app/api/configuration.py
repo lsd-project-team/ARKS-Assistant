@@ -1,6 +1,4 @@
-"""模型、MCP、长期记忆及备份 API。"""
-
-import asyncio
+"""全局模型与 MCP 配置 API，不再重复挂载到各项目。"""
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -8,15 +6,11 @@ from fastapi.responses import JSONResponse
 from app.config import AppSettings, McpSettings
 from app.mcp_client import probe_mcp
 from app.model_probe import probe_capabilities
-from app.provider import close_models, create_model
 from app.run_feedback import error_feedback
 from app.schemas import (
     McpProbe,
-    MemoryRestore,
-    MemoryWrite,
     ModelProbe,
     SettingsWrite,
-    SourcePreferencesWrite,
 )
 from app.services import AppServices
 
@@ -24,17 +18,7 @@ from app.services import AppServices
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
     settings = services.settings
-    memories = services.memories
     runtime = services.runtime
-
-    @router.get("/api/source-options")
-    async def get_source_options():
-        return services.repository.source_preferences.get()
-
-    @router.put("/api/source-options")
-    async def save_source_options(body: SourcePreferencesWrite):
-        async with services.runs.edit_lock:
-            return services.repository.source_preferences.save(body)
 
     @router.get("/api/settings")
     async def get_settings():
@@ -86,38 +70,5 @@ def create_router(services: AppServices) -> APIRouter:
             return await probe_mcp(server)
         except Exception:
             return JSONResponse({"detail": "MCP 连接失败，请检查地址和连接方式"}, status_code=502)
-
-    @router.get("/api/memories")
-    async def list_memories(include_deleted: bool = False):
-        return await asyncio.to_thread(memories.list, include_deleted)
-
-    @router.post("/api/memories/review")
-    async def review_memory(body: MemoryWrite):
-        config = settings.load().model
-        model = (
-            create_model(config) if config.model and config.base_url and config.api_key else None
-        )
-        try:
-            return await memories.semantic_review(body, model)
-        finally:
-            await close_models([model] if model else [])
-
-    @router.get("/api/memories/{scope}/{name}/history")
-    async def memory_history(scope: str, name: str):
-        MemoryWrite(name=name, scope=scope, content="")
-        return await asyncio.to_thread(memories.history.list, scope, name)
-
-    @router.post("/api/memories/{scope}/{name}/restore")
-    async def restore_memory(scope: str, name: str, body: MemoryRestore):
-        return await asyncio.to_thread(memories.restore, scope, name, body)
-
-    @router.put("/api/memories")
-    async def write_memory(body: MemoryWrite):
-        return await asyncio.to_thread(memories.save, body)
-
-    @router.delete("/api/memories/{scope}/{name}")
-    async def delete_memory(scope: str, name: str, version: str):
-        await asyncio.to_thread(memories.delete, scope, name, version)
-        return {"ok": True}
 
     return router

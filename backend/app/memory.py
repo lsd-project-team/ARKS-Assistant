@@ -14,11 +14,13 @@ from app.context import fit_text, text_tokens
 from app.database import Database
 from app.memory_conflicts import review_pairs
 from app.memory_history import MemoryHistory
+from app.memory_identity import user_memory_key, user_memory_owner
 from app.memory_matching import rank_memories, related_memories
 from app.models import MemoryRecord, Thread, now_iso
 from app.schemas import MemoryRestore, MemoryWrite
 from app.semantic_retrieval import SemanticRetrieval
 from app.workspace import Workspace, content_version
+from app.workspace_access import private_workspace_id
 
 
 class MemoryService:
@@ -32,12 +34,22 @@ class MemoryService:
         self.semantic_reviews = OrderedDict()
 
     def folder(self, scope: str) -> Path:
-        folder = self.paths.memories / (self.workspace.id if scope == "project" else "user")
+        owner = user_memory_owner()
+        folder = (
+            self.paths.memories / private_workspace_id(self.workspace.id)
+            if scope == "project"
+            else self.paths.memories / "users" / owner
+            if owner
+            else self.paths.memories / "user"
+        )
         folder.mkdir(parents=True, exist_ok=True)
         return folder
 
     def memory_id(self, scope: str, name: str) -> str:
-        return f"{self.workspace.id if scope == 'project' else 'user'}:{name}"
+        identifier = (
+            private_workspace_id(self.workspace.id) if scope == "project" else user_memory_key()
+        )
+        return f"{identifier}:{name}"
 
     def list(self, include_deleted: bool = False) -> list[dict]:
         with self.lock:
@@ -103,6 +115,7 @@ class MemoryService:
         return {
             "name": name,
             "scope": scope,
+            "owner_id": user_memory_owner() if scope == "user" else None,
             "content": data.decode("utf-8"),
             "version": content_version(data),
             "record_version": metadata_version,
@@ -117,12 +130,15 @@ class MemoryService:
     def save(self, request: MemoryWrite) -> dict:
         return self._write(request)
 
-    @staticmethod
-    def review_key(request):
-        return content_version(
-            request.model_dump_json(
-                include={"name", "scope", "content", "version", "record_version"}
-            ).encode()
+    def review_key(self, request):
+        return (
+            user_memory_key()
+            + ":"
+            + content_version(
+                request.model_dump_json(
+                    include={"name", "scope", "content", "version", "record_version"}
+                ).encode()
+            )
         )
 
     def review(self, request: MemoryWrite) -> list[dict]:
@@ -280,7 +296,10 @@ class MemoryService:
         row = session.get(MemoryRecord, key)
         if not row:
             row = MemoryRecord(
-                id=key, workspace_id=self.workspace.id, name=request.name, scope=request.scope
+                id=key,
+                workspace_id=private_workspace_id(self.workspace.id),
+                name=request.name,
+                scope=request.scope,
             )
             session.add(row)
         row.source_thread_id = request.source_thread_id

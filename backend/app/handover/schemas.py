@@ -16,6 +16,7 @@ Kind = Literal[
     "baseline",
     "verification",
     "issue",
+    "debug_issue",
     "plan",
     "framework",
     "training",
@@ -41,6 +42,7 @@ class Payload(BaseModel):
 
 
 class Source(Payload):
+    source_project_id: Short = ""
     supersedes: str = ""
     source_workspace_id: Short = ""
     filename: Short = ""
@@ -147,6 +149,26 @@ class Issue(Payload):
     closure: Text = ""
 
 
+class DebugIssue(Payload):
+    problem: Text = ""
+    conditions: Text = ""
+    environment: Text = ""
+    device: Short = ""
+    software_version: Short = ""
+    module: Short = ""
+    investigation: Text = ""
+    cause: Text = ""
+    solution: Text = ""
+    verification: Text = ""
+    resolution_status: Literal["open", "resolved"] = "open"
+    keywords: list[Short] = Field(default_factory=list, max_length=20)
+    original_text: Text = ""
+    reported_by: Short = ""
+    source_thread_id: str = Field(default="", max_length=36)
+    source_message_id: str = Field(default="", max_length=36)
+    source_project_id: Short = ""
+
+
 class PlanStep(BaseModel):
     model_config = ConfigDict(extra="forbid")
     action: Short
@@ -233,6 +255,7 @@ PAYLOADS = {
     "baseline": Baseline,
     "verification": Verification,
     "issue": Issue,
+    "debug_issue": DebugIssue,
     "plan": Plan,
     "framework": Framework,
     "training": Training,

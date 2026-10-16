@@ -3,6 +3,7 @@
 import asyncio
 
 from app.analysis_policy import configured_analysis
+from app.auth.context import request_identity
 from app.config import SettingsStore, dump_json
 from app.models import Run
 from app.project_context import bind_project
@@ -24,6 +25,18 @@ class RunManager:
 
     def start(self, run: dict):
         project = self.project_snapshot()
+        message = self.repository.message(run["message_id"])
+        current = request_identity.get()
+        actor = (
+            current["user"]
+            if current and (run.get("resumed_from") or run.get("regenerated_from"))
+            else message.get("actor", {})
+        )
+        # 排队出队可能发生在另一个人的任务中，不能继承那个后台任务的个人记忆。
+        project = {
+            **project,
+            "_execution_user": actor if actor.get("id") else None,
+        }
         with self.repository.database.session.begin() as session:
             session.get(Run, run["id"]).project_snapshot_json = dump_json(project)
         run["project_snapshot"] = project
@@ -48,8 +61,13 @@ class RunManager:
         task.add_done_callback(lambda _task: self.tasks.pop(run["id"], None))
 
     async def _execute_bound(self, run, configuration):
-        with bind_configuration(configuration), bind_project(run.get("project_snapshot", {})):
-            await self._execute(run, configuration)
+        actor = run.get("project_snapshot", {}).get("_execution_user")
+        token = request_identity.set({"user": actor} if actor else None)
+        try:
+            with bind_configuration(configuration), bind_project(run.get("project_snapshot", {})):
+                await self._execute(run, configuration)
+        finally:
+            request_identity.reset(token)
 
     async def _execute(self, run: dict, configuration):
         def emit(kind, payload):

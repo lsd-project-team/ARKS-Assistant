@@ -1,6 +1,7 @@
 import type { RunContext } from '../types';
 import { Markdown } from './Markdown';
 import { AnalysisRunDetails } from './AnalysisRunDetails';
+import { KnowledgeFeedback } from './RunKnowledgeSummary';
 
 export function RunEvidenceDetails({
   context,
@@ -16,6 +17,11 @@ export function RunEvidenceDetails({
     reported.reduce((total, item) => total + (item[field] ?? 0), 0).toLocaleString();
   return (
     <>
+      <KnowledgeFeedback
+        references={context.references}
+        searches={context.searches}
+        saves={context.memory_saves}
+      />
       <AnalysisRunDetails completion={context.completion} progress={context.analysis_progress} />
       {context.analysis_plan && (
         <p className="muted">
@@ -57,7 +63,7 @@ export function RunEvidenceDetails({
             ))}
         </details>
       )}
-      {!!context.materials?.length && (
+      {!context.references?.length && !!context.materials?.length && (
         <details>
           <summary>实际带入的项目资料</summary>
           {context.materials.map((material) => (

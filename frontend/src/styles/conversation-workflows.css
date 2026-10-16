@@ -15,26 +15,26 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  color: #938b80;
+  color: var(--text-secondary);
   font-weight: 400;
   font-size: 11px;
 }
 .run-activity small,
 .answer-actions > small {
   font-size: 10px;
-  color: #9c958b;
+  color: var(--text-muted);
 }
 .run-feedback {
   padding: 10px 12px;
   margin: 10px 0;
-  background: #faf1ec;
+  background: var(--danger-surface);
   border-radius: 9px;
-  color: #946350;
+  color: var(--danger-text);
   font-size: 12px;
 }
 .run-feedback.notice {
-  background: #f2efe7;
-  color: #83765e;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
 }
 .run-feedback p {
   margin: 0 0 4px;
@@ -50,7 +50,7 @@
 .branch-origin {
   padding: 5px 22px;
   font-size: 11px;
-  color: #8e857a;
+  color: var(--text-secondary);
 }
 .branch-origin button {
   text-decoration: underline;
@@ -58,18 +58,18 @@
 }
 .superseded-message {
   margin: 14px 0;
-  border-left: 2px solid #e5dfd5;
+  border-left: 2px solid var(--border);
   padding-left: 12px;
 }
 .superseded-message > summary {
   cursor: pointer;
-  color: #989083;
+  color: var(--text-muted);
   font-size: 11px;
   overflow-wrap: anywhere;
 }
 .past-run {
   margin: 6px 0 16px;
-  color: #958a7a;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 .past-run > summary {
@@ -83,7 +83,7 @@
 }
 .question-queue {
   margin: 0 0 10px;
-  background: #f2efe8;
+  background: var(--surface-subtle);
   border-radius: 10px;
   font-size: 12px;
 }
@@ -93,11 +93,11 @@
   gap: 7px;
   padding: 9px 12px;
   cursor: pointer;
-  color: #776e62;
+  color: var(--text-secondary);
 }
 .question-queue summary small {
   margin-left: auto;
-  color: #998d7b;
+  color: var(--text-muted);
 }
 .queue-controls {
   display: flex;
@@ -105,7 +105,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 0 12px 8px;
-  color: #948875;
+  color: var(--text-secondary);
   font-size: 11px;
 }
 .queue-controls .button {
@@ -127,12 +127,12 @@
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  border-top: 1px solid #e6e0d5;
+  border-top: 1px solid var(--border);
 }
 .question-queue li::before {
   content: counter(queued);
   font-size: 10px;
-  color: #a89c89;
+  color: var(--text-muted);
 }
 .queue-question {
   display: flex;
@@ -149,14 +149,14 @@
   white-space: nowrap;
 }
 .queue-question small {
-  color: #a0917c;
+  color: var(--text-muted);
   font-size: 10px;
 }
 .question-editor label {
   display: grid;
   gap: 8px;
   font-size: 12px;
-  color: #8c8172;
+  color: var(--text-secondary);
 }
 .question-editor textarea {
   width: 100%;
@@ -164,10 +164,10 @@
   max-height: 45vh;
   resize: vertical;
   padding: 12px;
-  background: #fff;
-  border: 1px solid #dfd9cf;
+  background: var(--panel);
+  border: 1px solid var(--border);
   border-radius: 9px;
-  color: #35312b;
+  color: var(--text);
   font-size: 14px;
   line-height: 1.7;
 }
@@ -186,7 +186,7 @@
   overflow-wrap: anywhere;
 }
 .question-selection small {
-  color: #9c8c78;
+  color: var(--text-muted);
 }
 .discard-question {
   display: flex;
@@ -194,7 +194,7 @@
   gap: 8px;
   margin-top: 12px;
   padding: 10px;
-  background: #f3ede3;
+  background: var(--surface-muted);
   border-radius: 8px;
   font-size: 12px;
 }

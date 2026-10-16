@@ -5,16 +5,22 @@ import json
 from sqlalchemy import func, select
 
 from app.config import dump_json
+from app.memory_identity import user_memory_key
 from app.models import MemoryRevision
 from app.workspace import content_version
+from app.workspace_access import private_workspace_id
 
 
 class MemoryHistory:
     def __init__(self, database, workspace_id):
-        self.database, self.workspace_id = database, workspace_id
+        self.database, self.base_workspace_id = database, workspace_id
+
+    @property
+    def workspace_id(self):
+        return private_workspace_id(self.base_workspace_id)
 
     def key(self, scope, name):
-        return f"{self.workspace_id if scope == 'project' else 'user'}:{name}"
+        return f"{self.workspace_id if scope == 'project' else user_memory_key()}:{name}"
 
     def snapshot(self, session, memory, action):
         session.add(
@@ -82,8 +88,20 @@ class MemoryHistory:
                 select(MemoryRevision).where(
                     MemoryRevision.id.in_(latest),
                     MemoryRevision.action == "deleted",
-                    (MemoryRevision.memory_id.startswith(self.workspace_id + ":"))
-                    | (MemoryRevision.scope == "user"),
+                    (
+                        (MemoryRevision.scope == "project")
+                        & (
+                            MemoryRevision.memory_id
+                            == self.workspace_id + ":" + MemoryRevision.name
+                        )
+                    )
+                    | (
+                        (MemoryRevision.scope == "user")
+                        & (
+                            MemoryRevision.memory_id
+                            == user_memory_key() + ":" + MemoryRevision.name
+                        )
+                    ),
                 )
             ).all()
             return [self.public(row) for row in rows]

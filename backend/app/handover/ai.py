@@ -182,15 +182,15 @@ class HandoverAI:
     def recover(self):
         with self.projects.database.session() as session:
             jobs = [
-                (row.project_id, row.id)
+                row.id
                 for row in session.scalars(
                     select(HandoverRecord).where(HandoverRecord.kind == "job")
                 )
                 if json.loads(row.payload_json)["status"] in {"queued", "running"}
             ]
-        for project_id, identifier in jobs:
+        for identifier in jobs:
             self._set(
-                HandoverStore(self.projects, project_id),
+                HandoverStore(self.projects),
                 identifier,
                 status="interrupted",
                 error="服务重启中断了作业；可重试，已保存的输入版本仍可查看",

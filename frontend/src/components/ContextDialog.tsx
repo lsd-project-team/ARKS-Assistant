@@ -127,6 +127,21 @@ export function ContextDialog({
                     {selection.stale ? ' · 旧版本' : ''}
                   </button>
                 ))}
+                {!sources.data.references?.length &&
+                  sources.data.debug_issues?.map((issue) => (
+                    <button
+                      key={issue.id}
+                      className="context-source"
+                      onClick={() =>
+                        guard.request(() => {
+                          window.location.hash = `handover/issues?record=${issue.id}&version=${issue.version}`;
+                          close();
+                        })
+                      }
+                    >
+                      调试记录 · {issue.title} · v{issue.version}
+                    </button>
+                  ))}
                 {sources.data.memories.map((memory) => (
                   <details className="context-memory" key={`${memory.scope}/${memory.name}`}>
                     <summary>

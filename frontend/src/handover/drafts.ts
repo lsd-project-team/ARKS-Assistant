@@ -6,11 +6,11 @@ export interface Draft {
   payload: Payload;
   version?: number;
 }
-export function draftStorageKey(projectId: string, recordKey: string) {
-  return `arks-handover-draft:${projectId}:${recordKey}`;
+export function draftStorageKey(scopeId: string, recordKey: string) {
+  return `arks-handover-draft:${scopeId}:${recordKey}`;
 }
-export function useHandoverDraft(projectId: string, recordKey: string, initial: Draft) {
-  const key = draftStorageKey(projectId, recordKey);
+export function useHandoverDraft(scopeId: string, recordKey: string, initial: Draft) {
+  const key = draftStorageKey(scopeId, recordKey);
   const [warning, setWarning] = useState('');
   const [restored] = useState(() => !!localStorage.getItem(key));
   const [draft, setDraft] = useState<Draft>(() => {
