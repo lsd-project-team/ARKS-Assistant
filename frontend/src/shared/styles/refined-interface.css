@@ -1,8 +1,7 @@
 /* 视觉参考 Codex 的浅色桌面界面；各工作区仍负责自身布局和功能。 */
 :root {
-  /* 三套外观遵循系统字体；中英文与等宽代码分别使用平台原生回退。 */
-  --font-ui:
-    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+  /* 已核对本机 Codex 26.1007 的默认字体定义；中文沿用系统回退，不另指定字体。 */
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-code:
     ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   --surface-shadow: var(--shadow-panel);

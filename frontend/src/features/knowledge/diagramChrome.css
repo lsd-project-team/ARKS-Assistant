@@ -6,13 +6,7 @@ select,
 .node-title,
 .lane-label,
 .minimap-title {
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    'Microsoft YaHei UI',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 button {
@@ -31,13 +25,7 @@ button {
   max-height: calc(100dvh - 24px);
 }
 svg text {
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    'Microsoft YaHei UI',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 :root[data-theme='dark'][data-appearance='dark'] {
   /* 图谱预设只决定语义节点颜色；画布、工具栏与浮层遵循应用深色外观。 */
