@@ -121,10 +121,10 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
     can_edit = bool(EDIT_REQUEST.search(request_text)) and not discussion
     attempts = 0
 
-    async def mutate(operation, *arguments):
+    async def mutate(operation, *arguments, **options):
         async with runtime.project_lock:
             await asyncio.to_thread(runtime.repository.creation_guard)
-            return await asyncio.to_thread(operation, *arguments)
+            return await asyncio.to_thread(operation, *arguments, **options)
 
     @tool
     async def project_reading_status(job_id: str = "") -> str:
@@ -161,11 +161,26 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         return dump_json(await asyncio.to_thread(changes.list))
 
     @tool
-    async def create_code_change(title: str, goal: str) -> str:
-        """Create an isolated copy for requested implementation. Original stays read-only."""
+    async def create_code_change(
+        title: str,
+        goal: str,
+        acceptance_criteria: list[str] | None = None,
+        constraints: str = "",
+        allowed_paths: list[str] | None = None,
+    ) -> str:
+        """Create a requested isolated change with criteria, constraints and relative glob scope."""
         if not can_edit:
             raise ValueError("本轮用户只要求分析，尚未要求修改或实现代码")
-        return dump_json(await mutate(changes.create, title, goal))
+        return dump_json(
+            await mutate(
+                changes.create,
+                title,
+                goal,
+                acceptance_criteria=acceptance_criteria or [],
+                constraints=constraints,
+                allowed_paths=allowed_paths or [],
+            )
+        )
 
     @tool
     async def read_change_file(
@@ -212,8 +227,8 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         return dump_json(await asyncio.to_thread(changes.profiles))
 
     @tool
-    async def verify_code_change(change_id: str, profile_id: str) -> str:
-        """Run configured verification and await result/log for repairs. Max 3 attempts."""
+    async def verify_code_change(change_id: str, profile_id: str, purpose: str = "change") -> str:
+        """Run baseline for environment diagnosis or change verification. Max 3 attempts."""
         nonlocal attempts
         if not can_edit:
             raise ValueError("本轮用户没有要求实施修改，请在代码工作页主动验证")
@@ -221,7 +236,7 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
             raise ValueError("本轮已验证3次，请保留失败日志、当前差异和剩余项后结束")
         attempts += 1
         # 保留启动任务：取消 to_thread 的等待不能停止其线程，必须等登记完成再取消进程。
-        launch = asyncio.create_task(mutate(changes.verify, change_id, profile_id))
+        launch = asyncio.create_task(mutate(changes.verify, change_id, profile_id, purpose))
         try:
             await asyncio.shield(launch)
             if emit:

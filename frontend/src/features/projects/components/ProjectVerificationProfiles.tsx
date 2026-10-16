@@ -6,7 +6,9 @@ import { Button, ErrorText } from '../../../shared/ui/ui';
 import { Select } from '../../../shared/ui/Select';
 import { boundProjectApi } from '../lib/projectRequest';
 import type { VerificationProfile } from '../types/codeWork';
-import { VerificationProfiles } from './VerificationProfiles';
+import { VerificationEnvironmentProbe, VerificationProfiles } from './VerificationProfiles';
+import { ReadinessPanel } from './ReadinessPanel';
+import { executionLabel } from '../lib/codeReadiness';
 import '../styles/code-work.css';
 
 export function ProjectVerificationProfiles({ projects }: { projects: Project[] }) {
@@ -71,7 +73,21 @@ export function ProjectVerificationProfileList({
             <li key={profile.id}>
               <strong>{profile.name}</strong>
               <span>超时 {profile.timeout_seconds || 120} 秒</span>
+              <span>
+                {executionLabel(profile.executor)} · {profile.environment_label || '环境未命名'} ·{' '}
+                {profile.category || '类别未知'}
+              </span>
+              {profile.executor?.kind === 'container' && (
+                <small>镜像 {profile.executor.image}</small>
+              )}
+              {profile.baseline_required && <span>要求原版本基线</span>}
               <code className="code-work-command">{JSON.stringify(profile.argv)}</code>
+              <VerificationEnvironmentProbe
+                projectId={projectId}
+                profile={profile}
+                api={request}
+                disabled={readOnly}
+              />
             </li>
           ))}
         </ul>
@@ -84,6 +100,7 @@ export function ProjectVerificationProfileList({
         disabled={readOnly}
         onSaved={() => void profiles.refetch()}
       />
+      <ReadinessPanel projectId={projectId} readOnly={readOnly} />
     </div>
   );
 }

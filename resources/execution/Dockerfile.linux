@@ -1,0 +1,11 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+LABEL io.arks.executor.version="2" io.arks.executor.platform="linux"
+USER root
+RUN mkdir -p /opt/arks /stage /work && chmod 755 /stage /work
+COPY supervisor.py transport.py /opt/arks/
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /work
+USER 0:0
+ENTRYPOINT ["/usr/local/bin/python", "-I", "/opt/arks/supervisor.py"]
+CMD []

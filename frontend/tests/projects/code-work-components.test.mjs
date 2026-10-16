@@ -10,12 +10,13 @@ const environment = {
   role: 'user',
   data: {},
   profileQuery: undefined,
+  probeQuery: undefined,
   api: async () => ({ profiles: [] }),
 };
 const bundled = await build({
   stdin: {
     contents:
-      "export { CodeChangesPanel } from './src/features/projects/components/CodeChangesPanel'; export { ProjectReadingPanel } from './src/features/projects/components/ProjectReadingPanel'; export { ProjectVerificationProfiles, ProjectVerificationProfileList } from './src/features/projects/components/ProjectVerificationProfiles'; export { ConfigurationPage } from './src/features/admin/ConfigurationPage'; export { ChangeFileEditor } from './src/features/projects/components/ChangeFileEditor';",
+      "export { CodeChangesPanel } from './src/features/projects/components/CodeChangesPanel'; export { ReadinessPanel } from './src/features/projects/components/ReadinessPanel'; export { ChangeDelivery } from './src/features/projects/components/ChangeDelivery'; export { ExecutorFields } from './src/features/projects/components/ExecutorFields'; export { ProjectReadingPanel } from './src/features/projects/components/ProjectReadingPanel'; export { ProjectVerificationProfiles, ProjectVerificationProfileList } from './src/features/projects/components/ProjectVerificationProfiles'; export { ConfigurationPage } from './src/features/admin/ConfigurationPage'; export { ChangeFileEditor } from './src/features/projects/components/ChangeFileEditor';",
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -89,11 +90,66 @@ const {
   ProjectVerificationProfileList,
   ConfigurationPage,
   ChangeFileEditor,
+  ReadinessPanel,
+  ChangeDelivery,
+  ExecutorFields,
 } = bundledModule.exports;
 
-function setup({ change, profiles = [], diff, job, documents = [], role = 'user' } = {}) {
+const defaultReadiness = {
+  project: {
+    status: 'blocked',
+    buildable: null,
+    projects: [
+      { path: 'App.csproj', target_frameworks: ['.NET Framework 4.8'], platforms: ['x86'] },
+    ],
+    requirements: ['需要独立 Windows 执行节点'],
+    issues: [
+      {
+        code: 'missing_reference',
+        severity: 'error',
+        path: 'App.csproj',
+        message: '私有 DLL 缺失',
+      },
+    ],
+    baseline_steps: ['准备目标 SDK 后运行原版本验证'],
+  },
+  policy: {
+    max_storage_mb: 4096,
+    min_free_mb: 1024,
+    max_log_mb: 16,
+    max_active_verifications: 1,
+    retention_days: 30,
+    reading_token_limit: 500000,
+    require_sandbox_delivery: true,
+  },
+  usage: {
+    storage_bytes: 1048576,
+    logs_bytes: 0,
+    changes: 1,
+    active_verifications: 0,
+    reading_reserved_tokens: 100,
+    reading_token_limit: 500000,
+  },
+  unresolved: ['未探测到可用 Windows 沙箱节点'],
+};
+
+function setup({
+  change,
+  profiles = [],
+  diff,
+  job,
+  documents = [],
+  role = 'user',
+  readiness = defaultReadiness,
+  verifications = [],
+  probe,
+} = {}) {
   environment.role = role;
-  environment.query = ({ queryKey, queryFn }) => {
+  environment.query = ({ queryKey, queryFn, ...options }) => {
+    if (queryKey[0] === 'code-profile-probe') {
+      environment.probeQuery = { queryKey, queryFn, ...options };
+      return { data: probe, error: null, isFetching: false, refetch: async () => {} };
+    }
     if (queryKey[0] === 'projects')
       return {
         data: { projects: [{ id: 'project-a', name: '项目A', state: 'active' }] },
@@ -102,6 +158,9 @@ function setup({ change, profiles = [], diff, job, documents = [], role = 'user'
     if (queryKey[0] === 'project')
       return { data: { id: 'project-a', name: '项目A', state: 'active' }, error: null };
     if (queryKey[0] === 'admin-events') return { data: [], error: null };
+    if (queryKey[0] === 'code-work-readiness')
+      return { data: readiness, error: null, refetch: async () => {} };
+    if (queryKey[0] === 'change-verifications') return { data: { verifications }, error: null };
     if (queryKey[0] === 'code-change-profiles-admin') environment.profileQuery = queryFn;
     const key =
       queryKey[0] === 'code-change-profiles' || queryKey[0] === 'code-change-profiles-admin'
@@ -332,6 +391,61 @@ test('管理员系统配置实际挂载项目验证命令入口，数据维护�
   );
 });
 
+test('管理员探测固定所属项目，缺失节点如实显示，探测不代替构建验证', async () => {
+  const profiles = [
+    {
+      id: 'windows-build',
+      name: 'Windows构建',
+      argv: ['msbuild'],
+      executor: {
+        kind: 'container',
+        platform: 'windows',
+        image: `sha256:${'a'.repeat(64)}`,
+        context: 'windows-node',
+      },
+    },
+  ];
+  setup({ role: 'admin', profiles });
+  const render = (readOnly = false) =>
+    renderToStaticMarkup(
+      createElement(ProjectVerificationProfileList, { projectId: 'project-b', readOnly }),
+    );
+  assert.match(render(), /探测环境/);
+  assert.doesNotMatch(render(), /节点与镜像可访问/);
+  const calls = [];
+  environment.api = async (path, options, projectId) => {
+    calls.push({ path, options, projectId });
+    return { available: false, error: 'Windows节点不可用' };
+  };
+  assert.equal(calls.length, 0);
+  await environment.probeQuery.queryFn();
+  assert.deepEqual(calls, [
+    {
+      path: '/code-changes/profiles/windows-build/probe',
+      options: { method: 'POST' },
+      projectId: 'project-b',
+    },
+  ]);
+  assert.equal(environment.probeQuery.queryKey[1], 'project-b');
+  assert.equal(environment.probeQuery.enabled, false);
+  assert.equal(environment.probeQuery.retry, false);
+  setup({ role: 'admin', profiles, probe: { available: false, error: 'Windows节点不可用' } });
+  assert.match(render(), /当前环境不可用.*Windows节点不可用/);
+  const linuxProfiles = [
+    { ...profiles[0], executor: { ...profiles[0].executor, platform: 'linux' } },
+  ];
+  setup({
+    role: 'admin',
+    profiles: linuxProfiles,
+    probe: { available: true, platform: 'linux', image_id: 'fixed-image-id' },
+  });
+  assert.match(render(), /节点与镜像可访问.*linux.*fixed-image-id/);
+  assert.match(render(), /仍需原版本基线与修改验证/);
+  assert.match(render(true), /<button[^>]*disabled=""[^>]*>探测环境/);
+  setup({ role: 'user', profiles });
+  assert.doesNotMatch(render(), /探测环境/);
+});
+
 test('重新进入副本恢复草稿及原版本，另一个项目不会恢复该正文', async () => {
   const { writeCodeFileDraft } = await import('../../src/features/projects/lib/codeFileDraft.ts');
   const saved = new Map();
@@ -373,4 +487,104 @@ test('重新进入副本恢复草稿及原版本，另一个项目不会恢复�
     if (previous === undefined) delete globalThis.window;
     else globalThis.window = previous;
   }
+});
+
+test('前置报告诚实展示Windows缺项，普通用户仍可阅读修改但没有管理员清理入口', () => {
+  setup();
+  const html = renderToStaticMarkup(
+    createElement(ReadinessPanel, { projectId: 'project-a', readOnly: false }),
+  );
+  assert.match(html, /独立 Windows 执行节点/);
+  assert.match(html, /还需实现并验收 Windows 执行适配/);
+  assert.match(html, /私有 DLL 缺失/);
+  assert.match(html, /仍可阅读、修改隔离副本与导出草稿补丁/);
+  assert.match(html, /静态检查不能证明可构建/);
+  assert.doesNotMatch(html, /本项目用量与清理|确认清理到期临时文件/);
+  setup({ role: 'admin' });
+  const admin = renderToStaticMarkup(
+    createElement(ReadinessPanel, { projectId: 'project-a', readOnly: false }),
+  );
+  assert.match(admin, /本项目用量与清理/);
+  assert.match(admin, /聊天和项目阅读共享按 UTC 日结算的模型 token 额度/);
+  assert.match(admin, /当日模型预留 token（UTC）/);
+  assert.match(admin, /预览可清理文件/);
+  assert.doesNotMatch(admin, /确认清理到期临时文件/);
+});
+
+test('可信宿主明确非沙箱，容器配置必须指定固定镜像与节点', () => {
+  setup();
+  const host = renderToStaticMarkup(
+    createElement(ExecutorFields, {
+      value: { kind: 'trusted_host', platform: 'windows', image: '', context: 'default' },
+      onChange: () => {},
+      disabled: false,
+    }),
+  );
+  assert.match(host, /可信宿主为非沙箱执行/);
+  assert.match(host, /不能作为沙箱交付依据/);
+  const container = renderToStaticMarkup(
+    createElement(ExecutorFields, {
+      value: { kind: 'container', platform: 'linux', image: '', context: 'default' },
+      onChange: () => {},
+      disabled: false,
+    }),
+  );
+  assert.match(container, /固定镜像 digest/);
+  assert.match(container, /Docker context/);
+  assert.match(container, /仅保存配置不代表节点或镜像已准备/);
+  assert.match(container, /Windows 执行适配仍待实现与验收/);
+  assert.match(container, /填写 Windows context 不会启用执行/);
+});
+
+test('交付要求固定当前审核和沙箱证明，旧审核不能解锁ZIP，原草稿补丁仍保留', () => {
+  const change = {
+    ...base,
+    status: 'passed',
+    change_version: 'current',
+    acceptance_criteria: ['返回值符合要求'],
+    review: { change_version: 'old', actor: '审核账号', reviewed_at: 'now' },
+    latest_verification: {
+      ...verification,
+      change_version: 'current',
+      purpose: 'change',
+      executor: { kind: 'trusted_host', platform: 'windows' },
+    },
+  };
+  setup({ change });
+  let html = renderToStaticMarkup(
+    createElement(ChangeDelivery, {
+      projectId: 'project-a',
+      change,
+      profiles: [],
+      disabled: false,
+      sourceUnchanged: true,
+      onChanged: () => {},
+      onDownload: async () => {},
+    }),
+  );
+  assert.match(html, /交付策略要求当前修改通过沙箱验证/);
+  assert.match(html, /<button[^>]*disabled=""[^>]*>下载已审核交付包/);
+  const approved = {
+    ...change,
+    review: { ...change.review, change_version: 'current' },
+    latest_verification: {
+      ...change.latest_verification,
+      executor: { kind: 'container', platform: 'windows' },
+    },
+  };
+  setup({ change: approved });
+  html = renderToStaticMarkup(
+    createElement(ChangeDelivery, {
+      projectId: 'project-a',
+      change: approved,
+      profiles: [],
+      disabled: false,
+      sourceUnchanged: true,
+      onChanged: () => {},
+      onDownload: async () => {},
+    }),
+  );
+  assert.match(html, /当前版本已审核/);
+  assert.match(html, /<button class="button">下载已审核交付包/);
+  assert.match(html, /反向回退说明/);
 });

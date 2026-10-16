@@ -5,6 +5,8 @@ import sqlite3
 from contextlib import closing
 from pathlib import Path
 
+from app.infrastructure.storage.paths import ordinary_path
+
 FORMAT_VERSION = 1
 MAX_ARCHIVE_BYTES = 512 * 1024 * 1024
 MAX_EXPANDED_BYTES = 2 * 1024 * 1024 * 1024
@@ -19,7 +21,7 @@ def database_info(
     path: Path, *, business: bool = False, verify: bool = True, immutable: bool = True
 ) -> dict:
     try:
-        uri = path.as_uri() + "?mode=ro" + ("&immutable=1" if immutable else "")
+        uri = ordinary_path(path).as_uri() + "?mode=ro" + ("&immutable=1" if immutable else "")
         with closing(sqlite3.connect(uri, uri=True)) as connection:
             connection.execute("PRAGMA trusted_schema=OFF")
             if verify and connection.execute("PRAGMA integrity_check").fetchone() != ("ok",):

@@ -4,6 +4,7 @@ import asyncio
 
 from fastapi import APIRouter
 
+from app.agents.runtime.model_budget import ProjectModelBudget
 from app.core.container import AppServices
 from app.infrastructure.providers.models import close_models, create_model
 from app.modules.chat.schemas import MemoryRestore, MemoryWrite, SourcePreferencesWrite
@@ -32,6 +33,15 @@ def create_router(services: AppServices) -> APIRouter:
         model = (
             create_model(config) if config.model and config.base_url and config.api_key else None
         )
+        if model is not None and services.repository.project_id:
+            model.callbacks = [
+                *(getattr(model, "callbacks", None) or []),
+                ProjectModelBudget(
+                    services.runtime.code_changes.policy,
+                    config.context_tokens,
+                    output_tokens=config.output_tokens,
+                ),
+            ]
         try:
             return await memories.semantic_review(body, model)
         finally:

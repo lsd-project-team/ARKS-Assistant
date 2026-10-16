@@ -1,5 +1,6 @@
 """本机 API 与静态前端入口；业务逻辑放在独立服务。"""
 
+import asyncio
 from contextlib import asynccontextmanager
 
 from alembic import command
@@ -63,6 +64,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 services.repository.recover()
                 services.runtime.project_reading.recover(all_projects=True)
                 services.runtime.code_changes.recover(all_projects=True)
+                await asyncio.to_thread(services.runtime.code_changes.cleanup_executors)
                 yield
             finally:
                 await projects.shutdown()

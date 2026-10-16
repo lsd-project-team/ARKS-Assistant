@@ -190,6 +190,7 @@ def test_confirmed_experience_keeps_fixed_change_and_verification_then_is_recall
             json={
                 "name": "临时校验",
                 "argv": [sys.executable, "-c", "print('passed')"],
+                "executor": {"kind": "trusted_host"},
             },
         ).json()
         client.post(f"{url}/code-changes/{change['id']}/verify", json={"profile_id": profile["id"]})
@@ -268,6 +269,7 @@ def test_new_project_endpoints_obey_ownership_and_admin_command_configuration(se
             json={
                 "name": "不允许",
                 "argv": [sys.executable, "-c", "print(1)"],
+                "executor": {"kind": "trusted_host"},
             },
         )
         assert response.status_code == 403
@@ -306,6 +308,7 @@ def test_project_cannot_rebind_archive_or_delete_while_reading_or_verifying(serv
             json={
                 "name": "等待取消",
                 "argv": [sys.executable, "-c", "import time; time.sleep(30)"],
+                "executor": {"kind": "trusted_host"},
             },
         ).json()
         assert (

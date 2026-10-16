@@ -600,7 +600,12 @@ def test_http_requires_login_and_admin_profile_configuration(changes, services):
     with TestClient(app) as client:
         assert client.get("/api/code-changes").status_code == 401
         sign_in(client, "user")
-        body = {"name": "Python", "argv": [sys.executable, "-c", "print('hello')"]}
+        body = {
+            "name": "Python",
+            "argv": [sys.executable, "-c", "print('hello')"],
+            "executor": {"kind": "trusted_host"},
+            "baseline_required": False,
+        }
         assert client.post("/api/code-changes/profiles", json=body).status_code == 403
         created = client.post("/api/code-changes", json={"title": "用户修改", "goal": "隔离测试"})
         assert created.status_code == 200
@@ -624,6 +629,7 @@ def test_http_requires_login_and_admin_profile_configuration(changes, services):
             json={
                 "name": "可取消命令",
                 "argv": [sys.executable, "-c", "import time;time.sleep(30)"],
+                "executor": {"kind": "trusted_host"},
             },
         ).json()
         verifying = client.post(

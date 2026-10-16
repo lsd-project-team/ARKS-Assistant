@@ -25,7 +25,7 @@ class GatedChanges:
         self.cancel_calls = 0
         self.current = {"status": "ready", "latest_verification": None}
 
-    def verify(self, change_id, profile_id):
+    def verify(self, change_id, profile_id, purpose="change"):
         self.start_entered.set()
         if not self.start_release.wait(5):
             raise RuntimeError("测试未释放启动闸门")

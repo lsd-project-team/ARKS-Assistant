@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { ProjectReadingPanel } from './ProjectReadingPanel';
 import { CodeChangesPanel } from './CodeChangesPanel';
+import { ReadinessPanel } from './ReadinessPanel';
 import '../styles/code-work.css';
 
 export function CodeWork({ projectId, readOnly }: { projectId: string; readOnly: boolean }) {
   const [section, setSection] = useState<'reading' | 'changes'>('reading');
   return (
     <div className="code-work">
+      <ReadinessPanel projectId={projectId} readOnly={readOnly} />
       <div className="code-work-tabs" aria-label="代码工作内容">
         <button aria-pressed={section === 'reading'} onClick={() => setSection('reading')}>
           全项目阅读

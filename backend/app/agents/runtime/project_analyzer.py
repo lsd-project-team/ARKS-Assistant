@@ -7,6 +7,8 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.runtime.configuration import current_configuration
+from app.agents.runtime.model_budget import ProjectModelBudget
+from app.agents.runtime.privacy import redact
 from app.infrastructure.providers.models import close_models, create_model, safe_error
 from app.modules.source_analysis.reading.schemas import ReadingAnalysis
 
@@ -14,6 +16,7 @@ from app.modules.source_analysis.reading.schemas import ReadingAnalysis
 class ModelReadingAnalyzer:
     def __init__(self, settings):
         self.settings = settings
+        self.budget = None
 
     def validate(self):
         model = current_configuration(self.settings).model
@@ -33,7 +36,7 @@ class ModelReadingAnalyzer:
         )
         messages = [
             SystemMessage(content=instructions),
-            HumanMessage(content=json.dumps(metadata, ensure_ascii=False) + "\n" + text),
+            HumanMessage(content=json.dumps(metadata, ensure_ascii=False) + "\n" + redact(text)),
         ]
         if estimate_tokens(messages) > input_budget(
             settings.context_tokens, settings.output_tokens
@@ -42,6 +45,13 @@ class ModelReadingAnalyzer:
         model = None
         try:
             model = create_model(settings)
+            if self.budget is not None:
+                model.callbacks = [
+                    *(getattr(model, "callbacks", None) or []),
+                    ProjectModelBudget(
+                        self.budget, settings.context_tokens, output_tokens=settings.output_tokens
+                    ),
+                ]
             reply = await asyncio.wait_for(model.ainvoke(messages), settings.timeout_seconds)
             content = reply.text.strip().removeprefix("```json").removeprefix("```")
             return ReadingAnalysis.model_validate_json(content.removesuffix("```").strip())

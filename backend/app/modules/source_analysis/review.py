@@ -6,6 +6,7 @@ import time
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.agents.context.tokens import text_tokens
+from app.agents.runtime.privacy import redact_messages
 from app.core.config import dump_json
 from app.infrastructure.providers.usage import reported_usage
 
@@ -64,10 +65,12 @@ async def review_answer(model, evidence, answer):
         evidence.record(block, "source_review")
     started = time.perf_counter()
     response = await model.ainvoke(
-        [
-            SystemMessage(content=REVIEW),
-            HumanMessage(content=dump_json({"answer": answer, "source": blocks})),
-        ],
+        redact_messages(
+            [
+                SystemMessage(content=REVIEW),
+                HumanMessage(content=dump_json({"answer": answer, "source": blocks})),
+            ]
+        ),
         config={"metadata": {"lc_source": "source_verification"}},
     )
     evidence.emit(

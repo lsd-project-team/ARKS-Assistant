@@ -273,6 +273,21 @@
   flex-direction: row;
   align-items: center;
 }
+.code-work-executor {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 14px;
+  min-width: 0;
+}
+.code-work-readiness {
+  border-bottom: 1px solid var(--border);
+}
+.code-work-readiness .code-work-counts dd {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
 @media (max-width: 680px) {
   .project-home .project-home-bar,
   .project-home .project-home-tabs,

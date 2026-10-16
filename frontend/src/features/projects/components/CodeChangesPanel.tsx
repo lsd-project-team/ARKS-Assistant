@@ -17,6 +17,8 @@ import type { ChangeDiff, CodeChange, VerificationProfile } from '../types/codeW
 import { ChangeFileEditor } from './ChangeFileEditor';
 import { VerificationProfiles } from './VerificationProfiles';
 import { ChangeExperience } from './ChangeExperience';
+import { ChangeDelivery } from './ChangeDelivery';
+import { executionLabel, requirementsPayload } from '../lib/codeReadiness';
 
 const verificationLabels = {
   running: '运行中',
@@ -40,6 +42,10 @@ export function CodeChangesPanel({
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState('');
   const [goal, setGoal] = useState('');
+  const [criteria, setCriteria] = useState('');
+  const [constraints, setConstraints] = useState('');
+  const [allowedPaths, setAllowedPaths] = useState('');
+  const [purpose, setPurpose] = useState<'baseline' | 'change'>('change');
   const [profileId, setProfileId] = useState('');
   const [path, setPath] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -80,6 +86,7 @@ export function CodeChangesPanel({
   function changed(next: CodeChange) {
     cache.setQueryData([...prefix, next.id], next);
     void cache.invalidateQueries({ queryKey: prefix });
+    void cache.invalidateQueries({ queryKey: ['code-work-readiness', projectId] });
   }
 
   async function act(action: 'create' | 'verify' | 'cancel' | 'discard') {
@@ -93,9 +100,15 @@ export function CodeChangesPanel({
         {
           method: 'POST',
           ...(action === 'create'
-            ? { body: jsonBody({ title: title.trim(), goal: goal.trim() }) }
+            ? {
+                body: jsonBody({
+                  title: title.trim(),
+                  goal: goal.trim(),
+                  ...requirementsPayload(criteria, constraints, allowedPaths),
+                }),
+              }
             : action === 'verify'
-              ? { body: jsonBody({ profile_id: configuredProfile?.id }) }
+              ? { body: jsonBody({ profile_id: configuredProfile?.id, purpose }) }
               : {}),
         },
       );
@@ -103,6 +116,9 @@ export function CodeChangesPanel({
       if (action === 'create') {
         setTitle('');
         setGoal('');
+        setCriteria('');
+        setConstraints('');
+        setAllowedPaths('');
         setCreating(false);
         setPath('');
       }
@@ -115,12 +131,12 @@ export function CodeChangesPanel({
     }
   }
 
-  async function download(path: string, filename: string) {
+  async function download(path: string, filename: string, method: 'GET' | 'POST' = 'GET') {
     setBusy('download');
     setError(undefined);
     try {
       // 二进制响应也固定发起时的项目，并使用现有账号会话保护。
-      const response = await sessionFetch(apiUrl(path, projectId));
+      const response = await sessionFetch(apiUrl(path, projectId), { method });
       if (!response.ok) {
         const body = await response.json().catch(() => null);
         throw new Error(
@@ -197,6 +213,37 @@ export function CodeChangesPanel({
               disabled={!!busy || readOnly}
             />
           </label>
+          <label>
+            验收标准（每行一条；留空仅可导出草稿）
+            <textarea
+              rows={3}
+              value={criteria}
+              onChange={(event) => setCriteria(event.target.value)}
+              disabled={!!busy || readOnly}
+              maxLength={20000}
+            />
+          </label>
+          <label>
+            实现约束
+            <textarea
+              rows={2}
+              value={constraints}
+              onChange={(event) => setConstraints(event.target.value)}
+              disabled={!!busy || readOnly}
+              maxLength={10000}
+            />
+          </label>
+          <label>
+            允许修改的路径范围（每行一个相对 glob）
+            <textarea
+              rows={2}
+              value={allowedPaths}
+              onChange={(event) => setAllowedPaths(event.target.value)}
+              disabled={!!busy || readOnly}
+              placeholder={'src/**\ntests/**'}
+            />
+            <small>留空表示项目内未排除文件；路径范围由后端强制检查。</small>
+          </label>
           <Button className="primary" type="submit" disabled={!!busy || readOnly}>
             创建隔离副本
           </Button>
@@ -246,6 +293,18 @@ export function CodeChangesPanel({
                 <span>修改 {change.files_changed} 个文件</span>
               </div>
               <p className="code-work-prose">{change.goal}</p>
+              {!!change.acceptance_criteria?.length && (
+                <details>
+                  <summary>验收标准与实现约束</summary>
+                  <ul>
+                    {change.acceptance_criteria.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="code-work-prose">{change.constraints}</p>
+                  <p>允许路径：{change.allowed_paths?.join('、') || '项目内未排除文件'}</p>
+                </details>
+              )}
               <ErrorText error={change.error} />
               {change.status === 'discarded' ? (
                 <p className="code-work-empty">隔离副本已丢弃，原始源码保留。</p>
@@ -347,12 +406,30 @@ export function CodeChangesPanel({
                           ))}
                         </Select>
                         {configuredProfile && (
-                          <code className="code-work-command">
-                            {JSON.stringify(configuredProfile.argv)}
-                          </code>
+                          <>
+                            <p>
+                              {executionLabel(configuredProfile.executor)} ·{' '}
+                              {configuredProfile.environment_label || '环境未命名'}
+                            </p>
+                            <code className="code-work-command">
+                              {JSON.stringify(configuredProfile.argv)}
+                            </code>
+                          </>
                         )}
                       </>
                     )}
+                    <label>
+                      验证对象
+                      <Select
+                        value={purpose}
+                        aria-label="验证对象"
+                        onValueChange={(value) => setPurpose(value as 'baseline' | 'change')}
+                        disabled={readOnly || !!busy || change.status === 'verifying'}
+                      >
+                        <option value="change">当前修改版本</option>
+                        <option value="baseline">原版本基线（独立临时副本）</option>
+                      </Select>
+                    </label>
                     <div className="code-work-actions">
                       <Button
                         className="primary"
@@ -380,6 +457,13 @@ export function CodeChangesPanel({
                           {verification.stale ? '（修改后已失效）' : ''}
                           {sourceConflict ? '（原始源码已变化，需重新建立并验证）' : ''}
                         </strong>
+                        <p>
+                          {verification.purpose === 'baseline'
+                            ? '原版本基线验证：不代表修改已通过'
+                            : '当前修改验证'}{' '}
+                          · {executionLabel(verification.executor)}
+                        </p>
+                        <ErrorText error={verification.error} />
                         <p className="muted">
                           退出码：{verification.exit_code ?? '尚无'} · 开始时间：
                           {new Date(verification.started_at).toLocaleString('zh-CN')}
@@ -431,6 +515,16 @@ export function CodeChangesPanel({
                         />
                       )}
                   </div>
+                  <ChangeDelivery
+                    key={id}
+                    projectId={projectId}
+                    change={change}
+                    profiles={profiles.data?.profiles || []}
+                    disabled={readOnly || !!busy || dirty || change.status === 'verifying'}
+                    sourceUnchanged={!!diff.data?.source_unchanged && !sourceConflict}
+                    onChanged={changed}
+                    onDownload={download}
+                  />
                   <div className="code-work-actions code-work-discard">
                     <Button
                       disabled={readOnly || !!busy || dirty || !changeCanEdit(change)}

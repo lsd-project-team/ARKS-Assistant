@@ -11,6 +11,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
+from app.agents.runtime.model_budget import ProjectModelBudget
+from app.agents.runtime.privacy import redact_messages
 from app.infrastructure.providers.models import create_model
 from app.infrastructure.providers.usage import reported_usage
 from app.modules.handover.application.debug_issues import DebugIssues
@@ -74,7 +76,9 @@ async def extract_issue(model, original, settings, emit):
         ):
             raise ValueError("调试描述超过当前模型的输入容量，尚未录入。请缩短描述或手动记录。")
         started = monotonic()
-        reply = await asyncio.wait_for(model.ainvoke(messages), settings.timeout_seconds)
+        reply = await asyncio.wait_for(
+            model.ainvoke(redact_messages(messages)), settings.timeout_seconds
+        )
         emit(
             "provider_usage",
             {
@@ -117,6 +121,15 @@ async def capture_command(runtime, run, emit, owned_models):
         settings = current_configuration(runtime.settings).model
         emit("stage", {"stage": "thinking", "detail": "正在整理问题与经验"})
         model = create_model(settings)
+        if runtime.repository.project_id:
+            model.callbacks = [
+                *(getattr(model, "callbacks", None) or []),
+                ProjectModelBudget(
+                    runtime.code_changes.policy,
+                    settings.context_tokens,
+                    output_tokens=settings.output_tokens,
+                ),
+            ]
         owned_models.append(model)
         extracted = await extract_issue(json_model(model, settings), original, settings, emit)
         row = await asyncio.to_thread(

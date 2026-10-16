@@ -195,6 +195,7 @@ def test_killed_app_recovers_verification_logs_and_resumes_saved_reading_via_api
                     "name": "Known temporary Python",
                     "argv": [sys.executable, "-c", verifier],
                     "timeout_seconds": 120,
+                    "executor": {"kind": "trusted_host"},
                 },
             )
             change_url = prefix + "/code-changes/" + change["id"]

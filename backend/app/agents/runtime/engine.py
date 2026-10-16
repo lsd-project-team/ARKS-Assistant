@@ -46,8 +46,9 @@ class AgentRuntime:
             return repository.project_id or repository.workspace_id
 
         self.project_reading = ProjectReading(paths, repository.database, workspace, project_id)
-        self.project_reading.analyzer = ModelReadingAnalyzer(settings)
         self.code_changes = CodeChanges(paths, repository.database, workspace, project_id)
+        self.project_reading.analyzer = ModelReadingAnalyzer(settings)
+        self.project_reading.analyzer.budget = self.code_changes.policy
         self.project_lock = asyncio.Lock()
 
     async def remote_tools(self, servers, emit):

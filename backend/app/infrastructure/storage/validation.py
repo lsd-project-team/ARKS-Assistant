@@ -19,6 +19,7 @@ from app.infrastructure.storage.manifest import (
     database_info,
     file_hash,
 )
+from app.infrastructure.storage.paths import staging_parent
 
 
 def safe_member(name: str) -> bool:
@@ -108,7 +109,9 @@ def validate_contents(folder: Path) -> dict:
 def checked_backup(source, *, temporary_parent: Path | None = None):
     if isinstance(source, Path) and source.stat().st_size > MAX_ARCHIVE_BYTES:
         raise ValueError("备份 ZIP 超过 512 MiB 上限")
-    with tempfile.TemporaryDirectory(dir=temporary_parent) as temporary:
+    # 扩展路径覆盖解压、哈希与 TemporaryDirectory 的清理，不能只在单次 open 时补前缀。
+    parent = staging_parent(temporary_parent or Path(tempfile.gettempdir()))
+    with tempfile.TemporaryDirectory(dir=parent) as temporary:
         folder = Path(temporary)
         try:
             with ZipFile(source) as archive:

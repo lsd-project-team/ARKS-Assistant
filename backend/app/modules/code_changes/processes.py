@@ -37,7 +37,7 @@ def terminate_process(process):
         process.wait(timeout=5)
 
 
-def run_process(task, argv, cwd, log_path, timeout_seconds):
+def run_process(task, argv, cwd, log_path, timeout_seconds, *, max_log_bytes=16 * 1024 * 1024):
     if task.cancel.is_set():
         return "cancelled", None, ""
     options = (
@@ -71,6 +71,10 @@ def run_process(task, argv, cwd, log_path, timeout_seconds):
                     raise
             started = time.monotonic()
             while task.process.poll() is None:
+                if output.tell() > max_log_bytes:
+                    terminate_process(task.process)
+                    output.truncate(max_log_bytes)
+                    return "failed", task.process.returncode, "验证日志超过项目额度，已终止进程"
                 if task.cancel.is_set():
                     terminate_process(task.process)
                     return "cancelled", task.process.returncode, ""
@@ -78,6 +82,9 @@ def run_process(task, argv, cwd, log_path, timeout_seconds):
                     terminate_process(task.process)
                     return "timed_out", task.process.returncode, "验证命令超过配置的时间限制"
                 task.cancel.wait(0.05)
+            if output.tell() > max_log_bytes:
+                output.truncate(max_log_bytes)
+                return "failed", task.process.returncode, "验证日志超过项目额度"
             return (
                 "passed" if task.process.returncode == 0 else "failed",
                 task.process.returncode,

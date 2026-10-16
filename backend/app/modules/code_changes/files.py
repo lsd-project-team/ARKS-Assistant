@@ -224,7 +224,7 @@ def binary_literal(data):
 
 
 def export_patch(base, work, baseline):
-    _, files, _ = changes_diff(base, work, baseline)
+    current, files, _ = changes_diff(base, work, baseline)
     chunks = []
     for item in files:
         relative = item["path"]
@@ -234,6 +234,10 @@ def export_patch(base, work, baseline):
         )
         before = safe_path(base, relative).read_bytes() if old_exists else b""
         after = safe_path(work, relative).read_bytes() if new_exists else b""
+        if (old_exists and digest(before) != item["base_version"]) or (
+            new_exists and digest(after) != item["current_version"]
+        ):
+            raise ValueError("导出读取期间文件版本已变化，请重试并核对差异")
         try:
             old_text, new_text = before.decode("utf-8"), after.decode("utf-8")
             if b"\x00" in before + after:
@@ -247,6 +251,8 @@ def export_patch(base, work, baseline):
             mode = " 100644" if old_exists and new_exists else ""
             chunks.append(header + f"index {old_hash}..{new_hash}{mode}\nGIT binary patch\n")
             chunks.extend([binary_literal(after), binary_literal(before)])
+    if inventory(work) != current or inventory(base) != baseline:
+        raise ValueError("生成补丁期间副本或原版本快照发生变化，请重新核对")
     return "".join(chunks)
 
 

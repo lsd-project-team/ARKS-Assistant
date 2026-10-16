@@ -1,0 +1,12 @@
+# escape=`
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+LABEL io.arks.executor.version="2" io.arks.executor.platform="windows"
+USER ContainerAdministrator
+RUN powershell -NoProfile -Command "New-Item -ItemType Directory -Force C:\arks,C:\stage,C:\work | Out-Null; icacls C:\work /grant 'ContainerUser:(OI)(CI)F' | Out-Null"
+COPY supervisor.py transport.py C:/arks/
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR C:/work
+USER ContainerUser
+ENTRYPOINT ["python", "C:\\arks\\supervisor.py"]
+CMD []

@@ -16,6 +16,7 @@ from app.agents.prompts.system import SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
+from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.engineering import engineering_tools
 from app.agents.tools.source import source_tools
@@ -62,6 +63,16 @@ class AgentGraphBuilder:
         summary_model = (
             StateInspectionModel() if inspection else create_model(settings.model, summary=True)
         )
+        if not inspection and runtime.repository.project_id:
+            for owned in (model, summary_model):
+                owned.callbacks = [
+                    *(getattr(owned, "callbacks", None) or []),
+                    ProjectModelBudget(
+                        runtime.code_changes.policy,
+                        settings.model.context_tokens,
+                        output_tokens=settings.model.output_tokens,
+                    ),
+                ]
         if not inspection:
             summary_model.callbacks = [*(summary_model.callbacks or []), SummaryUsage(emit)]
         if owned_models is not None:

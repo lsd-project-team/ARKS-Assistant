@@ -7,6 +7,7 @@ from langchain_core.messages import HumanMessage
 
 from app.agents.context.summary_quality import SUMMARY_PROMPT, summary_report
 from app.agents.context.tokens import estimate_tokens, fit_text, input_budget, request_budget
+from app.agents.runtime.privacy import redact, redact_messages
 from app.modules.source_analysis.evidence import deduplicate_source_results
 
 
@@ -34,6 +35,7 @@ class BudgetedSummarization(SummarizationMiddleware):
         return await super().awrap_model_call(request, handler)
 
     async def _acreate_summary(self, messages):
+        messages = redact_messages(messages)
         self.emit("stage", {"stage": "compacting"})
         self.emit("compaction", {"text": "正在压缩完整请求上下文，原始对话保留"})
         helper = self._lc_helper
@@ -110,7 +112,13 @@ class ContextBudget(AgentMiddleware):
         self.memory_prompt, self.emit = memory_prompt, emit
 
     async def awrap_model_call(self, request, handler):
-        request = request.override(messages=deduplicate_source_results(request.messages))
+        system = request.system_message
+        overrides = {"messages": redact_messages(deduplicate_source_results(request.messages))}
+        if system:
+            overrides["system_message"] = system.model_copy(
+                update={"content": redact(system.content)}
+            )
+        request = request.override(**overrides)
         budget = {
             **request_budget(request, self.limit, self.output, self.memory_prompt),
             "phase": "model_request",

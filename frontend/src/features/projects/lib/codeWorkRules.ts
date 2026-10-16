@@ -41,6 +41,7 @@ export function changeCanRecordExperience(change: CodeChange, hasUnsavedChanges 
   return (
     change.status === 'passed' &&
     verification?.status === 'passed' &&
+    verification.purpose !== 'baseline' &&
     !verification.stale &&
     !!verification.change_version &&
     !hasUnsavedChanges
