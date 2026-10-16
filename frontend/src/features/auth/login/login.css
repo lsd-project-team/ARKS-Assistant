@@ -6,7 +6,7 @@
   overflow: auto;
   background: var(--canvas);
   color: var(--text);
-  font-family: 'Geist Variable', var(--font-ui);
+  font-family: var(--font-ui);
 }
 .login-header {
   display: flex;

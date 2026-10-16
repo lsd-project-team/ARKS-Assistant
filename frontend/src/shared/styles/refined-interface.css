@@ -1,8 +1,10 @@
 /* 视觉参考 Codex 的浅色桌面界面；各工作区仍负责自身布局和功能。 */
 :root {
-  /* 三套外观共用已打包的字体，颜色切换不再改变中英文的字形。 */
-  --font-ui: 'Noto Sans SC Variable', 'Segoe UI', sans-serif;
-  --font-code: 'Geist Mono Variable', Consolas, 'Noto Sans SC Variable', monospace;
+  /* 三套外观遵循系统字体；中英文与等宽代码分别使用平台原生回退。 */
+  --font-ui:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+  --font-code:
+    ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   --surface-shadow: var(--shadow-panel);
   --surface-stroke: inset 0 0 0 1px var(--border);
   --focus-ring: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent);
@@ -16,6 +18,7 @@
 }
 body {
   font-family: var(--font-ui);
+  font-size: 14px;
   font-weight: 400;
 }
 svg.lucide {
@@ -114,7 +117,7 @@ textarea::placeholder {
 .workspace-sections > button {
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .workspace-sections > button:hover {
   background: var(--surface-hover);
@@ -248,7 +251,7 @@ textarea::placeholder {
   color: var(--reading-accent);
 }
 .legacy-visual .markdown {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.8;
 }
@@ -822,6 +825,7 @@ textarea::placeholder {
   color: var(--panel);
 }
 .legacy-visual .knowledge-workspace {
+  font-family: var(--font-ui);
   font-weight: 400;
   --accent-soft: var(--selection-background);
   --accent-border: var(--selection-border);

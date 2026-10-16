@@ -35,7 +35,7 @@
 
 /* 字体、字重与字号使用统一层级，切换外观时保持同样的阅读密度。 */
 :root[data-appearance] body {
-  font-weight: 450;
+  font-weight: 400;
 }
 
 :root[data-appearance] .workspace-brand strong {
@@ -43,6 +43,10 @@
 }
 
 :root[data-appearance] .workspace-sections > button {
+  font-weight: 400;
+}
+
+:root[data-appearance] .workspace-sections > button.active {
   font-weight: 500;
 }
 
@@ -64,10 +68,10 @@
   font-weight: 500;
 }
 
-/* 保留列表行高和截断规则，增加字号及真实字重，不用描边或阴影模拟加粗。 */
+/* 列表使用常规字重，选中标题沿用独立的强调规则。 */
 :root[data-appearance] .app-navigation .sidebar .thread-select {
   font-size: 14px;
-  font-weight: 450;
+  font-weight: 400;
 }
 
 :root[data-appearance] .sidebar-footer {
@@ -75,17 +79,17 @@
 }
 
 :root[data-appearance] .chat-heading strong {
-  font-weight: 550;
+  font-weight: 600;
 }
 
 :root[data-appearance] .chat-welcome h2 {
   font-size: clamp(22px, 4cqw, 24px);
-  font-weight: 550;
+  font-weight: 600;
 }
 
 :root[data-appearance] .chat-welcome p {
-  font-size: 15px;
-  font-weight: 450;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 :root[data-appearance='white'] .welcome-mark {
@@ -96,7 +100,7 @@
 
 :root[data-appearance] .welcome-suggestions button {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 :root[data-appearance='white'] .welcome-suggestions button {
@@ -135,8 +139,8 @@
 }
 
 :root[data-appearance] .composer textarea {
-  font-size: 15px;
-  font-weight: 450;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 :root[data-appearance='white'] .composer textarea {
@@ -153,7 +157,7 @@
 }
 
 :root[data-appearance] .markdown {
-  font-weight: 450;
+  font-weight: 400;
 }
 
 :root[data-appearance='dark'] {

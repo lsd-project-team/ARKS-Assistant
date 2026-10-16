@@ -204,7 +204,7 @@
   gap: 8px;
   padding: 8px;
   border-radius: 8px;
-  font: 450 13px/1.5 var(--font-ui);
+  font: 400 13px/1.5 var(--font-ui);
 }
 .app-navigation .navigation-tools > button > svg {
   width: 16px;
