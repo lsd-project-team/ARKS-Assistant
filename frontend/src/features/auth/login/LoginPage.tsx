@@ -32,6 +32,7 @@ export default function LoginPage() {
             <Network size={16} />
             公司内网
           </span>
+          <AppearanceSwitch />
         </div>
       </header>
       <main className="login-main">
@@ -40,9 +41,6 @@ export default function LoginPage() {
           <LoginForm />
         </div>
       </main>
-      <footer className="login-footer">
-        <AppearanceSwitch />
-      </footer>
     </div>
   );
 }

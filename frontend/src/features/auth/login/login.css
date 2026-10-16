@@ -37,17 +37,13 @@
 }
 .login-header-tools {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 16px;
 }
-.login-footer {
-  position: fixed;
-  left: 20px;
-  bottom: 16px;
-  z-index: 2;
+.login-header-tools .appearance-switch {
   border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--canvas);
+  white-space: nowrap;
 }
 .login-network-badge {
   display: inline-flex;
@@ -429,6 +425,15 @@
   }
   .login-header-tools {
     gap: 9px;
+  }
+  .login-header-tools .appearance-switch {
+    justify-content: center;
+    width: 36px;
+    min-height: 36px;
+    padding: 8px;
+  }
+  .login-header-tools .appearance-switch .nav-copy {
+    display: none;
   }
   .login-network-badge {
     gap: 6px;
