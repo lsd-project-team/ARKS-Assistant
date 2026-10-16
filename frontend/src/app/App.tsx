@@ -137,7 +137,6 @@ export default function App() {
         <WorkspaceNavigation
           route={route}
           compact={!motion.navigationExpanded}
-          hasSelectedThread={!!threadId}
           layout={navigationLayout}
           onExpand={expandNavigation}
           onCollapse={() => setCollapsed(true)}

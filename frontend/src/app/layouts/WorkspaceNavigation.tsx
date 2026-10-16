@@ -8,7 +8,6 @@ import { NavigationIcon } from './NavigationIcon';
 export function WorkspaceNavigation({
   route,
   compact,
-  hasSelectedThread,
   layout,
   onExpand,
   onCollapse,
@@ -19,7 +18,6 @@ export function WorkspaceNavigation({
 }: {
   route: Route;
   compact: boolean;
-  hasSelectedThread: boolean;
   layout: { width: number; maximumWidth: number };
   onExpand: () => void;
   onCollapse: () => void;
@@ -36,12 +34,10 @@ export function WorkspaceNavigation({
     // 收缩和展开会替换按钮，把键盘焦点交给新出现的对应入口。
     navigationControl.current?.focus();
   }, [compact]);
-  const active = handover?.active
-    ? undefined
-    : route.kind === 'chat'
-      ? hasSelectedThread
-        ? undefined
-        : 'chat'
+  // 新对话是新建动作，不代表当前页面；所有聊天入口都不高亮它。
+  const active =
+    handover?.active || route.kind === 'chat'
+      ? undefined
       : ['graphs', 'graph', 'catalog'].includes(route.kind)
         ? 'graphs'
         : 'modules';
