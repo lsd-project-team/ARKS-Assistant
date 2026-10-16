@@ -2,7 +2,7 @@
 
 from alembic import op
 
-from app.auth.models import Account, LoginSession
+from app.modules.auth.models import Account, LoginSession
 
 revision = "0015"
 down_revision = "0014"

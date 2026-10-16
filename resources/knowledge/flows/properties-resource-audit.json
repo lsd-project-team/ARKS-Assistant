@@ -1,0 +1,658 @@
+{
+  "date": "2026-09-28",
+  "scope": "File-reference existence and hashes only; no image decoding or build/runtime proof",
+  "source": "trunk/AKRS.ZX2200/Properties/Resources.resx",
+  "sourceSha256": "d8fc3e3335492fac7557fb097dd0f72d8db27908c45657f40d216c0b9069e4a8",
+  "entries": 111,
+  "fileReferences": 108,
+  "references": [
+    {
+      "key": "transport unit_TU position2",
+      "reference": "..\\Resources\\transport unit_TU position2.png",
+      "exists": true,
+      "sha256": "7aab216bbcdc6374d7b71ec4aeacbac54b63eaf23802e06174e4004a82518479"
+    },
+    {
+      "key": "inserttablerowsabove_32x32",
+      "reference": "..\\Resources\\inserttablerowsabove_32x32.png",
+      "exists": true,
+      "sha256": "c0917586a3cdf9fc2d9b786a9d3e54b3dc2ed9b63724c4c394a2470dcc2ff4ac"
+    },
+    {
+      "key": "moveup_32x32",
+      "reference": "..\\Resources\\moveup_32x32.png",
+      "exists": true,
+      "sha256": "eec796d9003099b98dbd070761b3797b88632d3a0b723113f854a8dd376af6c5"
+    },
+    {
+      "key": "上一步-03",
+      "reference": "..\\Resources\\上一步-03.png",
+      "exists": true,
+      "sha256": "172ae47716bd10e96d5df6e31d3ae19586f3600405e5f14dd895614767337143"
+    },
+    {
+      "key": "loadfrom_32x321",
+      "reference": "..\\Resources\\loadfrom_32x321.png",
+      "exists": true,
+      "sha256": "82977e4f2935abf8995b99c7f6ba9d498e430d92fda40b55a070c8a734aff637"
+    },
+    {
+      "key": "webps1",
+      "reference": "..\\Resources\\webps.svg",
+      "exists": true,
+      "sha256": "0a3feb189c67acbbd192188336970ce548771ad0e3335b4a9202bbc26dfacd15"
+    },
+    {
+      "key": "cancel_32x32",
+      "reference": "..\\Resources\\cancel_32x32.png",
+      "exists": true,
+      "sha256": "37e2a94db2587480af25ebb3a913f6faed8502842ba36e3cc835f2701c2077e5"
+    },
+    {
+      "key": "status_16x16",
+      "reference": "..\\Resources\\status_16x16.png",
+      "exists": true,
+      "sha256": "50bd465ff5558e4882b20b4c2e6d691b5a07fc8e7d303d95fa518c26621749fe"
+    },
+    {
+      "key": "Greed",
+      "reference": "..\\Resources\\Greed.svg",
+      "exists": true,
+      "sha256": "1c8e696d04fb845b134a79bfa2ba5617af271dbe3fe9897e29062a3c1523b38e"
+    },
+    {
+      "key": "对",
+      "reference": "..\\Resources\\对.png",
+      "exists": true,
+      "sha256": "2206de7f892c74df969c45d73eb5541b43867e992200add085c1ec0043fbf83e"
+    },
+    {
+      "key": "red1",
+      "reference": "..\\Resources\\red.svg",
+      "exists": true,
+      "sha256": "0a3feb189c67acbbd192188336970ce548771ad0e3335b4a9202bbc26dfacd15"
+    },
+    {
+      "key": "胶水 (1)",
+      "reference": "..\\Resources\\胶水 (1).png",
+      "exists": true,
+      "sha256": "5a2650d581eaac212be4c1e1ea19a3e854376471d3a66c28eecb9b9c7d00fe05"
+    },
+    {
+      "key": "向上 (1)",
+      "reference": "..\\Resources\\向上 (1).png",
+      "exists": true,
+      "sha256": "4c1650f9267f765991a7c0648858deaf41bab468925e7737ae4970f379d918ba"
+    },
+    {
+      "key": "失败处继续",
+      "reference": "..\\Resources\\失败处继续.png",
+      "exists": true,
+      "sha256": "2343a131dc82c4e83c2fd608df2cb70b17d1a3ffb5bb7e1ee792b55e203f7d98"
+    },
+    {
+      "key": "components_component geometry5",
+      "reference": "..\\Resources\\components_component geometry5.png",
+      "exists": true,
+      "sha256": "c4f538279cc1694429337474b74af1a8fba8e2c2c3c4f866d021820f20b85030"
+    },
+    {
+      "key": "components_component geometry8",
+      "reference": "..\\Resources\\components_component geometry8.png",
+      "exists": true,
+      "sha256": "72cbdc2330d69cc1e1348804fea518c17fc97a36017fb0cb67631a3b4cef5b95"
+    },
+    {
+      "key": "ToUpLeft",
+      "reference": "..\\Resources\\ToUpLeft.GIF",
+      "exists": true,
+      "sha256": "54771ce74d1bac454d5af653ec2989f9dea72eb998b0819d65cc23fa23fa4fa4"
+    },
+    {
+      "key": "高度",
+      "reference": "..\\Resources\\高度.png",
+      "exists": true,
+      "sha256": "7294e13daf279f9063bbed1d8943f6aaae7bfe108331cabede285b5380723092"
+    },
+    {
+      "key": "下一步-03",
+      "reference": "..\\Resources\\下一步-03.png",
+      "exists": true,
+      "sha256": "7a782cb239260cf380f3790c00238e291b5fd9c32db7891450b9869dbc1d7b6d"
+    },
+    {
+      "key": "components_component geometry1",
+      "reference": "..\\Resources\\components_component geometry1.png",
+      "exists": true,
+      "sha256": "10231a04e8f2afe4d3a3144767d15b4856d0d3ff8454a0f9858b204dfdad6002"
+    },
+    {
+      "key": "components_component geometry9",
+      "reference": "..\\Resources\\components_component geometry9.png",
+      "exists": true,
+      "sha256": "aa0914c2baea0e0f34cccc47673232de665d27938a22714857075f64cd772420"
+    },
+    {
+      "key": "White",
+      "reference": "..\\Resources\\White.svg",
+      "exists": true,
+      "sha256": "028828f876eabaa4d8a43e0a76022a0e7217ca8f739a9110f991bec72014d719"
+    },
+    {
+      "key": "bordersall_32x32",
+      "reference": "..\\Resources\\bordersall_32x32.png",
+      "exists": true,
+      "sha256": "a0f2ff823f2d2e2739572f1370db3e9fffaf764cb2b24e4379b4fef0f5aa72bd"
+    },
+    {
+      "key": "吸取材质",
+      "reference": "..\\Resources\\吸取材质.png",
+      "exists": true,
+      "sha256": "fbd47f3ae61b40a899d5411d07ec06d0bfa03e7cbf126050fa58044a88364464"
+    },
+    {
+      "key": "MedStyleC",
+      "reference": "..\\Resources\\MedStyleC.png",
+      "exists": true,
+      "sha256": "b7b5f029dd2a4c74b75918c8ebd41cc33a3b74cdda27fd9d346fa8fb304a927e"
+    },
+    {
+      "key": "向右边",
+      "reference": "..\\Resources\\向右边.png",
+      "exists": true,
+      "sha256": "a0b94ec665549e1293e674544100b028f54943fb694c39d551bcd9ee15f2751f"
+    },
+    {
+      "key": "ToLeftUp",
+      "reference": "..\\Resources\\ToLeftUp.GIF",
+      "exists": true,
+      "sha256": "d41a3546fe74f816be44a031675bfc3a002563e5565733ef6751f39e6a883d9e"
+    },
+    {
+      "key": "movedown_32x32",
+      "reference": "..\\Resources\\movedown_32x32.png",
+      "exists": true,
+      "sha256": "381f2c9fd0da3d7f6adc36686b947142db1f52da3a70de5327e527a625fb1072"
+    },
+    {
+      "key": "home (2)",
+      "reference": "..\\Resources\\home (2).png",
+      "exists": true,
+      "sha256": "0c1abe69e11c320b2d42d2e270d4d37a1480160b5037421d47083b9941161da1"
+    },
+    {
+      "key": "highlight (1)",
+      "reference": "..\\Resources\\highlight (1).png",
+      "exists": true,
+      "sha256": "f4d7b997b4599d0fe368e2873b8aab6c8bf0426a486ac7b0c8c25ae1eab393b1"
+    },
+    {
+      "key": "取消",
+      "reference": "..\\Resources\\取消.png",
+      "exists": true,
+      "sha256": "49215561d87a2f55325c482f7e3aec85b0d1f2ae76f8aa8e7ff109b0a7a48396"
+    },
+    {
+      "key": "highlight (2)",
+      "reference": "..\\Resources\\highlight (2).png",
+      "exists": true,
+      "sha256": "de8a5c436fb3d224076c33f709c6bf85def5767dfc9328500ecc44f5a3556b02"
+    },
+    {
+      "key": "home (1)",
+      "reference": "..\\Resources\\home (1).png",
+      "exists": true,
+      "sha256": "cb5bc76f485fcd696f7c9a56c601b613f5805fc0a4adfdcb8deca48e215a2c65"
+    },
+    {
+      "key": "pagesetup_32x32",
+      "reference": "..\\Resources\\pagesetup_32x32.png",
+      "exists": true,
+      "sha256": "a8fbdcf18659c69c2e2061cf0a182aacdc6ec346fe14fd0794abfdc9bb12c8ae"
+    },
+    {
+      "key": "向右边1",
+      "reference": "..\\Resources\\向右边1.png",
+      "exists": true,
+      "sha256": "a0b94ec665549e1293e674544100b028f54943fb694c39d551bcd9ee15f2751f"
+    },
+    {
+      "key": "home",
+      "reference": "..\\Resources\\home.png",
+      "exists": true,
+      "sha256": "3e63d7e2f762dc2cb3b08a72beab7900592c81909b55775f4f5aff39c6fc8f3f"
+    },
+    {
+      "key": "components_component geometry7",
+      "reference": "..\\Resources\\components_component geometry7.png",
+      "exists": true,
+      "sha256": "57db1bbbcecdfe9d70c4aa419f847d1b175c7adc90bf5076476c38e526c2df2e"
+    },
+    {
+      "key": "home (3)",
+      "reference": "..\\Resources\\home (3).png",
+      "exists": true,
+      "sha256": "f4c99064729936e5a6420c51a2bb289fde19eb3bacb63dbcf7ff35fcb8f3e468"
+    },
+    {
+      "key": "svg (2)1",
+      "reference": "..\\Resources\\svg (2).svg",
+      "exists": true,
+      "sha256": "b79b01db5d3db5309b7e809b9d4c7c8e9c661ba165ba2066303dca5b464bd7b4"
+    },
+    {
+      "key": "排序",
+      "reference": "..\\Resources\\排序.png",
+      "exists": true,
+      "sha256": "4c9f02b4e15d6e109e8432dd2fd7acce0cdfd9d15f97753a6b6ee14f6222f05d"
+    },
+    {
+      "key": "svg (2)",
+      "reference": "..\\Resources\\svg (2).svg",
+      "exists": true,
+      "sha256": "b79b01db5d3db5309b7e809b9d4c7c8e9c661ba165ba2066303dca5b464bd7b4"
+    },
+    {
+      "key": "media_32x32",
+      "reference": "..\\Resources\\media_32x32.png",
+      "exists": true,
+      "sha256": "9294fe307f5e1f9dfc56fc42f4a86da986f698de221eb00b0cbff3f4c4de5739"
+    },
+    {
+      "key": "transport unit_TU position5",
+      "reference": "..\\Resources\\transport unit_TU position5.png",
+      "exists": true,
+      "sha256": "49d6a6930e8474db2d14b8de96bf3764b855305efbd038fdc8daf406e0f475e4"
+    },
+    {
+      "key": "red",
+      "reference": "..\\Resources\\red.svg",
+      "exists": true,
+      "sha256": "0a3feb189c67acbbd192188336970ce548771ad0e3335b4a9202bbc26dfacd15"
+    },
+    {
+      "key": "transport unit_TU position6",
+      "reference": "..\\Resources\\transport unit_TU position6.png",
+      "exists": true,
+      "sha256": "07966d507c06bf5221a3e10247365e5b5084c0340001800d5029e73ad9c3f0d8"
+    },
+    {
+      "key": "handtool_16x16",
+      "reference": "..\\Resources\\handtool_16x16.png",
+      "exists": true,
+      "sha256": "82ac9c3b8def1e6e2b0c1c19d529aa2a9e72926e8eb68b25f1442898c7ddd21c"
+    },
+    {
+      "key": "transport unit_TU position3",
+      "reference": "..\\Resources\\transport unit_TU position3.png",
+      "exists": true,
+      "sha256": "15f4f90cdcdcb2b5d3858f43c1b9db46649d45cb2857ee905e232e9eba7bd82e"
+    },
+    {
+      "key": "components_component carrier geometry1",
+      "reference": "..\\Resources\\components_component carrier geometry1.png",
+      "exists": true,
+      "sha256": "bae5ff81027a7587cfbdc133316feda05664726b1087de872c9c3e63915d1b62"
+    },
+    {
+      "key": "components_component carrier geometry2",
+      "reference": "..\\Resources\\components_component carrier geometry2.png",
+      "exists": true,
+      "sha256": "bceea17cb7691c5f2121aee810230d71fd14d2b54d28f95ecaf65e787c05d222"
+    },
+    {
+      "key": "ToDownRight",
+      "reference": "..\\Resources\\ToDownRight.GIF",
+      "exists": true,
+      "sha256": "7a6559dfe504c61a201429faa9601564fd73d6160f7bb3abd16c9036e3bd51ac"
+    },
+    {
+      "key": "ToLeftDown",
+      "reference": "..\\Resources\\ToLeftDown.GIF",
+      "exists": true,
+      "sha256": "09e11cf6d051ce136ee6e9c375e39de2e8037167b109cbf82b259a941f0a9895"
+    },
+    {
+      "key": "向左边",
+      "reference": "..\\Resources\\向左边.png",
+      "exists": true,
+      "sha256": "114e1796f275208eb9e320c1bddc490220b2d5c40c7e2460cf6333cce79d8ee6"
+    },
+    {
+      "key": "technology_32x32",
+      "reference": "..\\Resources\\technology_32x32.png",
+      "exists": true,
+      "sha256": "fb5409cd92d06ab4c53118ff395c91a135406c52eb802ca13b3f9d3a8784adab"
+    },
+    {
+      "key": "pie3d_32x32",
+      "reference": "..\\Resources\\pie3d_32x32.png",
+      "exists": true,
+      "sha256": "39408f1e1f26c1fd1a1a6f4a154e0853cd135276f056126f2baa993bc242c99e"
+    },
+    {
+      "key": "components_component geometry4",
+      "reference": "..\\Resources\\components_component geometry4.png",
+      "exists": true,
+      "sha256": "a3ede8fbe425e790c44041d3fff93e3d91dd93ad848056393643521325cf8e0c"
+    },
+    {
+      "key": "ToRightUp",
+      "reference": "..\\Resources\\ToRightUp.GIF",
+      "exists": true,
+      "sha256": "bc2027f16697167e9a758b4333e80d2a2f5f1278fdfcace1f5eed7e31e597e61"
+    },
+    {
+      "key": "加",
+      "reference": "..\\Resources\\加.png",
+      "exists": true,
+      "sha256": "1c775153697b4f8b1944dd823f935e1d9c69ec582579488dca0d8532d0cfb602"
+    },
+    {
+      "key": "customizegrid_32x32",
+      "reference": "..\\Resources\\customizegrid_32x32.png",
+      "exists": true,
+      "sha256": "4116a72bb0de36f07a94f0fb3635281baf1538236d9d21b44a165156fb1c861e"
+    },
+    {
+      "key": "warning_16x16",
+      "reference": "..\\Resources\\warning_16x16.png",
+      "exists": true,
+      "sha256": "1e5f1ca5120763e41224db6f0f7631ba81e3fddd80d18fbfc4b5080de8f1af8b"
+    },
+    {
+      "key": "Yellow",
+      "reference": "..\\Resources\\Yellow.svg",
+      "exists": true,
+      "sha256": "6590c4c7debbf0986eb8b96e58cc4c765e923efedcc15b49291ce0e5da0d9165"
+    },
+    {
+      "key": "顶层 (1)",
+      "reference": "..\\Resources\\顶层 (1).png",
+      "exists": true,
+      "sha256": "6c80bdf88e89e3218ef046fa468a589e726d3c33c25b4adc528a35c02f30ceb0"
+    },
+    {
+      "key": "Cyan",
+      "reference": "..\\Resources\\Cyan.svg",
+      "exists": true,
+      "sha256": "b26759a170ce846c2f1391e282179fc5e0955e4637145749a28d3c57c216b29a"
+    },
+    {
+      "key": "home_fill",
+      "reference": "..\\Resources\\home_fill.png",
+      "exists": true,
+      "sha256": "efce3d808e3012d0a737988fdcbf0992f1064e1aa5ac793fd1bc963c398c51aa"
+    },
+    {
+      "key": "components_component geometry3",
+      "reference": "..\\Resources\\components_component geometry3.png",
+      "exists": true,
+      "sha256": "d511bd31e003620191679c2b5b4969cf4a44e65860905ed6ad5308f8e29e8a8e"
+    },
+    {
+      "key": "保存",
+      "reference": "..\\Resources\\保存.png",
+      "exists": true,
+      "sha256": "213be858c42938f87c3790379efd34bd43a11146cbc8450fed50b8b6d461ccd2"
+    },
+    {
+      "key": "Magenta",
+      "reference": "..\\Resources\\Magenta.svg",
+      "exists": true,
+      "sha256": "12ad0a1ade72c1535a03139d056f34420140d37e4fe2744c96460dada3c32e2d"
+    },
+    {
+      "key": "更改库存说明",
+      "reference": "..\\Resources\\更改库存说明.png",
+      "exists": true,
+      "sha256": "51c7390a8c54485e59202bb8b1b9d0887753d05b2fb7ea1d0a71ba880b82dd22"
+    },
+    {
+      "key": "ToRightDown",
+      "reference": "..\\Resources\\ToRightDown.GIF",
+      "exists": true,
+      "sha256": "f6bad9c2f88920ad7dc66d8eaf78ec8748704b59a4a5fd723086f056ac8ded39"
+    },
+    {
+      "key": "banana-spade",
+      "reference": "..\\Resources\\banana-spade.png",
+      "exists": true,
+      "sha256": "63eb1cd2c5769825edbd7a36f13b2e92996704fa60ccbd551b323a6c0b135539"
+    },
+    {
+      "key": "replace_32x32",
+      "reference": "..\\Resources\\replace_32x32.png",
+      "exists": true,
+      "sha256": "72d30c50f77d504ac91b546884d62fb142d561077f82f742e905f9166936198b"
+    },
+    {
+      "key": "向上",
+      "reference": "..\\Resources\\向上.png",
+      "exists": true,
+      "sha256": "29f9c18d4c58566e8c05945a2afd0604c4966974be275d9517f7d5a6a78ea883"
+    },
+    {
+      "key": "Blue",
+      "reference": "..\\Resources\\Blue.svg",
+      "exists": true,
+      "sha256": "8cb03f7fc104d84549902264aa16c7fc265b6db46038cc4ab0a93afd3f15465d"
+    },
+    {
+      "key": "components_component carrier geometry3",
+      "reference": "..\\Resources\\components_component carrier geometry3.png",
+      "exists": true,
+      "sha256": "243ec8d0b17ca0832ad9029d27d39329c53461b242683dbd425607034ab00919"
+    },
+    {
+      "key": "components_component carrier geometry4",
+      "reference": "..\\Resources\\components_component carrier geometry4.png",
+      "exists": true,
+      "sha256": "3e32b315fbcebcf9df92b693b7967e8d64fd69bb16a8f5e50497ce6173620745"
+    },
+    {
+      "key": "Customize",
+      "reference": "..\\Resources\\Customize.svg",
+      "exists": true,
+      "sha256": "b79b01db5d3db5309b7e809b9d4c7c8e9c661ba165ba2066303dca5b464bd7b4"
+    },
+    {
+      "key": "ToUpRight",
+      "reference": "..\\Resources\\ToUpRight.GIF",
+      "exists": true,
+      "sha256": "e74cb8ad63328e3f59de403163264eb5a4bf3b35c3fa1589bb7a606ed82da6df"
+    },
+    {
+      "key": "排序 (1)",
+      "reference": "..\\Resources\\排序 (1).png",
+      "exists": true,
+      "sha256": "6d63f0861c2ee0cd4ee47728ee20b55fd7c700028e5e687aa3029a36ac492762"
+    },
+    {
+      "key": "components_component geometry2",
+      "reference": "..\\Resources\\components_component geometry2.png",
+      "exists": true,
+      "sha256": "122a88ba05ee5fdb6f7e55890ca85b1f598847154c39cad8bd317f4eb7ca2eb3"
+    },
+    {
+      "key": "删除",
+      "reference": "..\\Resources\\删除.png",
+      "exists": true,
+      "sha256": "5fd09a1116201c255f4bad4962ed844158ee5e6e7e9d5d5f411011ecd9b49e57"
+    },
+    {
+      "key": "components_component geometry6",
+      "reference": "..\\Resources\\components_component geometry6.png",
+      "exists": true,
+      "sha256": "846480f784f7b44b80438380856798ed3c683d917c2ca27b9760f37a83400b2c"
+    },
+    {
+      "key": "apply_32x32",
+      "reference": "..\\Resources\\apply_32x32.png",
+      "exists": true,
+      "sha256": "20c1b95b6f2093e46ecfad4e7ccfdd50debc0494a64bd794cee6862e472a2010"
+    },
+    {
+      "key": "加 (1)",
+      "reference": "..\\Resources\\加 (1).png",
+      "exists": true,
+      "sha256": "d20fba79d2ad5429a379809c715e09a5ca7792bf09e836428b2ea748679420d0"
+    },
+    {
+      "key": "铅笔",
+      "reference": "..\\Resources\\铅笔.png",
+      "exists": true,
+      "sha256": "1e931430ae9b1ccb39e8d77fa83e60214040560a4b0eef89d1c72bce7cbbbd5e"
+    },
+    {
+      "key": "保存成功",
+      "reference": "..\\Resources\\保存成功.png",
+      "exists": true,
+      "sha256": "7b6184c2e9f031ff6aebeed9e1e596f896746a72e8ac6b9961d6a103d0f48422"
+    },
+    {
+      "key": "左移",
+      "reference": "..\\Resources\\左移.png",
+      "exists": true,
+      "sha256": "7e448cd4f221ffd659c2abc480311fdd941507764b6c38090bf009c54e49c65f"
+    },
+    {
+      "key": "webps",
+      "reference": "..\\Resources\\webps.svg",
+      "exists": true,
+      "sha256": "0a3feb189c67acbbd192188336970ce548771ad0e3335b4a9202bbc26dfacd15"
+    },
+    {
+      "key": "ToDownLeft",
+      "reference": "..\\Resources\\ToDownLeft.GIF",
+      "exists": true,
+      "sha256": "63d1830c43a7639040f79e7f7cffdeb401bd4fb56c529804a9f95d9d2e47e582"
+    },
+    {
+      "key": "向左边1",
+      "reference": "..\\Resources\\向左边1.png",
+      "exists": true,
+      "sha256": "114e1796f275208eb9e320c1bddc490220b2d5c40c7e2460cf6333cce79d8ee6"
+    },
+    {
+      "key": "右移",
+      "reference": "..\\Resources\\右移.png",
+      "exists": true,
+      "sha256": "9da0f4415ca8d1094e8e4223a04a143c95924ef7711c4220e9b007ce912b7565"
+    },
+    {
+      "key": "highlight",
+      "reference": "..\\Resources\\highlight.png",
+      "exists": true,
+      "sha256": "f4d7b997b4599d0fe368e2873b8aab6c8bf0426a486ac7b0c8c25ae1eab393b1"
+    },
+    {
+      "key": "首页-首页",
+      "reference": "..\\Resources\\首页-首页.png",
+      "exists": true,
+      "sha256": "b45deaed69afad0c451e32c4460228efa460a47a6e0189f62d722022f5c49a1b"
+    },
+    {
+      "key": "add_32x32",
+      "reference": "..\\Resources\\add_32x32.png",
+      "exists": true,
+      "sha256": "d3df8796100e51a5575ebce2ac7dcf93bfb219d9d430631d88eb7cfc5c524b81"
+    },
+    {
+      "key": "编辑色块",
+      "reference": "..\\Resources\\编辑色块.png",
+      "exists": true,
+      "sha256": "1e8af04ac6c87b7529a2d39826cca07a9a0950637ebd3891df14a1cbc987c3f4"
+    },
+    {
+      "key": "胶水",
+      "reference": "..\\Resources\\胶水.png",
+      "exists": true,
+      "sha256": "931d571a86b35aeb2eada2276142fe38b3a5f3d26fbad498970fb80a8cd989d5"
+    },
+    {
+      "key": "transport unit_TU position4",
+      "reference": "..\\Resources\\transport unit_TU position4.png",
+      "exists": true,
+      "sha256": "6bb1a25048778ef82ff524687c921a5e8cc837bd9cce1681fc53baaf398051d4"
+    },
+    {
+      "key": "loadfrom_32x32",
+      "reference": "..\\Resources\\loadfrom_32x32.png",
+      "exists": true,
+      "sha256": "82977e4f2935abf8995b99c7f6ba9d498e430d92fda40b55a070c8a734aff637"
+    },
+    {
+      "key": "transport unit_TU position1",
+      "reference": "..\\Resources\\transport unit_TU position1.png",
+      "exists": true,
+      "sha256": "598fc51fc5f698dac36c11a1e5ab07a4d551318c356fa6ba919fe03aa529d9f5"
+    },
+    {
+      "key": "bordernone_32x32",
+      "reference": "..\\Resources\\bordernone_32x32.png",
+      "exists": true,
+      "sha256": "b078f9c5e9dd960adbcc557656258903359b5a1eef28e4abf0c26bf93a6ffd85"
+    },
+    {
+      "key": "wafer handing_wafer change1",
+      "reference": "..\\Resources\\wafer handing_wafer change1.png",
+      "exists": true,
+      "sha256": "62af9303f3a43d4b209e2c920204cb1392a244daa3bf91f433039d6a276f1f25"
+    },
+    {
+      "key": "wafer handing_wafer change2",
+      "reference": "..\\Resources\\wafer handing_wafer change2.png",
+      "exists": true,
+      "sha256": "376a9516bfb8897fb66ac5ac8082078b4f51cb3c2dfd2a28a5d85a84acc4cb85"
+    },
+    {
+      "key": "wafer handing_wafer change3",
+      "reference": "..\\Resources\\wafer handing_wafer change3.png",
+      "exists": true,
+      "sha256": "376a9516bfb8897fb66ac5ac8082078b4f51cb3c2dfd2a28a5d85a84acc4cb85"
+    },
+    {
+      "key": "wafer handing_wafer change4",
+      "reference": "..\\Resources\\wafer handing_wafer change4.png",
+      "exists": true,
+      "sha256": "b3b9a68e15658ba6a33d2a181b783a2e4be04d86bcc701902c1629e68eaf42d7"
+    },
+    {
+      "key": "wafer handing_wafer change5",
+      "reference": "..\\Resources\\wafer handing_wafer change5.png",
+      "exists": true,
+      "sha256": "376a9516bfb8897fb66ac5ac8082078b4f51cb3c2dfd2a28a5d85a84acc4cb85"
+    },
+    {
+      "key": "wafer handing_wafer change6",
+      "reference": "..\\Resources\\wafer handing_wafer change6.png",
+      "exists": true,
+      "sha256": "6d1e26a516497044f3624bf6ad8d39b0267e6daa37551db98f227701afa46703"
+    },
+    {
+      "key": "wafer handing_wafer change7",
+      "reference": "..\\Resources\\wafer handing_wafer change7.png",
+      "exists": true,
+      "sha256": "e1de8bc5a49373156741492e989c83df5618e4ce8b60df0d9a096bfcafd561ec"
+    },
+    {
+      "key": "wafer handing_wafer change8",
+      "reference": "..\\Resources\\wafer handing_wafer change8.png",
+      "exists": true,
+      "sha256": "49cc0c525a72338e33a6c5bebb1e2555e7b294ed954cf23dc43f79a628f0164b"
+    },
+    {
+      "key": "wafer handing_wafer magazine geometry1",
+      "reference": "..\\Resources\\wafer handing_wafer magazine geometry1.png",
+      "exists": true,
+      "sha256": "7b2ae916e6828d301fba67604ad115c7111d4db5d6cf91e34a158d63bc742468"
+    },
+    {
+      "key": "wafer handing_wafer magazine geometry2",
+      "reference": "..\\Resources\\wafer handing_wafer magazine geometry2.png",
+      "exists": true,
+      "sha256": "376a9516bfb8897fb66ac5ac8082078b4f51cb3c2dfd2a28a5d85a84acc4cb85"
+    }
+  ]
+}

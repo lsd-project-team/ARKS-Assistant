@@ -1,0 +1,246 @@
+{
+  "date": "2026-09-28",
+  "scope": "Archive-declared module topology and subscriptions only; not runtime branch selection, native module code, field configuration or SDK execution.",
+  "file": "trunk/AKRS.Galaxy2.PR/AlgFlowTemplates/胶量检测.prc",
+  "sha256": "74f8ebd2735c5a6e92aed0da09c24895d0cb6a0642d07fa5b4dd41adf2529656",
+  "xmlEntry": "ProcFile\\ProcedureInfo.xml",
+  "xmlSha256": "868a9cbfcec4c216b900e1e629b64df69fd01a07fa3a7524abdfb3e1e56ac0fb",
+  "softwareVersion": "V4.3.0",
+  "procedureName": "多胶点胶量检测",
+  "modules": [
+    {
+      "id": "11",
+      "name": "图像源1",
+      "type": "ImageSourceModule",
+      "enabled": "1"
+    },
+    {
+      "id": "12",
+      "name": "脚本1",
+      "type": "ShellModule",
+      "enabled": "1"
+    },
+    {
+      "id": "13",
+      "name": "快速匹配1",
+      "type": "IMVSFastFeatureMatchModu",
+      "enabled": "1"
+    },
+    {
+      "id": "14",
+      "name": "分支模块1",
+      "type": "BranchModule_STD",
+      "enabled": "1"
+    },
+    {
+      "id": "15",
+      "name": "位置修正1",
+      "type": "IMVSFixtureModu",
+      "enabled": "1"
+    },
+    {
+      "id": "16",
+      "name": "脚本2",
+      "type": "ShellModule",
+      "enabled": "1"
+    },
+    {
+      "id": "17",
+      "name": "初定位方式",
+      "type": "BranchModule_STD",
+      "enabled": "1"
+    },
+    {
+      "id": "18",
+      "name": "高精度匹配1",
+      "type": "IMVSHPFeatureMatchModu",
+      "enabled": "1"
+    },
+    {
+      "id": "19",
+      "name": "BLOB分析2",
+      "type": "IMVSBlobFindModu",
+      "enabled": "1"
+    },
+    {
+      "id": "20",
+      "name": "灰度匹配1",
+      "type": "IMVSGrayMatchModuVA",
+      "enabled": "1"
+    },
+    {
+      "id": "21",
+      "name": "轮廓匹配1",
+      "type": "IMVSContourMatchModu",
+      "enabled": "1"
+    },
+    {
+      "id": "22",
+      "name": "BLOB分析1",
+      "type": "IMVSBlobFindModu",
+      "enabled": "1"
+    },
+    {
+      "id": "23",
+      "name": "脚本3",
+      "type": "ShellModule",
+      "enabled": "1"
+    }
+  ],
+  "edges": [
+    {
+      "from": "11",
+      "to": "14"
+    },
+    {
+      "from": "12",
+      "to": "15"
+    },
+    {
+      "from": "13",
+      "to": "12"
+    },
+    {
+      "from": "14",
+      "to": "17"
+    },
+    {
+      "from": "14",
+      "to": "19"
+    },
+    {
+      "from": "15",
+      "to": "22"
+    },
+    {
+      "from": "17",
+      "to": "13"
+    },
+    {
+      "from": "17",
+      "to": "18"
+    },
+    {
+      "from": "17",
+      "to": "20"
+    },
+    {
+      "from": "17",
+      "to": "21"
+    },
+    {
+      "from": "18",
+      "to": "12"
+    },
+    {
+      "from": "19",
+      "to": "23"
+    },
+    {
+      "from": "20",
+      "to": "12"
+    },
+    {
+      "from": "21",
+      "to": "12"
+    },
+    {
+      "from": "22",
+      "to": "16"
+    }
+  ],
+  "subscriptions": [
+    "12 . %in0% . 20 . ModuStatus . 0 . 0 . All . 1",
+    "12 . %in1% . 21 . ModuStatus . 0 . 0 . All . 1",
+    "12 . %in2% . 13 . ModuStatus . 0 . 0 . All . 1",
+    "12 . %in3% . 18 . ModuStatus . 0 . 0 . All . 1",
+    "12 . %in4% . 20 . MatchPointX . 0 . 0 . All . 1",
+    "12 . %in5% . 20 . MatchPointY . 0 . 0 . All . 1",
+    "12 . %in6% . 20 . MatchBoxAngle . 0 . 0 . All . 1",
+    "12 . %in7% . 21 . MatchPointX . 0 . 0 . All . 1",
+    "12 . %in8% . 21 . MatchPointY . 0 . 0 . All . 1",
+    "12 . %in9% . 21 . MatchBoxAngle . 0 . 0 . All . 1",
+    "12 . %in10% . 21 . MatchScaleX . 0 . 0 . All . 1",
+    "12 . %in11% . 21 . MatchScaleY . 0 . 0 . All . 1",
+    "12 . %in12% . 13 . MatchPointX . 0 . 0 . All . 1",
+    "12 . %in13% . 13 . MatchPointY . 0 . 0 . All . 1",
+    "12 . %in14% . 13 . MatchBoxAngle . 0 . 0 . All . 1",
+    "12 . %in15% . 13 . MatchScale . 0 . 0 . All . 1",
+    "12 . %in16% . 18 . MatchPointX . 0 . 0 . All . 1",
+    "12 . %in17% . 18 . MatchPointY . 0 . 0 . All . 1",
+    "12 . %in18% . 18 . MatchBoxAngle . 0 . 0 . All . 1",
+    "12 . %in19% . 18 . MatchScaleX . 0 . 0 . All . 1",
+    "12 . %in20% . 18 . MatchScaleY . 0 . 0 . All . 1",
+    "13 . InImage . 11 . Image . 0 . 0 . All . 1",
+    "13 . InImageWidth . 11 . Width . 0 . 0 . All . 1",
+    "13 . InImageHeight . 11 . Height . 0 . 0 . All . 1",
+    "13 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1",
+    "14 . inputint . 10002 . %IsFirPR% . 0 . 0 . All . 1",
+    "15 . InPointX . 12 . %outX% . 0 . 0 . All . 1",
+    "15 . InPointY . 12 . %outY% . 0 . 0 . All . 1",
+    "15 . InAngle . 12 . %outA% . 0 . 0 . All . 1",
+    "15 . MatchScaleX . 12 . %outSx% . 0 . 0 . All . 1",
+    "15 . MatchScaleY . 12 . %outSy% . 0 . 0 . All . 1",
+    "16 . %in0% . 22 . ModuStatus . 0 . 0 . All . 1",
+    "16 . %in1% . 22 . CentroidX . 0 . 0 . All . 1",
+    "16 . %in2% . 22 . CentroidY . 0 . 0 . All . 1",
+    "16 . %in3% . 22 . BlobNum . 0 . 0 . All . 1",
+    "16 . %in4% . 22 . Area . 0 . 0 . All . 1",
+    "17 . inputint . 10002 . %FirPRType% . 0 . 0 . All . 1",
+    "18 . InImage . 11 . Image . 0 . 0 . All . 1",
+    "18 . InImageWidth . 11 . Width . 0 . 0 . All . 1",
+    "18 . InImageHeight . 11 . Height . 0 . 0 . All . 1",
+    "18 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1",
+    "19 . InImage . 11 . Image . 0 . 0 . All . 1",
+    "19 . InImageWidth . 11 . Width . 0 . 0 . All . 1",
+    "19 . InImageHeight . 11 . Height . 0 . 0 . All . 1",
+    "19 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1",
+    "20 . InImage . 11 . Image . 0 . 0 . All . 1",
+    "20 . InImageWidth . 11 . Width . 0 . 0 . All . 1",
+    "20 . InImageHeight . 11 . Height . 0 . 0 . All . 1",
+    "20 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1",
+    "21 . InImage . 11 . Image . 0 . 0 . All . 1",
+    "21 . InImageWidth . 11 . Width . 0 . 0 . All . 1",
+    "21 . InImageHeight . 11 . Height . 0 . 0 . All . 1",
+    "21 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1",
+    "22 . InImage . 11 . Image . 0 . 0 . All . 1",
+    "22 . InImageWidth . 11 . Width . 0 . 0 . All . 1",
+    "22 . InImageHeight . 11 . Height . 0 . 0 . All . 1",
+    "22 . InImagePixelFormat . 11 . PixelFormat . 0 . 0 . All . 1",
+    "22 . FixtureInitPointX . 15 . FixtureInitPointX . 0 . 0 . All . 1",
+    "22 . FixtureInitPointY . 15 . FixtureInitPointY . 0 . 0 . All . 1",
+    "22 . FixtureInitAngle . 15 . FixtureInitAngle . 0 . 0 . All . 1",
+    "22 . FixtureInitScaleX . 15 . FixtureInitScaleX . 0 . 0 . All . 1",
+    "22 . FixtureInitScaleY . 15 . FixtureInitScaleY . 0 . 0 . All . 1",
+    "22 . FixtureRunPointX . 15 . FixtureRunPointX . 0 . 0 . All . 1",
+    "22 . FixtureRunPointY . 15 . FixtureRunPointY . 0 . 0 . All . 1",
+    "22 . FixtureRunAngle . 15 . FixtureRunAngle . 0 . 0 . All . 1",
+    "22 . FixtureRunScaleX . 15 . FixtureRunScaleX . 0 . 0 . All . 1",
+    "22 . FixtureRunScaleY . 15 . FixtureRunScaleY . 0 . 0 . All . 1",
+    "23 . %in1% . 19 . CentroidX . 0 . 0 . All . 1",
+    "23 . %in2% . 19 . CentroidY . 0 . 0 . All . 1",
+    "23 . %in3% . 19 . BlobNum . 0 . 0 . All . 1",
+    "23 . %in4% . 19 . Area . 0 . 0 . All . 1",
+    "23 . %in0% . 19 . ModuStatus . 0 . 0 . All . 1",
+    "10002 . %Imageout0% . 11 . Image . 0 . 0 . All . 1",
+    "10002 . %ImageWidthout0% . 11 . Width . 0 . 0 . All . 1",
+    "10002 . %ImageHeightout0% . 11 . Height . 0 . 0 . All . 1",
+    "10002 . %ImagePixelFormatout0% . 11 . PixelFormat . 0 . 0 . All . 1",
+    "10002 . %1BlobArea% . 16 . %outa% . 0 . 0 . All . 1",
+    "10002 . %1BlobCenterX% . 16 . %outx% . 0 . 0 . All . 1",
+    "10002 . %1BlobCenterY% . 16 . %outy% . 0 . 0 . All . 1",
+    "10002 . %2BlobArea% . 23 . %outa% . 0 . 0 . All . 1",
+    "10002 . %2BlobCenterX% . 23 . %outx% . 0 . 0 . All . 1",
+    "10002 . %2BlobCenterY% . 23 . %outy% . 0 . 0 . All . 1",
+    "10002 . %ContourInfoout% . 22 . ContourInfo . 0 . 0 . All . 1",
+    "10002 . %CentroidXout% . 22 . CentroidX . 0 . 0 . All . 1",
+    "10002 . %CentroidYout% . 22 . CentroidY . 0 . 0 . All . 1",
+    "10002 . %Areaout% . 22 . Area . 0 . 0 . All . 1",
+    "10002 . %BlobStatusout% . 22 . BlobStatus . 0 . 0 . All . 1",
+    "10002 . %ContourInfoout0% . 19 . ContourInfo . 0 . 0 . All . 1",
+    "10002 . %CentroidXout0% . 19 . CentroidX . 0 . 0 . All . 1",
+    "10002 . %CentroidYout0% . 19 . CentroidY . 0 . 0 . All . 1",
+    "10002 . %Areaout0% . 19 . Area . 0 . 0 . All . 1",
+    "10002 . %BlobStatusout0% . 19 . BlobStatus . 0 . 0 . All . 1"
+  ]
+}

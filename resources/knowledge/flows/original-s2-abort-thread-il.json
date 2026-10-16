@@ -1,0 +1,30 @@
+{
+  "schema": "archify-original-s2-abort-thread-il-v1",
+  "status": "original-s2-abort-thread-il-captured",
+  "assembly": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\bin\\Debug\\AKRS.ZX2200.exe",
+  "assemblySha256": "ea7c14767e29420d54f00c2070bb66f833980147156123a77a7925946b0f4ad8",
+  "method": {
+    "type": "AKRS.ZX2200.BondSystem.Tasks.BondTask",
+    "method": "AbortThread",
+    "fullName": "System.Void AKRS.ZX2200.BondSystem.Tasks.BondTask::AbortThread()",
+    "instructionCount": 2,
+    "calls": [],
+    "branches": [],
+    "strings": [],
+    "instructions": [
+      {
+        "offset": 0,
+        "opcode": "nop",
+        "operand": null,
+        "instruction": "IL_0000: nop"
+      },
+      {
+        "offset": 1,
+        "opcode": "ret",
+        "operand": null,
+        "instruction": "IL_0001: ret"
+      }
+    ]
+  },
+  "scope": "Read-only Mono.Cecil inspection of BondTask.AbortThread; it does not invoke task cancellation, UI, signal, transport, database, VM, SDK or device behavior."
+}

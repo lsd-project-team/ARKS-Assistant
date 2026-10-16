@@ -1,8 +1,8 @@
 from alembic import context
 
-from app.config import Paths
-from app.database import Database
-from app.models import Base
+from app.core.config import Paths
+from app.infrastructure.database.registry import Base
+from app.infrastructure.database.session import Database
 
 database = None
 engine = context.config.attributes.get("connection")

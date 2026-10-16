@@ -3,7 +3,7 @@
 import sqlalchemy as sa
 from alembic import op
 
-from app.models import Base
+from app.infrastructure.database.base import Base
 
 revision = "0011"
 down_revision = "0010"

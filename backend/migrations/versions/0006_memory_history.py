@@ -2,7 +2,7 @@
 
 from alembic import op
 
-from app.models import MemoryRevision
+from app.modules.memory.models import MemoryRevision
 
 revision = "0006"
 down_revision = "0005"

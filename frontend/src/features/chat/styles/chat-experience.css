@@ -1,0 +1,313 @@
+.answer-code {
+  margin: 12px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-subtle);
+}
+.answer-code-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 11px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+}
+.answer-code-toolbar > div {
+  display: flex;
+  gap: 8px;
+}
+.answer-code-toolbar button {
+  display: grid;
+  place-items: center;
+  padding: 3px;
+  border-radius: 4px;
+}
+.answer-code-toolbar button:hover,
+.answer-code-toolbar button[aria-pressed='true'] {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+.markdown .answer-code pre,
+.answer-code pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 12px;
+  background: transparent;
+  overflow: auto;
+  font-size: 12px;
+}
+.answer-code.wrapped pre,
+.answer-code.wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.answer-code.collapsed-code pre {
+  max-height: 360px;
+}
+.code-expand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 4px;
+  padding: 8px;
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.quote-answer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  margin: 8px 0;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-subtle);
+}
+.answer-actions time {
+  margin-left: 0;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.reply-version-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 14px 0 0;
+}
+.reply-version-switch button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+}
+.reply-version-switch button:hover {
+  background: var(--surface-hover);
+}
+.selection-preview-path {
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.selection-preview-path span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 11px;
+  margin: 6px 0 12px;
+}
+.selection-stale {
+  padding: 10px;
+  color: var(--warning-text);
+  background: var(--warning-surface);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.selection-preview-trigger {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 5px;
+  min-width: 0;
+}
+.selection-chip .selection-preview-trigger {
+  padding: 0;
+  color: inherit;
+}
+.modal-content.reader-dialog {
+  width: min(560px, calc(100vw - 32px));
+}
+.dialog-body.reader-preferences {
+  display: grid;
+  gap: 20px;
+  min-height: 0;
+  padding: 22px 24px 24px;
+  font-size: 13px;
+}
+.reader-display-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.reader-preferences label {
+  display: grid;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.reader-preferences select,
+.reader-preferences input {
+  min-width: 0;
+  width: 100%;
+  height: 38px;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+}
+.reader-jump {
+  display: grid;
+  gap: 8px;
+}
+.reader-jump-controls {
+  display: flex;
+  gap: 8px;
+}
+.reader-jump-controls input {
+  flex: 1;
+}
+.reader-jump-controls .button {
+  flex-shrink: 0;
+  min-width: 72px;
+}
+.reader-shortcuts {
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.reader-shortcuts h3 {
+  margin: 0 0 14px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 550;
+}
+.reader-preferences .shortcut-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.shortcut-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+.shortcut-list dd {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+.shortcut-list kbd {
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  font: 11px/1.5 var(--font-code);
+  white-space: nowrap;
+}
+.reader-layout-reset {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.reader-layout-reset p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.reader-layout-reset .button {
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .dialog-body.reader-preferences {
+    padding: 20px;
+  }
+  .reader-layout-reset {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+@media (max-width: 400px) {
+  .shortcut-list > div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .shortcut-list dd {
+    justify-content: flex-start;
+  }
+}
+.workspace-search-input {
+  margin: 0 0 12px;
+}
+.workspace-search-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.workspace-search-filter input {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px;
+  flex: 1;
+  background: var(--panel);
+}
+.workspace-search-results {
+  max-height: 55vh;
+  overflow: auto;
+}
+.workspace-search-results section {
+  margin: 14px 0;
+}
+.workspace-search-results strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  padding: 6px 2px;
+}
+.workspace-search-results button {
+  display: flex;
+  gap: 10px;
+  text-align: left;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.workspace-search-results button:hover {
+  background: var(--surface-hover);
+}
+.workspace-search-results small {
+  min-width: 30px;
+  color: var(--text-muted);
+}
+.workspace-search-results code {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.source-load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+}
+.source-load-error p {
+  max-width: 360px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 13px;
+}

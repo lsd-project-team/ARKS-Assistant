@@ -1,0 +1,2650 @@
+{
+  "schema": "archify-programming-external-dialog-il-v1",
+  "status": "external-dialog-bound-il-captured",
+  "assembly": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\libs\\AKRS.Galaxy2.Infrastructure.dll",
+  "assemblySha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb",
+  "type": "AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName",
+  "baseType": "DevExpress.XtraEditors.XtraForm",
+  "methods": [
+    {
+      "name": "get_ValidatePredicate",
+      "fullName": "System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_ValidatePredicate()",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0000: ldarg.0"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldfld",
+          "operand": "System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<ValidatePredicate>k__BackingField",
+          "instruction": "IL_0001: ldfld System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<ValidatePredicate>k__BackingField"
+        },
+        {
+          "offset": 6,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0006: ret"
+        }
+      ]
+    },
+    {
+      "name": "set_ValidatePredicate",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::set_ValidatePredicate(System.Predicate`1<System.String>)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0000: ldarg.0"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.1",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.1"
+        },
+        {
+          "offset": 2,
+          "opcode": "stfld",
+          "operand": "System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<ValidatePredicate>k__BackingField",
+          "instruction": "IL_0002: stfld System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<ValidatePredicate>k__BackingField"
+        },
+        {
+          "offset": 7,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0007: ret"
+        }
+      ]
+    },
+    {
+      "name": ".ctor",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::.ctor(System.String,System.String,System.String)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [
+        "System.Void DevExpress.XtraEditors.XtraForm::.ctor()",
+        "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::InitializeComponent()",
+        "System.Void System.Windows.Forms.Control::set_Text(System.String)"
+      ],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0000: ldarg.0"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldnull",
+          "operand": null,
+          "instruction": "IL_0001: ldnull"
+        },
+        {
+          "offset": 2,
+          "opcode": "stfld",
+          "operand": "System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components",
+          "instruction": "IL_0002: stfld System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components"
+        },
+        {
+          "offset": 7,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0007: ldarg.0"
+        },
+        {
+          "offset": 8,
+          "opcode": "call",
+          "operand": "System.Void DevExpress.XtraEditors.XtraForm::.ctor()",
+          "instruction": "IL_0008: call System.Void DevExpress.XtraEditors.XtraForm::.ctor()"
+        },
+        {
+          "offset": 13,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_000d: nop"
+        },
+        {
+          "offset": 14,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_000e: nop"
+        },
+        {
+          "offset": 15,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_000f: ldarg.0"
+        },
+        {
+          "offset": 16,
+          "opcode": "call",
+          "operand": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::InitializeComponent()",
+          "instruction": "IL_0010: call System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::InitializeComponent()"
+        },
+        {
+          "offset": 21,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0015: nop"
+        },
+        {
+          "offset": 22,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0016: ldarg.0"
+        },
+        {
+          "offset": 23,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_0017: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 28,
+          "opcode": "ldarg.1",
+          "operand": null,
+          "instruction": "IL_001c: ldarg.1"
+        },
+        {
+          "offset": 29,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_001d: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 34,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0022: nop"
+        },
+        {
+          "offset": 35,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0023: ldarg.0"
+        },
+        {
+          "offset": 36,
+          "opcode": "ldarg.2",
+          "operand": null,
+          "instruction": "IL_0024: ldarg.2"
+        },
+        {
+          "offset": 37,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_0025: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 42,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_002a: nop"
+        },
+        {
+          "offset": 43,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_002b: ldarg.0"
+        },
+        {
+          "offset": 44,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_002c: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 49,
+          "opcode": "ldarg.3",
+          "operand": null,
+          "instruction": "IL_0031: ldarg.3"
+        },
+        {
+          "offset": 50,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_0032: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 55,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0037: nop"
+        },
+        {
+          "offset": 56,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0038: ret"
+        }
+      ]
+    },
+    {
+      "name": "get_CreateName",
+      "fullName": "System.String AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_CreateName()",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0000: ldarg.0"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldfld",
+          "operand": "System.String AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<CreateName>k__BackingField",
+          "instruction": "IL_0001: ldfld System.String AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<CreateName>k__BackingField"
+        },
+        {
+          "offset": 6,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0006: ret"
+        }
+      ]
+    },
+    {
+      "name": "set_CreateName",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::set_CreateName(System.String)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0000: ldarg.0"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.1",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.1"
+        },
+        {
+          "offset": 2,
+          "opcode": "stfld",
+          "operand": "System.String AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<CreateName>k__BackingField",
+          "instruction": "IL_0002: stfld System.String AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::<CreateName>k__BackingField"
+        },
+        {
+          "offset": 7,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0007: ret"
+        }
+      ]
+    },
+    {
+      "name": "BtOk_Click",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk_Click(System.Object,System.EventArgs)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [
+        "System.String System.Windows.Forms.Control::get_Text()",
+        "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::set_CreateName(System.String)",
+        "System.Void System.Windows.Forms.Form::set_DialogResult(System.Windows.Forms.DialogResult)"
+      ],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0000: nop"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.0"
+        },
+        {
+          "offset": 2,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0002: ldarg.0"
+        },
+        {
+          "offset": 3,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_0003: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 8,
+          "opcode": "callvirt",
+          "operand": "System.String System.Windows.Forms.Control::get_Text()",
+          "instruction": "IL_0008: callvirt System.String System.Windows.Forms.Control::get_Text()"
+        },
+        {
+          "offset": 13,
+          "opcode": "call",
+          "operand": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::set_CreateName(System.String)",
+          "instruction": "IL_000d: call System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::set_CreateName(System.String)"
+        },
+        {
+          "offset": 18,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0012: nop"
+        },
+        {
+          "offset": 19,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0013: ldarg.0"
+        },
+        {
+          "offset": 20,
+          "opcode": "ldc.i4.1",
+          "operand": null,
+          "instruction": "IL_0014: ldc.i4.1"
+        },
+        {
+          "offset": 21,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Form::set_DialogResult(System.Windows.Forms.DialogResult)",
+          "instruction": "IL_0015: call System.Void System.Windows.Forms.Form::set_DialogResult(System.Windows.Forms.DialogResult)"
+        },
+        {
+          "offset": 26,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_001a: nop"
+        },
+        {
+          "offset": 27,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_001b: ret"
+        }
+      ]
+    },
+    {
+      "name": "BtnCancel_Click",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtnCancel_Click(System.Object,System.EventArgs)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [
+        "System.Void System.Windows.Forms.Form::set_DialogResult(System.Windows.Forms.DialogResult)"
+      ],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0000: nop"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.0"
+        },
+        {
+          "offset": 2,
+          "opcode": "ldc.i4.2",
+          "operand": null,
+          "instruction": "IL_0002: ldc.i4.2"
+        },
+        {
+          "offset": 3,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Form::set_DialogResult(System.Windows.Forms.DialogResult)",
+          "instruction": "IL_0003: call System.Void System.Windows.Forms.Form::set_DialogResult(System.Windows.Forms.DialogResult)"
+        },
+        {
+          "offset": 8,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0008: nop"
+        },
+        {
+          "offset": 9,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0009: ret"
+        }
+      ]
+    },
+    {
+      "name": "TxtName_EditValueChanging",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName_EditValueChanging(System.Object,DevExpress.XtraEditors.Controls.ChangingEventArgs)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": true,
+      "calls": [
+        "System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_ValidatePredicate()",
+        "System.Void System.Windows.Forms.Control::set_Enabled(System.Boolean)",
+        "System.String System.Windows.Forms.Control::get_Text()",
+        "System.Boolean System.Predicate`1<System.String>::Invoke(!0)"
+      ],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0000: nop"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.0"
+        },
+        {
+          "offset": 2,
+          "opcode": "call",
+          "operand": "System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_ValidatePredicate()",
+          "instruction": "IL_0002: call System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_ValidatePredicate()"
+        },
+        {
+          "offset": 7,
+          "opcode": "ldnull",
+          "operand": null,
+          "instruction": "IL_0007: ldnull"
+        },
+        {
+          "offset": 8,
+          "opcode": "ceq",
+          "operand": null,
+          "instruction": "IL_0008: ceq"
+        },
+        {
+          "offset": 10,
+          "opcode": "stloc.0",
+          "operand": null,
+          "instruction": "IL_000a: stloc.0"
+        },
+        {
+          "offset": 11,
+          "opcode": "ldloc.0",
+          "operand": null,
+          "instruction": "IL_000b: ldloc.0"
+        },
+        {
+          "offset": 12,
+          "opcode": "brfalse.s",
+          "operand": "IL_001f: nop",
+          "instruction": "IL_000c: brfalse.s IL_001f"
+        },
+        {
+          "offset": 14,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_000e: nop"
+        },
+        {
+          "offset": 15,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_000f: ldarg.0"
+        },
+        {
+          "offset": 16,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_0010: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 21,
+          "opcode": "ldc.i4.1",
+          "operand": null,
+          "instruction": "IL_0015: ldc.i4.1"
+        },
+        {
+          "offset": 22,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Enabled(System.Boolean)",
+          "instruction": "IL_0016: callvirt System.Void System.Windows.Forms.Control::set_Enabled(System.Boolean)"
+        },
+        {
+          "offset": 27,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_001b: nop"
+        },
+        {
+          "offset": 28,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_001c: nop"
+        },
+        {
+          "offset": 29,
+          "opcode": "br.s",
+          "operand": "IL_0043: ret",
+          "instruction": "IL_001d: br.s IL_0043"
+        },
+        {
+          "offset": 31,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_001f: nop"
+        },
+        {
+          "offset": 32,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0020: ldarg.0"
+        },
+        {
+          "offset": 33,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_0021: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 38,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0026: ldarg.0"
+        },
+        {
+          "offset": 39,
+          "opcode": "call",
+          "operand": "System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_ValidatePredicate()",
+          "instruction": "IL_0027: call System.Predicate`1<System.String> AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::get_ValidatePredicate()"
+        },
+        {
+          "offset": 44,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_002c: ldarg.0"
+        },
+        {
+          "offset": 45,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_002d: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 50,
+          "opcode": "callvirt",
+          "operand": "System.String System.Windows.Forms.Control::get_Text()",
+          "instruction": "IL_0032: callvirt System.String System.Windows.Forms.Control::get_Text()"
+        },
+        {
+          "offset": 55,
+          "opcode": "callvirt",
+          "operand": "System.Boolean System.Predicate`1<System.String>::Invoke(!0)",
+          "instruction": "IL_0037: callvirt System.Boolean System.Predicate`1<System.String>::Invoke(!0)"
+        },
+        {
+          "offset": 60,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Enabled(System.Boolean)",
+          "instruction": "IL_003c: callvirt System.Void System.Windows.Forms.Control::set_Enabled(System.Boolean)"
+        },
+        {
+          "offset": 65,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0041: nop"
+        },
+        {
+          "offset": 66,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0042: nop"
+        },
+        {
+          "offset": 67,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0043: ret"
+        }
+      ]
+    },
+    {
+      "name": "Dispose",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::Dispose(System.Boolean)",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": false,
+      "calls": [
+        "System.Void System.IDisposable::Dispose()",
+        "System.Void DevExpress.XtraEditors.XtraForm::Dispose(System.Boolean)"
+      ],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0000: nop"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.1",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.1"
+        },
+        {
+          "offset": 2,
+          "opcode": "brfalse.s",
+          "operand": "IL_000f: ldc.i4.0",
+          "instruction": "IL_0002: brfalse.s IL_000f"
+        },
+        {
+          "offset": 4,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0004: ldarg.0"
+        },
+        {
+          "offset": 5,
+          "opcode": "ldfld",
+          "operand": "System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components",
+          "instruction": "IL_0005: ldfld System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components"
+        },
+        {
+          "offset": 10,
+          "opcode": "ldnull",
+          "operand": null,
+          "instruction": "IL_000a: ldnull"
+        },
+        {
+          "offset": 11,
+          "opcode": "cgt.un",
+          "operand": null,
+          "instruction": "IL_000b: cgt.un"
+        },
+        {
+          "offset": 13,
+          "opcode": "br.s",
+          "operand": "IL_0010: stloc.0",
+          "instruction": "IL_000d: br.s IL_0010"
+        },
+        {
+          "offset": 15,
+          "opcode": "ldc.i4.0",
+          "operand": null,
+          "instruction": "IL_000f: ldc.i4.0"
+        },
+        {
+          "offset": 16,
+          "opcode": "stloc.0",
+          "operand": null,
+          "instruction": "IL_0010: stloc.0"
+        },
+        {
+          "offset": 17,
+          "opcode": "ldloc.0",
+          "operand": null,
+          "instruction": "IL_0011: ldloc.0"
+        },
+        {
+          "offset": 18,
+          "opcode": "brfalse.s",
+          "operand": "IL_0022: ldarg.0",
+          "instruction": "IL_0012: brfalse.s IL_0022"
+        },
+        {
+          "offset": 20,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0014: nop"
+        },
+        {
+          "offset": 21,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0015: ldarg.0"
+        },
+        {
+          "offset": 22,
+          "opcode": "ldfld",
+          "operand": "System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components",
+          "instruction": "IL_0016: ldfld System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components"
+        },
+        {
+          "offset": 27,
+          "opcode": "callvirt",
+          "operand": "System.Void System.IDisposable::Dispose()",
+          "instruction": "IL_001b: callvirt System.Void System.IDisposable::Dispose()"
+        },
+        {
+          "offset": 32,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0020: nop"
+        },
+        {
+          "offset": 33,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0021: nop"
+        },
+        {
+          "offset": 34,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0022: ldarg.0"
+        },
+        {
+          "offset": 35,
+          "opcode": "ldarg.1",
+          "operand": null,
+          "instruction": "IL_0023: ldarg.1"
+        },
+        {
+          "offset": 36,
+          "opcode": "call",
+          "operand": "System.Void DevExpress.XtraEditors.XtraForm::Dispose(System.Boolean)",
+          "instruction": "IL_0024: call System.Void DevExpress.XtraEditors.XtraForm::Dispose(System.Boolean)"
+        },
+        {
+          "offset": 41,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0029: nop"
+        },
+        {
+          "offset": 42,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_002a: ret"
+        }
+      ]
+    },
+    {
+      "name": "InitializeComponent",
+      "fullName": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::InitializeComponent()",
+      "hasBody": true,
+      "isStatic": false,
+      "selected": false,
+      "calls": [
+        "System.Void System.ComponentModel.Container::.ctor()",
+        "System.Void DevExpress.XtraEditors.TextEdit::.ctor()",
+        "System.Void DevExpress.XtraEditors.SimpleButton::.ctor()",
+        "System.Void DevExpress.XtraEditors.LabelControl::.ctor()",
+        "System.Void System.Windows.Forms.ContextMenuStrip::.ctor(System.ComponentModel.IContainer)",
+        "System.Void System.Windows.Forms.BindingSource::.ctor(System.ComponentModel.IContainer)",
+        "DevExpress.XtraEditors.Repository.RepositoryItemTextEdit DevExpress.XtraEditors.TextEdit::get_Properties()",
+        "System.Void System.ComponentModel.ISupportInitialize::BeginInit()",
+        "System.Void DevExpress.XtraEditors.XtraForm::SuspendLayout()",
+        "System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)",
+        "System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)",
+        "System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)",
+        "System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)",
+        "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+        "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+        "System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)",
+        "System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)",
+        "System.Void DevExpress.XtraEditors.Controls.ChangingEventHandler::.ctor(System.Object,System.IntPtr)",
+        "System.Void DevExpress.XtraEditors.BaseEdit::add_EditValueChanging(DevExpress.XtraEditors.Controls.ChangingEventHandler)",
+        "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+        "System.Void System.EventHandler::.ctor(System.Object,System.IntPtr)",
+        "System.Void System.Windows.Forms.Control::add_Click(System.EventHandler)",
+        "System.Void System.Windows.Forms.ToolStrip::set_ImageScalingSize(System.Drawing.Size)",
+        "System.Void System.Drawing.SizeF::.ctor(System.Single,System.Single)",
+        "System.Void System.Windows.Forms.ContainerControl::set_AutoScaleDimensions(System.Drawing.SizeF)",
+        "System.Void System.Windows.Forms.ContainerControl::set_AutoScaleMode(System.Windows.Forms.AutoScaleMode)",
+        "System.Void System.Windows.Forms.Form::set_ClientSize(System.Drawing.Size)",
+        "System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()",
+        "System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)",
+        "System.Void System.Windows.Forms.Form::set_Margin(System.Windows.Forms.Padding)",
+        "System.Void System.Windows.Forms.Form::set_StartPosition(System.Windows.Forms.FormStartPosition)",
+        "System.Void System.ComponentModel.ISupportInitialize::EndInit()",
+        "System.Void DevExpress.XtraEditors.XtraForm::ResumeLayout(System.Boolean)",
+        "System.Void System.Windows.Forms.Control::PerformLayout()"
+      ],
+      "exceptionHandlers": [],
+      "instructions": [
+        {
+          "offset": 0,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0000: nop"
+        },
+        {
+          "offset": 1,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0001: ldarg.0"
+        },
+        {
+          "offset": 2,
+          "opcode": "newobj",
+          "operand": "System.Void System.ComponentModel.Container::.ctor()",
+          "instruction": "IL_0002: newobj System.Void System.ComponentModel.Container::.ctor()"
+        },
+        {
+          "offset": 7,
+          "opcode": "stfld",
+          "operand": "System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components",
+          "instruction": "IL_0007: stfld System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components"
+        },
+        {
+          "offset": 12,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_000c: ldarg.0"
+        },
+        {
+          "offset": 13,
+          "opcode": "newobj",
+          "operand": "System.Void DevExpress.XtraEditors.TextEdit::.ctor()",
+          "instruction": "IL_000d: newobj System.Void DevExpress.XtraEditors.TextEdit::.ctor()"
+        },
+        {
+          "offset": 18,
+          "opcode": "stfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_0012: stfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 23,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0017: ldarg.0"
+        },
+        {
+          "offset": 24,
+          "opcode": "newobj",
+          "operand": "System.Void DevExpress.XtraEditors.SimpleButton::.ctor()",
+          "instruction": "IL_0018: newobj System.Void DevExpress.XtraEditors.SimpleButton::.ctor()"
+        },
+        {
+          "offset": 29,
+          "opcode": "stfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_001d: stfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 34,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0022: ldarg.0"
+        },
+        {
+          "offset": 35,
+          "opcode": "newobj",
+          "operand": "System.Void DevExpress.XtraEditors.SimpleButton::.ctor()",
+          "instruction": "IL_0023: newobj System.Void DevExpress.XtraEditors.SimpleButton::.ctor()"
+        },
+        {
+          "offset": 40,
+          "opcode": "stfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_0028: stfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 45,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_002d: ldarg.0"
+        },
+        {
+          "offset": 46,
+          "opcode": "newobj",
+          "operand": "System.Void DevExpress.XtraEditors.LabelControl::.ctor()",
+          "instruction": "IL_002e: newobj System.Void DevExpress.XtraEditors.LabelControl::.ctor()"
+        },
+        {
+          "offset": 51,
+          "opcode": "stfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_0033: stfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 56,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0038: ldarg.0"
+        },
+        {
+          "offset": 57,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0039: ldarg.0"
+        },
+        {
+          "offset": 58,
+          "opcode": "ldfld",
+          "operand": "System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components",
+          "instruction": "IL_003a: ldfld System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components"
+        },
+        {
+          "offset": 63,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.ContextMenuStrip::.ctor(System.ComponentModel.IContainer)",
+          "instruction": "IL_003f: newobj System.Void System.Windows.Forms.ContextMenuStrip::.ctor(System.ComponentModel.IContainer)"
+        },
+        {
+          "offset": 68,
+          "opcode": "stfld",
+          "operand": "System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1",
+          "instruction": "IL_0044: stfld System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1"
+        },
+        {
+          "offset": 73,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0049: ldarg.0"
+        },
+        {
+          "offset": 74,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_004a: ldarg.0"
+        },
+        {
+          "offset": 75,
+          "opcode": "ldfld",
+          "operand": "System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components",
+          "instruction": "IL_004b: ldfld System.ComponentModel.IContainer AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::components"
+        },
+        {
+          "offset": 80,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.BindingSource::.ctor(System.ComponentModel.IContainer)",
+          "instruction": "IL_0050: newobj System.Void System.Windows.Forms.BindingSource::.ctor(System.ComponentModel.IContainer)"
+        },
+        {
+          "offset": 85,
+          "opcode": "stfld",
+          "operand": "System.Windows.Forms.BindingSource AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::bindingSource1",
+          "instruction": "IL_0055: stfld System.Windows.Forms.BindingSource AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::bindingSource1"
+        },
+        {
+          "offset": 90,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_005a: ldarg.0"
+        },
+        {
+          "offset": 91,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_005b: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 96,
+          "opcode": "callvirt",
+          "operand": "DevExpress.XtraEditors.Repository.RepositoryItemTextEdit DevExpress.XtraEditors.TextEdit::get_Properties()",
+          "instruction": "IL_0060: callvirt DevExpress.XtraEditors.Repository.RepositoryItemTextEdit DevExpress.XtraEditors.TextEdit::get_Properties()"
+        },
+        {
+          "offset": 101,
+          "opcode": "callvirt",
+          "operand": "System.Void System.ComponentModel.ISupportInitialize::BeginInit()",
+          "instruction": "IL_0065: callvirt System.Void System.ComponentModel.ISupportInitialize::BeginInit()"
+        },
+        {
+          "offset": 106,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_006a: nop"
+        },
+        {
+          "offset": 107,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_006b: ldarg.0"
+        },
+        {
+          "offset": 108,
+          "opcode": "ldfld",
+          "operand": "System.Windows.Forms.BindingSource AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::bindingSource1",
+          "instruction": "IL_006c: ldfld System.Windows.Forms.BindingSource AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::bindingSource1"
+        },
+        {
+          "offset": 113,
+          "opcode": "callvirt",
+          "operand": "System.Void System.ComponentModel.ISupportInitialize::BeginInit()",
+          "instruction": "IL_0071: callvirt System.Void System.ComponentModel.ISupportInitialize::BeginInit()"
+        },
+        {
+          "offset": 118,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0076: nop"
+        },
+        {
+          "offset": 119,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0077: ldarg.0"
+        },
+        {
+          "offset": 120,
+          "opcode": "call",
+          "operand": "System.Void DevExpress.XtraEditors.XtraForm::SuspendLayout()",
+          "instruction": "IL_0078: call System.Void DevExpress.XtraEditors.XtraForm::SuspendLayout()"
+        },
+        {
+          "offset": 125,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_007d: nop"
+        },
+        {
+          "offset": 126,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_007e: ldarg.0"
+        },
+        {
+          "offset": 127,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_007f: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 132,
+          "opcode": "ldc.i4",
+          "operand": "153",
+          "instruction": "IL_0084: ldc.i4 153"
+        },
+        {
+          "offset": 137,
+          "opcode": "ldc.i4.s",
+          "operand": "53",
+          "instruction": "IL_0089: ldc.i4.s 53"
+        },
+        {
+          "offset": 139,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_008b: newobj System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 144,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)",
+          "instruction": "IL_0090: callvirt System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)"
+        },
+        {
+          "offset": 149,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0095: nop"
+        },
+        {
+          "offset": 150,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0096: ldarg.0"
+        },
+        {
+          "offset": 151,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_0097: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 156,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_009c: ldc.i4.3"
+        },
+        {
+          "offset": 157,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_009d: ldc.i4.4"
+        },
+        {
+          "offset": 158,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_009e: ldc.i4.3"
+        },
+        {
+          "offset": 159,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_009f: ldc.i4.4"
+        },
+        {
+          "offset": 160,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)",
+          "instruction": "IL_00a0: newobj System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)"
+        },
+        {
+          "offset": 165,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)",
+          "instruction": "IL_00a5: callvirt System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)"
+        },
+        {
+          "offset": 170,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_00aa: nop"
+        },
+        {
+          "offset": 171,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_00ab: ldarg.0"
+        },
+        {
+          "offset": 172,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_00ac: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 177,
+          "opcode": "ldstr",
+          "operand": "TxtName",
+          "instruction": "IL_00b1: ldstr \"TxtName\""
+        },
+        {
+          "offset": 182,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+          "instruction": "IL_00b6: callvirt System.Void System.Windows.Forms.Control::set_Name(System.String)"
+        },
+        {
+          "offset": 187,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_00bb: nop"
+        },
+        {
+          "offset": 188,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_00bc: ldarg.0"
+        },
+        {
+          "offset": 189,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_00bd: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 194,
+          "opcode": "ldc.i4",
+          "operand": "248",
+          "instruction": "IL_00c2: ldc.i4 248"
+        },
+        {
+          "offset": 199,
+          "opcode": "ldc.i4.s",
+          "operand": "24",
+          "instruction": "IL_00c7: ldc.i4.s 24"
+        },
+        {
+          "offset": 201,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_00c9: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 206,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)",
+          "instruction": "IL_00ce: callvirt System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)"
+        },
+        {
+          "offset": 211,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_00d3: nop"
+        },
+        {
+          "offset": 212,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_00d4: ldarg.0"
+        },
+        {
+          "offset": 213,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_00d5: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 218,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_00da: ldc.i4.3"
+        },
+        {
+          "offset": 219,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)",
+          "instruction": "IL_00db: callvirt System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)"
+        },
+        {
+          "offset": 224,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_00e0: nop"
+        },
+        {
+          "offset": 225,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_00e1: ldarg.0"
+        },
+        {
+          "offset": 226,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_00e2: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 231,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_00e7: ldarg.0"
+        },
+        {
+          "offset": 232,
+          "opcode": "ldftn",
+          "operand": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName_EditValueChanging(System.Object,DevExpress.XtraEditors.Controls.ChangingEventArgs)",
+          "instruction": "IL_00e8: ldftn System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName_EditValueChanging(System.Object,DevExpress.XtraEditors.Controls.ChangingEventArgs)"
+        },
+        {
+          "offset": 238,
+          "opcode": "newobj",
+          "operand": "System.Void DevExpress.XtraEditors.Controls.ChangingEventHandler::.ctor(System.Object,System.IntPtr)",
+          "instruction": "IL_00ee: newobj System.Void DevExpress.XtraEditors.Controls.ChangingEventHandler::.ctor(System.Object,System.IntPtr)"
+        },
+        {
+          "offset": 243,
+          "opcode": "callvirt",
+          "operand": "System.Void DevExpress.XtraEditors.BaseEdit::add_EditValueChanging(DevExpress.XtraEditors.Controls.ChangingEventHandler)",
+          "instruction": "IL_00f3: callvirt System.Void DevExpress.XtraEditors.BaseEdit::add_EditValueChanging(DevExpress.XtraEditors.Controls.ChangingEventHandler)"
+        },
+        {
+          "offset": 248,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_00f8: nop"
+        },
+        {
+          "offset": 249,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_00f9: ldarg.0"
+        },
+        {
+          "offset": 250,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_00fa: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 255,
+          "opcode": "ldc.i4.s",
+          "operand": "121",
+          "instruction": "IL_00ff: ldc.i4.s 121"
+        },
+        {
+          "offset": 257,
+          "opcode": "ldc.i4.s",
+          "operand": "122",
+          "instruction": "IL_0101: ldc.i4.s 122"
+        },
+        {
+          "offset": 259,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_0103: newobj System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 264,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)",
+          "instruction": "IL_0108: callvirt System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)"
+        },
+        {
+          "offset": 269,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_010d: nop"
+        },
+        {
+          "offset": 270,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_010e: ldarg.0"
+        },
+        {
+          "offset": 271,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_010f: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 276,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_0114: ldc.i4.3"
+        },
+        {
+          "offset": 277,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_0115: ldc.i4.4"
+        },
+        {
+          "offset": 278,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_0116: ldc.i4.3"
+        },
+        {
+          "offset": 279,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_0117: ldc.i4.4"
+        },
+        {
+          "offset": 280,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)",
+          "instruction": "IL_0118: newobj System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)"
+        },
+        {
+          "offset": 285,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)",
+          "instruction": "IL_011d: callvirt System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)"
+        },
+        {
+          "offset": 290,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0122: nop"
+        },
+        {
+          "offset": 291,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0123: ldarg.0"
+        },
+        {
+          "offset": 292,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_0124: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 297,
+          "opcode": "ldstr",
+          "operand": "BtOk",
+          "instruction": "IL_0129: ldstr \"BtOk\""
+        },
+        {
+          "offset": 302,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+          "instruction": "IL_012e: callvirt System.Void System.Windows.Forms.Control::set_Name(System.String)"
+        },
+        {
+          "offset": 307,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0133: nop"
+        },
+        {
+          "offset": 308,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0134: ldarg.0"
+        },
+        {
+          "offset": 309,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_0135: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 314,
+          "opcode": "ldc.i4.s",
+          "operand": "91",
+          "instruction": "IL_013a: ldc.i4.s 91"
+        },
+        {
+          "offset": 316,
+          "opcode": "ldc.i4.s",
+          "operand": "41",
+          "instruction": "IL_013c: ldc.i4.s 41"
+        },
+        {
+          "offset": 318,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_013e: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 323,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)",
+          "instruction": "IL_0143: callvirt System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)"
+        },
+        {
+          "offset": 328,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0148: nop"
+        },
+        {
+          "offset": 329,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0149: ldarg.0"
+        },
+        {
+          "offset": 330,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_014a: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 335,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_014f: ldc.i4.4"
+        },
+        {
+          "offset": 336,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)",
+          "instruction": "IL_0150: callvirt System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)"
+        },
+        {
+          "offset": 341,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0155: nop"
+        },
+        {
+          "offset": 342,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0156: ldarg.0"
+        },
+        {
+          "offset": 343,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_0157: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 348,
+          "opcode": "ldstr",
+          "operand": "确定",
+          "instruction": "IL_015c: ldstr \"确定\""
+        },
+        {
+          "offset": 353,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_0161: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 358,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0166: nop"
+        },
+        {
+          "offset": 359,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0167: ldarg.0"
+        },
+        {
+          "offset": 360,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_0168: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 365,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_016d: ldarg.0"
+        },
+        {
+          "offset": 366,
+          "opcode": "ldftn",
+          "operand": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk_Click(System.Object,System.EventArgs)",
+          "instruction": "IL_016e: ldftn System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk_Click(System.Object,System.EventArgs)"
+        },
+        {
+          "offset": 372,
+          "opcode": "newobj",
+          "operand": "System.Void System.EventHandler::.ctor(System.Object,System.IntPtr)",
+          "instruction": "IL_0174: newobj System.Void System.EventHandler::.ctor(System.Object,System.IntPtr)"
+        },
+        {
+          "offset": 377,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::add_Click(System.EventHandler)",
+          "instruction": "IL_0179: callvirt System.Void System.Windows.Forms.Control::add_Click(System.EventHandler)"
+        },
+        {
+          "offset": 382,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_017e: nop"
+        },
+        {
+          "offset": 383,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_017f: ldarg.0"
+        },
+        {
+          "offset": 384,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_0180: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 389,
+          "opcode": "ldc.i4",
+          "operand": "269",
+          "instruction": "IL_0185: ldc.i4 269"
+        },
+        {
+          "offset": 394,
+          "opcode": "ldc.i4.s",
+          "operand": "122",
+          "instruction": "IL_018a: ldc.i4.s 122"
+        },
+        {
+          "offset": 396,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_018c: newobj System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 401,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)",
+          "instruction": "IL_0191: callvirt System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)"
+        },
+        {
+          "offset": 406,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0196: nop"
+        },
+        {
+          "offset": 407,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0197: ldarg.0"
+        },
+        {
+          "offset": 408,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_0198: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 413,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_019d: ldc.i4.3"
+        },
+        {
+          "offset": 414,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_019e: ldc.i4.4"
+        },
+        {
+          "offset": 415,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_019f: ldc.i4.3"
+        },
+        {
+          "offset": 416,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_01a0: ldc.i4.4"
+        },
+        {
+          "offset": 417,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)",
+          "instruction": "IL_01a1: newobj System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)"
+        },
+        {
+          "offset": 422,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)",
+          "instruction": "IL_01a6: callvirt System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)"
+        },
+        {
+          "offset": 427,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_01ab: nop"
+        },
+        {
+          "offset": 428,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_01ac: ldarg.0"
+        },
+        {
+          "offset": 429,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_01ad: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 434,
+          "opcode": "ldstr",
+          "operand": "BtCancel",
+          "instruction": "IL_01b2: ldstr \"BtCancel\""
+        },
+        {
+          "offset": 439,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+          "instruction": "IL_01b7: callvirt System.Void System.Windows.Forms.Control::set_Name(System.String)"
+        },
+        {
+          "offset": 444,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_01bc: nop"
+        },
+        {
+          "offset": 445,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_01bd: ldarg.0"
+        },
+        {
+          "offset": 446,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_01be: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 451,
+          "opcode": "ldc.i4.s",
+          "operand": "86",
+          "instruction": "IL_01c3: ldc.i4.s 86"
+        },
+        {
+          "offset": 453,
+          "opcode": "ldc.i4.s",
+          "operand": "41",
+          "instruction": "IL_01c5: ldc.i4.s 41"
+        },
+        {
+          "offset": 455,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_01c7: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 460,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)",
+          "instruction": "IL_01cc: callvirt System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)"
+        },
+        {
+          "offset": 465,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_01d1: nop"
+        },
+        {
+          "offset": 466,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_01d2: ldarg.0"
+        },
+        {
+          "offset": 467,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_01d3: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 472,
+          "opcode": "ldc.i4.5",
+          "operand": null,
+          "instruction": "IL_01d8: ldc.i4.5"
+        },
+        {
+          "offset": 473,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)",
+          "instruction": "IL_01d9: callvirt System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)"
+        },
+        {
+          "offset": 478,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_01de: nop"
+        },
+        {
+          "offset": 479,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_01df: ldarg.0"
+        },
+        {
+          "offset": 480,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_01e0: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 485,
+          "opcode": "ldstr",
+          "operand": "取消",
+          "instruction": "IL_01e5: ldstr \"取消\""
+        },
+        {
+          "offset": 490,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_01ea: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 495,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_01ef: nop"
+        },
+        {
+          "offset": 496,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_01f0: ldarg.0"
+        },
+        {
+          "offset": 497,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_01f1: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 502,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_01f6: ldarg.0"
+        },
+        {
+          "offset": 503,
+          "opcode": "ldftn",
+          "operand": "System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtnCancel_Click(System.Object,System.EventArgs)",
+          "instruction": "IL_01f7: ldftn System.Void AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtnCancel_Click(System.Object,System.EventArgs)"
+        },
+        {
+          "offset": 509,
+          "opcode": "newobj",
+          "operand": "System.Void System.EventHandler::.ctor(System.Object,System.IntPtr)",
+          "instruction": "IL_01fd: newobj System.Void System.EventHandler::.ctor(System.Object,System.IntPtr)"
+        },
+        {
+          "offset": 514,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::add_Click(System.EventHandler)",
+          "instruction": "IL_0202: callvirt System.Void System.Windows.Forms.Control::add_Click(System.EventHandler)"
+        },
+        {
+          "offset": 519,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0207: nop"
+        },
+        {
+          "offset": 520,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0208: ldarg.0"
+        },
+        {
+          "offset": 521,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_0209: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 526,
+          "opcode": "ldc.i4.s",
+          "operand": "57",
+          "instruction": "IL_020e: ldc.i4.s 57"
+        },
+        {
+          "offset": 528,
+          "opcode": "ldc.i4.s",
+          "operand": "57",
+          "instruction": "IL_0210: ldc.i4.s 57"
+        },
+        {
+          "offset": 530,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_0212: newobj System.Void System.Drawing.Point::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 535,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)",
+          "instruction": "IL_0217: callvirt System.Void System.Windows.Forms.Control::set_Location(System.Drawing.Point)"
+        },
+        {
+          "offset": 540,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_021c: nop"
+        },
+        {
+          "offset": 541,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_021d: ldarg.0"
+        },
+        {
+          "offset": 542,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_021e: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 547,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_0223: ldc.i4.3"
+        },
+        {
+          "offset": 548,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_0224: ldc.i4.4"
+        },
+        {
+          "offset": 549,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_0225: ldc.i4.3"
+        },
+        {
+          "offset": 550,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_0226: ldc.i4.4"
+        },
+        {
+          "offset": 551,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)",
+          "instruction": "IL_0227: newobj System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)"
+        },
+        {
+          "offset": 556,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)",
+          "instruction": "IL_022c: callvirt System.Void System.Windows.Forms.Control::set_Margin(System.Windows.Forms.Padding)"
+        },
+        {
+          "offset": 561,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0231: nop"
+        },
+        {
+          "offset": 562,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0232: ldarg.0"
+        },
+        {
+          "offset": 563,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_0233: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 568,
+          "opcode": "ldstr",
+          "operand": "LbName",
+          "instruction": "IL_0238: ldstr \"LbName\""
+        },
+        {
+          "offset": 573,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+          "instruction": "IL_023d: callvirt System.Void System.Windows.Forms.Control::set_Name(System.String)"
+        },
+        {
+          "offset": 578,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0242: nop"
+        },
+        {
+          "offset": 579,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0243: ldarg.0"
+        },
+        {
+          "offset": 580,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_0244: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 585,
+          "opcode": "ldc.i4.s",
+          "operand": "75",
+          "instruction": "IL_0249: ldc.i4.s 75"
+        },
+        {
+          "offset": 587,
+          "opcode": "ldc.i4.s",
+          "operand": "18",
+          "instruction": "IL_024b: ldc.i4.s 18"
+        },
+        {
+          "offset": 589,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_024d: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 594,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)",
+          "instruction": "IL_0252: callvirt System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)"
+        },
+        {
+          "offset": 599,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0257: nop"
+        },
+        {
+          "offset": 600,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0258: ldarg.0"
+        },
+        {
+          "offset": 601,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_0259: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 606,
+          "opcode": "ldc.i4.6",
+          "operand": null,
+          "instruction": "IL_025e: ldc.i4.6"
+        },
+        {
+          "offset": 607,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)",
+          "instruction": "IL_025f: callvirt System.Void System.Windows.Forms.Control::set_TabIndex(System.Int32)"
+        },
+        {
+          "offset": 612,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0264: nop"
+        },
+        {
+          "offset": 613,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0265: ldarg.0"
+        },
+        {
+          "offset": 614,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_0266: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 619,
+          "opcode": "ldstr",
+          "operand": "模组名称：",
+          "instruction": "IL_026b: ldstr \"模组名称：\""
+        },
+        {
+          "offset": 624,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_0270: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 629,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0275: nop"
+        },
+        {
+          "offset": 630,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0276: ldarg.0"
+        },
+        {
+          "offset": 631,
+          "opcode": "ldfld",
+          "operand": "System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1",
+          "instruction": "IL_0277: ldfld System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1"
+        },
+        {
+          "offset": 636,
+          "opcode": "ldc.i4.s",
+          "operand": "20",
+          "instruction": "IL_027c: ldc.i4.s 20"
+        },
+        {
+          "offset": 638,
+          "opcode": "ldc.i4.s",
+          "operand": "20",
+          "instruction": "IL_027e: ldc.i4.s 20"
+        },
+        {
+          "offset": 640,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_0280: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 645,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.ToolStrip::set_ImageScalingSize(System.Drawing.Size)",
+          "instruction": "IL_0285: callvirt System.Void System.Windows.Forms.ToolStrip::set_ImageScalingSize(System.Drawing.Size)"
+        },
+        {
+          "offset": 650,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_028a: nop"
+        },
+        {
+          "offset": 651,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_028b: ldarg.0"
+        },
+        {
+          "offset": 652,
+          "opcode": "ldfld",
+          "operand": "System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1",
+          "instruction": "IL_028c: ldfld System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1"
+        },
+        {
+          "offset": 657,
+          "opcode": "ldstr",
+          "operand": "contextMenuStrip1",
+          "instruction": "IL_0291: ldstr \"contextMenuStrip1\""
+        },
+        {
+          "offset": 662,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+          "instruction": "IL_0296: callvirt System.Void System.Windows.Forms.Control::set_Name(System.String)"
+        },
+        {
+          "offset": 667,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_029b: nop"
+        },
+        {
+          "offset": 668,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_029c: ldarg.0"
+        },
+        {
+          "offset": 669,
+          "opcode": "ldfld",
+          "operand": "System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1",
+          "instruction": "IL_029d: ldfld System.Windows.Forms.ContextMenuStrip AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::contextMenuStrip1"
+        },
+        {
+          "offset": 674,
+          "opcode": "ldc.i4.s",
+          "operand": "61",
+          "instruction": "IL_02a2: ldc.i4.s 61"
+        },
+        {
+          "offset": 676,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_02a4: ldc.i4.4"
+        },
+        {
+          "offset": 677,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_02a5: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 682,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)",
+          "instruction": "IL_02aa: callvirt System.Void System.Windows.Forms.Control::set_Size(System.Drawing.Size)"
+        },
+        {
+          "offset": 687,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_02af: nop"
+        },
+        {
+          "offset": 688,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02b0: ldarg.0"
+        },
+        {
+          "offset": 689,
+          "opcode": "ldc.r4",
+          "operand": "8",
+          "instruction": "IL_02b1: ldc.r4 8"
+        },
+        {
+          "offset": 694,
+          "opcode": "ldc.r4",
+          "operand": "18",
+          "instruction": "IL_02b6: ldc.r4 18"
+        },
+        {
+          "offset": 699,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.SizeF::.ctor(System.Single,System.Single)",
+          "instruction": "IL_02bb: newobj System.Void System.Drawing.SizeF::.ctor(System.Single,System.Single)"
+        },
+        {
+          "offset": 704,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.ContainerControl::set_AutoScaleDimensions(System.Drawing.SizeF)",
+          "instruction": "IL_02c0: call System.Void System.Windows.Forms.ContainerControl::set_AutoScaleDimensions(System.Drawing.SizeF)"
+        },
+        {
+          "offset": 709,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_02c5: nop"
+        },
+        {
+          "offset": 710,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02c6: ldarg.0"
+        },
+        {
+          "offset": 711,
+          "opcode": "ldc.i4.1",
+          "operand": null,
+          "instruction": "IL_02c7: ldc.i4.1"
+        },
+        {
+          "offset": 712,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.ContainerControl::set_AutoScaleMode(System.Windows.Forms.AutoScaleMode)",
+          "instruction": "IL_02c8: call System.Void System.Windows.Forms.ContainerControl::set_AutoScaleMode(System.Windows.Forms.AutoScaleMode)"
+        },
+        {
+          "offset": 717,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_02cd: nop"
+        },
+        {
+          "offset": 718,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02ce: ldarg.0"
+        },
+        {
+          "offset": 719,
+          "opcode": "ldc.i4",
+          "operand": "510",
+          "instruction": "IL_02cf: ldc.i4 510"
+        },
+        {
+          "offset": 724,
+          "opcode": "ldc.i4",
+          "operand": "215",
+          "instruction": "IL_02d4: ldc.i4 215"
+        },
+        {
+          "offset": 729,
+          "opcode": "newobj",
+          "operand": "System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)",
+          "instruction": "IL_02d9: newobj System.Void System.Drawing.Size::.ctor(System.Int32,System.Int32)"
+        },
+        {
+          "offset": 734,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Form::set_ClientSize(System.Drawing.Size)",
+          "instruction": "IL_02de: call System.Void System.Windows.Forms.Form::set_ClientSize(System.Drawing.Size)"
+        },
+        {
+          "offset": 739,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_02e3: nop"
+        },
+        {
+          "offset": 740,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02e4: ldarg.0"
+        },
+        {
+          "offset": 741,
+          "opcode": "call",
+          "operand": "System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()",
+          "instruction": "IL_02e5: call System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()"
+        },
+        {
+          "offset": 746,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02ea: ldarg.0"
+        },
+        {
+          "offset": 747,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName",
+          "instruction": "IL_02eb: ldfld DevExpress.XtraEditors.LabelControl AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::LbName"
+        },
+        {
+          "offset": 752,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)",
+          "instruction": "IL_02f0: callvirt System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)"
+        },
+        {
+          "offset": 757,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_02f5: nop"
+        },
+        {
+          "offset": 758,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02f6: ldarg.0"
+        },
+        {
+          "offset": 759,
+          "opcode": "call",
+          "operand": "System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()",
+          "instruction": "IL_02f7: call System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()"
+        },
+        {
+          "offset": 764,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_02fc: ldarg.0"
+        },
+        {
+          "offset": 765,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel",
+          "instruction": "IL_02fd: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtCancel"
+        },
+        {
+          "offset": 770,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)",
+          "instruction": "IL_0302: callvirt System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)"
+        },
+        {
+          "offset": 775,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0307: nop"
+        },
+        {
+          "offset": 776,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0308: ldarg.0"
+        },
+        {
+          "offset": 777,
+          "opcode": "call",
+          "operand": "System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()",
+          "instruction": "IL_0309: call System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()"
+        },
+        {
+          "offset": 782,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_030e: ldarg.0"
+        },
+        {
+          "offset": 783,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk",
+          "instruction": "IL_030f: ldfld DevExpress.XtraEditors.SimpleButton AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::BtOk"
+        },
+        {
+          "offset": 788,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)",
+          "instruction": "IL_0314: callvirt System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)"
+        },
+        {
+          "offset": 793,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0319: nop"
+        },
+        {
+          "offset": 794,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_031a: ldarg.0"
+        },
+        {
+          "offset": 795,
+          "opcode": "call",
+          "operand": "System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()",
+          "instruction": "IL_031b: call System.Windows.Forms.Control/ControlCollection System.Windows.Forms.Control::get_Controls()"
+        },
+        {
+          "offset": 800,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0320: ldarg.0"
+        },
+        {
+          "offset": 801,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_0321: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 806,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)",
+          "instruction": "IL_0326: callvirt System.Void System.Windows.Forms.Control/ControlCollection::Add(System.Windows.Forms.Control)"
+        },
+        {
+          "offset": 811,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_032b: nop"
+        },
+        {
+          "offset": 812,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_032c: ldarg.0"
+        },
+        {
+          "offset": 813,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_032d: ldc.i4.3"
+        },
+        {
+          "offset": 814,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_032e: ldc.i4.4"
+        },
+        {
+          "offset": 815,
+          "opcode": "ldc.i4.3",
+          "operand": null,
+          "instruction": "IL_032f: ldc.i4.3"
+        },
+        {
+          "offset": 816,
+          "opcode": "ldc.i4.4",
+          "operand": null,
+          "instruction": "IL_0330: ldc.i4.4"
+        },
+        {
+          "offset": 817,
+          "opcode": "newobj",
+          "operand": "System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)",
+          "instruction": "IL_0331: newobj System.Void System.Windows.Forms.Padding::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)"
+        },
+        {
+          "offset": 822,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Form::set_Margin(System.Windows.Forms.Padding)",
+          "instruction": "IL_0336: call System.Void System.Windows.Forms.Form::set_Margin(System.Windows.Forms.Padding)"
+        },
+        {
+          "offset": 827,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_033b: nop"
+        },
+        {
+          "offset": 828,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_033c: ldarg.0"
+        },
+        {
+          "offset": 829,
+          "opcode": "ldstr",
+          "operand": "FrmCreateName",
+          "instruction": "IL_033d: ldstr \"FrmCreateName\""
+        },
+        {
+          "offset": 834,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Control::set_Name(System.String)",
+          "instruction": "IL_0342: call System.Void System.Windows.Forms.Control::set_Name(System.String)"
+        },
+        {
+          "offset": 839,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0347: nop"
+        },
+        {
+          "offset": 840,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0348: ldarg.0"
+        },
+        {
+          "offset": 841,
+          "opcode": "ldc.i4.1",
+          "operand": null,
+          "instruction": "IL_0349: ldc.i4.1"
+        },
+        {
+          "offset": 842,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Form::set_StartPosition(System.Windows.Forms.FormStartPosition)",
+          "instruction": "IL_034a: call System.Void System.Windows.Forms.Form::set_StartPosition(System.Windows.Forms.FormStartPosition)"
+        },
+        {
+          "offset": 847,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_034f: nop"
+        },
+        {
+          "offset": 848,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0350: ldarg.0"
+        },
+        {
+          "offset": 849,
+          "opcode": "ldstr",
+          "operand": "输入名称（不能有非法字符）",
+          "instruction": "IL_0351: ldstr \"输入名称（不能有非法字符）\""
+        },
+        {
+          "offset": 854,
+          "opcode": "callvirt",
+          "operand": "System.Void System.Windows.Forms.Control::set_Text(System.String)",
+          "instruction": "IL_0356: callvirt System.Void System.Windows.Forms.Control::set_Text(System.String)"
+        },
+        {
+          "offset": 859,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_035b: nop"
+        },
+        {
+          "offset": 860,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_035c: ldarg.0"
+        },
+        {
+          "offset": 861,
+          "opcode": "ldfld",
+          "operand": "DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName",
+          "instruction": "IL_035d: ldfld DevExpress.XtraEditors.TextEdit AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::TxtName"
+        },
+        {
+          "offset": 866,
+          "opcode": "callvirt",
+          "operand": "DevExpress.XtraEditors.Repository.RepositoryItemTextEdit DevExpress.XtraEditors.TextEdit::get_Properties()",
+          "instruction": "IL_0362: callvirt DevExpress.XtraEditors.Repository.RepositoryItemTextEdit DevExpress.XtraEditors.TextEdit::get_Properties()"
+        },
+        {
+          "offset": 871,
+          "opcode": "callvirt",
+          "operand": "System.Void System.ComponentModel.ISupportInitialize::EndInit()",
+          "instruction": "IL_0367: callvirt System.Void System.ComponentModel.ISupportInitialize::EndInit()"
+        },
+        {
+          "offset": 876,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_036c: nop"
+        },
+        {
+          "offset": 877,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_036d: ldarg.0"
+        },
+        {
+          "offset": 878,
+          "opcode": "ldfld",
+          "operand": "System.Windows.Forms.BindingSource AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::bindingSource1",
+          "instruction": "IL_036e: ldfld System.Windows.Forms.BindingSource AKRS.Galaxy2.Infrastructure.CustomControls.Controls.FrmCreateName::bindingSource1"
+        },
+        {
+          "offset": 883,
+          "opcode": "callvirt",
+          "operand": "System.Void System.ComponentModel.ISupportInitialize::EndInit()",
+          "instruction": "IL_0373: callvirt System.Void System.ComponentModel.ISupportInitialize::EndInit()"
+        },
+        {
+          "offset": 888,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0378: nop"
+        },
+        {
+          "offset": 889,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0379: ldarg.0"
+        },
+        {
+          "offset": 890,
+          "opcode": "ldc.i4.0",
+          "operand": null,
+          "instruction": "IL_037a: ldc.i4.0"
+        },
+        {
+          "offset": 891,
+          "opcode": "call",
+          "operand": "System.Void DevExpress.XtraEditors.XtraForm::ResumeLayout(System.Boolean)",
+          "instruction": "IL_037b: call System.Void DevExpress.XtraEditors.XtraForm::ResumeLayout(System.Boolean)"
+        },
+        {
+          "offset": 896,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0380: nop"
+        },
+        {
+          "offset": 897,
+          "opcode": "ldarg.0",
+          "operand": null,
+          "instruction": "IL_0381: ldarg.0"
+        },
+        {
+          "offset": 898,
+          "opcode": "call",
+          "operand": "System.Void System.Windows.Forms.Control::PerformLayout()",
+          "instruction": "IL_0382: call System.Void System.Windows.Forms.Control::PerformLayout()"
+        },
+        {
+          "offset": 903,
+          "opcode": "nop",
+          "operand": null,
+          "instruction": "IL_0387: nop"
+        },
+        {
+          "offset": 904,
+          "opcode": "ret",
+          "operand": null,
+          "instruction": "IL_0388: ret"
+        }
+      ]
+    }
+  ],
+  "selectedMethodNames": [
+    ".ctor",
+    "BtOk_Click",
+    "BtnCancel_Click",
+    "TxtName_EditValueChanging",
+    "get_CreateName",
+    "set_CreateName",
+    "get_ValidatePredicate",
+    "set_ValidatePredicate"
+  ],
+  "scope": "Read-only Mono.Cecil inspection of the shipped AKRS.Galaxy2.Infrastructure dependency. It records the FrmCreateName type and selected method IL at the source boundary used by FrmRepository; it does not execute the UI, prove deployment identity, or infer behavior beyond recorded IL calls and instructions."
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "archify-original-s2-start-worker-il-v1",
+  "status": "original-s2-start-worker-il-captured",
+  "assembly": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\bin\\Debug\\AKRS.ZX2200.exe",
+  "assemblySha256": "ea7c14767e29420d54f00c2070bb66f833980147156123a77a7925946b0f4ad8",
+  "method": {
+    "type": "AKRS.ZX2200.BondSystem.Tasks.BondTask",
+    "method": "<Start>b__20_0",
+    "fullName": "System.Void AKRS.ZX2200.BondSystem.Tasks.BondTask::<Start>b__20_0()",
+    "instructionCount": 8,
+    "calls": [
+      "System.Void AKRS.Galaxy2.Infrastructure.CommonUtil::SetCurrentThreadName(System.String)",
+      "System.Void AKRS.ZX2200.BondSystem.Tasks.BondTask::DoWork()"
+    ],
+    "branches": [],
+    "strings": [
+      "固晶工作线程"
+    ],
+    "instructions": [
+      {
+        "offset": 0,
+        "opcode": "nop",
+        "operand": null,
+        "instruction": "IL_0000: nop"
+      },
+      {
+        "offset": 1,
+        "opcode": "ldstr",
+        "operand": "固晶工作线程",
+        "instruction": "IL_0001: ldstr \"固晶工作线程\""
+      },
+      {
+        "offset": 6,
+        "opcode": "call",
+        "operand": "System.Void AKRS.Galaxy2.Infrastructure.CommonUtil::SetCurrentThreadName(System.String)",
+        "instruction": "IL_0006: call System.Void AKRS.Galaxy2.Infrastructure.CommonUtil::SetCurrentThreadName(System.String)"
+      },
+      {
+        "offset": 11,
+        "opcode": "nop",
+        "operand": null,
+        "instruction": "IL_000b: nop"
+      },
+      {
+        "offset": 12,
+        "opcode": "ldarg.0",
+        "operand": null,
+        "instruction": "IL_000c: ldarg.0"
+      },
+      {
+        "offset": 13,
+        "opcode": "call",
+        "operand": "System.Void AKRS.ZX2200.BondSystem.Tasks.BondTask::DoWork()",
+        "instruction": "IL_000d: call System.Void AKRS.ZX2200.BondSystem.Tasks.BondTask::DoWork()"
+      },
+      {
+        "offset": 18,
+        "opcode": "nop",
+        "operand": null,
+        "instruction": "IL_0012: nop"
+      },
+      {
+        "offset": 19,
+        "opcode": "ret",
+        "operand": null,
+        "instruction": "IL_0013: ret"
+      }
+    ]
+  },
+  "scope": "Read-only Mono.Cecil inspection of the BondTask.Start compiler-generated worker; it does not invoke the task, UI, signal, transport, database, VM, SDK or device behavior."
+}

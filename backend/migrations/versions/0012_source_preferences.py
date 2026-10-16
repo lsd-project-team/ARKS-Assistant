@@ -2,7 +2,7 @@
 
 from alembic import op
 
-from app.models import Base
+from app.infrastructure.database.base import Base
 
 revision = "0012"
 down_revision = "0011"

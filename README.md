@@ -2,6 +2,31 @@
 
 Windows 本机运行、浏览器访问的源码助手。使用 Deep Agents，支持源码阅读问答、普通聊天、多轮对话、跨会话长期记忆和上下文压缩。
 
+## 工程结构
+
+项目采用模块化单体，详细依赖约定见 [工程结构](docs/architecture/overview.md)，实施与验收记录见 [重构清单](docs/architecture/refactoring.md)。
+
+| 目录 | 职责 |
+| --- | --- |
+| `backend/app/modules/` | 账号、项目、聊天、源码分析、知识、记忆、交接、设置和管理业务 |
+| `backend/app/agents/` | Agent 图构建、执行、工具、上下文和提示词 |
+| `backend/app/infrastructure/` | 数据库、模型协议、MCP、备份恢复和缓存 |
+| `frontend/src/app/` | 应用入口、布局、跨业务协调和状态装配 |
+| `frontend/src/features/` | 各业务的组件、交互、状态和样式 |
+| `frontend/src/shared/` | 通用 UI、HTTP、基础类型和主题 |
+| `resources/knowledge/` | 自带图谱、功能说明和生成的知识索引 |
+| `scripts/` | 开发启动、维护和显式验证工具 |
+| `skills/` | 开发、项目结构和测试规范 |
+| `docs/` | 架构、功能、开发与验收文档 |
+| `trunk/`、`data/` | 只读业务源码与正式运行数据 |
+| `output/` | 测试报告、临时产物和历史构建 |
+
+项目规范统一放在 `skills/` 下，每项规范有独立的 `SKILL.md`：
+
+- [开发规范](skills/project-development/SKILL.md)：保留原根目录开发规范。
+- [项目结构规范](skills/project-structure/SKILL.md)：规定目录归属、业务边界、分层和依赖方向。
+- [测试规范](skills/project-testing/SKILL.md)：以用户提供的新版 Python 测试规范为依据，附本项目测试配置与执行说明。
+
 ## 启动
 
 已安装 Node.js 22.12+ 与 uv 后，在项目根目录执行：
@@ -15,7 +40,7 @@ Windows 本机运行、浏览器访问的源码助手。使用 Deep Agents，支
 
 ## 使用
 
-首次启动或升级会建立管理员 `admin` 和普通用户 `user`，随机初始密码保存在服务端本机 `data/auth.initial-accounts.json`。未登录先进入登录页；已登录时可通过右上角账号菜单退出或访问 `/#login` 切换账号。管理员进入独立管理工作区，提供管理概览、用户管理、AI 问答记录、交接管理、复核与追溯、系统配置和数据维护，不显示聊天输入及会话侧栏。普通用户继续使用 AI 问答和日常交接业务，不显示复核入口。首页五项统计自动采集实际使用行为，历史访问和时长不补造。账号维护、统计口径及访问范围见 [账号与交接访问控制](docs/accounts-and-handover-access.md)。
+首次启动或升级会建立管理员 `admin` 和普通用户 `user`，随机初始密码保存在服务端本机 `data/auth.initial-accounts.json`。未登录先进入登录页；已登录时可通过右上角账号菜单退出或访问 `/#login` 切换账号。管理员进入独立管理工作区，提供管理概览、用户管理、AI 问答记录、交接管理、复核与追溯、系统配置和数据维护，不显示聊天输入及会话侧栏。普通用户继续使用 AI 问答和日常交接业务，不显示复核入口。首页五项统计自动采集实际使用行为，历史访问和时长不补造。账号维护、统计口径及访问范围见 [账号与交接访问控制](docs/features/accounts-and-handover-access.md)。
 
 1. 点击左侧顶部“新对话”开始聊天，已有对话从下方会话列表打开。点击会话旁的搜索图标打开居中弹框，查看最近对话，或搜索标题、正文和代码选区；搜索包含已归档对话，正文命中可直接定位。右侧文件树单击文件临时预览，双击保留标签。筛选结果显示父目录，同名标签自动补足路径。Ctrl+P 可按文件名或路径快速打开，方向键选择、Enter 确认。
 2. 在编辑器拖选代码，点击“将选区加入对话”，输入问题。引用包含文件、行列、内容快照和文件版本。
@@ -35,7 +60,7 @@ Windows 本机运行、浏览器访问的源码助手。使用 Deep Agents，支
 - `data/app.sqlite3` 保存完整对话、选区、运行事件和记忆来源；`data/checkpoints.sqlite3` 保存 Agent 检查点。
 - `data/memories/` 保存跨会话 Markdown 记忆；`data/scratch/` 保存大工具结果和压缩档案。
 - 密钥保存在本机 `data/settings.private.json`，接口返回掩码，Git 和导出备份排除密钥配置。
-- 备份通过管理员“数据维护”导出。恢复时先停止服务，使用 `scripts/RestoreData.ps1` 校验和应用备份，再启动；现有密钥保留。完整步骤见 [本地备份与恢复](docs/backup-and-restore.md)。
+- 备份通过管理员“数据维护”导出。恢复时先停止服务，使用 `scripts/RestoreData.ps1` 校验和应用备份，再启动；现有密钥保留。完整步骤见 [本地备份与恢复](docs/development/backup-and-restore.md)。
 - 同一会话串行执行，全局最多三个运行。断线不取消任务；停止或重启后的运行可点击“继续运行”。
 - 同一个数据目录只运行一个服务实例，避免并发服务干扰检查点和恢复状态。
 - C# 符号定位优先使用 Roslyn；语义分析可核对重载、调用者与接口候选实现，缺失依赖明确显示未知。备用 Tree-sitter 在独立子进程解析。源码保持只读，不执行业务项目构建。
@@ -54,12 +79,12 @@ npm run build
 npx prettier --check src vite.config.ts
 ```
 
-测试模型用于确定性的框架回归，真实供应商和 DeepWiki 的验收另记在 `docs/development.md`。所有开发遵循根目录 `SKILL.md`，关键边界逻辑使用中文注释。
+测试模型用于确定性的框架回归，真实供应商和 DeepWiki 的历史验收另记在 [开发与验收记录](docs/archive/development.md)。代码开发、结构调整与测试分别遵循 `skills/` 下的对应规范，关键边界逻辑使用中文注释。
 
-最新清理及完整验收见 [旧代码清理与功能验收](docs/cleanup-validation.md)。回答质量优化见 [12 项完成记录](docs/answer-quality-upgrade.md)，历史界面与框架记录见 [开发与验收记录](docs/development.md)。
+本次工程重构与功能回归见 [重构验收记录](docs/verification/engineering-refactor.md)。此前清理验收见 [旧代码清理与功能验收](docs/verification/cleanup-validation.md)，回答质量优化见 [12 项完成记录](docs/verification/answer-quality-upgrade.md)，历史界面与框架记录见 [开发与验收记录](docs/archive/development.md)。
 
 在“设置 → 知识来源”选择 DeepWiki、知识资料、长期记忆，或仅使用本地源码。知识资料包含交接资料、调试记录、项目文档与共享结论，以及原先已接入的复核说明。默认值按项目保存，独立对话单独配置；新问题和新加入队列的问题自动使用，历史问题、重生成和已排队的问题保留原配置。回复的“本轮参考”和“上下文”显示实际参考资料、当前源码证据、结论复核状态，以及供应商实报用量。引用有效只代表位置与版本核对通过，未读取的外部实现仍可能未知。
 
 “设置 → 长期记忆”支持有效、待复核、失效和历史恢复。相关自然语言陈述由模型逐对核对，潜在矛盾需要人工确认；含义相近或条件不同不会自动认定为冲突。Setup 默认准备本地多语言检索模型和 Roslyn 工具；离线安装可用 `-SkipSemanticModels` 跳过，缺少依赖时有明确降级提示。
 
-个人偏好按登录账号隔离，项目记忆继续在项目内共享。旧公共偏好原件保留，未自动分配给个人账号。资料接入、混合检索、故障条件匹配、记忆反馈和验收结果见 [对话知识优化](docs/chat-knowledge-improvements.md)。流程图谱和功能说明本次暂不调整。
+个人偏好按登录账号隔离，项目记忆继续在项目内共享。旧公共偏好原件保留，未自动分配给个人账号。资料接入、混合检索、故障条件匹配、记忆反馈和验收结果见 [对话知识优化](docs/features/chat-knowledge-improvements.md)。流程图谱和功能说明本次暂不调整。

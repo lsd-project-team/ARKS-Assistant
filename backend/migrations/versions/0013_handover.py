@@ -2,8 +2,8 @@
 
 from alembic import op
 
-from app.handover import models  # noqa: F401
-from app.models import Base
+from app.infrastructure.database.base import Base
+from app.modules.handover.infrastructure.persistence import models as models
 
 revision = "0013"
 down_revision = "0012"

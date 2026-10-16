@@ -2,13 +2,13 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from app.auth.models import Account
-from app.config import Paths, SettingsStore
-from app.database import Database
-from app.memory import MemoryService
-from app.models import Base
-from app.repository import Repository
-from app.workspace import Workspace
+from app.core.config import Paths, SettingsStore
+from app.infrastructure.database.registry import Base
+from app.infrastructure.database.session import Database
+from app.modules.auth.models import Account
+from app.modules.chat.repository import Repository
+from app.modules.memory.service import MemoryService
+from app.modules.source_analysis.workspace import Workspace
 
 
 @pytest.fixture(autouse=True)
