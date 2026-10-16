@@ -41,6 +41,10 @@ export function ContextSummaryPanel({
         </p>
         {context.tokens > limit && <p role="status">已超过输入预算，下一轮会先尝试压缩。</p>}
       </div>
+      <section className="context-card" aria-label="用量明细">
+        <h3>用量明细</h3>
+        <ContextBudgetDetails usage={context} />
+      </section>
       {context.summary ? (
         <section className="context-card context-summary-card">
           <div className="context-section-heading">
@@ -89,15 +93,6 @@ export function ContextSummaryPanel({
           </small>
         </div>
       )}
-      <details className="context-advanced">
-        <summary>
-          <span>用量明细</span>
-          <small>系统提示、工具、记忆与消息</small>
-        </summary>
-        <div className="context-advanced-body">
-          <ContextBudgetDetails usage={context} />
-        </div>
-      </details>
     </div>
   );
 }
