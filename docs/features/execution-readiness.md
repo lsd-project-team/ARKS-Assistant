@@ -31,7 +31,7 @@ Windows节点须专用于单个应用控制进程，不能配置多个uvicorn wo
 
 Linux部署应显式准备分析器的.NET8运行时和自带helper；可配置 `ARKS_DOTNET_PATH` 与 `ARKS_ROSLYN_HELPER`。在backend目录运行 `python -m app.modules.source_analysis.setup --no-download` 使用现有SDK离线构建自带helper；正常源码请求不下载或构建。Roslyn目前使用自身.NET8基础引用并静态收集工程声明，不能代替ZX2200目标框架的完整语义绑定。
 
-2026-10-19 已在本机 Docker Desktop 的 Linux 应用镜像中完成自带 helper 实际语义调用、域名登录、隔离编辑和独立卷恢复，见 [Linux运行验收](../verification/linux-runtime.md)。这不代表公司服务器已部署；静态知识资源的登录边界仍有已确认缺口，需要继续处理后再上线。
+2026-10-19 已在本机 Docker Desktop 的 Linux 应用镜像中完成自带 helper 实际语义调用、域名登录、隔离编辑和独立卷恢复，见 [Linux运行验收](../verification/linux-runtime.md)。随后已补齐静态知识与业务分包的会话保护，见 [访问边界验收](../verification/private-static-resources.md)。公司服务器、Windows 节点和真实业务质量仍须分别验收。
 
 ## 模型与业务评估
 

@@ -1,10 +1,11 @@
 """通过实际HTTP写入微型项目、代码副本与资料；不启动Agent或验证命令。"""
 
+import hashlib
 import json
 import re
 from urllib.parse import urlsplit
 
-from .safety import require, tree_hash
+from .safety import PROJECT, require, tree_hash
 
 TEXT = "fixture original record\r\n记录人：Linux smoke\r\n"
 ATTACHMENT = "fixture attachment\r\n中文附件原文\r\n".encode()
@@ -64,6 +65,38 @@ def frontend(client):
             not urlsplit(asset).netloc and ".." not in asset.split("/"), "frontend_asset_not_local"
         )
         require(bool(request(client, "GET", asset).content), "frontend_asset_empty")
+    rejected = request(
+        client, "GET", assets[0], status=416, headers={"Range": "bytes=999999999999-"}
+    )
+    require(rejected.headers.get("cache-control") == "no-store", "public_error_cache_invalid")
+
+
+def knowledge_resources(client, *, authenticated):
+    directory = PROJECT / "frontend/dist"
+    public = json.loads((directory / "public-assets.json").read_text(encoding="utf-8"))["files"]
+    manifest = json.loads((directory / ".vite/manifest.json").read_text(encoding="utf-8"))
+    scripts = {row["file"] for row in manifest.values() if row["file"].endswith(".js")}
+    private = scripts - public.keys()
+    require(bool(private), "private_bundles_missing")
+    targets = private | {
+        "engineering/manifest.json",
+        "archify/module-source-explorer.html",
+        "agent-knowledge.json",
+    }
+    for name in targets:
+        response = request(client, "GET", "/" + name, status=200 if authenticated else 401)
+        if authenticated:
+            require(
+                hashlib.sha256(response.content).digest()
+                == hashlib.sha256((directory / name).read_bytes()).digest(),
+                "private_resource_bytes_differ",
+            )
+            require(
+                response.headers.get("cache-control") == "private, no-store",
+                "private_resource_cache_not_guarded",
+            )
+        else:
+            require(response.json() == {"detail": "请先登录"}, "private_resource_body_disclosed")
 
 
 def csrf_checks(client, origin):

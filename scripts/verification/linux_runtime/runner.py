@@ -9,6 +9,7 @@ from .http_checks import (
     bootstrap_password,
     csrf_checks,
     frontend,
+    knowledge_resources,
     login,
     persistent,
     populate,
@@ -106,11 +107,21 @@ def execute(root, token, checks, hashes):
         check(checks, "frontend_html_js_css", lambda: frontend(client))
         check(
             checks,
+            "anonymous_knowledge_and_bundles_rejected",
+            lambda: knowledge_resources(client, authenticated=False),
+        )
+        check(
+            checks,
             "unauthenticated_api_rejected",
             lambda: request(client, "GET", "/api/projects", status=401),
         )
         password = bootstrap_password(data)
         check(checks, "company_origin_login", lambda: login(client, password, ORIGIN))
+        check(
+            checks,
+            "authenticated_knowledge_and_bundles_readable",
+            lambda: knowledge_resources(client, authenticated=True),
+        )
         check(checks, "csrf_origin_host_guards", lambda: csrf_checks(client, ORIGIN))
         saved = check(checks, "http_fixture_and_isolated_edit", lambda: populate(client, source))
         require(saved["source_hash"] == hashes["source_before"], "original_source_changed")

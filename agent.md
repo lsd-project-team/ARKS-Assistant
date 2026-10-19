@@ -50,7 +50,7 @@
 | 隔离修改与验证     | 已接入独立副本、范围/验收、基线、Linux容器验证、固定版本审核及交付包；Windows适配代码已接入，真实Windows容器与ZX2200实际构建尚未验收 |
 | 调试问题录入       | 支持页面手动录入，以及对话中的 `/记录问题` 命令                                                                                      |
 | 历史调试问题复用   | 已接入问答检索，支持相似表达及设备、版本、模块和工况匹配                                                                             |
-| 资料问答           | 交接资料正文检索和固定版本引用实现保留，目前暂停接入 AI 对话；流程图谱与功能说明也暂不接入问答                                     |
+| 资料问答           | 交接资料正文检索和固定版本引用实现保留，目前暂停接入 AI 对话；流程图谱与功能说明也暂不接入问答                                       |
 | 资料管理           | 支持原文录入、版本查看与问答检索；AI 提取候选及作业流程已移除                                                                        |
 
 2026-10-16 核对时，调试录入、问题库、常见问法和交接资料检索相关测试共 23 项通过。这项结果不代表全项目源码已经理解完成，也不代表设备验证完成。
@@ -126,6 +126,8 @@
 - [Linux部署与代码工作后续验收](docs/verification/code-work-followup.md)
 - [公司Linux部署与迁移边界](docs/development/linux-deployment.md)
 - [Linux应用运行与独立卷恢复验收](docs/verification/linux-runtime.md)
+- [静态资料与业务分包访问边界](docs/architecture/static-resource-access.md)
+- [静态资源会话保护验收](docs/verification/private-static-resources.md)
 - [Windows隔离执行适配及边界](docs/architecture/windows-executor.md)
 - [当前模型质量评估与人工标准](docs/verification/code-work-quality.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)

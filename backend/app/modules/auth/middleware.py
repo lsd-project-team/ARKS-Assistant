@@ -9,13 +9,15 @@ from fastapi.responses import JSONResponse
 from app.core.deployment_security import DeploymentSecurity
 from app.modules.auth.context import request_identity
 from app.modules.auth.service import COOKIE_NAME
+from app.modules.auth.static_assets import StaticAssets
 
 PUBLIC_PATHS = {"/api/health", "/api/auth/login"}
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
 
-def install_authentication(app, auth, usage=None, *, deployment=None):
+def install_authentication(app, auth, usage=None, *, deployment=None, frontend=None):
     deployment = deployment or DeploymentSecurity.from_environment()
+    assets = StaticAssets(frontend) if frontend is not None else None
 
     @app.middleware("http")
     async def authenticate_request(request, call_next):
@@ -23,8 +25,15 @@ def install_authentication(app, auth, usage=None, *, deployment=None):
         rejection = deployment.rejection(request.headers)
         if rejection:
             return JSONResponse({"detail": rejection}, status_code=403)
-        if not path.startswith("/api/") and path != "/api":
-            return await call_next(request)
+        is_api = path.startswith("/api/") or path == "/api"
+        if not is_api and request.method in {"GET", "HEAD"} and assets and assets.allows(path):
+            response = await call_next(request)
+            response.headers["Cache-Control"] = (
+                assets.cache_control(path)
+                if response.status_code in {200, 206, 304}
+                else "no-store"
+            )
+            return response
         if request.headers.get("sec-fetch-site") == "cross-site":
             return JSONResponse({"detail": "不允许跨站访问"}, status_code=403)
         if path not in PUBLIC_PATHS:
@@ -73,5 +82,10 @@ def install_authentication(app, auth, usage=None, *, deployment=None):
                 )
         finally:
             request_identity.reset(token)
-        response.headers["Cache-Control"] = "no-store"
+        response.headers["Cache-Control"] = "no-store" if is_api else "private, no-store"
+        if not is_api:
+            response.headers.append("Vary", "Cookie")
+            # 资料页仍可在本应用的iframe中打开，不能被其他站点嵌入后读取或诱导操作。
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
+            response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         return response

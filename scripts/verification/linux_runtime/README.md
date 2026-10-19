@@ -16,6 +16,8 @@ ARKS_LINUX_SMOKE_ROOT=/tmp/arks-linux-smoke python -m scripts.verification.linux
 
 检查健康接口、静态JS/CSS、公司域名Origin登录及CSRF/Host拒绝、重复数据目录进程锁、真实Roslyn符号/重载/接口候选与调用方、隔离副本编辑和原件哈希、SQLite WAL一致性、资料/附件重启持久化、在线备份及异地恢复后的HTTP读取。
 
+还会读取当前构建的Vite清单，验证非公开JS分包和知识直链在未登录时均拒绝，登录后返回与构建文件完全相同的字节。需携带标准构建生成的 `.vite/manifest.json` 与 `public-assets.json`，不能用旧页面或只替换首页代替完整发布。
+
 输出仅有临时根中的`report.json`，包含检查名称、布尔值、fixture原件哈希及通用错误类别。初始化账号仅来自本轮临时data，引导文件读取后删除，密码只在内存保留；输出不含密码、Cookie、CSRF、数据库或资料正文。失败时日志也只保留在本轮临时根，不能作为公开报告导出。
 
 脚本拒绝现有非空目录、应用目录及其父目录、链接路径；不清理或接管其他目录，不自动重试复用已有数据。运行数据由操作者删除本次精确临时容器或目录时清理。

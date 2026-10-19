@@ -58,6 +58,8 @@
 
 **已确认的待完成访问边界**：在本轮独立容器中，不带会话请求 `/engineering/manifest.json` 和 `/archify/module-source-explorer.html` 均返回 200。现有静态页面及前端 archifyData 编译数据包含业务知识，现有 API 登录保护没有覆盖这部分。公司部署前需要将业务知识从未登录可下载的前端包中移出，并通过服务端认证提供知识资源；仅限制 Host/Origin 不能替代这项工作。本轮未宣称整套生产安全验收完成。
 
+后续已用构建依赖白名单和服务端会话检查修复以上静态访问缺口，并覆盖业务代码分包与历史哈希文件；新的独立回归和 Linux 证据见 [会话保护验收](private-static-resources.md)。本节保留发现缺口时的原始结果。
+
 ## Test Quality
 
 已测部署与恢复部分评为 High：真实数据库、文件、Windows junction、Linux 容器、HTTP、进程锁及跨设备恢复共同核对；没有 Mock 掉目标服务或把失败预期改成成功。总体交付仍未验收，以上已确认访问缺口、Windows 节点与真实业务质量均需继续处理。

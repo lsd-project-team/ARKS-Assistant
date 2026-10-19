@@ -78,7 +78,8 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     app.state.projects = projects
     app.state.auth = auth
     app.state.usage = usage
-    install_authentication(app, auth, usage, deployment=deployment)
+    frontend = PROJECT_ROOT / "frontend/dist"
+    install_authentication(app, auth, usage, deployment=deployment, frontend=frontend)
     app.include_router(auth_router(auth, projects, deployment=deployment))
     app.include_router(admin_router(auth, usage))
     app.include_router(usage_router(usage))
@@ -114,7 +115,6 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     async def unknown_api(unmatched: str):
         return JSONResponse({"detail": "接口不存在"}, status_code=404)
 
-    frontend = PROJECT_ROOT / "frontend/dist"
     if frontend.is_dir():
         app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")
     return app
