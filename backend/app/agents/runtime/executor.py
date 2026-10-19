@@ -70,6 +70,9 @@ class AgentRunExecutor:
                 while True:
                     events = runtime.repository.events(previous_run, cursor)
                     for event in events:
+                        if event["kind"] == "code_change_reference":
+                            evidence.observe_code_change(event["payload"]["id"])
+                            continue
                         if event["kind"] != "source_evidence":
                             continue
                         row = event["payload"]

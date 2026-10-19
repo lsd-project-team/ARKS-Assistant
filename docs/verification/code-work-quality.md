@@ -51,6 +51,8 @@ backend/.venv/Scripts/python.exe -m scripts.verification.code_work_quality sampl
 backend/.venv/Scripts/python.exe -m scripts.verification.code_work_quality run --cases C:/Temp/cw-quality-demo/cases.json --workspace C:/Temp/cw-quality-demo/workspace --config C:/Temp/cw-quality-demo/provider.example.json --output output/code-work-quality --live
 ```
 
+报告的 `source_review_context` 事件记录复核器实际收到的资料版本、范围与脱敏输入哈希，`code_change_reference` 只记录工具观察过的修改身份；它们不代替人工 ratings。实际复测见[复核证据验收](source-review-context.md)。
+
 程序输出唯一报告位置和报告 SHA256。保留原始报告，不手改后沿用旧评审。以 `current-source` 的 rubric 为例，另存人工填写的 `ratings.json`：
 
 ```json

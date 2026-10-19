@@ -30,6 +30,8 @@ EVENTS = {
     "source_evidence",
     "answer_validation",
     "source_review",
+    "source_review_context",
+    "code_change_reference",
     "provider_usage",
     "knowledge_reference",
     "knowledge_search",

@@ -96,6 +96,7 @@ class AgentGraphBuilder:
             requested_work,
             emit,
             use_knowledge=options.use_knowledge,
+            evidence=evidence,
         )
         tools += conversation_tools(
             runtime.repository,

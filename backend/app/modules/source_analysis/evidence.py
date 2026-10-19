@@ -100,6 +100,13 @@ class SourceEvidence:
         self.workspace, self.emit, self.required = workspace, emit, required
         self.reads = []
         self.audit_input_limit = 16000
+        self.code_change_ids = []
+        self.code_work_reader = None
+
+    def observe_code_change(self, identifier):
+        if identifier not in self.code_change_ids:
+            self.code_change_ids.append(identifier)
+            self.emit("code_change_reference", {"id": identifier})
 
     def covered(self, path, start, end, *, include_reviews=True):
         if not isinstance(path, str) or not isinstance(start, int) or not isinstance(end, int):
@@ -282,6 +289,13 @@ class SourceEvidenceGuard(AgentMiddleware):
         )
         return False
 
+    def mark_unknown(self, answer, review):
+        content = mark_unknown_conclusions(answer.text, review)
+        report = self.evidence.check(content)
+        invalid = {row["target"] for row in report["citations"] if not row["valid"]}
+        answer.content = disable_invalid_citations(content, invalid)
+        self.evidence.emit("answer_validation", report)
+
     async def awrap_model_call(self, request, handler):
         response = await handler(request)
         answer = next(
@@ -314,7 +328,7 @@ class SourceEvidenceGuard(AgentMiddleware):
         )
         if (
             report["passed"]
-            and self.evidence.required
+            and (self.evidence.required or self.evidence.code_change_ids)
             and self.audit_model is not None
             and self.audits < 2
         ):
@@ -328,8 +342,7 @@ class SourceEvidenceGuard(AgentMiddleware):
                 review = {"verdict": "unknown", "issues": [], "reason": "结论复核暂不可用"}
             self.evidence.emit("source_review", review)
             if review["verdict"] == "unknown":
-                answer.content = mark_unknown_conclusions(answer.text, review)
-                self.evidence.emit("answer_validation", self.evidence.check(answer.text))
+                self.mark_unknown(answer, review)
                 return response
             if review["verdict"] == "needs_correction" and self.semantic_repairs < 1:
                 self.semantic_repairs += 1
@@ -378,10 +391,7 @@ class SourceEvidenceGuard(AgentMiddleware):
                             }
                         self.evidence.emit("source_review", final_review)
                         if final_review["verdict"] == "unknown":
-                            answer.content = mark_unknown_conclusions(answer.text, final_review)
-                            self.evidence.emit(
-                                "answer_validation", self.evidence.check(answer.text)
-                            )
+                            self.mark_unknown(answer, final_review)
                         if final_review["verdict"] == "needs_correction":
                             answer.content = (
                                 answer.text

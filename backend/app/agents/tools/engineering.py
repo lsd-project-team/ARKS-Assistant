@@ -3,10 +3,12 @@
 import asyncio
 import logging
 import re
+from functools import partial
 
 from langchain_core.tools import tool
 
 from app.agents.context.tokens import fit_text
+from app.agents.tools.engineering_evidence import code_work_evidence
 from app.agents.tools.engineering_intent import (
     effective_request,
     explicit_edit_request,
@@ -101,10 +103,12 @@ async def _cancel_launched_verification(launch, changes, change_id):
     await asyncio.to_thread(cancel_current)
 
 
-def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True):
+def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True, evidence=None):
     if not runtime.repository.project_id:
         return []
     changes, reading = runtime.code_changes, runtime.project_reading
+    if evidence is not None:
+        evidence.code_work_reader = partial(code_work_evidence, changes)
     discussion = is_discussion(request_text, reading=True)
     can_edit = explicit_edit_request(request_text)
     seen_contracts = {}
@@ -112,6 +116,8 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
 
     def remember_contract(current):
         identifier = current["id"]
+        if evidence is not None:
+            evidence.observe_code_change(identifier)
         result = {
             key: current[key]
             for key in (
@@ -307,6 +313,8 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         launch = asyncio.create_task(mutate(changes.verify, change_id, profile_id, purpose))
         try:
             await asyncio.shield(launch)
+            if evidence is not None:
+                evidence.observe_code_change(change_id)
             if emit:
                 emit("stage", {"stage": "thinking", "detail": "正在验证隔离副本中的修改"})
             result = await changes.wait(change_id, timeout_seconds=650)

@@ -66,7 +66,7 @@ backend/.venv/Scripts/python.exe -m scripts.verification.calibration_grid_case o
 
 ## 当前模型实际验收
 
-设计复现后，按照用户单独批准的范围实际调用 DeepSeek-V4-Flash。仓库外工作区严格只有 6 个文件：原版 `MathAdvanceHelper.cs`、必要方法片段 `GetBondOffset.txt`、合成 `Program.cs`、`DataTypes.cs`、`Case.csproj`、`NuGet.Config`。调用片段只含原文件 72–88 行的方法，没有复制后续实际标定值。参考对照留在本机，模型完成后才本地比较。
+设计复现后，按照用户单独批准的范围实际调用 DeepSeek-V4-Flash。仓库外工作区严格只有 6 个文件：原版 `MathAdvanceHelper.cs`、必要方法片段 `GetBondOffset.txt`、合成 `Program.cs`、`DataTypes.cs`、`Case.csproj`、`NuGet.Config`。调用片段只含原文件 73–87 行的方法，没有复制后续实际标定值。参考对照留在本机，模型完成后才本地比较。
 
 关闭资料检索、MCP、DeepWiki、个人记忆和自动记忆；每次使用独立临时数据库、检查点和副本。公开模型配置与场景文件不含密钥，密钥仅注入进程内存，正式配置字节不变，两个业务原件摘要保持一致。
 
@@ -112,6 +112,8 @@ backend/.venv/Scripts/python.exe -m scripts.verification.calibration_grid_case o
 6 项通过的是原件完整性、当前引用、运行完成、隔离修改、补丁回放和沙箱验证。真实模型阶段实际执行两次 C# 测试，共 22 次用例，与前面的独立设计对照分别计数；覆盖率未采集。没有写入冒充人工的 review，也没有交付或写回 trunk。
 
 回答仍有质量问题：源码复核只取得部分源码证据，不能核对调用片段、命令日志和完整差异，因此在最终文字中插入多处不连贯的“该结论的具体机制本轮未核实”。保留原报告；本文的 8/3、11/0 和范围结论另由实际验证档案及差异核对，不因文字里的提示而忽略真实日志，也不把机械通过提升为完整语义通过。整套源码/执行证据向复核环节的传递、人工业务评审、更多代表性问题仍待完善。
+
+后续已经修复这部分材料传递，并用原场景、原配置和原源码重新执行；本例 AI 复核转为 passed，原版仍 8/3、修改版 11/0，见[复核证据验收](source-review-context.md)。本页保留此前快照与原报告，不将 AI 复核当作人工验收。
 
 早先一次镜像组合因 Python 所需 glibc 高于 SDK 基础镜像而失败，属于环境准备失败，未调用业务模型。调整为在较新 Python 基础镜像中离线放入既有 SDK 和 ICU，经过无业务数据的普通用户编译/执行预检后才运行模型；没有联网安装依赖或降低运行隔离。
 
