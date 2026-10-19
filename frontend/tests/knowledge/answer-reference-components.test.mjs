@@ -145,7 +145,7 @@ test('历史候选匹配失败或引用上下文尚未加载时不假造参考�
   assert.equal(renderHistory('[记录](debug-issue:pickup/2)'), '');
 });
 
-function renderOriginals(answer, historical = false) {
+function renderOriginals(answer, historical = false, payload = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const reference = { ...references[1], title: '7月23—24日｜adv-3 试验', image_count: 3 };
   const candidates = ['7月25—26日', '7月27日', '7月28日'].map((date, index) => ({
@@ -162,11 +162,15 @@ function renderOriginals(answer, historical = false) {
     payload: {
       problem: '按原文整理的文字，精度−4～2μm。',
       original_text: '原消息 <script>不会执行</script>',
+      recorded_by: '贺强',
+      recorded_at: '2026年7月27日 15:55',
+      reported_by: '内部录入账号',
       images: [
         { id: 'a', name: '原图.png', recorded_at: '7月27日16:09' },
         { id: 'a', name: '原图.png', recorded_at: '7月27日16:09' },
         { id: 'b', name: '另一张.png', recorded_at: '7月27日16:10' },
       ],
+      ...payload,
     },
   });
   for (const candidate of candidates) {
@@ -197,6 +201,9 @@ for (const historical of [false, true]) {
   test(`${historical ? '历史' : '流式'}回复只展开实际引用记录的文字与全部原图，保留重复图`, () => {
     const html = renderOriginals('[试验记录](debug-issue:pickup/2)', historical);
     assert.match(html, /按原文整理的文字/);
+    assert.equal((html.match(/按原文整理的文字/g) || []).length, 1);
+    assert.match(html, /贺强 · 2026年7月27日 15:55/);
+    assert.doesNotMatch(html, /内部录入账号/);
     assert.match(html, /&lt;script&gt;不会执行&lt;\/script&gt;/);
     assert.equal((html.match(/<img /g) || []).length, 3);
     for (const index of [0, 1, 2]) {
@@ -215,6 +222,13 @@ for (const historical of [false, true]) {
     }
   });
 }
+
+test('记录正文缺失时直接展示录入原文，不产生重复核对入口', () => {
+  const html = renderOriginals('[试验记录](debug-issue:pickup/2)', false, { problem: '' });
+  assert.match(html, /原消息 &lt;script&gt;不会执行/);
+  assert.doesNotMatch(html, /查看录入原文/);
+  assert.equal((html.match(/<img /g) || []).length, 3);
+});
 
 test('明确引用多条记录时按引用顺序展示，未引用的其他日期仍不展开', () => {
   const html = renderOriginals('[7月27日](debug-issue:other-1/2) [7月23日](debug-issue:pickup/2)');
