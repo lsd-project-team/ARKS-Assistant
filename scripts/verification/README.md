@@ -4,18 +4,19 @@
 
 真实供应商类脚本需要显式执行并消耗 API 额度，不属于默认测试，也不会由启动脚本自动运行。下表区分历史入口、独立配置质量套件和不调用供应商的离线验收。
 
-| 脚本                           | 用途                                                                                                                                                |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `live_validation.py`           | 在临时数据目录验证真实模型压缩、档案和历史检索                                                                                                      |
-| `answer_style.py`              | `--live` 显式用当前模型验证经验归纳、事实边界、原文保留和长段历史下的阅读结构；仅临时蓝膜案例与合成历史，见[归纳验收](../../docs/verification/grounded-answer-style.md)与[阅读体验验收](../../docs/verification/readable-answer-style.md) |
-| `evaluate_quality.py`          | 既有回答质量验收场景                                                                                                                                |
-| `evaluate_audit.py`            | 既有源码审计验收场景                                                                                                                                |
-| `evaluate_analysis_upgrade.py` | 既有分析能力升级验收场景                                                                                                                            |
-| `data_snapshot.py`             | 历史回答质量验收的数据快照辅助                                                                                                                      |
-| `verify_preservation.py`       | 比对历史质量验收约定的基线快照，依赖其输出文件和接口访问条件                                                                                        |
-| `code_work_quality/`           | `--live` 显式运行源码问答、隔离修改与历史复用；独立公开配置、合成数据和密钥环境变量，见 [质量套件](../../docs/verification/code-work-quality.md)    |
-| `linux_runtime/`               | 无模型调用的真实 Linux HTTP、Roslyn、持久化和恢复验收                                                                                               |
-| `linux_semantic.py`            | 只使用公开本地权重和临时问题库的断网 Linux 语义检索验收，见 [执行与结果](../../docs/verification/linux-semantic.md)                                 |
-| `calibration_grid_case.py`     | 只读生成标定网格边界的原版、独立参考对照和11例合成C#测试；不调用模型、不执行代码，见 [案例与结果](../../docs/verification/calibration-grid-case.md) |
+| 脚本                           | 用途                                                                                                                                                                                                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `live_validation.py`           | 在临时数据目录验证真实模型压缩、档案和历史检索                                                                                                                                                                                                                    |
+| `answer_style.py`              | `--live` 显式用当前模型验证经验归纳、事实边界、原文保留和长段历史下的阅读结构；仅临时蓝膜案例与合成历史，见[归纳验收](../../docs/verification/grounded-answer-style.md)与[阅读体验验收](../../docs/verification/readable-answer-style.md)                         |
+| `answer_quality/`              | `python -m scripts.verification.answer_quality --live --output output/answer-quality-20/run`：当前模型20题，15经验+5流程；固定种子随机排列，隔离数据与源码选区，逐题保存事实核对及视觉评估证据，见[评分约定](../../docs/verification/answer-quality-20-rubric.md) |
+| `evaluate_quality.py`          | 既有回答质量验收场景                                                                                                                                                                                                                                              |
+| `evaluate_audit.py`            | 既有源码审计验收场景                                                                                                                                                                                                                                              |
+| `evaluate_analysis_upgrade.py` | 既有分析能力升级验收场景                                                                                                                                                                                                                                          |
+| `data_snapshot.py`             | 历史回答质量验收的数据快照辅助                                                                                                                                                                                                                                    |
+| `verify_preservation.py`       | 比对历史质量验收约定的基线快照，依赖其输出文件和接口访问条件                                                                                                                                                                                                      |
+| `code_work_quality/`           | `--live` 显式运行源码问答、隔离修改与历史复用；独立公开配置、合成数据和密钥环境变量，见 [质量套件](../../docs/verification/code-work-quality.md)                                                                                                                  |
+| `linux_runtime/`               | 无模型调用的真实 Linux HTTP、Roslyn、持久化和恢复验收                                                                                                                                                                                                             |
+| `linux_semantic.py`            | 只使用公开本地权重和临时问题库的断网 Linux 语义检索验收，见 [执行与结果](../../docs/verification/linux-semantic.md)                                                                                                                                               |
+| `calibration_grid_case.py`     | 只读生成标定网格边界的原版、独立参考对照和11例合成C#测试；不调用模型、不执行代码，见 [案例与结果](../../docs/verification/calibration-grid-case.md)                                                                                                               |
 
 以上历史场景的结果不能作为当前版本的自动验收结论。本次工程重构使用的基线、测试日志、路由和数据核对报告保存在项目本机忽略目录 `output/refactoring/`，最终记录见 [重构清单](../../docs/architecture/refactoring.md)。

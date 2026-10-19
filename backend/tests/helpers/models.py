@@ -1,5 +1,7 @@
 """可确定复现的测试模型，不发起真实供应商请求。"""
 
+import json
+
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
@@ -19,7 +21,15 @@ class DeterministicModel(BaseChatModel):
         summary_request = "Context Extraction" in str(messages[0].content)
         if "你负责复核并修订基于历史经验" in messages[0].text:
             # 普通框架用例不评估语言质量；纠错、失败和降级由专门的复核替身覆盖。
-            content = '{"verdict":"passed","reason":"框架测试替身","answer":""}'
+            records = json.loads(messages[-1].text)["records"]
+            content = json.dumps(
+                {
+                    "verdict": "passed",
+                    "reason": "框架测试替身",
+                    "answer": "",
+                    "selections": fixture_selections(records),
+                }
+            )
         else:
             content = (
                 "目标：保持中文回答；已讨论入口；待办：继续读取源码。"
@@ -27,3 +37,19 @@ class DeterministicModel(BaseChatModel):
                 else "测试回复"
             )
         return ChatResult(generations=[ChatGeneration(message=AIMessage(content=content))])
+
+
+def fixture_selections(records):
+    """仅为流程测试提供合法出处；相关性选择由专门反例和真实模型测评检查。"""
+    return [
+        {
+            "reference": row["reference"],
+            "reason": "测试用选定范围",
+            "excerpts": [
+                {"field": key, "text": value}
+                for key, value in row["content"].items()
+                if isinstance(value, str)
+            ],
+        }
+        for row in records
+    ]

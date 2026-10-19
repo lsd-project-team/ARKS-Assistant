@@ -229,7 +229,11 @@ class AgentRunExecutor:
                             emit("stage", {"stage": "generating"})
                             generating = True
                         text += part
-                        emit("token", {"text": part})
+                        # 经验草稿可能尚未筛除其他日期的候选，复核完成后统一显示最终稿。
+                        if not any(
+                            row.get("kind") == "debug_issue" for row in knowledge_references
+                        ):
+                            emit("token", {"text": part})
                 else:
                     if any(
                         getattr(item, "type", "") == "tool" or getattr(item, "tool_calls", [])
@@ -298,7 +302,9 @@ class AgentRunExecutor:
             )
             emit("context", current)
             formatted = canonical_knowledge_citations(answer, knowledge_references)
-            if formatted != answer:
+            if formatted != answer or any(
+                row.get("kind") == "debug_issue" for row in knowledge_references
+            ):
                 emit("answer_replace", {"text": formatted})
                 answer = formatted
             return answer

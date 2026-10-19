@@ -10,7 +10,7 @@ from app.modules.handover.application.commands import DebugWrite
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
-from tests.helpers.models import DeterministicModel
+from tests.helpers.models import DeterministicModel, fixture_selections
 
 
 @pytest.mark.parametrize("via_tool", [False, True])
@@ -45,6 +45,7 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
                             "verdict": "passed" if passed else "revised",
                             "reason": "保留试验边界",
                             "answer": "" if passed else revision,
+                            "selections": fixture_selections(payload["records"]),
                         }
                     )
                 )
@@ -81,6 +82,7 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     )
     assert "不应发送的其他记录" not in str(reviewed)
     assert not any('"verdict"' in payload["text"] for kind, payload in events if kind == "token")
+    assert not any("任何工况" in payload["text"] for kind, payload in events if kind == "token")
     assert any(kind == "answer_replace" and row["text"] == revision for kind, row in events)
     assert issues.store.get(saved["id"])["payload"]["original_text"] == "组合调整后216颗无刺穿。"
 
