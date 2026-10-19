@@ -13,6 +13,7 @@ import {
 import { useWorkspace, draftFor } from '../../../app/state/store';
 import type { Message, Run } from '../../../shared/types/api';
 import { Markdown } from '../../../app/components/Markdown';
+import { AnswerMarkdown } from './AnswerMarkdown';
 import { RunTrace } from './RunTrace';
 import { ErrorText } from '../../../shared/ui/ui';
 import { SelectionPreview } from './SelectionPreview';
@@ -56,6 +57,7 @@ export function MessageBubble({
   const [error, setError] = useState<unknown>();
   const [savingConclusion, setSavingConclusion] = useState(false);
   const project = useCurrentProject();
+  const Content = message.role === 'assistant' ? AnswerMarkdown : Markdown;
   async function copy() {
     try {
       await navigator.clipboard.writeText(message.content);
@@ -131,7 +133,7 @@ export function MessageBubble({
             );
           }}
         >
-          <Markdown
+          <Content
             content={message.content}
             runId={run?.id}
             sourceId={message.source_workspace_id || undefined}

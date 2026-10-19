@@ -156,17 +156,19 @@ export function Markdown({
   content,
   runId,
   sourceId,
+  remarkPlugins = [],
 }: {
   content: string;
   runId?: string;
   sourceId?: string;
+  remarkPlugins?: NonNullable<ComponentProps<typeof ReactMarkdown>['remarkPlugins']>;
 }) {
   return (
     <CitationRun.Provider value={runId}>
       <CitationSource.Provider value={sourceId}>
         <div className="markdown">
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[remarkGfm, ...remarkPlugins]}
             urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
             components={markdownComponents}
           >

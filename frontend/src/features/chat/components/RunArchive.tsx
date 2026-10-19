@@ -1,5 +1,5 @@
 import type { Run } from '../../../shared/types/api';
-import { Markdown } from '../../../app/components/Markdown';
+import { AnswerMarkdown } from './AnswerMarkdown';
 import { RunActivity } from './RunActivity';
 import { RunFeedback } from './RunFeedback';
 import { persistedFeedback } from '../lib/runFeedback';
@@ -25,7 +25,7 @@ export function RunArchive({
           onContext={() => onContext(run.id)}
         />
       )}
-      {run.answer && <Markdown content={run.answer} />}
+      {run.answer && <AnswerMarkdown content={run.answer} />}
       <button onClick={() => onContext(run.id)}>查看当时的上下文</button>
     </details>
   ));

@@ -11,7 +11,7 @@ import type {
   Thread,
   SourceOptions,
 } from '../../../shared/types/api';
-import { Markdown } from '../../../app/components/Markdown';
+import { AnswerMarkdown } from './AnswerMarkdown';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useChatScroll } from '../hooks/useChatScroll';
 import { MessageBubble } from './MessageBubble';
@@ -466,7 +466,7 @@ export function ChatPane({
               </div>
               <ToolActivity tools={stream.tools} />
               {stream.answer ? (
-                <Markdown content={stream.answer} />
+                <AnswerMarkdown content={stream.answer} />
               ) : (
                 <span className="muted">
                   正在思考<span className="typing-dots">…</span>
@@ -498,7 +498,7 @@ export function ChatPane({
                   onContext={() => setContext({ runId: latest.id })}
                 />
               )}
-              {latest.answer && <Markdown content={latest.answer} />}
+              {latest.answer && <AnswerMarkdown content={latest.answer} />}
               <Button
                 onClick={() => resume.mutate(latest.id)}
                 disabled={archivedProject || resume.isPending}
