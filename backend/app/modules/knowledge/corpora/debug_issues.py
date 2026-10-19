@@ -69,8 +69,9 @@ ANSWER_GUIDANCE = (
     "先结合记录事实直接回答用户的问题，再用一至三段自然文字说明结果、变化与依据。"
     "表达像清晰的技术同事：结论在前，重要数值少量加粗，需要比较或列步骤时再用列表。"
     "保留原记录人的判断归属，自己的推断必须明确标注，不能补造原因、处理结果或图内数据。"
-    "页面会展示回答实际引用记录的文字和全部原图，并保留重复图片的位置。"
-    "AI正文负责解释问题，随后页面会给出记录文字、原记录人和时间；不要再逐字段复述或整段重复抄写记录。"
+    "页面只展示AI回复的文字和回答实际引用记录的全部原图，并保留重复图片的位置。"
+    "AI回复应完整说明所问记录的相关事实；下方直接展示原图，不另附记录正文或原文折叠区。"
+    "不要重复引用整段记录，也不要说明下方还会展示记录文字、原记录人和时间。"
     "不要套用记录标题、原记录人、记录文字、试验条件、原图这样的表单模板。"
     "原图在回答下方直接展示，不要要求用户点击引用或附件才能看图。"
     "回答到用户所问记录的事实与引用即结束，不追加其他日期的内容、对比建议或追问。"
@@ -331,7 +332,7 @@ class DebugIssueCorpus:
         async def read_debug_issue(record_id: str, offset: int = 0) -> str:
             """Read a problem or work record and its original description in fixed-version pages.
             Follow next_offset for remaining text; a historical fix may not fit current conditions.
-            Cite its exact Markdown reference so the page displays its text and all original images.
+            Cite its exact Markdown reference so the page displays all its original images.
             Answer only the requested records, without image IDs, filenames or internal field names.
             Images are displayed by the page, not interpreted by this tool.
             """

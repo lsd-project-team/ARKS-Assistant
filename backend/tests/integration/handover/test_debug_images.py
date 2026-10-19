@@ -129,7 +129,7 @@ async def test_read_tool_keeps_complete_business_text_without_image_or_source_in
             assert page["reference"] == (
                 f"[7月23—24日｜adv-3 试验 · v4](debug-issue:{row['id']}/4)"
             )
-            assert "实际引用记录的文字和全部原图" in page["display_hint"]
+            assert "只展示AI回复的文字和回答实际引用记录的全部原图" in page["display_hint"]
             assert "只展示对应记录" in page["display_hint"]
             assert "不要声称无法展示原图" in page["display_hint"]
             chunks.append(page["content"])

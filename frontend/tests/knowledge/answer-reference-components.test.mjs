@@ -198,43 +198,50 @@ function renderOriginals(answer, historical = false, payload = {}) {
 }
 
 for (const historical of [false, true]) {
-  test(`${historical ? '历史' : '流式'}回复只展开实际引用记录的文字与全部原图，保留重复图`, () => {
+  test(`${historical ? '历史' : '流式'}回复只展开实际引用记录的全部原图，不重复记录文字`, () => {
     const html = renderOriginals('[试验记录](debug-issue:pickup/2)', historical);
-    assert.match(html, /按原文整理的文字/);
-    assert.equal((html.match(/按原文整理的文字/g) || []).length, 1);
-    assert.match(html, /贺强 · 2026年7月27日 15:55/);
-    assert.doesNotMatch(html, /内部录入账号/);
-    assert.match(html, /&lt;script&gt;不会执行&lt;\/script&gt;/);
+    assert.doesNotMatch(
+      html,
+      /按原文整理的文字|原消息|贺强|15:55|内部录入账号|记录文字|查看录入原文|<blockquote/,
+    );
     assert.equal((html.match(/<img /g) || []).length, 3);
     for (const index of [0, 1, 2]) {
       assert.ok(html.includes(`/api/handover/debug-issues/pickup/images/2/${index}`));
     }
     assert.doesNotMatch(html, /7月25|7月27日｜|7月28|other-|images\/1\/|<script>/);
     assert.doesNotMatch(html, /原图\.png|另一张\.png|图片ID/);
-    assert.equal((html.match(/检索原文：/g) || []).length, 1);
+    assert.equal((html.match(/aria-label="原图：/g) || []).length, 1);
     assert.match(html, /本轮参考 · 1 条资料/);
   });
 
   test(`${historical ? '历史' : '流式'}回复没有引用时不展开日期候选，也不猜测未知版本`, () => {
     for (const answer of ['下面是试验记录。', '[旧版](debug-issue:pickup/1)']) {
       const html = renderOriginals(answer, historical);
-      assert.doesNotMatch(html, /检索原文|<img |本轮参考|不应带出/);
+      assert.doesNotMatch(html, /aria-label="原图：|<img |本轮参考|不应带出/);
     }
   });
 }
 
-test('记录正文缺失时直接展示录入原文，不产生重复核对入口', () => {
+test('记录正文缺失时仍只展示原图，不回退展示录入原文', () => {
   const html = renderOriginals('[试验记录](debug-issue:pickup/2)', false, { problem: '' });
-  assert.match(html, /原消息 &lt;script&gt;不会执行/);
-  assert.doesNotMatch(html, /查看录入原文/);
+  assert.doesNotMatch(html, /原消息|查看录入原文|<blockquote/);
   assert.equal((html.match(/<img /g) || []).length, 3);
+});
+
+test('没有原图的引用只保留参考入口，不显示空图片区或重复正文', () => {
+  const html = render({
+    answer: '[文字记录](debug-issue:pickup/2)',
+    references: [{ ...references[1], image_count: 0 }],
+  });
+  assert.match(html, /本轮参考 · 1 条资料/);
+  assert.doesNotMatch(html, /aria-label="原图：|正在加载原图|<img |记录文字/);
 });
 
 test('明确引用多条记录时按引用顺序展示，未引用的其他日期仍不展开', () => {
   const html = renderOriginals('[7月27日](debug-issue:other-1/2) [7月23日](debug-issue:pickup/2)');
   assert.match(html, /本轮参考 · 2 条资料/);
   assert.equal((html.match(/<img /g) || []).length, 4);
-  assert.ok(html.indexOf('检索原文：7月27日') < html.indexOf('检索原文：7月23'));
+  assert.ok(html.indexOf('aria-label="原图：7月27日') < html.indexOf('aria-label="原图：7月23'));
   assert.doesNotMatch(html, /7月25|7月28|other-0|other-2/);
 });
 
@@ -251,5 +258,5 @@ test('条件不符的历史记录即使被引用对照，也不作为适用记�
   });
   assert.match(html, /本轮参考 · 1 条资料/);
   assert.match(html, /条件不符，仅供历史对照/);
-  assert.doesNotMatch(html, /检索原文：|<img /);
+  assert.doesNotMatch(html, /aria-label="原图：|<img /);
 });
