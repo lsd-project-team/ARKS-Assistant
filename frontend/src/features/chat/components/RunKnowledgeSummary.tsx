@@ -15,6 +15,7 @@ import { answerKnowledgeCitations, answerReferences } from '../../knowledge/lib/
 import { Markdown } from '../../../app/components/Markdown';
 import { ErrorText } from '../../../shared/ui/ui';
 import '../../knowledge/styles/knowledge-feedback.css';
+import { DebugIssueSources, originalDebugReferences } from './DebugIssueSources';
 
 type KnowledgeFeedbackProps = {
   references?: KnowledgeReference[];
@@ -32,9 +33,11 @@ export function KnowledgeFeedback({
   const sources =
     mode === 'context' ? distinctReferences(references) : answerReferences(answer, references);
   const notices = mode === 'context' ? searchNotices(searches, sources) : [];
-  if (!sources.length && !notices.length && !saves.length) return null;
+  const originals = mode === 'answer' ? originalDebugReferences(references) : [];
+  if (!sources.length && !notices.length && !saves.length && !originals.length) return null;
   return (
     <div className="knowledge-feedback">
+      {originals.length > 0 && <DebugIssueSources references={originals} />}
       {saves.map((save, index) => (
         <p
           key={`${save.name}:${index}`}
@@ -83,7 +86,6 @@ export function RunKnowledgeSummary({
   runId,
   projectId,
   answer,
-  recent = false,
 }: {
   runId: string;
   projectId: string;
@@ -94,7 +96,8 @@ export function RunKnowledgeSummary({
   const context = useQuery({
     queryKey: ['run-knowledge', projectId, runId],
     queryFn: () => api<RunContext>(`/runs/${runId}/context`, undefined, projectId),
-    enabled: recent || hasCitations,
+    // 历史回复即使省略文字引用，也应恢复当轮检索到的固定版本原文与原图。
+    enabled: true,
     staleTime: 300000,
   });
   if (!context.data) return hasCitations ? <ErrorText error={context.error} /> : null;

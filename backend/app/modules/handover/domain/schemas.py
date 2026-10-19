@@ -149,6 +149,13 @@ class Issue(Payload):
     closure: Text = ""
 
 
+class DebugImage(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: str = Field(pattern=r"^[a-f0-9]{64}$")
+    name: str = Field(min_length=1, max_length=250)
+    recorded_at: Short = ""
+
+
 class DebugIssue(Payload):
     record_type: Literal["problem", "experience", "progress", "archive"] = "problem"
     occurred_on: Short = ""
@@ -167,6 +174,7 @@ class DebugIssue(Payload):
     resolution_status: Literal["open", "resolved", "recorded"] = "open"
     keywords: list[Short] = Field(default_factory=list, max_length=20)
     original_text: Text = ""
+    images: list[DebugImage] = Field(default_factory=list, max_length=100)
     reported_by: Short = ""
     source_thread_id: str = Field(default="", max_length=36)
     source_message_id: str = Field(default="", max_length=36)

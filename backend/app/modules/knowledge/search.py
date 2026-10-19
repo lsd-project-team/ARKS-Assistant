@@ -38,7 +38,7 @@ def searchable_text(row):
     content = row.get("content") or "\n".join(
         str(value) if not isinstance(value, list) else " ".join(map(str, value))
         for key, value in payload.items()
-        if key not in {"evidence", "reported_by", "source_message_id", "source_thread_id"}
+        if key not in {"evidence", "reported_by", "source_message_id", "source_thread_id", "images"}
     )
     return row["title"], content
 

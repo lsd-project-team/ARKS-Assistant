@@ -1,0 +1,47 @@
+.debug-original-images {
+  display: grid;
+  gap: 16px;
+}
+.debug-original-images:empty {
+  display: none;
+}
+.debug-original-images figure {
+  margin: 0;
+  min-width: 0;
+}
+.debug-original-images figcaption {
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.debug-original-images img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.debug-original-images a {
+  display: block;
+}
+.debug-source-record {
+  padding-top: 18px;
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+}
+.debug-source-record header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+.debug-source-record pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  line-height: 1.8;
+  margin: 12px 0;
+}
+.debug-image-upload {
+  margin: 16px 0;
+}

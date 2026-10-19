@@ -192,7 +192,10 @@ export function RecordView({
         version={version}
         client={client}
         onEdit={onEdit}
-        onChanged={onChanged}
+        onChanged={() => {
+          onChanged();
+          void query.refetch();
+        }}
         onOpen={onOpen}
         onClose={onClose}
       />

@@ -104,6 +104,7 @@ class DebugIssueCorpus:
                     "title": document["title"],
                     "version": row["version"],
                     "citation": citation(row),
+                    "image_count": len(document["payload"].get("images", [])),
                     "reference": (
                         "["
                         + document["title"].replace("[", "（").replace("]", "）").replace("\n", " ")
@@ -169,6 +170,7 @@ class DebugIssueCorpus:
                 "citation": citation(row),
                 "compatibility": compatibility(row, self.context_filters or explicit_filters("")),
                 "resolution_status": row["payload"].get("resolution_status", "open"),
+                "image_count": len(row["payload"].get("images", [])),
             },
         )
         content = json.dumps(document["payload"], ensure_ascii=False, indent=2)
@@ -206,6 +208,7 @@ class DebugIssueCorpus:
                     "payload": {
                         "resolution_status": item["payload"].get("resolution_status", "open")
                     },
+                    "image_count": item["image_count"],
                 }
             )
         for item in report["excluded_records"]:
@@ -225,6 +228,7 @@ class DebugIssueCorpus:
             "不代表问题已解决或已验收。"
             "occurred_on 为事项日期，recorded_by/recorded_at 为原记录人和原记录时间；"
             "reported_by 为系统录入人，不要混用。只引用原文已有事实，不替空白字段补充结论。"
+            "页面会随检索记录展示文字和原图；本轮未识别图片，不要推断图内数值或声称看图分析。"
             "引用直接使用每条记录返回的 reference 链接，保留实际标题和版本，不要写占位标题。"
             "相同症状只能证明有相似记录；当前版本、环境或发生条件未提供时，"
             "不得断言完全一致、原因相同或处理办法必然有效。\n"

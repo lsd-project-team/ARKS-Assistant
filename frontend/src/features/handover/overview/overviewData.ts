@@ -32,6 +32,7 @@ const eventGroups: Omit<ChartDatum, 'value'>[] = [
 export const eventActionLabels: Record<string, string> = {
   created: '新增',
   updated: '修改',
+  image_added: '添加原图',
   confirm: '人工确认',
   reject: '审核拒绝',
   invalidated: '需要重新复核',

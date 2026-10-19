@@ -2,6 +2,7 @@
 
 from app.modules.handover.application.commands import Write
 from app.modules.handover.application.ports import RecordRepository
+from app.modules.handover.domain.images import image_metadata
 from app.modules.handover.domain.schemas import DebugIssue
 
 
@@ -36,8 +37,14 @@ class DebugIssues:
                     reason="更新调试问题与处理结果",
                 ),
             )
-        payload.update(origin="human", reported_by=actor_name(actor))
+        payload.update(
+            origin="human", reported_by=actor_name(actor), original_text=payload["problem"]
+        )
         return self.store.create("debug_issue", body.title, payload, actor_name(actor))
+
+    def add_image(self, identifier, version, data, filename, recorded_at, actor):
+        metadata = image_metadata(data, filename, recorded_at)
+        return self.store.append_debug_image(identifier, version, metadata, data, actor_name(actor))
 
     def captured(self, message_id):
         return next(

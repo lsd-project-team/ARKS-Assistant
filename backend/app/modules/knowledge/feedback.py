@@ -40,6 +40,7 @@ def references(emit, kind, rows):
                 "kind": kind,
                 **{key: row[key] for key in ("id", "title", "version", "citation")},
                 **({"compatibility": row["compatibility"]} if "compatibility" in row else {}),
+                **({"image_count": row.get("image_count", 0)} if kind == "debug_issue" else {}),
                 **(
                     {"resolution_status": row["payload"].get("resolution_status")}
                     if "payload" in row

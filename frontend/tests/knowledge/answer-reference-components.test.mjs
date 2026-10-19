@@ -13,7 +13,8 @@ const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
 // 执行真实组件与查询缓存，仅隔离资料查看器和 HTTP，不替换筛选逻辑。
 const result = await build({
   stdin: {
-    contents: "export * from './src/features/chat/components/RunKnowledgeSummary.tsx';",
+    contents:
+      "export * from './src/features/chat/components/RunKnowledgeSummary.tsx'; export * from './src/features/chat/components/DebugIssueSources.tsx';",
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -142,4 +143,59 @@ test('历史候选匹配失败或引用上下文尚未加载时不假造参考�
   const missing = renderHistory('[记录](debug-issue:unknown/2)', { references });
   assert.doesNotMatch(missing, /本轮参考|M8 DAF|中转台取片异常/);
   assert.equal(renderHistory('[记录](debug-issue:pickup/2)'), '');
+});
+
+test('检索记录即使没有回答内引用，也完整显示对应版本的文字与全部原图', () => {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const reference = { ...references[1], image_count: 3 };
+  client.setQueryData(['debug-source', 'pickup', 2], {
+    id: 'pickup',
+    version: 2,
+    kind: 'debug_issue',
+    title: reference.title,
+    payload: {
+      problem: '按原文整理的文字，精度−4～2μm。',
+      original_text: '原消息 <script>不会执行</script>',
+      images: [
+        { id: 'a', name: '原图.png', recorded_at: '7月27日16:09' },
+        { id: 'a', name: '原图.png', recorded_at: '7月27日16:09' },
+        { id: 'b', name: '另一张.png', recorded_at: '7月27日16:10' },
+      ],
+    },
+  });
+  const html = renderToStaticMarkup(
+    createElement(
+      QueryClientProvider,
+      { client },
+      createElement(KnowledgeFeedback, {
+        answer: '下面是试验记录。',
+        references: [reference, reference],
+      }),
+    ),
+  );
+  assert.match(html, /按原文整理的文字/);
+  assert.match(html, /&lt;script&gt;不会执行&lt;\/script&gt;/);
+  assert.equal((html.match(/<img /g) || []).length, 3);
+  for (const index of [0, 1, 2]) {
+    assert.ok(html.includes(`/api/handover/debug-issues/pickup/images/2/${index}`));
+  }
+  assert.doesNotMatch(html, /images\/1\/|<script>/);
+  assert.equal((html.match(/检索原文：/g) || []).length, 1);
+  client.clear();
+});
+
+test('条件不符的历史对照不作为适用记录自动展开原图', () => {
+  assert.equal(
+    render({
+      answer: '条件不一致。',
+      references: [
+        {
+          ...references[1],
+          image_count: 3,
+          compatibility: { status: 'mismatch' },
+        },
+      ],
+    }),
+    '',
+  );
 });

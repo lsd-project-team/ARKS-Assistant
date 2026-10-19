@@ -15,6 +15,7 @@ from app.modules.handover.domain.rules import (
     validate_links,
 )
 from app.modules.handover.domain.schemas import validate_payload
+from app.modules.handover.infrastructure.persistence.debug_images import DebugImageStorage
 from app.modules.handover.infrastructure.persistence.models import (
     HandoverBlob,
     HandoverEvent,
@@ -44,7 +45,7 @@ def record_dict(row):
     }
 
 
-class HandoverStore:
+class HandoverStore(DebugImageStorage):
     def __init__(self, projects=None, *, database=None):
         self.database = database if database is not None else projects.database
         self.lock = projects.lock if projects is not None else _standalone_lock

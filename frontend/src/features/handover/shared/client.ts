@@ -28,6 +28,14 @@ export function handoverClient() {
         headers: { 'Content-Type': 'application/octet-stream' },
         body: file,
       }),
+    uploadDebugImage: <T>(id: string, version: number, file: File) =>
+      request<T>(
+        `/debug-issues/${encodeURIComponent(id)}/images?${new URLSearchParams({
+          version: String(version),
+          filename: file.name,
+        })}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: file },
+      ),
     download: async (path: string, filename: string) => {
       const response = await sessionFetch(root + path);
       if (!response.ok) {

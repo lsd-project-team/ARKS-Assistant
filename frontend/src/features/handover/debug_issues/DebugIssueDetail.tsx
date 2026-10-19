@@ -5,6 +5,8 @@ import { HandoverModal } from '../shared/HandoverModal';
 import { debugIssueFields, debugRecordType, debugStatus } from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
+import { DebugIssueImages } from './DebugIssueImages';
+import { DebugIssueImageUpload } from './DebugIssueImageUpload';
 
 export function DebugIssueDetail({
   row,
@@ -87,6 +89,10 @@ export function DebugIssueDetail({
           </div>
         )}
       </dl>
+      {!version && row.state !== 'archived' && (
+        <DebugIssueImageUpload row={row} client={client} onChanged={onChanged} />
+      )}
+      <DebugIssueImages row={row} />
       {text(row.payload.original_text) && (
         <details className="debug-issue-original">
           <summary>查看录入原文</summary>

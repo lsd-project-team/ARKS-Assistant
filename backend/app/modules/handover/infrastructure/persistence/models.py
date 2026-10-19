@@ -44,6 +44,15 @@ class HandoverBlob(Base):
     content: Mapped[bytes] = mapped_column(LargeBinary)
 
 
+class HandoverDebugImage(Base):
+    # 图片字节随 SQLite 一起备份；版本快照只保存有序引用，重复出现的位置不去重。
+    __tablename__ = "handover_debug_images"
+    record_id: Mapped[str] = mapped_column(ForeignKey("handover_records.id"), primary_key=True)
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    media_type: Mapped[str] = mapped_column(String(100))
+    content: Mapped[bytes] = mapped_column(LargeBinary)
+
+
 class HandoverEvent(Base):
     __tablename__ = "handover_events"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

@@ -351,6 +351,7 @@ export interface RunContext {
 }
 
 export interface KnowledgeReference {
+  image_count?: number;
   kind: 'material' | 'handover_material' | 'debug_issue';
   id: string;
   title: string;

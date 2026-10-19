@@ -13,7 +13,10 @@ def explicit_filters(query, device="", software_version="", module="", condition
     version = re.search(
         r"(?i)(?:(?<![a-z0-9])v\s*|版本\s*[:：]?\s*)(\d+(?:\.\d+){1,3})(?!\d)", query
     )
-    machine = re.search(r"(?i)(?<![a-z0-9])zx\s*\d{3,5}(?:\s*(?:hs|ls))?", query)
+    machine = re.search(
+        r"(?i)(?<![a-z0-9])(?:zx\s*\d{3,5}(?:\s*(?:hs|ls))?|adv[\s-]*\d+(?![a-z0-9]))",
+        query,
+    )
     stage = re.search(r"(?i)(?<![a-z0-9])s[12](?![a-z0-9])", query)
     return {
         "device": device or (machine[0] if machine else ""),
@@ -48,6 +51,8 @@ def compatibility(row, filters):
             known = match[0] if match else ""
         actual = compact(known)
         differs = requested not in actual and actual not in requested
+        if field == "device" and requested.startswith("adv") and actual.startswith("adv"):
+            differs = requested != actual
         if field == "software_version" and requested and actual:
             versions = set(re.findall(r"\d+(?:\.\d+){1,3}", str(known)))
             differs = (
