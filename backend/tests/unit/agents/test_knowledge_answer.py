@@ -162,7 +162,79 @@ def test_record_card_detection_respects_explicit_output_request(question, expect
     assert topic_needs_synthesis(question, "**问题**：现象\n**结果**：216颗") is expected
 
 
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "本次组合有试验依据。\n\n### 调整参数\n- 顶针：075\n\n### 复用建议\n先核对条件。",
+        "本次组合有试验依据。\n\n**本次参数**\n- **顶针**：075\n"
+        "- **焊头力**：20~30g\n- **速度**：3mm/s\n\n**适用范围**\n仅限记录条件。",
+        "结果显示216颗无刺穿。\n\n经验需要结合本次条件理解。",
+        "本次组合有试验依据，复用仍需核对条件。\n\n**方案**\n- 顶针：075"
+        "\n\n**结果**\n216颗无刺穿。",
+    ],
+)
+def test_readable_headings_and_parameter_lists_are_not_record_cards(answer):
+    assert not topic_needs_synthesis("蓝膜刺穿处理经验", answer)
+    assert not answer_problems("蓝膜刺穿处理经验", answer)
+
+
+async def test_review_preserves_readable_structure_without_forcing_prose():
+    text = "本次组合后216颗无刺穿。\n\n### 如何复用\n先核对条件。\n\n### 适用范围\n不能直接推广。"
+    reviewer = Reviewer('{"verdict":"passed","answer":""}')
+    answer, events = await call_guard(reviewer, AIMessage(content=text), question="试验经验")
+    assert answer.text == text
+    assert len(reviewer.requests) == 1
+    assert not json.loads(reviewer.requests[0][0][-1].text)["must_rewrite"]
+    assert not any(kind == "answer_replace" for kind, _ in events)
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "### 问题\n现象\n\n### 方案\n处理\n\n### 结果\n216颗",
+        "- **问题：**现象\n- **处理办法：**处理\n- **验证记录：**216颗",
+        "【问题】现象\n【方案】处理\n【结果】216颗",
+    ],
+)
+def test_source_field_cards_are_detected_across_markdown_styles(answer):
+    assert topic_needs_synthesis("试验经验", answer)
+
+
 def test_returned_records_do_not_prove_whole_catalog_absence():
     assert answer_problems("其他尺寸也一样吗？", "库里没有其他规格的数据。")
     assert not answer_problems("其他尺寸也一样吗？", "这份记录未提供其他规格的数据。")
     assert not answer_problems("请逐字引用原文", "库里没有其他规格的数据。")
+
+
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("**" + "本次观察结果仅限该组合与条件" * 4 + "**", "大块加粗"),
+        ("参数A：1 + 参数B：2 + 参数C：3 + 参数D：4", "逐项参数列表"),
+        ("本次记录说明的范围有限。" * 18, "连续正文段"),
+    ],
+)
+def test_observed_readability_problems_are_sent_to_reviewer(text, expected):
+    assert expected in answer_problems("试验经验", text)
+    assert not answer_problems("请提取完整原文", text)
+    assert not answer_problems("请保持格式", text)
+
+
+def test_readability_checks_preserve_lists_code_and_quotes():
+    text = "- 参数A：1\n- 参数B：2\n- 参数C：3\n- 参数D：4\n\n**关键结果**：成功。"
+    assert not answer_problems("试验经验", text)
+    literal = "**" + "引文内容" * 20 + "** + 1 + 2 + 3"
+    assert not answer_problems("试验经验", f"```text\n{literal}\n```")
+    assert not answer_problems("试验经验", "> " + literal)
+    table = "| 参数 | 值 |\n| --- | --- |\n" + "| 验证数量 | 216颗 |\n" * 20
+    assert not answer_problems("请用表格列出记录", table)
+
+
+async def test_passed_review_cannot_ignore_explicit_readability_problem():
+    reviewer = Reviewer('{"verdict":"passed","answer":""}')
+    answer, _events = await call_guard(
+        reviewer, AIMessage(content="参数A：1 + 参数B：2 + 参数C：3 + 参数D：4")
+    )
+    assert len(reviewer.requests) == 2
+    assert "逐项参数列表" in json.loads(reviewer.requests[0][0][-1].text)["must_rewrite"]
+    assert "本轮分析尚未通过复核" in answer.text

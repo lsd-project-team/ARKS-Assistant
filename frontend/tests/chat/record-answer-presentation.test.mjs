@@ -12,7 +12,7 @@ function render(content) {
   return renderToStaticMarkup(
     createElement(ReactMarkdown, {
       children: content,
-      remarkPlugins: [remarkGfm, remarkRecordAnswer],
+      remarkPlugins: [[remarkGfm, { singleTilde: false }], remarkRecordAnswer],
       // 与应用保持一致，测试固定版本业务引用的 Markdown 渲染。
       urlTransform: (url) => url,
     }),
@@ -75,4 +75,14 @@ test('图表和代码后的来源保留独立引用，不把链接塞进数据�
   const html = render(`| 精度 |\n| --- |\n| 3μm |\n\n${citation}`);
   assert.match(html, /<table>/);
   assert.match(html, /<\/table>\s*<p><a href="debug-issue:trial\/4">/);
+});
+
+test('工艺数值范围的单波浪号保持原样，显式双波浪号仍能表示删除线', () => {
+  const html = render(
+    `焊头力20~30g，顶针高度280~300。\n\n> 20~30g + 280~300\n\n~~旧设置~~ ${citation}`,
+  );
+  assert.match(html, /焊头力20~30g，顶针高度280~300。/);
+  assert.match(html, /<blockquote>\s*<p>20~30g \+ 280~300<\/p>/);
+  assert.equal((html.match(/<del>/g) || []).length, 1);
+  assert.match(html, /<del>旧设置<\/del>/);
 });

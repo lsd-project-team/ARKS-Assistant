@@ -7,7 +7,7 @@
 | 脚本                           | 用途                                                                                                                                                |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `live_validation.py`           | 在临时数据目录验证真实模型压缩、档案和历史检索                                                                                                      |
-| `answer_style.py`              | `--live` 显式用当前模型验证经验归纳、事实边界和原文保留；仅临时蓝膜案例与合成历史，见[验收记录](../../docs/verification/grounded-answer-style.md) |
+| `answer_style.py`              | `--live` 显式用当前模型验证经验归纳、事实边界、原文保留和长段历史下的阅读结构；仅临时蓝膜案例与合成历史，见[归纳验收](../../docs/verification/grounded-answer-style.md)与[阅读体验验收](../../docs/verification/readable-answer-style.md) |
 | `evaluate_quality.py`          | 既有回答质量验收场景                                                                                                                                |
 | `evaluate_audit.py`            | 既有源码审计验收场景                                                                                                                                |
 | `evaluate_analysis_upgrade.py` | 既有分析能力升级验收场景                                                                                                                            |

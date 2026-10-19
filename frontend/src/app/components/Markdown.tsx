@@ -181,7 +181,8 @@ export function Markdown({
       <CitationSource.Provider value={sourceId}>
         <div className="markdown">
           <ReactMarkdown
-            remarkPlugins={[remarkGfm, ...remarkPlugins]}
+            // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
+            remarkPlugins={[[remarkGfm, { singleTilde: false }], ...remarkPlugins]}
             urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
             components={markdownComponents}
           >

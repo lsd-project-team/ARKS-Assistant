@@ -39,6 +39,7 @@ ORIGINAL = (
 QUESTIONS = {
     "topic": "蓝膜刺穿处理经验",
     "history": "蓝膜刺穿处理经验",
+    "dense_history": "蓝膜刺穿处理经验",
     "advice": "结合蓝膜刺穿处理经验，分析这次调整为什么有效，给出你的建议。",
     "verbatim": "提取蓝膜刺穿处理经验的完整原文，不要改写或分析。",
     "generalize": "蓝膜刺穿是不是用075顶针就能彻底根治，其他尺寸芯片也一样吗？",
@@ -80,6 +81,18 @@ async def execute_case(config, name):
         if name == "history":
             previous = repository.create_run(thread["id"], "蓝膜刺穿处理经验", [], options)
             repository.finish(previous["id"], "调试问题库中的记录如下：\n" + ORIGINAL)
+        elif name == "dense_history":
+            # 用同一验收案例合成长段旧答，检查模型是否继续沿用拥挤的组织方式。
+            previous = repository.create_run(thread["id"], "蓝膜刺穿处理经验", [], options)
+            repository.finish(
+                previous["id"],
+                "这条经验的核心是结合针型和参数理解本次调整。"
+                "记录背景是0.6×0.45mm微小芯片，025/050顶针出现蓝膜刺穿及底部残留蓝膜，"
+                "降低顶针高度、焊头力、顶针速度均无效。后更换075顶针，焊头力20~30g，"
+                "速度3mm/s，高度280~300，216颗无刺穿，取放稳定、底部残胶改善。"
+                "原记录将原因归为小顶针应力集中，但未提供单因素对照，"
+                "不能据此确定各项独立贡献，也不能推广到所有规格，复用时先核对条件。",
+            )
         run = repository.create_run(thread["id"], QUESTIONS[name], [], options)
         events = []
         try:
