@@ -1,7 +1,5 @@
 """交接资料接入、改写命中、条件排除、固定版本与缓存的行为验收。"""
 
-import json
-
 from sqlalchemy import event
 
 from app.modules.handover.application.commands import Action, DebugWrite, Write
@@ -56,12 +54,13 @@ def test_handover_documents_fixed_versions_archive_supersede_and_partial(service
     assert scan["id"] not in {item["id"] for item in matches}
 
 
-async def test_runtime_includes_handover_and_tool_citations_but_toggle_excludes(
+async def test_runtime_excludes_paused_handover_sources_and_preserves_records(
     services, monkeypatch
 ):
     from app.agents.runtime.engine import AgentRuntime
 
-    row = source(HandoverStore(database=services[1]), content="接料报警 E607：先检查托盘是否到位。")
+    store = HandoverStore(database=services[1])
+    row = source(store, content="接料报警 E607：先检查托盘是否到位。")
     runtime = AgentRuntime(services[0], services[5], services[2], services[3], services[4])
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_deep_agent", lambda **kwargs: kwargs
@@ -74,10 +73,11 @@ async def test_runtime_includes_handover_and_tool_citations_but_toggle_excludes(
         inspection=True,
         memory_query="接料报警 E607",
     )
-    assert "先检查托盘是否到位" in graph["system_prompt"]
-    reader = next(item for item in graph["tools"] if item.name == "read_handover_material")
-    assert json.loads(await reader.ainvoke({"record_id": row["id"]}))["version"] == 1
-    assert any(kind == "knowledge_reference" and item["id"] == row["id"] for kind, item in events)
+    assert "先检查托盘是否到位" not in graph["system_prompt"]
+    assert not any("handover_material" in item.name for item in graph["tools"])
+    assert not any(kind == "knowledge_reference" for kind, _item in events)
+    assert HandoverMaterialCorpus(services[1]).excerpt(row["id"])["version"] == 1
+    assert store.get(row["id"])["state"] != "archived"
     off = await runtime.graph(
         "off",
         None,

@@ -11,7 +11,6 @@ from app.agents.context.tokens import current_budget, input_budget
 from app.agents.runtime.answer_completion import termination
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
-from app.modules.chat.schemas import SourceOptions
 from app.modules.knowledge.citations import canonical_knowledge_citations
 from app.modules.source_analysis.evidence import (
     CODE_QUESTION,
@@ -84,20 +83,10 @@ class AgentRunExecutor:
                         break
                     cursor = events[-1]["sequence"]
                 previous_run = runtime.repository.run(previous_run).get("resumed_from")
-            options = SourceOptions.model_validate(message.get("source_options") or {})
             verified_context = await evidence.prepare(
                 message["selections"], max_tokens=min(4000, max(0, available // 5))
             )
             verified_context += progress.reuse(previous)
-            if options.use_knowledge and (
-                message["selections"] or CODE_QUESTION.search(message["content"])
-            ):
-                verified_context += await runtime.knowledge.prepare(
-                    message["content"],
-                    message["selections"],
-                    evidence,
-                    max_tokens=min(2000, max(0, available // 10)),
-                )
             if message["selections"] and available > 10000:
                 selection = message["selections"][0]
                 if selection["path"].lower().endswith(".cs"):
