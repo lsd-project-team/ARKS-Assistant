@@ -13,8 +13,8 @@ from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
 from app.modules.knowledge.citations import canonical_knowledge_citations
 from app.modules.source_analysis.evidence import (
-    CODE_QUESTION,
     SourceEvidence,
+    requires_source_evidence,
 )
 
 
@@ -42,7 +42,7 @@ class AgentRunExecutor:
                 emit,
                 required=bool(
                     message["selections"]
-                    or CODE_QUESTION.search(message["content"])
+                    or requires_source_evidence(message["content"])
                     or run["analysis_policy"]["mode"] == "deep"
                 ),
             )

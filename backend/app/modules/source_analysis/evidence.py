@@ -18,6 +18,16 @@ CODE_LITERAL = re.compile(
 )
 LOCATION = re.compile(r"(.+)#L(\d+)(?:[-–](?:L)?(\d+))?$")
 CODE_QUESTION = re.compile(r"源码|函数|方法|调用链|实现逻辑|分支|入口|异常处理|[\w./-]+\.cs\b")
+DEVICE_SUBJECT = re.compile(r"设备|标定|校准|固晶|点胶|晶圆|吸嘴|顶针|取片|贴片|回零|焊头")
+DEVICE_SOURCE_INTENT = re.compile(r"流程|步骤|顺序|条件|原理|逻辑|怎么|如何|为什么|为何|操作")
+
+
+def requires_source_evidence(question):
+    # 自然语言询问设备流程也需源码；仅检索历史处理经验不因出现设备名就强制源码核查。
+    return bool(
+        CODE_QUESTION.search(question)
+        or (DEVICE_SUBJECT.search(question) and DEVICE_SOURCE_INTENT.search(question))
+    )
 
 
 def citation_matches(text):
