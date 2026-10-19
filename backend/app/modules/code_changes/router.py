@@ -9,6 +9,7 @@ from app.core.container import AppServices
 from app.modules.auth.router import identity, require_admin
 from app.modules.code_changes.delivery import delivery_package, review_change
 from app.modules.code_changes.maintenance import cleanup
+from app.modules.code_changes.request_binding import RequestOrigin
 from app.modules.code_changes.schemas import (
     ChangeWrite,
     CleanupWrite,
@@ -36,8 +37,11 @@ def create_router(services: AppServices):
         return {"changes": await asyncio.to_thread(changes.list)}
 
     @router.post("")
-    async def create_change(body: ChangeWrite):
-        return await mutate(changes.create, **body.model_dump())
+    async def create_change(body: ChangeWrite, request: Request):
+        origin = RequestOrigin(
+            "manual_form", body.model_dump_json(), identity(request)["user"]["id"]
+        )
+        return await mutate(changes.create, request_origin=origin, **body.model_dump())
 
     @router.get("/readiness")
     async def readiness():
@@ -97,12 +101,16 @@ def create_router(services: AppServices):
         return await asyncio.to_thread(changes.read_file, identifier, path)
 
     @router.put("/{identifier}/requirements")
-    async def update_requirements(identifier: str, body: RequirementsWrite):
+    async def update_requirements(identifier: str, body: RequirementsWrite, request: Request):
+        origin = RequestOrigin(
+            "manual_form", body.model_dump_json(), identity(request)["user"]["id"]
+        )
         return await mutate(
             changes.update_requirements,
             identifier,
             body.change_version,
             body.requirements_version,
+            request_origin=origin,
             **body.model_dump(exclude={"change_version", "requirements_version"}),
         )
 

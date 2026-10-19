@@ -102,6 +102,8 @@ class SourceEvidence:
         self.audit_input_limit = 16000
         self.code_change_ids = []
         self.code_work_reader = None
+        self.user_request = ""
+        self.request_identity = {}
 
     def observe_code_change(self, identifier):
         if identifier not in self.code_change_ids:

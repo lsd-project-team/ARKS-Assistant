@@ -42,7 +42,12 @@ async def work(services):
     }
     try:
         yield SimpleNamespace(
-            changes=changes, evidence=evidence, tools=tools, workspace=workspace, events=events
+            changes=changes,
+            evidence=evidence,
+            tools=tools,
+            workspace=workspace,
+            events=events,
+            runtime=runtime,
         )
     finally:
         await changes.shutdown()
@@ -313,6 +318,31 @@ async def test_secret_in_diff_is_masked_before_clipping_and_both_file_versions_s
     assert "diff-dummy-secret" not in str(payload) and "敏感值已隐藏" in str(payload)
     assert (work.workspace.root / "calc.py").read_text(encoding="utf-8") == original
     assert secret in work.changes.read_file(verified["id"], "calc.py")["content"]
+
+
+async def test_original_request_is_retained_but_redacted_in_reviewer_input(work):
+    request = "请在隔离副本修改calc.py，不要修改原件。password=request-only-dummy-secret"
+    tools = {
+        item.name: item
+        for item in engineering_tools(
+            work.runtime,
+            request,
+            evidence=work.evidence,
+        )
+    }
+    created = json.loads(
+        await tools["create_code_change"].ainvoke({"title": "入口", "goal": "保持入口"})
+    )
+
+    payload = await inspect(work)
+
+    assert "request-only-dummy-secret" not in str(payload)
+    assert "敏感值已隐藏" in payload["user_request"]
+    origin = payload["code_work"]["changes"][0]["request_binding"]["original"]["origin"]
+    assert "敏感值已隐藏" in origin["text"]
+    assert (
+        work.changes.get(created["id"])["request_binding"]["original"]["origin"]["text"] == request
+    )
 
 
 async def test_contract_drift_while_external_reviewer_is_waiting_cannot_return_passed(work):

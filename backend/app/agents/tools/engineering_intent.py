@@ -30,6 +30,73 @@ TEMPORARY_DISCUSSION = re.compile(
     r"|先(?:不|不要|不用)(?:开始|修改|动代码|实现|编写)"
 )
 CLAUSE_BOUNDARY = r"[，,。！!？?；;\n]"
+REQUIREMENT_FIELDS = {
+    "title": r"标题|修改名称",
+    "goal": r"目标|需求描述",
+    "acceptance_criteria": r"验收标准|验收条件|验收要求",
+    "constraints": r"约束|限制条件",
+    "allowed_paths": r"修改范围|文件范围|允许路径|允许修改路径",
+}
+REQUIREMENT_ITEM = (
+    r"(?:本次|当前|这个|这次|已有|的)*"
+    r"(?:需求约定|需求契约|" + "|".join(REQUIREMENT_FIELDS.values()) + r")"
+    r"(?!函数|方法|检查|校验|变量|类)"
+)
+REQUIREMENT_TARGET = REQUIREMENT_ITEM + r"(?:\s*(?:、|和|及|与)\s*" + REQUIREMENT_ITEM + r")*"
+REQUIREMENT_REQUEST = re.compile(
+    r"^(?:(?:请(?:你)?|帮我|给我|直接|现在|需要|我要|我想)\s*)*"
+    r"(?:(?:为|给)(?:本次修改|这个副本|本副本)\s*)?"
+    r"(?:(?:把|将)(?P<before>"
+    + REQUIREMENT_TARGET
+    + r")\s*"
+    + ACTION
+    + r"|"
+    + ACTION
+    + r"\s*(?P<after>"
+    + REQUIREMENT_TARGET
+    + r"))"
+)
+
+
+def command_text(request_text):
+    """授权判断忽略粘贴源码和引用；原始正文另行留存，不用清洗结果冒充原文。"""
+    text = effective_request(request_text)
+    text = re.sub(r"(?ms)^[ \t]*(`{3,}|~{3,})[^\n]*\n.*?(?:^[ \t]*\1[ \t]*$|\Z)", "", text)
+    text = re.sub(r"(?s)<code_selection\b[^>]*>.*?(?:</code_selection>|\Z)", "", text)
+    return re.sub(r"(?m)^[ \t]*>.*$", "", text)
+
+
+def requested_requirement_fields(request_text):
+    text = command_text(request_text)
+    # 允许“只补验收，不修改代码”；讨论和全局否定仍不能授权约定变更。
+    text = re.sub(
+        r"(?:不要|不|别|禁止)修改(?:任何)?代码\s*(?=" + CLAUSE_BOUNDARY + r"|$)", "", text
+    )
+    if DISCUSSION_ONLY.search(text) or READ_NEGATIVE.search(text):
+        return set()
+    clauses = [clause.strip() for clause in re.split(CLAUSE_BOUNDARY, text)]
+    fields = set()
+    prohibited = set()
+    for clause in clauses:
+        if EDIT_NEGATIVE.search(clause):
+            specific = {
+                key for key, pattern in REQUIREMENT_FIELDS.items() if re.search(pattern, clause)
+            }
+            if not specific or re.search(r"需求约定|需求契约", clause):
+                return set()
+            prohibited.update(specific)
+            continue
+        match = REQUIREMENT_REQUEST.match(clause)
+        if not match or INQUIRY.search(clause) or EDIT_NEGATIVE.search(clause):
+            continue
+        target = match.group("before") or match.group("after")
+        if re.search(r"需求约定|需求契约", target):
+            fields.update(REQUIREMENT_FIELDS)
+        else:
+            fields.update(
+                key for key, pattern in REQUIREMENT_FIELDS.items() if re.search(pattern, target)
+            )
+    return fields - prohibited
 
 
 def _without_protected_objects(text):
@@ -37,6 +104,7 @@ def _without_protected_objects(text):
     objects = (
         r"测试(?:代码|文件|用例)?|点值替身|工程文件|配置(?:文件)?|调用片段|其他文件"
         r"|[A-Za-z0-9_./\\-]+\.[A-Za-z0-9_]+"
+        r"|需求约定|需求契约|" + "|".join(REQUIREMENT_FIELDS.values())
     )
     if re.search(r"副本|隔离", text):
         objects += r"|原件|原文件|原始文件"
@@ -76,7 +144,7 @@ def effective_request(request_text):
 
 
 def is_discussion(request_text, *, reading=False):
-    text = _without_protected_objects(effective_request(request_text))
+    text = _without_protected_objects(command_text(request_text))
     return bool(
         DISCUSSION_ONLY.search(text)
         or READ_NEGATIVE.search(text)
@@ -85,12 +153,14 @@ def is_discussion(request_text, *, reading=False):
 
 
 def explicit_edit_request(request_text):
-    text = effective_request(request_text)
+    text = command_text(request_text)
     if is_discussion(request_text):
         return False
     if re.search(r"[，,]\s*(?:需要|要|有)(?:哪些|什么|多少|多久|何时)", text):
         return False
     return any(
-        EDIT_REQUEST.match(clause.strip()) and not INQUIRY.search(clause)
+        EDIT_REQUEST.match(clause.strip())
+        and not INQUIRY.search(clause)
+        and not REQUIREMENT_REQUEST.match(clause.strip())
         for clause in re.split(r"[，,。！!\n；;]", text)
     )

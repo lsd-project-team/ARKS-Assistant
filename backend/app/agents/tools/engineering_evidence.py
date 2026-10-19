@@ -69,6 +69,7 @@ def code_work_evidence(changes, identifiers):
                             "acceptance_criteria",
                             "constraints",
                             "allowed_paths",
+                            "request_binding",
                             "review",
                             "delivered_at",
                         )

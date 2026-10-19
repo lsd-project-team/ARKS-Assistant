@@ -46,6 +46,8 @@ class AgentRunExecutor:
                     or run["analysis_policy"]["mode"] == "deep"
                 ),
             )
+            evidence.user_request = message["content"]
+            evidence.request_identity = {"message_id": message["id"], "run_id": run["id"]}
             policy = run["analysis_policy"]
             previous = (
                 runtime.repository.latest_event(run["thread_id"], "analysis_progress")

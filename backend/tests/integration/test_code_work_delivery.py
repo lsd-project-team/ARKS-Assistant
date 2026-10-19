@@ -17,6 +17,7 @@ from app.modules.code_changes import CodeChanges
 from app.modules.code_changes.delivery import delivery_package, review_change
 from app.modules.code_changes.maintenance import cleanup
 from app.modules.code_changes.models import CodeChangeRecord, VerificationRecord
+from app.modules.code_changes.request_binding import RequestOrigin
 
 
 @pytest.fixture
@@ -169,7 +170,14 @@ async def test_missing_criteria_can_be_filled_without_losing_patch_and_need_reve
 ):
     service = delivery_changes
     set_policy(service, require_sandbox_delivery=False)
-    change = edit_entry(service, create_change(service, acceptance_criteria=[]))
+    change = edit_entry(
+        service,
+        create_change(
+            service,
+            acceptance_criteria=[],
+            request_origin=RequestOrigin("chat", "请修改副本入口名称"),
+        ),
+    )
     profile = host_profile(service)
     passed = await verify_complete(service, change, profile)
     patch = service.export(change["id"])
@@ -202,19 +210,30 @@ async def test_missing_criteria_can_be_filled_without_losing_patch_and_need_reve
     )
     assert manifest["requirements_version"] == updated["requirements_version"]
     assert manifest["acceptance_criteria"] == ["入口名称为 Start"]
+    assert manifest["request_binding"] == updated["request_binding"]
+    assert manifest["request_binding"]["original"]["origin"]["text"] == "请修改副本入口名称"
+    assert manifest["request_binding"]["revisions"][0]["origin"] is None
 
 
 async def test_contract_update_rejects_stale_identity_and_invalid_scope_then_clears_review(
     delivery_changes,
 ):
     service = delivery_changes
-    reviewed = await approved_host_change(service)
+    reviewed = await approved_host_change(
+        service, request_origin=RequestOrigin("chat", "请修改入口")
+    )
+    no_op = update_contract(service, reviewed, title="  " + reviewed["title"] + "  ")
+    assert no_op == reviewed
+    assert no_op["status"] == "passed" and not no_op["latest_verification"]["stale"]
+    assert no_op["request_binding"]["revisions"] == []
     delivery_package(service, reviewed["id"])
     with pytest.raises(ValueError, match="超出新的路径范围"):
         update_contract(service, reviewed, allowed_paths=["other/**"])
     assert service.get(reviewed["id"])["requirements_version"] == reviewed["requirements_version"]
     assert service.get(reviewed["id"])["review"]
     updated = update_contract(service, reviewed, constraints="必须保留原文件")
+    assert updated["request_binding"]["original"] == reviewed["request_binding"]["original"]
+    assert len(updated["request_binding"]["revisions"]) == 1
     assert updated["review"] is None and updated["delivered_at"] is None
     with pytest.raises(ValueError, match="需求已变化"):
         update_contract(service, reviewed, goal="旧窗口不能覆盖需求")

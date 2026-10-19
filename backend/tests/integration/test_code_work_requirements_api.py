@@ -28,6 +28,21 @@ def test_contract_api_fills_old_copy_and_enforces_identity_ownership_and_archive
         ).json()
         url = f"/api/p/{project['id']}/code-changes"
         change = client.post(url, json={"title": "入口", "goal": "保持入口可用"}).json()
+        origin = change["request_binding"]["original"]
+        assert origin["origin"]["channel"] == "manual_form"
+        assert origin["origin"]["actor_id"] == client.get("/api/auth/session").json()["user"]["id"]
+        assert origin["contract"]["goal"] == "保持入口可用"
+        assert (
+            client.post(
+                url,
+                json={
+                    "title": "伪造",
+                    "goal": "伪造",
+                    "request_binding": {"original": "伪造"},
+                },
+            ).status_code
+            == 422
+        )
         updated = client.put(
             f"{url}/{change['id']}/requirements",
             json=payload(change, acceptance_criteria=["入口仍可读"], allowed_paths=["Program.cs"]),
@@ -36,6 +51,19 @@ def test_contract_api_fills_old_copy_and_enforces_identity_ownership_and_archive
         saved = updated.json()
         assert saved["acceptance_criteria"] == ["入口仍可读"]
         assert saved["requirements_version"] != change["requirements_version"]
+        assert saved["request_binding"]["original"] == origin
+        assert len(saved["request_binding"]["revisions"]) == 1
+        assert saved["request_binding"]["revisions"][0]["changes"] == {
+            "acceptance_criteria": ["入口仍可读"],
+            "allowed_paths": ["Program.cs"],
+        }
+        assert (
+            client.put(
+                f"{url}/{change['id']}/requirements",
+                json=payload(saved, request_origin={"text": "fake"}),
+            ).status_code
+            == 422
+        )
         old_file = client.get(f"{url}/{change['id']}/file", params={"path": "Program.cs"}).json()
         next_contract = client.put(
             f"{url}/{change['id']}/requirements", json=payload(saved, constraints="新限制")
@@ -52,6 +80,8 @@ def test_contract_api_fills_old_copy_and_enforces_identity_ownership_and_archive
         )
         assert stale_edit.status_code == 409 and "需求约定已变化" in stale_edit.text
         saved = next_contract
+        assert saved["request_binding"]["original"] == origin
+        assert len(saved["request_binding"]["revisions"]) == 2
         assert (
             client.put(f"{url}/{change['id']}/requirements", json=payload(change)).status_code
             == 409

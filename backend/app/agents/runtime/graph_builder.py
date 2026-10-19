@@ -91,6 +91,8 @@ class AgentGraphBuilder:
             and CONTINUE_QUESTION.fullmatch(requested_work.strip())
         ):
             requested_work += "\n此前已授权的请求：" + policy["question"]
+        if evidence is not None:
+            evidence.user_request = requested_work
         tools += engineering_tools(
             runtime,
             requested_work,

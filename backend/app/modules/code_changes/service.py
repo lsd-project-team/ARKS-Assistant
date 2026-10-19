@@ -31,6 +31,7 @@ from app.modules.code_changes.models import (
 )
 from app.modules.code_changes.policy import WorkPolicy, profile_version
 from app.modules.code_changes.processes import VerificationTask, run_process
+from app.modules.code_changes.request_binding import initial_binding, revised_binding
 from app.modules.code_changes.requirements import (
     path_allowed,
     requirement_payload,
@@ -97,8 +98,11 @@ class CodeChanges:
         if row.status in {"discarded", "verifying"}:
             raise ValueError("验证中或已丢弃的副本不能修改")
 
-    def create(self, title, goal, **details):
+    def create(self, title, goal, *, request_origin=None, **details):
         body = ChangeWrite(title=title, goal=goal, **details)
+        payload = requirement_payload(body)
+        if request_origin is not None:
+            payload["request_binding"] = initial_binding(request_origin, body.model_dump())
         if getattr(self.workspace, "attached", {}):
             raise ValueError("隔离修改暂不支持附加源码目录，请使用只关联主目录的项目")
         if self.storage.resolve().is_relative_to(self.workspace.root.resolve()):
@@ -120,7 +124,7 @@ class CodeChanges:
                 goal=body.goal,
                 status="ready",
                 source_root=str(self.workspace.root.resolve()),
-                requirements_json=json.dumps(requirement_payload(body), ensure_ascii=False),
+                requirements_json=json.dumps(payload, ensure_ascii=False),
             )
             folder = self._folder(row)
             folder.mkdir()
@@ -195,7 +199,16 @@ class CodeChanges:
                 "requirements_version": requirements_version(row),
             }
 
-    def update_requirements(self, identifier, change_version, expected_requirements, **details):
+    def update_requirements(
+        self,
+        identifier,
+        change_version,
+        expected_requirements,
+        *,
+        request_origin=None,
+        authorized_fields=None,
+        **details,
+    ):
         body = ChangeWrite(**details)
         with self._lock, self.database.session.begin() as session:
             row = self._row(session, identifier)
@@ -206,8 +219,26 @@ class CodeChanges:
             ):
                 raise ValueError("副本或需求已变化，请刷新后再保存需求约定")
             previous = requirements_version(row)
+            current = {"title": row.title, "goal": row.goal, **requirements(row)}
+            delta = {
+                key: value for key, value in body.model_dump().items() if value != current[key]
+            }
+            if authorized_fields is not None and (set(delta) - set(authorized_fields)):
+                raise ValueError(
+                    "用户未授权修改这些需求字段："
+                    + ", ".join(sorted(set(delta) - set(authorized_fields)))
+                )
+            if not delta:
+                return self._serialize(session, row)
             row.title, row.goal = body.title, body.goal
-            row.requirements_json = json.dumps(requirement_payload(body), ensure_ascii=False)
+            payload = requirement_payload(body)
+            payload["request_binding"] = revised_binding(
+                current.get("request_binding"),
+                request_origin,
+                previous,
+                delta,
+            )
+            row.requirements_json = json.dumps(payload, ensure_ascii=False)
             _, files, _ = changes_diff(
                 safe_path(self._folder(row), "base"), self._work(row), json.loads(row.manifest_json)
             )
@@ -616,6 +647,7 @@ class CodeChanges:
             "latest_verification": latest,
             "error": row.error,
             **requirements(row),
+            "request_binding": requirements(row).get("request_binding"),
             "review": (json.loads(row.review_json) or None)
             if not latest or not latest["stale"]
             else None,

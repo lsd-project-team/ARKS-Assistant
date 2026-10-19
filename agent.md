@@ -55,7 +55,7 @@
 
 2026-10-16 核对时，调试录入、问题库、常见问法和交接资料检索相关测试共 23 项通过。这项结果不代表全项目源码已经理解完成，也不代表设备验证完成。
 
-2026-10-19，当前模型在限定外发范围内完成了一个真实业务方法的读取、问题定位、隔离修复及Linux实际命令验证：原版3个边界用例越界，修改版11例全部通过，业务原件不变。详见[标定网格案例](docs/verification/calibration-grid-case.md)。随后补齐已读源码、差异与命令档案进入复核，本例AI复核通过，见[复核证据验收](docs/verification/source-review-context.md)。人工评审、原始需求/约定修订授权的独立验收、.NET Framework 4.8整机工程构建和全仓阅读仍未完成。
+2026-10-19，当前模型在限定外发范围内完成了一个真实业务方法的读取、问题定位、隔离修复及Linux实际命令验证：原版3个边界用例越界，修改版11例全部通过，业务原件不变。详见[标定网格案例](docs/verification/calibration-grid-case.md)。随后补齐已读源码、差异与命令档案进入复核，本例AI复核通过，见[复核证据验收](docs/verification/source-review-context.md)。原始人类要求已独立绑定，模型修订约定按明确请求的字段授权，同例再次通过11例与AI复核，见[需求绑定验收](docs/verification/request-binding.md)。初始约定仍是草稿；人工业务语义评审、.NET Framework 4.8整机工程构建和全仓阅读仍未完成。
 
 ## 四、沟通与开发约定
 
@@ -137,6 +137,7 @@
 - [当前模型接入Linux沙箱验证](docs/verification/model-sandbox.md)
 - [首个业务源码验收：标定网格边界](docs/verification/calibration-grid-case.md)
 - [源码与执行证据进入复核](docs/verification/source-review-context.md)
+- [原始需求绑定与约定修订授权](docs/verification/request-binding.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)
 - [账号与交接访问控制](docs/features/accounts-and-handover-access.md)
 

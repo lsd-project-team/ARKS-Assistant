@@ -29,6 +29,7 @@ from app.modules.code_changes.models import (
     VerificationRecord,
 )
 from app.modules.code_changes.policy import WorkPolicy
+from app.modules.code_changes.request_binding import RequestOrigin
 from app.modules.source_analysis.workspace import Workspace
 
 
@@ -109,7 +110,23 @@ async def test_restore_keeps_code_work(tmp_path, monkeypatch):
             acceptance_criteria=["入口改为 Start", "原件保持不变"],
             constraints="只修改入口名称",
             allowed_paths=["Program.cs"],
+            request_origin=RequestOrigin("manual_form", "只改入口名称", actor_id="test-actor"),
         )
+        original_request = change["request_binding"]["original"]
+        change = changes.update_requirements(
+            change["id"],
+            change["change_version"],
+            change["requirements_version"],
+            title=change["title"],
+            goal=change["goal"],
+            acceptance_criteria=change["acceptance_criteria"],
+            allowed_paths=change["allowed_paths"],
+            constraints="只修改入口名称；不得联网",
+            request_origin=RequestOrigin("manual_form", "增加离线约束", actor_id="test-actor"),
+            authorized_fields={"constraints"},
+        )
+        assert change["request_binding"]["original"] == original_request
+        assert len(change["request_binding"]["revisions"]) == 1
         file = changes.read_file(change["id"], "Program.cs")
         changes.edit_file(change["id"], "Program.cs", "Main", "Start", file["version"])
         profile = changes.save_profile(
@@ -132,6 +149,11 @@ async def test_restore_keeps_code_work(tmp_path, monkeypatch):
             "test-reviewer",
         )
         package = delivery_package(changes, change["id"])
+        with ZipFile(io.BytesIO(package)) as zipped:
+            assert (
+                json.loads(zipped.read("manifest.json"))["request_binding"]
+                == change["request_binding"]
+            )
         (paths.scratch / "delivery.zip").write_bytes(package)
         patch = changes.export(change["id"])
         (paths.scratch / "delivery.patch").write_text(patch, encoding="utf-8", newline="")

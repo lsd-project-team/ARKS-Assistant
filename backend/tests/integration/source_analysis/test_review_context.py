@@ -191,8 +191,10 @@ async def test_resumed_run_restores_only_the_change_reference_and_reloads_curren
             lambda kind, payload: repository.event(current["id"], kind, payload),
         )
         (payload,) = model.reviewed
+        assert payload["user_request"] == "核对 Program.cs 和已有副本"
         assert [row["id"] for row in payload["code_work"]["changes"]] == [created["id"]]
         assert payload["code_work"]["changes"][0]["verifications"] == []
+        assert payload["code_work"]["changes"][0]["request_binding"] is None
         contexts = [
             row["payload"]
             for row in repository.events(current["id"], 0)

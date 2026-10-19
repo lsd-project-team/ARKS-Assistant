@@ -10,12 +10,14 @@ from langchain_core.tools import tool
 from app.agents.context.tokens import fit_text
 from app.agents.tools.engineering_evidence import code_work_evidence
 from app.agents.tools.engineering_intent import (
-    effective_request,
+    command_text,
     explicit_edit_request,
     is_discussion,
+    requested_requirement_fields,
 )
 from app.agents.tools.guards import safe_source_tools
 from app.core.config import dump_json
+from app.modules.code_changes.request_binding import RequestOrigin
 
 CHANGE_TOOLS = {
     "list_code_changes",
@@ -45,7 +47,7 @@ _logger = logging.getLogger(__name__)
 
 
 def _explicit_read_request(request_text):
-    text = effective_request(request_text)
+    text = command_text(request_text)
     # 在动作分句内识别命令；“如何开始通读”不能因命中名词或动词子串触发付费任务。
     clauses = re.split(
         r"[，,。！!\n；;]|并(?:且)?(?=总结|分析|说明|解释|告诉|给出|列出|梳理|开始|继续|通读)"
@@ -109,8 +111,13 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
     changes, reading = runtime.code_changes, runtime.project_reading
     if evidence is not None:
         evidence.code_work_reader = partial(code_work_evidence, changes)
+        evidence.user_request = request_text
     discussion = is_discussion(request_text, reading=True)
     can_edit = explicit_edit_request(request_text)
+    requirement_fields = requested_requirement_fields(request_text)
+    origin = RequestOrigin(
+        "chat", request_text, **(evidence.request_identity if evidence is not None else {})
+    )
     seen_contracts = {}
     attempts = 0
 
@@ -127,6 +134,7 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
                 "acceptance_criteria",
                 "constraints",
                 "allowed_paths",
+                "request_binding",
             )
         }
         seen_contracts[identifier] = current["requirements_version"]
@@ -199,6 +207,7 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
             acceptance_criteria=acceptance_criteria or [],
             constraints=constraints,
             allowed_paths=allowed_paths or [],
+            request_origin=origin,
         )
         remember_contract(result)
         return dump_json(result)
@@ -262,10 +271,12 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         allowed_paths: list[str],
     ) -> str:
         """Update requested requirements after reading contract; invalidates tests and review."""
-        if not can_edit:
-            raise ValueError("本轮用户没有要求实施修改或更新需求约定")
+        if not requirement_fields:
+            raise ValueError("本轮用户没有明确要求修改需求约定")
         if change_id not in seen_contracts:
             raise ValueError("请先读取副本文件或差异，核对当前需求约定")
+        if requirements_version != seen_contracts[change_id]:
+            raise ValueError("需求约定与本轮已读取版本不符，请重新读取")
         return dump_json(
             await mutate(
                 changes.update_requirements,
@@ -277,6 +288,8 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
                 acceptance_criteria=acceptance_criteria,
                 constraints=constraints,
                 allowed_paths=allowed_paths,
+                request_origin=origin,
+                authorized_fields=requirement_fields,
             )
         )
 

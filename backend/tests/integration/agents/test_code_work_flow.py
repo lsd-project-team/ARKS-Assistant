@@ -177,6 +177,11 @@ async def test_agent_reads_failed_exit_then_repairs_and_reverifies_original_unch
         assert results[0]["latest_verification"]["exit_code"] == 1
         assert "answer must equal 2" in results[0]["latest_verification"]["output"]
         assert results[1]["latest_verification"]["exit_code"] == 0
+        expected_request = question + "\n此前已授权的请求：" + previous if previous else question
+        binding = changes.get(results[-1]["id"])["request_binding"]
+        assert binding["original"]["origin"]["text"] == expected_request
+        assert binding["original"]["origin"]["channel"] == "chat"
+        assert binding["revisions"] == []
         assert original.read_bytes() == original_bytes
         assert "+answer = 2" in changes.export(results[-1]["id"])
     finally:
