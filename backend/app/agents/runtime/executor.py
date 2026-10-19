@@ -210,7 +210,10 @@ class AgentRunExecutor:
             ):
                 if mode == "messages":
                     chunk, metadata = event
-                    if metadata.get("lc_source") == "source_verification":
+                    if metadata.get("lc_source") in {
+                        "source_verification",
+                        "knowledge_verification",
+                    }:
                         continue
                     if metadata.get("lc_source") == "summarization":
                         if not summary_announced:

@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 
+import pytest
 from langchain_core.messages import ToolMessage
 
 from app.agents.analysis.policy import analysis_policy, configured_analysis
@@ -19,6 +20,21 @@ def test_scope_policy_preserves_configuration_and_continuation_scope():
     assert analysis_policy(settings, "继续核查", policy)["mode"] == "deep"
     assert analysis_policy(settings, "解释这个函数")["mode"] == "standard"
     assert analysis_policy(settings, "另一个普通问题", policy)["continuing"] is False
+
+
+@pytest.mark.parametrize(
+    "question,mode",
+    [
+        ("提取蓝膜刺穿处理经验的完整原文，不要改写或分析。", "standard"),
+        ("给我完整分析标定调用链", "deep"),
+        ("介绍完整的工作流程", "deep"),
+        ("完整业务流程是什么", "deep"),
+        ("完整地梳理标定调用链", "deep"),
+        ("完整说明设备标定的流程", "deep"),
+    ],
+)
+def test_complete_quote_is_not_a_complete_code_audit(question, mode):
+    assert analysis_policy(AppSettings(), question)["mode"] == mode
 
 
 def test_batch_merges_ranges_and_records_only_returned_content(services):

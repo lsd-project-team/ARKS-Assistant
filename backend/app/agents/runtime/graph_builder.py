@@ -15,6 +15,7 @@ from app.agents.prompts.system import SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
+from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.engineering import engineering_tools
@@ -53,6 +54,14 @@ class AgentGraphBuilder:
         policy=None,
     ):
         runtime = self.runtime
+        # 自动带入及工具检索共用来源事件；复核不能读取未检索的其他记录。
+        debug_references, original_emit = {}, emit
+
+        def emit(kind, payload):
+            if kind == "knowledge_reference" and payload.get("kind") == "debug_issue":
+                debug_references[payload["id"]] = payload["version"]
+            return original_emit(kind, payload)
+
         settings = current_configuration(runtime.settings)
         options = SourceOptions.model_validate(source_options or {})
         if not inspection:
@@ -246,7 +255,8 @@ class AgentGraphBuilder:
                 "用户只查询历史事件、试验结果或要求记录文字和原图时，直接回答记录事实，"
                 "不追加适用条件缺项检查或追问。missing 可能来自本次提问未提供条件，"
                 "不能据此断言原记录没有填写；说明原记录缺项必须核对实际正文。"
-                "用户只要以前的处理方案时，先忠实返回历史记录；除非用户要求进一步分析，否则不扩展源码排查。"
+                "用户只要以前的处理方案时，先用自己的话提炼历史方案与实际结果并保留条件、判断归属；"
+                "只有用户要求原文才逐字返回，除非用户要求进一步分析，否则不扩展源码排查。"
                 "excluded_records 是已经找到但条件不符的历史记录，不能回答成库里没有记录。"
                 "解释条件差异时可读取其原文作为对照；不得忽略 compatibility 把它套用到当前设备。"
             )
@@ -287,6 +297,13 @@ class AgentGraphBuilder:
                     [SourceEvidenceGuard(evidence, None if inspection else model)]
                     if evidence is not None
                     else []
+                ),
+                KnowledgeAnswerGuard(
+                    None if inspection else model,
+                    question_text or "",
+                    lambda: debug_issues.review_records(debug_references) if debug_issues else [],
+                    emit,
+                    available,
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations

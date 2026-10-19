@@ -17,9 +17,13 @@ class DeterministicModel(BaseChatModel):
 
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         summary_request = "Context Extraction" in str(messages[0].content)
-        content = (
-            "目标：保持中文回答；已讨论入口；待办：继续读取源码。"
-            if summary_request
-            else "测试回复"
-        )
+        if "你负责复核并修订基于历史经验" in messages[0].text:
+            # 普通框架用例不评估语言质量；纠错、失败和降级由专门的复核替身覆盖。
+            content = '{"verdict":"passed","reason":"框架测试替身","answer":""}'
+        else:
+            content = (
+                "目标：保持中文回答；已讨论入口；待办：继续读取源码。"
+                if summary_request
+                else "测试回复"
+            )
         return ChatResult(generations=[ChatGeneration(message=AIMessage(content=content))])
