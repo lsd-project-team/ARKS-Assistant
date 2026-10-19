@@ -104,14 +104,13 @@ export function ProjectHome() {
     <section className="project-home" aria-label="项目首页">
       <div className="project-home-content">
         <WorkspaceHeading className="project-home-header">
-          <div>
-            <div className="project-eyebrow">
-              <Folder size={16} />
-              项目{project?.state === 'archived' ? ' · 已归档' : ''}
-            </div>
-            <h1>{project?.name || '正在读取项目…'}</h1>
-            <p>{project?.description || '把相关对话、源码和资料放在一起。'}</p>
-          </div>
+          <h1 className="project-home-title" title={project?.name}>
+            <Folder size={21} aria-hidden="true" />
+            <span className="project-home-name">{project?.name || '正在读取项目…'}</span>
+            {project?.state === 'archived' && (
+              <span className="project-archived-badge">已归档</span>
+            )}
+          </h1>
           <div className="project-home-actions">
             <Button
               className="icon-button"

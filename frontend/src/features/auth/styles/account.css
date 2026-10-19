@@ -54,7 +54,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.workspace-topbar :is(.handover-header, .project-home-header) p {
+.workspace-topbar .handover-header p {
   margin: 0;
   font-size: 11px;
   line-height: 1.6;
@@ -62,13 +62,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.workspace-topbar .project-home-header > div:first-child {
-  min-width: 0;
-}
-.workspace-topbar .project-home-header .project-eyebrow {
-  font-size: 10px;
-  margin: 0;
 }
 .workspace-topbar .knowledge-page-heading {
   font-size: 14px;
@@ -265,7 +258,7 @@
   .account-role {
     display: none;
   }
-  .workspace-topbar :is(.handover-header, .project-home-header) p {
+  .workspace-topbar .handover-header p {
     display: none;
   }
   .workspace-topbar :is(.handover-header, .project-home-header) h1,
