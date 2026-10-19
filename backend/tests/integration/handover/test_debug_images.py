@@ -1,6 +1,7 @@
 """文字检索带出固定版本原图，重复位置、旧引用和权限均不能丢失。"""
 
 import base64
+import json
 
 import pytest
 from fastapi.testclient import TestClient
@@ -106,6 +107,55 @@ def test_search_returns_original_image_metadata_without_vision_or_image_indexing
         assert not DebugIssueCorpus(services[1]).search("adv-3")
         assert client.get(image_url(row, 0)).content == PNG
         assert upload(client, {**row, "version": 3}).status_code == 409
+
+
+async def test_read_tool_keeps_complete_business_text_without_image_or_source_internals(services):
+    with TestClient(create_app(services[0])) as client:
+        sign_in(client, "user")
+        problem = "7月23日09:00—7月24日16:30，室温25.2℃，精度3μm 3Σ。\n" * 180
+        row = client.post(
+            "/api/handover/debug-issues",
+            json={"title": "7月23—24日｜adv-3 试验", "payload": {"problem": problem}},
+        ).json()
+        for _ in range(3):
+            row = upload(client, row, filename="internal-only.png").json()
+        corpus = DebugIssueCorpus(services[1], context_query="adv-3 7月23日试验")
+        read_tool = next(tool for tool in corpus.tools() if tool.name == "read_debug_issue")
+        chunks = []
+        offset = 0
+        while offset is not None:
+            page = json.loads(await read_tool.ainvoke({"record_id": row["id"], "offset": offset}))
+            assert page["version"] == 4 and page["image_count"] == 3
+            assert page["reference"] == (
+                f"[7月23—24日｜adv-3 试验 · v4](debug-issue:{row['id']}/4)"
+            )
+            assert "实际引用记录的文字和全部原图" in page["display_hint"]
+            assert "只展示对应记录" in page["display_hint"]
+            assert "不要声称无法展示原图" in page["display_hint"]
+            chunks.append(page["content"])
+            offset = page["next_offset"]
+        assert len(chunks) > 1
+        content = json.loads("".join(chunks))
+        assert content["记录正文"] == problem
+        assert content["录入原文"] == problem
+        assert content["处理状态"] == "未解决"
+        assert content["记录类别"] == "问题处理"
+        assert (
+            not {"images", "origin", "evidence", "reported_by", "source_thread_id"} & content.keys()
+        )
+        assert "internal-only.png" not in "".join(chunks)
+        assert row["payload"]["images"][0]["id"] not in "".join(chunks)
+        assert "resolution_status" not in "".join(chunks)
+        search_tool = next(tool for tool in corpus.tools() if tool.name == "search_debug_issues")
+        searched = json.loads(await search_tool.ainvoke({"query": "adv-3 试验"}))
+        assert searched["matches"][0]["payload"]["处理状态"] == "未解决"
+        assert searched["matches"][0]["payload"]["记录类别"] == "问题处理"
+        prompt, _ = corpus.prompt("adv-3 试验", 3000)
+        assert "resolution_status" not in prompt and "record_type" not in prompt
+        assert prompt.index("</debug_issue_records>") < prompt.index("只展示对应记录")
+        # 精简的是模型读到的投影，记录原件及三处重复图片保持不变。
+        saved = client.get(f"/api/handover/records/{row['id']}?version=4").json()
+        assert saved["payload"] == row["payload"]
 
 
 def test_adv_device_condition_keeps_other_machine_images_out_of_matches(services):

@@ -62,7 +62,8 @@ class HistoricalAnswer(BaseChatModel):
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         prompt = str(messages[0].content)
         assert "debug_issue_records" in prompt and "更换密封圈" in prompt
-        assert '"resolution_status": "resolved"' in prompt
+        assert '"处理状态": "记录人反馈已解决"' in prompt
+        assert "resolution_status" not in prompt
         source = prompt.split('"citation": "debug-issue:')[1].split('"')[0]
         answer = f"历史 E901 记录中，更换密封圈后连续取片20次正常。[调试记录](debug-issue:{source})"
         return ChatResult(generations=[ChatGeneration(message=AIMessage(content=answer))])

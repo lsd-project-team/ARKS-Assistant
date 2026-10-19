@@ -33,7 +33,8 @@ export function KnowledgeFeedback({
   const sources =
     mode === 'context' ? distinctReferences(references) : answerReferences(answer, references);
   const notices = mode === 'context' ? searchNotices(searches, sources) : [];
-  const originals = mode === 'answer' ? originalDebugReferences(references) : [];
+  // 检索候选不等于回答依据；原文和原图必须跟随回答实际引用的固定版本。
+  const originals = mode === 'answer' ? originalDebugReferences(sources) : [];
   if (!sources.length && !notices.length && !saves.length && !originals.length) return null;
   return (
     <div className="knowledge-feedback">
@@ -96,7 +97,7 @@ export function RunKnowledgeSummary({
   const context = useQuery({
     queryKey: ['run-knowledge', projectId, runId],
     queryFn: () => api<RunContext>(`/runs/${runId}/context`, undefined, projectId),
-    // 历史回复即使省略文字引用，也应恢复当轮检索到的固定版本原文与原图。
+    // 历史回复恢复引用快照后，仍由当前回答的引用筛选原文与原图。
     enabled: true,
     staleTime: 300000,
   });

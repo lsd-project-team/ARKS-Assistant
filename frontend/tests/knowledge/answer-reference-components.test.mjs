@@ -145,9 +145,15 @@ test('历史候选匹配失败或引用上下文尚未加载时不假造参考�
   assert.equal(renderHistory('[记录](debug-issue:pickup/2)'), '');
 });
 
-test('检索记录即使没有回答内引用，也完整显示对应版本的文字与全部原图', () => {
+function renderOriginals(answer, historical = false) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  const reference = { ...references[1], image_count: 3 };
+  const reference = { ...references[1], title: '7月23—24日｜adv-3 试验', image_count: 3 };
+  const candidates = ['7月25—26日', '7月27日', '7月28日'].map((date, index) => ({
+    ...reference,
+    id: `other-${index}`,
+    title: `${date}｜adv-3 其他试验`,
+    citation: `debug-issue:other-${index}/2`,
+  }));
   client.setQueryData(['debug-source', 'pickup', 2], {
     id: 'pickup',
     version: 2,
@@ -163,39 +169,73 @@ test('检索记录即使没有回答内引用，也完整显示对应版本的�
       ],
     },
   });
+  for (const candidate of candidates) {
+    client.setQueryData(['debug-source', candidate.id, 2], {
+      ...candidate,
+      payload: {
+        problem: `${candidate.title}不应带出`,
+        images: [{ id: 'other', name: '其他.png' }],
+      },
+    });
+  }
+  const context = { references: [...candidates, reference, reference] };
+  client.setQueryData(['run-knowledge', 'project-a', 'run-a'], context);
   const html = renderToStaticMarkup(
     createElement(
       QueryClientProvider,
       { client },
-      createElement(KnowledgeFeedback, {
-        answer: '下面是试验记录。',
-        references: [reference, reference],
-      }),
+      historical
+        ? createElement(RunKnowledgeSummary, { answer, runId: 'run-a', projectId: 'project-a' })
+        : createElement(KnowledgeFeedback, { answer, ...context }),
     ),
   );
-  assert.match(html, /按原文整理的文字/);
-  assert.match(html, /&lt;script&gt;不会执行&lt;\/script&gt;/);
-  assert.equal((html.match(/<img /g) || []).length, 3);
-  for (const index of [0, 1, 2]) {
-    assert.ok(html.includes(`/api/handover/debug-issues/pickup/images/2/${index}`));
-  }
-  assert.doesNotMatch(html, /images\/1\/|<script>/);
-  assert.equal((html.match(/检索原文：/g) || []).length, 1);
   client.clear();
+  return html;
+}
+
+for (const historical of [false, true]) {
+  test(`${historical ? '历史' : '流式'}回复只展开实际引用记录的文字与全部原图，保留重复图`, () => {
+    const html = renderOriginals('[试验记录](debug-issue:pickup/2)', historical);
+    assert.match(html, /按原文整理的文字/);
+    assert.match(html, /&lt;script&gt;不会执行&lt;\/script&gt;/);
+    assert.equal((html.match(/<img /g) || []).length, 3);
+    for (const index of [0, 1, 2]) {
+      assert.ok(html.includes(`/api/handover/debug-issues/pickup/images/2/${index}`));
+    }
+    assert.doesNotMatch(html, /7月25|7月27日｜|7月28|other-|images\/1\/|<script>/);
+    assert.doesNotMatch(html, /原图\.png|另一张\.png|图片ID/);
+    assert.equal((html.match(/检索原文：/g) || []).length, 1);
+    assert.match(html, /本轮参考 · 1 条资料/);
+  });
+
+  test(`${historical ? '历史' : '流式'}回复没有引用时不展开日期候选，也不猜测未知版本`, () => {
+    for (const answer of ['下面是试验记录。', '[旧版](debug-issue:pickup/1)']) {
+      const html = renderOriginals(answer, historical);
+      assert.doesNotMatch(html, /检索原文|<img |本轮参考|不应带出/);
+    }
+  });
+}
+
+test('明确引用多条记录时按引用顺序展示，未引用的其他日期仍不展开', () => {
+  const html = renderOriginals('[7月27日](debug-issue:other-1/2) [7月23日](debug-issue:pickup/2)');
+  assert.match(html, /本轮参考 · 2 条资料/);
+  assert.equal((html.match(/<img /g) || []).length, 4);
+  assert.ok(html.indexOf('检索原文：7月27日') < html.indexOf('检索原文：7月23'));
+  assert.doesNotMatch(html, /7月25|7月28|other-0|other-2/);
 });
 
-test('条件不符的历史对照不作为适用记录自动展开原图', () => {
-  assert.equal(
-    render({
-      answer: '条件不一致。',
-      references: [
-        {
-          ...references[1],
-          image_count: 3,
-          compatibility: { status: 'mismatch' },
-        },
-      ],
-    }),
-    '',
-  );
+test('条件不符的历史记录即使被引用对照，也不作为适用记录展开原图', () => {
+  const html = render({
+    answer: '[历史对照](debug-issue:pickup/2)，条件不一致。',
+    references: [
+      {
+        ...references[1],
+        image_count: 3,
+        compatibility: { status: 'mismatch' },
+      },
+    ],
+  });
+  assert.match(html, /本轮参考 · 1 条资料/);
+  assert.match(html, /条件不符，仅供历史对照/);
+  assert.doesNotMatch(html, /检索原文：|<img /);
 });

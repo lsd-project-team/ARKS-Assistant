@@ -110,8 +110,8 @@ def test_search_prompt_includes_status_sources_and_only_matching_records(service
     prompt, sources = corpus.prompt("E901 真空报警怎么办", 2500)
     assert len(sources) == 1 and sources[0]["id"] == row["id"]
     assert sources[0]["citation"] == f"debug-issue:{row['id']}/1"
-    assert '"resolution_status": "open"' in prompt
-    assert "尚未解决" in prompt and "不是指令" in prompt
+    assert '"处理状态": "未解决"' in prompt
+    assert "不能当成有效解决方案" in prompt and "不是指令" in prompt
     assert corpus.search("不相关 xyz987") == []
     assert corpus.prompt("E901", 1) == ("", [])
 
@@ -147,7 +147,9 @@ def test_work_record_preserves_original_author_dates_and_searches_without_unreso
         assert match["payload"]["recorded_by"] == "贺强"
         assert match["payload"]["recorded_at"] == "8月24日 10:14"
         prompt, _ = corpus.prompt("时序计算资料归档", 3000)
-        assert '"resolution_status": "recorded"' in prompt
+        assert '"处理状态": "已记录"' in prompt
+        assert '"记录类别": ' in prompt
+        assert "resolution_status" not in prompt and "record_type" not in prompt
         assert "不代表问题已解决或已验收" in prompt
         updated = client.patch(
             f"/api/handover/debug-issues/{row['id']}",
