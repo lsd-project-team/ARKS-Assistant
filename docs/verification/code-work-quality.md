@@ -77,6 +77,8 @@ backend/.venv/Scripts/python.exe -m scripts.verification.code_work_quality verif
 
 ## 本轮验证与未验收项
 
+本节保留评测入口初建时的范围。2026-10-19 的后续真实供应商结果分别见 [三类合成场景](current-model-quality.md)、[合成修改与Linux沙箱](model-sandbox.md)、[首个业务源码案例](calibration-grid-case.md)，不覆盖或合并本节的历史测试统计。
+
 测试使用真实临时应用服务、Agent 图、工具、SQLite 和供应商回调，外部模型为确定性替身。反例覆盖不带 `--live`、源码哈希不符、内部目录、过期引用、非法补丁、报告修改后旧评审失效，以及凭据字段输入。本轮覆盖率未采集。
 
 真实供应商上的当前模型效果、模型间比较、完整 C# 阅读理解、私有依赖构建、Windows 执行、设备现场结果和人工业务验收尚未进行。完成这些工作后应追加新的固定报告及人工评审，不覆盖本记录中的未知边界。

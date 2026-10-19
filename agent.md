@@ -55,6 +55,8 @@
 
 2026-10-16 核对时，调试录入、问题库、常见问法和交接资料检索相关测试共 23 项通过。这项结果不代表全项目源码已经理解完成，也不代表设备验证完成。
 
+2026-10-19，当前模型在限定外发范围内完成了一个真实业务方法的读取、问题定位、隔离修复及Linux实际命令验证：原版3个边界用例越界，修改版11例全部通过，业务原件不变。详见[标定网格案例](docs/verification/calibration-grid-case.md)。源码复核的执行证据传递、人工评审、.NET Framework 4.8整机工程构建和全仓阅读仍未完成。
+
 ## 四、沟通与开发约定
 
 - 默认使用中文，先说明结果和实际影响，避免堆砌实现细节。
@@ -132,6 +134,8 @@
 - [Windows隔离执行适配及边界](docs/architecture/windows-executor.md)
 - [当前模型质量评估与人工标准](docs/verification/code-work-quality.md)
 - [当前供应商三类合成场景与定向复测](docs/verification/current-model-quality.md)
+- [当前模型接入Linux沙箱验证](docs/verification/model-sandbox.md)
+- [首个业务源码验收：标定网格边界](docs/verification/calibration-grid-case.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)
 - [账号与交接访问控制](docs/features/accounts-and-handover-access.md)
 
