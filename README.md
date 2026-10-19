@@ -85,9 +85,10 @@ API 密钥保存在本机 `data/settings.private.json`，Git 和应用导出的�
 | 日常操作、知识问答与调试记录 | [使用指南](docs/features/user-guide.md)                                                                                          |
 | 安装选项、启动排查与开发检查 | [本地运行与开发](docs/development/local-development.md)                                                                          |
 | 项目、源码目录与资料管理     | [项目功能](docs/features/projects.md)                                                                                            |
-| 项目阅读、隔离修改与测试验证 | [代码工作](docs/features/code-work.md) |
+| 项目阅读、隔离修改与测试验证 | [代码工作](docs/features/code-work.md)                                                                                           |
 | 账号角色与数据访问范围       | [账号与访问控制](docs/features/accounts-and-handover-access.md) · [项目与对话隔离](docs/features/account-workspace-isolation.md) |
 | 本地数据备份与停服恢复       | [备份与恢复](docs/development/backup-and-restore.md)                                                                             |
+| 公司 Linux 部署与迁移边界    | [Linux 部署](docs/development/linux-deployment.md)                                                                               |
 | 代码结构与模块依赖           | [工程结构](docs/architecture/overview.md)                                                                                        |
 
 ## 参与开发

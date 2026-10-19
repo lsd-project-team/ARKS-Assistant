@@ -3,10 +3,10 @@
 import asyncio
 import secrets
 import uuid
-from urllib.parse import urlparse
 
 from fastapi.responses import JSONResponse
 
+from app.core.deployment_security import DeploymentSecurity
 from app.modules.auth.context import request_identity
 from app.modules.auth.service import COOKIE_NAME
 
@@ -14,13 +14,15 @@ PUBLIC_PATHS = {"/api/health", "/api/auth/login"}
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
 
-def install_authentication(app, auth, usage=None):
+def install_authentication(app, auth, usage=None, *, deployment=None):
+    deployment = deployment or DeploymentSecurity.from_environment()
+
     @app.middleware("http")
     async def authenticate_request(request, call_next):
         path = request.url.path.rstrip("/") or "/"
-        origin = request.headers.get("origin")
-        if origin and urlparse(origin).hostname not in {"localhost", "127.0.0.1", "::1"}:
-            return JSONResponse({"detail": "仅允许本机页面访问"}, status_code=403)
+        rejection = deployment.rejection(request.headers)
+        if rejection:
+            return JSONResponse({"detail": rejection}, status_code=403)
         if not path.startswith("/api/") and path != "/api":
             return await call_next(request)
         if request.headers.get("sec-fetch-site") == "cross-site":

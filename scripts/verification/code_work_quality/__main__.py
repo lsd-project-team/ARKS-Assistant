@@ -8,11 +8,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "backend"))
 
-from .review import save_review, verify_review  # noqa: E402
-from .runner import run_suite  # noqa: E402
-from .safety import checked_path, file_hash  # noqa: E402
-from .samples import create_sample  # noqa: E402
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -37,10 +32,16 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == "sample":
+            from .samples import create_sample
+
             print(create_sample(args.destination))
         elif args.command == "run":
             if not args.live:
                 parser.exit(1, "run必须显式指定--live；真实运行会消耗供应商API与Token。\n")
+            # 授权门先于模型/运行时导入；未授权命令不应等待整套供应商依赖启动。
+            from .runner import run_suite
+            from .safety import file_hash
+
             path = asyncio.run(
                 run_suite(
                     args.cases,
@@ -65,11 +66,16 @@ def main():
             if outcome == "failed":
                 return 1
         elif args.command == "review":
+            from .review import save_review
+            from .safety import checked_path
+
             ratings = json.loads(checked_path(args.ratings).read_text(encoding="utf-8"))
             print(
                 save_review(args.report, args.report_sha256, args.case_id, args.reviewer, ratings)
             )
         else:
+            from .review import verify_review
+
             print(verify_review(args.report, args.review))
     except Exception as error:
         # 参数/Pydantic/供应商异常可能回显原输入；终端只报告错误类型，不打印凭据。

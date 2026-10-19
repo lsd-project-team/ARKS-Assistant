@@ -343,10 +343,12 @@ def test_sample_sources_have_real_hashes_and_do_not_overwrite(quality, tmp_path)
         samples.create_sample(target)
 
 
-def test_cli_without_live_stops_before_reading_missing_config(tmp_path):
+@pytest.mark.parametrize("stdlib_only", [False, True])
+def test_cli_without_live_stops_before_reading_missing_config(tmp_path, stdlib_only):
     result = subprocess.run(
         [
             sys.executable,
+            *(["-S"] if stdlib_only else []),
             "-m",
             "scripts.verification.code_work_quality",
             "run",

@@ -64,8 +64,9 @@ def rollback_restore(destination: Path) -> dict:
 def restore_backup(source: Path, destination: Path) -> dict:
     destination = destination.resolve()
     destination.mkdir(parents=True, exist_ok=True)
-    # 校验与解压始终在隔离目录完成；获得服务锁后才触碰现有数据。
-    with checked_backup(source, temporary_parent=destination.parent) as (report, staged):
+    # 数据目录可能就是独立挂载点；暂存必须建在卷内，不能假设其父目录与它同设备。
+    # checked_backup 创建私有唯一目录并仅清理本轮暂存；获得服务锁后才替换现有数据。
+    with checked_backup(source, temporary_parent=destination) as (report, staged):
         with service_lock(destination):
             if (destination / "restore.pending.json").exists():
                 raise ValueError("存在未完成的恢复，请先使用 --rollback 回滚")

@@ -5,6 +5,7 @@ import asyncio
 from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.core.deployment_security import DeploymentSecurity
 from app.modules.auth.service import COOKIE_NAME
 
 
@@ -35,7 +36,8 @@ def require_admin(request: Request):
     return current
 
 
-def create_router(auth, projects=None) -> APIRouter:
+def create_router(auth, projects=None, *, deployment=None) -> APIRouter:
+    deployment = deployment or DeploymentSecurity.from_environment()
     router = APIRouter(prefix="/api/auth", tags=["auth"])
 
     @router.post("/login")
@@ -54,7 +56,7 @@ def create_router(auth, projects=None) -> APIRouter:
             token,
             httponly=True,
             samesite="strict",
-            secure=request.url.scheme == "https",
+            secure=deployment.secure_cookie(request.url.scheme, request.headers.get("origin")),
             path="/",
         )
         response.headers["Cache-Control"] = "no-store"
@@ -68,7 +70,13 @@ def create_router(auth, projects=None) -> APIRouter:
     @router.post("/logout", status_code=204)
     async def logout(request: Request, response: Response):
         await asyncio.to_thread(auth.revoke, request.cookies.get(COOKIE_NAME, ""))
-        response.delete_cookie(COOKIE_NAME, path="/", httponly=True, samesite="strict")
+        response.delete_cookie(
+            COOKIE_NAME,
+            path="/",
+            httponly=True,
+            samesite="strict",
+            secure=deployment.secure_cookie(request.url.scheme, request.headers.get("origin")),
+        )
 
     @router.post("/password", status_code=204)
     async def password(body: PasswordChange, request: Request, response: Response):
@@ -81,6 +89,12 @@ def create_router(auth, projects=None) -> APIRouter:
             body.current_password,
             body.new_password,
         )
-        response.delete_cookie(COOKIE_NAME, path="/", httponly=True, samesite="strict")
+        response.delete_cookie(
+            COOKIE_NAME,
+            path="/",
+            httponly=True,
+            samesite="strict",
+            secure=deployment.secure_cookie(request.url.scheme, request.headers.get("origin")),
+        )
 
     return router

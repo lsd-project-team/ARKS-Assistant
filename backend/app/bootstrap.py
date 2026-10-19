@@ -15,6 +15,7 @@ from app.agents.runtime.engine import AgentRuntime
 from app.core import health as health
 from app.core.config import PROJECT_ROOT, Paths, SettingsStore
 from app.core.container import AppServices
+from app.core.deployment_security import DeploymentSecurity
 from app.core.process_lock import service_lock
 from app.infrastructure.database.session import Database
 from app.modules.admin.router import create_router as admin_router
@@ -39,6 +40,7 @@ from app.modules.source_analysis.workspace import Workspace
 
 
 def create_app(paths: Paths | None = None) -> FastAPI:
+    deployment = DeploymentSecurity.from_environment()
     paths = paths or Paths()
     if (paths.data / "restore.pending.json").exists():
         raise RuntimeError("检测到未完成的数据恢复，请先运行恢复工具的 --rollback，再启动服务")
@@ -76,8 +78,8 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     app.state.projects = projects
     app.state.auth = auth
     app.state.usage = usage
-    install_authentication(app, auth, usage)
-    app.include_router(auth_router(auth, projects))
+    install_authentication(app, auth, usage, deployment=deployment)
+    app.include_router(auth_router(auth, projects, deployment=deployment))
     app.include_router(admin_router(auth, usage))
     app.include_router(usage_router(usage))
 

@@ -6,5 +6,6 @@
 *.md text eol=lf
 *.ps1 text eol=crlf
 *.cmd text eol=crlf
+resources/deployment/Dockerfile.linux text eol=lf
 # 静态资料带源码指纹，保留原始字节，避免检出时换行转换使校验失效。
 frontend/public/** -text

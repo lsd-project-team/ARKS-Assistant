@@ -1,6 +1,6 @@
 # ARKS智能助手项目协作说明
 
-更新日期：2026-10-16。
+更新日期：2026-10-19。
 
 本文件记录项目目标、已核对的功能进度和开发约定，供后续开发与 AI 协作时参考。进度描述是当前快照，后续应随实际实现和验收结果更新。
 
@@ -124,6 +124,8 @@
 - [执行环境与待验收条件](docs/features/execution-readiness.md)
 - [Linux执行与交付验收](docs/verification/execution-readiness.md)
 - [Linux部署与代码工作后续验收](docs/verification/code-work-followup.md)
+- [公司Linux部署与迁移边界](docs/development/linux-deployment.md)
+- [Linux应用运行与独立卷恢复验收](docs/verification/linux-runtime.md)
 - [Windows隔离执行适配及边界](docs/architecture/windows-executor.md)
 - [当前模型质量评估与人工标准](docs/verification/code-work-quality.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)
