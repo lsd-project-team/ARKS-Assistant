@@ -57,6 +57,8 @@
 
 2026-10-19，当前模型在限定外发范围内完成了一个真实业务方法的读取、问题定位、隔离修复及Linux实际命令验证：原版3个边界用例越界，修改版11例全部通过，业务原件不变。详见[标定网格案例](docs/verification/calibration-grid-case.md)。随后补齐已读源码、差异与命令档案进入复核，本例AI复核通过，见[复核证据验收](docs/verification/source-review-context.md)。原始人类要求已独立绑定，模型修订约定按明确请求的字段授权，同例再次通过11例与AI复核，见[需求绑定验收](docs/verification/request-binding.md)。初始约定仍是草稿；人工业务语义评审、.NET Framework 4.8整机工程构建和全仓阅读仍未完成。
 
+同日重新清点主源码根：2,039 个可读文件、6,704 个阅读分块。用户已批准先向当前 DeepSeek 发送 64 块，排除 DLL、交接资料和历史对话；正式首轮阅读已从所属账号的页面启动，实际成果与断点继续核对。最新应用镜像的 18 项 Linux 运行检查通过；本机已发现 VS2022/MSBuild 17.14 与 4.8 targeting 引用，旧的缺编译器说明已修正，Windows 隔离节点及实际工程构建仍未验收。见[当前覆盖与执行条件复核](docs/verification/readiness-audit-20261019.md)。
+
 ## 四、沟通与开发约定
 
 - 默认使用中文，先说明结果和实际影响，避免堆砌实现细节。
@@ -140,6 +142,7 @@
 - [源码与执行证据进入复核](docs/verification/source-review-context.md)
 - [原始需求绑定与约定修订授权](docs/verification/request-binding.md)
 - [同一修改请求的创建重试与恢复](docs/verification/change-creation-retry.md)
+- [当前源码覆盖与执行条件复核](docs/verification/readiness-audit-20261019.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)
 - [账号与交接访问控制](docs/features/accounts-and-handover-access.md)
 
