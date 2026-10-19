@@ -119,6 +119,7 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         "chat", request_text, **(evidence.request_identity if evidence is not None else {})
     )
     seen_contracts = {}
+    created_identifier = None
     attempts = 0
 
     def remember_contract(current):
@@ -197,18 +198,27 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         constraints: str = "",
         allowed_paths: list[str] | None = None,
     ) -> str:
-        """Create a requested isolated change with criteria, constraints and relative glob scope."""
+        """Create one isolated change per user request; retries reuse its current contract/work."""
         if not can_edit:
             raise ValueError("本轮用户只要求分析，尚未要求修改或实现代码")
-        result = await mutate(
-            changes.create,
-            title,
-            goal,
-            acceptance_criteria=acceptance_criteria or [],
-            constraints=constraints,
-            allowed_paths=allowed_paths or [],
-            request_origin=origin,
-        )
+
+        def create_or_reuse():
+            nonlocal created_identifier
+            # 直接构建工具时可能没有消息身份；同一工具实例仍须在项目锁内防止重复创建。
+            if created_identifier is not None:
+                return changes.reuse(created_identifier)
+            current = changes.create(
+                title,
+                goal,
+                acceptance_criteria=acceptance_criteria or [],
+                constraints=constraints,
+                allowed_paths=allowed_paths or [],
+                request_origin=origin,
+            )
+            created_identifier = current["id"]
+            return current
+
+        result = await mutate(create_or_reuse)
         remember_contract(result)
         return dump_json(result)
 

@@ -98,6 +98,37 @@ class CodeChanges:
         if row.status in {"discarded", "verifying"}:
             raise ValueError("验证中或已丢弃的副本不能修改")
 
+    def _request_change_id(self, origin, project_id):
+        if origin is None or origin.channel != "chat" or not origin.message_id:
+            return None
+        prefix = "$.request_binding.original.origin."
+        with self.database.session() as session:
+            return session.scalar(
+                select(CodeChangeRecord.id)
+                .where(
+                    CodeChangeRecord.project_id == project_id,
+                    func.json_extract(CodeChangeRecord.requirements_json, prefix + "channel")
+                    == "chat",
+                    func.json_extract(CodeChangeRecord.requirements_json, prefix + "message_id")
+                    == origin.message_id,
+                    func.json_extract(CodeChangeRecord.requirements_json, prefix + "text")
+                    == origin.text,
+                )
+                .order_by(CodeChangeRecord.created_at, CodeChangeRecord.id)
+                .limit(1)
+            )
+
+    def reuse(self, identifier):
+        with self._lock:
+            current = self.get(identifier)
+            if current["status"] == "discarded":
+                raise ValueError("本次请求的副本已丢弃或清理，请由用户重新提出修改请求")
+            return {
+                **current,
+                "reused": True,
+                "notice": "本次请求已有副本，沿用当前约定和修改进度；未采用本次创建参数重置它",
+            }
+
     def create(self, title, goal, *, request_origin=None, **details):
         body = ChangeWrite(title=title, goal=goal, **details)
         payload = requirement_payload(body)
@@ -109,6 +140,10 @@ class CodeChanges:
             raise ValueError("隔离副本必须放在源码目录之外，请调整项目源码目录")
         project_id = self.project_id
         with self._lock:
+            # 中断恢复保留消息身份，run_id会变化。查询持久化原始消息，不能只在内存防重。
+            existing = self._request_change_id(request_origin, project_id)
+            if existing is not None:
+                return self.reuse(existing)
             manifest_preview = inventory(self.workspace.root)
             required = (
                 sum(

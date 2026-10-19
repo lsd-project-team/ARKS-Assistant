@@ -90,6 +90,7 @@
 - 分析受工具额度或上下文限制时，如实报告剩余范围，不宣称已经完成全部核查。
 - 项目阅读在“项目 → 代码工作”启动，每轮默认64块，使用配置供应商并消耗额度；中断或预算用尽可继续。状态明确区分索引、读取、模型分析和人工评审。
 - 明确要求实现代码时，可以修改隔离副本并执行已配置验证；默认不配置命令，不自动运行设备程序。当前隔离修改只支持主源码根；Linux容器通道提供资源和权限隔离，显式可信宿主配置仍是非沙箱。Windows适配需要独立Hyper-V节点和管理员准备镜像，当前没有真实节点验收，不能用Linux结果声称ZX2200已经构建通过。
+- 同一用户消息重试创建或恢复代码工作时沿用当前副本与约定，不能用新建副本重置验收或范围。首次约定仍需核对原始需求；新用户问题和页面人工创建保持独立。
 - 模型声明的依赖不代表静态分析完备。依赖未知或旧成果缺少快照时保守失效；明确继续阅读会刷新源码快照后恢复。
 - Linux上的Roslyn运行时按平台发现，可显式配置 `ARKS_DOTNET_PATH`、`ARKS_ROSLYN_HELPER`；正常问答不安装工具。部署时显式准备自带helper，离线使用 `python -m app.modules.source_analysis.setup --no-download`。语法或.NET8参考集分析不能替代.NET Framework 4.8精确绑定与构建。
 - 给代码建议时说明修改位置、相关调用和验证方法；没有实际修改、编译或测试，不得声称已经执行。
@@ -138,6 +139,7 @@
 - [首个业务源码验收：标定网格边界](docs/verification/calibration-grid-case.md)
 - [源码与执行证据进入复核](docs/verification/source-review-context.md)
 - [原始需求绑定与约定修订授权](docs/verification/request-binding.md)
+- [同一修改请求的创建重试与恢复](docs/verification/change-creation-retry.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)
 - [账号与交接访问控制](docs/features/accounts-and-handover-access.md)
 
