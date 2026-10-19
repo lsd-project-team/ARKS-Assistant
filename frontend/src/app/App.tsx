@@ -20,7 +20,8 @@ import { useNavigationLayout } from './layouts/hooks/useNavigationLayout';
 import { useLayoutMotion } from './layouts/hooks/useLayoutMotion';
 import { WorkspaceLoadBoundary } from './layouts/WorkspaceLoadBoundary';
 import { ProjectHome } from '../features/projects/components/ProjectHome';
-import { useCurrentProject } from '../features/projects/hooks/useProjects';
+import { useSourceContext } from '../features/source_reader/hooks/useSourceContext';
+import { ErrorText } from '../shared/ui/ui';
 import { useNewConversation } from '../features/chat/hooks/useNewConversation';
 import { HistoricalSourceDialog } from '../features/source_reader/components/HistoricalSourceDialog';
 import '../features/chat/styles/conversations.css';
@@ -40,7 +41,7 @@ const CodePane = lazy(() =>
 
 export default function App() {
   useWindowSync();
-  const project = useCurrentProject();
+  const sourceContext = useSourceContext();
   const startConversation = useNewConversation();
   const { route, navigate, knowledgeOpen } = useKnowledgeNavigation();
   const handover = useHandoverNavigation();
@@ -184,7 +185,20 @@ export default function App() {
             />
           </Suspense>
         )}
-        {knowledgeOpen && !project.data?.knowledge_available && (
+        {knowledgeOpen && sourceContext.isPending && (
+          <section className="project-home padded muted" role="status">
+            正在读取流程与功能资料…
+          </section>
+        )}
+        {knowledgeOpen && sourceContext.isError && (
+          <section className="project-home padded">
+            <ErrorText error={sourceContext.error} />
+            <button className="button" onClick={() => void sourceContext.refetch()}>
+              重新加载
+            </button>
+          </section>
+        )}
+        {knowledgeOpen && sourceContext.isSuccess && !sourceContext.data.knowledge_available && (
           <section className="project-home">
             <div className="project-empty">
               <h2>此项目还没有流程与功能资料</h2>
@@ -201,7 +215,7 @@ export default function App() {
             </div>
           </section>
         )}
-        {knowledgeOpen && project.data?.knowledge_available && (
+        {knowledgeOpen && sourceContext.isSuccess && sourceContext.data.knowledge_available && (
           <WorkspaceLoadBoundary kind="knowledge">
             <Suspense
               fallback={

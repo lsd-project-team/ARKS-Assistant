@@ -12,6 +12,12 @@ export interface SourceFile {
   encoding: string;
   line_count: number;
 }
+export interface SourceContext {
+  scope_id: string;
+  source_workspace_id: string | null;
+  attached_source_ids: string[];
+  knowledge_available: boolean;
+}
 export interface Selection {
   source_workspace_id?: string;
   path: string;

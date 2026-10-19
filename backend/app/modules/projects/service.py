@@ -189,6 +189,21 @@ class Projects:
     def knowledge_available(self, root):
         return bool(root and Path(root).resolve() == self.base.workspace.root)
 
+    def source_context(self, project_id):
+        """独立对话与项目共用源码身份；不向独立对话复制项目专属资料。"""
+        services = self.services(project_id)
+        primary = services.repository.source_workspace_id
+        return {
+            "scope_id": project_id,
+            "source_workspace_id": primary,
+            "attached_source_ids": sorted(
+                source_id
+                for source_id in services.repository.source_workspace_ids
+                if source_id and source_id != primary
+            ),
+            "knowledge_available": self.knowledge_available(str(services.workspace.root)),
+        }
+
     def association(self, primary, folders=()):
         root = source_root(primary)
         extra = [source_root(value) for value in folders if value.strip()]

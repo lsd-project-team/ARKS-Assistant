@@ -3,11 +3,11 @@ import { api, query } from '../../../app/api/client';
 import { useWorkspace } from '../../../app/state/store';
 import { toast } from '../../../shared/utils/toasts';
 import type { SourceFile } from '../../../shared/types/api';
-import { useCurrentProject } from '../../projects/hooks/useProjects';
+import { sourceContextQuery } from './useSourceContext';
+import { citationPath } from '../lib/citationPath';
 
 export function useSourceCitation() {
   const cache = useQueryClient();
-  const project = useCurrentProject();
   const projectId = useWorkspace((state) => state.projectId);
   return async (
     path: string,
@@ -17,10 +17,10 @@ export function useSourceCitation() {
     sourceId?: string,
   ) => {
     try {
-      const attachedSource = project.data?.source_folders?.find(
-        (folder) => folder.source_id === sourceId,
-      );
-      if (sourceId && sourceId !== project.data?.source_workspace_id && !attachedSource) {
+      const context = await cache.fetchQuery(sourceContextQuery(projectId));
+      if (useWorkspace.getState().projectId !== projectId) return false;
+      const localPath = citationPath(context, path, sourceId);
+      if (localPath === null) {
         const source = await api<SourceFile>(`/sources/${sourceId}/file?path=${query(path)}`);
         if (useWorkspace.getState().projectId !== projectId) return false;
         if (expectedVersion && source.version !== expectedVersion)
@@ -36,6 +36,11 @@ export function useSourceCitation() {
         });
         return true;
       }
+      path = localPath;
+      const openFile = (line?: number, endLine?: number) => {
+        useWorkspace.getState().openFile(path, line, 'pinned', endLine);
+        useWorkspace.getState().revealFile();
+      };
       const source = await cache.fetchQuery({
         queryKey: ['source', path],
         queryFn: () => api<SourceFile>(`/file?path=${query(path)}`, undefined, projectId),
@@ -44,11 +49,11 @@ export function useSourceCitation() {
       if (useWorkspace.getState().projectId !== projectId) return false;
       if (expectedVersion && source.version !== expectedVersion) {
         toast('文件已变化，打开当前版本，请重新定位原引用');
-        useWorkspace.getState().openFile(path);
+        openFile();
         return false;
       }
       if (start === 0 && end === 0 && source.line_count === 0) {
-        useWorkspace.getState().openFile(path);
+        openFile();
         return true;
       }
       if (start < 1 || end < start || end > source.line_count) {
@@ -57,10 +62,10 @@ export function useSourceCitation() {
           undefined,
           'error',
         );
-        useWorkspace.getState().openFile(path);
+        openFile();
         return false;
       }
-      useWorkspace.getState().openFile(path, start, 'pinned', end);
+      openFile(start, end);
       return true;
     } catch (error) {
       toast(

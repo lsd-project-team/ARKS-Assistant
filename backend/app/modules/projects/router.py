@@ -169,6 +169,10 @@ def create_router(projects: Projects):
                 raise FileNotFoundError("来源对话不存在或已移入回收站")
             return {"project_id": thread.project_id, "id": thread.id}
 
+    @router.get("/api/projects/{project_id}/source-context")
+    async def source_context(project_id: str):
+        return await asyncio.to_thread(projects.source_context, project_id)
+
     @router.get("/api/projects/{project_id}")
     async def get(project_id: str):
         row = projects.get(project_id)

@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, type ComponentProps, type ReactNode } from 'react';
+import {
+  Children,
+  createContext,
+  useContext,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+} from 'react';
 import ReactMarkdown, { defaultUrlTransform, type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSourceCitation } from '../../features/source_reader/hooks/useSourceCitation';
@@ -11,6 +18,7 @@ import { MaterialViewer } from '../../features/projects/components/MaterialViewe
 import { HandoverMaterialViewer } from '../../features/handover/materials/components/HandoverMaterialViewer';
 import type { HandoverRecord } from '../../features/handover/shared/types';
 import { isKnowledgeReference } from '../../features/knowledge/lib/knowledgeReference';
+import { citationEndLine } from '../../features/source_reader/lib/citationRange';
 
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
@@ -121,20 +129,25 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
             ? await api<RunContext>(`/runs/${runId}/context`, undefined, projectId)
             : undefined;
           if (useWorkspace.getState().projectId !== projectId) return;
+          const start = Number(source[2]);
+          const end = citationEndLine(
+            path,
+            start,
+            source[3],
+            Children.toArray(children)
+              .filter((child) => typeof child === 'string')
+              .join(''),
+            context?.source_evidence || [],
+          );
           const evidence = context?.source_evidence
             ?.slice()
             .reverse()
-            .find(
-              (item) =>
-                item.path === path &&
-                item.start_line <= Number(source[2]) &&
-                item.end_line >= Number(source[3] || source[2]),
-            );
+            .find((item) => item.path === path && item.start_line <= start && item.end_line >= end);
           if (runId && !evidence) toast('这条历史引用没有可核对的版本记录，请核对当前源码');
           await openCitation(
             path,
-            Number(source[2]),
-            Number(source[3] || source[2]),
+            start,
+            end,
             evidence?.version,
             evidence?.source_workspace_id ||
               (path.startsWith('@sources/') ? path.split('/')[1] : sourceId),
