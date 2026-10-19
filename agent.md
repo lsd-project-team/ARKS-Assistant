@@ -126,10 +126,12 @@
 - [Linux部署与代码工作后续验收](docs/verification/code-work-followup.md)
 - [公司Linux部署与迁移边界](docs/development/linux-deployment.md)
 - [Linux应用运行与独立卷恢复验收](docs/verification/linux-runtime.md)
+- [Linux离线语义检索与调试复用验收](docs/verification/linux-semantic.md)
 - [静态资料与业务分包访问边界](docs/architecture/static-resource-access.md)
 - [静态资源会话保护验收](docs/verification/private-static-resources.md)
 - [Windows隔离执行适配及边界](docs/architecture/windows-executor.md)
 - [当前模型质量评估与人工标准](docs/verification/code-work-quality.md)
+- [当前供应商三类合成场景与定向复测](docs/verification/current-model-quality.md)
 - [交接工作台开发记录](docs/features/handover-workbench.md)
 - [账号与交接访问控制](docs/features/accounts-and-handover-access.md)
 

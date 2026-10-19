@@ -192,6 +192,39 @@ async def test_missing_environment_key_never_creates_model(quality, fixture_case
     assert not output.exists()
 
 
+class HighUsageModel(EvidenceModel):
+    @staticmethod
+    def result(message):
+        message.usage_metadata = {
+            "input_tokens": 1_000_000,
+            "output_tokens": 500_000,
+            "total_tokens": 1_500_000,
+        }
+        return ChatResult(generations=[ChatGeneration(message=message)])
+
+
+async def test_explicit_unlimited_budget_still_meters_real_runtime_usage(
+    quality, fixture_case, monkeypatch
+):
+    workspace, cases, config, output, _ = fixture_case
+    payload = json.loads(config.read_text(encoding="utf-8"))
+    payload["token_limit"] = None
+    quality.write_json(config, payload)
+    install_model(monkeypatch, HighUsageModel())
+    path = await quality.run_suite(cases, workspace, config, output, live=True)
+    report = json.loads(path.read_text(encoding="utf-8"))
+    case = report["cases"][0]
+    assert report["configuration"]["token_limit"] is None
+    assert (
+        next(row for row in case["checks"] if row["name"] == "runtime_completed")["status"]
+        == "pass"
+    )
+    assert case["budget"]["calls"] >= 2
+    assert case["budget"]["actual_tokens"] >= 3_000_000
+    assert report["outcome"] == case["outcome"] == "unknown"
+    assert (workspace / "calc.py").read_bytes() == b"answer = 1\n"
+
+
 class FailedProvider(EvidenceModel):
     async def _agenerate(self, messages, stop=None, run_manager=None, **kwargs):
         raise RuntimeError("provider rejected fixture-key-only-in-memory")

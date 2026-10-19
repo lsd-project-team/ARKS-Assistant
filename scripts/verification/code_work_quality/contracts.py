@@ -73,7 +73,8 @@ class Suite(Strict):
 class ProviderConfig(Strict):
     model: dict
     key_env: str = Field(pattern=r"^[A-Z][A-Z0-9_]{0,79}$")
-    token_limit: int = Field(default=100000, ge=1000, le=1000000)
+    # 只有显式null取消本套件额度拦截；实际用量与调用次数继续写入临时账本。
+    token_limit: int | None = Field(default=100000, ge=1000, le=1000000)
     timeout_seconds: int = Field(default=180, ge=1, le=600)
     verification_profile: ProfileWrite | None = None
 
