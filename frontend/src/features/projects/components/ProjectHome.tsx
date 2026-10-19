@@ -1,29 +1,28 @@
 import { useProjectApi } from '../hooks/useProjectApi';
 import { useState } from 'react';
-import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Folder, Plus, Settings2, Pin, Archive, Trash2, Search, FileText } from 'lucide-react';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { Folder, Plus, Settings2, Pin, Archive, Trash2, Search } from 'lucide-react';
 import { useCurrentProject, useProjects } from '../hooks/useProjects';
 import { useNewConversation } from '../../chat/hooks/useNewConversation';
 import { useWorkspace } from '../../../app/state/store';
 import { apiUrl, jsonBody, query } from '../../../app/api/client';
-import type { Memory, Thread } from '../../../shared/types/api';
+import type { Thread } from '../../../shared/types/api';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { ProjectEditor } from './ProjectEditor';
 import { MoveThreadsDialog } from '../../chat/components/MoveThreadsDialog';
 import { Select } from '../../../shared/ui/Select';
 import { toast } from '../../../shared/utils/toasts';
 import { useDebouncedValue } from '../../../shared/hooks/useDebouncedValue';
-import { ProjectDocuments } from './ProjectDocuments';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { CodeWork } from './CodeWork';
 
-export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
+export function ProjectHome() {
   const api = useProjectApi();
   const current = useCurrentProject();
   const projects = useProjects();
   const startConversation = useNewConversation();
   const { projectId, selectThread, switchProject } = useWorkspace();
-  const [tab, setTab] = useState<'chats' | 'materials' | 'code'>('chats');
+  const [tab, setTab] = useState<'chats' | 'code'>('chats');
   const [codeVisited, setCodeVisited] = useState(false);
   const [filter, setFilter] = useState('');
   const [state, setState] = useState('active');
@@ -49,11 +48,6 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
     getNextPageParam: (rows, _pages, previous) => (rows.length === 50 ? previous + 50 : undefined),
   });
   const rows = filter.trim() === settled ? threads.data?.pages.flat() || [] : [];
-  const memories = useQuery({
-    queryKey: ['memories'],
-    queryFn: () => api<Memory[]>('/memories'),
-    enabled: tab === 'materials',
-  });
   async function update(changes: unknown) {
     setPending(true);
     setError(undefined);
@@ -139,9 +133,6 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
             <button aria-pressed={tab === 'chats'} onClick={() => setTab('chats')}>
               对话
             </button>
-            <button aria-pressed={tab === 'materials'} onClick={() => setTab('materials')}>
-              资料与指令
-            </button>
             <button
               aria-pressed={tab === 'code'}
               onClick={() => {
@@ -171,7 +162,7 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
             </Button>
           )}
         </div>
-        {tab === 'chats' ? (
+        {tab === 'chats' && (
           <>
             <div className="project-chat-tools">
               <label className="search-box">
@@ -256,65 +247,6 @@ export function ProjectHome({ onMaterials }: { onMaterials: () => void }) {
               </div>
             )}
           </>
-        ) : tab === 'code' ? null : (
-          <div className="project-materials">
-            <ProjectDocuments
-              projectId={projectId}
-              readOnly={project?.state === 'archived' || !project}
-            />
-            <article>
-              <h2>
-                <Folder size={16} />
-                源码目录
-              </h2>
-              <p className="project-directory">{project?.source_root || '尚未关联源码目录'}</p>
-              {project?.source_folders?.map((folder) => (
-                <p className="project-directory" key={folder.source_id}>
-                  <strong>{folder.label}</strong>
-                  <br />
-                  {folder.root}
-                </p>
-              ))}
-              <Button onClick={() => setEditor(true)}>
-                {project?.source_root ? '修改关联' : '关联源码'}
-              </Button>
-            </article>
-            <article>
-              <h2>
-                <Settings2 size={16} />
-                项目指令
-              </h2>
-              <p className="project-instructions">
-                {project?.instructions || '尚未设置。你可以指定回答语言、分析习惯和项目目标。'}
-              </p>
-              <Button onClick={() => setEditor(true)}>编辑指令</Button>
-            </article>
-            <article>
-              <h2>
-                <FileText size={16} />
-                已保存的项目知识
-              </h2>
-              <ErrorText error={memories.error} />
-              {memories.data
-                ?.filter((memory) => memory.scope === 'project')
-                .map((memory) => (
-                  <div className="project-memory" key={memory.name}>
-                    <strong>{memory.name}</strong>
-                    <p>{memory.content.slice(0, 180)}</p>
-                  </div>
-                ))}
-              {!memories.data?.some((memory) => memory.scope === 'project') && (
-                <p className="muted">在对话中保存的项目知识会出现在这里。</p>
-              )}
-              <Button onClick={onMaterials}>管理知识与记忆</Button>
-            </article>
-            {project?.knowledge_available && (
-              <article>
-                <h2>流程图谱与功能说明</h2>
-                <p>此源码项目保留了已复核的生产流程和功能资料。</p>
-              </article>
-            )}
-          </div>
         )}
         {codeVisited && (
           <div hidden={tab !== 'code'}>

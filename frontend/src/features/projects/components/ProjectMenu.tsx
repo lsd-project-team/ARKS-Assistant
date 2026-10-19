@@ -136,7 +136,7 @@ export function ProjectMenu({
                 onHome();
               }}
             >
-              查看项目与资料
+              查看项目
             </button>
           </div>,
           document.body,

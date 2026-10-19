@@ -195,43 +195,6 @@
   line-height: 1.8;
   margin: 10px 0 20px;
 }
-.project-materials {
-  display: grid;
-  gap: 18px;
-  padding-top: 24px;
-}
-.project-materials article {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-}
-.project-materials h2 {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-weight: 500;
-  font-size: 14px;
-  margin: 0 0 12px;
-}
-.project-materials p {
-  color: var(--text-secondary);
-  line-height: 1.8;
-  font-size: 13px;
-  overflow-wrap: anywhere;
-}
-.project-directory,
-.project-instructions {
-  white-space: pre-wrap;
-}
-.project-memory {
-  border-top: 1px solid var(--border);
-  padding: 12px 0;
-  font-size: 13px;
-}
-.project-memory p {
-  margin: 6px 0;
-  white-space: pre-wrap;
-}
 .project-home-footer {
   display: flex;
   gap: 8px;

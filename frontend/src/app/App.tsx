@@ -168,9 +168,7 @@ export default function App() {
             />
           )}
         </WorkspaceNavigation>
-        {projectPage && !knowledgeOpen && !handover.open && (
-          <ProjectHome onMaterials={() => setDialog('memory')} />
-        )}
+        {projectPage && !knowledgeOpen && !handover.open && <ProjectHome />}
         {handover.open && (
           <Suspense
             fallback={<section className="project-home padded muted">正在加载交接工作台…</section>}
@@ -272,8 +270,8 @@ export default function App() {
           </section>
         </main>
         <SettingsDialog
-          open={dialog === 'settings' || dialog === 'mcp' || dialog === 'memory'}
-          initialTab={dialog === 'mcp' ? 'mcp' : dialog === 'memory' ? 'memory' : 'model'}
+          open={dialog === 'settings' || dialog === 'mcp'}
+          initialTab={dialog === 'mcp' ? 'mcp' : 'model'}
           onClose={() => setDialog('')}
         />
         <QuickOpen
