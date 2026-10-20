@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1140" viewBox="0 0 2400 1140"><rect width="100%" height="100%" fill="white"/>
+<text x="350" y="90" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">产品定位</text>
+<rect x="60" y="160" width="600" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="360.0" y="222" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">采集与计算</text>
+<text x="360.0" y="297" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">选点与位姿计算</text>
+<rect x="900" y="160" width="600" height="190" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="222" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">写入与执行</text>
+<text x="1200.0" y="297" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本层坐标 / BaseInfo</text>
+<rect x="1740" y="160" width="600" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2040.0" y="222" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续使用</text>
+<text x="2040.0" y="297" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">后代位置通过父链更新</text>
+<polyline points="660,255 900,255" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="900,255 879.2897166458885,265.0042072845583 879.2897166458885,244.9957927154417" fill="#315d82"/>
+<polyline points="1500,255 1740,255" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1740,255 1719.2897166458883,265.0042072845583 1719.2897166458883,244.9957927154417" fill="#315d82"/>
+<text x="350" y="425" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">上视纠偏</text>
+<rect x="60" y="495" width="600" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="360.0" y="557" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">采集与计算</text>
+<text x="360.0" y="632" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">芯片识别与偏移计算</text>
+<rect x="900" y="495" width="600" height="190" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="557" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">写入与执行</text>
+<text x="1200.0" y="632" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">焊点 Info 保存偏移</text>
+<rect x="1740" y="495" width="600" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2040.0" y="557" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续使用</text>
+<text x="2040.0" y="632" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">贴装前按剩余角旋转</text>
+<polyline points="660,590 900,590" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="900,590 879.2897166458885,600.0042072845583 879.2897166458885,579.9957927154417" fill="#315d82"/>
+<polyline points="1500,590 1740,590" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1740,590 1719.2897166458883,600.0042072845583 1719.2897166458883,579.9957927154417" fill="#315d82"/>
+<text x="350" y="760" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">中转台纠偏</text>
+<rect x="60" y="830" width="600" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="360.0" y="892" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">采集与计算</text>
+<text x="360.0" y="967" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">台面识别与中心计算</text>
+<rect x="900" y="830" width="600" height="190" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="892" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">写入与执行</text>
+<text x="1200.0" y="967" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">修正取片位 / IPT记录</text>
+<rect x="1740" y="830" width="600" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2040.0" y="892" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续使用</text>
+<text x="2040.0" y="967" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">先重取片  后供实时补偿</text>
+<polyline points="660,925 900,925" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="900,925 879.2897166458885,935.0042072845583 879.2897166458885,914.9957927154417" fill="#315d82"/>
+<polyline points="1500,925 1740,925" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1740,925 1719.2897166458883,935.0042072845583 1719.2897166458883,914.9957927154417" fill="#315d82"/></svg>

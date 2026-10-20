@@ -1,20 +1,20 @@
 {
   "schema_version": 1,
   "date": "2026-10-20",
-  "stage": "源码分析底稿；尚未编写纠偏正式设计文档",
+  "stage": "正式分册写作与交叉核查依据",
   "audience": [
     "软件研发与技术评审人员",
     "设备调试与应用工程师"
   ],
   "scope": "产品层级定位、上视芯片纠偏、中转台芯片纠偏，以及各流程输出在贴装入口中的必要使用",
-  "authoring_gate": "按会话约定，TU分册确认后再开始纠偏正文；当前尚未收到TU第3版修订1验收结论",
+  "authoring_gate": "2026年10月20日用户要求持续完善至两册图文与阅读质量可直接使用；本轮在TU修订后继续纠偏分册。保留此前研究与本轮复核的技术差异。",
   "limits": [
     "记录为当前本地源码的静态追踪与说明算例，不是设备运行、识别精度或断电恢复验证",
     "只列实际读取的源码区间，不把整文件哈希视作整文件分析完成",
     "不修改trunk中的业务源码，不把发现的异常行为改写成理想设计",
     "本文件是后续写作的技术依据，不是可出版的正文或最终验收结果"
   ],
-  "repository_commit": "36a138551936475a33716d8e5d73a75440517af4",
+  "repository_commit": "7fb0295736251b17a8326ecb6f6d7099d05bd300",
   "sources": [
     {
       "id": "TU_SERVICE",
@@ -637,6 +637,18 @@
             "line": 724,
             "text": "public AKRSPoint3D UpLookRealPosInG0()"
           }
+        },
+        {
+          "start_line": 897,
+          "end_line": 924,
+          "first_anchor": {
+            "line": 897,
+            "text": "public  bool System2TemperatureCompensation(bool firstTu)"
+          },
+          "last_anchor": {
+            "line": 924,
+            "text": "}"
+          }
         }
       ]
     },
@@ -720,6 +732,90 @@
           "last_anchor": {
             "line": 586,
             "text": "StatisticsDomain.GetInstance().AddDefectResult(defect);"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TEMPERATURE_MODEL",
+      "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+      "line_count": 277,
+      "reviewed_ranges": [
+        {
+          "start_line": 64,
+          "end_line": 145,
+          "first_anchor": {
+            "line": 64,
+            "text": "public static bool TemperatureCompensation(bool firstTu)"
+          },
+          "last_anchor": {
+            "line": 145,
+            "text": "return true;"
+          }
+        },
+        {
+          "start_line": 240,
+          "end_line": 255,
+          "first_anchor": {
+            "line": 240,
+            "text": "public static AKRSPoint3D GetTemperatureCompensation()"
+          },
+          "last_anchor": {
+            "line": 255,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "VISION_ALARM_DISPATCH",
+      "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs",
+      "sha256": "df946ef5fd34e83b541f34cbcd6a84a499fd6b38e4c831f453f81bc9f7f6e35e",
+      "line_count": 435,
+      "reviewed_ranges": [
+        {
+          "start_line": 234,
+          "end_line": 309,
+          "first_anchor": {
+            "line": 234,
+            "text": "private (DialogResult, BaseAlgResult) VisionAlarm(PREntity pREntity, string message, string caption)"
+          },
+          "last_anchor": {
+            "line": 309,
+            "text": "private void EditPrProgram(PREntity pREntity)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "VISION_ALARM_FORM",
+      "path": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/FrmVisionAlarm.cs",
+      "sha256": "68036808a4e3cccacf0460b5f93cbf132b6c0171ae9c28fd356f88d25104769c",
+      "line_count": 570,
+      "reviewed_ranges": [
+        {
+          "start_line": 339,
+          "end_line": 414,
+          "first_anchor": {
+            "line": 339,
+            "text": "private void BtOK_Click(object sender, EventArgs e)"
+          },
+          "last_anchor": {
+            "line": 414,
+            "text": "/// <param name=\"e\">参数</param>"
+          }
+        },
+        {
+          "start_line": 505,
+          "end_line": 570,
+          "first_anchor": {
+            "line": 505,
+            "text": "private void BtSkip_Click(object sender, EventArgs e)"
+          },
+          "last_anchor": {
+            "line": 570,
+            "text": "}"
           }
         }
       ]
@@ -1057,13 +1153,28 @@
     },
     {
       "id": "U07",
-      "claim": "上视主流程的几何结果先保存，随后还执行温漂流程；温漂失败可返回Abort，成功则把漂移量写TpMarkCompensate并累加到ComponentOffSet。不能把前面已写字段当作整个动作成功凭据。",
+      "claim": "上视几何结果先保存，再调用温漂包装方法。包装方法对底层TemperatureCompensation的bool结果未使用且始终返回true；底层识别失败会停机并返回false，但不能据包装返回值判定温漂成功。获取漂移量超限时抛异常，由上视外层返回Exception；写过几何字段不等于整个动作成功。",
       "basis": "当前源码静态核查",
       "evidence": [
         {
           "source_id": "UPLOOK_ACTION",
           "start_line": 485,
           "end_line": 501
+        },
+        {
+          "source_id": "BOND_VISION_CONTROLLER",
+          "start_line": 897,
+          "end_line": 924
+        },
+        {
+          "source_id": "TEMPERATURE_MODEL",
+          "start_line": 64,
+          "end_line": 145
+        },
+        {
+          "source_id": "TEMPERATURE_MODEL",
+          "start_line": 240,
+          "end_line": 255
         }
       ]
     },
@@ -1237,6 +1348,28 @@
           "source_id": "LOCATE_CONFIG",
           "start_line": 22,
           "end_line": 196
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "claim": "普通匹配算法的报警OK会在界面中再次运行PR，成功后复制CenterX、CenterY和Angle返回；上视及中转台的人工OK调用出口绕过后续GetMatchResultByConfig。不能把OK当作未经识别的任意位置输入。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "VISION_ALARM_FORM",
+          "start_line": 339,
+          "end_line": 395
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 1591,
+          "end_line": 1608
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 594,
+          "end_line": 701
         }
       ]
     }
@@ -1534,11 +1667,7 @@
     }
   ],
   "remaining_before_formal_authoring": [
-    "先取得TU分册验收结论；若要求修改TU，优先完成具体意见",
-    "报警对话框内部的手动对点实现、机器配置下的完整移动变体以及中断后的资源收尾尚未全部展开；本次只确认所列调用点和返回分支",
-    "相机标定矩阵、实际配方数值和吸嘴标定属于运行上下文；本轮算例使用明确给定的说明输入，没有复现设备标定",
-    "镜像普通上视的实际T旋转与保存角度不是同一表达式，需在对应示例中单列，不从非镜像算例推断",
-    "中转台P1/P2参考系转换次序、实时补偿实参与形参名顺序应在后续接口表和算例中明确，不能在写作时悄悄对调",
-    "正式图稿、Word/PDF正文、全页排版校样、双读者阅读验收和两册整体出版验收均尚未完成"
+    "相机标定矩阵、实际配方与吸嘴标定作为外部运行输入；说明算例不替代设备标定复现",
+    "文档不规定通用断电恢复或未经源码证明的自动回滚"
   ]
 }
