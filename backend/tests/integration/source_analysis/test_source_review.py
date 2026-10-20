@@ -44,6 +44,51 @@ class SequenceReviewModel(DeterministicModel):
         return ChatResult(generations=[ChatGeneration(message=answer)])
 
 
+async def test_long_flow_is_composed_before_source_fact_check_and_final_text_is_displayed(
+    services, monkeypatch
+):
+    paths, _, workspace, repository, memory, settings = services
+    read = workspace.read("Program.cs")
+    reference = "[依据](source:Program.cs#L1-L3)"
+    short = "启动流程：读取入口后再分析调用关系，设备动作仍需核对。" + reference
+    checked = []
+
+    class Model(DeterministicModel):
+        def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            if "你只负责把流程草稿" in messages[0].text:
+                text = short
+            elif "独立的源码结论复核器" in messages[0].text:
+                checked.append(json.loads(messages[-1].text)["answer"])
+                text = json.dumps({"verdict": "passed", "issues": []})
+            else:
+                text = "流程背景。" * 350 + reference
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content=text))])
+
+    monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
+    runtime = AgentRuntime(paths, settings, workspace, repository, memory)
+    run = repository.create_run(
+        None,
+        "根据源码选区给出设备启动流程",
+        [
+            {
+                "path": "Program.cs",
+                "start_line": 1,
+                "end_line": 3,
+                "content": "\n".join(read["content"].splitlines()[:3]),
+                "version": read["version"],
+            }
+        ],
+    )
+    events = []
+    answer = await runtime.execute(run, lambda *e: events.append(e))
+    repository.finish(run["id"], answer)
+    assert answer == short and checked == [short]
+    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == short
+    assert not any(kind == "token" for kind, _ in events)
+    assert any(kind == "answer_replace" and row["text"] == short for kind, row in events)
+    runtime.semantic.close()
+
+
 async def test_semantic_correction_and_review_stream_are_separate(services, monkeypatch):
     paths, _, workspace, repository, memory, settings = services
     (workspace.root / "Program.cs").write_text(

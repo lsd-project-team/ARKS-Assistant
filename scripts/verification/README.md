@@ -20,3 +20,5 @@
 | `calibration_grid_case.py`     | 只读生成标定网格边界的原版、独立参考对照和11例合成C#测试；不调用模型、不执行代码，见 [案例与结果](../../docs/verification/calibration-grid-case.md)                                                                                                               |
 
 以上历史场景的结果不能作为当前版本的自动验收结论。本次工程重构使用的基线、测试日志、路由和数据核对报告保存在项目本机忽略目录 `output/refactoring/`，最终记录见 [重构清单](../../docs/architecture/refactoring.md)。
+
+20题套件须先逐题对照资料、源码和浏览器实际渲染填写 `grades.json`，再运行 `python -m scripts.verification.answer_quality.report 新批次目录 基线目录` 生成全部20题前后变化；题集或数据指纹不同会拒绝比较，不能拼接不同版本的较好答案。最新结果见[筛选、事实核查与排版分离复测](../../docs/verification/answer-quality-split-20261020.md)：准确性改善，阅读均分未提升，保留全部失败与退步题。

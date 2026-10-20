@@ -1,43 +1,30 @@
-import json
-
 import pytest
 
-from app.agents.runtime.knowledge_scope import scope_problems, scoped_fallback, selected_records
+from app.agents.runtime.knowledge_scope import (
+    pieces,
+    scope_problems,
+    scoped_fallback,
+    selected_records,
+    selection_input,
+)
 
-BEFORE = "7月23日，adv-3精度稳定在3μm 3Σ。"
-TARGET = "7月25日14:47至7月26日00:50，adv-3室温23.2℃，精度范围由-4~4μm变为-4~2μm。"
-AFTER = "7月27日，adv-3另一个阶段。"
-ROWS = [
-    {
-        "reference": "[跨日试验 · v4](debug-issue:trial/4)",
-        "content": {"记录正文": BEFORE + TARGET + AFTER},
-    },
-    {
-        "reference": "[其他设备 · v1](debug-issue:other/1)",
-        "content": {"记录正文": "adv-30无关结果900μm"},
-    },
-]
+BEFORE, TARGET, AFTER = "7月23日，3μm。", "7月25日，23.2℃，精度-4~2μm。", "7月27日，900μm。"
+REF = "[跨日记录 · v4](debug-issue:trial/4)"
+ROWS = [{"reference": REF, "content": {"正文": BEFORE + TARGET + AFTER}}]
 
 
-def choice(text=TARGET, reference=ROWS[0]["reference"]):
-    return {
-        "selections": [
-            {
-                "reference": reference,
-                "reason": "设备与时间阶段符合",
-                "excerpts": [{"field": "记录正文", "text": text}],
-            }
-        ]
-    }
+def choice(start=2, end=2, index=1, field="正文"):
+    return {"selections": [{"id": index, "parts": [{"field": field, "start": start, "end": end}]}]}
 
 
-def test_cross_day_record_is_restricted_to_selected_passage_even_on_fallback():
+def test_span_selection_returns_immutable_original_not_model_copied_values():
+    projected = selection_input(ROWS)
+    assert projected[0]["id"] == 1
+    assert projected[0]["content"]["正文"][1] == {"number": 2, "text": TARGET}
     selected = selected_records(choice(), ROWS)
-    assert selected == [{"reference": ROWS[0]["reference"], "content": {"记录正文": TARGET}}]
-    fallback = scoped_fallback(selected)
-    assert TARGET in fallback
-    assert BEFORE not in fallback and AFTER not in fallback and "900" not in fallback
-    assert ROWS[0]["content"]["记录正文"] == BEFORE + TARGET + AFTER
+    assert selected == [{"reference": REF, "content": {"正文": TARGET}}]
+    assert ROWS[0]["content"]["正文"] == BEFORE + TARGET + AFTER
+    assert BEFORE not in scoped_fallback(selected) and AFTER not in scoped_fallback(selected)
 
 
 @pytest.mark.parametrize(
@@ -45,48 +32,48 @@ def test_cross_day_record_is_restricted_to_selected_passage_even_on_fallback():
     [
         {},
         {"selections": "all"},
-        choice("伪造的精度结果"),
-        choice(reference="[旧版本](debug-issue:trial/3)"),
-        {"selections": [{"reference": ROWS[0]["reference"], "reason": "符合", "excerpts": []}]},
+        choice(0, 1),
+        choice(3, 2),
+        choice(1, 4),
+        choice(index=2),
+        choice(index=True),
+        choice(start=True),
+        choice(field="unknown"),
+        {"selections": [{"id": 1, "parts": []}]},
     ],
 )
-def test_missing_or_fabricated_evidence_is_rejected(result):
+def test_unknown_or_invalid_locations_are_rejected(result):
     with pytest.raises((ValueError, KeyError, TypeError)):
         selected_records(result, ROWS)
-    assert "adv-3" not in scoped_fallback([])
 
 
-def test_second_review_cannot_expand_selected_scope():
-    selected = selected_records(choice(), ROWS)
+def test_full_source_including_newlines_is_restored_exactly_and_overlaps_deduplicated():
+    original = "【问题】\n0.6×0.45mm。\n\n【方案】\n高度280~300\n"
+    rows = [{"reference": REF, "content": {"正文": original}}]
+    assert "".join(pieces(original)) == original
+    data = choice(1, len(pieces(original)))
+    data["selections"][0]["parts"].append({"field": "正文", "start": 2, "end": 2})
+    assert selected_records(data, rows)[0]["content"]["正文"] == original
+
+
+def test_duplicate_record_ids_rejected_without_mutating_snapshot():
+    data = choice()
+    data["selections"].append(data["selections"][0])
     with pytest.raises(ValueError):
-        selected_records(choice(BEFORE), selected)
-    assert selected_records({"selections": []}, selected) == []
+        selected_records(data, ROWS)
 
 
-def test_typographic_quote_is_restored_and_reference_title_is_canonical():
-    result = choice(TARGET.replace("-4~4μm", "-4 ～ 4 μm"), "debug-issue:trial/4")
-    selected = selected_records(result, ROWS)
-    assert selected[0]["content"]["记录正文"] == TARGET
-    assert selected[0]["reference"] == ROWS[0]["reference"]
-    with pytest.raises(ValueError):
-        selected_records(choice(TARGET.replace("23.2", "25.2")), ROWS)
-
-
-def test_foreign_citations_and_missing_requested_images_are_detected():
+def test_scope_checks_versions_images_and_protects_code_literals():
     selected = selected_records(choice(), ROWS)
-    assert "未选定" in scope_problems("试验结果", ROWS[1]["reference"], selected)
-    assert "不能遗漏" in scope_problems("展示记录文字和全部原图", TARGET, selected)
-    assert not scope_problems("展示全部原图", TARGET + ROWS[0]["reference"], selected)
-    assert not scope_problems("示例", "```text\ndebug-issue:other/1\n```", selected)
+    assert scope_problems("结果", "[旧版](debug-issue:trial/3)", selected)
+    assert scope_problems("全部原图", TARGET, selected)
+    assert not scope_problems("全部原图", TARGET + REF, selected)
+    assert not scope_problems("代码", "```\ndebug-issue:other/1\n```", selected)
 
 
-def test_scoped_fallback_redacts_credentials_without_modifying_source():
-    rows = [
-        {
-            "reference": ROWS[0]["reference"],
-            "content": {"记录正文": "api_key='do-not-leak'\n" + TARGET},
-        }
-    ]
-    fallback = scoped_fallback(rows)
-    assert "do-not-leak" not in fallback and "敏感值已隐藏" in fallback
-    assert "do-not-leak" in json.dumps(rows)
+def test_selection_redacts_secrets_without_modifying_original():
+    rows = [{"reference": REF, "content": {"正文": "api_key='do-not-leak'\n" + TARGET}}]
+    projected = selection_input(rows)
+    assert "do-not-leak" not in str(projected)
+    assert "do-not-leak" not in scoped_fallback(selected_records(choice(1, 2), rows))
+    assert "do-not-leak" in rows[0]["content"]["正文"]

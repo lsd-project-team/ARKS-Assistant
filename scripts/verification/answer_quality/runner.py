@@ -31,6 +31,9 @@ PNG = base64.b64decode(
 )
 GIF = base64.b64decode("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
 EVENTS = {
+    "knowledge_stage_error",
+    "answer_presentation",
+    "answer_draft",
     "review_raw",
     "knowledge_selection",
     "knowledge_answer_check",
@@ -55,7 +58,7 @@ class ReviewObserver(BaseCallbackHandler):
         self.destination, self.review_runs = destination, set()
 
     def on_chat_model_start(self, serialized, messages, *, run_id, metadata=None, **kwargs):
-        if (metadata or {}).get("lc_source") == "knowledge_verification":
+        if (metadata or {}).get("lc_source") in {"knowledge_verification", "knowledge_selection"}:
             self.review_runs.add(run_id)
 
     def on_llm_end(self, response, *, run_id, **kwargs):
@@ -209,9 +212,7 @@ async def execute(case, config, directory, case_timeout_seconds=600):
             result["image_positions"] = sum(
                 seeded[key]["image_count"] for key in result["cited_records"]
             )
-            result["raw_draft_exposed"] = (
-                any(row["kind"] == "token" for row in events) if seeded else None
-            )
+            result["raw_draft_exposed"] = any(row["kind"] == "token" for row in events)
             result["forbidden_hits"] = [
                 word for word in case["forbidden"] if word in result["answer"]
             ]
@@ -238,6 +239,16 @@ async def main(args):
     manifest = {
         "seed": args.seed,
         "model": config.model.model,
+        "model_parameters": {
+            key: getattr(config.model, key)
+            for key in (
+                "protocol",
+                "temperature",
+                "context_tokens",
+                "output_tokens",
+                "timeout_seconds",
+            )
+        },
         "application_sha256": app_version(),
         "cases": cases(args.seed),
         "timeout_seconds": args.timeout,

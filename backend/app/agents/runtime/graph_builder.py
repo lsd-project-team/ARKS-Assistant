@@ -13,6 +13,7 @@ from app.agents.context.budget import BudgetedSummarization, ContextBudget
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.system import SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
+from app.agents.runtime.answer_draft import FlowAnswerDraft
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
@@ -305,6 +306,9 @@ class AgentGraphBuilder:
                     lambda: debug_issues.review_records(debug_references) if debug_issues else [],
                     emit,
                     available,
+                ),
+                FlowAnswerDraft(
+                    None if inspection else model, question_text or "", evidence, emit, available
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations

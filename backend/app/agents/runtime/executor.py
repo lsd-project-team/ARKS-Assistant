@@ -1,6 +1,7 @@
 """Agent 运行职责拆分，依赖通过运行实例显式传入。"""
 
 import asyncio
+import re
 
 from langchain_core.messages import AIMessage, HumanMessage, RemoveMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
@@ -9,6 +10,7 @@ from app.agents.analysis.progress import AnalysisProgress
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.tokens import current_budget, input_budget
 from app.agents.runtime.answer_completion import termination
+from app.agents.runtime.answer_presentation import format_answer
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
 from app.modules.knowledge.citations import canonical_knowledge_citations
@@ -47,6 +49,9 @@ class AgentRunExecutor:
                 ),
             )
             evidence.user_request = message["content"]
+            hold_flow_answer = bool(
+                evidence.required and re.search(r"流程|步骤|怎么走|启动前检查", message["content"])
+            )
             evidence.request_identity = {"message_id": message["id"], "run_id": run["id"]}
             policy = run["analysis_policy"]
             previous = (
@@ -213,6 +218,8 @@ class AgentRunExecutor:
                     if metadata.get("lc_source") in {
                         "source_verification",
                         "knowledge_verification",
+                        "knowledge_selection",
+                        "answer_draft",
                     }:
                         continue
                     if metadata.get("lc_source") == "summarization":
@@ -230,7 +237,7 @@ class AgentRunExecutor:
                             generating = True
                         text += part
                         # 经验草稿可能尚未筛除其他日期的候选，复核完成后统一显示最终稿。
-                        if not any(
+                        if not hold_flow_answer and not any(
                             row.get("kind") == "debug_issue" for row in knowledge_references
                         ):
                             emit("token", {"text": part})
@@ -302,8 +309,12 @@ class AgentRunExecutor:
             )
             emit("context", current)
             formatted = canonical_knowledge_citations(answer, knowledge_references)
-            if formatted != answer or any(
-                row.get("kind") == "debug_issue" for row in knowledge_references
+            if output["output"] == "complete":
+                formatted = format_answer(formatted, message["content"], emit)
+            if (
+                hold_flow_answer
+                or formatted != text
+                or any(row.get("kind") == "debug_issue" for row in knowledge_references)
             ):
                 emit("answer_replace", {"text": formatted})
                 answer = formatted
