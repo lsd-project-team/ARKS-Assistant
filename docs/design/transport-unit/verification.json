@@ -1,0 +1,76 @@
+{
+  "status": "prepared_for_user_review",
+  "date": "2026-10-20",
+  "scope": "Transport Unit设计文档，不含独立纠偏设计文档",
+  "pages": 27,
+  "main_chapters": 9,
+  "appendices": 3,
+  "figures": 11,
+  "source_files_hash_rechecked": 24,
+  "source_files_changed": 0,
+  "toc_page_numbers_verified": {
+    "1 设计概述": 2,
+    "2 模块组成与职责划分": 3,
+    "3 对象模型与数据设计": 4,
+    "4 坐标体系设计": 7,
+    "5 对象构建与初始化设计": 9,
+    "6 生命周期与状态设计": 11,
+    "7 主要接口设计": 15,
+    "8 约束与异常处理设计": 17,
+    "9 典型案例与设计核对": 18,
+    "附录 A 关键源码与分析版本": 21,
+    "附录 B 术语及图表索引": 25,
+    "附录 C 待核实事项": 26
+  },
+  "toc_pdf_links": 12,
+  "coordinate_example_independent_recalculation": [
+    90,
+    240,
+    0
+  ],
+  "visual_review": {
+    "renderer": "Microsoft Word ExportAsFixedFormat and bundled Poppler",
+    "packaged_renderer_attempt": "failed because LibreOffice soffice.exe was not available",
+    "pages_inspected": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ],
+    "raster_dpi": 150,
+    "page_25_rechecked_dpi": 200,
+    "result": "页码、配图、表格、文字和附录逐页核对；未见重叠、裁切或缺字"
+  },
+  "not_executed": [
+    "ZX2200程序构建与设备运行",
+    "业务人员独立评审"
+  ],
+  "deliverable_sha256": {
+    "TransportUnit设计文档.docx": "bcdd8357e4983cc7a68bc2ed295b7cbbf6ea657e7c696987a7a60312587c9236",
+    "TransportUnit设计文档.pdf": "a737048025286cddb8df9e7220a4875aaabcfda1a7ab546c535855ed38676e6d",
+    "TransportUnit设计文档.md": "c87f04465ac31d65d3b17b6c9b96946e6e20658d79f76aaf8d3de8d9ab6b488c"
+  }
+}
