@@ -1,3 +1,4 @@
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -68,3 +69,36 @@ async def test_invalid_or_failed_composition_keeps_original_for_fact_check(reply
 async def test_short_verbatim_nonflow_or_budget_does_not_call_composer(question, text, limit):
     result, _, sent = await compose(question=question, text=text, limit=limit)
     assert result == text and sent == []
+
+
+async def test_valid_structured_flow_survives_plain_markdown_composer():
+    document = {
+        "version": 1,
+        "blocks": [
+            {
+                "id": "stop",
+                "type": "step_flow",
+                "steps": [
+                    {
+                        "id": "stop-flag",
+                        "title": "停止",
+                        "description": "保留前置条件与停止分支。" * 140,
+                        "sources": [{"path": "Program.cs", "start_line": 1, "end_line": 3}],
+                    }
+                ],
+            }
+        ],
+    }
+    original = REF + "\n\n```rich-content\n" + json.dumps(document, ensure_ascii=False) + "\n```"
+    text, events, sent = await compose(text=original)
+    assert text == original
+    assert sent == []
+    assert events[-1] == ("answer_draft", {"changed": False, "code": "structured_content"})
+
+
+@pytest.mark.parametrize("language,version", [("json", 1), ("rich-content", 9)])
+async def test_code_examples_and_unknown_protocol_do_not_skip_composer(language, version):
+    text = LONG + f'\n\n```{language}\n{{"version":{version},"blocks":[]}}\n```'
+    result, _, sent = await compose(text=text)
+    assert result == SHORT
+    assert len(sent) == 1

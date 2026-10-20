@@ -1,4 +1,4 @@
-"""隔离的真实聊天页面验收入口：真实认证/API/SSE/数据库，模型使用可控替身。"""
+"""隔离聊天页面验收；默认可控替身，--live 显式使用当前模型和只读业务源码。"""
 
 import argparse
 import asyncio
@@ -12,10 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
 
 import uvicorn  # noqa: E402
+from sqlalchemy import select  # noqa: E402
 
 from app.agents.runtime.engine import AgentRuntime  # noqa: E402
 from app.bootstrap import create_app  # noqa: E402
-from app.core.config import Paths  # noqa: E402
+from app.core.config import Paths, SettingsStore  # noqa: E402
 from app.modules.auth.context import request_identity  # noqa: E402
 from app.modules.auth.models import Account, public_account  # noqa: E402
 from app.modules.source_analysis.evidence import SourceEvidence, source_excerpt  # noqa: E402
@@ -49,12 +50,41 @@ async def exercise_reply(self, run, emit):
     return answer
 
 
+def seed_examples(services):
+    repository = services.repository
+    run = repository.create_run(None, "组件与源码验收", [])
+    ledger = SourceEvidence(
+        services.workspace,
+        lambda kind, payload: repository.event(run["id"], kind, payload),
+    )
+    ledger.record(source_excerpt(services.workspace, "Program.cs", 2, 2))
+    repository.finish(run["id"], fixture_answer())
+    old = repository.create_run(None, "Markdown 与异常兼容验收", [])
+    repository.finish(
+        old["id"],
+        "## 历史技术回答\n\n普通段落，参数20~30g。\n\n"
+        "- 主项\n  - 子项\n\n- [x] 已完成\n\n"
+        "| 参数 | 数值 |\n| --- | ---: |\n| 等待时间 | 0 |\n\n"
+        "```python\nprint('安全代码示例')\n```\n\n"
+        '```rich-content\n{"version":9,"blocks":[]}\n```\n\n后续文字仍可阅读。',
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8876)
     parser.add_argument("--ui-port", type=int, default=5179)
+    parser.add_argument("--live", action="store_true", help="调用当前真实供应商并消耗额度")
+    parser.add_argument("--live-token-budget", type=int, default=2_000_000)
+    parser.add_argument("--directory", type=Path, help="复用 output 下已有的隔离验收目录")
     args = parser.parse_args()
-    destination = Path(tempfile.mkdtemp(prefix="rich-ui-", dir=ROOT / "output"))
+    destination = (
+        args.directory.resolve()
+        if args.directory
+        else Path(tempfile.mkdtemp(prefix="rich-ui-", dir=ROOT / "output"))
+    )
+    if not destination.is_relative_to(ROOT / "output") or not destination.is_dir():
+        raise ValueError("隔离验收目录必须是 output 下已存在的子目录")
     vite_config = destination / "vite.config.mjs"
     vite_config.write_text(
         "import config from "
@@ -67,50 +97,62 @@ def main():
         + "}}};\n",
         encoding="utf-8",
     )
-    source = destination / "source"
-    source.mkdir()
-    (source / "Program.cs").write_text(
-        "class Program {\n static void Main() {}\n}\n", encoding="utf-8"
-    )
+    source = ROOT / "trunk" if args.live else destination / "source"
+    if not args.live:
+        source.mkdir(exist_ok=True)
+        (source / "Program.cs").write_text(
+            "class Program {\n static void Main() {}\n}\n", encoding="utf-8"
+        )
     application = create_app(Paths(destination / "data", source))
     original_lifespan = application.router.lifespan_context
-    AgentRuntime.execute = exercise_reply
+    if args.live:
+        configuration = (
+            SettingsStore(Paths())
+            .load()
+            .model_copy(
+                update={"mcp_servers": [], "auto_memory": False, "deepwiki_repo": ""}, deep=True
+            )
+        )
+        if not configuration.model.api_key or not configuration.model.model:
+            raise ValueError("当前模型配置不完整，不能执行真实验收")
+        # 仅本服务的配置对象读取内存快照；密钥不复制到隔离文件，不修改正式配置。
+        application.state.projects.base.settings.load = lambda: configuration.model_copy(deep=True)
+    else:
+        AgentRuntime.execute = exercise_reply
 
     @asynccontextmanager
     async def isolated_lifespan(app):
         async with original_lifespan(app):
             auth = app.state.auth
             with auth.database.session.begin() as session:
-                account = Account(
-                    username="rich-test",
-                    display_name="界面验收",
-                    role="user",
-                    password_hash=auth.hasher.hash("local-rich-ui-test"),
-                )
-                session.add(account)
-                session.flush()
+                username = "rich-live" if args.live else "rich-test"
+                account = session.scalar(select(Account).where(Account.username == username))
+                created = account is None
+                if created:
+                    account = Account(
+                        username=username,
+                        display_name="真实模型验收" if args.live else "界面验收",
+                        role="user",
+                        password_hash=auth.hasher.hash("local-rich-ui-test"),
+                    )
+                    session.add(account)
+                    session.flush()
                 identity = public_account(account)
             token = request_identity.set({"user": identity})
             try:
                 app.state.projects.account_defaults.ensure(identity)
                 services = app.state.projects.services(app.state.projects.list()[0]["id"])
-                repository = services.repository
-                run = repository.create_run(None, "组件与源码验收", [])
-                ledger = SourceEvidence(
-                    services.workspace,
-                    lambda kind, payload: repository.event(run["id"], kind, payload),
-                )
-                ledger.record(source_excerpt(services.workspace, "Program.cs", 2, 2))
-                repository.finish(run["id"], fixture_answer())
-                old = repository.create_run(None, "Markdown 与异常兼容验收", [])
-                repository.finish(
-                    old["id"],
-                    "## 历史技术回答\n\n普通段落，参数20~30g。\n\n"
-                    "- 主项\n  - 子项\n\n- [x] 已完成\n\n"
-                    "| 参数 | 数值 |\n| --- | ---: |\n| 等待时间 | 0 |\n\n"
-                    "```python\nprint('安全代码示例')\n```\n\n"
-                    '```rich-content\n{"version":9,"blocks":[]}\n```\n\n后续文字仍可阅读。',
-                )
+                if args.live:
+                    policy = services.runtime.code_changes.policy
+                    policy.save(
+                        {
+                            **policy.get().model_dump(),
+                            "reading_token_limit": args.live_token_budget,
+                        }
+                    )
+                    print(f"真实模型：{configuration.model.model}；业务源码：{source}", flush=True)
+                elif created:
+                    seed_examples(services)
             finally:
                 request_identity.reset(token)
             print(f"隔离数据目录：{destination}", flush=True)

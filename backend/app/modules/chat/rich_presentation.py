@@ -149,6 +149,11 @@ RICH_CONTENT_GUIDANCE = """
 简单问答、原文提取、含调试记录/资料引用的回答继续用普通 Markdown。
 当答案确有功能概览、顺序步骤或对比时，可以在普通 Markdown 之间使用 rich-content 围栏，内部为 JSON：
 {"version":1,"blocks":[...]}。每个块有唯一英文数字/短横线 id 和白名单 type。
+需要卡片时，围栏语言必须逐字写成 rich-content，不能写 json；json 围栏只显示示例代码。
+格式示例（占位文字必须替换为本题已核实的内容）：
+```rich-content
+{"version":1,"blocks":[{"id":"steps","type":"step_flow","steps":[{"id":"s1","title":"实际步骤名称","description":"实际步骤说明"}]}]}
+```
 overview_grid: title?、items:[{id,title,description,icon?,source?}]。
 icon 只能为 code/layers/settings/workflow。
 step_flow: title?、description?、steps:[{id,title,description,details?,sources?:[源码引用]}]。
