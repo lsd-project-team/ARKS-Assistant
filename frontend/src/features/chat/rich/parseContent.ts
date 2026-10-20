@@ -8,7 +8,12 @@ export type ContentSegment =
   | { id: string; type: 'pending'; content: string };
 
 // 仅识别显式协议围栏，跳过普通代码围栏中的同名示例，不推测业务语义。
-export function parseContent(content: string, streaming = false): ContentSegment[] {
+type SegmentCache = Map<number, { raw: string; segment: ContentSegment }>;
+export function parseContent(
+  content: string,
+  streaming = false,
+  cache?: SegmentCache,
+): ContentSegment[] {
   const segments: ContentSegment[] = [];
   const fences = /^[ ]{0,3}(`{3,}|~{3,})([^\r\n]*)\r?$/gm;
   let opened: { marker: string; start: number; body: number; rich: boolean } | undefined;
@@ -36,17 +41,23 @@ export function parseContent(content: string, streaming = false): ContentSegment
           content: content.slice(consumed, opened.start),
         });
       const end = match.index + match[0].length;
-      const result = parseDocument(content.slice(opened.body, match.index));
-      segments.push(
-        result.document
-          ? { id: `rich:${opened.start}`, type: 'rich', document: result.document }
-          : {
-              id: `rich:${opened.start}`,
-              type: 'fallback',
-              content: content.slice(opened.start, end),
-              error: result.error,
-            },
-      );
+      const raw = content.slice(opened.start, end);
+      const saved = cache?.get(opened.start);
+      const result =
+        saved?.raw === raw ? undefined : parseDocument(content.slice(opened.body, match.index));
+      const segment: ContentSegment =
+        saved?.raw === raw
+          ? saved.segment
+          : result?.document
+            ? { id: `rich:${opened.start}`, type: 'rich', document: result.document }
+            : {
+                id: `rich:${opened.start}`,
+                type: 'fallback',
+                content: content.slice(opened.start, end),
+                error: result?.error || '内容格式无效',
+              };
+      segments.push(segment);
+      cache?.set(opened.start, { raw, segment });
       consumed = end;
       documents++;
     }
@@ -72,4 +83,14 @@ export function parseContent(content: string, streaming = false): ContentSegment
   } else if (consumed < content.length)
     segments.push({ id: `text:${consumed}`, type: 'markdown', content: content.slice(consumed) });
   return segments;
+}
+
+export function createContentParser() {
+  const cache: SegmentCache = new Map();
+  let previous = '';
+  return (content: string, streaming = false) => {
+    if (!content.startsWith(previous)) cache.clear();
+    previous = content;
+    return parseContent(content, streaming, cache);
+  };
 }

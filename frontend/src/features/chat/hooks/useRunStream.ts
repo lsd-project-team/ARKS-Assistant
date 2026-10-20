@@ -11,6 +11,7 @@ import type {
 } from '../../../shared/types/api';
 import { apiUrl } from '../../../app/api/client';
 import { useWorkspace } from '../../../app/state/store';
+import { createAnswerBuffer, subscribeRunEvents } from '../lib/streamEvents';
 
 export function useRunStream(run: Run | undefined) {
   const cache = useQueryClient();
@@ -46,19 +47,15 @@ export function useRunStream(run: Run | undefined) {
     setContext(undefined);
     if (!run || !['queued', 'running'].includes(run.status)) return;
     const source = new EventSource(apiUrl(`/runs/${run.id}/events`, projectId));
-    let cursor = 0;
-    const listen = (kind: string, handle: (payload: Record<string, unknown>) => void) => {
-      source.addEventListener(kind, (event) => {
-        const message = event as MessageEvent;
-        if (!message.data) return;
-        const sequence = Number(message.lastEventId);
-        // EventSource 重连会带 Last-Event-ID；此处再去重，避免重复显示 token。
-        if (sequence <= cursor) return;
-        cursor = sequence;
-        handle(JSON.parse(message.data));
-      });
-    };
-    listen('token', (payload) => setAnswer((previous) => previous + String(payload.text)));
+    const buffer = createAnswerBuffer(
+      (text) => setAnswer((previous) => previous + text),
+      setAnswer,
+    );
+    const events = subscribeRunEvents(source, () =>
+      setNotice('收到无法解析的消息片段，已保留其余内容；完成后将同步最终回答。'),
+    );
+    const listen = events.listen;
+    listen('token', (payload) => buffer.token(payload.text));
     listen('knowledge_reference', (payload) =>
       setReferences((previous) => [...previous, payload as unknown as KnowledgeReference]),
     );
@@ -68,7 +65,7 @@ export function useRunStream(run: Run | undefined) {
     listen('memory_save', (payload) =>
       setMemorySaves((previous) => [...previous, payload as unknown as MemorySaveFeedback]),
     );
-    listen('answer_replace', (payload) => setAnswer(String(payload.text)));
+    listen('answer_replace', (payload) => buffer.replace(payload.text));
     listen('retrieval_budget', (payload) => setNotice(String(payload.text)));
     listen('answer_completion', (payload) => {
       if (!payload.continuing && payload.output !== 'complete')
@@ -103,7 +100,7 @@ export function useRunStream(run: Run | undefined) {
       setFeedback(payload as unknown as ErrorFeedback);
     });
     listen('done', (payload) => {
-      if (payload.answer) setAnswer(String(payload.answer));
+      buffer.finish(payload.answer);
       setFinished(true);
       setConnectionNotice('');
       setStage(String(payload.stage || payload.status));
@@ -118,7 +115,11 @@ export function useRunStream(run: Run | undefined) {
     // 重连提示独立于 MCP / 压缩提示，恢复连接后只撤掉断线状态。
     source.onopen = () => setConnectionNotice('');
     source.onerror = () => setConnectionNotice('连接中断，正在恢复消息…');
-    return () => source.close();
+    return () => {
+      events.dispose();
+      buffer.dispose();
+      source.close();
+    };
   }, [run?.id, run?.status, cache, projectId]);
   return {
     references,

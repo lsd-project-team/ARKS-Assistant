@@ -3,7 +3,7 @@ import { Markdown } from '../../../app/components/Markdown';
 import { CodeBlock } from '../../../shared/ui/markdown/CodeBlock';
 import { CollapsibleSection, DataTable, OverviewGrid, StepFlow } from './ContentBlocks';
 import { FlowDiagram } from './FlowDiagram';
-import { parseContent } from './parseContent';
+import { createContentParser } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
 import { remarkRecordAnswer } from '../lib/recordAnswerPresentation';
 
@@ -13,9 +13,16 @@ const TextBlock = memo(function TextBlock({
   content,
   runId,
   sourceId,
-}: Context & { content: string }) {
+  streaming,
+}: Context & { content: string; streaming?: boolean }) {
   return (
-    <Markdown content={content} runId={runId} sourceId={sourceId} remarkPlugins={answerPlugins} />
+    <Markdown
+      content={content}
+      runId={runId}
+      sourceId={sourceId}
+      remarkPlugins={answerPlugins}
+      streaming={streaming}
+    />
   );
 });
 
@@ -90,16 +97,18 @@ export function RichContentRenderer({
   sourceId,
   streaming = false,
 }: Context & { content: string; streaming?: boolean }) {
-  const segments = useMemo(() => parseContent(content, streaming), [content, streaming]);
+  const parse = useMemo(createContentParser, []);
+  const segments = useMemo(() => parse(content, streaming), [content, streaming, parse]);
   return (
     <div className="rich-content">
-      {segments.map((segment) => {
+      {segments.map((segment, index) => {
         switch (segment.type) {
           case 'markdown':
             return (
               <TextBlock
                 key={segment.id}
                 content={segment.content}
+                streaming={streaming && index === segments.length - 1}
                 runId={runId}
                 sourceId={sourceId}
               />

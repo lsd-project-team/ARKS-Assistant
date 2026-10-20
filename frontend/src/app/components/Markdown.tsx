@@ -22,9 +22,11 @@ import { citationEndLine } from '../../features/source_reader/lib/citationRange'
 
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
+const Streaming = createContext(false);
 
 function MarkdownPre({ children }: { children?: ReactNode }) {
-  return <CodeBlock>{children}</CodeBlock>;
+  const streaming = useContext(Streaming);
+  return <CodeBlock streaming={streaming}>{children}</CodeBlock>;
 }
 
 function MarkdownLink({ href, children }: ComponentProps<'a'>) {
@@ -170,25 +172,29 @@ export function Markdown({
   runId,
   sourceId,
   remarkPlugins = [],
+  streaming = false,
 }: {
   content: string;
   runId?: string;
   sourceId?: string;
+  streaming?: boolean;
   remarkPlugins?: NonNullable<ComponentProps<typeof ReactMarkdown>['remarkPlugins']>;
 }) {
   return (
     <CitationRun.Provider value={runId}>
       <CitationSource.Provider value={sourceId}>
-        <div className="markdown">
-          <ReactMarkdown
-            // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
-            remarkPlugins={[[remarkGfm, { singleTilde: false }], ...remarkPlugins]}
-            urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
-            components={markdownComponents}
-          >
-            {content}
-          </ReactMarkdown>
-        </div>
+        <Streaming.Provider value={streaming}>
+          <div className="markdown">
+            <ReactMarkdown
+              // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
+              remarkPlugins={[[remarkGfm, { singleTilde: false }], ...remarkPlugins]}
+              urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
+              components={markdownComponents}
+            >
+              {content}
+            </ReactMarkdown>
+          </div>
+        </Streaming.Provider>
       </CitationSource.Provider>
     </CitationRun.Provider>
   );

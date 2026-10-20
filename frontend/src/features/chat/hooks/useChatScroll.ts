@@ -78,6 +78,24 @@ export function useChatScroll(threadId: string, revision: string, visible: boole
     root.addEventListener('workspace-layout-settled', settled);
     return () => root.removeEventListener('workspace-layout-settled', settled);
   }, [threadId, scope]);
+  useLayoutEffect(() => {
+    const area = scrollArea.current;
+    const content = area?.querySelector('.chat-content');
+    if (!area || !content || !visible || !loaded) return;
+    let frame = 0;
+    // 折叠块、代码高亮和图形异步改变高度时，只为仍在跟随的人补齐滚动。
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (following.current && initialized.current === scope) area.scrollTop = area.scrollHeight;
+      });
+    });
+    observer.observe(content);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [scope, visible, loaded]);
   function onScroll() {
     const area = scrollArea.current;
     if (!area || initialized.current !== scope) return;

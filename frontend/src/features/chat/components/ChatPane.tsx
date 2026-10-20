@@ -466,7 +466,11 @@ export function ChatPane({
               </div>
               <ToolActivity tools={stream.tools} />
               {stream.answer ? (
-                <AnswerMarkdown content={stream.answer} />
+                <AnswerMarkdown
+                  content={stream.answer}
+                  runId={active.id}
+                  streaming={!stream.finished}
+                />
               ) : (
                 <span className="muted">
                   正在思考<span className="typing-dots">…</span>
@@ -498,7 +502,7 @@ export function ChatPane({
                   onContext={() => setContext({ runId: latest.id })}
                 />
               )}
-              {latest.answer && <AnswerMarkdown content={latest.answer} />}
+              {latest.answer && <AnswerMarkdown content={latest.answer} runId={latest.id} />}
               <Button
                 onClick={() => resume.mutate(latest.id)}
                 disabled={archivedProject || resume.isPending}
