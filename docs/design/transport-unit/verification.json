@@ -1,9 +1,9 @@
 {
-  "revision": "3.0",
+  "revision": "3.1",
   "date": "2026-10-20",
-  "page_count": 29,
+  "page_count": 34,
   "source_baseline_verified": true,
-  "source_files": 48,
+  "source_files": 50,
   "checks": {
     "native_toc": true,
     "toc_entries": [
@@ -24,7 +24,7 @@
         "page": 6
       },
       {
-        "title": "2.1 配方、运行对象与执行过程",
+        "title": "2.1 配方与运行对象及执行过程",
         "page": 6
       },
       {
@@ -48,7 +48,7 @@
         "page": 8
       },
       {
-        "title": "3.3 序号、地址与加工顺序",
+        "title": "3.3 对象地址与加工顺序",
         "page": 9
       },
       {
@@ -60,140 +60,160 @@
         "page": 10
       },
       {
-        "title": "4 坐标体系设计",
+        "title": "3.6 关键字段的来源与有效期",
         "page": 11
+      },
+      {
+        "title": "4 坐标体系设计",
+        "page": 12
       },
       {
         "title": "4.1 位置按相对关系保存",
-        "page": 11
+        "page": 12
       },
       {
         "title": "4.2 单层变换与逐层合成",
-        "page": 11
+        "page": 12
       },
       {
         "title": "4.3 一个焊点位置的完整计算",
-        "page": 11
+        "page": 12
       },
       {
         "title": "4.4 工位偏移与分段位置",
-        "page": 13
+        "page": 14
       },
       {
-        "title": "4.5 定位、测高与刷新怎样改变坐标",
-        "page": 13
+        "title": "4.5 定位和测高如何影响坐标",
+        "page": 14
       },
       {
         "title": "5 对象构建与初始化设计",
-        "page": 14
+        "page": 15
       },
       {
         "title": "5.1 创建一棵可使用的运行树",
-        "page": 14
+        "page": 15
       },
       {
         "title": "5.2 常规布局的展开与配置整理",
-        "page": 14
+        "page": 15
       },
       {
         "title": "5.3 异形节点的展开",
-        "page": 15
-      },
-      {
-        "title": "5.4 工艺状态与工序键的装配",
-        "page": 15
-      },
-      {
-        "title": "6 生命周期与生产协作",
-        "page": 15
-      },
-      {
-        "title": "6.1 正常生产链中的三个有效期",
-        "page": 15
-      },
-      {
-        "title": "6.2 启动与S1生产入口",
         "page": 16
       },
       {
-        "title": "6.3 从点胶段交给固晶段",
+        "title": "5.4 工艺状态与工序键的装配",
+        "page": 16
+      },
+      {
+        "title": "6 生命周期与生产协作",
         "page": 17
       },
       {
-        "title": "6.4 S2为什么通常保留S1传来的对象",
+        "title": "6.1 正常生产链中的三个有效期",
+        "page": 17
+      },
+      {
+        "title": "6.2 启动与S1生产入口",
         "page": 18
+      },
+      {
+        "title": "6.3 从点胶段交给固晶段",
+        "page": 18
+      },
+      {
+        "title": "6.4 S2为什么通常保留S1传来的对象",
+        "page": 19
       },
       {
         "title": "6.5 替代路径会在哪里改变连续性",
-        "page": 18
+        "page": 20
       },
       {
         "title": "7 主要接口与使用约定",
-        "page": 19
+        "page": 21
       },
       {
-        "title": "7.1 按意图选择创建、刷新或重新取值",
-        "page": 19
+        "title": "7.1 创建和刷新操作的选择",
+        "page": 21
       },
       {
         "title": "7.2 产品地址查询",
-        "page": 19
+        "page": 21
       },
       {
         "title": "7.3 步骤记录与动作记录",
-        "page": 20
+        "page": 22
       },
       {
         "title": "7.4 坐标与状态接口",
-        "page": 20
-      },
-      {
-        "title": "8 一致性、失败与恢复边界",
-        "page": 20
-      },
-      {
-        "title": "8.1 配方、树与步骤需要同时一致",
-        "page": 20
-      },
-      {
-        "title": "8.2 交接成功与交接中断",
-        "page": 21
-      },
-      {
-        "title": "8.3 人工操作改变哪些记录",
-        "page": 21
-      },
-      {
-        "title": "8.4 保存的范围决定可恢复的范围",
-        "page": 21
-      },
-      {
-        "title": "9 贯穿实例与设计核对",
         "page": 22
       },
       {
-        "title": "9.1 固定一组完整输入",
-        "page": 22
-      },
-      {
-        "title": "9.2 从S1创建到S2处理的连续快照",
-        "page": 22
-      },
-      {
-        "title": "9.3 用条件变化检查设计理解",
+        "title": "7.5 步骤与转换接口的调用契约",
         "page": 23
       },
       {
-        "title": "附录A 源码依据与阅读定位",
+        "title": "8 一致性约束及失败恢复边界",
+        "page": 23
+      },
+      {
+        "title": "8.1 配方与对象树及步骤的一致性",
+        "page": 23
+      },
+      {
+        "title": "8.2 交接成功与交接中断",
         "page": 24
       },
       {
-        "title": "附录B 术语与读法",
-        "page": 28
+        "title": "8.3 人工操作改变哪些记录",
+        "page": 24
+      },
+      {
+        "title": "8.4 保存的范围决定可恢复的范围",
+        "page": 24
+      },
+      {
+        "title": "9 贯穿实例与设计核对",
+        "page": 25
+      },
+      {
+        "title": "9.1 固定一组完整输入",
+        "page": 25
+      },
+      {
+        "title": "9.2 从S1创建到S2处理的连续快照",
+        "page": 25
+      },
+      {
+        "title": "9.3 用条件变化检查设计理解",
+        "page": 26
+      },
+      {
+        "title": "附录A 源码依据与阅读定位",
+        "page": 27
+      },
+      {
+        "title": "附录B 术语与图表索引",
+        "page": 32
+      },
+      {
+        "title": "B.1 常用术语",
+        "page": 32
+      },
+      {
+        "title": "B.2 图目录",
+        "page": 33
+      },
+      {
+        "title": "B.3 表目录",
+        "page": 33
       },
       {
         "title": "附录C 当前实现的特定边界",
-        "page": 29
+        "page": 34
       }
     ],
     "bookmarks": [
@@ -214,7 +234,7 @@
         "page": 6
       },
       {
-        "title": "2.1 配方、运行对象与执行过程",
+        "title": "2.1 配方与运行对象及执行过程",
         "page": 6
       },
       {
@@ -238,7 +258,7 @@
         "page": 8
       },
       {
-        "title": "3.3 序号、地址与加工顺序",
+        "title": "3.3 对象地址与加工顺序",
         "page": 9
       },
       {
@@ -250,140 +270,282 @@
         "page": 10
       },
       {
-        "title": "4 坐标体系设计",
+        "title": "3.6 关键字段的来源与有效期",
         "page": 11
+      },
+      {
+        "title": "4 坐标体系设计",
+        "page": 12
       },
       {
         "title": "4.1 位置按相对关系保存",
-        "page": 11
+        "page": 12
       },
       {
         "title": "4.2 单层变换与逐层合成",
-        "page": 11
+        "page": 12
       },
       {
         "title": "4.3 一个焊点位置的完整计算",
-        "page": 11
+        "page": 12
       },
       {
         "title": "4.4 工位偏移与分段位置",
-        "page": 13
+        "page": 14
       },
       {
-        "title": "4.5 定位、测高与刷新怎样改变坐标",
-        "page": 13
+        "title": "4.5 定位和测高如何影响坐标",
+        "page": 14
       },
       {
         "title": "5 对象构建与初始化设计",
-        "page": 14
+        "page": 15
       },
       {
         "title": "5.1 创建一棵可使用的运行树",
-        "page": 14
+        "page": 15
       },
       {
         "title": "5.2 常规布局的展开与配置整理",
-        "page": 14
+        "page": 15
       },
       {
         "title": "5.3 异形节点的展开",
-        "page": 15
-      },
-      {
-        "title": "5.4 工艺状态与工序键的装配",
-        "page": 15
-      },
-      {
-        "title": "6 生命周期与生产协作",
-        "page": 15
-      },
-      {
-        "title": "6.1 正常生产链中的三个有效期",
-        "page": 15
-      },
-      {
-        "title": "6.2 启动与S1生产入口",
         "page": 16
       },
       {
-        "title": "6.3 从点胶段交给固晶段",
+        "title": "5.4 工艺状态与工序键的装配",
+        "page": 16
+      },
+      {
+        "title": "6 生命周期与生产协作",
         "page": 17
       },
       {
-        "title": "6.4 S2为什么通常保留S1传来的对象",
+        "title": "6.1 正常生产链中的三个有效期",
+        "page": 17
+      },
+      {
+        "title": "6.2 启动与S1生产入口",
         "page": 18
+      },
+      {
+        "title": "6.3 从点胶段交给固晶段",
+        "page": 18
+      },
+      {
+        "title": "6.4 S2为什么通常保留S1传来的对象",
+        "page": 19
       },
       {
         "title": "6.5 替代路径会在哪里改变连续性",
-        "page": 18
+        "page": 20
       },
       {
         "title": "7 主要接口与使用约定",
-        "page": 19
+        "page": 21
       },
       {
-        "title": "7.1 按意图选择创建、刷新或重新取值",
-        "page": 19
+        "title": "7.1 创建和刷新操作的选择",
+        "page": 21
       },
       {
         "title": "7.2 产品地址查询",
-        "page": 19
+        "page": 21
       },
       {
         "title": "7.3 步骤记录与动作记录",
-        "page": 20
+        "page": 22
       },
       {
         "title": "7.4 坐标与状态接口",
-        "page": 20
-      },
-      {
-        "title": "8 一致性、失败与恢复边界",
-        "page": 20
-      },
-      {
-        "title": "8.1 配方、树与步骤需要同时一致",
-        "page": 20
-      },
-      {
-        "title": "8.2 交接成功与交接中断",
-        "page": 21
-      },
-      {
-        "title": "8.3 人工操作改变哪些记录",
-        "page": 21
-      },
-      {
-        "title": "8.4 保存的范围决定可恢复的范围",
-        "page": 21
-      },
-      {
-        "title": "9 贯穿实例与设计核对",
         "page": 22
       },
       {
-        "title": "9.1 固定一组完整输入",
-        "page": 22
-      },
-      {
-        "title": "9.2 从S1创建到S2处理的连续快照",
-        "page": 22
-      },
-      {
-        "title": "9.3 用条件变化检查设计理解",
+        "title": "7.5 步骤与转换接口的调用契约",
         "page": 23
       },
       {
-        "title": "附录A 源码依据与阅读定位",
+        "title": "8 一致性约束及失败恢复边界",
+        "page": 23
+      },
+      {
+        "title": "8.1 配方与对象树及步骤的一致性",
+        "page": 23
+      },
+      {
+        "title": "8.2 交接成功与交接中断",
         "page": 24
       },
       {
-        "title": "附录B 术语与读法",
-        "page": 28
+        "title": "8.3 人工操作改变哪些记录",
+        "page": 24
+      },
+      {
+        "title": "8.4 保存的范围决定可恢复的范围",
+        "page": 24
+      },
+      {
+        "title": "9 贯穿实例与设计核对",
+        "page": 25
+      },
+      {
+        "title": "9.1 固定一组完整输入",
+        "page": 25
+      },
+      {
+        "title": "9.2 从S1创建到S2处理的连续快照",
+        "page": 25
+      },
+      {
+        "title": "9.3 用条件变化检查设计理解",
+        "page": 26
+      },
+      {
+        "title": "附录A 源码依据与阅读定位",
+        "page": 27
+      },
+      {
+        "title": "附录B 术语与图表索引",
+        "page": 32
+      },
+      {
+        "title": "B.1 常用术语",
+        "page": 32
+      },
+      {
+        "title": "B.2 图目录",
+        "page": 33
+      },
+      {
+        "title": "B.3 表目录",
+        "page": 33
       },
       {
         "title": "附录C 当前实现的特定边界",
-        "page": 29
+        "page": 34
+      }
+    ],
+    "caption_index_page_numbers": [
+      {
+        "title": "图1-1 产品层级与一个具体焊点的地址",
+        "page": 5,
+        "index_page": 33
+      },
+      {
+        "title": "图2-1 产品配置 运行模型与动作执行的分工",
+        "page": 6,
+        "index_page": 33
+      },
+      {
+        "title": "图3-1 重复焊点共享配置定义而分别保存运行记录",
+        "page": 8,
+        "index_page": 33
+      },
+      {
+        "title": "图3-2 一组两行三列阵列中的对象序号和工作序号",
+        "page": 9,
+        "index_page": 33
+      },
+      {
+        "title": "图4-1 焊点局部原点逐层转换的中间结果",
+        "page": 13,
+        "index_page": 33
+      },
+      {
+        "title": "图4-2 TU旋转后的局部轴与焊点全局位置",
+        "page": 13,
+        "index_page": 33
+      },
+      {
+        "title": "图5-1 从产品配置到运行对象树的建立顺序",
+        "page": 15,
+        "index_page": 33
+      },
+      {
+        "title": "图5-2 常规模板与异形节点的展开差异",
+        "page": 16,
+        "index_page": 33
+      },
+      {
+        "title": "图6-1 正常S1到S2路径中对象、几何与进度的有效期",
+        "page": 17,
+        "index_page": 33
+      },
+      {
+        "title": "图6-2 自动点胶到固晶交接的主要调用与信号",
+        "page": 18,
+        "index_page": 33
+      },
+      {
+        "title": "图6-3 工作消息与产品步骤是两套记录",
+        "page": 20,
+        "index_page": 33
+      },
+      {
+        "title": "表3-1 主要对象的职责与直接数据",
+        "page": 8,
+        "index_page": 33
+      },
+      {
+        "title": "表3-2 参与本侧工艺时的完成函数规则",
+        "page": 10,
+        "index_page": 33
+      },
+      {
+        "title": "表3-3 配置与位置数据的读写规则",
+        "page": 11,
+        "index_page": 33
+      },
+      {
+        "title": "表3-4 入口标记与过程记录的读写规则",
+        "page": 11,
+        "index_page": 33
+      },
+      {
+        "title": "表6-1 点胶到固晶移送中的状态与引用",
+        "page": 19,
+        "index_page": 33
+      },
+      {
+        "title": "表7-1 创建和刷新接口的语义",
+        "page": 21,
+        "index_page": 33
+      },
+      {
+        "title": "表7-2 TU地址查询接口的输入输出",
+        "page": 21,
+        "index_page": 33
+      },
+      {
+        "title": "表7-3 步骤及坐标接口的输入输出",
+        "page": 23,
+        "index_page": 33
+      },
+      {
+        "title": "表9-1 贯穿实例的结构与坐标输入",
+        "page": 25,
+        "index_page": 33
+      },
+      {
+        "title": "表9-2 同一A点在几个阶段的状态快照",
+        "page": 25,
+        "index_page": 33
+      },
+      {
+        "title": "表9-3 可用于评审和调试的核对问题",
+        "page": 26,
+        "index_page": 33
+      },
+      {
+        "title": "表B-1 本文常用术语",
+        "page": 32,
+        "index_page": 33
+      },
+      {
+        "title": "表C-1 需要保留的实现边界",
+        "page": 34,
+        "index_page": 33
       }
     ],
     "linked_reference_targets_valid": true,
@@ -479,7 +641,7 @@
       },
       {
         "file": "figures/p05-coordinate-chain.png",
-        "page": 12,
+        "page": 13,
         "pixels": [
           2400,
           1080
@@ -489,7 +651,7 @@
       },
       {
         "file": "figures/p06-coordinate-geometry.png",
-        "page": 12,
+        "page": 13,
         "pixels": [
           2400,
           1500
@@ -499,7 +661,7 @@
       },
       {
         "file": "figures/p07-build-sequence.png",
-        "page": 14,
+        "page": 15,
         "pixels": [
           2400,
           1130
@@ -508,8 +670,18 @@
         "effective_dpi": 366.49
       },
       {
-        "file": "figures/p08-lifetimes.png",
+        "file": "figures/p11-layout-models.png",
         "page": 16,
+        "pixels": [
+          2400,
+          1110
+        ],
+        "display_inches": 6.5496,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/p08-lifetimes.png",
+        "page": 17,
         "pixels": [
           2400,
           1230
@@ -519,31 +691,69 @@
       },
       {
         "file": "figures/p09-handover.png",
-        "page": 17,
-        "pixels": [
-          2400,
-          1620
-        ],
-        "display_inches": 6.5494,
-        "effective_dpi": 366.44
-      },
-      {
-        "file": "figures/p10-progress.png",
         "page": 18,
         "pixels": [
           2400,
-          1050
+          1220
         ],
         "display_inches": 6.5492,
         "effective_dpi": 366.46
+      },
+      {
+        "file": "figures/p10-progress.png",
+        "page": 20,
+        "pixels": [
+          2400,
+          820
+        ],
+        "display_inches": 6.5488,
+        "effective_dpi": 366.48
       }
     ]
   },
   "review": {
-    "technical": "逐条件复核S1创建、交接Refresh、S2有条件重建、步骤与消息区分；重要边界按源文件锚点复核",
-    "editorial": "通读概念到实例的连贯性，统一术语、单位、地址和工序名；说明数据与实际测量分开",
+    "technical": "逐条件复核S1创建、交接Refresh、S2有条件重建、步骤与消息区分；修正TU Index查询与控制器WorkIndex解析的区别，复核身份记录保留及S2当前对象缓存行为",
+    "editorial": "通读概念到实例的连贯性，统一术语、单位、地址和工序名；补关键字段读写表、输入输出契约、区段状态表和带页码图表索引",
     "visual": "全部PDF页面渲染检查；改动页复查。详细校样记录见editorial-review.md",
-    "render_pipeline": "独立隐藏Word COM更新目录、分页并原生导出PDF，启用PDF/A选项及字体嵌入；按原稿阅读顺序无损恢复原始PNG图像流；Poppler渲染校对。捆绑LibreOffice不可用。未执行第三方PDF/A合规认证。"
+    "render_pipeline": "独立隐藏Word COM更新目录、分页并原生导出PDF，启用PDF/A选项及字体嵌入；按原稿阅读顺序无损恢复原始PNG图像流；Poppler渲染校对。捆绑LibreOffice不可用。未执行第三方PDF/A合规认证。",
+    "acceptance_audit": "acceptance-audit.md；本册待用户内容验收，纠偏分册待TU确认后编写",
+    "visual_pages_viewed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34
+    ],
+    "final_render_comparison": "34页校样逐页查看；最后两处源码引用更新后重新导出渲染，32页像素一致，第29、31页重新查看，未发现裁切、重叠或异常断行"
   },
   "limits": [
     "源码静态核查和独立算例复算，不包含设备生产或断电恢复试验",
@@ -551,16 +761,16 @@
   ],
   "files": {
     "TransportUnit设计文档.docx": {
-      "sha256": "ef6d35d836fd4660b2264f04d1f0a8b048d2065d109efd237ef7cf8ad06aa312",
-      "bytes": 6936813
+      "sha256": "cea7c24ecbe1d3ce950f86353bdc29b8e11de482a579a51e39d91ee8cd12b6f2",
+      "bytes": 7050947
     },
     "TransportUnit设计文档.pdf": {
-      "sha256": "b21b61bae40be94f82086042c697f8a5b9e4e5db549182fadaa6c165db67ccf0",
-      "bytes": 4077961
+      "sha256": "d601cf6f0250a41ce44dcc825c34a9cac0ede0b6a7ddba8e070c1b276ece4a52",
+      "bytes": 4382577
     },
     "TransportUnit设计文档.md": {
-      "sha256": "288fec809053aab0f1e556e6a487547b0318861419cf8ac12364af7d377b09cd",
-      "bytes": 52597
+      "sha256": "22d456d41cec02d45bbf77546d12a3ad6f278a38c8c1545390e4d761ef141020",
+      "bytes": 62778
     }
   }
 }

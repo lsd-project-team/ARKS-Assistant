@@ -1,5 +1,5 @@
 {
-  "revision": "3.0",
+  "revision": "3.1",
   "claims": [
     {
       "id": "C01",
@@ -84,6 +84,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         },
@@ -194,6 +206,10 @@
             {
               "symbol": "private void RemoveDisableActionNode()",
               "line": 1554
+            },
+            {
+              "symbol": "public void InitCurrentMessage()",
+              "line": 930
             }
           ]
         },
@@ -282,6 +298,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         },
@@ -412,6 +440,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         }
@@ -437,6 +477,14 @@
             {
               "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHieght;",
               "line": 468
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IsIdentity = true;",
+              "line": 624
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;",
+              "line": 625
             }
           ]
         },
@@ -455,6 +503,14 @@
             {
               "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHeight;",
               "line": 1005
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IsIdentity = true;",
+              "line": 1088
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;",
+              "line": 1089
             }
           ]
         },
@@ -497,6 +553,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         },
@@ -556,6 +624,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         },
@@ -595,6 +675,14 @@
             {
               "symbol": "public void FinishCurrentActionNode()",
               "line": 767
+            },
+            {
+              "symbol": "public Substrate CurrentSubstrate =>",
+              "line": 75
+            },
+            {
+              "symbol": "public Module CurrentModule =>",
+              "line": 69
             }
           ]
         },
@@ -613,6 +701,10 @@
             {
               "symbol": "private void RemoveDisableActionNode()",
               "line": 1554
+            },
+            {
+              "symbol": "public void InitCurrentMessage()",
+              "line": 930
             }
           ]
         }
@@ -780,6 +872,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         },
@@ -831,6 +935,14 @@
             {
               "symbol": "public void FinishCurrentActionNode()",
               "line": 767
+            },
+            {
+              "symbol": "public Substrate CurrentSubstrate =>",
+              "line": 75
+            },
+            {
+              "symbol": "public Module CurrentModule =>",
+              "line": 69
             }
           ]
         },
@@ -849,6 +961,10 @@
             {
               "symbol": "private void RemoveDisableActionNode()",
               "line": 1554
+            },
+            {
+              "symbol": "public void InitCurrentMessage()",
+              "line": 930
             }
           ]
         },
@@ -961,6 +1077,18 @@
             {
               "symbol": "public void ClearMeasureHeight()",
               "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
             }
           ]
         }
@@ -1194,12 +1322,301 @@
           "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
           "anchors": [
             {
-              "symbol": "public class TransportTask",
-              "line": 45
+              "symbol": "ExcuteResult ret = this.transportController.TransferDispenseToBond();",
+              "line": 525
             },
             {
               "symbol": "TransferToBondFinishedSignal.Set();",
-              "line": 489
+              "line": 540
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C23",
+      "section": "7.2",
+      "claim": "TU地址查询只按Index；动作控制器另按WorkIndex解析",
+      "evidence": [
+        {
+          "source_id": "S01",
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "anchors": [
+            {
+              "symbol": "public TransportUnit(string reason)",
+              "line": 73
+            },
+            {
+              "symbol": "private void Init()",
+              "line": 107
+            },
+            {
+              "symbol": "public void Refresh()",
+              "line": 135
+            },
+            {
+              "symbol": "public void SetSystem1OffSet()",
+              "line": 526
+            },
+            {
+              "symbol": "public TransportUnit(CurrentMachineSystemEnum",
+              "line": 86
+            },
+            {
+              "symbol": "public List<BondPosition> GetAllBondPositions",
+              "line": 217
+            },
+            {
+              "symbol": "public List<BaseMatter> GetAllBaseMatter()",
+              "line": 601
+            },
+            {
+              "symbol": "public void ClearVision()",
+              "line": 623
+            },
+            {
+              "symbol": "public void ClearMeasureHeight()",
+              "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
+            }
+          ]
+        },
+        {
+          "source_id": "S13",
+          "path": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+          "anchors": [
+            {
+              "symbol": "public void InjectSteps(TransportUnit transportUnit)",
+              "line": 859
+            },
+            {
+              "symbol": "public ActionNode GetNextActionNode()",
+              "line": 776
+            },
+            {
+              "symbol": "public void FinishCurrentActionNode()",
+              "line": 767
+            },
+            {
+              "symbol": "public Substrate CurrentSubstrate =>",
+              "line": 75
+            },
+            {
+              "symbol": "public Module CurrentModule =>",
+              "line": 69
+            }
+          ]
+        },
+        {
+          "source_id": "S14",
+          "path": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+          "anchors": [
+            {
+              "symbol": "public void InjectSteps(TransportUnit transportUnit)",
+              "line": 1410
+            },
+            {
+              "symbol": "public ActionNode GetNextActionNode()",
+              "line": 1042
+            },
+            {
+              "symbol": "private void RemoveDisableActionNode()",
+              "line": 1554
+            },
+            {
+              "symbol": "public void InitCurrentMessage()",
+              "line": 930
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C24",
+      "section": "7.2",
+      "claim": "S2 InitCurrentMessage未统一清空当前对象缓存，未命中不保证null",
+      "evidence": [
+        {
+          "source_id": "S14",
+          "path": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+          "anchors": [
+            {
+              "symbol": "public void InjectSteps(TransportUnit transportUnit)",
+              "line": 1410
+            },
+            {
+              "symbol": "public ActionNode GetNextActionNode()",
+              "line": 1042
+            },
+            {
+              "symbol": "private void RemoveDisableActionNode()",
+              "line": 1554
+            },
+            {
+              "symbol": "public void InitCurrentMessage()",
+              "line": 930
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C25",
+      "section": "3.6",
+      "claim": "Refresh保留身份识别标记和代码，基板识别动作据标记跳过",
+      "evidence": [
+        {
+          "source_id": "S01",
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "anchors": [
+            {
+              "symbol": "public TransportUnit(string reason)",
+              "line": 73
+            },
+            {
+              "symbol": "private void Init()",
+              "line": 107
+            },
+            {
+              "symbol": "public void Refresh()",
+              "line": 135
+            },
+            {
+              "symbol": "public void SetSystem1OffSet()",
+              "line": 526
+            },
+            {
+              "symbol": "public TransportUnit(CurrentMachineSystemEnum",
+              "line": 86
+            },
+            {
+              "symbol": "public List<BondPosition> GetAllBondPositions",
+              "line": 217
+            },
+            {
+              "symbol": "public List<BaseMatter> GetAllBaseMatter()",
+              "line": 601
+            },
+            {
+              "symbol": "public void ClearVision()",
+              "line": 623
+            },
+            {
+              "symbol": "public void ClearMeasureHeight()",
+              "line": 635
+            },
+            {
+              "symbol": "public Substrate GetSubstrate(int index)",
+              "line": 150
+            },
+            {
+              "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+              "line": 171
+            },
+            {
+              "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+              "line": 195
+            }
+          ]
+        },
+        {
+          "source_id": "S06",
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Information/BaseInformation.cs",
+          "anchors": [
+            {
+              "symbol": "public abstract class BaseInformation",
+              "line": 12
+            }
+          ]
+        },
+        {
+          "source_id": "S29",
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+          "anchors": [
+            {
+              "symbol": "public bool System1MatterVision",
+              "line": 96
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.MeasureHeightResult = addHieght;",
+              "line": 460
+            },
+            {
+              "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHieght;",
+              "line": 468
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IsIdentity = true;",
+              "line": 624
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;",
+              "line": 625
+            }
+          ]
+        },
+        {
+          "source_id": "S30",
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+          "anchors": [
+            {
+              "symbol": "public bool System2MatterVision",
+              "line": 279
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.MeasureHeightResult = addHeight;",
+              "line": 995
+            },
+            {
+              "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHeight;",
+              "line": 1005
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IsIdentity = true;",
+              "line": 1088
+            },
+            {
+              "symbol": "baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;",
+              "line": 1089
+            }
+          ]
+        },
+        {
+          "source_id": "S51",
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs",
+          "anchors": [
+            {
+              "symbol": "public override ExcuteResult DoWork()",
+              "line": 40
+            },
+            {
+              "symbol": "if (this.substrate.BaseInfo.IsIdentity)",
+              "line": 102
+            }
+          ]
+        },
+        {
+          "source_id": "S52",
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2SubstrateIdentityActionNode.cs",
+          "anchors": [
+            {
+              "symbol": "public override ExcuteResult DoWork()",
+              "line": 40
+            },
+            {
+              "symbol": "if (this.substrate.BaseInfo.IsIdentity)",
+              "line": 102
             }
           ]
         }

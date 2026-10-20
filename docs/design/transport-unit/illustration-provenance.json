@@ -1,5 +1,5 @@
 {
-  "revision": "3.0",
+  "revision": "3.1",
   "generated": [
     {
       "file": "figures/p01-product-map.png",
@@ -17,5 +17,5 @@
       "review": "一份配置对应三个独立运行记录；未完成只用空心圆，完成用勾；生成后人工视觉检查"
     }
   ],
-  "engineering": "p02、p04至p10由确定性工程绘图生成；SVG和PNG内容对应；坐标图使用等比例刻度"
+  "engineering": "p02、p04至p11由确定性工程绘图生成；SVG和PNG内容对应；坐标图使用等比例刻度；p11比较常规模板与异形节点的展开差异，示例独立于正文贯穿实例"
 }

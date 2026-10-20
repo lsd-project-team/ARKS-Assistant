@@ -1,6 +1,6 @@
 # Transport Unit设计文档
 
-ZX2200产品运行模型 · 第3版 · 2026年10月20日
+ZX2200产品运行模型 · 第3版修订1 · 2026年10月20日
 
 # 1 设计概述
 
@@ -28,7 +28,7 @@ TU首先要让各业务模块使用同一套产品地址。基板和基岛的序
 
 # 2 模块组成与职责划分
 
-## 2.1 配方、运行对象与执行过程
+## 2.1 配方与运行对象及执行过程
 
 同一份产品涉及三类不同的信息。配方描述产品应当怎样组织和加工，例如基板数量、示教位置、焊点名称与工序选择。运行对象记录这一份产品目前的情况，例如当前坐标、定位结果和已完成的工序。执行过程则描述任务接下来选择什么动作，以及动作何时允许执行。三类信息相互协作，但没有被合并成一个对象。
 
@@ -87,7 +87,7 @@ TU保存基板集合，基板保存基岛集合，基岛保存焊点集合。每
 
 异形节点的配置也有共享关系。节点Config按ConfigName从公共配置列表查找；未找到时，当前实现会创建默认配置、加入列表并保存产品配置。因此“每个节点关联配置”并不意味着每个节点总有一份不可共享的配置，更不意味着读取Config一定没有副作用。几何节点与工艺配置名称应在设计中分别理解。
 
-## 3.3 序号、地址与加工顺序
+## 3.3 对象地址与加工顺序
 
 Index表示当前树中的对象序号。常规创建从1开始，并以Index减1读取坐标表。WorkIndex表示加工编排使用的工作序号，由行列、排列方式与加工方向计算。普通顺序下两者可以相同，蛇形或其他方向下就可能不同。当前动作的基板与基岛查询使用WorkIndex，因此它不是一个只影响界面显示的附加字段。[3][5]
 
@@ -124,6 +124,33 @@ MatterProductState表示对象参与哪些工艺：Enable参与S1和S2，EnableI
 | 两侧字典非空 | 所有S1值为true时返回true | 所有S2值为true时返回true |
 
 表3-2保留了当前实现中两侧不对称的检查条件。EntityState又是另一维度，取Process、Success或Fail。固晶动作要求当前焊点处于Process，并同时满足参与范围和工序未完成条件。完成字典不会在这里被自动等同于EntityState，更不能直接代替实物质量结论。[1][4][7]
+
+## 3.6 关键字段的来源与有效期
+
+字段的有效期取决于它属于配置、当前几何还是运行记录。表3-3与表3-4把相同操作作用于不同数据的差异放在一起比较。初始值区分新建Info与完成工序注入两个阶段；坐标中的长度采用mm，Degree采用rad，布尔值与工序字典没有物理单位。[1][3][4][5][11]
+
+表3-3 配置与位置数据的读写规则
+
+| 关键字段 | 建立时的含义 | 写入与主要使用 | Refresh后的含义 |
+|---|---|---|---|
+| Config | 按当前配方或异形节点动态取得 | 构建和动作条件读取配置；不保存为私有配方快照 | 仍按当前上下文读取 |
+| CoordinateSystem | 连接父坐标，复制本层配置位置 | 构建、刷新、定位和测高修改；移动动作读取转换结果 | 替换坐标实例，重新取配置几何 |
+| LocateResultInfo／IsVisioned | 新Info建立结果容器，标记为false | 视觉流程保存结果并更新坐标；动作条件读取标记 | 旧结果保留，标记清false |
+| MeasureHeightResult／IsMeasureHeight | 新Info为0mm／false | 测高流程写高度差并增量改Z；后代转换使用父层Z | 差值保留，标记清false；旧增量不再包含于新坐标 |
+
+表3-4 入口标记与过程记录的读写规则
+
+| 关键字段 | 建立时的值 | 写入与主要使用 | Refresh后的含义 |
+|---|---|---|---|
+| IsProduct | TU Info中初始为false | S1／S2入口及Mapping可置true；生产入口据此判断重建 | 保留；不能当作工序完成证据 |
+| IsSystem1Offset／IsSystem2Offset | TU Info中两者均为false | 本侧偏移方法置true并避免本侧重复累加 | 均清false；自身不重新应用偏移 |
+| S1RemainingSteps／S2RemainingSteps | 焊点新Info中为空；注入缺键后值为false | 动作成功写true；参与完成判断；人工操作可修改 | 键和值均保留 |
+| IsIdentity／IdentityCode | 各层新Info为false／null | 身份识别保存代码与标记；识别动作读取标记；离线可只设标记 | 标记与代码均保留 |
+| ActionNodeMessage.Finished | 新消息默认为false | 任务标记本消息已处理；控制器选择未完成消息 | 不属于TU；TU刷新不复位消息 |
+
+身份识别标记与定位标记的寿命不同。以两侧基板识别动作为例，IsIdentity已经为true时会跳过；Refresh只清定位和测高标记，因此交接不会自动要求重新读码。离线分支还能只置识别标记而不产生代码，所以“标记为true”和“保存了有效IdentityCode”需要分别判断。两侧物料识别的忽略分支执行本层停用操作后返回，不经过正常的代码保存段；上层对象按其传播规则影响下层。[13]
+
+EntityState也不属于这些完成标记。它在BaseMatter中初始为Process，动作读取它决定是否进入处理；把某工序字典值置为true并不会同时把它改成Success。对当前产品的判断应同时明确所属对象、字段及阶段。
 
 # 4 坐标体系设计
 
@@ -171,7 +198,7 @@ S1和S2工位偏移直接加到TU的Distance上，因而影响整棵后代的转
 
 分段点胶的平移与工位偏移使用不同机制。System1MoveDistance仅在SubstrateProcessing为Divide时给TU的Distance.X加DistanceToRight，回移方法做减法，没有同一套布尔标记保护。具体前后段由配置与区段位置共同决定，不能从“分段”一词推断固定一半数量，也不能把枚举中的DivideWithInverted自动视为同一分支。[1][2][9]
 
-## 4.5 定位、测高与刷新怎样改变坐标
+## 4.5 定位和测高如何影响坐标
 
 定位先保存测得的结果点，再由TuService.UpdateEntity计算用于更新的点和角度，并调用当前坐标的UpdateCoordinateSystem。被更新层的后代不需要逐点重写；它们下一次向G0转换时就会受到父层位姿变化影响。本篇说明数据和几何的归属，定位点选择与角度计算的完整算法另册展开。[5][11]
 
@@ -206,6 +233,12 @@ S1和S2工位偏移直接加到TU的Distance上，因而影响整棵后代的转
 异形创建以DownConfigs的实际节点数为准。每层构造把节点关联到运行对象，再建立坐标和自己的Info；基板、基岛的初始WorkIndex等于节点序号。配置名决定读取哪份工艺配置，节点位置决定在父层中的布局，两者不必一一对应。
 
 这条路径使不同基板可以具有不同的下层结构，但也要求节点层级和类型含义正确。常规全局Count仍存在于其他便捷接口中，不应据此替代实际异形集合。需要获取真实产品规模时，应沿运行树或相应节点树统计。
+
+![图5-2 常规模板与异形节点的展开差异](figures/p11-layout-models.png)
+
+图5-2 常规模板与异形节点的展开差异
+
+左右是两组独立说明数据。常规例中同一基岛模板重复到每块基板，形成相同数量；异形例中两块基板的下层分别有2个和3个节点。A、B均表示逻辑加工位置，矩形边界不表示基板实物形状。
 
 ## 5.4 工艺状态与工序键的装配
 
@@ -253,6 +286,18 @@ S1在未停止时发出允许向固晶段移送的信号，然后调用自身控
 
 输送任务收到控制器成功返回后，发出固晶来料完成信号。固晶任务等待该信号后进入产品处理。放行、实物交接、引用交接和目标来料通知分别位于不同位置，调试时应按这些节点判断停在哪一段，不能只看一个区段中的TU是否非空。
 
+区段另外保存有料状态SubSectionState与移送状态SubSectionTransferState。前者的HasMaterial和NoMaterial用于本次移送的进入判断；后者的Ready、Transfering和Alarm描述机械移送阶段。它们属于区段程式，与TU的IsProduct及焊点工序字典分别更新。表6-1只描述点胶到固晶这一分支的关键节点。[8]
+
+表6-1 点胶到固晶移送中的状态与引用
+
+| 节点 | 区段有料状态 | 移送状态 | TU引用与数据 |
+|---|---|---|---|
+| 允许进入并开始移送 | 源HasMaterial；目标NoMaterial | 源先置Transfering；目标在接料步骤另置Transfering | 此阶段产品仍由源区段持有 |
+| 成功出口 | 源NoMaterial；目标HasMaterial | 两侧均置Ready | 目标持有原TU并已Refresh；源清空；步骤保留 |
+| 目标Refresh抛异常 | 未保证达到成功出口状态 | 没有覆盖全部状态的统一回滚 | 目标可能已接收源引用；源尚未清空，坐标可能部分重建 |
+
+物料检测失败的相应分支还会把该侧移送状态设为Alarm，再由实际处理分支决定重试或退出。Alarm、焊点Fail与某个工序未完成不是同一个状态；恢复判断需要同时对应区段、产品和动作阶段。
+
 ## 6.4 S2为什么通常保留S1传来的对象
 
 固晶任务取得来料后补充S2步骤键。启用固晶且输送已配置时，只有当前TU的IsProduct为false才会按S2参数重新创建对象并置为true。正常S1已经把N1的标记设为true，交接刷新又保留了该标记，所以这条正常路径不会在S2入口无条件新建TU。S1的加工记录正是沿这一条件得以延续。[7]
@@ -273,11 +318,11 @@ S1在未停止时发出允许向固晶段移送的信号，然后调用自身控
 
 手动移送还存在目标TU为空时补建再刷新的分支；示教中的JudgeTuExist会按用户在设备界面中的选择重新建立对象；轨道物料搜索也可能补建或刷新。它们都说明“区段已经有一份TU”不等于“后续入口一定保留这一份TU”。需要追踪实例连续性时，应检查实际进入的条件分支。
 
-IsProduct也不是不可伪造的生产事实标记。Mapping显示界面在载入已有TU时会把它设为true，即使此前没有经过S1生产入口。分析该标记时必须包含界面入口。其设计上的实际意义是影响后续创建判断，不能单独用来证明某个机械加工过程已经发生。[9]
+IsProduct单独不能作为生产履历凭据。Mapping显示界面在载入已有TU时会把它设为true，即使此前没有经过S1生产入口。分析该标记时必须包含界面入口。其设计上的实际意义是影响后续创建判断，不能单独用来证明某个机械加工过程已经发生。[9]
 
 # 7 主要接口与使用约定
 
-## 7.1 按意图选择创建、刷新或重新取值
+## 7.1 创建和刷新操作的选择
 
 调用TU接口前，先明确本次操作要改变的是什么。新建用于建立新的运行身份和记录；Refresh用于结构仍相符时重建几何；从当前工位重新取TU用于跟随区段引用变化。这三种操作互不等价。表7-1按意图给出它们的前提与效果，便于开发和调试采用相同判断。[1][8]
 
@@ -293,11 +338,23 @@ IsProduct也不是不可伪造的生产事实标记。Mapping显示界面在载�
 
 ## 7.2 产品地址查询
 
-GetSubstrate和GetModule可按Index或工作序号查询，调用时必须明确所需序号含义。GetBondPosition继续以焊点名称查找。动作消息使用的是工作序号，示教坐标表创建使用的是对象序号；把一个数直接从两类接口之间传递，可能恰好在普通顺序下正确，却在蛇形排列时指向另一个对象。
+TU的GetSubstrate和GetModule只按Index查询；GetBondPosition先按这两个Index取得祖先，再按焊点名称查找。它们没有根据WorkIndex选择对象的参数。动作控制器采用另一条解析路径：S1直接按WorkIndex查找当前基板与基岛，S2在InitCurrentMessage中逐层匹配WorkIndex。动作消息中的序号不能未经换算就传给TU的这些查询方法。表7-2的正常查找以各层集合已建立为前提。[1][3]
+
+表7-2 TU地址查询接口的输入输出
+
+| 接口 | 输入的地址含义 | 返回与失败行为 |
+|---|---|---|
+| GetSubstrate(index) | 基板Index；常规构建从1开始 | 返回Substrate或null；集合存在时负数抛ArgumentOutOfRangeException |
+| GetModule(substrateIndex, moduleIndex) | 基板Index与该板内基岛Index | 返回Module或null；先查父基板，父存在后才检查基岛负数 |
+| GetBondPosition(substrateIndex, moduleIndex, bondPositionName) | 祖先Index与该岛内焊点名称 | 返回BondPosition或null；祖先存在后才检查名称是否为null |
+
+图3-2的蛇形例能显示这一差别。假设该阵列位于基板1中，GetModule(1,4)取得Index为4、WorkIndex为6的基岛；动作消息中的基岛工作序号4则解析到Index为6的对象。同一个整数在两条调用路径中有不同含义，普通顺序下两者相同不代表接口可以互换。
 
 查询的失败行为并不统一。基板查询在集合为空引用时返回null，负序号检查随后才执行；基岛查询找不到父基板时先返回null，因而不会继续检查下层序号。焊点查询找不到祖先时返回null，祖先存在后才检查焊点名是否为null；空字符串可以进入查找并以未找到结束。对外层调用而言，既要处理未找到，也不能把所有错误都假定为同一种异常。[1]
 
 GetAllBaseMatter取得根以下的实际对象，包含基板、基岛和焊点而排除TU根。GetAllBondPositions则按名称收集焊点，但两层循环只到常规Count减1：本例查找A点应有6个，该方法却只遍历基板1的前两个岛，得到2个。其数量接口读取常规全局Count，也不能替代异形树实际计数。附录C集中记录这些现状。
+
+S2当前对象解析还使用了缓存。InitCurrentMessage在匹配成功时写入CurrentSubstrate、CurrentModule和BondPosition，但没有先统一清空这些字段；本轮地址未命中时，非空结果可能仍来自上一次消息。因此“当前对象非空”不能单独证明它与本轮消息一致，完整配置与地址匹配仍是调用前提。[3]
 
 ## 7.3 步骤记录与动作记录
 
@@ -313,9 +370,24 @@ SelfPosToG0接受本层坐标中的点，G0PosToSelf接受G0中的点。两者�
 
 SetMatterDisable、SetMatterOnlyDispense、SetMatterOnlyBond与SetMatterEnable向下层传播工艺参与范围。基板与基岛的聚合属性随后反映下层状态；TU本身没有同样的聚合覆盖。修改工艺参与范围不会自动等同于清除工序结果，界面是否同时清步骤还取决于选择的是焊点还是上层对象。[1][9]
 
-# 8 一致性、失败与恢复边界
+## 7.5 步骤与转换接口的调用契约
 
-## 8.1 配方、树与步骤需要同时一致
+下表把常用输入、返回值和前提集中用于查阅。返回void只说明方法不返回结果对象，并不表示没有副作用。控制器复位针对工作消息，焊点步骤写入针对产品记录；调用者应在正确的拥有者上操作。[3][4][5]
+
+表7-3 步骤及坐标接口的输入输出
+
+| 方法与输入 | 输出与副作用 | 调用约束 |
+|---|---|---|
+| InjectSteps(transportUnit) | void；在匹配焊点上补缺失工序键并设false | TU及下层集合、工序配置应可遍历；已有键保留 |
+| IsS1NeedStep(stepName)／IsS2NeedStep(stepName) | bool；返回对应完成值的反值 | stepName非null且本侧字典已有键；缺键抛KeyNotFoundException |
+| S1FinishedStep(stepName)／S2FinishedStep(stepName) | void；本侧字典值置true；缺失键被建立 | stepName非null；成功路径写入；不标记控制器消息 |
+| FinishCurrentActionNode() | void；当前工作消息Finished置true | 必须存在当前消息；不代替焊点工序写回 |
+| Finish() | void；将本控制器工作消息Finished复位为false | 两侧集合为null均返回；S2集合非null时还要求至少一项 |
+| SelfPosToG0(point3D)／G0PosToSelf(point3D) | 返回新的AKRSPoint3D；不改写输入点 | 输入非null；使用同一条当前父链，输入参考系与方向应对应 |
+
+# 8 一致性约束及失败恢复边界
+
+## 8.1 配方与对象树及步骤的一致性
 
 TU运行依赖当前对象树、配置与工序定义共同成立。只改坐标而保持结构时，可以通过刷新重新建立几何；改变层级数量、焊点名称或异形关联以后，旧树可能不再满足配置索引条件。Refresh沿既有集合执行，不按新数量重建整棵树，也不重新应用工艺状态或重新注入步骤。因此它不能承担任意配方迁移。[1][2]
 
@@ -475,7 +547,7 @@ IsProduct重建、放行顺序和点胶工序写回
 - ZX/TransportSystem/Models/Programs/BaseSubSectionProgram.cs：abstract class BaseSubSectionProgram，L36；void UpdateTransportUnit()，L62
 - ZX/TransportSystem/Controllers/TransportController.cs：ExcuteResult TransferAutoLoaderToLoading，L439；ExcuteResult TransferDispenseToBond，L1266
 - ZX/TransportSystem/Models/TransportDomain.cs：void StartTask()，L84；TransportProgram.RefreshTransportUnit();，L117
-- ZX/TransportSystem/Tasks/TransportTask.cs：class TransportTask，L45；TransferToBondFinishedSignal.Set();，L489
+- ZX/TransportSystem/Tasks/TransportTask.cs：ExcuteResult ret = this.transportController.TransferDispenseToBond();，L525；TransferToBondFinishedSignal.Set();，L540
 - ZX/TransportSystem/Controllers/DispenseSubSectionController.cs：this.dispenseSubSectionProgram.TransportUnit.Refresh();，L482；this.dispenseSubSectionProgram.TransportUnit.System1BackMoveDistance();，L504
 
 ## [9] 示教与人工状态修改
@@ -513,7 +585,19 @@ IsProduct重建、放行顺序和点胶工序写回
 
 - ZX/Main/Machine/MachineSupport/Machine.Operate.cs：void Start(，L261
 
-# 附录B 术语与读法
+## [13] 身份识别记录的有效期
+
+识别结果保存、离线标记及重复识别条件
+
+- ZX/TransportUnitSystem/Module/Information/BaseInformation.cs：abstract class BaseInformation，L12
+- ZX/DispenseSystem/Models/System1Domain.cs：baseEntity.BaseInfo.IsIdentity = true;，L624；baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;，L625
+- ZX/BondSystem/Models/System2Domain.cs：baseEntity.BaseInfo.IsIdentity = true;，L1088；baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;，L1089
+- ZX/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs：override ExcuteResult DoWork()，L40；if (this.substrate.BaseInfo.IsIdentity)，L102
+- ZX/BondSystem/Models/ActionNodes/IdentityActionNode/S2SubstrateIdentityActionNode.cs：override ExcuteResult DoWork()，L40；if (this.substrate.BaseInfo.IsIdentity)，L102
+
+# 附录B 术语与图表索引
+
+## B.1 常用术语
 
 表B-1 本文常用术语
 
@@ -531,6 +615,41 @@ IsProduct重建、放行顺序和点胶工序写回
 | 工作消息／WorkMessages | 控制器保存的动作编排及其完成标记 |
 | 工序步骤字典 | 焊点保存的“工序名→是否完成”记录 |
 | Refresh | 沿既有树重建坐标并清除相应流程标记 |
+| 区段有料状态 | SubSectionState；HasMaterial和NoMaterial供移送进入条件判断 |
+| 区段移送状态 | SubSectionTransferState；表示Ready、Transfering或Alarm等阶段 |
+| 身份识别记录 | IsIdentity与IdentityCode分别保存处理标记和识别代码 |
+| 异形节点 | OppositeSex；用节点层级、位置及配置名称描述产品分支 |
+| mm／rad | 本文位置计算的长度单位毫米／平面角度单位弧度 |
+
+## B.2 图目录
+
+- 图1-1 产品层级与一个具体焊点的地址
+- 图2-1 产品配置 运行模型与动作执行的分工
+- 图3-1 重复焊点共享配置定义而分别保存运行记录
+- 图3-2 一组两行三列阵列中的对象序号和工作序号
+- 图4-1 焊点局部原点逐层转换的中间结果
+- 图4-2 TU旋转后的局部轴与焊点全局位置
+- 图5-1 从产品配置到运行对象树的建立顺序
+- 图5-2 常规模板与异形节点的展开差异
+- 图6-1 正常S1到S2路径中对象、几何与进度的有效期
+- 图6-2 自动点胶到固晶交接的主要调用与信号
+- 图6-3 工作消息与产品步骤是两套记录
+
+## B.3 表目录
+
+- 表3-1 主要对象的职责与直接数据
+- 表3-2 参与本侧工艺时的完成函数规则
+- 表3-3 配置与位置数据的读写规则
+- 表3-4 入口标记与过程记录的读写规则
+- 表6-1 点胶到固晶移送中的状态与引用
+- 表7-1 创建和刷新接口的语义
+- 表7-2 TU地址查询接口的输入输出
+- 表7-3 步骤及坐标接口的输入输出
+- 表9-1 贯穿实例的结构与坐标输入
+- 表9-2 同一A点在几个阶段的状态快照
+- 表9-3 可用于评审和调试的核对问题
+- 表B-1 本文常用术语
+- 表C-1 需要保留的实现边界
 
 # 附录C 当前实现的特定边界
 
@@ -547,3 +666,4 @@ IsProduct重建、放行顺序和点胶工序写回
 | 异形节点Config读取 | 缺失配置时可创建并保存默认配置 | 配置访问并非始终只读；见3.2节 |
 | ModifyMatter异常处理 | 清理工艺信息并保存，不统一回滚已写节点 | 无向上传播异常不代表映射完整；见5.4节 |
 | Mapping载入 | 已有TU的IsProduct可被界面设为true | 标记必须结合入口解释；见6.5节 |
+| S2当前对象解析 | 未统一清空上次缓存；未命中不保证变为null | 应验证与本轮工作消息匹配；见7.2节 |

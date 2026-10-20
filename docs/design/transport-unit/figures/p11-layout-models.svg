@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1110" viewBox="0 0 2400 1110"><rect width="100%" height="100%" fill="white"/>
+<text x="600" y="60" fill="#162e43" font-family="Microsoft YaHei" font-size="60" font-weight="700" text-anchor="middle" dominant-baseline="central">常规产品</text>
+<text x="1800" y="60" fill="#162e43" font-family="Microsoft YaHei" font-size="60" font-weight="700" text-anchor="middle" dominant-baseline="central">异形产品</text>
+<text x="600" y="135" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">同一模板重复展开</text>
+<text x="1800" y="135" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">每个分支读取自己的节点</text>
+<polyline points="1200,30 1200,1030" fill="none" stroke="#a5b5c1" stroke-width="3"/>
+<rect x="40" y="220" width="1120" height="330" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="600" y="270" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板 1</text>
+<rect x="130" y="330" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="250" y="370" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 1</text>
+<circle cx="195" cy="445" r="34" fill="#b65f17"/>
+<text x="195" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="305" cy="445" r="34" fill="#b65f17"/>
+<text x="305" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="480" y="330" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="600" y="370" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 2</text>
+<circle cx="545" cy="445" r="34" fill="#b65f17"/>
+<text x="545" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="655" cy="445" r="34" fill="#b65f17"/>
+<text x="655" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="830" y="330" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="950" y="370" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 3</text>
+<circle cx="895" cy="445" r="34" fill="#b65f17"/>
+<text x="895" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="1005" cy="445" r="34" fill="#b65f17"/>
+<text x="1005" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="40" y="610" width="1120" height="330" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="600" y="660" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板 2</text>
+<rect x="130" y="720" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="250" y="760" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 1</text>
+<circle cx="195" cy="835" r="34" fill="#b65f17"/>
+<text x="195" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="305" cy="835" r="34" fill="#b65f17"/>
+<text x="305" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="480" y="720" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="600" y="760" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 2</text>
+<circle cx="545" cy="835" r="34" fill="#b65f17"/>
+<text x="545" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="655" cy="835" r="34" fill="#b65f17"/>
+<text x="655" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="830" y="720" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="950" y="760" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 3</text>
+<circle cx="895" cy="835" r="34" fill="#b65f17"/>
+<text x="895" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="1005" cy="835" r="34" fill="#b65f17"/>
+<text x="1005" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="1240" y="220" width="1120" height="330" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1800" y="270" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板 1</text>
+<rect x="1400" y="330" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1520" y="370" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 1</text>
+<circle cx="1465" cy="445" r="34" fill="#b65f17"/>
+<text x="1465" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="1575" cy="445" r="34" fill="#b65f17"/>
+<text x="1575" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="1960" y="330" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2080" y="370" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 2</text>
+<circle cx="2025" cy="445" r="34" fill="#b65f17"/>
+<text x="2025" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="2135" cy="445" r="34" fill="#b65f17"/>
+<text x="2135" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="1240" y="610" width="1120" height="330" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1800" y="660" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板 2</text>
+<rect x="1330" y="720" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1450" y="760" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 1</text>
+<circle cx="1395" cy="835" r="34" fill="#b65f17"/>
+<text x="1395" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="1505" cy="835" r="34" fill="#b65f17"/>
+<text x="1505" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="1680" y="720" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1800" y="760" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 2</text>
+<circle cx="1745" cy="835" r="34" fill="#b65f17"/>
+<text x="1745" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="1855" cy="835" r="34" fill="#b65f17"/>
+<text x="1855" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<rect x="2030" y="720" width="240" height="170" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2150" y="760" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">岛 3</text>
+<circle cx="2095" cy="835" r="34" fill="#b65f17"/>
+<text x="2095" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">A</text>
+<circle cx="2205" cy="835" r="34" fill="#b65f17"/>
+<text x="2205" y="835" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">B</text>
+<text x="600" y="1015" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">两块基板各3岛，共12个焊点</text>
+<text x="1800" y="1015" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">两块基板分别2岛和3岛，共10个焊点</text></svg>

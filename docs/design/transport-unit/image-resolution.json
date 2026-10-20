@@ -41,7 +41,7 @@
   },
   {
     "file": "figures/p05-coordinate-chain.png",
-    "page": 12,
+    "page": 13,
     "pixels": [
       2400,
       1080
@@ -51,7 +51,7 @@
   },
   {
     "file": "figures/p06-coordinate-geometry.png",
-    "page": 12,
+    "page": 13,
     "pixels": [
       2400,
       1500
@@ -61,7 +61,7 @@
   },
   {
     "file": "figures/p07-build-sequence.png",
-    "page": 14,
+    "page": 15,
     "pixels": [
       2400,
       1130
@@ -70,8 +70,18 @@
     "effective_dpi": 366.49
   },
   {
-    "file": "figures/p08-lifetimes.png",
+    "file": "figures/p11-layout-models.png",
     "page": 16,
+    "pixels": [
+      2400,
+      1110
+    ],
+    "display_inches": 6.5496,
+    "effective_dpi": 366.44
+  },
+  {
+    "file": "figures/p08-lifetimes.png",
+    "page": 17,
     "pixels": [
       2400,
       1230
@@ -81,22 +91,22 @@
   },
   {
     "file": "figures/p09-handover.png",
-    "page": 17,
-    "pixels": [
-      2400,
-      1620
-    ],
-    "display_inches": 6.5494,
-    "effective_dpi": 366.44
-  },
-  {
-    "file": "figures/p10-progress.png",
     "page": 18,
     "pixels": [
       2400,
-      1050
+      1220
     ],
     "display_inches": 6.5492,
     "effective_dpi": 366.46
+  },
+  {
+    "file": "figures/p10-progress.png",
+    "page": 20,
+    "pixels": [
+      2400,
+      820
+    ],
+    "display_inches": 6.5488,
+    "effective_dpi": 366.48
   }
 ]

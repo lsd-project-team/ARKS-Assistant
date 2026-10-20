@@ -1,7 +1,7 @@
 {
   "date": "2026-10-20",
-  "revision": "3.0",
-  "repository_commit": "104e56c73cf60cb7a82755d6eb55f54152c6e1fe",
+  "revision": "3.1",
+  "repository_commit": "79ecf6c0877b944b60a42861caae544dff47513e",
   "scope": "Transport Unit对象与主要生产调用链的设计分析；源码只读；不代表整机或断电恢复试验",
   "files": [
     {
@@ -45,6 +45,18 @@
         {
           "symbol": "public void ClearMeasureHeight()",
           "line": 635
+        },
+        {
+          "symbol": "public Substrate GetSubstrate(int index)",
+          "line": 150
+        },
+        {
+          "symbol": "public Module GetModule(int substrateIndex, int moduleIndex)",
+          "line": 171
+        },
+        {
+          "symbol": "public BondPosition GetBondPosition(int substrateIndex, int moduleIndex, string bondPositionName)",
+          "line": 195
         }
       ]
     },
@@ -253,6 +265,14 @@
         {
           "symbol": "public void FinishCurrentActionNode()",
           "line": 767
+        },
+        {
+          "symbol": "public Substrate CurrentSubstrate =>",
+          "line": 75
+        },
+        {
+          "symbol": "public Module CurrentModule =>",
+          "line": 69
         }
       ]
     },
@@ -273,6 +293,10 @@
         {
           "symbol": "private void RemoveDisableActionNode()",
           "line": 1554
+        },
+        {
+          "symbol": "public void InitCurrentMessage()",
+          "line": 930
         }
       ]
     },
@@ -520,6 +544,14 @@
         {
           "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHieght;",
           "line": 468
+        },
+        {
+          "symbol": "baseEntity.BaseInfo.IsIdentity = true;",
+          "line": 624
+        },
+        {
+          "symbol": "baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;",
+          "line": 625
         }
       ],
       "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a"
@@ -540,6 +572,14 @@
         {
           "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHeight;",
           "line": 1005
+        },
+        {
+          "symbol": "baseEntity.BaseInfo.IsIdentity = true;",
+          "line": 1088
+        },
+        {
+          "symbol": "baseEntity.BaseInfo.IdentityCode = codeResult.CodeValue;",
+          "line": 1089
         }
       ],
       "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
@@ -722,12 +762,12 @@
       "purpose": "控制器成功后发来料信号",
       "anchors": [
         {
-          "symbol": "public class TransportTask",
-          "line": 45
+          "symbol": "ExcuteResult ret = this.transportController.TransferDispenseToBond();",
+          "line": 525
         },
         {
           "symbol": "TransferToBondFinishedSignal.Set();",
-          "line": 489
+          "line": 540
         }
       ],
       "sha256": "b9a0b273ecc335c68f5cd58585d35a62dfe9d8a9bc31753a06a677f96b7f1234"
@@ -811,6 +851,38 @@
         }
       ],
       "sha256": "f2c412830c866e14cdfc00686237838526466a56835715d4812c8dcb982b7ece"
+    },
+    {
+      "id": "S51",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs",
+      "purpose": "S1基板识别标记的写入与跳过",
+      "anchors": [
+        {
+          "symbol": "public override ExcuteResult DoWork()",
+          "line": 40
+        },
+        {
+          "symbol": "if (this.substrate.BaseInfo.IsIdentity)",
+          "line": 102
+        }
+      ],
+      "sha256": "7e760c785adbd5652a9ad30a6281846ce9e2ccb22ad6a3e083db0a7130fdd301"
+    },
+    {
+      "id": "S52",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2SubstrateIdentityActionNode.cs",
+      "purpose": "S2基板识别标记的写入与跳过",
+      "anchors": [
+        {
+          "symbol": "public override ExcuteResult DoWork()",
+          "line": 40
+        },
+        {
+          "symbol": "if (this.substrate.BaseInfo.IsIdentity)",
+          "line": 102
+        }
+      ],
+      "sha256": "a14a666b625eb3f3df9ac3608f9fd32847fcec71eeeea49c42e85fb54ad6429d"
     }
   ],
   "reference_groups": [
@@ -950,6 +1022,18 @@
       "purpose": "准备、任务启动与S2动作控制器初始化",
       "source_ids": [
         "S47"
+      ]
+    },
+    {
+      "number": 13,
+      "title": "身份识别记录的有效期",
+      "purpose": "识别结果保存、离线标记及重复识别条件",
+      "source_ids": [
+        "S06",
+        "S29",
+        "S30",
+        "S51",
+        "S52"
       ]
     }
   ]

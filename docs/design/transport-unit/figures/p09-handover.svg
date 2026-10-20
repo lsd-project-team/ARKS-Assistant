@@ -1,34 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1620" viewBox="0 0 2400 1620"><rect width="100%" height="100%" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1220" viewBox="0 0 2400 1220"><rect width="100%" height="100%" fill="white"/>
 <text x="290" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="700" text-anchor="middle" dominant-baseline="central">S1任务</text>
-<polyline points="290,125 290,1510" fill="none" stroke="#a5b5c1" stroke-width="3"/>
+<polyline points="290,125 290,1125" fill="none" stroke="#a5b5c1" stroke-width="3"/>
 <text x="920" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="700" text-anchor="middle" dominant-baseline="central">输送任务／控制器</text>
-<polyline points="920,125 920,1510" fill="none" stroke="#a5b5c1" stroke-width="3"/>
+<polyline points="920,125 920,1125" fill="none" stroke="#a5b5c1" stroke-width="3"/>
 <text x="1540" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="700" text-anchor="middle" dominant-baseline="central">区段TU引用</text>
-<polyline points="1540,125 1540,1510" fill="none" stroke="#a5b5c1" stroke-width="3"/>
+<polyline points="1540,125 1540,1125" fill="none" stroke="#a5b5c1" stroke-width="3"/>
 <text x="2140" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="700" text-anchor="middle" dominant-baseline="central">S2任务</text>
-<polyline points="2140,125 2140,1510" fill="none" stroke="#a5b5c1" stroke-width="3"/>
-<polyline points="290,220 920,220" fill="none" stroke="#245b87" stroke-width="5"/>
-<polygon points="920,220 899.2897166458885,230.0042072845583 899.2897166458885,209.9957927154417" fill="#245b87"/>
-<text x="590" y="170" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">允许向固晶段移送</text>
-<rect x="85" y="290" width="410" height="145" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="290" y="332" fill="#162e43" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">Finish复位消息</text>
-<text x="290" y="390" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">无需等待移送结束</text>
-<rect x="650" y="345" width="530" height="175" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
-<text x="915" y="400" fill="#162e43" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">确认源有料、目标无料</text>
-<text x="915" y="470" fill="#162e43" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">机械移送与检测完成</text>
-<polyline points="920,620 1540,620" fill="none" stroke="#245b87" stroke-width="5"/>
-<polygon points="1540,620 1519.2897166458883,630.0042072845583 1519.2897166458883,609.9957927154417" fill="#245b87"/>
-<text x="1230" y="565" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">目标TU = 源TU</text>
-<rect x="1310" y="710" width="460" height="130" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1540" y="775" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="700" text-anchor="middle" dominant-baseline="central">目标TU.Refresh</text>
-<polyline points="920,950 1540,950" fill="none" stroke="#245b87" stroke-width="5"/>
-<polygon points="1540,950 1519.2897166458883,960.0042072845583 1519.2897166458883,939.9957927154417" fill="#245b87"/>
-<text x="1230" y="895" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">源TU清空；更新状态</text>
-<text x="920" y="1050" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">保存；返回Success</text>
-<polyline points="920,1190 2140,1190" fill="none" stroke="#356d4a" stroke-width="5"/>
-<polygon points="2140,1190 2119.2897166458883,1200.0042072845583 2119.2897166458883,1179.9957927154417" fill="#356d4a"/>
-<text x="1510" y="1135" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">输送任务发送固晶来料完成信号</text>
-<rect x="1875" y="1300" width="495" height="145" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
-<text x="2120" y="1345" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">补充S2键</text>
-<text x="2120" y="1405" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">IsProduct=true，保留TU</text>
-<text x="1200" y="1570" fill="#4d6070" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">时间向下；机械完成后才交接引用，随后通知S2进入产品处理</text></svg>
+<polyline points="2140,125 2140,1125" fill="none" stroke="#a5b5c1" stroke-width="3"/>
+<polyline points="290,190 920,190" fill="none" stroke="#245b87" stroke-width="5"/>
+<polygon points="920,190 899.2897166458885,200.0042072845583 899.2897166458885,179.9957927154417" fill="#245b87"/>
+<text x="590" y="145" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">允许向固晶段移送</text>
+<rect x="70" y="260" width="440" height="130" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="290" y="300" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">Finish复位消息</text>
+<text x="290" y="360" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">无需等移送结束</text>
+<rect x="640" y="260" width="560" height="130" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="920" y="300" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">确认源有料、目标无料</text>
+<text x="920" y="360" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">机械移送与检测完成</text>
+<polyline points="920,465 1540,465" fill="none" stroke="#245b87" stroke-width="5"/>
+<polygon points="1540,465 1519.2897166458883,475.0042072845583 1519.2897166458883,454.9957927154417" fill="#245b87"/>
+<text x="1230" y="420" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">目标TU = 源TU</text>
+<rect x="1290" y="500" width="500" height="110" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1540" y="555" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="700" text-anchor="middle" dominant-baseline="central">目标TU.Refresh</text>
+<polyline points="920,680 1540,680" fill="none" stroke="#245b87" stroke-width="5"/>
+<polygon points="1540,680 1519.2897166458883,690.0042072845583 1519.2897166458883,669.9957927154417" fill="#245b87"/>
+<text x="1230" y="635" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">源TU清空；更新状态</text>
+<text x="920" y="745" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">保存；返回Success</text>
+<polyline points="920,850 2140,850" fill="none" stroke="#356d4a" stroke-width="5"/>
+<polygon points="2140,850 2119.2897166458883,860.0042072845583 2119.2897166458883,839.9957927154417" fill="#356d4a"/>
+<text x="1510" y="805" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">输送任务发送固晶来料完成信号</text>
+<rect x="1875" y="930" width="495" height="170" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2120" y="970" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">补充S2键</text>
+<text x="2120" y="1020" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">IsProduct=true</text>
+<text x="2120" y="1070" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">保留原TU</text>
+<text x="1200" y="1180" fill="#4d6070" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">时间向下；机械完成后才交接引用，随后通知S2进入产品处理</text></svg>
