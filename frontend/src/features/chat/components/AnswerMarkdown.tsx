@@ -1,9 +1,6 @@
 import type { ComponentProps } from 'react';
-import { Markdown } from '../../../app/components/Markdown';
-import { remarkRecordAnswer } from '../lib/recordAnswerPresentation';
+import { RichContentRenderer } from '../rich/RichContentRenderer';
 
-const answerPlugins = [remarkRecordAnswer];
-
-export function AnswerMarkdown(props: ComponentProps<typeof Markdown>) {
-  return <Markdown {...props} remarkPlugins={answerPlugins} />;
+export function AnswerMarkdown(props: ComponentProps<typeof RichContentRenderer>) {
+  return <RichContentRenderer {...props} />;
 }

@@ -10,6 +10,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from app.agents.context.tokens import fit_text
 from app.core.config import dump_json
+from app.modules.chat.rich_presentation import project_rich_content
 from app.modules.source_analysis.location import resolve_source_path
 
 CITATION = re.compile(r"(?<!\\)\[([^\]\n]+)\]\(source:([^\s)]+)\)")
@@ -40,6 +41,8 @@ def citation_matches(text):
 
 
 def disable_invalid_citations(text, invalid):
+    if invalid:
+        text = project_rich_content(text)
     for match in reversed(citation_matches(text)):
         if match[2] in invalid:
             text = text[: match.start()] + f"{match[1]}（引用未核对）" + text[match.end() :]
@@ -47,6 +50,7 @@ def disable_invalid_citations(text, invalid):
 
 
 def mark_unknown_conclusions(text, review):
+    text = project_rich_content(text)
     # 已明确缺证据的句子不能继续以肯定语气出现；原句仍保存在复核事件中。
     for item in sorted(review.get("issues", []), key=lambda row: len(row["claim"]), reverse=True):
         citations = " ".join(match[0] for match in citation_matches(item["claim"]))
@@ -230,6 +234,7 @@ class SourceEvidence:
         )
 
     def check(self, text):
+        text = project_rich_content(text)
         citations = []
         for match in citation_matches(text):
             location = LOCATION.fullmatch(unquote(match[2]))

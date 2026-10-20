@@ -23,6 +23,7 @@ from app.agents.tools.engineering import engineering_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
+from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.chat.schemas import SourceOptions
 from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
 from app.modules.projects.context import project_prompt
@@ -190,6 +191,7 @@ class AgentGraphBuilder:
             "相关代码问题请读取本地源码；历史对话中的资料引用不代表本轮已经检索。"
         )
         prompt += "\n" + REPORT_GUIDANCE
+        prompt += "\n" + RICH_CONTENT_GUIDANCE
         if policy:
             prompt += (
                 f"\n本轮分析模式：{policy['mode']}，工具额度 {policy['limit']}，"
