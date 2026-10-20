@@ -1,8 +1,8 @@
 {
   "date": "2026-10-20",
-  "revision": "2.0",
-  "repository_commit": "9c3c07569e3d7dfee02a56f4fa49f6e3d727e0af",
-  "scope": "Transport Unit设计：对象、构造、调用方、交接、状态和坐标的相关实现片段；不代表全仓或实机验收",
+  "revision": "3.0",
+  "repository_commit": "104e56c73cf60cb7a82755d6eb55f54152c6e1fe",
+  "scope": "Transport Unit对象与主要生产调用链的设计分析；源码只读；不代表整机或断电恢复试验",
   "files": [
     {
       "id": "S01",
@@ -595,6 +595,362 @@
         }
       ],
       "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41"
+    },
+    {
+      "id": "S35",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OppositeSex.cs",
+      "purpose": "异形节点的配置共享与惰性建立",
+      "anchors": [
+        {
+          "symbol": "public OppositeSexConfig Config",
+          "line": 121
+        }
+      ],
+      "sha256": "578f6280ca830bd0ce1e67c2145dcebc77d9e63252d2cab9225db4d3587831a9"
+    },
+    {
+      "id": "S36",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/ArrayConfig.cs",
+      "purpose": "阵列参数与默认值",
+      "anchors": [
+        {
+          "symbol": "public class ArrayConfig",
+          "line": 18
+        }
+      ],
+      "sha256": "98dfc5b7ebdbcd0d52f3604a68535770cc41a5747b8a69f42b88ab972b75455c"
+    },
+    {
+      "id": "S37",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/BaseConfig.cs",
+      "purpose": "公共产品配置",
+      "anchors": [
+        {
+          "symbol": "public class BaseConfig",
+          "line": 22
+        }
+      ],
+      "sha256": "809e99e93d2301570d91f9086455863e38885a9f1922f223b1873e001a6b40c8"
+    },
+    {
+      "id": "S38",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/SubstrateConfig.cs",
+      "purpose": "前后段索引与基板工作方向",
+      "anchors": [
+        {
+          "symbol": "GetFrontSubstrateIndex",
+          "line": 71
+        }
+      ],
+      "sha256": "f2878a13438bd8e9a5ed02581ddbc5a609fb3fd57edebf1de900e405e8d115ab"
+    },
+    {
+      "id": "S39",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/ModuleConfig.cs",
+      "purpose": "基岛工序方向与排列",
+      "anchors": [
+        {
+          "symbol": "public class ModuleConfig",
+          "line": 13
+        }
+      ],
+      "sha256": "165b11edf712f3dc4bf766fe432c9bd631c80df5eb409d5007ec54cd6a9bcfab"
+    },
+    {
+      "id": "S40",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/SingleBondPositionConfig.cs",
+      "purpose": "单焊点配置与偏移",
+      "anchors": [
+        {
+          "symbol": "public class SingleBondPositionConfig",
+          "line": 24
+        }
+      ],
+      "sha256": "4ae2e72a1ece77fa240b9065a2004c0e53dc8df2f442436b813fad243727203d"
+    },
+    {
+      "id": "S41",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Model/VisionResult.cs",
+      "purpose": "定位结果点保存",
+      "anchors": [
+        {
+          "symbol": "SaveInfo",
+          "line": 60
+        }
+      ],
+      "sha256": "ac0567ac9c60c181cf5293afc9ea6541b326da1517746be92bab2e9d65f7d2d3"
+    },
+    {
+      "id": "S42",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Information/LocateResultInfo.cs",
+      "purpose": "定位点与距离结果",
+      "anchors": [
+        {
+          "symbol": "public class LocateResultInfo",
+          "line": 13
+        }
+      ],
+      "sha256": "1bc2cb0f04d41da85099cf2a357a126196bdaaafb96322a588394e9ab4fdbaa3"
+    },
+    {
+      "id": "S43",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "purpose": "S1入口重建与放行信号",
+      "anchors": [
+        {
+          "symbol": "if (this.Enable)",
+          "line": 93
+        },
+        {
+          "symbol": "TransportUnitInfo.IsProduct =",
+          "line": 99
+        },
+        {
+          "symbol": "AllowDispenseTransferToBondSignal.Set();",
+          "line": 175
+        },
+        {
+          "symbol": "this.S1ActionNodeController.Finish();",
+          "line": 181
+        }
+      ],
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789"
+    },
+    {
+      "id": "S44",
+      "path": "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs",
+      "purpose": "控制器成功后发来料信号",
+      "anchors": [
+        {
+          "symbol": "public class TransportTask",
+          "line": 45
+        },
+        {
+          "symbol": "TransferToBondFinishedSignal.Set();",
+          "line": 489
+        }
+      ],
+      "sha256": "b9a0b273ecc335c68f5cd58585d35a62dfe9d8a9bc31753a06a677f96b7f1234"
+    },
+    {
+      "id": "S45",
+      "path": "trunk/AKRS.ZX2200/Main/Machine/Process/SingleProcessStep.cs",
+      "purpose": "工序键与焊点名称定义",
+      "anchors": [
+        {
+          "symbol": "public class SingleProcessStep",
+          "line": 15
+        }
+      ],
+      "sha256": "3b810e1d5360f692e58e0139ef8d0d6a107d2c88917a836b4c086b21b3c4f29a"
+    },
+    {
+      "id": "S46",
+      "path": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ActionNodeMessage.cs",
+      "purpose": "工作消息字段",
+      "anchors": [
+        {
+          "symbol": "public class ActionNodeMessage",
+          "line": 12
+        }
+      ],
+      "sha256": "dd202801af33c493c6c7a0df11611020ca84ebd859a222b6bcfbaf7df2c66161"
+    },
+    {
+      "id": "S47",
+      "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "purpose": "机器任务启动顺序",
+      "anchors": [
+        {
+          "symbol": "public void Start(",
+          "line": 261
+        }
+      ],
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073"
+    },
+    {
+      "id": "S48",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/UcTransportShow.cs",
+      "purpose": "Mapping载入与人工步骤修改",
+      "anchors": [
+        {
+          "symbol": "TransportUnitInfo.IsProduct = true;",
+          "line": 56
+        },
+        {
+          "symbol": "private void BtNormal_ItemClick",
+          "line": 938
+        },
+        {
+          "symbol": "private void BtSuccess_ItemClick",
+          "line": 976
+        }
+      ],
+      "sha256": "d5feaa5ecaac5411af3b1545d96dba2869aa757d75fde798c5338faacdbc9974"
+    },
+    {
+      "id": "S49",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/FrmTransportUnitMapping.cs",
+      "purpose": "显示入口改IsProduct",
+      "anchors": [
+        {
+          "symbol": "TransportUnitInfo.IsProduct = true;",
+          "line": 62
+        }
+      ],
+      "sha256": "5e016ba9358defbf11b81d94300a13810253849065d602d56baf2f01d11fb8df"
+    },
+    {
+      "id": "S50",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/FrmAddTuInfo.cs",
+      "purpose": "配方批次面别的界面赋值",
+      "anchors": [
+        {
+          "symbol": "private void BtSure_Click",
+          "line": 42
+        }
+      ],
+      "sha256": "f2c412830c866e14cdfc00686237838526466a56835715d4812c8dcb982b7ece"
+    }
+  ],
+  "reference_groups": [
+    {
+      "number": 1,
+      "title": "产品运行对象与状态",
+      "purpose": "对象层级、查询、刷新、偏移与参与范围",
+      "source_ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S11"
+      ]
+    },
+    {
+      "number": 2,
+      "title": "产品配置与展开服务",
+      "purpose": "常规／异形结构、阵列、状态映射及Mapping输出",
+      "source_ids": [
+        "S09",
+        "S10",
+        "S12",
+        "S21",
+        "S35",
+        "S36",
+        "S37",
+        "S38",
+        "S39",
+        "S40"
+      ]
+    },
+    {
+      "number": 3,
+      "title": "动作控制与步骤定义",
+      "purpose": "当前对象解析、消息复位与缺失步骤键注入",
+      "source_ids": [
+        "S13",
+        "S14",
+        "S45",
+        "S46"
+      ]
+    },
+    {
+      "number": 4,
+      "title": "运行信息与定位结果",
+      "purpose": "独立Info、IsProduct、步骤完成条件及定位数据",
+      "source_ids": [
+        "S06",
+        "S07",
+        "S08",
+        "S41",
+        "S42"
+      ]
+    },
+    {
+      "number": 5,
+      "title": "父坐标与几何转换",
+      "purpose": "普通正逆变换、父链合成与坐标更新",
+      "source_ids": [
+        "S19",
+        "S20",
+        "S24",
+        "S10"
+      ]
+    },
+    {
+      "number": 6,
+      "title": "点胶生产入口",
+      "purpose": "IsProduct重建、放行顺序和点胶工序写回",
+      "source_ids": [
+        "S43",
+        "S34"
+      ]
+    },
+    {
+      "number": 7,
+      "title": "固晶生产入口",
+      "purpose": "有条件重建、步骤执行、结束与产品发送",
+      "source_ids": [
+        "S22",
+        "S28"
+      ]
+    },
+    {
+      "number": 8,
+      "title": "输送与区段产品引用",
+      "purpose": "自动交接、Refresh、源清空、完成信号与物料搜索",
+      "source_ids": [
+        "S15",
+        "S16",
+        "S17",
+        "S32",
+        "S44",
+        "S27"
+      ]
+    },
+    {
+      "number": 9,
+      "title": "示教与人工状态修改",
+      "purpose": "示教重建、工位偏移、Mapping与信息编辑",
+      "source_ids": [
+        "S23",
+        "S26",
+        "S31",
+        "S48",
+        "S49",
+        "S50"
+      ]
+    },
+    {
+      "number": 10,
+      "title": "存储与配置关联",
+      "purpose": "独立TU存储及当前配方关联的边界",
+      "source_ids": [
+        "S18",
+        "S09",
+        "S16"
+      ]
+    },
+    {
+      "number": 11,
+      "title": "具体动作中的位置与记录",
+      "purpose": "定位和测高写回、点胶与固晶执行条件",
+      "source_ids": [
+        "S29",
+        "S30",
+        "S10",
+        "S34",
+        "S28"
+      ]
+    },
+    {
+      "number": 12,
+      "title": "机器启动调度",
+      "purpose": "准备、任务启动与S2动作控制器初始化",
+      "source_ids": [
+        "S47"
+      ]
     }
   ]
 }

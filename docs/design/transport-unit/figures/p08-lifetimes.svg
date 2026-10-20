@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1230" viewBox="0 0 2400 1230"><rect width="100%" height="100%" fill="white"/>
+<text x="650" y="75" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S1入口</text>
+<polyline points="650,145 650,1100" fill="none" stroke="#a5b5c1" stroke-width="2" stroke-dasharray="12 12"/>
+<text x="1090" y="75" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S1完成</text>
+<polyline points="1090,145 1090,1100" fill="none" stroke="#a5b5c1" stroke-width="2" stroke-dasharray="12 12"/>
+<text x="1560" y="75" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">交接刷新</text>
+<polyline points="1560,145 1560,1100" fill="none" stroke="#a5b5c1" stroke-width="2" stroke-dasharray="12 12"/>
+<text x="2080" y="75" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S2完成</text>
+<polyline points="2080,145 2080,1100" fill="none" stroke="#a5b5c1" stroke-width="2" stroke-dasharray="12 12"/>
+<text x="190" y="290" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">运行对象</text>
+<text x="190" y="540" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">当前几何</text>
+<text x="190" y="825" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">焊点进度</text>
+<polyline points="460,290 650,290" fill="none" stroke="#4d6070" stroke-width="16"/>
+<text x="520" y="215" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">N0</text>
+<polyline points="650,290 2300,290" fill="none" stroke="#245b87" stroke-width="20"/>
+<circle cx="650" cy="290" r="19" fill="#245b87"/>
+<text x="1430" y="220" fill="#245b87" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">N1：S1创建后跨工位保留</text>
+<rect x="650" y="430" width="910" height="200" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1100" y="490" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S1几何</text>
+<text x="1100" y="565" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">工位偏移 + 本阶段定位／测高</text>
+<rect x="1560" y="430" width="740" height="200" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1920" y="490" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">刷新后的新坐标</text>
+<text x="1920" y="565" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">原定位／测高标记清除</text>
+<polyline points="650,790 1090,790" fill="none" stroke="#b65f17" stroke-width="10"/>
+<polyline points="1090,790 2300,790" fill="none" stroke="#356d4a" stroke-width="14"/>
+<text x="850" y="730" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">D_A=false</text>
+<text x="1660" y="730" fill="#356d4a" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">D_A=true，交接保留</text>
+<polyline points="650,975 2080,975" fill="none" stroke="#b65f17" stroke-width="10"/>
+<polyline points="2080,975 2300,975" fill="none" stroke="#356d4a" stroke-width="14"/>
+<text x="1350" y="915" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">T_A=false</text>
+<text x="2190" y="1050" fill="#356d4a" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">true</text>
+<text x="1200" y="1170" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">Refresh不清IsProduct，也不清S1／S2工序字典</text></svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1130" viewBox="0 0 2400 1130"><rect width="100%" height="100%" fill="white"/>
+<rect x="40" y="60" width="590" height="175" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="335.0" y="117.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">新建TU运行信息</text>
+<text x="335.0" y="185.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">建立新的根Info</text>
+<rect x="900" y="60" width="590" height="175" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1195.0" y="117.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">建立TU根坐标</text>
+<text x="1195.0" y="185.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">连接机器父坐标</text>
+<polyline points="630,148 900,148" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="900,148 879.2897166458885,158.0042072845583 879.2897166458885,137.9957927154417" fill="#4d6070"/>
+<polyline points="1490,148 2010,148 2010,350" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="2010,350 1999.9957927154417,329.28971664588846 2020.0042072845583,329.28971664588846" fill="#4d6070"/>
+<rect x="1280" y="350" width="1050" height="180" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1805.0" y="410.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">常规：按模板与数量展开</text>
+<text x="1805.0" y="478.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">坐标表 + 阵列与工作方向</text>
+<rect x="70" y="350" width="1050" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="595.0" y="410.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">异形：按节点树展开</text>
+<text x="595.0" y="478.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">节点位置 + 配置名称关联</text>
+<polyline points="1195,235 1195,290 595,290 595,350" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="595,350 584.9957927154417,329.28971664588846 605.0042072845583,329.28971664588846" fill="#4d6070"/>
+<text x="1200" y="425" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">或</text>
+<polyline points="595,530 595,610 1200,610" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="1800,530 1800,610 1200,610" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1200,610 1220.7102833541117,599.9957927154417 1220.7102833541117,620.0042072845583" fill="#4d6070"/>
+<rect x="70" y="700" width="680" height="180" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="410.0" y="760.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">映射工艺参与状态</text>
+<text x="410.0" y="828.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">ModifyMatter</text>
+<rect x="860" y="700" width="680" height="180" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1200.0" y="760.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">注入S2，再注入S1</text>
+<text x="1200.0" y="828.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">只补缺失工序键</text>
+<rect x="1650" y="700" width="680" height="180" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1990.0" y="760.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">名称与工位偏移</text>
+<text x="1990.0" y="828.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">系统参数构造再加偏移</text>
+<polyline points="1200,610 410,610 410,700" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="410,700 399.9957927154417,679.2897166458885 420.0042072845583,679.2897166458885" fill="#4d6070"/>
+<polyline points="750,790 860,790" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="860,790 839.2897166458885,800.0042072845583 839.2897166458885,779.9957927154417" fill="#4d6070"/>
+<polyline points="1540,790 1650,790" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1650,790 1629.2897166458883,800.0042072845583 1629.2897166458883,779.9957927154417" fill="#4d6070"/>
+<text x="1200" y="1020" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">输出：对象树 + 当前坐标 + 独立运行信息 + 已注入的工序字典</text></svg>

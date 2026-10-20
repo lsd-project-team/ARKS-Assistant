@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1050" viewBox="0 0 2400 1050"><rect width="100%" height="100%" fill="white"/>
+<text x="590" y="70" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">两侧动作控制器</text>
+<text x="1810" y="70" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">当前TU中的焊点A</text>
+<rect x="50" y="150" width="1060" height="670" fill="white" stroke="#a5b5c1" stroke-width="3"/>
+<rect x="1280" y="150" width="1060" height="670" fill="white" stroke="#a5b5c1" stroke-width="3"/>
+<rect x="110" y="240" width="940" height="130" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="580" y="305" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S1工作消息：D_A</text>
+<rect x="110" y="435" width="940" height="130" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="580" y="500" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S2工作消息：T_A</text>
+<text x="580" y="675" fill="#245b87" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">Finish → Finished=false</text>
+<text x="580" y="750" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">为下一轮编排复位</text>
+<rect x="1340" y="240" width="940" height="130" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1810" y="305" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S1步骤  { D_A : true }</text>
+<rect x="1340" y="435" width="940" height="130" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1810" y="500" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">S2步骤  { T_A : true }</text>
+<text x="1810" y="675" fill="#356d4a" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">Finish不修改这两条记录</text>
+<text x="1810" y="750" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">其他焊点有自己的字典</text>
+<polyline points="1110,350 1280,350" fill="none" stroke="#b65f17" stroke-width="5"/>
+<polygon points="1280,350 1259.2897166458883,360.0042072845583 1259.2897166458883,339.9957927154417" fill="#b65f17"/>
+<text x="1200" y="930" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">动作写回焊点步骤；任务标记当前消息完成</text></svg>
