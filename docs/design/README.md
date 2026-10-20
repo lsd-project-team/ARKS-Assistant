@@ -1,14 +1,12 @@
 # ZX2200设计文档
 
-2026年10月20日。分别交付Transport Unit和纠偏过程两册，供软件研发、技术评审及设备调试阅读。
+2026年10月20日。本轮继续完善正文可读性、动作场景和空间计算图示，分别交付两册。
 
-| 分册 | PDF | 可编辑Word | 内容与配图 |
+| 当前分册 | PDF | Word | 配套资料 |
 |---|---|---|---|
-| Transport Unit 第5版 | [阅读PDF](transport-unit/v5/TransportUnit设计文档.pdf) | [编辑Word](transport-unit/v5/TransportUnit设计文档.docx) | 对象与数据、坐标、构建、生命周期、接口和失败边界；35页，15幅图、13张表 |
-| 纠偏过程 第1版 | [阅读PDF](correction-process/纠偏过程设计文档.pdf) | [编辑Word](correction-process/纠偏过程设计文档.docx) | 产品层级定位、上视和中转台的采集、计算、输出使用及异常；24页，13幅图、6张表 |
+| Transport Unit 第6版 | [阅读PDF](transport-unit/v6/TransportUnit设计文档.pdf) | [编辑Word](transport-unit/v6/TransportUnit设计文档.docx) | [内容与检查记录](transport-unit/v6/README.md) |
+| 纠偏过程 第2版 | [阅读PDF](correction-process/v2/纠偏过程设计文档.pdf) | [编辑Word](correction-process/v2/纠偏过程设计文档.docx) | [内容与检查记录](correction-process/v2/README.md) |
 
-先通过对象与场景图建立认识，再读流程和坐标算例；研发评审可继续查接口及源码索引，设备调试可按图核对当前动作阶段和记录含义。两册分别组织，仅在解释本册设计所需时引用对方。
+TU分册解释产品对象、坐标、初始化、跨工位生命周期、接口与边界；纠偏分册解释产品定位、上视及中转台的采集、计算、结果使用与失败路径。先读含义再读实现，两类读者可沿各册编写说明选择阅读路径。
 
-两册均完成技术编校与全页渲染检查，文件包含原生目录和公式、PDF书签与图表页码。生成式概念插图配合精确工程图；插图来源、独立复算和具体校样记录随册保存。总体要求对照见[交付检查](publication-acceptance.md)。
-
-当前结论基于本地源码静态追踪及说明算例。未执行独立读者试读、用户验收或设备运行、精度与断电恢复试验；未修改trunk业务源码。
+本轮重点见[要求对照与修订记录](publication-acceptance.md)。两册保存源码依据、算例、图源与最终校样记录。基于源码静态追踪及独立复算，未执行独立读者试读、用户验收或设备试验。

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360"><rect width="100%" height="100%" fill="white"/>
+<text x="630" y="70" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">S1 两点距离异常</text>
+<text x="1810" y="70" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">S2 两点距离异常</text>
+<rect x="80" y="190" width="350" height="320" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="255.0" y="350.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Abort</text>
+<polyline points="430,350 520,350" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="520,350 499.28971664588846,360.0042072845583 499.28971664588846,339.9957927154417" fill="#315d82"/>
+<rect x="520" y="190" width="600" height="320" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="820.0" y="252" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续路径</text>
+<text x="820.0" y="327" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">停机</text>
+<text x="820.0" y="385" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">返回 false</text>
+<rect x="1300" y="190" width="350" height="320" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="1475.0" y="350.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Abort</text>
+<polyline points="1650,350 1740,350" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1740,350 1719.2897166458883,360.0042072845583 1719.2897166458883,339.9957927154417" fill="#315d82"/>
+<rect x="1740" y="190" width="600" height="320" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2040.0" y="252" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续路径</text>
+<text x="2040.0" y="327" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">停机</text>
+<text x="2040.0" y="385" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">返回 false</text>
+<rect x="80" y="530" width="350" height="320" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="255.0" y="690.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Retry</text>
+<polyline points="430,690 520,690" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="520,690 499.28971664588846,700.0042072845583 499.28971664588846,679.9957927154417" fill="#315d82"/>
+<rect x="520" y="530" width="600" height="320" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="820.0" y="592" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续路径</text>
+<text x="820.0" y="667" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">从 P1 开始人工对点</text>
+<text x="820.0" y="725" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">跳过下一次距离检查</text>
+<text x="820.0" y="783" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">随后 UpdateEntity</text>
+<rect x="1300" y="530" width="350" height="320" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="1475.0" y="690.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Retry</text>
+<polyline points="1650,690 1740,690" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1740,690 1719.2897166458883,700.0042072845583 1719.2897166458883,679.9957927154417" fill="#315d82"/>
+<rect x="1740" y="530" width="600" height="320" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2040.0" y="592" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续路径</text>
+<text x="2040.0" y="667" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">重新自动采 P1 / P2</text>
+<text x="2040.0" y="725" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">再次距离检查</text>
+<text x="2040.0" y="783" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">通过后 UpdateEntity</text>
+<rect x="80" y="870" width="350" height="320" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="255.0" y="1030.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">None</text>
+<polyline points="430,1030 520,1030" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="520,1030 499.28971664588846,1040.0042072845583 499.28971664588846,1019.9957927154417" fill="#315d82"/>
+<rect x="520" y="870" width="600" height="320" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="820.0" y="932" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续路径</text>
+<text x="820.0" y="1007" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">停用本层</text>
+<text x="820.0" y="1065" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">继续 UpdateEntity</text>
+<rect x="1300" y="870" width="350" height="320" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="1475.0" y="1030.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">None</text>
+<polyline points="1650,1030 1740,1030" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1740,1030 1719.2897166458883,1040.0042072845583 1719.2897166458883,1019.9957927154417" fill="#315d82"/>
+<rect x="1740" y="870" width="600" height="320" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2040.0" y="932" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">后续路径</text>
+<text x="2040.0" y="1007" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">停用本层</text>
+<text x="2040.0" y="1065" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">直接返回 true</text>
+<text x="1200" y="1300" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">分支名称相同   S1与S2的后续采集和更新路径分别定义</text></svg>

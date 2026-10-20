@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1270" viewBox="0 0 2400 1270"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#18364b" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">一次圆点表示一次正常几何PR采集</text>
+<text x="2300" y="130" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">次数</text>
+<text x="260" y="270" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">单点快速</text>
+<circle cx="700" cy="270" r="40" fill="#315d82"/>
+<text x="700" y="355" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1</text>
+<text x="2300" y="270" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">1次</text>
+<text x="260" y="545" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">单点普通</text>
+<circle cx="700" cy="545" r="40" fill="#315d82"/>
+<text x="700" y="630" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1</text>
+<polyline points="742,545 1658,545" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1658,545 1637.2897166458883,555.0042072845583 1637.2897166458883,534.9957927154417" fill="#315d82"/>
+<circle cx="1700" cy="545" r="40" fill="#315d82"/>
+<text x="1700" y="630" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1</text>
+<text x="1200.0" y="465" fill="#c58737" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">旋转 T 轴</text>
+<text x="2300" y="545" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">2次</text>
+<text x="260" y="820" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">双点快速</text>
+<circle cx="700" cy="820" r="40" fill="#315d82"/>
+<text x="700" y="905" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1</text>
+<polyline points="742,820 1108,820" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1108,820 1087.2897166458883,830.0042072845583 1087.2897166458883,809.9957927154417" fill="#315d82"/>
+<circle cx="1150" cy="820" r="40" fill="#315d82"/>
+<text x="1150" y="905" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P2</text>
+<text x="2300" y="820" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">2次</text>
+<text x="260" y="1095" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">双点普通</text>
+<circle cx="700" cy="1095" r="40" fill="#315d82"/>
+<text x="700" y="1180" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1</text>
+<polyline points="742,1095 1108,1095" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1108,1095 1087.2897166458883,1105.0042072845583 1087.2897166458883,1084.9957927154417" fill="#315d82"/>
+<circle cx="1150" cy="1095" r="40" fill="#315d82"/>
+<text x="1150" y="1180" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P2</text>
+<polyline points="1192,1095 1658,1095" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1658,1095 1637.2897166458883,1105.0042072845583 1637.2897166458883,1084.9957927154417" fill="#315d82"/>
+<circle cx="1700" cy="1095" r="40" fill="#315d82"/>
+<text x="1700" y="1180" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1</text>
+<polyline points="1742,1095 2108,1095" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="2108,1095 2087.2897166458883,1105.0042072845583 2087.2897166458883,1084.9957927154417" fill="#315d82"/>
+<circle cx="2150" cy="1095" r="40" fill="#315d82"/>
+<text x="2150" y="1180" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P2</text>
+<text x="1425.0" y="1015" fill="#c58737" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">旋转 T 轴</text>
+<text x="2300" y="1095" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">4次</text></svg>

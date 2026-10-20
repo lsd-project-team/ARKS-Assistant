@@ -1,0 +1,721 @@
+{
+  "revision": "2.0",
+  "date": "2026-10-20",
+  "page_count": 24,
+  "source_files": 30,
+  "source_baseline_verified": true,
+  "checks": {
+    "native_toc": true,
+    "toc_entries": [
+      {
+        "title": "1 纠偏对象与设计范围",
+        "page": 5
+      },
+      {
+        "title": "1.1 三类流程分别修正什么",
+        "page": 5
+      },
+      {
+        "title": "1.2 模块职责与外部输入",
+        "page": 5
+      },
+      {
+        "title": "2 输入输出与坐标约定",
+        "page": 6
+      },
+      {
+        "title": "2.1 产品配置与芯片配置分别提供参数",
+        "page": 6
+      },
+      {
+        "title": "2.2 位置必须带上参考系",
+        "page": 7
+      },
+      {
+        "title": "2.3 旋转符号与结果有效期",
+        "page": 7
+      },
+      {
+        "title": "3 产品层级定位设计",
+        "page": 7
+      },
+      {
+        "title": "3.1 进入条件与定位点数",
+        "page": 7
+      },
+      {
+        "title": "3.2 每个定位点如何形成结果",
+        "page": 8
+      },
+      {
+        "title": "3.3 锚点选择与角度计算",
+        "page": 9
+      },
+      {
+        "title": "3.4 坐标如何围绕锚点更新",
+        "page": 9
+      },
+      {
+        "title": "3.5 距离检查与两侧异常路径",
+        "page": 10
+      },
+      {
+        "title": "4 上视芯片纠偏设计",
+        "page": 11
+      },
+      {
+        "title": "4.1 入口条件与四种采集次序",
+        "page": 11
+      },
+      {
+        "title": "4.2 快速模式的偏移与角度",
+        "page": 12
+      },
+      {
+        "title": "4.3 普通模式与镜像分支",
+        "page": 12
+      },
+      {
+        "title": "4.4 温漂调用与动作结束",
+        "page": 13
+      },
+      {
+        "title": "5 中转台芯片纠偏设计",
+        "page": 13
+      },
+      {
+        "title": "5.1 放片识别与重新取片",
+        "page": 13
+      },
+      {
+        "title": "5.2 芯片中心与取片位置计算",
+        "page": 14
+      },
+      {
+        "title": "5.3 拍照位 取片位与统计字段",
+        "page": 15
+      },
+      {
+        "title": "5.4 视觉失败与取片检测失败",
+        "page": 16
+      },
+      {
+        "title": "6 纠偏输出在贴装入口中的使用",
+        "page": 16
+      },
+      {
+        "title": "6.1 上视偏移按剩余旋转角使用",
+        "page": 16
+      },
+      {
+        "title": "6.2 中转台记录与实时补偿接口",
+        "page": 17
+      },
+      {
+        "title": "6.3 其他补偿项与结果记录的边界",
+        "page": 18
+      },
+      {
+        "title": "7 异常处理与状态有效性",
+        "page": 18
+      },
+      {
+        "title": "7.1 采集成功 更新成功与动作返回",
+        "page": 18
+      },
+      {
+        "title": "7.2 人工确认的返回契约",
+        "page": 19
+      },
+      {
+        "title": "7.3 Retry如何回到动作编排",
+        "page": 19
+      },
+      {
+        "title": "8 接口契约与设计核对",
+        "page": 20
+      },
+      {
+        "title": "8.1 主要接口的输入输出",
+        "page": 20
+      },
+      {
+        "title": "8.2 两类读者共用的核对问题",
+        "page": 20
+      },
+      {
+        "title": "附录A 源码依据与阅读定位",
+        "page": 21
+      },
+      {
+        "title": "附录B 术语与图表索引",
+        "page": 22
+      },
+      {
+        "title": "B.1 常用术语",
+        "page": 22
+      },
+      {
+        "title": "B.2 图目录",
+        "page": 23
+      },
+      {
+        "title": "B.3 表目录",
+        "page": 23
+      },
+      {
+        "title": "附录C 当前实现的特定边界",
+        "page": 24
+      }
+    ],
+    "bookmarks": [
+      {
+        "title": "1 纠偏对象与设计范围",
+        "page": 5
+      },
+      {
+        "title": "1.1 三类流程分别修正什么",
+        "page": 5
+      },
+      {
+        "title": "1.2 模块职责与外部输入",
+        "page": 5
+      },
+      {
+        "title": "2 输入输出与坐标约定",
+        "page": 6
+      },
+      {
+        "title": "2.1 产品配置与芯片配置分别提供参数",
+        "page": 6
+      },
+      {
+        "title": "2.2 位置必须带上参考系",
+        "page": 7
+      },
+      {
+        "title": "2.3 旋转符号与结果有效期",
+        "page": 7
+      },
+      {
+        "title": "3 产品层级定位设计",
+        "page": 7
+      },
+      {
+        "title": "3.1 进入条件与定位点数",
+        "page": 7
+      },
+      {
+        "title": "3.2 每个定位点如何形成结果",
+        "page": 8
+      },
+      {
+        "title": "3.3 锚点选择与角度计算",
+        "page": 9
+      },
+      {
+        "title": "3.4 坐标如何围绕锚点更新",
+        "page": 9
+      },
+      {
+        "title": "3.5 距离检查与两侧异常路径",
+        "page": 10
+      },
+      {
+        "title": "4 上视芯片纠偏设计",
+        "page": 11
+      },
+      {
+        "title": "4.1 入口条件与四种采集次序",
+        "page": 11
+      },
+      {
+        "title": "4.2 快速模式的偏移与角度",
+        "page": 12
+      },
+      {
+        "title": "4.3 普通模式与镜像分支",
+        "page": 12
+      },
+      {
+        "title": "4.4 温漂调用与动作结束",
+        "page": 13
+      },
+      {
+        "title": "5 中转台芯片纠偏设计",
+        "page": 13
+      },
+      {
+        "title": "5.1 放片识别与重新取片",
+        "page": 13
+      },
+      {
+        "title": "5.2 芯片中心与取片位置计算",
+        "page": 14
+      },
+      {
+        "title": "5.3 拍照位 取片位与统计字段",
+        "page": 15
+      },
+      {
+        "title": "5.4 视觉失败与取片检测失败",
+        "page": 16
+      },
+      {
+        "title": "6 纠偏输出在贴装入口中的使用",
+        "page": 16
+      },
+      {
+        "title": "6.1 上视偏移按剩余旋转角使用",
+        "page": 16
+      },
+      {
+        "title": "6.2 中转台记录与实时补偿接口",
+        "page": 17
+      },
+      {
+        "title": "6.3 其他补偿项与结果记录的边界",
+        "page": 18
+      },
+      {
+        "title": "7 异常处理与状态有效性",
+        "page": 18
+      },
+      {
+        "title": "7.1 采集成功 更新成功与动作返回",
+        "page": 18
+      },
+      {
+        "title": "7.2 人工确认的返回契约",
+        "page": 19
+      },
+      {
+        "title": "7.3 Retry如何回到动作编排",
+        "page": 19
+      },
+      {
+        "title": "8 接口契约与设计核对",
+        "page": 20
+      },
+      {
+        "title": "8.1 主要接口的输入输出",
+        "page": 20
+      },
+      {
+        "title": "8.2 两类读者共用的核对问题",
+        "page": 20
+      },
+      {
+        "title": "附录A 源码依据与阅读定位",
+        "page": 21
+      },
+      {
+        "title": "附录B 术语与图表索引",
+        "page": 22
+      },
+      {
+        "title": "B.1 常用术语",
+        "page": 22
+      },
+      {
+        "title": "B.2 图目录",
+        "page": 23
+      },
+      {
+        "title": "B.3 表目录",
+        "page": 23
+      },
+      {
+        "title": "附录C 当前实现的特定边界",
+        "page": 24
+      }
+    ],
+    "caption_index_page_numbers": [
+      {
+        "title": "图1-1 产品定位 上视纠偏与中转台纠偏的观察对象",
+        "page": 5
+      },
+      {
+        "title": "图2-1 纠偏结果的写入位置及后续使用",
+        "page": 6
+      },
+      {
+        "title": "图3-1 产品定位从入口到坐标更新的主要步骤",
+        "page": 8
+      },
+      {
+        "title": "图3-2 S2定位点的拍照目标与识别结果转换",
+        "page": 8
+      },
+      {
+        "title": "图3-3 一个定位锚点在更新前后的父参考系位置",
+        "page": 10
+      },
+      {
+        "title": "图3-4 两点距离异常时S1与S2的处理差异",
+        "page": 11
+      },
+      {
+        "title": "图4-1 四种上视模式的正常几何采集次序",
+        "page": 12
+      },
+      {
+        "title": "图5-1 中转台纠偏把识别结果用于重新取片",
+        "page": 14
+      },
+      {
+        "title": "图5-2 从示教中心到修正取片位置的计算关系",
+        "page": 15
+      },
+      {
+        "title": "图5-3 取片后检测的Retry与实际重新执行Pick的区别",
+        "page": 16
+      },
+      {
+        "title": "图6-1 上视偏移从保存到贴装使用的角度关系",
+        "page": 17
+      },
+      {
+        "title": "图6-2 实时补偿的实参与形参及追加位置",
+        "page": 18
+      },
+      {
+        "title": "图7-1 产品定位的写入阶段与可能的失败位置",
+        "page": 19
+      },
+      {
+        "title": "表2-1 三条流程的主要输入与输出",
+        "page": 6
+      },
+      {
+        "title": "表2-2 本册使用的量与单位",
+        "page": 7
+      },
+      {
+        "title": "表8-1 定位与纠偏接口的调用契约",
+        "page": 20
+      },
+      {
+        "title": "表8-2 阅读与评审核对问题",
+        "page": 20
+      },
+      {
+        "title": "表B-1 本册常用术语",
+        "page": 22
+      },
+      {
+        "title": "表C-1 需要保留的实现边界",
+        "page": 24
+      }
+    ],
+    "all_fonts_embedded": {
+      "/BCDEEE+MicrosoftYaHei": true,
+      "/BCDFEE+MicrosoftYaHei": true,
+      "/BCDGEE+MicrosoftYaHei-Bold": true,
+      "/BCDHEE+MicrosoftYaHei-Bold": true,
+      "/BCDIEE+SimSun": true,
+      "/BCDJEE+TimesNewRomanPSMT": true,
+      "/BCDKEE+Cambria": true,
+      "/BCDLEE+Arial-BoldMT": true,
+      "/BCDMEE+TimesNewRomanPSMT": true,
+      "/BCDNEE+CambriaMath": true
+    },
+    "heading_font_faces_in_actual_pdf": [
+      "BCDGEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei-Bold"
+    ],
+    "toc_font_faces_in_actual_pdf": [
+      "BCDEEE+MicrosoftYaHei",
+      "BCDFEE+MicrosoftYaHei",
+      "BCDGEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei-Bold"
+    ],
+    "heading_and_toc_font_fallback_absent": true,
+    "linked_reference_targets_valid": true,
+    "word_native_equations": 10,
+    "native_inline_math_count": 12,
+    "figures_have_alt_text": true,
+    "tables_repeat_header": true,
+    "no_out_of_page_text": true,
+    "image_resolution": [
+      {
+        "file": "figures/c01-correction-scenes.png",
+        "page": 5,
+        "pixels": [
+          1536,
+          1024
+        ],
+        "display_inches": 5.05,
+        "effective_dpi": 304.16
+      },
+      {
+        "file": "figures/c02-data-flow.png",
+        "page": 6,
+        "pixels": [
+          2400,
+          1140
+        ],
+        "display_inches": 6.5497,
+        "effective_dpi": 366.43
+      },
+      {
+        "file": "figures/c03-product-locate.png",
+        "page": 8,
+        "pixels": [
+          2400,
+          780
+        ],
+        "display_inches": 6.5492,
+        "effective_dpi": 366.46
+      },
+      {
+        "file": "figures/c04-result-conversion.png",
+        "page": 8,
+        "pixels": [
+          2400,
+          1040
+        ],
+        "display_inches": 6.5497,
+        "effective_dpi": 366.43
+      },
+      {
+        "file": "figures/c05-anchor-example.png",
+        "page": 10,
+        "pixels": [
+          2400,
+          1250
+        ],
+        "display_inches": 6.5493,
+        "effective_dpi": 366.45
+      },
+      {
+        "file": "figures/c06-distance-retry.png",
+        "page": 11,
+        "pixels": [
+          2400,
+          1360
+        ],
+        "display_inches": 6.549,
+        "effective_dpi": 366.47
+      },
+      {
+        "file": "figures/c07-uplook-captures.png",
+        "page": 12,
+        "pixels": [
+          2400,
+          1270
+        ],
+        "display_inches": 6.5499,
+        "effective_dpi": 366.42
+      },
+      {
+        "file": "figures/c14-ipt-motion.png",
+        "page": 14,
+        "pixels": [
+          1536,
+          1024
+        ],
+        "display_inches": 5.05,
+        "effective_dpi": 304.16
+      },
+      {
+        "file": "figures/c15-ipt-vectors.png",
+        "page": 15,
+        "pixels": [
+          2400,
+          1170
+        ],
+        "display_inches": 6.5499,
+        "effective_dpi": 366.42
+      },
+      {
+        "file": "figures/c10-ipt-retry.png",
+        "page": 16,
+        "pixels": [
+          2400,
+          1080
+        ],
+        "display_inches": 6.5494,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/c11-uplook-consumer.png",
+        "page": 17,
+        "pixels": [
+          2400,
+          1280
+        ],
+        "display_inches": 6.5494,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/c12-output-contract.png",
+        "page": 18,
+        "pixels": [
+          2400,
+          1400
+        ],
+        "display_inches": 6.55,
+        "effective_dpi": 366.41
+      },
+      {
+        "file": "figures/c13-partial-update.png",
+        "page": 19,
+        "pixels": [
+          2400,
+          1120
+        ],
+        "display_inches": 6.5492,
+        "effective_dpi": 366.46
+      }
+    ],
+    "no_reference_alone_on_line": true
+  },
+  "layout": [
+    {
+      "page": 1,
+      "images": 0,
+      "body_bottom": 553.0
+    },
+    {
+      "page": 2,
+      "images": 0,
+      "body_bottom": 428.44
+    },
+    {
+      "page": 3,
+      "images": 0,
+      "body_bottom": 713.29
+    },
+    {
+      "page": 4,
+      "images": 0,
+      "body_bottom": 260.21
+    },
+    {
+      "page": 5,
+      "images": 1,
+      "body_bottom": 732.42
+    },
+    {
+      "page": 6,
+      "images": 1,
+      "body_bottom": 686.75
+    },
+    {
+      "page": 7,
+      "images": 0,
+      "body_bottom": 698.94
+    },
+    {
+      "page": 8,
+      "images": 2,
+      "body_bottom": 650.87
+    },
+    {
+      "page": 9,
+      "images": 0,
+      "body_bottom": 729.54
+    },
+    {
+      "page": 10,
+      "images": 1,
+      "body_bottom": 526.6
+    },
+    {
+      "page": 11,
+      "images": 1,
+      "body_bottom": 599.71
+    },
+    {
+      "page": 12,
+      "images": 1,
+      "body_bottom": 735.54
+    },
+    {
+      "page": 13,
+      "images": 0,
+      "body_bottom": 620.47
+    },
+    {
+      "page": 14,
+      "images": 1,
+      "body_bottom": 684.32
+    },
+    {
+      "page": 15,
+      "images": 1,
+      "body_bottom": 673.87
+    },
+    {
+      "page": 16,
+      "images": 1,
+      "body_bottom": 705.68
+    },
+    {
+      "page": 17,
+      "images": 1,
+      "body_bottom": 517.48
+    },
+    {
+      "page": 18,
+      "images": 1,
+      "body_bottom": 738.06
+    },
+    {
+      "page": 19,
+      "images": 1,
+      "body_bottom": 673.03
+    },
+    {
+      "page": 20,
+      "images": 0,
+      "body_bottom": 691.15
+    },
+    {
+      "page": 21,
+      "images": 0,
+      "body_bottom": 704.16
+    },
+    {
+      "page": 22,
+      "images": 0,
+      "body_bottom": 465.16
+    },
+    {
+      "page": 23,
+      "images": 0,
+      "body_bottom": 539.26
+    },
+    {
+      "page": 24,
+      "images": 0,
+      "body_bottom": 397.1
+    }
+  ],
+  "review": {
+    "visual_status": "completed page review with exact-pixel comparison for unchanged bodies",
+    "render_pipeline": "独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。",
+    "visual_evidence": "final-qa.json",
+    "editorial_evidence": "editorial-review.md",
+    "reader_trial": "本轮为代理编校与视觉核查，未执行独立读者试读或用户验收"
+  },
+  "limits": [
+    "基于源码静态追踪与独立算例；未运行设备或C#业务流程",
+    "阅读和技术评审用途；说明输入不代表实际配方或设备精度"
+  ],
+  "files": {
+    "纠偏过程设计文档.docx": {
+      "sha256": "167fa873ef5d031e9df3e927f4cb499c42b043688a7646f099c72fec004bbbf0",
+      "bytes": 7639405
+    },
+    "纠偏过程设计文档.pdf": {
+      "sha256": "768493444d32f220801d8e6d5b84dffe0c379df0631c589b00edf1670d7de9b1",
+      "bytes": 4749704
+    },
+    "纠偏过程设计文档.md": {
+      "sha256": "33190992309b6ae0c209c514e7197d1201b9dbf1dad0441d70a711e948ba3fa0",
+      "bytes": 38763
+    }
+  }
+}

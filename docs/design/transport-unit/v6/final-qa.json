@@ -1,0 +1,325 @@
+{
+  "complete": true,
+  "date": "2026-10-20",
+  "reviewer": "代理编校与视觉核查；无独立读者试读",
+  "pdf_sha256": "cbc45ff6635862ff1b843d731f4a8b4f4261249f6a1f5717e13fe71d6c544ec7",
+  "body_comparison_rectangle_at_1500px": [
+    0,
+    98,
+    1160,
+    1405
+  ],
+  "footer_page_numbers_verified": true,
+  "pages": [
+    {
+      "page": 1,
+      "sha256": "171308f0c0fe426c6b03784419e170e058f6a9406a745c79cdfcfc494b423415",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-01.png",
+        "sha256": "171308f0c0fe426c6b03784419e170e058f6a9406a745c79cdfcfc494b423415"
+      }
+    },
+    {
+      "page": 2,
+      "sha256": "afe6e0f06cb4b382efaf4ae4951d94c505a1921ee4ee2f852cb9690ecf198fdc",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-02.png",
+        "sha256": "afe6e0f06cb4b382efaf4ae4951d94c505a1921ee4ee2f852cb9690ecf198fdc"
+      }
+    },
+    {
+      "page": 3,
+      "sha256": "e329d06988c92b51ff5f9543816954787612521453a1f53416762c690557b773",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-03.png",
+        "sha256": "e329d06988c92b51ff5f9543816954787612521453a1f53416762c690557b773"
+      }
+    },
+    {
+      "page": 4,
+      "sha256": "5f3af3855cb59a1730ed3e7d3a111bc3069d5b419cf2d3b374df810893d69680",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 5,
+      "sha256": "950a2d82911abb21bb5e6b33fe6ed6f8e373dea7cee063c71651a05060ff244c",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-05.png",
+        "sha256": "950a2d82911abb21bb5e6b33fe6ed6f8e373dea7cee063c71651a05060ff244c"
+      }
+    },
+    {
+      "page": 6,
+      "sha256": "e1b3991179661d6ab257b454f3edddb7f55bf19066c26b6dd752eb79b6a6fe0e",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 7,
+      "sha256": "e5525210e5ca8be6010ec8c5d02f144f5a6b889812962c28eb1ea7ef2fa7e0a7",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-07.png",
+        "sha256": "e5525210e5ca8be6010ec8c5d02f144f5a6b889812962c28eb1ea7ef2fa7e0a7"
+      }
+    },
+    {
+      "page": 8,
+      "sha256": "67d590b06044a35e03c04927abe526d80f43fccfdf8ae0cc288bdcf4e8b7682e",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-08.png",
+        "sha256": "67d590b06044a35e03c04927abe526d80f43fccfdf8ae0cc288bdcf4e8b7682e"
+      }
+    },
+    {
+      "page": 9,
+      "sha256": "58bb870558b53c9872c92c01a6c6a22a4298739ea79876ed9f38a88c90f65345",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-09.png",
+        "sha256": "58bb870558b53c9872c92c01a6c6a22a4298739ea79876ed9f38a88c90f65345"
+      }
+    },
+    {
+      "page": 10,
+      "sha256": "10852783945a4b484de72b5b313f44e143533e11dd86f9123a8713ce4ff543b2",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-10.png",
+        "sha256": "10852783945a4b484de72b5b313f44e143533e11dd86f9123a8713ce4ff543b2"
+      }
+    },
+    {
+      "page": 11,
+      "sha256": "ae05c62a21f42ac883e6635dacc7556eb0e91d8c116784e0c33fca1317f9dad5",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-11.png",
+        "sha256": "ae05c62a21f42ac883e6635dacc7556eb0e91d8c116784e0c33fca1317f9dad5"
+      }
+    },
+    {
+      "page": 12,
+      "sha256": "aab173c0fefee039b096680fd7fdd044e67d1a301584cb3086c1de06eefcb582",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-12.png",
+        "sha256": "aab173c0fefee039b096680fd7fdd044e67d1a301584cb3086c1de06eefcb582"
+      }
+    },
+    {
+      "page": 13,
+      "sha256": "4dc733487905deb5d3bee66c856bce6ce08ee9773197e7a3ab03f3f19d44b8d7",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-13.png",
+        "sha256": "4dc733487905deb5d3bee66c856bce6ce08ee9773197e7a3ab03f3f19d44b8d7"
+      }
+    },
+    {
+      "page": 14,
+      "sha256": "49d0cb083ab087ad2a5d48ccd17ac265f4ba0e2010a7efbb719d6e9eb5e0ee99",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-14.png",
+        "sha256": "49d0cb083ab087ad2a5d48ccd17ac265f4ba0e2010a7efbb719d6e9eb5e0ee99"
+      }
+    },
+    {
+      "page": 15,
+      "sha256": "110faa3f044a985ae23151aa4f9b40e0a55e0c146286e282deeea729b7038d90",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-15.png",
+        "sha256": "110faa3f044a985ae23151aa4f9b40e0a55e0c146286e282deeea729b7038d90"
+      }
+    },
+    {
+      "page": 16,
+      "sha256": "f0cb6abda5881fa7806496e1a81382e35c63c32c3fb120a1630b654622cdaec3",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-16.png",
+        "sha256": "f0cb6abda5881fa7806496e1a81382e35c63c32c3fb120a1630b654622cdaec3"
+      }
+    },
+    {
+      "page": 17,
+      "sha256": "d65b6d73356570e2727dba3fd5c07183cf9373156d02bee1acb61e38a2c44f23",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-17.png",
+        "sha256": "d65b6d73356570e2727dba3fd5c07183cf9373156d02bee1acb61e38a2c44f23"
+      }
+    },
+    {
+      "page": 18,
+      "sha256": "eaa446963c85f73e08ffbab20d9a15ffdea5a18229374e1465c3dbae3176a9b6",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-18.png",
+        "sha256": "eaa446963c85f73e08ffbab20d9a15ffdea5a18229374e1465c3dbae3176a9b6"
+      }
+    },
+    {
+      "page": 19,
+      "sha256": "e42b131ff8510db6be6590b6e9d32ad14e35ae5d14a89c73346e194a7245a289",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-19.png",
+        "sha256": "e42b131ff8510db6be6590b6e9d32ad14e35ae5d14a89c73346e194a7245a289"
+      }
+    },
+    {
+      "page": 20,
+      "sha256": "c538ef8b8e00d3056424b4dbf802b98e0cc3a8aed6716c457e5c04012f0c2bed",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-20.png",
+        "sha256": "c538ef8b8e00d3056424b4dbf802b98e0cc3a8aed6716c457e5c04012f0c2bed"
+      }
+    },
+    {
+      "page": 21,
+      "sha256": "d78b8034f5ed2dbeca9cb2a4dfc86c05993d0844a230265cc42c03cce17b6c2d",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-21.png",
+        "sha256": "d78b8034f5ed2dbeca9cb2a4dfc86c05993d0844a230265cc42c03cce17b6c2d"
+      }
+    },
+    {
+      "page": 22,
+      "sha256": "7fd4258a4d3191645c9ca59a0614ef9b97a5668bbe5a2401f4fab5bf08f73c07",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-22.png",
+        "sha256": "7fd4258a4d3191645c9ca59a0614ef9b97a5668bbe5a2401f4fab5bf08f73c07"
+      }
+    },
+    {
+      "page": 23,
+      "sha256": "6c2f6b808d24d10fe65c2a795088b970160669558eb761c2e66dd5bba3023f13",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-23.png",
+        "sha256": "6c2f6b808d24d10fe65c2a795088b970160669558eb761c2e66dd5bba3023f13"
+      }
+    },
+    {
+      "page": 24,
+      "sha256": "ef8b3c0ce66ed16f526076b4db407b6fc6837f0a754187c04cc3a76b7ef1d8e2",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 25,
+      "sha256": "66a11bce78e529cce6d239d26211a93c13f695c65d5bcb3b5ec6e1a68c99d0c6",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 26,
+      "sha256": "3ba5a0c40d87c4b8fc270f94084a28917e3596df55f62ce5fb27b6d3d14ce921",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 27,
+      "sha256": "7a05ec18ffcf9cc7a8282683cbe770b7d54c6fc7bfc87b9109ca1f4f974714c3",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 28,
+      "sha256": "09e3b9e1367809a3b5e91042827f828452d23b36e21dbf3839813b246f24a74d",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 29,
+      "sha256": "67c5ebfbd699a00e45d7d599cbbf578df9190ddce48ed2fbd9452cd14598d67e",
+      "method": "final page visually inspected",
+      "equivalent_reviewed_proof": null
+    },
+    {
+      "page": 30,
+      "sha256": "e012a10da10c56af279419becc19802ba48acee7ec970520bb67de3dce5c50b4",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-30.png",
+        "sha256": "e012a10da10c56af279419becc19802ba48acee7ec970520bb67de3dce5c50b4"
+      }
+    },
+    {
+      "page": 31,
+      "sha256": "0ca60605b6254f8d69fea814cdab168856257b2c6c4233c2542fd3b59cf5f594",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-31.png",
+        "sha256": "0ca60605b6254f8d69fea814cdab168856257b2c6c4233c2542fd3b59cf5f594"
+      }
+    },
+    {
+      "page": 32,
+      "sha256": "09672500ce8a67b7adebb0e7b5c75fc7245b47113443a08656983c02292bdaf6",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-32.png",
+        "sha256": "09672500ce8a67b7adebb0e7b5c75fc7245b47113443a08656983c02292bdaf6"
+      }
+    },
+    {
+      "page": 33,
+      "sha256": "596c4f7fe168ace7bb31b6eee4b58577dab66f3262ff627c5047f65547064a3c",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-33.png",
+        "sha256": "596c4f7fe168ace7bb31b6eee4b58577dab66f3262ff627c5047f65547064a3c"
+      }
+    },
+    {
+      "page": 34,
+      "sha256": "945e3d66e6c3bbbee9ff6a4665d213ca971dfa92ec8185d26c157bdbd0c58a4a",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-34.png",
+        "sha256": "945e3d66e6c3bbbee9ff6a4665d213ca971dfa92ec8185d26c157bdbd0c58a4a"
+      }
+    },
+    {
+      "page": 35,
+      "sha256": "f64f27beee0caa0ef0f751fe518e521e9b01f5ad98f46b5ae4fa61f4a82e7501",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-35.png",
+        "sha256": "f64f27beee0caa0ef0f751fe518e521e9b01f5ad98f46b5ae4fa61f4a82e7501"
+      }
+    },
+    {
+      "page": 36,
+      "sha256": "a3668adf5c7c01f763657ecb0113a38d0e4147be841af76ab3d8ef3edcecdc85",
+      "method": "body pixels identical to reviewed prior proof",
+      "equivalent_reviewed_proof": {
+        "file": "release-36.png",
+        "sha256": "a3668adf5c7c01f763657ecb0113a38d0e4147be841af76ab3d8ef3edcecdc85"
+      }
+    }
+  ],
+  "scope": [
+    "技术含义、图中文字、数值及方向",
+    "图注与对应正文、实际缩放阅读",
+    "表格与分页、字体及边界",
+    "目录与图表页码重新核对"
+  ],
+  "limits": [
+    "未执行设备、独立读者或用户验收",
+    "只对最终稿及像素一致的已检查校样作出检查结论"
+  ]
+}
