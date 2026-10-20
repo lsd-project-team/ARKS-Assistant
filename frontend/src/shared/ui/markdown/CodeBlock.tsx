@@ -3,7 +3,9 @@ import { Copy, WrapText, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from '../../utils/toasts';
 
 const CodeSyntax = lazy(() =>
-  import('./CodeSyntax').then((module) => ({ default: module.CodeSyntax })),
+  import('./CodeSyntax')
+    .then((module) => ({ default: module.CodeSyntax }))
+    .catch(() => ({ default: ({ content }: { content: string }) => <code>{content}</code> })),
 );
 
 function codeText(node: ReactNode): string {

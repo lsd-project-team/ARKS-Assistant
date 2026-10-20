@@ -47,7 +47,10 @@ export function SourceReference({
     setOpening(true);
     setError('');
     try {
-      const origin = evidence.source_workspace_id || sourceId;
+      const origin =
+        evidence.source_workspace_id ||
+        evidence.path.match(/^@sources\/([\w-]+)\//)?.[1] ||
+        sourceId;
       const end = source.end_line || source.start_line;
       if (!previewOnly) {
         const opened = await openCitation(
@@ -157,7 +160,13 @@ export function SourceReference({
           {error}
         </p>
       )}
-      {preview && <SelectionPreview selection={preview} onClose={() => setPreview(undefined)} />}
+      {preview && (
+        <SelectionPreview
+          selection={preview}
+          description="本轮核对版本的源码片段"
+          onClose={() => setPreview(undefined)}
+        />
+      )}
     </div>
   );
 }

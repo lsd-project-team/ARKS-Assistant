@@ -111,7 +111,9 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
     );
   const source = href?.match(/^source:(.+)#L(\d+)(?:-L?(\d+))?$/);
   if (!source)
-    return (
+    return isKnowledgeReference(href || '') ? (
+      <span title="引用格式无效">{children}（引用格式无效）</span>
+    ) : (
       <a href={href} target="_blank" rel="noreferrer">
         {children}
       </a>

@@ -19,11 +19,11 @@ export function OverviewGrid({
   return (
     <section className="rich-overview" aria-label={block.title || '功能概览'}>
       {block.title && <h3>{block.title}</h3>}
-      <ul className="rich-overview-grid">
+      <ul className="rich-overview-grid" role="list">
         {block.items.map((item) => {
           const Icon = item.icon ? icons[item.icon] : undefined;
           return (
-            <li key={item.id} className="rich-overview-item">
+            <li key={item.id} className="rich-overview-item" role="listitem">
               {Icon && (
                 <span className="rich-overview-icon">
                   <Icon size={21} aria-hidden="true" />
@@ -57,9 +57,9 @@ export function StepFlow({
     <section className="rich-step-flow" aria-label={block.title || '执行步骤'}>
       {block.title && <h3>{block.title}</h3>}
       {block.description && <p className="rich-description">{block.description}</p>}
-      <ol className="rich-steps">
+      <ol className="rich-steps" role="list">
         {block.steps.map((step, index) => (
-          <li key={step.id}>
+          <li key={step.id} role="listitem">
             <span className="rich-step-number" aria-hidden="true">
               {index + 1}
             </span>

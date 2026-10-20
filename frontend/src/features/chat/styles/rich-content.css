@@ -278,6 +278,7 @@
   color: var(--text);
 }
 .rich-table :is(th, td) {
+  text-align: start;
   min-width: 110px;
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);

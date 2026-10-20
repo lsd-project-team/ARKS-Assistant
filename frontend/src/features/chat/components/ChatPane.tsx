@@ -535,7 +535,7 @@ export function ChatPane({
             <button onClick={() => useWorkspace.getState().setProjectPage(true)}>恢复项目</button>
           </div>
         )}
-        <QuestionQueuePanel key={threadId} queue={queue} threadId={threadId} />
+        <QuestionQueuePanel key={`queue:${threadId}`} queue={queue} threadId={threadId} />
         {scroll.showLatest && (
           <button className="back-to-latest" onClick={scroll.toLatest}>
             <ChevronDown size={14} />
@@ -566,7 +566,7 @@ export function ChatPane({
         )}
         <ChatComposer
           readOnly={archivedProject}
-          key={threadId}
+          key={`composer:${threadId}`}
           inputRef={composerInput}
           draft={draft}
           onChange={setDraft}

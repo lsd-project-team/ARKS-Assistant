@@ -2,8 +2,13 @@ import asyncio
 import json
 
 import pytest
+from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.outputs import ChatGeneration, ChatResult
 
+from app.agents.runtime.engine import AgentRuntime
+from app.core.config import AppSettings, ModelSettings
 from app.modules.chat.runs import RunManager
+from tests.helpers.models import DeterministicModel
 
 ANSWER = (
     "开头文字\n\n```rich-content\n"
@@ -75,3 +80,73 @@ async def test_partial_rich_block_retained_and_retry_uses_same_question(services
     retried = repository.resume(run["id"])
     assert retried["message_id"] == run["message_id"]
     assert len(repository.thread(run["thread_id"])["messages"]) == 1
+
+
+async def test_actual_agent_graph_reads_source_and_checks_structured_answer(services, monkeypatch):
+    answer = (
+        "入口在 Main。\n\n```rich-content\n"
+        + json.dumps(
+            {
+                "version": 1,
+                "blocks": [
+                    {
+                        "id": "flow",
+                        "type": "step_flow",
+                        "steps": [
+                            {
+                                "id": "entry",
+                                "title": "入口方法",
+                                "description": "Main 方法体为空。",
+                                "sources": [{"path": "Program.cs", "start_line": 2, "end_line": 2}],
+                            }
+                        ],
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        )
+        + "\n```"
+    )
+
+    class StructuredModel(DeterministicModel):
+        def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            if "独立的源码结论复核器" in messages[0].text:
+                payload = json.loads(messages[-1].text)
+                assert "rich-content" not in payload["answer"]
+                assert "Main 方法体为空" in payload["answer"]
+                assert any(row["path"] == "Program.cs" for row in payload["source"])
+                result = AIMessage(
+                    content='{"verdict":"passed","issues":[],"reason":"测试替身复核"}'
+                )
+            elif any(
+                isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
+            ):
+                result = AIMessage(content=answer)
+            else:
+                assert "可选展示协议" in messages[0].text
+                result = AIMessage(
+                    content="",
+                    tool_calls=[
+                        {
+                            "id": "read-entry",
+                            "name": "read_source",
+                            "args": {"path": "Program.cs", "start_line": 2, "end_line": 2},
+                        }
+                    ],
+                )
+            return ChatResult(generations=[ChatGeneration(message=result)])
+
+    paths, _, workspace, repository, memories, settings = services
+    settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=1024)))
+    monkeypatch.setattr(
+        "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: StructuredModel()
+    )
+    runtime = AgentRuntime(paths, settings, workspace, repository, memories)
+    run = repository.create_run(None, "解释 Program.cs 的入口方法", [])
+    actual = await runtime.execute(
+        run, lambda kind, payload: repository.event(run["id"], kind, payload)
+    )
+    assert actual == answer
+    validation = repository.run_event(run["id"], "answer_validation")
+    assert validation["passed"] and validation["citations"][0]["start_line"] == 2
+    assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"

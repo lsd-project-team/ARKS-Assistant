@@ -224,6 +224,20 @@ test('读取源码身份失败时保留页面状态，不降级成错误目录�
   );
 });
 
+test('原始目录的版本变化显示当前文件供核对，但不返回成功定位', async () => {
+  await withCitation(
+    'independent',
+    async (open) => {
+      assert.equal(await open('Dir/Test.cs', 2, 3, 'old', 'original'), false);
+      assert.equal(useWorkspace.getState().activePath, '');
+      assert.equal(useWorkspace.getState().historicalSource.source.version, 'v1');
+      assert.ok(environment.notices.some((message) => /文件已变化/.test(message)));
+    },
+    (path) =>
+      path.endsWith('/source-context') ? context : { ...file, source_workspace_id: 'original' },
+  );
+});
+
 test('旧引用仅有起始锚点时，只有读取证据覆盖标签范围才恢复多行定位', () => {
   const reads = [{ path: 'Dir/Test.cs', start_line: 760, end_line: 825 }];
   assert.equal(citationEndLine('Dir/Test.cs', 791, undefined, 'Test.cs:791-802', reads), 802);

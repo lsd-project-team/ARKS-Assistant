@@ -131,3 +131,27 @@ def test_structured_source_runs_through_existing_evidence_guard(services):
         invalid, {row["target"] for row in report["citations"] if not row["valid"]}
     )
     assert "引用未核对" in lowered and "rich-content" not in lowered
+
+
+@pytest.mark.parametrize(
+    "metadata", [{"version": "forged-version"}, {"source_workspace_id": "other-source"}]
+)
+def test_structured_citation_cannot_forge_snapshot_or_repository(services, metadata):
+    workspace = services[2]
+    ledger = SourceEvidence(workspace, lambda *_: None, required=True)
+    ledger.record(source_excerpt(workspace, "Program.cs", 2, 2))
+    answer = fence(
+        {
+            "version": 1,
+            "blocks": [
+                {
+                    "id": "source",
+                    "type": "source_reference",
+                    "sources": [{"path": "Program.cs", "start_line": 2, **metadata}],
+                }
+            ],
+        }
+    )
+    report = ledger.check(answer)
+    assert not report["passed"]
+    assert "不一致" in report["citations"][0]["reason"]

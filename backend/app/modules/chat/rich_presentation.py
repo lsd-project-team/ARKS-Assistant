@@ -35,7 +35,32 @@ def rich_documents(content):
 def source_text(source):
     path = quote(source.path, safe="/@._-")
     end = source.end_line or source.start_line
-    return f"[{source.path}:{source.start_line}–{end}](source:{path}#L{source.start_line}-L{end})"
+    label = source.path.replace("[", "（").replace("]", "）")
+    return f"[{label}:{source.start_line}–{end}](source:{path}#L{source.start_line}-L{end})"
+
+
+def source_pointers(content):
+    """仅遍历白名单引用字段，代码和普通文字不当成元数据。"""
+
+    def visit(blocks):
+        for block in blocks:
+            if block.type == "overview_grid":
+                for item in block.items:
+                    if item.source:
+                        yield item.source
+            elif block.type == "step_flow":
+                for step in block.steps:
+                    yield from step.sources
+            elif block.type == "source_reference":
+                yield from block.sources
+            elif block.type == "code" and block.source:
+                yield block.source
+            elif block.type == "collapsible":
+                yield from visit(block.blocks)
+
+    for _, _, document in rich_documents(content):
+        if document:
+            yield from visit(document.blocks)
 
 
 def block_text(block):

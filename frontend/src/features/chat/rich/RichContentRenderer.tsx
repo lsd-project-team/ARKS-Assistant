@@ -7,6 +7,7 @@ import { createContentParser } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
 import { remarkRecordAnswer } from '../lib/recordAnswerPresentation';
 import { SourceReference } from './SourceReference';
+import { BlockBoundary } from './BlockBoundary';
 
 const answerPlugins = [remarkRecordAnswer];
 type Context = Pick<ComponentProps<typeof Markdown>, 'runId' | 'sourceId'>;
@@ -75,7 +76,9 @@ function Blocks({ blocks, runId, sourceId }: Context & { blocks: ContentBlock[] 
   return (
     <div className="rich-content">
       {blocks.map((block) => (
-        <Block key={block.id} block={block} runId={runId} sourceId={sourceId} />
+        <BlockBoundary key={block.id} block={block}>
+          <Block block={block} runId={runId} sourceId={sourceId} />
+        </BlockBoundary>
       ))}
     </div>
   );
@@ -94,7 +97,7 @@ export function RichContentRenderer({
       {segments.map((segment, index) => {
         switch (segment.type) {
           case 'markdown':
-            return (
+            return segment.content.trim() ? (
               <TextBlock
                 key={segment.id}
                 content={segment.content}
@@ -102,7 +105,7 @@ export function RichContentRenderer({
                 runId={runId}
                 sourceId={sourceId}
               />
-            );
+            ) : null;
           case 'rich':
             return (
               <Blocks

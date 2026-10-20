@@ -132,3 +132,9 @@ test('未知组件降级不丢正文，不允许任意组件加载', () => {
   assert.match(html, /后文/);
   assert.match(html, /原始内容/);
 });
+
+test('格式损坏的业务引用不能降为任意外部协议链接', () => {
+  const html = render('[坏引用](source:not-a-location)');
+  assert.match(html, /引用格式无效/);
+  assert.doesNotMatch(html, /href="source:/);
+});

@@ -12,7 +12,7 @@ from pydantic import (
     model_validator,
 )
 
-Identifier = Annotated[str, StringConstraints(strict=True, pattern=r"^[\w-]{1,80}$")]
+Identifier = Annotated[str, StringConstraints(strict=True, pattern=r"^[A-Za-z0-9_-]{1,80}$")]
 Title = Annotated[str, StringConstraints(strict=True, max_length=300)]
 Text = Annotated[str, StringConstraints(strict=True, max_length=20000)]
 Description = Annotated[str, StringConstraints(strict=True, max_length=4000)]

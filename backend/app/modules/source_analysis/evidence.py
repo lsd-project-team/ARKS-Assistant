@@ -10,7 +10,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from app.agents.context.tokens import fit_text
 from app.core.config import dump_json
-from app.modules.chat.rich_presentation import project_rich_content
+from app.modules.chat.rich_presentation import project_rich_content, source_pointers, source_text
 from app.modules.source_analysis.location import resolve_source_path
 
 CITATION = re.compile(r"(?<!\\)\[([^\]\n]+)\]\(source:([^\s)]+)\)")
@@ -234,6 +234,7 @@ class SourceEvidence:
         )
 
     def check(self, text):
+        pointers = list(source_pointers(text))
         text = project_rich_content(text)
         citations = []
         for match in citation_matches(text):
@@ -264,6 +265,19 @@ class SourceEvidence:
             except (OSError, ValueError) as error:
                 entry["reason"] = str(error)
             citations.append(entry)
+        # 路径范围有效也不能替模型声明的错误来源或版本背书。
+        for pointer in pointers:
+            target = citation_matches(source_text(pointer))[0][2]
+            for entry in (row for row in citations if row["target"] == target and row["valid"]):
+                if pointer.version and pointer.version != entry.get("version"):
+                    entry.update(valid=False, reason="结构化引用声明的版本与本轮证据不一致")
+                elif pointer.source_workspace_id and not any(
+                    row["path"] == pointer.path
+                    and row["version"] == entry.get("version")
+                    and row.get("source_workspace_id") == pointer.source_workspace_id
+                    for row in self.reads
+                ):
+                    entry.update(valid=False, reason="结构化引用声明的源码目录与本轮证据不一致")
         reasons = [row["reason"] for row in citations if not row["valid"]]
         if self.required and not self.reads:
             reasons.append("本轮缺少已核对的本地源码")
