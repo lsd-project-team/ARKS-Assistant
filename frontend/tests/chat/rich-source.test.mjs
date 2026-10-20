@@ -50,6 +50,19 @@ test('跨目录同名源码、变化版本、未知状态与来源矛盾不产�
     evidence,
   );
 });
+test('同版本分段读取可连续覆盖引用，但不能拼接缺行、跨版本或跨目录的证据', () => {
+  const first = { ...evidence, end_line: 12 };
+  const second = { ...evidence, start_line: 13 };
+  assert.equal(resolveSourceEvidence(source, [first, second], 'src-a').reason, undefined);
+  for (const changed of [
+    { ...second, start_line: 14 },
+    { ...second, version: 'v2' },
+    { ...second, source_workspace_id: 'src-b' },
+    { ...second, current_status: 'changed' },
+    { ...second, current_status: 'unavailable' },
+  ])
+    assert.ok(resolveSourceEvidence(source, [first, changed], 'src-a').reason);
+});
 test('复制结构化回答保留语义、步骤、代码、表格和引用，旧文本逐字保留', async () => {
   const fixture = await readFile(new URL('./fixtures/rich-content.json', import.meta.url), 'utf8');
   const answer = '# 回答\n\n```rich-content\n' + fixture + '\n```\n\n末尾';

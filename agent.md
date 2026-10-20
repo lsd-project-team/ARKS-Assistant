@@ -140,6 +140,7 @@
 - [静态资源会话保护验收](docs/verification/private-static-resources.md)
 - [Windows隔离执行适配及边界](docs/architecture/windows-executor.md)
 - [当前模型质量评估与人工标准](docs/verification/code-work-quality.md)
+- [流程回答整理与正式页面发布](docs/verification/rich-flow-publishing-20261020.md)
 - [当前供应商三类合成场景与定向复测](docs/verification/current-model-quality.md)
 - [当前模型接入Linux沙箱验证](docs/verification/model-sandbox.md)
 - [首个业务源码验收：标定网格边界](docs/verification/calibration-grid-case.md)

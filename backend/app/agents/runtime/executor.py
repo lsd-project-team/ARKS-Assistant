@@ -28,11 +28,15 @@ class AgentRunExecutor:
         runtime = self.runtime
         original_emit, observed = emit, {}
         knowledge_references = []
+        hold_flow_answer, publishing_final = False, False
 
         def emit(kind, payload):
             observed[kind] = payload
             if kind == "knowledge_reference":
                 knowledge_references.append(payload)
+            # 续写中间稿同样会发 answer_replace；只挡 token 会提前露出未整理、未复核正文。
+            if kind == "answer_replace" and hold_flow_answer and not publishing_final:
+                return
             return original_emit(kind, payload)
 
         async with AsyncSqliteSaver.from_conn_string(
@@ -316,6 +320,7 @@ class AgentRunExecutor:
                 or formatted != text
                 or any(row.get("kind") == "debug_issue" for row in knowledge_references)
             ):
+                publishing_final = True
                 emit("answer_replace", {"text": formatted})
                 answer = formatted
             return answer

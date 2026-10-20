@@ -123,7 +123,7 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
             ):
                 result = AIMessage(content=answer)
             else:
-                assert "可选展示协议" in messages[0].text
+                assert "默认用step_flow" in messages[0].text
                 result = AIMessage(
                     content="",
                     tool_calls=[
@@ -150,3 +150,87 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
     validation = repository.run_event(run["id"], "answer_validation")
     assert validation["passed"] and validation["citations"][0]["start_line"] == 2
     assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
+
+
+async def test_flow_draft_is_hidden_until_compact_answer_and_source_review_finish(
+    services, monkeypatch
+):
+    def flow(description):
+        return (
+            "```rich-content\n"
+            + json.dumps(
+                {
+                    "version": 1,
+                    "blocks": [
+                        {
+                            "id": "flow",
+                            "type": "step_flow",
+                            "steps": [
+                                {
+                                    "id": "main",
+                                    "title": "入口",
+                                    "description": description,
+                                    "sources": [
+                                        {"path": "Program.cs", "start_line": 2, "end_line": 2}
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                },
+                ensure_ascii=False,
+            )
+            + "\n```"
+        )
+
+    original, compact = flow("尚待整理的冗长草稿。" * 200), flow("Main 方法体为空，没有后续步骤。")
+    events, phases = [], []
+
+    class Model(DeterministicModel):
+        def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            try:
+                payload = json.loads(messages[-1].text)
+            except ValueError:
+                payload = {}
+            if "draft" in payload and "question" in payload:
+                assert payload["draft"] == original
+                phases.append("compose")
+                result = AIMessage(content=compact)
+            elif "answer" in payload and "source" in payload:
+                assert (
+                    "尚待整理" not in payload["answer"] and "Main 方法体为空" in payload["answer"]
+                )
+                assert not any(kind in {"token", "answer_replace"} for kind, _ in events)
+                phases.append("review")
+                result = AIMessage(content='{"verdict":"passed","issues":[]}')
+            elif any(
+                isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
+            ):
+                result = AIMessage(content=original)
+            else:
+                result = AIMessage(
+                    content="",
+                    tool_calls=[
+                        {
+                            "id": "read",
+                            "name": "read_source",
+                            "args": {"path": "Program.cs", "start_line": 2, "end_line": 2},
+                        }
+                    ],
+                )
+            return ChatResult(generations=[ChatGeneration(message=result)])
+
+    paths, _, workspace, repository, memories, settings = services
+    settings.save(AppSettings(model=ModelSettings(context_tokens=32768, output_tokens=4096)))
+    monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
+    runtime = AgentRuntime(paths, settings, workspace, repository, memories)
+    run = repository.create_run(None, "说明 Program.cs 的入口流程", [])
+    try:
+        actual = await runtime.execute(run, lambda *event: events.append(event))
+        repository.finish(run["id"], actual)
+        assert phases == ["compose", "review"] and actual == compact
+        displayed = [row["text"] for kind, row in events if kind == "answer_replace"]
+        assert displayed == [compact]
+        assert repository.thread(run["thread_id"])["messages"][-1]["content"] == compact
+    finally:
+        runtime.semantic.close()

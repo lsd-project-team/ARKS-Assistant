@@ -5,6 +5,7 @@ from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
 from app.agents.runtime.engine import AgentRuntime
+from app.modules.chat.rich_presentation import rich_documents
 from app.modules.source_analysis.evidence import (
     SourceEvidence,
     SourceEvidenceGuard,
@@ -159,3 +160,36 @@ def test_unsupported_mechanism_is_removed_but_its_verified_citation_remains():
     )
     assert "必然选择" not in result and "传入 false" in result
     assert "source:Program.cs#L2" in result and "具体机制本轮未核实" in result
+
+
+def test_unknown_review_without_specific_claims_preserves_steps_and_table():
+    original = (
+        "```rich-content\n"
+        + json.dumps(
+            {
+                "version": 1,
+                "blocks": [
+                    {
+                        "id": "steps",
+                        "type": "step_flow",
+                        "steps": [{"id": "stop", "title": "停止", "description": "置停止标志"}],
+                    },
+                    {
+                        "id": "comparison",
+                        "type": "table",
+                        "columns": [{"id": "kind", "label": "类型"}],
+                        "rows": [{"id": "one", "cells": ["原值"]}],
+                    },
+                ],
+            },
+            ensure_ascii=False,
+        )
+        + "\n```"
+    )
+    result = mark_unknown_conclusions(original, {"issues": [], "reason": "结论复核未返回有效结构"})
+    assert result.startswith(original)
+    assert [b.type for _, _, doc in rich_documents(result) if doc for b in doc.blocks] == [
+        "step_flow",
+        "table",
+    ]
+    assert "结论复核未返回有效结构" in result

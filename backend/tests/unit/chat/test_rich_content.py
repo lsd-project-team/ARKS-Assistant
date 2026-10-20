@@ -9,6 +9,7 @@ from app.modules.chat.rich_presentation import project_rich_content, rich_docume
 from app.modules.source_analysis.evidence import (
     SourceEvidence,
     disable_invalid_citations,
+    mark_unknown_conclusions,
     source_excerpt,
 )
 
@@ -36,6 +37,62 @@ def test_shared_frontend_backend_fixture_and_projection():
         assert text in projected
     assert "source:Program.cs#L2-L2" in projected
     assert "rich-content" not in projected
+
+
+def test_projected_table_remains_a_valid_markdown_table_when_fallback_is_needed():
+    content = fence(
+        {
+            "version": 1,
+            "blocks": [
+                {
+                    "id": "table",
+                    "type": "table",
+                    "columns": [{"id": "type", "label": "类型"}, {"id": "value", "label": "值"}],
+                    "rows": [{"id": "row", "cells": ["A|B", "第一行\n第二行"]}],
+                }
+            ],
+        }
+    )
+    projected = project_rich_content(content)
+    assert "| 类型 | 值 |\n| --- | --- |" in projected
+    assert "| A\\|B | 第一行<br>第二行 |" in projected
+
+
+def test_specific_unknown_claim_does_not_destroy_an_unrelated_rich_table():
+    claim = "传入 false 已保证设备移动完成。"
+    original = fence(
+        {
+            "version": 1,
+            "blocks": [
+                {
+                    "id": "steps",
+                    "type": "step_flow",
+                    "steps": [
+                        {
+                            "id": "one",
+                            "title": "调用",
+                            "description": claim,
+                            "sources": [{"path": "Program.cs", "start_line": 2}],
+                        }
+                    ],
+                },
+                {
+                    "id": "table",
+                    "type": "table",
+                    "columns": [{"id": "name", "label": "参数"}],
+                    "rows": [{"id": "row", "cells": ["false"]}],
+                },
+            ],
+        }
+    )
+    result = mark_unknown_conclusions(
+        original, {"issues": [{"claim": claim}], "reason": "只核实调用点，没有动作完成证据。"}
+    )
+    projected = project_rich_content(result)
+    assert claim not in projected and "具体机制本轮未核实" in projected
+    assert "source:Program.cs#L2-L2" in projected
+    document = next(doc for _, _, doc in rich_documents(result))
+    assert document.blocks[1].type == "table"
 
 
 @pytest.mark.parametrize(

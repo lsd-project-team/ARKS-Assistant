@@ -101,13 +101,20 @@ def block_text(block):
             + (source_text(block.source) if block.source else "")
         )
     if kind == "table":
+
+        def cell(value):
+            return ("—" if value is None else str(value)).replace("|", "\\|").replace("\n", "<br>")
+
         return (
             title
-            + " | ".join(column.label for column in block.columns)
-            + "\n"
+            + "| "
+            + " | ".join(cell(column.label) for column in block.columns)
+            + " |\n"
+            + "| "
+            + " | ".join("---" for _ in block.columns)
+            + " |\n"
             + "\n".join(
-                " | ".join("—" if cell is None else str(cell) for cell in row.cells)
-                for row in block.rows
+                "| " + " | ".join(cell(value) for value in row.cells) + " |" for row in block.rows
             )
         )
     if kind == "diagram":
@@ -144,10 +151,61 @@ def project_rich_content(content):
     return content
 
 
+def replace_answer_claims(content, replacements):
+    """只降低有具体争议的块；无争议的步骤、表格和引用继续按协议显示。"""
+    from app.modules.chat.rich_content import TextBlock
+
+    def replace(text):
+        for claim, replacement in replacements:
+            text = text.replace(claim, replacement)
+        return text
+
+    def rewrite(block):
+        if block.type == "collapsible":
+            return block.model_copy(update={"blocks": [rewrite(child) for child in block.blocks]})
+        projected = block_text(block)
+        revised = replace(projected)
+        if revised != projected:
+            return TextBlock(id=block.id, type="text", content=revised)
+        return block
+
+    if not replacements:
+        return content
+    original = content
+    try:
+        for start, end, document in reversed(list(rich_documents(content))):
+            if document is None:
+                continue
+            updated = document.model_copy(update={"blocks": [rewrite(b) for b in document.blocks]})
+            # 重新验证变换结果；过大的块、跨块争议或无法定位的句子保守降为可核对文字。
+            data = updated.model_dump(exclude_none=True, by_alias=True)
+            encoded = RichDocument.model_validate(data).model_dump_json(
+                exclude_none=True, by_alias=True
+            )
+            content = content[:start] + "```rich-content\n" + encoded + "\n```" + content[end:]
+        # 普通 Markdown 中的争议句直接替换，不把 JSON 键或源码元数据当正文修改。
+        cursor, parts = 0, []
+        for start, end, _ in rich_documents(content):
+            parts += [replace(content[cursor:start]), content[start:end]]
+            cursor = end
+        result = "".join([*parts, replace(content[cursor:])])
+        if any(claim in project_rich_content(result) for claim, _ in replacements):
+            return replace(project_rich_content(original))
+        return result
+    except ValueError:
+        return replace(project_rich_content(original))
+
+
 RICH_CONTENT_GUIDANCE = """
-可选展示协议（只影响排版，事实核查和检索规则不变）：
+回答展示协议（只影响排版，事实核查和检索规则不变）：
 简单问答、原文提取、含调试记录/资料引用的回答继续用普通 Markdown。
-当答案确有功能概览、顺序步骤或对比时，可以在普通 Markdown 之间使用 rich-content 围栏，内部为 JSON：
+明确询问源码支持的操作流程时，默认用step_flow组织主线；多入口可先用overview_grid，实际对比才用table。
+用户明确要纯Markdown时遵从。其他普通解释不强制使用组件。
+开头一两句直接说明主流程和适用入口，不同时展开多条完整向导、自动流程和底层算法。
+步骤只写目的、必要条件和结果；补充实现放入collapsible或步骤details，默认收起。
+关键前置条件、失败/取消分支、停止与保存必须在主流程就近可见，不能因折叠丢失。
+不为了卡片凑固定入口或固定步骤数；较长向导可单独折叠，但主线须说明其适用位置和必要条件。
+在普通 Markdown 之间使用 rich-content 围栏，内部为 JSON：
 {"version":1,"blocks":[...]}。每个块有唯一英文数字/短横线 id 和白名单 type。
 需要卡片时，围栏语言必须逐字写成 rich-content，不能写 json；json 围栏只显示示例代码。
 格式示例（占位文字必须替换为本题已核实的内容）：
