@@ -1,0 +1,284 @@
+.rich-content {
+  display: grid;
+  gap: var(--answer-section-space, 28px);
+  min-width: 0;
+}
+.rich-content :is(h3, h4) {
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.45;
+}
+.rich-content h3 {
+  font-size: 18px;
+  margin: 0 0 14px;
+}
+.rich-content h4 {
+  font-size: 15px;
+  margin: 0 0 5px;
+}
+.rich-content .markdown {
+  min-width: 0;
+}
+.rich-description,
+.rich-status {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0 0 14px;
+}
+.rich-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rich-overview-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-subtle);
+  min-width: 0;
+}
+.rich-overview-item > div {
+  min-width: 0;
+  flex: 1;
+}
+.rich-overview-item .markdown {
+  font-size: 13px !important;
+  color: var(--text-secondary);
+}
+.rich-overview-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 10px;
+  color: var(--text-secondary);
+}
+.rich-status {
+  display: block;
+  margin: 6px 0 0;
+}
+.rich-steps {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.rich-steps > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 16px;
+  padding-bottom: 24px;
+}
+.rich-steps > li:last-child {
+  padding-bottom: 0;
+}
+.rich-steps > li:not(:last-child)::before {
+  position: absolute;
+  content: '';
+  top: 36px;
+  bottom: 2px;
+  left: 16px;
+  width: 1px;
+  background: var(--border);
+}
+.rich-step-number {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.rich-step-body {
+  padding-top: 4px;
+  min-width: 0;
+}
+.rich-step-body .markdown {
+  font-size: 14px !important;
+}
+.rich-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.rich-collapsible {
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.rich-collapsible summary {
+  padding: 12px 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.rich-collapsible[open] > summary {
+  color: var(--text);
+}
+.rich-collapsible-body {
+  padding: 0 0 14px 16px;
+  min-width: 0;
+}
+.rich-collapsible-body > .rich-content {
+  margin-top: 4px;
+}
+.rich-table-scroll {
+  max-width: 100%;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.rich-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+}
+.rich-table caption {
+  text-align: start;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.rich-table :is(th, td) {
+  min-width: 110px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.rich-table th {
+  background: var(--surface-subtle);
+  font-weight: 600;
+}
+.rich-diagram {
+  margin: 0;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.rich-diagram figcaption {
+  padding: 14px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.rich-diagram-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.rich-diagram-toolbar > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rich-diagram-toolbar button {
+  min-width: 30px;
+  min-height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+}
+.rich-diagram-toolbar button:hover {
+  background: var(--surface-hover);
+}
+.rich-diagram-toolbar output {
+  width: 44px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.rich-diagram-viewport {
+  overflow: auto;
+  max-height: 520px;
+  scrollbar-width: thin;
+}
+.rich-diagram-viewport svg {
+  max-width: none;
+  display: block;
+  margin-inline: auto;
+}
+.rich-node-label {
+  font-size: 13px;
+  fill: var(--text);
+}
+.rich-edge-label {
+  font-size: 11px;
+  fill: var(--text-secondary);
+}
+.rich-diagram-description {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.rich-diagram-description summary {
+  cursor: pointer;
+}
+.rich-diagram-description ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin-block: 10px;
+}
+.modal-content.rich-diagram-dialog {
+  width: min(1100px, calc(100vw - 32px));
+}
+.rich-diagram-dialog .rich-diagram-viewport {
+  max-height: 65vh;
+}
+.answer-code-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.code-syntax {
+  color: var(--text);
+}
+.code-syntax .code-line > span:not(.code-line-number) {
+  color: var(--code-light, inherit);
+}
+:root[data-appearance='dark'] .code-syntax .code-line > span:not(.code-line-number) {
+  color: var(--code-dark, inherit);
+}
+.code-line-number {
+  display: inline-block;
+  width: 4em;
+  padding-right: 1em;
+  text-align: right;
+  color: var(--text-muted);
+  user-select: none;
+}
+@container (max-width: 540px) {
+  .rich-overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 540px) {
+  .rich-overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rich-diagram-toolbar {
+    flex-wrap: wrap;
+  }
+}

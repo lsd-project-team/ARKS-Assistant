@@ -1,6 +1,10 @@
-import { Children, isValidElement, useState, type ReactNode } from 'react';
+import { Children, isValidElement, lazy, Suspense, useState, type ReactNode } from 'react';
 import { Copy, WrapText, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from '../../utils/toasts';
+
+const CodeSyntax = lazy(() =>
+  import('./CodeSyntax').then((module) => ({ default: module.CodeSyntax })),
+);
 
 function codeText(node: ReactNode): string {
   return Children.toArray(node)
@@ -11,7 +15,17 @@ function codeText(node: ReactNode): string {
     .join('');
 }
 
-export function CodeBlock({ children }: { children: ReactNode }) {
+export function CodeBlock({
+  children,
+  filename,
+  startLine,
+  streaming = false,
+}: {
+  children: ReactNode;
+  filename?: string;
+  startLine?: number;
+  streaming?: boolean;
+}) {
   const [wrap, setWrap] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const element = Children.toArray(children).find((child) => isValidElement(child));
@@ -33,7 +47,9 @@ export function CodeBlock({ children }: { children: ReactNode }) {
       className={`answer-code ${wrap ? 'wrapped' : ''} ${long && !expanded ? 'collapsed-code' : ''}`}
     >
       <div className="answer-code-toolbar">
-        <span>{language || '代码'}</span>
+        <span className="answer-code-name" title={filename}>
+          {filename || language || '代码'}
+        </span>
         <div>
           <button
             type="button"
@@ -49,9 +65,22 @@ export function CodeBlock({ children }: { children: ReactNode }) {
           </button>
         </div>
       </div>
-      <pre>{children}</pre>
+      <pre>
+        {streaming ? (
+          children
+        ) : (
+          <Suspense fallback={children}>
+            <CodeSyntax content={content} language={language} startLine={startLine} />
+          </Suspense>
+        )}
+      </pre>
       {long && (
-        <button type="button" className="code-expand" onClick={() => setExpanded(!expanded)}>
+        <button
+          type="button"
+          className="code-expand"
+          aria-expanded={expanded}
+          onClick={() => setExpanded(!expanded)}
+        >
           {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}{' '}
           {expanded ? '收起代码' : `展开 ${content.split('\n').length} 行代码`}
         </button>
