@@ -1,0 +1,1544 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-20",
+  "stage": "源码分析底稿；尚未编写纠偏正式设计文档",
+  "audience": [
+    "软件研发与技术评审人员",
+    "设备调试与应用工程师"
+  ],
+  "scope": "产品层级定位、上视芯片纠偏、中转台芯片纠偏，以及各流程输出在贴装入口中的必要使用",
+  "authoring_gate": "按会话约定，TU分册确认后再开始纠偏正文；当前尚未收到TU第3版修订1验收结论",
+  "limits": [
+    "记录为当前本地源码的静态追踪与说明算例，不是设备运行、识别精度或断电恢复验证",
+    "只列实际读取的源码区间，不把整文件哈希视作整文件分析完成",
+    "不修改trunk中的业务源码，不把发现的异常行为改写成理想设计",
+    "本文件是后续写作的技术依据，不是可出版的正文或最终验收结果"
+  ],
+  "repository_commit": "36a138551936475a33716d8e5d73a75440517af4",
+  "sources": [
+    {
+      "id": "TU_SERVICE",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+      "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+      "line_count": 2081,
+      "reviewed_ranges": [
+        {
+          "start_line": 443,
+          "end_line": 864,
+          "first_anchor": {
+            "line": 443,
+            "text": "public enum NormalVisionType"
+          },
+          "last_anchor": {
+            "line": 864,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 965,
+          "end_line": 997,
+          "first_anchor": {
+            "line": 965,
+            "text": "public static bool TwoPointCheck(LocateConfig locateConfig, LocateResultInfo locateResultInfo)"
+          },
+          "last_anchor": {
+            "line": 997,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "DOMAIN_S1",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a",
+      "line_count": 629,
+      "reviewed_ranges": [
+        {
+          "start_line": 96,
+          "end_line": 197,
+          "first_anchor": {
+            "line": 96,
+            "text": "public bool System1MatterVision(BaseMatter baseEntity, bool byMapping = true)"
+          },
+          "last_anchor": {
+            "line": 197,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 205,
+          "end_line": 265,
+          "first_anchor": {
+            "line": 205,
+            "text": "private bool System1VisionByPos(BaseMatter baseEntity, TuService.NormalVisionType type,bool alarm = false)"
+          },
+          "last_anchor": {
+            "line": 265,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 321,
+          "end_line": 360,
+          "first_anchor": {
+            "line": 322,
+            "text": "(DialogResult dialogResult, BaseAlgResult match) result = UcMainSystem.VisionAlarmLockFunc(pREntityTemp, baseEntity.Name, $\"{baseEntity.MatterTypeEnum}点胶定位失败\", this.DispenseVisionController.GetHardware());"
+          },
+          "last_anchor": {
+            "line": 360,
+            "text": "return true;"
+          }
+        },
+        {
+          "start_line": 307,
+          "end_line": 325,
+          "first_anchor": {
+            "line": 315,
+            "text": "if (matchResult1 == null)"
+          },
+          "last_anchor": {
+            "line": 325,
+            "text": "matchResult1 = (MatchResult)result.match;"
+          }
+        }
+      ]
+    },
+    {
+      "id": "DOMAIN_S2",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "line_count": 1214,
+      "reviewed_ranges": [
+        {
+          "start_line": 267,
+          "end_line": 588,
+          "first_anchor": {
+            "line": 267,
+            "text": "public bool System2ObjectVision(BaseMatter baseEntity, bool byMapping = true)"
+          },
+          "last_anchor": {
+            "line": 588,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "LOCATE_CONFIG",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/LocateConfig.cs",
+      "sha256": "b53c2cc86e9f34e1dfa26415d998801f1c9b87ccc3859b582fb901f5e589a9c7",
+      "line_count": 253,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 253,
+          "first_anchor": {
+            "line": 1,
+            "text": "using AKRS.Galaxy2.Infrastructure.CommonModel;"
+          },
+          "last_anchor": {
+            "line": 253,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "VISION_RESULT",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Model/VisionResult.cs",
+      "sha256": "ac0567ac9c60c181cf5293afc9ea6541b326da1517746be92bab2e9d65f7d2d3",
+      "line_count": 81,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 81,
+          "first_anchor": {
+            "line": 1,
+            "text": "using AKRS.Galaxy2.Infrastructure.CommonModel;"
+          },
+          "last_anchor": {
+            "line": 81,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BASE_COORDINATE",
+      "path": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+      "sha256": "c6e5ae892f8617da2fa1809e9e5793382d9712106e2932d15cb3844de60bedff",
+      "line_count": 344,
+      "reviewed_ranges": [
+        {
+          "start_line": 84,
+          "end_line": 112,
+          "first_anchor": {
+            "line": 84,
+            "text": "public AKRSPoint3D ForwardConvertCoordinate(AKRSPoint3D value)"
+          },
+          "last_anchor": {
+            "line": 110,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 194,
+          "end_line": 259,
+          "first_anchor": {
+            "line": 195,
+            "text": "return point;"
+          },
+          "last_anchor": {
+            "line": 258,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GENERAL_COORDINATE",
+      "path": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d",
+      "line_count": 134,
+      "reviewed_ranges": [
+        {
+          "start_line": 107,
+          "end_line": 132,
+          "first_anchor": {
+            "line": 107,
+            "text": "public double DegreeInG0()"
+          },
+          "last_anchor": {
+            "line": 132,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "UPLOOK_ACTION",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+      "line_count": 2044,
+      "reviewed_ranges": [
+        {
+          "start_line": 131,
+          "end_line": 545,
+          "first_anchor": {
+            "line": 131,
+            "text": "public override ExcuteResult DoWork()"
+          },
+          "last_anchor": {
+            "line": 539,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 1375,
+          "end_line": 1609,
+          "first_anchor": {
+            "line": 1375,
+            "text": "public (ExcuteResult, MatchResult) UpLookVision(AKRSPoint3D visionPoint3D, string name,bool isFirstPosVision)"
+          },
+          "last_anchor": {
+            "line": 1609,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "IPT_ACTION",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+      "line_count": 870,
+      "reviewed_ranges": [
+        {
+          "start_line": 136,
+          "end_line": 514,
+          "first_anchor": {
+            "line": 136,
+            "text": "public override ExcuteResult DoWork()"
+          },
+          "last_anchor": {
+            "line": 514,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 520,
+          "end_line": 702,
+          "first_anchor": {
+            "line": 520,
+            "text": "public override bool IsDoWork()"
+          },
+          "last_anchor": {
+            "line": 702,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "IPT_PROVIDER",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "sha256": "73bbe54ab96120045e09f69c80c6382d795894c914298c97a99a3d508e4d8414",
+      "line_count": 130,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 130,
+          "first_anchor": {
+            "line": 1,
+            "text": "using System;"
+          },
+          "last_anchor": {
+            "line": 130,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BOND_PROVIDER",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+      "line_count": 702,
+      "reviewed_ranges": [
+        {
+          "start_line": 498,
+          "end_line": 629,
+          "first_anchor": {
+            "line": 498,
+            "text": "private AKRSPoint4D CalculateBondPos()"
+          },
+          "last_anchor": {
+            "line": 629,
+            "text": "};"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BOND_ACTION",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf",
+      "line_count": 566,
+      "reviewed_ranges": [
+        {
+          "start_line": 118,
+          "end_line": 154,
+          "first_anchor": {
+            "line": 118,
+            "text": "public override ExcuteResult DoWork()"
+          },
+          "last_anchor": {
+            "line": 154,
+            "text": "{"
+          }
+        }
+      ]
+    },
+    {
+      "id": "RUN_TIME",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "sha256": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1",
+      "line_count": 435,
+      "reviewed_ranges": [
+        {
+          "start_line": 409,
+          "end_line": 433,
+          "first_anchor": {
+            "line": 415,
+            "text": "public static MatchResult GetMatchResultByConfig(MatchResult matchResult,LocateUseConfig locateUseConfig)"
+          },
+          "last_anchor": {
+            "line": 433,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "UPLOOK_MODULE",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Modules/UpLookModule.cs",
+      "sha256": "a7b132eae5efe4718dde1e25fabbaba810a6e8f27686b7d974a28bed0b726a83",
+      "line_count": 126,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 110,
+          "first_anchor": {
+            "line": 1,
+            "text": "using System.Collections.Generic;"
+          },
+          "last_anchor": {
+            "line": 109,
+            "text": "List<string> pRLights = new List<string>();"
+          }
+        }
+      ]
+    },
+    {
+      "id": "NOZZLE_CONTROLLER",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.cs",
+      "sha256": "854d4b6dca4b79a67d215129e471efbc159be07dd2ce25f06e4deb6a8bdb29a1",
+      "line_count": 1194,
+      "reviewed_ranges": [
+        {
+          "start_line": 965,
+          "end_line": 993,
+          "first_anchor": {
+            "line": 970,
+            "text": "public AKRSPoint2D GetNozzleOffset(string nozzleName, double angle)"
+          },
+          "last_anchor": {
+            "line": 993,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "MATH_HELPER",
+      "path": "trunk/AKRS.ZX2200/Infrastructure/Utils/MathHelper.cs",
+      "sha256": "3464a656b445ac169a721e9b2dd27a129daa1b03c7a2c926483369ef116dea7c",
+      "line_count": 597,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 100,
+          "first_anchor": {
+            "line": 1,
+            "text": "namespace AKRS.ZX2200.Infrastructure.Utils"
+          },
+          "last_anchor": {
+            "line": 100,
+            "text": "public static AKRSPoint3D OnePointAdjust(double angleDifference, double radius, AKRSPoint3D resultPos, double NewDegree,double rotateDistance)"
+          }
+        },
+        {
+          "start_line": 516,
+          "end_line": 567,
+          "first_anchor": {
+            "line": 516,
+            "text": "public static PointF GetCentre(PointF P1, PointF P2, PointF P3)"
+          },
+          "last_anchor": {
+            "line": 567,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ACTION_CONTROLLER",
+      "path": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "line_count": 1630,
+      "reviewed_ranges": [
+        {
+          "start_line": 715,
+          "end_line": 853,
+          "first_anchor": {
+            "line": 715,
+            "text": "private List<ActionNodeMessage> GetActionNodeMessageByProcess(SingleProcessStep singleProcess, int substrateIndex, int moduleIndex)"
+          },
+          "last_anchor": {
+            "line": 853,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 1099,
+          "end_line": 1139,
+          "first_anchor": {
+            "line": 1099,
+            "text": "public void SetActionNodeReWork(List<ActionNode> actionNodes)"
+          },
+          "last_anchor": {
+            "line": 1139,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BOND_TASK",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "line_count": 503,
+      "reviewed_ranges": [
+        {
+          "start_line": 232,
+          "end_line": 319,
+          "first_anchor": {
+            "line": 232,
+            "text": "ExcuteResult ret = actionNode.DoWork();"
+          },
+          "last_anchor": {
+            "line": 319,
+            "text": "this.system2Domain.ActionNodesService.FinishCurrentActionNode();"
+          }
+        }
+      ]
+    },
+    {
+      "id": "CHIP_CONFIG",
+      "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/BaseCarrierConfig.cs",
+      "sha256": "9d41f35fdd56c99bf8e7faf52185dfb6057ae2523d1d15014921b4a62c16e0b7",
+      "line_count": 1362,
+      "reviewed_ranges": [
+        {
+          "start_line": 211,
+          "end_line": 220,
+          "first_anchor": {
+            "line": 215,
+            "text": "[TreeProgramListArgs(\"是否两点定位\", \"芯片载具公共属性\", false)]"
+          },
+          "last_anchor": {
+            "line": 216,
+            "text": "public bool IsTwoPointAdjust { get; set; }"
+          }
+        },
+        {
+          "start_line": 472,
+          "end_line": 505,
+          "first_anchor": {
+            "line": 481,
+            "text": "[TreeProgramListArgs(\"上视定位配置\", \"精度模式\")]"
+          },
+          "last_anchor": {
+            "line": 502,
+            "text": "public CameraTypeEnum AdjustCamera { get; set; } = CameraTypeEnum.UpLookCamera;"
+          }
+        },
+        {
+          "start_line": 696,
+          "end_line": 716,
+          "first_anchor": {
+            "line": 699,
+            "text": "[TreeProgramListArgs(\"下视角度\", \"上/下视\", UnitHelper.degree)]"
+          },
+          "last_anchor": {
+            "line": 712,
+            "text": "public AKRSPoint3D IPTComponentCenter { get; set; }"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ADJUST_CONFIG",
+      "path": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/AdjustConfig.cs",
+      "sha256": "f08a10d0bbea736f686ffbeaa4245955d99da217e18fa6124c402e84128a1d01",
+      "line_count": 135,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 135,
+          "first_anchor": {
+            "line": 2,
+            "text": "/*----------------------------------------------------------------"
+          },
+          "last_anchor": {
+            "line": 135,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "REAL_TIME_CORRECTION",
+      "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+      "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+      "line_count": 340,
+      "reviewed_ranges": [
+        {
+          "start_line": 149,
+          "end_line": 201,
+          "first_anchor": {
+            "line": 149,
+            "text": "public AKRSPoint3D GetCompensatePoint3D(AKRSPoint3D iptPickPos, AKRSPoint3D iptVisionPos, AKRSPoint3D bondPos, AKRSPoint3D bondVisonPos)"
+          },
+          "last_anchor": {
+            "line": 201,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "S2_SUBSTRATE_ACTION",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2",
+      "line_count": 168,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 168,
+          "first_anchor": {
+            "line": 1,
+            "text": "using System;"
+          },
+          "last_anchor": {
+            "line": 168,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BOND_INFO",
+      "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Information/BondPositionInfo.cs",
+      "sha256": "6bd63b789cffdd7231e03a0ebaaa70e618dff79518b4c8e199ebae578d297828",
+      "line_count": 231,
+      "reviewed_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 109,
+          "first_anchor": {
+            "line": 1,
+            "text": "using AKRS.Galaxy2.Infrastructure.CommonModel;"
+          },
+          "last_anchor": {
+            "line": 107,
+            "text": "public Dictionary<string, bool> S1RemainingSteps { get; set; } = new Dictionary<string, bool>();"
+          }
+        }
+      ]
+    },
+    {
+      "id": "BOND_VISION_CONTROLLER",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+      "line_count": 924,
+      "reviewed_ranges": [
+        {
+          "start_line": 159,
+          "end_line": 282,
+          "first_anchor": {
+            "line": 159,
+            "text": "public BaseAlgResult BondCameraVision(AKRSPoint3D visionPosition, string pRName, bool isZSafe = false, bool isDefect = false, bool autofocus = false)"
+          },
+          "last_anchor": {
+            "line": 282,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 652,
+          "end_line": 724,
+          "first_anchor": {
+            "line": 652,
+            "text": "public AKRSPoint3D GetBondVisionResultPos(MatchResult result, AKRSPoint3D visionPos = null)"
+          },
+          "last_anchor": {
+            "line": 724,
+            "text": "public AKRSPoint3D UpLookRealPosInG0()"
+          }
+        }
+      ]
+    },
+    {
+      "id": "DISPENSE_CONTROLLER",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8",
+      "line_count": 1088,
+      "reviewed_ranges": [
+        {
+          "start_line": 262,
+          "end_line": 287,
+          "first_anchor": {
+            "line": 262,
+            "text": "public AKRSPoint3D GetG0VisionPos(AKRSPoint3D point3D)"
+          },
+          "last_anchor": {
+            "line": 287,
+            "text": "+ new AKRSPoint3D(0, 0, this.DevicePara.PreDispensePlatePara.DistanceInSensor);"
+          }
+        },
+        {
+          "start_line": 791,
+          "end_line": 802,
+          "first_anchor": {
+            "line": 791,
+            "text": "public AKRSPoint3D ConvertVisionResultInG0(MatchResult result, AKRSPoint3D visionPos = null)"
+          },
+          "last_anchor": {
+            "line": 802,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "VISION_SERVICE",
+      "path": "trunk/AKRS.ZX2200/Infrastructure/Service/VisionService.cs",
+      "sha256": "71aa2134a158c2a404f29ee3646a7de383f8f1ba386a3f6555bb2467960f010d",
+      "line_count": 377,
+      "reviewed_ranges": [
+        {
+          "start_line": 78,
+          "end_line": 147,
+          "first_anchor": {
+            "line": 78,
+            "text": "public static BaseAlgResult Vision(string pRName, PRHardware prHardware, string systemName = \"Other\", string bitmapName = \"\", bool setLight = true)"
+          },
+          "last_anchor": {
+            "line": 147,
+            "text": "}"
+          }
+        },
+        {
+          "start_line": 257,
+          "end_line": 315,
+          "first_anchor": {
+            "line": 257,
+            "text": "public static DialogResult DistanceCheck(BaseMatter baseMatter)"
+          },
+          "last_anchor": {
+            "line": 315,
+            "text": "}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "AFTER_BOND_CHECK",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+      "sha256": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b",
+      "line_count": 847,
+      "reviewed_ranges": [
+        {
+          "start_line": 559,
+          "end_line": 586,
+          "first_anchor": {
+            "line": 560,
+            "text": "double distanceY = Math.Round(point4D.Y - this.PostBondInspection.PostBondDistanceY, 5);"
+          },
+          "last_anchor": {
+            "line": 586,
+            "text": "StatisticsDomain.GetInstance().AddDefectResult(defect);"
+          }
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "P01",
+      "claim": "产品定位的点数决定采集和结束位置；UpdateEntity(NormalVisionType)内部按当前LocateConfig计算，不能把传入的P1/P2/P3/P4标记当作独立计算快照。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 528,
+          "end_line": 608
+        },
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 295,
+          "end_line": 432
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "claim": "位置锚点的X与Y分别按各点UseX/UseY及AdjustType求算术均值；某轴全部关闭时返回0，不保持该轴旧值。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 617,
+          "end_line": 681
+        },
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 721,
+          "end_line": 785
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "claim": "角度按启用结果的Angle求普通算术均值，再从度转弧度；P4的参与条件实际读取LocateUseConfig3.UseAngle。不能在图或公式中擅自改成第4点开关或圆周均值。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 827,
+          "end_line": 864
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "claim": "默认更新角为负视觉角度减父链全局角；两点定角分支实际使用Atan(newAngle-oldAngle)再减父链角，没有直接使用角度差或归一化函数。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 565,
+          "end_line": 590
+        },
+        {
+          "source_id": "GENERAL_COORDINATE",
+          "start_line": 107,
+          "end_line": 132
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "claim": "三点拟合圆模式在3点与4点模式下均只取P1至P3；GetCentre以PointF运算，精确共线分支返回P1、P2中点，不产生拟合失败异常。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 592,
+          "end_line": 604
+        },
+        {
+          "source_id": "MATH_HELPER",
+          "start_line": 516,
+          "end_line": 567
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "claim": "普通坐标更新先计算父参考系中的新旧锚点差，再平移并绕新锚点旋转原点；XYZ任一分量绝对值大于10或更新角绝对值大于0.2rad会先抛异常。边界值等于10或0.2不被这些比较拒绝。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "BASE_COORDINATE",
+          "start_line": 204,
+          "end_line": 237
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "claim": "UpdateEntity在几何校验之前清P1至P4的Bitmap，坐标更新完成后才置IsVisioned=true；SaveInfo保存识别结果、局部/G0位置及拍照位置，并置成功/更新标记。更新失败不表示所有记录均未改变。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 553,
+          "end_line": 608
+        },
+        {
+          "source_id": "VISION_RESULT",
+          "start_line": 60,
+          "end_line": 69
+        }
+      ]
+    },
+    {
+      "id": "P08",
+      "claim": "S2产品定位逐点采集成功后才在相应点数出口更新；距离检查只放在TwoPoints分支。Abort停止；Retry重新采P1、P2后重新检查；None直接停用并返回true，不进入UpdateEntity。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 295,
+          "end_line": 432
+        },
+        {
+          "source_id": "VISION_SERVICE",
+          "start_line": 257,
+          "end_line": 315
+        }
+      ]
+    },
+    {
+      "id": "P09",
+      "claim": "S1两点距离检查的Retry跳过自动拍照并进入报警对点分支并从P1开始，再次到达检查处时因visionAlarm已为true而跳过该检查；None停用后继续UpdateEntity。S1和S2不能合并画成同一条异常路径。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 96,
+          "end_line": 197
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 205,
+          "end_line": 243
+        },
+        {
+          "source_id": "VISION_SERVICE",
+          "start_line": 299,
+          "end_line": 314
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 315,
+          "end_line": 325
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "claim": "S2基板定位DoWork调用System2ObjectVision后未使用其bool结果，随后返回Success；动作成功、识别结果存在、IsVisioned和工序完成需要分开解释。离线分支仅置IsVisioned。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "S2_SUBSTRATE_ACTION",
+          "start_line": 58,
+          "end_line": 98
+        },
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 267,
+          "end_line": 285
+        }
+      ]
+    },
+    {
+      "id": "P11",
+      "claim": "S2拍照目标从对象局部转G0后减HeadToCameraOffset；识别点经相机标定和拍照位置转换，再加HeadToCameraOffset、转回对象局部并SaveInfo。S1使用独立的相机/测高参考差转换，不套用S2偏移公式。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 444,
+          "end_line": 465
+        },
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 574,
+          "end_line": 584
+        },
+        {
+          "source_id": "BOND_VISION_CONTROLLER",
+          "start_line": 652,
+          "end_line": 662
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 229,
+          "end_line": 243
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 345,
+          "end_line": 356
+        },
+        {
+          "source_id": "DISPENSE_CONTROLLER",
+          "start_line": 262,
+          "end_line": 277
+        },
+        {
+          "source_id": "DISPENSE_CONTROLLER",
+          "start_line": 791,
+          "end_line": 802
+        }
+      ]
+    },
+    {
+      "id": "U01",
+      "claim": "上视DoWork在AccuracyMode为Off、选用BondCamera或离线模式时提前成功返回；DryCycle走独立动作。IsDoWork另外检查焊点参与范围和本工序字典。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 131,
+          "end_line": 162
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 520,
+          "end_line": 538
+        }
+      ]
+    },
+    {
+      "id": "U02",
+      "claim": "正常成功路径中，上视单点快速模式采1次，单点普通模式先采角度、旋转后再采位置；双点快速模式采P1/P2两次，双点普通模式在旋转前后各采P1/P2，共4次。不含重取、二维码或其他附加拍照。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 207,
+          "end_line": 430
+        }
+      ]
+    },
+    {
+      "id": "U03",
+      "claim": "快速上视的偏移为标定后的识别位移，减去按负角度差旋转后的示教中心距离，再加本次轴位置减玻璃上视参考；双点对两次位移和两次轴位置分别求均值。ComponentAngleOffSet保存单点识别角或双点均角，单位为度。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 228,
+          "end_line": 249
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 341,
+          "end_line": 366
+        },
+        {
+          "source_id": "UPLOOK_MODULE",
+          "start_line": 69,
+          "end_line": 75
+        }
+      ]
+    },
+    {
+      "id": "U04",
+      "claim": "普通上视先按识别角、焊点全局角与硬补偿旋转T轴，再用旋转后识别位置计算ComponentOffSet；ComponentAngleOffSet写为负的焊点全局角加硬补偿之和。镜像时实际旋转的bpAngle另取180减硬补偿，算例只采用非镜像。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 255,
+          "end_line": 292
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 368,
+          "end_line": 429
+        }
+      ]
+    },
+    {
+      "id": "U05",
+      "claim": "正常识别结果在GetMatchResultByConfig中被原地改写：关闭X用1224，关闭Y用1024，关闭角度用0；不能把UseX/UseY关闭解释为物理位移直接置零。上视和中转台人工OK出口直接返回人工match，绕过后方这一步。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "RUN_TIME",
+          "start_line": 415,
+          "end_line": 432
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 1591,
+          "end_line": 1608
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 594,
+          "end_line": 596
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 697,
+          "end_line": 701
+        }
+      ]
+    },
+    {
+      "id": "U06",
+      "claim": "上视识别失败的自动跳过或人工重取，会执行抛料、拒收计数、按浸胶模式选择重置动作消息并返回Retry；BondTask收到Retry继续循环，不标记当前消息完成。人工OK和Abort有独立出口。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 1410,
+          "end_line": 1592
+        },
+        {
+          "source_id": "ACTION_CONTROLLER",
+          "start_line": 1099,
+          "end_line": 1115
+        },
+        {
+          "source_id": "BOND_TASK",
+          "start_line": 232,
+          "end_line": 319
+        }
+      ]
+    },
+    {
+      "id": "U07",
+      "claim": "上视主流程的几何结果先保存，随后还执行温漂流程；温漂失败可返回Abort，成功则把漂移量写TpMarkCompensate并累加到ComponentOffSet。不能把前面已写字段当作整个动作成功凭据。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 485,
+          "end_line": 501
+        }
+      ]
+    },
+    {
+      "id": "I01",
+      "claim": "中转台流程先准备当前焊点、吸嘴与速度；AccuracyMode为Off或选上视相机则提前返回。正常路径依次放片、拍照、计算修正取片位、移动并重新取片。该DoWork没有与上视相同的离线提前返回分支。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_PROVIDER",
+          "start_line": 33,
+          "end_line": 47
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 136,
+          "end_line": 270
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 375,
+          "end_line": 418
+        }
+      ]
+    },
+    {
+      "id": "I02",
+      "claim": "中转台单点的旋转角为负识别角减示教下视角；双点使用识别角均值。芯片中心由示教中心绕示教Mark或Mark中点旋转，再加本次识别点或识别中点的位移得到；取片G0位置再加头相机差、减按新取片角求得的吸嘴偏心。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 276,
+          "end_line": 360
+        },
+        {
+          "source_id": "NOZZLE_CONTROLLER",
+          "start_line": 970,
+          "end_line": 992
+        }
+      ]
+    },
+    {
+      "id": "I03",
+      "claim": "P1拍照位先从G0转轴坐标再减头相机差，P2使用另一条G0移动路径；IPTPickPos由最终取片轴位置转换回G0保存。后续配图必须标出每个量的参考系，不能用一组相同名称掩盖两种位置。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 244,
+          "end_line": 251
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 313,
+          "end_line": 325
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 375,
+          "end_line": 389
+        }
+      ]
+    },
+    {
+      "id": "I04",
+      "claim": "中转台记录的SubstrateCameraCompensate用于结果统计；当前CalculateBondPos没有直接把它作为取片位置叠加。双点统计表达式在P2处重新换算P1结果，未复用前面缓存的realPoint3D1；必须分别看待几何中心计算与该统计字段。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 313,
+          "end_line": 366
+        },
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 498,
+          "end_line": 629
+        },
+        {
+          "source_id": "AFTER_BOND_CHECK",
+          "start_line": 564,
+          "end_line": 586
+        }
+      ]
+    },
+    {
+      "id": "I05",
+      "claim": "中转台视觉失败的Ignore出口会回原放片位取回、抛料并重置相关动作返回Retry，不等于按失败识别点继续贴装。重新取片后的真空检测中，Retry跳到RePick标签，该标签位于Pick调用之后；不能仅按按钮“重取”二字把它画成再次执行Pick。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 546,
+          "end_line": 683
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 409,
+          "end_line": 483
+        }
+      ]
+    },
+    {
+      "id": "C01",
+      "claim": "贴装的T目标为当前T加ComponentAngleOffSet、焊点全局角及硬补偿；上视分支按尚需旋转角旋转ComponentOffSet后取XY叠加。产品局部硬补偿先经父链变到G0。此处只是纠偏输出的使用入口，不扩展为独立TU连接设计。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 498,
+          "end_line": 576
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "claim": "中转台相机分支先减新T角下的吸嘴偏心，再调用实时补偿；调用顺序实际为IPTVisionPos、IPTPickPos，而被调方法首二参数名为iptPickPos、iptVisionPos。保留实际位置顺序，不能仅按参数名改写。该方法关闭时返回零，成功只返回X，超过0.5的XY阈值时返回零。返回值在G0目标转轴坐标之后追加；RealBondPoint3D记录发生在这次追加之前。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 550,
+          "end_line": 568
+        },
+        {
+          "source_id": "REAL_TIME_CORRECTION",
+          "start_line": 149,
+          "end_line": 201
+        },
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 588,
+          "end_line": 593
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "claim": "同一芯片工序的编排可以同时包含上视与中转台动作名，各动作内部根据相机配置选择实际执行；动作名单出现某名称不等于它必然拍照。重做仅把匹配地址和工序的动作消息Finished改false。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "ACTION_CONTROLLER",
+          "start_line": 715,
+          "end_line": 853
+        },
+        {
+          "source_id": "ACTION_CONTROLLER",
+          "start_line": 1099,
+          "end_line": 1139
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "claim": "芯片定位输入来自芯片载具配置的AdjustConfig；它与产品层级定位的LocateConfig分别定义。前者有两组PR与中心距离/角度等数据，后者有1至4点及分轴选择等数据；不共用一张无坐标含义的“定位参数表”。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "ADJUST_CONFIG",
+          "start_line": 33,
+          "end_line": 135
+        },
+        {
+          "source_id": "CHIP_CONFIG",
+          "start_line": 472,
+          "end_line": 505
+        },
+        {
+          "source_id": "LOCATE_CONFIG",
+          "start_line": 22,
+          "end_line": 196
+        }
+      ]
+    }
+  ],
+  "normal_paths": [
+    {
+      "flow": "产品层级定位",
+      "steps": [
+        "动作检查本层配置、参与范围和当前定位标记",
+        "按P1至配置点数逐点移动、识别和保存局部/G0结果",
+        "TwoPoints路径按本侧实际分支执行距离检查",
+        "分别选X、Y、角度结果，应用两点定角或前三点圆心分支",
+        "以新旧锚点和角度更新当前对象坐标，成功后置IsVisioned"
+      ],
+      "claim_ids": [
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11"
+      ]
+    },
+    {
+      "flow": "上视芯片纠偏",
+      "steps": [
+        "工序检查后由精度、相机和运行模式决定是否执行",
+        "按快速/普通模式准备拍照T角与吸嘴高度",
+        "单点/双点采集，普通模式在旋转后再采集",
+        "保存ComponentOffSet及模式相关的ComponentAngleOffSet",
+        "温漂流程成功后附加漂移量；后续贴装按剩余旋转角转动偏移向量"
+      ],
+      "claim_ids": [
+        "U01",
+        "U02",
+        "U03",
+        "U04",
+        "U05",
+        "U06",
+        "U07",
+        "C01"
+      ]
+    },
+    {
+      "flow": "中转台芯片纠偏",
+      "steps": [
+        "准备当前焊点、吸嘴与速度，按模式和相机决定是否执行",
+        "按中转台位置与吸嘴偏心放下芯片",
+        "P1或P1/P2识别，计算芯片中心及新的取片T角",
+        "用芯片中心、头相机差和新角度下的吸嘴偏心计算取片位",
+        "转轴坐标并重新取片；保存IPT位置用于后续实时补偿及统计"
+      ],
+      "claim_ids": [
+        "I01",
+        "I02",
+        "I03",
+        "I04",
+        "I05",
+        "C02"
+      ]
+    }
+  ],
+  "mode_matrix": [
+    {
+      "mode": "上视单点快速",
+      "successful_geometry_acquisitions": 1,
+      "axis_rotation_before_second_capture": false,
+      "angle_record": "首次识别Angle（度）",
+      "claim_ids": [
+        "U02",
+        "U03"
+      ]
+    },
+    {
+      "mode": "上视单点普通",
+      "successful_geometry_acquisitions": 2,
+      "axis_rotation_before_second_capture": true,
+      "angle_record": "-(焊点全局角度+硬补偿)，角度为度；镜像旋转分支另核对",
+      "claim_ids": [
+        "U02",
+        "U04"
+      ]
+    },
+    {
+      "mode": "上视双点快速",
+      "successful_geometry_acquisitions": 2,
+      "axis_rotation_before_second_capture": false,
+      "angle_record": "两次识别Angle的算术均值（度）",
+      "claim_ids": [
+        "U02",
+        "U03"
+      ]
+    },
+    {
+      "mode": "上视双点普通",
+      "successful_geometry_acquisitions": 4,
+      "axis_rotation_before_second_capture": true,
+      "angle_record": "-(焊点全局角度+硬补偿)，角度为度；镜像旋转分支另核对",
+      "claim_ids": [
+        "U02",
+        "U04"
+      ]
+    },
+    {
+      "mode": "中转台单点",
+      "successful_geometry_acquisitions": 1,
+      "angle_record": "识别Angle；取片T=当前T-Angle",
+      "claim_ids": [
+        "I02"
+      ]
+    },
+    {
+      "mode": "中转台双点",
+      "successful_geometry_acquisitions": 2,
+      "angle_record": "识别Angle均值；取片T=当前T-均值",
+      "claim_ids": [
+        "I02"
+      ]
+    }
+  ],
+  "field_notes": [
+    {
+      "field": "LocateResultInfo.P1Info至P4Info",
+      "owner": "当前产品层级对象的BaseInfo",
+      "writes": "每点SaveInfo保存识别量、对象局部点、G0点和拍照位置；UpdateEntity仅把四张Bitmap置null",
+      "claim_ids": [
+        "P07",
+        "P11"
+      ]
+    },
+    {
+      "field": "BondPositionInfo.ComponentOffSet",
+      "initial": "new AKRSPoint3D()",
+      "writes": "上视计算芯片相对旋转中心的偏移，成功温漂后还会累加漂移",
+      "reads": "贴装上视分支按尚需旋转角旋转后叠加XY",
+      "claim_ids": [
+        "U03",
+        "U04",
+        "U07",
+        "C01"
+      ]
+    },
+    {
+      "field": "BondPositionInfo.ComponentAngleOffSet",
+      "initial": "0",
+      "units": "度",
+      "meaning": "与模式相关；快速上视/中转台保存识别角，普通上视保存目标角抵消量，不能给所有模式同一个简写含义",
+      "claim_ids": [
+        "U03",
+        "U04",
+        "I02",
+        "C01"
+      ]
+    },
+    {
+      "field": "IPTVisionPos／IPTP2VisionPos／IPTPickPos",
+      "initial": "未显式初始化，默认为null",
+      "meaning": "分别在拍照与最终取片计算时写入；P1、P2采用不同移动接口，需结合实际转换过程说明坐标含义",
+      "claim_ids": [
+        "I03",
+        "C02"
+      ]
+    },
+    {
+      "field": "SubstrateCameraCompensate",
+      "initial": "new AKRSPoint3D()",
+      "meaning": "与实际修正取片位分开；在焊后统计中读取",
+      "claim_ids": [
+        "I04"
+      ]
+    },
+    {
+      "field": "WorkMessages.Finished",
+      "meaning": "重取时重置匹配动作消息；Retry不把当前动作消息标成完成；不等同于产品工序字典",
+      "claim_ids": [
+        "U06",
+        "C03"
+      ]
+    }
+  ],
+  "formula_notes": [
+    {
+      "id": "F01",
+      "formula": "oldAnchor.x=mean(启用X的示教点X)，newAnchor.x=mean(同组识别局部点X)；Y独立选择；无启用项则为0",
+      "claim_ids": [
+        "P02"
+      ]
+    },
+    {
+      "id": "F02",
+      "formula": "deltaAngle=-mean(选中MatchResult.Angle)*pi/180-upperGlobalAngle；两点定角分支替换为atan(newLineAngle-oldLineAngle)-upperGlobalAngle",
+      "claim_ids": [
+        "P03",
+        "P04"
+      ]
+    },
+    {
+      "id": "F03",
+      "formula": "Uold=Forward(oldAnchor)，Unew=Forward(newAnchor)，shift=Unew-Uold，Dnew=R(deltaAngle)*(Dold+shift-Unew)+Unew；thetaNew=thetaOld+deltaAngle",
+      "constraints": "该算例采用General平面旋转；Z按源码单独相加；R为公式规定的标准旋转矩阵，不能只信旋转帮助方法的中文注释",
+      "claim_ids": [
+        "P06"
+      ]
+    },
+    {
+      "id": "F04",
+      "formula": "quickOffset=mean(machinePos)-glassReference+mean(calibratedPixelDistance)-R(-(mean(matchAngle)-taughtCenterAngle))*taughtCenterDistance",
+      "units": "像素先经过标定；公式中的旋转角需由度转弧度；machinePos与glassReference按源码处于同类轴坐标",
+      "claim_ids": [
+        "U03"
+      ]
+    },
+    {
+      "id": "F05",
+      "formula": "normalOffset=mean(postRotationMachinePos)-glassReference+mean(postRotationCalibratedPixelDistance)-taughtCenterDistance",
+      "claim_ids": [
+        "U04"
+      ]
+    },
+    {
+      "id": "F06",
+      "formula": "iptCenter=R(-(mean(matchAngle)+taughtDownlookAngle))*(taughtChipCenter-taughtMarkCenter)+recognizedMarkCenter；pickG0=iptCenter+headCameraOffset-nozzleOffset(newPickAngle)",
+      "constraints": "旋转角由度转弧度；单点中心取P1，双点分别取示教Mark与识别Mark中点；吸嘴偏心是接口返回输入",
+      "claim_ids": [
+        "I02"
+      ]
+    },
+    {
+      "id": "F07",
+      "formula": "nextT=currentT+ComponentAngleOffSet+bondGlobalAngle+hardBondAngle；uplookXY=R(nextT-currentT)*ComponentOffSet",
+      "constraints": "此处T为度，旋转前转弧度；只列上视输出使用分支，其他补偿项不能在完整贴装公式中省略",
+      "claim_ids": [
+        "C01"
+      ]
+    }
+  ],
+  "arithmetic_file": "arithmetic-examples.json",
+  "drawing_requirements": [
+    {
+      "purpose": "让两类读者分清修正对象与结果归属",
+      "content": "产品定位更新对象坐标；上视保存旋转中心偏移；中转台修正重取位置",
+      "claim_ids": [
+        "P07",
+        "U03",
+        "I02"
+      ],
+      "production": "概念插画可用生图；结果、数量和标签按源码审查"
+    },
+    {
+      "purpose": "看懂上视不同模式为什么拍摄次数不同",
+      "content": "单点/双点与快速/普通四种模式下，分别显示采集、旋转与写回的实际顺序",
+      "claim_ids": [
+        "U02",
+        "U04"
+      ],
+      "production": "精确时序图；按四种模式分别展示，不靠概念插画表达调用顺序"
+    },
+    {
+      "purpose": "看懂旋转如何改变中心偏移",
+      "content": "示教视觉中心、芯片中心、轴旋转中心、负角度差与残余旋转角；公式与算例一致",
+      "claim_ids": [
+        "U03",
+        "I02",
+        "C01"
+      ],
+      "production": "精确坐标图和对照图，标清单位与旋转方向；生图只能辅助空间理解"
+    },
+    {
+      "purpose": "看懂产品定位的点数与分轴选择",
+      "content": "P1至P4的X、Y、角度独立选择；前三点圆心分支；实际P4角度开关边界",
+      "claim_ids": [
+        "P01",
+        "P02",
+        "P03",
+        "P05"
+      ],
+      "production": "矩阵与位置示意图；不得把当前实现改画为四点刚体拟合"
+    },
+    {
+      "purpose": "避免把不同层级的Retry和Ignore混为一谈",
+      "content": "域层对点、芯片抛料重取、任务消息复位、动作返回值和产品标记分别列状态",
+      "claim_ids": [
+        "P08",
+        "P09",
+        "P10",
+        "U06",
+        "I05"
+      ],
+      "production": "分层异常流程图，引用真实返回值"
+    }
+  ],
+  "remaining_before_formal_authoring": [
+    "先取得TU分册验收结论；若要求修改TU，优先完成具体意见",
+    "报警对话框内部的手动对点实现、机器配置下的完整移动变体以及中断后的资源收尾尚未全部展开；本次只确认所列调用点和返回分支",
+    "相机标定矩阵、实际配方数值和吸嘴标定属于运行上下文；本轮算例使用明确给定的说明输入，没有复现设备标定",
+    "镜像普通上视的实际T旋转与保存角度不是同一表达式，需在对应示例中单列，不从非镜像算例推断",
+    "中转台P1/P2参考系转换次序、实时补偿实参与形参名顺序应在后续接口表和算例中明确，不能在写作时悄悄对调",
+    "正式图稿、Word/PDF正文、全页排版校样、双读者阅读验收和两册整体出版验收均尚未完成"
+  ]
+}
