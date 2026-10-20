@@ -6,6 +6,7 @@ import { FlowDiagram } from './FlowDiagram';
 import { createContentParser } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
 import { remarkRecordAnswer } from '../lib/recordAnswerPresentation';
+import { SourceReference } from './SourceReference';
 
 const answerPlugins = [remarkRecordAnswer];
 type Context = Pick<ComponentProps<typeof Markdown>, 'runId' | 'sourceId'>;
@@ -26,23 +27,12 @@ const TextBlock = memo(function TextBlock({
   );
 });
 
-// 引用只先展示数据；证据匹配后才允许打开原源码查看器。
-function SourceReference({ source }: { source: SourcePointer }) {
-  return (
-    <span className="rich-source-unverified" title={source.path}>
-      {source.path.split('/').at(-1)}:{source.start_line}
-      {source.end_line && source.end_line !== source.start_line ? `–${source.end_line}` : ''} ·
-      未核实
-    </span>
-  );
-}
-
 const Block = memo(function Block({ block, runId, sourceId }: Context & { block: ContentBlock }) {
   const renderText = (content: string) => (
     <TextBlock content={content} runId={runId} sourceId={sourceId} />
   );
   const renderSource = (source: SourcePointer, key: string) => (
-    <SourceReference key={key} source={source} />
+    <SourceReference key={key} source={source} runId={runId} sourceId={sourceId} />
   );
   switch (block.type) {
     case 'text':

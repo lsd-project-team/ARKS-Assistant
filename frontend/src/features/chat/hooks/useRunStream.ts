@@ -56,6 +56,9 @@ export function useRunStream(run: Run | undefined) {
     );
     const listen = events.listen;
     listen('token', (payload) => buffer.token(payload.text));
+    listen('source_evidence', () => {
+      void cache.invalidateQueries({ queryKey: ['source-evidence', projectId, run.id] });
+    });
     listen('knowledge_reference', (payload) =>
       setReferences((previous) => [...previous, payload as unknown as KnowledgeReference]),
     );

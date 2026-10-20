@@ -39,7 +39,7 @@ const result = await build({
         builder.onResolve(
           {
             filter:
-              /(state\/store|api\/client|hooks\/useSourceCitation|components\/(MaterialViewer|HandoverMaterialViewer))$/,
+              /(state\/store|api\/client|hooks\/useSourceCitation|components\/(MaterialViewer|HandoverMaterialViewer|SelectionPreview))$/,
           },
           (args) => ({ path: args.path, namespace: 'boundary' }),
         );
@@ -50,8 +50,8 @@ const result = await build({
             : path.endsWith('client')
               ? 'export const api = () => {throw new Error("测试禁止网络")};'
               : path.endsWith('useSourceCitation')
-                ? 'export const useSourceCitation = () => () => false;'
-                : 'export const MaterialViewer = () => null; export const HandoverMaterialViewer = () => null;',
+                ? 'export const useSourceCitation = () => () => false; export const readCitationSource = () => { throw new Error("测试禁止网络"); };'
+                : 'export const MaterialViewer = () => null; export const HandoverMaterialViewer = () => null; export const SelectionPreview = () => null;',
         }));
       },
     },
@@ -63,8 +63,22 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module,
   module.exports,
 );
-const render = (content) =>
-  renderToStaticMarkup(createElement(module.exports.AnswerMarkdown, { content }));
+const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
+const render = (content, evidence = []) => {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  client.setQueryData(['source-evidence', 'p', 'r'], { source_evidence: evidence });
+  try {
+    return renderToStaticMarkup(
+      createElement(
+        QueryClientProvider,
+        { client },
+        createElement(module.exports.AnswerMarkdown, { content, runId: 'r' }),
+      ),
+    );
+  } finally {
+    client.clear();
+  }
+};
 const fixture = await readFile(new URL('./fixtures/rich-content.json', import.meta.url), 'utf8');
 
 test('真实助手 Renderer 将所有白名单块和 Markdown 交错渲染', () => {

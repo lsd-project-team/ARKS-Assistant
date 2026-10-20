@@ -25,7 +25,7 @@ export function RunArchive({
           onContext={() => onContext(run.id)}
         />
       )}
-      {run.answer && <AnswerMarkdown content={run.answer} />}
+      {run.answer && <AnswerMarkdown content={run.answer} runId={run.id} />}
       <button onClick={() => onContext(run.id)}>查看当时的上下文</button>
     </details>
   ));

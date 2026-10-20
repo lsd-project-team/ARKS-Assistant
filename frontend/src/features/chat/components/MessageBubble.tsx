@@ -24,6 +24,7 @@ import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { MaterialEditor } from '../../projects/components/MaterialEditor';
 import { RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { InlineQuestionEditor } from './InlineQuestionEditor';
+import { contentToMarkdown } from '../rich/contentToMarkdown';
 
 export function MessageBubble({
   message,
@@ -60,7 +61,9 @@ export function MessageBubble({
   const Content = message.role === 'assistant' ? AnswerMarkdown : Markdown;
   async function copy() {
     try {
-      await navigator.clipboard.writeText(message.content);
+      await navigator.clipboard.writeText(
+        message.role === 'assistant' ? contentToMarkdown(message.content) : message.content,
+      );
       setCopied(true);
       toast('回复已复制');
       setError(undefined);
@@ -244,7 +247,7 @@ export function MessageBubble({
       {savingConclusion && project.data && (
         <MaterialEditor
           projectId={project.data.id}
-          initialContent={message.content}
+          initialContent={contentToMarkdown(message.content)}
           kind="conclusion"
           originMessageId={message.id}
           onClose={() => setSavingConclusion(false)}
