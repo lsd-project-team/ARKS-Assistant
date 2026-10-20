@@ -1,42 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1110" viewBox="0 0 2400 1110"><rect width="100%" height="100%" fill="white"/>
-<rect x="25" y="30" width="2350" height="285" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="130" y="172" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">配方</text>
-<rect x="25" y="380" width="2350" height="285" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="130" y="522" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">运行</text>
-<rect x="25" y="750" width="2350" height="285" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
-<text x="130" y="892" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">执行</text>
-<rect x="310" y="80" width="820" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="720.0" y="137.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">产品配置</text>
-<text x="720.0" y="205.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">结构 · 示教坐标 · 工艺参与</text>
-<rect x="1320" y="80" width="950" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1795.0" y="137.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">工序定义</text>
-<text x="1795.0" y="205.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">启用工序 · 工序名 · 焊点名</text>
-<rect x="310" y="435" width="820" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="720.0" y="492.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">TU → 基板 → 基岛 → 焊点</text>
-<text x="720.0" y="560.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">每层坐标与Info；焊点保存步骤</text>
-<rect x="1320" y="435" width="950" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1795.0" y="492.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">区段程式持有当前TU</text>
-<text x="1795.0" y="560.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">来料 · 引用交接 · 几何刷新</text>
-<rect x="310" y="805" width="820" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
-<text x="720.0" y="862.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">动作控制器</text>
-<text x="720.0" y="930.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">展开工作消息 · 解析当前对象</text>
-<rect x="1320" y="805" width="950" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1795.0" y="862.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">具体动作与任务</text>
-<text x="1795.0" y="930.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">条件判断 · 执行 · 结果写回</text>
-<polyline points="700,255 700,435" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="700,435 689.9957927154417,414.28971664588846 710.0042072845583,414.28971664588846" fill="#4d6070"/>
-<text x="1030" y="345" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">配置展开</text>
-<polyline points="1795,255 1795,340 1200,340 1200,720 700,720 700,805" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="700,805 689.9957927154417,784.2897166458885 710.0042072845583,784.2897166458885" fill="#4d6070"/>
-<text x="1820" y="340" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">工序编排</text>
-<polyline points="1320,520 1130,520" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="1130,520 1150.7102833541117,509.9957927154417 1150.7102833541117,530.0042072845583" fill="#4d6070"/>
-<polyline points="720,805 720,610" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="720,610 730.0042072845583,630.7102833541115 709.9957927154417,630.7102833541115" fill="#4d6070"/>
-<text x="1045" y="680" fill="#162e43" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">查询／注入</text>
-<polyline points="1130,895 1320,895" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="1320,895 1299.2897166458883,905.0042072845583 1299.2897166458883,884.9957927154417" fill="#4d6070"/>
-<polyline points="2270,895 2330,895 2330,680 1130,680 1130,610" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="1130,610 1140.0042072845583,630.7102833541115 1119.9957927154417,630.7102833541115" fill="#4d6070"/>
-<text x="1920" y="690" fill="#162e43" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">读取位置／写回结果</text>
-<text x="1200" y="1060" fill="#4d6070" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">TuService辅助结构展开、索引换算、坐标建立与状态映射</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1150" viewBox="0 0 2400 1150"><rect width="100%" height="100%" fill="white"/>
+<text x="370.0" y="70" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">定义输入</text>
+<text x="1200.0" y="70" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">产品与动作入口</text>
+<text x="2030.0" y="70" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">执行与流转</text>
+<rect x="90" y="170" width="560" height="250" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="370.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">产品配置</text>
+<text x="370.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">产品层级与示教坐标</text>
+<text x="370.0" y="365" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">工艺参与范围</text>
+<rect x="920" y="170" width="560" height="250" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">TU 产品树</text>
+<text x="1200.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">每层坐标与独立Info</text>
+<text x="1200.0" y="365" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">焊点保存步骤</text>
+<rect x="1750" y="170" width="560" height="250" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="2030.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">具体动作与任务</text>
+<text x="2030.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">按条件执行</text>
+<text x="2030.0" y="365" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">读取位置与写回结果</text>
+<rect x="90" y="660" width="560" height="250" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="370.0" y="722" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">工序定义</text>
+<text x="370.0" y="797" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">工序名与焊点名</text>
+<text x="370.0" y="855" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">工序启用条件</text>
+<rect x="920" y="660" width="560" height="250" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="722" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">动作控制器</text>
+<text x="1200.0" y="797" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">展开工作消息</text>
+<text x="1200.0" y="855" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">解析当前对象</text>
+<rect x="1750" y="660" width="560" height="250" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="2030.0" y="722" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">区段程式</text>
+<text x="2030.0" y="797" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">当前TU产品引用</text>
+<text x="2030.0" y="855" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">来料交接与刷新</text>
+<polyline points="650,270 920,270" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="920,270 899.2897166458885,280.0042072845583 899.2897166458885,259.9957927154417" fill="#315d82"/>
+<text x="785" y="215" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">配置展开</text>
+<polyline points="1480,255 1750,255" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1750,255 1729.2897166458883,265.0042072845583 1729.2897166458883,244.9957927154417" fill="#315d82"/>
+<text x="1615" y="205" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">读取位置</text>
+<polyline points="1750,315 1480,315" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1480,315 1500.7102833541117,304.9957927154417 1500.7102833541117,325.0042072845583" fill="#315d82"/>
+<text x="1615" y="365" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">写回记录</text>
+<polyline points="650,760 920,760" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="920,760 899.2897166458885,770.0042072845583 899.2897166458885,749.9957927154417" fill="#315d82"/>
+<text x="785" y="705" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">工序编排</text>
+<polyline points="1200,660 1200,420" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1200,420 1210.0042072845583,440.71028335411154 1189.9957927154417,440.71028335411154" fill="#315d82"/>
+<text x="1410" y="535" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">查询与注入</text>
+<polyline points="1480,760 1615,760 1615,490 2030,490 2030,420" fill="none" stroke="#c58737" stroke-width="4"/>
+<polygon points="2030,420 2040.0042072845583,440.71028335411154 2019.9957927154417,440.71028335411154" fill="#c58737"/>
+<text x="1880" y="465" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">任务执行动作</text>
+<polyline points="2030,910 2030,965 1200,965 1200,910" fill="none" stroke="#5a6e7f" stroke-width="4"/>
+<polygon points="1200,910 1210.0042072845583,930.7102833541115 1189.9957927154417,930.7102833541115" fill="#5a6e7f"/>
+<text x="1645" y="1030" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">区段提供当前产品入口</text>
+<text x="1200" y="1110" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">TuService提供结构展开、坐标建立和工艺状态映射</text></svg>

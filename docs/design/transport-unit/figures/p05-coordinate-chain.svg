@@ -1,30 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1080" viewBox="0 0 2400 1080"><rect width="100%" height="100%" fill="white"/>
-<rect x="40" y="150" width="710" height="220" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="395.0" y="230.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">焊点局部</text>
-<text x="395.0" y="298.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(0, 0)</text>
-<rect x="835" y="150" width="710" height="220" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1190.0" y="230.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基岛中</text>
-<text x="1190.0" y="298.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(10, 5)</text>
-<rect x="1630" y="150" width="710" height="220" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1985.0" y="230.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板中</text>
-<text x="1985.0" y="298.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(20, 10)</text>
-<rect x="1630" y="650" width="710" height="220" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1985.0" y="730.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">TU中</text>
-<text x="1985.0" y="798.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(40, 10)</text>
-<rect x="835" y="650" width="710" height="220" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1190.0" y="730.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">G0中</text>
-<text x="1190.0" y="798.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(90, 240)</text>
-<polyline points="750,260 835,260" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="835,260 814.2897166458885,270.0042072845583 814.2897166458885,249.9957927154417" fill="#4d6070"/>
-<text x="795" y="90" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">A点平移</text>
-<polyline points="1545,260 1630,260" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="1630,260 1609.2897166458883,270.0042072845583 1609.2897166458883,249.9957927154417" fill="#4d6070"/>
-<text x="1590" y="90" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">岛2平移</text>
-<polyline points="1985,370 1985,650" fill="none" stroke="#4d6070" stroke-width="4"/>
-<polygon points="1985,650 1974.9957927154417,629.2897166458885 1995.0042072845583,629.2897166458885" fill="#4d6070"/>
-<text x="1985" y="515" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">基板1平移 (20, 0)</text>
-<polyline points="1630,760 1545,760" fill="none" stroke="#b65f17" stroke-width="5"/>
-<polygon points="1545,760 1565.7102833541117,749.9957927154417 1565.7102833541117,770.0042072845583" fill="#b65f17"/>
-<text x="1200" y="565" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">TU：旋转90°，再平移(100, 200)</text>
-<text x="400" y="760" fill="#4d6070" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">长度单位 mm</text>
-<text x="1200" y="1000" fill="#4d6070" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">Transport到G0在本例中为零平移、零角度；各下层角度为0</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="790" viewBox="0 0 2400 790"><rect width="100%" height="100%" fill="white"/>
+<rect x="60" y="170" width="360" height="245" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="240.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">焊点局部</text>
+<text x="240.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(0, 0)</text>
+<rect x="540" y="170" width="360" height="245" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="720.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">基岛中</text>
+<text x="720.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(10, 5)</text>
+<rect x="1020" y="170" width="360" height="245" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">基板中</text>
+<text x="1200.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(20, 10)</text>
+<rect x="1500" y="170" width="360" height="245" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1680.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">TU 中</text>
+<text x="1680.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(40, 10)</text>
+<rect x="1980" y="170" width="360" height="245" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="2160.0" y="232" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">G0 中</text>
+<text x="2160.0" y="307" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(90, 240)</text>
+<polyline points="420,292 540,292" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="540,292 519.2897166458885,302.0042072845583 519.2897166458885,281.9957927154417" fill="#315d82"/>
+<polyline points="900,292 1020,292" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1020,292 999.2897166458885,302.0042072845583 999.2897166458885,281.9957927154417" fill="#315d82"/>
+<polyline points="1380,292 1500,292" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1500,292 1479.2897166458883,302.0042072845583 1479.2897166458883,281.9957927154417" fill="#315d82"/>
+<polyline points="1860,292 1980,292" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1980,292 1959.2897166458883,302.0042072845583 1959.2897166458883,281.9957927154417" fill="#315d82"/>
+<text x="480" y="535" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">焊点平移</text>
+<text x="480" y="601" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(10, 5)</text>
+<text x="960" y="535" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">基岛2平移</text>
+<text x="960" y="601" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(10, 5)</text>
+<text x="1440" y="535" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">基板1平移</text>
+<text x="1440" y="601" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">(20, 0)</text>
+<text x="1920" y="535" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">TU 旋转90°</text>
+<text x="1920" y="601" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">再平移(100, 200)</text>
+<text x="1200" y="725" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">各步使用直接父坐标   长度单位 mm   本例 Z 恒为0</text></svg>

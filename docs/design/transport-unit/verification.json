@@ -1,5 +1,5 @@
 {
-  "revision": "3.1",
+  "revision": "4.0",
   "date": "2026-10-20",
   "page_count": 34,
   "source_baseline_verified": true,
@@ -89,11 +89,11 @@
       },
       {
         "title": "5 对象构建与初始化设计",
-        "page": 15
+        "page": 14
       },
       {
         "title": "5.1 创建一棵可使用的运行树",
-        "page": 15
+        "page": 14
       },
       {
         "title": "5.2 常规布局的展开与配置整理",
@@ -299,11 +299,11 @@
       },
       {
         "title": "5 对象构建与初始化设计",
-        "page": 15
+        "page": 14
       },
       {
         "title": "5.1 创建一棵可使用的运行树",
-        "page": 15
+        "page": 14
       },
       {
         "title": "5.2 常规布局的展开与配置整理",
@@ -550,18 +550,17 @@
     ],
     "linked_reference_targets_valid": true,
     "all_fonts_embedded": {
-      "/BCDEEE+Calibri": true,
+      "/BCDEEE+MicrosoftYaHei": true,
       "/BCDFEE+MicrosoftYaHei": true,
-      "/BCDGEE+MS-Gothic": true,
-      "/BCDHEE+Calibri": true,
+      "/BCDGEE+MicrosoftYaHei-Bold": true,
+      "/BCDHEE+MicrosoftYaHei-Bold": true,
       "/BCDIEE+SimSun": true,
       "/BCDJEE+TimesNewRomanPSMT": true,
-      "/BCDKEE+SimHei": true,
-      "/BCDLEE+Cambria": true,
-      "/BCDMEE+ArialMT": true,
-      "/BCDNEE+TimesNewRomanPSMT": true,
-      "/BCDOEE+TimesNewRomanPS-BoldMT": true,
-      "/BCDPEE+CambriaMath": true
+      "/BCDKEE+Cambria": true,
+      "/BCDLEE+Arial-BoldMT": true,
+      "/BCDMEE+TimesNewRomanPSMT": true,
+      "/BCDNEE+TimesNewRomanPS-BoldMT": true,
+      "/BCDOEE+CambriaMath": true
     },
     "figures_have_alt_text": true,
     "tables_repeat_header": true,
@@ -614,10 +613,10 @@
         "page": 6,
         "pixels": [
           2400,
-          1110
+          1150
         ],
-        "display_inches": 6.5496,
-        "effective_dpi": 366.44
+        "display_inches": 6.5493,
+        "effective_dpi": 366.45
       },
       {
         "file": "figures/p03-config-instance.png",
@@ -634,30 +633,30 @@
         "page": 9,
         "pixels": [
           2400,
-          1030
-        ],
-        "display_inches": 6.5486,
-        "effective_dpi": 366.49
-      },
-      {
-        "file": "figures/p05-coordinate-chain.png",
-        "page": 13,
-        "pixels": [
-          2400,
           1080
         ],
         "display_inches": 6.5494,
         "effective_dpi": 366.44
       },
       {
+        "file": "figures/p05-coordinate-chain.png",
+        "page": 13,
+        "pixels": [
+          2400,
+          790
+        ],
+        "display_inches": 6.5485,
+        "effective_dpi": 366.5
+      },
+      {
         "file": "figures/p06-coordinate-geometry.png",
         "page": 13,
         "pixels": [
           2400,
-          1500
+          1470
         ],
-        "display_inches": 6.55,
-        "effective_dpi": 366.41
+        "display_inches": 6.5499,
+        "effective_dpi": 366.42
       },
       {
         "file": "figures/p07-build-sequence.png",
@@ -694,22 +693,33 @@
         "page": 18,
         "pixels": [
           2400,
-          1220
+          1290
         ],
-        "display_inches": 6.5492,
-        "effective_dpi": 366.46
+        "display_inches": 6.549,
+        "effective_dpi": 366.47
       },
       {
         "file": "figures/p10-progress.png",
         "page": 20,
         "pixels": [
           2400,
-          820
+          850
         ],
-        "display_inches": 6.5488,
-        "effective_dpi": 366.48
+        "display_inches": 6.549,
+        "effective_dpi": 366.47
       }
-    ]
+    ],
+    "heading_font_faces_in_actual_pdf": [
+      "BCDGEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei-Bold"
+    ],
+    "toc_font_faces_in_actual_pdf": [
+      "BCDEEE+MicrosoftYaHei",
+      "BCDFEE+MicrosoftYaHei",
+      "BCDGEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei-Bold"
+    ],
+    "heading_and_toc_font_fallback_absent": true
   },
   "review": {
     "technical": "逐条件复核S1创建、交接Refresh、S2有条件重建、步骤与消息区分；修正TU Index查询与控制器WorkIndex解析的区别，复核身份记录保留及S2当前对象缓存行为",
@@ -717,6 +727,7 @@
     "visual": "全部PDF页面渲染检查；改动页复查。详细校样记录见editorial-review.md",
     "render_pipeline": "独立隐藏Word COM更新目录、分页并原生导出PDF，启用PDF/A选项及字体嵌入；按原稿阅读顺序无损恢复原始PNG图像流；Poppler渲染校对。捆绑LibreOffice不可用。未执行第三方PDF/A合规认证。",
     "acceptance_audit": "acceptance-audit.md；本册待用户内容验收，纠偏分册待TU确认后编写",
+    "visual_revision": "统一标题中英文与编号字体，修复主题字体覆盖和内置目录样式；两幅生图精修，九幅工程图重新布局。对齐、留白、字体与原有技术含义同时复核。",
     "visual_pages_viewed": [
       1,
       2,
@@ -753,7 +764,7 @@
       33,
       34
     ],
-    "final_render_comparison": "34页校样逐页查看；最后两处源码引用更新后重新导出渲染，32页像素一致，第29、31页重新查看，未发现裁切、重叠或异常断行"
+    "final_render_comparison": "第4版全页重新渲染，标题与目录字体、各图及图表分页逐页视觉复查，详见editorial-review.md"
   },
   "limits": [
     "源码静态核查和独立算例复算，不包含设备生产或断电恢复试验",
@@ -761,16 +772,16 @@
   ],
   "files": {
     "TransportUnit设计文档.docx": {
-      "sha256": "cea7c24ecbe1d3ce950f86353bdc29b8e11de482a579a51e39d91ee8cd12b6f2",
-      "bytes": 7050947
+      "sha256": "e701eb53e1bc4f939dea5780d768af9103f8c6a11a76c8d0871c8b94c712e188",
+      "bytes": 6895362
     },
     "TransportUnit设计文档.pdf": {
-      "sha256": "d601cf6f0250a41ce44dcc825c34a9cac0ede0b6a7ddba8e070c1b276ece4a52",
-      "bytes": 4382577
+      "sha256": "4a5d35340a9a1b39f84c0f75739764360c6f91f867b2cb0be12b6731da4ee78e",
+      "bytes": 4218283
     },
     "TransportUnit设计文档.md": {
-      "sha256": "22d456d41cec02d45bbf77546d12a3ad6f278a38c8c1545390e4d761ef141020",
-      "bytes": 62778
+      "sha256": "092e4a051cc5c7ac198404f7afaa1b881e789adbd0269c8dc8d661333eea24c2",
+      "bytes": 62777
     }
   }
 }

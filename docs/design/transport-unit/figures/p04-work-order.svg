@@ -1,29 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1030" viewBox="0 0 2400 1030"><rect width="100%" height="100%" fill="white"/>
-<text x="1200" y="55" fill="#162e43" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central">LeftDownToRight + Snake</text>
-<rect x="150" y="180" width="490" height="215" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="395.0" y="257.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 4</text>
-<text x="395.0" y="325.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 6</text>
-<rect x="950" y="180" width="490" height="215" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1195.0" y="257.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 5</text>
-<text x="1195.0" y="325.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 5</text>
-<rect x="1750" y="180" width="490" height="215" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1995.0" y="257.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 6</text>
-<text x="1995.0" y="325.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 4</text>
-<rect x="150" y="560" width="490" height="215" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="395.0" y="637.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 1</text>
-<text x="395.0" y="705.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 1</text>
-<rect x="950" y="560" width="490" height="215" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1195.0" y="637.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 2</text>
-<text x="1195.0" y="705.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 2</text>
-<rect x="1750" y="560" width="490" height="215" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
-<text x="1995.0" y="637.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 3</text>
-<text x="1995.0" y="705.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 3</text>
-<polyline points="400,845 2330,845 2330,470 400,470" fill="none" stroke="#245b87" stroke-width="7"/>
-<polygon points="400,470 420.71028335411154,459.9957927154417 420.71028335411154,480.0042072845583" fill="#245b87"/>
-<polyline points="890,845 920,845" fill="none" stroke="#245b87" stroke-width="7"/>
-<polygon points="920,845 899.2897166458885,855.0042072845583 899.2897166458885,834.9957927154417" fill="#245b87"/>
-<polyline points="1710,845 1740,845" fill="none" stroke="#245b87" stroke-width="7"/>
-<polygon points="1740,845 1719.2897166458883,855.0042072845583 1719.2897166458883,834.9957927154417" fill="#245b87"/>
-<polyline points="1580,470 1550,470" fill="none" stroke="#245b87" stroke-width="7"/>
-<polygon points="1550,470 1570.7102833541117,459.9957927154417 1570.7102833541117,480.0042072845583" fill="#245b87"/>
-<text x="1200" y="955" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">工作路径：对象 1 → 2 → 3 → 6 → 5 → 4</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1080" viewBox="0 0 2400 1080"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="70" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">LeftDownToRight + Snake</text>
+<rect x="150" y="220" width="540" height="215" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="420.0" y="282" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 4</text>
+<text x="420.0" y="357" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 6</text>
+<rect x="930" y="220" width="540" height="215" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="282" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 5</text>
+<text x="1200.0" y="357" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 5</text>
+<rect x="1710" y="220" width="540" height="215" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1980.0" y="282" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 6</text>
+<text x="1980.0" y="357" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 4</text>
+<rect x="150" y="640" width="540" height="215" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="420.0" y="702" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 1</text>
+<text x="420.0" y="777" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 1</text>
+<rect x="930" y="640" width="540" height="215" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="702" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 2</text>
+<text x="1200.0" y="777" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 2</text>
+<rect x="1710" y="640" width="540" height="215" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1980.0" y="702" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">Index 3</text>
+<text x="1980.0" y="777" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex 3</text>
+<polyline points="690,747 930,747" fill="none" stroke="#315d82" stroke-width="5"/>
+<polygon points="930,747 909.2897166458885,757.0042072845583 909.2897166458885,736.9957927154417" fill="#315d82"/>
+<polyline points="1470,747 1710,747" fill="none" stroke="#315d82" stroke-width="5"/>
+<polygon points="1710,747 1689.2897166458883,757.0042072845583 1689.2897166458883,736.9957927154417" fill="#315d82"/>
+<polyline points="2250,747 2310,747 2310,327 2250,327" fill="none" stroke="#315d82" stroke-width="5"/>
+<polygon points="2250,327 2270.7102833541117,316.9957927154417 2270.7102833541117,337.0042072845583" fill="#315d82"/>
+<polyline points="1710,327 1470,327" fill="none" stroke="#315d82" stroke-width="5"/>
+<polygon points="1470,327 1490.7102833541117,316.9957927154417 1490.7102833541117,337.0042072845583" fill="#315d82"/>
+<polyline points="930,327 690,327" fill="none" stroke="#315d82" stroke-width="5"/>
+<polygon points="690,327 710.7102833541115,316.9957927154417 710.7102833541115,337.0042072845583" fill="#315d82"/>
+<text x="1200" y="1000" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">工作路径   1 → 2 → 3 → 6 → 5 → 4</text></svg>

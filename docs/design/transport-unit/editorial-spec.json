@@ -2,7 +2,7 @@
   "audience": "软件研发与技术评审人员、设备调试与应用工程师",
   "genre": "基于现有实现的技术设计专册",
   "scope": "Transport Unit；纠偏另册，等待本册确认",
-  "revision": "3.1",
+  "revision": "4.0",
   "editorial_structure": "保留九章主题，按概念、协作、模型、几何、构建、生命周期、接口、边界、贯穿实例递进；章内连续排版",
   "technical_review": [
     "先闭合正常生产路径，再讲旁路和异常，不用单个分支代表整个周期",
@@ -18,11 +18,11 @@
   "layout": {
     "page": "Letter portrait",
     "body": "宋体11.5磅，18.5磅行距，首行缩进两字，段落两端对齐",
-    "headings": "黑色黑体，章、节、子节各用真实层级",
+    "headings": "标题与章、节均为微软雅黑；中英文、编号采用相同字体；章18.5磅、节13磅、标题27磅，黑色粗体",
     "pagination": "正文连续排版，章间加间距；正文起始、源码附录与末附录另页；图注相随，表格按语义分页并重复表头",
-    "navigation": "Word自动目录、PDF书签、可点击引用及图表索引；图表页码使用原生PAGEREF字段",
+    "navigation": "使用Word内置toc 1/toc 2样式，统一中英文及编号字体；保留原生目录、书签、引用和PAGEREF图表索引",
     "appendices": "源码定位、术语表与图表索引、实现边界分别组织；术语表整张同页，图表索引集中在同页",
-    "figures": "技术图原生SVG及高分辨率PNG；生成式插图控制插入尺寸以保证清晰度"
+    "figures": "概念图经内置生图工具重做和精修；工程图按统一网格重新布局，保持精确数据与时序，提供SVG/PNG"
   },
   "shipping_gates": [
     "技术核对和正常路径的完整性核对",
@@ -31,5 +31,6 @@
     "全页校样检查，修改页重新检查并核对其余页未漂移",
     "目录、图表编号、引用、字体、页边距和文件完整性核对"
   ],
-  "status": "review_ready; pending user content acceptance"
+  "status": "review_ready",
+  "font_stability": "删除OOXML主题字体属性，并在Word更新目录后统一字体；从实际PDF字符资源核对字体，不只查样式名"
 }

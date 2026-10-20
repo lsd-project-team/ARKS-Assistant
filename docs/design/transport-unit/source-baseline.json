@@ -1,7 +1,7 @@
 {
   "date": "2026-10-20",
-  "revision": "3.1",
-  "repository_commit": "79ecf6c0877b944b60a42861caae544dff47513e",
+  "revision": "4.0",
+  "repository_commit": "080a455366b93f9506d7139a2e332655110c7a39",
   "scope": "Transport Unit对象与主要生产调用链的设计分析；源码只读；不代表整机或断电恢复试验",
   "files": [
     {
