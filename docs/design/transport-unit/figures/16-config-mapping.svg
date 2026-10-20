@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="570" viewBox="0 0 1600 570"><rect width="100%" height="100%" fill="white"/>
+<text x="390" y="35" font-family="Microsoft YaHei" font-size="34" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">常规  公共模板重复展开</text>
+<text x="1200" y="35" font-family="Microsoft YaHei" font-size="34" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">异形  对象绑定各自节点</text>
+<rect x="150" y="100" width="480" height="90" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="390.0" y="145.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">一套基板模板</text>
+<rect x="30" y="310" width="330" height="95" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="195.0" y="338.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">基板1</text>
+<text x="195.0" y="384.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">独立运行Info</text>
+<polyline points="390,190 390,250 195,250 195,310" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="195,310 188.28804245954115,297.7138441335348 201.71195754045885,297.7138441335348" fill="#596b7a"/>
+<rect x="430" y="310" width="330" height="95" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="595.0" y="338.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">基板2</text>
+<text x="595.0" y="384.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">独立运行Info</text>
+<polyline points="390,190 390,250 595,250 595,310" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="595,310 588.2880424595412,297.7138441335348 601.7119575404588,297.7138441335348" fill="#596b7a"/>
+<rect x="955" y="100" width="480" height="90" rx="10" fill="#e9edf1" stroke="#bac7d0" stroke-width="2"/>
+<text x="1195.0" y="145.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">异形根节点</text>
+<rect x="850" y="310" width="320" height="95" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="1010.0" y="338.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">节点A</text>
+<text x="1010.0" y="384.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">自身配置与子树</text>
+<polyline points="1195,190 1195,250 1010,250 1010,310" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1010,310 1003.2880424595412,297.7138441335348 1016.7119575404588,297.7138441335348" fill="#596b7a"/>
+<rect x="1255" y="310" width="320" height="95" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="1415.0" y="338.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">节点B</text>
+<text x="1415.0" y="384.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">自身配置与子树</text>
+<polyline points="1195,190 1195,250 1415,250 1415,310" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1415,310 1408.2880424595412,297.7138441335348 1421.7119575404588,297.7138441335348" fill="#596b7a"/>
+<text x="390" y="480" font-family="Microsoft YaHei" font-size="30" font-weight="400" fill="#37754b" text-anchor="middle" dominant-baseline="central">模板相同，运行对象不同</text>
+<text x="1200" y="480" font-family="Microsoft YaHei" font-size="30" font-weight="400" fill="#245a88" text-anchor="middle" dominant-baseline="central">各分支数量与坐标可不同</text></svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="500" viewBox="0 0 1600 500"><rect width="100%" height="100%" fill="white"/>
+<rect x="20" y="60" width="360" height="125" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="200.0" y="103.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">工序字典</text>
+<text x="200.0" y="149.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">每个键false／true</text>
+<rect x="440" y="60" width="490" height="125" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="685.0" y="103.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">焊点本侧完成</text>
+<text x="685.0" y="149.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">先看参与范围，再看字典</text>
+<rect x="990" y="60" width="570" height="125" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="1275.0" y="103.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛 → 基板 → TU</text>
+<text x="1275.0" y="149.5" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">要求直接下层全部完成</text>
+<polyline points="380,122 440,122" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="440,122 427.7138441335348,128.71195754045885 427.7138441335348,115.28804245954116" fill="#596b7a"/>
+<polyline points="930,122 990,122" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="990,122 977.7138441335347,128.71195754045885 977.7138441335347,115.28804245954116" fill="#596b7a"/>
+<rect x="80" y="280" width="1440" height="110" rx="10" fill="#f4f6f8" stroke="#bac7d0" stroke-width="2"/>
+<text x="800" y="315" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">S1额外条件  S1非空且S2空 → S1完成函数返回false</text>
+<text x="800" y="360" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">工艺不参与本侧的焊点，可在外层完成属性中直接判完成</text>
+<text x="800" y="460" font-family="Microsoft YaHei" font-size="29" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">空集合汇总可返回true；完成属性不能单独证明结构完整或实物合格</text></svg>

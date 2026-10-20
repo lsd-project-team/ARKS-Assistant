@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="650" viewBox="0 0 1600 650"><rect width="100%" height="100%" fill="white"/>
+<rect x="630" y="10" width="340" height="85" rx="10" fill="#e9edf1" stroke="#bac7d0" stroke-width="2"/>
+<text x="800.0" y="52.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">TU 1份</text>
+<rect x="45" y="145" width="710" height="85" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="400.0" y="187.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">基板1</text>
+<polyline points="800,95 800,120 400,120 400,145" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="400,145 393.28804245954115,132.7138441335348 406.71195754045885,132.7138441335348" fill="#596b7a"/>
+<rect x="45" y="285" width="220" height="85" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="155.0" y="327.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛1</text>
+<polyline points="400,230 400,255 155,255 155,285" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="155,285 148.28804245954115,272.7138441335348 161.71195754045885,272.7138441335348" fill="#596b7a"/>
+<rect x="55" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="102.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">A</text>
+<polyline points="155,370 155,405 102,405 102,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="102,435 95.28804245954116,422.7138441335348 108.71195754045884,422.7138441335348" fill="#596b7a"/>
+<rect x="160" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="207.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">B</text>
+<polyline points="155,370 155,405 207,405 207,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="207,435 200.28804245954115,422.7138441335348 213.71195754045885,422.7138441335348" fill="#596b7a"/>
+<rect x="290" y="285" width="220" height="85" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="400.0" y="327.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛2</text>
+<polyline points="400,230 400,255 400,255 400,285" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="400,285 393.28804245954115,272.7138441335348 406.71195754045885,272.7138441335348" fill="#596b7a"/>
+<rect x="300" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="347.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">A</text>
+<polyline points="400,370 400,405 347,405 347,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="347,435 340.28804245954115,422.7138441335348 353.71195754045885,422.7138441335348" fill="#596b7a"/>
+<rect x="405" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="452.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">B</text>
+<polyline points="400,370 400,405 452,405 452,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="452,435 445.28804245954115,422.7138441335348 458.71195754045885,422.7138441335348" fill="#596b7a"/>
+<rect x="535" y="285" width="220" height="85" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="645.0" y="327.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛3</text>
+<polyline points="400,230 400,255 645,255 645,285" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="645,285 638.2880424595412,272.7138441335348 651.7119575404588,272.7138441335348" fill="#596b7a"/>
+<rect x="545" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="592.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">A</text>
+<polyline points="645,370 645,405 592,405 592,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="592,435 585.2880424595412,422.7138441335348 598.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="650" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="697.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">B</text>
+<polyline points="645,370 645,405 697,405 697,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="697,435 690.2880424595412,422.7138441335348 703.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="840" y="145" width="710" height="85" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="1195.0" y="187.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">基板2</text>
+<polyline points="800,95 800,120 1195,120 1195,145" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1195,145 1188.2880424595412,132.7138441335348 1201.7119575404588,132.7138441335348" fill="#596b7a"/>
+<rect x="840" y="285" width="220" height="85" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="950.0" y="327.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛1</text>
+<polyline points="1195,230 1195,255 950,255 950,285" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="950,285 943.2880424595412,272.7138441335348 956.7119575404588,272.7138441335348" fill="#596b7a"/>
+<rect x="850" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="897.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">A</text>
+<polyline points="950,370 950,405 897,405 897,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="897,435 890.2880424595412,422.7138441335348 903.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="955" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="1002.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">B</text>
+<polyline points="950,370 950,405 1002,405 1002,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1002,435 995.2880424595412,422.7138441335348 1008.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="1085" y="285" width="220" height="85" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="1195.0" y="327.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛2</text>
+<polyline points="1195,230 1195,255 1195,255 1195,285" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1195,285 1188.2880424595412,272.7138441335348 1201.7119575404588,272.7138441335348" fill="#596b7a"/>
+<rect x="1095" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="1142.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">A</text>
+<polyline points="1195,370 1195,405 1142,405 1142,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1142,435 1135.2880424595412,422.7138441335348 1148.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="1200" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="1247.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">B</text>
+<polyline points="1195,370 1195,405 1247,405 1247,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1247,435 1240.2880424595412,422.7138441335348 1253.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="1330" y="285" width="220" height="85" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="1440.0" y="327.5" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">岛3</text>
+<polyline points="1195,230 1195,255 1440,255 1440,285" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1440,285 1433.2880424595412,272.7138441335348 1446.7119575404588,272.7138441335348" fill="#596b7a"/>
+<rect x="1340" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="1387.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">A</text>
+<polyline points="1440,370 1440,405 1387,405 1387,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1387,435 1380.2880424595412,422.7138441335348 1393.7119575404588,422.7138441335348" fill="#596b7a"/>
+<rect x="1445" y="435" width="95" height="70" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="1492.5" y="470.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">B</text>
+<polyline points="1440,370 1440,405 1492,405 1492,435" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1492,435 1485.2880424595412,422.7138441335348 1498.7119575404588,422.7138441335348" fill="#596b7a"/>
+<text x="800" y="560" font-family="Microsoft YaHei" font-size="33" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">示例地址  基板1 → 岛2 → 焊点A</text>
+<text x="800" y="610" font-family="Microsoft YaHei" font-size="29" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">2块基板  /  6个岛  /  12个独立焊点  /  加上TU共21个对象</text></svg>

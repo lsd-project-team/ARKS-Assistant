@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="570" viewBox="0 0 1600 570"><rect width="100%" height="100%" fill="white"/>
+<rect x="30" y="50" width="450" height="120" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="255.0" y="91.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">产品配置文件</text>
+<text x="255.0" y="137.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">结构与工艺参数</text>
+<rect x="575" y="50" width="450" height="120" rx="10" fill="#fff0df" stroke="#bac7d0" stroke-width="2"/>
+<text x="800.0" y="91.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">内存TU对象树</text>
+<text x="800.0" y="137.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">本次产品运行数据</text>
+<rect x="1120" y="50" width="450" height="120" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="1345.0" y="91.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">独立TU JSON包装</text>
+<text x="1345.0" y="137.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">显式Save／Read入口</text>
+<polyline points="480,110 575,110" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="575,110 562.7138441335347,116.71195754045884 562.7138441335347,103.28804245954116" fill="#596b7a"/>
+<polyline points="1025,110 1120,110" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1120,110 1107.7138441335348,116.71195754045884 1107.7138441335348,103.28804245954116" fill="#596b7a"/>
+<rect x="575" y="340" width="450" height="110" rx="10" fill="#e9edf1" stroke="#bac7d0" stroke-width="2"/>
+<text x="800.0" y="376.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">TransportProgram.Save</text>
+<text x="800.0" y="422.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">区段TU引用不序列化</text>
+<polyline points="800,170 800,340" fill="none" stroke="#596b7a" stroke-width="3"/>
+<text x="950" y="260" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">JsonIgnore</text>
+<polyline points="780,245 820,285" fill="none" stroke="#b56823" stroke-width="4"/>
+<polyline points="820,245 780,285" fill="none" stroke="#b56823" stroke-width="4"/>
+<text x="800" y="520" font-family="Microsoft YaHei" font-size="29" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">Read不负责重建坐标；已核对交接路径未调用独立TU存储包装</text></svg>

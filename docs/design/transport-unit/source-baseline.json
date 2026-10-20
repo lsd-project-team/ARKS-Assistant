@@ -1,6 +1,8 @@
 {
   "date": "2026-10-20",
-  "scope": "Transport Unit设计说明的文件基线；锚点为相关片段，不代表全部文件完成业务验收",
+  "revision": "2.0",
+  "repository_commit": "9c3c07569e3d7dfee02a56f4fa49f6e3d727e0af",
+  "scope": "Transport Unit设计：对象、构造、调用方、交接、状态和坐标的相关实现片段；不代表全仓或实机验收",
   "files": [
     {
       "id": "S01",
@@ -23,6 +25,26 @@
         {
           "symbol": "public void SetSystem1OffSet()",
           "line": 526
+        },
+        {
+          "symbol": "public TransportUnit(CurrentMachineSystemEnum",
+          "line": 86
+        },
+        {
+          "symbol": "public List<BondPosition> GetAllBondPositions",
+          "line": 217
+        },
+        {
+          "symbol": "public List<BaseMatter> GetAllBaseMatter()",
+          "line": 601
+        },
+        {
+          "symbol": "public void ClearVision()",
+          "line": 623
+        },
+        {
+          "symbol": "public void ClearMeasureHeight()",
+          "line": 635
         }
       ]
     },
@@ -175,6 +197,10 @@
         {
           "symbol": "public static void ModifyMatter",
           "line": 887
+        },
+        {
+          "symbol": "public static int GetIndex",
+          "line": 98
         }
       ]
     },
@@ -219,6 +245,14 @@
         {
           "symbol": "public void InjectSteps(TransportUnit transportUnit)",
           "line": 859
+        },
+        {
+          "symbol": "public ActionNode GetNextActionNode()",
+          "line": 776
+        },
+        {
+          "symbol": "public void FinishCurrentActionNode()",
+          "line": 767
         }
       ]
     },
@@ -231,26 +265,30 @@
         {
           "symbol": "public void InjectSteps(TransportUnit transportUnit)",
           "line": 1410
+        },
+        {
+          "symbol": "public ActionNode GetNextActionNode()",
+          "line": 1042
+        },
+        {
+          "symbol": "private void RemoveDisableActionNode()",
+          "line": 1554
         }
       ]
     },
     {
       "id": "S15",
-      "path": "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs",
-      "sha256": "d180b07735e4952f5f9aafafe3eb1b385f621e8d1b4686c6b2aa35534ba11086",
-      "purpose": "上料创建与点胶到固晶引用交接",
+      "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProgram.cs",
+      "sha256": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba",
+      "purpose": "区段集合与选择性刷新",
       "anchors": [
         {
-          "symbol": "public ExcuteResult TransferAutoLoaderToLoading",
-          "line": 439
+          "symbol": "public class TransportProgram",
+          "line": 20
         },
         {
-          "symbol": "public ExcuteResult TransferDispenseToBond",
-          "line": 1266
-        },
-        {
-          "symbol": "this.TransportProgram.BondSubSectionProgram.TransportUnit =",
-          "line": 1478
+          "symbol": "public void RefreshTransportUnit()",
+          "line": 90
         }
       ]
     },
@@ -272,17 +310,41 @@
     },
     {
       "id": "S17",
-      "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProgram.cs",
-      "sha256": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba",
-      "purpose": "区段集合与选择性刷新",
+      "path": "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs",
+      "sha256": "d180b07735e4952f5f9aafafe3eb1b385f621e8d1b4686c6b2aa35534ba11086",
+      "purpose": "上料创建与点胶到固晶引用交接",
       "anchors": [
         {
-          "symbol": "public class TransportProgram",
-          "line": 20
+          "symbol": "public ExcuteResult TransferAutoLoaderToLoading",
+          "line": 439
         },
         {
-          "symbol": "public void RefreshTransportUnit()",
-          "line": 90
+          "symbol": "public ExcuteResult TransferDispenseToBond",
+          "line": 1266
+        },
+        {
+          "symbol": "this.TransportProgram.BondSubSectionProgram.TransportUnit =",
+          "line": 1478
+        },
+        {
+          "symbol": "public void MapMaterial()",
+          "line": 132
+        },
+        {
+          "symbol": "public void InitializeTS()",
+          "line": 159
+        },
+        {
+          "symbol": "this.TransportProgram.BondSubSectionProgram.TransportUnit.Refresh();",
+          "line": 1486
+        },
+        {
+          "symbol": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit?.Refresh();",
+          "line": 1684
+        },
+        {
+          "symbol": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit.Refresh();",
+          "line": 2014
         }
       ]
     },
@@ -359,6 +421,18 @@
         {
           "symbol": "ExcuteResult ret = actionNode.DoWork()",
           "line": 232
+        },
+        {
+          "symbol": "if (this.Enable)",
+          "line": 198
+        },
+        {
+          "symbol": "if (!TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit.TransportUnitInfo.IsProduct",
+          "line": 200
+        },
+        {
+          "symbol": "ActionNode actionNode = this.system2Domain.ActionNodesService.GetNextActionNode();",
+          "line": 216
         }
       ]
     },
@@ -385,6 +459,142 @@
           "line": 11
         }
       ]
+    },
+    {
+      "id": "S26",
+      "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "purpose": "定位扫描的偏移与分段调用",
+      "anchors": [
+        {
+          "symbol": "private void VisionScan()",
+          "line": 126
+        }
+      ],
+      "sha256": "f1779ebecc01ec731a0e46a66f6e6ec850e2fca156682e0e89c507c0d07fa5eb"
+    },
+    {
+      "id": "S27",
+      "path": "trunk/AKRS.ZX2200/TransportSystem/Controllers/DispenseSubSectionController.cs",
+      "purpose": "点胶轨道搜索、补建与刷新",
+      "anchors": [
+        {
+          "symbol": "this.dispenseSubSectionProgram.TransportUnit.Refresh();",
+          "line": 482
+        },
+        {
+          "symbol": "this.dispenseSubSectionProgram.TransportUnit.System1BackMoveDistance();",
+          "line": 504
+        }
+      ],
+      "sha256": "47816b9d687d21a5272f6cf9250ebe29d2689398ac43e9dba6965991ecc02328"
+    },
+    {
+      "id": "S28",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "purpose": "固晶执行条件与步骤写回",
+      "anchors": [
+        {
+          "symbol": "public override ExcuteResult DoWork()",
+          "line": 118
+        },
+        {
+          "symbol": "public override bool IsDoWork()",
+          "line": 383
+        }
+      ],
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf"
+    },
+    {
+      "id": "S29",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "purpose": "点胶定位数据与测高更新",
+      "anchors": [
+        {
+          "symbol": "public bool System1MatterVision",
+          "line": 96
+        },
+        {
+          "symbol": "baseEntity.BaseInfo.MeasureHeightResult = addHieght;",
+          "line": 460
+        },
+        {
+          "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHieght;",
+          "line": 468
+        }
+      ],
+      "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a"
+    },
+    {
+      "id": "S30",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "purpose": "固晶定位开关与测高更新",
+      "anchors": [
+        {
+          "symbol": "public bool System2MatterVision",
+          "line": 279
+        },
+        {
+          "symbol": "baseEntity.BaseInfo.MeasureHeightResult = addHeight;",
+          "line": 995
+        },
+        {
+          "symbol": "baseEntity.CoordinateSystem.Distance.Z += addHeight;",
+          "line": 1005
+        }
+      ],
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
+    },
+    {
+      "id": "S31",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "purpose": "点胶应用示教中的偏移调用",
+      "anchors": [
+        {
+          "symbol": "transportUnit.SetSystem1OffSet();",
+          "line": 813
+        },
+        {
+          "symbol": "transportUnit.System1MoveDistance();",
+          "line": 843
+        }
+      ],
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b"
+    },
+    {
+      "id": "S32",
+      "path": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportDomain.cs",
+      "purpose": "输送启动刷新与物料匹配",
+      "anchors": [
+        {
+          "symbol": "public void StartTask()",
+          "line": 84
+        },
+        {
+          "symbol": "TransportProgram.RefreshTransportUnit();",
+          "line": 117
+        },
+        {
+          "symbol": "this.TransportController.MapMaterial();",
+          "line": 121
+        }
+      ],
+      "sha256": "daf2c09966a3874673df23590d8d058d6fc6f81d1f4fe7e02e9bd0c2991b338e"
+    },
+    {
+      "id": "S34",
+      "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs",
+      "purpose": "点胶执行条件与步骤写回",
+      "anchors": [
+        {
+          "symbol": "public override ExcuteResult DoWork()",
+          "line": 46
+        },
+        {
+          "symbol": "public override bool IsDoWork()",
+          "line": 177
+        }
+      ],
+      "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41"
     }
   ]
 }

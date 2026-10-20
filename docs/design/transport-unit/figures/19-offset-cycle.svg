@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="590" viewBox="0 0 1600 590"><rect width="100%" height="100%" fill="white"/>
+<rect x="35" y="50" width="440" height="120" rx="10" fill="#e9edf1" stroke="#bac7d0" stroke-width="2"/>
+<text x="255.0" y="91.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">字符串创建</text>
+<text x="255.0" y="137.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">配置坐标，标记false</text>
+<rect x="580" y="50" width="440" height="120" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="800.0" y="91.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">SetSystem1OffSet</text>
+<text x="800.0" y="137.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">Distance加S1，标记true</text>
+<rect x="1125" y="50" width="440" height="120" rx="10" fill="#e8f4ec" stroke="#bac7d0" stroke-width="2"/>
+<text x="1345.0" y="91.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">重复调用S1方法</text>
+<text x="1345.0" y="137.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">返回，坐标不再累加</text>
+<polyline points="475,110 580,110" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="580,110 567.7138441335347,116.71195754045884 567.7138441335347,103.28804245954116" fill="#596b7a"/>
+<polyline points="1020,110 1125,110" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1125,110 1112.7138441335348,116.71195754045884 1112.7138441335348,103.28804245954116" fill="#596b7a"/>
+<rect x="580" y="325" width="440" height="120" rx="10" fill="#e7effb" stroke="#bac7d0" stroke-width="2"/>
+<text x="800.0" y="366.0" font-family="Microsoft YaHei" font-size="31" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">Refresh</text>
+<text x="800.0" y="412.0" font-family="Microsoft YaHei" font-size="25" font-weight="400" fill="#596b7a" text-anchor="middle" dominant-baseline="central">重建坐标，两个标记false</text>
+<polyline points="1345,170 1345,265 800,265 800,325" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="800,325 793.2880424595412,312.7138441335348 806.7119575404588,312.7138441335348" fill="#596b7a"/>
+<polyline points="580,385 505,385 505,225 800,225 800,170" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="800,170 806.7119575404588,182.2861558664652 793.2880424595412,182.2861558664652" fill="#596b7a"/>
+<text x="295" y="425" font-family="Microsoft YaHei" font-size="27" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">刷新后按具体路径再选偏移</text>
+<text x="800" y="540" font-family="Microsoft YaHei" font-size="29" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">S1与S2标记独立；本图只画S1重复调用，两个偏移并不互斥</text></svg>

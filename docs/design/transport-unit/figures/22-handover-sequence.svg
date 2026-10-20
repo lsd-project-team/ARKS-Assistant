@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="770" viewBox="0 0 1600 770"><rect width="100%" height="100%" fill="white"/>
+<text x="250" y="30" font-family="Microsoft YaHei" font-size="32" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">输送控制器</text>
+<polyline points="250,85 250,715" fill="none" stroke="#bac7d0" stroke-width="3"/>
+<text x="800" y="30" font-family="Microsoft YaHei" font-size="32" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">点胶段</text>
+<polyline points="800,85 800,715" fill="none" stroke="#bac7d0" stroke-width="3"/>
+<text x="1350" y="30" font-family="Microsoft YaHei" font-size="32" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">Bond段</text>
+<polyline points="1350,85 1350,715" fill="none" stroke="#bac7d0" stroke-width="3"/>
+<polyline points="250,140 800,140" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="800,140 787.7138441335347,146.71195754045885 787.7138441335347,133.28804245954115" fill="#596b7a"/>
+<text x="525.0" y="110" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">取得源TU引用</text>
+<polyline points="250,245 1350,245" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1350,245 1337.7138441335348,251.71195754045885 1337.7138441335348,238.28804245954115" fill="#596b7a"/>
+<text x="800.0" y="215" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">目标TU = 源TU</text>
+<polyline points="250,455 800,455" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="800,455 787.7138441335347,461.71195754045885 787.7138441335347,448.28804245954115" fill="#596b7a"/>
+<text x="525.0" y="425" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">源TU = null</text>
+<polyline points="250,565 1350,565" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1350,565 1337.7138441335348,571.7119575404588 1337.7138441335348,558.2880424595412" fill="#596b7a"/>
+<text x="800.0" y="535" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">更新有料与传输状态</text>
+<polyline points="1350,320 1525,320 1525,380 1350,380" fill="none" stroke="#596b7a" stroke-width="3"/>
+<polygon points="1350,380 1362.2861558664652,373.28804245954115 1362.2861558664652,386.71195754045885" fill="#596b7a"/>
+<text x="1040" y="345" font-family="Microsoft YaHei" font-size="30" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">目标TU.Refresh()</text>
+<text x="800" y="655" font-family="Microsoft YaHei" font-size="30" font-weight="700" fill="#1c2935" text-anchor="middle" dominant-baseline="central">最后调用TransportProgram.Save()</text>
+<text x="800" y="738" font-family="Microsoft YaHei" font-size="28" font-weight="400" fill="#1c2935" text-anchor="middle" dominant-baseline="central">手动且目标为空时先新建；本路径没有统一全状态回滚</text></svg>
