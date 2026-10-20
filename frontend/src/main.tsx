@@ -21,6 +21,7 @@ import './features/projects/styles/projects.css';
 import './app/layouts/styles/sidebar-navigation.css';
 import './shared/styles/theme-interface.css';
 import './shared/styles/control-surfaces.css';
+import './features/chat/styles/answer-content.css';
 
 // 项目数据加载前先恢复外观，避免刷新时短暂显示另一套主题的加载页。
 document.documentElement.dataset.appearance = useAppearance.getState().mode;

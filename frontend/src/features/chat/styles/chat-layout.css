@@ -1,7 +1,7 @@
 /* 分屏与单独聊天共用宽度上限，面板变宽时只增加两侧留白。 */
 .app-shell .chat-pane {
   container-type: inline-size;
-  --chat-reading-max-width: 720px;
+  --chat-reading-max-width: 820px;
   --chat-reading-width: min(var(--chat-reading-max-width), calc(100cqw - 48px));
 }
 .app-shell .chat-scroll {

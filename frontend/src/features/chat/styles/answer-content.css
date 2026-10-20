@@ -1,0 +1,103 @@
+/* 回答与结构化块共享排版节奏，颜色继承当前外观。 */
+.chat-pane {
+  --answer-font-size: 15px;
+  --answer-line-height: 1.75;
+  --answer-space: 16px;
+  --answer-section-space: 28px;
+}
+.chat-pane .message.assistant {
+  color: var(--text);
+  font-size: var(--answer-font-size);
+  line-height: var(--answer-line-height);
+  margin-block: 12px 40px;
+  min-width: 0;
+}
+.chat-pane .message.assistant .markdown,
+.chat-pane .run-recovery .markdown {
+  font-size: var(--answer-font-size);
+  line-height: var(--answer-line-height);
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
+.chat-pane .markdown > :first-child {
+  margin-top: 0;
+}
+.chat-pane .markdown > :last-child {
+  margin-bottom: 0;
+}
+.chat-pane .markdown p {
+  margin-block: 0 var(--answer-space);
+}
+.chat-pane .markdown :is(h1, h2, h3, h4) {
+  margin-block: var(--answer-section-space) 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.chat-pane .markdown h1 { font-size: 1.5em; }
+.chat-pane .markdown h2 { font-size: 1.28em; }
+.chat-pane .markdown h3 { font-size: 1.12em; }
+.chat-pane .markdown h4 { font-size: 1em; }
+.chat-pane .markdown :is(ul, ol) {
+  margin-block: var(--answer-space);
+  padding-inline-start: 1.6em;
+}
+.chat-pane .markdown li { margin-block: 6px; }
+.chat-pane .markdown li > :is(ul, ol) { margin-block: 6px; }
+.chat-pane .markdown li > p { margin-block: 8px; }
+.chat-pane .markdown .contains-task-list { list-style: none; padding-inline-start: 0; }
+.chat-pane .markdown input[type='checkbox'] { width: auto; margin-inline-end: 8px; accent-color: var(--accent); }
+.chat-pane .markdown blockquote {
+  margin-block: var(--answer-space);
+  padding: 2px 16px;
+  border-inline-start: 3px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+.chat-pane .markdown blockquote > :last-child { margin-bottom: 0; }
+.chat-pane .markdown hr { margin-block: var(--answer-section-space); border: 0; border-top: 1px solid var(--border); }
+.chat-pane .markdown code { font-family: var(--font-code); font-size: .88em; }
+.chat-pane .markdown pre code { font-size: inherit; color: var(--text); }
+.chat-pane .markdown a { color: var(--reading-accent, var(--accent)); text-decoration-thickness: 1px; }
+.chat-pane .markdown img { max-width: 100%; height: auto; border-radius: 8px; }
+.chat-pane .markdown table {
+  width: 100%;
+  max-width: 100%;
+  margin-block: 20px;
+  font-size: 13px;
+  line-height: 1.65;
+  scrollbar-width: thin;
+  font-variant-numeric: tabular-nums;
+}
+.chat-pane .markdown :is(th, td) {
+  min-width: 100px;
+  max-width: 420px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.chat-pane .markdown th { background: var(--surface-subtle); font-weight: 600; }
+.chat-pane .markdown .source-link {
+  display: inline;
+  margin-inline: 2px;
+  padding: 2px 5px;
+  color: var(--text-secondary);
+  font: 12px/1.6 var(--font-ui);
+  box-decoration-break: clone;
+}
+.chat-pane .message-label { margin-bottom: 16px; color: var(--text-muted); font-size: 12px; }
+.chat-pane .answer-actions { gap: 4px; margin-top: 14px; }
+.chat-pane .answer-actions button { min-width: 30px; min-height: 30px; border-radius: 6px; color: var(--text-muted); }
+.chat-pane .answer-actions button:hover { color: var(--text); background: var(--surface-hover); }
+.chat-pane :is(.answer-actions button, .source-link, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.chat-pane .answer-code { margin-block: 20px; border-radius: 10px; }
+.chat-pane .answer-code-toolbar { min-height: 38px; gap: 12px; }
+.chat-pane .answer-code-toolbar button { min-width: 28px; min-height: 28px; }
+.chat-pane .answer-code pre { font: 13px/1.7 var(--font-code); }
+@container (max-width: 480px) {
+  .chat-pane .message.assistant { margin-bottom: 30px; }
+  .chat-pane .answer-actions button { min-width: 36px; min-height: 36px; }
+  .chat-pane .markdown :is(th, td) { padding: 8px 10px; }
+}
