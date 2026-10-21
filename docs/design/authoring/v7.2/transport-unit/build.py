@@ -204,6 +204,7 @@ for kind,value in BLOCKS:
         md.extend([('## ' if kind=='section' else '### ')+value,''])
     elif kind=='p':
         q=para(value)
+        if value.startswith('生产Mapping界面的停用'):q.paragraph_format.keep_together=True
         if value.startswith('如果去掉S1启用条件'):q.paragraph_format.keep_with_next=True
         if value.startswith('本文以2026年'):q.alignment=WD_ALIGN_PARAGRAPH.LEFT
         md.extend([value,''])

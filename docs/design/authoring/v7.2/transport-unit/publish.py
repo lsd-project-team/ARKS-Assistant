@@ -15,7 +15,7 @@ assert len(list(pages.glob('page-*.png')))==n
 continuity=json.loads((ROOT/'output/tu-recheck/visual-continuity.json').read_text(encoding='utf-8'))
 assert len(continuity['pages'])==n
 dump('visual-continuity.json',continuity)
-dump('final-qa.json',dict(complete=True,method='Word独立隐藏实例更新目录与导出；恢复原图像流；Poppler 120dpi全页渲染及逐页校样；迭代后未变页逐像素确认与已阅页一致，变更页重新直接查看',canonical_renderer='render_docx.py已实际执行；日志报soffice.exe缺失，因此使用本机原生Word渲染后检查，未声明LibreOffice通过',pdf_sha256=sha(TMP/(title+'.pdf')),docx_sha256=sha(TMP/(title+'.docx')),pages=[dict(page=i,viewed=True,png_sha256=sha(pages/f'page-{i:02}.png'),checks='标题、正文、公式、图注、表格和页码校样；无遮挡或截断',review=continuity['pages'][i-1]['review']) for i in range(1,n+1)],repaired=['目录尾项孤页','图表索引尾部孤页','交接异常表与实例快照表仅一行落前页','重复收尾段落孤页'],remaining_defects=[]))
+dump('final-qa.json',dict(complete=True,method='Word独立隐藏实例更新目录与导出；恢复原图像流；Poppler 120dpi全页渲染及逐页校样；迭代后未变页逐像素确认与已阅页一致，变更页重新直接查看',canonical_renderer='render_docx.py已实际执行；日志报soffice.exe缺失，因此使用本机原生Word渲染后检查，未声明LibreOffice通过',pdf_sha256=sha(TMP/(title+'.pdf')),docx_sha256=sha(TMP/(title+'.docx')),pages=[dict(page=i,viewed=True,png_sha256=sha(pages/f'page-{i:02}.png'),checks='标题、正文、公式、图注、表格和页码校样；无遮挡或截断',review=continuity['pages'][i-1]['review']) for i in range(1,n+1)],repaired=['目录尾项孤页','图表索引尾部孤页','交接异常表与实例快照表仅一行落前页','重复收尾段落孤页','8.3小节标题与首段跨页'],remaining_defects=[]))
 v['review']['visual_status']='complete; all actual final pages directly viewed and bound to final-qa.json';dump('verification.json',v)
 questions=[
  ('一份产品由哪些对象组成','TU根、基板、基岛、焊点；每层独立Info，焊点独立步骤。','3.1、3.4'),
@@ -97,7 +97,7 @@ audit=f'''# Transport Unit第7.2版验收自检
 | 内容同步 | {sync['body_paragraphs']}段正文、全部图注、48项图表标题和表格单元格一致 |
 | 数值 | 12项独立数值核对通过；不当作设备精度或整套C#执行结果 |
 | 图文 | 24图24表，新增6幅工程图；原始图像至少300dpi |
-| 排版 | 当前{n}页全部120dpi渲染并逐页直接查看；修复目录及索引孤页和两张表的一行断页 |
+| 排版 | 当前{n}页全部120dpi渲染并逐页直接查看；修复目录及索引孤页、两张表的一行断页及8.3首段跨页 |
 | 导航 | 67项目录/书签、48项图表索引核对；可编辑Word保留原生公式 |
 
 核查与代理阅读、版式自检已完成；未进行独立真人试读或设备运行，不能冒充用户签收。最终哈希及逐页记录见final-qa.json。

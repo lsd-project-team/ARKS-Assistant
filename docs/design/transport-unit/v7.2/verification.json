@@ -213,7 +213,7 @@
       },
       {
         "title": "8.3 人工操作改变哪些记录",
-        "page": 35
+        "page": 36
       },
       {
         "title": "8.4 保存的范围决定可恢复的范围",
@@ -483,7 +483,7 @@
       },
       {
         "title": "8.3 人工操作改变哪些记录",
-        "page": 35
+        "page": 36
       },
       {
         "title": "8.4 保存的范围决定可恢复的范围",
@@ -1188,12 +1188,12 @@
     {
       "page": 35,
       "images": 1,
-      "body_bottom": 723.52
+      "body_bottom": 649.39
     },
     {
       "page": 36,
       "images": 0,
-      "body_bottom": 520.96
+      "body_bottom": 584.95
     },
     {
       "page": 37,
@@ -1261,12 +1261,12 @@
   ],
   "files": {
     "TransportUnit设计文档.docx": {
-      "sha256": "5856c51eaef20c8c51937fe955495cea98aff4b69caa9b7080613296cc32c3d3",
-      "bytes": 8830626
+      "sha256": "381dcec9f403f6e87c0cdda1e5a3c07080faf397d0b43527eb3c2a3dc34afa50",
+      "bytes": 8830667
     },
     "TransportUnit设计文档.pdf": {
-      "sha256": "f9df9c9eb7ca33c64ee3376cedc1ece1b51df7ccd57376472e876bc890a241ba",
-      "bytes": 6088587
+      "sha256": "9cac0b5c16dd11662bb44d8ee895c2340363174402765fca7548096960d8c47b",
+      "bytes": 6088430
     },
     "TransportUnit设计文档.md": {
       "sha256": "a9fbdd407cd0a19966f19a710651a97571dfddc030a840fea289e6a8ce005afd",

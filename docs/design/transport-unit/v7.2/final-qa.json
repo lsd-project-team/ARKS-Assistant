@@ -2,344 +2,345 @@
   "complete": true,
   "method": "Word独立隐藏实例更新目录与导出；恢复原图像流；Poppler 120dpi全页渲染及逐页校样；迭代后未变页逐像素确认与已阅页一致，变更页重新直接查看",
   "canonical_renderer": "render_docx.py已实际执行；日志报soffice.exe缺失，因此使用本机原生Word渲染后检查，未声明LibreOffice通过",
-  "pdf_sha256": "f9df9c9eb7ca33c64ee3376cedc1ece1b51df7ccd57376472e876bc890a241ba",
-  "docx_sha256": "5856c51eaef20c8c51937fe955495cea98aff4b69caa9b7080613296cc32c3d3",
+  "pdf_sha256": "9cac0b5c16dd11662bb44d8ee895c2340363174402765fca7548096960d8c47b",
+  "docx_sha256": "381dcec9f403f6e87c0cdda1e5a3c07080faf397d0b43527eb3c2a3dc34afa50",
   "pages": [
     {
       "page": 1,
       "viewed": true,
       "png_sha256": "be07911f2ce9a418b86ad8fb70bbf8c855ead12f32b2481c25fc1496b19dd786",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 2,
       "viewed": true,
       "png_sha256": "d5963b9d28497bf42f77c9b432bd6e0f7a34153c3a83bb8b7bc1875ba6860134",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 3,
       "viewed": true,
-      "png_sha256": "7ee3d0b271c35dc6c500f19fdd21c4aff63f6e32428f3313c057ff90ac795301",
+      "png_sha256": "682c0adb386e5463220e06ea61317d7314d21569d2bdaf1a7f5098128031617a",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 4,
       "viewed": true,
       "png_sha256": "57747e331dbbae28f4f42a9f4fe278090019936b44c33ac4dc0ec4ed7883ae7a",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 5,
       "viewed": true,
       "png_sha256": "11f90849a8d81c8ea3efa381d69d6021b6ed5f3401a9d9c63cdf7d392a4a545e",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 6,
       "viewed": true,
       "png_sha256": "2321f1f5f0ed1df14e28cdca268dada27cb64c3a5a335de03031d04f6b2c3882",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 7,
       "viewed": true,
       "png_sha256": "e1e42ddc883f629202352990924b80cafbc6f547770f39be7a4545383fa397a1",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 8,
       "viewed": true,
       "png_sha256": "86dd6f4d8781d19365fa170f4c8e3bc307293020f59073fe6c8bdb4154b61bf6",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 9,
       "viewed": true,
       "png_sha256": "f9dc0847501840b353d402715610b9ddc8bf7f9e1a108f0206a6934360a0c00f",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 10,
       "viewed": true,
       "png_sha256": "a4f26565983dc599b5a203c3bd7fe1f6727bda21f8b8d2145e31c76cb96bd241",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 11,
       "viewed": true,
       "png_sha256": "9b02780048c09500928a5e9bce35062609dbe3cd05c99504f179004ddd199417",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 12,
       "viewed": true,
       "png_sha256": "02bcea867b1b136432379ced9c68089dd586bb135e76dc2d6f11d216a342d7b9",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 13,
       "viewed": true,
       "png_sha256": "488bf4919f6a685bae9550301883deae3739eee35038fd53d33659ac9ec304f1",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 14,
       "viewed": true,
       "png_sha256": "01079c6f09cb2c09aba3af3bc3e62443a51b1a979c23df9c801ea77221c72c39",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 15,
       "viewed": true,
       "png_sha256": "1f7ee426b3bb62681aaad924883ce0f04a7b1052faee5842ea0126fffceadbbf",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 16,
       "viewed": true,
       "png_sha256": "07990dfe14d26d5f78eba994635ab4f4cbdeb8e0470fe910bee8de0be7ead502",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 17,
       "viewed": true,
       "png_sha256": "3051e89774768eb6fd16abe95f5626d25be38b2929688f8d30043a3839120811",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 18,
       "viewed": true,
       "png_sha256": "09a4d59215aa8d9a3f1afd2da276394db15495332539fcd5da93ae80dd900108",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 19,
       "viewed": true,
       "png_sha256": "e3040ac35deb2bd0d32198341b5e472f5d3a14cea9bbe38cf0c4a59b39c1691f",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 20,
       "viewed": true,
       "png_sha256": "5985c197a77d44582baa8a76a3d4feb46cd9360345aecfbebb9a38f42675058d",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 21,
       "viewed": true,
       "png_sha256": "1dfc0b343b0ea79ff2253aa312ae1575f13d965d44c0d2a10e877865977ba6c2",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 22,
       "viewed": true,
       "png_sha256": "1dc005996d990cf1411a5f18425e33850e67df3667cb663d99a490968b6809c2",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 23,
       "viewed": true,
       "png_sha256": "02f0fec8c0bc113adec8fa18a36df3972c624b042b3c9d9c741a52f5158d9f82",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 24,
       "viewed": true,
       "png_sha256": "e2ea6d30411cec27ce27f62de3140816c15b5cb6cc3d457be81ffb28cf3b1e4b",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 25,
       "viewed": true,
       "png_sha256": "d7cd9e8b9f5140106e04e85ab485150e33e8c197424ff103d986385c3d878284",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 26,
       "viewed": true,
       "png_sha256": "c187c092b2af34e6d2eb0f7bad9e76d0ec62dba6138ae66721a3ad90d4f32bf6",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 27,
       "viewed": true,
       "png_sha256": "5b8d0fa7fc82ca1be1d428cb4e2e062538d5f8013fca6da2e203dc831b53ccf4",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 28,
       "viewed": true,
       "png_sha256": "c3d46451e9656950d6ec12607da2964ab54aafbf81fcb6a42e624867b4baf49f",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 29,
       "viewed": true,
       "png_sha256": "1e02e98be9732127c3ebe7b18d39adfa6bcc7adba578b58c8bd9fdc2307f8551",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 30,
       "viewed": true,
       "png_sha256": "d5840230f02b2f3103a90b4f5e26e38dd992b4b13c081c223a871133e85dc48c",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 31,
       "viewed": true,
       "png_sha256": "52e896144df5eba5c01de798c90a1daa525982e3acf597d736aedcf54b1d4e12",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 32,
       "viewed": true,
       "png_sha256": "e501d65f2d7505109c2289756e12127fbc1ba67f838525fd5697faecfff09099",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 33,
       "viewed": true,
       "png_sha256": "b555b2a2193f0eab9e5029d15b5fb4ef7e26e430a52014a6221595ec106f891b",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 34,
       "viewed": true,
       "png_sha256": "994b677323a4acc68c3df229d684b14fafae91678a9a483c0dd8d39ccdb6208b",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 35,
       "viewed": true,
-      "png_sha256": "d74347b711f0dbbd7db9e9863fa0f68675a97100e4c84c2a14016f9b55d7d2cf",
+      "png_sha256": "8ab51f9cc1b381952316197fcb754563e74bbe3dad59c5cd664e4e4a02782b54",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 36,
       "viewed": true,
-      "png_sha256": "9a18eaae773c47ac21478e45fc3a947ef48e849e8524b510ef21366ac0336f80",
+      "png_sha256": "fe170c117441bd5b812acd352370753e857019b8da561c00f1a1acd773ffb993",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 37,
       "viewed": true,
       "png_sha256": "175b7f750469de03d4afd97b4c2d81bdca86c5df784a79a853c86440fff32395",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 38,
       "viewed": true,
       "png_sha256": "60c3e96b1cbe2770513d2022a3d0da05b25516727d3dfd6f5858b0722d23752d",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 39,
       "viewed": true,
       "png_sha256": "0d39b9517d0ff83db76be268ab73cc525732e095368b38f28d2aba6c31dcc367",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 40,
       "viewed": true,
       "png_sha256": "25e34791a54d0f40a852fb5c4f4093733e90d7c16ce6c398ed576e5147b05747",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 41,
       "viewed": true,
       "png_sha256": "443b92e4a14566605f0dd44c1b1b03a78d31c7b3da46c4204d61a31ef1c1c666",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "与已阅上一轮页面像素一致"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 42,
       "viewed": true,
       "png_sha256": "918ac8d6644d86e1d983a337bb93a83bdddd1f0f238b3f2ee487aa1681a12e85",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 43,
       "viewed": true,
       "png_sha256": "d7d1ce75d57dabe56bc27a73b711292ae441eca2537d6489a29a7087d3c5b8a9",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 44,
       "viewed": true,
       "png_sha256": "35360adbb8bcacd72ac342977aeab726383ef31f357e394a824b66a1d2e6845f",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 45,
       "viewed": true,
       "png_sha256": "6541ce92bee7c63d838d657e7323a50fbc5ae2df02efd488bb804786dcc9e570",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 46,
       "viewed": true,
       "png_sha256": "80e7f17baec5cf81a11e388d4cfca1d544a681f1ff59a29fb93cc60466028ed9",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     },
     {
       "page": 47,
       "viewed": true,
       "png_sha256": "d5bd18732eae1d927ca2fccc37f774ca6aa9ffbe9de938c046f7c470b74ed044",
       "checks": "标题、正文、公式、图注、表格和页码校样；无遮挡或截断",
-      "review": "本轮重新直接查看"
+      "review": "本轮最终PDF重新渲染后直接逐页查看"
     }
   ],
   "repaired": [
     "目录尾项孤页",
     "图表索引尾部孤页",
     "交接异常表与实例快照表仅一行落前页",
-    "重复收尾段落孤页"
+    "重复收尾段落孤页",
+    "8.3小节标题与首段跨页"
   ],
   "remaining_defects": []
 }
