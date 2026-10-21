@@ -224,3 +224,88 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
         assert len(repository.run_event(run["id"], "context_sources")["debug_issues"]) == 3
     finally:
         runtime.semantic.close()
+
+
+@pytest.mark.parametrize("with_history", [False, True])
+@pytest.mark.parametrize("defect", ["range", "version", "workspace"])
+async def test_exhausted_source_repairs_keep_flow_and_disable_only_unverified_links(
+    services, monkeypatch, with_history, defect
+):
+    paths, database, workspace, repository, memories, settings = services
+    seed_unrelated_records(database)
+    monkeypatch.setattr(SemanticRetrieval, "scores", lambda *_args: {})
+    settings.save(AppSettings(model=ModelSettings(context_tokens=32768, output_tokens=4096)))
+    document = json.loads(flow("Main 方法体为空；其余流程本轮尚未核实。").splitlines()[1])
+    invalid = {"path": "Program.cs", "start_line": 3, "end_line": 3}
+    if defect != "range":
+        invalid.update(start_line=2, end_line=2)
+        invalid["version" if defect == "version" else "source_workspace_id"] = "foreign"
+    document["blocks"][0]["steps"][0]["sources"].append(invalid)
+    draft = "```rich-content\n" + json.dumps(document, ensure_ascii=False) + "\n```"
+    answers = []
+
+    class Model(DeterministicModel):
+        def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            if any(isinstance(row, ToolMessage) and row.name == "read_source" for row in messages):
+                # 模拟模型补核对两次后仍沿用了历史范围或错误元数据，不能假装引用已通过。
+                answers.append(draft)
+                result = AIMessage(content=draft)
+            else:
+                result = AIMessage(
+                    content="",
+                    tool_calls=[
+                        {
+                            "id": "current-entry",
+                            "name": "read_source",
+                            "args": {"path": "Program.cs", "start_line": 2, "end_line": 2},
+                        }
+                    ],
+                )
+            return ChatResult(generations=[ChatGeneration(message=result)])
+
+    monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
+    runtime = AgentRuntime(paths, settings, workspace, repository, memories)
+    manager = RunManager(repository, runtime, settings)
+    thread_id = None
+    if with_history:
+        previous = repository.create_run(None, "以前的标定流程", [])
+        repository.finish(previous["id"], "旧范围。[旧引用](source:Program.cs#L3-L3)")
+        thread_id = previous["thread_id"]
+    run = repository.create_run(
+        thread_id,
+        QUESTION,
+        [],
+        {"use_knowledge": True, "use_deepwiki": False, "use_memory": False},
+    )
+    try:
+        manager.start(run)
+        await asyncio.wait_for(manager.tasks[run["id"]], timeout=20)
+        saved = repository.run(run["id"])
+        assert saved["status"] == "completed", saved.get("error")
+        answer = saved["answer"]
+        documents = [doc for _, _, doc in rich_documents(answer)]
+        assert documents and all(doc is not None for doc in documents)
+        assert documents[0].blocks[0].type == "step_flow"
+        assert (
+            documents[0].blocks[0].steps[0].description == "Main 方法体为空；其余流程本轮尚未核实。"
+        )
+        assert "引用未核对" in answer and "源码核对提示" in answer
+        assert len(answers) == 3
+        # 同一路径/行号有伪造版本时全部停用，避免为冲突来源背书。
+        pointers = list(source_pointers(answer))
+        assert len(pointers) == (1 if defect == "range" else 0)
+        assert not pointers or pointers[0].start_line == 2
+        validation = repository.run_event(run["id"], "answer_validation")
+        assert not validation["passed"] and any(not row["valid"] for row in validation["citations"])
+        events = repository.events(run["id"])
+        assert not any(
+            event["kind"] in {"token", "knowledge_selection", "source_review"} for event in events
+        )
+        assert [
+            event["payload"]["text"] for event in events if event["kind"] == "answer_replace"
+        ] == [answer]
+        assert repository.thread(run["thread_id"])["messages"][-1]["content"] == answer
+        assert [event async for event in manager.stream(run["id"], after=0)] == events
+    finally:
+        await manager.shutdown()
+        runtime.semantic.close()

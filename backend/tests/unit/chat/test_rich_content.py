@@ -187,7 +187,10 @@ def test_structured_source_runs_through_existing_evidence_guard(services):
     lowered = disable_invalid_citations(
         invalid, {row["target"] for row in report["citations"] if not row["valid"]}
     )
-    assert "引用未核对" in lowered and "rich-content" not in lowered
+    assert "引用未核对" in lowered
+    document = next(doc for _, _, doc in rich_documents(lowered))
+    assert document.blocks[0].type == "step_flow"
+    assert document.blocks[0].steps[0].sources == []
 
 
 @pytest.mark.parametrize(

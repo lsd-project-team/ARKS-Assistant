@@ -16,6 +16,7 @@ from app.modules.chat.rich_presentation import (
     source_pointers,
     source_text,
 )
+from app.modules.chat.rich_sources import rewrite_source_citations
 from app.modules.source_analysis.location import resolve_source_path
 
 CITATION = re.compile(r"(?<!\\)\[([^\]\n]+)\]\(source:([^\s)]+)\)")
@@ -46,12 +47,20 @@ def citation_matches(text):
 
 
 def disable_invalid_citations(text, invalid):
-    if invalid:
-        text = project_rich_content(text)
-    for match in reversed(citation_matches(text)):
-        if match[2] in invalid:
-            text = text[: match.start()] + f"{match[1]}（引用未核对）" + text[match.end() :]
-    return text
+    if not invalid:
+        return text
+
+    def rewrite_markdown(prose):
+        for match in reversed(citation_matches(prose)):
+            if match[2] in invalid:
+                prose = prose[: match.start()] + f"{match[1]}（引用未核对）" + prose[match.end() :]
+        return prose
+
+    return rewrite_source_citations(
+        text,
+        rewrite_markdown,
+        lambda source: citation_matches(source_text(source))[0][2] in invalid,
+    )
 
 
 def mark_unknown_conclusions(text, review):

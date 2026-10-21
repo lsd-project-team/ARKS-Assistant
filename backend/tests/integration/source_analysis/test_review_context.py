@@ -2,6 +2,7 @@
 
 import json
 
+import pytest
 from langchain.agents.middleware.types import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
@@ -9,6 +10,7 @@ from pydantic import Field
 
 from app.agents.runtime.engine import AgentRuntime
 from app.modules.chat.models import Run
+from app.modules.chat.rich_presentation import rich_documents, source_pointers
 from app.modules.projects.models import Project
 from app.modules.source_analysis.evidence import SourceEvidence, SourceEvidenceGuard, source_excerpt
 from app.modules.source_analysis.review import review_answer
@@ -97,7 +99,10 @@ async def test_verified_empty_file_is_provided_without_inventing_a_source_line(s
     assert block["path"] == "Empty.cs" and block["empty_file"] and block["lines"] == []
 
 
-async def test_source_changed_during_review_cannot_keep_a_passed_review_or_stale_link(services):
+@pytest.mark.parametrize("rich", [False, True])
+async def test_source_changed_during_review_cannot_keep_a_passed_review_or_stale_link(
+    services, rich
+):
     workspace = services[2]
     events = []
     evidence = SourceEvidence(workspace, lambda *event: events.append(event), required=True)
@@ -109,7 +114,33 @@ async def test_source_changed_during_review_cannot_keep_a_passed_review_or_stale
             return await super().ainvoke(messages, **options)
 
     async def handler(_request):
-        return ModelResponse(result=[AIMessage(content="入口见[原件](source:Program.cs#L2)。")])
+        content = "入口见[原件](source:Program.cs#L2)。"
+        if rich:
+            content = (
+                "```rich-content\n"
+                + json.dumps(
+                    {
+                        "version": 1,
+                        "blocks": [
+                            {
+                                "id": "flow",
+                                "type": "step_flow",
+                                "steps": [
+                                    {
+                                        "id": "one",
+                                        "title": "入口",
+                                        "description": "本轮只核实调用点。",
+                                        "sources": [{"path": "Program.cs", "start_line": 2}],
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n```"
+            )
+        return ModelResponse(result=[AIMessage(content=content)])
 
     response = await SourceEvidenceGuard(evidence, ChangedReviewer()).awrap_model_call(
         ModelRequest(model=DeterministicModel(), messages=[]),
@@ -123,6 +154,10 @@ async def test_source_changed_during_review_cannot_keep_a_passed_review_or_stale
         and "source:Program.cs#L2" not in response.result[0].text
     )
     assert "引用未核对" in response.result[0].text
+    if rich:
+        document = next(doc for _, _, doc in rich_documents(response.result[0].text))
+        assert document.blocks[0].type == "step_flow"
+        assert not list(source_pointers(response.result[0].text))
 
 
 async def test_resumed_run_restores_only_the_change_reference_and_reloads_current_archive(
