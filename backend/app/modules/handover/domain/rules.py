@@ -1,7 +1,5 @@
 """引用校验、依赖闭环与人工确认门槛，不把 AI 推断当成验收。"""
 
-LAYERS = ["source", "interface", "offline", "simulation", "bench", "device", "release"]
-
 
 def linked_ids(payload):
     result = {item["record_id"] for item in payload.get("evidence", [])}

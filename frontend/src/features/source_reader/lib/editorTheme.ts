@@ -4,7 +4,6 @@ import codexDark from '../../../shared/assets/code-theme/codex-dark.json';
 
 export const SOURCE_THEME = 'workspace-codex-light';
 export const SOURCE_DARK_THEME = 'workspace-codex-dark';
-export const SOURCE_LINE_HEIGHT = 21.6;
 
 // 使用本机 Codex Light 的声明式主题配置，避免手工近似配色丢失语言细节。
 export const sourceTheme: ThemeRegistration = { ...codexLight, name: SOURCE_THEME, type: 'light' };

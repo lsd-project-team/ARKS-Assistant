@@ -23,20 +23,6 @@ SEARCH_FIELDS = {
     "investigation": 1,
     "device": 3,
 }
-STOP_TERMS = {
-    "什么",
-    "问题",
-    "怎么",
-    "如何",
-    "我们",
-    "这个",
-    "发生",
-    "一样",
-    "出现",
-    "记录",
-    "解决",
-    "一下",
-}
 READ_FIELDS = {
     "problem": "记录正文",
     "module": "模块",

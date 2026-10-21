@@ -340,9 +340,6 @@ class Repository:
             session.flush()
             return record_dict(row)
 
-    def search_history(self, thread_id: str, query: str, offset=0, limit=20) -> list[dict]:
-        return self.history.search(thread_id, query, offset, limit)["matches"]
-
     def has_active_run(self, thread_id: str) -> bool:
         self.catalog.get(thread_id)
         with self.database.session() as session:

@@ -1,7 +1,6 @@
 """项目资料与用户确认的结论；检索只读，资料内容不作为 Agent 指令。"""
 
 import asyncio
-import re
 
 from langchain_core.tools import tool
 from sqlalchemy import func, select
@@ -144,17 +143,6 @@ class Materials:
             row.updated_at = now_iso()
             self._revision(session, row)
             return record_dict(row)
-
-
-def query_terms(query):
-    tokens = re.findall(r"[a-z0-9_]{2,}|[\u4e00-\u9fff]+", query.casefold())
-    result = set()
-    for token in tokens:
-        if re.fullmatch(r"[\u4e00-\u9fff]+", token):
-            result.update(token[index : index + 2] for index in range(len(token) - 1))
-        else:
-            result.add(token)
-    return sorted(result)[:80]
 
 
 class MaterialCorpus:

@@ -136,8 +136,7 @@
   line-height: 1.5;
   margin: 0 0 16px;
 }
-.handover-panel h3,
-.handover-group h3 {
+.handover-panel h3 {
   font-size: 14px;
   font-weight: 600;
   margin: 20px 0 12px;
@@ -157,13 +156,11 @@
 .handover-panel > header h2 {
   margin-bottom: 4px;
 }
-.handover-panel > header > div,
-.handover-group-heading > div {
+.handover-panel > header > div {
   flex: 1;
   min-width: 0;
 }
-.handover-panel > header > .button,
-.handover-group-heading > .button {
+.handover-panel > header > .button {
   flex-shrink: 0;
 }
 .handover-empty-state {
@@ -276,8 +273,7 @@
   background: color-mix(in srgb, var(--handover-warning) 9%, var(--panel));
   border-color: color-mix(in srgb, var(--handover-warning) 22%, var(--panel));
 }
-.handover-page-heading,
-.handover-group-heading {
+.handover-page-heading {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -298,8 +294,7 @@
 .handover-page-heading-compact h2 {
   margin: 0;
 }
-.handover-page-heading p,
-.handover-group-heading p {
+.handover-page-heading p {
   margin: 0;
   font-size: 13px;
   color: var(--text-secondary);
@@ -311,12 +306,6 @@
   margin-right: 6px;
   min-height: 38px;
   font-size: 13px;
-}
-.handover-count {
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 400;
-  font-variant-numeric: tabular-nums;
 }
 .handover-toolbar {
   display: flex;
@@ -380,38 +369,6 @@
   text-align: center;
   color: var(--text-secondary);
   line-height: 1.8;
-}
-.handover-empty-small {
-  text-align: left;
-  padding: 18px;
-  border: 1px dashed var(--border);
-  border-radius: 10px;
-  background: var(--surface-subtle);
-}
-.handover-group {
-  margin-bottom: 16px;
-  padding: 22px 24px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-.handover-group-heading {
-  margin-bottom: 16px;
-}
-.handover-group-heading h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 6px;
-  font-size: 16px;
-}
-.handover-group-empty {
-  margin: 0;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: var(--surface-subtle);
-  color: var(--text-secondary);
-  font-size: 13px;
 }
 .handover-result-count {
   color: var(--text-secondary);
@@ -553,9 +510,6 @@
 }
 .handover-detail {
   width: min(1000px, calc(100vw - 32px));
-}
-.handover-chooser {
-  width: min(720px, calc(100vw - 32px));
 }
 .handover-modal fieldset {
   padding: 0;

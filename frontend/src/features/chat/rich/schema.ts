@@ -1,4 +1,4 @@
-import type { ContentBlock, RichDocument, SourcePointer } from './types.ts';
+import type { RichDocument, SourcePointer } from './types.ts';
 
 export const RICH_LIMITS = { bytes: 262144, blocks: 128, depth: 4 } as const;
 type ObjectValue = Record<string, unknown>;
@@ -198,14 +198,5 @@ export function parseDocument(
     return { document: validateDocument(JSON.parse(json)) };
   } catch (error) {
     return { error: error instanceof Error ? error.message : '内容格式无效' };
-  }
-}
-
-export function isContentBlock(value: unknown): value is ContentBlock {
-  try {
-    validateDocument({ version: 1, blocks: [value] });
-    return true;
-  } catch {
-    return false;
   }
 }

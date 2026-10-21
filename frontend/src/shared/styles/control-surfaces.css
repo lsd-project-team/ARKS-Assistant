@@ -14,7 +14,6 @@
     .thread-menu,
     .file-menu,
     .account-menu,
-    .source-options-popup,
     .composer-commands
   ) {
   border: 1px solid var(--border);
@@ -30,7 +29,6 @@
     .thread-menu,
     .file-menu,
     .account-menu,
-    .source-options-popup,
     .composer-commands
   ) {
   border-radius: var(--popup-radius);

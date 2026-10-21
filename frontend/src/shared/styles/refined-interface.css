@@ -173,7 +173,7 @@ textarea::placeholder {
 .legacy-visual .app-navigation .thread-row.active .thread-title {
   font-weight: 500;
 }
-.legacy-visual .app-navigation :is(.sidebar-heading strong, .section-label) {
+.legacy-visual .app-navigation .sidebar-heading strong {
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
