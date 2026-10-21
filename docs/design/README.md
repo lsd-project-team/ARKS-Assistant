@@ -1,12 +1,12 @@
 # ZX2200设计文档
 
-2026年10月21日复核。两册分别交付；纠偏分册校订术语、吸嘴校准角度约定与公式符号。
+2026年10月21日修订。两册独立交付，源码深核限定在trunk/AKRS.ZX2200。
 
-| 当前分册 | PDF | Word | 配套资料 |
+| 当前分册 | PDF | Word | 修订与核查资料 |
 |---|---|---|---|
-| Transport Unit 第6版 | [阅读PDF](transport-unit/v6/TransportUnit设计文档.pdf) | [编辑Word](transport-unit/v6/TransportUnit设计文档.docx) | [内容与检查记录](transport-unit/v6/README.md) |
-| 纠偏过程 第2.1版 | [阅读PDF](correction-process/v2/纠偏过程设计文档.pdf) | [编辑Word](correction-process/v2/纠偏过程设计文档.docx) | [内容与检查记录](correction-process/v2/README.md) |
+| Transport Unit 第7版 | [阅读PDF](transport-unit/v7/TransportUnit设计文档.pdf) | [编辑Word](transport-unit/v7/TransportUnit设计文档.docx) | [本册资料](transport-unit/v7/README.md) |
+| 纠偏过程 第3版 | [阅读PDF](correction-process/v3/纠偏过程设计文档.pdf) | [编辑Word](correction-process/v3/纠偏过程设计文档.docx) | [本册资料](correction-process/v3/README.md) |
 
-TU分册解释产品对象、坐标、初始化、跨工位生命周期、接口与边界；纠偏分册解释产品定位、上视及中转台的采集、计算、结果使用与失败路径。先读含义再读实现，两类读者可沿各册编写说明选择阅读路径。
+TU册按对象、数据、坐标、构建、生命周期和接口展开，补充搜索补料、镜像标记和Mapping重建。纠偏册覆盖供料、八个产品定位动作、上视、中转台、手动测试差异及运行补偿。正式阅读稿保留设计内容，制作和核查说明统一外置。
 
-本轮重点见[要求对照与修订记录](publication-acceptance.md)。两册保存源码依据、算例、图源与最终校样记录。基于源码静态追踪及独立复算，未执行独立读者试读、用户验收或设备试验。
+本轮分别完成源码静态核查、独立算例与最终全页校样，记录见[要求对照](publication-acceptance.md)。旧版保留；未运行设备或C#业务流程，用户验收与设备验证另行进行。

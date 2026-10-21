@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040"><rect width="100%" height="100%" fill="white"/>
+<text x="320" y="85" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">拍照目标</text>
+<rect x="60" y="170" width="450" height="200" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="285.0" y="270.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">本层示教点</text>
+<polyline points="510,270 670,270" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="670,270 649.2897166458885,280.0042072845583 649.2897166458885,259.9957927154417" fill="#315d82"/>
+<rect x="670" y="170" width="450" height="200" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="895.0" y="270.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">父链转换到 G0</text>
+<polyline points="1120,270 1280,270" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1280,270 1259.2897166458883,280.0042072845583 1259.2897166458883,259.9957927154417" fill="#315d82"/>
+<rect x="1280" y="170" width="450" height="200" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1505.0" y="270.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">减头相机差 H</text>
+<polyline points="1730,270 1890,270" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1890,270 1869.2897166458883,280.0042072845583 1869.2897166458883,259.9957927154417" fill="#315d82"/>
+<rect x="1890" y="170" width="450" height="200" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="2115.0" y="270.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">相机移动并识别</text>
+<text x="320" y="555" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">结果回写</text>
+<rect x="60" y="640" width="450" height="200" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="285.0" y="740.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">图像像素结果</text>
+<polyline points="510,740 670,740" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="670,740 649.2897166458885,750.0042072845583 649.2897166458885,729.9957927154417" fill="#315d82"/>
+<rect x="670" y="640" width="450" height="200" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="895.0" y="740.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">标定与拍照位</text>
+<polyline points="1120,740 1280,740" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1280,740 1259.2897166458883,750.0042072845583 1259.2897166458883,729.9957927154417" fill="#315d82"/>
+<rect x="1280" y="640" width="450" height="200" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1505.0" y="740.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">加头相机差 H</text>
+<polyline points="1730,740 1890,740" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1890,740 1869.2897166458883,750.0042072845583 1869.2897166458883,729.9957927154417" fill="#315d82"/>
+<rect x="1890" y="640" width="450" height="200" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="2115.0" y="740.0" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">转局部并保存</text>
+<text x="1200" y="480" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">像素 → 标定后的物理量 → G0 → 对象局部</text>
+<text x="1200" y="950" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">H 在两条路径分别减去和加回   S1采用独立参考转换</text></svg>
