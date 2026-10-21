@@ -34,10 +34,23 @@ class Reviewer:
         return AIMessage(content=value if isinstance(value, str) else json.dumps(value))
 
 
-async def call(reviewer, text="本次记录216颗无刺穿。" + REF, records=RECORDS, limit=10000):
+async def call(
+    reviewer,
+    text="本次记录216颗无刺穿。" + REF,
+    records=RECORDS,
+    limit=10000,
+    *,
+    question="总结试验",
+    source_required=False,
+):
     events = []
     guard = KnowledgeAnswerGuard(
-        reviewer, "总结试验", lambda: records, lambda *e: events.append(e), limit
+        reviewer,
+        question,
+        lambda: records,
+        lambda *e: events.append(e),
+        limit,
+        source_required=source_required,
     )
 
     async def handler(_request):
@@ -46,7 +59,7 @@ async def call(reviewer, text="本次记录216颗无刺穿。" + REF, records=RE
         )
 
     response = await guard.awrap_model_call(
-        ModelRequest(model=DeterministicModel(), messages=[HumanMessage(content="总结试验")]),
+        ModelRequest(model=DeterministicModel(), messages=[HumanMessage(content=question)]),
         handler,
     )
     return response.result[0].text, events
@@ -261,7 +274,7 @@ async def test_code_examples_or_invalid_rich_content_do_not_bypass_knowledge_rev
 async def test_mixed_source_and_knowledge_answer_still_receives_fact_review(source):
     text = source + "\n\n本次记录216颗无刺穿。" + REF
     reviewer = Reviewer()
-    answer, _ = await call(reviewer, text)
+    answer, _ = await call(reviewer, text, source_required=True, question="设备标定流程及历史经验")
     assert answer == text
     assert [purpose for purpose, _ in reviewer.requests] == [
         "knowledge_selection",
@@ -284,3 +297,47 @@ async def test_unselected_knowledge_reference_inside_rich_text_is_still_rejected
         "knowledge_verification",
         "knowledge_verification",
     ]
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "本轮源码流程草稿尚缺引用。",
+        RICH_SOURCE.replace(
+            '"sources":[{"path":"Program.cs","start_line":1,"end_line":3}]', '"sources":[]'
+        ),
+    ],
+)
+@pytest.mark.parametrize("selection", [{"selections": []}, "not json", RuntimeError("secret")])
+async def test_source_task_missing_citations_is_left_to_source_guard_instead_of_empty_knowledge(
+    text, selection
+):
+    reviewer = Reviewer(selection=selection)
+    answer, events = await call(
+        reviewer, text, source_required=True, question="我想在做设备标定，给我输出一下标定流程"
+    )
+    assert answer == text and reviewer.requests == []
+    assert events[-1][1]["verdict"] == "skipped"
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "给我设备标定流程的历史记录原文",
+        "查一下标定经验",
+        "展示记录文字和原图",
+    ],
+)
+async def test_explicit_historical_request_is_not_exempted_by_source_requirement(question):
+    reviewer = Reviewer(selection={"selections": []})
+    answer, _ = await call(reviewer, source_required=True, question=question)
+    assert "没有选到" in answer and "216颗" not in answer
+    assert [purpose for purpose, _ in reviewer.requests] == ["knowledge_selection"]
+
+
+@pytest.mark.parametrize("question", ["给出 Program.cs 原文", "逐字输出设备标定流程源码"])
+async def test_source_verbatim_request_is_not_misclassified_as_historical_material(question):
+    reviewer = Reviewer(selection={"selections": []})
+    original = "代码原文待补齐引用。"
+    answer, _ = await call(reviewer, original, source_required=True, question=question)
+    assert answer == original and reviewer.requests == []

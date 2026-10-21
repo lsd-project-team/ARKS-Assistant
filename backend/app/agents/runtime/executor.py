@@ -75,28 +75,44 @@ class AgentRunExecutor:
                 emit("stage", {"stage": "reading_source", "detail": "补齐选区上下文并核对调用关系"})
             available = input_budget(settings.context_tokens, settings.output_tokens)
             evidence.audit_input_limit = available
-            previous_run = run.get("resumed_from")
+            previous_run = run.get("resumed_from") or run.get("regenerated_from")
+            reuse_reason = "resume" if run.get("resumed_from") else "regenerate"
+            visited_runs = set()
             while previous_run:
+                if previous_run in visited_runs:
+                    break
+                visited_runs.add(previous_run)
                 cursor = 0
                 while True:
                     events = runtime.repository.events(previous_run, cursor)
                     for event in events:
                         if event["kind"] == "code_change_reference":
-                            evidence.observe_code_change(event["payload"]["id"])
+                            if run.get("resumed_from"):
+                                evidence.observe_code_change(event["payload"]["id"])
                             continue
                         if event["kind"] != "source_evidence":
                             continue
                         row = event["payload"]
                         try:
-                            if runtime.workspace.read(row["path"])["version"] == row["version"]:
-                                evidence.reads.append(row)
-                                emit("source_evidence", {**row, "reason": "resume"})
+                            current_source = runtime.workspace.read(row["path"])
+                            if current_source["version"] != row["version"] or (
+                                row.get("source_workspace_id")
+                                and row["source_workspace_id"]
+                                != current_source.get("source_workspace_id")
+                            ):
+                                continue
+                            # 重新生成沿用同一模型检查点；同版本、同目录的历史已读范围需同步登记。
+                            restored = {**row, "reason": reuse_reason}
+                            if restored not in evidence.reads:
+                                evidence.reads.append(restored)
+                                emit("source_evidence", restored)
                         except (ValueError, OSError):
                             pass
                     if len(events) < 500:
                         break
                     cursor = events[-1]["sequence"]
-                previous_run = runtime.repository.run(previous_run).get("resumed_from")
+                linked = runtime.repository.run(previous_run)
+                previous_run = linked.get("resumed_from") or linked.get("regenerated_from")
             verified_context = await evidence.prepare(
                 message["selections"], max_tokens=min(4000, max(0, available // 5))
             )

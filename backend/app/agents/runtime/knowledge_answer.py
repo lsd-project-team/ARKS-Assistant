@@ -49,9 +49,10 @@ def factual_result(result):
 
 
 class KnowledgeAnswerGuard(AgentMiddleware):
-    def __init__(self, model, question, sources, emit, input_limit):
+    def __init__(self, model, question, sources, emit, input_limit, *, source_required=False):
         self.model, self.question, self.sources, self.emit = model, question, sources, emit
         self.calls = ReviewCalls(model, emit, input_limit)
+        self.source_required = source_required
 
     def unavailable(self, stage, code):
         self.emit("knowledge_stage_error", {"stage": stage, "code": code})
@@ -121,7 +122,9 @@ class KnowledgeAnswerGuard(AgentMiddleware):
         records = self.sources()
         if not records:
             return response
-        if source_only_answer(answer.text):
+        if source_only_answer(
+            answer.text, source_required=self.source_required, question=self.question
+        ):
             # 自动带入的无关经验不能接管源码回答；含经验引用的混合回答仍须核查。
             self.emit(
                 "knowledge_answer_review",

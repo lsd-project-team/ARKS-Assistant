@@ -73,10 +73,18 @@ def selected_records(result, records):
     return selected
 
 
-def source_only_answer(answer):
-    """按实际引用分流；识别来源不等于验真，源码仍由外层引用与语义核查负责。"""
+def source_only_answer(answer, *, source_required=False, question=""):
+    """源码任务缺引用时仍交给源码核查；无关经验不能抢先替换待修正的正文。"""
     prose = CODE.sub("", project_rich_content(answer))
-    return bool(citation_matches(prose)) and not re.search(r"debug-issue:[\w-]+/\d+", prose)
+    # 明确查询历史经验或原始记录时沿用经验核查；两类引用混用时也不能跳过经验事实核查。
+    source_task = source_required and not re.search(
+        r"经验|原图|记录文字|调试记录|(?:历史|以前|以往).*(?:记录|试验)"
+        r"|(?:记录|资料).*(?:原文|逐字)|(?:原文|逐字).*(?:记录|资料)",
+        question,
+    )
+    return bool(citation_matches(prose) or source_task) and not re.search(
+        r"debug-issue:[\w-]+/\d+", prose
+    )
 
 
 def scope_problems(question, answer, records):

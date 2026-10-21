@@ -308,6 +308,7 @@ class AgentGraphBuilder:
                     lambda: debug_issues.review_records(debug_references) if debug_issues else [],
                     emit,
                     available,
+                    source_required=bool(evidence and evidence.required),
                 ),
                 FlowAnswerDraft(
                     None if inspection else model, question_text or "", evidence, emit, available
