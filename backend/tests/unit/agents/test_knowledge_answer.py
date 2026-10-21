@@ -8,6 +8,7 @@ from langchain.agents.middleware.types import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage
 
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
+from app.modules.chat.rich_presentation import project_rich_content
 from tests.helpers.models import DeterministicModel, fixture_selections
 
 REF = "[试验 · v1](debug-issue:case/1)"
@@ -214,3 +215,72 @@ async def test_tool_call_response_is_left_to_tools_instead_of_reviewed_as_answer
     )
     answer, events = await call(reviewer, message)
     assert answer == "" and events == [] and reviewer.requests == []
+
+
+SOURCE = "[源码](source:Program.cs#L1-L3)"
+RICH_SOURCE = (
+    '```rich-content\n{"version":1,"blocks":[{"id":"s","type":"step_flow",'
+    '"steps":[{"id":"one","title":"入口","description":"保存参数",'
+    '"sources":[{"path":"Program.cs","start_line":1,"end_line":3}]}]}]}\n```'
+)
+
+
+@pytest.mark.parametrize("text", ["准备标定。" + SOURCE, RICH_SOURCE])
+@pytest.mark.parametrize("selection", [{"selections": []}, "not json", RuntimeError("secret")])
+async def test_source_answer_is_not_replaced_by_unrelated_knowledge_or_selection_failure(
+    text, selection
+):
+    reviewer = Reviewer(selection=selection)
+    answer, events = await call(reviewer, text)
+    assert answer == text and reviewer.requests == []
+    assert events == [
+        (
+            "knowledge_answer_review",
+            {"verdict": "skipped", "reason": "源码回答由源码核查处理", "references": []},
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    "fake_source",
+    [
+        "source:Program.cs#L1-L3",
+        "`" + SOURCE + "`",
+        "```text\n" + SOURCE + "\n```",
+        RICH_SOURCE.replace('"version":1', '"version":9'),
+    ],
+)
+async def test_code_examples_or_invalid_rich_content_do_not_bypass_knowledge_review(fake_source):
+    reviewer = Reviewer(selection={"selections": []})
+    answer, _ = await call(reviewer, "候选记录。\n\n" + fake_source)
+    assert "没有选到" in answer
+    assert [purpose for purpose, _ in reviewer.requests] == ["knowledge_selection"]
+
+
+@pytest.mark.parametrize("source", [SOURCE, RICH_SOURCE])
+async def test_mixed_source_and_knowledge_answer_still_receives_fact_review(source):
+    text = source + "\n\n本次记录216颗无刺穿。" + REF
+    reviewer = Reviewer()
+    answer, _ = await call(reviewer, text)
+    assert answer == text
+    assert [purpose for purpose, _ in reviewer.requests] == [
+        "knowledge_selection",
+        "knowledge_verification",
+    ]
+
+
+async def test_unselected_knowledge_reference_inside_rich_text_is_still_rejected():
+    document = {
+        "version": 1,
+        "blocks": [{"id": "text", "type": "text", "content": "其他记录。" + REF}],
+    }
+    text = RICH_SOURCE + "\n```rich-content\n" + json.dumps(document) + "\n```"
+    reviewer = Reviewer(selection={"selections": []})
+    answer, _ = await call(reviewer, text)
+    assert REF not in project_rich_content(answer)
+    assert "资料筛选暂未完成" in answer
+    assert [purpose for purpose, _ in reviewer.requests] == [
+        "knowledge_selection",
+        "knowledge_verification",
+        "knowledge_verification",
+    ]
