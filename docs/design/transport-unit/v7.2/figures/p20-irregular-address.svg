@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1000" viewBox="0 0 2400 1000"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">实际节点树决定数量 配置名称决定工艺关联</text>
+<rect x="80" y="160" width="920" height="150" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="540.0" y="205.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">TU N1</text>
+<text x="540.0" y="273.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">下层两块基板  总计13个对象</text>
+<rect x="80" y="360" width="430" height="150" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="295.0" y="405.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板1</text>
+<text x="295.0" y="473.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">2个岛 / 2个A点</text>
+<rect x="570" y="360" width="430" height="150" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="785.0" y="405.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板2</text>
+<text x="785.0" y="473.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">3个岛 / 3个A点</text>
+<polyline points="540,310 540,335 295,335 295,360" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="295,360 284.9957927154417,339.28971664588846 305.0042072845583,339.28971664588846" fill="#4d6070"/>
+<polyline points="540,335 785,335 785,360" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="785,360 774.9957927154417,339.28971664588846 795.0042072845583,339.28971664588846" fill="#4d6070"/>
+<rect x="80" y="650" width="920" height="160" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="540" y="700" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">各A点可引用同一个ConfigName</text>
+<text x="540" y="765" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">Info与工序记录仍归各自运行节点</text>
+<polyline points="295,510 295,650" fill="none" stroke="#4d6070" stroke-width="4" stroke-dasharray="12 12"/>
+<polygon points="295,650 284.9957927154417,629.2897166458885 305.0042072845583,629.2897166458885" fill="#4d6070"/>
+<polyline points="785,510 785,650" fill="none" stroke="#4d6070" stroke-width="4" stroke-dasharray="12 12"/>
+<polygon points="785,650 774.9957927154417,629.2897166458885 795.0042072845583,629.2897166458885" fill="#4d6070"/>
+<text x="1725" y="200" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">基板1 / 基岛2 / A</text>
+<text x="1700" y="335" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">TU (100,200) + 基板1 (20,0)</text>
+<text x="1700" y="445" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">+ 岛2 (10,5) + A (2,1)</text>
+<text x="1700" y="560" fill="#245b87" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">G0 = (132,206) mm</text>
+<text x="1700" y="710" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">基板定位 +0.1X → (132.1,206)</text>
+<text x="1700" y="840" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">Refresh → (132,206)</text>
+<text x="1200" y="930" fill="#4d6070" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">树图和坐标为说明模型  不按实物比例绘制</text></svg>

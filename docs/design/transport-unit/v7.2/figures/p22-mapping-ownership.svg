@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1240" viewBox="0 0 2400 1240"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central">配方参与范围与本产品进度分别维护</text>
+<rect x="70" y="190" width="660" height="210" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="400.0" y="261.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">新配方 Mapping</text>
+<text x="400.0" y="329.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">窗口样本TU</text>
+<rect x="875" y="190" width="660" height="210" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1205.0" y="261.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">OtherConfig</text>
+<text x="1205.0" y="329.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">内存参与状态</text>
+<rect x="1680" y="190" width="650" height="210" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2005.0" y="261.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">后续新建TU</text>
+<text x="2005.0" y="329.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">ModifyMatter读取</text>
+<polyline points="730,295 875,295" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="875,295 854.2897166458885,305.0042072845583 854.2897166458885,284.9957927154417" fill="#4d6070"/>
+<polyline points="1535,295 1680,295" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1680,295 1659.2897166458883,305.0042072845583 1659.2897166458883,284.9957927154417" fill="#4d6070"/>
+<text x="1200" y="490" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">关闭且 IsChange → SaveInformation</text>
+<rect x="70" y="690" width="660" height="210" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="400.0" y="761.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">生产 Mapping</text>
+<text x="400.0" y="829.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">区段当前TU</text>
+<rect x="875" y="690" width="660" height="210" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1205.0" y="761.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">本产品参与状态</text>
+<text x="1205.0" y="829.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">焊点完成字典</text>
+<rect x="1680" y="690" width="650" height="210" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2005.0" y="761.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">后续生产判断</text>
+<text x="2005.0" y="829.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">读取当前记录</text>
+<polyline points="730,795 875,795" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="875,795 854.2897166458885,805.0042072845583 854.2897166458885,784.9957927154417" fill="#4d6070"/>
+<polyline points="1535,795 1680,795" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1680,795 1659.2897166458883,805.0042072845583 1659.2897166458883,784.9957927154417" fill="#4d6070"/>
+<text x="1200" y="1015" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">配方界面关闭且任一区段有TU时，可进入清空确认</text>
+<text x="1200" y="1120" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">确认、机器状态与保存结果分别影响实际出口</text></svg>

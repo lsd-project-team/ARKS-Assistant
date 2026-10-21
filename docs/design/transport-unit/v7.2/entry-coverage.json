@@ -1,0 +1,4919 @@
+{
+  "scope": "trunk/AKRS.ZX2200",
+  "method": "方法级列出入口、区段赋值、刷新与配置辅助；仅匹配和归属不等于完整语义读取",
+  "known_unassigned_entries": [],
+  "entries": [
+    {
+      "file": "BondSystem/Controllers/System2Controller.Assistant.cs",
+      "method": "PlacementTest",
+      "start": 659,
+      "end": 942,
+      "compiled": true,
+      "kind": "手动贴片",
+      "sections": "6.11、纠偏分册手动贴片",
+      "note": "此处TU赋值是当前单例区段引用回赋，不宣称独立新建",
+      "assignments": [
+        {
+          "line": 832,
+          "target": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit =\r\n                TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit"
+        }
+      ],
+      "calls": [
+        {
+          "line": 668,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 670,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 681,
+          "condition": "!System2Domain.GetInstance().System2MatterVision(substrate)"
+        },
+        {
+          "line": 688,
+          "condition": "!System2Domain.GetInstance().System2MatterVision(module)"
+        },
+        {
+          "line": 696,
+          "condition": "!System2Domain.GetInstance().System2MatterVision(bondPosition)"
+        },
+        {
+          "line": 705,
+          "condition": "(bondType == BondTypeEnum.DipFluxOnTU || bondType == BondTypeEnum.BondOnTU) && component.DipMode == DipModeEnum.BeforeAccuracyMode"
+        },
+        {
+          "line": 714,
+          "condition": "dialog == DialogResult.Yes"
+        },
+        {
+          "line": 720,
+          "condition": "component.IsActiveComponentDetection"
+        },
+        {
+          "line": 726,
+          "condition": "hasComponent == false"
+        },
+        {
+          "line": 754,
+          "condition": "component.AccuracyMode != AccuracyModeEnum.Off"
+        },
+        {
+          "line": 766,
+          "condition": "res.excuteResult != ExcuteResult.Success"
+        },
+        {
+          "line": 786,
+          "condition": "(bondType == BondTypeEnum.DipFluxOnTU || bondType == BondTypeEnum.BondOnTU) && component.DipMode == DipModeEnum.AfterAccuracyMode"
+        },
+        {
+          "line": 794,
+          "condition": "dialog == DialogResult.Yes"
+        },
+        {
+          "line": 800,
+          "condition": "component.IsActiveComponentDetection"
+        },
+        {
+          "line": 805,
+          "condition": "hasComponent == false"
+        },
+        {
+          "line": 854,
+          "condition": "component.BondingForceMode != ForceModeEnum.Force"
+        },
+        {
+          "line": 883,
+          "condition": "ret == false"
+        },
+        {
+          "line": 909,
+          "condition": "component.IsActiveComponentDetection && bondType != BondTypeEnum.DipFluxOnTU"
+        },
+        {
+          "line": 911,
+          "condition": "this.bondHeadController.ComponentCheckAfterBonding(this.bondHeadController.GetCurrentNozzle())\r\n                    == false"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmModuleSelect.cs",
+      "method": "FrmModuleSelect",
+      "start": 43,
+      "end": 52,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 50,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmModuleSelect.cs",
+      "method": "FrmModuleSelect",
+      "start": 68,
+      "end": 75,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 74,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmModuleSelect.cs",
+      "method": "FrmModuleSelect_Load",
+      "start": 814,
+      "end": 821,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 816,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 817,
+          "condition": "this.transportUnit == null"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmRelativeBondTeach.cs",
+      "method": "Save",
+      "start": 185,
+      "end": 194,
+      "compiled": true,
+      "kind": "示教保存",
+      "sections": "6.6、7.1",
+      "note": "保存后UpdateTransportUnit重建运行树",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 193,
+          "callee": "UpdateTransportUnit",
+          "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.UpdateTransportUnit"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmTeachBondingPosition.cs",
+      "method": "Save",
+      "start": 390,
+      "end": 396,
+      "compiled": true,
+      "kind": "示教保存",
+      "sections": "6.6、7.1",
+      "note": "保存后UpdateTransportUnit重建运行树",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 395,
+          "callee": "UpdateTransportUnit",
+          "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.UpdateTransportUnit"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "BondSystem/Controls/Setting/BondPosition/UcAddBondPosition.cs",
+      "method": "BtnDelete_Click",
+      "start": 186,
+      "end": 215,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 211,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 192,
+          "condition": "bondPositionConfig == null"
+        },
+        {
+          "line": 200,
+          "condition": "res == DialogResult.OK"
+        },
+        {
+          "line": 209,
+          "condition": "TransportDomain.GetInstance().TransportController.IsExistTu"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Setting/BondPosition/UcAddBondPosition.cs",
+      "method": "GcBondPosition_DoubleClick",
+      "start": 331,
+      "end": 395,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 387,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 336,
+          "condition": "bondPositionConfig == null"
+        },
+        {
+          "line": 345,
+          "condition": "string.IsNullOrEmpty(createName)"
+        },
+        {
+          "line": 350,
+          "condition": "createName == defaultName"
+        },
+        {
+          "line": 357,
+          "condition": "createName.Contains(rInvalidChar.ToString())"
+        },
+        {
+          "line": 365,
+          "condition": "createName.Length > 15"
+        },
+        {
+          "line": 373,
+          "condition": "this.bondPositionConfigList.Exists(it => it.Name == createName)"
+        },
+        {
+          "line": 385,
+          "condition": "TransportDomain.GetInstance().TransportController.IsExistTu"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Setting/PostBond/UcPostBondEdit.cs",
+      "method": "BtPostBondDoWork_Click",
+      "start": 160,
+      "end": 196,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 168,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 162,
+          "condition": "!this.postBondInspection.IsAssistantSucceed"
+        },
+        {
+          "line": 170,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 185,
+          "condition": "!TUAssistantHelper.System2VisionByPos(bondPosition)"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Services/System2TUService.cs",
+      "method": "GetSubstratePos",
+      "start": 21,
+      "end": 43,
+      "compiled": true,
+      "kind": "位置辅助",
+      "sections": "7.6",
+      "note": "当前固晶区段、配置点与返回参考系逐方法说明",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 26,
+          "condition": "transportUnit.GetSubstrate(index) == null"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Services/System2TUService.cs",
+      "method": "GetModulePos",
+      "start": 51,
+      "end": 74,
+      "compiled": true,
+      "kind": "位置辅助",
+      "sections": "7.6",
+      "note": "当前固晶区段、配置点与返回参考系逐方法说明",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 57,
+          "condition": "transportUnit.GetModule(substrateIndex, moduleIndex) == null"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Services/System2TUService.cs",
+      "method": "GetBondPositionVisionPos",
+      "start": 83,
+      "end": 118,
+      "compiled": true,
+      "kind": "位置辅助",
+      "sections": "7.6",
+      "note": "当前固晶区段、配置点与返回参考系逐方法说明",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 88,
+          "condition": "transportUnit.GetModule(substrateIndex, moduleIndex) == null"
+        },
+        {
+          "line": 96,
+          "condition": "transportUnit.GetBondPosition(substrateIndex, moduleIndex, bondPositionName) == null"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Services/System2TUService.cs",
+      "method": "GetBondPositionTeachPos",
+      "start": 127,
+      "end": 159,
+      "compiled": true,
+      "kind": "位置辅助",
+      "sections": "7.6",
+      "note": "当前固晶区段、配置点与返回参考系逐方法说明",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 132,
+          "condition": "transportUnit.GetModule(substrateIndex, moduleIndex) == null"
+        },
+        {
+          "line": 140,
+          "condition": "transportUnit.GetBondPosition(substrateIndex, moduleIndex, bondPositionName) == null"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Tasks/BondTask.cs",
+      "method": "DoWork",
+      "start": 100,
+      "end": 355,
+      "compiled": true,
+      "kind": "固晶生产及补偿模式",
+      "sections": "6.4、6.11",
+      "note": "字符串与System2构造的两个判断分别说明",
+      "assignments": [
+        {
+          "line": 189,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\")"
+        },
+        {
+          "line": 203,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit =\r\n                            new TransportUnit(CurrentMachineSystemEnum.System2)"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 120,
+          "condition": "this.Enable\r\n                    && System2Configuration.GetInstance().IsChangeNozzleAdvance\r\n                    && component != null"
+        },
+        {
+          "line": 136,
+          "condition": "this.system2Controller.IsNeedToChangeNozzle(component.NozzleName)"
+        },
+        {
+          "line": 140,
+          "condition": "ret == false"
+        },
+        {
+          "line": 154,
+          "condition": "!this.GetIncomingSignal()"
+        },
+        {
+          "line": 162,
+          "condition": "!TpMarkCompensate.PickUpCompensationVision(true)"
+        },
+        {
+          "line": 168,
+          "condition": "!this.system2Controller.System2TemperatureCompensation(true)"
+        },
+        {
+          "line": 174,
+          "condition": "!RealTimeCorrection.GetInstance().ScanReferencePoints(true)"
+        },
+        {
+          "line": 187,
+          "condition": "MachineStateModel.GetInstance().IsCompensateWork"
+        },
+        {
+          "line": 198,
+          "condition": "this.Enable"
+        },
+        {
+          "line": 200,
+          "condition": "!TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit.TransportUnitInfo.IsProduct\r\n                        && MachineHardwareConfiguration.GetInstance().IsTransportConfigured"
+        },
+        {
+          "line": 219,
+          "condition": "actionNode == null"
+        },
+        {
+          "line": 226,
+          "condition": "actionNode.IsDoWork()"
+        },
+        {
+          "line": 245,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSlideFluxerConfigured"
+        },
+        {
+          "line": 269,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSlideFluxerConfigured"
+        },
+        {
+          "line": 299,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSlideFluxerConfigured"
+        },
+        {
+          "line": 340,
+          "condition": "System2Configuration.GetInstance().IsSaveEjectionTimeData"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Tasks/BondTask.cs",
+      "method": "SendAway",
+      "start": 443,
+      "end": 489,
+      "compiled": true,
+      "kind": "固晶生产及补偿模式",
+      "sections": "6.4、6.11",
+      "note": "字符串与System2构造的两个判断分别说明",
+      "assignments": [
+        {
+          "line": 476,
+          "target": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 447,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsTransportConfigured"
+        },
+        {
+          "line": 450,
+          "condition": "Machine.GetInstance().IsStop() == false"
+        },
+        {
+          "line": 463,
+          "condition": "Machine.GetInstance().IsStop() == false"
+        },
+        {
+          "line": 469,
+          "condition": "MachineSoftwareConfiguration.GetInstance().AutoSaveMapping"
+        }
+      ]
+    },
+    {
+      "file": "CalibSystem/Controls/Assistant/FrmTransportTeach.cs",
+      "method": "BtClearTu_Click",
+      "start": 365,
+      "end": 368,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 367,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "method": "DoWork",
+      "start": 63,
+      "end": 183,
+      "compiled": true,
+      "kind": "点胶生产",
+      "sections": "6.2",
+      "note": "IsProduct条件下新建并注入工序",
+      "assignments": [
+        {
+          "line": 97,
+          "target": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit =\r\n                            new TransportUnit(CurrentMachineSystemEnum.System1)"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 76,
+          "condition": "MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.OffLineWork"
+        },
+        {
+          "line": 79,
+          "condition": "!this.GetInputSignal()"
+        },
+        {
+          "line": 93,
+          "condition": "this.Enable"
+        },
+        {
+          "line": 95,
+          "condition": "!TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit.TransportUnitInfo.IsProduct"
+        },
+        {
+          "line": 122,
+          "condition": "actionNode == null"
+        },
+        {
+          "line": 127,
+          "condition": "!actionNode.IsDoWork()"
+        },
+        {
+          "line": 133,
+          "condition": "actionNode.Name != \"S1DispenseMeasureActionNode\" \r\n                            && actionNode.Name != \"S1CarrierMeasureHeightActionNode\"\r\n                            && actionNode.Name != \"S1SubstrateMeasureHeightActionNode\"\r\n                            && actionNode.Name != \"S1ModuleMeasureHeightActionNode\""
+        },
+        {
+          "line": 138,
+          "condition": "MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.OffLineWork"
+        },
+        {
+          "line": 151,
+          "condition": "ret == ExcuteResult.Retry"
+        },
+        {
+          "line": 155,
+          "condition": "ret != ExcuteResult.Success"
+        },
+        {
+          "line": 172,
+          "condition": "Machine.GetInstance().IsStop() == false"
+        }
+      ]
+    },
+    {
+      "file": "Experiment/DispenseMeasureExperiment/FrmDispenseMeasureHeightTest.cs",
+      "method": "DispenseMeasureHeight",
+      "start": 102,
+      "end": 138,
+      "compiled": true,
+      "kind": "实验辅助",
+      "sections": "6.11及维护资料",
+      "note": "实验类单列，不作为正常生产交接证据",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 105,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "Experiment/TestFunction/FrmTest.cs",
+      "method": "simpleButton10_Click",
+      "start": 465,
+      "end": 528,
+      "compiled": true,
+      "kind": "实验辅助",
+      "sections": "6.11及维护资料",
+      "note": "实验类单列，不作为正常生产交接证据",
+      "assignments": [
+        {
+          "line": 525,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\")"
+        }
+      ],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "Experiment/TestFunction/FrmTest.cs",
+      "method": "simpleButton14_Click",
+      "start": 622,
+      "end": 636,
+      "compiled": true,
+      "kind": "实验辅助",
+      "sections": "6.11及维护资料",
+      "note": "实验类单列，不作为正常生产交接证据",
+      "assignments": [
+        {
+          "line": 624,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\")"
+        }
+      ],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+      "method": "AssistancePostBond",
+      "start": 800,
+      "end": 870,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 840,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 804,
+          "condition": "postBondInspection == null"
+        },
+        {
+          "line": 810,
+          "condition": "postBondInspection.ApplicationSystem == BondSystem.Models.Enums.PostBondApplicationSystemEnum.BLTMeasure"
+        },
+        {
+          "line": 817,
+          "condition": "postBondInspection.IsPreDispenseCheck"
+        },
+        {
+          "line": 821,
+          "condition": "dialog == DialogResult.Cancel"
+        },
+        {
+          "line": 827,
+          "condition": "frmAssistant.ShowDialog() == DialogResult.OK"
+        },
+        {
+          "line": 841,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 849,
+          "condition": "dialog == DialogResult.Cancel"
+        },
+        {
+          "line": 860,
+          "condition": "frmAssistant.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+      "method": "AssistanceBLTCheck",
+      "start": 1035,
+      "end": 1110,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1045,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1039,
+          "condition": "postBondInspection == null"
+        },
+        {
+          "line": 1046,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 1054,
+          "condition": "dialog == DialogResult.Cancel"
+        },
+        {
+          "line": 1067,
+          "condition": "frmAssistant1.ShowDialog() == DialogResult.OK"
+        },
+        {
+          "line": 1085,
+          "condition": "frmAssistant2.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "method": "BtInitializeTS_ItemClick",
+      "start": 781,
+      "end": 784,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 783,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "method": "BtTUMapping_ItemClick",
+      "start": 1025,
+      "end": 1050,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1034,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        },
+        {
+          "line": 1047,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1027,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.UseNewMappingUi"
+        },
+        {
+          "line": 1032,
+          "condition": "TransportDomain.GetInstance().TransportController.IsExistTu"
+        },
+        {
+          "line": 1045,
+          "condition": "TransportDomain.GetInstance().TransportController.IsExistTu"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "method": "BarBtInitializeTS_ItemClick",
+      "start": 1074,
+      "end": 1077,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1076,
+          "callee": "InitializeTS",
+          "expression": "TransportDomain.GetInstance().TransportController.InitializeTS"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "method": "VisionScan",
+      "start": 126,
+      "end": 276,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 130,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 131,
+          "condition": "MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2"
+        },
+        {
+          "line": 135,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing != SubstrateProcessingEnum.Divide"
+        },
+        {
+          "line": 138,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 145,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 152,
+          "condition": "substrate.MatterProductState != MatterProductState.Disable"
+        },
+        {
+          "line": 157,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 164,
+          "condition": "module.MatterProductState != MatterProductState.Disable"
+        },
+        {
+          "line": 169,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 176,
+          "condition": "bondPosition.MatterProductState != MatterProductState.Disable"
+        },
+        {
+          "line": 181,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 200,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing != SubstrateProcessingEnum.Divide"
+        },
+        {
+          "line": 203,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 211,
+          "condition": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1"
+        },
+        {
+          "line": 221,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing != SubstrateProcessingEnum.Divide"
+        },
+        {
+          "line": 231,
+          "condition": "substrate.MatterProductState != MatterProductState.Disable"
+        },
+        {
+          "line": 236,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 243,
+          "condition": "module.MatterProductState != MatterProductState.Disable"
+        },
+        {
+          "line": 248,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 255,
+          "condition": "!Signal.WaitStart()"
+        },
+        {
+          "line": 260,
+          "condition": "bondPosition.MatterProductState != MatterProductState.Disable"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "method": "IsVisionScanIsReady",
+      "start": 282,
+      "end": 311,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 298,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 285,
+          "condition": "!Machine.GetInstance().MachineInitSuccess()"
+        },
+        {
+          "line": 291,
+          "condition": "Machine.GetInstance().IsWorking() || Machine.GetInstance().IsPause()"
+        },
+        {
+          "line": 298,
+          "condition": "TUAssistantHelper.JudgeTuExist() == null"
+        },
+        {
+          "line": 304,
+          "condition": "!ProductConfiguration.GetInstance().TransportUnitConfig.IsAssistantSucceed"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/UcShortcutMenu.cs",
+      "method": "BtInitializeTS_Click",
+      "start": 228,
+      "end": 235,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 234,
+          "callee": "InitializeTS",
+          "expression": "this.transportController.InitializeTS"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 230,
+          "condition": "!Machine.GetInstance().IsStop()"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/UcShortcutMenu.cs",
+      "method": "BtClearDispense_Click",
+      "start": 242,
+      "end": 249,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 248,
+          "callee": "InitializeTSInDispense",
+          "expression": "this.transportController.InitializeTSInDispense"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 244,
+          "condition": "!Machine.GetInstance().IsStop()"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/UcShortcutMenu.cs",
+      "method": "BtClearBond_Click",
+      "start": 256,
+      "end": 263,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 262,
+          "callee": "InitializeTSInBond",
+          "expression": "this.transportController.InitializeTSInBond"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 258,
+          "condition": "!Machine.GetInstance().IsStop()"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/BondSubSectionController.cs",
+      "method": "MapBelt",
+      "start": 429,
+      "end": 605,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 461,
+          "target": "this.bondSubSectionProgram.TransportUnit",
+          "expression": "this.bondSubSectionProgram.TransportUnit =\r\n                                    new TransportUnit(CurrentMachineSystemEnum.System2)"
+        },
+        {
+          "line": 499,
+          "target": "this.bondSubSectionProgram.TransportUnit",
+          "expression": "this.bondSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 506,
+          "target": "this.bondSubSectionProgram.TransportUnit",
+          "expression": "this.bondSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 541,
+          "target": "this.bondSubSectionProgram.TransportUnit",
+          "expression": "this.bondSubSectionProgram.TransportUnit =\r\n                                    new TransportUnit(CurrentMachineSystemEnum.System2)"
+        },
+        {
+          "line": 578,
+          "target": "this.bondSubSectionProgram.TransportUnit",
+          "expression": "this.bondSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 597,
+          "target": "this.bondSubSectionProgram.TransportUnit",
+          "expression": "this.bondSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [
+        {
+          "line": 476,
+          "callee": "Refresh",
+          "expression": "this.bondSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 431,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsTransportConfigured"
+        },
+        {
+          "line": 434,
+          "condition": "!TransportDevicePara.GetInstance().IsReverseSearch\r\n                    && autoWork\r\n                    && this.bondSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 444,
+          "condition": "hasMaterial"
+        },
+        {
+          "line": 447,
+          "condition": "this.bondSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 481,
+          "condition": "this.bondSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 514,
+          "condition": "!TransportDevicePara.GetInstance().IsReverseSearch\r\n                    && autoWork\r\n                    && this.bondSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 525,
+          "condition": "isSuccess"
+        },
+        {
+          "line": 527,
+          "condition": "this.bondSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 560,
+          "condition": "this.bondSubSectionProgram.TransportUnit != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/DispenseSubSectionController.cs",
+      "method": "MapBelt",
+      "start": 437,
+      "end": 523,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 467,
+          "target": "this.dispenseSubSectionProgram.TransportUnit",
+          "expression": "this.dispenseSubSectionProgram.TransportUnit =\r\n                                new TransportUnit(CurrentMachineSystemEnum.System1)"
+        },
+        {
+          "line": 510,
+          "target": "this.dispenseSubSectionProgram.TransportUnit",
+          "expression": "this.dispenseSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 517,
+          "target": "this.dispenseSubSectionProgram.TransportUnit",
+          "expression": "this.dispenseSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [
+        {
+          "line": 482,
+          "callee": "Refresh",
+          "expression": "this.dispenseSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 440,
+          "condition": "!TransportDevicePara.GetInstance().IsReverseSearch\r\n                && AutoWork\r\n                && this.dispenseSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 450,
+          "condition": "hasMaterial"
+        },
+        {
+          "line": 453,
+          "condition": "this.dispenseSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 487,
+          "condition": "this.dispenseSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 502,
+          "condition": "!this.dispenseSubSectionProgram.IsTuInDispense1"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "InitializeTS",
+      "start": 159,
+      "end": 224,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [
+        {
+          "line": 210,
+          "target": "this.transportProgram.LoadingSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.LoadingSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 211,
+          "target": "this.transportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.DispenseSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 212,
+          "target": "this.transportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.BondSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 213,
+          "target": "this.transportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 214,
+          "target": "this.transportProgram.UnloadingSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.UnloadingSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 162,
+          "condition": "Machine.GetInstance().IsWorking()\r\n                || Machine.GetInstance().IsPause()"
+        },
+        {
+          "line": 175,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.LoaderBin"
+        },
+        {
+          "line": 182,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSystem1Configrated"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "InitializeTSInDispense",
+      "start": 229,
+      "end": 277,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [
+        {
+          "line": 267,
+          "target": "this.transportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.DispenseSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 232,
+          "condition": "Machine.GetInstance().IsWorking()\r\n                || Machine.GetInstance().IsPause()"
+        },
+        {
+          "line": 245,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.LoaderBin"
+        },
+        {
+          "line": 252,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSystem1Configrated"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "InitializeTSInBond",
+      "start": 282,
+      "end": 328,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [
+        {
+          "line": 317,
+          "target": "this.transportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "this.transportProgram.BondSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 285,
+          "condition": "Machine.GetInstance().IsWorking()\r\n                || Machine.GetInstance().IsPause()"
+        },
+        {
+          "line": 298,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.LoaderBin"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferAutoLoaderToLoading",
+      "start": 439,
+      "end": 550,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 527,
+          "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = new TransportUnit(CurrentMachineSystemEnum.System2)"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 444,
+          "condition": "this.TransportProgram.LoadingSubSectionProgram.SubSectionState == SubSectionStateEnum.NoMaterial"
+        },
+        {
+          "line": 458,
+          "condition": "hasMaterial"
+        },
+        {
+          "line": 481,
+          "condition": "sp.ElapsedMilliseconds > 5000"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferLoadBeltToDispense",
+      "start": 558,
+      "end": 865,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 650,
+          "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit =\r\n                                new TransportUnitSystem.Module.Matter.TransportUnit(\"上料载具对象生成\")"
+        },
+        {
+          "line": 826,
+          "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit =\r\n                        this.TransportProgram.LoadingSubSectionProgram.TransportUnit"
+        },
+        {
+          "line": 834,
+          "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [
+        {
+          "line": 829,
+          "callee": "Refresh",
+          "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 563,
+          "condition": "this.TransportProgram.DispenseSubSectionProgram.SubSectionState ==\r\n                    SubSectionStateEnum.HasMaterial"
+        },
+        {
+          "line": 571,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.Online"
+        },
+        {
+          "line": 574,
+          "condition": "this.TransportProgram.LoadingSubSectionProgram.SubSectionState ==\r\n                        SubSectionStateEnum.NoMaterial"
+        },
+        {
+          "line": 589,
+          "condition": "inOutPutBeltSetting == null"
+        },
+        {
+          "line": 645,
+          "condition": "hasMaterialInModule"
+        },
+        {
+          "line": 648,
+          "condition": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 656,
+          "condition": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 670,
+          "condition": "hasMaterialInModule == false"
+        },
+        {
+          "line": 672,
+          "condition": "isManual == false"
+        },
+        {
+          "line": 724,
+          "condition": "hasMaterialInModule"
+        },
+        {
+          "line": 734,
+          "condition": "hasMaterialInModule == false"
+        },
+        {
+          "line": 782,
+          "condition": "hasMaterialInModule"
+        },
+        {
+          "line": 818,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSystem1Configrated"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferLoadBinToDispense",
+      "start": 873,
+      "end": 1179,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 1128,
+          "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit =\r\n                            new TransportUnitSystem.Module.Matter.TransportUnit(CurrentMachineSystemEnum.System1)"
+        },
+        {
+          "line": 1146,
+          "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [
+        {
+          "line": 1141,
+          "callee": "Refresh",
+          "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 878,
+          "condition": "this.TransportProgram.DispenseSubSectionProgram.SubSectionState == SubSectionStateEnum.HasMaterial"
+        },
+        {
+          "line": 901,
+          "condition": "res != ExcuteResult.Success"
+        },
+        {
+          "line": 958,
+          "condition": "hasMaterialInFeedingInlet"
+        },
+        {
+          "line": 964,
+          "condition": "this.LoaderBinController.IsPushRodInPosition()"
+        },
+        {
+          "line": 1057,
+          "condition": "this.LoaderBinController.IsPushRodInPosition()"
+        },
+        {
+          "line": 1063,
+          "condition": "stopwatch.ElapsedMilliseconds > 10000"
+        },
+        {
+          "line": 1079,
+          "condition": "this.DispenseSubSectionController.HasMaterialInFeedingInlet()"
+        },
+        {
+          "line": 1126,
+          "condition": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 1134,
+          "condition": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferDispenseToBond",
+      "start": 1266,
+      "end": 1524,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 1478,
+          "target": "this.TransportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit =\r\n                    this.TransportProgram.DispenseSubSectionProgram.TransportUnit"
+        },
+        {
+          "line": 1483,
+          "target": "this.TransportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit = new TransportUnit(CurrentMachineSystemEnum.System2)"
+        },
+        {
+          "line": 1488,
+          "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit = null"
+        },
+        {
+          "line": 1494,
+          "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [
+        {
+          "line": 1486,
+          "callee": "Refresh",
+          "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1271,
+          "condition": "this.TransportProgram.BondSubSectionProgram.SubSectionState !=\r\n                    SubSectionStateEnum.NoMaterial ||\r\n                    this.TransportProgram.DispenseSubSectionProgram.SubSectionState !=\r\n                    SubSectionStateEnum.HasMaterial"
+        },
+        {
+          "line": 1283,
+          "condition": "isManual == false"
+        },
+        {
+          "line": 1287,
+          "condition": "rt == false"
+        },
+        {
+          "line": 1295,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == TransportUnitSystem.Model.SubstrateProcessingEnum.Divide"
+        },
+        {
+          "line": 1297,
+          "condition": "this.TransportProgram.DispenseSubSectionProgram.IsTuInDispense1"
+        },
+        {
+          "line": 1311,
+          "condition": "MachineHardwareConfiguration.GetInstance().IsSystem1Configrated"
+        },
+        {
+          "line": 1371,
+          "condition": "hasMaterialInOutlet"
+        },
+        {
+          "line": 1380,
+          "condition": "hasMaterialInOutlet == false"
+        },
+        {
+          "line": 1422,
+          "condition": "hasMaterialInOutlet"
+        },
+        {
+          "line": 1481,
+          "condition": "this.TransportProgram.BondSubSectionProgram.TransportUnit == null && isManual"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferBondToWaitingUnload",
+      "start": 1531,
+      "end": 1810,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 1764,
+          "target": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit =\r\n                    this.TransportProgram.BondSubSectionProgram.TransportUnit"
+        },
+        {
+          "line": 1772,
+          "target": "this.TransportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 1536,
+          "condition": "this.TransportProgram.BondSubSectionProgram.SubSectionState !=\r\n                    SubSectionStateEnum.HasMaterial"
+        },
+        {
+          "line": 1545,
+          "condition": "this.TransportProgram.WaitingUnloadSubSectionProgram.SubSectionState !=\r\n                    SubSectionStateEnum.NoMaterial"
+        },
+        {
+          "line": 1554,
+          "condition": "isManual == false"
+        },
+        {
+          "line": 1559,
+          "condition": "rt == false"
+        },
+        {
+          "line": 1610,
+          "condition": "hasMaterialInOutlet"
+        },
+        {
+          "line": 1620,
+          "condition": "hasMaterialInOutlet == false"
+        },
+        {
+          "line": 1671,
+          "condition": "hasMaterialInOutlet == false"
+        },
+        {
+          "line": 1701,
+          "condition": "hasMaterialInFeedingInlet"
+        },
+        {
+          "line": 1724,
+          "condition": "hasMaterialInBondOutlet == true || hasMaterialInFeedingInlet == false"
+        },
+        {
+          "line": 1781,
+          "condition": "isManual"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferWaitingUnloadToUnloadBelt",
+      "start": 1816,
+      "end": 2056,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 2011,
+          "target": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit =\r\n                        this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit"
+        },
+        {
+          "line": 2016,
+          "target": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [
+        {
+          "line": 2014,
+          "callee": "Refresh",
+          "expression": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1823,
+          "condition": "this.WaitingUnloadSubSectionController.HasMaterialInModule() == false"
+        },
+        {
+          "line": 1830,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.Online || MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.OnlineWithAutoUnloader"
+        },
+        {
+          "line": 1833,
+          "condition": "this.UnloadingSubSectionController.HasMaterialInModule()"
+        },
+        {
+          "line": 1842,
+          "condition": "this.TransportProgram.WaitingUnloadSubSectionProgram.SubSectionState ==\r\n                    SubSectionStateEnum.NoMaterial"
+        },
+        {
+          "line": 1850,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.Online"
+        },
+        {
+          "line": 1852,
+          "condition": "this.TransportProgram.UnloadingSubSectionProgram.SubSectionTransferState ==\r\n                        SubSectionStateTransferEnum.Transfering || this.TransportProgram.UnloadingSubSectionProgram.SubSectionState ==\r\n                    SubSectionStateEnum.HasMaterial"
+        },
+        {
+          "line": 1884,
+          "condition": "hasMaterialInFeedingInletUnload"
+        },
+        {
+          "line": 1894,
+          "condition": "hasMaterialInFeedingInletUnload == false"
+        },
+        {
+          "line": 1939,
+          "condition": "hasMaterialInFeedingInletUnload == false"
+        },
+        {
+          "line": 1945,
+          "condition": "!MachineHardwareConfiguration.GetInstance().IsUnloadingSubSectionContinueMove"
+        },
+        {
+          "line": 1959,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration != LoadConfigurationEnum.Belt"
+        },
+        {
+          "line": 1977,
+          "condition": "hasMaterialInFeedingInletUnload == true || hasMaterialInOutletWaitingUnload == true"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferWaitingUnloadToUnloadBin",
+      "start": 2063,
+      "end": 2285,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 2246,
+          "target": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 2070,
+          "condition": "this.WaitingUnloadSubSectionController.HasMaterialInModule() == false"
+        },
+        {
+          "line": 2077,
+          "condition": "this.TransportProgram.WaitingUnloadSubSectionProgram.SubSectionState ==\r\n                    SubSectionStateEnum.NoMaterial"
+        },
+        {
+          "line": 2085,
+          "condition": "this.WaitingUnloadSubSectionController.IsMoving()"
+        },
+        {
+          "line": 2092,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.Online || MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.OnlineWithAutoUnloader"
+        },
+        {
+          "line": 2095,
+          "condition": "this.TransportProgram.UnloadingSubSectionProgram.SubSectionState ==\r\n                        SubSectionStateEnum.HasMaterial"
+        },
+        {
+          "line": 2121,
+          "condition": "hasMaterialInWaitingUnload == false"
+        },
+        {
+          "line": 2132,
+          "condition": "hasMaterialInWaitingUnload == true"
+        },
+        {
+          "line": 2173,
+          "condition": "ret != ExcuteResult.Success"
+        },
+        {
+          "line": 2205,
+          "condition": "hasMaterialInOutletWaitingUnload == true"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "method": "TransferUnloadBeltToAutoUnloader",
+      "start": 2292,
+      "end": 2448,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 2419,
+          "target": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit",
+          "expression": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 2297,
+          "condition": "this.TransportProgram.UnloadingSubSectionProgram.SubSectionState ==\r\n                    SubSectionStateEnum.NoMaterial || this.TransportProgram.UnloadingSubSectionProgram.SubSectionTransferState ==\r\n             SubSectionStateTransferEnum.Transfering"
+        },
+        {
+          "line": 2308,
+          "condition": "isNeedMaterial == false"
+        },
+        {
+          "line": 2333,
+          "condition": "hasMaterialInOutlet"
+        },
+        {
+          "line": 2342,
+          "condition": "hasMaterialInOutlet == false"
+        },
+        {
+          "line": 2379,
+          "condition": "hasMaterial == false"
+        },
+        {
+          "line": 2389,
+          "condition": "hasMaterial == true"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/UnloadingSubSectionController.cs",
+      "method": "MapBelt",
+      "start": 71,
+      "end": 107,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 103,
+          "target": "this.unloadingSubSectionProgram.TransportUnit",
+          "expression": "this.unloadingSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 76,
+          "condition": "(hasMaterial && this.unloadingSubSectionProgram.SubSectionState == SubSectionStateEnum.NoMaterial)\r\n                || (!hasMaterial && this.unloadingSubSectionProgram.SubSectionState == SubSectionStateEnum.HasMaterial)"
+        },
+        {
+          "line": 94,
+          "condition": "this.unloadingSubSectionProgram.TransportUnit == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/WaitingUnloadSubSectionController.cs",
+      "method": "MapBelt",
+      "start": 71,
+      "end": 107,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 103,
+          "target": "this.waitingUnloadSubSectionProgram.TransportUnit",
+          "expression": "this.waitingUnloadSubSectionProgram.TransportUnit = null"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 76,
+          "condition": "(hasMaterial && this.waitingUnloadSubSectionProgram.SubSectionState == SubSectionStateEnum.NoMaterial)\r\n                || (!hasMaterial && this.waitingUnloadSubSectionProgram.SubSectionState == SubSectionStateEnum.HasMaterial)"
+        },
+        {
+          "line": 94,
+          "condition": "this.waitingUnloadSubSectionProgram.TransportUnit == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controls/Manual/UcTransportSystemManual.cs",
+      "method": "BtInitializeTS_Click",
+      "start": 67,
+      "end": 70,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 69,
+          "callee": "InitializeTS",
+          "expression": "this.transportController.InitializeTS"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportSystem/Controls/Manual/UcTransportSystemManual.cs",
+      "method": "BtClearDispense_Click",
+      "start": 141,
+      "end": 144,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 143,
+          "callee": "InitializeTSInDispense",
+          "expression": "transportController.InitializeTSInDispense"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportSystem/Controls/Manual/UcTransportSystemManual.cs",
+      "method": "BtClearBond_Click",
+      "start": 151,
+      "end": 154,
+      "compiled": true,
+      "kind": "清空入口或调用方",
+      "sections": "5.6、6.10",
+      "note": "按方法区分整线与单区段清空；上层附加条件不泛化",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 153,
+          "callee": "InitializeTSInBond",
+          "expression": "transportController.InitializeTSInBond"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportSystem/Models/Programs/BaseSubSectionProgram.cs",
+      "method": "UpdateTransportUnit",
+      "start": 62,
+      "end": 65,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 64,
+          "target": "this.TransportUnit",
+          "expression": "this.TransportUnit = new TransportUnit(\"示教\")"
+        }
+      ],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportSystem/Models/Programs/BaseSubSectionProgram.cs",
+      "method": "RefreshTransportUnit",
+      "start": 71,
+      "end": 74,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 73,
+          "callee": "Refresh",
+          "expression": "this.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportSystem/Models/TransportDomain.cs",
+      "method": "StartTask",
+      "start": 84,
+      "end": 141,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 117,
+          "callee": "RefreshTransportUnit",
+          "expression": "TransportProgram.RefreshTransportUnit"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 88,
+          "condition": "!MachineHardwareConfiguration.GetInstance().IsTransportConfigured"
+        },
+        {
+          "line": 95,
+          "condition": "MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.DryCycle"
+        },
+        {
+          "line": 102,
+          "condition": "this.TransportController.CheckCarrierBeforeLoaderMove() == false"
+        },
+        {
+          "line": 108,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.Online"
+        },
+        {
+          "line": 114,
+          "condition": "TransportDevicePara.GetInstance().IsReverseSearch"
+        },
+        {
+          "line": 124,
+          "condition": "MachineHardwareConfiguration.GetInstance().LoadConfiguration == LoadConfigurationEnum.LoaderBin"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Models/TransportProgram.cs",
+      "method": "RefreshTransportUnit",
+      "start": 90,
+      "end": 106,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 94,
+          "callee": "Refresh",
+          "expression": "this.DispenseSubSectionProgram.TransportUnit.Refresh"
+        },
+        {
+          "line": 99,
+          "callee": "Refresh",
+          "expression": "this.BondSubSectionProgram.TransportUnit.Refresh"
+        },
+        {
+          "line": 104,
+          "callee": "Refresh",
+          "expression": "this.WaitingUnloadSubSectionProgram.TransportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 92,
+          "condition": "this.DispenseSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 97,
+          "condition": "this.BondSubSectionProgram.TransportUnit != null"
+        },
+        {
+          "line": 102,
+          "condition": "this.WaitingUnloadSubSectionProgram.TransportUnit != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Tasks/TransportTask.cs",
+      "method": "StartDryRun",
+      "start": 775,
+      "end": 891,
+      "compiled": true,
+      "kind": "输送与启动",
+      "sections": "6.2—6.11、8.2、8.6",
+      "note": "沿用、刷新、新建、清空及部分提交按实际入口区分",
+      "assignments": [
+        {
+          "line": 786,
+          "target": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit =\r\n                    new TransportUnit(CurrentMachineSystemEnum.System1)"
+        },
+        {
+          "line": 795,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit =\r\n              new TransportUnit(CurrentMachineSystemEnum.System2)"
+        },
+        {
+          "line": 831,
+          "target": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit =\r\n                       new TransportUnit(CurrentMachineSystemEnum.System1)"
+        },
+        {
+          "line": 876,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit =\r\n                    new TransportUnit(CurrentMachineSystemEnum.System2)"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 800,
+          "condition": "this.transferDispenseToBondTask == null || this.transferDispenseToBondTask.Status != TaskStatus.Running"
+        },
+        {
+          "line": 812,
+          "condition": "Machine.GetInstance().IsStop()"
+        },
+        {
+          "line": 820,
+          "condition": "rt == false"
+        },
+        {
+          "line": 846,
+          "condition": "this.transferBondToWaitingUnloadTask == null || this.transferBondToWaitingUnloadTask.Status != TaskStatus.Running"
+        },
+        {
+          "line": 857,
+          "condition": "Machine.GetInstance().IsStop()"
+        },
+        {
+          "line": 865,
+          "condition": "rt == false"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/CarrierTeach/FrmTUIdentificationTeach.cs",
+      "method": "FrmTUIdentificationTeach_Load",
+      "start": 39,
+      "end": 47,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 41,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 42,
+          "condition": "this.transportUnit == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/CarrierTeach/FrmTUPositionTeach.cs",
+      "method": "FrmTUPositionTeach_Load",
+      "start": 92,
+      "end": 117,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 95,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 96,
+          "condition": "this.transportUnit == null"
+        },
+        {
+          "line": 105,
+          "condition": "frm.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "FrmAdjustDegree",
+      "start": 27,
+      "end": 30,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "FrmAdjustDegree",
+      "start": 37,
+      "end": 43,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "InitControl",
+      "start": 91,
+      "end": 178,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 137,
+          "condition": "MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.OffLineWork"
+        },
+        {
+          "line": 145,
+          "condition": "Math.Abs(this.degreePoint1.X - this.degreePoint2.X) < 1"
+        },
+        {
+          "line": 160,
+          "condition": "Math.Abs(angle) > 5"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "SetUiControl",
+      "start": 184,
+      "end": 194,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "BtNext_Click",
+      "start": 201,
+      "end": 207,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "BtBack_Click",
+      "start": 214,
+      "end": 220,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "BtDone_Click",
+      "start": 227,
+      "end": 232,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "BtCancel_Click",
+      "start": 239,
+      "end": 242,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "FrmAdjustDegree_Load",
+      "start": 249,
+      "end": 254,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "BtAutoFocus_Click",
+      "start": 261,
+      "end": 264,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "method": "FrmAdjustDegree_FormClosed",
+      "start": 271,
+      "end": 274,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.Designer.cs",
+      "method": "Dispose",
+      "start": 16,
+      "end": 23,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 18,
+          "condition": "disposing && (components != null)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.Designer.cs",
+      "method": "InitializeComponent",
+      "start": 31,
+      "end": 356,
+      "compiled": true,
+      "kind": "角度示教",
+      "sections": "8.7",
+      "note": "窗口传入对象、调用方写入与取消分别核对",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAssistantHeightPoints.cs",
+      "method": "FrmAssistantHeightPoints_Load",
+      "start": 269,
+      "end": 306,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 272,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 273,
+          "condition": "this.transportUnit == null"
+        },
+        {
+          "line": 283,
+          "condition": "this.coordinateSystem == null"
+        },
+        {
+          "line": 293,
+          "condition": "frm.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/ModuleTeach/FrmModulePositionTeach.cs",
+      "method": "FrmModulePositionTeach_Load",
+      "start": 443,
+      "end": 514,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 445,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 446,
+          "condition": "this.transportUnit == null"
+        },
+        {
+          "line": 453,
+          "condition": "!ProductConfiguration.GetInstance().ModuleConfig.IsMultiple"
+        },
+        {
+          "line": 460,
+          "condition": "ProductConfiguration.GetInstance().ModuleConfig.Multiplication == MultiplicationEnum.Configurable"
+        },
+        {
+          "line": 464,
+          "condition": "!int.TryParse(XtraInputBox.Show(\"请输入基岛一共有多少个\", \"基岛个数\", \"2\"), out this.moduleCount)"
+        },
+        {
+          "line": 489,
+          "condition": "fmrModuleSelect.ShowDialog() == DialogResult.OK"
+        },
+        {
+          "line": 503,
+          "condition": "frmAssistanceHeight.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/SubstrateTeach/FrmSubstratePositionTeach.cs",
+      "method": "FrmSubstratePositionTeach_Load",
+      "start": 441,
+      "end": 490,
+      "compiled": true,
+      "kind": "辅助调用",
+      "sections": "7.1及维护资料",
+      "note": "消费当前TU或触发既有刷新接口；不单列为生产交接",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 443,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 444,
+          "condition": "this.transportUnit == null"
+        },
+        {
+          "line": 451,
+          "condition": "!ProductConfiguration.GetInstance().SubstrateConfig.IsMultiple"
+        },
+        {
+          "line": 458,
+          "condition": "ProductConfiguration.GetInstance().SubstrateConfig.Multiplication == MultiplicationEnum.Configurable"
+        },
+        {
+          "line": 478,
+          "condition": "frmAssistanceHeight.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+      "method": "JudgeTuExist",
+      "start": 392,
+      "end": 455,
+      "compiled": true,
+      "kind": "示教对象入口",
+      "sections": "6.11、8.7",
+      "note": "在线区段替换与离线窗口对象分别说明",
+      "assignments": [
+        {
+          "line": 420,
+          "target": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit",
+          "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit =\r\n                        new TransportUnit(CurrentMachineSystemEnum.System2)"
+        },
+        {
+          "line": 447,
+          "target": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit",
+          "expression": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit =\r\n                        new TransportUnit(CurrentMachineSystemEnum.System1)"
+        }
+      ],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 394,
+          "condition": "MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.OffLineWork"
+        },
+        {
+          "line": 399,
+          "condition": "MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2"
+        },
+        {
+          "line": 401,
+          "condition": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 407,
+          "condition": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit\r\n                        .TransportUnitInfo.IsProduct"
+        },
+        {
+          "line": 414,
+          "condition": "dialogResult == DialogResult.No"
+        },
+        {
+          "line": 426,
+          "condition": "MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System1"
+        },
+        {
+          "line": 428,
+          "condition": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit == null"
+        },
+        {
+          "line": 434,
+          "condition": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit\r\n                        .TransportUnitInfo.IsProduct"
+        },
+        {
+          "line": 441,
+          "condition": "dialogResult == DialogResult.No"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTransportUnitMapping.cs",
+      "method": "BtImportMapping_Click",
+      "start": 88,
+      "end": 125,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [
+        {
+          "line": 114,
+          "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+          "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = transportNew"
+        }
+      ],
+      "calls": [
+        {
+          "line": 107,
+          "callee": "ReadTransportMapping",
+          "expression": "TuService.ReadTransportMapping"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 90,
+          "condition": "this.Transport == null"
+        },
+        {
+          "line": 109,
+          "condition": "transportNew == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTransportUnitMapping.cs",
+      "method": "BtInputID_Click",
+      "start": 186,
+      "end": 214,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [
+        {
+          "line": 210,
+          "target": "this.baseSubSectionProgram.TransportUnit",
+          "expression": "this.baseSubSectionProgram.TransportUnit = transportUnit"
+        }
+      ],
+      "calls": [
+        {
+          "line": 202,
+          "callee": "ReadTransportMapping",
+          "expression": "TuService.ReadTransportMapping"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 188,
+          "condition": "this.Transport == null"
+        },
+        {
+          "line": 196,
+          "condition": "id == string.Empty"
+        },
+        {
+          "line": 205,
+          "condition": "transportUnit == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "FrmTuMapping",
+      "start": 27,
+      "end": 45,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 44,
+          "callee": "Refresh",
+          "expression": "this.transportUnit.Refresh"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 34,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.LagerNumber"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "FrmTuMapping",
+      "start": 51,
+      "end": 55,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "FrmTuMapping_Load",
+      "start": 147,
+      "end": 174,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 160,
+          "condition": "!MachineHardwareConfiguration.GetInstance().IsSystem1Configrated"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnMapping_Paint",
+      "start": 181,
+      "end": 190,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "GetSelectIndex",
+      "start": 196,
+      "end": 213,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 198,
+          "condition": "this.CmbBondPosition.SelectedIndex == 0"
+        },
+        {
+          "line": 206,
+          "condition": "single != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnMapping_MouseMove",
+      "start": 220,
+      "end": 251,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 223,
+          "condition": "e.Button == MouseButtons.None"
+        },
+        {
+          "line": 229,
+          "condition": "e.Button == MouseButtons.Left"
+        },
+        {
+          "line": 231,
+          "condition": "(int)Control.ModifierKeys == (int)Keys.Control"
+        },
+        {
+          "line": 238,
+          "condition": "!this.mappingDraw.IsChooseEnable(this.startPointF, e.Location)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnMapping_DoubleClick",
+      "start": 258,
+      "end": 264,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 260,
+          "condition": "this.SelectSubstrate != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnMapping_MouseDown",
+      "start": 271,
+      "end": 288,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 282,
+          "condition": "substrate != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnMapping_MouseUp",
+      "start": 295,
+      "end": 304,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 297,
+          "condition": "this.isSelectMore"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnModuleMapping_Paint",
+      "start": 311,
+      "end": 321,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 313,
+          "condition": "this.SelectSubstrate != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnModuleMapping_MouseMove",
+      "start": 328,
+      "end": 359,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 331,
+          "condition": "e.Button == MouseButtons.None"
+        },
+        {
+          "line": 337,
+          "condition": "e.Button == MouseButtons.Left"
+        },
+        {
+          "line": 339,
+          "condition": "(int)Control.ModifierKeys == (int)Keys.Control"
+        },
+        {
+          "line": 346,
+          "condition": "!this.mappingDraw.IsChooseEnable(this.startPointF, e.Location)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnModuleMapping_MouseDown",
+      "start": 366,
+      "end": 383,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 379,
+          "condition": "module != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "FrmTuMapping_FormClosed",
+      "start": 390,
+      "end": 393,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnModuleMapping_MouseUp",
+      "start": 400,
+      "end": 409,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 402,
+          "condition": "this.isSelectMore"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnBondPositionMapping_Paint",
+      "start": 416,
+      "end": 426,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 418,
+          "condition": "this.SelectModule != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnBondPositionMapping_MouseDown",
+      "start": 433,
+      "end": 451,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 446,
+          "condition": "bondPosition != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnBondPositionMapping_MouseMove",
+      "start": 458,
+      "end": 489,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 461,
+          "condition": "e.Button == MouseButtons.None"
+        },
+        {
+          "line": 467,
+          "condition": "e.Button == MouseButtons.Left"
+        },
+        {
+          "line": 469,
+          "condition": "(int)Control.ModifierKeys == (int)Keys.Control"
+        },
+        {
+          "line": 476,
+          "condition": "!this.mappingDraw.IsChooseEnable(this.startPointF, e.Location)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnBondPositionMapping_MouseUp",
+      "start": 496,
+      "end": 505,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 498,
+          "condition": "this.isSelectMore"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnModuleMapping_DoubleClick",
+      "start": 512,
+      "end": 518,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 514,
+          "condition": "this.SelectModule != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "GetSelectSubs",
+      "start": 526,
+      "end": 545,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 528,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 0"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "GetSelectModules",
+      "start": 551,
+      "end": 581,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 553,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 0"
+        },
+        {
+          "line": 564,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 1"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "GetSelectBondPositions",
+      "start": 587,
+      "end": 613,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 589,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 2"
+        },
+        {
+          "line": 597,
+          "condition": "this.CmbBondPosition.SelectedIndex == 0"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "TsmEnable_Click",
+      "start": 620,
+      "end": 630,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 622,
+          "callee": "ChangeMatterProduct",
+          "expression": "this.mappingDraw.ChangeMatterProduct"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "TsmDisable_Click",
+      "start": 637,
+      "end": 649,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 639,
+          "callee": "ChangeMatterProduct",
+          "expression": "this.mappingDraw.ChangeMatterProduct"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "TSMEnableInSystem1_Click",
+      "start": 656,
+      "end": 671,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 663,
+          "callee": "ChangeMatterProduct",
+          "expression": "this.mappingDraw.ChangeMatterProduct"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 658,
+          "condition": "!MachineHardwareConfiguration.GetInstance().IsSystem1Configrated"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "TsmClear_Click",
+      "start": 678,
+      "end": 688,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 680,
+          "callee": "ChangeMatterProduct",
+          "expression": "this.mappingDraw.ChangeMatterProduct"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "BtClearAll_Click",
+      "start": 697,
+      "end": 703,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "ClearSelect",
+      "start": 708,
+      "end": 713,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "RefreshMatterIndex",
+      "start": 718,
+      "end": 736,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 720,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 0"
+        },
+        {
+          "line": 725,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 1"
+        },
+        {
+          "line": 731,
+          "condition": "this.PnMapping.SelectedTabPageIndex == 2"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "PnMapping_SelectedPageChanging",
+      "start": 743,
+      "end": 783,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 745,
+          "condition": "e.Page.TabIndex == 1"
+        },
+        {
+          "line": 747,
+          "condition": "this.SelectSubstrate == null"
+        },
+        {
+          "line": 761,
+          "condition": "e.Page.TabIndex == 2"
+        },
+        {
+          "line": 763,
+          "condition": "this.SelectSubstrate == null || this.SelectModule == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "LueWorkSortType_EditValueChanged",
+      "start": 790,
+      "end": 803,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 792,
+          "condition": "this.ChkSubstrate.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "ChangeImageBySelect",
+      "start": 809,
+      "end": 838,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "ChkAutoReturn_CheckedChanged",
+      "start": 845,
+      "end": 859,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 847,
+          "condition": "this.ChkSubstrate.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "ChkSubstrate_CheckedChanged",
+      "start": 866,
+      "end": 873,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 868,
+          "condition": "this.ChkSubstrate.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "method": "ChkModule_CheckedChanged",
+      "start": 880,
+      "end": 887,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 882,
+          "condition": "this.ChkModule.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.Designer.cs",
+      "method": "Dispose",
+      "start": 14,
+      "end": 21,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 16,
+          "condition": "disposing && (components != null)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.Designer.cs",
+      "method": "InitializeComponent",
+      "start": 29,
+      "end": 594,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "FrmTuMappingNew",
+      "start": 18,
+      "end": 21,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "FrmTransportUnitMapping_Load",
+      "start": 43,
+      "end": 54,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "ChkSubstrate_CheckedChanged",
+      "start": 61,
+      "end": 69,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 63,
+          "condition": "this.ChkSubstrate.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "ChkModule_CheckedChanged",
+      "start": 76,
+      "end": 84,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 78,
+          "condition": "this.ChkModule.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "ChkAutoReturn_CheckedChanged",
+      "start": 91,
+      "end": 105,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 93,
+          "condition": "this.ChkSubstrate.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "BtClearAll_Click",
+      "start": 112,
+      "end": 118,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [
+        {
+          "line": 115,
+          "target": "this.TransportUnit",
+          "expression": "this.TransportUnit = new TransportUnit(\"mapping\")"
+        }
+      ],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "LueWorkSortType_EditValueChanged",
+      "start": 125,
+      "end": 138,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 127,
+          "condition": "this.ChkSubstrate.Checked"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "ChangeImageBySelect",
+      "start": 144,
+      "end": 173,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "method": "FrmTuMappingNew_FormClosed",
+      "start": 180,
+      "end": 187,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 185,
+          "callee": "SaveInformation",
+          "expression": "this.productConfig.OtherConfig.SaveInformation"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 182,
+          "condition": "this.ucTransportShow.IsChange"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.Designer.cs",
+      "method": "Dispose",
+      "start": 14,
+      "end": 21,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 16,
+          "condition": "disposing && (components != null)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.Designer.cs",
+      "method": "InitializeComponent",
+      "start": 29,
+      "end": 276,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "method": "FrmAddObject",
+      "start": 25,
+      "end": 29,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "method": "BtSure_Click",
+      "start": 65,
+      "end": 134,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 67,
+          "condition": "OppositeSex.IsExistName(this.TxName.Text)"
+        },
+        {
+          "line": 75,
+          "condition": "this.TxName.Text.Contains(rInvalidChar.ToString())"
+        },
+        {
+          "line": 82,
+          "condition": "this.ChkAbsoluteOffset.Checked"
+        },
+        {
+          "line": 114,
+          "condition": "this.Type == \"基板\""
+        },
+        {
+          "line": 120,
+          "condition": "this.Type == \"基岛\""
+        },
+        {
+          "line": 126,
+          "condition": "this.Type == \"焊点\""
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "method": "BtCancel_Click",
+      "start": 141,
+      "end": 144,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "method": "FrmAddObject_Load",
+      "start": 151,
+      "end": 188,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 165,
+          "condition": "this.SelectOppositeSexConfig != null"
+        },
+        {
+          "line": 167,
+          "condition": "this.SelectOppositeSexConfig.MatterTypeEnum == EntityTypeEnum.TransportUnit"
+        },
+        {
+          "line": 172,
+          "condition": "this.SelectOppositeSexConfig.MatterTypeEnum == EntityTypeEnum.Substrate"
+        },
+        {
+          "line": 178,
+          "condition": "this.SelectOppositeSexConfig.MatterTypeEnum == EntityTypeEnum.Module"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "method": "CmbType_SelectedIndexChanged",
+      "start": 195,
+      "end": 214,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 199,
+          "condition": "this.Type == \"基板\""
+        },
+        {
+          "line": 204,
+          "condition": "this.Type == \"基岛\""
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "method": "ChkAbsoluteOffset_CheckedChanged",
+      "start": 221,
+      "end": 224,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.Designer.cs",
+      "method": "Dispose",
+      "start": 14,
+      "end": 21,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 16,
+          "condition": "disposing && (components != null)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.Designer.cs",
+      "method": "InitializeComponent",
+      "start": 29,
+      "end": 346,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.cs",
+      "method": "FrmObjectCopy",
+      "start": 30,
+      "end": 36,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.cs",
+      "method": "BtCancel_Click",
+      "start": 53,
+      "end": 56,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.cs",
+      "method": "BtSure_Click",
+      "start": 63,
+      "end": 96,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 70,
+          "condition": "!this.ChkCenterDistance.Checked"
+        },
+        {
+          "line": 80,
+          "condition": "i == 0 && j == 0"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.Designer.cs",
+      "method": "Dispose",
+      "start": 14,
+      "end": 21,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 16,
+          "condition": "disposing && (components != null)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.Designer.cs",
+      "method": "InitializeComponent",
+      "start": 29,
+      "end": 321,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "FrmTransportUnitEdit",
+      "start": 47,
+      "end": 50,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "Init",
+      "start": 55,
+      "end": 87,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 57,
+          "callee": "InitOppositeSexConfigIndex",
+          "expression": "ProductConfiguration.OppositeSexConfiguration.InitOppositeSexConfigIndex"
+        }
+      ],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "TreeTransportUnit_FocusedNodeChanged",
+      "start": 94,
+      "end": 107,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "BtAdd_Click",
+      "start": 114,
+      "end": 135,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 120,
+          "condition": "dialogResult != DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "BtDelete_Click",
+      "start": 142,
+      "end": 172,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 166,
+          "callee": "RemoveOppositeSexConfig",
+          "expression": "ProductConfiguration.OppositeSexConfiguration.RemoveOppositeSexConfig"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 146,
+          "condition": "oppositeSexConfig == null"
+        },
+        {
+          "line": 151,
+          "condition": "oppositeSexConfig.IsLock"
+        },
+        {
+          "line": 159,
+          "condition": "dialogResult != DialogResult.OK"
+        },
+        {
+          "line": 164,
+          "condition": "oppositeSexConfig != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "BtCopy_Click",
+      "start": 179,
+      "end": 212,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 183,
+          "condition": "oppositeSexConfig == null"
+        },
+        {
+          "line": 191,
+          "condition": "frmObjectCopy.ShowDialog() != DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "FrmTransportUnitEdit_Load",
+      "start": 219,
+      "end": 226,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "BackAction",
+      "start": 231,
+      "end": 234,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "ChangeTape",
+      "start": 239,
+      "end": 242,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "SelectOppositeSex",
+      "start": 248,
+      "end": 261,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 250,
+          "condition": "oppositeSexConfig == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "RefreshImage",
+      "start": 266,
+      "end": 279,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 273,
+          "condition": "oppositeSex != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "BtClear_Click",
+      "start": 286,
+      "end": 293,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs",
+      "method": "BtLock_Click",
+      "start": 300,
+      "end": 309,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.Designer.cs",
+      "method": "Dispose",
+      "start": 14,
+      "end": 21,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 16,
+          "condition": "disposing && (components != null)"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.Designer.cs",
+      "method": "InitializeComponent",
+      "start": 29,
+      "end": 228,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "BtAssistantVision_Click",
+      "start": 335,
+      "end": 380,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 337,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 348,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        },
+        {
+          "line": 358,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 338,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 343,
+          "condition": "this.oppositeSex.MatterTypeEnum != EntityTypeEnum.TransportUnit"
+        },
+        {
+          "line": 352,
+          "condition": "!ParentBaseMatter.BaseInfo.IsVisioned"
+        },
+        {
+          "line": 370,
+          "condition": "frmEditPRsSu.DialogResult != DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "BtAssistantMeasureHeight_Click",
+      "start": 387,
+      "end": 427,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 389,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 395,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 390,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 397,
+          "condition": "!baseMatter.BaseInfo.IsVisioned"
+        },
+        {
+          "line": 404,
+          "condition": "!System2Domain.GetInstance().System2Controller.ChangeTouchDownAssistance()"
+        },
+        {
+          "line": 417,
+          "condition": "frmMeasureHeight.DialogResult != DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "BtAssistantEpoxyCheck_Click",
+      "start": 434,
+      "end": 467,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 444,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 452,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 438,
+          "condition": "string.IsNullOrEmpty(this.baseConfig.EpoxyCheckName)"
+        },
+        {
+          "line": 445,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 459,
+          "condition": "frmAssistant.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "BtAssistantAfterBond_Click",
+      "start": 474,
+      "end": 507,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 484,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 492,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 478,
+          "condition": "string.IsNullOrEmpty(this.baseConfig.AfterBondName)"
+        },
+        {
+          "line": 485,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 499,
+          "condition": "frmAssistant.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "BtAssistantSize_Click",
+      "start": 693,
+      "end": 774,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 695,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 713,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 696,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 701,
+          "condition": "!System2Domain.GetInstance().System2Controller.ChangeTouchDownAssistance()"
+        },
+        {
+          "line": 711,
+          "condition": "this.oppositeSex.MatterTypeEnum != EntityTypeEnum.TransportUnit"
+        },
+        {
+          "line": 716,
+          "condition": "!baseMatter.BaseInfo.IsVisioned"
+        },
+        {
+          "line": 727,
+          "condition": "frmAssistantSizeAndCenter.ShowDialog() != DialogResult.OK"
+        },
+        {
+          "line": 744,
+          "condition": "this.oppositeSex.MatterTypeEnum != EntityTypeEnum.TransportUnit"
+        },
+        {
+          "line": 760,
+          "condition": "this.oppositeSex.MatterTypeEnum == EntityTypeEnum.TransportUnit"
+        },
+        {
+          "line": 763,
+          "condition": "frmEditSafeHeight.ShowDialog() == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "MoveToSelectCenter",
+      "start": 871,
+      "end": 897,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 879,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 885,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 873,
+          "condition": "!this.oppositeSex.AssistantPos"
+        },
+        {
+          "line": 880,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 889,
+          "condition": "!baseMatter.BaseInfo.IsVisioned"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "BtAssistanceHeight_Click",
+      "start": 1024,
+      "end": 1077,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1026,
+          "callee": "JudgeTuExist",
+          "expression": "TUAssistantHelper.JudgeTuExist"
+        },
+        {
+          "line": 1044,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1027,
+          "condition": "transportUnit == null"
+        },
+        {
+          "line": 1032,
+          "condition": "!this.oppositeSex.AssistantPos"
+        },
+        {
+          "line": 1039,
+          "condition": "!System2Domain.GetInstance().System2Controller.ChangeTouchDownAssistance()"
+        },
+        {
+          "line": 1048,
+          "condition": "!baseMatter.BaseInfo.IsVisioned"
+        },
+        {
+          "line": 1060,
+          "condition": "dialogResult == DialogResult.OK"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "method": "VisionBaseMatter",
+      "start": 1079,
+      "end": 1112,
+      "compiled": true,
+      "kind": "异形配置编辑",
+      "sections": "5.5、7.6",
+      "note": "配置节点树操作；不等同重建旧运行TU",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1087,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        },
+        {
+          "line": 1101,
+          "callee": "GetBaseMatterByOppositeSex",
+          "expression": "transportUnit.GetBaseMatterByOppositeSex"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1085,
+          "condition": "visionSelf"
+        },
+        {
+          "line": 1096,
+          "condition": "parentOppositeSex == null"
+        },
+        {
+          "line": 1102,
+          "condition": "parentOppositeSex != null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "TransportUnit",
+      "start": 65,
+      "end": 67,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "TransportUnit",
+      "start": 73,
+      "end": 80,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "TransportUnit",
+      "start": 86,
+      "end": 101,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 93,
+          "condition": "currentMachineSystem == CurrentMachineSystemEnum.System1"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "Init",
+      "start": 107,
+      "end": 125,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 112,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "Refresh",
+      "start": 135,
+      "end": 143,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetSubstrate",
+      "start": 150,
+      "end": 163,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 152,
+          "condition": "this.Substrates == null"
+        },
+        {
+          "line": 157,
+          "condition": "index < 0"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetModule",
+      "start": 171,
+      "end": 186,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 175,
+          "condition": "substrate == null"
+        },
+        {
+          "line": 180,
+          "condition": "moduleIndex < 0"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetBondPosition",
+      "start": 195,
+      "end": 210,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 199,
+          "condition": "module == null"
+        },
+        {
+          "line": 204,
+          "condition": "bondPositionName == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetAllBondPositions",
+      "start": 217,
+      "end": 237,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 228,
+          "condition": "bondPosition.Name == bpName"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetSubstrateCount",
+      "start": 243,
+      "end": 246,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetModuleCount",
+      "start": 253,
+      "end": 256,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "InitTransportUnitCoordinateSystem",
+      "start": 261,
+      "end": 280,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 266,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "InitSubstrateCoordinateSystem",
+      "start": 285,
+      "end": 343,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 291,
+          "condition": "!substrateConfig.IsMultiple"
+        },
+        {
+          "line": 301,
+          "condition": "substrateConfig.ElementCoordinates.Count == 0"
+        },
+        {
+          "line": 306,
+          "condition": "substrateConfig.IsAssistanceDistanceByInput"
+        },
+        {
+          "line": 332,
+          "condition": "substrateConfig.Multiplication == MultiplicationEnum.Matrix"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "InitSubstrateByOppositeSex",
+      "start": 348,
+      "end": 357,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "RefreshSubstrate",
+      "start": 362,
+      "end": 368,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "System1MoveDistance",
+      "start": 373,
+      "end": 380,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 376,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "System1BackMoveDistance",
+      "start": 385,
+      "end": 392,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 388,
+          "condition": "ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SaveDataToExcel",
+      "start": 398,
+      "end": 439,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "IsProcessFinishedInSystem1",
+      "start": 467,
+      "end": 478,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 471,
+          "condition": "!substrate.IsSubstrateProcessFinishedInSystem1"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "IsProcessFinishedInSystem2",
+      "start": 484,
+      "end": 495,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 488,
+          "condition": "!substrate.IsSubstrateProcessFinishInSystem2"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetDivideSubstrate",
+      "start": 502,
+      "end": 521,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 510,
+          "condition": "substrate.CoordinateSystem.Distance.X >= divideX"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SetSystem1OffSet",
+      "start": 526,
+      "end": 536,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 528,
+          "condition": "this.TransportUnitInfo.IsSystem1Offset"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SetSystem2OffSet",
+      "start": 541,
+      "end": 551,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 543,
+          "condition": "this.TransportUnitInfo.IsSystem2Offset"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SetMatterDisable",
+      "start": 556,
+      "end": 562,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SetMatterOnlyDispense",
+      "start": 567,
+      "end": 573,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SetMatterOnlyBond",
+      "start": 578,
+      "end": 584,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "SetMatterEnable",
+      "start": 589,
+      "end": 595,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetAllBaseMatter",
+      "start": 601,
+      "end": 618,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "ClearVision",
+      "start": 623,
+      "end": 630,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "ClearMeasureHeight",
+      "start": 635,
+      "end": 642,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": []
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/TransportUnit.cs",
+      "method": "GetBaseMatterByOppositeSex",
+      "start": 649,
+      "end": 681,
+      "compiled": true,
+      "kind": "运行模型",
+      "sections": "3—7",
+      "note": "构建、查询、几何及状态接口；分段旧便捷函数与实际消息划分分别归属",
+      "assignments": [],
+      "calls": [],
+      "conditions": [
+        {
+          "line": 651,
+          "condition": "this.OppositeSex == opposite"
+        },
+        {
+          "line": 658,
+          "condition": "substrate.OppositeSex == opposite"
+        },
+        {
+          "line": 665,
+          "condition": "module.OppositeSex == opposite"
+        },
+        {
+          "line": 672,
+          "condition": "bondPosition.OppositeSex == opposite"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Service/TuService.cs",
+      "method": "ReadTransportMapping",
+      "start": 1800,
+      "end": 1810,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1809,
+          "callee": "ReadTransportMapping",
+          "expression": "ReadTransportMapping"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1804,
+          "condition": "fileName == null"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Service/TuService.cs",
+      "method": "ReadTransportMapping",
+      "start": 1817,
+      "end": 1946,
+      "compiled": true,
+      "kind": "Mapping",
+      "sections": "5.6、8.3、8.5",
+      "note": "样本、真实区段与导入新树分别归属",
+      "assignments": [],
+      "calls": [
+        {
+          "line": 1824,
+          "callee": "ReadTransportMappingByComponent",
+          "expression": "ReadTransportMappingByComponent"
+        }
+      ],
+      "conditions": [
+        {
+          "line": 1822,
+          "condition": "MachineSoftwareConfiguration.GetInstance().AutoSaveBondPositionComponentMapping"
+        },
+        {
+          "line": 1827,
+          "condition": "!File.Exists(transportId)"
+        },
+        {
+          "line": 1848,
+          "condition": "productConfiguration.SubstrateConfig.IsMultiple\r\n                && productConfiguration.ModuleConfig.IsMultiple"
+        },
+        {
+          "line": 1866,
+          "condition": "columnString[k * productConfiguration.ModuleConfig.ColumnCount + l].ToString() == \"X\""
+        },
+        {
+          "line": 1870,
+          "condition": "columnString[k * productConfiguration.ModuleConfig.ColumnCount + l].ToString() == \"2\""
+        },
+        {
+          "line": 1883,
+          "condition": "productConfiguration.SubstrateConfig.IsMultiple"
+        },
+        {
+          "line": 1896,
+          "condition": "columnString[j].ToString() == \"X\""
+        },
+        {
+          "line": 1900,
+          "condition": "columnString[j].ToString() == \"2\""
+        },
+        {
+          "line": 1911,
+          "condition": "productConfiguration.ModuleConfig.IsMultiple"
+        },
+        {
+          "line": 1922,
+          "condition": "columnString[j].ToString() == \"X\""
+        },
+        {
+          "line": 1926,
+          "condition": "columnString[j].ToString() == \"2\""
+        }
+      ]
+    }
+  ]
+}
