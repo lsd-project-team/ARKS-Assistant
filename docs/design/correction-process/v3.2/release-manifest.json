@@ -254,7 +254,7 @@
       "bytes": 20002
     },
     "illustration-provenance.json": {
-      "sha256": "45c11d0020cb617f00feb011a1bda6d74e20bee0c934ae311850f5e968b2232a",
+      "sha256": "62573464b64b3813004bbbda79509d9e3471bf93bc940430c38a7349bd57eaa5",
       "bytes": 13976
     },
     "image-resolution.json": {
@@ -310,8 +310,8 @@
       "bytes": 217
     },
     "verification.json": {
-      "sha256": "3536b457b400b2463333aa748221763019caeb26ffe33fefaac9df47a8a77374",
-      "bytes": 29205
+      "sha256": "0cb4f227681491c19610b420a239c25addfe980873d4dceb34e3b7d3a1f7e752",
+      "bytes": 29240
     },
     "纠偏过程设计文档.docx": {
       "sha256": "1d4bb795b55cda4dc82876fa68918442150e9cd7e28f0845aa6214a41ebc7524",

@@ -29,6 +29,8 @@ fig_root=(P/'figures').resolve()
 for path in fig_root.iterdir():
     assert path.resolve().is_relative_to(fig_root)
     if path.is_file() and path.suffix in ['.svg','.png'] and path.stem not in keys:path.unlink()
+for path in fig_root.glob('*.svg'):
+    path.write_bytes(path.read_bytes().replace(b'\r\n',b'\n'))
 provenance=read(P/'illustration-provenance.json');provenance['revision']='3.2'
 provenance['final_assets']=[dict(file='figures/'+b[0]+'.png',sha256=sha(fig_root/(b[0]+'.png'))) for b in figures]
 provenance['engineering_additions']=[dict(figure=b[1],png='figures/'+b[0]+'.png',svg='figures/'+b[0]+'.svg',

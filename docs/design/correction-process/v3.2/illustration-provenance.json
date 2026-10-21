@@ -143,7 +143,7 @@
       "png": "figures/c24-compensation-layers.png",
       "svg": "figures/c24-compensation-layers.svg",
       "sha256_png": "6c9fe847440f2d34f9d4e376793c0f68abf0dcd07d3a7d03d089b27923c6beaa",
-      "sha256_svg": "893edff4c2b76d1fd0bf315b0a8b8cd2946ffb0a08f96553fff44190412b7f72",
+      "sha256_svg": "f23995a6bac835948992603ee9a30b5a647f6ffd9004db4fe56b65eb4245ceb9",
       "method": "Python按同一坐标精确绘制PNG与SVG；计算、参考系与控制流逐项核对"
     },
     {
@@ -151,7 +151,7 @@
       "png": "figures/c25-axis-home.png",
       "svg": "figures/c25-axis-home.svg",
       "sha256_png": "16050a056b43565388a6182c650a5c9de501cccf0e67014048e2c1441b8d1636",
-      "sha256_svg": "c4548d3c0aed8ea7b530f614c09f01b04535e8c76f8d0a178332de5490f98ce9",
+      "sha256_svg": "bae584771b35f471a487fdaa82b4099a031435b3c526391b0dee35c245cbc476",
       "method": "Python按同一坐标精确绘制PNG与SVG；计算、参考系与控制流逐项核对"
     },
     {
@@ -159,7 +159,7 @@
       "png": "figures/c26-teach-angle.png",
       "svg": "figures/c26-teach-angle.svg",
       "sha256_png": "c8ba9fdbf061a7bef2aa84c4f1a4784ff1f55495ff4d763a2114ee13f5fb18f1",
-      "sha256_svg": "53560cea87902def43bf78ff7dcef9f4d58c7e4243207bb5f88cefd590caca67",
+      "sha256_svg": "1174486395a7b00558ce994509bdcb88fa5293c4a9cdc96f471b2c9727bb2816",
       "method": "Python按同一坐标精确绘制PNG与SVG；计算、参考系与控制流逐项核对"
     },
     {
@@ -167,7 +167,7 @@
       "png": "figures/c27-auto-collect.png",
       "svg": "figures/c27-auto-collect.svg",
       "sha256_png": "07aa933f83fcd8f5f9af1e3e3646230e400bb5c4049d68b38df932c473dbd5cd",
-      "sha256_svg": "5d8a0d54064cab7ba8b72184b3db2380ed9f3d6b9e4c2c5f6cf374507fe9c773",
+      "sha256_svg": "818199334dc0f1583ec8b5b2be6a841539cabfd3b0be190a2f88c8b865c08d73",
       "method": "Python按同一坐标精确绘制PNG与SVG；计算、参考系与控制流逐项核对"
     },
     {
@@ -175,7 +175,7 @@
       "png": "figures/c28-grid-calculation.png",
       "svg": "figures/c28-grid-calculation.svg",
       "sha256_png": "88bb59acb06344d2e7b4f6245d0f97ea013d472bb638957deab4202183d159a5",
-      "sha256_svg": "c7a7fc4d04b5a09a8e15ab948e2d77e3df61a0c65981e6c78f643c846041b064",
+      "sha256_svg": "2df04106797e141799b69505b301b1bbe8f4adc49837333659e6dc831023828a",
       "method": "Python按同一坐标精确绘制PNG与SVG；计算、参考系与控制流逐项核对"
     },
     {
@@ -183,7 +183,7 @@
       "png": "figures/c29-import-smoothing.png",
       "svg": "figures/c29-import-smoothing.svg",
       "sha256_png": "ccbcfd691c5782e1a0faa0342f183bbc7933cf8e339c5a41a0914995bf02ad8d",
-      "sha256_svg": "73e5873fbd3995a67bf3ee47cc01441e3b6e0c8cf0630c4e0310850a3c2840d8",
+      "sha256_svg": "dd2a39ab2b2fce013f6fc5ad9d5a801d57309a558046637a4f88a4eb5a81bfc0",
       "method": "Python按同一坐标精确绘制PNG与SVG；计算、参考系与控制流逐项核对"
     }
   ]

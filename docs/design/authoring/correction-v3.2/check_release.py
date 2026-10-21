@@ -21,6 +21,12 @@ assert len(PdfReader(P/'纠偏过程设计文档.pdf').pages)==46
 assert not get('text-sync.json')['word_missing'] and not get('text-sync.json')['pdf_missing']
 assert all(g['passed'] for g in get('acceptance-gates.json')['gates'])
 assert not get('entry-coverage.json')['known_unassigned_entries']
+assert get('verification.json')['review']['visual_status'].startswith('complete')
+provenance=get('illustration-provenance.json')
+for a in provenance['final_assets']:assert sha(P/a['file'])==a['sha256']
+for a in provenance['engineering_additions']:
+    assert sha(P/a['png'])==a['sha256_png']
+    assert sha(P/a['svg'])==a['sha256_svg']
 with zipfile.ZipFile(P/'纠偏过程设计文档.docx') as z:
     x=etree.fromstring(z.read('word/document.xml'))
     assert len(x.xpath('//*[local-name()="drawing"]'))==27

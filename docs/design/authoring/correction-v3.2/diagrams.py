@@ -39,4 +39,4 @@ class Canvas:
         self.text(x+w/2,y+h/2-(30 if sub else 0),title,52,bold=True)
         if sub:self.text(x+w/2,y+h/2+38,sub,44,color=C['muted'])
     def save(self):
-        self.im.save(OUT/(self.name+'.png'),dpi=(360,360));(OUT/(self.name+'.svg')).write_text('\n'.join(self.svg)+'</svg>',encoding='utf-8')
+        self.im.save(OUT/(self.name+'.png'),dpi=(360,360));(OUT/(self.name+'.svg')).write_text('\n'.join(self.svg)+'</svg>',encoding='utf-8',newline='\n')

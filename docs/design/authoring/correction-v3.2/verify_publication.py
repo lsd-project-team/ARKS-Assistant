@@ -77,6 +77,11 @@ def verify_book(folder,title,expected_equations,revision):
    else:outline.append({'title':obj.title,'page':reader.get_destination_page_number(obj)+1})
  walk(reader.outline);assert len(outline)==len(toc)
  report={'revision':revision,'date':'2026-10-21','page_count':len(pdf.pages),'source_files':len(b['files']),'source_baseline_verified':True,'checks':{'native_toc':True,'toc_entries':toc,'bookmarks':outline,'caption_index_page_numbers':indices,'all_fonts_embedded':fonts,'heading_font_faces_in_actual_pdf':heads,'toc_font_faces_in_actual_pdf':tocfaces,'heading_and_toc_font_fallback_absent':True,'linked_reference_targets_valid':True,'word_native_equations':expected_equations,'native_inline_math_count':len(math_objects)-expected_equations,'figures_have_alt_text':True,'tables_repeat_header':True,'no_out_of_page_text':True,'image_resolution':res},'layout':layout,'review':{'visual_status':'pending complete page review','render_pipeline':'独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。'},'limits':['基于源码静态追踪与独立算例；未运行设备或整套C#业务流程；纯数值类另有C#复算记录','阅读和技术评审用途；说明输入不代表实际配方或设备精度'],'files':{title+ext:{'sha256':sha(p/(title+ext)),'bytes':(p/(title+ext)).stat().st_size} for ext in ['.docx','.pdf','.md']}}
+ qa_path=p/'final-qa.json'
+ if qa_path.exists():
+  qa=json.loads(qa_path.read_text(encoding='utf-8'))
+  if qa.get('complete') and qa.get('pdf_sha256')==sha(p/(title+'.pdf')) and qa.get('docx_sha256')==sha(p/(title+'.docx')) and len(qa.get('pages',[]))==len(pdf.pages) and all(q.get('viewed') for q in qa['pages']):
+   report['review']['visual_status']='complete; exact current PDF and Word hashes match final-qa.json'
  (p/'verification.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  print(folder,{'pages':len(pdf.pages),'toc':len(toc),'figures':len(figs),'tables':len(tables),'source_files':len(b['files'])})
 

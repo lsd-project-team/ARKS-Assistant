@@ -1273,7 +1273,7 @@
     }
   ],
   "review": {
-    "visual_status": "pending complete page review",
+    "visual_status": "complete; exact current PDF and Word hashes match final-qa.json",
     "render_pipeline": "独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。"
   },
   "limits": [
