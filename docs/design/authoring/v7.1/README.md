@@ -2,6 +2,8 @@
 
 正文维护稿已解析为本次版本BLOCKS，不依赖旧版revision/refine/readability过滤器。正式稿删除的制作说明不会因旧过滤器重新出现。源码根只有trunk/AKRS.ZX2200，保持只读。
 
+两册封面统一由cover.py生成，仅保留两行大标题和两行内容介绍。封面不打印版本、日期、额外副标题或读者说明；相关信息留在配套资料中。
+
 每册按build.py → export.ps1 → restore_pdf_images.py顺序生成。输出是仓库忽略目录output/design-publication-v7.1对应子目录，已发布v7.1/v3.1保持不变。图源从各册已发布figures读取。PDF与Word共用正文、原生目录、OMML公式和精简引用附录。
 
 先使用工作区依赖加载器取得Python和Poppler，依赖见requirements.txt；原生Word导出需本机安装Word。导出脚本只操作本次独立隐藏实例。规范render_docx入口缺少LibreOffice时，使用本次记录的Word导出和Poppler全页校样路径。不要把文件结构检查当作视觉通过。

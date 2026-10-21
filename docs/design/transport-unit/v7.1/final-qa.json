@@ -1,282 +1,320 @@
 {
   "complete": true,
-  "pdf_sha256": "93fab4e742ba7ec4b1c24d61a05007e623b4040ca0a7fff76ec56bf085da4a50",
+  "pdf_sha256": "1e53b9ba8f0136c0234eae61c827c6c9b6a2a3b856059a7767c53a82a5ff9e57",
   "page_count": 39,
-  "render": "最终PDF原始PNG流恢复后，捆绑Poppler长边1500px全页逐页查看",
-  "raster_location": "output/design-publication-v7.1/transport-unit",
+  "render": "本轮Word原生导出并恢复原始图像流后全部重渲染；封面直接查看，正文区域逐页像素一致复用此前直接查看结果；TU页眉字符局部栅格微差已直接核对。",
+  "raster_location": "output/cover-redesign-20261021/transport-unit",
   "pages": [
     {
       "page": 1,
       "viewed": true,
-      "raster": "review-01.png",
-      "raster_sha256": "48be82e343ab026abcdd1f742c38c7c0350277c65494790e22055f961a92f17b",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-01.png",
+      "raster_sha256": "f3edfd226ce12f6c1d29ced12f8b5c705cabde31f80015a13f2dd86a316294d8",
+      "result": "直接查看最终新封面：只有大标题与介绍；字形、间距、留白及页边界正常。"
     },
     {
       "page": 2,
       "viewed": true,
-      "raster": "review-02.png",
-      "raster_sha256": "825c3299cdb347f6c6fef481b7a0d10fec1534cd5e5ff089196fb180d0e32a34",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-02.png",
+      "raster_sha256": "278cbd3a5913b45b5f0646806bf41278cf2ae157abbc85a251dc99da28174621",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 3,
       "viewed": true,
-      "raster": "review-03.png",
-      "raster_sha256": "ce4db52d867b02fee26c0dbcf7b77bbfdad7947c5b208e46563ae4dbaf87f2c2",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-03.png",
+      "raster_sha256": "bfcc24b79c91aee919408fe0c5da6f90f883e25f6e86c38d0523507a42073ac8",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 4,
       "viewed": true,
-      "raster": "review-04.png",
-      "raster_sha256": "519ee9003fd8c007670d6e57c10ea42e80271e4e29a5cd65ea7be71239d28a6a",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-04.png",
+      "raster_sha256": "df5d93ad42d16a7ed8af9df1232d53687c0410ac9a1f21113caa95b6ff0de6db",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 5,
       "viewed": true,
-      "raster": "review-05.png",
-      "raster_sha256": "7f6f1a3c23a291be242aa12df5a6fab795df87f1d3fe20d7f57fd5c2132fdc63",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-05.png",
+      "raster_sha256": "b29b15efb488c039a69c47563c0e57f0068524798dc5964addeba3c348e34a02",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 6,
       "viewed": true,
-      "raster": "review-06.png",
-      "raster_sha256": "69d8e612caed5f259db712aebf2dccdb48e7a85f7a16034c25e6f364844a848f",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-06.png",
+      "raster_sha256": "11c44bb918bc7b6b025d6c4718e0d6c926ec7fb3a35759108da1a324f8943834",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 7,
       "viewed": true,
-      "raster": "review-07.png",
-      "raster_sha256": "6bc4488fc14fc3fe7bd482db4be221bd5bf622d37e45ca198f3ad66e11be7f6e",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-07.png",
+      "raster_sha256": "a096fbb890d14aba5e06552456e842224d70cb09384de8cb2e2b486a371f4806",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 8,
       "viewed": true,
-      "raster": "review-08.png",
-      "raster_sha256": "858c779163315f2cd7fc2513a28b972a31176fb5a592de21241a7ffa24fbfac2",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-08.png",
+      "raster_sha256": "7a9e8213d838ed90e0b02cbcee3d36ccd0a452d2a17edffcef9142295840d888",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 9,
       "viewed": true,
-      "raster": "review-09.png",
-      "raster_sha256": "bce1b5f4f3724643c12e3f1edb4e6b5b823522a42df20d52e5bfedaadaea7820",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-09.png",
+      "raster_sha256": "ac4d3e9851cd1f9c4f13530ffc69a6e7f7039aab00f9c325ed3137dd9c0d0d2d",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 10,
       "viewed": true,
-      "raster": "review-10.png",
-      "raster_sha256": "e579c69a867079b210342bb1cb81e9d28a102e33e7f303c0cbd9039b069918e7",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-10.png",
+      "raster_sha256": "e3b017dcd99d309e184d73fa754a4ad4a083b7addd8c37c46a9b6edbe2d61960",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 11,
       "viewed": true,
-      "raster": "review-11.png",
-      "raster_sha256": "d84a8a2310dabbbe535b22310749d429cb51e511d9bfdaf063cfb55bd8d79ec5",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-11.png",
+      "raster_sha256": "6990ad0f9128be9003c373d801a11b31546dd6da95700a052d63ce911ea4d90e",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 12,
       "viewed": true,
-      "raster": "review-12.png",
-      "raster_sha256": "3345e484746d73162928a8ca8d1a18c9d23d62d30128daae027a805d21c4450f",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-12.png",
+      "raster_sha256": "552351807024577d9a8847f23274fd11de27f4a36068717676b889247f94773d",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 13,
       "viewed": true,
-      "raster": "review-13.png",
-      "raster_sha256": "382dde27a8f0e23289bb88b494403fdb13f7fe0dbe53b0e8f91b8713406fb114",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-13.png",
+      "raster_sha256": "58bec4c992cea8fe8c5f972b1387484bc8de0a1c0dd4e295507cc086f4661739",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 14,
       "viewed": true,
-      "raster": "review-14.png",
-      "raster_sha256": "a94cea3c0cd55464f38acfa3d19c5546f02f44d2fdb14f17ec0dd22a69e9dd6f",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-14.png",
+      "raster_sha256": "5fb43639834dc84bc58b3e9b862da201b3c84fe30150c6c7dc368126c4dcfbd3",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 15,
       "viewed": true,
-      "raster": "review-15.png",
-      "raster_sha256": "949baacf183e9bb9a5c2407b15e486be798887462088ffa6ec8da77f9e265d54",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-15.png",
+      "raster_sha256": "673a901f0c6d8753265e9844edfb8f9eb9352d0ef4683cb200affe4e4fcdfb63",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 16,
       "viewed": true,
-      "raster": "review-16.png",
-      "raster_sha256": "94125858dd0f76241b0853dcea44a6091d8172d82447b58db4304db88c89d6d0",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-16.png",
+      "raster_sha256": "14a11bb5f2635ec134d79470e62ae3765c05515ad07e109cd319461eaf9d8239",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 17,
       "viewed": true,
-      "raster": "review-17.png",
-      "raster_sha256": "e3e125a39c75e4b3854bd85bcce7061326a86947c212500eacfa13b633fd469d",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-17.png",
+      "raster_sha256": "907ecbf6f2371b08e93ee7a94b4783de9d5317ff130808bb866134e3a3753860",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 18,
       "viewed": true,
-      "raster": "review-18.png",
-      "raster_sha256": "03ebf3360a3157db61523af3f4c6ddc5d573256217dd3945d38f5844fd04dc60",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-18.png",
+      "raster_sha256": "ee74904e56620044edbc475d4a6f327e6695eaf37a7389d9ac1b73e9ff8e37bc",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 19,
       "viewed": true,
-      "raster": "review-19.png",
-      "raster_sha256": "bbde0c512feabc283eb96f23248e20c826ac8cf2b4737d88e71d40e6433b6811",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-19.png",
+      "raster_sha256": "dee0b6100f9d13ed401ef219bb120e964af062d89b8aef53626fc96c8e03efdd",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 20,
       "viewed": true,
-      "raster": "review-20.png",
-      "raster_sha256": "6f19eb1e22b6ba703803dd263d8a5f0b99795194eb135d05cab2a302e1030335",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-20.png",
+      "raster_sha256": "fff01c8761842f972ea6176addaf253437c2c085f575c6795acf8d9245395f03",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 21,
       "viewed": true,
-      "raster": "review-21.png",
-      "raster_sha256": "391bb899e1f6089e9d8df396a292c5f1d3ebc09849c51cae35bb1dd33df4e9a0",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-21.png",
+      "raster_sha256": "646156ecf034383fc9f85fe132dfc5a61af1bedd5f8a732e50923aa8397e5f79",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 22,
       "viewed": true,
-      "raster": "review-22.png",
-      "raster_sha256": "42b1ee80df222063049d3f87764d71635133069a96de363d0c6ad0b26e55eaba",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-22.png",
+      "raster_sha256": "8624219cc6a4649d98a0d824956eb32546c987f003fa9c990dbb8cc17429b273",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 23,
       "viewed": true,
-      "raster": "review-23.png",
-      "raster_sha256": "9cd25e1d5e148dcf338da643c875d4da2359c4ca7dc71fc618bdaa0214b3aa2d",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-23.png",
+      "raster_sha256": "7eeddd0a4f095a486200d209d83b0c4bc8e9763e0454b22ba8a1d01b96f788ef",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 24,
       "viewed": true,
-      "raster": "review-24.png",
-      "raster_sha256": "c6e31562bb44b0b96e5c5b847b1e76c4b26088cdda7d77d6b081c27bd4c9c844",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-24.png",
+      "raster_sha256": "19f79413a4d3f0f60e547115ca02b8e164d2cc960e6a060c8bfe1f17b288f9e2",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 25,
       "viewed": true,
-      "raster": "review-25.png",
-      "raster_sha256": "a7f0c1423a573a0a6de06c9df830273d56932a2fdb5ad2505a2e84a39e2d983e",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-25.png",
+      "raster_sha256": "d99f45c836f0a6d20e3108641fd7603db8bd0b3bb524b8d9c72a7b7b3fec4c0f",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 26,
       "viewed": true,
-      "raster": "review-26.png",
-      "raster_sha256": "9b7e10fe2c77eca566729af17f7877b30c0de06df3830ed41980c763c9ce9998",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-26.png",
+      "raster_sha256": "de1790812d7a67207b8565c84c4940f56c5008575252147b86530571f58be91d",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 27,
       "viewed": true,
-      "raster": "review-27.png",
-      "raster_sha256": "18416d9604ecebf3e891ac3fa00453eb347e9ed29292f5d5c13577c0c3fac49c",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-27.png",
+      "raster_sha256": "672a694deb67c821e753619686374a6f65737eec4d6d0df36f8a6fa09cb2ac3b",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 28,
       "viewed": true,
-      "raster": "review-28.png",
-      "raster_sha256": "a665414998c5ce460c7dd54022d737bfaa9e20a1622f75d9ae8d6dd45ce258d8",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-28.png",
+      "raster_sha256": "35362330da2d0815e8a5338ea11d4833308911a712b2af3292e3b337cef05618",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 29,
       "viewed": true,
-      "raster": "review-29.png",
-      "raster_sha256": "e1e9d2a5b26f14669f61549de4862824357a5e95bb3fa0daf49002705ed9967e",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-29.png",
+      "raster_sha256": "b8817c1bfdf0dc669c2b9ba713599bee6fb787601cf0ae546cfdf7c20c05f39b",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 30,
       "viewed": true,
-      "raster": "review-30.png",
-      "raster_sha256": "1b4d02f8e31fd2a92703526907864c36626b5c867dc1dd746c7a45c103f7114c",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-30.png",
+      "raster_sha256": "a60ac73ed91f5a9593f566b25420172fe76866136b56174669135cb75a619463",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 31,
       "viewed": true,
-      "raster": "review-31.png",
-      "raster_sha256": "61b88f2c8709aaa1dc1765c88cc9bbfb5b01cfe64edaf9801a76b0dc9e66eb68",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-31.png",
+      "raster_sha256": "6b6b51188d38d666b4f7d2e3d6f1b2c26b66aa0b9fb4a9461d25934e3337e37b",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 32,
       "viewed": true,
-      "raster": "review-32.png",
-      "raster_sha256": "2363b7719335338713100103e55b5ab23859b287c596bab73d8d530b66ef6628",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-32.png",
+      "raster_sha256": "7bf822da30f7b29990043aad4d17a36db389b5a644afcd3eb1b90c137d067bc4",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 33,
       "viewed": true,
-      "raster": "review-33.png",
-      "raster_sha256": "021d083866b37e1a201cf33114573142e2f020dbed7a6d75cd269673ae73faa9",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-33.png",
+      "raster_sha256": "c5e719b9535eea0f1e2c7e639e9f7b0b3338833ce8dcdbb8f075940037f415c3",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 34,
       "viewed": true,
-      "raster": "review-34.png",
-      "raster_sha256": "3f0856aac26c37505d0ff05473ba9687136e1a1861fdbbfe78c6fb3a777df996",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-34.png",
+      "raster_sha256": "57b11134e4939fbe1881bf2d4e360a72bf415f072656e27afa354a75a4a41196",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 35,
       "viewed": true,
-      "raster": "review-35.png",
-      "raster_sha256": "60475f84c43a73672cfe0cc5402e4cc55c8e52e66e3495018d6d9824a758167d",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-35.png",
+      "raster_sha256": "b2d42250839f8f48a0731752925d25ea22b187bbf42f6c37aa7abd3a5a3316ba",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 36,
       "viewed": true,
-      "raster": "review-36.png",
-      "raster_sha256": "09383f8d0a1cd48f495d0055a10df7e90cb763797981a008baa788ef8faa18a3",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-36.png",
+      "raster_sha256": "430a7f88ca4ef16e94104ec917104c1eaea251a28aee70ba0fde57ebf6012524",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 37,
       "viewed": true,
-      "raster": "review-37.png",
-      "raster_sha256": "21b2b7740f57d659ff913410981fdfa1619680a4c0ae9450b3ad0cacbc79c130",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-37.png",
+      "raster_sha256": "dc761456c89dfd91926c48c7e0b80056a7b600499630661106d36a98594718cc",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 38,
       "viewed": true,
-      "raster": "review-38.png",
-      "raster_sha256": "3832cee2de74ccc88da6d0fe5295fa39dabe98ba4ddd9ffec8d3cf3b9a6b5c15",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-38.png",
+      "raster_sha256": "741bee8f0b8b67a75f34ca5aad6e059fc3c478f30237cb4f90a137f34db5c611",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     },
     {
       "page": 39,
       "viewed": true,
-      "raster": "review-39.png",
-      "raster_sha256": "fc4fb29ac15ffbc1197922c947069fa5381436c72eac2df2b7eb671f45ff370e",
-      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题"
+      "raster": "page-39.png",
+      "raster_sha256": "206274841041756abd79f1811780317df1d90ef57c94a24a87285322c0f3d0e0",
+      "result": "直接查看最终1500px全页；检查文字、图表、公式、分页、图注及页边界，未发现待修问题",
+      "cover_revision_check": "本轮重新渲染的正文区域与前次直接查看的图像逐像素一致；TU页眉字符局部栅格微差已单独核对。"
     }
   ],
   "defects_remaining": []

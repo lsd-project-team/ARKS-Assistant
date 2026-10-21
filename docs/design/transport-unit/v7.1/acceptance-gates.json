@@ -31,7 +31,8 @@
     "passed": true,
     "pages": 39,
     "evidence": "final-qa.json",
-    "remaining_defects": []
+    "remaining_defects": [],
+    "cover_revision": "cover-redesign.json：封面直接查看；正文区域全页像素一致，TU页眉字符局部栅格微差单独核对。"
   },
   "requirements": [
     {

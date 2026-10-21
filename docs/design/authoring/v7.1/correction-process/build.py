@@ -120,14 +120,12 @@ fp=sec.footer.paragraphs[0];fp.alignment=WD_ALIGN_PARAGRAPH.CENTER;fp.paragraph_
 for r in fp.runs:r.font.size=Pt(9)
 doc.core_properties.title='纠偏过程设计文档';doc.core_properties.subject='ZX2200产品定位、上视与中转台芯片纠偏';doc.core_properties.author='';doc.core_properties.version='3.1'
 
-md=['# 纠偏过程设计文档','','ZX2200视觉定位与芯片纠偏 · 第3.1版 · 2026年10月21日','']
-p=para('ZX2200\n视觉定位与芯片纠偏','Subtitle');p.paragraph_format.space_before=Pt(58);p.paragraph_format.space_after=Pt(28)
-p=para('纠偏过程','Title');p.paragraph_format.line_spacing=Pt(38);p.paragraph_format.space_after=Pt(4)
-p=para('设计文档','Title');p.paragraph_format.line_spacing=Pt(38);p.paragraph_format.space_after=Pt(22)
-p=para('供料定位 产品定位与芯片纠偏','Subtitle');p.paragraph_format.space_after=Pt(54)
-para('解释纠偏对象、进入条件、采集步骤、坐标计算、结果使用与失败边界，让设计评审和设备调试使用同一套判断依据。')
-p=para('适用读者\n软件研发与技术评审人员\n设备调试与应用工程师','Book Note');p.paragraph_format.space_before=Pt(36);p.paragraph_format.line_spacing=Pt(19)
-p=para('第3.1版    2026年10月21日','Book Note');p.paragraph_format.space_before=Pt(36)
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
+from cover import add_cover,COVERS
+md=['# 纠偏过程 设计文档','',COVERS['correction-process']['intro'],'']
+add_cover(doc,'correction-process')
+
 doc.add_page_break();para('目录','Book Front Heading');field(doc.add_paragraph(),'TOC \\o "1-2" \\h \\z \\u')
 
 def heading(text,level,numbered=True):

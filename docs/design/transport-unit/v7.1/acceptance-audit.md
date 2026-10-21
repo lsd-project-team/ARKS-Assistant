@@ -23,3 +23,5 @@
 规范render_docx入口因LibreOffice缺失未完成；已使用独立隐藏Word实例更新字段原生导出、恢复原始图像流，再由捆绑Poppler渲染全部最终页面。最终PNG校样保存在本机忽略目录output/design-publication-v7.1，逐页图像哈希见final-qa.json。
 
 本记录是代理依据约定标准的自检结果，不代替用户签收、设备运行或精度验证。
+
+封面修订：仅保留大标题与内容介绍。两册封面均直接查看，正文Word XML及所有其他部件不变；最终PDF正文区域全部重渲染并与前次校样逐像素一致，TU页眉字符局部栅格微差已单独核对。记录见cover-redesign.json。

@@ -108,14 +108,12 @@ fp=sec.footer.paragraphs[0];fp.alignment=WD_ALIGN_PARAGRAPH.CENTER;fp.paragraph_
 for r in fp.runs:r.font.size=Pt(9)
 doc.core_properties.title='Transport Unit设计文档';doc.core_properties.subject='ZX2200产品运行模型：结构、坐标与生产协作';doc.core_properties.author='';doc.core_properties.version='7.1'
 
-md=['# Transport Unit设计文档','','ZX2200产品运行模型 · 第7.1版 · 2026年10月21日','']
-p=para('ZX2200\n产品运行模型','Subtitle');p.paragraph_format.space_before=Pt(58);p.paragraph_format.space_after=Pt(28)
-p=para('Transport Unit','Title');p.paragraph_format.line_spacing=Pt(38);p.paragraph_format.space_after=Pt(4)
-p=para('设计文档','Title');p.paragraph_format.line_spacing=Pt(38);p.paragraph_format.space_after=Pt(22)
-p=para('产品结构与坐标计算及生产协作','Subtitle');p.paragraph_format.space_after=Pt(54)
-para('从一份产品的层级地址出发，解释运行对象怎样建立、位置怎样逐层计算，以及同一份加工记录如何随产品跨工位延续。')
-p=para('适用读者\n软件研发与技术评审人员\n设备调试与应用工程师','Book Note');p.paragraph_format.space_before=Pt(36);p.paragraph_format.line_spacing=Pt(19)
-p=para('第7.1版    2026年10月21日','Book Note');p.paragraph_format.space_before=Pt(36)
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
+from cover import add_cover,COVERS
+md=['# Transport Unit 设计文档','',COVERS['transport-unit']['intro'],'']
+add_cover(doc,'transport-unit')
+
 doc.add_page_break();p=para('目录','Book Front Heading')
 field(doc.add_paragraph(),'TOC \\o "1-2" \\h \\z \\u')
 

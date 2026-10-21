@@ -569,12 +569,12 @@
       }
     ],
     "all_fonts_embedded": {
-      "/BCDEEE+MicrosoftYaHei": true,
-      "/BCDFEE+MicrosoftYaHei": true,
-      "/BCDGEE+MicrosoftYaHei-Bold": true,
-      "/BCDHEE+MicrosoftYaHei-Bold": true,
-      "/BCDIEE+SimSun": true,
-      "/BCDJEE+TimesNewRomanPSMT": true,
+      "/BCDEEE+MicrosoftYaHei-Bold": true,
+      "/BCDFEE+MicrosoftYaHei-Bold": true,
+      "/BCDGEE+TimesNewRomanPSMT": true,
+      "/BCDHEE+MicrosoftYaHei": true,
+      "/BCDIEE+MicrosoftYaHei": true,
+      "/BCDJEE+SimSun": true,
       "/BCDKEE+Arial-BoldMT": true,
       "/BCDLEE+Cambria": true,
       "/BCDMEE+TimesNewRomanPSMT": true,
@@ -583,14 +583,14 @@
       "/BCDPEE+TimesNewRomanPS-BoldMT": true
     },
     "heading_font_faces_in_actual_pdf": [
-      "BCDGEE+MicrosoftYaHei-Bold",
-      "BCDHEE+MicrosoftYaHei-Bold"
+      "BCDEEE+MicrosoftYaHei-Bold",
+      "BCDFEE+MicrosoftYaHei-Bold"
     ],
     "toc_font_faces_in_actual_pdf": [
-      "BCDEEE+MicrosoftYaHei",
-      "BCDFEE+MicrosoftYaHei",
-      "BCDGEE+MicrosoftYaHei-Bold",
-      "BCDHEE+MicrosoftYaHei-Bold"
+      "BCDEEE+MicrosoftYaHei-Bold",
+      "BCDFEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei",
+      "BCDIEE+MicrosoftYaHei"
     ],
     "heading_and_toc_font_fallback_absent": true,
     "linked_reference_targets_valid": true,
@@ -816,7 +816,7 @@
     {
       "page": 1,
       "images": 0,
-      "body_bottom": 553.0
+      "body_bottom": 411.5
     },
     {
       "page": 2,
@@ -985,10 +985,11 @@
     }
   ],
   "review": {
-    "visual_status": "最终PDF全部页面直接查看完成",
+    "visual_status": "新封面直接查看；正文全部重新渲染并逐页像素一致，保留前次正文直接查看结果。TU页眉字符局部栅格微差已直接核对。",
     "render_pipeline": "独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。",
+    "cover_revision": "封面仅保留大标题与内容介绍；最终封面直接查看，正文区域全部页面重渲染后与先前逐页查看的校样像素一致。",
     "visual_evidence": "final-qa.json",
-    "reader_evidence": "reader-walkthrough.json"
+    "cover_evidence": "cover-redesign.json"
   },
   "limits": [
     "基于源码静态追踪与独立算例；未运行设备或C#业务流程",
@@ -996,16 +997,16 @@
   ],
   "files": {
     "纠偏过程设计文档.docx": {
-      "sha256": "2a8ff24667beb2e70c650376cad2c7f83e4cf5640bec0a8948b53a41c84ac9d2",
-      "bytes": 10538917
+      "sha256": "86d12f4ef4a3a201a1d83120b30b75e7c0f0eca11a78d8eaa8fceae24a4d5a62",
+      "bytes": 10521343
     },
     "纠偏过程设计文档.pdf": {
-      "sha256": "63e275f2750b1f3cddde025a101ea0f37dde65b92f4fe6ef2ba8e867e1b28506",
-      "bytes": 8267992
+      "sha256": "be489c5ee714e1734f7776fb296b63f5b82f4d9b309c83d5c5eaeab495ae0ddf",
+      "bytes": 8266250
     },
     "纠偏过程设计文档.md": {
-      "sha256": "d8a23d9f24dfee5efa008033512c4481f7e799c924108f553a3e72a9e575a80b",
-      "bytes": 58676
+      "sha256": "98170d8efa552d72f6a59025c9cda010f2414bbecf348bd3d529d0f2fac9d374",
+      "bytes": 58749
     }
   }
 }

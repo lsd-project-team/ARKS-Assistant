@@ -649,12 +649,12 @@
       }
     ],
     "all_fonts_embedded": {
-      "/BCDEEE+MicrosoftYaHei": true,
-      "/BCDFEE+MicrosoftYaHei": true,
-      "/BCDGEE+MicrosoftYaHei-Bold": true,
-      "/BCDHEE+MicrosoftYaHei-Bold": true,
-      "/BCDIEE+SimSun": true,
-      "/BCDJEE+TimesNewRomanPSMT": true,
+      "/BCDEEE+MicrosoftYaHei-Bold": true,
+      "/BCDFEE+MicrosoftYaHei-Bold": true,
+      "/BCDGEE+TimesNewRomanPSMT": true,
+      "/BCDHEE+MicrosoftYaHei": true,
+      "/BCDIEE+MicrosoftYaHei": true,
+      "/BCDJEE+SimSun": true,
       "/BCDKEE+Arial-BoldMT": true,
       "/BCDLEE+TimesNewRomanPSMT": true,
       "/BCDMEE+Cambria": true,
@@ -662,14 +662,14 @@
       "/BCDOEE+CambriaMath": true
     },
     "heading_font_faces_in_actual_pdf": [
-      "BCDGEE+MicrosoftYaHei-Bold",
-      "BCDHEE+MicrosoftYaHei-Bold"
+      "BCDEEE+MicrosoftYaHei-Bold",
+      "BCDFEE+MicrosoftYaHei-Bold"
     ],
     "toc_font_faces_in_actual_pdf": [
-      "BCDEEE+MicrosoftYaHei",
-      "BCDFEE+MicrosoftYaHei",
-      "BCDGEE+MicrosoftYaHei-Bold",
-      "BCDHEE+MicrosoftYaHei-Bold"
+      "BCDEEE+MicrosoftYaHei-Bold",
+      "BCDFEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei",
+      "BCDIEE+MicrosoftYaHei"
     ],
     "heading_and_toc_font_fallback_absent": true,
     "linked_reference_targets_valid": true,
@@ -865,7 +865,7 @@
     {
       "page": 1,
       "images": 0,
-      "body_bottom": 553.0
+      "body_bottom": 411.5
     },
     {
       "page": 2,
@@ -1059,10 +1059,11 @@
     }
   ],
   "review": {
-    "visual_status": "最终PDF全部页面直接查看完成",
+    "visual_status": "新封面直接查看；正文全部重新渲染并逐页像素一致，保留前次正文直接查看结果。TU页眉字符局部栅格微差已直接核对。",
     "render_pipeline": "独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。",
+    "cover_revision": "封面仅保留大标题与内容介绍；最终封面直接查看，正文区域全部页面重渲染后与先前逐页查看的校样像素一致。",
     "visual_evidence": "final-qa.json",
-    "reader_evidence": "reader-walkthrough.json"
+    "cover_evidence": "cover-redesign.json"
   },
   "limits": [
     "基于源码静态追踪与独立算例；未运行设备或C#业务流程",
@@ -1070,16 +1071,16 @@
   ],
   "files": {
     "TransportUnit设计文档.docx": {
-      "sha256": "5c951ddd01782d99d628e2fb0cff05aa154bbd95489868654c5815119b70b65f",
-      "bytes": 7966371
+      "sha256": "ae13d07f3965bee22710f0c0fcf498a8c68ecec779f744fedc04679f09b2666b",
+      "bytes": 7948592
     },
     "TransportUnit设计文档.pdf": {
-      "sha256": "93fab4e742ba7ec4b1c24d61a05007e623b4040ca0a7fff76ec56bf085da4a50",
-      "bytes": 5201245
+      "sha256": "1e53b9ba8f0136c0234eae61c827c6c9b6a2a3b856059a7767c53a82a5ff9e57",
+      "bytes": 5199645
     },
     "TransportUnit设计文档.md": {
-      "sha256": "8dc3ed1c727b5306b614f011b85cef0ec07e401af7f857ce7cb06a560f4e3940",
-      "bytes": 74729
+      "sha256": "23a26a820a8f07dffa7844dd1e46be6007b44a3916d0276473fc9bc563f821f3",
+      "bytes": 74811
     }
   }
 }
