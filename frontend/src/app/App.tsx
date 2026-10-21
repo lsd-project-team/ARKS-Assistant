@@ -29,9 +29,11 @@ import '../features/chat/styles/chat-experience.css';
 import '../features/chat/styles/conversation-workflows.css';
 import '../features/settings/styles/settings.css';
 import { useHandoverNavigation } from '../features/handover/navigation';
+import { useTimingNavigation, timingHash } from '../features/action_timing/navigation';
 
 const KnowledgeWorkspace = lazy(() => import('../features/knowledge/KnowledgeWorkspace'));
 const HandoverWorkspace = lazy(() => import('../features/handover/HandoverWorkspace'));
+const ActionTimingPage = lazy(() => import('../features/action_timing/ActionTimingPage'));
 
 const CodePane = lazy(() =>
   import('../features/source_reader/components/CodePane').then((module) => ({
@@ -45,6 +47,7 @@ export default function App() {
   const startConversation = useNewConversation();
   const { route, navigate, knowledgeOpen } = useKnowledgeNavigation();
   const handover = useHandoverNavigation();
+  const timing = useTimingNavigation();
   const appearance = useAppearance((state) => state.mode);
   useEffect(() => {
     document.documentElement.dataset.appearance = appearance;
@@ -158,6 +161,12 @@ export default function App() {
             setDialog('settings');
           }}
           handover={{ active: handover.open, onOpen: () => handover.navigate() }}
+          actionTiming={{
+            active: timing.open,
+            onOpen: () => {
+              location.hash = timingHash();
+            },
+          }}
         >
           {motion.navigationExpanded && (
             <Sidebar
@@ -169,7 +178,16 @@ export default function App() {
             />
           )}
         </WorkspaceNavigation>
-        {projectPage && !knowledgeOpen && !handover.open && <ProjectHome />}
+        {projectPage && !knowledgeOpen && !handover.open && !timing.open && <ProjectHome />}
+        {timing.open && (
+          <Suspense
+            fallback={
+              <section className="project-home padded muted">正在加载动作耗时统计…</section>
+            }
+          >
+            <ActionTimingPage />
+          </Suspense>
+        )}
         {handover.open && (
           <Suspense
             fallback={<section className="project-home padded muted">正在加载交接工作台…</section>}
@@ -233,7 +251,10 @@ export default function App() {
             </Suspense>
           </WorkspaceLoadBoundary>
         )}
-        <main className="workspace-main" hidden={knowledgeOpen || projectPage || handover.open}>
+        <main
+          className="workspace-main"
+          hidden={knowledgeOpen || projectPage || handover.open || timing.open}
+        >
           <div className="mobile-switch">
             <button
               className={mobile === 'chat' ? 'selected' : ''}
@@ -253,7 +274,7 @@ export default function App() {
             </button>
           </div>
           <ChatPane
-            showHeader={!knowledgeOpen && !projectPage && !handover.open}
+            showHeader={!knowledgeOpen && !projectPage && !handover.open && !timing.open}
             onSettings={(tab) => setDialog(tab === 'mcp' ? 'mcp' : 'settings')}
             onToggleWorkspace={toggleWorkspace}
           />

@@ -1,4 +1,4 @@
-import { Settings2, Menu, ClipboardList } from 'lucide-react';
+import { Settings2, Menu, ClipboardList, Timer } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { Route } from '../../features/knowledge/routes';
 import { AppearanceSwitch } from '../../features/settings/components/AppearanceSwitch';
@@ -14,6 +14,7 @@ export function WorkspaceNavigation({
   navigate,
   onSettings,
   handover,
+  actionTiming,
   children,
 }: {
   route: Route;
@@ -24,6 +25,7 @@ export function WorkspaceNavigation({
   navigate: (route: Route) => void;
   onSettings: () => void;
   handover?: { active: boolean; onOpen: () => void };
+  actionTiming?: { active: boolean; onOpen: () => void };
   children?: ReactNode;
 }) {
   const navigationControl = useRef<HTMLButtonElement>(null);
@@ -36,7 +38,7 @@ export function WorkspaceNavigation({
   }, [compact]);
   // 新对话是新建动作，不代表当前页面；所有聊天入口都不高亮它。
   const active =
-    handover?.active || route.kind === 'chat'
+    handover?.active || actionTiming?.active || route.kind === 'chat'
       ? undefined
       : ['graphs', 'graph', 'catalog'].includes(route.kind)
         ? 'graphs'
@@ -113,6 +115,18 @@ export function WorkspaceNavigation({
           >
             <ClipboardList size={18} strokeWidth={1.5} />
             <span className="nav-copy">交接工作台</span>
+          </button>
+        )}
+        {actionTiming && (
+          <button
+            title="动作耗时统计"
+            aria-label="动作耗时统计"
+            aria-current={actionTiming.active ? 'page' : undefined}
+            className={actionTiming.active ? 'active' : ''}
+            onClick={actionTiming.onOpen}
+          >
+            <Timer size={18} strokeWidth={1.5} />
+            <span className="nav-copy">动作耗时统计</span>
           </button>
         )}
       </nav>

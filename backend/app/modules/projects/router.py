@@ -8,6 +8,7 @@ from fastapi import APIRouter, FastAPI, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
+from app.modules.action_timing import router as action_timing
 from app.modules.auth.ownership import require_source, require_thread
 from app.modules.auth.router import require_admin
 from app.modules.chat import router as conversations
@@ -240,7 +241,7 @@ class ProjectDispatcher:
         entry = self.apps.get(project_id)
         if not entry or entry[0] is not services:
             app = FastAPI(exception_handlers=self.exception_handlers)
-            modules = [workspace, conversations, memories, knowledge]
+            modules = [workspace, conversations, memories, knowledge, action_timing]
             if services.repository.project_id:
                 modules += [project_reading, code_changes, code_experiences]
             for module in modules:

@@ -9,6 +9,7 @@ import {
   MessageSquareText,
   Settings2,
   Users,
+  Timer,
 } from 'lucide-react';
 import { AccountMenu } from '../auth/AccountMenu';
 import { useAppearance } from '../settings/lib/appearance';
@@ -36,12 +37,14 @@ const ConfigurationPage = lazy(() =>
   import('./ConfigurationPage').then((module) => ({ default: module.ConfigurationPage })),
 );
 const HandoverWorkspace = lazy(() => import('../handover/HandoverWorkspace'));
+const ActionTimingPage = lazy(() => import('../action_timing/ActionTimingPage'));
 
 const navigation = [
   { id: 'overview', title: '管理概览', href: '#admin/overview', icon: BarChart3 },
   { id: 'users', title: '用户管理', href: '#admin/users', icon: Users },
   { id: 'questions', title: 'AI 问答记录', href: '#admin/questions', icon: MessageSquareText },
   { id: 'handover', title: '交接管理', href: '#handover/materials', icon: ClipboardList },
+  { id: 'action-timing', title: '动作耗时统计', href: '#action-timing', icon: Timer },
   { id: 'reviews', title: '复核与追溯', href: '#handover/updates', icon: CheckCheck },
   { id: 'settings', title: '系统配置', href: '#admin/settings', icon: Settings2 },
   { id: 'data', title: '数据维护', href: '#admin/data', icon: Database },
@@ -157,6 +160,7 @@ export default function AdminShell() {
             {page === 'overview' && <OverviewPage />}
             {page === 'users' && <UsersPage />}
             {page === 'questions' && <QuestionsPage identifier={route.questionId} />}
+            {page === 'action-timing' && <ActionTimingPage />}
             {(page === 'handover' || page === 'reviews') && (
               <HandoverWorkspace
                 management
