@@ -17,7 +17,7 @@
       "review": "核对四个标题、芯片始终仅一枚、识别相机朝下、对位移动吸嘴、重取后台面无残留芯片。"
     }
   ],
-  "revision": "2.0",
+  "revision": "2.1",
   "engineering": "除概念生图外，按源码事实、给定算例和明确坐标比例绘制SVG/PNG；本轮正文只引用下列资产。",
   "final_assets": [
     {
@@ -85,5 +85,6 @@
       "absolute_path": "D:/agent_project/code_agent/docs/design/correction-process/v2/figures/c13-partial-update.png",
       "sha256": "22f3a1ab9016c704ab7fc30983f307c523624e467631be612e377e3330f87408"
     }
-  ]
+  ],
+  "final_review": "2026-10-21校订沿用已核对图源；没有生成或修改插图"
 }

@@ -1,8 +1,8 @@
 {
-  "revision": "2.0",
-  "date": "2026-10-20",
+  "revision": "2.1",
+  "date": "2026-10-21",
   "page_count": 24,
-  "source_files": 30,
+  "source_files": 31,
   "source_baseline_verified": true,
   "checks": {
     "native_toc": true,
@@ -433,7 +433,7 @@
     "heading_and_toc_font_fallback_absent": true,
     "linked_reference_targets_valid": true,
     "word_native_equations": 10,
-    "native_inline_math_count": 12,
+    "native_inline_math_count": 13,
     "figures_have_alt_text": true,
     "tables_repeat_header": true,
     "no_out_of_page_text": true,
@@ -569,7 +569,8 @@
         "effective_dpi": 366.46
       }
     ],
-    "no_reference_alone_on_line": true
+    "no_reference_alone_on_line": true,
+    "footer_page_numbers": true
   },
   "layout": [
     {
@@ -640,7 +641,7 @@
     {
       "page": 14,
       "images": 1,
-      "body_bottom": 684.32
+      "body_bottom": 721.4
     },
     {
       "page": 15,
@@ -680,7 +681,7 @@
     {
       "page": 22,
       "images": 0,
-      "body_bottom": 465.16
+      "body_bottom": 563.08
     },
     {
       "page": 23,
@@ -694,7 +695,7 @@
     }
   ],
   "review": {
-    "visual_status": "completed page review with exact-pixel comparison for unchanged bodies",
+    "visual_status": "completed: 6 changed final pages opened; 18 full pages pixel-identical to reviewed proofs",
     "render_pipeline": "独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。",
     "visual_evidence": "final-qa.json",
     "editorial_evidence": "editorial-review.md",
@@ -706,16 +707,16 @@
   ],
   "files": {
     "纠偏过程设计文档.docx": {
-      "sha256": "167fa873ef5d031e9df3e927f4cb499c42b043688a7646f099c72fec004bbbf0",
-      "bytes": 7639405
+      "sha256": "7d6cf634f3037fc40ff67687171568ce325c00403065eab73b2e4d5c520ca388",
+      "bytes": 7639916
     },
     "纠偏过程设计文档.pdf": {
-      "sha256": "768493444d32f220801d8e6d5b84dffe0c379df0631c589b00edf1670d7de9b1",
-      "bytes": 4749704
+      "sha256": "343008d56d37e7d3803743e332adbe60b694e3bfdc019d274f0398360c1a4f3a",
+      "bytes": 4761970
     },
     "纠偏过程设计文档.md": {
-      "sha256": "33190992309b6ae0c209c514e7197d1201b9dbf1dad0441d70a711e948ba3fa0",
-      "bytes": 38763
+      "sha256": "da344cda428e584c8ccfe257669973fa9e23fcfb1c83f901678edb75b3bdd9da",
+      "bytes": 39447
     }
   }
 }

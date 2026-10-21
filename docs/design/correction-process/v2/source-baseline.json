@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-20",
-  "revision": "1.0",
-  "repository_commit": "6e5f20c06c8bba49fbda582534283b677eb4aa6e",
+  "date": "2026-10-21",
+  "revision": "2.1",
+  "repository_commit": "4a04fb796bc2ace39c982c90d6c173e36a292197",
   "scope": "产品层级定位、上视芯片纠偏、中转台芯片纠偏，以及各流程输出在贴装入口中的必要使用",
   "files": [
     {
@@ -1385,6 +1385,31 @@
           "symbol": "private void BtReDispense_Click(object sender, EventArgs e)"
         }
       ]
+    },
+    {
+      "id": "NOZZLE_CONFIG",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/Nozzle/Nozzle.cs",
+      "sha256": "39cf74dfda75ca9c211d12e6dfc78b835fc35b35ff25fc0a5a1f4993dc52f3cc",
+      "reviewed_ranges": [
+        {
+          "start_line": 77,
+          "end_line": 81,
+          "first_anchor": {
+            "line": 77,
+            "text": "/// <summary>"
+          },
+          "last_anchor": {
+            "line": 81,
+            "text": "public double AlignAngle { get; set; } = 0;"
+          }
+        }
+      ],
+      "anchors": [
+        {
+          "line": 81,
+          "symbol": "public double AlignAngle { get; set; } = 0;"
+        }
+      ]
     }
   ],
   "reference_groups": [
@@ -1421,7 +1446,8 @@
         "BOND_VISION_CONTROLLER",
         "DISPENSE_CONTROLLER",
         "NOZZLE_CONTROLLER",
-        "MATH_HELPER"
+        "MATH_HELPER",
+        "NOZZLE_CONFIG"
       ]
     },
     {

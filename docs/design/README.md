@@ -1,11 +1,11 @@
 # ZX2200设计文档
 
-2026年10月20日。本轮继续完善正文可读性、动作场景和空间计算图示，分别交付两册。
+2026年10月21日复核。两册分别交付；纠偏分册校订术语、吸嘴校准角度约定与公式符号。
 
 | 当前分册 | PDF | Word | 配套资料 |
 |---|---|---|---|
 | Transport Unit 第6版 | [阅读PDF](transport-unit/v6/TransportUnit设计文档.pdf) | [编辑Word](transport-unit/v6/TransportUnit设计文档.docx) | [内容与检查记录](transport-unit/v6/README.md) |
-| 纠偏过程 第2版 | [阅读PDF](correction-process/v2/纠偏过程设计文档.pdf) | [编辑Word](correction-process/v2/纠偏过程设计文档.docx) | [内容与检查记录](correction-process/v2/README.md) |
+| 纠偏过程 第2.1版 | [阅读PDF](correction-process/v2/纠偏过程设计文档.pdf) | [编辑Word](correction-process/v2/纠偏过程设计文档.docx) | [内容与检查记录](correction-process/v2/README.md) |
 
 TU分册解释产品对象、坐标、初始化、跨工位生命周期、接口与边界；纠偏分册解释产品定位、上视及中转台的采集、计算、结果使用与失败路径。先读含义再读实现，两类读者可沿各册编写说明选择阅读路径。
 

@@ -1,14 +1,16 @@
 # 纠偏过程设计文档
 
-第2.0版，2026年10月20日。面向研发评审与设备调试两类读者。
+第2.1版，2026年10月21日。面向研发评审与设备调试两类读者。
 
-- [纠偏过程设计文档.pdf](纠偏过程设计文档.pdf)：24页阅读稿，13幅图、6张表，含目录跳转及章节书签。
-- [纠偏过程设计文档.docx](纠偏过程设计文档.docx)：可编辑Word，保留原生目录、公式、引用和图表页码。
+- [阅读PDF](纠偏过程设计文档.pdf)：24页，13幅图、6张表，含目录跳转及章节书签。
+- [编辑Word](纠偏过程设计文档.docx)：保留原生目录、公式、引用和图表页码。
 - Markdown及figures目录用于维护；工程图同时保存SVG和PNG。
-- source-guide.md、source-baseline.json、claim-map.json保存源码入口及主要结论依据。
-- illustration-provenance.json保存生图提示词、最终图片绝对路径及哈希。
-- verification.json、final-qa.json、editorial-review.md、acceptance-audit.md保存本轮检查依据；arithmetic-verification.json保存独立复算结果。
+- source-guide.md、source-baseline.json、source-analysis.json及claim-map.json保存源码依据。
+- illustration-provenance.json保存生图提示词、所用图片路径及哈希。
+- verification.json、final-qa.json、editorial-review.md、acceptance-audit.md保存检查依据；arithmetic-verification.json保存独立复算结果。
 
-第2、3、4、5章先解释物理含义，再定义变量、条件和实现边界。3.3节用少量加粗标识算法分支。图5-1改为生图连续场景，图5-2改为精确向量及偏心局部放大图。保留四点角度、两点Atan、S1/S2距离检查、人工OK、温漂返回和两个重试标签的实际行为。
+本次校订补齐TU、PR、IPT及S1/S2术语，说明吸嘴偏心接口中的AlignAngle约定，并把硬角度补偿记为h，避免与特征中心向量c混用。公式6-1同时明确a_off的含义。图源与章节结构沿用第2版，旧稿可从Git历史追溯。
 
-两册入口见[设计文档总览](../../README.md)。源码保持只读；算例不是实机验证结果。
+最终24页中6页直接查看，18页全页像素与上一轮已核对校样一致；源码基线、目录、图表、原生公式、字体与分辨率检查通过，9个独立算例复算通过。源码保持只读；未执行设备试验或独立读者验收。
+
+两册入口见[设计文档总览](../../README.md)。

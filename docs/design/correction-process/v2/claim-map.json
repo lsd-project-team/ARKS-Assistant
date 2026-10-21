@@ -1,5 +1,5 @@
 {
-  "revision": "1.0",
+  "revision": "2.1",
   "claims": [
     {
       "id": "P01",
@@ -549,6 +549,33 @@
           "source_id": "IPT_ACTION",
           "start_line": 594,
           "end_line": 701
+        }
+      ]
+    },
+    {
+      "id": "F01",
+      "claim": "中转台式5-2的E(α)封装吸嘴校准角度约定：实际GetNozzleOffset调用角度为新取片轴角α减nozzle.AlignAngle，而非直接传α；AlignAngle为吸嘴校准角度。",
+      "basis": "2026-10-21源码复核",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 280,
+          "end_line": 303
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 350,
+          "end_line": 358
+        },
+        {
+          "source_id": "NOZZLE_CONTROLLER",
+          "start_line": 970,
+          "end_line": 979
+        },
+        {
+          "source_id": "NOZZLE_CONFIG",
+          "start_line": 77,
+          "end_line": 81
         }
       ]
     }

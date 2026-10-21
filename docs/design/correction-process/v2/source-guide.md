@@ -31,6 +31,7 @@
 - trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs：AKRSPoint3D GetG0VisionPos(AKRSPoint3D point3D)，L262；AKRSPoint3D GetG0PosFromVision(AKRSPoint3D point3D)，L273
 - trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.cs：AKRSPoint2D GetNozzleOffset(string nozzleName, double angle)，L970；AKRSPoint2D GetNozzleOffset(AKRSPoint2D offset, double angle)，L987
 - trunk/AKRS.ZX2200/Infrastructure/Utils/MathHelper.cs：static class MathHelper，L26；static AKRSPoint3D RotateCenter(AKRSPoint3D distanceToCenter,double degree)，L34
+- trunk/AKRS.ZX2200/BondSystem/Models/Repositories/Nozzle/Nozzle.cs：double AlignAngle { get; set; } = 0;，L81
 
 ## [4] 上视纠偏与温漂
 

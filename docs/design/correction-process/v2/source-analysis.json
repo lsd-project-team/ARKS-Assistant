@@ -819,6 +819,26 @@
           }
         }
       ]
+    },
+    {
+      "id": "NOZZLE_CONFIG",
+      "path": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/Nozzle/Nozzle.cs",
+      "sha256": "39cf74dfda75ca9c211d12e6dfc78b835fc35b35ff25fc0a5a1f4993dc52f3cc",
+      "line_count": 272,
+      "reviewed_ranges": [
+        {
+          "start_line": 77,
+          "end_line": 81,
+          "first_anchor": {
+            "line": 77,
+            "text": "/// <summary>"
+          },
+          "last_anchor": {
+            "line": 81,
+            "text": "public double AlignAngle { get; set; } = 0;"
+          }
+        }
+      ]
     }
   ],
   "claims": [
@@ -1372,6 +1392,33 @@
           "end_line": 701
         }
       ]
+    },
+    {
+      "id": "F01",
+      "claim": "中转台式5-2的E(α)封装吸嘴校准角度约定：实际GetNozzleOffset调用角度为新取片轴角α减nozzle.AlignAngle，而非直接传α；AlignAngle为吸嘴校准角度。",
+      "basis": "2026-10-21源码复核",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 280,
+          "end_line": 303
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 350,
+          "end_line": 358
+        },
+        {
+          "source_id": "NOZZLE_CONTROLLER",
+          "start_line": 970,
+          "end_line": 979
+        },
+        {
+          "source_id": "NOZZLE_CONFIG",
+          "start_line": 77,
+          "end_line": 81
+        }
+      ]
     }
   ],
   "normal_paths": [
@@ -1669,5 +1716,6 @@
   "remaining_before_formal_authoring": [
     "相机标定矩阵、实际配方与吸嘴标定作为外部运行输入；说明算例不替代设备标定复现",
     "文档不规定通用断电恢复或未经源码证明的自动回滚"
-  ]
+  ],
+  "final_review_date": "2026-10-21"
 }
