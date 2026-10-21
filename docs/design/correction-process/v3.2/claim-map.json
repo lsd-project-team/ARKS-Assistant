@@ -1,0 +1,1790 @@
+{
+  "scope": "trunk/AKRS.ZX2200",
+  "date": "2026-10-21",
+  "claims": [
+    {
+      "id": "CO01",
+      "sections": "3.1、3.2",
+      "conclusion": "供料入口NextDie按四种搜索方式分派，先形成候选与识别结果再供取片。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+          "method_or_token": "NextDie",
+          "start": 335,
+          "end": 357,
+          "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+          "start_text": "public bool NextDie()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+          "method_or_token": "NextDie",
+          "start": 162,
+          "end": 192,
+          "sha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+          "start_text": "if (!Block.GetInstance().NextDie())",
+          "end_text": "goto NeedChange;"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO02",
+      "sections": "3.2",
+      "conclusion": "重复定位含等号阈值，次数上限在移动前检查；人工OK直接取首项返回true，不再阈值判断；内外Retry位置不同。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+          "method_or_token": "AnalyseDie",
+          "start": 78,
+          "end": 317,
+          "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+          "start_text": "private MatchResult AnalyseDie(bool isSpringBoard, out bool isSkip, string matchTemplateName)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+          "method_or_token": "ToRequiredAccuracy",
+          "start": 1394,
+          "end": 1473,
+          "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+          "start_text": "private (bool isSucceed, MatchResult matchResult) ToRequiredAccuracy()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+          "method_or_token": "MoveToCameraCenterWithThread",
+          "start": 693,
+          "end": 702,
+          "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+          "start_text": "public void MoveToCameraCenterWithThread(MatchResult[] results)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO03",
+      "sections": "3.2",
+      "conclusion": "Single双特征取均值；Nine复用候选但后续再次PR；Mapping和Box按支持分支处理。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+          "method_or_token": "SearchSingle",
+          "start": 35,
+          "end": 163,
+          "sha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919",
+          "start_text": "private bool SearchSingle(bool isOffset = true)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+          "method_or_token": "AnalyseDies",
+          "start": 294,
+          "end": 386,
+          "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+          "start_text": "private bool AnalyseDies()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+          "method_or_token": "SearchMapping",
+          "start": 46,
+          "end": 197,
+          "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+          "start_text": "private bool SearchMapping()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+          "method_or_token": "SearchDieBox",
+          "start": 48,
+          "end": 145,
+          "sha256": "1afc14108540072e5d4a276cb71148b2481bc043d66da21224b776d224e4066b",
+          "start_text": "private bool SearchDieBox()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO04",
+      "sections": "3.3",
+      "conclusion": "取片T未翻转p−a+n，翻转p+a+n；偏心输入角扣AlignAngle。静态华夫盒另有XY及Z分支。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+          "method_or_token": "CalculatePickPos",
+          "start": 1457,
+          "end": 1655,
+          "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+          "start_text": "public AKRSPoint4D CalculatePickPos(BaseCarrierConfig component, double componentAngle, MatchResult matchResult)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO05",
+      "sections": "3.4",
+      "conclusion": "Pick动作调用PickUpCompensationVision(true)，失败Abort；供料角写ComponentAngleOnWafer。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 156,
+          "end": 515,
+          "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+          "method_or_token": "StaticWaffleVision",
+          "start": 180,
+          "end": 311,
+          "sha256": "7907bbbb2e06f9d0b54dac33c334f700c50f0a79df6f35c99a80ca64e93a7f33",
+          "start_text": "private (ExcuteResult, MatchResult) StaticWaffleVision(bool isSkip)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO06",
+      "sections": "3.4、5.4",
+      "conclusion": "两种漂移符号、超限及返回不同；上视包装忽略底层bool。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+          "method_or_token": "GetPickCompensation",
+          "start": 261,
+          "end": 275,
+          "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+          "start_text": "public static AKRSPoint3D GetPickCompensation()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+          "method_or_token": "GetTemperatureCompensation",
+          "start": 240,
+          "end": 255,
+          "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+          "start_text": "public static AKRSPoint3D GetTemperatureCompensation()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+          "method_or_token": "System2TemperatureCompensation",
+          "start": 897,
+          "end": 922,
+          "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+          "start_text": "public  bool System2TemperatureCompensation(bool firstTu)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO07",
+      "sections": "4.1、4.3",
+      "conclusion": "S1/S2领域采集、头相机差及Mapping提前返回分别判断；结果逐点写入。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+          "method_or_token": "System1MatterVision",
+          "start": 96,
+          "end": 197,
+          "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a",
+          "start_text": "public bool System1MatterVision(BaseMatter baseEntity, bool byMapping = true)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+          "method_or_token": "System2MatterVision",
+          "start": 279,
+          "end": 435,
+          "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+          "start_text": "public bool System2MatterVision(BaseMatter baseEntity, bool byMapping = true)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO08",
+      "sections": "4.2",
+      "conclusion": "八个动作已注册并编入工程；生产IsDoWork与DoWork域调用条件不可混同。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs",
+          "method_or_token": "S1CarrierVisionActionNode",
+          "start": 85,
+          "end": 85,
+          "sha256": "4d5e6f5746a3d90a25899260fef0f8d1d3f53df62ae388714454194842a9df3b",
+          "start_text": "public S1CarrierVisionActionNode S1CarrierVisionActionNode { get; set; } =",
+          "end_text": "public S1CarrierVisionActionNode S1CarrierVisionActionNode { get; set; } ="
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BondActionNodeRepository.cs",
+          "method_or_token": "S2CarrierVisionActionNode",
+          "start": 112,
+          "end": 112,
+          "sha256": "5d421c598701ab1f7945d4da706f8b0aeaa831eed97cb938e008a92ce8ddc3e4",
+          "start_text": "public S2CarrierVisionActionNode S2CarrierVisionActionNode { get; set; } = new S2CarrierVisionActionNode() { ActionLevel = ActionLevelEnum.Carrier, Name = \"BondCarrierVision\" };",
+          "end_text": "public S2CarrierVisionActionNode S2CarrierVisionActionNode { get; set; } = new S2CarrierVisionActionNode() { ActionLevel = ActionLevelEnum.Carrier, Name = \"BondCarrierVision\" };"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO09",
+      "sections": "4.2",
+      "conclusion": "S1离线置标记后继续调用领域；S2置标记后直接成功。各层开关与完成判断不完全相同。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 44,
+          "end": 90,
+          "sha256": "c3f0c97946b6d83324209a167a3d0f77756ba93595999a2b732cbea9c4daa367",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 98,
+          "end": 125,
+          "sha256": "c3f0c97946b6d83324209a167a3d0f77756ba93595999a2b732cbea9c4daa367",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 34,
+          "end": 78,
+          "sha256": "33a8e5078fc86c1d1c214919d3f339ba2f4b6599f5be50767a9ca8669432816a",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 86,
+          "end": 122,
+          "sha256": "33a8e5078fc86c1d1c214919d3f339ba2f4b6599f5be50767a9ca8669432816a",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 36,
+          "end": 81,
+          "sha256": "0b93b50df40d6858da8214fa19858271eff5d711a14a93217942e8e6569ecd2a",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 87,
+          "end": 121,
+          "sha256": "0b93b50df40d6858da8214fa19858271eff5d711a14a93217942e8e6569ecd2a",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 48,
+          "end": 91,
+          "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 97,
+          "end": 133,
+          "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 36,
+          "end": 86,
+          "sha256": "c26a814b5492210abc4e78345a99448d67e601378f4e8c8facae91747d22996b",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 92,
+          "end": 124,
+          "sha256": "c26a814b5492210abc4e78345a99448d67e601378f4e8c8facae91747d22996b",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 55,
+          "end": 97,
+          "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 103,
+          "end": 140,
+          "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 55,
+          "end": 99,
+          "sha256": "fbe942a1faaae0d5c38e41809234a2a449e7b0f4c3d2670cb48935ecd9e3f431",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 105,
+          "end": 136,
+          "sha256": "fbe942a1faaae0d5c38e41809234a2a449e7b0f4c3d2670cb48935ecd9e3f431",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 58,
+          "end": 98,
+          "sha256": "b881dfd2360e51aaca2ed2ca26828b4b28fe312b70e19168a9d432fd46119aaf",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+          "method_or_token": "IsDoWork",
+          "start": 104,
+          "end": 129,
+          "sha256": "b881dfd2360e51aaca2ed2ca26828b4b28fe312b70e19168a9d432fd46119aaf",
+          "start_text": "public override bool IsDoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO10",
+      "sections": "4.2",
+      "conclusion": "相对固晶在Init中重排焊点定位到对应Pick之前；S1常规相对固晶点不执行该定位。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+          "method_or_token": "SortRelativeBond",
+          "start": 1440,
+          "end": 1493,
+          "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+          "start_text": "public void SortRelativeBond()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 48,
+          "end": 91,
+          "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO11",
+      "sections": "4.4",
+      "conclusion": "X/Y独立选点，四点角度P4受P3开关控制；两点定角保留Atan，三点拟合圆忽略P4。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "method_or_token": "UpdateEntity",
+          "start": 528,
+          "end": 546,
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+          "start_text": "public static void UpdateEntity(BaseMatter baseEntity, AdjustTypeEnum type)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "method_or_token": "GetCentre",
+          "start": 595,
+          "end": 625,
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+          "start_text": "oldPoint = MathHelper.GetCentre(",
+          "end_text": "{"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Utils/MathHelper.cs",
+          "method_or_token": "GetCentre",
+          "start": 516,
+          "end": 546,
+          "sha256": "3464a656b445ac169a721e9b2dd27a129daa1b03c7a2c926483369ef116dea7c",
+          "start_text": "public static PointF GetCentre(PointF P1, PointF P2, PointF P3)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO12",
+      "sections": "4.5、8.1",
+      "conclusion": "当前目录证明坐标更新接口输入与调用次序；不证明目录外校验阈值，已删除原10mm/0.2rad断言及图示。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "method_or_token": "UpdateEntity",
+          "start": 528,
+          "end": 546,
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+          "start_text": "public static void UpdateEntity(BaseMatter baseEntity, AdjustTypeEnum type)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO13",
+      "sections": "4.6、8.2",
+      "conclusion": "两点距离Retry/None两侧不同；人工普通匹配OK重跑PR而非直接返回中心，按实际出口返回。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+          "method_or_token": "System1MatterVision",
+          "start": 96,
+          "end": 197,
+          "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a",
+          "start_text": "public bool System1MatterVision(BaseMatter baseEntity, bool byMapping = true)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+          "method_or_token": "System2MatterVision",
+          "start": 279,
+          "end": 435,
+          "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+          "start_text": "public bool System2MatterVision(BaseMatter baseEntity, bool byMapping = true)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs",
+          "method_or_token": "InitAction",
+          "start": 31,
+          "end": 51,
+          "sha256": "df946ef5fd34e83b541f34cbcd6a84a499fd6b38e4c831f453f81bc9f7f6e35e",
+          "start_text": "private void InitAction()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO14",
+      "sections": "5.1—5.4",
+      "conclusion": "生产上视快速/普通、单/双点与镜像分支分别计算偏移和角；偏移先写，再二维码/温漂。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 131,
+          "end": 514,
+          "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO15",
+      "sections": "6.1—6.3",
+      "conclusion": "IPT先放片后识别计算重取；IPTVisionPos、IPTPickPos在对应运动前写目标，不是到位记录。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 136,
+          "end": 514,
+          "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+          "method_or_token": "PrepareBeforeAction",
+          "start": 33,
+          "end": 47,
+          "sha256": "73bbe54ab96120045e09f69c80c6382d795894c914298c97a99a3d508e4d8414",
+          "start_text": "private void PrepareBeforeAction()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO16",
+      "sections": "6.4",
+      "conclusion": "两个重取标签位置不同；正常RePick只重做检测；视觉Ignore抛料并重置消息Retry。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 136,
+          "end": 514,
+          "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO17",
+      "sections": "6.5",
+      "conclusion": "绝对运动去拍照/取片调用未接收子方法返回，插补分支接收；异常传播与返回非Success是两回事。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+          "method_or_token": "MoveToIPT",
+          "start": 51,
+          "end": 107,
+          "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412",
+          "start_text": "private ExcuteResult MoveToIPT(BaseCarrierConfig componet, AKRSPoint4D targetPos)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+          "method_or_token": "MoveToIPTVisionPos",
+          "start": 423,
+          "end": 445,
+          "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412",
+          "start_text": "private ExcuteResult MoveToIPTVisionPos(AKRSPoint3D targetPos)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+          "method_or_token": "MoveToIPTPickPos",
+          "start": 543,
+          "end": 565,
+          "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412",
+          "start_text": "private ExcuteResult MoveToIPTPickPos(AKRSPoint4D targetPos)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+          "method_or_token": "SubstrateCameraCorrectionActionDryRun",
+          "start": 877,
+          "end": 958,
+          "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412",
+          "start_text": "private ExcuteResult SubstrateCameraCorrectionActionDryRun()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO18",
+      "sections": "7.1—7.4",
+      "conclusion": "贴装依次处理硬偏移、焊后/单点、相机分支、TU区域及参考点，再记G0后转轴及实时追加。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+          "method_or_token": "CalculateBondPos",
+          "start": 498,
+          "end": 630,
+          "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+          "start_text": "private AKRSPoint4D CalculateBondPos()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO19",
+      "sections": "7.2",
+      "conclusion": "实时实参前二顺序与形参名称反向；插值超限抛异常，四点差超限返回零，最终仅X。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+          "method_or_token": "GetCompensatePoint3D",
+          "start": 149,
+          "end": 201,
+          "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+          "start_text": "public AKRSPoint3D GetCompensatePoint3D(AKRSPoint3D iptPickPos, AKRSPoint3D iptVisionPos, AKRSPoint3D bondPos, AKRSPoint3D bondVisonPos)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+          "method_or_token": "GetCompensatePosByPoint",
+          "start": 208,
+          "end": 266,
+          "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+          "start_text": "private AKRSPoint3D GetCompensatePosByPoint(AKRSPoint3D point3D)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO20",
+      "sections": "7.3",
+      "conclusion": "焊后原样本数达标后分别筛XY绝对值<50，空筛选可Average失败；汇总Z取X均值。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+          "method_or_token": "GetPostCompensation",
+          "start": 57,
+          "end": 84,
+          "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+          "start_text": "public static AKRSPoint3D GetPostCompensation(PostBondInspection postBondInspection)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+          "method_or_token": "GetPostBondCompensation",
+          "start": 187,
+          "end": 228,
+          "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+          "start_text": "public static AKRSPoint3D GetPostBondCompensation(string bpName)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO21",
+      "sections": "7.3",
+      "conclusion": "AutoByLast时GetPostBondCompensation为零，产品结束NormalizationOffset修改后续配置，单点补偿同受开关控制。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+          "method_or_token": "NormalizationOffset",
+          "start": 90,
+          "end": 180,
+          "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+          "start_text": "public static void NormalizationOffset(string tuId)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+          "method_or_token": "GetBpSeparateOffset",
+          "start": 235,
+          "end": 252,
+          "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+          "start_text": "public static AKRSPoint3D GetBpSeparateOffset(BondPosition bondPosition)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+          "method_or_token": "NormalizationOffset",
+          "start": 337,
+          "end": 367,
+          "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+          "start_text": "DefectCompensate.NormalizationOffset(this.transportUnit.Name);",
+          "end_text": "{"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO22",
+      "sections": "7.3",
+      "conclusion": "TU补偿双线性插值，关闭/null为零，XY绝对值>1抛异常，不能承诺任意网格外查询有效。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+          "method_or_token": "GetBondCompensate",
+          "start": 66,
+          "end": 146,
+          "sha256": "8bc110fc23a5155db53cbf25c36bbdc5c0c54b465325a54422c45548a9cb1b10",
+          "start_text": "public AKRSPoint3D GetBondCompensate(double x, double y)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO23",
+      "sections": "8.5",
+      "conclusion": "手动PlacementTest调用独立UplookVisionAction；启用纠偏时只支持上视，非生产IPT路径。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmComponentPlacement.cs",
+          "method_or_token": "PlacementTest",
+          "start": 433,
+          "end": 501,
+          "sha256": "84a880e9d9c42325e97febcd307170720a87b71dbfe4b04e376b924ea4197908",
+          "start_text": "private void PlacementTest(BondTypeEnum bondType)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+          "method_or_token": "PlacementTest",
+          "start": 659,
+          "end": 942,
+          "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+          "start_text": "public ExcuteResult PlacementTest(",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+          "method_or_token": "UplookVisionAction",
+          "start": 950,
+          "end": 1235,
+          "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+          "start_text": "public (ExcuteResult, AKRSPoint4D) UplookVisionAction(BondPosition bondPosition, BaseCarrierConfig component)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO24",
+      "sections": "8.5",
+      "conclusion": "示教/快捷扫描复用公共领域能力，可跳过生产IsDoWork；byMapping=false行为需区分。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+          "method_or_token": "System2MatterVision",
+          "start": 666,
+          "end": 696,
+          "sha256": "893f55643943826da075fb8564e9da08d76c771b70803da75611daf372ea37f3",
+          "start_text": "if (!System2Domain.GetInstance().System2MatterVision(transportUnit, false))",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+          "method_or_token": "VisionBaseMatter",
+          "start": 1079,
+          "end": 1112,
+          "sha256": "78462da4520e4c1133c1add685e999e5d9c07dc30c38337401c7fb077ed6b00a",
+          "start_text": "private void VisionBaseMatter(TransportUnit transportUnit, bool visionSelf)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+          "method_or_token": "System2MatterVision",
+          "start": 137,
+          "end": 167,
+          "sha256": "f1779ebecc01ec731a0e46a66f6e6ec850e2fca156682e0e89c507c0d07fa5eb",
+          "start_text": "System2Domain.System2MatterVision(transportUnit);",
+          "end_text": "}"
+        }
+      ],
+      "basis": "本目录内静态路径及条件核查；几何说明模型不当作外部坐标实现证明",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO25",
+      "sections": "3.5",
+      "conclusion": "Nine候选仍在移向取料中心时再次PR，但bondSpinAngle先写且后次PR的void结果不否决搜索成功；Map不支持分支抛异常。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+          "method_or_token": "SearchNine",
+          "start": 39,
+          "end": 288,
+          "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+          "start_text": "private bool SearchNine()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+          "method_or_token": "AnalyseDies",
+          "start": 294,
+          "end": 386,
+          "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+          "start_text": "private bool AnalyseDies()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+          "method_or_token": "CalculateDiesPosition",
+          "start": 391,
+          "end": 496,
+          "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+          "start_text": "private void CalculateDiesPosition()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+          "method_or_token": "MoveDieToPickCenter",
+          "start": 1045,
+          "end": 1090,
+          "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+          "start_text": "private void MoveDieToPickCenter()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+          "method_or_token": "SearchMapping",
+          "start": 46,
+          "end": 197,
+          "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+          "start_text": "private bool SearchMapping()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内方法、条件、写入和后续使用静态核查；独立算例验证公式关系",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO26",
+      "sections": "3.5",
+      "conclusion": "候选、放行与已取走分别更新；Map预取推进和取后刷新为两次调用。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+          "method_or_token": "GetNextPositionInfoAndForwardTo",
+          "start": 453,
+          "end": 491,
+          "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+          "start_text": "private Info GetNextPositionInfoAndForwardTo()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+          "method_or_token": "RemeberPickedDieInfo",
+          "start": 510,
+          "end": 521,
+          "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+          "start_text": "private void RemeberPickedDieInfo()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+          "method_or_token": "RefreshPickedDieStatus",
+          "start": 526,
+          "end": 546,
+          "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+          "start_text": "private void RefreshPickedDieStatus()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+          "method_or_token": "RefreshMap",
+          "start": 859,
+          "end": 913,
+          "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+          "start_text": "public void RefreshMap(bool isDebugMode = false)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+          "method_or_token": "Dowork",
+          "start": 64,
+          "end": 386,
+          "sha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+          "start_text": "private void Dowork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内方法、条件、写入和后续使用静态核查；独立算例验证公式关系",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO27",
+      "sections": "8.5",
+      "conclusion": "手动准备T独立；普通双点不采用镜像分支；辅助返回T因路径而异。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+          "method_or_token": "UplookVisionAction",
+          "start": 950,
+          "end": 1235,
+          "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+          "start_text": "public (ExcuteResult, AKRSPoint4D) UplookVisionAction(BondPosition bondPosition, BaseCarrierConfig component)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+          "method_or_token": "UpLookVisionAsissitant",
+          "start": 1244,
+          "end": 1373,
+          "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+          "start_text": "public (ExcuteResult, MatchResult) UpLookVisionAsissitant(BaseCarrierConfig component, AKRSPoint3D visionPoint3D, string name)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内方法、条件、写入和后续使用静态核查；独立算例验证公式关系",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO28",
+      "sections": "8.6",
+      "conclusion": "手动目标SelfPosToG0(q)+o与生产分别处理；PlacementTest仅使用上视返回的执行结果。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs",
+          "method_or_token": "PlacementTest",
+          "start": 659,
+          "end": 942,
+          "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+          "start_text": "public ExcuteResult PlacementTest(",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+          "method_or_token": "CalculateBondPos",
+          "start": 498,
+          "end": 630,
+          "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+          "start_text": "private AKRSPoint4D CalculateBondPos()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内方法、条件、写入和后续使用静态核查；独立算例验证公式关系",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO29",
+      "sections": "5.5",
+      "conclusion": "生产普通单/双点镜像转180−h，保存角仍−(b+h)，后续使用新的当前T。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+          "method_or_token": "DoWork",
+          "start": 131,
+          "end": 514,
+          "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+          "method_or_token": "CalculateBondPos",
+          "start": 498,
+          "end": 630,
+          "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+          "start_text": "private AKRSPoint4D CalculateBondPos()",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内方法、条件、写入和后续使用静态核查；独立算例验证公式关系",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CO30",
+      "sections": "7.3",
+      "conclusion": "补偿缓存不由TU.Refresh统一清空；实时全点成功后替换点组。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+          "method_or_token": "TemperatureCompensation",
+          "start": 64,
+          "end": 146,
+          "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+          "start_text": "public static bool TemperatureCompensation(bool firstTu)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+          "method_or_token": "PickUpCompensationVision",
+          "start": 153,
+          "end": 234,
+          "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+          "start_text": "public static bool PickUpCompensationVision(bool firstTu)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+          "method_or_token": "ScanReferencePoints",
+          "start": 271,
+          "end": 312,
+          "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+          "start_text": "public bool ScanReferencePoints(bool first = false)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+          "method_or_token": "FirstScanReferencePoints",
+          "start": 317,
+          "end": 338,
+          "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+          "start_text": "public void FirstScanReferencePoints(AKRSPoint3D[] pos)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+          "method_or_token": "NormalizationOffset",
+          "start": 90,
+          "end": 180,
+          "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+          "start_text": "public static void NormalizationOffset(string tuId)",
+          "end_text": "}",
+          "locator": "C#语法节点范围"
+        }
+      ],
+      "basis": "本目录内方法、条件、写入和后续使用静态核查；独立算例验证公式关系",
+      "review_status": "沿用已核对正文；本轮重新核对原始文件哈希和范围锚点"
+    },
+    {
+      "id": "CN01",
+      "sections": "9.1",
+      "conclusion": "轴二维表与TU应用补偿的保存对象、生效层级及开关独立。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+          "start": 589,
+          "end": 635,
+          "method_or_token": "CloseCompensate / OpenCompensate",
+          "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+          "start_text": "public void CloseCompensate()",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+          "start": 66,
+          "end": 146,
+          "method_or_token": "GetBondCompensate",
+          "sha256": "8bc110fc23a5155db53cbf25c36bbdc5c0c54b465325a54422c45548a9cb1b10",
+          "start_text": "public AKRSPoint3D GetBondCompensate(double x, double y)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+          "start": 498,
+          "end": 630,
+          "method_or_token": "CalculateBondPos",
+          "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+          "start_text": "private AKRSPoint4D CalculateBondPos()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN02",
+      "sections": "9.2",
+      "conclusion": "整机回零先关闭，OneKeyHome成功后才按开关开启；无统一失败恢复。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+          "start": 504,
+          "end": 635,
+          "method_or_token": "AllAxisGoHome",
+          "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+          "start_text": "public bool AllAxisGoHome()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN03",
+      "sections": "9.2、表9-2",
+      "conclusion": "固高开启false只弹窗，不传播为回零false；历史AllAxisReset未在入口统一清除。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+          "start": 504,
+          "end": 635,
+          "method_or_token": "AllAxisGoHome / OpenCompensate",
+          "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+          "start_text": "public bool AllAxisGoHome()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN04",
+      "sections": "9.3",
+      "conclusion": "ETEL开启包装实际读取全局TextName；下载DsaException被内层吞掉后仍可继续激活。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Utils/ETelDrive.cs",
+          "start": 27,
+          "end": 47,
+          "method_or_token": "DownloadMapping",
+          "sha256": "a9a51b38ef31f28dee26364b04c33e62fff4ac675facd32eab0391cdc2772c51",
+          "start_text": "public static void DownloadMapping(Axis axisX, Axis axisY, string fileName)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Utils/ETelDrive.cs",
+          "start": 292,
+          "end": 330,
+          "method_or_token": "Open2DCompensate / Close2DCompensate",
+          "sha256": "a9a51b38ef31f28dee26364b04c33e62fff4ac675facd32eab0391cdc2772c51",
+          "start_text": "public static void Open2DCompensate(Axis axisX, Axis axisY, string fileName)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN05",
+      "sections": "9.3、式9-1、式9-2",
+      "conclusion": "固高间距先取整再乘10000，起点先乘再取整；AutoScale行列各扩20。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Utils/GuGaoDrive.cs",
+          "start": 839,
+          "end": 1047,
+          "method_or_token": "Close2DCompensate / Open2DCompensate",
+          "sha256": "40f4bd8c3efbd0d53e5e16ac156266a25ca36f6c1f4ab49d182fe17035ece243",
+          "start_text": "public static void Close2DCompensate()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN06",
+      "sections": "9.4",
+      "conclusion": "标定UI的启停、回零次序及固高bool处理与整机路径不同。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/CalibSystem/GlobalCalibration/FrmGlobalCalibration.cs",
+          "start": 415,
+          "end": 503,
+          "method_or_token": "CloseStage / OpenStage",
+          "sha256": "2ded207de028e2cb6e7b8112b9d963529bb05c0f283c8025de7fc76ab2f0a895",
+          "start_text": "private void CloseStage()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN07",
+      "sections": "10.1",
+      "conclusion": "在线采点转换到传入对象上级参考系；S1/S2相机参考转换分别处理。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+          "start": 463,
+          "end": 502,
+          "method_or_token": "GetPosBySystem",
+          "sha256": "893f55643943826da075fb8564e9da08d76c771b70803da75611daf372ea37f3",
+          "start_text": "public static AKRSPoint3D GetPosBySystem(",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+          "start": 91,
+          "end": 178,
+          "method_or_token": "InitControl",
+          "sha256": "cc10800b6646b42c802891a4b4737f2b9bf15d3dc415c420c9fdbb8d55ac5012",
+          "start_text": "public void InitControl()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN08",
+      "sections": "10.2",
+      "conclusion": "判据是X跨度<1及角度绝对值>5；用Atan斜率，Degree写弧度。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+          "start": 133,
+          "end": 173,
+          "method_or_token": "doneAction",
+          "sha256": "cc10800b6646b42c802891a4b4737f2b9bf15d3dc415c420c9fdbb8d55ac5012",
+          "start_text": "doneAction: () =>",
+          "end_text": "}),"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN09",
+      "sections": "10.2、10.3",
+      "conclusion": "离线提前OK未算RealDegree；调用方仍可能复制默认0；取消无统一回滚。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+          "start": 133,
+          "end": 173,
+          "method_or_token": "doneAction",
+          "sha256": "cc10800b6646b42c802891a4b4737f2b9bf15d3dc415c420c9fdbb8d55ac5012",
+          "start_text": "doneAction: () =>",
+          "end_text": "}),"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+          "start": 239,
+          "end": 242,
+          "method_or_token": "BtCancel_Click",
+          "sha256": "cc10800b6646b42c802891a4b4737f2b9bf15d3dc415c420c9fdbb8d55ac5012",
+          "start_text": "private void BtCancel_Click(object sender, EventArgs e)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+          "start": 683,
+          "end": 728,
+          "method_or_token": "焊点角示教",
+          "sha256": "9e7b7e900683d8070c27aed5cd15283210b0138fe1a3db1c5ad8e12a3f1e19f1",
+          "start_text": "{",
+          "end_text": "this.RefreshILstAssistantStepWithBondPosition(singleBondPositionConfig);"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN10",
+      "sections": "10.3、表10-2",
+      "conclusion": "TU完整与分段均先拉角度；分段无AssistantAllRotation条件，随后编辑左右PR。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+          "start": 63,
+          "end": 153,
+          "method_or_token": "AssistanceTuAdjust",
+          "sha256": "9e7b7e900683d8070c27aed5cd15283210b0138fe1a3db1c5ad8e12a3f1e19f1",
+          "start_text": "public void AssistanceTuAdjust()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN11",
+      "sections": "10.3、表10-2",
+      "conclusion": "基板传TU、基岛传基板、焊点传基岛；窗口与调用方写回目标不同。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+          "start": 159,
+          "end": 213,
+          "method_or_token": "AssistanceSubAdjust",
+          "sha256": "9e7b7e900683d8070c27aed5cd15283210b0138fe1a3db1c5ad8e12a3f1e19f1",
+          "start_text": "public void AssistanceSubAdjust()",
+          "end_text": "frmEditPRsSu.Dispose();"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+          "start": 219,
+          "end": 274,
+          "method_or_token": "AssistanceModuleAdjust",
+          "sha256": "9e7b7e900683d8070c27aed5cd15283210b0138fe1a3db1c5ad8e12a3f1e19f1",
+          "start_text": "public void AssistanceModuleAdjust()",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+          "start": 683,
+          "end": 728,
+          "method_or_token": "焊点示教",
+          "sha256": "9e7b7e900683d8070c27aed5cd15283210b0138fe1a3db1c5ad8e12a3f1e19f1",
+          "start_text": "{",
+          "end_text": "this.RefreshILstAssistantStepWithBondPosition(singleBondPositionConfig);"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN12",
+      "sections": "11.1",
+      "conclusion": "查询名固定贴片精度，按TU索引、基板索引和日期分组，组内按ModuleIndex排序。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/CompensateDataService.cs",
+          "start": 24,
+          "end": 68,
+          "method_or_token": "GetRoundsAfterTime",
+          "sha256": "b42fdfdc748c8cc6564a6ac12cee096b19235b538fcebf06b89ed0d53aa0ec43",
+          "start_text": "public class CompensateDataService",
+          "end_text": "public int GetPointPerRound() => _pointPerRound;"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN13",
+      "sections": "11.1",
+      "conclusion": "焊后构造链把TU名称写Id，未赋TuIndex；采集按TuIndex而非Id分组。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/CompensateDataService.cs",
+          "start": 39,
+          "end": 63,
+          "method_or_token": "GetRoundsAfterTime",
+          "sha256": "b42fdfdc748c8cc6564a6ac12cee096b19235b538fcebf06b89ed0d53aa0ec43",
+          "start_text": "public List<RoundGroup> GetRoundsAfterTime(DateTime startTime)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Statistics/DefectStatisticsEntity.cs",
+          "start": 13,
+          "end": 67,
+          "method_or_token": "统计字段",
+          "sha256": "715a72522071a0d5012e99af0844e00be9a36b6b5ac8fadc95b2e6bcf96cf00e",
+          "start_text": "public class DefectStatisticsEntity",
+          "end_text": "public double OffsetY { get; set; }"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Statistics/DefectStatisticsEntity.cs",
+          "start": 164,
+          "end": 186,
+          "method_or_token": "构造函数",
+          "sha256": "715a72522071a0d5012e99af0844e00be9a36b6b5ac8fadc95b2e6bcf96cf00e",
+          "start_text": "public DefectStatisticsEntity(DateTime dateTime, string defectName, string id, int subIndex, int moduleIndex, string bondPositionName, double offsetX, double offsetY, double offsetAngle, double area, double tpOffsetX, double tpOffsetY, double upLookOffsetX, double upLookOffsetY, double bondPositionX, double bondPositionY, double bpOffsetX, double bpOffsetY,double substrateCameraCompensateX,double substrateCameraCompensateY)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+          "start": 556,
+          "end": 587,
+          "method_or_token": "LogDefect",
+          "sha256": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b",
+          "start_text": "private void LogDefect(AKRSPoint4D point4D)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+          "start": 407,
+          "end": 422,
+          "method_or_token": "AddDefectResult / SaveDataToDb",
+          "sha256": "2f28e39648d034261ae5d57be4cb9e1908f4bec971d80d00120e9a3af6baa4ca",
+          "start_text": "public void AddDefectResult(DefectStatisticsEntity defectStatisticsEntity)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+          "start": 110,
+          "end": 124,
+          "method_or_token": "SaveEntityToDb",
+          "sha256": "b327f38b5596f4f61d63d85a98d8e5dc3637cf1876764a52c2dddd4db783a094",
+          "start_text": "public static void SaveEntityToDb()",
+          "end_text": "else if (item is ParameterChangeLogEntity parameterChangeLogEntity)"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN14",
+      "sections": "11.1",
+      "conclusion": "新组先记去重键后判点数，不重判相同键的补齐数据；未校验点号唯一性。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 173,
+          "end": 232,
+          "method_or_token": "PollTimer_Tick",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void PollTimer_Tick(object sender, EventArgs e)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN15",
+      "sections": "11.1",
+      "conclusion": "有效轮达标优先判断；未达标且总查询组数>=2K时停机。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 173,
+          "end": 232,
+          "method_or_token": "PollTimer_Tick",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void PollTimer_Tick(object sender, EventArgs e)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN16",
+      "sections": "11.1",
+      "conclusion": "关闭采集窗只停Timer，显式停止和轮询异常同时Stop设备。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 57,
+          "end": 69,
+          "method_or_token": "FormClosing",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void FrmAutoCompensate_FormClosing(object sender, FormClosingEventArgs e)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 128,
+          "end": 141,
+          "method_or_token": "BtnStopCollect_Click",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void BtnStopCollect_Click(object sender, EventArgs e)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 225,
+          "end": 231,
+          "method_or_token": "catch",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "catch (Exception ex)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN17",
+      "sections": "11.2",
+      "conclusion": "X/Y偏移除1000，前K轮形成[位置,轮次]矩阵；逐位置一次Huber，残差再Huber。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 237,
+          "end": 289,
+          "method_or_token": "FinishCollectAndCalculate",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void FinishCollectAndCalculate()",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/CompensateCalculator.cs",
+          "start": 26,
+          "end": 95,
+          "method_or_token": "Calculate / HuberEstimate",
+          "sha256": "dd64dd5fb650129d2b888a18b43d115df769462ce56be043e7c2c1a98fb0b846",
+          "start_text": "public static double[,] Calculate(double[,] rawOffsets, int rows, int cols,",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN18",
+      "sections": "11.2",
+      "conclusion": "残差估计按位置，不是跨位置公共漂移；平移等变推导及浮点误差界限经独立计算复核。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/CompensateCalculator.cs",
+          "start": 35,
+          "end": 58,
+          "method_or_token": "逐位置估计与残差",
+          "sha256": "dd64dd5fb650129d2b888a18b43d115df769462ce56be043e7c2c1a98fb0b846",
+          "start_text": "// 1. 逐位置Huber估计 得到c_old（对应Excel BYROW(mat, calc_huber)）",
+          "end_text": "cNewRaw[i] = cOld[i] - alpha * commonResid[i];"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN19",
+      "sections": "11.2、图11-2",
+      "conclusion": "行优先还原，默认5列滑动中位数边界截断且不跨行。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/CompensateCalculator.cs",
+          "start": 112,
+          "end": 153,
+          "method_or_token": "SmoothMedianRowWise / WrapTo2D",
+          "sha256": "dd64dd5fb650129d2b888a18b43d115df769462ce56be043e7c2c1a98fb0b846",
+          "start_text": "private static double[,] SmoothMedianRowWise(double[,] mat, int windowSize)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN20",
+      "sections": "11.3",
+      "conclusion": "自动窗发布只改XY矩阵，不初始化网格几何、不改生产开关；未启用保留旧表。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 91,
+          "end": 123,
+          "method_or_token": "BtnStartCollect_Click",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void BtnStartCollect_Click(object sender, EventArgs e)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 146,
+          "end": 161,
+          "method_or_token": "BtnEnable_Click",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void BtnEnable_Click(object sender, EventArgs e)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+          "start": 237,
+          "end": 289,
+          "method_or_token": "FinishCollectAndCalculate",
+          "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+          "start_text": "private void FinishCollectAndCalculate()",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+          "start": 66,
+          "end": 146,
+          "method_or_token": "GetBondCompensate",
+          "sha256": "8bc110fc23a5155db53cbf25c36bbdc5c0c54b465325a54422c45548a9cb1b10",
+          "start_text": "public AKRSPoint3D GetBondCompensate(double x, double y)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN21",
+      "sections": "11.4",
+      "conclusion": "人工导入非空校验后先改行列元数据，再检查点数；读取首条位置和配置间距。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmBondCompensate.cs",
+          "start": 48,
+          "end": 99,
+          "method_or_token": "BtInput_Click",
+          "sha256": "7cb74cc76cbf0408bf5591fb9a0a9cbb1ea42983b34072195c074385cbe2f901",
+          "start_text": "private void BtInput_Click(object sender, EventArgs e)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN22",
+      "sections": "11.4、图11-3",
+      "conclusion": "人工导入按原始行数据做首末不变、邻3点/5点均值，与自动Huber后中位数不同。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmBondCompensate.cs",
+          "start": 101,
+          "end": 131,
+          "method_or_token": "BtInput_Click",
+          "sha256": "7cb74cc76cbf0408bf5591fb9a0a9cbb1ea42983b34072195c074385cbe2f901",
+          "start_text": "for (int i = 0; i < TransportUnitCompensate.GetInstance().RowCount; i++)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/CompensateCalculator.cs",
+          "start": 112,
+          "end": 133,
+          "method_or_token": "SmoothMedianRowWise",
+          "sha256": "dd64dd5fb650129d2b888a18b43d115df769462ce56be043e7c2c1a98fb0b846",
+          "start_text": "private static double[,] SmoothMedianRowWise(double[,] mat, int windowSize)",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN23",
+      "sections": "11.4",
+      "conclusion": "人工清空只置内存null，无Save；手工编辑保存另行Save。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmBondCompensate.cs",
+          "start": 138,
+          "end": 142,
+          "method_or_token": "BtClear_Click",
+          "sha256": "7cb74cc76cbf0408bf5591fb9a0a9cbb1ea42983b34072195c074385cbe2f901",
+          "start_text": "private void BtClear_Click(object sender, EventArgs e)",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/FrmBondCompensate.cs",
+          "start": 190,
+          "end": 202,
+          "method_or_token": "BtSave_Click",
+          "sha256": "7cb74cc76cbf0408bf5591fb9a0a9cbb1ea42983b34072195c074385cbe2f901",
+          "start_text": "private void BtSave_Click(object sender, EventArgs e)",
+          "end_text": ""
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN24",
+      "sections": "11.4",
+      "conclusion": "主界面通过泛型ShowForm<FrmBondCompensate>打开人工补偿界面。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+          "start": 1929,
+          "end": 1937,
+          "method_or_token": "BarBondCompensate_ItemClick",
+          "sha256": "03ac03cbf6340faa7de0bc345f6bccab605f42575d33f36495e6062cb8618ae2",
+          "start_text": "/// <summary>",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    },
+    {
+      "id": "CN25",
+      "sections": "12.3",
+      "conclusion": "扩展区域插值用于标定扫描，IPT示教写设备位置，诊断路径与生产输出分别归属。",
+      "evidence": [
+        {
+          "path": "trunk/AKRS.ZX2200/CalibSystem/GlobalCalibration/FrmGlobalCalibrationEx.cs",
+          "start": 882,
+          "end": 960,
+          "method_or_token": "ScanPointsWithCompensation",
+          "sha256": "a324f6d8627bd5ea9e585365fe6ae061918ee9343319da568fbaab7587e4f6f6",
+          "start_text": "private Task ScanPointsWithCompensation(bool simRunFlag, CancellationToken ct)",
+          "end_text": "(MatchResult matchResult, AKRSPoint2D axisPos) tdMarkResult = default;"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/CalibSystem/GlobalCalibration/FrmGlobalCalibrationEx.cs",
+          "start": 998,
+          "end": 1015,
+          "method_or_token": "扫描移动",
+          "sha256": "a324f6d8627bd5ea9e585365fe6ae061918ee9343319da568fbaab7587e4f6f6",
+          "start_text": "this.RefreshCurrentRow(data);",
+          "end_text": "}"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Controls/Manual/FrmLearnIPT.cs",
+          "start": 90,
+          "end": 156,
+          "method_or_token": "InitControl",
+          "sha256": "998e4e7ddf17954644d04b4b2a10551bc68c7a16d429c379b711e2904fde8814",
+          "start_text": "private void InitControl()",
+          "end_text": "this.bondModuleController.MoveToG0Pos(measureHeight);"
+        },
+        {
+          "path": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondPositionVisionTest.cs",
+          "start": 33,
+          "end": 104,
+          "method_or_token": "DoWork / IsDoWork",
+          "sha256": "d8a3557dadc3ae0300ebdf9341f39ca2e9decd651a59f9adf489b02bd6220d27",
+          "start_text": "public override ExcuteResult DoWork()",
+          "end_text": "}"
+        }
+      ],
+      "review_status": "本轮按完整相关区段阅读并结合调用方核对"
+    }
+  ]
+}

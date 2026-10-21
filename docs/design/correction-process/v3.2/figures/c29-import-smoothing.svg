@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1190" viewBox="0 0 2400 1190"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="60" fill="#162e43" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central">一行五列的人工导入平滑</text>
+<text x="180" y="280" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">输入</text>
+<rect x="390" y="190" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="580" y="280" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">0</text>
+<rect x="770" y="190" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="960" y="280" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">1</text>
+<rect x="1150" y="190" width="380" height="180" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1340" y="280" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">100</text>
+<rect x="1530" y="190" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1720" y="280" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">3</text>
+<rect x="1910" y="190" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2100" y="280" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">4</text>
+<text x="180" y="670" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">均值输出</text>
+<rect x="390" y="580" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="580" y="670" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">0</text>
+<rect x="770" y="580" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="960" y="670" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">33.667</text>
+<rect x="1150" y="580" width="380" height="180" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1340" y="670" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">21.6</text>
+<rect x="1530" y="580" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1720" y="670" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">35.667</text>
+<rect x="1910" y="580" width="380" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2100" y="670" fill="#162e43" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central">4</text>
+<polyline points="580,370 580,425" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="580,520 580,580" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="580,580 569.9957927154417,559.2897166458885 590.0042072845583,559.2897166458885" fill="#4d6070"/>
+<text x="580" y="475" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">原值</text>
+<polyline points="960,370 960,425" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="960,520 960,580" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="960,580 949.9957927154417,559.2897166458885 970.0042072845583,559.2897166458885" fill="#4d6070"/>
+<text x="960" y="475" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">3点平均</text>
+<polyline points="1340,370 1340,425" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="1340,520 1340,580" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1340,580 1329.9957927154417,559.2897166458885 1350.0042072845583,559.2897166458885" fill="#4d6070"/>
+<text x="1340" y="475" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">5点平均</text>
+<polyline points="1720,370 1720,425" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="1720,520 1720,580" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,580 1709.9957927154417,559.2897166458885 1730.0042072845583,559.2897166458885" fill="#4d6070"/>
+<text x="1720" y="475" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">3点平均</text>
+<polyline points="2100,370 2100,425" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="2100,520 2100,580" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="2100,580 2089.995792715442,559.2897166458885 2110.004207284558,559.2897166458885" fill="#4d6070"/>
+<text x="2100" y="475" fill="#162e43" font-family="Microsoft YaHei" font-size="45" font-weight="400" text-anchor="middle" dominant-baseline="central">原值</text>
+<text x="1200" y="905" fill="#356d4a" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">自动采集的默认行中位数输出：1，2，3，3.5，4</text>
+<text x="1200" y="1035" fill="#4d6070" font-family="Microsoft YaHei" font-size="49" font-weight="400" text-anchor="middle" dominant-baseline="central">仅解释算法；示例数值不能直接作为设备补偿参数</text></svg>

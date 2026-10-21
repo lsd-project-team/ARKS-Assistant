@@ -1,0 +1,2367 @@
+{
+  "scope": "trunk/AKRS.ZX2200",
+  "discovery": "C#当前语法树、编译项、调用/赋值/构造/泛型UI入口和方法声明，人工逐类归属",
+  "known_unassigned_entries": [],
+  "entries": [
+    {
+      "file": "BondSystem/BondForce/Controllers/BaseCalibrationController.cs",
+      "compiled": true,
+      "sha256": "a354a7030dddc3d22369d3aa944c528a9d41ab88451675c195d692e0af14b602",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Controllers/ClosedLoopCalibrationController.cs",
+      "compiled": true,
+      "sha256": "d25523ce923d351be068121b7f3d8898fbe6d0013cdf815d104a6852534145ab",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Controllers/VoiceCoilMotorCalibrationController.cs",
+      "compiled": true,
+      "sha256": "0b25955200a0702cb57de160429139a4e6a6f06c27f7f4e3df555827ba788b4e",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/ForceCalibration.cs",
+      "compiled": true,
+      "sha256": "a7bf38c9747be71815343bd32a105ad93b39da7a28fefb6892beabf48d9475f4",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Forms/Assistant/FrmCalibrateTeach.cs",
+      "compiled": true,
+      "sha256": "69a0da787e21ca74a80433cee90534eb42f71a047f604fd7d4bc9f0af0f35978",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Forms/FrmCalibrateTableForceRealtimeLine.cs",
+      "compiled": true,
+      "sha256": "90aaf3ea06f4fcf24ac263e0fe6b1aadad6b4e2270395d67595a15dc33221375",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Forms/FrmCalibrationRelationship.cs",
+      "compiled": true,
+      "sha256": "38a460bd25617c49dd28fc7c3c2c6e851fa6f87c9bf8f7895dfe49af89b86bab",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 40,
+          "kind": "new",
+          "expression": "ClosedLoopCalibrationController"
+        },
+        {
+          "line": 187,
+          "kind": "declaration",
+          "expression": "FrmCalibrationRelationship_FormClosing"
+        }
+      ],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Forms/UcBondForceMeasurement.cs",
+      "compiled": true,
+      "sha256": "b81803c1c8ab54a8e2a1058c0424316182c06e6da04062c39163e53206673050",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 45,
+          "kind": "new",
+          "expression": "ClosedLoopCalibrationController"
+        },
+        {
+          "line": 70,
+          "kind": "new",
+          "expression": "FrmCalibrateTeach"
+        },
+        {
+          "line": 85,
+          "kind": "new",
+          "expression": "FrmCalibrationRelationship"
+        },
+        {
+          "line": 104,
+          "kind": "new",
+          "expression": "FrmCalibrateTableForceRealtimeLine"
+        }
+      ],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Models/ClosedLoopModels/ForceCalibrationData.cs",
+      "compiled": true,
+      "sha256": "41db0a9ccf4856001afab6b6f7d7c96e93c0a80fc66f7e6ded29409827fe7391",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Models/VoiceCoilModels/VoiceCoilMotorForcePara.cs",
+      "compiled": true,
+      "sha256": "4c7091e8ff926326618642dac8c7b70b61cea7f3cf53ddb3b2aab590e7a5ef9c",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 44,
+          "kind": "new",
+          "expression": "VoiceCoilMotorForceCalibrationPara"
+        }
+      ],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/BondForce/Services/ForceCalibrationService.cs",
+      "compiled": true,
+      "sha256": "13c1ecc5f01b53efbba01be0e6b0f843cceb3d1ee404248005e8e986350205f6",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/Controllers/System2Controller.Assistant.cs",
+      "compiled": true,
+      "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 248,
+          "kind": "call",
+          "expression": "this.CalculatePickPos"
+        },
+        {
+          "line": 497,
+          "kind": "call",
+          "expression": "this.CalculatePickPos"
+        },
+        {
+          "line": 681,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 688,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 696,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 762,
+          "kind": "call",
+          "expression": "this.UplookVisionAction"
+        },
+        {
+          "line": 1035,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 1036,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 1078,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 1084,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 1156,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 1157,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 1207,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 1214,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Controllers/System2Controller.cs",
+      "compiled": true,
+      "sha256": "8219bbc4f0b225020a31da8c3d0ef44ae9c142e63dd2292f14051e3af5185597",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 1253,
+          "kind": "declaration",
+          "expression": "GetCalibrateTableForceValue"
+        }
+      ],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/Controllers/System2Controller.Vision.cs",
+      "compiled": true,
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 897,
+          "kind": "declaration",
+          "expression": "System2TemperatureCompensation"
+        }
+      ],
+      "entry_kind": "既有正文已核对的算法、输入或调用接口；哈希与结论锚点一致",
+      "document_sections": "3.4、5.4",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Controls/Experiment/UcBondModuelSetting.cs",
+      "compiled": true,
+      "sha256": "243c1942c259c965f7540aa2cacb54e18773cf14b05b4d5ce47a9cf01a332cb7",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 2048,
+          "kind": "new",
+          "expression": "ClosedLoopCalibrationController"
+        }
+      ],
+      "entry_kind": "力控／测高标定输入，非额外XY视觉纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/Controls/Manual/FrmLearnIPT.cs",
+      "compiled": true,
+      "sha256": "998e4e7ddf17954644d04b4b2a10551bc68c7a16d429c379b711e2904fde8814",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 127,
+          "kind": "write",
+          "expression": "BondDevicePara.GetInstance().IPTDevicePara.IPTVisionPos"
+        },
+        {
+          "line": 141,
+          "kind": "write",
+          "expression": "BondDevicePara.GetInstance().IPTDevicePara.RightIPTVisionPos"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "b881dfd2360e51aaca2ed2ca26828b4b28fe312b70e19168a9d432fd46119aaf",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 76,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2ObjectVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "c26a814b5492210abc4e78345a99448d67e601378f4e8c8facae91747d22996b",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 60,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2ObjectVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "fbe942a1faaae0d5c38e41809234a2a449e7b0f4c3d2670cb48935ecd9e3f431",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 72,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2ObjectVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 71,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2ObjectVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BondActionNodeRepository.cs",
+      "compiled": true,
+      "sha256": "5d421c598701ab1f7945d4da706f8b0aeaa831eed97cb938e008a92ce8ddc3e4",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 69,
+          "kind": "new",
+          "expression": "UpLookCorrectionActionNode"
+        },
+        {
+          "line": 79,
+          "kind": "new",
+          "expression": "SubstrateCameraCorrectionActionNode"
+        }
+      ],
+      "entry_kind": "既有正文已核对的算法、输入或调用接口；哈希与结论锚点一致",
+      "document_sections": "4.2",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "compiled": true,
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 150,
+          "kind": "call",
+          "expression": "this.CalculateBondPos"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "compiled": true,
+      "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 151,
+          "kind": "declaration",
+          "expression": "SaveGlobalCalibrationData"
+        },
+        {
+          "line": 521,
+          "kind": "call",
+          "expression": "DefectCompensate.GetPostBondCompensation"
+        },
+        {
+          "line": 524,
+          "kind": "call",
+          "expression": "DefectCompensate.GetBpSeparateOffset"
+        },
+        {
+          "line": 561,
+          "kind": "call",
+          "expression": "RealTimeCorrection.GetInstance().GetCompensatePoint3D"
+        },
+        {
+          "line": 579,
+          "kind": "call",
+          "expression": "TransportUnitCompensate.GetInstance().GetBondCompensate"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondPositionVisionTest.cs",
+      "compiled": true,
+      "sha256": "d8a3557dadc3ae0300ebdf9341f39ca2e9decd651a59f9adf489b02bd6220d27",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "compiled": true,
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 186,
+          "kind": "call",
+          "expression": "TpMarkCompensate.PickUpCompensationVision"
+        },
+        {
+          "line": 192,
+          "kind": "call",
+          "expression": "TpMarkCompensate.GetPickCompensation"
+        },
+        {
+          "line": 266,
+          "kind": "call",
+          "expression": "this.system2Controller.CalculatePickPos"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "compiled": true,
+      "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 248,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.IPTVisionPos"
+        },
+        {
+          "line": 304,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 359,
+          "kind": "write",
+          "expression": "bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 380,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.IPTPickPos"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+      "compiled": true,
+      "sha256": "3aa74ea1f5f350c827b1e18ae4ef98f4e5f2318102c98b12a29c233099f9d412",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 877,
+          "kind": "declaration",
+          "expression": "SubstrateCameraCorrectionActionDryRun"
+        }
+      ],
+      "entry_kind": "既有正文已核对的算法、输入或调用接口；哈希与结论锚点一致",
+      "document_sections": "6.5",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "compiled": true,
+      "sha256": "73bbe54ab96120045e09f69c80c6382d795894c914298c97a99a3d508e4d8414",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "compiled": true,
+      "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 248,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 249,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 285,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 291,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 365,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 366,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 421,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentOffSet"
+        },
+        {
+          "line": 428,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet"
+        },
+        {
+          "line": 485,
+          "kind": "call",
+          "expression": "this.system2Controller.System2TemperatureCompensation"
+        },
+        {
+          "line": 491,
+          "kind": "call",
+          "expression": "TpMarkCompensate.GetTemperatureCompensation"
+        },
+        {
+          "line": 497,
+          "kind": "write",
+          "expression": "this.bondPosition.BondPositionInfo.ComponentOffSet"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Models/Programs/PostBondProgram.cs",
+      "compiled": true,
+      "sha256": "8ee8b51d4a10fcfac6aa03388e56b758caf8771ac9c6e445e990e64c1f5186e9",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 108,
+          "kind": "declaration",
+          "expression": "IsCompensateOpen"
+        }
+      ],
+      "entry_kind": "焊后补偿启用配置汇总",
+      "document_sections": "7.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "BondSystem/Models/System2Domain.cs",
+      "compiled": true,
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 269,
+          "kind": "call",
+          "expression": "this.System2MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "BondSystem/Tasks/BondTask.cs",
+      "compiled": true,
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 162,
+          "kind": "call",
+          "expression": "TpMarkCompensate.PickUpCompensationVision"
+        },
+        {
+          "line": 168,
+          "kind": "call",
+          "expression": "this.system2Controller.System2TemperatureCompensation"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "CalibSystem/Controls/Assistant/FrmLightnessCalibTeach.cs",
+      "compiled": true,
+      "sha256": "3feb2cfbb9434d88d66823063e38331affc4a074aba77e0b682c705054f0469a",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 361,
+          "kind": "declaration",
+          "expression": "LightnessCalibration"
+        },
+        {
+          "line": 459,
+          "kind": "declaration",
+          "expression": "CalibrateLightPair"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/Controls/FrmStartup.cs",
+      "compiled": true,
+      "sha256": "35c70808cbd8c7c35842e739623f204e8d01f20a830d03b02542c35907e885dd",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 134,
+          "kind": "declaration",
+          "expression": "BtLaserCalibration_Click"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/BondCompensateCalibration.cs",
+      "compiled": true,
+      "sha256": "16f46edbf84d7110be14a628cad73be7ee1bf17b6f4059fcc60d8b943bb9e932",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmAssistant2DStage.cs",
+      "compiled": true,
+      "sha256": "82865da043370a252c0a4be320610e9ebc9a14ad727d2386483651549f08f321",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 256,
+          "kind": "call",
+          "expression": "Machine.GetInstance().CloseCompensate"
+        }
+      ],
+      "entry_kind": "设备轴二维补偿调用、数据或辅助关闭入口",
+      "document_sections": "第9章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmBondCompensateCalibration.cs",
+      "compiled": true,
+      "sha256": "d6bbc3c5bee3e9fa4fb0a3d240f694b6cc9eddc6096ad658350491a8637e7556",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 67,
+          "kind": "declaration",
+          "expression": "FrmBondCompensateCalibration_Load"
+        },
+        {
+          "line": 217,
+          "kind": "declaration",
+          "expression": "StartBondCompensateCalibration"
+        },
+        {
+          "line": 317,
+          "kind": "declaration",
+          "expression": "ValidateBondCompensateCalibration"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmCompensationRegionView.cs",
+      "compiled": true,
+      "sha256": "58864b3c801174e21269be923f22966150fb9f5764550357e6bc3a4f3c0138f3",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 29,
+          "kind": "declaration",
+          "expression": "FrmCompensationRegionView_Load"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmGlobalCalibration.cs",
+      "compiled": true,
+      "sha256": "2ded207de028e2cb6e7b8112b9d963529bb05c0f283c8025de7fc76ab2f0a895",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 168,
+          "kind": "declaration",
+          "expression": "GlobalCalibration"
+        },
+        {
+          "line": 245,
+          "kind": "declaration",
+          "expression": "FrmGlobalCalibration_Load"
+        },
+        {
+          "line": 289,
+          "kind": "declaration",
+          "expression": "FrmGlobalCalibration_FormClosing"
+        },
+        {
+          "line": 419,
+          "kind": "call",
+          "expression": "ETelDrive.Close2DCompensate"
+        },
+        {
+          "line": 423,
+          "kind": "call",
+          "expression": "GuGaoDrive.Close2DCompensate"
+        },
+        {
+          "line": 454,
+          "kind": "call",
+          "expression": "ETelDrive.Close2DCompensate"
+        },
+        {
+          "line": 476,
+          "kind": "call",
+          "expression": "ETelDrive.Open2DCompensate"
+        },
+        {
+          "line": 483,
+          "kind": "call",
+          "expression": "GuGaoDrive.Close2DCompensate"
+        },
+        {
+          "line": 501,
+          "kind": "call",
+          "expression": "GuGaoDrive.Open2DCompensate"
+        },
+        {
+          "line": 581,
+          "kind": "declaration",
+          "expression": "Mapping2DCalibration"
+        },
+        {
+          "line": 670,
+          "kind": "declaration",
+          "expression": "StageCalibrationTest"
+        },
+        {
+          "line": 1028,
+          "kind": "call",
+          "expression": "this.CloseStage"
+        },
+        {
+          "line": 1060,
+          "kind": "declaration",
+          "expression": "PreliminaryCompensationX"
+        },
+        {
+          "line": 1137,
+          "kind": "declaration",
+          "expression": "PreliminaryCompensationY"
+        },
+        {
+          "line": 1218,
+          "kind": "call",
+          "expression": "this.OpenStage"
+        },
+        {
+          "line": 1228,
+          "kind": "call",
+          "expression": "this.CloseStage"
+        },
+        {
+          "line": 1276,
+          "kind": "call",
+          "expression": "this.OpenStage"
+        },
+        {
+          "line": 1281,
+          "kind": "call",
+          "expression": "this.OpenStage"
+        },
+        {
+          "line": 1293,
+          "kind": "declaration",
+          "expression": "SaveBondCompensateData"
+        },
+        {
+          "line": 1308,
+          "kind": "declaration",
+          "expression": "BtnExportCompensateData_Click"
+        },
+        {
+          "line": 1404,
+          "kind": "declaration",
+          "expression": "BondCompensateCalibration"
+        },
+        {
+          "line": 1444,
+          "kind": "call",
+          "expression": "this.BondCompensate.GetBondCompensate"
+        },
+        {
+          "line": 1512,
+          "kind": "declaration",
+          "expression": "InitBondCompensateCalibration"
+        },
+        {
+          "line": 1527,
+          "kind": "declaration",
+          "expression": "BondCompensateRecordData"
+        },
+        {
+          "line": 1553,
+          "kind": "call",
+          "expression": "this.BondCompensate.GetBondCompensate"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmGlobalCalibrationEx.cs",
+      "compiled": true,
+      "sha256": "a324f6d8627bd5ea9e585365fe6ae061918ee9343319da568fbaab7587e4f6f6",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 161,
+          "kind": "declaration",
+          "expression": "FrmGlobalCalibration_Load"
+        },
+        {
+          "line": 227,
+          "kind": "declaration",
+          "expression": "FrmGlobalCalibration_FormClosing"
+        },
+        {
+          "line": 882,
+          "kind": "declaration",
+          "expression": "ScanPointsWithCompensation"
+        },
+        {
+          "line": 1626,
+          "kind": "declaration",
+          "expression": "FrmGlobalCalibrationEx_RunToCompleteEvent"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmNewCompensationRegion.cs",
+      "compiled": true,
+      "sha256": "16f1e07dcc5b66fb57293bf1936dd4cf2dd73f7acb40f7c51c7ffbb025cab632",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 71,
+          "kind": "declaration",
+          "expression": "FrmNewCompensationRegion_Load"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/GlobalCalibrationData.cs",
+      "compiled": true,
+      "sha256": "84f0db2c5c783a765f9a5f60ff43cf66099a50e498723e240879ae7f3ad8a91e",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/GlobalCalibrationDomain.cs",
+      "compiled": true,
+      "sha256": "9d521ac0e3695a5bc931c412c850b47395ae69f85444a22a5fe1218c16809c0f",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 94,
+          "kind": "declaration",
+          "expression": "GetAxisCompensate"
+        },
+        {
+          "line": 160,
+          "kind": "declaration",
+          "expression": "GetBondHandCompensate"
+        }
+      ],
+      "entry_kind": "设备轴二维补偿调用、数据或辅助关闭入口",
+      "document_sections": "第9章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/GlobalCalibrationDomainEx.cs",
+      "compiled": true,
+      "sha256": "d1ec481a8c1115d004fb1a252a4fd21fcd3a8881b1ef8c7c0177421b8369ab3e",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 76,
+          "kind": "new",
+          "expression": "List<GlobalCalibrationData>"
+        },
+        {
+          "line": 88,
+          "kind": "new",
+          "expression": "BilinearCompensator"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibrationEnd/BCOffsetRelationCalib/FrmCalibration.cs",
+      "compiled": true,
+      "sha256": "112b143e33cbd31b79e0c9fe17508940971ad27877ba3bf0a50c2f731cc8aaf5",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 246,
+          "kind": "declaration",
+          "expression": "BtnStartCalibration_Click"
+        }
+      ],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/Models/CalibrateResult.cs",
+      "compiled": true,
+      "sha256": "c9448bb4bdb52d53b4a813f1f02f977e5e881e478410a0e81301570667e8b0cf",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/Models/CalibrateRunPara.cs",
+      "compiled": true,
+      "sha256": "6de30a1616d81261702c4159f78c7e643ce584e5756bc16fda7a588d17835699",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/Models/CalibrateTask.cs",
+      "compiled": true,
+      "sha256": "0aece663a65610360197353ef66ab69b3867b68899e2042c411f2516c34902ba",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "CalibSystem/Models/LightCalibrationPara.cs",
+      "compiled": true,
+      "sha256": "885a82a7c472e481b4d69faec4bc0a2f0fb5ad93859669979cfe0c40b7794b2a",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "compiled": true,
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 669,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 693,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 718,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 847,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 859,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 872,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs",
+      "compiled": true,
+      "sha256": "4d5e6f5746a3d90a25899260fef0f8d1d3f53df62ae388714454194842a9df3b",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 38,
+          "kind": "new",
+          "expression": "S1DispenseCorrectionActionNode"
+        }
+      ],
+      "entry_kind": "既有正文已核对的算法、输入或调用接口；哈希与结论锚点一致",
+      "document_sections": "4.2",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+      "compiled": true,
+      "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 73,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "c3f0c97946b6d83324209a167a3d0f77756ba93595999a2b732cbea9c4daa367",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 64,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "0b93b50df40d6858da8214fa19858271eff5d711a14a93217942e8e6569ecd2a",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 53,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "33a8e5078fc86c1d1c214919d3f339ba2f4b6599f5be50767a9ca8669432816a",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 51,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Experiment/AccuracyExperiment/FrmAccuracyExperiment.cs",
+      "compiled": true,
+      "sha256": "718da3bad8ac7dda1687c9e4391e3bec7e5443b638f902dc933ef03db9c26c44",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 261,
+          "kind": "declaration",
+          "expression": "BtBondCameraContinueVisionTest_Click"
+        },
+        {
+          "line": 292,
+          "kind": "declaration",
+          "expression": "BtUpLookCameraContinueVisionTest_Click"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/DispenseMeasureExperiment/FrmDispenseMeasureHeightTest.cs",
+      "compiled": true,
+      "sha256": "0effbe43e6d800cd12e6743878a445f24af2eee3635405cf872c56dade7df258",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 348,
+          "kind": "declaration",
+          "expression": "SaveCorrectionData"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/RepeatPositionAccuracy/FrmRepeatPositionAccuracy.cs",
+      "compiled": true,
+      "sha256": "98264fc79b60b8638a045b7c7001ebbb8d534b4b62982c7c9673daf22f2c5870",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 92,
+          "kind": "declaration",
+          "expression": "PickCalibrationPlate"
+        },
+        {
+          "line": 157,
+          "kind": "declaration",
+          "expression": "PutbackCalibrationPlate"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/Test/FrmBMCTest.cs",
+      "compiled": true,
+      "sha256": "7e5319c9637125335d5772fbce791f4b1165db5804828b4f4e012693257beab6",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 1695,
+          "kind": "declaration",
+          "expression": "SavePostBondCompensateData"
+        },
+        {
+          "line": 1976,
+          "kind": "declaration",
+          "expression": "ChkActiveTemperatrueDriftCompensate_CheckedChanged"
+        },
+        {
+          "line": 1987,
+          "kind": "declaration",
+          "expression": "ChkCompensateAccordingToLastTwo_CheckedChanged"
+        },
+        {
+          "line": 2005,
+          "kind": "declaration",
+          "expression": "ChkCompensateAccordingToFirst_CheckedChanged"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/Test/FrmBMCTestResult.cs",
+      "compiled": true,
+      "sha256": "58420fb1c8730d67e3e6a91aa7d375158c8fa0fd23f6df9cb285848bb1c55c63",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 168,
+          "kind": "declaration",
+          "expression": "SaveCorrectionData"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/Test/FrmBMCTestResultDetail.cs",
+      "compiled": true,
+      "sha256": "4d8e8fe5fa912ec56cba72c69ce0af1add5a70fd7c808116caed2be57e7310a2",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 50,
+          "kind": "declaration",
+          "expression": "SaveCorrectionData"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/Test/FrmCalibrationValidate.cs",
+      "compiled": true,
+      "sha256": "f7a717297d900bef2c5f68dc6fc767d685600016c04ab42566407d10f5b5ab80",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/Test/FrmRotateCenterAccuracyTwo.cs",
+      "compiled": true,
+      "sha256": "9a4e66cf09397af771488f81e9008529f516b2f35ac90f3885f748e5f406d8ea",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 503,
+          "kind": "declaration",
+          "expression": "SaveCorrectionData"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Experiment/Test/FrmVibrationTest.cs",
+      "compiled": true,
+      "sha256": "2e49fb68a7758c3996d0dce1265eded8580b1a6fa2ad2c37acfecc8881d50cbc",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 75,
+          "kind": "new",
+          "expression": "UpLookCorrectionActionNode"
+        },
+        {
+          "line": 1119,
+          "kind": "new",
+          "expression": "SubstrateCameraCorrectionActionNode"
+        },
+        {
+          "line": 1147,
+          "kind": "new",
+          "expression": "SubstrateCameraCorrectionActionNode"
+        }
+      ],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+      "compiled": true,
+      "sha256": "9e7b7e900683d8070c27aed5cd15283210b0138fe1a3db1c5ad8e12a3f1e19f1",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 77,
+          "kind": "new",
+          "expression": "FrmAdjustDegree"
+        },
+        {
+          "line": 111,
+          "kind": "new",
+          "expression": "FrmAdjustDegree"
+        },
+        {
+          "line": 182,
+          "kind": "new",
+          "expression": "FrmAdjustDegree"
+        },
+        {
+          "line": 242,
+          "kind": "new",
+          "expression": "FrmAdjustDegree"
+        },
+        {
+          "line": 705,
+          "kind": "new",
+          "expression": "FrmAdjustDegree"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Infrastructure/Models/CommonModels/BilinearCompensator.cs",
+      "compiled": true,
+      "sha256": "14413f119b53fb347065ed76949ecb3320dde08793824de8d301a50951f049d1",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "标定数据、扫描验证或区域维护；独立于生产TU查表",
+      "document_sections": "9.4、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Infrastructure/Models/CommonModels/CompensationPredictor.cs",
+      "compiled": true,
+      "sha256": "71d3a6d66717190de41e3d04744445020f92cb36a12b3c53744db71b45445a5f",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "模型类存在；标定界面初始化代码被注释，不作为有效生产AI纠偏",
+      "document_sections": "12.3归属；详细边界外置",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Infrastructure/Models/CommonModels/TemperatureCompensationEntity.cs",
+      "compiled": true,
+      "sha256": "753337f6b77ba5fcd257194dc0c34ca9c9cf9cebdf69fd806add645e25a43b38",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "统计查询、展示或存储支持；不新增纠偏算法",
+      "document_sections": "第11章、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Infrastructure/Service/DBService.cs",
+      "compiled": true,
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 239,
+          "kind": "declaration",
+          "expression": "ClearTemperatureCompensationEntity"
+        }
+      ],
+      "entry_kind": "统计查询、展示或存储支持；不新增纠偏算法",
+      "document_sections": "第11章、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "Infrastructure/Utils/ETelDrive.cs",
+      "compiled": true,
+      "sha256": "a9a51b38ef31f28dee26364b04c33e62fff4ac675facd32eab0391cdc2772c51",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 292,
+          "kind": "declaration",
+          "expression": "Open2DCompensate"
+        },
+        {
+          "line": 314,
+          "kind": "declaration",
+          "expression": "Close2DCompensate"
+        }
+      ],
+      "entry_kind": "设备轴二维补偿调用、数据或辅助关闭入口",
+      "document_sections": "第9章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Infrastructure/Utils/GuGaoDrive.cs",
+      "compiled": true,
+      "sha256": "40f4bd8c3efbd0d53e5e16ac156266a25ca36f6c1f4ab49d182fe17035ece243",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 839,
+          "kind": "declaration",
+          "expression": "Close2DCompensate"
+        },
+        {
+          "line": 845,
+          "kind": "new",
+          "expression": "TCompensate2D"
+        },
+        {
+          "line": 872,
+          "kind": "new",
+          "expression": "TCompensate2D"
+        },
+        {
+          "line": 897,
+          "kind": "declaration",
+          "expression": "Open2DCompensate"
+        },
+        {
+          "line": 905,
+          "kind": "new",
+          "expression": "TCompensate2DTable"
+        },
+        {
+          "line": 933,
+          "kind": "new",
+          "expression": "TCompensate2D"
+        },
+        {
+          "line": 959,
+          "kind": "new",
+          "expression": "TCompensate2DTable"
+        },
+        {
+          "line": 989,
+          "kind": "new",
+          "expression": "TCompensate2D"
+        },
+        {
+          "line": 1017,
+          "kind": "declaration",
+          "expression": "Open2DCompensate"
+        }
+      ],
+      "entry_kind": "设备轴二维补偿调用、数据或辅助关闭入口",
+      "document_sections": "第9章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Infrastructure/Utils/MathHelper.cs",
+      "compiled": true,
+      "sha256": "3464a656b445ac169a721e9b2dd27a129daa1b03c7a2c926483369ef116dea7c",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 226,
+          "kind": "declaration",
+          "expression": "RotationCompensation"
+        }
+      ],
+      "entry_kind": "既有正文已核对的算法、输入或调用接口；哈希与结论锚点一致",
+      "document_sections": "4.4",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "compiled": true,
+      "sha256": "03ac03cbf6340faa7de0bc345f6bccab605f42575d33f36495e6062cb8618ae2",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 1413,
+          "kind": "new",
+          "expression": "FrmCalibration"
+        },
+        {
+          "line": 1706,
+          "kind": "declaration",
+          "expression": "BtGlobalCalibration_ItemClick"
+        },
+        {
+          "line": 1708,
+          "kind": "new",
+          "expression": "FrmGlobalCalibration"
+        },
+        {
+          "line": 1725,
+          "kind": "new",
+          "expression": "FrmGlobalCalibrationEx"
+        },
+        {
+          "line": 1770,
+          "kind": "new",
+          "expression": "FrmBondCompensateCalibration"
+        },
+        {
+          "line": 1828,
+          "kind": "new",
+          "expression": "FrmCompensateTest"
+        },
+        {
+          "line": 1934,
+          "kind": "declaration",
+          "expression": "BarBondCompensate_ItemClick"
+        },
+        {
+          "line": 1936,
+          "kind": "call",
+          "expression": "this.ShowForm<FrmBondCompensate>"
+        },
+        {
+          "line": 2100,
+          "kind": "new",
+          "expression": "FrmSystem2Calibrate"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "compiled": true,
+      "sha256": "f1779ebecc01ec731a0e46a66f6e6ec850e2fca156682e0e89c507c0d07fa5eb",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 137,
+          "kind": "call",
+          "expression": "System2Domain.System2MatterVision"
+        },
+        {
+          "line": 144,
+          "kind": "call",
+          "expression": "System2Domain.System2ObjectVision"
+        },
+        {
+          "line": 154,
+          "kind": "call",
+          "expression": "System2Domain.System2ObjectVision"
+        },
+        {
+          "line": 166,
+          "kind": "call",
+          "expression": "System2Domain.System2ObjectVision"
+        },
+        {
+          "line": 178,
+          "kind": "call",
+          "expression": "System2Domain.System2ObjectVision"
+        },
+        {
+          "line": 202,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 233,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 245,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 262,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "Main/Machine/MachineSupport/Machine.Operate.cs",
+      "compiled": true,
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 536,
+          "kind": "call",
+          "expression": "this.CloseCompensate"
+        },
+        {
+          "line": 573,
+          "kind": "call",
+          "expression": "this.OpenCompensate"
+        },
+        {
+          "line": 589,
+          "kind": "declaration",
+          "expression": "CloseCompensate"
+        },
+        {
+          "line": 598,
+          "kind": "call",
+          "expression": "ETelDrive.Close2DCompensate"
+        },
+        {
+          "line": 602,
+          "kind": "call",
+          "expression": "GuGaoDrive.Close2DCompensate"
+        },
+        {
+          "line": 609,
+          "kind": "declaration",
+          "expression": "OpenCompensate"
+        },
+        {
+          "line": 622,
+          "kind": "call",
+          "expression": "ETelDrive.Open2DCompensate"
+        },
+        {
+          "line": 629,
+          "kind": "call",
+          "expression": "GuGaoDrive.Open2DCompensate"
+        }
+      ],
+      "entry_kind": "设备轴二维补偿调用、数据或辅助关闭入口",
+      "document_sections": "第9章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Calibrate/FrmSystem2Calibrate.cs",
+      "compiled": true,
+      "sha256": "88404305c4bf88f01e2dac93db6d90667a0ae75f6e536abbe5217537782a27f1",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 586,
+          "kind": "declaration",
+          "expression": "FrmSystem2Calibrate_FormClosing"
+        },
+        {
+          "line": 613,
+          "kind": "declaration",
+          "expression": "FrmSystem2Calibrate_Load"
+        }
+      ],
+      "entry_kind": "相机标定输入",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Compensate/AxisCompensate/EtelCompensate.cs",
+      "compiled": true,
+      "sha256": "28f2d7a2d1bf91fe5621b80d50db9a78462f7a07ab5cd6bdac75c9a0edb2b15b",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "空辅助类；实际启停证据来自Machine与Infrastructure/Utils，未以空类推断整机功能缺失",
+      "document_sections": "第9章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Compensate/AxisCompensate/GooGolCompensate.cs",
+      "compiled": true,
+      "sha256": "ac1cc5acccf7f3aed2f8bcc36fe163bd14a490c6a057e4545a66d30a331bd174",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 17,
+          "kind": "declaration",
+          "expression": "OpenCompensate"
+        },
+        {
+          "line": 25,
+          "kind": "declaration",
+          "expression": "CloseCompensate"
+        }
+      ],
+      "entry_kind": "空辅助类；实际启停证据来自Machine与Infrastructure/Utils，未以空类推断整机功能缺失",
+      "document_sections": "第9章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+      "compiled": true,
+      "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 57,
+          "kind": "declaration",
+          "expression": "GetPostCompensation"
+        },
+        {
+          "line": 187,
+          "kind": "declaration",
+          "expression": "GetPostBondCompensation"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/BondCompensate.cs",
+      "compiled": true,
+      "sha256": "a306393e170f5376854263c538a399db659be5b8aa2cb8a7962ae9b1c9177b25",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 74,
+          "kind": "declaration",
+          "expression": "GetBondCompensate"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/CompensateCalculator.cs",
+      "compiled": true,
+      "sha256": "dd64dd5fb650129d2b888a18b43d115df769462ce56be043e7c2c1a98fb0b846",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "区域表生成或维护实现",
+      "document_sections": "第11章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/CompensateDataService.cs",
+      "compiled": true,
+      "sha256": "b42fdfdc748c8cc6564a6ac12cee096b19235b538fcebf06b89ed0d53aa0ec43",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "区域表生成或维护实现",
+      "document_sections": "第11章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+      "compiled": true,
+      "sha256": "362f6ed405910d5e5369ca7f39719fb6273bf372dc2396c3f3a9dac63508df24",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 52,
+          "kind": "declaration",
+          "expression": "FrmAutoCompensate_Load"
+        },
+        {
+          "line": 57,
+          "kind": "declaration",
+          "expression": "FrmAutoCompensate_FormClosing"
+        },
+        {
+          "line": 81,
+          "kind": "new",
+          "expression": "CompensateDataService"
+        },
+        {
+          "line": 155,
+          "kind": "write",
+          "expression": "inst.TransportUnitCompensateX"
+        },
+        {
+          "line": 156,
+          "kind": "write",
+          "expression": "inst.TransportUnitCompensateY"
+        },
+        {
+          "line": 180,
+          "kind": "call",
+          "expression": "_dataService.GetRoundsAfterTime"
+        },
+        {
+          "line": 272,
+          "kind": "write",
+          "expression": "inst.TransportUnitCompensateX"
+        },
+        {
+          "line": 273,
+          "kind": "write",
+          "expression": "inst.TransportUnitCompensateY"
+        },
+        {
+          "line": 351,
+          "kind": "declaration",
+          "expression": "PreviewCompensateData"
+        },
+        {
+          "line": 364,
+          "kind": "declaration",
+          "expression": "GvCompensate_CustomDrawRowIndicator"
+        }
+      ],
+      "entry_kind": "辅助采集实现已纳入；工程编译存在，但未发现本目录内直接构造或泛型打开入口",
+      "document_sections": "11.1至11.3；入口证据边界外置",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/FrmBondCompensate.cs",
+      "compiled": true,
+      "sha256": "7cb74cc76cbf0408bf5591fb9a0a9cbb1ea42983b34072195c074385cbe2f901",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 126,
+          "kind": "write",
+          "expression": "TransportUnitCompensate.GetInstance().TransportUnitCompensateX"
+        },
+        {
+          "line": 127,
+          "kind": "write",
+          "expression": "TransportUnitCompensate.GetInstance().TransportUnitCompensateY"
+        },
+        {
+          "line": 140,
+          "kind": "write",
+          "expression": "TransportUnitCompensate.GetInstance().TransportUnitCompensateX"
+        },
+        {
+          "line": 141,
+          "kind": "write",
+          "expression": "TransportUnitCompensate.GetInstance().TransportUnitCompensateY"
+        },
+        {
+          "line": 149,
+          "kind": "declaration",
+          "expression": "FrmBondCompensate_Load"
+        }
+      ],
+      "entry_kind": "区域表生成或维护实现",
+      "document_sections": "第11章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/FrmCompensateTest.cs",
+      "compiled": true,
+      "sha256": "8ee82723ee551a8d1f560c266d7f9e766ae3cb965839094f10ad8d72b89fec89",
+      "parse_error": false,
+      "hits": [],
+      "entry_kind": "实验或诊断实现，分别记录；不据类名计为注册生产动作",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+      "compiled": true,
+      "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 149,
+          "kind": "declaration",
+          "expression": "GetCompensatePoint3D"
+        },
+        {
+          "line": 208,
+          "kind": "declaration",
+          "expression": "GetCompensatePosByPoint"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+      "compiled": true,
+      "sha256": "8bc110fc23a5155db53cbf25c36bbdc5c0c54b465325a54422c45548a9cb1b10",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 66,
+          "kind": "declaration",
+          "expression": "GetBondCompensate"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "compiled": true,
+      "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 64,
+          "kind": "declaration",
+          "expression": "TemperatureCompensation"
+        },
+        {
+          "line": 94,
+          "kind": "new",
+          "expression": "TemperatureCompensationEntity"
+        },
+        {
+          "line": 127,
+          "kind": "new",
+          "expression": "TemperatureCompensationEntity"
+        },
+        {
+          "line": 153,
+          "kind": "declaration",
+          "expression": "PickUpCompensationVision"
+        },
+        {
+          "line": 183,
+          "kind": "new",
+          "expression": "TemperatureCompensationEntity"
+        },
+        {
+          "line": 215,
+          "kind": "new",
+          "expression": "TemperatureCompensationEntity"
+        },
+        {
+          "line": 240,
+          "kind": "declaration",
+          "expression": "GetTemperatureCompensation"
+        },
+        {
+          "line": 261,
+          "kind": "declaration",
+          "expression": "GetPickCompensation"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/HeatingSettings/FrmHeatingSettings.cs",
+      "compiled": true,
+      "sha256": "b6c1af97f104243e0e8282e9980fcd6509d2fca3ce6851c1a03e8cb01f985b13",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 140,
+          "kind": "declaration",
+          "expression": "BtSetCompensateValue_Click"
+        },
+        {
+          "line": 153,
+          "kind": "declaration",
+          "expression": "BtSetCompensateSlope_Click"
+        }
+      ],
+      "entry_kind": "加热温控通道，不属于XY纠偏",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Statistics/FrmStatistics.cs",
+      "compiled": true,
+      "sha256": "f87f95db390718cb0c78def11f041bce4eea364ed0ce5d7c58ccc7549a28d92e",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 56,
+          "kind": "new",
+          "expression": "UcTemperatureCompensation"
+        }
+      ],
+      "entry_kind": "统计查询、展示或存储支持；不新增纠偏算法",
+      "document_sections": "第11章、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "SupportFeature/Statistics/StatisticsDomain.cs",
+      "compiled": true,
+      "sha256": "2f28e39648d034261ae5d57be4cb9e1908f4bec971d80d00120e9a3af6baa4ca",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 351,
+          "kind": "declaration",
+          "expression": "QueryTemperatureCompensationTime"
+        }
+      ],
+      "entry_kind": "统计查询、展示或存储支持；不新增纠偏算法",
+      "document_sections": "第11章、12.3",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "SupportFeature/Statistics/UcTemperatureCompensation.cs",
+      "compiled": true,
+      "sha256": "75341e02d0167d75ba2bd3d0f494d28cf22da96642754e425c155120cbaf968a",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 32,
+          "kind": "declaration",
+          "expression": "UcTemperatureCompensation_Load"
+        }
+      ],
+      "entry_kind": "统计查询、展示或存储支持；不新增纠偏算法",
+      "document_sections": "第11章、12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "TransportSystem/Controllers/BondSubSectionController.cs",
+      "compiled": true,
+      "sha256": "d2211e2ca723ae3cd05c5e5f541a31c5c338b90a5bcfa156fba9d9882b5eb3e9",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 914,
+          "kind": "declaration",
+          "expression": "GetCompensateValue"
+        },
+        {
+          "line": 934,
+          "kind": "declaration",
+          "expression": "SetCompensateValue"
+        },
+        {
+          "line": 955,
+          "kind": "declaration",
+          "expression": "GetCompensateSlope"
+        },
+        {
+          "line": 975,
+          "kind": "declaration",
+          "expression": "SetCompensateSlope"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "compiled": true,
+      "sha256": "cc10800b6646b42c802891a4b4737f2b9bf15d3dc415c420c9fdbb8d55ac5012",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 249,
+          "kind": "declaration",
+          "expression": "FrmAdjustDegree_Load"
+        },
+        {
+          "line": 271,
+          "kind": "declaration",
+          "expression": "FrmAdjustDegree_FormClosed"
+        }
+      ],
+      "entry_kind": "两点角度示教及其五处直接调用",
+      "document_sections": "第10章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+      "compiled": true,
+      "sha256": "893f55643943826da075fb8564e9da08d76c771b70803da75611daf372ea37f3",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 666,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 671,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 680,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 687,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 692,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 701,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 708,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 715,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 720,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2MatterVision"
+        },
+        {
+          "line": 742,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 747,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 756,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 763,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 768,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 777,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 784,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 791,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        },
+        {
+          "line": 796,
+          "kind": "call",
+          "expression": "System1Domain.GetInstance().System1MatterVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "compiled": true,
+      "sha256": "78462da4520e4c1133c1add685e999e5d9c07dc30c38337401c7fb077ed6b00a",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 396,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2ObjectVision"
+        },
+        {
+          "line": 1110,
+          "kind": "call",
+          "expression": "System2Domain.GetInstance().System2ObjectVision"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "TransportUnitSystem/Module/Matter/BondPosition.cs",
+      "compiled": true,
+      "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 254,
+          "kind": "declaration",
+          "expression": "GetRotaryCompensate"
+        },
+        {
+          "line": 265,
+          "kind": "declaration",
+          "expression": "GetPositionCompensate"
+        },
+        {
+          "line": 276,
+          "kind": "declaration",
+          "expression": "GetDispenseRotaryCompensate"
+        },
+        {
+          "line": 287,
+          "kind": "declaration",
+          "expression": "GetDispensePositionCompensate"
+        }
+      ],
+      "entry_kind": "硬补偿参数访问器，不新增视觉过程",
+      "document_sections": "第7章",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "WaferSubSystem/Controls/FrmEjectionRealtimeState.cs",
+      "compiled": true,
+      "sha256": "cafc0c4736fe17f7c7dfc70daf270b574effacfc1a557c0e8c0a0910a50480ae",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 438,
+          "kind": "declaration",
+          "expression": "SaveCorrectionData"
+        }
+      ],
+      "entry_kind": "顶针诊断数据导出方法，非XY纠偏生产更新",
+      "document_sections": "12.3",
+      "review_depth": "入口、声明、接收对象或输出归属核对；未宣称全文通读"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+      "compiled": true,
+      "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 196,
+          "kind": "call",
+          "expression": "this.ToRequiredAccuracy"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+      "compiled": true,
+      "sha256": "1afc14108540072e5d4a276cb71148b2481bc043d66da21224b776d224e4066b",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 142,
+          "kind": "call",
+          "expression": "this.MoveDieToPickCenter"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+      "compiled": true,
+      "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 122,
+          "kind": "call",
+          "expression": "this.MoveDieToPickCenter"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+      "compiled": true,
+      "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 309,
+          "kind": "call",
+          "expression": "this.MoveDieToPickCenter"
+        },
+        {
+          "line": 328,
+          "kind": "call",
+          "expression": "this.MoveDieToPickCenter"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+      "compiled": true,
+      "sha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919",
+      "parse_error": false,
+      "hits": [
+        {
+          "line": 158,
+          "kind": "call",
+          "expression": "this.MoveDieToPickCenter"
+        }
+      ],
+      "entry_kind": "既有生产／手动入口归属已保留；本轮源文件哈希一致",
+      "document_sections": "第3至8章",
+      "review_depth": "相关方法语义区段已读／既有证据沿用"
+    }
+  ],
+  "unresolved_runtime_entry": [
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+      "status": "辅助实现已描述；无法在本目录证明外部或反射入口，不作为生产自动调用事实"
+    }
+  ]
+}

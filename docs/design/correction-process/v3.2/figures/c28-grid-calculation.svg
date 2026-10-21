@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1510" viewBox="0 0 2400 1510"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="55" fill="#162e43" font-family="Microsoft YaHei" font-size="57" font-weight="700" text-anchor="middle" dominant-baseline="central">逐位置估计后按行优先恢复阵列</text>
+<rect x="60" y="170" width="710" height="230" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="415.0" y="217.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">原始偏移 D</text>
+<text x="415.0" y="285.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">N个位置 × K个轮次</text>
+<text x="415.0" y="353.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">X、Y独立；单位 mm</text>
+<rect x="850" y="170" width="710" height="230" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1205.0" y="217.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">逐位置计算</text>
+<text x="1205.0" y="285.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">c_i = H(d_i)</text>
+<text x="1205.0" y="353.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">b_i = c_i − 0.85H(d_i−c_i)</text>
+<rect x="1640" y="170" width="700" height="230" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1990.0" y="251.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">恢复 R × C</text>
+<text x="1990.0" y="319.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">B[r,c] = b[rC+c]</text>
+<polyline points="770,285 850,285" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="850,285 829.2897166458885,295.0042072845583 829.2897166458885,274.9957927154417" fill="#4d6070"/>
+<polyline points="1560,285 1640,285" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1640,285 1619.2897166458883,295.0042072845583 1619.2897166458883,274.9957927154417" fill="#4d6070"/>
+<text x="1200" y="520" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">每行独立滑动中位数，默认窗口5列</text>
+<rect x="80" y="650" width="320" height="175" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="240" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 0</text>
+<rect x="400" y="650" width="320" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="560" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 1</text>
+<rect x="720" y="650" width="320" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="880" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 2</text>
+<rect x="1040" y="650" width="320" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1200" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 3</text>
+<rect x="1360" y="650" width="320" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1520" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 4</text>
+<rect x="1680" y="650" width="320" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1840" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 5</text>
+<rect x="2000" y="650" width="320" height="175" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2160" y="738" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">列 6</text>
+<polyline points="400,640 400,595 2000,595 2000,640" fill="none" stroke="#356d4a" stroke-width="6"/>
+<text x="1670" y="920" fill="#356d4a" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">计算列3：取列1至5的中位数</text>
+<polyline points="80,840 80,1020 1040,1020 1040,840" fill="none" stroke="#b65f17" stroke-width="5"/>
+<text x="680" y="1130" fill="#b65f17" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">计算列0：边界截断为列0至2</text>
+<text x="1200" y="1300" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">不跨行；中位数平滑不等于人工导入的均值平滑</text>
+<text x="1200" y="1415" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">输出矩阵尚需与既有起点和间距匹配，随后才能用于生产查表</text></svg>

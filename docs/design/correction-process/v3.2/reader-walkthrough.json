@@ -1,0 +1,96 @@
+{
+  "method": "按研发和设备调试问题定位最终PDF页面并核对答案；非独立真人试读",
+  "questions": [
+    {
+      "role": "研发",
+      "question": "四类生产定位各修改什么",
+      "answer": "产品父链、焊点偏移和IPT取片记录分别维护",
+      "page": 5,
+      "passed": true
+    },
+    {
+      "role": "调试",
+      "question": "供料重复校正会不会自动回正T",
+      "answer": "角度参与阈值，循环内主要移动XY，不直接旋转T",
+      "page": 8,
+      "passed": true
+    },
+    {
+      "role": "研发",
+      "question": "八个产品入口是否共用同一跳过条件",
+      "answer": "S1/S2及层级分别判断，表4-1与表4-2逐项列出",
+      "page": 13,
+      "passed": true
+    },
+    {
+      "role": "调试",
+      "question": "普通双点上视为什么有四次几何采集",
+      "answer": "旋转前后各采P1/P2",
+      "page": 18,
+      "passed": true
+    },
+    {
+      "role": "研发",
+      "question": "芯片偏移何时用于贴装目标",
+      "answer": "贴装入口按剩余角旋转再追加",
+      "page": 24,
+      "passed": true
+    },
+    {
+      "role": "调试",
+      "question": "重取检测Retry是否重新执行Pick",
+      "answer": "标签在Pick之后，只返回检测",
+      "page": 23,
+      "passed": true
+    },
+    {
+      "role": "研发",
+      "question": "回零true能否证明二维表生效",
+      "answer": "开关可跳过、固高false不传播；ETEL下载错误另行处理",
+      "page": 32,
+      "passed": true
+    },
+    {
+      "role": "调试",
+      "question": "角度示教检查什么距离",
+      "answer": "仅X跨度，1mm及5度边界按源码判定",
+      "page": 34,
+      "passed": true
+    },
+    {
+      "role": "研发",
+      "question": "基板示教改变哪个传入对象",
+      "answer": "窗口改TU坐标，调用方还写基板和配置",
+      "page": 35,
+      "passed": true
+    },
+    {
+      "role": "研发",
+      "question": "自动采集轮次的索引从哪里来",
+      "answer": "按TuIndex而非Id分组；焊后生成链未给TuIndex赋值",
+      "page": 36,
+      "passed": true
+    },
+    {
+      "role": "调试",
+      "question": "启用矩阵为何仍可能没有补偿",
+      "answer": "需生产开关以及起点、间距、矩阵和顺序匹配",
+      "page": 38,
+      "passed": true
+    },
+    {
+      "role": "研发",
+      "question": "自动与人工是否同一平滑算法",
+      "answer": "Huber后中位数与人工3/5点均值不同",
+      "page": 40,
+      "passed": true
+    },
+    {
+      "role": "调试",
+      "question": "清空后重启是否一定为空",
+      "answer": "只置内存null，事件内没有Save",
+      "page": 40,
+      "passed": true
+    }
+  ]
+}

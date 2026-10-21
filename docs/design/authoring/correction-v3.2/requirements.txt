@@ -1,0 +1,7 @@
+python-docx
+Pillow
+lxml
+pypdf
+pdfplumber
+tree-sitter>=0.25
+tree-sitter-c-sharp

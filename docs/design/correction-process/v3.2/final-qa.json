@@ -1,0 +1,386 @@
+{
+  "complete": true,
+  "pdf_sha256": "d0a588fa013fd1e652878052d252e0ada383cd439f28918a587c5c8e631e0432",
+  "docx_sha256": "1d4bb795b55cda4dc82876fa68918442150e9cd7e28f0845aa6214a41ebc7524",
+  "page_count": 46,
+  "render": "隐藏独立Word实例原生导出；两幅同尺寸图像最后微调仅替换原始PNG流；全46页再次由捆绑Poppler渲染；44页像素一致、2页重新直接查看。",
+  "raster_location": "output/correction-v3.2",
+  "pages": [
+    {
+      "page": 1,
+      "viewed": true,
+      "raster": "review-page-01.png",
+      "raster_sha256": "f8da285338ac7efecb3c04074005277cee7d674fb73b1ee7951b33eada36360e",
+      "result": "仅大标题和介绍；无版本日期；封面留白及字形正常。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 2,
+      "viewed": true,
+      "raster": "review-page-02.png",
+      "raster_sha256": "c18217ae272af4e0774e9324a9abf7032d74e2ab926547a17087efbbb6768503",
+      "result": "原生目录上半；层级、页码和点线对齐，无裁切。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 3,
+      "viewed": true,
+      "raster": "review-page-03.png",
+      "raster_sha256": "8825f96e058388d895ccfc4f593c4f4feb01c295b10a155671acb4ead6a1cf88",
+      "result": "原生目录下半；正文从下一页开始，无空白页。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 4,
+      "viewed": true,
+      "raster": "review-page-04.png",
+      "raster_sha256": "7dfc8d6fc57314a6a57a4a72209a472bf8bfe3f1edc4e8f78a816760dd3ad83d",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 5,
+      "viewed": true,
+      "raster": "review-page-05.png",
+      "raster_sha256": "23d9bbe9c3d494c47c0e2455e2afc0ac7c1679ab27af536a01babd6a8478d0fb",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 6,
+      "viewed": true,
+      "raster": "review-page-06.png",
+      "raster_sha256": "0eef3274d2150931826c162457be1a7715636ca91744982155d07b41f49beac8",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 7,
+      "viewed": true,
+      "raster": "review-page-07.png",
+      "raster_sha256": "ec4db8d4003d06ce856bef76bf7e3f1fd5adaf4d6479e25f0e6186910d303183",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 8,
+      "viewed": true,
+      "raster": "review-page-08.png",
+      "raster_sha256": "696dc222d6c32adaa07150525911b689a5b8647c32e52638a3cca2756e9cdfca",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 9,
+      "viewed": true,
+      "raster": "review-page-09.png",
+      "raster_sha256": "ff64f8bbb1dc053a896410cd51d1e7ec2ab5f5fedfd94b041d564046c411e7ff",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 10,
+      "viewed": true,
+      "raster": "review-page-10.png",
+      "raster_sha256": "cdcd40fd3f84bf7810a985a65f5ffded933a63fd59aa79007637853578da9a7d",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 11,
+      "viewed": true,
+      "raster": "review-page-11.png",
+      "raster_sha256": "51c0f24a5c69414d5a4bb56c3b9c056830a078060297df33113345d5cae23387",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 12,
+      "viewed": true,
+      "raster": "review-page-12.png",
+      "raster_sha256": "28af3cf8a5ae0553c729d1ce80506d43cba23d116b574b5d031f6eff83f3114b",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 13,
+      "viewed": true,
+      "raster": "review-page-13.png",
+      "raster_sha256": "5e398f828b81dcd7f65f946c0a1fd22cffcebbd9d36f349200fc105b9b5bd574",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 14,
+      "viewed": true,
+      "raster": "review-page-14.png",
+      "raster_sha256": "600c83c7ad048272327ce85a19d46d1421aa3237d5792ca157d0ff1fd68f1bff",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 15,
+      "viewed": true,
+      "raster": "review-page-15.png",
+      "raster_sha256": "99e9ee7672418edaa5109b6775937cd6e50387b2a1e510c38c16e6f6f049a044",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 16,
+      "viewed": true,
+      "raster": "review-page-16.png",
+      "raster_sha256": "df420ed83313faebbf11a37e7f34d8775711541e1a1216ddd98f369407cd19df",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 17,
+      "viewed": true,
+      "raster": "review-page-17.png",
+      "raster_sha256": "3951c9bdd450c20435e7b46a283fba8154a8d668bdc02abb771bf0a6cd50ba48",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 18,
+      "viewed": true,
+      "raster": "review-page-18.png",
+      "raster_sha256": "a0f01f2bc56f91f87cd07d50487b95faaa932a5724659c1f1fd064db0bbb9f82",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 19,
+      "viewed": true,
+      "raster": "review-page-19.png",
+      "raster_sha256": "67f24d8d7e7a1b9e4eaff02bed3b02d0e118efda13ed0df726ae86b0167c16c0",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 20,
+      "viewed": true,
+      "raster": "review-page-20.png",
+      "raster_sha256": "f814abadbddcf63fff20770f1df5e9272232ea049f19623c0c3a548306c26ede",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 21,
+      "viewed": true,
+      "raster": "review-page-21.png",
+      "raster_sha256": "d24d8d24690296e4ba8e9089c71d66aa18b2581a24077283e7dead3452f1b782",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 22,
+      "viewed": true,
+      "raster": "review-page-22.png",
+      "raster_sha256": "976410f401c55a3b941cffe36bceed986c255bf1f7eb5990e6351241ca0ced2d",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 23,
+      "viewed": true,
+      "raster": "review-page-23.png",
+      "raster_sha256": "48194388688b6e652d799f2cc9c5d36d9b2a4117c5c46b1acf4c36fa996b3da1",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 24,
+      "viewed": true,
+      "raster": "review-page-24.png",
+      "raster_sha256": "fe7ccd3553df1a7d10aa1a484a2f7d8696727a28b886f99f9198a5d70bb59c9b",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 25,
+      "viewed": true,
+      "raster": "review-page-25.png",
+      "raster_sha256": "f95a6bff475c3109f802349f9e517d05b90197bee8a757cd1a5ab7632655e709",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 26,
+      "viewed": true,
+      "raster": "review-page-26.png",
+      "raster_sha256": "0d2825e3b5b61cf5ee311cc6dcba29ce6f442d8970ee17d359c3c5ff5d11d01a",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 27,
+      "viewed": true,
+      "raster": "review-page-27.png",
+      "raster_sha256": "9461d09a6a1dde45327ec82197b4df6244a82510599a7d795e902103c64dcc8c",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 28,
+      "viewed": true,
+      "raster": "review-page-28.png",
+      "raster_sha256": "2ab9661793fd76acda5d5bf3dc055761ac78edb7aade63a7fe0bcff8c5d0f57d",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 29,
+      "viewed": true,
+      "raster": "review-page-29.png",
+      "raster_sha256": "3666a006d72e7e7896c2714c6430c029495a5f4c0a848ac1d1a67719629d428f",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 30,
+      "viewed": true,
+      "raster": "review-page-30.png",
+      "raster_sha256": "35f3446c671e5ca82af79ab780f6cbe8a185bd4536b03d679d7f123d2889f999",
+      "result": "正文、既有工程图或概念插图、公式、图注、表格与页边界逐页查看，未发现未处理的裁切、重叠或缺字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 31,
+      "viewed": true,
+      "raster": "review-page-31.png",
+      "raster_sha256": "51fc244eb78894fe4beaebe250fc201801f0211b7d3b31fabb57abd9fc94cbe7",
+      "result": "两种补偿层级图及职责表；图中文字与箭头无交叠。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 32,
+      "viewed": true,
+      "raster": "review-page-32.png",
+      "raster_sha256": "e3e3802a12331c61e3ddd21bbd3dd118a941eaa26c07bf6e6a8911ab348496e9",
+      "result": "回零控制流与false分支；分支线分开，标签及图注可读。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 33,
+      "viewed": true,
+      "raster": "review-page-33.png",
+      "raster_sha256": "8e65bd74fd07427211cb57d096165eb1014788e6923ddb050f21531c783d8366",
+      "result": "整数转换公式、失败表及标定启停；无孤立图注或公式裁切。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 34,
+      "viewed": true,
+      "raster": "review-page-34.png",
+      "raster_sha256": "a83ddd6c168ad0798f67f78f95c82011e0fa22dc440a5365c2c52bc4ebd04296",
+      "result": "两点坐标等比例，X跨度标签无缺字；公式及单位清楚。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 35,
+      "viewed": true,
+      "raster": "review-page-35.png",
+      "raster_sha256": "50445aa32c5f776f9f9d6177ad64b084233259274bf160af45eb5eacbae85cb8",
+      "result": "两张示教表及调用方对象差异；表头和换行正常。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 36,
+      "viewed": true,
+      "raster": "review-page-36.png",
+      "raster_sha256": "b6cd8d3bbc86290147e4dbafde06de95c939115c87a0a9bbd7da59cb30019fc6",
+      "result": "分组前提与采集流程图；启动、停止及发布路径清楚。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 37,
+      "viewed": true,
+      "raster": "review-page-37.png",
+      "raster_sha256": "a94457da79bf09f5d8fb1c9fe5a470656afcc495baf65d55bb6864ea77bbf5b1",
+      "result": "原始矩阵、Huber和残差公式；五组公式无重叠或漏字。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 38,
+      "viewed": true,
+      "raster": "review-page-38.png",
+      "raster_sha256": "0908ec2ae81230c4304c65846137bfac63af2b18cf22bcf0368ba28ca3d90731",
+      "result": "已移动中位数说明标签，避开边界窗口括线；正文和图注完整。",
+      "evidence": "最终重渲染直接查看"
+    },
+    {
+      "page": 39,
+      "viewed": true,
+      "raster": "review-page-39.png",
+      "raster_sha256": "d5c2c57aeb5db59740affdf9dcf38d23c3031963af4ab0a69063527cc7590324",
+      "result": "完整状态表与人工导入流程；未跨页拆表。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 40,
+      "viewed": true,
+      "raster": "review-page-40.png",
+      "raster_sha256": "5fe1469d3ad9ee2b52425bee34bd0554650524e3c28745832b2d5cd901a6138b",
+      "result": "人工均值与自动中位数对比；箭头在标签处留空，无穿字。",
+      "evidence": "最终重渲染直接查看"
+    },
+    {
+      "page": 41,
+      "viewed": true,
+      "raster": "review-page-41.png",
+      "raster_sha256": "a7ec81b7f9f47dd1cb0224a1fd525f44a26d1c027bd255063cf38d88accb1373",
+      "result": "主要接口契约表完整；长接口名称无溢出。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 42,
+      "viewed": true,
+      "raster": "review-page-42.png",
+      "raster_sha256": "f1f1987b954105633bb0a4494373fb7f635c074a5676e453efd360968e3e55bf",
+      "result": "阅读核对与辅助路径归属；无末段孤页。",
+      "evidence": "已直接查看对应全页；最后同尺寸图像微调后的该页重渲染逐像素一致"
+    },
+    {
+      "page": 43,
+      "viewed": true,
+      "raster": "review-page-43.png",
+      "raster_sha256": "00d996ac63bb4c3a725d95e827e8b961dbfc090ea719858864b681747166c5a1",
+      "result": "17条精简依据同页；方法短名可读，无单条孤页。",
+      "evidence": "最终重渲染直接查看"
+    },
+    {
+      "page": 44,
+      "viewed": true,
+      "raster": "review-page-44.png",
+      "raster_sha256": "4b73e54dae38b5a830f3d5317868165e3f8102d25e6672c79d34a08fc92b2212",
+      "result": "术语表及新增术语；行高、表头与边界正常。",
+      "evidence": "最终重渲染直接查看"
+    },
+    {
+      "page": 45,
+      "viewed": true,
+      "raster": "review-page-45.png",
+      "raster_sha256": "f7ce68e9fae059ffd2abf0b8c858e7683f256f2dd684a03838c4ba2b7931408c",
+      "result": "27幅图目录独立成页，页码及链接正常。",
+      "evidence": "最终重渲染直接查看"
+    },
+    {
+      "page": 46,
+      "viewed": true,
+      "raster": "review-page-46.png",
+      "raster_sha256": "efda89a5701a801be6101773ec0546054458506dacadd3b30396e87a10db2c42",
+      "result": "20张表目录独立成页，无少量尾项孤页。",
+      "evidence": "最终重渲染直接查看"
+    }
+  ],
+  "corrected_issues": [
+    "目录后空白页",
+    "图中不受字体支持的下标字形",
+    "区域平滑图括线与说明交叠",
+    "导入平滑图箭头穿过标签",
+    "源码附录与末段少量内容孤页"
+  ],
+  "review_kind": "代理技术与视觉自检；不等于独立真人试读或用户签收"
+}

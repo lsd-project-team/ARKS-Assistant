@@ -1,0 +1,129 @@
+{
+  "source_sha256": "dd64dd5fb650129d2b888a18b43d115df769462ce56be043e7c2c1a98fb0b846",
+  "checks": [
+    {
+      "passed": true,
+      "actual": 0.0,
+      "tolerance": 1E-10,
+      "name": "empty Huber",
+      "expected": 0
+    },
+    {
+      "passed": true,
+      "actual": 0.015,
+      "tolerance": 1E-10,
+      "name": "single Huber",
+      "expected": 0.015
+    },
+    {
+      "passed": true,
+      "actual": 1.0,
+      "tolerance": 1E-10,
+      "name": "zero MAD returns median",
+      "expected": 1
+    },
+    {
+      "passed": true,
+      "actual": 6.0,
+      "tolerance": 1E-10,
+      "name": "even median",
+      "expected": 6
+    },
+    {
+      "passed": true,
+      "actual": 0.011664417691698188,
+      "tolerance": 1E-10,
+      "name": "Huber weighted center agrees with independent Python",
+      "expected": 0.011664417691698188
+    },
+    {
+      "passed": true,
+      "actual": -5.772535142993444E-19,
+      "tolerance": 1E-10,
+      "name": "residual Huber is zero within floating precision",
+      "expected": 0
+    },
+    {
+      "passed": true,
+      "actual": 1.0,
+      "tolerance": 1E-10,
+      "name": "row median boundary 0",
+      "expected": 1.0
+    },
+    {
+      "passed": true,
+      "actual": 2.0,
+      "tolerance": 1E-10,
+      "name": "row median boundary 1",
+      "expected": 2.0
+    },
+    {
+      "passed": true,
+      "actual": 3.0,
+      "tolerance": 1E-10,
+      "name": "row median boundary 2",
+      "expected": 3.0
+    },
+    {
+      "passed": true,
+      "actual": 3.5,
+      "tolerance": 1E-10,
+      "name": "row median boundary 3",
+      "expected": 3.5
+    },
+    {
+      "passed": true,
+      "actual": 4.0,
+      "tolerance": 1E-10,
+      "name": "row median boundary 4",
+      "expected": 4.0
+    },
+    {
+      "passed": true,
+      "actual": 2.0,
+      "tolerance": 1E-10,
+      "name": "row zero layout 0",
+      "expected": 2
+    },
+    {
+      "passed": true,
+      "actual": 200.0,
+      "tolerance": 1E-10,
+      "name": "row one does not mix 0",
+      "expected": 200
+    },
+    {
+      "passed": true,
+      "actual": 2.0,
+      "tolerance": 1E-10,
+      "name": "row zero layout 1",
+      "expected": 2
+    },
+    {
+      "passed": true,
+      "actual": 200.0,
+      "tolerance": 1E-10,
+      "name": "row one does not mix 1",
+      "expected": 200
+    },
+    {
+      "passed": true,
+      "actual": 2.0,
+      "tolerance": 1E-10,
+      "name": "row zero layout 2",
+      "expected": 2
+    },
+    {
+      "passed": true,
+      "actual": 200.0,
+      "tolerance": 1E-10,
+      "name": "row one does not mix 2",
+      "expected": 200
+    },
+    {
+      "passed": true,
+      "name": "shape mismatch throws"
+    }
+  ],
+  "scope": "pure CompensateCalculator class only"
+}

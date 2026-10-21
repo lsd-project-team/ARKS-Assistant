@@ -1,0 +1,210 @@
+[
+  {
+    "number": 1,
+    "title": "纠偏对象与配置",
+    "purpose": "产品定位与芯片定位的独立配置",
+    "source_ids": [
+      "TransportUnitSystem/Module/Config/LocateConfig.cs",
+      "Infrastructure/Models/CommonModels/AdjustConfig.cs",
+      "WaferSubSystem/Models/Repositories/Carrier/BaseCarrierConfig.cs",
+      "TransportUnitSystem/Module/Information/BondPositionInfo.cs"
+    ]
+  },
+  {
+    "number": 2,
+    "title": "产品定位计算",
+    "purpose": "采集、分轴选点、角度和坐标更新调用",
+    "source_ids": [
+      "DispenseSystem/Models/System1Domain.cs",
+      "BondSystem/Models/System2Domain.cs",
+      "TransportUnitSystem/Service/TuService.cs",
+      "TransportUnitSystem/Model/VisionResult.cs",
+      "Infrastructure/Utils/MathHelper.cs"
+    ]
+  },
+  {
+    "number": 3,
+    "title": "坐标及标定接口",
+    "purpose": "相机结果转换和吸嘴校准角度",
+    "source_ids": [
+      "BondSystem/Controllers/System2Controller.Vision.cs",
+      "BondSystem/Controllers/BondHeadController.cs",
+      "BondSystem/Controllers/BondModuleController.cs",
+      "BondSystem/Models/Repositories/Nozzle/Nozzle.cs",
+      "DispenseSystem/Controllers/DispenseController.cs",
+      "Infrastructure/Utils/MathHelper.cs"
+    ]
+  },
+  {
+    "number": 4,
+    "title": "生产上视纠偏",
+    "purpose": "快速、普通、镜像和温漂调用",
+    "source_ids": [
+      "BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs"
+    ]
+  },
+  {
+    "number": 5,
+    "title": "生产中转台纠偏",
+    "purpose": "放片、拍照、重取及重试",
+    "source_ids": [
+      "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs"
+    ]
+  },
+  {
+    "number": 6,
+    "title": "贴装目标",
+    "purpose": "补偿次序、位置记录与运动轴目标",
+    "source_ids": [
+      "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs"
+    ]
+  },
+  {
+    "number": 7,
+    "title": "报警与人工确认",
+    "purpose": "PR重跑和距离检查",
+    "source_ids": [
+      "Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs",
+      "Infrastructure/Controls/Currency/FrmVisionAlarm.cs",
+      "Infrastructure/Service/VisionService.cs"
+    ]
+  },
+  {
+    "number": 8,
+    "title": "定位动作与编排",
+    "purpose": "八个层级定位入口及相对固晶时机",
+    "source_ids": [
+      "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+      "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+      "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+      "DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+      "BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+      "BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+      "BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+      "DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs",
+      "BondSystem/Models/ActionNodes/BondActionNodeRepository.cs",
+      "Main/Machine/Process/S2ActionNodeController.cs",
+      "BondSystem/Tasks/BondTask.cs"
+    ]
+  },
+  {
+    "number": 9,
+    "title": "供料端定位及取片",
+    "purpose": "搜晶分支、多次校正、静态华夫盒和取片位",
+    "source_ids": [
+      "WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+      "WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+      "WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+      "WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+      "WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+      "WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "BondSystem/Controllers/System2Controller.Assistant.cs",
+      "WaferSubSystem/Controllers/WaferSubController.cs",
+      "WaferSubSystem/Tasks/FlipTask.cs"
+    ]
+  },
+  {
+    "number": 10,
+    "title": "手动辅助入口",
+    "purpose": "贴片测试、示教定位与独立上视实现",
+    "source_ids": [
+      "BondSystem/Controllers/System2Controller.Assistant.cs",
+      "BondSystem/Controls/Assistant/FrmComponentPlacement.cs",
+      "TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+      "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs"
+    ]
+  },
+  {
+    "number": 11,
+    "title": "中转台运动分支",
+    "purpose": "绝对运动、插补运动与空跑",
+    "source_ids": [
+      "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs"
+    ]
+  },
+  {
+    "number": 12,
+    "title": "相关运行补偿",
+    "purpose": "取片温漂、焊后、单点、TU区域与实时补偿",
+    "source_ids": [
+      "SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+      "BondSystem/Tasks/BondTask.cs"
+    ]
+  },
+  {
+    "number": 13,
+    "title": "设备轴二维补偿",
+    "purpose": "回零、标定界面和驱动补偿的启停契约",
+    "source_ids": [
+      "Main/Machine/MachineSupport/Machine.Operate.cs",
+      "Infrastructure/Utils/ETelDrive.cs",
+      "Infrastructure/Utils/GuGaoDrive.cs",
+      "Main/Machine/MachineSupport/MachineSoftwareConfiguration.cs",
+      "CalibSystem/GlobalCalibration/FrmGlobalCalibration.cs",
+      "CalibSystem/GlobalCalibration/GlobalCalibrationDomain.cs",
+      "CalibSystem/GlobalCalibration/FrmAssistant2DStage.cs"
+    ]
+  },
+  {
+    "number": 14,
+    "title": "两点角度示教",
+    "purpose": "采点参考系、角度边界、调用方写回和取消语义",
+    "source_ids": [
+      "TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs",
+      "Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+      "TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs"
+    ]
+  },
+  {
+    "number": 15,
+    "title": "自动生成区域补偿表",
+    "purpose": "统计分组、轮次筛选、矩阵计算及保存",
+    "source_ids": [
+      "SupportFeature/Compensate/MotionAreaCompensate/FrmAutoCompensate.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/CompensateCalculator.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/CompensateDataService.cs",
+      "SupportFeature/Statistics/StatisticsDomain.cs",
+      "SupportFeature/Statistics/DefectStatisticsEntity.cs",
+      "SupportFeature/Statistics/StatisticsService.cs"
+    ]
+  },
+  {
+    "number": 16,
+    "title": "人工维护区域补偿表",
+    "purpose": "统计导入、行平滑、编辑、清空和生产使用",
+    "source_ids": [
+      "SupportFeature/Compensate/MotionAreaCompensate/FrmBondCompensate.cs",
+      "Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/FrmInputData.cs"
+    ]
+  },
+  {
+    "number": 17,
+    "title": "标定与诊断输入",
+    "purpose": "IPT示教、标定验证和诊断入口与生产流程的归属",
+    "source_ids": [
+      "BondSystem/Controls/Manual/FrmLearnIPT.cs",
+      "CalibSystem/GlobalCalibration/FrmGlobalCalibrationEx.cs",
+      "SupportFeature/Compensate/MotionAreaCompensate/FrmCompensateTest.cs",
+      "BondSystem/Models/ActionNodes/BPActionNode/BondPositionVisionTest.cs",
+      "Infrastructure/Models/CommonModels/BilinearCompensator.cs",
+      "BondSystem/BondForce/Services/ForceCalibrationService.cs"
+    ]
+  }
+]
