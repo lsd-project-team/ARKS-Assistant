@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="770" viewBox="0 0 2400 770"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central">贴装目标中的补偿按位置和参考系分别生效</text>
+<text x="115" y="248" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">起点</text>
+<rect x="320" y="170" width="580" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="610.0" y="227.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">焊点局部硬补偿</text>
+<text x="610.0" y="295.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">随产品父链转到G0</text>
+<rect x="1020" y="170" width="580" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1310.0" y="227.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">焊后与单点补偿</text>
+<text x="1310.0" y="295.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">加到G0目标</text>
+<rect x="1720" y="170" width="580" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2010.0" y="227.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">相机分支</text>
+<text x="2010.0" y="295.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">上视偏移或吸嘴偏心</text>
+<polyline points="900,257 1020,257" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1020,257 999.2897166458885,267.0042072845583 999.2897166458885,246.9957927154417" fill="#4d6070"/>
+<polyline points="1600,257 1720,257" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,257 1699.2897166458883,267.0042072845583 1699.2897166458883,246.9957927154417" fill="#4d6070"/>
+<text x="115" y="503" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">后续</text>
+<rect x="320" y="425" width="580" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="610.0" y="482.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">TU区域补偿</text>
+<text x="610.0" y="550.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">按当前位置查询后相减</text>
+<rect x="1020" y="425" width="580" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1310.0" y="482.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">参考点追加与记录</text>
+<text x="1310.0" y="550.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">RealBondPoint3D</text>
+<rect x="1720" y="425" width="580" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2010.0" y="482.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">G0转运动轴</text>
+<text x="2010.0" y="550.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">随后追加实时补偿</text>
+<polyline points="900,512 1020,512" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1020,512 999.2897166458885,522.0042072845583 999.2897166458885,501.9957927154417" fill="#4d6070"/>
+<polyline points="1600,512 1720,512" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,512 1699.2897166458883,522.0042072845583 1699.2897166458883,501.9957927154417" fill="#4d6070"/></svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1250" viewBox="0 0 2400 1250"><rect width="100%" height="100%" fill="white"/>
+<polyline points="260.0,980.0 260.0,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<polyline points="449.9999999999892,980.0 449.9999999999892,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="449.9999999999892" y="1050" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">110.00</text>
+<polyline points="639.9999999999784,980.0 639.9999999999784,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<polyline points="830.0000000000216,980.0 830.0000000000216,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="830.0000000000216" y="1050" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">110.10</text>
+<polyline points="1020.0000000000108,980.0 1020.0000000000108,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<polyline points="1210.0,980.0 1210.0,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="1210.0" y="1050" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">110.20</text>
+<polyline points="1399.999999999989,980.0 1399.999999999989,219.9999999999352" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<polyline points="260.0,980.0 1399.999999999989,980.0" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="150" y="980.0" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">199.95</text>
+<polyline points="260.0,789.9999999999568 1399.999999999989,789.9999999999568" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="150" y="789.9999999999568" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">200.00</text>
+<polyline points="260.0,600.0000000000216 1399.999999999989,600.0000000000216" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="150" y="600.0000000000216" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">200.05</text>
+<polyline points="260.0,409.9999999999784 1399.999999999989,409.9999999999784" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="150" y="409.9999999999784" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">200.10</text>
+<polyline points="260.0,220.0000000000432 1399.999999999989,220.0000000000432" fill="none" stroke="#dce4ea" stroke-width="2"/>
+<text x="150" y="220.0000000000432" fill="#18364b" font-family="Microsoft YaHei" font-size="40" font-weight="400" text-anchor="middle" dominant-baseline="central">200.15</text>
+<polyline points="260.0,980.0 1438.0000000000086,980.0" fill="none" stroke="#18364b" stroke-width="4"/>
+<polygon points="1438.0000000000086,980.0 1417.289716645897,990.0042072845583 1417.289716645897,969.9957927154417" fill="#18364b"/>
+<polyline points="260.0,980.0 260.0,144.00000000000432" fill="none" stroke="#18364b" stroke-width="4"/>
+<polygon points="260.0,144.00000000000432 270.0042072845583,164.7102833541159 249.9957927154417,164.7102833541159" fill="#18364b"/>
+<text x="260" y="110" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">父参考系 Y / mm</text>
+<text x="1400" y="1100" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">X / mm</text>
+<polyline points="449.9999999999892,789.9999999999568 1210.0,409.9999999999784" fill="none" stroke="#c58737" stroke-width="5"/>
+<polygon points="1210.0,409.9999999999784 1195.9501769446233,428.2099553023015 1187.0021419249156,410.3138852628845" fill="#c58737"/>
+<circle cx="449.9999999999892" cy="789.9999999999568" r="16" fill="#315d82"/>
+<circle cx="1210.0" cy="409.9999999999784" r="19" fill="#44765b"/>
+<circle cx="1650" cy="300" r="13" fill="#315d82"/>
+<text x="1950" y="365" fill="#315d82" font-family="Microsoft YaHei" font-size="45" font-weight="700" text-anchor="middle" dominant-baseline="central">更新前示教锚点</text>
+<text x="1950" y="445" fill="#18364b" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">(110.000, 200.000)</text>
+<circle cx="1650" cy="600" r="13" fill="#44765b"/>
+<text x="1950" y="665" fill="#44765b" font-family="Microsoft YaHei" font-size="45" font-weight="700" text-anchor="middle" dominant-baseline="central">本次目标与更新后锚点</text>
+<text x="1950" y="745" fill="#18364b" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">(110.200, 200.100)</text>
+<text x="1900" y="920" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">X 与 Y 使用相同比例</text>
+<text x="1200" y="1170" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">局部视窗只显示锚点附近   新原点约为(100.200500, 200.000002)</text></svg>
