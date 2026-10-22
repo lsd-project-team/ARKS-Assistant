@@ -13,7 +13,7 @@ from app.modules.action_timing.source_properties import (
     increment_property,
     read_property,
 )
-from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup
+from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup, track_binding
 
 PURE_NAMES = {
     "GetInstance",
@@ -224,6 +224,14 @@ class Estimator:
             return read_property(self, node, method, bindings, stack, conditions, background)
         if node.type == "object_creation_expression":
             return create_object(self, node, method, bindings, stack, conditions, background)
+        if node.type == "variable_declarator":
+            right = initializer(node)
+            cost = self.expression(right, method, bindings, stack, conditions, background)
+            left = node.child_by_field_name("name") or next(
+                iter(children(node, "tuple_pattern")), None
+            )
+            track_binding(self.index, left, right, method, bindings)
+            return cost
         if node.type == "await_expression":
             operand = children(node)[-1]
             plan = lookup(operand, method, bindings)

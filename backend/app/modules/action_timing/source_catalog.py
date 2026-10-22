@@ -4,6 +4,7 @@ import re
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass, replace
 
+from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing.source_hardware import hardware_operation
 from app.modules.action_timing.source_index import children, description, text, walk
 
@@ -144,6 +145,20 @@ def build_catalog(index, legacy):
                     edges[method.key].add(target.key)
                     callers[target.key].add(method.key)
         for call in (part for root in roots for part in walk(root)):
+            function = text(call.child_by_field_name("function"))
+            task = call.type == "invocation_expression" and function.removeprefix(
+                "System.Threading.Tasks."
+            ) in {"Task.Run", "Task.Factory.StartNew"}
+            creation = call.type == "object_creation_expression" and text(
+                call.child_by_field_name("type")
+            ).split("<", 1)[0] in {"Task", "System.Threading.Tasks.Task"}
+            if task or creation:
+                arguments = children(call.child_by_field_name("arguments"), "argument")
+                delegate = delegates.unwrap(index, arguments[0], method) if arguments else None
+                target = delegates.method_group(index, delegate, method)
+                if target:
+                    edges[method.key].add(target.key)
+                    callers[target.key].add(method.key)
             if call.type == "object_creation_expression":
                 owner = index.lookup_type(text(call.child_by_field_name("type")), method)
                 for target in constructor_targets(owner):

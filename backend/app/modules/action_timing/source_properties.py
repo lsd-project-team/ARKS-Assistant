@@ -5,7 +5,7 @@ import math
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
-from app.modules.action_timing.source_tasks import CLOCK
+from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 
 def accessor_cost(
@@ -165,6 +165,9 @@ def assign_property(
             state.transfer(bindings, target_bindings)
     elif setter and estimator.index.polymorphic(left, method, setter):
         state.write(estimator.index, left, method, bindings, None, owner)
+    track_binding(
+        estimator.index, left, right if operator == "=" and not custom else None, method, bindings
+    )
     bindings[CLOCK] = started
     return before
 

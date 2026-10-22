@@ -4,7 +4,7 @@ from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
 from app.modules.action_timing.source_properties import assign_property
-from app.modules.action_timing.source_tasks import CLOCK
+from app.modules.action_timing.source_tasks import CLOCK, create_task
 
 
 def field_initializers(
@@ -181,6 +181,9 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
             estimator.expression(argument, method, bindings, stack, conditions, background)
         )
     owner = estimator.index.lookup_type(text(node.child_by_field_name("type")), method)
+    if create_task(estimator, node, method, bindings):
+        bindings[CLOCK] = started
+        return cost
     receiver_id = state.reference(estimator.index, node, method, bindings)
     target = estimator.index.constructor(owner, arguments, method)
     bindings[CLOCK] = started.plus(cost)
