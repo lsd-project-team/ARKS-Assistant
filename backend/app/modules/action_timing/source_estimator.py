@@ -3,6 +3,7 @@
 import math
 import re
 
+from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_construction import constructor_body, create_object
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
 from app.modules.action_timing.source_hardware import hardware_call
@@ -50,6 +51,7 @@ class Estimator:
         self.root_method = None
         self.skip_conditions = []
         self.failure_reasons = []
+        self.frames = 0
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
@@ -57,6 +59,8 @@ class Estimator:
         self.root_method = method.key
         bindings = {
             **self.context,
+            state.THIS: f"root:{method.owner}",
+            state.FRAME: "root",
             **{
                 name: self.index.value(default, method, self.context)
                 for name, _, default in method.parameters
@@ -283,26 +287,40 @@ class Estimator:
                 before = self.expression(left, method, bindings, stack, conditions, background)
                 if (op == "&&" and value is False) or (op == "||" and value is True):
                     return before
+                branch_bindings = dict(bindings)
                 after = self.expression(
                     node.child_by_field_name("right"),
                     method,
-                    bindings,
+                    branch_bindings,
                     stack,
                     conditions,
                     background,
+                )
+                state.merge(
+                    bindings, [bindings, branch_bindings] if value is None else [branch_bindings]
                 )
                 return before.plus(choice(ZERO, after) if value is None else after)
         if node.type == "conditional_expression":
             condition = node.child_by_field_name("condition")
             before = self.expression(condition, method, bindings, stack, conditions, background)
             value = self.index.value(condition, method, bindings)
-            costs = [
-                self.expression(
-                    node.child_by_field_name(field), method, bindings, stack, conditions, background
+            costs, branches = [], []
+            for flag, field in [(True, "consequence"), (False, "alternative")]:
+                if isinstance(value, bool) and flag != value:
+                    continue
+                branch = dict(bindings)
+                costs.append(
+                    self.expression(
+                        node.child_by_field_name(field),
+                        method,
+                        branch,
+                        stack,
+                        conditions,
+                        background,
+                    )
                 )
-                for flag, field in [(True, "consequence"), (False, "alternative")]
-                if not isinstance(value, bool) or flag == value
-            ]
+                branches.append(branch)
+            state.merge(bindings, branches)
             return before.plus(choice(costs[0], costs[1]) if len(costs) == 2 else costs[0])
         result = ZERO
         for child in children(node):
@@ -364,6 +382,8 @@ class Estimator:
         ):
             return ZERO
         target = self.index.resolve(node, method)
+        if target is None:
+            state.invalidate_byref(self.index, node, method, bindings)
         if target and self.index.polymorphic(node, method, target):
             self.record(
                 "unresolved",
@@ -496,6 +516,7 @@ class Estimator:
         conditions,
         background,
         argument_values=None,
+        receiver_id=state.MISSING,
     ):
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
         if target.key in stack or (not metadata and (self.depth(stack) >= 7 or self.calls >= 120)):
@@ -512,8 +533,14 @@ class Estimator:
             return UNKNOWN
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1
+        self.frames += 1
         values = {
             **self.context,
+            **state.context(bindings),
+            state.THIS: state.receiver_for(self.index, target, node, caller, bindings)
+            if receiver_id is state.MISSING
+            else receiver_id,
+            state.FRAME: str(self.frames),
             CLOCK: bindings.get(CLOCK, ZERO),
             **{
                 parameter[0]: self.index.value(argument, caller, bindings)
@@ -532,6 +559,16 @@ class Estimator:
             ):
                 values[name] = float(values[name])
         flow = self.execute_body(target, values, (*stack, target.key), conditions, background)
+        state.transfer(bindings, values)
+        for position, argument in state.byref_arguments(node):
+            assigned = state.argument_target(argument)
+            if assigned is not None and text(assigned) != "_":
+                value = (
+                    values.get(target.parameters[position][0])
+                    if position < len(target.parameters)
+                    else None
+                )
+                state.write(self.index, assigned, caller, bindings, value)
         if flow.live is None and flow.returned is None:
             self.record(
                 "unresolved",
@@ -570,6 +607,7 @@ class Estimator:
         value = self.index.value(receiver, method, bindings)
         present = isinstance(value, dict) and "<type>" in value
         started = bindings.get(CLOCK, ZERO)
+        original = dict(bindings)
         bindings[CLOCK] = started.plus(before)
         labels = (*conditions, f"{text(receiver)} 非空")
         cost = ZERO
@@ -605,6 +643,8 @@ class Estimator:
                     "unresolved", "空条件属性访问未绑定", access, method, labels, background
                 )
         bindings[CLOCK] = started
+        if not present:
+            state.merge(bindings, [original, dict(bindings)])
         return before.plus(cost if present else choice(ZERO, cost))
 
     def motion_definitions(self, node, method):
@@ -743,9 +783,11 @@ class Estimator:
                 return Flow(condition_cost)
             label = f"循环：{text(node.child_by_field_name('condition')) or '次数依赖运行数据'}"
             start = len(self.stages)
+            loop_bindings = dict(bindings)
             body_flow = self.block(
-                body, method, dict(bindings), stack, (*conditions, label), background
+                body, method, loop_bindings, stack, (*conditions, label), background
             )
+            state.transfer(bindings, loop_bindings, uncertain=True, locals=True)
             for changed in walk(body):
                 if changed.type == "assignment_expression":
                     assigned = text(changed.child_by_field_name("left"))

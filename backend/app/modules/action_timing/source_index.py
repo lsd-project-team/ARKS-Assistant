@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 import tree_sitter_c_sharp
 from tree_sitter import Language, Parser
 
+from app.modules.action_timing import source_state as state
+
 
 def walk(node):
     pending = [node] if node is not None else []
@@ -113,6 +115,7 @@ class ClassInfo:
     short_name: str = ""
     constructor_writes: set = field(default_factory=set)
     initializers: list = field(default_factory=list)
+    static_members: set = field(default_factory=set)
 
 
 class SourceIndex:
@@ -129,6 +132,7 @@ class SourceIndex:
         self._resolving = set()
         self._overridden_cache = {}
         self._property_cache = {}
+        self._valuing = set()
         for source in documents:
             raw = source["content"].encode("utf-8")
             # 文本、语法树与节点共同保存，避免跨文件持有失效的原生节点。
@@ -212,6 +216,8 @@ class SourceIndex:
                     if value.type != "arrow_expression_clause":
                         self._initializer(info, unit, member, member_name, value)
                 property_modifiers = {text(part) for part in children(member, "modifier")}
+                if "static" in property_modifiers:
+                    info.static_members.add(member_name)
                 accessors = children(
                     member.child_by_field_name("accessors"), "accessor_declaration"
                 )
@@ -244,9 +250,14 @@ class SourceIndex:
                 if not declaration:
                     continue
                 kind = text(declaration.child_by_field_name("type"))
+                static = any(
+                    text(part) in {"static", "const"} for part in children(member, "modifier")
+                )
                 for variable in children(declaration, "variable_declarator"):
                     member_name = text(variable.child_by_field_name("name"))
                     info.types[member_name] = kind
+                    if static:
+                        info.static_members.add(member_name)
                     value = initializer(variable)
                     if value is not None:
                         info.defaults[member_name] = (unit, value)
@@ -471,7 +482,12 @@ class SourceIndex:
         if identity in seen:
             return None
         declaration = Method(owner, "<initializer>", value_node, unit, [], {})
-        context = {key: value for key, value in bindings.items() if "." in key}
+        context = {
+            **{key: value for key, value in bindings.items() if "." in key},
+            **state.context(bindings),
+            state.THIS: bindings.get(state.THIS),
+            state.FRAME: f"field:{bindings.get(state.THIS)}:{owner}.{name}",
+        }
         value = self.value(value_node, declaration, context, seen | {identity})
         if (
             self.classes[owner].types.get(name) in {"double", "float", "decimal"}
@@ -479,7 +495,7 @@ class SourceIndex:
             and not isinstance(value, bool)
         ):
             return float(value)
-        return value
+        return state.materialize(value, bindings)
 
     def infer(self, node, method):
         if node is None:
@@ -644,10 +660,26 @@ class SourceIndex:
         """有限表达式求值；未知保持未知，不用 eval，也不把属性编辑器范围当成初值。"""
         if node is None:
             return None
+        identity = (method.key, node.type, node.start_byte, node.end_byte)
+        if identity in self._valuing:
+            return None
+        self._valuing.add(identity)
+        try:
+            return self._value(node, method, bindings, seen)
+        finally:
+            self._valuing.remove(identity)
+
+    def _value(self, node, method, bindings, seen=None):
+        if node is None:
+            return None
         seen = set() if seen is None else seen
         kind, source = node.type, text(node)
+        if kind in {"identifier", "member_access_expression"}:
+            current = state.read(self, node, method, bindings)
+            if current is not state.MISSING:
+                return state.materialize(current, bindings)
         if source in bindings:
-            return bindings[source]
+            return state.materialize(bindings[source], bindings)
         if kind in {"integer_literal", "real_literal"}:
             try:
                 cleaned = re.sub(r"[dDfFmMuUlL]+$", "", source.replace("_", ""))
@@ -667,7 +699,10 @@ class SourceIndex:
         if kind == "object_creation_expression":
             # 仅求值显式对象初始化器；不执行构造函数，也不臆测外部构造参数顺序。
             value_node = next(iter(children(node, "initializer_expression")), None)
-            result = {"<type>": text(node.child_by_field_name("type"))}
+            result = {
+                "<type>": text(node.child_by_field_name("type")),
+                "<ref>": f"new:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}",
+            }
             owner = self.lookup_type(result["<type>"], method)
             for assignment in children(value_node, "assignment_expression"):
                 left = assignment.child_by_field_name("left")
@@ -687,7 +722,7 @@ class SourceIndex:
                     )
                     if custom:
                         result[f"<invalidated:{member_name}>"] = True
-            return result
+            return state.materialize(result, bindings)
         if kind == "member_access_expression":
             name = text(node.child_by_field_name("name"))
             owner = self.infer(node.child_by_field_name("expression"), method)
@@ -709,11 +744,19 @@ class SourceIndex:
             )
             if isinstance(receiver_value, dict) and name in receiver_value:
                 if receiver_value.get(f"<invalidated:{name}>"):
-                    return None
-                return receiver_value[name]
+                    if getter is None or getter.body is None:
+                        return None
+                else:
+                    return receiver_value[name]
             if simple_type(receiver) in self.enums:
                 return name
-            return self.default_value(owner, name, bindings, seen)
+            context = {
+                **bindings,
+                state.THIS: state.reference(
+                    self, node.child_by_field_name("expression"), method, bindings
+                ),
+            }
+            return self.default_value(owner, name, context, seen)
         if kind == "cast_expression":
             value = self.value(children(node)[-1], method, bindings, seen)
             target = text(node.child_by_field_name("type"))
@@ -823,7 +866,12 @@ class SourceIndex:
             target = self.resolve(node, method)
             if target and self.polymorphic(node, method, target):
                 return None
-            return self.returned_value(target, values, bindings, seen)
+            context = (
+                {**bindings, state.THIS: state.receiver_for(self, target, node, method, bindings)}
+                if target
+                else bindings
+            )
+            return self.returned_value(target, values, context, seen)
         return None
 
     def returned_value(self, target, values, bindings, seen):
@@ -836,6 +884,9 @@ class SourceIndex:
             parameter[0]: value for parameter, value in zip(target.parameters, values, strict=False)
         }
         arguments.update({key: value for key, value in bindings.items() if "." in key})
+        arguments.update(state.context(bindings))
+        arguments[state.THIS] = bindings.get(state.THIS)
+        arguments[state.FRAME] = bindings.get(state.FRAME)
         if target.body.type == "arrow_expression_clause":
             return self.value(children(target.body)[-1], target, arguments, seen | {identity})
         statements = children(target.body)

@@ -2,13 +2,23 @@
 
 import math
 
+from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
 from app.modules.action_timing.source_tasks import CLOCK
 
 
 def accessor_cost(
-    estimator, target, node, method, bindings, stack, conditions, background, value=None
+    estimator,
+    target,
+    node,
+    method,
+    bindings,
+    stack,
+    conditions,
+    background,
+    value=None,
+    receiver_id=state.MISSING,
 ):
     if target is None:
         return ZERO
@@ -29,6 +39,7 @@ def accessor_cost(
         conditions,
         background,
         argument_values={"value": value} if target.callable_kind == "property_set" else {},
+        receiver_id=receiver_id,
     )
 
 
@@ -81,7 +92,17 @@ def literal_getter(target):
     return bool(parts and parts[-1].type in {"integer_literal", "real_literal", "boolean_literal"})
 
 
-def assign_property(estimator, node, method, bindings, stack, conditions, background, owner=None):
+def assign_property(
+    estimator,
+    node,
+    method,
+    bindings,
+    stack,
+    conditions,
+    background,
+    owner=None,
+    receiver_id=state.MISSING,
+):
     left = node.child_by_field_name("left")
     right = node.child_by_field_name("right")
     operator = text(node.child_by_field_name("operator"))
@@ -91,23 +112,33 @@ def assign_property(estimator, node, method, bindings, stack, conditions, backgr
         before = estimator.expression(
             left.child_by_field_name("expression"), method, bindings, stack, conditions, background
         )
-    value = estimator.index.value(right, method, bindings)
     if operator != "=":
         current = estimator.index.value(left, method, bindings)
         getter = estimator.index.accessor(left, method, "get", owner)
         before = before.plus(
             accessor_cost(estimator, getter, left, method, bindings, stack, conditions, background)
         )
-        value = assigned_value(current, value, operator)
     bindings[CLOCK] = started.plus(before)
     before = before.plus(
         estimator.expression(right, method, bindings, stack, conditions, background)
     )
+    value = estimator.index.value(right, method, bindings)
+    if operator != "=":
+        value = assigned_value(current, value, operator)
     setter = estimator.index.accessor(left, method, "set", owner)
     bindings[CLOCK] = started.plus(before)
     before = before.plus(
         accessor_cost(
-            estimator, setter, left, method, bindings, stack, conditions, background, value
+            estimator,
+            setter,
+            left,
+            method,
+            bindings,
+            stack,
+            conditions,
+            background,
+            value,
+            receiver_id=receiver_id,
         )
     )
     if setter is None and left.type == "member_access_expression":
@@ -123,18 +154,17 @@ def assign_property(estimator, node, method, bindings, stack, conditions, backgr
                 "call", "外部硬件属性写入的行为未解析", left, method, conditions, background
             )
             before = before.plus(UNKNOWN)
-    if owner is None:
-        getter = estimator.index.accessor(left, method, "get")
-        custom = (setter and setter.body is not None) or (getter and getter.body is not None)
-        if custom and literal_getter(getter):
-            bindings.pop(text(left), None)
-        else:
-            bindings[text(left)] = None if custom else value
-        if left.type == "member_access_expression":
-            receiver = left.child_by_field_name("expression")
-            state = estimator.index.value(receiver, method, bindings)
-            if receiver.type == "identifier" and isinstance(state, dict):
-                bindings[text(receiver)] = {**state, text(left.child_by_field_name("name")): value}
+    getter = estimator.index.accessor(left, method, "get", owner)
+    custom = (setter and setter.body is not None) or (getter and getter.body is not None)
+    if not custom:
+        target_bindings = (
+            bindings if receiver_id is state.MISSING else {**bindings, state.THIS: receiver_id}
+        )
+        state.write(estimator.index, left, method, target_bindings, value, owner)
+        if target_bindings is not bindings:
+            state.transfer(bindings, target_bindings)
+    elif setter and estimator.index.polymorphic(left, method, setter):
+        state.write(estimator.index, left, method, bindings, None, owner)
     bindings[CLOCK] = started
     return before
 
@@ -155,13 +185,7 @@ def increment_property(estimator, node, method, bindings, stack, conditions, bac
             estimator, setter, operand, method, bindings, stack, conditions, background, value
         )
     )
-    getter = estimator.index.accessor(operand, method, "get")
-    if setter and setter.body is not None:
-        if literal_getter(getter):
-            bindings.pop(text(operand), None)
-        else:
-            bindings[text(operand)] = None
-    else:
-        bindings[text(operand)] = value
+    if setter is None or setter.body is None:
+        state.write(estimator.index, operand, method, bindings, value)
     bindings[CLOCK] = started
     return cost

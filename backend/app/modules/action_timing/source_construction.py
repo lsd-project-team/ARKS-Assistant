@@ -1,5 +1,6 @@
 """对象构造的字段初始化、this/base 链与正文；不执行设备程序集。"""
 
+from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
 from app.modules.action_timing.source_properties import assign_property
@@ -180,6 +181,7 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
             estimator.expression(argument, method, bindings, stack, conditions, background)
         )
     owner = estimator.index.lookup_type(text(node.child_by_field_name("type")), method)
+    receiver_id = state.reference(estimator.index, node, method, bindings)
     target = estimator.index.constructor(owner, arguments, method)
     bindings[CLOCK] = started.plus(cost)
     if target:
@@ -196,17 +198,27 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
         or "LogicHardware" in owner
         or owner in {"Axis", "CamAxis", "AKRSCamera", "Sensor", "Electric"}
     ):
+        constructor_bindings = {**bindings, state.THIS: receiver_id}
         cost = cost.plus(
             implicit_constructor(
-                estimator, owner, method, node, bindings, stack, conditions, background
+                estimator, owner, method, node, constructor_bindings, stack, conditions, background
             )
         )
+        state.transfer(bindings, constructor_bindings)
     for initializer in children(node, "initializer_expression"):
         for part in children(initializer):
             bindings[CLOCK] = started.plus(cost)
             cost = cost.plus(
                 assign_property(
-                    estimator, part, method, bindings, stack, conditions, background, owner=owner
+                    estimator,
+                    part,
+                    method,
+                    bindings,
+                    stack,
+                    conditions,
+                    background,
+                    owner=owner,
+                    receiver_id=receiver_id,
                 )
                 if part.type == "assignment_expression"
                 else estimator.expression(part, method, bindings, stack, conditions, background)

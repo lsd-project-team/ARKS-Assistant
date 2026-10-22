@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass
 
+from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
 from app.modules.action_timing.source_index import children, text, walk
 
@@ -115,18 +116,20 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
                 None,
             )
             if delegate:
+                task_bindings = dict(bindings)
                 body = delegate.child_by_field_name("body")
                 if body and body.type != "block":
                     duration = estimator.expression(
-                        body, method, dict(bindings), stack, conditions, background or not waiting
+                        body, method, task_bindings, stack, conditions, background or not waiting
                     )
                 else:
                     flow = estimator.block(
-                        body, method, dict(bindings), stack, conditions, background or not waiting
+                        body, method, task_bindings, stack, conditions, background or not waiting
                     )
                     duration = flow.cost()
                     if flow.live is None and flow.returned is None:
                         duration = UNKNOWN
+                state.transfer(bindings, task_bindings, uncertain=not waiting, locals=True)
                 break
         if any(
             row["kind"] in {"motion", "wait", "call", "unresolved"} and not row.get("resolved")
