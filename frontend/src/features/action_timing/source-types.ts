@@ -37,6 +37,8 @@ export type SourceAction = {
   motion_count: number;
   wait_count: number;
   timeout_count: number;
+  execution_status?: 'complete' | 'partial' | 'skipped' | 'unavailable';
+  status_reason?: string;
   stage_count?: number;
   parameter_count?: number;
   stages?: SourceStage[];

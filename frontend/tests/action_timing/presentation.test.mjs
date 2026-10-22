@@ -53,6 +53,17 @@ test('缺少耗时与无固定停留均不伪装成零毫秒，未定上界保�
   assert.equal(actionPresentation({ ...action, known_delay_max_ms: null }).duration, '至少 20 ms');
 });
 
+test('源码不可执行或空跑跳过的动作明确标注，不要求用户补参数', () => {
+  const unavailable = actionPresentation({ ...action, execution_status: 'unavailable' });
+  assert.equal(unavailable.duration, '空跑不可执行');
+  assert.equal(unavailable.remainder, '');
+  assert.equal(unavailable.hasDuration, false);
+  assert.equal(
+    actionPresentation({ ...action, execution_status: 'skipped' }).duration,
+    '空跑不动作',
+  );
+});
+
 test('主要动作不混入控制器子动作，名称搜索与工位筛选一起生效', () => {
   const other = { ...action, id: 'dispense', name: 'S1 点胶', group: 'S1 点胶' };
   const controller = { ...action, id: 'controller', kind: 'controller' };

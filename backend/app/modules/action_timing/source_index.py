@@ -11,9 +11,11 @@ from tree_sitter import Language, Parser
 
 
 def walk(node):
-    yield node
-    for child in node.children:
-        yield from walk(child)
+    pending = [node] if node is not None else []
+    while pending:
+        current = pending.pop()
+        yield current
+        pending.extend(reversed(current.children))
 
 
 def children(node, kind=None):
@@ -47,7 +49,8 @@ def simple_type(value):
 
 def description(raw, node):
     prefix = raw[: node.start_byte].decode("utf-8")[-1500:]
-    summaries = re.findall(r"<summary>(.*?)</summary>", prefix, re.S)
+    comment = re.search(r"((?:[ \t]*///[^\n]*\n)+)[ \t]*$", prefix)
+    summaries = re.findall(r"<summary>(.*?)</summary>", comment[1], re.S) if comment else []
     return re.sub(r"\s*///\s*|<[^>]+>", "", summaries[-1]).strip() if summaries else ""
 
 
@@ -57,6 +60,8 @@ class Unit:
     raw: bytes
     version: str
     tree: object
+    project: str = ""
+    role: str = "business"
 
     def evidence(self, node):
         return {
@@ -75,10 +80,14 @@ class Method:
     unit: Unit
     parameters: list
     types: dict
+    initializers: dict = field(default_factory=dict)
 
     @property
     def key(self):
-        return f"{self.owner}.{self.name}@{self.unit.path}:{self.node.start_point[0] + 1}"
+        return (
+            f"{self.owner}.{self.name}@{self.unit.path}:"
+            f"{self.node.start_point[0] + 1}:{self.node.start_byte}"
+        )
 
     @property
     def body(self):
@@ -93,6 +102,10 @@ class ClassInfo:
     types: dict = field(default_factory=dict)
     defaults: dict = field(default_factory=dict)
     declarations: list = field(default_factory=list)
+    namespace: str = ""
+    project: str = ""
+    short_name: str = ""
+    constructor_writes: set = field(default_factory=set)
 
 
 class SourceIndex:
@@ -101,75 +114,177 @@ class SourceIndex:
         self.units = []
         self.notes = []
         self.by_method = defaultdict(list)
+        self.type_names = defaultdict(list)
+        self.enums = set()
+        self._inference_cache = {}
+        self._inferring = set()
         for source in documents:
             raw = source["content"].encode("utf-8")
             # 文本、语法树与节点共同保存，避免跨文件持有失效的原生节点。
             parser = Parser(Language(tree_sitter_c_sharp.language()))
-            unit = Unit(source["path"], raw, source["version"], parser.parse(raw))
+            unit = Unit(
+                source["path"],
+                raw,
+                source["version"],
+                parser.parse(raw),
+                source.get("project", ""),
+                source.get("role", "business"),
+            )
             self.units.append(unit)
             if unit.tree.root_node.has_error:
                 self.notes.append(f"{unit.path}：包含语法错误，相关结果保留未解析标记")
-            self._index(unit)
+        declarations = defaultdict(list)
+        names = defaultdict(set)
+        for unit in self.units:
+            for node in walk(unit.tree.root_node):
+                if node.type == "enum_declaration":
+                    self.enums.add(text(node.child_by_field_name("name")))
+                if node.type not in {
+                    "class_declaration",
+                    "struct_declaration",
+                    "interface_declaration",
+                }:
+                    continue
+                name = text(node.child_by_field_name("name"))
+                namespace = self.namespace(node, unit)
+                identity = (unit.project, namespace, name)
+                declarations[identity].append((unit, node))
+                names[name].add(identity)
+        # partial 只在同一工程和命名空间内合并，包与业务代码的同名类不能互相覆盖。
+        for (project, namespace, name), nodes in declarations.items():
+            key = name if len(names[name]) == 1 else f"{project}::{namespace}.{name}"
+            info = ClassInfo(key, namespace=namespace, project=project, short_name=name)
+            self.classes[key] = info
+            self.type_names[name].append(key)
+            for unit, node in nodes:
+                self._index(unit, node, info)
         fingerprint = "\n".join(f"{u.path}:{u.version}" for u in self.units)
         self.revision = hashlib.sha256(fingerprint.encode()).hexdigest()
 
-    def _index(self, unit):
-        for node in walk(unit.tree.root_node):
-            if node.type != "class_declaration":
-                continue
-            name = text(node.child_by_field_name("name"))
-            info = self.classes.setdefault(name, ClassInfo(name))
-            info.declarations.append((unit, node))
-            base = next(iter(children(node, "base_list")), None)
-            if base:
-                info.bases.extend(simple_type(text(item)) for item in children(base))
-            body = node.child_by_field_name("body")
-            for member in children(body) if body else []:
-                if member.type == "property_declaration":
-                    member_name = text(member.child_by_field_name("name"))
-                    info.types[member_name] = simple_type(text(member.child_by_field_name("type")))
-                    value = member.child_by_field_name("value")
+    @staticmethod
+    def namespace(node, unit):
+        names = []
+        current = node.parent
+        while current:
+            if current.type in {
+                "namespace_declaration",
+                "file_scoped_namespace_declaration",
+                "class_declaration",
+            }:
+                names.append(text(current.child_by_field_name("name")))
+            current = current.parent
+        if not names:
+            names = [
+                text(part.child_by_field_name("name"))
+                for part in children(unit.tree.root_node, "file_scoped_namespace_declaration")
+            ]
+        return ".".join(reversed(names))
+
+    def _index(self, unit, node, info):
+        name = info.name
+        info.declarations.append((unit, node))
+        base = next(iter(children(node, "base_list")), None)
+        if base:
+            info.bases.extend(text(item) for item in children(base))
+        body = node.child_by_field_name("body")
+        for member in children(body) if body else []:
+            if member.type == "property_declaration":
+                member_name = text(member.child_by_field_name("name"))
+                info.types[member_name] = text(member.child_by_field_name("type"))
+                value = member.child_by_field_name("value")
+                if value is not None:
+                    info.defaults[member_name] = (unit, value)
+            elif member.type == "field_declaration":
+                declaration = next(iter(children(member, "variable_declaration")), None)
+                if not declaration:
+                    continue
+                kind = text(declaration.child_by_field_name("type"))
+                for variable in children(declaration, "variable_declarator"):
+                    member_name = text(variable.child_by_field_name("name"))
+                    info.types[member_name] = kind
+                    value = initializer(variable)
                     if value is not None:
                         info.defaults[member_name] = (unit, value)
-                elif member.type == "field_declaration":
-                    declaration = next(iter(children(member, "variable_declaration")), None)
-                    if not declaration:
-                        continue
-                    kind = simple_type(text(declaration.child_by_field_name("type")))
-                    for variable in children(declaration, "variable_declarator"):
-                        member_name = text(variable.child_by_field_name("name"))
-                        info.types[member_name] = kind
-                        value = initializer(variable)
-                        if value is not None:
-                            info.defaults[member_name] = (unit, value)
-                elif member.type == "method_declaration":
-                    parameters = []
-                    for parameter in children(
-                        member.child_by_field_name("parameters"), "parameter"
-                    ):
-                        parameters.append(
-                            (
-                                text(parameter.child_by_field_name("name")),
-                                simple_type(text(parameter.child_by_field_name("type"))),
-                                initializer(parameter),
-                            )
+            elif member.type == "method_declaration":
+                parameters = []
+                for parameter in children(member.child_by_field_name("parameters"), "parameter"):
+                    parameters.append(
+                        (
+                            text(parameter.child_by_field_name("name")),
+                            text(parameter.child_by_field_name("type")),
+                            initializer(parameter),
                         )
-                    types = {name: kind for name, kind, _ in parameters}
-                    for declaration in walk(member):
-                        if declaration.type == "variable_declaration":
-                            kind = simple_type(text(declaration.child_by_field_name("type")))
-                            for variable in children(declaration, "variable_declarator"):
-                                types[text(variable.child_by_field_name("name"))] = kind
-                    method = Method(
-                        name,
-                        text(member.child_by_field_name("name")),
-                        member,
-                        unit,
-                        parameters,
-                        types,
                     )
-                    info.methods.append(method)
-                    self.by_method[(name, method.name)].append(method)
+                types = {name: kind for name, kind, _ in parameters}
+                initializers = {}
+                for declaration in walk(member):
+                    if declaration.type == "variable_declaration":
+                        kind = text(declaration.child_by_field_name("type"))
+                        for variable in children(declaration, "variable_declarator"):
+                            types[text(variable.child_by_field_name("name"))] = kind
+                            initializers[text(variable.child_by_field_name("name"))] = initializer(
+                                variable
+                            )
+                method = Method(
+                    name,
+                    text(member.child_by_field_name("name")),
+                    member,
+                    unit,
+                    parameters,
+                    types,
+                    initializers,
+                )
+                info.methods.append(method)
+                self.by_method[(name, method.name)].append(method)
+            elif member.type == "constructor_declaration":
+                for assignment in walk(member.child_by_field_name("body")):
+                    if assignment.type != "assignment_expression":
+                        continue
+                    left = assignment.child_by_field_name("left")
+                    if left.type == "identifier":
+                        info.constructor_writes.add(text(left))
+                    elif left.type == "member_access_expression" and text(
+                        left.child_by_field_name("expression")
+                    ) in {"this", info.short_name}:
+                        info.constructor_writes.add(text(left.child_by_field_name("name")))
+
+    def lookup_type(self, source, context):
+        source = source.replace("global::", "").split("<", 1)[0].rstrip("?[]")
+        if source in self.classes:
+            return source
+        info = self.classes.get(context.owner if isinstance(context, Method) else context)
+        candidates = self.type_names.get(simple_type(source), [])
+        if "." in source:
+            candidates = [
+                key
+                for key in candidates
+                if f"{self.classes[key].namespace}.{self.classes[key].short_name}" == source
+            ]
+        if len(candidates) <= 1:
+            return candidates[0] if candidates else source
+        if info:
+            local = [
+                key
+                for key in candidates
+                if self.classes[key].project == info.project
+                and self.classes[key].namespace == info.namespace
+            ]
+            if len(local) == 1:
+                return local[0]
+            unit = context.unit if isinstance(context, Method) else info.declarations[0][0]
+            usings = {
+                text(part).removeprefix("using ").rstrip(";").strip()
+                for part in walk(unit.tree.root_node)
+                if part.type == "using_directive"
+            }
+            imported = [key for key in candidates if self.classes[key].namespace in usings]
+            if len(imported) == 1:
+                return imported[0]
+        return ""
+
+    def base_types(self, owner):
+        info = self.classes.get(owner)
+        return [self.lookup_type(base, owner) for base in info.bases] if info else []
 
     def member_type(self, owner, name, seen=None):
         seen = set() if seen is None else seen
@@ -177,34 +292,110 @@ class SourceIndex:
             return ""
         seen.add(owner)
         info = self.classes[owner]
-        return info.types.get(name) or next(
-            (found for base in info.bases if (found := self.member_type(base, name, seen))), ""
+        return (
+            self.lookup_type(info.types[name], owner)
+            if name in info.types
+            else next(
+                (
+                    found
+                    for base in self.base_types(owner)
+                    if (found := self.member_type(base, name, seen))
+                ),
+                "",
+            )
         )
+
+    def member_default(self, owner, name, seen=None):
+        seen = set() if seen is None else seen
+        if owner in seen or owner not in self.classes:
+            return None
+        seen.add(owner)
+        info = self.classes[owner]
+        if name in info.constructor_writes:
+            return None
+        if name in info.defaults:
+            return owner, info.defaults[name]
+        return next(
+            (
+                found
+                for base in self.base_types(owner)
+                if (found := self.member_default(base, name, seen))
+            ),
+            None,
+        )
+
+    def default_value(self, owner, name, bindings, seen):
+        found = self.member_default(owner, name)
+        if found is None:
+            return None
+        owner, (unit, value_node) = found
+        identity = (owner, name)
+        if identity in seen:
+            return None
+        declaration = Method(owner, "<initializer>", value_node, unit, [], {})
+        context = {key: value for key, value in bindings.items() if "." in key}
+        value = self.value(value_node, declaration, context, seen | {identity})
+        if (
+            self.classes[owner].types.get(name) in {"double", "float", "decimal"}
+            and isinstance(value, (int, float))
+            and not isinstance(value, bool)
+        ):
+            return float(value)
+        return value
 
     def infer(self, node, method):
         if node is None:
             return ""
+        identity = (method.key, node.type, node.start_byte, node.end_byte)
+        if identity in self._inference_cache:
+            return self._inference_cache[identity]
+        if identity in self._inferring:
+            return ""
+        self._inferring.add(identity)
+        try:
+            value = self._infer(node, method)
+            self._inference_cache[identity] = value
+            return value
+        finally:
+            self._inferring.remove(identity)
+
+    def _infer(self, node, method):
         source = text(node)
         if node.type == "this_expression" or source == "this":
             return method.owner
         if node.type == "identifier":
+            if method.types.get(source) == "var":
+                return self.infer(method.initializers.get(source), method)
             return (
-                method.types.get(source)
+                (self.lookup_type(method.types[source], method) if source in method.types else "")
                 or self.member_type(method.owner, source)
-                or (source if source in self.classes else "")
+                or self.lookup_type(source, method)
             )
         if node.type == "object_creation_expression":
-            return simple_type(text(node.child_by_field_name("type")))
+            return self.lookup_type(text(node.child_by_field_name("type")), method)
         if node.type == "member_access_expression":
             owner = self.infer(node.child_by_field_name("expression"), method)
-            return self.member_type(owner, text(node.child_by_field_name("name")))
+            return self.member_type(
+                owner, text(node.child_by_field_name("name"))
+            ) or self.lookup_type(source, method)
         if node.type == "invocation_expression":
             function = node.child_by_field_name("function")
             if text(function).endswith(".GetInstance"):
-                return simple_type(text(function.child_by_field_name("expression")))
+                return self.lookup_type(text(function.child_by_field_name("expression")), method)
             found = self.resolve(node, method)
-            return simple_type(text(found.node.child_by_field_name("returns"))) if found else ""
-        return ""
+            return (
+                self.lookup_type(text(found.node.child_by_field_name("returns")), found)
+                if found
+                else ""
+            )
+        if node.type == "argument":
+            return self.infer(children(node)[-1], method)
+        return {
+            "integer_literal": "int",
+            "real_literal": "double",
+            "boolean_literal": "bool",
+            "string_literal": "string",
+        }.get(node.type, "")
 
     def resolve(self, node, caller):
         function = node.child_by_field_name("function")
@@ -216,13 +407,34 @@ class SourceIndex:
             owner = self.infer(function.child_by_field_name("expression"), caller)
             name = text(function.child_by_field_name("name"))
         args = children(node.child_by_field_name("arguments"), "argument")
+        owners = [owner]
+        visited = set()
+        methods = []
+        while owners:
+            current = owners.pop(0)
+            if current in visited:
+                continue
+            visited.add(current)
+            methods.extend(self.by_method.get((current, name), []))
+            owners.extend(self.base_types(current))
         candidates = [
             method
-            for method in self.by_method.get((owner, name), [])
+            for method in methods
             if sum(default is None for _, _, default in method.parameters)
             <= len(args)
             <= len(method.parameters)
         ]
+        if len(candidates) > 1:
+            types = [self.infer(arg, caller) for arg in args]
+            exact = [
+                candidate
+                for candidate in candidates
+                if all(
+                    kind and kind == self.lookup_type(parameter[1], candidate)
+                    for kind, parameter in zip(types, candidate.parameters, strict=False)
+                )
+            ]
+            candidates = exact if len(exact) == 1 else candidates
         return candidates[0] if len(candidates) == 1 else None
 
     def value(self, node, method, bindings, seen=None):
@@ -243,26 +455,23 @@ class SourceIndex:
         if kind == "boolean_literal":
             return source == "true"
         if kind == "identifier":
-            return bindings.get(source)
+            return self.default_value(method.owner, source, bindings, seen)
         if kind == "member_access_expression":
             name = text(node.child_by_field_name("name"))
-            if name == "MachineWorkMode":
+            owner = self.infer(node.child_by_field_name("expression"), method)
+            if name == "MachineWorkMode" and simple_type(owner) == "MachineStateModel":
                 return "DryCycle"
-            if name == "IsDryCycle":
+            if name == "IsDryCycle" and simple_type(owner) == "MachineStateModel":
                 return True
             receiver = text(node.child_by_field_name("expression"))
             if receiver.endswith("MachineWorkModeEnum"):
                 return name
-            owner = self.infer(node.child_by_field_name("expression"), method)
-            identity = (owner, name)
-            info = self.classes.get(owner)
-            if info and name in info.defaults and identity not in seen:
-                value = self.value(info.defaults[name][1], method, bindings, seen | {identity})
-                if info.types.get(name) in {"double", "float", "decimal"} and isinstance(
-                    value, (int, float)
-                ):
-                    return float(value)
-                return value
+            identity = f"{simple_type(owner)}.{name}"
+            if identity in bindings:
+                return bindings[identity]
+            if simple_type(receiver) in self.enums:
+                return name
+            return self.default_value(owner, name, bindings, seen)
         if kind == "cast_expression":
             value = self.value(children(node)[-1], method, bindings, seen)
             target = text(node.child_by_field_name("type"))
@@ -272,7 +481,12 @@ class SourceIndex:
                 if target in {"double", "float", "decimal"}:
                     return float(value)
             return None
-        if kind in {"parenthesized_expression", "argument", "constant_pattern"}:
+        if kind in {
+            "parenthesized_expression",
+            "argument",
+            "constant_pattern",
+            "arrow_expression_clause",
+        }:
             parts = children(node)
             return self.value(parts[-1], method, bindings, seen) if parts else None
         if kind == "prefix_unary_expression":
@@ -357,4 +571,36 @@ class SourceIndex:
                 }
                 if function in allowed:
                     return allowed[function](values)
+            target = self.resolve(node, method)
+            identity = (target.key, "<return>") if target else None
+            statements = children(target.body) if target and target.body else []
+            if (
+                len(statements) > 1
+                and all(part.type == "expression_statement" for part in statements[:-1])
+                and statements[-1].type == "return_statement"
+            ):
+                returned = children(statements[-1])
+                if returned and returned[-1].type in {
+                    "integer_literal",
+                    "real_literal",
+                    "boolean_literal",
+                }:
+                    statements = statements[-1:]
+            if (
+                target
+                and identity not in seen
+                and len(statements) == 1
+                and statements[0].type == "return_statement"
+            ):
+                arguments = {
+                    parameter[0]: value
+                    for parameter, value in zip(target.parameters, values, strict=False)
+                }
+                arguments.update({key: value for key, value in bindings.items() if "." in key})
+                returned = children(statements[0])
+                return (
+                    self.value(returned[-1], target, arguments, seen | {identity})
+                    if returned
+                    else None
+                )
         return None

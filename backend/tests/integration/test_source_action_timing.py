@@ -111,3 +111,27 @@ def test_actual_zx_source_delays_and_entry_coverage_are_read_only():
         hashlib.sha256((root / path).read_bytes()).hexdigest() == version
         for path, version in before.items()
     )
+
+
+def test_whole_trunk_follows_package_signal_source_without_exposing_packages_as_actions():
+    service = SourceTiming(Workspace(ROOT / "trunk"))
+    report = service.report()
+    assert {"AKRS.ZX2200", "AKRS.Galaxy2.Machine", "AKRS.Galaxy2.Dispense"} <= {
+        item["assembly"] for item in report["source_projects"]
+    }
+    paths = {item["path"] for item in service.loaded_scope.documents}
+    assert "AKRS.Galaxy2.Machine/Models/Signal.cs" in paths
+    assert any("/CalibSystem/" in path for path in paths)
+    pick = next(row for row in report["rows"] if row["class_name"] == "PickActionNode")
+    assert pick["known_delay_min_ms"] >= 5 and pick["total_ms"] is None
+    assert any(
+        stage["path"] == "AKRS.Galaxy2.Machine/Models/Signal.cs"
+        and stage["kind"] == "delay"
+        and stage["milliseconds"] == 5
+        for stage in pick["stages"]
+    )
+    flux = next(row for row in report["rows"] if row["class_name"] == "DipFluxActionNode")
+    assert flux["method"] == "DipFluxActionDryRun"
+    assert flux["execution_status"] == "unavailable" and flux["total_ms"] is None
+    assert "蘸胶空跑动作待验证" in flux["status_reason"]
+    assert all(row["entry"]["path"].startswith("AKRS.ZX2200/") for row in report["rows"])

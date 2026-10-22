@@ -92,6 +92,7 @@ export function SourceTimingDetail({
             </div>
             <details className="source-detail-evidence">
               <summary>查看计算依据</summary>
+              {data.status_reason && <p>{data.status_reason}</p>}
               <p>{data.formula}</p>
               <p className="timing-caption">
                 数值来自源码显式初值。此处没有运行设备，运动和信号等待不以超时值代替。

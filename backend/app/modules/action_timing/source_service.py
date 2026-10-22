@@ -4,10 +4,12 @@ import csv
 import hashlib
 import io
 import threading
+from collections import Counter
 
 from app.modules.action_timing.catalog import CATALOG
 from app.modules.action_timing.source_estimator import Estimator
 from app.modules.action_timing.source_index import SourceIndex, description, text
+from app.modules.action_timing.source_scope import load_scope
 
 FIRST = {item["class_name"]: item for item in CATALOG}
 ENTITY_NAMES = {
@@ -23,6 +25,8 @@ DRY_METHODS = {
     "BondActionNode": "BondActionDryRun",
     "UpLookCorrectionActionNode": "UplookActionDryRun",
     "SubstrateCameraCorrectionActionNode": "SubstrateCameraCorrectionActionDryRun",
+    "DipFluxActionNode": "DipFluxActionDryRun",
+    "AfterBondCheckActionNode": "PostBondActionDryRun",
 }
 PURE_PREFIXES = (
     "Get",
@@ -75,6 +79,8 @@ def node_name(info, unit, declaration):
 def discover(index):
     entries = []
     for info in index.classes.values():
+        if not any(unit.role == "business" for unit, _ in info.declarations):
+            continue
         if "ActionNode" in info.bases:
             methods = [method for method in info.methods if method.name == "DoWork"]
             dry = [method for method in info.methods if method.name == DRY_METHODS.get(info.name)]
@@ -125,62 +131,16 @@ class SourceTiming:
         self.lock = threading.RLock()
         self.cached = None
         self.signature = None
+        self.loaded_scope = None
 
     def _documents(self):
-        documents, total = [], 0
-        files = sorted(self.workspace.files())
-        projects = [
-            self.workspace.relative(path) for path in files if path.name == "AKRS.ZX2200.csproj"
-        ]
-        preferred = [
-            "AKRS.ZX2200.csproj",
-            "AKRS.ZX2200/AKRS.ZX2200.csproj",
-            "trunk/AKRS.ZX2200/AKRS.ZX2200.csproj",
-        ]
-        project = next((path for path in preferred if path in projects), None)
-        if project is None and projects:
-            primary = [
-                path
-                for path in projects
-                if not path.startswith("@sources/") and "output" not in path.split("/")
-            ]
-            candidates = primary or projects
-            if len(candidates) != 1:
-                raise ValueError("关联了多份ZX2200源码，请在单一源码版本所属项目查看，避免混算")
-            project = candidates[0]
-        prefix = project.rsplit("/", 1)[0] + "/" if project and "/" in project else ""
-        for path in files:
-            relative = self.workspace.relative(path)
-            if project is not None and not relative.startswith(prefix):
-                continue
-            if (
-                project is not None
-                and not project.startswith("@sources/")
-                and relative.startswith("@sources/")
-            ):
-                continue
-            parts = relative.split("/")
-            if path.suffix.lower() != ".cs" or any(
-                part in {"Controls", "Forms", "CalibSystem", "Test", "Tests"} for part in parts
-            ):
-                continue
-            if path.name.lower().endswith((".designer.cs", ".g.cs")) or "Experiment" in parts:
-                continue
-            # 同一解决方案的其他工程不是ZX2200生产动作；不跨项目猜测设备SDK实现。
-            projects = [part for part in parts if part.startswith("AKRS.")]
-            if projects and "AKRS.ZX2200" not in projects:
-                continue
-            document = self.workspace.read(relative)
-            total += len(document["content"].encode("utf-8"))
-            if len(documents) >= 4000 or total > 80_000_000:
-                raise ValueError("源码范围超过分析上限，请选择ZX2200源码目录")
-            documents.append(document)
-        return documents
+        self.loaded_scope = load_scope(self.workspace)
+        return self.loaded_scope.documents
 
     def report(self):
         with self.lock:
             documents = self._documents()
-            signature = tuple((item["path"], item["version"]) for item in documents)
+            signature = self.loaded_scope.revision
             if signature != self.signature:
                 self.cached = self._build(SourceIndex(documents))
                 self.signature = signature
@@ -241,13 +201,20 @@ class SourceTiming:
         return {
             "mode": "DryCycle",
             "basis": "source_defaults",
-            "source_revision": index.revision,
+            "source_revision": hashlib.sha256(
+                f"{index.revision}:{self.loaded_scope.revision}".encode()
+            ).hexdigest(),
             "source_files": len(index.units),
+            "source_projects": self.loaded_scope.projects,
+            "source_dependencies": self.loaded_scope.references,
+            "source_coverage": dict(Counter(item["status"] for item in self.loaded_scope.files)),
             "scope": SCOPE,
             "notes": index.notes,
             "assumptions": [
                 "数值取C#源码显式初值，不读取现场配方；无初值的参数保持未知。",
                 "以进入动作工作分支为前提；调度跳过和失败/人工处理时间不作为成功动作的固定耗时。",
+                "模拟连续工作状态 MachineState=Working；"
+                "空跑直接返回、源码抛异常与可执行动作分别标记。",
                 "统计配置延时与动作调用关系，不把CPU执行开销估成设备动作时间。",
                 "互斥分支分别计算范围；未定循环、信号等待、运动和未解析调用不填零总耗时。",
                 "超时上限不计作必耗时；后台Task单独显示；并发轴不能逐项相加。",

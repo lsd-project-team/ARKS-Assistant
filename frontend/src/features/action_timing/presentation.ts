@@ -16,6 +16,17 @@ const pendingNotes: Record<string, string> = {
 export function actionPresentation(row: SourceAction) {
   const station = row.group.match(/^S[12]\b/)?.[0] || row.group;
   const name = actionNames[row.class_name] || row.name.replace(/^S[12]\s+/, '');
+  if (row.execution_status === 'unavailable' || row.execution_status === 'skipped') {
+    const unavailable = row.execution_status === 'unavailable';
+    return {
+      station,
+      name,
+      duration: unavailable ? '空跑不可执行' : '空跑不动作',
+      remainder: '',
+      note: unavailable ? '源码模拟分支无法正常完成' : '源码空跑分支直接跳过',
+      hasDuration: false,
+    };
+  }
   const low = row.known_delay_min_ms;
   const high = row.known_delay_max_ms;
   const hasDelay = low != null && (low > 0 || (high != null && high > 0));

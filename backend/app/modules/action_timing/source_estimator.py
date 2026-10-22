@@ -83,15 +83,24 @@ class Estimator:
         self.parameters = {}
         self.calls = 0
         self.truncated = False
+        self.context = {"MachineStateModel.MachineState": "Working"}
+        self.root_method = None
+        self.skip_conditions = []
+        self.failure_reasons = []
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
             self.truncated = True
-        flow = self.block(method.body, method, {}, (), (), False)
+        self.root_method = method.key
+        flow = self.block(method.body, method, dict(self.context), (), (), False)
         cost = flow.cost()
         has_success_path = flow.live is not None or flow.returned is not None
         unknown = any(
-            row["kind"] in {"motion", "wait", "call", "unresolved"} and not row["background"]
+            (
+                row["kind"] in {"motion", "wait", "call", "unresolved"}
+                or (row["kind"] == "loop" and row.get("iterations") is None)
+            )
+            and not row["background"]
             for row in self.stages
         )
         if cost.upper is None:
@@ -109,6 +118,20 @@ class Estimator:
         if not has_success_path:
             formula = "未发现正常完成路径，不推算成功动作耗时"
         return {
+            "execution_status": "unavailable"
+            if not has_success_path
+            else "skipped"
+            if self.skip_conditions and not self.stages and cost == ZERO
+            else "complete"
+            if not unknown and cost.upper is not None and not self.truncated
+            else "partial",
+            "status_reason": (
+                self.failure_reasons[0] if self.failure_reasons else "源码中没有正常完成路径"
+            )
+            if not has_success_path
+            else "空跑分支直接返回，不执行动作"
+            if self.skip_conditions and not self.stages and cost == ZERO
+            else "",
             "known_delay_min_ms": cost.lower if has_success_path else None,
             "known_delay_max_ms": cost.upper if has_success_path else None,
             "total_ms": cost.lower
@@ -179,13 +202,51 @@ class Estimator:
         if node is None:
             return ZERO
         if node.type == "invocation_expression":
-            return self.call(node, method, bindings, stack, conditions, background)
+            before = ZERO
+            function = node.child_by_field_name("function")
+            if function is not None and function.type == "member_access_expression":
+                before = self.expression(
+                    function.child_by_field_name("expression"),
+                    method,
+                    bindings,
+                    stack,
+                    conditions,
+                    background,
+                )
+            for argument in children(node.child_by_field_name("arguments"), "argument"):
+                before = before.plus(
+                    self.expression(argument, method, bindings, stack, conditions, background)
+                )
+            return before.plus(self.call(node, method, bindings, stack, conditions, background))
         if node.type == "binary_expression":
             left = node.child_by_field_name("left")
             op = text(node.child_by_field_name("operator"))
             value = self.index.value(left, method, bindings)
-            if (op == "&&" and value is False) or (op == "||" and value is True):
-                return self.expression(left, method, bindings, stack, conditions, background)
+            if op in {"&&", "||"}:
+                before = self.expression(left, method, bindings, stack, conditions, background)
+                if (op == "&&" and value is False) or (op == "||" and value is True):
+                    return before
+                after = self.expression(
+                    node.child_by_field_name("right"),
+                    method,
+                    bindings,
+                    stack,
+                    conditions,
+                    background,
+                )
+                return before.plus(choice(ZERO, after) if value is None else after)
+        if node.type == "conditional_expression":
+            condition = node.child_by_field_name("condition")
+            before = self.expression(condition, method, bindings, stack, conditions, background)
+            value = self.index.value(condition, method, bindings)
+            costs = [
+                self.expression(
+                    node.child_by_field_name(field), method, bindings, stack, conditions, background
+                )
+                for flag, field in [(True, "consequence"), (False, "alternative")]
+                if not isinstance(value, bool) or flag == value
+            ]
+            return before.plus(choice(costs[0], costs[1]) if len(costs) == 2 else costs[0])
         result = ZERO
         for child in children(node):
             # lambda只在明确的Task.Run处处理；不把未执行的委托内容加到当前调用。
@@ -253,13 +314,18 @@ class Estimator:
             ("Math.", "System.Math.", "TimeSpan.", "DateTime.", "Guid.", "Enumerable.")
         ):
             return ZERO
-        if name in {
-            "WaitAxesArrival",
-            "WaitAxisArrival",
-            "WaitAll",
-            "WhenAll",
-            "WhenAny",
-        } or WAIT.search(name):
+        target = self.index.resolve(node, method)
+        if not (target and target.body) and (
+            name
+            in {
+                "WaitAxesArrival",
+                "WaitAxisArrival",
+                "WaitAll",
+                "WhenAll",
+                "WhenAny",
+            }
+            or WAIT.search(name)
+        ):
             self.record(
                 "wait",
                 "到位/信号等待，实际时间由条件决定",
@@ -285,7 +351,6 @@ class Estimator:
                         expression=text(node),
                     )
             return ZERO
-        target = self.index.resolve(node, method)
         if target and target.body:
             if target.key in stack or len(stack) >= 7 or self.calls >= 120:
                 self.truncated = True
@@ -301,8 +366,11 @@ class Estimator:
                 return UNKNOWN
             self.calls += 1
             values = {
-                parameter[0]: self.index.value(arg, method, bindings)
-                for parameter, arg in zip(target.parameters, arguments, strict=False)
+                **self.context,
+                **{
+                    parameter[0]: self.index.value(arg, method, bindings)
+                    for parameter, arg in zip(target.parameters, arguments, strict=False)
+                },
             }
             for name, _, default in target.parameters[len(arguments) :]:
                 values[name] = self.index.value(default, target, {})
@@ -422,12 +490,17 @@ class Estimator:
         if kind == "return_statement":
             value = text(node)
             cost = self.expression(node, method, bindings, stack, conditions, background)
+            if method.key == self.root_method and any(
+                "DryCycle" in condition for condition in conditions
+            ):
+                self.skip_conditions.extend(conditions)
             if re.search(
                 r"ExcuteResult\.(?:Abort|Fail|Alarm|Exception|Retry)|return\s+false\b", value
             ):
                 return Flow(None, None)
             return Flow(None, cost)
         if kind == "throw_statement":
+            self.failure_reasons.append(text(node).removeprefix("throw ").removesuffix(";")[:180])
             return Flow(None, None)
         if kind == "try_statement":
             body = next(iter(children(node, "block")), None)
@@ -453,12 +526,15 @@ class Estimator:
         }:
             body = node.child_by_field_name("body")
             condition = node.child_by_field_name("condition")
+            condition_cost = self.expression(
+                condition, method, bindings, stack, conditions, background
+            )
             value = self.index.value(condition, method, bindings)
             iterations = (
                 self.iterations(node, method, bindings) if kind == "for_statement" else None
             )
             if (kind == "while_statement" and value is False) or iterations == 0:
-                return Flow()
+                return Flow(condition_cost)
             label = f"循环：{text(node.child_by_field_name('condition')) or '次数依赖运行数据'}"
             start = len(self.stages)
             each = self.block(
@@ -479,18 +555,25 @@ class Estimator:
                 per_iteration_min_ms=each.lower,
                 per_iteration_max_ms=each.upper,
             )
-            self.expression(condition, method, bindings, stack, conditions, background)
             self._timeouts(node, method, conditions, background)
             if iterations is not None:
                 return Flow(
                     Cost(
-                        each.lower * iterations,
-                        each.upper * iterations if each.upper is not None else None,
+                        each.lower * iterations + condition_cost.lower * (iterations + 1),
+                        each.upper * iterations + condition_cost.upper * (iterations + 1)
+                        if each.upper is not None and condition_cost.upper is not None
+                        else None,
                     )
                 )
             if kind == "do_statement" and value is False:
-                return Flow(each)
-            return Flow(live=UNKNOWN if each.upper != 0 else ZERO)
+                return Flow(each.plus(condition_cost))
+            return Flow(
+                live=Cost(
+                    (each.lower if kind == "do_statement" else 0) + condition_cost.lower, None
+                )
+                if each.upper != 0 or condition_cost.upper != 0
+                else ZERO
+            )
         if kind == "switch_statement":
             body = node.child_by_field_name("body")
             value_node = node.child_by_field_name("value")
@@ -513,12 +596,14 @@ class Estimator:
                 ]
                 sections = matches or defaults
             result = Flow(None, None)
+            continuing_bindings = []
             for section in sections:
                 labels = " ".join(text(part) for part in children(section, "constant_pattern"))
+                branch_bindings = dict(bindings)
                 branch = self.block(
                     section,
                     method,
-                    dict(bindings),
+                    branch_bindings,
                     stack,
                     (*conditions, labels or "switch 分支"),
                     background,
@@ -526,8 +611,15 @@ class Estimator:
                 result = Flow(
                     choice(result.live, branch.live), choice(result.returned, branch.returned)
                 )
+                if branch.live is not None:
+                    continuing_bindings.append(branch_bindings)
             if not sections or (value is None and not defaults):
                 result.live = choice(result.live, ZERO)
+                continuing_bindings.append(dict(bindings))
+            if continuing_bindings:
+                for key in set().union(*(state.keys() for state in continuing_bindings)):
+                    values = [state.get(key) for state in continuing_bindings]
+                    bindings[key] = values[0] if all(item == values[0] for item in values) else None
             return Flow(add(before, result.live), add(before, result.returned))
         if kind == "local_declaration_statement":
             for declaration in children(node, "variable_declaration"):
