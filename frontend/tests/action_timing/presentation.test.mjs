@@ -94,3 +94,29 @@ test('导出只含筛选后的动作，保留部分耗时说明及中文，并�
   assert.ok(!csv.includes('SUM'));
   assert.ok(actionTableCsv([malicious]).includes('"\'=SUM(1,2)""测试"'));
 });
+
+test('任务单轮可进入主要动作，线程启动和界面包装保留在辅助动作', () => {
+  const cycle = { ...action, kind: 'workflow', primary: true, name: '输送交接（单轮）' };
+  const launcher = { ...action, kind: 'workflow', primary: false, name: '启动输送任务' };
+  const options = { auxiliary: false, group: '', search: '' };
+  assert.deepEqual(filterActions([cycle, launcher], options), [cycle]);
+  assert.deepEqual(filterActions([cycle, launcher], { ...options, auxiliary: true }), [launcher]);
+});
+
+test('同一动作类的辅助方法保留各自名称，不套用主要动作的说明', () => {
+  const helper = actionPresentation({
+    ...action,
+    kind: 'workflow',
+    class_name: 'InteractiveAction',
+    name: '等待相机',
+  });
+  assert.equal(helper.name, '等待相机');
+  const delay = actionPresentation({
+    ...action,
+    kind: 'workflow',
+    name: '等待相机',
+    known_delay_min_ms: 7,
+    known_delay_max_ms: 7,
+  });
+  assert.ok(!delay.note.includes('单点停留'));
+});

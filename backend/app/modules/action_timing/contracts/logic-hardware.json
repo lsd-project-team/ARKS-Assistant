@@ -1,0 +1,738 @@
+{
+  "schemaVersion": 1,
+  "scope": "selected LogicHardware / IOControl wrapper contracts; not full trunk action inventory",
+  "artifact": {
+    "path": "AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+    "sha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250",
+    "byte_length": 184320,
+    "format": "pe"
+  },
+  "module": {
+    "name": "AKRS.Galaxy2.LogicHardware.dll",
+    "generation": 0,
+    "mvid": "5741e666-a720-41c3-8c23-8700b3dbedf5",
+    "enc_id": null,
+    "enc_base_id": null,
+    "token": "0x00000001",
+    "row_offset": 73552
+  },
+  "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+  "confidence": "static observation plus explicitly labeled model composition inference; no target execution",
+  "coverage": {
+    "metadata": "REA complete",
+    "members": "REA partial; selected CIL bodies no truncated instructions",
+    "units": "axis physical units and exposure unit remain unresolved"
+  },
+  "integrationRules": [
+    "Match declaring type and exact overload; resolve virtual dispatch.",
+    "Do not treat bool=false on Axis move/wait as asynchronous.",
+    "A fixed program Sleep overlaps device motion already sent; avoid double counting.",
+    "Command-only at wrapper layer does not prove zero hardware duration or zero SDK call latency.",
+    "Keep actual configuration unresolved when not supplied; constructor defaults are a named scenario only.",
+    "Do not use event timeout as normal duration.",
+    "Keep failed, retry, offline/simulation and successful paths distinct; combine independent Drive aspect contract."
+  ],
+  "constructorDefaults": {
+    "axisMovePara": {
+      "AbsoluteMoveSpeed": 10,
+      "JogSpeed": 10,
+      "ACC": 10,
+      "DEC": 10,
+      "Jerk": 0,
+      "HomeSpeedFinal": 0,
+      "HomeIndexSpeed": 10,
+      "MaxJogSpeedLimit": 50,
+      "MaxSpeedLimitWhenBackingZero": "System.Double.MaxValue",
+      "unit": "unresolved",
+      "evidenceToken": "0x060002b6"
+    },
+    "baseCamera": {
+      "ExposureTime": 1000,
+      "ExposureTimeMin": 0,
+      "ExposureTimeMax": 1000000,
+      "ExposureTimeUnit": "unresolved",
+      "WaitTimeMs": 100,
+      "evidenceToken": "0x0600015b"
+    }
+  },
+  "accuracyMode": {
+    "None": -1,
+    "HighAccuracy": 0,
+    "HighSpeed": 1,
+    "source": "drive-camera-static-supplement.json static field constants"
+  },
+  "contracts": [
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.WaitForArrival(System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "WaitForArrival",
+      "parameterTypes": [
+        "System.Boolean",
+        "System.Double",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "isCheckPostion": false,
+        "targetPosition": 0,
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001ca",
+      "bodyToken": "0x06000208",
+      "bodyIlSha256": "e77254777112dad354512e7280732bbae497b8d8d01add86c7c933929f56b25a",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "conditional_wait",
+        "blocksCallerForMode": [
+          0,
+          1
+        ],
+        "modeDispatch": {
+          "0": "Drive.WaitInRealPosition",
+          "1": "Drive.WaitInCommandPosition",
+          "-1": "no arrival wait in this wrapper"
+        },
+        "boolMeaning": "isCheckPostion controls additional post-wait absolute actual-versus-target check; false does not disable arrival wait",
+        "postWaitPositionCheck": {
+          "enabledBy": "isCheckPostion",
+          "threshold": 2,
+          "unit": "unresolved"
+        },
+        "fixedSleepMs": 0,
+        "driverWaitModel": "external Drive contract; do not infer polling or timeout from this wrapper",
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.AbsoluteMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,System.Boolean,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "AbsoluteMove",
+      "parameterTypes": [
+        "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara",
+        "System.Boolean",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "isCheckPostion": false,
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001cd",
+      "bodyToken": "0x06000209",
+      "bodyIlSha256": "b960489eb424d39218028950bc9aa2f5a004f434b7ceaac290fb166fab05ef26",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_sleep_then_wait",
+        "clampVelocity": "Math.Min(movePara.Vel,AxisMovePara.MaxSpeedLimit)",
+        "fixedSleepMs": 20,
+        "fixedSleepOverlapsStartedMotion": true,
+        "composition": "send at t; advance 20 ms; wait only until pending axis completion; ideal max(20 ms,motion remaining at send), not motion + 20",
+        "waitsForArrivalForMode": [
+          0,
+          1
+        ],
+        "boolMeaning": "isCheckPostion controls additional post-wait absolute actual-versus-target check; false does not disable arrival wait",
+        "declaredTypeMatchRequired": true,
+        "virtualDispatchMustBeResolved": true,
+        "physicalDurationKnown": false,
+        "unitsKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.AbsoluteMove(System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "AbsoluteMove",
+      "parameterTypes": [
+        "System.Double",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {},
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001ce",
+      "bodyToken": "0x0600020a",
+      "bodyIlSha256": "3ac69fbc91c25072205e1cebcf4ec75e9c921af3c5f12076bc1c848fdd81ca78",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_sleep_then_wait",
+        "clampVelocity": "Math.Min(movePara.Vel,AxisMovePara.MaxSpeedLimit)",
+        "fixedSleepMs": 20,
+        "fixedSleepOverlapsStartedMotion": true,
+        "composition": "send at t; advance 20 ms; wait only until pending axis completion; ideal max(20 ms,motion remaining at send), not motion + 20",
+        "waitsForArrivalForMode": [
+          0,
+          1
+        ],
+        "boolMeaning": "isCheckPostion controls additional post-wait absolute actual-versus-target check; false does not disable arrival wait",
+        "declaredTypeMatchRequired": true,
+        "virtualDispatchMustBeResolved": true,
+        "physicalDurationKnown": false,
+        "unitsKnown": false,
+        "delegatesTo": "Axis.AbsoluteMove(MovePara,bool,AccuracyMode)",
+        "forwardedIsCheckPostion": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.AbsoluteMove(System.Double,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "AbsoluteMove",
+      "parameterTypes": [
+        "System.Double",
+        "System.Boolean",
+        "System.Double",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "isCheckPostion": false,
+        "vel": -1,
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001cf",
+      "bodyToken": "0x0600020b",
+      "bodyIlSha256": "60ae62f8003cac5dcbe290b3524c9cc89cc1ecf54d11a2da1bd140fb3446cfb6",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_sleep_then_wait",
+        "clampVelocity": "Math.Min(movePara.Vel,AxisMovePara.MaxSpeedLimit)",
+        "fixedSleepMs": 20,
+        "fixedSleepOverlapsStartedMotion": true,
+        "composition": "send at t; advance 20 ms; wait only until pending axis completion; ideal max(20 ms,motion remaining at send), not motion + 20",
+        "waitsForArrivalForMode": [
+          0,
+          1
+        ],
+        "boolMeaning": "isCheckPostion controls additional post-wait absolute actual-versus-target check; false does not disable arrival wait",
+        "declaredTypeMatchRequired": true,
+        "virtualDispatchMustBeResolved": true,
+        "physicalDurationKnown": false,
+        "unitsKnown": false,
+        "velocitySentinel": {
+          "value": -1,
+          "tolerance": 0.0001,
+          "replacement": "AxisMovePara.AbsoluteMoveSpeed"
+        }
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.SendAbsoluteMoveCommand(System.Double,System.Double)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "SendAbsoluteMoveCommand",
+      "parameterTypes": [
+        "System.Double",
+        "System.Double"
+      ],
+      "optionalDefaults": {
+        "vel": -1
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001d0",
+      "bodyToken": "0x0600020c",
+      "bodyIlSha256": "38848b809a36b260b57cc0cb1937bdf9b85ba99da78688f38c5d7544ffeba834",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "command_only_in_this_wrapper",
+        "delegatesTo": "Axis.SendAbsoluteMoveCommand(MovePara)",
+        "arrivalWait": false,
+        "fixedSleepMs": 0,
+        "commandLatencyUnknown": true,
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.SendAbsoluteMoveCommand(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "SendAbsoluteMoveCommand",
+      "parameterTypes": [
+        "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara"
+      ],
+      "optionalDefaults": {},
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001d1",
+      "bodyToken": "0x0600020d",
+      "bodyIlSha256": "2f0e94a5651be9ccecf886fc2332399ece9b5ad62e77e3161f0ecaddb72f4eee",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "command_only_in_this_wrapper",
+        "arrivalWait": false,
+        "fixedSleepMs": 0,
+        "commandLatencyUnknown": true,
+        "physicalDurationKnown": false,
+        "velocityClamped": true,
+        "parameterTransform": "TargetPosition (direction-inverted if configured),Acc,Dec,Jerk,Vel multiplied by PulseEquivalent before Drive call",
+        "unitsKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "RelativeMove",
+      "parameterTypes": [
+        "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001d4",
+      "bodyToken": "0x06000210",
+      "bodyIlSha256": "3c76e905204f12730e67b3cb35d026de347fc2f07ca4535f363bc8472f951f0e",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_wait",
+        "fixedSleepMs": 0,
+        "waitsForArrivalForMode": [
+          0,
+          1
+        ],
+        "physicalDurationKnown": false,
+        "unitsKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.RelativeMove(System.Double,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "method": "RelativeMove",
+      "parameterTypes": [
+        "System.Double",
+        "System.Double",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "vel": -1,
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x060001d5",
+      "bodyToken": "0x06000211",
+      "bodyIlSha256": "d83e647fa3c8dd0fcde43f42c782f72b58f47c3d96e967edc2343b6900c51373",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_wait",
+        "fixedSleepMs": 0,
+        "waitsForArrivalForMode": [
+          0,
+          1
+        ],
+        "physicalDurationKnown": false,
+        "unitsKnown": false,
+        "delegatesTo": "Axis.RelativeMove(MovePara,AccuracyMode)"
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis.AbsoluteMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,System.Boolean,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis",
+      "method": "AbsoluteMove",
+      "parameterTypes": [
+        "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara",
+        "System.Boolean",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "isCheckPostion": false,
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x0600016e",
+      "bodyToken": "0x06000179",
+      "bodyIlSha256": "3ecc538ed2a218ac4c08f2b906312fa13a9be6c8c87bcfa075def1783259cde2",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_wait",
+        "fixedSleepMs": 0,
+        "waitsForArrivalForMode": [
+          0,
+          1
+        ],
+        "physicalDurationKnown": false,
+        "derivedOverrideOf": "Axis.AbsoluteMove(MovePara,bool,AccuracyMode)",
+        "mustNotInheritBaseFixedSleep": true,
+        "boolMeaning": "isCheckPostion controls additional post-wait absolute actual-versus-target check; false does not disable arrival wait"
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis.SendAbsoluteMoveCommand(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis",
+      "method": "SendAbsoluteMoveCommand",
+      "parameterTypes": [
+        "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara"
+      ],
+      "optionalDefaults": {},
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x0600016f",
+      "bodyToken": "0x0600017a",
+      "bodyIlSha256": "ed22e68cda19e9a0211f7a0c5e505a7a6b51beb7aa7c9de22a0e4f7236721475",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "command_only_in_this_wrapper",
+        "fixedSleepMs": 0,
+        "arrivalWait": false,
+        "physicalDurationKnown": false,
+        "parameterTransform": "LengthToCamAngle(TargetPosition,Radius), then base Axis.SendAbsoluteMoveCommand(convertedTarget,-1)",
+        "unitsKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis.RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis",
+      "method": "RelativeMove",
+      "parameterTypes": [
+        "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara",
+        "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+      ],
+      "optionalDefaults": {
+        "accuracyMode": 0
+      },
+      "returnType": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult",
+      "publicToken": "0x06000170",
+      "bodyToken": "0x0600017b",
+      "bodyIlSha256": "cc7cbd0a307cdd546673c637f1d3e29605315bd4e7a5c15938086a63a8746e40",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "send_then_sleep_then_wait",
+        "fixedSleepMs": 20,
+        "fixedSleepOverlapsStartedMotion": true,
+        "delegatesExplicitlyToBase": "Axis.AbsoluteMove(MovePara,bool,AccuracyMode)",
+        "relativeTargetTransform": "TargetPosition += GetRealPosition()",
+        "physicalDurationKnown": false,
+        "unitsKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Electric.SetOutputValue(System.Boolean)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Electric",
+      "method": "SetOutputValue",
+      "parameterTypes": [
+        "System.Boolean"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Void",
+      "publicToken": "0x06000262",
+      "bodyToken": "0x0600026a",
+      "bodyIlSha256": "14e457caf955cfa2184e11c7f2797bc41bf8483942935a01456c15cc4e421764",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "output_command",
+        "fixedSleepMs": 0,
+        "arrivalWait": false,
+        "sensorCheck": false,
+        "commandLatencyUnknown": true,
+        "physicalDurationKnown": false,
+        "doNotTreatAsZeroPhysicalTime": true
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Electric.CheckStateForNums(System.Boolean,System.Int32,System.Int32)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Electric",
+      "method": "CheckStateForNums",
+      "parameterTypes": [
+        "System.Boolean",
+        "System.Int32",
+        "System.Int32"
+      ],
+      "optionalDefaults": {
+        "state": true,
+        "num": 1,
+        "checkInteval": 80
+      },
+      "returnType": "System.Boolean",
+      "publicToken": "0x06000264",
+      "bodyToken": "0x0600026c",
+      "bodyIlSha256": "762e42cdd24616cefa881d6cc669dfbaf1d2ca1771e79a7d1236c4a776281dc5",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "repeated_state_check",
+        "readKind": "DIO_output",
+        "minimumCheckIntervalMs": 30,
+        "firstMismatchReturnsFalse": true,
+        "successAfterMatchingReads": "max(num,1)",
+        "sleepBetweenMatchingReads": true,
+        "explicitSleepFormulaIfAllReadsMatchMs": "max(num-1,0) * max(checkInteval,30)",
+        "defaultNumOneHasNoFixedSleep": true,
+        "readLatencyUnknown": true,
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Sensor.CheckStateForNums(System.Boolean,System.Int32,System.Int32)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Sensor",
+      "method": "CheckStateForNums",
+      "parameterTypes": [
+        "System.Boolean",
+        "System.Int32",
+        "System.Int32"
+      ],
+      "optionalDefaults": {
+        "state": true,
+        "num": 1,
+        "checkInteval": 80
+      },
+      "returnType": "System.Boolean",
+      "publicToken": "0x06000296",
+      "bodyToken": "0x0600029c",
+      "bodyIlSha256": "e74817d9f89a240a439f41f9d9a0447dc6dfc3f5b3dc9d305928c686af5ab7c9",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "repeated_state_check",
+        "readKind": "DIO_input",
+        "minimumCheckIntervalMs": 30,
+        "firstMismatchReturnsFalse": true,
+        "successAfterMatchingReads": "max(num,1)",
+        "sleepBetweenMatchingReads": true,
+        "explicitSleepFormulaIfAllReadsMatchMs": "max(num-1,0) * max(checkInteval,30)",
+        "defaultNumOneHasNoFixedSleep": true,
+        "readLatencyUnknown": true,
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Sensor.WaitSignal(System.Boolean,System.Int32,System.Boolean&)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Sensor",
+      "method": "WaitSignal",
+      "parameterTypes": [
+        "System.Boolean",
+        "System.Int32",
+        "System.Boolean&"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Boolean",
+      "publicToken": "0x06000295",
+      "bodyToken": "0x0600029b",
+      "bodyIlSha256": "b4bc62a63f07e78757d3a22ecd088800c445a35a9fb1f8282cfa7c1c745ddeb4",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "polling_wait",
+        "firstCheckBeforeDelay": true,
+        "firstCheckBeforeCancelAndTimeout": true,
+        "pollIntervalMs": 80,
+        "timeoutParameter": "timeOut",
+        "timeoutUnit": "ms",
+        "timeoutComparison": "Stopwatch.ElapsedMilliseconds > timeOut",
+        "cancelParameter": "isCancelWait",
+        "waitCanCompleteImmediately": true,
+        "timeoutCanOvershootOnePollPlusReadLatency": true,
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.MoveAxesToTargetPosition(System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[])",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Services.MotionService",
+      "method": "MoveAxesToTargetPosition",
+      "parameterTypes": [
+        "System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[]"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Void",
+      "publicToken": "0x060000a4",
+      "bodyToken": "0x060000a4",
+      "bodyIlSha256": "0e801e0fb56a3752697a92f52c4d23a146f7839dfc498149f2f1c9a233ced8c0",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "multi_axis_send_then_sleep_then_wait",
+        "tupleItems": [
+          "axis",
+          "isCheckPostion",
+          "targetPosition",
+          "accuracyMode"
+        ],
+        "dispatchAllBeforeWaiting": true,
+        "fixedSleepMs": 20,
+        "fixedSleepOverlapsStartedMotion": true,
+        "waitForAxes": "sequential wait calls on already-started motions",
+        "composition": "maximum completion timestamp of pending axes; do not sum complete axis durations",
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.WaitAxesArrival(System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[])",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Services.MotionService",
+      "method": "WaitAxesArrival",
+      "parameterTypes": [
+        "System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[]"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Void",
+      "publicToken": "0x060000a5",
+      "bodyToken": "0x060000a5",
+      "bodyIlSha256": "232b7496b1b203297c4e60aeb8a94aa6a30279bb4b8bab3765ab580afe2ff8a0",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "wait_for_pending_axes",
+        "fixedSleepMs": 0,
+        "sendsMotion": false,
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.WaitAxesArrivalAsyn(AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis[])",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Services.MotionService",
+      "method": "WaitAxesArrivalAsyn",
+      "parameterTypes": [
+        "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis[]"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Void",
+      "publicToken": "0x060000a6",
+      "bodyToken": "0x060000a6",
+      "bodyIlSha256": "3eef90a25fb16f50a0aaf647ff839fed48d9e4bdcb4878ea2626c92ff6eb040e",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "tasks_then_wait_all",
+        "blocksCaller": true,
+        "fixedSleepMs": 0,
+        "sendsMotion": false,
+        "accuracyModeForwarded": 0,
+        "isCheckPostionForwarded": false,
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.SyncMove(AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis,AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Double,System.Double,System.Double)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Services.MotionService",
+      "method": "SyncMove",
+      "parameterTypes": [
+        "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis",
+        "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+        "System.Double",
+        "System.Double",
+        "System.Double"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Void",
+      "publicToken": "0x060000a7",
+      "bodyToken": "0x060000a7",
+      "bodyIlSha256": "587bae728805519c3542d21766295396bd01087b6c47765ae3cadbf679813bbe",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "no_op_in_this_version",
+        "observedBody": "nop;ret",
+        "doesNotStartMotion": true
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera.SetExposureTime(System.Double)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera",
+      "method": "SetExposureTime",
+      "parameterTypes": [
+        "System.Double"
+      ],
+      "optionalDefaults": {},
+      "returnType": "System.Boolean",
+      "publicToken": "0x06000107",
+      "bodyToken": "0x0600011c",
+      "bodyIlSha256": "d1bec78ade0dbed81d22aa30a39c93aca1e6557e3697391adb0dd2bed4b60e6e",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "configuration",
+        "fixedSleepMs": 0,
+        "doesNotRepresentExposureCompletion": true,
+        "transformation": "clamp to configured min/max; pass ref double to Drive; no conversion by 1000",
+        "unit": "unresolved",
+        "unitConflict": "concrete parameter microsecond versus abstract BaseCamera parameter millisecond",
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera.SnapShot(System.Boolean,AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.SnapImageFormat)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera",
+      "method": "SnapShot",
+      "parameterTypes": [
+        "System.Boolean",
+        "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.SnapImageFormat"
+      ],
+      "optionalDefaults": {
+        "imageFormat": 137224
+      },
+      "returnType": "System.Drawing.Bitmap",
+      "publicToken": "0x0600010d",
+      "bodyToken": "0x06000122",
+      "bodyIlSha256": "4d02ccf1f0b6a7456a7d970560cac2818c3108c9be944b474cba3d5366669ea9",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "conditional_pre_wait_then_acquire",
+        "preWait": {
+          "triggerModelNumeric": 0,
+          "durationParameter": "BaseCamera.WaitTime",
+          "unit": "ms",
+          "constructorDefault": 100
+        },
+        "delegatesTo": "SnapImage(false,isPostToLink,imageFormat)",
+        "physicalDurationKnown": false
+      }
+    },
+    {
+      "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera.SnapImage(System.Boolean,System.Boolean,AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.SnapImageFormat)",
+      "declaringType": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera",
+      "method": "SnapImage",
+      "parameterTypes": [
+        "System.Boolean",
+        "System.Boolean",
+        "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.SnapImageFormat"
+      ],
+      "optionalDefaults": {
+        "isPostToLink": true,
+        "imageFormat": 198659
+      },
+      "returnType": "System.Drawing.Bitmap",
+      "publicToken": "0x06000111",
+      "bodyToken": "0x06000126",
+      "bodyIlSha256": "18edfe09e58f3a60b300ca609736b4c68839b37361c7dad951fe87470f998985",
+      "evidenceId": "ev_a3d73735c72849fb15bdd67ec149737c75ea66365bcc83be8259345d571ec283",
+      "behavior": {
+        "kind": "branching_acquisition",
+        "physicalDurationKnown": false,
+        "branches": [
+          {
+            "triggerModelNumeric": 0,
+            "operation": "GetFrameData; convert on success",
+            "failureSleepMs": 20,
+            "maxFailedAttempts": 6,
+            "maxExplicitFailureSleepSumMs": 120,
+            "sdkCallLatencyUnknown": true
+          },
+          {
+            "triggerModelNumeric": 1,
+            "cache": {
+              "enabledBy": "canUseCachedImage",
+              "freshnessThresholdMs": 30,
+              "thresholdIsNotWait": true
+            },
+            "operation": "ExecuteSoftTrigger; WaitOne(1000); GetCacheBmp",
+            "eventWaitTimeoutMs": 1000,
+            "eventCanCompleteEarly": true,
+            "triggerFailureCallsResetAndRetries": true,
+            "overallRetryBoundProven": false
+          },
+          {
+            "triggerModelNumeric": 2,
+            "operation": "DIO low; Sleep25; DIO high; WaitOne2000; GetCacheBmp",
+            "fixedPulseIntervalMs": 25,
+            "eventWaitTimeoutMs": 2000,
+            "eventCanCompleteEarly": true,
+            "maxTimedOutAttempts": 6,
+            "maxExplicitFailureWaitBudgetMs": 12150,
+            "timeoutIsNotNormalDuration": true
+          }
+        ],
+        "eventSetBy": "Camera_CameraBufferReceived finally after cache handling",
+        "exposureUnit": "unresolved"
+      }
+    }
+  ],
+  "residualUnknowns": [
+    "DIO and driver command execution cost",
+    "Cylinder mechanical completion and vacuum build-up",
+    "Actual runtime axis positions, tuning and PulseEquivalent/Radius",
+    "SDK physical unit conventions and exposure unit conflict",
+    "Image transfer/conversion/callback/vision cost",
+    "Runtime initialization/simulation aspect gates handled by Drive report"
+  ],
+  "ioControlArtifact": {
+    "path": "AKRS.ZX2200/libs/AKRS.Galaxy2.IOControl.dll",
+    "sha256": "0b0f0efb041d7947a62fa4249961d7d3a7c7a5dece8d4366bb8b275c5ec253fb",
+    "byte_length": 14848,
+    "format": "pe",
+    "evidenceId": "ev_9d55e7b3f8d9011fb2d3f2c933bc23168d4beae78665a04687a9459b2d4833d7",
+    "observation": "WinForms IO display/switch controls; not a cylinder/vacuum physical-time model"
+  }
+}

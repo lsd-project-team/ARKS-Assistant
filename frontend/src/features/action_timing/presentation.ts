@@ -15,7 +15,8 @@ const pendingNotes: Record<string, string> = {
 
 export function actionPresentation(row: SourceAction) {
   const station = row.group.match(/^S[12]\b/)?.[0] || row.group;
-  const name = actionNames[row.class_name] || row.name.replace(/^S[12]\s+/, '');
+  const node = row.kind === 'node';
+  const name = (node && actionNames[row.class_name]) || row.name.replace(/^S[12]\s+/, '');
   if (row.execution_status === 'unavailable' || row.execution_status === 'skipped') {
     const unavailable = row.execution_status === 'unavailable';
     return {
@@ -52,12 +53,12 @@ export function actionPresentation(row: SourceAction) {
   else if (hasTotal) note = '按源码模拟逻辑计算';
   else if (hasDelay) {
     note = `可算停留 ${knownDelay(row)}，其余耗时待定`;
-    if (row.class_name === 'UpLookCorrectionActionNode' && high != null) {
+    if (node && row.class_name === 'UpLookCorrectionActionNode' && high != null) {
       note = `单点停留 ${milliseconds(low)} ms，双点停留 ${milliseconds(high)} ms`;
-    } else if (row.class_name === 'BondActionNode' && low === high) {
+    } else if (node && row.class_name === 'BondActionNode' && low === high) {
       note = `固定停留 ${milliseconds(low)} ms，另含运动与抬起`;
     }
-  } else if (pendingNotes[row.class_name]) note = pendingNotes[row.class_name];
+  } else if (node && pendingNotes[row.class_name]) note = pendingNotes[row.class_name];
   else if (pending.length) note = `需补全${pending.join('与')}参数`;
   if (row.kind === 'placeholder') note = '源码中尚无动作实现';
   return { station, name, duration, remainder, note, hasDuration: hasDelay || hasTotal };
@@ -69,7 +70,8 @@ export function filterActions(
 ) {
   const query = search.trim().toLocaleLowerCase();
   return rows.filter((row) => {
-    if ((row.kind !== 'node') !== auxiliary || (group && row.group !== group)) return false;
+    if (!(row.primary ?? row.kind === 'node') !== auxiliary || (group && row.group !== group))
+      return false;
     const { name, station } = actionPresentation(row);
     return `${station} ${name}`.toLocaleLowerCase().includes(query);
   });

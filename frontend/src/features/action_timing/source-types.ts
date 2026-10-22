@@ -1,4 +1,5 @@
 export type SourceEvidence = { path: string; line: number; version: string; code: string };
+export type SourceValue = number | boolean | string | null | { [key: string]: SourceValue };
 export type SourceStage = SourceEvidence & {
   kind: 'delay' | 'motion' | 'wait' | 'call' | 'unresolved' | 'loop' | 'background' | 'timeout';
   label: string;
@@ -10,13 +11,24 @@ export type SourceStage = SourceEvidence & {
   repeat?: boolean;
   note?: string;
   arguments?: string[];
-  argument_values?: (number | boolean | string | null)[];
+  argument_values?: SourceValue[];
+  motion_model?: {
+    formula: string;
+    conditions: string;
+    distance?: number | null;
+    target?: number | string | null;
+    velocity?: number | null;
+    velocity_expression: string;
+    acceleration_expression: string;
+    deceleration_expression: string;
+    unresolved: string[];
+  };
   definitions?: SourceEvidence[];
   iterations?: number | null;
 };
 export type SourceParameter = SourceEvidence & {
   name: string;
-  value: number | boolean | null;
+  value: SourceValue;
   expression: string;
 };
 export type SourceAction = {
@@ -25,6 +37,9 @@ export type SourceAction = {
   class_name: string;
   method: string;
   kind: 'node' | 'controller' | 'workflow' | 'placeholder';
+  primary?: boolean;
+  category?: string;
+  analysis_unit?: 'method' | 'single_cycle';
   group: string;
   branch: string;
   entry: SourceEvidence;

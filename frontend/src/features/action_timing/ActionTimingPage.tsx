@@ -48,7 +48,11 @@ export default function ActionTimingPage() {
   const rows = data?.rows || [];
   const filtered = filterActions(rows, { auxiliary, group, search });
   const groups = [
-    ...new Set(rows.filter((row) => (row.kind !== 'node') === auxiliary).map((row) => row.group)),
+    ...new Set(
+      rows
+        .filter((row) => !(row.primary ?? row.kind === 'node') === auxiliary)
+        .map((row) => row.group),
+    ),
   ];
   // 刷新或切换筛选后，旧页码不能让仍有结果的列表显示为空。
   const pageOffset = Math.min(

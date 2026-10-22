@@ -7,7 +7,9 @@ import threading
 from collections import Counter
 
 from app.modules.action_timing.catalog import CATALOG
+from app.modules.action_timing.source_catalog import build_catalog
 from app.modules.action_timing.source_estimator import Estimator
+from app.modules.action_timing.source_hardware import bind_packages
 from app.modules.action_timing.source_index import SourceIndex, description, text
 from app.modules.action_timing.source_scope import load_scope
 
@@ -47,8 +49,8 @@ WORKFLOWS = {
     "Block": {"NextDie"},
 }
 SCOPE = (
-    "ActionNode节点（含测试/占位）、Controllers公开执行入口及换料/放行子流程；"
-    "控制器子动作单独列出，不相加为整机节拍"
+    "ZX2200全部编译方法按调用关系核对：动作节点、任务单轮、换料、初始化、"
+    "手动/标定与子动作；依赖工程只作为计算依据，父子动作不相加为整机节拍"
 )
 
 
@@ -142,13 +144,17 @@ class SourceTiming:
             documents = self._documents()
             signature = self.loaded_scope.revision
             if signature != self.signature:
-                self.cached = self._build(SourceIndex(documents))
+                index = SourceIndex(documents)
+                index.packages = bind_packages(self.loaded_scope.references)
+                self.cached = self._build(index)
                 self.signature = signature
             return self.cached
 
     def _build(self, index):
         rows = []
-        for method, name, kind, branch in discover(index):
+        entries, coverage = build_catalog(index, discover(index))
+        for entry in entries:
+            method, name, kind, branch = entry.method, entry.name, entry.kind, entry.branch
             if method is None:
                 info, unit, node = branch
                 row = {
@@ -187,6 +193,19 @@ class SourceTiming:
                     "entry": method.unit.evidence(method.node),
                     **result,
                 }
+            row.update(
+                category=entry.category, primary=entry.primary, analysis_unit=entry.analysis_unit
+            )
+            if entry.mode_note:
+                row.update(
+                    execution_status="skipped",
+                    status_reason=entry.mode_note,
+                    complete=False,
+                    total_ms=None,
+                    known_delay_min_ms=None,
+                    known_delay_max_ms=None,
+                    formula=entry.mode_note,
+                )
             rows.append(row)
         order = {item["class_name"]: n for n, item in enumerate(CATALOG)}
         rows.sort(
@@ -202,12 +221,14 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v3:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,
             "source_dependencies": self.loaded_scope.references,
+            "package_contracts": index.packages,
             "source_coverage": dict(Counter(item["status"] for item in self.loaded_scope.files)),
+            "action_coverage": coverage,
             "scope": SCOPE,
             "notes": index.notes,
             "assumptions": [
@@ -218,6 +239,10 @@ class SourceTiming:
                 "统计配置延时与动作调用关系，不把CPU执行开销估成设备动作时间。",
                 "互斥分支分别计算范围；未定循环、信号等待、运动和未解析调用不填零总耗时。",
                 "超时上限不计作必耗时；后台Task单独显示；并发轴不能逐项相加。",
+                "任务单轮只展开服务循环的一次工作体；线程启动入口与子动作不会叠加为节拍。",
+                "Task 模型只模拟源码显式耗时，假设可立即调度；不估算线程调度或CPU耗时。",
+                "运动公式保留起点、目标、速度、加减速和驱动单位条件；"
+                "未证明单位、平滑及到位稳定时，不编造运动毫秒数。",
             ],
             "rows": rows,
         }
@@ -226,12 +251,24 @@ class SourceTiming:
         report = self.report()
         return {
             **report,
+            "action_coverage": {
+                key: value for key, value in report["action_coverage"].items() if key != "methods"
+            },
             "rows": [
                 {key: value for key, value in row.items() if key not in {"stages", "parameters"}}
                 | {"stage_count": len(row["stages"]), "parameter_count": len(row["parameters"])}
                 for row in report["rows"]
             ],
         }
+
+    def coverage(self):
+        with self.lock:
+            report = self.report()
+            return {
+                "source_revision": report["source_revision"],
+                "files": self.loaded_scope.files,
+                **report["action_coverage"],
+            }
 
     def detail(self, identifier):
         row = next((row for row in self.report()["rows"] if row["id"] == identifier), None)

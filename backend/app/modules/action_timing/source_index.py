@@ -81,17 +81,19 @@ class Method:
     parameters: list
     types: dict
     initializers: dict = field(default_factory=dict)
+    body_override: object = None
 
     @property
     def key(self):
-        return (
+        identity = (
             f"{self.owner}.{self.name}@{self.unit.path}:"
             f"{self.node.start_point[0] + 1}:{self.node.start_byte}"
         )
+        return identity + (f":cycle:{self.body_override.start_byte}" if self.body_override else "")
 
     @property
     def body(self):
-        return self.node.child_by_field_name("body")
+        return self.body_override or self.node.child_by_field_name("body")
 
 
 @dataclass
@@ -118,6 +120,9 @@ class SourceIndex:
         self.enums = set()
         self._inference_cache = {}
         self._inferring = set()
+        self._resolution_cache = {}
+        self._resolving = set()
+        self._overridden_cache = {}
         for source in documents:
             raw = source["content"].encode("utf-8")
             # 文本、语法树与节点共同保存，避免跨文件持有失效的原生节点。
@@ -325,6 +330,9 @@ class SourceIndex:
         )
 
     def default_value(self, owner, name, bindings, seen):
+        if owner.endswith(("RunTimeProvider", "RuntimeProvider")):
+            # 运行中的请求/状态标志不是配方初值，不能用启动时 false 抹掉动作路径。
+            return None
         found = self.member_default(owner, name)
         if found is None:
             return None
@@ -363,6 +371,9 @@ class SourceIndex:
         source = text(node)
         if node.type == "this_expression" or source == "this":
             return method.owner
+        if node.type == "base_expression" or source == "base":
+            bases = self.base_types(method.owner)
+            return bases[0] if len(bases) == 1 else ""
         if node.type == "identifier":
             if method.types.get(source) == "var":
                 return self.infer(method.initializers.get(source), method)
@@ -398,6 +409,20 @@ class SourceIndex:
         }.get(node.type, "")
 
     def resolve(self, node, caller):
+        identity = (caller.owner, caller.unit.path, node.start_byte, node.end_byte)
+        if identity in self._resolution_cache:
+            return self._resolution_cache[identity]
+        if identity in self._resolving:
+            return None
+        self._resolving.add(identity)
+        try:
+            result = self._resolve(node, caller)
+            self._resolution_cache[identity] = result
+            return result
+        finally:
+            self._resolving.remove(identity)
+
+    def _resolve(self, node, caller):
         function = node.child_by_field_name("function")
         if function is None:
             return None
@@ -410,12 +435,19 @@ class SourceIndex:
         owners = [owner]
         visited = set()
         methods = []
+        signatures = set()
         while owners:
             current = owners.pop(0)
             if current in visited:
                 continue
             visited.add(current)
-            methods.extend(self.by_method.get((current, name), []))
+            for method in self.by_method.get((current, name), []):
+                signature = tuple(
+                    self.lookup_type(kind, method) for _, kind, _ in method.parameters
+                )
+                if signature not in signatures:
+                    methods.append(method)
+                    signatures.add(signature)
             owners.extend(self.base_types(current))
         candidates = [
             method
@@ -437,6 +469,26 @@ class SourceIndex:
             candidates = exact if len(exact) == 1 else candidates
         return candidates[0] if len(candidates) == 1 else None
 
+    def polymorphic(self, node, caller, target):
+        modifiers = {text(item) for item in children(target.node, "modifier")}
+        if not modifiers.intersection({"virtual", "abstract", "override"}):
+            return False
+        receiver = node.child_by_field_name("function").child_by_field_name("expression")
+        if text(receiver) == "base" or (receiver and receiver.type == "object_creation_expression"):
+            return False
+        if receiver and receiver.type == "identifier":
+            created = caller.initializers.get(text(receiver))
+            if created and created.type == "object_creation_expression":
+                return False
+        # 无实际实例类型时不能把基类的空实现当成运行时动作。
+        identity = (target.owner, target.name)
+        if identity not in self._overridden_cache:
+            self._overridden_cache[identity] = "abstract" in modifiers or any(
+                target.owner in self.base_types(owner) and self.by_method.get((owner, target.name))
+                for owner in self.classes
+            )
+        return self._overridden_cache[identity]
+
     def value(self, node, method, bindings, seen=None):
         """有限表达式求值；未知保持未知，不用 eval，也不把属性编辑器范围当成初值。"""
         if node is None:
@@ -456,6 +508,19 @@ class SourceIndex:
             return source == "true"
         if kind == "identifier":
             return self.default_value(method.owner, source, bindings, seen)
+        if kind == "object_creation_expression":
+            # 仅求值显式对象初始化器；不执行构造函数，也不臆测外部构造参数顺序。
+            value_node = next(iter(children(node, "initializer_expression")), None)
+            if value_node is None:
+                return None
+            result = {"<type>": text(node.child_by_field_name("type"))}
+            for assignment in children(value_node, "assignment_expression"):
+                left = assignment.child_by_field_name("left")
+                if left.type == "identifier":
+                    result[text(left)] = self.value(
+                        assignment.child_by_field_name("right"), method, bindings, seen
+                    )
+            return result
         if kind == "member_access_expression":
             name = text(node.child_by_field_name("name"))
             owner = self.infer(node.child_by_field_name("expression"), method)
@@ -469,6 +534,11 @@ class SourceIndex:
             identity = f"{simple_type(owner)}.{name}"
             if identity in bindings:
                 return bindings[identity]
+            receiver_value = self.value(
+                node.child_by_field_name("expression"), method, bindings, seen
+            )
+            if isinstance(receiver_value, dict) and name in receiver_value:
+                return receiver_value[name]
             if simple_type(receiver) in self.enums:
                 return name
             return self.default_value(owner, name, bindings, seen)

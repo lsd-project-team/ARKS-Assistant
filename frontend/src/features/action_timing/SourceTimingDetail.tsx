@@ -32,6 +32,18 @@ function Phase({ row }: { row: SourceStage }) {
         <p className="source-condition">条件：{row.conditions.join('；')}</p>
       )}
       {row.note && <p>{row.note}</p>}
+      {row.motion_model && (
+        <details>
+          <summary>运动参数与计算公式</summary>
+          <p>
+            目标 / 位移：{row.motion_model.target ?? '未定'}；速度：
+            {row.motion_model.velocity ?? row.motion_model.velocity_expression}
+          </p>
+          <p>{row.motion_model.formula}</p>
+          <p>{row.motion_model.conditions}</p>
+          <p>尚未确定：{row.motion_model.unresolved.join('；')}</p>
+        </details>
+      )}
       <code className="source-location">
         {row.path}:{row.line} · {row.method}
       </code>
@@ -94,6 +106,9 @@ export function SourceTimingDetail({
               <summary>查看计算依据</summary>
               {data.status_reason && <p>{data.status_reason}</p>}
               <p>{data.formula}</p>
+              {data.analysis_unit === 'single_cycle' && (
+                <p>此项计算一个工作循环，子动作已包含在本流程中。</p>
+              )}
               <p className="timing-caption">
                 数值来自源码显式初值。此处没有运行设备，运动和信号等待不以超时值代替。
               </p>
@@ -122,7 +137,13 @@ export function SourceTimingDetail({
                           <td>
                             <code>{parameter.name}</code>
                           </td>
-                          <td>{parameter.value == null ? '未能求值' : String(parameter.value)}</td>
+                          <td>
+                            {parameter.value == null
+                              ? '未能求值'
+                              : typeof parameter.value === 'object'
+                                ? JSON.stringify(parameter.value)
+                                : String(parameter.value)}
+                          </td>
                           <td>
                             <code>
                               {parameter.path}:{parameter.line}

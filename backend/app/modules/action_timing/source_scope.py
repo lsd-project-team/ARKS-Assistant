@@ -82,6 +82,7 @@ def load_scope(workspace):
 
     documents, projects, references, inventory, versions = [], [], [], [], []
     loaded, included = set(), set()
+    binary_versions = {}
 
     def read_document(path, role, assembly):
         relative = by_path[str(path.resolve()).casefold()]
@@ -163,13 +164,21 @@ def load_scope(workspace):
             hint = _child_text(reference, "HintPath")
             target = _relative_target(path, hint)
             key = str(target).casefold() if target else ""
+            name = reference.get("Include", "").split(",")[0]
+            binary_hash = None
+            if key in by_path and name in {"AKRS.Galaxy2.Drive", "AKRS.Galaxy2.LogicHardware"}:
+                if key not in binary_versions:
+                    binary_versions[key] = hashlib.sha256(target.read_bytes()).hexdigest()
+                    versions.append((by_path[key], binary_versions[key]))
+                binary_hash = binary_versions[key]
             references.append(
                 {
                     "from": source["path"],
-                    "name": reference.get("Include", "").split(",")[0],
+                    "name": name,
                     "kind": "assembly",
                     "status": "binary" if key in by_path else "external",
                     "path": by_path.get(key, hint),
+                    "sha256": binary_hash,
                 }
             )
 

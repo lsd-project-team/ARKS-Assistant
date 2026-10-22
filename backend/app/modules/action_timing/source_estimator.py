@@ -2,55 +2,11 @@
 
 import math
 import re
-from dataclasses import dataclass
 
+from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
+from app.modules.action_timing.source_hardware import hardware_call
 from app.modules.action_timing.source_index import children, initializer, text, walk
-
-
-@dataclass(frozen=True)
-class Cost:
-    lower: float = 0
-    upper: float | None = 0
-
-    def plus(self, other):
-        return Cost(
-            self.lower + other.lower,
-            None if self.upper is None or other.upper is None else self.upper + other.upper,
-        )
-
-
-ZERO = Cost()
-UNKNOWN = Cost(0, None)
-
-
-def choice(left, right):
-    if left is None:
-        return right
-    if right is None:
-        return left
-    return Cost(
-        min(left.lower, right.lower),
-        None if left.upper is None or right.upper is None else max(left.upper, right.upper),
-    )
-
-
-def add(left, right):
-    return left.plus(right) if left is not None and right is not None else None
-
-
-@dataclass
-class Flow:
-    live: Cost | None = ZERO
-    returned: Cost | None = None
-
-    def then(self, other):
-        return Flow(
-            add(self.live, other.live), choice(self.returned, add(self.live, other.returned))
-        )
-
-    def cost(self):
-        return choice(self.live, self.returned) or ZERO
-
+from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup
 
 PURE_NAMES = {
     "GetInstance",
@@ -94,11 +50,20 @@ class Estimator:
         self.root_method = method.key
         flow = self.block(method.body, method, dict(self.context), (), (), False)
         cost = flow.cost()
-        has_success_path = flow.live is not None or flow.returned is not None
+        has_success_path = any(
+            value is not None for value in (flow.live, flow.returned, flow.broken, flow.continued)
+        )
         unknown = any(
             (
-                row["kind"] in {"motion", "wait", "call", "unresolved"}
-                or (row["kind"] == "loop" and row.get("iterations") is None)
+                (
+                    row["kind"] in {"motion", "wait", "call", "unresolved"}
+                    and not row.get("resolved", False)
+                )
+                or (
+                    row["kind"] == "loop"
+                    and row.get("iterations") is None
+                    and not row.get("bounded", False)
+                )
             )
             and not row["background"]
             for row in self.stages
@@ -201,8 +166,24 @@ class Estimator:
     def expression(self, node, method, bindings, stack, conditions, background):
         if node is None:
             return ZERO
+        if node.type == "await_expression":
+            operand = children(node)[-1]
+            plan = lookup(operand, method, bindings)
+            if plan and operand.type != "invocation_expression":
+                cost = plan.remaining(bindings.get(CLOCK, ZERO))
+                self.record(
+                    "wait",
+                    "等待任务完成",
+                    node,
+                    method,
+                    conditions,
+                    background,
+                    resolved=cost.upper is not None,
+                )
+                return cost
         if node.type == "invocation_expression":
             before = ZERO
+            started = bindings.get(CLOCK, ZERO)
             function = node.child_by_field_name("function")
             if function is not None and function.type == "member_access_expression":
                 before = self.expression(
@@ -214,10 +195,14 @@ class Estimator:
                     background,
                 )
             for argument in children(node.child_by_field_name("arguments"), "argument"):
+                bindings[CLOCK] = started.plus(before)
                 before = before.plus(
                     self.expression(argument, method, bindings, stack, conditions, background)
                 )
-            return before.plus(self.call(node, method, bindings, stack, conditions, background))
+            bindings[CLOCK] = started.plus(before)
+            result = before.plus(self.call(node, method, bindings, stack, conditions, background))
+            bindings[CLOCK] = started
+            return result
         if node.type == "binary_expression":
             left = node.child_by_field_name("left")
             op = text(node.child_by_field_name("operator"))
@@ -272,6 +257,9 @@ class Estimator:
                 or self.index.infer(receiver, method) == "Stopwatch"
             ):
                 return ZERO
+        task_cost = handle_tasks(self, node, method, bindings, stack, conditions, background)
+        if task_cost is not None:
+            return task_cost
         if function_name.endswith(("Thread.Sleep", "DelayHelper.Delay")):
             arg = arguments[0] if arguments else None
             value = self.index.value(arg, method, bindings)
@@ -294,27 +282,27 @@ class Estimator:
                 milliseconds=value if valid else None,
             )
             return Cost(value, value) if valid else UNKNOWN
-        if function_name in {"Task.Run", "Task.Factory.StartNew"}:
-            self.record(
-                "background", "后台分支，独立展示，不累加到同步耗时", node, method, conditions, True
-            )
-            for arg in arguments:
-                for part in children(arg):
-                    if part.type in {"lambda_expression", "anonymous_method_expression"}:
-                        self.block(
-                            part.child_by_field_name("body"),
-                            method,
-                            dict(bindings),
-                            stack,
-                            conditions,
-                            True,
-                        )
-            return ZERO
         if name in PURE_NAMES or function_name.startswith(
             ("Math.", "System.Math.", "TimeSpan.", "DateTime.", "Guid.", "Enumerable.")
         ):
             return ZERO
         target = self.index.resolve(node, method)
+        if target and self.index.polymorphic(node, method, target):
+            self.record(
+                "unresolved",
+                "实际动作类型由运行时选择",
+                node,
+                method,
+                conditions,
+                background,
+                expression=text(node),
+                note="保留动态派发，未把基类实现当成实际动作；各具体动作另行计算",
+            )
+            return UNKNOWN
+        if not target:
+            package_cost = hardware_call(self, node, method, bindings, conditions, background)
+            if package_cost is not None:
+                return package_cost
         if not (target and target.body) and (
             name
             in {
@@ -367,6 +355,7 @@ class Estimator:
             self.calls += 1
             values = {
                 **self.context,
+                CLOCK: bindings.get(CLOCK, ZERO),
                 **{
                     parameter[0]: self.index.value(arg, method, bindings)
                     for parameter, arg in zip(target.parameters, arguments, strict=False)
@@ -374,9 +363,21 @@ class Estimator:
             }
             for name, _, default in target.parameters[len(arguments) :]:
                 values[name] = self.index.value(default, target, {})
-            return self.block(
+            flow = self.block(
                 target.body, target, values, (*stack, target.key), conditions, background
-            ).cost()
+            )
+            if flow.live is None and flow.returned is None:
+                self.record(
+                    "unresolved",
+                    "被调方法无法正常返回",
+                    node,
+                    method,
+                    conditions,
+                    background,
+                    expression=text(node),
+                )
+                return UNKNOWN
+            return flow.cost()
         if MOTION.search(name):
             self.record(
                 "motion",
@@ -447,9 +448,10 @@ class Estimator:
             for child in children(node):
                 if result.live is None:
                     break
-                result = result.then(
-                    self.block(child, method, bindings, stack, conditions, background)
-                )
+                started = bindings.get(CLOCK, ZERO)
+                part = self.block(child, method, bindings, stack, conditions, background)
+                bindings[CLOCK] = started.plus(part.live) if part.live is not None else UNKNOWN
+                result = result.then(part)
             return result
         if kind == "if_statement":
             condition = node.child_by_field_name("condition")
@@ -482,29 +484,51 @@ class Estimator:
                     )
             result = branches[0]
             if len(branches) == 2:
-                result = Flow(
-                    choice(result.live, branches[1].live),
-                    choice(result.returned, branches[1].returned),
-                )
-            return Flow(add(before, result.live), add(before, result.returned))
+                result = result.merge(branches[1])
+            return result.prefix(before)
         if kind == "return_statement":
             value = text(node)
             cost = self.expression(node, method, bindings, stack, conditions, background)
+            if method.body_override is not None:
+                # 服务循环内部 return 结束线程，并非该轮动作正常完成。
+                return Flow(None, None)
             if method.key == self.root_method and any(
                 "DryCycle" in condition for condition in conditions
             ):
                 self.skip_conditions.extend(conditions)
-            if re.search(
-                r"ExcuteResult\.(?:Abort|Fail|Alarm|Exception|Retry)|return\s+false\b", value
+            if re.search(r"ExcuteResult\.(?:Abort|Fail|Alarm|Exception|Retry)", value):
+                return Flow(None, None)
+            # Wait 的 false 表示等待中止；普通布尔查询返回 false 仍是正常完成。
+            if (method.key == self.root_method or WAIT.search(method.name)) and re.search(
+                r"return\s+false\b", value
             ):
                 return Flow(None, None)
             return Flow(None, cost)
+        if kind == "break_statement":
+            return Flow(None, broken=ZERO)
+        if kind == "continue_statement":
+            return Flow(None, continued=ZERO)
         if kind == "throw_statement":
             self.failure_reasons.append(text(node).removeprefix("throw ").removesuffix(";")[:180])
             return Flow(None, None)
         if kind == "try_statement":
             body = next(iter(children(node, "block")), None)
             result = self.block(body, method, bindings, stack, conditions, background)
+            for caught in children(node, "catch_clause"):
+                handler = self.block(
+                    next(iter(children(caught, "block")), None),
+                    method,
+                    dict(bindings),
+                    stack,
+                    (*conditions, "异常恢复分支"),
+                    background,
+                )
+                if handler.live is not None or handler.returned is not None:
+                    # 异常发生点不确定，恢复不能被当作无成本的顺序正常路径。
+                    result = result.merge(handler.prefix(UNKNOWN))
+                    self.record(
+                        "unresolved", "异常恢复路径耗时未定", caught, method, conditions, background
+                    )
             final = next(iter(children(node, "finally_clause")), None)
             if final:
                 cost = self.block(
@@ -515,7 +539,7 @@ class Estimator:
                     conditions,
                     background,
                 ).cost()
-                result = Flow(add(result.live, cost), add(result.returned, cost))
+                result = result.prefix(cost)
             return result
         if kind in {
             "while_statement",
@@ -537,9 +561,15 @@ class Estimator:
                 return Flow(condition_cost)
             label = f"循环：{text(node.child_by_field_name('condition')) or '次数依赖运行数据'}"
             start = len(self.stages)
-            each = self.block(
+            body_flow = self.block(
                 body, method, dict(bindings), stack, (*conditions, label), background
-            ).cost()
+            )
+            for changed in walk(body):
+                if changed.type == "assignment_expression":
+                    assigned = text(changed.child_by_field_name("left"))
+                    if assigned in bindings:
+                        bindings[assigned] = None
+            each = body_flow.cost()
             for stage in self.stages[start:]:
                 stage["repeat"] = True
             self.record(
@@ -552,10 +582,20 @@ class Estimator:
                 conditions,
                 background,
                 iterations=iterations,
+                bounded=(kind == "do_statement" and value is False)
+                or (body_flow.live is None and body_flow.continued is None),
                 per_iteration_min_ms=each.lower,
                 per_iteration_max_ms=each.upper,
             )
             self._timeouts(node, method, conditions, background)
+            # break/continue 只终止其所属控制结构；不能继续计入不可达的后续语句。
+            if body_flow.live is None and body_flow.continued is None:
+                exited = Flow(body_flow.broken, body_flow.returned)
+                if kind != "do_statement":
+                    exited = exited.prefix(condition_cost)
+                if kind != "do_statement" and value is not True:
+                    exited.live = choice(condition_cost, exited.live)
+                return exited
             if iterations is not None:
                 return Flow(
                     Cost(
@@ -566,7 +606,13 @@ class Estimator:
                     )
                 )
             if kind == "do_statement" and value is False:
-                return Flow(each.plus(condition_cost))
+                return Flow(
+                    choice(
+                        add(choice(body_flow.live, body_flow.continued), condition_cost),
+                        body_flow.broken,
+                    ),
+                    body_flow.returned,
+                )
             return Flow(
                 live=Cost(
                     (each.lower if kind == "do_statement" else 0) + condition_cost.lower, None
@@ -608,9 +654,9 @@ class Estimator:
                     (*conditions, labels or "switch 分支"),
                     background,
                 )
-                result = Flow(
-                    choice(result.live, branch.live), choice(result.returned, branch.returned)
-                )
+                branch.live = choice(branch.live, branch.broken)
+                branch.broken = None
+                result = result.merge(branch)
                 if branch.live is not None:
                     continuing_bindings.append(branch_bindings)
             if not sections or (value is None and not defaults):
@@ -620,7 +666,7 @@ class Estimator:
                 for key in set().union(*(state.keys() for state in continuing_bindings)):
                     values = [state.get(key) for state in continuing_bindings]
                     bindings[key] = values[0] if all(item == values[0] for item in values) else None
-            return Flow(add(before, result.live), add(before, result.returned))
+            return result.prefix(before)
         if kind == "local_declaration_statement":
             for declaration in children(node, "variable_declaration"):
                 for variable in children(declaration, "variable_declarator"):
@@ -634,12 +680,21 @@ class Estimator:
                     bindings[text(variable.child_by_field_name("name"))] = value
         if kind == "expression_statement":
             for assignment in children(node, "assignment_expression"):
-                name = text(assignment.child_by_field_name("left"))
+                left = assignment.child_by_field_name("left")
+                name = text(left)
                 right = self.index.value(assignment.child_by_field_name("right"), method, bindings)
                 operator = text(assignment.child_by_field_name("operator"))
                 current = bindings.get(name)
                 if operator == "=":
                     bindings[name] = right
+                    if left.type == "member_access_expression":
+                        receiver = left.child_by_field_name("expression")
+                        state = self.index.value(receiver, method, bindings)
+                        if receiver.type == "identifier" and isinstance(state, dict):
+                            bindings[text(receiver)] = {
+                                **state,
+                                text(left.child_by_field_name("name")): right,
+                            }
                 elif (
                     operator == "+="
                     and isinstance(current, (int, float))

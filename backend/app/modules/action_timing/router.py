@@ -38,6 +38,11 @@ def create_router(services):
             },
         )
 
+    @router.get("/source-analysis/coverage")
+    async def source_coverage():
+        source_scope()
+        return await asyncio.to_thread(source.coverage)
+
     @router.get("/source-analysis/{identifier}")
     async def source_detail(identifier: str):
         source_scope()

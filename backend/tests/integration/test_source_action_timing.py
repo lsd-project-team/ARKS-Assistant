@@ -29,6 +29,14 @@ def test_page_data_is_available_without_import_and_changes_with_source(services)
         assert first["basis"] == "source_defaults" and first["mode"] == "DryCycle"
         assert row["known_delay_min_ms"] == row["known_delay_max_ms"] == 12
         assert "stages" not in row
+        coverage = client.get(BASE + "/coverage")
+        assert coverage.status_code == 200
+        assert coverage.json()["source_revision"] == first["source_revision"]
+        assert coverage.json()["uncatalogued_timing_methods"] == 0
+        assert any(
+            item["method"] == "Demo.DoWork" and item["status"] == "catalogued"
+            for item in coverage.json()["methods"]
+        )
         detail = client.get(BASE + "/" + row["id"])
         assert detail.status_code == 200
         assert detail.json()["stages"][0]["path"] == "Demo.cs"
