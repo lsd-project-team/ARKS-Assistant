@@ -163,9 +163,10 @@ class ClassInfo:
 
 
 class SourceIndex:
-    def __init__(self, documents):
+    def __init__(self, documents, declaration_sources=()):
         self.classes = {}
         self.units = []
+        self.declaration_units = []
         self.notes = []
         self.by_method = defaultdict(list)
         self.type_names = defaultdict(list)
@@ -219,13 +220,65 @@ class SourceIndex:
             self.type_names[name].append(key)
             for unit, node in nodes:
                 self._index(unit, node, info)
+        self._generated_fields(declaration_sources)
         self.method_kinds = {
             method.key: method.callable_kind
             for info in self.classes.values()
             for method in info.methods
         }
-        fingerprint = "\n".join(f"{u.path}:{u.version}" for u in self.units)
+        fingerprint = "\n".join(
+            f"{u.path}:{u.version}" for u in [*self.units, *self.declaration_units]
+        )
         self.revision = hashlib.sha256(fingerprint.encode()).hexdigest()
+
+    def _generated_fields(self, sources):
+        """Designer只补已存在partial类型的字段声明，不执行布局、初始化和事件挂接。"""
+        owners = {
+            (info.project, info.namespace, info.short_name): info for info in self.classes.values()
+        }
+        parser = Parser(Language(tree_sitter_c_sharp.language()))
+        for source in sources:
+            raw = source["content"].encode("utf-8")
+            unit = Unit(
+                source["path"],
+                raw,
+                source["version"],
+                parser.parse(raw),
+                source.get("project", ""),
+                source.get("role", "business"),
+            )
+            self.declaration_units.append(unit)
+            if unit.tree.root_node.has_error:
+                self.notes.append(f"{unit.path}：生成字段包含语法错误，相关调用保留未解析")
+                continue
+            for node in walk(unit.tree.root_node):
+                if node.type != "class_declaration":
+                    continue
+                info = owners.get(
+                    (
+                        unit.project,
+                        self.namespace(node, unit),
+                        text(node.child_by_field_name("name")),
+                    )
+                )
+                if info is None:
+                    continue
+                for member in children(node.child_by_field_name("body"), "field_declaration"):
+                    declaration = next(iter(children(member, "variable_declaration")), None)
+                    if declaration is None:
+                        continue
+                    kind = text(declaration.child_by_field_name("type"))
+                    static = any(
+                        text(part) in {"static", "const"} for part in children(member, "modifier")
+                    )
+                    for variable in children(declaration, "variable_declarator"):
+                        name = text(variable.child_by_field_name("name"))
+                        if name in info.types:
+                            continue
+                        info.types[name] = kind
+                        info.member_units[name] = unit
+                        if static:
+                            info.static_members.add(name)
 
     @staticmethod
     def namespace(node, unit):
@@ -438,7 +491,7 @@ class SourceIndex:
             return None
         return self.property_method(owner, name, mode)
 
-    def lookup_type(self, source, context):
+    def lookup_type(self, source, context, unit=None):
         source = source.replace("global::", "").split("<", 1)[0].rstrip("?[]")
         if source in self.classes:
             return source
@@ -461,13 +514,10 @@ class SourceIndex:
             ]
             if len(local) == 1:
                 return local[0]
-            unit = context.unit if isinstance(context, Method) else info.declarations[0][0]
-            usings = {
-                text(part).removeprefix("using ").rstrip(";").strip()
-                for part in walk(unit.tree.root_node)
-                if part.type == "using_directive"
-            }
-            imported = [key for key in candidates if self.classes[key].namespace in usings]
+            unit = unit or (
+                context.unit if isinstance(context, Method) else info.declarations[0][0]
+            )
+            imported = [key for key in candidates if self.classes[key].namespace in unit.namespaces]
             if len(imported) == 1:
                 return imported[0]
         return ""
@@ -483,7 +533,7 @@ class SourceIndex:
         seen.add(owner)
         info = self.classes[owner]
         return (
-            self.lookup_type(info.types[name], owner)
+            self.lookup_type(info.types[name], owner, info.member_units.get(name))
             if name in info.types
             else next(
                 (

@@ -24,7 +24,7 @@ test('动作表区分停留部分和完整耗时，单点与双点使用当前�
     station: 'S2',
     name: '上视纠偏',
     duration: '20–40 ms',
-    remainder: '+ 运动与等待时间',
+    remainder: '已知停留，运动与等待耗时未定',
     note: '单点停留 20 ms，双点停留 40 ms',
     hasDuration: true,
   });
@@ -43,10 +43,10 @@ test('缺少耗时与无固定停留均不伪装成零毫秒，未定上界保�
     known_delay_min_ms: 0,
     known_delay_max_ms: 0,
   };
-  assert.equal(actionPresentation(unknown).duration, '待补参数');
+  assert.equal(actionPresentation(unknown).duration, '耗时未定');
   assert.equal(
     actionPresentation({ ...unknown, known_delay_min_ms: null, known_delay_max_ms: null }).duration,
-    '待补参数',
+    '耗时未定',
   );
   assert.equal(actionPresentation({ ...unknown, total_ms: 0 }).duration, '无固定停留');
   assert.match(actionPresentation({ ...unknown, total_ms: 0 }).note, /不表示实际耗时为零/);
@@ -90,7 +90,7 @@ test('导出只含筛选后的动作，保留部分耗时说明及中文，并�
   const csv = actionTableCsv(selected);
   assert.ok(csv.startsWith('\ufeff'));
   assert.equal(csv.trim().split('\r\n').length, 2);
-  assert.ok(csv.includes('20–40 ms + 运动与等待时间'));
+  assert.ok(csv.includes('20–40 ms 已知停留，运动与等待耗时未定'));
   assert.ok(!csv.includes('SUM'));
   assert.ok(actionTableCsv([malicious]).includes('"\'=SUM(1,2)""测试"'));
 });

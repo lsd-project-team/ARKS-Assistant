@@ -4,7 +4,7 @@ import fnmatch
 import hashlib
 import json
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -16,6 +16,7 @@ class SourceScope:
     references: list
     files: list
     versions: list
+    declarations: list = field(default_factory=list)
 
     @property
     def revision(self):
@@ -80,7 +81,7 @@ def load_scope(workspace):
         if assembly:
             assemblies.setdefault(assembly.casefold(), []).append(identity)
 
-    documents, projects, references, inventory, versions = [], [], [], [], []
+    documents, projects, references, inventory, versions, declarations = [], [], [], [], [], []
     loaded, included = set(), set()
     binary_versions = {}
 
@@ -98,11 +99,10 @@ def load_scope(workspace):
                 "status": "generated" if generated else "indexed",
             }
         )
-        if generated:
-            return
         source = workspace.read(relative)
         versions.append((relative, source["version"]))
-        documents.append({**source, "project": assembly, "role": role})
+        target = declarations if generated else documents
+        target.append({**source, "project": assembly, "role": role})
 
     def visit(identity, role):
         if identity in loaded:
@@ -209,8 +209,8 @@ def load_scope(workspace):
             }
         )
     if (
-        len(documents) > 4000
-        or sum(len(item["content"].encode()) for item in documents) > 80_000_000
+        len(documents) + len(declarations) > 4000
+        or sum(len(item["content"].encode()) for item in [*documents, *declarations]) > 80_000_000
     ):
         raise ValueError("源码范围超过分析上限，请选择 ZX2200 及关联依赖目录")
     return SourceScope(
@@ -220,4 +220,5 @@ def load_scope(workspace):
         references,
         inventory,
         versions,
+        declarations,
     )

@@ -8,9 +8,9 @@ const actionNames: Record<string, string> = {
 };
 
 const pendingNotes: Record<string, string> = {
-  S1DispenseCorrectionActionNode: '需补全运动与视觉等待参数',
-  S1DispenseActionNode: '需补全轨迹与等待参数',
-  PickActionNode: '需补全运动与取料等待参数',
+  S1DispenseCorrectionActionNode: '定位耗时无法由现有源码确定',
+  S1DispenseActionNode: '轨迹与等待耗时未定',
+  PickActionNode: '运动与取料等待耗时未定',
 };
 
 export function actionPresentation(row: SourceAction) {
@@ -38,15 +38,15 @@ export function actionPresentation(row: SourceAction) {
       ? knownDelay(row)
       : row.total_ms === 0
         ? '无固定停留'
-        : '待补参数';
+        : '耗时未定';
 
-  // 已知停留只是动作的一部分，主表也要保留尚未算出的耗时，不能冒充总时长。
+  // 停留可能与已启动的运动重叠，不能用加号暗示可直接相加为总时长。
   const pending = [row.motion_count > 0 && '运动', row.wait_count > 0 && '等待'].filter(Boolean);
   const remainder =
     row.total_ms == null && hasDelay
       ? pending.length
-        ? `+ ${pending.join('与')}时间`
-        : '+ 其他待定耗时'
+        ? `已知停留，${pending.join('与')}耗时未定`
+        : '已知停留，完整耗时未定'
       : '';
   let note = '源码参数或调用耗时尚未确定';
   if (row.total_ms === 0) note = '源码未设置固定停留，不表示实际耗时为零';
@@ -59,7 +59,7 @@ export function actionPresentation(row: SourceAction) {
       note = `固定停留 ${milliseconds(low)} ms，另含运动与抬起`;
     }
   } else if (node && pendingNotes[row.class_name]) note = pendingNotes[row.class_name];
-  else if (pending.length) note = `需补全${pending.join('与')}参数`;
+  else if (pending.length) note = `${pending.join('与')}耗时无法由现有源码确定`;
   if (row.kind === 'placeholder') note = '源码中尚无动作实现';
   return { station, name, duration, remainder, note, hasDuration: hasDelay || hasTotal };
 }
