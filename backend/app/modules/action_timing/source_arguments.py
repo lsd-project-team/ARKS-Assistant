@@ -66,6 +66,10 @@ def snapshot(node, method, bindings):
     return saved if isinstance(saved, Evaluated) else None
 
 
+def return_key(node, method, bindings):
+    return snapshot_key(node, method, bindings) + ":return"
+
+
 def values(index, node, method, bindings, seen=None):
     saved = snapshot(node, method, bindings)
     return (
@@ -91,6 +95,7 @@ def evaluate(
     from app.modules.action_timing.source_tasks import CLOCK
 
     nodes = arguments(node)
+    bindings.pop(return_key(node, method, bindings), None)
     slots = plan(target.parameters, nodes) if target is not None else None
     started, cost = bindings.get(CLOCK, ZERO), prefix
     scalars, callbacks, references = [], [], []

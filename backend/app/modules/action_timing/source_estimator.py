@@ -10,11 +10,13 @@ from app.modules.action_timing.source_construction import constructor_body, crea
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
 from app.modules.action_timing.source_hardware import hardware_call
 from app.modules.action_timing.source_index import children, initializer, simple_type, text, walk
+from app.modules.action_timing.source_loops import execute_for
 from app.modules.action_timing.source_properties import (
     assign_property,
     increment_property,
     read_property,
 )
+from app.modules.action_timing.source_scopes import declarations, local_scope
 from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup, track_binding
 
 PURE_NAMES = {
@@ -54,6 +56,10 @@ class Estimator:
         self.skip_conditions = []
         self.failure_reasons = []
         self.frames = 0
+        self.loop_steps = 0
+        self.numeric_loop_steps = 0
+        self.scope_frames = 0
+        self.allocations = 0
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
@@ -233,6 +239,13 @@ class Estimator:
             left = node.child_by_field_name("name") or next(
                 iter(children(node, "tuple_pattern")), None
             )
+            if left is not None and left.type == "identifier":
+                value = self.index.value(right, method, bindings)
+                if method.types.get(text(left)) in {"double", "float", "decimal"} and isinstance(
+                    value, (int, float)
+                ):
+                    value = float(value)
+                state.write(self.index, left, method, bindings, value)
             track_binding(self.index, left, right, method, bindings)
             return cost
         if node.type == "await_expression":
@@ -670,6 +683,9 @@ class Estimator:
                 expression=text(node),
             )
             return UNKNOWN
+        returned = flow.states.get("returned", {})
+        if "<return-value>" in returned:
+            bindings[call_args.return_key(node, caller, bindings)] = returned["<return-value>"]
         return flow.cost()
 
     def execute_body(self, method, bindings, stack, conditions, background):
@@ -775,15 +791,8 @@ class Estimator:
                 None, self.expression(node, method, bindings, stack, conditions, background)
             )
         if kind in {"block", "switch_section"}:
-            result = Flow()
-            for child in children(node):
-                if result.live is None:
-                    break
-                started = bindings.get(CLOCK, ZERO)
-                part = self.block(child, method, bindings, stack, conditions, background)
-                bindings[CLOCK] = started.plus(part.live) if part.live is not None else UNKNOWN
-                result = result.then(part)
-            return result
+            with local_scope(self, declarations(node), bindings):
+                return self.sequence(node, method, bindings, stack, conditions, background)
         if kind == "if_statement":
             condition = node.child_by_field_name("condition")
             before = self.expression(condition, method, bindings, stack, conditions, background)
@@ -834,11 +843,13 @@ class Estimator:
                 r"return\s+false\b", value
             ):
                 return Flow(None, None)
-            return Flow(None, cost)
+            expression = next(iter(children(node)), None)
+            bindings["<return-value>"] = self.index.value(expression, method, bindings)
+            return Flow(None, cost).with_state("returned", bindings)
         if kind == "break_statement":
-            return Flow(None, broken=ZERO)
+            return Flow(None, broken=ZERO).with_state("broken", bindings)
         if kind == "continue_statement":
-            return Flow(None, continued=ZERO)
+            return Flow(None, continued=ZERO).with_state("continued", bindings)
         if kind == "throw_statement":
             self.failure_reasons.append(text(node).removeprefix("throw ").removesuffix(";")[:180])
             return Flow(None, None)
@@ -872,10 +883,11 @@ class Estimator:
                 ).cost()
                 result = result.prefix(cost)
             return result
+        if kind == "for_statement":
+            return execute_for(self, node, method, bindings, stack, conditions, background)
         if kind in {
             "while_statement",
             "do_statement",
-            "for_statement",
             "for_each_statement",
             "foreach_statement",
         }:
@@ -885,10 +897,7 @@ class Estimator:
                 condition, method, bindings, stack, conditions, background
             )
             value = self.index.value(condition, method, bindings)
-            iterations = (
-                self.iterations(node, method, bindings) if kind == "for_statement" else None
-            )
-            if (kind == "while_statement" and value is False) or iterations == 0:
+            if kind == "while_statement" and value is False:
                 return Flow(condition_cost)
             label = f"循环：{text(node.child_by_field_name('condition')) or '次数依赖运行数据'}"
             start = len(self.stages)
@@ -907,14 +916,12 @@ class Estimator:
                 stage["repeat"] = True
             self.record(
                 "loop",
-                f"固定循环 {iterations} 次"
-                if iterations is not None
-                else "循环次数未定，不把每轮延时当作单次总耗时",
+                "循环次数未定，不把每轮延时当作单次总耗时",
                 node,
                 method,
                 conditions,
                 background,
-                iterations=iterations,
+                iterations=None,
                 bounded=(kind == "do_statement" and value is False)
                 or (body_flow.live is None and body_flow.continued is None),
                 per_iteration_min_ms=each.lower,
@@ -929,15 +936,6 @@ class Estimator:
                 if kind != "do_statement" and value is not True:
                     exited.live = choice(condition_cost, exited.live)
                 return exited
-            if iterations is not None:
-                return Flow(
-                    Cost(
-                        each.lower * iterations + condition_cost.lower * (iterations + 1),
-                        each.upper * iterations + condition_cost.upper * (iterations + 1)
-                        if each.upper is not None and condition_cost.upper is not None
-                        else None,
-                    )
-                )
             if kind == "do_statement" and value is False:
                 return Flow(
                     choice(
@@ -1000,19 +998,6 @@ class Estimator:
                     values = [state.get(key) for state in continuing_bindings]
                     bindings[key] = values[0] if all(item == values[0] for item in values) else None
             return result.prefix(before)
-        if kind == "local_declaration_statement":
-            for declaration in children(node, "variable_declaration"):
-                for variable in children(declaration, "variable_declarator"):
-                    value = self.index.value(initializer(variable), method, bindings)
-                    if text(declaration.child_by_field_name("type")) in {
-                        "double",
-                        "float",
-                        "decimal",
-                    } and isinstance(value, (int, float)):
-                        value = float(value)
-                    declared = variable.child_by_field_name("name")
-                    if declared is not None:
-                        state.write(self.index, declared, method, bindings, value)
         if kind in {"expression_statement", "local_declaration_statement"}:
             return Flow(self.expression(node, method, bindings, stack, conditions, background))
         if kind in {
@@ -1073,29 +1058,16 @@ class Estimator:
             return Flow(UNKNOWN)
         return Flow()
 
-    def iterations(self, node, method, bindings):
-        # 只计算明确的非负整数字面量/已知参数上界、步长为1的for；其余保留公式。
-        source = text(node)
-        if any(
-            part.type
-            in {"break_statement", "continue_statement", "return_statement", "goto_statement"}
-            for part in walk(node.child_by_field_name("body"))
-        ):
-            return None
-        match = re.match(
-            r"for\s*\(\s*(?:int\s+)?(\w+)\s*=\s*(\d+)\s*;\s*\1\s*(<|<=)\s*([\w.]+)\s*;\s*(?:\1\+\+|\+\+\1)\s*\)",
-            source,
-        )
-        if not match:
-            return None
-        end = float(match[4]) if match[4].isdigit() else bindings.get(match[4])
-        if not isinstance(end, (int, float)) or isinstance(end, bool) or not math.isfinite(end):
-            return None
-        if end != int(end) or abs(end) > 1_000_000:
-            return None
-        if 0 <= int(match[2]) <= 1_000_000:
-            return max(0, int(end) - int(match[2]) + (match[3] == "<="))
-        return None
+    def sequence(self, node, method, bindings, stack, conditions, background):
+        result = Flow()
+        for child in children(node):
+            if result.live is None:
+                break
+            started = bindings.get(CLOCK, ZERO)
+            part = self.block(child, method, bindings, stack, conditions, background)
+            bindings[CLOCK] = started.plus(part.live) if part.live is not None else UNKNOWN
+            result = result.then(part)
+        return result
 
     def _timeouts(self, node, method, conditions, background):
         for part in walk(node):

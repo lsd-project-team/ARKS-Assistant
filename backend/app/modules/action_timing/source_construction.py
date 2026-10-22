@@ -204,6 +204,10 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
     if create_task(estimator, node, method, bindings):
         bindings[CLOCK] = started
         return cost
+    estimator.allocations += 1
+    bindings[f"<allocation:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}>"] = (
+        f"new:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}:{estimator.allocations}"
+    )
     receiver_id = state.reference(estimator.index, node, method, bindings)
     bindings[CLOCK] = started.plus(cost)
     if target:

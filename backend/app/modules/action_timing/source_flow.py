@@ -1,6 +1,8 @@
 """顺序、互斥分支与控制流出口的耗时区间。"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from app.modules.action_timing import source_state as state
 
 
 @dataclass(frozen=True)
@@ -40,6 +42,20 @@ class Flow:
     returned: Cost | None = None
     broken: Cost | None = None
     continued: Cost | None = None
+    states: dict = field(default_factory=dict)
+
+    def with_state(self, channel, bindings):
+        self.states[channel] = dict(bindings)
+        return self
+
+    def merge_states(self, other):
+        result = {}
+        for channel in self.states.keys() | other.states.keys():
+            branches = [part[channel] for part in (self.states, other.states) if channel in part]
+            merged = {}
+            state.merge(merged, branches)
+            result[channel] = merged
+        return result
 
     def then(self, other):
         return Flow(
@@ -47,6 +63,7 @@ class Flow:
             choice(self.returned, add(self.live, other.returned)),
             choice(self.broken, add(self.live, other.broken)),
             choice(self.continued, add(self.live, other.continued)),
+            self.merge_states(other),
         )
 
     def cost(self):
@@ -57,10 +74,12 @@ class Flow:
             *(
                 choice(getattr(self, key), getattr(other, key))
                 for key in ("live", "returned", "broken", "continued")
-            )
+            ),
+            self.merge_states(other),
         )
 
     def prefix(self, cost):
         return Flow(
-            *(add(cost, getattr(self, key)) for key in ("live", "returned", "broken", "continued"))
+            *(add(cost, getattr(self, key)) for key in ("live", "returned", "broken", "continued")),
+            self.states,
         )

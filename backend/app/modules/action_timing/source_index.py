@@ -803,7 +803,10 @@ class SourceIndex:
             value_node = next(iter(children(node, "initializer_expression")), None)
             result = {
                 "<type>": text(node.child_by_field_name("type")),
-                "<ref>": f"new:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}",
+                "<ref>": bindings.get(
+                    f"<allocation:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}>",
+                    f"new:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}",
+                ),
             }
             owner = self.lookup_type(result["<type>"], method)
             for assignment in children(value_node, "assignment_expression"):
@@ -941,6 +944,9 @@ class SourceIndex:
                     seen,
                 )
         if kind == "invocation_expression":
+            result_key = call_args.return_key(node, method, bindings)
+            if result_key in bindings:
+                return state.materialize(bindings[result_key], bindings)
             function_node = node.child_by_field_name("function")
             function = text(function_node)
             if function_node.type == "conditional_access_expression":

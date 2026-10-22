@@ -88,10 +88,11 @@ def test_declared_base_variable_with_new_derived_is_not_treated_as_base_instance
     assert result["total_ms"] is None and result["known_delay_min_ms"] == 0
 
 
-def test_unbound_loop_local_does_not_read_same_named_member_initializer():
+def test_loop_counter_shadows_the_same_named_member_initializer():
     result = analyze("""class Demo {int i=100; public int DoWork() {
         for(int i=0;i<3;i++) Thread.Sleep(i); return 0;}}""")
-    assert result["total_ms"] is None and result["known_delay_max_ms"] is None
+    # 循环实际读取0、1、2；不读取同名成员的100，也不再遗漏可算计数器。
+    assert result["total_ms"] == 3
 
 
 def test_derived_property_body_and_hidden_field_do_not_reuse_base_initializer():

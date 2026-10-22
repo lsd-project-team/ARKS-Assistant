@@ -4,7 +4,7 @@ from dataclasses import dataclass, replace
 
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import ZERO
-from app.modules.action_timing.source_index import children, text
+from app.modules.action_timing.source_index import children, text, walk
 
 
 @dataclass(frozen=True)
@@ -16,9 +16,26 @@ class Closure:
 
 def capture(method, bindings, node):
     cells = []
+    declared = {name for name, _, _ in parameters(node)}
+    declared.update(
+        text(part.child_by_field_name("name"))
+        for part in walk(node)
+        if part.type == "variable_declarator"
+    )
+    used = {
+        text(part)
+        for part in walk(node)
+        if part.type == "identifier" and text(part) not in declared
+    }
     for name in method.types:
+        if name not in used:
+            continue
         initial = method.initializers.get(name)
-        if name not in bindings or (initial is not None and initial.start_byte > node.start_byte):
+        if name not in bindings or (
+            initial is not None
+            and initial.start_byte > node.start_byte
+            and f"{state.LOCAL_ALIAS}{name}>" not in bindings
+        ):
             continue
         key = bindings.get(
             f"{state.LOCAL_ALIAS}{name}>",
