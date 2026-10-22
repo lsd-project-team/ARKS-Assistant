@@ -6,11 +6,77 @@ from pathlib import Path
 
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
 from app.modules.action_timing.source_index import children, simple_type, text
+from app.modules.action_timing.source_state import member
 
 CONTRACT_ROOT = Path(__file__).with_name("contracts")
 HARDWARE = json.loads((CONTRACT_ROOT / "logic-hardware.json").read_text(encoding="utf-8"))
 DRIVE = json.loads((CONTRACT_ROOT / "drive.json").read_text(encoding="utf-8"))
 ALIASES = {"System.Boolean": "bool", "System.Double": "double", "System.Int32": "int"}
+HARDWARE_TYPES = {contract["declaringType"] for contract in HARDWARE["contracts"]}
+
+
+def receiver_declaration(index, node, method):
+    """调用文件无需using属性返回类型；归属证据应来自字段/属性的声明文件。"""
+    if node is None:
+        return None
+    if node.type == "invocation_expression":
+        target = index.resolve(node, method)
+        return target.unit if target else None
+    if node.type == "identifier" and text(node) not in method.types:
+        owner, name = method.owner, text(node)
+    elif node.type == "member_access_expression":
+        owner = index.infer(node.child_by_field_name("expression"), method)
+        name = text(node.child_by_field_name("name"))
+    else:
+        return None
+    found = member(index, owner, name)
+    return index.classes[found[0]].member_units.get(name) if found else None
+
+
+def hardware_type(index, node, method):
+    """识别外部硬件接收者；类型归属不等于某重载的耗时契约已核实。"""
+    function = node.child_by_field_name("function")
+    receiver = function.child_by_field_name("expression")
+    if function.type == "conditional_access_expression":
+        receiver = function.child_by_field_name("condition")
+    owner = index.infer(receiver, method)
+    pending, seen = [(owner, method.unit)], set()
+    declaration = receiver_declaration(index, receiver, method)
+    if declaration:
+        pending.append((owner, declaration))
+    while pending:
+        owner, unit = pending.pop()
+        identity = (owner, unit.path)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        info = index.classes.get(owner)
+        if info:
+            pending.extend(
+                (base, declaration)
+                for base in index.base_types(owner)
+                for declaration, _ in info.declarations
+            )
+            continue
+        for kind in sorted(HARDWARE_TYPES):
+            if kind == owner or (
+                simple_type(kind) == owner and kind.rsplit(".", 1)[0] in unit.namespaces
+            ):
+                return kind
+    return None
+
+
+def operation_name(node):
+    function = node.child_by_field_name("function")
+    binding = next(iter(children(function, "member_binding_expression")), None)
+    return text((binding or function).child_by_field_name("name"))
+
+
+def hardware_operation(index, node, method):
+    name = operation_name(node)
+    if name in {"GetInstance", "ToString", "Equals", "GetType", "GetHashCode"}:
+        return None
+    return hardware_type(index, node, method)
 
 
 def bind_packages(references):
@@ -34,12 +100,10 @@ def contract_for(index, node, method):
     bound = getattr(index, "packages", {}).get("AKRS.Galaxy2.LogicHardware", {})
     if not bound.get("verified"):
         return None
-    function = node.child_by_field_name("function")
-    receiver = function.child_by_field_name("expression")
-    owner = index.infer(receiver, method)
-    if owner in index.classes:
+    owner = hardware_type(index, node, method)
+    if not owner or owner in index.classes:
         return None
-    name = text(function.child_by_field_name("name"))
+    name = operation_name(node)
     args = children(node.child_by_field_name("arguments"), "argument")
     candidates = []
     for contract in HARDWARE["contracts"]:
@@ -47,7 +111,7 @@ def contract_for(index, node, method):
         if contract["method"] != name or simple_type(full_type) != simple_type(owner):
             continue
         namespace = full_type.rsplit(".", 1)[0]
-        if owner != full_type and f"using {namespace};" not in method.unit.raw.decode("utf-8"):
+        if owner != full_type and namespace not in method.unit.namespaces:
             continue
         params = contract["parameterTypes"]
         optional = len(contract.get("optionalDefaults", {}))
@@ -129,6 +193,29 @@ def motion_model(contract, expressions, values, receiver):
 def hardware_call(estimator, node, method, bindings, conditions, background):
     contract = contract_for(estimator.index, node, method)
     if contract is None:
+        owner = hardware_operation(estimator.index, node, method)
+        if owner:
+            name = operation_name(node)
+            kind = (
+                "motion"
+                if any(part in name for part in ("Move", "Jog", "Home"))
+                else "wait"
+                if name.startswith("Wait")
+                else "call"
+            )
+            estimator.record(
+                kind,
+                "外部硬件接口耗时未定",
+                node,
+                method,
+                conditions,
+                background,
+                receiver_type=owner,
+                expression=text(node),
+                milliseconds=None,
+                note="已确认硬件类型；此方法/重载的内部等待未核实，不按Get/Set前缀当作零耗时",
+            )
+            return ZERO
         return None
     behavior = contract["behavior"]
     owner = simple_type(contract["declaringType"])
@@ -176,7 +263,10 @@ def hardware_call(estimator, node, method, bindings, conditions, background):
                 contract,
                 expressions,
                 values,
-                text(node.child_by_field_name("function").child_by_field_name("expression")),
+                text(
+                    node.child_by_field_name("function").child_by_field_name("expression")
+                    or node.child_by_field_name("function").child_by_field_name("condition")
+                ),
             ),
         )
         return ZERO

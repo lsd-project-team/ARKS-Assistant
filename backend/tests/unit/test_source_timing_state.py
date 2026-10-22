@@ -115,3 +115,10 @@ def test_object_initializer_custom_setter_updates_the_value_read_by_getter():
         class Demo {public int DoWork(){var settings=new Settings {Delay=7};
         Thread.Sleep(settings.Delay);return 0;}}""")
     assert result["total_ms"] == 9
+
+
+def test_value_projection_cache_is_limited_to_one_evaluation_and_parameter_context():
+    result = analyze("""class Demo {int delay=5;int Echo(int value)=>value;
+        public int DoWork(){Thread.Sleep(Echo(3)+Echo(7));Thread.Sleep(delay);
+        delay=7;Thread.Sleep(delay);return 0;}}""")
+    assert result["total_ms"] == 22

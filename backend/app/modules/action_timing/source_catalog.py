@@ -4,6 +4,7 @@ import re
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass, replace
 
+from app.modules.action_timing.source_hardware import hardware_operation
 from app.modules.action_timing.source_index import children, description, text, walk
 
 TIMED = re.compile(
@@ -184,7 +185,9 @@ def build_catalog(index, legacy):
                 continue
             function = text(call.child_by_field_name("function"))
             target = index.resolve(call, method)
-            if timed_operation(function.split(".")[-1]) and not (target and target.body):
+            if (
+                timed_operation(function.split(".")[-1]) or hardware_operation(index, call, method)
+            ) and not (target and target.body):
                 direct.add(method.key)
             if target:
                 edges[method.key].add(target.key)

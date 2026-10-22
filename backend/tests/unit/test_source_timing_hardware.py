@@ -2,6 +2,8 @@
 
 import hashlib
 
+import pytest
+
 from app.modules.action_timing.source_estimator import Estimator
 from app.modules.action_timing.source_index import SourceIndex
 from app.modules.action_timing.source_service import SourceTiming
@@ -109,3 +111,132 @@ def test_unimplemented_syncmove_is_not_reported_as_real_parallel_motion():
     result = Estimator(index).estimate(index.by_method[("Demo", "DoWork")][0])
     assert result["motion_count"] == 0 and result["total_ms"] == 0
     assert "没有动作实现" in result["stages"][0]["label"]
+
+
+def test_typed_hardware_query_is_unknown_even_when_its_name_starts_with_get():
+    result = estimate("axis.GetRealPosition(); Thread.Sleep(3);")
+    assert result["known_delay_min_ms"] == result["known_delay_max_ms"] == 3
+    assert result["total_ms"] is None
+    assert any(stage.get("receiver_type", "").endswith("Axis") for stage in result["stages"])
+
+
+def test_private_jog_and_query_wrappers_enter_catalog_by_hardware_type(tmp_path):
+    (tmp_path / "Demo.cs").write_text(
+        """using AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers;
+        class Manual {Axis axis;void Nudge(){axis.Jog(5);}
+        void Adjust(){axis.SetVel(3);}double Read(){return axis.GetRealPosition();}}
+        class Plain {OtherAxis axis;void Nudge(){axis.Jog(5);}}
+        class Factory {void Read(){MotionService.GetInstance();}}""",
+        encoding="utf-8",
+    )
+    rows = SourceTiming(Workspace(tmp_path)).summary()["rows"]
+    entries = {(row["class_name"], row["method"]) for row in rows}
+    assert {("Manual", "Nudge"), ("Manual", "Adjust"), ("Manual", "Read")} <= entries
+    assert ("Plain", "Nudge") not in entries
+    assert ("Factory", "Read") not in entries
+
+
+def test_hardware_type_check_respects_namespace_and_source_implementation():
+    source = """using Other;
+        class Demo {Axis axis;public int DoWork(){axis.GetRealPosition();return 0;}}"""
+    index = SourceIndex([{"path": "main.cs", "content": source, "version": "wrong-import"}])
+    result = Estimator(index).estimate(index.by_method[("Demo", "DoWork")][0])
+    assert not any(stage.get("receiver_type") for stage in result["stages"])
+    own = estimate(
+        "axis.GetRealPosition();",
+        extra="""class Axis {
+        public double GetRealPosition(){Thread.Sleep(9);return 0;}}""",
+    )
+    assert own["total_ms"] == 9
+    assert not any(stage.get("receiver_type") for stage in own["stages"])
+
+
+def test_source_derived_hardware_and_conditional_access_keep_external_boundary(tmp_path):
+    (tmp_path / "Axis.cs").write_text(
+        """using AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers;
+        partial class CustomAxis:Axis {}""",
+        encoding="utf-8",
+    )
+    (tmp_path / "Axis.Other.cs").write_text("partial class CustomAxis {}", encoding="utf-8")
+    (tmp_path / "Manual.cs").write_text(
+        "class Manual {CustomAxis axis;void Nudge(){axis?.Jog(5);}}", encoding="utf-8"
+    )
+    rows = SourceTiming(Workspace(tmp_path)).report()["rows"]
+    row = next(row for row in rows if row["class_name"] == "Manual")
+    assert row["motion_count"] == 1 and row["total_ms"] is None
+    assert any(stage.get("receiver_type", "").endswith(".Axis") for stage in row["stages"])
+
+
+def test_hardware_property_type_uses_declaration_imports_in_another_file(tmp_path):
+    (tmp_path / "Device.cs").write_text(
+        """using AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers;
+        class Device {public Axis AxisX {get;} public Sensor Pressure;}""",
+        encoding="utf-8",
+    )
+    (tmp_path / "Manual.cs").write_text(
+        """class Manual {Device device;
+        double Read(){return device.AxisX.GetRealPosition();}
+        void Check(){device.Pressure.ReadTxPDO(0,1);}}""",
+        encoding="utf-8",
+    )
+    rows = SourceTiming(Workspace(tmp_path)).report()["rows"]
+    assert {("Manual", "Read"), ("Manual", "Check")} <= {
+        (row["class_name"], row["method"]) for row in rows
+    }
+    assert all(row["total_ms"] is None for row in rows if row["class_name"] == "Manual")
+
+
+def test_verified_contract_uses_external_property_declaration_type():
+    index = SourceIndex(
+        [
+            {
+                "path": "Device.cs",
+                "content": """using AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers;
+        class Device {public Axis AxisX {get;}}""",
+                "version": "device",
+            },
+            {
+                "path": "Demo.cs",
+                "content": """class Demo {Device device;public int DoWork(){
+        device.AxisX.AbsoluteMove(10,false,20);return 0;}}""",
+                "version": "caller",
+            },
+        ]
+    )
+    index.packages = {"AKRS.Galaxy2.LogicHardware": {"verified": True}}
+    result = Estimator(index).estimate(index.by_method[("Demo", "DoWork")][0])
+    stage = next(stage for stage in result["stages"] if stage["kind"] == "motion")
+    assert "contract" in stage and stage["motion_model"]["source_fixed_wait_ms"] == 20
+
+
+@pytest.mark.parametrize(
+    "prefix,suffix,matched",
+    [
+        (
+            "namespace AKRS.ZX2200; using Galaxy2.LogicHardware.Hardwares.MotionControllers;",
+            "",
+            True,
+        ),
+        (
+            "using Galaxy2.LogicHardware.Hardwares.MotionControllers; namespace AKRS.ZX2200;",
+            "",
+            False,
+        ),
+        (
+            "namespace AKRS.ZX2200 { using Galaxy2.LogicHardware.Hardwares.MotionControllers;",
+            "}",
+            True,
+        ),
+    ],
+)
+def test_relative_namespace_import_obeys_its_csharp_scope(prefix, suffix, matched):
+    source = (
+        prefix
+        + """class Demo {Axis axis;public int DoWork(){
+        axis.AbsoluteMove(10,false,20);return 0;}}"""
+        + suffix
+    )
+    index = SourceIndex([{"path": "main.cs", "content": source, "version": "relative"}])
+    index.packages = {"AKRS.Galaxy2.LogicHardware": {"verified": True}}
+    result = Estimator(index).estimate(index.by_method[("Demo", "DoWork")][0])
+    assert any("contract" in stage for stage in result["stages"]) is matched

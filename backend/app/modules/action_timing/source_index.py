@@ -5,6 +5,7 @@ import math
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
+from functools import cached_property
 
 import tree_sitter_c_sharp
 from tree_sitter import Language, Parser
@@ -65,6 +66,48 @@ class Unit:
     project: str = ""
     role: str = "business"
 
+    @cached_property
+    def namespaces(self):
+        result, pending = set(), [self.tree.root_node]
+        while pending:
+            node = pending.pop()
+            if node.type != "using_directive":
+                if node.type in {
+                    "compilation_unit",
+                    "namespace_declaration",
+                    "file_scoped_namespace_declaration",
+                    "declaration_list",
+                }:
+                    pending.extend(children(node))
+                continue
+            found = re.fullmatch(
+                r"(?:global\s+)?using\s+((?:global::)?[\w.]+)\s*;", text(node).strip()
+            )
+            if found is None:
+                continue
+            imported = found[1].removeprefix("global::")
+            result.add(imported)
+            if found[1].startswith("global::") or text(node).lstrip().startswith("global "):
+                continue
+            scopes, parent = [], node.parent
+            while parent:
+                if parent.type in {"namespace_declaration", "file_scoped_namespace_declaration"}:
+                    scopes.append(text(parent.child_by_field_name("name")))
+                parent = parent.parent
+            if not scopes:
+                scopes = [
+                    text(part.child_by_field_name("name"))
+                    for part in children(self.tree.root_node, "file_scoped_namespace_declaration")
+                    if part.start_byte < node.start_byte
+                ]
+            # namespace AKRS.ZX2200 内的 using Galaxy2... 可以指向
+            # AKRS.Galaxy2...；位于该namespace之前的全局using不能这样补前缀。
+            parts = ".".join(reversed(scopes)).split(".") if scopes else []
+            result.update(
+                f"{'.'.join(parts[:length])}.{imported}" for length in range(1, len(parts) + 1)
+            )
+        return result
+
     def evidence(self, node):
         return {
             "path": self.path,
@@ -116,6 +159,7 @@ class ClassInfo:
     constructor_writes: set = field(default_factory=set)
     initializers: list = field(default_factory=list)
     static_members: set = field(default_factory=set)
+    member_units: dict = field(default_factory=dict)
 
 
 class SourceIndex:
@@ -133,6 +177,8 @@ class SourceIndex:
         self._overridden_cache = {}
         self._property_cache = {}
         self._valuing = set()
+        self._value_cache = {}
+        self._value_contexts = {}
         for source in documents:
             raw = source["content"].encode("utf-8")
             # 文本、语法树与节点共同保存，避免跨文件持有失效的原生节点。
@@ -210,6 +256,7 @@ class SourceIndex:
             if member.type == "property_declaration":
                 member_name = text(member.child_by_field_name("name"))
                 info.types[member_name] = text(member.child_by_field_name("type"))
+                info.member_units[member_name] = unit
                 value = member.child_by_field_name("value")
                 if value is not None:
                     info.defaults[member_name] = (unit, value)
@@ -256,6 +303,7 @@ class SourceIndex:
                 for variable in children(declaration, "variable_declarator"):
                     member_name = text(variable.child_by_field_name("name"))
                     info.types[member_name] = kind
+                    info.member_units[member_name] = unit
                     if static:
                         info.static_members.add(member_name)
                     value = initializer(variable)
@@ -661,13 +709,24 @@ class SourceIndex:
         if node is None:
             return None
         identity = (method.key, node.type, node.start_byte, node.end_byte)
+        cached = (*identity, id(bindings))
+        if cached in self._value_cache:
+            return self._value_cache[cached]
         if identity in self._valuing:
             return None
+        # 一次投影中不会执行写入。只复用相同参数上下文的子表达式，避免沿
+        # 多层属性接收者反复展开；跨语句清空，且保留上下文以防Python复用id。
+        self._value_contexts[id(bindings)] = bindings
         self._valuing.add(identity)
         try:
-            return self._value(node, method, bindings, seen)
+            value = self._value(node, method, bindings, seen)
+            self._value_cache[cached] = value
+            return value
         finally:
             self._valuing.remove(identity)
+            if not self._valuing:
+                self._value_cache.clear()
+                self._value_contexts.clear()
 
     def _value(self, node, method, bindings, seen=None):
         if node is None:
