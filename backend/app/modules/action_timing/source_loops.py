@@ -5,7 +5,7 @@ from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add
 from app.modules.action_timing.source_index import children, initializer, text, walk
 from app.modules.action_timing.source_loop_bounds import pure_loop
 from app.modules.action_timing.source_numbers import INTEGER_RANGES
-from app.modules.action_timing.source_scopes import local_scope
+from app.modules.action_timing.source_scopes import local_scope, restore
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 MAX_ITERATIONS = 128
@@ -23,6 +23,7 @@ class ForExecution:
         self.conditions, self.background = conditions, background
         self.started = bindings.get(CLOCK, ZERO)
         self.elapsed = ZERO
+        self.test_cost = ZERO
         self.result = Flow(None, None)
         self.exits = []
         self.count = 0
@@ -42,6 +43,7 @@ class ForExecution:
             node, self.method, self.bindings, self.stack, self.conditions, self.background
         )
         self.elapsed = self.elapsed.plus(cost)
+        return cost
 
     def initialize(self):
         for node in fields(self.node, "initializer"):
@@ -78,7 +80,12 @@ class ForExecution:
         returned = Flow(
             None,
             add(prefix, flow.returned),
-            states={name: value for name, value in flow.states.items() if name == "returned"},
+            states={
+                name: value
+                for name, value in flow.states.items()
+                if name == "returned" or name in flow.jumps
+            },
+            jumps={key: add(prefix, cost) for key, cost in flow.jumps.items()},
         )
         self.result = self.result.merge(returned)
 
@@ -122,11 +129,17 @@ class ForExecution:
         state.merge(self.bindings, possible)
         # 未知次数后的状态不沿用单轮更新结果。
         state.transfer(self.bindings, possible[-1], uncertain=True, locals=True)
-        tail = UNKNOWN if can_repeat and sample != ZERO else ZERO
+        repeating_time = sample != ZERO or self.test_cost != ZERO
+        tail = UNKNOWN if can_repeat and repeating_time else ZERO
         if not can_repeat:
             tail = choice(ZERO, flow.broken) if flow.broken is not None else ZERO
             self.bounded = True
         self.exit(self.elapsed.plus(tail), self.bindings)
+        for target, cost in flow.jumps.items():
+            duration = Cost(cost.lower, None) if can_repeat and repeating_time else cost
+            outgoing = Flow(None, None, jumps={target: self.elapsed.plus(duration)})
+            outgoing.with_state(target, flow.states.get(target, self.bindings))
+            self.result = self.result.merge(outgoing)
         if flow.returned is not None:
             returned = Cost(flow.returned.lower, None) if can_repeat else flow.returned
             self.result.returned = choice(self.result.returned, self.elapsed.plus(returned))
@@ -184,7 +197,7 @@ class ForExecution:
             self.exit(self.elapsed.plus(plan.cost), self.bindings)
             return self.finish()
         while True:
-            self.expression(self.condition)
+            self.test_cost = self.expression(self.condition)
             value = (
                 True
                 if self.condition is None
@@ -272,7 +285,7 @@ class ForExecution:
         self.result.states = {
             channel: context
             for channel, context in self.result.states.items()
-            if channel == "returned"
+            if channel == "returned" or channel in self.result.jumps
         }
         return self.result
 
@@ -285,7 +298,10 @@ def execute_for(estimator, node, method, bindings, stack, conditions, background
         for part in children(declaration, "variable_declarator")
         if part.child_by_field_name("name") is not None
     ]
-    with local_scope(estimator, names, bindings):
-        return ForExecution(
+    with local_scope(estimator, names, bindings) as before:
+        flow = ForExecution(
             estimator, node, method, bindings, stack, conditions, background
         ).execute()
+        for snapshot in flow.states.values():
+            restore(snapshot, before)
+        return flow

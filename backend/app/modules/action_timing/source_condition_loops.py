@@ -17,7 +17,7 @@ class ConditionExecution(ForExecution):
         previous = None
         while True:
             if not post_test or self.count:
-                self.expression(self.condition)
+                self.test_cost = self.expression(self.condition)
                 value = self.estimator.index.value(self.condition, self.method, self.bindings)
                 if value is False:
                     self.exit(self.elapsed, self.bindings)

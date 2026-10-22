@@ -182,6 +182,7 @@ class SourceIndex:
         self.type_names = defaultdict(list)
         self.enums = set()
         self._inference_cache = {}
+        self._local_definition_cache = {}
         self._inferring = set()
         self._resolution_cache = {}
         self._resolving = set()
@@ -672,9 +673,9 @@ class SourceIndex:
             bases = self.base_types(method.owner)
             return bases[0] if len(bases) == 1 else ""
         if node.type == "identifier":
-            declared = self.local_type(node, method)
+            declared, value_node = self.local_definition(node, method)
             if declared == "var":
-                return self.infer(method.initializers.get(source), method)
+                return self.infer(value_node, method)
             return (
                 (self.lookup_type(declared, method) if declared else "")
                 or self.member_type(method.owner, source)
@@ -733,27 +734,62 @@ class SourceIndex:
         }.get(node.type, "")
 
     def local_type(self, node, method):
+        return self.local_definition(node, method)[0]
+
+    def local_definition(self, node, method):
+        identity = (method.key, node.start_byte, node.end_byte, method.type_scope)
+        if identity not in self._local_definition_cache:
+            self._local_definition_cache[identity] = self._local_definition(node, method)
+        return self._local_definition_cache[identity]
+
+    def _local_definition(self, node, method):
         name = text(node)
         parent = node.parent
         while parent is not None and parent != method.node:
+            if parent.type in {"block", "switch_section"}:
+                for statement in children(parent, "local_declaration_statement"):
+                    declaration = next(iter(children(statement, "variable_declaration")), None)
+                    for variable in children(declaration, "variable_declarator"):
+                        if text(variable.child_by_field_name("name")) == name:
+                            return text(declaration.child_by_field_name("type")), initializer(
+                                variable
+                            )
             if parent.type in {"foreach_statement", "for_each_statement"}:
                 body = parent.child_by_field_name("body")
+                variable = parent.child_by_field_name("left")
                 if (
-                    text(parent.child_by_field_name("left")) == name
+                    text(variable) == name
                     and body is not None
-                    and body.start_byte <= node.start_byte < body.end_byte
+                    and (
+                        body.start_byte <= node.start_byte < body.end_byte
+                        or variable.start_byte <= node.start_byte < variable.end_byte
+                    )
                 ):
                     for position, kind in reversed(method.type_scope):
                         if position == parent.start_byte:
-                            return kind
+                            return kind, None
                     kind = text(parent.child_by_field_name("type"))
                     if kind == "var":
                         from app.modules.action_timing.source_collections import element_type
 
-                        return element_type(self, parent.child_by_field_name("right"), method)
-                    return kind
+                        return element_type(self, parent.child_by_field_name("right"), method), None
+                    return kind, None
+            if parent.type == "for_statement":
+                for declaration in children(parent, "variable_declaration"):
+                    for variable in children(declaration, "variable_declarator"):
+                        if text(variable.child_by_field_name("name")) == name:
+                            return text(declaration.child_by_field_name("type")), initializer(
+                                variable
+                            )
             parent = parent.parent
-        return method.types.get(name, "")
+        parameter = next(
+            (kind for parameter, kind, _ in method.parameters if parameter == name), None
+        )
+        if parameter is not None:
+            return parameter, None
+        if method.callable_kind == "delegate":
+            return method.types.get(name, ""), method.initializers.get(name)
+        return "", None
 
     def resolve(self, node, caller):
         identity = (caller.key, node.start_byte, node.end_byte, caller.type_scope)
@@ -819,7 +855,7 @@ class SourceIndex:
         if text(receiver) == "base" or (receiver and receiver.type == "object_creation_expression"):
             return False
         if receiver and receiver.type == "identifier":
-            created = caller.initializers.get(text(receiver))
+            created = self.local_definition(receiver, caller)[1]
             if (
                 created
                 and created.type == "object_creation_expression"
@@ -909,7 +945,7 @@ class SourceIndex:
             place = location(self, node, method, bindings)
             return item(*place, bindings) if place is not None else None
         if kind == "identifier":
-            if source in method.types:
+            if self.local_type(node, method):
                 return None
             getter = self.accessor(node, method, "get")
             if getter and self.polymorphic(node, method, getter):

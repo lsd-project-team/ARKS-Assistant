@@ -6,6 +6,8 @@ import re
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_delegates as delegates
+from app.modules.action_timing import source_finally
+from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_condition_loops import execute_condition_loop
 from app.modules.action_timing.source_construction import constructor_body, create_object
@@ -21,7 +23,7 @@ from app.modules.action_timing.source_properties import (
     increment_property,
     read_property,
 )
-from app.modules.action_timing.source_scopes import declarations, local_scope
+from app.modules.action_timing.source_scopes import declarations, local_scope, restore
 from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup, track_binding
 
 PURE_NAMES = {
@@ -65,6 +67,7 @@ class Estimator:
         self.numeric_loop_steps = 0
         self.scope_frames = 0
         self.allocations = 0
+        self.jump_steps = 0
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
@@ -739,7 +742,14 @@ class Estimator:
             return Flow(
                 self.expression(method.body, method, bindings, stack, conditions, background)
             )
-        return self.block(method.body, method, bindings, stack, conditions, background)
+        flow = self.block(method.body, method, bindings, stack, conditions, background)
+        if flow.jumps:
+            self.truncated = True
+            self.record(
+                "unresolved", "跳转超出当前分析执行体", method.body, method, conditions, background
+            )
+            flow.live = choice(flow.live, UNKNOWN)
+        return flow
 
     def depth(self, stack):
         return sum(
@@ -835,8 +845,11 @@ class Estimator:
             bindings["<return-value>"] = self.index.value(node, method, bindings)
             return Flow(None, cost).with_state("returned", bindings)
         if kind in {"block", "switch_section"}:
-            with local_scope(self, declarations(node), bindings):
-                return self.sequence(node, method, bindings, stack, conditions, background)
+            with local_scope(self, declarations(node), bindings) as before:
+                flow = self.sequence(node, method, bindings, stack, conditions, background)
+                for snapshot in flow.states.values():
+                    restore(snapshot, before)
+                return flow
         if kind == "if_statement":
             condition = node.child_by_field_name("condition")
             before = self.expression(condition, method, bindings, stack, conditions, background)
@@ -898,34 +911,56 @@ class Estimator:
             self.failure_reasons.append(text(node).removeprefix("throw ").removesuffix(";")[:180])
             return Flow(None, None)
         if kind == "try_statement":
+            started = bindings.get(CLOCK, ZERO)
             body = next(iter(children(node, "block")), None)
             result = self.block(body, method, bindings, stack, conditions, background)
+            bindings[CLOCK] = started
+            continuing = [dict(bindings)] if result.live is not None else []
             for caught in children(node, "catch_clause"):
+                handler_bindings = dict(bindings)
+                handler_bindings[CLOCK] = started
                 handler = self.block(
                     next(iter(children(caught, "block")), None),
                     method,
-                    dict(bindings),
+                    handler_bindings,
                     stack,
                     (*conditions, "异常恢复分支"),
                     background,
                 )
-                if handler.live is not None or handler.returned is not None:
+                if (
+                    any(
+                        cost is not None
+                        for cost in (
+                            handler.live,
+                            handler.returned,
+                            handler.broken,
+                            handler.continued,
+                        )
+                    )
+                    or handler.jumps
+                ):
                     # 异常发生点不确定，恢复不能被当作无成本的顺序正常路径。
                     result = result.merge(handler.prefix(UNKNOWN))
                     self.record(
                         "unresolved", "异常恢复路径耗时未定", caught, method, conditions, background
                     )
+                if handler.live is not None:
+                    continuing.append(handler_bindings)
+            if continuing:
+                state.merge(bindings, continuing)
+            bindings[CLOCK] = started
             final = next(iter(children(node, "finally_clause")), None)
             if final:
-                cost = self.block(
-                    next(iter(children(final, "block")), None),
+                result = source_finally.execute(
+                    self,
+                    final,
+                    result,
                     method,
                     bindings,
                     stack,
                     conditions,
                     background,
-                ).cost()
-                result = result.prefix(cost)
+                )
             return result
         if kind == "for_statement":
             return execute_for(self, node, method, bindings, stack, conditions, background)
@@ -1013,20 +1048,11 @@ class Estimator:
                 background,
             )
         if kind == "labeled_statement":
-            self.truncated = True
-            self.record(
-                "unresolved",
-                "含标签跳转，顺序总时长保持未定",
-                node,
-                method,
-                conditions,
-                background,
-                expression=text(node)[:180],
+            return self.block(
+                jumps.labeled_body(node), method, bindings, stack, conditions, background
             )
-            return Flow(UNKNOWN)
         if kind == "goto_statement":
-            self.truncated = True
-            return Flow(UNKNOWN)
+            return jumps.transfer(self, node, method, bindings, conditions, background)
         if kind.endswith("_statement") and kind not in {
             "break_statement",
             "continue_statement",
@@ -1046,6 +1072,8 @@ class Estimator:
         return Flow()
 
     def sequence(self, node, method, bindings, stack, conditions, background):
+        if jumps.labels(node, method):
+            return jumps.sequence(self, node, method, bindings, stack, conditions, background)
         result = Flow()
         for child in children(node):
             if result.live is None:

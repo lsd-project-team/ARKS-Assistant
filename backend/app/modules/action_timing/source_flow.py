@@ -43,6 +43,7 @@ class Flow:
     broken: Cost | None = None
     continued: Cost | None = None
     states: dict = field(default_factory=dict)
+    jumps: dict = field(default_factory=dict)
 
     def with_state(self, channel, bindings):
         self.states[channel] = dict(bindings)
@@ -64,6 +65,10 @@ class Flow:
             choice(self.broken, add(self.live, other.broken)),
             choice(self.continued, add(self.live, other.continued)),
             self.merge_states(other),
+            {
+                key: choice(self.jumps.get(key), add(self.live, other.jumps.get(key)))
+                for key in self.jumps.keys() | other.jumps.keys()
+            },
         )
 
     def cost(self):
@@ -76,10 +81,15 @@ class Flow:
                 for key in ("live", "returned", "broken", "continued")
             ),
             self.merge_states(other),
+            {
+                key: choice(self.jumps.get(key), other.jumps.get(key))
+                for key in self.jumps.keys() | other.jumps.keys()
+            },
         )
 
     def prefix(self, cost):
         return Flow(
             *(add(cost, getattr(self, key)) for key in ("live", "returned", "broken", "continued")),
             self.states,
+            {key: add(cost, value) for key, value in self.jumps.items()},
         )

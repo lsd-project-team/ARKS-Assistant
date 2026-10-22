@@ -37,10 +37,14 @@ def local_scope(estimator, names, bindings):
         bindings[f"{state.LOCAL_ALIAS}{name}>"] = slot
         bindings[name] = None
     try:
-        yield
+        yield before
     finally:
-        for key, value in before.items():
-            if value is state.MISSING:
-                bindings.pop(key, None)
-            else:
-                bindings[key] = value
+        restore(bindings, before)
+
+
+def restore(bindings, before):
+    for key, value in before.items():
+        if value is state.MISSING:
+            bindings.pop(key, None)
+        else:
+            bindings[key] = value

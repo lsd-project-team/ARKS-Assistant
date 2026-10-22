@@ -130,11 +130,11 @@ def raw_type(index, node, method, seen=None):
             kind = f"{element}[{',' * (count - 1)}]"
         return kind
     if node.type == "identifier":
-        kind = index.local_type(node, method)
+        kind, value_node = index.local_definition(node, method)
         if kind and kind != "var":
             return kind
         if kind == "var":
-            return raw_type(index, method.initializers.get(text(node)), method, seen)
+            return raw_type(index, value_node, method, seen)
         found = state.member(index, method.owner, text(node))
     elif node.type == "member_access_expression":
         owner = index.infer(node.child_by_field_name("expression"), method)

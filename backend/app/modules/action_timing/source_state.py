@@ -46,7 +46,7 @@ def location(index, node, method, bindings, owner=None):
         return None
     name = source(node)
     if node.type == "identifier":
-        if owner is None and name in method.types:
+        if owner is None and index.local_type(node, method):
             return None
         found = member(index, owner or method.owner, name)
         receiver = bindings.get(THIS)
