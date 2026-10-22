@@ -1930,7 +1930,6 @@
 .knowledge-workspace .hero-secondary {
   border-color: transparent;
   background: transparent;
-  padding-inline: 0;
   color: var(--muted);
 }
 .knowledge-workspace .hero-secondary:hover {
