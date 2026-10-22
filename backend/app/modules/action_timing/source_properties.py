@@ -2,9 +2,13 @@
 
 import math
 
+from app.modules.action_timing import source_arguments as call_args
+from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_collection_expressions import evaluate_location
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
+from app.modules.action_timing.source_numbers import bounded
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 
@@ -108,15 +112,24 @@ def assign_property(
     operator = text(node.child_by_field_name("operator"))
     started = bindings.get(CLOCK, ZERO)
     before = ZERO
+    place = None
+    if left.type == "element_access_expression":
+        before, place = evaluate_location(
+            estimator, left, method, bindings, stack, conditions, background
+        )
     if left.type == "member_access_expression":
         before = estimator.expression(
             left.child_by_field_name("expression"), method, bindings, stack, conditions, background
         )
     if operator != "=":
-        current = estimator.index.value(left, method, bindings)
         getter = estimator.index.accessor(left, method, "get", owner)
         before = before.plus(
             accessor_cost(estimator, getter, left, method, bindings, stack, conditions, background)
+        )
+        current = (
+            collections.item(*place, bindings)
+            if place is not None
+            else estimator.index.value(left, method, bindings)
         )
     bindings[CLOCK] = started.plus(before)
     before = before.plus(
@@ -125,6 +138,12 @@ def assign_property(
     value = estimator.index.value(right, method, bindings)
     if operator != "=":
         value = assigned_value(current, value, operator)
+    value, overflow = bounded(estimator.index, left, method, value)
+    if overflow:
+        estimator.record(
+            "unresolved", "整数运算溢出，赋值结果未定", node, method, conditions, background
+        )
+        before = before.plus(UNKNOWN)
     setter = estimator.index.accessor(left, method, "set", owner)
     bindings[CLOCK] = started.plus(before)
     before = before.plus(
@@ -156,7 +175,9 @@ def assign_property(
             before = before.plus(UNKNOWN)
     getter = estimator.index.accessor(left, method, "get", owner)
     custom = (setter and setter.body is not None) or (getter and getter.body is not None)
-    if not custom:
+    if place is not None:
+        collections.write(place, value, bindings)
+    elif not custom:
         target_bindings = (
             bindings if receiver_id is state.MISSING else {**bindings, state.THIS: receiver_id}
         )
@@ -169,18 +190,36 @@ def assign_property(
         estimator.index, left, right if operator == "=" and not custom else None, method, bindings
     )
     bindings[CLOCK] = started
+    bindings[call_args.return_key(node, method, bindings)] = value
     return before
 
 
 def increment_property(estimator, node, method, bindings, stack, conditions, background):
     operand = children(node)[-1]
     started = bindings.get(CLOCK, ZERO)
-    value = estimator.index.value(operand, method, bindings)
-    cost = read_property(estimator, operand, method, bindings, stack, conditions, background)
+    place = None
+    if operand.type == "element_access_expression":
+        cost, place = evaluate_location(
+            estimator, operand, method, bindings, stack, conditions, background
+        )
+    else:
+        cost = read_property(estimator, operand, method, bindings, stack, conditions, background)
+    previous = (
+        collections.item(*place, bindings)
+        if place is not None
+        else estimator.index.value(operand, method, bindings)
+    )
+    value = previous
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         value += 1 if "++" in text(node) else -1
     else:
         value = None
+    value, overflow = bounded(estimator.index, operand, method, value)
+    if overflow:
+        estimator.record(
+            "unresolved", "整数自增溢出，结果未定", node, method, conditions, background
+        )
+        cost = cost.plus(UNKNOWN)
     setter = estimator.index.accessor(operand, method, "set")
     bindings[CLOCK] = started.plus(cost)
     cost = cost.plus(
@@ -188,7 +227,12 @@ def increment_property(estimator, node, method, bindings, stack, conditions, bac
             estimator, setter, operand, method, bindings, stack, conditions, background, value
         )
     )
-    if setter is None or setter.body is None:
+    if place is not None:
+        collections.write(place, value, bindings)
+    elif setter is None or setter.body is None:
         state.write(estimator.index, operand, method, bindings, value)
     bindings[CLOCK] = started
+    bindings[call_args.return_key(node, method, bindings)] = (
+        previous if node.type == "postfix_unary_expression" else value
+    )
     return cost

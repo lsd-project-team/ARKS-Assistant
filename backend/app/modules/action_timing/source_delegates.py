@@ -10,6 +10,7 @@ from app.modules.action_timing.source_index import children, simple_type, text, 
 
 DELEGATE_PREFIX = "<delegate-variable:"
 NULL_DELEGATE = object()
+RESULT = "<delegate-result>"
 
 
 @dataclass(frozen=True)
@@ -95,6 +96,7 @@ def execute(
 ):
     from app.modules.action_timing.source_tasks import CLOCK
 
+    bindings.pop(RESULT, None)
     bound = capture(estimator.index, node, method, bindings)
     node = bound.node if isinstance(bound, BoundDelegate) else None
     start = len(estimator.stages)
@@ -129,6 +131,7 @@ def execute(
                 conditions,
                 background or nested_async,
             )
+            bindings[RESULT] = estimator.index.value(body, callback_method, callback_scope)
         else:
             flow = estimator.block(
                 body,
@@ -139,6 +142,7 @@ def execute(
                 background or nested_async,
             )
             cost = flow.cost() if flow.live is not None or flow.returned is not None else UNKNOWN
+            bindings[RESULT] = flow.states.get("returned", {}).get("<return-value>")
         if join_result:
             cost = returned_task(body, callback_method, callback_scope, cost, started)
         state.transfer(bindings, callback_scope, uncertain=nested_async)
@@ -180,6 +184,9 @@ def execute(
                 name: value
                 for (name, _, _), value in zip(target.parameters, argument_values, strict=True)
             },
+        )
+        bindings[RESULT] = target_context.get(
+            call_args.return_key(node, declaration, target_context)
         )
         if bound.async_void:
             state.transfer(bindings, target_context, uncertain=True)
@@ -380,6 +387,7 @@ def invoke(estimator, node, method, bindings, stack, conditions, background):
         argument_values=values,
         join_result=joined,
     )
+    bindings[call_args.return_key(node, method, bindings)] = context.get(RESULT) if joined else None
     if not joined:
         state.transfer(bindings, context, uncertain=True)
         cost = UNKNOWN

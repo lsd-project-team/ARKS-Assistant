@@ -55,6 +55,7 @@ class Evaluated:
     callbacks: tuple
     receiver: object = state.MISSING
     references: tuple = ()
+    receiver_value: object = state.MISSING
 
 
 def snapshot_key(node, method, bindings):
@@ -90,6 +91,7 @@ def evaluate(
     target=None,
     prefix=ZERO,
     receiver=state.MISSING,
+    receiver_value=state.MISSING,
 ):
     from app.modules.action_timing import source_delegates as delegates
     from app.modules.action_timing.source_tasks import CLOCK
@@ -123,7 +125,7 @@ def evaluate(
         callbacks.append(bound)
     # 下一次访问该调用时覆盖快照；快照仅属于当前帧，不进入被调方法的状态。
     bindings[snapshot_key(node, method, bindings)] = Evaluated(
-        tuple(scalars), tuple(callbacks), receiver, tuple(references)
+        tuple(scalars), tuple(callbacks), receiver, tuple(references), receiver_value
     )
     bindings[CLOCK] = started.plus(cost)
     return cost

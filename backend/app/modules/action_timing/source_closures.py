@@ -44,7 +44,9 @@ def capture(method, bindings, node):
         if key not in bindings:
             bindings[key] = bindings.get(name)
         cells.append((name, key))
-    return Closure(method, bindings.get(state.THIS), tuple(cells))
+    return Closure(
+        replace(method, types=dict(method.types)), bindings.get(state.THIS), tuple(cells)
+    )
 
 
 def parameters(node):

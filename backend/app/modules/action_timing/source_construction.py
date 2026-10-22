@@ -1,7 +1,9 @@
 """对象构造的字段初始化、this/base 链与正文；不执行设备程序集。"""
 
 from app.modules.action_timing import source_arguments as call_args
+from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_collection_expressions import initializer_values
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
 from app.modules.action_timing.source_properties import assign_property
@@ -231,7 +233,19 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
             )
         )
         state.transfer(bindings, constructor_bindings)
+    collection = collections.created(estimator.index, node, method, bindings)
     for initializer in children(node, "initializer_expression"):
+        if collections.known(collection):
+            bindings[CLOCK] = started.plus(cost)
+            extra, values = initializer_values(
+                estimator, initializer, method, bindings, stack, conditions, background
+            )
+            cost = cost.plus(extra)
+            previous = collection.get("<items>") or ()
+            size = collection.get("<length>")
+            collection["<items>"] = previous + values if size == len(previous) else None
+            collection["<length>"] = size + len(values) if size is not None else None
+            continue
         for part in children(initializer):
             bindings[CLOCK] = started.plus(cost)
             cost = cost.plus(
@@ -249,5 +263,7 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
                 if part.type == "assignment_expression"
                 else estimator.expression(part, method, bindings, stack, conditions, background)
             )
+    if collections.known(collection):
+        bindings[call_args.return_key(node, method, bindings)] = collection
     bindings[CLOCK] = started
     return cost

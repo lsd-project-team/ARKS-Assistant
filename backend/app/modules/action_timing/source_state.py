@@ -5,6 +5,7 @@ FRAME = "<source-frame>"
 PREFIX = "<member:"
 LOCAL_PREFIX = "<captured-local:"
 LOCAL_ALIAS = "<captured-alias:"
+COLLECTION_PREFIX = "<collection:"
 MISSING = object()
 
 
@@ -111,7 +112,9 @@ def write(index, node, method, bindings, value, owner=None):
 
 def context(bindings):
     return {
-        name: value for name, value in bindings.items() if name.startswith((PREFIX, LOCAL_PREFIX))
+        name: value
+        for name, value in bindings.items()
+        if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX))
     }
 
 
@@ -130,7 +133,9 @@ def materialize(value, bindings):
 def transfer(before, after, *, uncertain=False, locals=False):
     """把调用或后台分支的写入带回；未确定先后关系时只传播失效。"""
     for name, value in after.items():
-        if name.startswith((PREFIX, LOCAL_PREFIX)) or (locals and not name.startswith("<")):
+        if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX)) or (
+            locals and not name.startswith("<")
+        ):
             if name not in before or value != before[name]:
                 before[name] = None if uncertain else value
 
@@ -193,6 +198,27 @@ def capture_ref(index, argument, method, bindings):
     target = argument_target(argument)
     if target is None or source(target) == "_":
         return None
+    if target.type == "element_access_expression":
+        from app.modules.action_timing import source_collections as collections
+
+        element = collections.location(index, target, method, bindings)
+        if element is None:
+            return None
+        data, position = element
+        size = collections.length(data, bindings)
+        if (
+            data["<collection>"] != "array"
+            or not isinstance(position, int)
+            or isinstance(position, bool)
+            or size is None
+            or not 0 <= position < size
+        ):
+            collections.invalidate(data, bindings)
+            return None
+        slot = collections.key(data, f"item:{position}")
+        if slot not in bindings:
+            bindings[slot] = collections.item(data, position, bindings)
+        return slot
     place = location(index, target, method, bindings)
     if place is not None:
         slot = key(place)
@@ -222,4 +248,11 @@ def invalidate_byref(index, node, method, bindings):
             continue
         target = argument_target(argument)
         if target is not None and source(target) != "_":
+            if target.type == "element_access_expression":
+                from app.modules.action_timing import source_collections as collections
+
+                element = collections.location(index, target, method, bindings)
+                if element is not None:
+                    collections.invalidate(element[0], bindings)
+                    continue
             write(index, target, method, bindings, None)

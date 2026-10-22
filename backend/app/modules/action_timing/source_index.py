@@ -12,6 +12,7 @@ from tree_sitter import Language, Parser
 
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_numbers import binary_value
 
 
 def walk(node):
@@ -132,6 +133,7 @@ class Method:
     callable_kind: str = "method"
     is_static: bool = False
     is_virtual: bool = False
+    type_scope: tuple = ()
 
     @property
     def key(self):
@@ -407,6 +409,10 @@ class SourceIndex:
                     variable_name = text(variable.child_by_field_name("name"))
                     types[variable_name] = kind
                     initializers[variable_name] = initializer(variable)
+            elif declaration.type in {"foreach_statement", "for_each_statement"}:
+                variable = declaration.child_by_field_name("left")
+                if variable is not None and variable.type == "identifier":
+                    types.setdefault(text(variable), text(declaration.child_by_field_name("type")))
         method = Method(
             info.name,
             name,
@@ -573,6 +579,16 @@ class SourceIndex:
         if owner.endswith(("RunTimeProvider", "RuntimeProvider")):
             # 运行中的请求/状态标志不是配方初值，不能用启动时 false 抹掉动作路径。
             return None
+        info = self.classes.get(owner)
+        if (
+            info is not None
+            and info.short_name == "Signal"
+            and info.namespace == "AKRS.Galaxy2.Machine.Models"
+            and name == "State"
+        ):
+            # 工作用的交互信号可被其他线程设置；声明时ReSet不是当前工况。
+            # 显式状态写入由state.read优先读取，仍参与当前调用的状态传递。
+            return None
         found = self.member_default(owner, name)
         if found is None:
             getter = self.property_method(owner, name, "get")
@@ -600,7 +616,7 @@ class SourceIndex:
     def infer(self, node, method):
         if node is None:
             return ""
-        identity = (method.key, node.type, node.start_byte, node.end_byte)
+        identity = (method.key, node.type, node.start_byte, node.end_byte, method.type_scope)
         if identity in self._inference_cache:
             return self._inference_cache[identity]
         if identity in self._inferring:
@@ -615,6 +631,12 @@ class SourceIndex:
 
     def _infer(self, node, method):
         source = text(node)
+        if node.type == "element_access_expression":
+            from app.modules.action_timing.source_collections import element_type
+
+            return self.lookup_type(
+                element_type(self, node.child_by_field_name("expression"), method), method
+            )
         if node.type == "this_expression" or source == "this":
             return method.owner
         if node.type == "base_expression" or source == "base":
@@ -664,7 +686,7 @@ class SourceIndex:
         }.get(node.type, "")
 
     def resolve(self, node, caller):
-        identity = (caller.key, node.start_byte, node.end_byte)
+        identity = (caller.key, node.start_byte, node.end_byte, caller.type_scope)
         if identity in self._resolution_cache:
             return self._resolution_cache[identity]
         if identity in self._resolving:
@@ -773,10 +795,25 @@ class SourceIndex:
             return None
         seen = set() if seen is None else seen
         kind, source = node.type, text(node)
+        if kind in {
+            "prefix_unary_expression",
+            "postfix_unary_expression",
+            "assignment_expression",
+            "element_access_expression",
+            "binary_expression",
+            "conditional_expression",
+        }:
+            result_key = call_args.return_key(node, method, bindings)
+            if result_key in bindings:
+                return bindings[result_key]
         if kind == "argument":
             parts = children(node)
             return self.value(parts[-1], method, bindings, seen) if parts else None
         if kind in {"identifier", "member_access_expression"}:
+            getter = self.accessor(node, method, "get")
+            result_key = call_args.return_key(node, method, bindings)
+            if getter and getter.body is not None and result_key in bindings:
+                return state.materialize(bindings[result_key], bindings)
             current = state.read(self, node, method, bindings)
             if current is not state.MISSING:
                 return state.materialize(current, bindings)
@@ -791,6 +828,19 @@ class SourceIndex:
                 return None
         if kind == "boolean_literal":
             return source == "true"
+        if kind in {
+            "array_creation_expression",
+            "implicit_array_creation_expression",
+            "collection_expression",
+        }:
+            from app.modules.action_timing.source_collections import created
+
+            return created(self, node, method, bindings)
+        if kind == "element_access_expression":
+            from app.modules.action_timing.source_collections import item, location
+
+            place = location(self, node, method, bindings)
+            return item(*place, bindings) if place is not None else None
         if kind == "identifier":
             if source in method.types:
                 return None
@@ -799,6 +849,11 @@ class SourceIndex:
                 return None
             return self.default_value(method.owner, source, bindings, seen)
         if kind == "object_creation_expression":
+            from app.modules.action_timing.source_collections import created
+
+            collection = created(self, node, method, bindings)
+            if collection is not state.MISSING:
+                return collection
             # 仅求值显式对象初始化器；不执行构造函数，也不臆测外部构造参数顺序。
             value_node = next(iter(children(node, "initializer_expression")), None)
             result = {
@@ -847,6 +902,11 @@ class SourceIndex:
             receiver_value = self.value(
                 node.child_by_field_name("expression"), method, bindings, seen
             )
+            if name in {"Length", "LongLength", "Count"}:
+                from app.modules.action_timing.source_collections import known, length
+
+                if known(receiver_value):
+                    return length(receiver_value, bindings)
             if isinstance(receiver_value, dict) and name in receiver_value:
                 if receiver_value.get(f"<invalidated:{name}>"):
                     if getter is None or getter.body is None:
@@ -891,49 +951,7 @@ class SourceIndex:
             left = self.value(node.child_by_field_name("left"), method, bindings, seen)
             right = self.value(node.child_by_field_name("right"), method, bindings, seen)
             op = text(node.child_by_field_name("operator"))
-            if op == "&&":
-                return (
-                    False
-                    if left is False or right is False
-                    else True
-                    if left is True and right is True
-                    else None
-                )
-            if op == "||":
-                return (
-                    True
-                    if left is True or right is True
-                    else False
-                    if left is False and right is False
-                    else None
-                )
-            if left is None or right is None:
-                return None
-            try:
-                operations = {
-                    "+": lambda: left + right,
-                    "-": lambda: left - right,
-                    "*": lambda: left * right,
-                    "/": lambda: (
-                        math.trunc(left / right)
-                        if isinstance(left, int) and isinstance(right, int)
-                        else left / right
-                    ),
-                    "==": lambda: left == right,
-                    "!=": lambda: left != right,
-                    ">": lambda: left > right,
-                    "<": lambda: left < right,
-                    ">=": lambda: left >= right,
-                    "<=": lambda: left <= right,
-                }
-                result = operations[op]() if op in operations else None
-                return (
-                    result
-                    if not isinstance(result, (int, float)) or math.isfinite(result)
-                    else None
-                )
-            except (TypeError, ZeroDivisionError, OverflowError):
-                return None
+            return binary_value(op, left, right)
         if kind == "conditional_expression":
             condition = self.value(node.child_by_field_name("condition"), method, bindings, seen)
             if isinstance(condition, bool):
@@ -947,6 +965,11 @@ class SourceIndex:
             result_key = call_args.return_key(node, method, bindings)
             if result_key in bindings:
                 return state.materialize(bindings[result_key], bindings)
+            from app.modules.action_timing.source_collections import range_value
+
+            collection = range_value(self, node, method, bindings)
+            if collection is not state.MISSING:
+                return collection
             function_node = node.child_by_field_name("function")
             function = text(function_node)
             if function_node.type == "conditional_access_expression":

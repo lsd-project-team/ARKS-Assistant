@@ -140,6 +140,11 @@ def sleep_calls(index, body, method, bindings):
 
 
 def pure_loop(estimator, node, method, bindings, minimum_count):
+    # 数值探测不执行表达式，不能复用上一次进入该循环时保存的表达式结果。
+    # 使用无实参/返回快照的投影副本；正常逐轮执行仍保留原来的求值时点。
+    bindings = {
+        name: value for name, value in bindings.items() if not name.startswith("<arguments:")
+    }
     index = estimator.index
     limits = counted_range(index, node, method, bindings)
     if limits is None:

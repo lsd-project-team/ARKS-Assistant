@@ -5,6 +5,12 @@ import pytest
 from tests.unit.test_source_timing_dependencies import analyze
 
 
+def test_repeated_analytical_loop_does_not_reuse_a_previous_sample_expression_value():
+    result = analyze("""class Demo {public int DoWork(){for(int j=0;j<2;j++){
+        for(int i=0;i<130;i++){Thread.Sleep(i+1);}}return 0;}}""")
+    assert result["total_ms"] == 17030
+
+
 @pytest.mark.parametrize(
     ("body", "expected"),
     [

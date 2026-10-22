@@ -4,19 +4,12 @@ from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
 from app.modules.action_timing.source_index import children, initializer, text, walk
 from app.modules.action_timing.source_loop_bounds import pure_loop
+from app.modules.action_timing.source_numbers import INTEGER_RANGES
 from app.modules.action_timing.source_scopes import local_scope
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 MAX_ITERATIONS = 128
 MAX_ACTION_ITERATIONS = 512
-INTEGER_RANGES = {
-    "int": (-(2**31), 2**31 - 1),
-    "uint": (0, 2**32 - 1),
-    "long": (-(2**63), 2**63 - 1),
-    "ulong": (0, 2**64 - 1),
-    "short": (-(2**15), 2**15 - 1),
-    "ushort": (0, 2**16 - 1),
-}
 
 
 def fields(node, name):
@@ -37,9 +30,11 @@ class ForExecution:
         self.bounded = False
         self.exact = True
         self.analytical = False
+        self.no_normal_exit = False
         self.body = node.child_by_field_name("body")
         self.condition = node.child_by_field_name("condition")
         self.updates = fields(node, "update")
+        self.kind = {"while_statement": "while", "do_statement": "do"}.get(node.type, "for")
 
     def expression(self, node):
         self.bindings[CLOCK] = self.started.plus(self.elapsed)
@@ -91,8 +86,12 @@ class ForExecution:
         """剩余循环可能不执行，也可能多次执行；只展开一份条件样本追踪写入。"""
         original = dict(self.bindings)
         self.exact = False
+        stage_start = len(self.estimator.stages)
         flow = self.body_flow(f"剩余循环未定：{reason}")
         can_repeat = flow.live is not None or flow.continued is not None
+        if can_repeat:
+            for stage in self.estimator.stages[stage_start:]:
+                stage["repeat"] = True
         possible = [original]
         sample = choice(flow.broken, flow.returned)
         continuing = []
@@ -133,8 +132,8 @@ class ForExecution:
             self.result.returned = choice(self.result.returned, self.elapsed.plus(returned))
             self.result.states = self.result.merge_states(flow)
 
-    def check_integer_range(self):
-        for update in self.updates:
+    def check_integer_range(self, nodes=None):
+        for update in self.updates if nodes is None else nodes:
             for part in walk(update):
                 left = (
                     part.child_by_field_name("left")
@@ -202,28 +201,49 @@ class ForExecution:
                 self.estimator.truncated = True
                 self.summarize("达到迭代展开边界")
                 break
-            self.estimator.loop_steps += 1
-            flow = self.body_flow(f"for第{self.count + 1}轮：{text(self.condition) or 'true'}")
-            self.count += 1
-            self.each = choice(self.each, flow.cost())
-            self.returns(flow, self.elapsed)
-            if flow.broken is not None:
-                self.exit(add(self.elapsed, flow.broken), flow.states.get("broken", self.bindings))
-            continuing = choice(flow.live, flow.continued)
-            if continuing is None:
-                self.bounded = True
+            if not self.run_body():
                 break
-            contexts = []
-            if flow.live is not None:
-                contexts.append(dict(self.bindings))
-            if flow.continued is not None:
-                contexts.append(flow.states.get("continued", dict(self.bindings)))
-            state.merge(self.bindings, contexts)
-            self.elapsed = self.elapsed.plus(continuing)
+            if self.reject_constant_true_loop():
+                break
             for update in self.updates:
                 self.expression(update)
             self.check_integer_range()
         return self.finish()
+
+    def run_body(self):
+        self.estimator.loop_steps += 1
+        flow = self.body_flow(f"{self.kind}第{self.count + 1}轮：{text(self.condition) or 'true'}")
+        self.last_flow = flow
+        self.count += 1
+        self.each = choice(self.each, flow.cost())
+        self.returns(flow, self.elapsed)
+        if flow.broken is not None:
+            self.exit(add(self.elapsed, flow.broken), flow.states.get("broken", self.bindings))
+        continuing = choice(flow.live, flow.continued)
+        if continuing is None:
+            self.bounded = True
+            return False
+        contexts = []
+        if flow.live is not None:
+            contexts.append(dict(self.bindings))
+        if flow.continued is not None:
+            contexts.append(flow.states.get("continued", dict(self.bindings)))
+        state.merge(self.bindings, contexts)
+        self.elapsed = self.elapsed.plus(continuing)
+        return True
+
+    def reject_constant_true_loop(self):
+        always = self.condition is None or text(self.condition).strip() == "true"
+        exits = {"break_statement", "return_statement", "goto_statement", "yield_statement"}
+        if not always or any(part.type in exits for part in walk(self.body)):
+            return False
+        # 真常量条件没有正常退出语句，正常完成路径为空；异常/终止线程不作正常耗时。
+        self.no_normal_exit = True
+        self.exact = False
+        self.result = Flow(None, None)
+        self.exits.clear()
+        self.estimator.failure_reasons.append("循环条件恒真且没有正常退出语句")
+        return True
 
     def finish(self):
         if self.exits:
@@ -231,7 +251,11 @@ class ForExecution:
         self.bindings[CLOCK] = self.started
         self.estimator.record(
             "loop",
-            f"for已展开{self.count}轮" if self.bounded else "for剩余次数未定",
+            "循环没有正常退出路径"
+            if self.no_normal_exit
+            else (
+                f"{self.kind}已展开{self.count}轮" if self.bounded else f"{self.kind}剩余次数未定"
+            ),
             self.node,
             self.method,
             self.conditions,
@@ -240,6 +264,7 @@ class ForExecution:
             expanded_iterations=1 if self.analytical else self.count,
             analytical=self.analytical,
             bounded=self.bounded,
+            no_normal_exit=self.no_normal_exit,
             per_iteration_min_ms=self.each.lower if self.each else 0,
             per_iteration_max_ms=self.each.upper if self.each else 0,
         )

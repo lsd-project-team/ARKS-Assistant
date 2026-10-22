@@ -4,13 +4,18 @@ import math
 import re
 
 from app.modules.action_timing import source_arguments as call_args
+from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_condition_loops import execute_condition_loop
 from app.modules.action_timing.source_construction import constructor_body, create_object
-from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
+from app.modules.action_timing.source_delay_reachability import possible as delay_possible
+from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, choice
+from app.modules.action_timing.source_foreach import execute_foreach
 from app.modules.action_timing.source_hardware import hardware_call
 from app.modules.action_timing.source_index import children, initializer, simple_type, text, walk
 from app.modules.action_timing.source_loops import execute_for
+from app.modules.action_timing.source_numbers import binary_value
 from app.modules.action_timing.source_properties import (
     assign_property,
     increment_property,
@@ -231,6 +236,14 @@ class Estimator:
             return increment_property(self, node, method, bindings, stack, conditions, background)
         if node.type in {"member_access_expression", "identifier"}:
             return read_property(self, node, method, bindings, stack, conditions, background)
+        if node.type == "element_access_expression":
+            from app.modules.action_timing.source_collection_expressions import read_element
+
+            return read_element(self, node, method, bindings, stack, conditions, background)
+        if node.type in collections.ARRAYS:
+            from app.modules.action_timing.source_collection_expressions import create_array
+
+            return create_array(self, node, method, bindings, stack, conditions, background)
         if node.type == "object_creation_expression":
             return create_object(self, node, method, bindings, stack, conditions, background)
         if node.type == "variable_declarator":
@@ -299,6 +312,11 @@ class Estimator:
                 if target is not None
                 else state.MISSING
             )
+            receiver_value = (
+                self.index.value(function.child_by_field_name("expression"), method, bindings)
+                if function.type == "member_access_expression"
+                else state.MISSING
+            )
             before = call_args.evaluate(
                 self,
                 node,
@@ -310,6 +328,7 @@ class Estimator:
                 target=target,
                 prefix=before,
                 receiver=receiver_id,
+                receiver_value=receiver_value,
             )
             bindings[CLOCK] = started.plus(before)
             result = before.plus(self.call(node, method, bindings, stack, conditions, background))
@@ -318,12 +337,17 @@ class Estimator:
         if node.type == "binary_expression":
             left = node.child_by_field_name("left")
             op = text(node.child_by_field_name("operator"))
+            started = bindings.get(CLOCK, ZERO)
+            result_key = call_args.return_key(node, method, bindings)
+            bindings.pop(result_key, None)
+            before = self.expression(left, method, bindings, stack, conditions, background)
             value = self.index.value(left, method, bindings)
             if op in {"&&", "||"}:
-                before = self.expression(left, method, bindings, stack, conditions, background)
                 if (op == "&&" and value is False) or (op == "||" and value is True):
+                    bindings[result_key] = value
                     return before
                 branch_bindings = dict(bindings)
+                branch_bindings[CLOCK] = started.plus(before)
                 after = self.expression(
                     node.child_by_field_name("right"),
                     method,
@@ -332,15 +356,26 @@ class Estimator:
                     conditions,
                     background,
                 )
+                right = self.index.value(node.child_by_field_name("right"), method, branch_bindings)
+                branch_bindings[CLOCK] = started
                 state.merge(
                     bindings, [bindings, branch_bindings] if value is None else [branch_bindings]
                 )
+                bindings[result_key] = binary_value(op, value, right)
                 return before.plus(choice(ZERO, after) if value is None else after)
+            bindings[CLOCK] = started.plus(before)
+            after = self.expression(
+                node.child_by_field_name("right"), method, bindings, stack, conditions, background
+            )
+            right = self.index.value(node.child_by_field_name("right"), method, bindings)
+            bindings[result_key] = binary_value(op, value, right)
+            bindings[CLOCK] = started
+            return before.plus(after)
         if node.type == "conditional_expression":
             condition = node.child_by_field_name("condition")
             before = self.expression(condition, method, bindings, stack, conditions, background)
             value = self.index.value(condition, method, bindings)
-            costs, branches = [], []
+            costs, branches, values = [], [], []
             for flag, field in [(True, "consequence"), (False, "alternative")]:
                 if isinstance(value, bool) and flag != value:
                     continue
@@ -355,8 +390,12 @@ class Estimator:
                         background,
                     )
                 )
+                values.append(self.index.value(node.child_by_field_name(field), method, branch))
                 branches.append(branch)
             state.merge(bindings, branches)
+            bindings[call_args.return_key(node, method, bindings)] = (
+                values[0] if all(value == values[0] for value in values) else None
+            )
             return before.plus(choice(costs[0], costs[1]) if len(costs) == 2 else costs[0])
         result = ZERO
         for child in children(node):
@@ -381,6 +420,8 @@ class Estimator:
             )
         )
         arguments = children(node.child_by_field_name("arguments"), "argument")
+        if collections.call(self, node, method, bindings):
+            return ZERO
         if name in {"Start", "StartNew", "Restart", "Stop", "Reset"}:
             receiver = function.child_by_field_name("expression")
             if (
@@ -419,11 +460,13 @@ class Estimator:
                 milliseconds=value if valid else None,
             )
             return Cost(value, value) if valid else UNKNOWN
+        target = self.index.resolve(node, method)
+        if target is None:
+            collections.invalidate_arguments(self.index, node, method, bindings)
         if name in PURE_NAMES or function_name.startswith(
             ("Math.", "System.Math.", "TimeSpan.", "DateTime.", "Guid.", "Enumerable.")
         ):
             return ZERO
-        target = self.index.resolve(node, method)
         if target is None:
             state.invalidate_byref(self.index, node, method, bindings)
             if self.index.has_source_call(node, method):
@@ -567,6 +610,7 @@ class Estimator:
         argument_values=None,
         receiver_id=state.MISSING,
     ):
+        bindings.pop(call_args.return_key(node, caller, bindings), None)
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
         if target.key in stack or (not metadata and (self.depth(stack) >= 7 or self.calls >= 120)):
             self.truncated = True
@@ -579,7 +623,7 @@ class Estimator:
                 background,
                 expression=text(node),
             )
-            return UNKNOWN
+            return UNKNOWN if delay_possible(self.index, target) else ZERO
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1
         self.frames += 1
@@ -787,9 +831,9 @@ class Estimator:
             return Flow()
         kind = node.type
         if kind == "arrow_expression_clause":
-            return Flow(
-                None, self.expression(node, method, bindings, stack, conditions, background)
-            )
+            cost = self.expression(node, method, bindings, stack, conditions, background)
+            bindings["<return-value>"] = self.index.value(node, method, bindings)
+            return Flow(None, cost).with_state("returned", bindings)
         if kind in {"block", "switch_section"}:
             with local_scope(self, declarations(node), bindings):
                 return self.sequence(node, method, bindings, stack, conditions, background)
@@ -885,72 +929,15 @@ class Estimator:
             return result
         if kind == "for_statement":
             return execute_for(self, node, method, bindings, stack, conditions, background)
+        if kind in {"while_statement", "do_statement"}:
+            return execute_condition_loop(
+                self, node, method, bindings, stack, conditions, background
+            )
         if kind in {
-            "while_statement",
-            "do_statement",
             "for_each_statement",
             "foreach_statement",
         }:
-            body = node.child_by_field_name("body")
-            condition = node.child_by_field_name("condition")
-            condition_cost = self.expression(
-                condition, method, bindings, stack, conditions, background
-            )
-            value = self.index.value(condition, method, bindings)
-            if kind == "while_statement" and value is False:
-                return Flow(condition_cost)
-            label = f"循环：{text(node.child_by_field_name('condition')) or '次数依赖运行数据'}"
-            start = len(self.stages)
-            loop_bindings = dict(bindings)
-            body_flow = self.block(
-                body, method, loop_bindings, stack, (*conditions, label), background
-            )
-            state.transfer(bindings, loop_bindings, uncertain=True, locals=True)
-            for changed in walk(body):
-                if changed.type == "assignment_expression":
-                    assigned = text(changed.child_by_field_name("left"))
-                    if assigned in bindings:
-                        bindings[assigned] = None
-            each = body_flow.cost()
-            for stage in self.stages[start:]:
-                stage["repeat"] = True
-            self.record(
-                "loop",
-                "循环次数未定，不把每轮延时当作单次总耗时",
-                node,
-                method,
-                conditions,
-                background,
-                iterations=None,
-                bounded=(kind == "do_statement" and value is False)
-                or (body_flow.live is None and body_flow.continued is None),
-                per_iteration_min_ms=each.lower,
-                per_iteration_max_ms=each.upper,
-            )
-            self._timeouts(node, method, conditions, background)
-            # break/continue 只终止其所属控制结构；不能继续计入不可达的后续语句。
-            if body_flow.live is None and body_flow.continued is None:
-                exited = Flow(body_flow.broken, body_flow.returned)
-                if kind != "do_statement":
-                    exited = exited.prefix(condition_cost)
-                if kind != "do_statement" and value is not True:
-                    exited.live = choice(condition_cost, exited.live)
-                return exited
-            if kind == "do_statement" and value is False:
-                return Flow(
-                    choice(
-                        add(choice(body_flow.live, body_flow.continued), condition_cost),
-                        body_flow.broken,
-                    ),
-                    body_flow.returned,
-                )
-            return Flow(
-                live=Cost(
-                    (each.lower if kind == "do_statement" else 0) + condition_cost.lower, None
-                )
-                if each.upper != 0 or condition_cost.upper != 0
-                else ZERO
-            )
+            return execute_foreach(self, node, method, bindings, stack, conditions, background)
         if kind == "switch_statement":
             body = node.child_by_field_name("body")
             value_node = node.child_by_field_name("value")
