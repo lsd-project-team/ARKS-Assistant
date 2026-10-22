@@ -118,12 +118,19 @@ class Unit:
         return result
 
     def evidence(self, node):
+        key = (node.start_byte, node.end_byte)
+        if key not in self.evidence_texts:
+            self.evidence_texts[key] = text(node).strip()[:650]
         return {
             "path": self.path,
             "line": node.start_point[0] + 1,
             "version": self.version,
-            "code": text(node).strip()[:650],
+            "code": self.evidence_texts[key],
         }
+
+    @cached_property
+    def evidence_texts(self):
+        return {}
 
 
 @dataclass

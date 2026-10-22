@@ -51,7 +51,7 @@ class Flow:
 
     def merge_states(self, other):
         result = {}
-        for channel in self.states.keys() | other.states.keys():
+        for channel in dict.fromkeys((*self.states, *other.states)):
             branches = [part[channel] for part in (self.states, other.states) if channel in part]
             merged = {}
             state.merge(merged, branches)
@@ -67,7 +67,7 @@ class Flow:
             self.merge_states(other),
             {
                 key: choice(self.jumps.get(key), add(self.live, other.jumps.get(key)))
-                for key in self.jumps.keys() | other.jumps.keys()
+                for key in dict.fromkeys((*self.jumps, *other.jumps))
             },
         )
 
@@ -83,7 +83,7 @@ class Flow:
             self.merge_states(other),
             {
                 key: choice(self.jumps.get(key), other.jumps.get(key))
-                for key in self.jumps.keys() | other.jumps.keys()
+                for key in dict.fromkeys((*self.jumps, *other.jumps))
             },
         )
 

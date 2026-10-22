@@ -143,7 +143,13 @@ def transfer(before, after, *, uncertain=False, locals=False):
 def merge(bindings, branches):
     if not branches:
         return
-    for name in set().union(*(branch.keys() for branch in branches)):
+    if len(branches) == 1:
+        bindings.update(
+            {name: value if value == value else None for name, value in branches[0].items()}
+        )
+        return
+    # 状态/出口的源顺序必须稳定；散列顺序会改变标签分支的展开与预算分配。
+    for name in dict.fromkeys(name for branch in branches for name in branch):
         values = [branch.get(name) for branch in branches]
         bindings[name] = values[0] if all(value == values[0] for value in values) else None
 

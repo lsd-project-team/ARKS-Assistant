@@ -16,7 +16,7 @@ from app.modules.action_timing.source_service import SourceTiming
 def create_router(services):
     router = APIRouter(prefix="/api/action-timing", tags=["action-timing"])
     timing = ActionTiming(services)
-    source = SourceTiming(services.workspace)
+    source = SourceTiming(services.workspace, services.paths.data / "cache" / "action-timing")
 
     def source_scope():
         with services.database.session() as session:

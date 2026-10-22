@@ -11,6 +11,7 @@ from app.modules.action_timing.source_catalog import build_catalog
 from app.modules.action_timing.source_estimator import Estimator
 from app.modules.action_timing.source_hardware import bind_packages
 from app.modules.action_timing.source_index import SourceIndex, description, text
+from app.modules.action_timing.source_report_cache import SourceReportCache
 from app.modules.action_timing.source_scope import load_scope
 
 FIRST = {item["class_name"]: item for item in CATALOG}
@@ -131,12 +132,15 @@ def discover(index):
 
 
 class SourceTiming:
-    def __init__(self, workspace):
+    def __init__(self, workspace, cache_directory=None):
         self.workspace = workspace
         self.lock = threading.RLock()
         self.cached = None
         self.signature = None
         self.loaded_scope = None
+        self.disk_cache = (
+            SourceReportCache(cache_directory, workspace) if cache_directory is not None else None
+        )
 
     def _documents(self):
         self.loaded_scope = load_scope(self.workspace)
@@ -147,9 +151,14 @@ class SourceTiming:
             documents = self._documents()
             signature = self.loaded_scope.revision
             if signature != self.signature:
-                index = SourceIndex(documents, self.loaded_scope.declarations)
-                index.packages = bind_packages(self.loaded_scope.references)
-                self.cached = self._build(index)
+                report = self.disk_cache.load(signature) if self.disk_cache else None
+                if report is None:
+                    index = SourceIndex(documents, self.loaded_scope.declarations)
+                    index.packages = bind_packages(self.loaded_scope.references)
+                    report = self._build(index)
+                    if self.disk_cache:
+                        self.disk_cache.save(signature, report)
+                self.cached = report
                 self.signature = signature
             return self.cached
 
@@ -224,7 +233,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v14:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v15:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,

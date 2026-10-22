@@ -21,7 +21,17 @@ class SourceScope:
     @property
     def revision(self):
         return hashlib.sha256(
-            json.dumps(self.versions, ensure_ascii=False, sort_keys=True).encode()
+            json.dumps(
+                {
+                    "versions": self.versions,
+                    "files": self.files,
+                    "projects": self.projects,
+                    "references": self.references,
+                    "primary_project": self.primary_project,
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+            ).encode()
         ).hexdigest()
 
 

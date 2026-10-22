@@ -873,12 +873,7 @@ class Estimator:
                 if branch.live is not None:
                     continuing_bindings.append(branch_bindings)
             if continuing_bindings:
-                keys = set().union(*(state.keys() for state in continuing_bindings))
-                for key in keys:
-                    values = [state.get(key) for state in continuing_bindings]
-                    bindings[key] = (
-                        values[0] if all(value == values[0] for value in values) else None
-                    )
+                state.merge(bindings, continuing_bindings)
             result = branches[0]
             if len(branches) == 2:
                 result = result.merge(branches[1])
@@ -1016,9 +1011,7 @@ class Estimator:
                 result.live = choice(result.live, ZERO)
                 continuing_bindings.append(dict(bindings))
             if continuing_bindings:
-                for key in set().union(*(state.keys() for state in continuing_bindings)):
-                    values = [state.get(key) for state in continuing_bindings]
-                    bindings[key] = values[0] if all(item == values[0] for item in values) else None
+                state.merge(bindings, continuing_bindings)
             return result.prefix(before)
         if kind in {"expression_statement", "local_declaration_statement"}:
             return Flow(self.expression(node, method, bindings, stack, conditions, background))
