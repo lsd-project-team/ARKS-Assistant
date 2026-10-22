@@ -263,6 +263,20 @@ def call(estimator, node, method, bindings):
         return False
     name = text(function.child_by_field_name("name"))
     values = call_args.values(estimator.index, node, method, bindings)
+    if name == "ToArray" and not values:
+        size = length(data, bindings)
+        if size is not None and size <= 256:
+            estimator.allocations += 1
+            result = {
+                "<collection>": "array",
+                "<ref>": f"array-copy:{estimator.allocations}",
+                "<length>": size,
+                "<shape>": (size,),
+                "<element_type>": data.get("<element_type>"),
+                "<items>": tuple(item(data, i, bindings) for i in range(size)),
+            }
+            bindings[call_args.return_key(node, method, bindings)] = result
+            return True
     if data["<collection>"] == "array" and name in {
         "GetLength",
         "GetLongLength",

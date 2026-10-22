@@ -151,7 +151,12 @@ def merge(bindings, branches):
     # 状态/出口的源顺序必须稳定；散列顺序会改变标签分支的展开与预算分配。
     for name in dict.fromkeys(name for branch in branches for name in branch):
         values = [branch.get(name) for branch in branches]
-        bindings[name] = values[0] if all(value == values[0] for value in values) else None
+        if all(value == values[0] for value in values):
+            bindings[name] = values[0]
+        else:
+            from app.modules.action_timing.source_tasks import merge_plans
+
+            bindings[name] = merge_plans(values)
 
 
 def receiver_for(index, target, node, caller, bindings):

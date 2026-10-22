@@ -1,20 +1,25 @@
 """Task 的源代码时间线：发起与等待分开，已并行经过的时间不重复相加。"""
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_state as state
-from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
+from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, choice
 from app.modules.action_timing.source_index import children, text, walk
 
 CLOCK = "<simulation-clock>"
+CREATION_ONLY = "<task-creation-only>"
 
 
 @dataclass(frozen=True)
 class TaskPlan:
     start: Cost
     duration: Cost
+    result: object = None
+    effects: tuple = ()
+    stage_ids: tuple = field(default=(), compare=False, repr=False)
 
     def remaining(self, clock):
         end = self.start.plus(self.duration)
@@ -67,9 +72,10 @@ def consumed(node):
     return False
 
 
-def remember(node, method, bindings, duration):
-    plan = TaskPlan(bindings.get(CLOCK, ZERO), duration)
+def remember_plan(node, method, bindings, plan, fresh=False):
     bindings[task_key(node, method)] = plan
+    bindings[task_key(node, method) + ":fresh"] = fresh
+    bindings[call_args.return_key(node, method, bindings)] = plan
     parent = node.parent
     # ConfigureAwait 等调用不改变任务归属；不跨过其他函数实参去误认外层变量。
     while parent and parent.type not in {
@@ -86,38 +92,126 @@ def remember(node, method, bindings, duration):
     return plan
 
 
-def lookup(node, method, bindings):
+def remember(node, method, bindings, duration, result=None, effects=(), stage_ids=()):
+    return remember_plan(
+        node,
+        method,
+        bindings,
+        TaskPlan(bindings.get(CLOCK, ZERO), duration, result, effects, stage_ids),
+        fresh=True,
+    )
+
+
+def known_task(value):
+    return isinstance(value, (TaskPlan, DeferredTask, TaskGroup))
+
+
+def join_stages(estimator, plan, background):
+    """完成边界所等待的阶段归入当前动作；未join的子任务仍留在后台。"""
+    if background or not isinstance(plan, TaskPlan):
+        return
+    covered = set(plan.stage_ids)
+    for stage in estimator.stages:
+        if id(stage) in covered:
+            stage["background"] = False
+
+
+def task_ids(values, depth=0):
+    """返回前已存在的任务不算新发起，join时不能重放它的历史写入。"""
+    if depth > 16:
+        return set()
+    found = set()
+    for value in values:
+        if known_task(value):
+            found.add(id(value))
+        if isinstance(value, dict):
+            found.update(task_ids(value.values(), depth + 1))
+        elif isinstance(value, (tuple, list)):
+            found.update(task_ids(value, depth + 1))
+        elif isinstance(value, TaskGroup):
+            found.update(task_ids(value.tasks, depth + 1))
+    return found
+
+
+def public_value(value, depth=0):
+    if known_task(value) or depth > 16:
+        return None
+    if isinstance(value, dict):
+        return {key: public_value(part, depth + 1) for key, part in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [public_value(part, depth + 1) for part in value]
+    return value
+
+
+def merge_plans(values):
+    if not all(isinstance(value, TaskPlan) for value in values):
+        return None
+    end = None
+    for value in values:
+        end = choice(end, value.start.plus(value.duration))
+    first = values[0].result
+    result = (
+        first
+        if all(type(value.result) is type(first) and value.result == first for value in values)
+        else None
+    )
+    return TaskPlan(
+        ZERO,
+        end or UNKNOWN,
+        result,
+        stage_ids=tuple(dict.fromkeys(stage for value in values for stage in value.stage_ids)),
+    )
+
+
+def lookup(node, method, bindings, index=None):
     if node is None:
         return None
     if node.type == "argument":
         parts = children(node)
-        return lookup(parts[-1], method, bindings) if parts else None
+        return lookup(parts[-1], method, bindings, index) if parts else None
     if node.type in {"parenthesized_expression", "cast_expression"}:
         operand = node.child_by_field_name("value") or next(iter(children(node)), None)
-        return lookup(operand, method, bindings)
+        return lookup(operand, method, bindings, index)
+    if index is not None:
+        value = index.value(node, method, bindings)
+        if known_task(value):
+            return value
     if node.type in {"identifier", "member_access_expression"}:
-        return bindings.get(f"<task-variable:{text(node)}>")
+        value = bindings.get(text(node))
+        return (
+            value
+            if known_task(value)
+            else bindings.get(f"<task-variable:{text(node)}>")
+            or bindings.get(task_key(node, method))
+        )
     return bindings.get(task_key(node, method))
 
 
-def task_group(node, method, bindings):
+def task_group(node, method, bindings, index=None):
     if node is None:
         return None
-    direct = lookup(node, method, bindings)
+    direct = lookup(node, method, bindings, index)
     if isinstance(direct, TaskGroup):
         return direct
     if isinstance(direct, (TaskPlan, DeferredTask)):
         return TaskGroup((direct,))
     if node.type == "argument":
         parts = children(node)
-        return task_group(parts[-1], method, bindings) if parts else None
+        return task_group(parts[-1], method, bindings, index) if parts else None
+    if index is not None:
+        from app.modules.action_timing import source_collections as collections
+
+        value = index.value(node, method, bindings)
+        size = collections.length(value, bindings)
+        if size is not None and size <= 256:
+            return TaskGroup(tuple(collections.item(value, i, bindings) for i in range(size)))
     if node.type not in {"array_creation_expression", "implicit_array_creation_expression"}:
         return None
     initializer = next(iter(children(node, "initializer_expression")), None)
     if initializer is None:
         return None
     # 每个元素都必须有去向；不能扫描到一个已知任务就忽略其他未知成员。
-    return TaskGroup(tuple(lookup(item, method, bindings) for item in children(initializer)))
+    return TaskGroup(tuple(lookup(item, method, bindings, index) for item in children(initializer)))
 
 
 def track_binding(index, left, right, method, bindings):
@@ -127,6 +221,7 @@ def track_binding(index, left, right, method, bindings):
         # 解构没有单一变量名；返回任务尚未绑定时，逐个使旧任务/委托失效。
         for part in walk(left):
             if part.type == "identifier":
+                state.write(index, part, method, bindings, None)
                 track_binding(index, part, None, method, bindings)
         return
     if left.type == "element_access_expression":
@@ -136,7 +231,7 @@ def track_binding(index, left, right, method, bindings):
                 bindings[key] = None
         return
     name = text(left)
-    task = lookup(right, method, bindings) or task_group(right, method, bindings)
+    task = lookup(right, method, bindings, index) or task_group(right, method, bindings, index)
     key = f"<task-variable:{name}>"
     if task is not None or key in bindings:
         bindings[key] = task
@@ -172,7 +267,7 @@ def create_task(estimator, node, method, bindings):
         bindings.get(state.FRAME),
         len(args) == 1,
     )
-    bindings[task_key(node, method)] = definition
+    remember_plan(node, method, bindings, definition, fresh=True)
     return True
 
 
@@ -180,6 +275,7 @@ def run_delegate(
     estimator, delegate, method, bindings, stack, conditions, background, waiting, join_result=True
 ):
     task_bindings = dict(bindings)
+    stage_start = len(estimator.stages)
     duration = delegates.execute(
         estimator,
         delegate,
@@ -187,8 +283,19 @@ def run_delegate(
         task_bindings,
         stack,
         conditions,
-        background or not waiting,
+        False,
         join_result=join_result,
+    )
+    stage_ids = tuple(
+        id(stage) for stage in estimator.stages[stage_start:] if not stage["background"]
+    )
+    if background or not waiting:
+        for stage in estimator.stages[stage_start:]:
+            stage["background"] = True
+    effects = tuple(
+        (key, value)
+        for key, value in state.context(task_bindings).items()
+        if key not in bindings or value != bindings[key]
     )
     state.transfer(
         bindings,
@@ -196,7 +303,9 @@ def run_delegate(
         uncertain=not waiting or (not join_result and duration.upper is None),
         locals=True,
     )
-    return duration
+    return TaskPlan(
+        bindings.get(CLOCK, ZERO), duration, task_bindings.get(delegates.RESULT), effects, stage_ids
+    )
 
 
 def handle_tasks(estimator, node, method, bindings, stack, conditions, background):
@@ -204,7 +313,7 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
     full_name = text(function).removeprefix("System.Threading.Tasks.")
     name = full_name.split(".")[-1]
     args = children(node.child_by_field_name("arguments"), "argument")
-    waiting = consumed(node)
+    waiting = consumed(node) and not bindings.get(CREATION_ONLY)
     task_owner = full_name.rsplit(".", 1)[0].removesuffix(".Factory")
     original_owner = text(function).rsplit(".", 1)[0].removesuffix(".Factory")
     if task_owner == "Task" and not framework_task(estimator.index, original_owner, method):
@@ -218,8 +327,6 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
             and value >= 0
         )
         duration = Cost(value, value) if valid else UNKNOWN
-        remember(node, method, bindings, duration)
-        bindings[task_key(node, method) + ":charged"] = waiting
         estimator.record(
             "delay",
             "异步延时" if waiting else "后台延时",
@@ -229,14 +336,19 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
             background or not waiting,
             milliseconds=value if valid else None,
         )
+        remember(node, method, bindings, duration, stage_ids=(id(estimator.stages[-1]),))
+        bindings[task_key(node, method) + ":charged"] = waiting
         return duration if waiting else ZERO
+    if full_name.split("<", 1)[0] == "Task.FromResult" and len(args) == 1:
+        remember(node, method, bindings, ZERO, estimator.index.value(args[0], method, bindings))
+        return ZERO
     if full_name in {"Task.Run", "Task.Factory.StartNew"}:
         supported = len(args) == 1 or (
             full_name == "Task.Factory.StartNew"
             and len(args) == 2
             and text(args[1]).startswith("TaskCreationOptions.")
         )
-        duration = run_delegate(
+        plan = run_delegate(
             estimator,
             args[0] if args else None,
             method,
@@ -248,8 +360,9 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
             join_result=full_name == "Task.Run",
         )
         if not supported:
-            duration = UNKNOWN
-        remember(node, method, bindings, duration)
+            plan = TaskPlan(plan.start, UNKNOWN, stage_ids=plan.stage_ids)
+        duration = plan.duration
+        remember_plan(node, method, bindings, plan, fresh=True)
         bindings[task_key(node, method) + ":charged"] = waiting
         estimator.record(
             "wait" if waiting else "background",
@@ -263,17 +376,17 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
         )
         return duration if waiting else ZERO
     receiver = function.child_by_field_name("expression")
-    receiver_plan = lookup(receiver, method, bindings)
+    receiver_plan = lookup(receiver, method, bindings, estimator.index)
     if name in {"Start", "RunSynchronously"} and isinstance(receiver_plan, DeferredTask):
         synchronous = name == "RunSynchronously"
         duration = UNKNOWN
+        execution = None
         if (
             receiver_plan.supported
-            and receiver_plan.method_key == method.key
-            and receiver_plan.frame == bindings.get(state.FRAME)
+            and isinstance(receiver_plan.delegate, delegates.BoundDelegate)
             and not args
         ):
-            duration = run_delegate(
+            execution = run_delegate(
                 estimator,
                 receiver_plan.delegate,
                 method,
@@ -284,7 +397,12 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
                 synchronous,
                 join_result=False,
             )
-        plan = TaskPlan(bindings.get(CLOCK, ZERO), duration)
+            duration = execution.duration
+        plan = TaskPlan(
+            bindings.get(CLOCK, ZERO),
+            duration,
+            stage_ids=execution.stage_ids if execution is not None else (),
+        )
         for key, value in list(bindings.items()):
             if value is receiver_plan:
                 bindings[key] = plan
@@ -306,7 +424,13 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
         )
         return duration if synchronous else ZERO
     if name in {"ConfigureAwait", "GetAwaiter"} and receiver_plan:
-        bindings[task_key(node, method)] = receiver_plan
+        remember_plan(
+            node,
+            method,
+            bindings,
+            receiver_plan,
+            fresh=bindings.get(task_key(receiver, method) + ":fresh", False),
+        )
         charged = bindings.get(task_key(receiver, method) + ":charged", False)
         bindings[task_key(node, method) + ":charged"] = charged or waiting
         if not waiting:
@@ -327,8 +451,20 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
                 else UNKNOWN
             )
         )
+        if not args:
+            join_stages(estimator, receiver_plan, background)
+        if (
+            not args
+            and isinstance(receiver_plan, TaskPlan)
+            and bindings.get(task_key(receiver, method) + ":fresh")
+        ):
+            bindings.update(receiver_plan.effects)
+        if name == "GetResult":
+            bindings[call_args.return_key(node, method, bindings)] = (
+                receiver_plan.result if isinstance(receiver_plan, TaskPlan) else None
+            )
     elif full_name in {"Task.WaitAll", "Task.WaitAny", "Task.WhenAll", "Task.WhenAny"}:
-        groups = [task_group(argument, method, bindings) for argument in args]
+        groups = [task_group(argument, method, bindings, estimator.index) for argument in args]
         plans = [plan for group in groups if group for plan in group.tasks]
         costs = [plan.remaining(bindings.get(CLOCK, ZERO)) for plan in plans if plan]
         if (
@@ -350,8 +486,26 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
                 else max(cost.upper for cost in costs),
             )
         if name.startswith("When") and not waiting:
-            remember(node, method, bindings, cost)
+            remember(
+                node,
+                method,
+                bindings,
+                cost,
+                stage_ids=tuple(
+                    dict.fromkeys(
+                        stage
+                        for plan in plans
+                        if isinstance(plan, TaskPlan)
+                        for stage in plan.stage_ids
+                    )
+                )
+                if name == "WhenAll"
+                else (),
+            )
             return ZERO
+        if name in {"WaitAll", "WhenAll"}:
+            for plan in plans:
+                join_stages(estimator, plan, background)
     else:
         return None
     estimator.record(

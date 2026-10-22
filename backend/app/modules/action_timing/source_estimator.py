@@ -9,6 +9,7 @@ from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_finally
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing import source_task_returns as task_returns
 from app.modules.action_timing.source_condition_loops import execute_condition_loop
 from app.modules.action_timing.source_construction import constructor_body, create_object
 from app.modules.action_timing.source_delay_reachability import possible as delay_possible
@@ -24,7 +25,7 @@ from app.modules.action_timing.source_properties import (
     read_property,
 )
 from app.modules.action_timing.source_scopes import declarations, local_scope, restore
-from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup, track_binding
+from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, track_binding
 
 PURE_NAMES = {
     "GetInstance",
@@ -85,6 +86,12 @@ class Estimator:
         bindings.update(delegates.bind_arguments(self.index, method, [], method, bindings))
         flow = self.execute_body(method, bindings, (method.key,), (), False)
         cost = flow.cost()
+        if task_returns.task_method(self.index, method) and not task_returns.async_method(method):
+            from app.modules.action_timing.source_tasks import join_stages, known_task
+
+            plan = flow.states.get("returned", {}).get("<return-value>")
+            cost = cost.plus(plan.remaining(cost) if known_task(plan) else UNKNOWN)
+            join_stages(self, plan, False)
         has_success_path = any(
             value is not None for value in (flow.live, flow.returned, flow.broken, flow.continued)
         )
@@ -183,6 +190,8 @@ class Estimator:
         )
 
     def defaults(self, node, method, bindings):
+        from app.modules.action_timing.source_tasks import public_value
+
         for part in walk(node):
             if part.type != "member_access_expression":
                 continue
@@ -193,7 +202,7 @@ class Estimator:
                 unit, initializer = info.defaults[name]
                 self.parameters[(owner, name)] = {
                     "name": f"{owner}.{name}",
-                    "value": self.index.value(part, method, bindings),
+                    "value": public_value(self.index.value(part, method, bindings)),
                     "expression": text(initializer),
                     **unit.evidence(initializer),
                 }
@@ -238,6 +247,13 @@ class Estimator:
         ):
             return increment_property(self, node, method, bindings, stack, conditions, background)
         if node.type in {"member_access_expression", "identifier"}:
+            if task_returns.completed_property(self, node, method, bindings):
+                return ZERO
+            result = task_returns.result_property(
+                self, node, method, bindings, stack, conditions, background
+            )
+            if result is not None:
+                return result
             return read_property(self, node, method, bindings, stack, conditions, background)
         if node.type == "element_access_expression":
             from app.modules.action_timing.source_collection_expressions import read_element
@@ -265,20 +281,9 @@ class Estimator:
             track_binding(self.index, left, right, method, bindings)
             return cost
         if node.type == "await_expression":
-            operand = children(node)[-1]
-            plan = lookup(operand, method, bindings)
-            if plan and operand.type != "invocation_expression":
-                cost = plan.remaining(bindings.get(CLOCK, ZERO))
-                self.record(
-                    "wait",
-                    "等待任务完成",
-                    node,
-                    method,
-                    conditions,
-                    background,
-                    resolved=cost.upper is not None,
-                )
-                return cost
+            return task_returns.await_task(
+                self, node, method, bindings, stack, conditions, background
+            )
         if node.type == "invocation_expression":
             if text(node.child_by_field_name("function")) == "nameof":
                 return ZERO
@@ -695,6 +700,21 @@ class Estimator:
                 and not isinstance(values.get(name), bool)
             ):
                 values[name] = float(values[name])
+        if task_returns.task_method(self.index, target) and task_returns.async_method(target):
+            from app.modules.action_timing import source_async
+            from app.modules.action_timing.source_tasks import remember_plan
+
+            cost, plan = source_async.execute(
+                self, target, values, (*stack, target.key), conditions, background
+            )
+            state.transfer(bindings, values)
+            remember_plan(node, caller, bindings, plan, fresh=True)
+            return cost
+        returned_task = task_returns.task_method(self.index, target)
+        if returned_task:
+            from app.modules.action_timing.source_tasks import task_ids
+
+            existing_tasks = task_ids(values.values())
         flow = self.execute_body(target, values, (*stack, target.key), conditions, background)
         state.transfer(bindings, values, uncertain=uncertain_refs)
         for position, argument in state.byref_arguments(node):
@@ -733,9 +753,27 @@ class Estimator:
         returned = flow.states.get("returned", {})
         if "<return-value>" in returned:
             bindings[call_args.return_key(node, caller, bindings)] = returned["<return-value>"]
+        if returned_task:
+            from app.modules.action_timing.source_tasks import TaskPlan, known_task, remember_plan
+
+            value = returned.get("<return-value>")
+            task = (
+                value
+                if known_task(value)
+                else TaskPlan(bindings.get(CLOCK, ZERO).plus(flow.cost()), UNKNOWN)
+            )
+            remember_plan(node, caller, bindings, task, fresh=id(task) not in existing_tasks)
         return flow.cost()
 
     def execute_body(self, method, bindings, stack, conditions, background):
+        if (
+            method.callable_kind == "delegate"
+            and method.body is not None
+            and method.body.type != "block"
+        ):
+            cost = self.expression(method.body, method, bindings, stack, conditions, background)
+            bindings["<return-value>"] = self.index.value(method.body, method, bindings)
+            return Flow(None, cost).with_state("returned", bindings)
         if method.callable_kind == "constructor":
             return constructor_body(self, method, bindings, stack, conditions, background)
         if method.callable_kind == "initializer":
@@ -743,7 +781,9 @@ class Estimator:
                 self.expression(method.body, method, bindings, stack, conditions, background)
             )
         flow = self.block(method.body, method, bindings, stack, conditions, background)
-        if flow.jumps:
+        from app.modules.action_timing.source_async import SUSPENDED
+
+        if any(key != SUSPENDED for key in flow.jumps):
             self.truncated = True
             self.record(
                 "unresolved", "跳转超出当前分析执行体", method.body, method, conditions, background

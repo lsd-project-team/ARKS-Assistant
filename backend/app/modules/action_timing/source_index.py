@@ -642,6 +642,27 @@ class SourceIndex:
 
     def _infer(self, node, method):
         source = text(node)
+        if node.type == "await_expression":
+            from app.modules.action_timing.source_task_returns import result_type
+
+            return result_type(self, children(node)[-1], method)
+        if (
+            node.type == "member_access_expression"
+            and text(node.child_by_field_name("name")) == "Result"
+        ):
+            from app.modules.action_timing.source_task_returns import result_type
+
+            result = result_type(self, node.child_by_field_name("expression"), method)
+            if result:
+                return result
+        if node.type == "invocation_expression":
+            function = node.child_by_field_name("function")
+            if text(function.child_by_field_name("name")) == "GetResult":
+                from app.modules.action_timing.source_task_returns import result_type
+
+                result = result_type(self, function.child_by_field_name("expression"), method)
+                if result:
+                    return result
         if node.type == "cast_expression":
             return self.lookup_type(text(node.child_by_field_name("type")), method)
         if node.type == "parenthesized_expression":
@@ -915,6 +936,7 @@ class SourceIndex:
             "element_access_expression",
             "binary_expression",
             "conditional_expression",
+            "await_expression",
         }:
             result_key = call_args.return_key(node, method, bindings)
             if result_key in bindings:
@@ -925,7 +947,7 @@ class SourceIndex:
         if kind in {"identifier", "member_access_expression"}:
             getter = self.accessor(node, method, "get")
             result_key = call_args.return_key(node, method, bindings)
-            if getter and getter.body is not None and result_key in bindings:
+            if result_key in bindings:
                 return state.materialize(
                     coerce(self.infer(node, method), bindings[result_key]), bindings
                 )
@@ -960,6 +982,11 @@ class SourceIndex:
             return self.default_value(method.owner, source, bindings, seen)
         if kind == "object_creation_expression":
             from app.modules.action_timing.source_collections import created
+            from app.modules.action_timing.source_tasks import known_task
+
+            task = bindings.get(call_args.return_key(node, method, bindings))
+            if known_task(task):
+                return task
 
             collection = created(self, node, method, bindings)
             if collection is not state.MISSING:

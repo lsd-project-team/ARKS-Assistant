@@ -7,6 +7,8 @@ from app.modules.action_timing.source_tasks import CLOCK
 
 
 def execute(estimator, clause, incoming, method, bindings, stack, conditions, background):
+    from app.modules.action_timing.source_async import SUSPENDED
+
     result = Flow(None, None)
     started = bindings.get(CLOCK, ZERO)
     continuing = []
@@ -16,6 +18,14 @@ def execute(estimator, clause, incoming, method, bindings, stack, conditions, ba
     }
     for channel, cost in costs.items():
         if cost is None:
+            continue
+        if channel == SUSPENDED:
+            # await挂起仍停留在try中，此刻不能提前运行finally。
+            result = result.merge(
+                Flow(None, jumps={channel: cost}).with_state(
+                    channel, incoming.states.get(channel, bindings)
+                )
+            )
             continue
         scope = dict(incoming.states.get(channel, bindings))
         scope[CLOCK] = started.plus(cost)
@@ -27,6 +37,12 @@ def execute(estimator, clause, incoming, method, bindings, stack, conditions, ba
             conditions,
             background,
         )
+        if SUSPENDED in final.jumps:
+            result = result.merge(
+                Flow(None, jumps={SUSPENDED: cost.plus(final.jumps[SUSPENDED])}).with_state(
+                    SUSPENDED, final.states.get(SUSPENDED, scope)
+                )
+            )
         # finally中的throw或不终止循环不会恢复原来的goto/return出口。
         if final.live is None:
             continue

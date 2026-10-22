@@ -73,8 +73,6 @@ def test_callback_uses_creating_instance_instead_of_helper_this():
         "int delay=5; Action cb=()=>Thread.Sleep(delay); if(flag) delay=9; cb();",
         "Action cb=null; cb();",
         "Action cb=async ()=>{await Task.Delay(20);}; cb();",
-        "Func<Task> cb=()=>Task.Delay(20); cb();",
-        "System.Func<Task> cb=()=>Task.Delay(20); cb();",
         "Action cb=async ()=>{await Task.Delay(20);}; Task.Run(cb).Wait();",
     ],
 )
@@ -83,6 +81,16 @@ def test_unknown_callback_order_or_target_does_not_become_a_known_total(body):
         f"class Demo {{void Run(Action cb){{cb();}} public int DoWork(){{{body} return 0;}}}}"
     )
     assert result["total_ms"] is None
+
+
+@pytest.mark.parametrize("kind", ["Func<Task>", "System.Func<Task>"])
+def test_unjoined_task_callback_returns_after_starting_the_delay(kind):
+    result = analyze(f"""class Demo {{public int DoWork(){{
+        {kind} cb=()=>Task.Delay(20);cb();return 0;}}}}""")
+    assert result["total_ms"] == 0
+    assert any(
+        stage["background"] and stage.get("milliseconds") == 20 for stage in result["stages"]
+    )
 
 
 def test_same_named_invoke_on_source_object_is_not_a_delegate():
