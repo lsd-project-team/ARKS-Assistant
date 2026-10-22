@@ -116,7 +116,7 @@ export function TopicDirectory({
       {!embedded && (
         <div className="page-header">
           <div>
-            <span className="eyebrow">功能说明</span>
+            <span className="eyebrow">功能与流程</span>
             <h1>按你关心的问题阅读</h1>
             <p>从系统全局到生产、维护与数据，查看用途、条件、异常处理和相关原始图谱。</p>
           </div>

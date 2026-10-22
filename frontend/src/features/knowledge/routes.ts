@@ -48,9 +48,9 @@ export function workspacePath(path: string): string {
   return path.replaceAll('\\', '/').replace(/^trunk\//, '');
 }
 export const routeNames: Record<string, string> = {
-  overview: '系统总览',
-  graphs: '流程图谱',
-  modules: '功能说明',
+  overview: '功能与流程',
+  graphs: '全部图谱',
+  modules: '功能与流程',
   topic: '功能专题',
   graph: '流程阅读',
   catalog: '图谱阅读',

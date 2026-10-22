@@ -111,7 +111,6 @@ export default function KnowledgeWorkspace({
     scroller.current?.scrollTo({ top: 0 });
   }, [route]);
   const theme = mode === 'dark' ? 'dark' : 'light';
-  const headingKind = ['graphs', 'graph', 'catalog'].includes(route.kind) ? 'graphs' : 'modules';
   let page;
   switch (route.kind) {
     case 'graphs':
@@ -153,10 +152,10 @@ export default function KnowledgeWorkspace({
       );
   }
   return (
-    <section className="knowledge-workspace" aria-label="流程与功能资料" ref={scroller}>
+    <section className="knowledge-workspace" aria-label="功能与流程" ref={scroller}>
       <WorkspaceHeading className="knowledge-page-heading">
         <div className="breadcrumb knowledge-heading-title">
-          <NavigationIcon kind={headingKind} size={23} />
+          <NavigationIcon kind="modules" size={23} />
           <strong>{routeNames[route.kind]}</strong>
         </div>
       </WorkspaceHeading>

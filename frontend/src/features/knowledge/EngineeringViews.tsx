@@ -236,7 +236,7 @@ export function SourceModuleView({ id, navigate }: { id: string; navigate: Navig
     <>
       <div className="page-header">
         <div>
-          <span className="eyebrow">功能说明 / 源码模块</span>
+          <span className="eyebrow">功能与流程 / 源码模块</span>
           <h1>{module.title}</h1>
           <p>{module.purpose}</p>
           <code>{module.name}</code>
@@ -247,7 +247,7 @@ export function SourceModuleView({ id, navigate }: { id: string; navigate: Navig
             window.location.hash = 'modules';
           }}
         >
-          ← 功能说明
+          ← 功能与流程
         </button>
       </div>
       <section className="section card panel module-progress">

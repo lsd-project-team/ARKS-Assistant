@@ -143,9 +143,14 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
       <PageHeader
         title="找到你要了解的流程"
         actions={
-          <span className="pill">
-            {entries.length} / {publicCatalog.length} 张图
-          </span>
+          <>
+            <button className="button" onClick={() => navigate({ kind: 'modules' })}>
+              ← 功能与流程
+            </button>
+            <span className="pill">
+              {entries.length} / {publicCatalog.length} 张图
+            </span>
+          </>
         }
       >
         先读 8 条生产主流程，再按问题进入专题图。
