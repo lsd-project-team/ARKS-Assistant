@@ -1,5 +1,6 @@
 """对象构造的字段初始化、this/base 链与正文；不执行设备程序集。"""
 
+from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
@@ -114,12 +115,26 @@ def constructor_body(estimator, method, bindings, stack, conditions, background)
     started = bindings.get(CLOCK, ZERO)
     if initial is not None:
         args = children(next(iter(children(initial, "argument_list")), None), "argument")
-        for argument in args:
-            bindings[CLOCK] = started.plus(before)
-            before = before.plus(
-                estimator.expression(argument, method, bindings, stack, conditions, background)
-            )
         owners = [method.owner] if is_this else estimator.index.base_types(method.owner)
+        target = next(
+            (
+                target
+                for owner in owners
+                if (target := estimator.index.constructor(owner, args, method))
+            ),
+            None,
+        )
+        before = call_args.evaluate(
+            estimator,
+            initial,
+            method,
+            bindings,
+            stack,
+            conditions,
+            background,
+            target=target,
+            prefix=before,
+        )
     else:
         args = []
         owners = [] if method.is_static else estimator.index.base_types(method.owner)
@@ -174,18 +189,22 @@ def constructor_body(estimator, method, bindings, stack, conditions, background)
 def create_object(estimator, node, method, bindings, stack, conditions, background):
     arguments = children(node.child_by_field_name("arguments"), "argument")
     started = bindings.get(CLOCK, ZERO)
-    cost = ZERO
-    for argument in arguments:
-        bindings[CLOCK] = started.plus(cost)
-        cost = cost.plus(
-            estimator.expression(argument, method, bindings, stack, conditions, background)
-        )
     owner = estimator.index.lookup_type(text(node.child_by_field_name("type")), method)
+    target = estimator.index.constructor(owner, arguments, method)
+    cost = call_args.evaluate(
+        estimator,
+        node,
+        method,
+        bindings,
+        stack,
+        conditions,
+        background,
+        target=target,
+    )
     if create_task(estimator, node, method, bindings):
         bindings[CLOCK] = started
         return cost
     receiver_id = state.reference(estimator.index, node, method, bindings)
-    target = estimator.index.constructor(owner, arguments, method)
     bindings[CLOCK] = started.plus(cost)
     if target:
         cost = cost.plus(

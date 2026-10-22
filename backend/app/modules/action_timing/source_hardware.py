@@ -4,6 +4,7 @@ import json
 import math
 from pathlib import Path
 
+from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
 from app.modules.action_timing.source_index import children, simple_type, text
 from app.modules.action_timing.source_state import member
@@ -96,6 +97,19 @@ def bind_packages(references):
     }
 
 
+def parameter_plan(contract, args):
+    names = contract.get("parameterNames", [])
+    types = contract["parameterTypes"]
+    if len(names) != len(types):
+        return None
+    defaults = contract.get("optionalDefaults", {})
+    parameters = [
+        (name, kind, True if name in defaults else None)
+        for name, kind in zip(names, types, strict=True)
+    ]
+    return call_args.plan(parameters, args)
+
+
 def contract_for(index, node, method):
     bound = getattr(index, "packages", {}).get("AKRS.Galaxy2.LogicHardware", {})
     if not bound.get("verified"):
@@ -114,14 +128,12 @@ def contract_for(index, node, method):
         if owner != full_type and namespace not in method.unit.namespaces:
             continue
         params = contract["parameterTypes"]
-        optional = len(contract.get("optionalDefaults", {}))
-        if not len(params) - optional <= len(args) <= len(params):
+        slots = parameter_plan(contract, args)
+        if slots is None:
             continue
         score = 0
-        for arg, parameter in zip(args, params, strict=False):
-            parts = children(arg)
-            if any(child.type in {"name_colon", "name_equals"} for child in parts):
-                break
+        for arg, slot in zip(args, slots, strict=True):
+            parameter = params[slot]
             actual = simple_type(index.infer(arg, method))
             parameter = parameter.rstrip("&")
             expected = simple_type(ALIASES.get(parameter, parameter))
@@ -147,13 +159,18 @@ def numeric(value):
 def motion_model(contract, expressions, values, receiver):
     """给出可代入的运动参数和公式，不把跨驱动未证明的时间单位转换成毫秒。"""
     relative = "Relative" in contract["method"]
-    first = values[0] if values else None
+    names = contract.get("parameterNames", [])
+    target_index = next(
+        (names.index(name) for name in ("movePara", "position", "targetPosition") if name in names),
+        0,
+    )
+    first = values[target_index] if target_index < len(values) else None
     move_para = first if isinstance(first, dict) else {}
     target = move_para.get("TargetPosition", first)
     distance = abs(target) if relative and numeric(target) else None
-    velocity_index = 1 if relative else 2
+    velocity_index = names.index("vel") if "vel" in names else -1
     velocity = move_para.get(
-        "Vel", values[velocity_index] if len(values) > velocity_index else None
+        "Vel", values[velocity_index] if 0 <= velocity_index < len(values) else None
     )
     behavior = contract["behavior"]
     return {
@@ -161,12 +178,12 @@ def motion_model(contract, expressions, values, receiver):
         "distance": distance,
         "target": target
         if numeric(target)
-        else expressions[0]
-        if expressions
+        else expressions[target_index]
+        if target_index < len(expressions)
         else "MovePara.TargetPosition",
         "velocity": velocity if numeric(velocity) and velocity >= 0 else None,
         "velocity_expression": expressions[velocity_index]
-        if len(expressions) > velocity_index
+        if 0 <= velocity_index < len(expressions) and expressions[velocity_index]
         else f"{receiver}.AxisMovePara.AbsoluteMoveSpeed",
         "acceleration_expression": f"{receiver}.AxisMovePara.ACC",
         "deceleration_expression": f"{receiver}.AxisMovePara.DEC",
@@ -221,8 +238,11 @@ def hardware_call(estimator, node, method, bindings, conditions, background):
     owner = simple_type(contract["declaringType"])
     name = contract["method"]
     args = children(node.child_by_field_name("arguments"), "argument")
-    expressions = [text(arg) for arg in args]
-    values = [estimator.index.value(arg, method, bindings) for arg in args]
+    expressions = [""] * len(contract["parameterTypes"])
+    values = [contract.get("optionalDefaults", {}).get(name) for name in contract["parameterNames"]]
+    supplied = call_args.values(estimator.index, node, method, bindings)
+    for arg, value, slot in zip(args, supplied, parameter_plan(contract, args), strict=True):
+        expressions[slot], values[slot] = text(arg), value
     evidence = {
         key: contract[key] for key in ("symbol", "publicToken", "bodyToken", "bodyIlSha256")
     }

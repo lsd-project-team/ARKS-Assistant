@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_closures as closures
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
@@ -276,15 +277,22 @@ def signature_arity(kind):
     return count - (base == "Func")
 
 
-def bind_arguments(index, target, arguments, caller, bindings):
+def bind_arguments(index, target, arguments, caller, bindings, saved=None):
     result = {}
-    for position, (name, kind, default) in enumerate(target.parameters):
+    slots = call_args.plan(target.parameters, arguments)
+    sources = {slot: position for position, slot in enumerate(slots or ())}
+    for slot, (name, kind, default) in enumerate(target.parameters):
         arity = signature_arity(kind)
         if arity is None or index.lookup_type(kind, target) in index.classes:
             continue
-        value = arguments[position] if position < len(arguments) else default
+        position = sources.get(slot)
+        value = arguments[position] if position is not None else default
         bound = (
-            capture(
+            saved.callbacks[position]
+            if saved is not None
+            and position is not None
+            and saved.callbacks[position] is not state.MISSING
+            else capture(
                 index,
                 value,
                 caller,
@@ -345,7 +353,13 @@ def invoke(estimator, node, method, bindings, stack, conditions, background):
         )
         return UNKNOWN
     arguments = children(node.child_by_field_name("arguments"), "argument")
-    values = tuple(estimator.index.value(argument, method, bindings) for argument in arguments)
+    # Action/Func.Invoke的命名参数属于框架签名，不能用用户lambda的参数名猜测。
+    if any(call_args.argument_name(arg) is not None for arg in arguments):
+        estimator.record(
+            "unresolved", "委托命名参数签名未绑定", node, method, conditions, background
+        )
+        return UNKNOWN
+    values = call_args.values(estimator.index, node, method, bindings)
     from app.modules.action_timing.source_tasks import consumed
 
     asynchronous = (

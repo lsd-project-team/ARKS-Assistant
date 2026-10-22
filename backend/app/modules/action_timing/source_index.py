@@ -10,6 +10,7 @@ from functools import cached_property
 import tree_sitter_c_sharp
 from tree_sitter import Language, Parser
 
+from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
 
 
@@ -175,6 +176,7 @@ class SourceIndex:
         self._inferring = set()
         self._resolution_cache = {}
         self._resolving = set()
+        self._source_call_sites = set()
         self._overridden_cache = {}
         self._property_cache = {}
         self._valuing = set()
@@ -432,12 +434,11 @@ class SourceIndex:
         info.initializers.append(method)
 
     def constructor(self, owner, arguments, caller):
+        return self.overload(self.by_method.get((owner, ".ctor"), []), arguments, caller)
+
+    def overload(self, methods, arguments, caller):
         candidates = [
-            method
-            for method in self.by_method.get((owner, ".ctor"), [])
-            if sum(default is None for _, _, default in method.parameters)
-            <= len(arguments)
-            <= len(method.parameters)
+            method for method in methods if call_args.plan(method.parameters, arguments) is not None
         ]
         if len(candidates) > 1:
             kinds = [self.infer(argument, caller) for argument in arguments]
@@ -446,12 +447,13 @@ class SourceIndex:
                 for method in candidates
                 if all(
                     kind and kind == self.lookup_type(parameter[1], method)
-                    for kind, parameter in zip(kinds, method.parameters, strict=False)
+                    for kind, slot in zip(
+                        kinds, call_args.plan(method.parameters, arguments), strict=True
+                    )
+                    for parameter in [method.parameters[slot]]
                 )
             ]
             candidates = exact if len(exact) == 1 else candidates
-        if any(re.match(r"\w+\s*:", text(argument)) for argument in arguments):
-            return None
         return candidates[0] if len(candidates) == 1 else None
 
     def property_method(self, owner, name, mode, seen=None):
@@ -662,7 +664,7 @@ class SourceIndex:
         }.get(node.type, "")
 
     def resolve(self, node, caller):
-        identity = (caller.owner, caller.unit.path, node.start_byte, node.end_byte)
+        identity = (caller.key, node.start_byte, node.end_byte)
         if identity in self._resolution_cache:
             return self._resolution_cache[identity]
         if identity in self._resolving:
@@ -674,6 +676,10 @@ class SourceIndex:
             return result
         finally:
             self._resolving.remove(identity)
+
+    def has_source_call(self, node, caller):
+        self.resolve(node, caller)
+        return (caller.key, node.start_byte, node.end_byte) in self._source_call_sites
 
     def _resolve(self, node, caller):
         function = node.child_by_field_name("function")
@@ -706,25 +712,9 @@ class SourceIndex:
                     methods.append(method)
                     signatures.add(signature)
             owners.extend(self.base_types(current))
-        candidates = [
-            method
-            for method in methods
-            if sum(default is None for _, _, default in method.parameters)
-            <= len(args)
-            <= len(method.parameters)
-        ]
-        if len(candidates) > 1:
-            types = [self.infer(arg, caller) for arg in args]
-            exact = [
-                candidate
-                for candidate in candidates
-                if all(
-                    kind and kind == self.lookup_type(parameter[1], candidate)
-                    for kind, parameter in zip(types, candidate.parameters, strict=False)
-                )
-            ]
-            candidates = exact if len(exact) == 1 else candidates
-        return candidates[0] if len(candidates) == 1 else None
+        if methods:
+            self._source_call_sites.add((caller.key, node.start_byte, node.end_byte))
+        return self.overload(methods, args, caller)
 
     def polymorphic(self, node, caller, target):
         modifiers = {text(item) for item in children(target.node, "modifier")}
@@ -959,10 +949,7 @@ class SourceIndex:
                 )
                 if not isinstance(receiver, dict) or "<type>" not in receiver:
                     return None
-            values = [
-                self.value(arg, method, bindings, seen)
-                for arg in children(node.child_by_field_name("arguments"), "argument")
-            ]
+            values = call_args.values(self, node, method, bindings, seen)
             if values and all(
                 isinstance(value, (int, float)) and not isinstance(value, bool) for value in values
             ):
@@ -978,23 +965,40 @@ class SourceIndex:
             target = self.resolve(node, method)
             if target and self.polymorphic(node, method, target):
                 return None
+            saved = call_args.snapshot(node, method, bindings)
+            receiver = saved.receiver if saved is not None else state.MISSING
             context = (
-                {**bindings, state.THIS: state.receiver_for(self, target, node, method, bindings)}
+                {
+                    **bindings,
+                    state.THIS: state.receiver_for(self, target, node, method, bindings)
+                    if receiver is state.MISSING
+                    else receiver,
+                }
                 if target
                 else bindings
             )
-            return self.returned_value(target, values, context, seen)
+            return self.returned_value(target, values, context, seen, call_args.arguments(node))
         return None
 
-    def returned_value(self, target, values, bindings, seen):
+    def returned_value(self, target, values, bindings, seen, argument_nodes=None):
         if target is None or target.body is None:
             return None
         identity = (target.key, "<return>")
         if identity in seen:
             return None
+        slots = (
+            call_args.plan(target.parameters, argument_nodes)
+            if argument_nodes is not None
+            else tuple(range(len(values)))
+        )
+        if slots is None:
+            return None
         arguments = {
-            parameter[0]: value for parameter, value in zip(target.parameters, values, strict=False)
+            name: self.value(default, target, {}, seen) for name, _, default in target.parameters
         }
+        arguments.update(
+            (target.parameters[slot][0], value) for slot, value in zip(slots, values, strict=True)
+        )
         arguments.update({key: value for key, value in bindings.items() if "." in key})
         arguments.update(state.context(bindings))
         arguments[state.THIS] = bindings.get(state.THIS)

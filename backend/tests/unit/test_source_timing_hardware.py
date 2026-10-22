@@ -78,6 +78,42 @@ def test_sensor_stable_reads_use_intervals_between_reads_and_no_timeout_as_durat
     assert waited["known_delay_max_ms"] is None and waited["total_ms"] is None
 
 
+def test_hardware_named_arguments_use_verified_parameter_names_and_optional_defaults():
+    moved = estimate("axis.AbsoluteMove(vel:20,position:10);")
+    motion = next(stage for stage in moved["stages"] if stage["kind"] == "motion")
+    assert motion["motion_model"]["target"] == 10
+    assert motion["motion_model"]["velocity"] == 20
+    assert motion["contract"]["publicToken"] == "0x060001cf"
+    assert moved["total_ms"] is None
+    sensed = estimate("sensor.CheckStateForNums(num:3);", "Sensor sensor;")
+    assert sensed["known_delay_max_ms"] == 160
+    reordered = estimate("sensor.CheckStateForNums(checkInteval:10,num:3);", "Sensor sensor;")
+    assert reordered["known_delay_max_ms"] == 60
+
+
+def test_hardware_numeric_arguments_keep_their_evaluation_time_values():
+    result = estimate(
+        "axis.AbsoluteMove(vel:Read(),position:Change());",
+        "Axis axis;int velocity=20;int Read()=>velocity;int Change(){velocity=99;return 10;}",
+    )
+    model = next(stage["motion_model"] for stage in result["stages"] if stage["kind"] == "motion")
+    assert model["target"] == 10 and model["velocity"] == 20
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "axis.AbsoluteMove(other:10);",
+        "axis.AbsoluteMove(vel:20);",
+        "axis.AbsoluteMove(position:10,position:20);",
+    ],
+)
+def test_invalid_hardware_named_arguments_do_not_borrow_a_positional_contract(body):
+    result = estimate(body)
+    assert result["total_ms"] is None
+    assert not any("contract" in stage for stage in result["stages"])
+
+
 def test_binary_changes_invalidate_source_model_and_unverified_contract_is_disabled(tmp_path):
     (tmp_path / "AKRS.ZX2200.csproj").write_text(
         """<Project><ItemGroup>

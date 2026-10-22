@@ -3,6 +3,7 @@
 import math
 import re
 
+from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_construction import constructor_body, create_object
@@ -255,13 +256,13 @@ class Estimator:
             before = ZERO
             started = bindings.get(CLOCK, ZERO)
             function = node.child_by_field_name("function")
+            target = self.index.resolve(node, method)
             if function.type == "conditional_access_expression":
                 return self.conditional_access(
                     function, node, method, bindings, stack, conditions, background
                 )
             if function is not None and function.type == "member_access_expression":
                 receiver = function.child_by_field_name("expression")
-                target = self.index.resolve(node, method)
                 static_receiver = self.index.lookup_type(
                     text(receiver), method
                 ) in self.index.classes and (
@@ -280,11 +281,23 @@ class Estimator:
                         background,
                     )
                 )
-            for argument in children(node.child_by_field_name("arguments"), "argument"):
-                bindings[CLOCK] = started.plus(before)
-                before = before.plus(
-                    self.expression(argument, method, bindings, stack, conditions, background)
-                )
+            receiver_id = (
+                state.receiver_for(self.index, target, node, method, bindings)
+                if target is not None
+                else state.MISSING
+            )
+            before = call_args.evaluate(
+                self,
+                node,
+                method,
+                bindings,
+                stack,
+                conditions,
+                background,
+                target=target,
+                prefix=before,
+                receiver=receiver_id,
+            )
             bindings[CLOCK] = started.plus(before)
             result = before.plus(self.call(node, method, bindings, stack, conditions, background))
             bindings[CLOCK] = started
@@ -372,7 +385,8 @@ class Estimator:
             return callback_cost
         if function_name.endswith(("Thread.Sleep", "DelayHelper.Delay")):
             arg = arguments[0] if arguments else None
-            value = self.index.value(arg, method, bindings)
+            values = call_args.values(self.index, node, method, bindings)
+            value = values[0] if values else None
             if arg:
                 self.defaults(arg, method, bindings)
             valid = (
@@ -399,6 +413,13 @@ class Estimator:
         target = self.index.resolve(node, method)
         if target is None:
             state.invalidate_byref(self.index, node, method, bindings)
+            if self.index.has_source_call(node, method):
+                self.record(
+                    "unresolved", "源码调用重载或参数未绑定", node, method, conditions, background
+                )
+                # 该阶段使动作总耗时未定；已知延时栏只汇总实际展开的延时组成，
+                # 与未绑定的运动、SDK调用保持同一口径，不能据此宣称总耗时为零。
+                return ZERO
         if target and self.index.polymorphic(node, method, target):
             self.record(
                 "unresolved",
@@ -549,7 +570,43 @@ class Estimator:
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1
         self.frames += 1
-        callbacks = delegates.bind_arguments(self.index, target, arguments, caller, bindings)
+        slots = call_args.plan(target.parameters, arguments, provided=argument_values or {})
+        if slots is None:
+            self.record("unresolved", "源码调用参数未绑定", node, caller, conditions, background)
+            return UNKNOWN
+        saved = call_args.snapshot(node, caller, bindings)
+        scalars = (
+            saved.values
+            if saved is not None and len(saved.values) == len(arguments)
+            else tuple(self.index.value(arg, caller, bindings) for arg in arguments)
+        )
+        callbacks = delegates.bind_arguments(
+            self.index, target, arguments, caller, bindings, saved=saved
+        )
+        refs = {
+            target.parameters[slots[position]][0]: slot
+            for position, argument in state.byref_arguments(node)
+            if position < len(slots)
+            and (
+                slot := saved.references[position]
+                if saved is not None and position < len(saved.references)
+                else state.capture_ref(self.index, argument, caller, bindings)
+            )
+            is not None
+        }
+        uncertain_refs = any(
+            position < len(slots)
+            and target.parameters[slots[position]][0] not in refs
+            and text(state.argument_target(argument)) not in {"", "_"}
+            for position, argument in state.byref_arguments(node)
+        )
+        stage_start = len(self.stages)
+        if uncertain_refs:
+            self.record(
+                "unresolved", "引用参数的实例或存储位置未绑定", node, caller, conditions, background
+            )
+        if receiver_id is state.MISSING:
+            receiver_id = saved.receiver if saved is not None else state.MISSING
         values = {
             **self.context,
             **state.context(bindings),
@@ -559,13 +616,16 @@ class Estimator:
             state.FRAME: str(self.frames),
             CLOCK: bindings.get(CLOCK, ZERO),
             **{
-                parameter[0]: self.index.value(argument, caller, bindings)
-                for parameter, argument in zip(target.parameters, arguments, strict=False)
+                target.parameters[slot][0]: value
+                for slot, value in zip(slots, scalars, strict=True)
             },
         }
         values.update(callbacks)
         values.update(argument_values or {})
-        for name, _, default in target.parameters[len(arguments) :]:
+        for name, slot in refs.items():
+            values[f"{state.LOCAL_ALIAS}{name}>"] = slot
+            values[name] = bindings.get(slot)
+        for name, _, default in target.parameters:
             if name not in values:
                 values[name] = self.index.value(default, target, {})
         for name, kind, _ in target.parameters:
@@ -576,16 +636,29 @@ class Estimator:
             ):
                 values[name] = float(values[name])
         flow = self.execute_body(target, values, (*stack, target.key), conditions, background)
-        state.transfer(bindings, values)
+        state.transfer(bindings, values, uncertain=uncertain_refs)
         for position, argument in state.byref_arguments(node):
+            if position < len(slots) and target.parameters[slots[position]][0] in refs:
+                continue
             assigned = state.argument_target(argument)
             if assigned is not None and text(assigned) != "_":
                 value = (
-                    values.get(target.parameters[position][0])
-                    if position < len(target.parameters)
+                    values.get(target.parameters[slots[position]][0])
+                    if position < len(slots)
                     else None
                 )
-                state.write(self.index, assigned, caller, bindings, value)
+                state.write(
+                    self.index, assigned, caller, bindings, None if uncertain_refs else value
+                )
+        if uncertain_refs:
+            # 未证明两个ref是否别名时，方法内赋值后的数值也不作为已知停留。
+            for stage in self.stages[stage_start:]:
+                stage["conditions"].append("引用参数别名未确定，不推算该段数值")
+                if "milliseconds" in stage:
+                    stage["milliseconds"] = None
+                if "resolved" in stage:
+                    stage["resolved"] = False
+            return UNKNOWN
         if flow.live is None and flow.returned is None:
             self.record(
                 "unresolved",
@@ -634,9 +707,23 @@ class Estimator:
         labels = (*conditions, f"{text(receiver)} 非空")
         cost = ZERO
         if invocation:
-            for arg in children(invocation.child_by_field_name("arguments"), "argument"):
-                bindings[CLOCK] = started.plus(before).plus(cost)
-                cost = cost.plus(self.expression(arg, method, bindings, stack, labels, background))
+            target = self.index.resolve(invocation, method)
+            receiver_id = (
+                state.receiver_for(self.index, target, invocation, method, bindings)
+                if target is not None
+                else state.MISSING
+            )
+            cost = call_args.evaluate(
+                self,
+                invocation,
+                method,
+                bindings,
+                stack,
+                labels,
+                background,
+                target=target,
+                receiver=receiver_id,
+            )
             cost = cost.plus(self.call(invocation, method, bindings, stack, labels, background))
         else:
             binding = next(iter(children(access, "member_binding_expression")), None)

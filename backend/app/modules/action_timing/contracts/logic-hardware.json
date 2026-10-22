@@ -101,7 +101,12 @@
         "fixedSleepMs": 0,
         "driverWaitModel": "external Drive contract; do not infer polling or timeout from this wrapper",
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "isCheckPostion",
+        "targetPosition",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.AbsoluteMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,System.Boolean,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -136,7 +141,12 @@
         "virtualDispatchMustBeResolved": true,
         "physicalDurationKnown": false,
         "unitsKnown": false
-      }
+      },
+      "parameterNames": [
+        "movePara",
+        "isCheckPostion",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.AbsoluteMove(System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -169,7 +179,11 @@
         "unitsKnown": false,
         "delegatesTo": "Axis.AbsoluteMove(MovePara,bool,AccuracyMode)",
         "forwardedIsCheckPostion": false
-      }
+      },
+      "parameterNames": [
+        "position",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.AbsoluteMove(System.Double,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -211,7 +225,13 @@
           "tolerance": 0.0001,
           "replacement": "AxisMovePara.AbsoluteMoveSpeed"
         }
-      }
+      },
+      "parameterNames": [
+        "position",
+        "isCheckPostion",
+        "vel",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.SendAbsoluteMoveCommand(System.Double,System.Double)",
@@ -236,7 +256,11 @@
         "fixedSleepMs": 0,
         "commandLatencyUnknown": true,
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "position",
+        "vel"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.SendAbsoluteMoveCommand(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara)",
@@ -260,7 +284,10 @@
         "velocityClamped": true,
         "parameterTransform": "TargetPosition (direction-inverted if configured),Acc,Dec,Jerk,Vel multiplied by PulseEquivalent before Drive call",
         "unitsKnown": false
-      }
+      },
+      "parameterNames": [
+        "movePara"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -287,7 +314,11 @@
         ],
         "physicalDurationKnown": false,
         "unitsKnown": false
-      }
+      },
+      "parameterNames": [
+        "movePara",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.RelativeMove(System.Double,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -317,7 +348,12 @@
         "physicalDurationKnown": false,
         "unitsKnown": false,
         "delegatesTo": "Axis.RelativeMove(MovePara,AccuracyMode)"
-      }
+      },
+      "parameterNames": [
+        "position",
+        "vel",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis.AbsoluteMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,System.Boolean,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -348,7 +384,12 @@
         "derivedOverrideOf": "Axis.AbsoluteMove(MovePara,bool,AccuracyMode)",
         "mustNotInheritBaseFixedSleep": true,
         "boolMeaning": "isCheckPostion controls additional post-wait absolute actual-versus-target check; false does not disable arrival wait"
-      }
+      },
+      "parameterNames": [
+        "movePara",
+        "isCheckPostion",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis.SendAbsoluteMoveCommand(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara)",
@@ -370,7 +411,10 @@
         "physicalDurationKnown": false,
         "parameterTransform": "LengthToCamAngle(TargetPosition,Radius), then base Axis.SendAbsoluteMoveCommand(convertedTarget,-1)",
         "unitsKnown": false
-      }
+      },
+      "parameterNames": [
+        "movePara"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis.RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
@@ -396,7 +440,11 @@
         "relativeTargetTransform": "TargetPosition += GetRealPosition()",
         "physicalDurationKnown": false,
         "unitsKnown": false
-      }
+      },
+      "parameterNames": [
+        "movePara",
+        "accuracyMode"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Electric.SetOutputValue(System.Boolean)",
@@ -419,7 +467,10 @@
         "commandLatencyUnknown": true,
         "physicalDurationKnown": false,
         "doNotTreatAsZeroPhysicalTime": true
-      }
+      },
+      "parameterNames": [
+        "value"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Electric.CheckStateForNums(System.Boolean,System.Int32,System.Int32)",
@@ -451,7 +502,12 @@
         "defaultNumOneHasNoFixedSleep": true,
         "readLatencyUnknown": true,
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "state",
+        "num",
+        "checkInteval"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Sensor.CheckStateForNums(System.Boolean,System.Int32,System.Int32)",
@@ -483,7 +539,12 @@
         "defaultNumOneHasNoFixedSleep": true,
         "readLatencyUnknown": true,
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "state",
+        "num",
+        "checkInteval"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Sensor.WaitSignal(System.Boolean,System.Int32,System.Boolean&)",
@@ -512,7 +573,12 @@
         "waitCanCompleteImmediately": true,
         "timeoutCanOvershootOnePollPlusReadLatency": true,
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "state",
+        "timeOut",
+        "isCancelWait"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.MoveAxesToTargetPosition(System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[])",
@@ -541,7 +607,10 @@
         "waitForAxes": "sequential wait calls on already-started motions",
         "composition": "maximum completion timestamp of pending axes; do not sum complete axis durations",
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "moveOpts"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.WaitAxesArrival(System.ValueTuple`4<AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode>[])",
@@ -561,7 +630,10 @@
         "fixedSleepMs": 0,
         "sendsMotion": false,
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "moveOpts"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.WaitAxesArrivalAsyn(AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis[])",
@@ -584,7 +656,10 @@
         "accuracyModeForwarded": 0,
         "isCheckPostionForwarded": false,
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "axes"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Services.MotionService.SyncMove(AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.CamAxis,AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis,System.Double,System.Double,System.Double)",
@@ -607,7 +682,14 @@
         "kind": "no_op_in_this_version",
         "observedBody": "nop;ret",
         "doesNotStartMotion": true
-      }
+      },
+      "parameterNames": [
+        "camAxis",
+        "axis",
+        "camAxisStartpos",
+        "axisStartpos",
+        "distance"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera.SetExposureTime(System.Double)",
@@ -630,7 +712,10 @@
         "unit": "unresolved",
         "unitConflict": "concrete parameter microsecond versus abstract BaseCamera parameter millisecond",
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "microsecond"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera.SnapShot(System.Boolean,AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.SnapImageFormat)",
@@ -658,7 +743,11 @@
         },
         "delegatesTo": "SnapImage(false,isPostToLink,imageFormat)",
         "physicalDurationKnown": false
-      }
+      },
+      "parameterNames": [
+        "isPostToLink",
+        "imageFormat"
+      ]
     },
     {
       "symbol": "AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.AKRSCamera.SnapImage(System.Boolean,System.Boolean,AKRS.Galaxy2.LogicHardware.Hardwares.Cameras.SnapImageFormat)",
@@ -716,7 +805,12 @@
         ],
         "eventSetBy": "Camera_CameraBufferReceived finally after cache handling",
         "exposureUnit": "unresolved"
-      }
+      },
+      "parameterNames": [
+        "canUseCachedImage",
+        "isPostToLink",
+        "imageFormat"
+      ]
     }
   ],
   "residualUnknowns": [
@@ -734,5 +828,11 @@
     "format": "pe",
     "evidenceId": "ev_9d55e7b3f8d9011fb2d3f2c933bc23168d4beae78665a04687a9459b2d4833d7",
     "observation": "WinForms IO display/switch controls; not a cylinder/vacuum physical-time model"
+  },
+  "parameterNameEvidence": {
+    "basis": "ECMA-335 Param table; sequence and optional constants matched to publicToken",
+    "reader": "System.Reflection.Metadata PEReader, file-only static supplement",
+    "artifactSha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250",
+    "targetExecuted": false
   }
 }

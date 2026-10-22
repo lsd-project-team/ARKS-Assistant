@@ -161,12 +161,16 @@ def receiver_for(index, target, node, caller, bindings):
 
 
 def byref_arguments(node):
-    args = node.child_by_field_name("arguments")
+    args = node.child_by_field_name("arguments") or next(
+        (child for child in node.children if child.type == "argument_list"), None
+    )
     if args is None:
         return []
     return [
         (position, argument)
-        for position, argument in enumerate(child for child in args.children if child.is_named)
+        for position, argument in enumerate(
+            child for child in args.children if child.type == "argument"
+        )
         if any(child.type in {"ref", "out"} for child in argument.children)
     ]
 
@@ -183,8 +187,39 @@ def argument_target(argument):
     return target
 
 
+def capture_ref(index, argument, method, bindings):
+    if not any(child.type in {"ref", "out"} for child in argument.children):
+        return None
+    target = argument_target(argument)
+    if target is None or source(target) == "_":
+        return None
+    place = location(index, target, method, bindings)
+    if place is not None:
+        slot = key(place)
+        if place[0] is None:
+            write(index, target, method, bindings, None)
+            # 通配失效槽不能当作真实地址；两个未知对象可能相同，也可能不同。
+            return None
+    elif target.type == "identifier":
+        slot = local_slot(target, method, bindings)
+        if slot is None:
+            return None
+    else:
+        return None
+    if slot not in bindings:
+        bindings[slot] = index.value(target, method, bindings)
+    return slot
+
+
 def invalidate_byref(index, node, method, bindings):
-    for _, argument in byref_arguments(node):
+    from app.modules.action_timing import source_arguments as call_args
+
+    saved = call_args.snapshot(node, method, bindings)
+    for position, argument in byref_arguments(node):
+        slot = saved.references[position] if saved and position < len(saved.references) else None
+        if slot is not None:
+            bindings[slot] = None
+            continue
         target = argument_target(argument)
         if target is not None and source(target) != "_":
             write(index, target, method, bindings, None)
