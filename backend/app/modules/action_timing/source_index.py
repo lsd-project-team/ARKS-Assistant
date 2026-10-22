@@ -12,7 +12,14 @@ from tree_sitter import Language, Parser
 
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
-from app.modules.action_timing.source_numbers import binary_value
+from app.modules.action_timing.source_numbers import (
+    NUMERIC_TYPES,
+    binary_value,
+    coerce,
+    literal,
+    literal_type,
+    promoted,
+)
 
 
 def walk(node):
@@ -409,10 +416,6 @@ class SourceIndex:
                     variable_name = text(variable.child_by_field_name("name"))
                     types[variable_name] = kind
                     initializers[variable_name] = initializer(variable)
-            elif declaration.type in {"foreach_statement", "for_each_statement"}:
-                variable = declaration.child_by_field_name("left")
-                if variable is not None and variable.type == "identifier":
-                    types.setdefault(text(variable), text(declaration.child_by_field_name("type")))
         method = Method(
             info.name,
             name,
@@ -631,6 +634,32 @@ class SourceIndex:
 
     def _infer(self, node, method):
         source = text(node)
+        if node.type == "cast_expression":
+            return self.lookup_type(text(node.child_by_field_name("type")), method)
+        if node.type == "parenthesized_expression":
+            return self.infer(children(node)[-1], method) if children(node) else ""
+        if node.type == "binary_expression":
+            operator = text(node.child_by_field_name("operator"))
+            left = self.infer(node.child_by_field_name("left"), method)
+            right = self.infer(node.child_by_field_name("right"), method)
+            if operator in {"+", "-", "*", "/", "%", "&", "|", "^"}:
+                return promoted(left, right)
+            if operator in {"&&", "||"} and left == right == "bool":
+                return "bool"
+        if node.type in {"prefix_unary_expression", "postfix_unary_expression"}:
+            operand = self.infer(children(node)[-1], method) if children(node) else ""
+            if operand in NUMERIC_TYPES:
+                if source.strip() in {"-2147483648", "-9223372036854775808"}:
+                    return "int" if source.strip() == "-2147483648" else "long"
+                if source.startswith(("++", "--")) or node.type == "postfix_unary_expression":
+                    return operand
+                if operand in {"byte", "sbyte", "short", "ushort", "char"}:
+                    return "int"
+                if source.startswith("-") and operand == "uint":
+                    return "long"
+                return "" if source.startswith("-") and operand == "ulong" else operand
+            if operand == "bool" and source.startswith("!"):
+                return "bool"
         if node.type == "element_access_expression":
             from app.modules.action_timing.source_collections import element_type
 
@@ -643,10 +672,11 @@ class SourceIndex:
             bases = self.base_types(method.owner)
             return bases[0] if len(bases) == 1 else ""
         if node.type == "identifier":
-            if method.types.get(source) == "var":
+            declared = self.local_type(node, method)
+            if declared == "var":
                 return self.infer(method.initializers.get(source), method)
             return (
-                (self.lookup_type(method.types[source], method) if source in method.types else "")
+                (self.lookup_type(declared, method) if declared else "")
                 or self.member_type(method.owner, source)
                 or self.lookup_type(source, method)
             )
@@ -661,12 +691,29 @@ class SourceIndex:
                 else ""
             )
         if node.type == "member_access_expression":
+            from app.modules.action_timing.source_collections import raw_type
+
+            if raw_type(self, node.child_by_field_name("expression"), method).endswith("]"):
+                name = text(node.child_by_field_name("name"))
+                if name in {"Length", "Rank"}:
+                    return "int"
+                if name == "LongLength":
+                    return "long"
             owner = self.infer(node.child_by_field_name("expression"), method)
             return self.member_type(
                 owner, text(node.child_by_field_name("name"))
             ) or self.lookup_type(source, method)
         if node.type == "invocation_expression":
             function = node.child_by_field_name("function")
+            if function.type == "member_access_expression":
+                from app.modules.action_timing.source_collections import raw_type
+
+                if raw_type(self, function.child_by_field_name("expression"), method).endswith("]"):
+                    name = text(function.child_by_field_name("name"))
+                    if name in {"GetLength", "GetUpperBound", "GetLowerBound"}:
+                        return "int"
+                    if name == "GetLongLength":
+                        return "long"
             if text(function).endswith(".GetInstance"):
                 return self.lookup_type(text(function.child_by_field_name("expression")), method)
             found = self.resolve(node, method)
@@ -678,12 +725,35 @@ class SourceIndex:
         if node.type == "argument":
             parts = children(node)
             return self.infer(parts[-1], method) if parts else ""
+        if node.type in {"integer_literal", "real_literal"}:
+            return literal_type(source, node.type == "real_literal")
         return {
-            "integer_literal": "int",
-            "real_literal": "double",
             "boolean_literal": "bool",
             "string_literal": "string",
         }.get(node.type, "")
+
+    def local_type(self, node, method):
+        name = text(node)
+        parent = node.parent
+        while parent is not None and parent != method.node:
+            if parent.type in {"foreach_statement", "for_each_statement"}:
+                body = parent.child_by_field_name("body")
+                if (
+                    text(parent.child_by_field_name("left")) == name
+                    and body is not None
+                    and body.start_byte <= node.start_byte < body.end_byte
+                ):
+                    for position, kind in reversed(method.type_scope):
+                        if position == parent.start_byte:
+                            return kind
+                    kind = text(parent.child_by_field_name("type"))
+                    if kind == "var":
+                        from app.modules.action_timing.source_collections import element_type
+
+                        return element_type(self, parent.child_by_field_name("right"), method)
+                    return kind
+            parent = parent.parent
+        return method.types.get(name, "")
 
     def resolve(self, node, caller):
         identity = (caller.key, node.start_byte, node.end_byte, caller.type_scope)
@@ -813,19 +883,16 @@ class SourceIndex:
             getter = self.accessor(node, method, "get")
             result_key = call_args.return_key(node, method, bindings)
             if getter and getter.body is not None and result_key in bindings:
-                return state.materialize(bindings[result_key], bindings)
+                return state.materialize(
+                    coerce(self.infer(node, method), bindings[result_key]), bindings
+                )
             current = state.read(self, node, method, bindings)
             if current is not state.MISSING:
-                return state.materialize(current, bindings)
+                return state.materialize(coerce(self.infer(node, method), current), bindings)
         if source in bindings:
             return state.materialize(bindings[source], bindings)
         if kind in {"integer_literal", "real_literal"}:
-            try:
-                cleaned = re.sub(r"[dDfFmMuUlL]+$", "", source.replace("_", ""))
-                value = int(cleaned, 0) if kind == "integer_literal" else float(cleaned)
-                return value if math.isfinite(value) else None
-            except ValueError:
-                return None
+            return literal(source, kind == "real_literal")
         if kind == "boolean_literal":
             return source == "true"
         if kind in {
@@ -902,10 +969,13 @@ class SourceIndex:
             receiver_value = self.value(
                 node.child_by_field_name("expression"), method, bindings, seen
             )
-            if name in {"Length", "LongLength", "Count"}:
+            if name in {"Length", "LongLength", "Count", "Rank"}:
                 from app.modules.action_timing.source_collections import known, length
 
                 if known(receiver_value):
+                    if name == "Rank":
+                        shape = receiver_value.get("<shape>")
+                        return len(shape) if shape is not None else None
                     return length(receiver_value, bindings)
             if isinstance(receiver_value, dict) and name in receiver_value:
                 if receiver_value.get(f"<invalidated:{name}>"):
@@ -964,7 +1034,9 @@ class SourceIndex:
         if kind == "invocation_expression":
             result_key = call_args.return_key(node, method, bindings)
             if result_key in bindings:
-                return state.materialize(bindings[result_key], bindings)
+                return state.materialize(
+                    coerce(self.infer(node, method), bindings[result_key]), bindings
+                )
             from app.modules.action_timing.source_collections import range_value
 
             collection = range_value(self, node, method, bindings)

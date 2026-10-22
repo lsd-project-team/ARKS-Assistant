@@ -8,7 +8,7 @@ from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_collection_expressions import evaluate_location
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
-from app.modules.action_timing.source_numbers import bounded
+from app.modules.action_timing.source_numbers import bounded, quotient
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 
@@ -76,7 +76,7 @@ def assigned_value(current, right, operator):
             "-=": lambda: current - right,
             "*=": lambda: current * right,
             "/=": lambda: (
-                math.trunc(current / right)
+                quotient(current, right)
                 if isinstance(current, int) and isinstance(right, int)
                 else current / right
             ),

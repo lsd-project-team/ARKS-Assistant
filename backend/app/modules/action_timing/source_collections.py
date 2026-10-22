@@ -1,10 +1,9 @@
 """静态集合值与共享元素状态；不调用目标程序的枚举器或集合方法。"""
 
-import re
-
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_index import children, simple_type, text
+from app.modules.action_timing.source_numbers import coerce
 
 PREFIX = "<collection:"
 ARRAYS = {
@@ -38,18 +37,19 @@ def item(data, position, bindings):
         return None
     own = key(data, f"item:{position}")
     if own in bindings:
-        return state.materialize(bindings[own], bindings)
+        return state.materialize(coerce(data.get("<element_type>"), bindings[own]), bindings)
     unknown = key(data, "unknown")
     if unknown in bindings and bindings[unknown] is not False:
         return None
     if data["<collection>"] == "range":
         return data["<start>"] + position
     values = data.get("<items>")
-    return (
+    value = (
         state.materialize(values[position], bindings)
         if values is not None
         else data.get("<default>")
     )
+    return coerce(data.get("<element_type>"), value)
 
 
 def invalidate(data, bindings):
@@ -77,7 +77,11 @@ def location(index, node, method, bindings):
         iter(children(node, "bracketed_argument_list")), None
     )
     args = children(listing, "argument")
-    return data, index.value(args[0], method, bindings) if len(args) == 1 else None
+    from app.modules.action_timing.source_array_values import offset
+
+    return data, offset(
+        data, [index.value(arg, method, bindings) for arg in args], length(data, bindings)
+    )
 
 
 def write(place, value, bindings):
@@ -107,13 +111,26 @@ def raw_type(index, node, method, seen=None):
     seen = seen | {identity}
     if node.type in ARRAYS | {"object_creation_expression"}:
         kind = text(node.child_by_field_name("type"))
+        if node.type in ARRAYS and kind:
+            from app.modules.action_timing.source_array_values import type_name
+
+            kind = type_name(node)
         if not kind:
-            init = next(iter(children(node, "initializer_expression")), None)
-            parts = children(init)
-            kind = f"{index.infer(parts[0], method)}[]" if parts else "object[]"
+            from app.modules.action_timing import source_array_values as arrays
+
+            count = arrays.rank(node)
+            _, parts = arrays.initializer_shape(arrays.initial(node), count)
+            element = index.infer(parts[0], method) if parts else "object"
+            from app.modules.action_timing.source_numbers import promoted
+
+            for part in parts[1:]:
+                other = index.infer(part, method)
+                if element != other:
+                    element = promoted(element, other) or "var"
+            kind = f"{element}[{',' * (count - 1)}]"
         return kind
     if node.type == "identifier":
-        kind = method.types.get(text(node), "")
+        kind = index.local_type(node, method)
         if kind and kind != "var":
             return kind
         if kind == "var":
@@ -140,11 +157,9 @@ def raw_type(index, node, method, seen=None):
 
 
 def element_type(index, node, method):
-    raw = re.sub(r"\[[^]]*\]", "[]", raw_type(index, node, method))
-    if raw.endswith("[]"):
-        return raw[:-2]
-    found = re.match(r"(?:[\w.]+)<(.+)>", raw)
-    return found[1].strip() if found and "," not in found[1] else "var"
+    from app.modules.action_timing.source_array_values import element
+
+    return element(raw_type(index, node, method))
 
 
 def created(index, node, method, bindings):
@@ -184,18 +199,12 @@ def created(index, node, method, bindings):
                 )
             elif not isinstance(first, int) or isinstance(first, bool) or first < 0:
                 size = None
-    if array and init is None:
-        dimensions = [
-            n
-            for n in children(node.child_by_field_name("type"))
-            if n.type == "array_rank_specifier"
-        ]
-        values = [index.value(n, method, bindings) for rank in dimensions for n in children(rank)]
-        size = (
-            values[0]
-            if len(values) == 1 and isinstance(values[0], int) and values[0] >= 0
-            else None
-        )
+    dimensions = None
+    if array:
+        from app.modules.action_timing import source_array_values as arrays
+
+        dimensions, parts = arrays.shape(index, node, method, bindings)
+        size = arrays.length(dimensions)
     element = element_type(index, node, method)
     ref = bindings.get(
         f"<allocation:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}>",
@@ -207,6 +216,7 @@ def created(index, node, method, bindings):
         "<collection>": "array" if array else "list",
         "<element_type>": element,
         "<length>": size,
+        **({"<shape>": dimensions} if array else {}),
         "<items>": tuple(index.value(n, method, bindings) for n in parts)
         if init is not None and not is_list
         else copied,
@@ -253,6 +263,34 @@ def call(estimator, node, method, bindings):
         return False
     name = text(function.child_by_field_name("name"))
     values = call_args.values(estimator.index, node, method, bindings)
+    if data["<collection>"] == "array" and name in {
+        "GetLength",
+        "GetLongLength",
+        "GetLowerBound",
+        "GetUpperBound",
+    }:
+        shape = data.get("<shape>")
+        dimension = values[0] if len(values) == 1 else None
+        size = (
+            shape[dimension]
+            if shape is not None
+            and isinstance(dimension, int)
+            and not isinstance(dimension, bool)
+            and 0 <= dimension < len(shape)
+            else None
+        )
+        result = (
+            None
+            if size is None
+            else {
+                "GetLength": size,
+                "GetLongLength": size,
+                "GetLowerBound": 0,
+                "GetUpperBound": size - 1,
+            }[name]
+        )
+        bindings[call_args.return_key(node, method, bindings)] = result
+        return True
     if data["<collection>"] == "list" and name == "Add" and len(values) == 1:
         size, current = length(data, bindings), version(data, bindings)
         if size is None:

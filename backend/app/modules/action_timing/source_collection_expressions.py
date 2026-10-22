@@ -1,6 +1,7 @@
 """保存集合表达式在C#求值时点的值，避免后续写入改变已求得的接收者或元素。"""
 
 from app.modules.action_timing import source_arguments as call_args
+from app.modules.action_timing import source_array_values as arrays
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import ZERO
@@ -26,7 +27,11 @@ def evaluate_location(estimator, node, method, bindings, stack, conditions, back
             estimator.expression(argument, method, bindings, stack, conditions, background)
         )
         values.append(estimator.index.value(argument, method, bindings))
-    place = (data, values[0] if len(values) == 1 else None) if collections.known(data) else None
+    place = (
+        (data, arrays.offset(data, values, collections.length(data, bindings)))
+        if collections.known(data)
+        else None
+    )
     if place is not None:
         bindings[saved_key] = place
     bindings[CLOCK] = started
@@ -43,9 +48,11 @@ def read_element(estimator, node, method, bindings, stack, conditions, backgroun
     return cost
 
 
-def initializer_values(estimator, node, method, bindings, stack, conditions, background):
+def initializer_values(
+    estimator, node, method, bindings, stack, conditions, background, parts=None
+):
     started, cost, values = bindings.get(CLOCK, ZERO), ZERO, []
-    for part in children(node):
+    for part in children(node) if parts is None else parts:
         if part.type == "comment":
             continue
         bindings[CLOCK] = started.plus(cost)
@@ -62,15 +69,18 @@ def create_array(estimator, node, method, bindings, stack, conditions, backgroun
     result_key = call_args.return_key(node, method, bindings)
     bindings.pop(result_key, None)
     # 数组维度先求值，初始化器从左到右保存每个值，而非最后重新投影变量。
-    cost = estimator.expression(
-        node.child_by_field_name("type"), method, bindings, stack, conditions, background
-    )
-    initial = node.child_by_field_name("initializer") or next(
-        iter(children(node, "initializer_expression")), None
-    )
+    cost, dimensions = ZERO, []
+    for expression in arrays.dimensions(node):
+        bindings[CLOCK] = started.plus(cost)
+        cost = cost.plus(
+            estimator.expression(expression, method, bindings, stack, conditions, background)
+        )
+        dimensions.append(estimator.index.value(expression, method, bindings))
+    shape, leaves = arrays.shape(estimator.index, node, method, bindings, tuple(dimensions))
+    initial = arrays.initial(node)
     bindings[CLOCK] = started.plus(cost)
     extra, values = initializer_values(
-        estimator, initial, method, bindings, stack, conditions, background
+        estimator, initial, method, bindings, stack, conditions, background, parts=leaves
     )
     estimator.allocations += 1
     bindings[f"<allocation:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}>"] = (
@@ -78,8 +88,9 @@ def create_array(estimator, node, method, bindings, stack, conditions, backgroun
         f":{estimator.allocations}"
     )
     data = collections.created(estimator.index, node, method, bindings)
-    if initial is not None:
-        data["<items>"], data["<length>"] = values, len(values)
+    data["<shape>"], data["<length>"] = shape, arrays.length(shape)
+    if initial is not None and shape is not None:
+        data["<items>"] = values
     bindings[result_key] = data
     bindings[CLOCK] = started
     return cost.plus(extra)

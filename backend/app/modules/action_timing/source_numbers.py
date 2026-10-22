@@ -1,6 +1,7 @@
 """基础表达式投影与整数边界；不以Python无限精度证明C#整数有效。"""
 
 import math
+import re
 
 INTEGER_RANGES = {
     "int": (-(2**31), 2**31 - 1),
@@ -12,6 +13,82 @@ INTEGER_RANGES = {
     "byte": (0, 255),
     "sbyte": (-128, 127),
 }
+
+NUMERIC_TYPES = {*INTEGER_RANGES, "char", "float", "double", "decimal"}
+
+
+def coerce(kind, value):
+    if (
+        kind in {"float", "double", "decimal"}
+        and isinstance(value, (int, float))
+        and not isinstance(value, bool)
+    ):
+        return float(value)
+    return value
+
+
+def literal(source, real=False):
+    cleaned = re.sub(r"[fFdDmM]+$" if real else r"[uUlL]+$", "", source.replace("_", ""))
+    try:
+        value = (
+            float(cleaned)
+            if real
+            else int(cleaned, 0 if cleaned.lower().startswith(("0x", "0b")) else 10)
+        )
+        return value if math.isfinite(value) else None
+    except (ValueError, OverflowError):
+        return None
+
+
+def literal_type(source, real=False):
+    if real:
+        return (
+            "float"
+            if source[-1:].lower() == "f"
+            else "decimal"
+            if source[-1:].lower() == "m"
+            else "double"
+        )
+    value = literal(source)
+    if value is None:
+        return ""
+    suffix = re.search(r"[uUlL]+$", source)
+    suffix = suffix[0].lower() if suffix else ""
+    candidates = (
+        ["ulong"]
+        if "u" in suffix and "l" in suffix
+        else ["uint", "ulong"]
+        if "u" in suffix
+        else ["long", "ulong"]
+        if "l" in suffix
+        else ["int", "uint", "long", "ulong"]
+        if source.lower().startswith(("0x", "0b"))
+        else ["int", "long", "ulong"]
+    )
+    return next((kind for kind in candidates if value <= INTEGER_RANGES[kind][1]), "")
+
+
+def quotient(left, right):
+    return (abs(left) // abs(right)) * (-1 if (left < 0) != (right < 0) else 1)
+
+
+def promoted(left, right):
+    if left not in NUMERIC_TYPES or right not in NUMERIC_TYPES:
+        return ""
+    kinds = {left, right}
+    if "decimal" in kinds:
+        return "" if kinds & {"float", "double"} else "decimal"
+    if "double" in kinds:
+        return "double"
+    if "float" in kinds:
+        return "float"
+    if "ulong" in kinds:
+        return "" if kinds & {"sbyte", "short", "int", "long"} else "ulong"
+    if "long" in kinds:
+        return "long"
+    if "uint" in kinds:
+        return "long" if kinds & {"sbyte", "short", "int"} else "uint"
+    return "int"
 
 
 def bounded(index, node, method, value):
@@ -45,7 +122,7 @@ def binary_value(op, left, right):
             "-": lambda: left - right,
             "*": lambda: left * right,
             "/": lambda: (
-                math.trunc(left / right)
+                quotient(left, right)
                 if isinstance(left, int) and isinstance(right, int)
                 else left / right
             ),
