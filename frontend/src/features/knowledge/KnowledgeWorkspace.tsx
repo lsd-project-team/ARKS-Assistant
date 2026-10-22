@@ -11,12 +11,7 @@ import { routeNames, workspacePath, type Route } from './routes';
 import { WorkspaceHeading } from '../../app/layouts/WorkspaceHeader';
 import { GraphAtlas, DiagramDetail, TopicDetail, diagramRoute } from './KnowledgePages';
 import { ShowcaseHome } from './PresentationViews';
-import {
-  EngineeringDirectory,
-  SourceModuleView,
-  SourceFileView,
-  SourceMethodView,
-} from './EngineeringViews';
+import { SourceModuleView, SourceFileView, SourceMethodView } from './EngineeringViews';
 import './legacy-styles.css';
 
 const EMPTY_CHECKS: FileChecks = {};
@@ -150,14 +145,11 @@ export default function KnowledgeWorkspace({
       break;
     default:
       page = (
-        <>
-          <ShowcaseHome
-            onTopic={(id) => navigate({ kind: 'topic', id })}
-            onDiagram={(id) => navigate(diagramRoute(id))}
-            onAllDiagrams={() => navigate({ kind: 'graphs' })}
-          />
-          <EngineeringDirectory navigate={navigate} />
-        </>
+        <ShowcaseHome
+          onTopic={(id) => navigate({ kind: 'topic', id })}
+          onDiagram={(id) => navigate(diagramRoute(id))}
+          onAllDiagrams={() => navigate({ kind: 'graphs' })}
+        />
       );
   }
   return (

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Select } from '../../shared/ui/Select';
 import {
   useEngineering,
   useResource,
@@ -80,92 +79,6 @@ export function TopicSourceModules({
           </button>
         ))}
       </div>
-    </section>
-  );
-}
-
-export function EngineeringDirectory({ navigate }: { navigate: Navigate }) {
-  const manifest = useEngineering();
-  const [query, setQuery] = useState(''),
-    [status, setStatus] = useState('all');
-  if (!manifest) return <Loading />;
-  const modules = manifest.modules.filter(
-    (m) =>
-      `${m.name} ${m.title} ${m.purpose}`.toLowerCase().includes(query.toLowerCase()) &&
-      (status === 'all' ||
-        (status === 'linked' && m.workflows.length > 0) ||
-        (status === 'pending' && m.status !== 'complete')),
-  );
-  return (
-    <section className="section">
-      <div className="section-heading">
-        <div>
-          <h2>源码模块与交接进度</h2>
-          <p>
-            从模块职责进入依赖、方法和完整源码。已涉及文件数表示复核记录覆盖，不表示整份文件已验收。
-          </p>
-        </div>
-      </div>
-      <p>
-        当前源码工程：<b>{manifest.sourceName}</b>
-      </p>
-      <div className="engineering-metrics">
-        <span>
-          <b>{manifest.modules.length}</b> 模块
-        </span>
-        <span>
-          <b>{manifest.counts.compileFiles}</b> 编译源码文件
-        </span>
-        <span>
-          <b>{manifest.counts.symbols}</b> 源码符号
-        </span>
-        <span>
-          <b>{manifest.counts.calls.toLocaleString()}</b> 静态调用与事件关联
-        </span>
-      </div>
-      <div className="filter-row">
-        <input
-          aria-label="筛选源码模块"
-          placeholder="搜索模块名称或职责…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Select aria-label="模块范围" value={status} onValueChange={setStatus}>
-          <option value="all">全部模块</option>
-          <option value="linked">已关联业务流程</option>
-          <option value="pending">仍有待复核项</option>
-        </Select>
-      </div>
-      <SourceSearch navigate={navigate} />
-      <div className="topic-grid">
-        {modules.map((m) => (
-          <button
-            key={m.id}
-            className="card topic-card source-module-card"
-            onClick={() => navigate({ kind: 'source-module', id: m.id })}
-          >
-            <div className="topic-card-meta">
-              <span className="pill">{statusLabel(m.status)}</span>
-              <span>{m.fileCount} 个源码文件</span>
-            </div>
-            <h2>{m.title}</h2>
-            <code>{m.name}</code>
-            <p>{m.purpose}</p>
-            <div className="progress-track">
-              <span
-                style={{ width: `${m.fileCount ? (m.reviewedFiles / m.fileCount) * 100 : 0}%` }}
-              />
-            </div>
-            <small>
-              复核记录已涉及 {m.reviewedFiles} / {m.fileCount} 个文件
-              {m.staleFiles ? ` · ${m.staleFiles} 个文件发生变化` : ''}
-            </small>
-            <strong>模块、调用关系与源码 →</strong>
-          </button>
-        ))}
-      </div>
-      {!modules.length && <p className="empty-state compact">没有匹配的模块</p>}
-      <VersionStamp />
     </section>
   );
 }

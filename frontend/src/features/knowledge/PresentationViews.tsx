@@ -100,12 +100,6 @@ export function ShowcaseHome({ onTopic, onDiagram, onAllDiagrams }: Navigation) 
         </div>
       </section>
       <TopicDirectory onOpen={onTopic} embedded />
-      <section className="section card panel reading-boundary">
-        <h2>这些内容说明什么</h2>
-        <p>
-          展示的是已形成的源码分析与流程整理。图中的成功返回、状态变化与保存调用，需结合实际配方、设备和运行环境理解。各专题保留异常处理与待现场确认的范围。
-        </p>
-      </section>
     </div>
   );
 }

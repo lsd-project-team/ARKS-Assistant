@@ -689,8 +689,7 @@ textarea::placeholder {
   font-family: var(--font-ui);
 }
 .legacy-visual .knowledge-workspace .reading-summary .card,
-.legacy-visual .knowledge-workspace .diagram-reading .card,
-.legacy-visual .knowledge-workspace .reading-boundary {
+.legacy-visual .knowledge-workspace .diagram-reading .card {
   border-radius: 0;
   box-shadow: none;
   background: transparent;
