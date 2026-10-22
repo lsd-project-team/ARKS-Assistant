@@ -95,6 +95,7 @@ def test_project_and_independent_account_boundaries_cannot_be_forged(services):
     app = create_app(services[0])
     with TestClient(app) as client:
         assert client.get(BASE + "/catalog").status_code == 401
+        assert client.get(BASE + "/source-analysis").status_code == 401
         sign_in(client)
         for name in ("timing-a", "timing-b"):
             with app.state.auth.database.session.begin() as session:
@@ -125,6 +126,8 @@ def test_project_and_independent_account_boundaries_cannot_be_forged(services):
         assert client.get(BASE + "/runs").json()["total"] == 0
         assert client.get(BASE + f"/runs/{independent}/summary").status_code == 404
         assert client.get(scoped + f"/runs/{first}/export").status_code == 404
+        assert client.get(scoped + "/source-analysis").status_code == 404
+        assert client.get(scoped + "/source-analysis/export").status_code == 404
         assert client.post(scoped + "/imports", content=raw_package()).status_code == 404
         own = client.post(BASE + "/imports", content=raw_package())
         assert own.status_code == 201 and not own.json()["duplicate"]

@@ -1,139 +1,86 @@
-import { useEffect, useRef, useState } from 'react';
-import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Activity, Download, RefreshCw, Timer, Upload } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Activity, Code2, Download, RefreshCw, Search } from 'lucide-react';
 import { api } from '../../app/api/client';
 import { useWorkspace } from '../../app/state/store';
 import type { ProjectList } from '../../shared/types/api';
 import { Button, ErrorText } from '../../shared/ui/ui';
-import { timingClient } from './client';
 import { timingHash, useTimingNavigation } from './navigation';
-import { TimingDetail } from './TimingDetail';
-import { TimingStatistics } from './TimingStatistics';
-import { TimingSamples } from './TimingSamples';
+import { knownDelay, sourceTimingClient } from './source-client';
+import { SourceTimingDetail } from './SourceTimingDetail';
 import './action-timing.css';
+import './source-timing.css';
+
+const kinds = [
+  ['node', '动作节点'],
+  ['controller', '控制器子动作'],
+  ['workflow', '换料 / 放行'],
+  ['placeholder', '占位节点'],
+  ['', '全部入口'],
+];
 
 export default function ActionTimingPage() {
   const navigation = useTimingNavigation();
   const currentProject = useWorkspace((state) => state.projectId);
   const scope = navigation.projectId || currentProject || 'independent';
-  const [action, setAction] = useState('');
-  const [status, setStatus] = useState('');
+  const [kind, setKind] = useState('node');
+  const [group, setGroup] = useState('');
+  const [search, setSearch] = useState('');
   const [offset, setOffset] = useState(0);
-  const [detail, setDetail] = useState('');
-  const [busy, setBusy] = useState(false);
+  const [selected, setSelected] = useState('');
   const [error, setError] = useState<unknown>();
-  const [notice, setNotice] = useState('');
-  const upload = useRef<HTMLInputElement>(null);
-  const activeScope = useRef(scope);
-  activeScope.current = scope;
+  const client = sourceTimingClient(scope);
   const cache = useQueryClient();
-  const client = timingClient(scope);
   const projects = useQuery({
-    queryKey: ['projects', 'timing'],
+    queryKey: ['projects', 'source-timing'],
     queryFn: ({ signal }) => api<ProjectList>('/projects', { signal }),
   });
-  const catalog = useQuery({
-    queryKey: ['action-timing', scope, 'catalog'],
-    queryFn: ({ signal }) => client.catalog(signal),
+  const report = useQuery({
+    queryKey: ['source-timing', scope],
+    queryFn: ({ signal }) => client.report(signal),
+    staleTime: 0,
   });
-  const runs = useInfiniteQuery({
-    queryKey: ['action-timing', scope, 'runs'],
-    initialPageParam: 0,
-    queryFn: ({ pageParam, signal }) => client.runs(pageParam, signal),
-    getNextPageParam: (last, pages) =>
-      pages.flatMap((page) => page.items).length < last.total
-        ? pages.flatMap((page) => page.items).length
-        : undefined,
-  });
-  const runRows = runs.data?.pages.flatMap((page) => page.items) || [];
-  const run = navigation.runId || runRows[0]?.id || '';
-  const summary = useQuery({
-    queryKey: ['action-timing', scope, run, 'summary'],
-    queryFn: ({ signal }) => client.summary(run, signal),
-    enabled: !!run,
-  });
-  const samples = useQuery({
-    queryKey: ['action-timing', scope, run, 'events', action, status, offset],
-    queryFn: ({ signal }) => client.events(run, action, status, offset, signal),
-    enabled: !!run,
-  });
+  const data = report.data;
   useEffect(() => {
-    setAction('');
-    setStatus('');
+    setSelected('');
     setOffset(0);
-    setDetail('');
     setError(undefined);
-    setNotice('');
-  }, [scope]);
+  }, [scope, data?.source_revision]);
   useEffect(() => {
     setOffset(0);
-    setDetail('');
-  }, [run, action, status]);
-  async function importFile(file?: File) {
-    if (!file) return;
-    setError(undefined);
-    setNotice('');
-    if (file.size > 16 * 1024 * 1024) {
-      setError(new Error('数据包超过16MiB，请缩小采集批次'));
-      return;
-    }
-    setBusy(true);
-    try {
-      const result = await client.import(file);
-      await cache.invalidateQueries({ queryKey: ['action-timing', scope] });
-      if (activeScope.current !== scope) return;
-      location.hash = timingHash(scope, result.run.id);
-      setNotice(
-        result.duplicate
-          ? '此批次已导入，未重复计数。'
-          : `已导入 ${result.imported} 条动作及阶段记录。`,
-      );
-    } catch (reason) {
-      if (activeScope.current === scope) setError(reason);
-    } finally {
-      setBusy(false);
-    }
-  }
-  async function download(format: 'json' | 'csv') {
+  }, [kind, group, search]);
+  const rows = data?.rows || [];
+  const filtered = rows.filter(
+    (row) =>
+      (!kind || row.kind === kind) &&
+      (!group || row.group === group) &&
+      `${row.name} ${row.class_name} ${row.method} ${row.formula}`
+        .toLowerCase()
+        .includes(search.toLowerCase()),
+  );
+  const nodes = rows.filter((row) => row.kind === 'node');
+  async function download() {
     setError(undefined);
     try {
-      await client.download(run, format);
+      await client.download();
     } catch (reason) {
       setError(reason);
     }
   }
-  const data = summary.data;
-  const failed = (data?.statuses.failed || 0) + (data?.statuses.aborted || 0);
   return (
-    <section className="action-timing-workspace" aria-label="动作耗时统计">
+    <section className="action-timing-workspace source-timing-workspace" aria-label="动作耗时统计">
       <div className="timing-content">
         <header className="timing-heading">
           <div>
             <span className="timing-eyebrow">
-              <Activity size={14} /> ZX2200 · 动作分析
+              <Activity size={14} /> ZX2200 · 源码模拟分析
             </span>
             <h1>动作耗时统计</h1>
-            <p>沿用源码现有空跑流程，查看每次动作实际经过的时间。</p>
+            <p>从源码现有模拟分支、延时和运动参数直接计算，打开即可查看。</p>
           </div>
-          <Button
-            className="primary"
-            disabled={busy || projects.isPending}
-            onClick={() => upload.current?.click()}
-          >
-            <Upload size={16} />
-            {busy ? '正在导入…' : '导入采集数据'}
+          <Button disabled={!rows.length} onClick={() => void download()}>
+            <Download size={15} /> 导出分析
           </Button>
-          <input
-            ref={upload}
-            type="file"
-            accept=".json,.zip"
-            hidden
-            aria-label="选择耗时采集数据包"
-            onChange={(event) => {
-              void importFile(event.target.files?.[0]);
-              event.target.value = '';
-            }}
-          />
         </header>
         <div className="timing-filters">
           <label>
@@ -141,7 +88,6 @@ export default function ActionTimingPage() {
             <select
               aria-label="统计所属项目"
               value={scope}
-              disabled={busy}
               onChange={(event) => {
                 location.hash = timingHash(event.target.value);
               }}
@@ -154,98 +100,71 @@ export default function ActionTimingPage() {
               ))}
             </select>
           </label>
-          <label className="timing-run-select">
-            运行批次
+          <label>
+            模块
             <select
-              aria-label="运行批次"
-              value={run}
-              disabled={busy || !run}
-              onChange={(event) => {
-                location.hash = timingHash(scope, event.target.value);
-              }}
+              aria-label="筛选源码模块"
+              value={group}
+              onChange={(event) => setGroup(event.target.value)}
             >
-              {!run && <option value="">尚无采集批次</option>}
-              {run && !runRows.some((row) => row.id === run) && (
-                <option value={run}>{data?.run.recipe_name || run}</option>
-              )}
-              {runRows.map((row) => (
-                <option key={row.id} value={row.id}>
-                  {new Date(row.started_at).toLocaleString()} · {row.recipe_name || '未命名配方'}
-                  {row.source_kind === 'collector_test' ? ' · 采集器测试' : ''}
-                </option>
+              <option value="">全部模块</option>
+              {[...new Set(rows.map((row) => row.group))].map((label) => (
+                <option key={label}>{label}</option>
               ))}
             </select>
           </label>
+          <label className="timing-source-search">
+            <span>查找动作</span>
+            <span>
+              <Search size={14} />
+              <input
+                aria-label="查找源码动作"
+                placeholder="动作名、方法名、耗时表达式"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </span>
+          </label>
           <Button
-            title="刷新统计"
-            onClick={() => void cache.invalidateQueries({ queryKey: ['action-timing', scope] })}
+            disabled={report.isFetching}
+            onClick={() => void cache.invalidateQueries({ queryKey: ['source-timing', scope] })}
           >
-            <RefreshCw size={15} />
-            刷新
+            <RefreshCw size={14} /> {report.isFetching ? '正在分析…' : '重新核对源码'}
           </Button>
-          {runs.hasNextPage && (
-            <Button disabled={runs.isFetchingNextPage} onClick={() => void runs.fetchNextPage()}>
-              更多批次
-            </Button>
-          )}
         </div>
-        <ErrorText
-          error={
-            error || projects.error || catalog.error || runs.error || summary.error || samples.error
-          }
-        />
-        {notice && (
+        <ErrorText error={error || projects.error || report.error} />
+        {report.isPending && (
           <p role="status" className="timing-notice">
-            {notice}
+            正在读取源码，计算动作的配置延时和调用分支…
           </p>
         )}
-        {!run && !runs.isPending && (
-          <div className="timing-empty">
-            <Timer size={34} />
-            <h2>首批五个动作已接入</h2>
-            <p>S1 焊点定位、S1 点胶、S2 取片、上视纠偏、固晶。</p>
-            <p>导入空跑采集的 JSON 或 ZIP 数据包后，查看动作分布和内部阶段。</p>
-            <Button onClick={() => upload.current?.click()}>选择采集数据</Button>
-          </div>
-        )}
-        {(runs.isPending || (!!run && summary.isPending)) && <p role="status">正在读取耗时记录…</p>}
         {data && (
           <>
             <div className="timing-run-meta">
-              <span className="timing-badge">
-                {data.run.source_kind === 'collector_test' ? '采集器测试数据' : '原有空跑采集'}
-              </span>
-              <span>
-                {data.run.mode} · {data.run.recipe_name || '未命名配方'}
-              </span>
-              <span title={data.run.source_revision}>
-                源码 {data.run.source_revision.slice(0, 12)}
-              </span>
-              <span>
-                {data.run.state === 'completed'
-                  ? '已结束'
-                  : data.run.state === 'stopped'
-                    ? '已停止'
-                    : '记录不完整'}
-              </span>
+              <span className="timing-badge">源码计算结果</span>
+              <span>DryCycle 模拟分支</span>
+              <span>{data.source_files} 个源码文件</span>
+              <span title={data.source_revision}>版本 {data.source_revision.slice(0, 12)}</span>
             </div>
-            {data.run.source_kind === 'collector_test' && (
-              <p className="timing-notice">
-                此批次用于验证采集和数据通路，数值不代表设备动作耗时。
-              </p>
-            )}
-            {!data.data_complete && (
-              <p className="timing-notice warning">
-                采集不完整（丢失 {data.run.dropped_events}{' '}
-                条记录或存在未完成调用），保留原始记录，暂不计算成功耗时分布。
-              </p>
-            )}
+            <div className="source-explanation">
+              <Code2 size={19} />
+              <div>
+                <strong>按源码默认参数计算，可算部分直接给数值。</strong>
+                <p>
+                  “可算配置延时”是动作的一部分。运动、信号和循环次数未确定时保留计算式；超时上限单列。结果不代表现场实测。
+                </p>
+              </div>
+            </div>
             <div className="timing-metrics">
               {[
-                ['有效动作覆盖', `${data.covered_actions} / 5`],
-                ['动作调用', data.action_count],
-                ['失败 / 中止', failed],
-                ['重试 / 跳过', `${data.statuses.retry || 0} / ${data.statuses.skipped || 0}`],
+                ['动作节点', nodes.length],
+                ['执行 / 子动作入口', rows.length],
+                [
+                  '有可算延时的动作节点',
+                  nodes.filter((row) => (row.known_delay_max_ms || row.known_delay_min_ms || 0) > 0)
+                    .length,
+                ],
+                ['分析方式', '直接读源码'],
               ].map(([label, value]) => (
                 <div key={label}>
                   <span>{label}</span>
@@ -253,43 +172,110 @@ export default function ActionTimingPage() {
                 </div>
               ))}
             </div>
-            <div className="timing-section-heading">
-              <h2>
-                动作分布 <small>ms</small>
-              </h2>
-              <div>
-                <Button onClick={() => void download('csv')}>
-                  <Download size={14} />
-                  导出统计
-                </Button>
-                <Button onClick={() => void download('json')}>导出原始记录</Button>
-              </div>
-            </div>
+            <nav className="source-kind-tabs" aria-label="源码动作分类">
+              {kinds.map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={kind === value ? 'active' : ''}
+                  aria-pressed={kind === value}
+                  onClick={() => setKind(value)}
+                >
+                  {label}
+                  <span>{rows.filter((row) => !value || row.kind === value).length}</span>
+                </button>
+              ))}
+            </nav>
             <p className="timing-caption">
-              仅完整成功调用参与均值和分位数；分支分别计算。调用耗时包含等待和暂停，父子及并行时间不叠加为产品节拍。
+              动作与控制器子动作分层列出；调用点数量含不同分支，不表示执行次数。点击“计算依据”查看参数初值、分支和源码行号。
             </p>
-            <TimingStatistics
-              rows={data.rows}
-              onSelect={(code) => {
-                setAction(code);
-                setOffset(0);
-              }}
-            />
-            <TimingSamples
-              actions={catalog.data?.actions}
-              samples={samples.data}
-              action={action}
-              status={status}
-              offset={offset}
-              setAction={setAction}
-              setStatus={setStatus}
-              setOffset={setOffset}
-              setDetail={setDetail}
-            />
+            <div className="timing-table-wrap">
+              <table className="timing-table source-action-table">
+                <thead>
+                  <tr>
+                    <th>动作 / 耗时表达式</th>
+                    <th>可算配置延时</th>
+                    <th>待定部分</th>
+                    <th>依据</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.slice(offset, offset + 25).map((row) => (
+                    <tr key={row.id}>
+                      <td>
+                        <button className="source-action-name" onClick={() => setSelected(row.id)}>
+                          {row.name}
+                        </button>
+                        <small>
+                          {row.class_name} · {row.group}
+                        </small>
+                        <p className="source-formula">{row.formula}</p>
+                      </td>
+                      <td>
+                        <strong>{knownDelay(row)}</strong>
+                        <small>{row.branch}</small>
+                      </td>
+                      <td>
+                        <span className={row.total_ms == null ? 'source-pending' : 'source-known'}>
+                          {row.total_ms == null ? '总耗时未定' : '配置模型可算'}
+                        </span>
+                        <small>
+                          {row.motion_count ? `运动点 ${row.motion_count} · ` : ''}等待点{' '}
+                          {row.wait_count}
+                        </small>
+                        {row.truncated && <small>调用链未完整展开</small>}
+                      </td>
+                      <td>
+                        <Button onClick={() => setSelected(row.id)}>计算依据</Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {!filtered.length && (
+                <div className="timing-empty">
+                  <Code2 size={28} />
+                  <p>
+                    {rows.length
+                      ? '当前筛选条件下没有动作。'
+                      : '当前项目没有发现 ZX2200 动作，请选择关联了 ZX2200 源码的项目。'}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="timing-pagination">
+              <span>
+                共 {filtered.length} 个入口 · 第 {Math.floor(offset / 25) + 1} 页
+              </span>
+              <Button disabled={!offset} onClick={() => setOffset(Math.max(0, offset - 25))}>
+                上一页
+              </Button>
+              <Button
+                disabled={offset + 25 >= filtered.length}
+                onClick={() => setOffset(offset + 25)}
+              >
+                下一页
+              </Button>
+            </div>
+            <details className="source-scope">
+              <summary>计算口径与覆盖范围</summary>
+              <p>{data.scope}</p>
+              <ul>
+                {data.assumptions.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              {data.notes.length > 0 && <p>{data.notes.join('\n')}</p>}
+            </details>
           </>
         )}
-        {detail && run && (
-          <TimingDetail scope={scope} run={run} event={detail} onClose={() => setDetail('')} />
+        {selected && (
+          <SourceTimingDetail
+            scope={scope}
+            identifier={selected}
+            revision={data?.source_revision || ''}
+            onClose={() => setSelected('')}
+          />
         )}
       </div>
     </section>

@@ -1,0 +1,54 @@
+export type SourceEvidence = { path: string; line: number; version: string; code: string };
+export type SourceStage = SourceEvidence & {
+  kind: 'delay' | 'motion' | 'wait' | 'call' | 'unresolved' | 'loop' | 'background' | 'timeout';
+  label: string;
+  conditions: string[];
+  background: boolean;
+  method: string;
+  expression?: string;
+  milliseconds?: number | null;
+  repeat?: boolean;
+  note?: string;
+  arguments?: string[];
+  argument_values?: (number | boolean | string | null)[];
+  definitions?: SourceEvidence[];
+  iterations?: number | null;
+};
+export type SourceParameter = SourceEvidence & {
+  name: string;
+  value: number | boolean | null;
+  expression: string;
+};
+export type SourceAction = {
+  id: string;
+  name: string;
+  class_name: string;
+  method: string;
+  kind: 'node' | 'controller' | 'workflow' | 'placeholder';
+  group: string;
+  branch: string;
+  entry: SourceEvidence;
+  known_delay_min_ms: number | null;
+  known_delay_max_ms: number | null;
+  total_ms: number | null;
+  complete: boolean;
+  truncated: boolean;
+  formula: string;
+  motion_count: number;
+  wait_count: number;
+  timeout_count: number;
+  stage_count?: number;
+  parameter_count?: number;
+  stages?: SourceStage[];
+  parameters?: SourceParameter[];
+};
+export type SourceTimingReport = {
+  source_revision: string;
+  source_files: number;
+  mode: 'DryCycle';
+  basis: 'source_defaults';
+  scope: string;
+  assumptions: string[];
+  notes: string[];
+  rows: SourceAction[];
+};

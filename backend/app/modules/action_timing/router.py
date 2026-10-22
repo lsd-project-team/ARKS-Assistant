@@ -10,11 +10,38 @@ from app.modules.action_timing.catalog import CATALOG
 from app.modules.action_timing.packages import MAX_BYTES
 from app.modules.action_timing.schemas import Status
 from app.modules.action_timing.service import ActionTiming
+from app.modules.action_timing.source_service import SourceTiming
 
 
 def create_router(services):
     router = APIRouter(prefix="/api/action-timing", tags=["action-timing"])
     timing = ActionTiming(services)
+    source = SourceTiming(services.workspace)
+
+    def source_scope():
+        with services.database.session() as session:
+            timing.scope(session)
+
+    @router.get("/source-analysis")
+    async def source_analysis():
+        source_scope()
+        return await asyncio.to_thread(source.summary)
+
+    @router.get("/source-analysis/export")
+    async def source_export():
+        source_scope()
+        return Response(
+            await asyncio.to_thread(source.export_csv),
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": 'attachment; filename="zx2200-source-action-timing.csv"'
+            },
+        )
+
+    @router.get("/source-analysis/{identifier}")
+    async def source_detail(identifier: str):
+        source_scope()
+        return await asyncio.to_thread(source.detail, identifier)
 
     @router.get("/catalog")
     async def catalog():

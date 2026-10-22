@@ -29,3 +29,14 @@ export function branchLabel(branch: string) {
   };
   return known[branch] || branch.replace('drycycle.pick.', '空跑取片 · ');
 }
+export function knownDelay(row: {
+  known_delay_min_ms: number | null;
+  known_delay_max_ms: number | null;
+}) {
+  const low = row.known_delay_min_ms;
+  const high = row.known_delay_max_ms;
+  if (low == null) return '未定';
+  if (high == null) return low ? `至少 ${low} ms` : '次数 / 参数未定';
+  if (low === 0 && high === 0) return '无显式延时';
+  return low === high ? `${low} ms` : `${low}–${high} ms`;
+}

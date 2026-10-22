@@ -6,6 +6,7 @@ import {
   eventDuration,
   milliseconds,
   branchLabel,
+  knownDelay,
 } from '../../src/features/action_timing/format.ts';
 import { adminRoute } from '../../src/features/admin/navigation.ts';
 
@@ -51,6 +52,15 @@ test('两个角色都有入口，工作区导航把统计放在交接下面', ()
     new URL('../../src/features/action_timing/ActionTimingPage.tsx', import.meta.url),
     'utf8',
   );
-  assert.ok(page.includes('采集器测试数据'));
-  assert.ok(page.includes('暂不计算成功耗时分布'));
+  assert.ok(page.includes('源码计算结果'));
+  assert.ok(page.includes('总耗时未定'));
+  assert.ok(!page.includes('type="file"'));
+});
+
+test('源码已知配置耗时与未定总时长区分，缺参数不显示零', () => {
+  assert.equal(knownDelay({ known_delay_min_ms: 20, known_delay_max_ms: 40 }), '20–40 ms');
+  assert.equal(knownDelay({ known_delay_min_ms: 20, known_delay_max_ms: 20 }), '20 ms');
+  assert.equal(knownDelay({ known_delay_min_ms: 0, known_delay_max_ms: 0 }), '无显式延时');
+  assert.equal(knownDelay({ known_delay_min_ms: null, known_delay_max_ms: null }), '未定');
+  assert.equal(knownDelay({ known_delay_min_ms: 0, known_delay_max_ms: null }), '次数 / 参数未定');
 });
