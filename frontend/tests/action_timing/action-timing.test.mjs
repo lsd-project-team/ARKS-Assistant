@@ -52,8 +52,8 @@ test('两个角色都有入口，工作区导航把统计放在交接下面', ()
     new URL('../../src/features/action_timing/ActionTimingPage.tsx', import.meta.url),
     'utf8',
   );
-  assert.ok(page.includes('源码计算结果'));
-  assert.ok(page.includes('总耗时未定'));
+  assert.ok(page.includes('动作耗时表'));
+  assert.ok(page.includes('查看详情'));
   assert.ok(!page.includes('type="file"'));
 });
 
