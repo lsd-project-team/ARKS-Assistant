@@ -3,7 +3,16 @@
 THIS = "<source-this>"
 FRAME = "<source-frame>"
 PREFIX = "<member:"
+LOCAL_PREFIX = "<captured-local:"
+LOCAL_ALIAS = "<captured-alias:"
 MISSING = object()
+
+
+def local_slot(node, method, bindings):
+    name = source(node)
+    if node is None or node.type != "identifier" or name not in method.types:
+        return None
+    return bindings.get(f"{LOCAL_ALIAS}{name}>", f"{LOCAL_PREFIX}{bindings.get(FRAME)}|{name}>")
 
 
 def source(node):
@@ -64,6 +73,9 @@ def key(location):
 
 
 def read(index, node, method, bindings):
+    local = local_slot(node, method, bindings)
+    if local in bindings:
+        return bindings[local]
     place = location(index, node, method, bindings)
     if place is None:
         return MISSING
@@ -77,6 +89,11 @@ def read(index, node, method, bindings):
 
 
 def write(index, node, method, bindings, value, owner=None):
+    local = local_slot(node, method, bindings)
+    if owner is None and local in bindings:
+        bindings[local] = value
+        bindings[source(node)] = value
+        return
     place = location(index, node, method, bindings, owner)
     if place is None:
         bindings[source(node)] = value
@@ -93,7 +110,9 @@ def write(index, node, method, bindings, value, owner=None):
 
 
 def context(bindings):
-    return {name: value for name, value in bindings.items() if name.startswith(PREFIX)}
+    return {
+        name: value for name, value in bindings.items() if name.startswith((PREFIX, LOCAL_PREFIX))
+    }
 
 
 def materialize(value, bindings):
@@ -111,7 +130,7 @@ def materialize(value, bindings):
 def transfer(before, after, *, uncertain=False, locals=False):
     """把调用或后台分支的写入带回；未确定先后关系时只传播失效。"""
     for name, value in after.items():
-        if name.startswith(PREFIX) or (locals and not name.startswith("<")):
+        if name.startswith((PREFIX, LOCAL_PREFIX)) or (locals and not name.startswith("<")):
             if name not in before or value != before[name]:
                 before[name] = None if uncertain else value
 

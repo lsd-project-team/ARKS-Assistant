@@ -140,7 +140,16 @@ def track_binding(index, left, right, method, bindings):
     key = f"<task-variable:{name}>"
     if task is not None or key in bindings:
         bindings[key] = task
-    delegate = delegates.capture(index, right, method, bindings)
+    kind = method.types.get(name, "")
+    arity = delegates.signature_arity(kind)
+    delegate = delegates.capture(
+        index,
+        right,
+        method,
+        bindings,
+        arity or 0,
+        returns_task="Task" in kind and kind.replace("System.", "").startswith("Func<"),
+    )
     key = f"{delegates.DELEGATE_PREFIX}{name}>"
     if delegate is not None or key in bindings:
         bindings[key] = (method.key, delegate) if delegate is not None else None

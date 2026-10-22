@@ -201,7 +201,9 @@ def build_catalog(index, legacy):
             function = text(call.child_by_field_name("function"))
             target = index.resolve(call, method)
             if (
-                timed_operation(function.split(".")[-1]) or hardware_operation(index, call, method)
+                timed_operation(function.split(".")[-1])
+                or hardware_operation(index, call, method)
+                or delegates.typed_invocation(index, call, method)
             ) and not (target and target.body):
                 direct.add(method.key)
             if target:

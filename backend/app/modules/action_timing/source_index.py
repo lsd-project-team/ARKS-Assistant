@@ -783,6 +783,9 @@ class SourceIndex:
             return None
         seen = set() if seen is None else seen
         kind, source = node.type, text(node)
+        if kind == "argument":
+            parts = children(node)
+            return self.value(parts[-1], method, bindings, seen) if parts else None
         if kind in {"identifier", "member_access_expression"}:
             current = state.read(self, node, method, bindings)
             if current is not state.MISSING:

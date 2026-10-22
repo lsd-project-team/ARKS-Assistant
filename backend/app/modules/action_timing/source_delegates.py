@@ -2,11 +2,13 @@
 
 from dataclasses import dataclass
 
+from app.modules.action_timing import source_closures as closures
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
 from app.modules.action_timing.source_index import children, simple_type, text, walk
 
 DELEGATE_PREFIX = "<delegate-variable:"
+NULL_DELEGATE = object()
 
 
 @dataclass(frozen=True)
@@ -14,10 +16,14 @@ class BoundDelegate:
     node: object
     method_key: str
     receiver_id: object = state.MISSING
+    closure: object = None
+    arity: int = 0
+    returns_task: bool = False
+    async_void: bool = False
 
 
 def unwrap(index, node, method, bindings=None):
-    if isinstance(node, BoundDelegate):
+    if isinstance(node, BoundDelegate) or node is NULL_DELEGATE:
         return node
     while node is not None:
         if node.type in {"argument", "parenthesized_expression"}:
@@ -45,7 +51,7 @@ def unwrap(index, node, method, bindings=None):
     return node
 
 
-def method_group(index, node, caller):
+def method_group(index, node, caller, arity=0):
     if isinstance(node, BoundDelegate):
         node = node.node
     if node is None:
@@ -65,7 +71,9 @@ def method_group(index, node, caller):
             continue
         seen.add(current)
         candidates = [
-            target for target in index.by_method.get((current, name), []) if not target.parameters
+            target
+            for target in index.by_method.get((current, name), [])
+            if len(target.parameters) == arity
         ]
         if candidates:
             return candidates[0] if len(candidates) == 1 else None
@@ -73,66 +81,124 @@ def method_group(index, node, caller):
     return None
 
 
-def execute(estimator, node, method, bindings, stack, conditions, background, join_result=True):
+def execute(
+    estimator,
+    node,
+    method,
+    bindings,
+    stack,
+    conditions,
+    background,
+    join_result=True,
+    argument_values=(),
+):
     from app.modules.action_timing.source_tasks import CLOCK
 
     bound = capture(estimator.index, node, method, bindings)
-    node = bound.node if bound else None
+    node = bound.node if isinstance(bound, BoundDelegate) else None
     start = len(estimator.stages)
     started = bindings.get(CLOCK, ZERO)
     if node is None:
         return UNKNOWN
+    declaration = bound.closure.method
+    marker = f"<delegate:{bound.method_key}:{node.start_byte}:{node.end_byte}>"
+    if marker in stack or estimator.depth(stack) >= 7 or estimator.calls >= 120:
+        estimator.truncated = True
+        estimator.record(
+            "unresolved", "回调达到展开边界", node, declaration, conditions, background
+        )
+        return UNKNOWN
+    estimator.calls += 1
     if node.type in {"lambda_expression", "anonymous_method_expression"}:
-        parameters = node.child_by_field_name("parameters")
-        if parameters is not None and children(parameters):
+        if len(closures.parameters(node)) != len(argument_values):
             return UNKNOWN
-        if node.child_by_field_name("parameter") is not None:
-            return UNKNOWN
-        nested_async = not join_result and any(text(part) == "async" for part in node.children)
+        callback_method, callback_scope = closures.enter(
+            estimator, bound, node, bindings, argument_values
+        )
+        nested_async = (not join_result or not bound.returns_task) and any(
+            text(part) == "async" for part in node.children
+        )
         body = node.child_by_field_name("body")
         if body and body.type != "block":
             cost = estimator.expression(
-                body, method, bindings, stack, conditions, background or nested_async
+                body,
+                callback_method,
+                callback_scope,
+                (*stack, marker),
+                conditions,
+                background or nested_async,
             )
         else:
             flow = estimator.block(
-                body, method, bindings, stack, conditions, background or nested_async
+                body,
+                callback_method,
+                callback_scope,
+                (*stack, marker),
+                conditions,
+                background or nested_async,
             )
             cost = flow.cost() if flow.live is not None or flow.returned is not None else UNKNOWN
         if join_result:
-            cost = returned_task(body, method, bindings, cost, started)
+            cost = returned_task(body, callback_method, callback_scope, cost, started)
+        state.transfer(bindings, callback_scope, uncertain=nested_async)
         # StartNew(async ...)返回嵌套任务；没有Unwrap不能把整个异步体当作外层完成边界。
         if nested_async:
             estimator.record(
                 "unresolved",
                 "未展开异步委托的外层完成边界",
                 node,
-                method,
+                declaration,
                 conditions,
                 background,
             )
             return UNKNOWN
     else:
-        target = method_group(estimator.index, node, method)
-        if target is None or estimator.index.polymorphic(node, method, target):
+        target = method_group(estimator.index, node, declaration, len(argument_values))
+        if target is None or estimator.index.polymorphic(node, declaration, target):
             estimator.record(
-                "unresolved", "委托方法或实际实例类型未绑定", node, method, conditions, background
+                "unresolved",
+                "委托方法或实际实例类型未绑定",
+                node,
+                declaration,
+                conditions,
+                background,
             )
             return UNKNOWN
+        target_context = dict(bindings) if bound.async_void else bindings
         cost = estimator.invoke(
             target,
             [],
-            method,
+            declaration,
             node,
-            bindings,
+            target_context,
             stack,
             conditions,
-            background,
+            background or bound.async_void,
             receiver_id=bound.receiver_id,
+            argument_values={
+                name: value
+                for (name, _, _), value in zip(target.parameters, argument_values, strict=True)
+            },
         )
+        if bound.async_void:
+            state.transfer(bindings, target_context, uncertain=True)
+            estimator.record(
+                "unresolved",
+                "async void回调的完成边界未定",
+                node,
+                declaration,
+                conditions,
+                background,
+            )
+            return UNKNOWN
         if simple_type(text(target.node.child_by_field_name("returns"))) == "Task":
             estimator.record(
-                "unresolved", "委托返回任务的完成边界未绑定", node, method, conditions, background
+                "unresolved",
+                "委托返回任务的完成边界未绑定",
+                node,
+                declaration,
+                conditions,
+                background,
             )
             cost = Cost(cost.lower, None) if join_result else UNKNOWN
     if any(
@@ -162,16 +228,155 @@ def returned_task(body, method, bindings, cost, started):
     return cost.plus(plan.remaining(started.plus(cost)))
 
 
-def capture(index, node, method, bindings):
+def capture(index, node, method, bindings, arity=0, returns_task=None):
     node = unwrap(index, node, method, bindings)
     if isinstance(node, BoundDelegate):
-        return node if node.method_key == method.key else None
+        return node
+    if node is NULL_DELEGATE or (node is not None and node.type == "null_literal"):
+        return NULL_DELEGATE
     if node is None:
         return None
     if node.type in {"lambda_expression", "anonymous_method_expression"}:
-        return BoundDelegate(node, method.key)
-    target = method_group(index, node, method)
+        return BoundDelegate(
+            node,
+            method.key,
+            closure=closures.capture(method, bindings, node),
+            arity=len(closures.parameters(node)),
+            returns_task=any(text(part) == "async" for part in node.children)
+            if returns_task is None
+            else returns_task,
+        )
+    target = method_group(index, node, method, arity)
     if target is None:
         return None
     receiver = state.receiver_for(index, target, node, method, bindings)
-    return BoundDelegate(node, method.key, receiver)
+    return BoundDelegate(
+        node,
+        method.key,
+        receiver,
+        closures.Closure(method, bindings.get(state.THIS), ()),
+        arity,
+        simple_type(text(target.node.child_by_field_name("returns"))) == "Task",
+        any(text(part) == "async" for part in target.node.children)
+        and text(target.node.child_by_field_name("returns")) == "void",
+    )
+
+
+def signature_arity(kind):
+    base, separator, suffix = kind.replace("System.", "").partition("<")
+    if base == "Action" and not separator:
+        return 0
+    if base not in {"Action", "Func"} or not separator:
+        return None
+    depth, count = 0, 1
+    for char in suffix[:-1]:
+        depth += (char == "<") - (char == ">")
+        if char == "," and depth == 0:
+            count += 1
+    return count - (base == "Func")
+
+
+def bind_arguments(index, target, arguments, caller, bindings):
+    result = {}
+    for position, (name, kind, default) in enumerate(target.parameters):
+        arity = signature_arity(kind)
+        if arity is None or index.lookup_type(kind, target) in index.classes:
+            continue
+        value = arguments[position] if position < len(arguments) else default
+        bound = (
+            capture(
+                index,
+                value,
+                caller,
+                bindings,
+                arity,
+                returns_task="Task" in kind and kind.replace("System.", "").startswith("Func<"),
+            )
+            if value is not None
+            else None
+        )
+        result[f"{DELEGATE_PREFIX}{name}>"] = (target.key, bound)
+    return result
+
+
+def stored(node, method, bindings):
+    record = bindings.get(f"{DELEGATE_PREFIX}{text(node)}>")
+    return record[1] if record and record[0] == method.key else None
+
+
+def invocation_receiver(index, node, method):
+    function = node.child_by_field_name("function")
+    if function is None:
+        return None
+    if function.type == "identifier":
+        candidate = function
+    elif function.type == "conditional_access_expression":
+        name = next(iter(children(function, "member_binding_expression")), None)
+        candidate = (
+            function.child_by_field_name("condition")
+            if text(name.child_by_field_name("name") if name else None) == "Invoke"
+            else None
+        )
+    else:
+        candidate = (
+            function.child_by_field_name("expression")
+            if text(function.child_by_field_name("name")) == "Invoke"
+            else None
+        )
+    return candidate
+
+
+def typed_invocation(index, node, method):
+    receiver = invocation_receiver(index, node, method)
+    if receiver is None:
+        return False
+    kind = index.infer(receiver, method)
+    return kind not in index.classes and simple_type(kind) in {"Action", "Func"}
+
+
+def invoke(estimator, node, method, bindings, stack, conditions, background):
+    receiver = invocation_receiver(estimator.index, node, method)
+    bound = stored(receiver, method, bindings) if receiver is not None else None
+    if bound is None and not typed_invocation(estimator.index, node, method):
+        return None
+    if not isinstance(bound, BoundDelegate):
+        estimator.record(
+            "unresolved", "委托目标为空或尚未绑定", node, method, conditions, background
+        )
+        return UNKNOWN
+    arguments = children(node.child_by_field_name("arguments"), "argument")
+    values = tuple(estimator.index.value(argument, method, bindings) for argument in arguments)
+    from app.modules.action_timing.source_tasks import consumed
+
+    asynchronous = (
+        bound.returns_task
+        or bound.async_void
+        or any(text(part) == "async" for part in bound.node.children)
+    )
+    joined = not asynchronous or (bound.returns_task and consumed(node))
+    context = bindings if joined else dict(bindings)
+    cost = execute(
+        estimator,
+        bound,
+        method,
+        context,
+        stack,
+        conditions,
+        background,
+        argument_values=values,
+        join_result=joined,
+    )
+    if not joined:
+        state.transfer(bindings, context, uncertain=True)
+        cost = UNKNOWN
+    estimator.record(
+        "call",
+        "执行已绑定回调",
+        node,
+        method,
+        conditions,
+        background,
+        resolved=cost.upper is not None,
+        milliseconds=cost.lower if cost.lower == cost.upper else None,
+    )
+    return cost

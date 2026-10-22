@@ -3,6 +3,7 @@
 import math
 import re
 
+from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_construction import constructor_body, create_object
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
@@ -66,6 +67,7 @@ class Estimator:
                 for name, _, default in method.parameters
             },
         }
+        bindings.update(delegates.bind_arguments(self.index, method, [], method, bindings))
         flow = self.execute_body(method, bindings, (method.key,), (), False)
         cost = flow.cost()
         has_success_path = any(
@@ -363,6 +365,11 @@ class Estimator:
         task_cost = handle_tasks(self, node, method, bindings, stack, conditions, background)
         if task_cost is not None:
             return task_cost
+        callback_cost = delegates.invoke(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if callback_cost is not None:
+            return callback_cost
         if function_name.endswith(("Thread.Sleep", "DelayHelper.Delay")):
             arg = arguments[0] if arguments else None
             value = self.index.value(arg, method, bindings)
@@ -542,6 +549,7 @@ class Estimator:
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1
         self.frames += 1
+        callbacks = delegates.bind_arguments(self.index, target, arguments, caller, bindings)
         values = {
             **self.context,
             **state.context(bindings),
@@ -555,6 +563,7 @@ class Estimator:
                 for parameter, argument in zip(target.parameters, arguments, strict=False)
             },
         }
+        values.update(callbacks)
         values.update(argument_values or {})
         for name, _, default in target.parameters[len(arguments) :]:
             if name not in values:
@@ -613,7 +622,12 @@ class Estimator:
         if text(receiver) == "null":
             return before
         value = self.index.value(receiver, method, bindings)
-        present = isinstance(value, dict) and "<type>" in value
+        callback = delegates.stored(receiver, method, bindings)
+        if callback is delegates.NULL_DELEGATE:
+            return before
+        present = (isinstance(value, dict) and "<type>" in value) or isinstance(
+            callback, delegates.BoundDelegate
+        )
         started = bindings.get(CLOCK, ZERO)
         original = dict(bindings)
         bindings[CLOCK] = started.plus(before)
@@ -909,7 +923,9 @@ class Estimator:
                         "decimal",
                     } and isinstance(value, (int, float)):
                         value = float(value)
-                    bindings[text(variable.child_by_field_name("name"))] = value
+                    declared = variable.child_by_field_name("name")
+                    if declared is not None:
+                        state.write(self.index, declared, method, bindings, value)
         if kind in {"expression_statement", "local_declaration_statement"}:
             return Flow(self.expression(node, method, bindings, stack, conditions, background))
         if kind in {
