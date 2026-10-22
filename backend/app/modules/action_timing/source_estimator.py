@@ -3,9 +3,15 @@
 import math
 import re
 
+from app.modules.action_timing.source_construction import constructor_body, create_object
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
 from app.modules.action_timing.source_hardware import hardware_call
-from app.modules.action_timing.source_index import children, initializer, text, walk
+from app.modules.action_timing.source_index import children, initializer, simple_type, text, walk
+from app.modules.action_timing.source_properties import (
+    assign_property,
+    increment_property,
+    read_property,
+)
 from app.modules.action_timing.source_tasks import CLOCK, handle_tasks, lookup
 
 PURE_NAMES = {
@@ -29,6 +35,7 @@ MOTION = re.compile(
     r"(?:Move|Interpolation|SearchBelt|MapBelt|HomeWait|GoHome|WaitAxesArrival|WaitAxisArrival|WaitArrive)",
     re.I,
 )
+COLLECTION_OPERATIONS = {"Remove", "RemoveAt", "RemoveAll", "RemoveRange", "MoveNext"}
 WAIT = re.compile(r"^(?:Wait|SpinUntil)|Signal\.(?:Wait|WaitOne)|\.WaitOne$", re.I)
 
 
@@ -48,7 +55,14 @@ class Estimator:
         if method.unit.tree.root_node.has_error:
             self.truncated = True
         self.root_method = method.key
-        flow = self.block(method.body, method, dict(self.context), (), (), False)
+        bindings = {
+            **self.context,
+            **{
+                name: self.index.value(default, method, self.context)
+                for name, _, default in method.parameters
+            },
+        }
+        flow = self.execute_body(method, bindings, (method.key,), (), False)
         cost = flow.cost()
         has_success_path = any(
             value is not None for value in (flow.live, flow.returned, flow.broken, flow.continued)
@@ -166,6 +180,46 @@ class Estimator:
     def expression(self, node, method, bindings, stack, conditions, background):
         if node is None:
             return ZERO
+        if node.type in {
+            "lambda_expression",
+            "anonymous_method_expression",
+            "typeof_expression",
+            "sizeof_expression",
+            "default_expression",
+        }:
+            return ZERO
+        if node.type == "argument":
+            parts = children(node)
+            if not parts:
+                if not re.fullmatch(r"out\s+_", text(node).strip()):
+                    self.truncated = True
+                    self.record(
+                        "unresolved", "参数表达式未解析", node, method, conditions, background
+                    )
+                return ZERO
+            return self.expression(parts[-1], method, bindings, stack, conditions, background)
+        if node.type == "cast_expression":
+            return self.expression(
+                node.child_by_field_name("value"), method, bindings, stack, conditions, background
+            )
+        if node.type == "as_expression":
+            return self.expression(
+                node.child_by_field_name("left"), method, bindings, stack, conditions, background
+            )
+        if node.type == "conditional_access_expression":
+            return self.conditional_access(
+                node, None, method, bindings, stack, conditions, background
+            )
+        if node.type == "assignment_expression":
+            return assign_property(self, node, method, bindings, stack, conditions, background)
+        if node.type in {"prefix_unary_expression", "postfix_unary_expression"} and (
+            "++" in text(node) or "--" in text(node)
+        ):
+            return increment_property(self, node, method, bindings, stack, conditions, background)
+        if node.type in {"member_access_expression", "identifier"}:
+            return read_property(self, node, method, bindings, stack, conditions, background)
+        if node.type == "object_creation_expression":
+            return create_object(self, node, method, bindings, stack, conditions, background)
         if node.type == "await_expression":
             operand = children(node)[-1]
             plan = lookup(operand, method, bindings)
@@ -182,17 +236,35 @@ class Estimator:
                 )
                 return cost
         if node.type == "invocation_expression":
+            if text(node.child_by_field_name("function")) == "nameof":
+                return ZERO
             before = ZERO
             started = bindings.get(CLOCK, ZERO)
             function = node.child_by_field_name("function")
+            if function.type == "conditional_access_expression":
+                return self.conditional_access(
+                    function, node, method, bindings, stack, conditions, background
+                )
             if function is not None and function.type == "member_access_expression":
-                before = self.expression(
-                    function.child_by_field_name("expression"),
-                    method,
-                    bindings,
-                    stack,
-                    conditions,
-                    background,
+                receiver = function.child_by_field_name("expression")
+                target = self.index.resolve(node, method)
+                static_receiver = self.index.lookup_type(
+                    text(receiver), method
+                ) in self.index.classes and (
+                    text(function.child_by_field_name("name")) == "GetInstance"
+                    or (target and target.is_static)
+                )
+                before = (
+                    ZERO
+                    if static_receiver
+                    else self.expression(
+                        receiver,
+                        method,
+                        bindings,
+                        stack,
+                        conditions,
+                        background,
+                    )
                 )
             for argument in children(node.child_by_field_name("arguments"), "argument"):
                 bindings[CLOCK] = started.plus(before)
@@ -244,10 +316,15 @@ class Estimator:
     def call(self, node, method, bindings, stack, conditions, background):
         function = node.child_by_field_name("function")
         function_name = text(function)
+        binding = next(iter(children(function, "member_binding_expression")), None)
         name = (
-            text(function.child_by_field_name("name"))
-            if function.type != "identifier"
-            else function_name
+            text(binding.child_by_field_name("name"))
+            if binding
+            else (
+                text(function.child_by_field_name("name"))
+                if function.type != "identifier"
+                else function_name
+            )
         )
         arguments = children(node.child_by_field_name("arguments"), "argument")
         if name in {"Start", "StartNew", "Restart", "Stop", "Reset"}:
@@ -340,45 +417,25 @@ class Estimator:
                     )
             return ZERO
         if target and target.body:
-            if target.key in stack or len(stack) >= 7 or self.calls >= 120:
-                self.truncated = True
-                self.record(
-                    "unresolved",
-                    "调用链达到展开边界",
-                    node,
-                    method,
-                    conditions,
-                    background,
-                    expression=text(node),
-                )
-                return UNKNOWN
-            self.calls += 1
-            values = {
-                **self.context,
-                CLOCK: bindings.get(CLOCK, ZERO),
-                **{
-                    parameter[0]: self.index.value(arg, method, bindings)
-                    for parameter, arg in zip(target.parameters, arguments, strict=False)
-                },
-            }
-            for name, _, default in target.parameters[len(arguments) :]:
-                values[name] = self.index.value(default, target, {})
-            flow = self.block(
-                target.body, target, values, (*stack, target.key), conditions, background
+            return self.invoke(
+                target, arguments, method, node, bindings, stack, conditions, background
             )
-            if flow.live is None and flow.returned is None:
-                self.record(
-                    "unresolved",
-                    "被调方法无法正常返回",
-                    node,
-                    method,
-                    conditions,
-                    background,
-                    expression=text(node),
-                )
-                return UNKNOWN
-            return flow.cost()
-        if MOTION.search(name):
+        if name in COLLECTION_OPERATIONS:
+            receiver_type = simple_type(
+                self.index.infer(function.child_by_field_name("expression"), method)
+            )
+            if receiver_type in {
+                "List",
+                "HashSet",
+                "Dictionary",
+                "BindingList",
+                "LinkedList",
+                "ObservableCollection",
+                "IEnumerator",
+                "Enumerator",
+            }:
+                return ZERO
+        if MOTION.search(name) and name not in COLLECTION_OPERATIONS:
             self.record(
                 "motion",
                 "运动调用",
@@ -408,7 +465,6 @@ class Estimator:
                     "Clone",
                     "Select",
                     "Add",
-                    "Remove",
                     "Clear",
                     "Contains",
                     "Count",
@@ -429,6 +485,128 @@ class Estimator:
             )
         return ZERO
 
+    def invoke(
+        self,
+        target,
+        arguments,
+        caller,
+        node,
+        bindings,
+        stack,
+        conditions,
+        background,
+        argument_values=None,
+    ):
+        metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
+        if target.key in stack or (not metadata and (self.depth(stack) >= 7 or self.calls >= 120)):
+            self.truncated = True
+            self.record(
+                "unresolved",
+                "调用链达到展开边界",
+                node,
+                caller,
+                conditions,
+                background,
+                expression=text(node),
+            )
+            return UNKNOWN
+        if target.callable_kind in {"method", "constructor"}:
+            self.calls += 1
+        values = {
+            **self.context,
+            CLOCK: bindings.get(CLOCK, ZERO),
+            **{
+                parameter[0]: self.index.value(argument, caller, bindings)
+                for parameter, argument in zip(target.parameters, arguments, strict=False)
+            },
+        }
+        values.update(argument_values or {})
+        for name, _, default in target.parameters[len(arguments) :]:
+            if name not in values:
+                values[name] = self.index.value(default, target, {})
+        for name, kind, _ in target.parameters:
+            if (
+                kind in {"double", "float", "decimal"}
+                and isinstance(values.get(name), (int, float))
+                and not isinstance(values.get(name), bool)
+            ):
+                values[name] = float(values[name])
+        flow = self.execute_body(target, values, (*stack, target.key), conditions, background)
+        if flow.live is None and flow.returned is None:
+            self.record(
+                "unresolved",
+                "被调方法无法正常返回",
+                node,
+                caller,
+                conditions,
+                background,
+                expression=text(node),
+            )
+            return UNKNOWN
+        return flow.cost()
+
+    def execute_body(self, method, bindings, stack, conditions, background):
+        if method.callable_kind == "constructor":
+            return constructor_body(self, method, bindings, stack, conditions, background)
+        if method.callable_kind == "initializer":
+            return Flow(
+                self.expression(method.body, method, bindings, stack, conditions, background)
+            )
+        return self.block(method.body, method, bindings, stack, conditions, background)
+
+    def depth(self, stack):
+        return sum(
+            self.index.method_kinds.get(key) not in {"property_get", "property_set", "initializer"}
+            for key in stack
+        )
+
+    def conditional_access(
+        self, access, invocation, method, bindings, stack, conditions, background
+    ):
+        receiver = access.child_by_field_name("condition")
+        before = self.expression(receiver, method, bindings, stack, conditions, background)
+        if text(receiver) == "null":
+            return before
+        value = self.index.value(receiver, method, bindings)
+        present = isinstance(value, dict) and "<type>" in value
+        started = bindings.get(CLOCK, ZERO)
+        bindings[CLOCK] = started.plus(before)
+        labels = (*conditions, f"{text(receiver)} 非空")
+        cost = ZERO
+        if invocation:
+            for arg in children(invocation.child_by_field_name("arguments"), "argument"):
+                bindings[CLOCK] = started.plus(before).plus(cost)
+                cost = cost.plus(self.expression(arg, method, bindings, stack, labels, background))
+            cost = cost.plus(self.call(invocation, method, bindings, stack, labels, background))
+        else:
+            binding = next(iter(children(access, "member_binding_expression")), None)
+            owner = self.index.infer(receiver, method)
+            target = (
+                self.index.property_method(owner, text(binding.child_by_field_name("name")), "get")
+                if binding
+                else None
+            )
+            if target and target.body:
+                if self.index.polymorphic(access, method, target):
+                    self.record(
+                        "unresolved",
+                        "空条件属性的实际访问器未确定",
+                        access,
+                        method,
+                        labels,
+                        background,
+                    )
+                else:
+                    cost = self.invoke(
+                        target, [], method, access, bindings, stack, labels, background
+                    )
+            elif target is None:
+                self.record(
+                    "unresolved", "空条件属性访问未绑定", access, method, labels, background
+                )
+        bindings[CLOCK] = started
+        return before.plus(cost if present else choice(ZERO, cost))
+
     def motion_definitions(self, node, method):
         identifiers = {text(part) for part in walk(node) if part.type == "identifier"}
         return [
@@ -443,6 +621,10 @@ class Estimator:
         if node is None:
             return Flow()
         kind = node.type
+        if kind == "arrow_expression_clause":
+            return Flow(
+                None, self.expression(node, method, bindings, stack, conditions, background)
+            )
         if kind in {"block", "switch_section"}:
             result = Flow()
             for child in children(node):
@@ -678,31 +860,6 @@ class Estimator:
                     } and isinstance(value, (int, float)):
                         value = float(value)
                     bindings[text(variable.child_by_field_name("name"))] = value
-        if kind == "expression_statement":
-            for assignment in children(node, "assignment_expression"):
-                left = assignment.child_by_field_name("left")
-                name = text(left)
-                right = self.index.value(assignment.child_by_field_name("right"), method, bindings)
-                operator = text(assignment.child_by_field_name("operator"))
-                current = bindings.get(name)
-                if operator == "=":
-                    bindings[name] = right
-                    if left.type == "member_access_expression":
-                        receiver = left.child_by_field_name("expression")
-                        state = self.index.value(receiver, method, bindings)
-                        if receiver.type == "identifier" and isinstance(state, dict):
-                            bindings[text(receiver)] = {
-                                **state,
-                                text(left.child_by_field_name("name")): right,
-                            }
-                elif (
-                    operator == "+="
-                    and isinstance(current, (int, float))
-                    and isinstance(right, (int, float))
-                ):
-                    bindings[name] = current + right
-                else:
-                    bindings[name] = None
         if kind in {"expression_statement", "local_declaration_statement"}:
             return Flow(self.expression(node, method, bindings, stack, conditions, background))
         if kind in {

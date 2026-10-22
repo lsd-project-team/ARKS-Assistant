@@ -8,9 +8,18 @@ from app.modules.action_timing.source_index import children, description, text, 
 
 TIMED = re.compile(
     r"Sleep|Delay|Move|Interpolation|Wait|GoHome|SearchBelt|MapBelt|"
-    r"Trigger|Grab|Snap|Capture|Vacuum|Cylinder|Clamp|Release",
+    r"Trigger|Grab|Snap|Capture|Vacuum|Cylinder|Clamp|Release|"
+    r"SetOutputValue|GetInputValue|GetOutputValue|CheckStateForNums|"
+    r"ServoOn|ServoOff|SetExposureTime",
     re.I,
 )
+COLLECTION_OPERATIONS = {"Remove", "RemoveAt", "RemoveAll", "RemoveRange", "MoveNext"}
+
+
+def timed_operation(name):
+    return name not in COLLECTION_OPERATIONS and TIMED.search(name) is not None
+
+
 OPERATIONS = re.compile(r"^(?:Init|Reset|Home|Start|Stop|Open|Close|Calib|Execute|DoWork|Dowork)")
 TASK_NAMES = {
     "BondTask": "固晶单轮流程",
@@ -41,7 +50,7 @@ def category(method):
         return "测试动作"
     if "/CalibSystem/" in path:
         return "标定动作"
-    if method.name.startswith(("Init", "Reset", "GoHome", "Home")):
+    if method.name.startswith(("Init", "Reset", "GoHome", "Home", ".ctor", ".cctor")):
         return "初始化与复位"
     if any(part in path for part in ("/Controls/", "/Views/", "/Forms/")):
         return "界面与手动操作"
@@ -103,14 +112,80 @@ def build_catalog(index, legacy):
     callers = defaultdict(set)
     edges = defaultdict(set)
     direct = set()
+
+    def constructor_targets(owner, seen=None):
+        seen = set() if seen is None else seen
+        if owner in seen or owner not in index.classes:
+            return []
+        seen.add(owner)
+        info = index.classes[owner]
+        return [
+            *index.by_method.get((owner, ".ctor"), []),
+            *(method for method in info.initializers if not method.is_static),
+            *(
+                method
+                for base in index.base_types(owner)
+                for method in constructor_targets(base, seen)
+            ),
+        ]
+
     for method in methods.values():
-        for call in walk(method.body):
+        roots = [method.body]
+        if method.callable_kind == "constructor":
+            roots.extend(children(method.node, "constructor_initializer"))
+            targets = (
+                [part for part in index.classes[method.owner].initializers if part.is_static]
+                if method.is_static
+                else constructor_targets(method.owner)
+            )
+            for target in targets:
+                if target.key != method.key:
+                    edges[method.key].add(target.key)
+                    callers[target.key].add(method.key)
+        for call in (part for root in roots for part in walk(root)):
+            if call.type == "object_creation_expression":
+                owner = index.lookup_type(text(call.child_by_field_name("type")), method)
+                for target in constructor_targets(owner):
+                    edges[method.key].add(target.key)
+                    callers[target.key].add(method.key)
+                continue
+            if call.type == "assignment_expression":
+                left = call.child_by_field_name("left")
+                owner = None
+                ancestor = call.parent
+                if ancestor and ancestor.type == "initializer_expression":
+                    creation = ancestor.parent
+                    if creation and creation.type == "object_creation_expression":
+                        owner = index.lookup_type(
+                            text(creation.child_by_field_name("type")), method
+                        )
+                target = index.accessor(left, method, "set", owner)
+                if target:
+                    edges[method.key].add(target.key)
+                    callers[target.key].add(method.key)
+            if call.type in {"identifier", "member_access_expression"}:
+                parent = call.parent
+                selector = (
+                    parent
+                    and parent.type == "member_access_expression"
+                    and parent.child_by_field_name("name") == call
+                )
+                assigned = (
+                    parent
+                    and parent.type == "assignment_expression"
+                    and parent.child_by_field_name("left") == call
+                    and text(parent.child_by_field_name("operator")) == "="
+                )
+                target = None if selector or assigned else index.accessor(call, method, "get")
+                if target:
+                    edges[method.key].add(target.key)
+                    callers[target.key].add(method.key)
             if call.type != "invocation_expression":
                 continue
             function = text(call.child_by_field_name("function"))
-            if TIMED.search(function.split(".")[-1]):
-                direct.add(method.key)
             target = index.resolve(call, method)
+            if timed_operation(function.split(".")[-1]) and not (target and target.body):
+                direct.add(method.key)
             if target:
                 edges[method.key].add(target.key)
                 callers[target.key].add(method.key)
@@ -126,7 +201,12 @@ def build_catalog(index, legacy):
     represented = {}
     for method, name, kind, branch in legacy:
         entry = ActionEntry(
-            method, name, kind, branch, "动作节点" if kind == "node" else "子动作", kind == "node"
+            method,
+            name,
+            kind,
+            branch,
+            "动作节点" if kind == "node" else category(method) if method else "子动作",
+            kind == "node",
         )
         entries.append(entry)
         if method:
@@ -144,6 +224,14 @@ def build_catalog(index, legacy):
         extra = method.key in timed or (public and OPERATIONS.search(method.name)) or task
         if extra and method.key not in represented:
             label = description(method.unit.raw, method.node).replace("描述：", "").strip()
+            owner_name = index.classes[method.owner].short_name
+            if method.callable_kind == "constructor":
+                label = label or f"{owner_name} 初始化"
+            elif method.callable_kind == "initializer":
+                label = f"{owner_name} 字段初始化：{method.name.removeprefix('.initialize_')}"
+            elif method.callable_kind.startswith("property_"):
+                operation = "读取" if method.callable_kind == "property_get" else "设置"
+                label = f"{operation} {method.name.split('_', 1)[-1]}"
             entry = ActionEntry(
                 method,
                 label or method.name,
@@ -193,6 +281,7 @@ def build_catalog(index, legacy):
                 "status": status,
                 "category": category(method),
                 "direct_timing": key in direct,
+                "callable_kind": method.callable_kind,
                 "timed_callees": len(edges[key] & timed),
             }
         )

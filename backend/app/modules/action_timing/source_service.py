@@ -105,9 +105,12 @@ def discover(index):
                     )
                 )
         for method in info.methods:
-            is_controller = "/Controllers/" in f"/{method.unit.path}" and "public" in [
-                text(node) for node in method.node.children if node.type == "modifier"
-            ]
+            is_controller = (
+                method.callable_kind in {"method", "constructor"}
+                and "/Controllers/" in f"/{method.unit.path}"
+                and "public"
+                in [text(node) for node in method.node.children if node.type == "modifier"]
+            )
             is_workflow = method.name in WORKFLOWS.get(info.name, set())
             if is_workflow or (
                 is_controller and not method.name.startswith(PURE_PREFIXES) and method.body
@@ -221,7 +224,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v3:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v4:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,

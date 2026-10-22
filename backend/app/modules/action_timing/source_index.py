@@ -82,6 +82,10 @@ class Method:
     types: dict
     initializers: dict = field(default_factory=dict)
     body_override: object = None
+    body_node: object = None
+    callable_kind: str = "method"
+    is_static: bool = False
+    is_virtual: bool = False
 
     @property
     def key(self):
@@ -93,7 +97,7 @@ class Method:
 
     @property
     def body(self):
-        return self.body_override or self.node.child_by_field_name("body")
+        return self.body_override or self.body_node or self.node.child_by_field_name("body")
 
 
 @dataclass
@@ -108,6 +112,7 @@ class ClassInfo:
     project: str = ""
     short_name: str = ""
     constructor_writes: set = field(default_factory=set)
+    initializers: list = field(default_factory=list)
 
 
 class SourceIndex:
@@ -123,6 +128,7 @@ class SourceIndex:
         self._resolution_cache = {}
         self._resolving = set()
         self._overridden_cache = {}
+        self._property_cache = {}
         for source in documents:
             raw = source["content"].encode("utf-8")
             # 文本、语法树与节点共同保存，避免跨文件持有失效的原生节点。
@@ -163,6 +169,11 @@ class SourceIndex:
             self.type_names[name].append(key)
             for unit, node in nodes:
                 self._index(unit, node, info)
+        self.method_kinds = {
+            method.key: method.callable_kind
+            for info in self.classes.values()
+            for method in info.methods
+        }
         fingerprint = "\n".join(f"{u.path}:{u.version}" for u in self.units)
         self.revision = hashlib.sha256(fingerprint.encode()).hexdigest()
 
@@ -186,7 +197,6 @@ class SourceIndex:
         return ".".join(reversed(names))
 
     def _index(self, unit, node, info):
-        name = info.name
         info.declarations.append((unit, node))
         base = next(iter(children(node, "base_list")), None)
         if base:
@@ -199,6 +209,36 @@ class SourceIndex:
                 value = member.child_by_field_name("value")
                 if value is not None:
                     info.defaults[member_name] = (unit, value)
+                    if value.type != "arrow_expression_clause":
+                        self._initializer(info, unit, member, member_name, value)
+                property_modifiers = {text(part) for part in children(member, "modifier")}
+                accessors = children(
+                    member.child_by_field_name("accessors"), "accessor_declaration"
+                )
+                if value is not None and value.type == "arrow_expression_clause":
+                    accessors = [member]
+                for accessor in accessors:
+                    mode = (
+                        "get" if accessor == member else text(accessor.child_by_field_name("name"))
+                    )
+                    if mode not in {"get", "set", "init"}:
+                        continue
+                    name = "set" if mode == "init" else mode
+                    method = self._method(
+                        info,
+                        unit,
+                        accessor,
+                        f"{name}_{member_name}",
+                        f"property_{name}",
+                        value if accessor == member else None,
+                    )
+                    method.is_static = "static" in property_modifiers
+                    method.is_virtual = bool(
+                        property_modifiers.intersection({"virtual", "abstract", "override"})
+                    )
+                    if name == "set":
+                        method.parameters = [("value", info.types[member_name], None)]
+                        method.types["value"] = info.types[member_name]
             elif member.type == "field_declaration":
                 declaration = next(iter(children(member, "variable_declaration")), None)
                 if not declaration:
@@ -210,38 +250,20 @@ class SourceIndex:
                     value = initializer(variable)
                     if value is not None:
                         info.defaults[member_name] = (unit, value)
-            elif member.type == "method_declaration":
-                parameters = []
-                for parameter in children(member.child_by_field_name("parameters"), "parameter"):
-                    parameters.append(
-                        (
-                            text(parameter.child_by_field_name("name")),
-                            text(parameter.child_by_field_name("type")),
-                            initializer(parameter),
-                        )
-                    )
-                types = {name: kind for name, kind, _ in parameters}
-                initializers = {}
-                for declaration in walk(member):
-                    if declaration.type == "variable_declaration":
-                        kind = text(declaration.child_by_field_name("type"))
-                        for variable in children(declaration, "variable_declarator"):
-                            types[text(variable.child_by_field_name("name"))] = kind
-                            initializers[text(variable.child_by_field_name("name"))] = initializer(
-                                variable
-                            )
-                method = Method(
-                    name,
-                    text(member.child_by_field_name("name")),
-                    member,
+                        self._initializer(info, unit, member, member_name, value)
+            elif member.type in {"method_declaration", "constructor_declaration"}:
+                modifiers = {text(part) for part in children(member, "modifier")}
+                method_name = text(member.child_by_field_name("name"))
+                if member.type == "constructor_declaration":
+                    method_name = ".cctor" if "static" in modifiers else ".ctor"
+                self._method(
+                    info,
                     unit,
-                    parameters,
-                    types,
-                    initializers,
+                    member,
+                    method_name,
+                    "constructor" if member.type == "constructor_declaration" else "method",
                 )
-                info.methods.append(method)
-                self.by_method[(name, method.name)].append(method)
-            elif member.type == "constructor_declaration":
+            if member.type == "constructor_declaration":
                 for assignment in walk(member.child_by_field_name("body")):
                     if assignment.type != "assignment_expression":
                         continue
@@ -252,6 +274,110 @@ class SourceIndex:
                         left.child_by_field_name("expression")
                     ) in {"this", info.short_name}:
                         info.constructor_writes.add(text(left.child_by_field_name("name")))
+
+    def _method(self, info, unit, node, name, callable_kind="method", body_node=None):
+        parameters = [
+            (
+                text(part.child_by_field_name("name")),
+                text(part.child_by_field_name("type")),
+                initializer(part),
+            )
+            for part in children(node.child_by_field_name("parameters"), "parameter")
+        ]
+        types = {name: kind for name, kind, _ in parameters}
+        initializers = {}
+        for declaration in walk(body_node or node):
+            if declaration.type == "variable_declaration":
+                kind = text(declaration.child_by_field_name("type"))
+                for variable in children(declaration, "variable_declarator"):
+                    variable_name = text(variable.child_by_field_name("name"))
+                    types[variable_name] = kind
+                    initializers[variable_name] = initializer(variable)
+        method = Method(
+            info.name,
+            name,
+            node,
+            unit,
+            parameters,
+            types,
+            initializers,
+            body_node=body_node,
+            callable_kind=callable_kind,
+            is_static=any(text(part) == "static" for part in children(node, "modifier")),
+        )
+        info.methods.append(method)
+        self.by_method[(info.name, name)].append(method)
+        return method
+
+    def _initializer(self, info, unit, member, name, value):
+        if not any(
+            part.type in {"invocation_expression", "object_creation_expression"}
+            for part in walk(value)
+        ):
+            return
+        method = self._method(info, unit, member, f".initialize_{name}", "initializer", value)
+        method.parameters = []
+        info.initializers.append(method)
+
+    def constructor(self, owner, arguments, caller):
+        candidates = [
+            method
+            for method in self.by_method.get((owner, ".ctor"), [])
+            if sum(default is None for _, _, default in method.parameters)
+            <= len(arguments)
+            <= len(method.parameters)
+        ]
+        if len(candidates) > 1:
+            kinds = [self.infer(argument, caller) for argument in arguments]
+            exact = [
+                method
+                for method in candidates
+                if all(
+                    kind and kind == self.lookup_type(parameter[1], method)
+                    for kind, parameter in zip(kinds, method.parameters, strict=False)
+                )
+            ]
+            candidates = exact if len(exact) == 1 else candidates
+        if any(re.match(r"\w+\s*:", text(argument)) for argument in arguments):
+            return None
+        return candidates[0] if len(candidates) == 1 else None
+
+    def property_method(self, owner, name, mode, seen=None):
+        if seen is None:
+            key = (owner, name, mode)
+            if key not in self._property_cache:
+                self._property_cache[key] = self.property_method(owner, name, mode, set())
+            return self._property_cache[key]
+        seen = set() if seen is None else seen
+        if owner in seen or owner not in self.classes:
+            return None
+        seen.add(owner)
+        local = self.by_method.get((owner, f"{mode}_{name}"), [])
+        if local:
+            return local[0]
+        return next(
+            (
+                target
+                for base in self.base_types(owner)
+                if (target := self.property_method(base, name, mode, seen))
+            ),
+            None,
+        )
+
+    def accessor(self, node, caller, mode, owner=None):
+        if node is None:
+            return None
+        if node.type == "member_access_expression":
+            name = text(node.child_by_field_name("name"))
+            owner = owner or self.infer(node.child_by_field_name("expression"), caller)
+        elif node.type == "identifier":
+            name = text(node)
+            if not owner and name in caller.types:
+                return None
+            owner = owner or caller.owner
+        else:
+            return None
+        return self.property_method(owner, name, mode)
 
     def lookup_type(self, source, context):
         source = source.replace("global::", "").split("<", 1)[0].rstrip("?[]")
@@ -320,6 +446,9 @@ class SourceIndex:
             return None
         if name in info.defaults:
             return owner, info.defaults[name]
+        if name in info.types:
+            # 派生类重写/隐藏了成员；不能越过它套用基类的初始化值。
+            return None
         return next(
             (
                 found
@@ -335,7 +464,8 @@ class SourceIndex:
             return None
         found = self.member_default(owner, name)
         if found is None:
-            return None
+            getter = self.property_method(owner, name, "get")
+            return self.returned_value(getter, [], bindings, seen) if getter else None
         owner, (unit, value_node) = found
         identity = (owner, name)
         if identity in seen:
@@ -384,6 +514,14 @@ class SourceIndex:
             )
         if node.type == "object_creation_expression":
             return self.lookup_type(text(node.child_by_field_name("type")), method)
+        if node.type == "conditional_access_expression":
+            owner = self.infer(node.child_by_field_name("condition"), method)
+            binding = next(iter(children(node, "member_binding_expression")), None)
+            return (
+                self.member_type(owner, text(binding.child_by_field_name("name")))
+                if binding
+                else ""
+            )
         if node.type == "member_access_expression":
             owner = self.infer(node.child_by_field_name("expression"), method)
             return self.member_type(
@@ -400,7 +538,8 @@ class SourceIndex:
                 else ""
             )
         if node.type == "argument":
-            return self.infer(children(node)[-1], method)
+            parts = children(node)
+            return self.infer(parts[-1], method) if parts else ""
         return {
             "integer_literal": "int",
             "real_literal": "double",
@@ -426,7 +565,11 @@ class SourceIndex:
         function = node.child_by_field_name("function")
         if function is None:
             return None
-        if function.type == "identifier":
+        if function.type == "conditional_access_expression":
+            owner = self.infer(function.child_by_field_name("condition"), caller)
+            binding = next(iter(children(function, "member_binding_expression")), None)
+            name = text(binding.child_by_field_name("name")) if binding else ""
+        elif function.type == "identifier":
             owner, name = caller.owner, text(function)
         else:
             owner = self.infer(function.child_by_field_name("expression"), caller)
@@ -471,14 +614,22 @@ class SourceIndex:
 
     def polymorphic(self, node, caller, target):
         modifiers = {text(item) for item in children(target.node, "modifier")}
-        if not modifiers.intersection({"virtual", "abstract", "override"}):
+        if not target.is_virtual and not modifiers.intersection(
+            {"virtual", "abstract", "override"}
+        ):
             return False
-        receiver = node.child_by_field_name("function").child_by_field_name("expression")
+        function = node.child_by_field_name("function") or node
+        receiver = function.child_by_field_name("expression")
         if text(receiver) == "base" or (receiver and receiver.type == "object_creation_expression"):
             return False
         if receiver and receiver.type == "identifier":
             created = caller.initializers.get(text(receiver))
-            if created and created.type == "object_creation_expression":
+            if (
+                created
+                and created.type == "object_creation_expression"
+                and self.lookup_type(text(created.child_by_field_name("type")), caller)
+                == target.owner
+            ):
                 return False
         # 无实际实例类型时不能把基类的空实现当成运行时动作。
         identity = (target.owner, target.name)
@@ -507,19 +658,35 @@ class SourceIndex:
         if kind == "boolean_literal":
             return source == "true"
         if kind == "identifier":
+            if source in method.types:
+                return None
+            getter = self.accessor(node, method, "get")
+            if getter and self.polymorphic(node, method, getter):
+                return None
             return self.default_value(method.owner, source, bindings, seen)
         if kind == "object_creation_expression":
             # 仅求值显式对象初始化器；不执行构造函数，也不臆测外部构造参数顺序。
             value_node = next(iter(children(node, "initializer_expression")), None)
-            if value_node is None:
-                return None
             result = {"<type>": text(node.child_by_field_name("type"))}
+            owner = self.lookup_type(result["<type>"], method)
             for assignment in children(value_node, "assignment_expression"):
                 left = assignment.child_by_field_name("left")
                 if left.type == "identifier":
-                    result[text(left)] = self.value(
-                        assignment.child_by_field_name("right"), method, bindings, seen
+                    member_name = text(left)
+                    getter = self.property_method(owner, member_name, "get")
+                    setter = self.property_method(owner, member_name, "set")
+                    custom = (getter and getter.body is not None) or (
+                        setter and setter.body is not None
                     )
+                    result[member_name] = (
+                        None
+                        if custom
+                        else self.value(
+                            assignment.child_by_field_name("right"), method, bindings, seen
+                        )
+                    )
+                    if custom:
+                        result[f"<invalidated:{member_name}>"] = True
             return result
         if kind == "member_access_expression":
             name = text(node.child_by_field_name("name"))
@@ -534,10 +701,15 @@ class SourceIndex:
             identity = f"{simple_type(owner)}.{name}"
             if identity in bindings:
                 return bindings[identity]
+            getter = self.property_method(owner, name, "get")
+            if getter and self.polymorphic(node, method, getter):
+                return None
             receiver_value = self.value(
                 node.child_by_field_name("expression"), method, bindings, seen
             )
             if isinstance(receiver_value, dict) and name in receiver_value:
+                if receiver_value.get(f"<invalidated:{name}>"):
+                    return None
                 return receiver_value[name]
             if simple_type(receiver) in self.enums:
                 return name
@@ -624,7 +796,14 @@ class SourceIndex:
                     seen,
                 )
         if kind == "invocation_expression":
-            function = text(node.child_by_field_name("function"))
+            function_node = node.child_by_field_name("function")
+            function = text(function_node)
+            if function_node.type == "conditional_access_expression":
+                receiver = self.value(
+                    function_node.child_by_field_name("condition"), method, bindings, seen
+                )
+                if not isinstance(receiver, dict) or "<type>" not in receiver:
+                    return None
             values = [
                 self.value(arg, method, bindings, seen)
                 for arg in children(node.child_by_field_name("arguments"), "argument")
@@ -642,35 +821,39 @@ class SourceIndex:
                 if function in allowed:
                     return allowed[function](values)
             target = self.resolve(node, method)
-            identity = (target.key, "<return>") if target else None
-            statements = children(target.body) if target and target.body else []
-            if (
-                len(statements) > 1
-                and all(part.type == "expression_statement" for part in statements[:-1])
-                and statements[-1].type == "return_statement"
-            ):
-                returned = children(statements[-1])
-                if returned and returned[-1].type in {
-                    "integer_literal",
-                    "real_literal",
-                    "boolean_literal",
-                }:
-                    statements = statements[-1:]
-            if (
-                target
-                and identity not in seen
-                and len(statements) == 1
-                and statements[0].type == "return_statement"
-            ):
-                arguments = {
-                    parameter[0]: value
-                    for parameter, value in zip(target.parameters, values, strict=False)
-                }
-                arguments.update({key: value for key, value in bindings.items() if "." in key})
-                returned = children(statements[0])
-                return (
-                    self.value(returned[-1], target, arguments, seen | {identity})
-                    if returned
-                    else None
-                )
+            if target and self.polymorphic(node, method, target):
+                return None
+            return self.returned_value(target, values, bindings, seen)
+        return None
+
+    def returned_value(self, target, values, bindings, seen):
+        if target is None or target.body is None:
+            return None
+        identity = (target.key, "<return>")
+        if identity in seen:
+            return None
+        arguments = {
+            parameter[0]: value for parameter, value in zip(target.parameters, values, strict=False)
+        }
+        arguments.update({key: value for key, value in bindings.items() if "." in key})
+        if target.body.type == "arrow_expression_clause":
+            return self.value(children(target.body)[-1], target, arguments, seen | {identity})
+        statements = children(target.body)
+        if (
+            len(statements) > 1
+            and all(part.type == "expression_statement" for part in statements[:-1])
+            and statements[-1].type == "return_statement"
+        ):
+            returned = children(statements[-1])
+            if returned and returned[-1].type in {
+                "integer_literal",
+                "real_literal",
+                "boolean_literal",
+            }:
+                statements = statements[-1:]
+        if len(statements) == 1 and statements[0].type == "return_statement":
+            returned = children(statements[0])
+            return (
+                self.value(returned[-1], target, arguments, seen | {identity}) if returned else None
+            )
         return None
