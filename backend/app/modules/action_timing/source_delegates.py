@@ -1,12 +1,12 @@
 """只展开源码已绑定的委托；创建、传递与执行是三个不同的时点。"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_closures as closures
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
-from app.modules.action_timing.source_index import children, simple_type, text
+from app.modules.action_timing.source_index import children, simple_type, text, walk
 
 DELEGATE_PREFIX = "<delegate-variable:"
 NULL_DELEGATE = object()
@@ -257,6 +257,13 @@ def capture(
     if node is None:
         return None
     if node.type in {"lambda_expression", "anonymous_method_expression"}:
+        # 创建时冻结可见局部类型，包括外层条件中的模式变量；进入回调后
+        # 词法父节点不再属于回调自己的方法体，不能仅靠祖先遍历恢复它们。
+        captured_types = dict(method.types)
+        for part in walk(node):
+            if part.type == "identifier" and (kind_at_use := index.local_type(part, method)):
+                captured_types[text(part)] = kind_at_use
+        method = replace(method, types=captured_types)
         asynchronous = any(text(part) == "async" for part in node.children)
         return BoundDelegate(
             node,

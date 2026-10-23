@@ -4,8 +4,8 @@ import re
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass, replace
 
+from app.modules.action_timing import source_apm, source_dispatch, source_dynamic, source_parallel
 from app.modules.action_timing import source_delegates as delegates
-from app.modules.action_timing import source_dispatch, source_dynamic, source_parallel
 from app.modules.action_timing.source_hardware import hardware_operation
 from app.modules.action_timing.source_index import children, description, text, walk
 
@@ -206,6 +206,7 @@ def build_catalog(index, legacy):
                 or hardware_operation(index, call, method)
                 or delegates.typed_invocation(index, call, method)
                 or source_dynamic.operation(index, call, method)
+                or source_apm.operation(index, call, method)
                 or source_dispatch.receiver_kind(index, call, method)
                 or source_parallel.operation(index, call, method)
             ) and not (target and target.body):

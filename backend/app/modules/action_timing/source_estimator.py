@@ -3,15 +3,16 @@
 import math
 import re
 
-from app.modules.action_timing import source_arguments as call_args
-from app.modules.action_timing import source_collections as collections
-from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import (
+    source_apm,
     source_dispatch,
     source_dynamic,
     source_finally,
     source_parallel,
 )
+from app.modules.action_timing import source_arguments as call_args
+from app.modules.action_timing import source_collections as collections
+from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
@@ -74,6 +75,7 @@ class Estimator:
         self.scope_frames = 0
         self.allocations = 0
         self.jump_steps = 0
+        self.apm_calls = 0
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
@@ -471,6 +473,9 @@ class Estimator:
         task_cost = handle_tasks(self, node, method, bindings, stack, conditions, background)
         if task_cost is not None:
             return task_cost
+        apm_cost = source_apm.handle(self, node, method, bindings, stack, conditions, background)
+        if apm_cost is not None:
+            return apm_cost
         dynamic_cost = source_dynamic.invoke(
             self, node, method, bindings, stack, conditions, background
         )

@@ -146,8 +146,11 @@ def is_fresh(value, previous):
 
 
 def public_value(value, depth=0):
+    from app.modules.action_timing.source_apm import AsyncInvocation
+
     if (
         known_task(value)
+        or isinstance(value, AsyncInvocation)
         or isinstance(value, delegates.BoundDelegate)
         or value is delegates.NULL_DELEGATE
         or depth > 16
@@ -268,7 +271,9 @@ def track_binding(index, left, right, method, bindings):
     key = f"<task-variable:{name}>"
     if task is not None or key in bindings:
         bindings[key] = task
-    kind = method.types.get(name, "")
+    from app.modules.action_timing.source_collections import raw_type
+
+    kind = raw_type(index, left, method)
     arity = delegates.signature_arity(kind)
     delegate = delegates.capture(
         index,

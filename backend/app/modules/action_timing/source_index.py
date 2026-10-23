@@ -796,6 +796,19 @@ class SourceIndex:
         name = text(node)
         parent = node.parent
         while parent is not None and parent != method.node:
+            if parent.type in {"if_statement", "while_statement", "do_statement", "for_statement"}:
+                condition = parent.child_by_field_name("condition")
+                pending = [condition] if condition is not None else []
+                while pending:
+                    part = pending.pop()
+                    if part.type in {"lambda_expression", "anonymous_method_expression"}:
+                        continue
+                    if (
+                        part.type == "declaration_pattern"
+                        and text(part.child_by_field_name("name")) == name
+                    ):
+                        return text(part.child_by_field_name("type")), None
+                    pending.extend(children(part))
             if parent.type in {"block", "switch_section"}:
                 for statement in children(parent, "local_declaration_statement"):
                     declaration = next(iter(children(statement, "variable_declaration")), None)

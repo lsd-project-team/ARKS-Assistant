@@ -170,6 +170,7 @@ def run_item(
 
 def invalidate_unexplored(bindings, depth=0):
     """共享写入分析未收敛时，不让旧成员/集合/任务值继续提供固定毫秒数。"""
+    from app.modules.action_timing.source_apm import AsyncInvocation
     from app.modules.action_timing.source_tasks import known_task
 
     values = list(bindings.values())
@@ -185,6 +186,7 @@ def invalidate_unexplored(bindings, depth=0):
     for key, value in list(bindings.items()):
         if (
             known_task(value)
+            or isinstance(value, AsyncInvocation)
             or isinstance(value, delegates.BoundDelegate)
             or key.startswith(delegates.DELEGATE_PREFIX)
         ):
