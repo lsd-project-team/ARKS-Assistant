@@ -582,3 +582,5 @@ v29独立重算三条实际标定：OnlyWaferCameraCaib保留75,375 ms；StartBo
 独立入口审计另沿完整继承链枚举业务ActionNode，并枚举Tasks目录的服务循环后与目录对照，不只使用目录自身的未收录计数。当前39个动作节点继承类（含无实现节点）和16处任务服务循环均有对应目录记录，包内方法没有被列作业务动作。范围为ZX2200主工程加9个引用工程，业务源码/声明1,137份、依赖218份，合计977份可执行源码与378份生成声明；生成布局不执行。证据business-entry-inventory.json绑定同一scope指纹。
 
 另有81份源码在工程覆盖账本中保留排除原因：57份属于未引用工程，24份未被当前工程编译项选中。后者包含旧版RepeatPositionAccuracy/FrmRotateCenterAccuracy.cs及FrmChooseCamera.cs；当前csproj的编译项明确选择Experiment/Test下的同名界面，不能把两个版本混算。未编译清单见excluded-compilation-sources.json。目录中的“未发现可识别耗时路径”不等于该方法没有业务意义，也不证明动态目标均已求解；本审计只证明这些具体入口与版本范围，不能用它宣称全部C#或现场工况完成。
+
+等待v29整仓结果期间，按同一编译范围的语法树另清点47处查询名称候选：OrderBy 19、OrderByDescending 5、ThenBy 1、Distinct 16、SelectMany 6；注释中的旧代码不计入。回调内部直接调用仅见两处it.Count，没有直接Sleep、Delay或Wait。GlobalCalibrationData.Sort返回的S形点位顺序、ScanCompletedFlag的展开结果等仍会影响调用者的数据或分支，不能因此将排序/展开或后续动作判为完整零耗时。该清单不证明重载、操作符或间接调用均已求解；证据为remaining-query-compiled-sites.json。本轮主工程真实源码回归1项及快速回归1,069项已通过，全trunk回归与新报告差异仍待完成，正式页面保留此前已验收版本。
