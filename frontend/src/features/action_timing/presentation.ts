@@ -13,6 +13,22 @@ const pendingNotes: Record<string, string> = {
   PickActionNode: '运动与取料等待耗时未定',
 };
 
+function perItemTiming(row: SourceAction) {
+  return (row.per_item_timing || [])
+    .filter((item) => Number.isFinite(item.min_ms) && item.min_ms > 0)
+    .map((item) => {
+      const unit = item.element_type.split('.').at(-1) === 'Light' ? '每路光源' : '每项';
+      const time =
+        item.max_ms == null
+          ? `≥${milliseconds(item.min_ms)} ms`
+          : item.min_ms === item.max_ms
+            ? `${milliseconds(item.min_ms)} ms`
+            : `${milliseconds(item.min_ms)}–${milliseconds(item.max_ms)} ms`;
+      return `${unit} ${time}`;
+    })
+    .join('；');
+}
+
 export function actionPresentation(row: SourceAction) {
   const station = row.group.match(/^S[12]\b/)?.[0] || row.group;
   const node = row.kind === 'node';
@@ -32,13 +48,12 @@ export function actionPresentation(row: SourceAction) {
   const high = row.known_delay_max_ms;
   const hasDelay = low != null && (low > 0 || (high != null && high > 0));
   const hasTotal = row.total_ms != null && row.total_ms > 0;
+  const itemTiming = perItemTiming(row);
   const duration = hasTotal
     ? `${milliseconds(row.total_ms)} ms`
     : hasDelay
       ? knownDelay(row)
-      : row.total_ms === 0
-        ? '无固定停留'
-        : '耗时未定';
+      : itemTiming || (row.total_ms === 0 ? '无固定停留' : '耗时未定');
 
   // 停留可能与已启动的运动重叠，不能用加号暗示可直接相加为总时长。
   const pending = [row.motion_count > 0 && '运动', row.wait_count > 0 && '等待'].filter(Boolean);
@@ -47,7 +62,9 @@ export function actionPresentation(row: SourceAction) {
       ? pending.length
         ? `已知停留，${pending.join('与')}耗时未定`
         : '已知停留，完整耗时未定'
-      : '';
+      : itemTiming && !hasTotal
+        ? '数量未知，完整耗时未定'
+        : '';
   let note = '源码参数或调用耗时尚未确定';
   if (row.total_ms === 0) note = '源码未设置固定停留，不表示实际耗时为零';
   else if (hasTotal) note = '按源码模拟逻辑计算';
@@ -60,8 +77,18 @@ export function actionPresentation(row: SourceAction) {
     }
   } else if (node && pendingNotes[row.class_name]) note = pendingNotes[row.class_name];
   else if (pending.length) note = `${pending.join('与')}耗时无法由现有源码确定`;
+  if (itemTiming && row.total_ms == null) {
+    note = hasDelay ? `${note}；${itemTiming}，数量未知` : '按每项顺序计算，数量及其余耗时未定';
+  }
   if (row.kind === 'placeholder') note = '源码中尚无动作实现';
-  return { station, name, duration, remainder, note, hasDuration: hasDelay || hasTotal };
+  return {
+    station,
+    name,
+    duration,
+    remainder,
+    note,
+    hasDuration: hasDelay || hasTotal || !!itemTiming,
+  };
 }
 
 export function filterActions(

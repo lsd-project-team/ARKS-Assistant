@@ -500,3 +500,24 @@ trunk的6,281个非隐藏文件集合及SHA-256未变；前端本轮未改，未
 最终模型trunk-model-v24，源码指纹 `1fe24f1f124ef89d92ce57145f771ce465272ddd7c63f7c91a63567c804e0ce5`。首次整仓计算及保存653.281秒，新实例禁止重建后的恢复13.267秒，全部完整行指纹一致，仅为本机分析器开销。压缩报告15,819,978字节，SHA-256为 `77829bd2ea2a661fd3c82438ccdbb6bade63f617b8f2d20a4b25222948b1239d`，生产目录 `report-cache-v24-uzqrj4yz`；先审阅并通过上述回归门槛，再停止旧服务后原子替换派生缓存。发布及运行证据为 `multicast-cache-publish.json`、`multicast-runtime-verification.json`。
 
 trunk的6,281个非隐藏文件集合与SHA-256保持一致。前端本轮未改，未重复前端及普通账号浏览器验收；正式账号3、项目3、会话17、消息109、交接记录27、采集运行0，业务记录和任务状态未改。新建对象/首次注册的场景不强加给正式所有入口。顺序集合回调、复杂事件绑定、调度/信号、隐式转换与完整异常、外部SDK及缺失Hardware.json的完整运动仍有剩余条件，整体目标保持未完成。
+
+
+### 顺序 List.ForEach 与每项耗时（2026-10-23）
+
+原Machine.SelfCheck.cs第81–88行使用List<Light>.ForEach：每路SetIntensity(200)、Sleep(2000)、SetIntensity(0)。本次补上顺序回调，已知集合逐项累加并传递当前状态；接收者和委托按调用时点保存，回调return只结束该项，async Action在未完成await之后保持后台归属。集合修改、未知回调或展开限制保留未定边界，未知数量只追踪一份每项依据，不把样本当成实际执行了一项。
+
+用户已确认没有Hardware.json，不再要求补采集、导入或硬件配置。光源数量N未定，源码固定停留部分为2,000×N ms；每路接口调用和自检中的回零、气缸/信号及其他步骤仍有未定时间，不能把整个自检写成2秒。新增可选摘要per_item_timing，页面和筛选CSV显示“每路光源 ≥2,000 ms”“数量未知，完整耗时未定”。详情默认仅显示摘要，按需展开后可定位原第86行Thread.Sleep(2000)。保持现有工位、动作、耗时、说明和详情入口。
+
+实际18处ForEach名称候选已逐处记录：5处接收者明确为框架List，本次处理；2处急停是既有Parallel.ForEach，继续按并行模型处理；其余11处来自FindAll/ToList链、外部GetChildControls/Items、数组扩展或未绑定类型，保持未定，不能声称全部集合与LINQ都已展开。证据为list-callbacks-source.json；MainForm.ChangeData的数据方法链仍在剩余核对范围。
+
+目录仍2,737行、主表47项，无新增或删除。只有Machine.SelfCheck和UcMainSystem.BtSelfCHeck_ItemClick两条辅助记录变化，新增逐光源摘要和固定等待依据；47条主记录完整行指纹一致，所有原有汇总数值、状态和运动/等待计数保持一致。两条变化记录的原延时、运动、等待、超时阶段全部保留；额外回调调用使后续展开预算边界位置变化，均已逐条核对，见list-callbacks-trace-differences.json、list-callbacks-real-actions.json和list-callbacks-review.json。原上视20–40 ms、焊后500 ms、取片至少5 ms、焊接至少20 ms、输送单轮505 ms、点胶单轮至少10 ms及六条标定、18个Task返回入口均回归核对。
+
+新增单元25项、接口1项及前端2项。首批22个反例中17项先复现遗漏；最终相关后端37文件942项完整回归通过（1101.22秒，Failed=0、Skipped=0），包括最后补充的3项已知前缀、委托重赋值快照和前置11 ms与每项停留分开检查。源码相关单元33文件合计903项（模型32文件875项，另源码动作基础28项）；未削弱原数值断言，实际整仓集成检查增加自检原文件、每路2,000 ms和总耗时未定的断言。初始导入顺序整理前的候选及后来未留下完成结果的939项回归均不作为通过证据；最终942项由独立进程记录逐项输出和退出码，见list-callbacks-pytest-process.json与list-callbacks-full-pytest.log。
+
+前端311项通过，TypeScript、生产构建及相关格式检查通过，最终构建23.89秒；构建保留旧哈希资源。Ruff与82个文件格式检查通过。隔离output数据目录的普通账号实际验证主表47项、辅助自检筛选2项、每路数值、详情折叠与原行依据，并实际下载核对最终CSV。截图list-callbacks-ui.jpg、详情DOM记录list-callbacks-detail-ui.txt和list-callbacks-browser-verification.json保留版本依据。测试不写正式库。覆盖率未采集，未执行Mutation Testing、目标程序集或设备程序，质量判断为中；这些通过结果不能代表完整C#、CLR或全部业务工况。
+
+模型trunk-model-v25，源码指纹 `bc21a915322e03229e92255c08396c91c49867fc7116cad427400aaa5ba1d185`。首次整仓计算及保存651.593秒，新实例禁止重建后恢复13.444秒，全部完整行指纹一致；这些数字仅为本机分析器开销。压缩报告15,820,458字节，SHA-256为 `566c01f0c22acc1a253b6add0a38ea1e3fc3c8242e8c94b2dafc86fcb387c518`，生产目录report-cache-v25-1sp2ya0i。审阅及回归通过后停止旧服务，再原子替换派生缓存、启动新服务；发布记录见list-callbacks-cache-publish.json和list-callbacks-runtime-verification.json。
+
+后续集合链已有明确依据：对提供的AKRS.Galaxy2.Infrastructure.dll静态读取，SHA-256为f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb；GetChildControls的两个重载实际返回List<Control>与List<T>。REA方法记录与独立PEReader的原IL哈希一致；REA对泛型实例签名报告unsupported 0x15，不能将补充解码伪称为完整REA结果。证据见collection-packages-rea.json及collection-package-type-findings.json。尚未接入本次发布。FindAll/ToList链的14个具体输入已有12个缺口复现，源方法与未消费Select两个对照保持正确；预期按微软参考源码的[List](https://github.com/microsoft/referencesource/blob/main/mscorlib/system/collections/generic/list.cs)和[Enumerable](https://github.com/microsoft/referencesource/blob/main/System.Core/System/Linq/Enumerable.cs)核对。提供的trunk中没有DevExpress DLL，负面结论仅限该文件集合，不外推为本机未安装。
+
+trunk的6,281个非隐藏文件集合与SHA-256保持一致。正式账号3、项目3、会话17、消息109、交接记录27、采集运行0，业务数据和任务状态保持不变。复杂集合/扩展链、运行时事件绑定、调度/信号、隐式转换与完整异常，以及缺少配置、反馈和SDK条件的完整运动仍需继续核对；整体目标保持未完成。

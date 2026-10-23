@@ -56,6 +56,30 @@ def test_page_data_is_available_without_import_and_changes_with_source(services)
         assert client.get(BASE + "/missing").status_code == 404
 
 
+def test_source_api_keeps_per_item_timing_without_requiring_hardware_or_import(services):
+    (services[2].root / "Demo.cs").write_text(
+        "using System.Collections.Generic;class Demo : ActionNode {List<int> items;"
+        "public int DoWork(){items.ForEach(n=>Thread.Sleep(7));return 0;}}",
+        encoding="utf-8",
+    )
+    with TestClient(create_app(services[0])) as client:
+        response = client.get(BASE)
+        assert response.status_code == 200
+        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
+        assert row["known_delay_min_ms"] == 0 and row["known_delay_max_ms"] is None
+        assert row["total_ms"] is None
+        assert row["per_item_timing"] == [{"element_type": "int", "min_ms": 7, "max_ms": 7}]
+        assert "stages" not in row
+        detail = client.get(BASE + "/" + row["id"])
+        assert detail.status_code == 200
+        assert detail.json()["per_item_timing"] == row["per_item_timing"]
+        assert any(
+            stage["kind"] == "delay" and stage["milliseconds"] == 7 and stage["repeat"]
+            for stage in detail.json()["stages"]
+        )
+        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
+
+
 def test_main_zx_project_is_not_mixed_with_output_copy(tmp_path):
     original = tmp_path / "AKRS.ZX2200"
     copied = tmp_path / "output/AKRS.ZX2200"
@@ -138,6 +162,23 @@ def test_actual_zx_source_delays_and_entry_coverage_are_read_only():
 def test_whole_trunk_follows_package_signal_source_without_exposing_packages_as_actions():
     service = SourceTiming(Workspace(ROOT / "trunk"))
     report = service.report()
+    self_check = next(
+        row
+        for row in report["rows"]
+        if row["class_name"] == "Machine" and row["method"] == "SelfCheck"
+    )
+    assert self_check["total_ms"] is None
+    assert any(
+        item["element_type"] == "Light" and item["min_ms"] == 2000
+        for item in self_check["per_item_timing"]
+    )
+    assert any(
+        stage["kind"] == "delay"
+        and stage["milliseconds"] == 2000
+        and stage["repeat"]
+        and stage["path"].endswith("Machine.SelfCheck.cs")
+        for stage in self_check["stages"]
+    )
     assert {"AKRS.ZX2200", "AKRS.Galaxy2.Machine", "AKRS.Galaxy2.Dispense"} <= {
         item["assembly"] for item in report["source_projects"]
     }

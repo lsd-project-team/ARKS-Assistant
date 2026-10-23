@@ -19,6 +19,40 @@ const action = {
   wait_count: 7,
 };
 
+test('未知数量的逐项停留显示在动作表中，不把每路耗时当作动作总耗时', () => {
+  const light = {
+    ...action,
+    kind: 'workflow',
+    class_name: 'Machine',
+    name: '自检',
+    known_delay_min_ms: 0,
+    known_delay_max_ms: null,
+    per_item_timing: [{ element_type: 'AKRS.Light', min_ms: 2000, max_ms: 2000 }],
+  };
+  const view = actionPresentation(light);
+  assert.equal(view.duration, '每路光源 2,000 ms');
+  assert.equal(view.remainder, '数量未知，完整耗时未定');
+  assert.equal(view.note, '按每项顺序计算，数量及其余耗时未定');
+  assert.equal(view.hasDuration, true);
+  const csv = actionTableCsv([light]);
+  assert.ok(csv.includes('每路光源 2,000 ms 数量未知，完整耗时未定'));
+  const pending = actionPresentation({
+    ...light,
+    per_item_timing: [{ element_type: 'Light', min_ms: 2000, max_ms: null }],
+  });
+  assert.equal(pending.duration, '每路光源 ≥2,000 ms');
+});
+
+test('已有动作停留与每项停留分别说明，失败入口不被单项数值覆盖', () => {
+  const row = { ...action, per_item_timing: [{ element_type: 'Part', min_ms: 7, max_ms: 11 }] };
+  assert.equal(actionPresentation(row).duration, '20–40 ms');
+  assert.ok(actionPresentation(row).note.endsWith('每项 7–11 ms，数量未知'));
+  assert.equal(
+    actionPresentation({ ...row, execution_status: 'unavailable' }).duration,
+    '空跑不可执行',
+  );
+});
+
 test('动作表区分停留部分和完整耗时，单点与双点使用当前源码数值', () => {
   assert.deepEqual(actionPresentation(action), {
     station: 'S2',

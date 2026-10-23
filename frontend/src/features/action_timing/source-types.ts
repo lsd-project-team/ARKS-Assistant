@@ -57,6 +57,7 @@ export type SourceAction = {
   stage_count?: number;
   parameter_count?: number;
   stages?: SourceStage[];
+  per_item_timing?: { element_type: string; min_ms: number; max_ms: number | null }[];
   parameters?: SourceParameter[];
 };
 export type SourceTimingReport = {

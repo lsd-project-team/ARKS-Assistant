@@ -8,6 +8,7 @@ from app.modules.action_timing import (
     source_dispatch,
     source_dynamic,
     source_finally,
+    source_list_callbacks,
     source_parallel,
 )
 from app.modules.action_timing import source_arguments as call_args
@@ -148,6 +149,7 @@ class Estimator:
         if not has_success_path:
             formula = "未发现正常完成路径，不推算成功动作耗时"
         return {
+            **source_list_callbacks.per_item_timing(self.stages),
             "execution_status": "unavailable"
             if not has_success_path
             else "skipped"
@@ -552,6 +554,11 @@ class Estimator:
         control_cost = source_parallel.control(self, node, method, bindings, conditions, background)
         if control_cost is not None:
             return control_cost
+        list_cost = source_list_callbacks.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if list_cost is not None:
+            return list_cost
         if collections.call(self, node, method, bindings):
             return ZERO
         if name in {"Start", "StartNew", "Restart", "Stop", "Reset"}:
