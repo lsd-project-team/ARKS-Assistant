@@ -1,6 +1,6 @@
 """async调用的同步前段与任务完成时间分开求值，不提前发布续体写入。"""
 
-from collections import Counter
+from collections import defaultdict, deque
 
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, choice
@@ -90,7 +90,6 @@ def event_key(stage):
         stage["code"],
         stage["method"],
         tuple(stage["conditions"]),
-        stage["background"],
     )
 
 
@@ -145,13 +144,19 @@ def execute(estimator, method, values, stack, conditions, background):
         stage["background"] = was_background
 
     # 同步前段只显示一次，其余阶段是未来续体。保留循环中相同源码的重复次数。
-    counts = Counter(event_key(stage) for stage in prefix.stages)
+    retained = defaultdict(deque)
+    for stage in prefix.stages:
+        retained[event_key(stage)].append(stage)
     future = []
     stage_ids = list(dependencies)
     for stage in tail:
         key = event_key(stage)
-        if counts[key]:
-            counts[key] -= 1
+        if retained[key]:
+            existing = retained[key].popleft()
+            # 首个未完成await已经创建其任务；完成后仍是同一阶段，不能复制一次。
+            # 仅在完整路径确实等待它时，交给外层任务完成边界恢复前台归属。
+            if existing["background"] and not stage["background"]:
+                stage_ids.append(id(existing))
         else:
             pending = {**stage, "background": True}
             future.append(pending)

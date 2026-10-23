@@ -146,7 +146,12 @@ def is_fresh(value, previous):
 
 
 def public_value(value, depth=0):
-    if known_task(value) or depth > 16:
+    if (
+        known_task(value)
+        or isinstance(value, delegates.BoundDelegate)
+        or value is delegates.NULL_DELEGATE
+        or depth > 16
+    ):
         return None
     if isinstance(value, dict):
         return {key: public_value(part, depth + 1) for key, part in value.items()}
@@ -271,12 +276,17 @@ def track_binding(index, left, right, method, bindings):
         method,
         bindings,
         arity or 0,
-        returns_task="Task" in kind and kind.replace("System.", "").startswith("Func<"),
+        returns_task=None
+        if arity is None
+        else "Task" in kind and kind.replace("System.", "").startswith("Func<"),
         discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
+        signature_kind=kind,
     )
     key = f"{delegates.DELEGATE_PREFIX}{name}>"
     if delegate is not None or key in bindings:
         bindings[key] = (method.key, delegate) if delegate is not None else None
+    if isinstance(delegate, delegates.BoundDelegate) or delegate is delegates.NULL_DELEGATE:
+        state.write(index, left, method, bindings, delegate)
 
 
 def framework_task(index, owner, method):

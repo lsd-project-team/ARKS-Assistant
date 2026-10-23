@@ -23,6 +23,7 @@ class BoundDelegate:
     returns_task: bool = False
     async_void: bool = False
     discards_result: bool = False
+    signature: str = ""
 
 
 def unwrap(index, node, method, bindings=None):
@@ -47,10 +48,13 @@ def unwrap(index, node, method, bindings=None):
         else:
             break
     if node is not None and node.type in {"identifier", "member_access_expression"}:
-        stored = (bindings or {}).get(f"{DELEGATE_PREFIX}{text(node)}>")
-        if stored:
-            source_method, value = stored
-            return value if source_method == method.key else None
+        value = stored(node, method, bindings or {}, index)
+        if value is not None:
+            return value
+    if node is not None and node.type in {"element_access_expression", "invocation_expression"}:
+        value = index.value(node, method, bindings or {})
+        if isinstance(value, BoundDelegate) or value is NULL_DELEGATE:
+            return value
     return node
 
 
@@ -220,9 +224,28 @@ def execute(
     return cost
 
 
-def capture(index, node, method, bindings, arity=0, returns_task=None, discards_result=False):
+def capture(
+    index,
+    node,
+    method,
+    bindings,
+    arity=0,
+    returns_task=None,
+    discards_result=False,
+    signature_kind="",
+):
+    if isinstance(node, BoundDelegate) or node is NULL_DELEGATE:
+        return node
+    from app.modules.action_timing import source_dynamic
+
+    kind = source_dynamic.explicit_signature(index, node, method) or signature_kind
+    shape = source_dynamic.signature(index, kind, method) if kind else None
     explicit = explicit_return_kind(index, node, method)
     discards_result |= explicit is False
+    if shape is not None:
+        arity = len(shape[0])
+        explicit = False if shape[1] == "void" else simple_type(shape[1]) == "Task"
+        discards_result |= shape[1] == "void"
     if returns_task is None:
         returns_task = explicit
     node = unwrap(index, node, method, bindings)
@@ -242,6 +265,7 @@ def capture(index, node, method, bindings, arity=0, returns_task=None, discards_
             returns_task=asynchronous if returns_task is None else returns_task,
             async_void=asynchronous and returns_task is False,
             discards_result=discards_result,
+            signature=kind,
         )
     target = method_group(index, node, method, arity)
     if target is None:
@@ -256,6 +280,8 @@ def capture(index, node, method, bindings, arity=0, returns_task=None, discards_
         simple_type(text(target.node.child_by_field_name("returns"))) == "Task",
         any(text(part) == "async" for part in target.node.children)
         and text(target.node.child_by_field_name("returns")) == "void",
+        discards_result,
+        kind,
     )
 
 
@@ -290,11 +316,17 @@ def signature_arity(kind):
 
 def bind_arguments(index, target, arguments, caller, bindings, saved=None):
     result = {}
-    slots = call_args.plan(target.parameters, arguments)
+    slots = call_args.plan(target.parameters, arguments, variadic=target.variadic)
     sources = {slot: position for position, slot in enumerate(slots or ())}
     for slot, (name, kind, default) in enumerate(target.parameters):
         arity = signature_arity(kind)
-        if arity is None or index.lookup_type(kind, target) in index.classes:
+        generic = kind in {
+            "Delegate",
+            "System.Delegate",
+            "MulticastDelegate",
+            "System.MulticastDelegate",
+        }
+        if (arity is None and not generic) or index.lookup_type(kind, target) in index.classes:
             continue
         position = sources.get(slot)
         value = arguments[position] if position is not None else default
@@ -308,9 +340,12 @@ def bind_arguments(index, target, arguments, caller, bindings, saved=None):
                 value,
                 caller,
                 bindings,
-                arity,
-                returns_task="Task" in kind and kind.replace("System.", "").startswith("Func<"),
+                arity or 0,
+                returns_task=None
+                if generic
+                else "Task" in kind and kind.replace("System.", "").startswith("Func<"),
                 discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
+                signature_kind=kind,
             )
             if value is not None
             else None
@@ -319,7 +354,18 @@ def bind_arguments(index, target, arguments, caller, bindings, saved=None):
     return result
 
 
-def stored(node, method, bindings):
+def stored(node, method, bindings, index=None):
+    if node is None:
+        return None
+    if index is not None:
+        if state.is_unstable(index, node, method, bindings):
+            return None
+        value = index.value(node, method, bindings)
+        if isinstance(value, BoundDelegate) or value is NULL_DELEGATE:
+            return value
+        current = state.read(index, node, method, bindings)
+        if current is not state.MISSING:
+            return None
     record = bindings.get(f"{DELEGATE_PREFIX}{text(node)}>")
     return record[1] if record and record[0] == method.key else None
 
@@ -356,8 +402,19 @@ def typed_invocation(index, node, method):
 
 def invoke(estimator, node, method, bindings, stack, conditions, background):
     receiver = invocation_receiver(estimator.index, node, method)
-    bound = stored(receiver, method, bindings) if receiver is not None else None
-    if bound is None and not typed_invocation(estimator.index, node, method):
+    if receiver is None:
+        return None
+    saved = call_args.snapshot(node, method, bindings)
+    bound = saved.receiver_value if saved is not None else state.MISSING
+    if bound is state.MISSING:
+        bound = (
+            stored(receiver, method, bindings, estimator.index) if receiver is not None else None
+        )
+    if (
+        not isinstance(bound, BoundDelegate)
+        and bound is not NULL_DELEGATE
+        and not typed_invocation(estimator.index, node, method)
+    ):
         return None
     if not isinstance(bound, BoundDelegate):
         estimator.record(
@@ -372,39 +429,24 @@ def invoke(estimator, node, method, bindings, stack, conditions, background):
         )
         return UNKNOWN
     values = call_args.values(estimator.index, node, method, bindings)
-    from app.modules.action_timing.source_tasks import CLOCK, TaskPlan, known_task, remember_plan
+    return invoke_bound(
+        estimator, node, bound, method, bindings, stack, conditions, background, values
+    )
 
-    if bound.returns_task:
-        cost = execute(
-            estimator,
-            bound,
-            method,
-            bindings,
-            stack,
-            conditions,
-            background,
-            argument_values=values,
-            join_result=False,
-            creation_only=True,
-        )
-        result = bindings.get(RESULT)
-        plan = (
-            result
-            if known_task(result)
-            else TaskPlan(bindings.get(CLOCK, ZERO).plus(cost), UNKNOWN)
-        )
-        remember_plan(node, method, bindings, plan, fresh=True)
-        estimator.record(
-            "call",
-            "调用任务回调的同步前段",
-            node,
-            method,
-            conditions,
-            background,
-            resolved=cost.upper is not None,
-            milliseconds=cost.lower if cost.lower == cost.upper else None,
-        )
-        return cost
+
+def invoke_bound(
+    estimator, node, bound, method, bindings, stack, conditions, background, values, types=()
+):
+    from app.modules.action_timing.source_tasks import (
+        CLOCK,
+        TaskPlan,
+        is_fresh,
+        known_task,
+        remember_plan,
+        task_ids,
+    )
+
+    previous_tasks = task_ids(bindings.values())
 
     cost = execute(
         estimator,
@@ -415,12 +457,23 @@ def invoke(estimator, node, method, bindings, stack, conditions, background):
         conditions,
         background,
         argument_values=values,
+        argument_types=types,
         join_result=False,
+        creation_only=bound.returns_task,
     )
-    bindings[call_args.return_key(node, method, bindings)] = bindings.get(RESULT)
+    result = bindings.get(RESULT)
+    if bound.returns_task or known_task(result):
+        result = (
+            result
+            if known_task(result)
+            else TaskPlan(bindings.get(CLOCK, ZERO).plus(cost), UNKNOWN)
+        )
+        remember_plan(node, method, bindings, result, fresh=is_fresh(result, previous_tasks))
+    else:
+        bindings[call_args.return_key(node, method, bindings)] = result
     estimator.record(
         "call",
-        "执行已绑定回调",
+        "调用任务回调的同步前段" if known_task(result) else "执行已绑定回调",
         node,
         method,
         conditions,

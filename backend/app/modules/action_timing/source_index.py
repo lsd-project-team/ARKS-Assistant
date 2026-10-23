@@ -148,6 +148,7 @@ class Method:
     is_static: bool = False
     is_virtual: bool = False
     type_scope: tuple = ()
+    variadic: bool = False
 
     @property
     def key(self):
@@ -407,14 +408,7 @@ class SourceIndex:
                         info.constructor_writes.add(text(left.child_by_field_name("name")))
 
     def _method(self, info, unit, node, name, callable_kind="method", body_node=None):
-        parameters = [
-            (
-                text(part.child_by_field_name("name")),
-                text(part.child_by_field_name("type")),
-                initializer(part),
-            )
-            for part in children(node.child_by_field_name("parameters"), "parameter")
-        ]
+        parameters, variadic = call_args.declared_parameters(node)
         types = {name: kind for name, kind, _ in parameters}
         initializers = {}
         for declaration in walk(body_node or node):
@@ -435,6 +429,7 @@ class SourceIndex:
             body_node=body_node,
             callable_kind=callable_kind,
             is_static=any(text(part) == "static" for part in children(node, "modifier")),
+            variadic=variadic,
         )
         info.methods.append(method)
         self.by_method[(info.name, name)].append(method)
@@ -455,7 +450,9 @@ class SourceIndex:
 
     def overload(self, methods, arguments, caller):
         candidates = [
-            method for method in methods if call_args.plan(method.parameters, arguments) is not None
+            method
+            for method in methods
+            if call_args.plan(method.parameters, arguments, variadic=method.variadic) is not None
         ]
         if len(candidates) > 1:
             kinds = [self.infer(argument, caller) for argument in arguments]
@@ -465,11 +462,22 @@ class SourceIndex:
                 if all(
                     kind and kind == self.lookup_type(parameter[1], method)
                     for kind, slot in zip(
-                        kinds, call_args.plan(method.parameters, arguments), strict=True
+                        kinds,
+                        call_args.plan(method.parameters, arguments, variadic=method.variadic),
+                        strict=True,
                     )
                     for parameter in [method.parameters[slot]]
                 )
             ]
+            if arguments and len(exact) > 1:
+                fixed = [method for method in exact if not method.variadic]
+                # 同等转换时普通参数优于params展开；正常数组形式仍保留原重载判断。
+                if len(fixed) == 1 and all(
+                    not call_args.params_normal(self, method, arguments, caller)
+                    for method in exact
+                    if method.variadic
+                ):
+                    exact = fixed
             candidates = exact if len(exact) == 1 else candidates
         return candidates[0] if len(candidates) == 1 else None
 
@@ -937,6 +945,7 @@ class SourceIndex:
             "binary_expression",
             "conditional_expression",
             "await_expression",
+            "is_pattern_expression",
         }:
             result_key = call_args.return_key(node, method, bindings)
             if result_key in bindings:
@@ -1064,6 +1073,11 @@ class SourceIndex:
             return self.default_value(owner, name, context, seen)
         if kind == "cast_expression":
             value = self.value(children(node)[-1], method, bindings, seen)
+            from app.modules.action_timing.source_delegates import NULL_DELEGATE, BoundDelegate
+            from app.modules.action_timing.source_tasks import known_task
+
+            if isinstance(value, BoundDelegate) or value is NULL_DELEGATE or known_task(value):
+                return value
             target = text(node.child_by_field_name("type"))
             if isinstance(value, (int, float)) and not isinstance(value, bool):
                 if target in {"int", "long", "short", "byte"}:
@@ -1152,7 +1166,7 @@ class SourceIndex:
         return None
 
     def returned_value(self, target, values, bindings, seen, argument_nodes=None):
-        if target is None or target.body is None:
+        if target is None or target.body is None or target.variadic:
             return None
         identity = (target.key, "<return>")
         if identity in seen:

@@ -112,11 +112,26 @@ def write(place, value, bindings):
         and 0 <= position < size
     ):
         bindings[key(data, f"item:{position}")] = value
+        if data.get("<element_type>") in {"object", "System.Object"}:
+            bindings[key(data, f"type:{position}")] = None
         if data["<collection>"] == "list":
             current = version(data, bindings)
             bindings[key(data, "version")] = current + 1 if current is not None else None
     else:
         invalidate(data, bindings)
+
+
+def item_type(data, position, bindings):
+    """object[]元素的装箱类型不能由Python数值反推，未知写入使旧类型失效。"""
+    if not known(data) or length(data, bindings) is None:
+        return ""
+    if state.object_unstable(data["<ref>"], bindings) or bindings.get(key(data, "unknown")):
+        return ""
+    own = key(data, f"type:{position}")
+    if own in bindings.get(state.UNSTABLE, ()):
+        return ""
+    kind = data.get("<element_type>", "")
+    return bindings.get(own) or "" if kind in {"object", "System.Object"} else kind
 
 
 def raw_type(index, node, method, seen=None):

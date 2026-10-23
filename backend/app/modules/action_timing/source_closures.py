@@ -92,6 +92,7 @@ def enter(estimator, bound, node, bindings, values, argument_types=()):
             if name not in {arg[0] for arg in args}
         },
         callable_kind="delegate",
+        variadic=False,
     )
     scope = {
         **estimator.context,

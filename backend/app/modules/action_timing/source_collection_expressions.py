@@ -91,6 +91,11 @@ def create_array(estimator, node, method, bindings, stack, conditions, backgroun
     data["<shape>"], data["<length>"] = shape, arrays.length(shape)
     if initial is not None and shape is not None:
         data["<items>"] = values
+        if data.get("<element_type>") in {"object", "System.Object"}:
+            for position, part in enumerate(leaves[:256]):
+                bindings[collections.key(data, f"type:{position}")] = collections.raw_type(
+                    estimator.index, part, method
+                ) or estimator.index.infer(part, method)
     bindings[result_key] = data
     bindings[CLOCK] = started
     return cost.plus(extra)

@@ -6,7 +6,7 @@ import re
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_delegates as delegates
-from app.modules.action_timing import source_finally, source_parallel
+from app.modules.action_timing import source_dynamic, source_finally, source_parallel
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
@@ -241,6 +241,12 @@ class Estimator:
             return self.expression(
                 node.child_by_field_name("left"), method, bindings, stack, conditions, background
             )
+        if node.type == "is_pattern_expression":
+            result = source_dynamic.pattern(
+                self, node, method, bindings, stack, conditions, background
+            )
+            if result is not None:
+                return result
         if node.type == "conditional_access_expression":
             return self.conditional_access(
                 node, None, method, bindings, stack, conditions, background
@@ -330,6 +336,10 @@ class Estimator:
                 if function.type == "member_access_expression"
                 else state.MISSING
             )
+            if function.type == "identifier" and delegates.typed_invocation(
+                self.index, node, method
+            ):
+                receiver_value = self.index.value(function, method, bindings)
             before = call_args.evaluate(
                 self,
                 node,
@@ -381,7 +391,10 @@ class Estimator:
                 node.child_by_field_name("right"), method, bindings, stack, conditions, background
             )
             right = self.index.value(node.child_by_field_name("right"), method, bindings)
-            bindings[result_key] = binary_value(op, value, right)
+            null_comparison = source_dynamic.null_comparison(node, value, right)
+            bindings[result_key] = (
+                binary_value(op, value, right) if null_comparison is None else null_comparison
+            )
             bindings[CLOCK] = started
             return before.plus(after)
         if node.type == "conditional_expression":
@@ -453,6 +466,11 @@ class Estimator:
         task_cost = handle_tasks(self, node, method, bindings, stack, conditions, background)
         if task_cost is not None:
             return task_cost
+        dynamic_cost = source_dynamic.invoke(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if dynamic_cost is not None:
+            return dynamic_cost
         callback_cost = delegates.invoke(
             self, node, method, bindings, stack, conditions, background
         )
@@ -648,7 +666,9 @@ class Estimator:
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1
         self.frames += 1
-        slots = call_args.plan(target.parameters, arguments, provided=argument_values or {})
+        slots = call_args.plan(
+            target.parameters, arguments, provided=argument_values or {}, variadic=target.variadic
+        )
         if slots is None:
             self.record("unresolved", "源码调用参数未绑定", node, caller, conditions, background)
             return UNKNOWN
@@ -661,6 +681,10 @@ class Estimator:
         callbacks = delegates.bind_arguments(
             self.index, target, arguments, caller, bindings, saved=saved
         )
+        supplied = call_args.bound_values(self, target, arguments, slots, scalars, caller, bindings)
+        if supplied is None:
+            self.record("unresolved", "源码参数数组未绑定", node, caller, conditions, background)
+            return UNKNOWN
         refs = {
             target.parameters[slots[position]][0]: slot
             for position, argument in state.byref_arguments(node)
@@ -693,12 +717,15 @@ class Estimator:
             else receiver_id,
             state.FRAME: str(self.frames),
             CLOCK: bindings.get(CLOCK, ZERO),
-            **{
-                target.parameters[slot][0]: value
-                for slot, value in zip(slots, scalars, strict=True)
-            },
+            **supplied,
         }
         values.update(callbacks)
+        for name, _, _ in target.parameters:
+            bound = callbacks.get(f"{delegates.DELEGATE_PREFIX}{name}>")
+            if bound and (
+                isinstance(bound[1], delegates.BoundDelegate) or bound[1] is delegates.NULL_DELEGATE
+            ):
+                values[name] = bound[1]
         values.update(argument_values or {})
         for name, slot in refs.items():
             values[f"{state.LOCAL_ALIAS}{name}>"] = slot
@@ -830,7 +857,7 @@ class Estimator:
         if text(receiver) == "null":
             return before
         value = self.index.value(receiver, method, bindings)
-        callback = delegates.stored(receiver, method, bindings)
+        callback = delegates.stored(receiver, method, bindings, self.index)
         if callback is delegates.NULL_DELEGATE:
             return before
         present = (isinstance(value, dict) and "<type>" in value) or isinstance(
@@ -858,6 +885,7 @@ class Estimator:
                 background,
                 target=target,
                 receiver=receiver_id,
+                receiver_value=value,
             )
             cost = cost.plus(self.call(invocation, method, bindings, stack, labels, background))
         else:

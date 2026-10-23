@@ -285,4 +285,34 @@ Parallel.ForEach只按源码显式等待计算，参数求值继续按原顺序�
 
 trunk的6,281个非隐藏文件集合及SHA-256未变，前端本阶段未改；未重复前端或普通账号浏览器验收。正式账号3、项目3、会话17、消息109、交接记录27，采集运行仍为0；测试数据没有写入正式库。整体目标保持未完成。
 
+## 第十七阶段：反射委托与params参数数组（2026-10-23）
+
+从真实AsyncHelper.ExecuteAsync追查，当前C#语法树把末尾params参数直接放在parameter_list，而非普通parameter子节点；旧索引遗漏了object[] parameters，传入第三个参数的源码调用因此无法绑定。本轮将它纳入签名，支持params的显式数组、逐项展开、空数组、命名数组和前置可选值；显式数组保持别名，展开时按实参顺序保存各值。普通参数与同等转换的params展开形式分开判断，未完整证明的泛型、协变和复杂重载继续保留未解析。
+
+编译范围内共19处params签名，其中17处有实现、2处为IPlatformProvider接口声明；6处实际DynamicInvoke调用集中在AsyncHelper、WinFormsPlatformProvider和ContextService。审计最初按文本包含还收进3个外层ConfigureAwait表达式，已按语法树的函数接收者剔除，不将它们算成新增反射调用。逐项范围在 `dynamic-scope-reviewed.json`。
+
+已绑定Action/Func可经Delegate参数、局部/成员、闭包和返回值转发。DynamicInvoke按实际委托签名展开，params object[]被区分为参数列表和单个装箱的值类型数组；保存object[]元素的可证明装箱类型，未知写入后不从Python整数反推原C#类型。参数数量、类型、目标或数组内容未定时保留未解析。对应返回值、参数数组和异常语义参照微软[Delegate.DynamicInvoke](https://learn.microsoft.com/en-us/dotnet/api/system.delegate.dynamicinvoke?view=netframework-4.8.1)；参数数组的正常/展开形式参照[C#规范](https://learn.microsoft.com/dotnet/csharp/language-reference/language-specification/expressions)。这里不执行反射、目标程序集或设备程序。
+
+同步反射调用返回同步正文的结果；返回Task时只计算同步发起部分，显式等待时再补齐。异步Action继续只等待同步前段，旧任务经委托转发不会重放历史写入。接收者先于参数求值保存，后面参数改写委托不能换掉本次已取得的目标；已知闭包重新赋值会替换目标，未来写入则使旧目标失效。只对具体框架委托证明精确类型模式；不同引用类型可能存在协变/逆变，不因签名文本不同直接排除分支。
+
+反例同时发现首个未完成await的任务阶段被同步前段与完整正文各保留一次，且前一份持续显示后台。现按源码事件及出现顺序复用同一阶段，外层任务确实等待它时才恢复归属；未join的999 ms子任务仍保持后台。已核对3+20+2 ms异步反射调用，调用者先停留5 ms、join后停留7 ms，合计32 ms；3 ms同步前段的异步Action加调用者7 ms则为10 ms。这是软件模型例子，不能当成设备实测。
+
+使用原AsyncHelper.cs而非改写副本，只读验证Action、Func<Task>和Action<int>分别进入19 ms、23 ms和29 ms阶段；异常catch路径仍未定，总耗时不固定。源码及阶段依据在 `real-dynamic-helper-verification.json`。UI Send/Post、BeginInvoke、信号异步等待、事件、其他反射以及完整物理运动仍有剩余范围，本阶段不声称已经展开这些路径。
+
+另外保留4个UI基线反例：Send和Control.Invoke没有展开回调内7 ms停留；Post只保留调用者的3 ms而丢失后台回调，BeginInvoke也没有列出该回调。证据在 `remaining-ui-baseline-v18.json`。同步派发、异步排队及实际UI线程条件要继续分别接入；本文的反射支持只描述已经绑定的框架Action/Func，直接返回新匿名委托、自定义delegate、复杂反射和完整类型转换仍有未验证范围。
+
+新增 `test_source_timing_dynamic_delegate.py` 38项与 `test_source_timing_param_arrays.py` 18项，共56项。原14个正向反例先复现遗漏，另保留错误参数数量/装箱类型、源码同名成员、空条件跳过、副作用时点、实例绑定、旧任务写入、并发改写、params空/正常/展开/命名/别名/可选值及真实帮助类等检查。源码单元25文件的原550项整组通过，报告复核后另补2个显式null任务/硬件引用反例通过，合计552项；未更改旧测试预期。
+
+最终模型为 `trunk-model-v18`，完整目录2,260行、主表47项。新增ContextService.OnUIAsync和WinFormsPlatformProvider的Delegate同步/异步包装共3个入口，不将包装当成3道新生产工序，也不表示内部UI派发已经模拟完成。原18个返回Task方法现在都在目录中；此前未列的2个Post包装已恢复，但回调和线程条件仍未展开。
+
+与v17逐行完整指纹比较，共52行变化（原49行及新增3行），其中40行有选定统计变化；所有47个主条目的完整行保持一致。原记录中有5条已知范围修正：2条标定取片由至少15 ms恢复为115 ms，2条Bond到相机实验由至少5,015 ms恢复为5,035 ms，国际化初始化的上界由0恢复未定。其余原行的已知耗时数值、总时长及执行状态未变。ControlService等包装通过params恢复实际等待链，异步前段重复阶段去重，其他统计变化逐条保存在 `dynamic-trace-differences.json`、`dynamic-selected-changes.json` 和 `dynamic-review.json`。
+
+33处移除的超时阶段均来自BondHeadController.cs第257行的同一条ejectTask.Wait(2000)。源码仅对CarrierWithWafer创建该任务；已确定的其他取片路径中它保持显式null，不进入等待及失败返回。标定片取片使用CarrierWithWaffle，原模型的虚假失败出口压低了后续拾取延时下界：一组使用BMCDevicePara.PickupDelay=100，另一组使用BaseCarrierConfig.PickupDelay=20，现分别恢复。任务、空硬件条件输出的两个补充反例验证了跳过边界；这不是把2,000 ms超时改成必耗时。所有相关总时长仍保留运动/等待未定条件。
+
+本次完整计算及保存468.509秒，禁止重建的新实例从缓存恢复12.988秒，2,260行的完整指纹一致；仅为本次本机分析器开销观察。压缩缓存15,309,535字节，SHA-256为 `a5678da30f2eea108ea8e1682294fb6c255d290c1acdc88536ad0846ea4c60d1`。新版本报告经逐条审阅后，先停止旧进程，再原子替换派生缓存并启动新服务；证据在 `dynamic-cache-publish.json` 和 `dynamic-runtime-verification.json`。
+
+最终相关后端30文件618项通过：完整616项（757.25秒，Failed=0、Skipped=0）加报告复核后的2项补充反例（0.29秒，另36项未选择）；补充期间生产代码保持不变。测试保留真实主工程/整个trunk、API/导出、认证权限、源码失效、缓存重启和原采集协议；Ruff与64文件格式检查通过。覆盖率未采集，未执行Mutation Testing、目标程序集或设备程序，质量为中。UI派发、异步信号、枚举/LINQ、事件、动态反射和物理运动等范围继续按前述条件完善，整体目标保持未完成。
+
+trunk的6,281个非隐藏文件集合和SHA-256未变，前端本阶段未改，未重复前端和普通账号浏览器验收。正式账号、项目、会话、消息、交接记录保持原数量，采集运行仍为0，没有写入测试记录。
+
 本地清点与过程结果位于 `output/action-timing-trunk/`；该目录不提交业务代码或正式数据。功能使用说明见 [动作耗时统计](../features/action-timing.md)。

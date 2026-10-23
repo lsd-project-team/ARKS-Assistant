@@ -180,7 +180,11 @@ def invalidate_unexplored(bindings, depth=0):
     )
     bindings[state.UNKNOWN_MEMBERS] = True
     for key, value in list(bindings.items()):
-        if known_task(value) or key.startswith(delegates.DELEGATE_PREFIX):
+        if (
+            known_task(value)
+            or isinstance(value, delegates.BoundDelegate)
+            or key.startswith(delegates.DELEGATE_PREFIX)
+        ):
             bindings[key] = None
 
     def clear_collections(value, depth):
