@@ -45,20 +45,23 @@ def sequence(index, data, node, method):
     return Query(data, item_type, (), trusted)
 
 
-def selected_type(index, callback, method, input_type):
+def selected_type(index, callback, method, input_type, second_type=None):
     """以输入类型推断投影返回类型，不求值lambda正文。"""
     if callback is None or callback is delegates.NULL_DELEGATE:
         return "var"
     if isinstance(callback, delegates.BoundDelegate):
         method, callback = callback.closure.method, callback.node
+    input_types = (input_type,) if second_type is None else (input_type, second_type)
     if callback.type not in {"lambda_expression", "anonymous_method_expression"}:
-        target = delegates.method_group(index, callback, method, arity=1)
+        target = delegates.method_group(index, callback, method, arity=len(input_types))
         return target.return_type if target else "var"
     parameters = closures.parameters(callback)
-    if len(parameters) != 1:
+    if len(parameters) != len(input_types):
         return "var"
-    name, kind, _ = parameters[0]
-    kind = input_type if kind == "var" else kind
+    resolved = [
+        (name, actual if kind == "var" else kind, None)
+        for (name, kind, _), actual in zip(parameters, input_types, strict=True)
+    ]
     # 推断使用lambda自己的词法边界，避免把参数追溯为外层查询的初值，
     # 也避免重复追加上下文绕过SourceIndex的递归保护。
     context = replace(
@@ -66,9 +69,9 @@ def selected_type(index, callback, method, input_type):
         name=f"<query-type:{callback.start_byte}>",
         node=callback,
         callable_kind="delegate",
-        parameters=[(name, kind, None)],
-        types={**method.types, name: kind},
-        type_scope=(*method.type_scope, (callback.start_byte, input_type)),
+        parameters=resolved,
+        types={**method.types, **{name: kind for name, kind, _ in resolved}},
+        type_scope=(*method.type_scope, (callback.start_byte, "|".join(input_types))),
     )
     body = callback.child_by_field_name("body")
     if body is not None and body.type == "block":
@@ -84,6 +87,10 @@ def selected_type(index, callback, method, input_type):
 def handle(estimator, node, method, bindings, stack, conditions, background):
     index = estimator.index
     receiver, name, _ = parts(node)
+    if name == "SelectMany":
+        from app.modules.action_timing.source_query_flatten import handle as flatten
+
+        return flatten(estimator, node, method, bindings, stack, conditions, background)
     if name not in {"Where", "Select"} or not linq(index, node, method):
         return None
     nodes = arguments.arguments(node)
@@ -126,6 +133,10 @@ class QueryExecution(ForExecution):
         if position >= len(self.query.steps):
             return self.projected(value, conditions)
         name, callback, input_type, _ = self.query.steps[position]
+        if name == "SelectMany":
+            from app.modules.action_timing.source_query_flatten import apply
+
+            return apply(self, position, value, conditions)
         if not isinstance(callback, delegates.BoundDelegate) or callback.arity != 1:
             from app.modules.action_timing.source_parallel import invalidate_unexplored
 

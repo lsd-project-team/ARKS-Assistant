@@ -138,6 +138,32 @@ def test_source_api_includes_all_known_repeated_source_calls_without_import(serv
         assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
 
 
+def test_source_api_flattens_inputs_and_updates_counts_without_import(services):
+    path = services[2].root / "Demo.cs"
+    source = (
+        "using System.Linq;class Demo:ActionNode{public int DoWork(){"
+        "Thread.Sleep(new[]{1,2}.SelectMany(n=>{Thread.Sleep(n);return new[]{n,n+1};}).Count());"
+        "return 0;}}"
+    )
+    path.write_text(source, encoding="utf-8")
+    with TestClient(create_app(services[0])) as client:
+        first = client.get(BASE)
+        assert first.status_code == 200
+        first = first.json()
+        row = next(row for row in first["rows"] if row["class_name"] == "Demo")
+        assert row["total_ms"] == 7 and "stages" not in row
+        detail = client.get(BASE + "/" + row["id"])
+        assert detail.status_code == 200
+        assert [
+            stage["milliseconds"] for stage in detail.json()["stages"] if stage["kind"] == "delay"
+        ] == [1, 2, 4]
+        path.write_text(source.replace("new[]{n,n+1}", "new[]{n,n+1,n+2}"), encoding="utf-8")
+        updated = client.get(BASE).json()
+        assert updated["source_revision"] != first["source_revision"]
+        assert next(row for row in updated["rows"] if row["class_name"] == "Demo")["total_ms"] == 9
+        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
+
+
 def test_main_zx_project_is_not_mixed_with_output_copy(tmp_path):
     original = tmp_path / "AKRS.ZX2200"
     copied = tmp_path / "output/AKRS.ZX2200"
@@ -289,4 +315,19 @@ def test_whole_trunk_follows_package_signal_source_without_exposing_packages_as_
     assert flux["method"] == "DipFluxActionDryRun"
     assert flux["execution_status"] == "unavailable" and flux["total_ms"] is None
     assert "蘸胶空跑动作待验证" in flux["status_reason"]
+    wafer_cycle = next(
+        row
+        for row in report["rows"]
+        if row["class_name"] == "WaferSubSystemTask" and row["analysis_unit"] == "single_cycle"
+    )
+    # 同一编译源码下，这两段条件等待仍须有依据；不能因子调用耗尽图额度消失。
+    for line, delay in ((275, 0), (316, 10)):
+        assert any(
+            stage["kind"] == "delay"
+            and stage["path"] == "AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs"
+            and stage["line"] == line
+            and stage["milliseconds"] == delay
+            and not stage["background"]
+            for stage in wafer_cycle["stages"]
+        )
     assert all(row["entry"]["path"].startswith("AKRS.ZX2200/") for row in report["rows"])

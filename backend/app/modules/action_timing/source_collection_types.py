@@ -135,6 +135,11 @@ def result_type(index, node, method, seen):
         kind = collections.raw_type(index, receiver, method, seen)
         if framework_type(index, kind, method, "List", "System.Collections.Generic"):
             return f"System.Collections.Generic.List<{element(kind)}>"
+    if name == "SelectMany" and linq(index, node, method):
+        from app.modules.action_timing.source_query_flatten import result_type as flattened_type
+
+        item_type = flattened_type(index, node, method, seen)
+        return f"System.Collections.Generic.IEnumerable<{item_type}>"
     if name in {"Where", "Select", "ToList", "ToArray"} and linq(index, node, method):
         args = arguments(node)
         static = text(receiver) in {"Enumerable", "System.Linq.Enumerable"}
