@@ -12,6 +12,7 @@ WRITES = "<source-dispatch-writes>"
 FRESH = "<source-queue-new-objects>"
 PRIVATE_PENDING = "<source-private-pending>"
 PRIVATE_ACTIVE = "<source-private-active>"
+LOCAL_FUNCTIONS = "<source-local-functions>"
 MISSING = object()
 
 
@@ -177,7 +178,16 @@ def context(bindings):
         name: value
         for name, value in bindings.items()
         if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX))
-        or name in {UNSTABLE, UNKNOWN_MEMBERS, WRITES, FRESH, PRIVATE_PENDING, PRIVATE_ACTIVE}
+        or name
+        in {
+            UNSTABLE,
+            UNKNOWN_MEMBERS,
+            WRITES,
+            FRESH,
+            PRIVATE_PENDING,
+            PRIVATE_ACTIVE,
+            LOCAL_FUNCTIONS,
+        }
     }
 
 
@@ -201,7 +211,7 @@ def materialize(value, bindings):
 def transfer(before, after, *, uncertain=False, locals=False):
     """把调用或后台分支的写入带回；未确定先后关系时只传播失效。"""
     for name, value in after.items():
-        if name == PRIVATE_ACTIVE:
+        if name in {PRIVATE_ACTIVE, LOCAL_FUNCTIONS}:
             continue  # 当前执行目标属于调用帧，不带回发起者或其他并发分支。
         if name in {WRITES, FRESH, PRIVATE_PENDING}:
             if name in before or name == PRIVATE_PENDING:
@@ -290,11 +300,20 @@ def argument_target(argument):
     return target
 
 
+def discard_argument(index, argument, method):
+    target = argument_target(argument)
+    if target is None or source(target) != "_":
+        return False
+    return target.parent.type == "declaration_expression" or not (
+        index.local_type(target, method) or member(index, method.owner, "_")
+    )
+
+
 def capture_ref(index, argument, method, bindings):
     if not any(child.type in {"ref", "out"} for child in argument.children):
         return None
     target = argument_target(argument)
-    if target is None or source(target) == "_":
+    if target is None or discard_argument(index, argument, method):
         return None
     if target.type == "element_access_expression":
         from app.modules.action_timing import source_collections as collections
@@ -345,7 +364,7 @@ def invalidate_byref(index, node, method, bindings):
             bindings[slot] = None
             continue
         target = argument_target(argument)
-        if target is not None and source(target) != "_":
+        if target is not None and not discard_argument(index, argument, method):
             if target.type == "element_access_expression":
                 from app.modules.action_timing import source_collections as collections
 

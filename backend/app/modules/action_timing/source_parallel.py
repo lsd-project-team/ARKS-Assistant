@@ -125,6 +125,7 @@ def shared_changes(before, after, private, allocation_floor):
             state.FRESH,
             state.PRIVATE_PENDING,
             state.PRIVATE_ACTIVE,
+            state.LOCAL_FUNCTIONS,
         } or (key in before and value == before[key]):
             continue
         if key.startswith(state.LOCAL_PREFIX) and key not in before:
@@ -188,6 +189,7 @@ def invalidate_unexplored(bindings, depth=0):
             state.WRITES,
             state.PRIVATE_PENDING,
             state.PRIVATE_ACTIVE,
+            state.LOCAL_FUNCTIONS,
         }
     }
     for key in invalidated:

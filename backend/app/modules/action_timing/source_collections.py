@@ -185,7 +185,7 @@ def raw_type(index, node, method, seen=None):
         }:
             return "IEnumerable<int>"
         target = index.resolve(node, method)
-        return text(target.node.child_by_field_name("returns")) if target else ""
+        return target.return_type if target else ""
     else:
         return ""
     return (

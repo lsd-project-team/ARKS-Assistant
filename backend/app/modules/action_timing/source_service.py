@@ -233,7 +233,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v21:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v22:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,
@@ -274,7 +274,9 @@ class SourceTiming:
         return {
             **report,
             "action_coverage": {
-                key: value for key, value in report["action_coverage"].items() if key != "methods"
+                key: value
+                for key, value in report["action_coverage"].items()
+                if key not in {"methods", "local_functions"}
             },
             "rows": [
                 {key: value for key, value in row.items() if key not in {"stages", "parameters"}}

@@ -228,6 +228,9 @@ class Estimator:
             "typeof_expression",
             "sizeof_expression",
             "default_expression",
+            "declaration_expression",
+            "local_function_statement",
+            "local_function_declaration",
         }:
             return ZERO
         if node.type == "argument":
@@ -333,6 +336,13 @@ class Estimator:
                         background,
                     )
                 )
+            elif function is not None and function.type in {
+                "element_access_expression",
+                "invocation_expression",
+                "parenthesized_expression",
+                "cast_expression",
+            }:
+                before = self.expression(function, method, bindings, stack, conditions, background)
             receiver_id = (
                 state.receiver_for(self.index, target, node, method, bindings)
                 if target is not None
@@ -343,6 +353,13 @@ class Estimator:
                 if function.type == "member_access_expression"
                 else state.MISSING
             )
+            if function.type in {
+                "element_access_expression",
+                "invocation_expression",
+                "parenthesized_expression",
+                "cast_expression",
+            }:
+                receiver_value = self.index.value(function, method, bindings)
             if function.type == "identifier" and delegates.typed_invocation(
                 self.index, node, method
             ):
@@ -440,6 +457,13 @@ class Estimator:
         return result
 
     def call(self, node, method, bindings, stack, conditions, background):
+        from app.modules.action_timing import source_local_functions
+
+        local_cost = source_local_functions.call(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if local_cost is not None:
+            return local_cost
         function = node.child_by_field_name("function")
         function_name = text(function)
         binding = next(iter(children(function, "member_binding_expression")), None)
@@ -663,6 +687,7 @@ class Estimator:
         background,
         argument_values=None,
         receiver_id=state.MISSING,
+        captures=None,
     ):
         bindings.pop(call_args.return_key(node, caller, bindings), None)
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
@@ -714,7 +739,8 @@ class Estimator:
         uncertain_refs = any(
             position < len(slots)
             and target.parameters[slots[position]][0] not in refs
-            and text(state.argument_target(argument)) not in {"", "_"}
+            and state.argument_target(argument) is not None
+            and not state.discard_argument(self.index, argument, caller)
             for position, argument in state.byref_arguments(node)
         )
         stage_start = len(self.stages)
@@ -727,6 +753,7 @@ class Estimator:
         values = {
             **self.context,
             **state.context(bindings),
+            **(captures or {}),
             state.THIS: state.receiver_for(self.index, target, node, caller, bindings)
             if receiver_id is state.MISSING
             else receiver_id,
@@ -756,8 +783,7 @@ class Estimator:
             ):
                 values[name] = float(values[name])
         if task_returns.async_method(target) and (
-            task_returns.task_method(self.index, target)
-            or text(target.node.child_by_field_name("returns")) == "void"
+            task_returns.task_method(self.index, target) or target.return_type == "void"
         ):
             from app.modules.action_timing import source_async
             from app.modules.action_timing.source_tasks import remember_plan
@@ -945,18 +971,40 @@ class Estimator:
         ][:12]
 
     def block(self, node, method, bindings, stack, conditions, background):
+        from app.modules.action_timing.source_scopes import embedded, inline_names
+
+        names = inline_names(node, self.index) if embedded(node) else []
+        if names:
+            with local_scope(self, names, bindings) as before:
+                flow = self._block(node, method, bindings, stack, conditions, background)
+                for snapshot in flow.states.values():
+                    restore(snapshot, before)
+                return flow
+        return self._block(node, method, bindings, stack, conditions, background)
+
+    def _block(self, node, method, bindings, stack, conditions, background):
         if node is None:
             return Flow()
         kind = node.type
+        if kind in {"local_function_statement", "local_function_declaration"}:
+            return Flow()
         if kind == "arrow_expression_clause":
+            from app.modules.action_timing.source_closures import returned
+
             cost = self.expression(node, method, bindings, stack, conditions, background)
-            bindings["<return-value>"] = self.index.value(node, method, bindings)
+            bindings["<return-value>"] = returned(self.index, node, method, bindings)
             return Flow(None, cost).with_state("returned", bindings)
         if kind in {"block", "switch_section"}:
-            with local_scope(self, declarations(node), bindings) as before:
+            from app.modules.action_timing import source_local_functions
+
+            with (
+                local_scope(self, declarations(node, self.index), bindings) as before,
+                source_local_functions.scope(self, node, method, bindings) as previous_functions,
+            ):
                 flow = self.sequence(node, method, bindings, stack, conditions, background)
                 for snapshot in flow.states.values():
                     restore(snapshot, before)
+                    source_local_functions.restore(snapshot, previous_functions)
                 return flow
         if kind == "if_statement":
             condition = node.child_by_field_name("condition")
@@ -1004,7 +1052,9 @@ class Estimator:
             ):
                 return Flow(None, None)
             expression = next(iter(children(node)), None)
-            bindings["<return-value>"] = self.index.value(expression, method, bindings)
+            from app.modules.action_timing.source_closures import returned
+
+            bindings["<return-value>"] = returned(self.index, expression, method, bindings)
             return Flow(None, cost).with_state("returned", bindings)
         if kind == "break_statement":
             return Flow(None, broken=ZERO).with_state("broken", bindings)

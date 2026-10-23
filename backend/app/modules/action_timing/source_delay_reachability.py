@@ -4,10 +4,12 @@ import re
 
 from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing.source_hardware import hardware_operation
-from app.modules.action_timing.source_index import children, text, walk
+from app.modules.action_timing.source_index import children, text
 
 
 def possible(index, method):
+    from app.modules.action_timing.source_local_functions import timing_walk
+
     cache = getattr(index, "delay_reachability", None)
     if cache is None:
         cache = index.delay_reachability = {}
@@ -24,7 +26,7 @@ def possible(index, method):
             cache[identity] = True
             return True
         seen.add(key)
-        for node in walk(current.body):
+        for node in timing_walk(current.body):
             target = None
             if node.type == "invocation_expression":
                 function = text(node.child_by_field_name("function"))

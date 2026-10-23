@@ -163,9 +163,12 @@ def reassigned(method, name):
 
 
 def queued_scope(bound, bindings):
+    from app.modules.action_timing.source_local_functions import environment_functions
+
     scope = dict(bindings)
     captured = [
         bound,
+        *environment_functions(bound, bindings),
         *(
             value
             for value in state.context(bindings).values()
@@ -178,12 +181,7 @@ def queued_scope(bound, bindings):
         for name, slot in callback.closure.cells
         if constant_local(callback.closure.method, name)
     }
-    methods = [bound.closure.method]
-    methods.extend(
-        value.closure.method
-        for value in state.context(bindings).values()
-        if isinstance(value, delegates.BoundDelegate)
-    )
+    methods = [value.closure.method for value in captured]
     for key, value in state.context(scope).items():
         if key.startswith(state.LOCAL_PREFIX):
             name = key.rsplit("|", 1)[-1].removesuffix(">")

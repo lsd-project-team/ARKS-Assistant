@@ -60,10 +60,20 @@ def unwrap(index, node, method, bindings=None):
 
 
 def method_group(index, node, caller, arity=0):
+    from app.modules.action_timing import source_local_functions
+
     if isinstance(node, BoundDelegate):
         node = node.node
     if node is None:
         return None
+    if node.type in source_local_functions.KINDS:
+        target = source_local_functions.describe(index, node, caller)
+        return target if len(target.parameters) == arity else None
+    if node.type == "identifier":
+        declaration = source_local_functions.definition(index, node, caller)
+        if declaration is not None:
+            target = source_local_functions.describe(index, declaration, caller)
+            return target if len(target.parameters) == arity else None
     if node.type == "identifier" and text(node) not in caller.types:
         owner, name = caller.owner, text(node)
     elif node.type == "member_access_expression":
@@ -182,6 +192,8 @@ def execute(
             )
             return UNKNOWN
         target_context = bindings
+        from app.modules.action_timing import source_local_functions
+
         cost = estimator.invoke(
             target,
             [],
@@ -196,6 +208,9 @@ def execute(
                 name: value
                 for (name, _, _), value in zip(target.parameters, argument_values, strict=True)
             },
+            captures=source_local_functions.captures(bound, bindings)
+            if node.type in source_local_functions.KINDS
+            else None,
         )
         bindings[RESULT] = target_context.get(
             call_args.return_key(node, declaration, target_context)
@@ -251,6 +266,19 @@ def capture(
         returns_task = explicit
     node = unwrap(index, node, method, bindings)
     if isinstance(node, BoundDelegate):
+        if (
+            node.node.type in {"local_function_statement", "local_function_declaration"}
+            and not node.signature
+            and kind
+        ):
+            if node.arity != arity:
+                return None
+            return replace(
+                node,
+                signature=kind,
+                discards_result=discards_result,
+                returns_task=node.returns_task if returns_task is None else returns_task,
+            )
         return node
     if node is NULL_DELEGATE or (node is not None and node.type == "null_literal"):
         return NULL_DELEGATE
@@ -285,9 +313,9 @@ def capture(
         receiver,
         closures.Closure(method, bindings.get(state.THIS), ()),
         arity,
-        simple_type(text(target.node.child_by_field_name("returns"))) == "Task",
+        simple_type(target.return_type) == "Task",
         any(text(part) == "async" for part in target.node.children)
-        and text(target.node.child_by_field_name("returns")) == "void",
+        and target.return_type == "void",
         discards_result,
         kind,
     )
@@ -386,7 +414,13 @@ def invocation_receiver(index, node, method):
     function = node.child_by_field_name("function")
     if function is None:
         return None
-    if function.type == "identifier":
+    if function.type in {
+        "identifier",
+        "element_access_expression",
+        "invocation_expression",
+        "parenthesized_expression",
+        "cast_expression",
+    }:
         candidate = function
     elif function.type == "conditional_access_expression":
         name = next(iter(children(function, "member_binding_expression")), None)

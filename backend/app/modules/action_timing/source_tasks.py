@@ -351,7 +351,7 @@ def run_delegate(
     effects = tuple(
         (key, value)
         for key, value in state.context(task_bindings).items()
-        if key not in {state.PRIVATE_PENDING, state.PRIVATE_ACTIVE}
+        if key not in {state.PRIVATE_PENDING, state.PRIVATE_ACTIVE, state.LOCAL_FUNCTIONS}
         and (key not in bindings or value != bindings[key])
     )
     state.transfer(

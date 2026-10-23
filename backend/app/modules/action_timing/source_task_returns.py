@@ -7,7 +7,7 @@ from app.modules.action_timing.source_index import children, simple_type, text
 
 
 def task_method(index, method):
-    kind = text(method.node.child_by_field_name("returns"))
+    kind = method.return_type
     if method.callable_kind == "property_get":
         info = index.classes.get(method.owner)
         kind = info.types.get(method.name.removeprefix("get_"), "") if info else ""

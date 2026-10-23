@@ -35,6 +35,43 @@ TASK_NAMES = {
 }
 
 
+def timing_nodes(index, roots, method, linked):
+    from app.modules.action_timing.source_local_functions import timing_walk
+
+    pending = [(root, method) for root in roots]
+    seen = set()
+    while pending:
+        root, current = pending.pop()
+        for node in timing_walk(root):
+            yield node, current
+            targets = []
+            if node.type == "invocation_expression":
+                target = index.resolve(node, current)
+                if target:
+                    targets.append(target)
+                function = text(node.child_by_field_name("function")).removeprefix(
+                    "System.Threading.Tasks."
+                )
+                position = source_dispatch.callback_position(index, node, current)
+                if function in {"Task.Run", "Task.Factory.StartNew"} or position is not None:
+                    args = children(node.child_by_field_name("arguments"), "argument")
+                    number = position[1] if position is not None else 0
+                    callback = (
+                        delegates.unwrap(index, args[number], current)
+                        if number < len(args)
+                        else None
+                    )
+                    target = delegates.method_group(index, callback, current)
+                    if target:
+                        targets.append(target)
+            for target in targets:
+                if target.callable_kind != "local_function" or target.key in seen:
+                    continue
+                seen.add(target.key)
+                linked.add(target.key)
+                pending.append((target.body, target))
+
+
 @dataclass
 class ActionEntry:
     method: object
@@ -111,10 +148,27 @@ def cycle_name(method, loop, number):
 
 
 def build_catalog(index, legacy):
+    from app.modules.action_timing.source_local_functions import KINDS, describe
+
     methods = {method.key: method for info in index.classes.values() for method in info.methods}
     callers = defaultdict(set)
     edges = defaultdict(set)
     direct = set()
+    linked_locals = set()
+    local_declarations = []
+    for method in methods.values():
+        for node in walk(method.body):
+            if node.type in KINDS:
+                local = describe(index, node, method)
+                local_declarations.append(
+                    {
+                        "key": local.key,
+                        "parent": method.key,
+                        "name": text(node.child_by_field_name("name")),
+                        "path": method.unit.path,
+                        "line": node.start_point[0] + 1,
+                    }
+                )
 
     def constructor_targets(owner, seen=None):
         seen = set() if seen is None else seen
@@ -145,7 +199,7 @@ def build_catalog(index, legacy):
                 if target.key != method.key:
                     edges[method.key].add(target.key)
                     callers[target.key].add(method.key)
-        for call in (part for root in roots for part in walk(root)):
+        for call, context in timing_nodes(index, roots, method, linked_locals):
             function = text(call.child_by_field_name("function"))
             task = call.type == "invocation_expression" and function.removeprefix(
                 "System.Threading.Tasks."
@@ -155,13 +209,13 @@ def build_catalog(index, legacy):
             ).split("<", 1)[0] in {"Task", "System.Threading.Tasks.Task"}
             if task or creation:
                 arguments = children(call.child_by_field_name("arguments"), "argument")
-                delegate = delegates.unwrap(index, arguments[0], method) if arguments else None
-                target = delegates.method_group(index, delegate, method)
-                if target:
+                delegate = delegates.unwrap(index, arguments[0], context) if arguments else None
+                target = delegates.method_group(index, delegate, context)
+                if target and target.callable_kind != "local_function":
                     edges[method.key].add(target.key)
                     callers[target.key].add(method.key)
             if call.type == "object_creation_expression":
-                owner = index.lookup_type(text(call.child_by_field_name("type")), method)
+                owner = index.lookup_type(text(call.child_by_field_name("type")), context)
                 for target in constructor_targets(owner):
                     edges[method.key].add(target.key)
                     callers[target.key].add(method.key)
@@ -174,9 +228,9 @@ def build_catalog(index, legacy):
                     creation = ancestor.parent
                     if creation and creation.type == "object_creation_expression":
                         owner = index.lookup_type(
-                            text(creation.child_by_field_name("type")), method
+                            text(creation.child_by_field_name("type")), context
                         )
-                target = index.accessor(left, method, "set", owner)
+                target = index.accessor(left, context, "set", owner)
                 if target:
                     edges[method.key].add(target.key)
                     callers[target.key].add(method.key)
@@ -193,25 +247,25 @@ def build_catalog(index, legacy):
                     and parent.child_by_field_name("left") == call
                     and text(parent.child_by_field_name("operator")) == "="
                 )
-                target = None if selector or assigned else index.accessor(call, method, "get")
+                target = None if selector or assigned else index.accessor(call, context, "get")
                 if target:
                     edges[method.key].add(target.key)
                     callers[target.key].add(method.key)
             if call.type != "invocation_expression":
                 continue
             function = text(call.child_by_field_name("function"))
-            target = index.resolve(call, method)
+            target = index.resolve(call, context)
             if (
                 timed_operation(function.split(".")[-1])
-                or hardware_operation(index, call, method)
-                or delegates.typed_invocation(index, call, method)
-                or source_dynamic.operation(index, call, method)
-                or source_apm.operation(index, call, method)
-                or source_dispatch.receiver_kind(index, call, method)
-                or source_parallel.operation(index, call, method)
+                or hardware_operation(index, call, context)
+                or delegates.typed_invocation(index, call, context)
+                or source_dynamic.operation(index, call, context)
+                or source_apm.operation(index, call, context)
+                or source_dispatch.receiver_kind(index, call, context)
+                or source_parallel.operation(index, call, context)
             ) and not (target and target.body):
                 direct.add(method.key)
-            if target:
+            if target and target.callable_kind != "local_function":
                 edges[method.key].add(target.key)
                 callers[target.key].add(method.key)
     timed = set(direct)
@@ -312,6 +366,9 @@ def build_catalog(index, legacy):
         )
     return entries, {
         "methods": ledger,
+        "local_functions": [
+            {**row, "linked_execution": row["key"] in linked_locals} for row in local_declarations
+        ],
         "counts": dict(Counter(row["status"] for row in ledger)),
         "direct_timing_methods": len(direct),
         "uncatalogued_timing_methods": sum(

@@ -162,6 +162,12 @@ class Method:
     def body(self):
         return self.body_override or self.body_node or self.node.child_by_field_name("body")
 
+    @property
+    def return_type(self):
+        return text(
+            self.node.child_by_field_name("returns") or self.node.child_by_field_name("type")
+        )
+
 
 @dataclass
 class ClassInfo:
@@ -189,6 +195,7 @@ class SourceIndex:
         self.by_method = defaultdict(list)
         self.type_names = defaultdict(list)
         self.enums = set()
+        self.local_function_names = set()
         self._inference_cache = {}
         self._local_definition_cache = {}
         self._inferring = set()
@@ -219,6 +226,8 @@ class SourceIndex:
         names = defaultdict(set)
         for unit in self.units:
             for node in walk(unit.tree.root_node):
+                if node.type in {"local_function_statement", "local_function_declaration"}:
+                    self.local_function_names.add(text(node.child_by_field_name("name")))
                 if node.type == "enum_declaration":
                     self.enums.add(text(node.child_by_field_name("name")))
                 if node.type not in {
@@ -408,16 +417,12 @@ class SourceIndex:
                         info.constructor_writes.add(text(left.child_by_field_name("name")))
 
     def _method(self, info, unit, node, name, callable_kind="method", body_node=None):
+        from app.modules.action_timing.source_local_functions import declared_locals
+
         parameters, variadic = call_args.declared_parameters(node)
         types = {name: kind for name, kind, _ in parameters}
-        initializers = {}
-        for declaration in walk(body_node or node):
-            if declaration.type == "variable_declaration":
-                kind = text(declaration.child_by_field_name("type"))
-                for variable in children(declaration, "variable_declarator"):
-                    variable_name = text(variable.child_by_field_name("name"))
-                    types[variable_name] = kind
-                    initializers[variable_name] = initializer(variable)
+        local_types, initializers = declared_locals(body_node or node)
+        types.update(local_types)
         method = Method(
             info.name,
             name,
@@ -768,11 +773,7 @@ class SourceIndex:
             if text(function).endswith(".GetInstance"):
                 return self.lookup_type(text(function.child_by_field_name("expression")), method)
             found = self.resolve(node, method)
-            return (
-                self.lookup_type(text(found.node.child_by_field_name("returns")), found)
-                if found
-                else ""
-            )
+            return self.lookup_type(found.return_type, found) if found else ""
         if node.type == "argument":
             parts = children(node)
             return self.infer(parts[-1], method) if parts else ""
@@ -793,9 +794,15 @@ class SourceIndex:
         return self._local_definition_cache[identity]
 
     def _local_definition(self, node, method):
+        from app.modules.action_timing.source_scopes import SPACES, embedded, inline_declarations
+
         name = text(node)
         parent = node.parent
         while parent is not None and parent != method.node:
+            if parent.type in SPACES or embedded(parent):
+                for declaration in inline_declarations(parent, self):
+                    if text(declaration.child_by_field_name("name")) == name:
+                        return text(declaration.child_by_field_name("type")), None
             if parent.type in {"if_statement", "while_statement", "do_statement", "for_statement"}:
                 condition = parent.child_by_field_name("condition")
                 pending = [condition] if condition is not None else []
@@ -850,7 +857,7 @@ class SourceIndex:
         )
         if parameter is not None:
             return parameter, None
-        if method.callable_kind == "delegate":
+        if method.callable_kind in {"delegate", "local_function"}:
             return method.types.get(name, ""), method.initializers.get(name)
         return "", None
 
@@ -881,6 +888,14 @@ class SourceIndex:
             binding = next(iter(children(function, "member_binding_expression")), None)
             name = text(binding.child_by_field_name("name")) if binding else ""
         elif function.type == "identifier":
+            from app.modules.action_timing.source_local_functions import definition, describe
+
+            local = definition(self, function, caller)
+            if local is not None:
+                self._source_call_sites.add((caller.key, node.start_byte, node.end_byte))
+                target = describe(self, local, caller)
+                args = children(node.child_by_field_name("arguments"), "argument")
+                return self.overload([target], args, caller)
             owner, name = caller.owner, text(function)
         else:
             owner = self.infer(function.child_by_field_name("expression"), caller)
@@ -981,6 +996,12 @@ class SourceIndex:
             parts = children(node)
             return self.value(parts[-1], method, bindings, seen) if parts else None
         if kind in {"identifier", "member_access_expression"}:
+            if kind == "identifier":
+                from app.modules.action_timing.source_local_functions import value as local_value
+
+                local = local_value(self, node, method, bindings)
+                if local is not state.MISSING:
+                    return local
             getter = self.accessor(node, method, "get")
             result_key = call_args.return_key(node, method, bindings)
             if result_key in bindings:

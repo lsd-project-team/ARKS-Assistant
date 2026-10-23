@@ -394,3 +394,43 @@ BeginInvoke只建立后台目标与异步结果；EndInvoke核对同一已绑定
 新增48项反例，最终相关后端33文件746项通过（897.89秒，Failed=0、Skipped=0），其中源码单元28文件680项；Ruff及71文件格式检查通过。覆盖只读/未来写入、两个私有目标重叠、预算后写入、回调转发与重赋值、空/未知环境区分、构造链/字段初始化/属性、反射及外部对象逃逸、源码虚方法、旧任务等待、当前目标与其他目标的区别。真实全trunk、API/导出、权限、缓存重启和原采集协议也保留回归。未采集覆盖率、未执行Mutation Testing、目标程序集或设备程序，质量为中；复杂事件、嵌套调度/信号、枚举/LINQ及完整物理运动仍有剩余范围，整体目标保持未完成。
 
 最终首次计算及保存539.334秒，新实例禁止重建后的恢复12.973秒，仅为本机分析器开销观察。压缩报告15,539,740字节，SHA-256为 `3ed03b3fe095415fea94a9f557251e7f3ea20c1a138bbdbe015ace635f5641b1`；先审阅并通过746项门槛，再停止旧服务后原子替换。trunk的6,281个非隐藏文件集合及SHA-256一致，前端本阶段未改，未重复前端及普通账号浏览器验收。正式记录与发布/运行结果见 `member-async-cache-publish.json`、`member-async-runtime-verification.json`。
+
+## 第二十一阶段：本地函数与调用中的输出变量（2026-10-23）
+
+全编译范围核对到7处方法内本地函数声明。旧版会把声明标成不支持的控制流，使已知耗时上界变成未知；它并非普遍把声明内的延时直接相加。现将声明与执行分开，在进入所属块时绑定词法环境，只有实际调用才展开正文。声明前调用、return之后的声明、同级及嵌套函数、转为委托后的逃逸调用、捕获变量和async返回保留各自边界。语义依据为微软[C#本地函数规范](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/statements#1364-local-function-declarations)，本阶段仍不提供完整C#编译绑定。
+
+| 原声明 | 核对结果 |
+| --- | --- |
+| System2Controller.CalculatePickPos内CalculateOffset，1611行 | 实际进入本地函数正文，几何计算不填造执行时间 |
+| FrmBaseTest.BondTMethod内LocatePosition，491行 | 实际进入定位正文，保留PREntity.DoWork中的15 ms等待；相机、匹配及Stopwatch实耗仍未定 |
+| FrmBaseTest.BtnBondTPrEdit_Click内EditPr，569行 | 进入实际编辑调用；用户交互及外部编辑器耗时未定 |
+| FrmRepository.BarBtCreateNew_ItemClick内ValidatePredicate，117行 | 传给外部界面作为验证器，不假定创建窗口时已执行 |
+| ControlService.ToggleControlsEnabled(Control...)内ToggleAction，229行 | 两条候选线程分支均能进入正文；BeginInvoke分支仍保留后台和队列条件 |
+| ControlService.ToggleControlsEnabled(BarItem...)内ToggleAction，241行 | 经MainForm.SendUiAction转交；公开静态委托未在动作入口绑定，不能直接假定它已同步完成 |
+| MagazineController.SlotScan内CheckMagazine，340行 | 源码调用已被注释；不执行声明中的传感器重试，不增加检测等待 |
+
+MainForm.cs第50、61、68行另行核对：SendUiAction是公开静态Action<Action>，构造时追加PostAction，而PostAction正文为this.Invoke(action)。不能根据PostAction的方法名认定它是异步，也不能绕过入口未绑定的公开字段直接执行回调。这是剩余状态绑定条件，未按名称添加假契约。原7处声明、调用进入探针及剩余边界分别记录于 `local-function-scope.json`、`local-real-functions.json`。
+
+实际定位调用还有 `LocatePosition("测试", out double time)`。原模型没有识别调用时声明的输出变量，引用位置未知会连带抹掉被调正文中已知的15 ms等待。现收录显式类型及var输出声明，并按所属块、循环和嵌入语句保留变量槽，退出作用域后恢复原字段或外层绑定；循环正文的逃逸闭包保留各轮独立变量。未执行的短路、空条件调用不运行目标，外部未知输出不提供数值。显式out int _和out var _丢弃结果；单独out _若对应真实局部变量或字段则继续按引用写回。声明空间与类型推断规则参照微软[C#声明表达式](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/expressions#1220-declaration-expressions)和[声明空间](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/basic-concepts#72-declarations)。本轮只证明已绑定位置及值的传递，不声称解决全部泛型、重载推断、确定赋值或闭包调度。补充反例还验证out声明本身不求值，显式丢弃参数不会触发同名属性的getter或其中的999 ms等待。
+
+新增 `source_local_functions.py`，局部环境随闭包保留；同步返回和任务状态转移不把被调方法的词法环境覆盖回调用者。索引不再把嵌套函数的局部类型混进外层，lambda的自身局部类型单独恢复。委托数组的接收者和下标先于参数求值并只求值一次，后面的参数写入不能替换已读目标。目录沿实际本地调用连接到原父动作，声明本身不升级为新工序；详细核对放在coverage接口，不加入用户主表。
+
+最终模型为 `trunk-model-v22`，目录仍2,290行、主表47项，没有新增或删除目录行。47条主记录的完整行与已发布v21一致；24条辅助记录变化，其中6条统计变化、18条仅阶段变化。CalculatePickPos与Control重载的已知延时上界由未定恢复为0，表示没有可识别的固定停留，二者完整总耗时仍未定。BondTMethod恢复定位正文的4处锁等待，等待计数由2恢复6；按钮启动包装仍保留后台归属。
+
+原12处显式out声明在调用链/循环中共出现93次，均已核对对应源码位置；移除的是这些已绑定存储的引用边界，不是外部SDK和设备等待。七个父入口原有的38处PREntity.Sleep(15)从未知恢复为15 ms，前台/后台归属全部不变。三个前台测试入口的已知停留下界随之修正如下；上界与完整总耗时仍未定，这里只修正可算的软件停留组成。
+
+| 辅助入口 | v21已知停留下界 | v22已知停留下界 |
+| --- | ---: | ---: |
+| FrmTestAccuary.btnABAuto_Click | 500 ms | 515 ms |
+| FrmTestAccuary.simpleButton11_Click | 1,280 ms | 1,460 ms（12次15 ms） |
+| FrmTestAccuary.simpleButton8_Click | 0 ms | 15 ms |
+
+编辑入口只恢复实际EditPr正文及其构造/编辑调用，保留用户交互、外部硬件和展开预算。料盒及三个父包装仅移除未执行本地声明的控制流错误，不增加传感器等待。完整差异、引用位置、执行边界及审阅结果在 `local-functions-trace-differences.json`、`local-functions-reference-review.json`、`local-functions-call-boundaries.json` 与 `local-functions-review.json`。
+
+最终首次计算及保存572.280秒，新实例禁止重建后的恢复12.957秒，所有完整行指纹一致；这些只记录本机分析器开销。压缩报告15,544,593字节，SHA-256为 `02599c32b857fed5927a7f333d54665f92be63edf9830d0b83d38b7e6260ed6d`，生产目录为 `report-cache-v22-qm1s9b8_`。最终声明求值修正前后2,290条完整行再次逐一比较一致。发布时先停止旧服务，再原子替换已经审阅的派生报告，启动后检查原权限与缓存恢复。
+
+新增56项反例，最终相关后端34文件802项通过（954.52秒，Failed=0、Skipped=0），其中源码单元29文件736项；Ruff及73文件格式检查通过。覆盖未调用声明、前置/退出作用域后的调用、同级与嵌套函数、捕获写入、静态边界、异步结果、委托数组求值顺序、命名/可选/ref/out参数、输出声明的作用域、循环闭包、短路/空条件和丢弃结果。真实全trunk、API/导出、权限、缓存重启及原采集协议保留回归。未采集覆盖率，未执行Mutation Testing、目标程序集或设备程序，质量为中。
+
+trunk的6,281个非隐藏文件集合与SHA-256保持一致；前端本轮未改，未重复前端和普通账号浏览器验收。正式账号、项目、会话、消息及交接记录保持原数量，采集运行仍为0。发布与运行证据使用 `local-functions-cache-publish.json`、`local-functions-runtime-verification.json`。
+
+剩余边界清点还发现53处this实参被解析为空参数；最小探针也复现了命名this/返回this时对象身份未保留、读取旧声明初值的问题，列为后续修正，不声称这些调用已经求解。原公开UI委托、事件、复杂调度/信号、SDK单位、缺失Hardware.json及完整物理运动仍有未定条件。整体目标继续保持未完成。

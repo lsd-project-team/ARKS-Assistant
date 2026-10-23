@@ -5,7 +5,7 @@ from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add
 from app.modules.action_timing.source_index import children, initializer, text, walk
 from app.modules.action_timing.source_loop_bounds import pure_loop
 from app.modules.action_timing.source_numbers import INTEGER_RANGES
-from app.modules.action_timing.source_scopes import local_scope, restore
+from app.modules.action_timing.source_scopes import inline_names, local_scope, restore
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 MAX_ITERATIONS = 128
@@ -298,7 +298,7 @@ def execute_for(estimator, node, method, bindings, stack, conditions, background
         for part in children(declaration, "variable_declarator")
         if part.child_by_field_name("name") is not None
     ]
-    with local_scope(estimator, names, bindings) as before:
+    with local_scope(estimator, names + inline_names(node, estimator.index), bindings) as before:
         flow = ForExecution(
             estimator, node, method, bindings, stack, conditions, background
         ).execute()

@@ -66,6 +66,9 @@ class Effects:
             value.node.end_byte,
             value.signature,
             value.arity,
+            id(value.closure.functions)
+            if value.node.type in {"local_function_statement", "local_function_declaration"}
+            else None,
             tuple(
                 sorted(
                     (name, self.callback_key(part, depth + 1)) for name, part in environment.items()
@@ -127,7 +130,12 @@ class Effects:
                 self.opaque.append(text(node))
             else:
                 for implementation in self.implementations(node, method, target):
-                    self.add_method(implementation)
+                    self.add_method(
+                        implementation,
+                        self.callback_environments.get(id(bound), (None, {}))[1]
+                        if node.type in {"local_function_statement", "local_function_declaration"}
+                        else None,
+                    )
             return
         shape = source_dynamic.signature(self.index, bound.signature, method)
         parameters = closures.parameters(node)
@@ -135,6 +143,10 @@ class Effects:
         for number, (name, kind, _) in enumerate(parameters):
             types[name] = shape[0][number] if shape and number < len(shape[0]) else kind
         parameters = [(name, types[name], default) for name, _, default in parameters]
+        from app.modules.action_timing.source_local_functions import declared_locals
+
+        local_types, local_values = declared_locals(node)
+        types = {**types, **local_types}
         self.add_method(
             replace(
                 method,
@@ -145,6 +157,7 @@ class Effects:
                 body_override=None,
                 parameters=parameters,
                 types=types,
+                initializers={**method.initializers, **local_values},
             ),
             self.callback_environments.get(id(bound), (None, {}))[1],
         )

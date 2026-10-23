@@ -174,7 +174,7 @@ def execute(estimator, method, values, stack, conditions, background):
     effects = tuple(
         (key, value)
         for key, value in final_context.items()
-        if key not in {state.PRIVATE_PENDING, state.PRIVATE_ACTIVE}
+        if key not in {state.PRIVATE_PENDING, state.PRIVATE_ACTIVE, state.LOCAL_FUNCTIONS}
         and (key not in initial or value != initial[key])
     )
     # 未join时共享写入可能和调用者交错，只传播失效，不能当作已发生的常量。

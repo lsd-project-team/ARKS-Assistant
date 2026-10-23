@@ -9,6 +9,7 @@ from app.modules.action_timing.source_loops import (
     MAX_ITERATIONS,
     ForExecution,
 )
+from app.modules.action_timing.source_scopes import inline_names, local_scope, restore
 
 
 class ConditionExecution(ForExecution):
@@ -58,6 +59,10 @@ class ConditionExecution(ForExecution):
 
 
 def execute_condition_loop(estimator, node, method, bindings, stack, conditions, background):
-    return ConditionExecution(
-        estimator, node, method, bindings, stack, conditions, background
-    ).execute()
+    with local_scope(estimator, inline_names(node, estimator.index), bindings) as before:
+        flow = ConditionExecution(
+            estimator, node, method, bindings, stack, conditions, background
+        ).execute()
+        for snapshot in flow.states.values():
+            restore(snapshot, before)
+        return flow
