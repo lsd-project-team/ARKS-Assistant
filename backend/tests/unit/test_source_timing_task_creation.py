@@ -29,6 +29,8 @@ from tests.unit.test_source_timing_dependencies import analyze
         ),
         ("var a=Task.Delay(20); var b=a; Thread.Sleep(7); b.Wait();", 20),
         ("Task.WaitAll(new Task[] {}); Thread.Sleep(3);", 3),
+        ("Task.Factory.StartNew(async () => { await Task.Delay(20); }).Wait();", 0),
+        ("var t=new Task(async () => { await Task.Delay(20); }); t.Start(); t.Wait();", 0),
         (
             "var t=new Task(() => Thread.Sleep(20)); var group=new[] {t};"
             "t.Start(); Task.WaitAll(group);",
@@ -50,8 +52,6 @@ def test_task_creation_start_and_join_timeline(body, expected):
         "var a=Task.Delay(20); Task.WaitAll(new[] {a, missing});",
         "var a=Task.Delay(20); var group=new[] {a, missing}; Task.WaitAll(group);",
         "Task.WaitAny(new Task[] {});",
-        "Task.Factory.StartNew(async () => { await Task.Delay(20); }).Wait();",
-        "var t=new Task(async () => { await Task.Delay(20); }); t.Start(); t.Wait();",
         "Task.Delay(20).Wait(5);",
         "var t=Task.Delay(20); t.Wait(cancelToken);",
         "var a=Task.Delay(20); var group=new[] {a}; group[0]=missing; Task.WaitAll(group);",

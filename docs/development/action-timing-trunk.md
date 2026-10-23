@@ -261,4 +261,28 @@ async Task先分析首个未完成await之前的同步前段，再计算任务�
 
 6,281个trunk文件的集合和SHA-256再次核对未变，前端本阶段未修改，未重复前端和普通账号浏览器验收。正式服务在无活动作业时更新，复用已核实的本版本派生报告；启动及缓存读取证据保存在 `returned-tasks-cache-publish.json` 和 `returned-tasks-runtime-verification.json`。正式账号、项目、会话、消息和交接资料数量保持原有边界，采集记录仍为0；未导入测试记录。整体目标继续保持未完成。
 
+## 第十六阶段：async void、嵌套任务与并行枚举（2026-10-23）
+
+按编译源码语法树清点，当前有17个async void方法和2处Parallel.ForEach。17个方法主要是界面事件及一项泛型UI包装，审计没有静态绑定到普通直接调用；这项结果不覆盖运行时反射或事件派发。两处并行枚举分别位于Machine.EmergencyStop与UcMainSystem.BtEmergencyStop_ItemClick，均对硬件仓库返回的轴列表调用StopMove(false,true)。审计与源码版本依据保存在 `async-void-parallel-audit.json`。
+
+async void被普通调用或Action委托调用时，只把第一个未完成await之前的同步前段返回给调用者，后续代码保留后台归属；将事件自身作为分析入口时仍计算它的完整逻辑路径。绑定Action的Task.Run/new Task仅等待同步调用返回，Task.Factory.StartNew返回的外层任务也保留自己的完成边界。对应语义参照微软[C# async说明](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/async)；不把一个启动调用当成异步事件已经全部完成。
+
+新增嵌套任务的Unwrap、Result和GetResult连接，区分外层返回与内层完成。相同起点的后缀表达式按语法类型及完整字节范围分配任务键，修正outer.Result.Wait误用外层“已计时”标记而漏掉内层等待的问题。等长分支任务合并时保留各自的阶段路径；任务来源身份与结果的新旧状态不参与数值相等、文本状态或JSON输出。包装、转发和合并旧任务不会重放其历史写入，调用者30 ms后显式写入的7不会再被旧任务的9覆盖。
+
+Parallel.ForEach只按源码显式等待计算，参数求值继续按原顺序，支持已知数组、List、Range及1/2/3参数回调和已绑定方法组。类型从集合传入回调，未知轴列表仍可绑定到真实Axis。最大并行度只限定并发上限，见微软[MaxDegreeOfParallelism说明](https://learn.microsoft.com/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism)。在当前不计CPU及实际调度开销的口径下，独立20/30 ms停留保留30–50 ms范围；明确串行时按顺序合计。等待已有任务时不再套用迭代数/并行度工作量下界，避免重复计算同一任务的等待。
+
+共享写入先探测并重新分析其暴露的新分支，最多16轮；当前动作有每次128项的并行枚举展开边界。无法收敛或达到调用预算时保留截断和未知，并使旧成员、集合、任务及委托索引失效。可变输入集合不继续提供修改前的元素，List版本变化不假设正常按旧长度完成；每次回调自己的对象、数组、List和快照保持独立。私有引用发布到共享存储后，其内容也参与不确定性处理。取消、自定义调度、Stop/Break、未知集合或超出预算均保留相应未定条件。
+
+已只读验证两处真实急停，阶段中均展开到 `AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis.StopMove`，轴数量仍未知，StopMove的内部等待/重载尚未核实，总时长不固定。Machine.EmergencyStop的其他已知停留单独计入，不能把它作为各轴停止的时长。依据在 `real-parallel-stop-verification.json`；未执行目标程序集或设备程序。
+
+本轮新增三个单元文件：`test_source_timing_async_void.py` 13项、`test_source_timing_nested_tasks.py` 10项、`test_source_timing_parallel.py` 42项，共65项。原五项异步Action/冷任务/外层任务“一律未知”预期按同步返回边界修正为0 ms，同时保留后台延时存在的断言或由带3 ms同步前段的反例交叉验证。源码单元23文件496项通过；旧普通回调、返回任务、循环、状态、硬件及确定性回归保留。
+
+最终整仓模型为 `trunk-model-v17`，目录2,257行、主表47项，没有新增/删除目录行。逐行完整指纹与v16比较仅4条辅助记录变化：两条全局标定扫描的38个阶段各自仅恢复已等待任务的前台归属，运动计数由0恢复1、等待计数由1恢复4；两条急停则将未展开调用替换为逐轴StopMove及未知次数的并行阶段。界面急停的已知上界由0恢复未定，总时长本来就未定；其余数值与执行状态保持不变。47个主条目的完整行均未变化，取片至少5 ms、上视20–40 ms、固晶20 ms、焊后检测500 ms、点胶单轮至少10 ms与两个输送单轮至少505 ms继续通过复核。差异与逐条审阅依据在 `parallel-trace-differences.json`、`parallel-real-actions.json` 和 `parallel-review.json`。
+
+本次完整计算及保存438.109秒，新实例禁止重建后从缓存恢复13.052秒，所有完整行指纹一致；这是一次本机分析器开销观察，不计入设备动作时长。压缩报告15,309,871字节，SHA-256为 `979b30bf36139e77947d1346a91d12a79cf89eb58aaa377ea5ddf4e846189e6a`。正式服务停止旧进程后才原子替换派生缓存，再启动新进程，避免旧代码覆盖新版报告；发布前恢复12.298秒。发布与运行证据在 `parallel-cache-publish.json` 和 `parallel-runtime-verification.json`。
+
+最终相关后端28文件562项通过（Passed=562、Failed=0、Skipped=0，712.94秒），其中源码单元23文件496项。保留真实主工程/整个trunk、API/导出、认证权限、缓存重启与原采集协议检查；Ruff及61文件格式检查通过。覆盖率未采集，未执行Mutation Testing、目标程序集或设备程序，质量为中。复杂泛型/协变、反射/UI调度、枚举/LINQ、动态引用、外部副作用及完整物理运动仍有剩余范围，不能用本轮异步和并行回归称全部工况已完成。
+
+trunk的6,281个非隐藏文件集合及SHA-256未变，前端本阶段未改；未重复前端或普通账号浏览器验收。正式账号3、项目3、会话17、消息109、交接记录27，采集运行仍为0；测试数据没有写入正式库。整体目标保持未完成。
+
 本地清点与过程结果位于 `output/action-timing-trunk/`；该目录不提交业务代码或正式数据。功能使用说明见 [动作耗时统计](../features/action-timing.md)。

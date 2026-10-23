@@ -22,10 +22,26 @@ def known(data):
 
 
 def length(data, bindings):
+    if (
+        known(data)
+        and data["<collection>"] == "list"
+        and state.object_unstable(data["<ref>"], bindings)
+    ):
+        return None
+    if known(data) and key(data, "length") in bindings.get(state.UNSTABLE, ()):
+        return None
     return bindings.get(key(data, "length"), data.get("<length>")) if known(data) else None
 
 
 def version(data, bindings):
+    if (
+        known(data)
+        and data["<collection>"] == "list"
+        and state.object_unstable(data["<ref>"], bindings)
+    ):
+        return None
+    if known(data) and key(data, "version") in bindings.get(state.UNSTABLE, ()):
+        return None
     return bindings.get(key(data, "version"), 0) if known(data) else None
 
 
@@ -36,6 +52,8 @@ def item(data, position, bindings):
     if size is None or not 0 <= position < size:
         return None
     own = key(data, f"item:{position}")
+    if own in bindings.get(state.UNSTABLE, ()) or state.object_unstable(data["<ref>"], bindings):
+        return None
     if own in bindings:
         return state.materialize(coerce(data.get("<element_type>"), bindings[own]), bindings)
     unknown = key(data, "unknown")

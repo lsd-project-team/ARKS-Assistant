@@ -22,6 +22,7 @@ class BoundDelegate:
     arity: int = 0
     returns_task: bool = False
     async_void: bool = False
+    discards_result: bool = False
 
 
 def unwrap(index, node, method, bindings=None):
@@ -94,10 +95,12 @@ def execute(
     join_result=True,
     argument_values=(),
     creation_only=False,
+    argument_types=(),
 ):
-    from app.modules.action_timing.source_tasks import CLOCK
+    from app.modules.action_timing.source_tasks import CLOCK, is_fresh, task_ids
 
     bindings.pop(RESULT, None)
+    previous_tasks = task_ids(bindings.values())
     bound = capture(estimator.index, node, method, bindings)
     node = bound.node if isinstance(bound, BoundDelegate) else None
     start = len(estimator.stages)
@@ -117,20 +120,17 @@ def execute(
         if len(closures.parameters(node)) != len(argument_values):
             return UNKNOWN
         callback_method, callback_scope = closures.enter(
-            estimator, bound, node, bindings, argument_values
+            estimator, bound, node, bindings, argument_values, argument_types
         )
         is_async = any(text(part) == "async" for part in node.children)
-        nested_async = (
-            (not join_result or not bound.returns_task) and is_async and not creation_only
-        )
         body = node.child_by_field_name("body")
-        if is_async and not nested_async:
+        if is_async:
             from app.modules.action_timing import source_async
 
             cost, plan = source_async.execute(
                 estimator, callback_method, callback_scope, (*stack, marker), conditions, background
             )
-            bindings[RESULT] = plan
+            bindings[RESULT] = plan if bound.returns_task else None
         elif body and body.type != "block":
             cost = estimator.expression(
                 body,
@@ -138,7 +138,7 @@ def execute(
                 callback_scope,
                 (*stack, marker),
                 conditions,
-                background or nested_async,
+                background,
             )
             bindings[RESULT] = estimator.index.value(body, callback_method, callback_scope)
         else:
@@ -148,31 +148,22 @@ def execute(
                 callback_scope,
                 (*stack, marker),
                 conditions,
-                background or nested_async,
+                background,
             )
             cost = flow.cost() if flow.live is not None or flow.returned is not None else UNKNOWN
             bindings[RESULT] = flow.states.get("returned", {}).get("<return-value>")
-        state.transfer(bindings, callback_scope, uncertain=nested_async)
+        state.transfer(bindings, callback_scope)
         from app.modules.action_timing.source_tasks import TaskPlan, join_stages, known_task
 
         plan = bindings.get(RESULT)
-        if join_result and not creation_only and known_task(plan):
+        if join_result and not creation_only and not bound.discards_result and known_task(plan):
             cost = cost.plus(plan.remaining(started.plus(cost)))
             join_stages(estimator, plan, background)
-            if isinstance(plan, TaskPlan):
+            if isinstance(plan, TaskPlan) and is_fresh(plan, previous_tasks):
                 bindings.update(plan.effects)
                 bindings[RESULT] = plan.result
-        # StartNew(async ...)返回嵌套任务；没有Unwrap不能把整个异步体当作外层完成边界。
-        if nested_async:
-            estimator.record(
-                "unresolved",
-                "未展开异步委托的外层完成边界",
-                node,
-                declaration,
-                conditions,
-                background,
-            )
-            return UNKNOWN
+        if bound.discards_result:
+            bindings[RESULT] = None
     else:
         target = method_group(estimator.index, node, declaration, len(argument_values))
         if target is None or estimator.index.polymorphic(node, declaration, target):
@@ -185,7 +176,7 @@ def execute(
                 background,
             )
             return UNKNOWN
-        target_context = dict(bindings) if bound.async_void else bindings
+        target_context = bindings
         cost = estimator.invoke(
             target,
             [],
@@ -194,7 +185,7 @@ def execute(
             target_context,
             stack,
             conditions,
-            background or bound.async_void,
+            background,
             receiver_id=bound.receiver_id,
             argument_values={
                 name: value
@@ -205,16 +196,7 @@ def execute(
             call_args.return_key(node, declaration, target_context)
         )
         if bound.async_void:
-            state.transfer(bindings, target_context, uncertain=True)
-            estimator.record(
-                "unresolved",
-                "async void回调的完成边界未定",
-                node,
-                declaration,
-                conditions,
-                background,
-            )
-            return UNKNOWN
+            bindings[RESULT] = None
         from app.modules.action_timing.source_task_returns import task_method
         from app.modules.action_timing.source_tasks import TaskPlan, join_stages, known_task
 
@@ -223,7 +205,7 @@ def execute(
             if known_task(plan):
                 cost = cost.plus(plan.remaining(started.plus(cost)))
                 join_stages(estimator, plan, background)
-                if isinstance(plan, TaskPlan):
+                if isinstance(plan, TaskPlan) and is_fresh(plan, previous_tasks):
                     bindings.update(plan.effects)
                 bindings[RESULT] = getattr(plan, "result", None)
             else:
@@ -238,7 +220,11 @@ def execute(
     return cost
 
 
-def capture(index, node, method, bindings, arity=0, returns_task=None):
+def capture(index, node, method, bindings, arity=0, returns_task=None, discards_result=False):
+    explicit = explicit_return_kind(index, node, method)
+    discards_result |= explicit is False
+    if returns_task is None:
+        returns_task = explicit
     node = unwrap(index, node, method, bindings)
     if isinstance(node, BoundDelegate):
         return node
@@ -247,14 +233,15 @@ def capture(index, node, method, bindings, arity=0, returns_task=None):
     if node is None:
         return None
     if node.type in {"lambda_expression", "anonymous_method_expression"}:
+        asynchronous = any(text(part) == "async" for part in node.children)
         return BoundDelegate(
             node,
             method.key,
             closure=closures.capture(method, bindings, node),
             arity=len(closures.parameters(node)),
-            returns_task=any(text(part) == "async" for part in node.children)
-            if returns_task is None
-            else returns_task,
+            returns_task=asynchronous if returns_task is None else returns_task,
+            async_void=asynchronous and returns_task is False,
+            discards_result=discards_result,
         )
     target = method_group(index, node, method, arity)
     if target is None:
@@ -270,6 +257,21 @@ def capture(index, node, method, bindings, arity=0, returns_task=None):
         any(text(part) == "async" for part in target.node.children)
         and text(target.node.child_by_field_name("returns")) == "void",
     )
+
+
+def explicit_return_kind(index, node, method):
+    while node is not None and not isinstance(node, BoundDelegate):
+        if node.type in {"argument", "parenthesized_expression"}:
+            parts = children(node)
+            node = parts[-1] if parts else None
+            continue
+        if node.type not in {"cast_expression", "object_creation_expression"}:
+            break
+        kind = text(node.child_by_field_name("type"))
+        if simple_type(kind) == "Action" and index.lookup_type(kind, method) not in index.classes:
+            return False
+        break
+    return None
 
 
 def signature_arity(kind):
@@ -308,6 +310,7 @@ def bind_arguments(index, target, arguments, caller, bindings, saved=None):
                 bindings,
                 arity,
                 returns_task="Task" in kind and kind.replace("System.", "").startswith("Func<"),
+                discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
             )
             if value is not None
             else None
@@ -403,28 +406,18 @@ def invoke(estimator, node, method, bindings, stack, conditions, background):
         )
         return cost
 
-    asynchronous = (
-        bound.returns_task
-        or bound.async_void
-        or any(text(part) == "async" for part in bound.node.children)
-    )
-    joined = not asynchronous
-    context = bindings if joined else dict(bindings)
     cost = execute(
         estimator,
         bound,
         method,
-        context,
+        bindings,
         stack,
         conditions,
         background,
         argument_values=values,
-        join_result=joined,
+        join_result=False,
     )
-    bindings[call_args.return_key(node, method, bindings)] = context.get(RESULT) if joined else None
-    if not joined:
-        state.transfer(bindings, context, uncertain=True)
-        cost = UNKNOWN
+    bindings[call_args.return_key(node, method, bindings)] = bindings.get(RESULT)
     estimator.record(
         "call",
         "执行已绑定回调",

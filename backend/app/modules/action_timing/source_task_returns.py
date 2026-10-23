@@ -126,7 +126,16 @@ def await_task(estimator, node, method, bindings, stack, conditions, background)
 
 def result_property(estimator, node, method, bindings, stack, conditions, background):
     """Task<T>.Result先求值接收者，再等待；不能当成普通无成本属性。"""
-    from app.modules.action_timing.source_tasks import CLOCK, TaskPlan, join_stages, lookup
+    from app.modules.action_timing.source_tasks import (
+        CLOCK,
+        TaskPlan,
+        framework_task,
+        join_stages,
+        known_task,
+        lookup,
+        remember_plan,
+        task_key,
+    )
 
     if (
         node.type != "member_access_expression"
@@ -136,7 +145,23 @@ def result_property(estimator, node, method, bindings, stack, conditions, backgr
     receiver = node.child_by_field_name("expression")
     # 只接管框架任务，其他同名属性由原访问器执行，避免接收者求值两次。
     receiver_type = estimator.index.infer(receiver, method)
-    if simple_type(receiver_type) != "Task" or receiver_type in estimator.index.classes:
+    function = receiver.child_by_field_name("function")
+    framework_call = (
+        receiver.type == "invocation_expression"
+        and function is not None
+        and text(function.child_by_field_name("name")).split("<", 1)[0]
+        in {"Run", "StartNew", "FromResult"}
+        and framework_task(
+            estimator.index,
+            text(function.child_by_field_name("expression")).removesuffix(".Factory"),
+            method,
+        )
+    )
+    if receiver_type in estimator.index.classes or not (
+        simple_type(receiver_type) == "Task"
+        or lookup(receiver, method, bindings, estimator.index)
+        or framework_call
+    ):
         return None
     before = estimator.expression(receiver, method, bindings, stack, conditions, background)
     plan = lookup(receiver, method, bindings, estimator.index)
@@ -145,10 +170,18 @@ def result_property(estimator, node, method, bindings, stack, conditions, backgr
     bindings[call_args.return_key(node, method, bindings)] = (
         plan.result if isinstance(plan, TaskPlan) else None
     )
-    from app.modules.action_timing.source_tasks import task_key
-
     if isinstance(plan, TaskPlan) and bindings.get(task_key(receiver, method) + ":fresh"):
         bindings.update(plan.effects)
+    if isinstance(plan, TaskPlan) and known_task(plan.result):
+        remember_plan(
+            node,
+            method,
+            bindings,
+            plan.result,
+            fresh=bool(
+                plan.result_is_fresh and bindings.get(task_key(receiver, method) + ":fresh")
+            ),
+        )
     estimator.record(
         "wait",
         "读取任务结果前等待完成",

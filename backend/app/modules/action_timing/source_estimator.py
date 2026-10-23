@@ -6,7 +6,7 @@ import re
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_delegates as delegates
-from app.modules.action_timing import source_finally
+from app.modules.action_timing import source_finally, source_parallel
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
@@ -119,7 +119,12 @@ class Estimator:
         elif cost.lower == cost.upper:
             formula = f"{cost.lower:g} ms 已知延时"
         else:
-            formula = f"{cost.lower:g}–{cost.upper:g} ms 已知延时（分支相关）"
+            reason = (
+                "并行/分支条件相关"
+                if any(row.get("parallel") and not row["background"] for row in self.stages)
+                else "分支相关"
+            )
+            formula = f"{cost.lower:g}–{cost.upper:g} ms 已知延时（{reason}）"
         if unknown:
             formula += " + 运动/信号/未解析调用"
         if not has_success_path:
@@ -428,6 +433,14 @@ class Estimator:
             )
         )
         arguments = children(node.child_by_field_name("arguments"), "argument")
+        parallel_cost = source_parallel.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if parallel_cost is not None:
+            return parallel_cost
+        control_cost = source_parallel.control(self, node, method, bindings, conditions, background)
+        if control_cost is not None:
+            return control_cost
         if collections.call(self, node, method, bindings):
             return ZERO
         if name in {"Start", "StartNew", "Restart", "Stop", "Reset"}:
@@ -700,7 +713,10 @@ class Estimator:
                 and not isinstance(values.get(name), bool)
             ):
                 values[name] = float(values[name])
-        if task_returns.task_method(self.index, target) and task_returns.async_method(target):
+        if task_returns.async_method(target) and (
+            task_returns.task_method(self.index, target)
+            or text(target.node.child_by_field_name("returns")) == "void"
+        ):
             from app.modules.action_timing import source_async
             from app.modules.action_timing.source_tasks import remember_plan
 
@@ -708,7 +724,11 @@ class Estimator:
                 self, target, values, (*stack, target.key), conditions, background
             )
             state.transfer(bindings, values)
-            remember_plan(node, caller, bindings, plan, fresh=True)
+            if task_returns.task_method(self.index, target):
+                remember_plan(node, caller, bindings, plan, fresh=True)
+            else:
+                # async void没有可供调用者join的任务，续体保留后台归属。
+                bindings[call_args.return_key(node, caller, bindings)] = None
             return cost
         returned_task = task_returns.task_method(self.index, target)
         if returned_task:
@@ -754,7 +774,12 @@ class Estimator:
         if "<return-value>" in returned:
             bindings[call_args.return_key(node, caller, bindings)] = returned["<return-value>"]
         if returned_task:
-            from app.modules.action_timing.source_tasks import TaskPlan, known_task, remember_plan
+            from app.modules.action_timing.source_tasks import (
+                TaskPlan,
+                is_fresh,
+                known_task,
+                remember_plan,
+            )
 
             value = returned.get("<return-value>")
             task = (
@@ -762,7 +787,7 @@ class Estimator:
                 if known_task(value)
                 else TaskPlan(bindings.get(CLOCK, ZERO).plus(flow.cost()), UNKNOWN)
             )
-            remember_plan(node, caller, bindings, task, fresh=id(task) not in existing_tasks)
+            remember_plan(node, caller, bindings, task, fresh=is_fresh(task, existing_tasks))
         return flow.cost()
 
     def execute_body(self, method, bindings, stack, conditions, background):

@@ -1,7 +1,7 @@
 """Task 的源代码时间线：发起与等待分开，已并行经过的时间不重复相加。"""
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_delegates as delegates
@@ -20,6 +20,8 @@ class TaskPlan:
     result: object = None
     effects: tuple = ()
     stage_ids: tuple = field(default=(), compare=False, repr=False)
+    origin_ids: tuple = field(default=(), compare=False, repr=False)
+    result_is_fresh: bool = field(default=False, compare=False, repr=False)
 
     def remaining(self, clock):
         end = self.start.plus(self.duration)
@@ -49,7 +51,8 @@ class TaskGroup:
 
 
 def task_key(node, method):
-    return f"<task:{method.unit.path}:{node.start_byte}>"
+    # 后缀链的起点相同：outer、outer.Result和outer.Result.Wait不能共用已计时标记。
+    return f"<task:{method.unit.path}:{node.type}:{node.start_byte}:{node.end_byte}>"
 
 
 def consumed(node):
@@ -124,6 +127,7 @@ def task_ids(values, depth=0):
     for value in values:
         if known_task(value):
             found.add(id(value))
+            found.update(getattr(value, "origin_ids", ()))
         if isinstance(value, dict):
             found.update(task_ids(value.values(), depth + 1))
         elif isinstance(value, (tuple, list)):
@@ -131,6 +135,14 @@ def task_ids(values, depth=0):
         elif isinstance(value, TaskGroup):
             found.update(task_ids(value.tasks, depth + 1))
     return found
+
+
+def is_fresh(value, previous):
+    return (
+        known_task(value)
+        and id(value) not in previous
+        and not (set(getattr(value, "origin_ids", ())) & previous)
+    )
 
 
 def public_value(value, depth=0):
@@ -146,6 +158,19 @@ def public_value(value, depth=0):
 def merge_plans(values):
     if not all(isinstance(value, TaskPlan) for value in values):
         return None
+    if all(value is values[0] for value in values):
+        return values[0]
+    stages = tuple(dict.fromkeys(stage for value in values for stage in value.stage_ids))
+    origins = tuple(
+        dict.fromkeys(origin for value in values for origin in (id(value), *value.origin_ids))
+    )
+    if all(value == values[0] for value in values):
+        return replace(
+            values[0],
+            stage_ids=stages,
+            origin_ids=origins,
+            result_is_fresh=all(value.result_is_fresh for value in values),
+        )
     end = None
     for value in values:
         end = choice(end, value.start.plus(value.duration))
@@ -159,7 +184,8 @@ def merge_plans(values):
         ZERO,
         end or UNKNOWN,
         result,
-        stage_ids=tuple(dict.fromkeys(stage for value in values for stage in value.stage_ids)),
+        stage_ids=stages,
+        origin_ids=origins,
     )
 
 
@@ -173,6 +199,8 @@ def lookup(node, method, bindings, index=None):
         operand = node.child_by_field_name("value") or next(iter(children(node)), None)
         return lookup(operand, method, bindings, index)
     if index is not None:
+        if state.is_unstable(index, node, method, bindings):
+            return None
         value = index.value(node, method, bindings)
         if known_task(value):
             return value
@@ -244,6 +272,7 @@ def track_binding(index, left, right, method, bindings):
         bindings,
         arity or 0,
         returns_task="Task" in kind and kind.replace("System.", "").startswith("Func<"),
+        discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
     )
     key = f"{delegates.DELEGATE_PREFIX}{name}>"
     if delegate is not None or key in bindings:
@@ -262,7 +291,11 @@ def create_task(estimator, node, method, bindings):
         return False
     args = children(node.child_by_field_name("arguments"), "argument")
     definition = DeferredTask(
-        delegates.capture(estimator.index, args[0], method, bindings) if args else None,
+        delegates.capture(
+            estimator.index, args[0], method, bindings, returns_task=False, discards_result=True
+        )
+        if args
+        else None,
         method.key,
         bindings.get(state.FRAME),
         len(args) == 1,
@@ -275,6 +308,7 @@ def run_delegate(
     estimator, delegate, method, bindings, stack, conditions, background, waiting, join_result=True
 ):
     task_bindings = dict(bindings)
+    previous_tasks = task_ids(task_bindings.values())
     stage_start = len(estimator.stages)
     duration = delegates.execute(
         estimator,
@@ -304,7 +338,12 @@ def run_delegate(
         locals=True,
     )
     return TaskPlan(
-        bindings.get(CLOCK, ZERO), duration, task_bindings.get(delegates.RESULT), effects, stage_ids
+        bindings.get(CLOCK, ZERO),
+        duration,
+        task_bindings.get(delegates.RESULT),
+        effects,
+        stage_ids,
+        result_is_fresh=is_fresh(task_bindings.get(delegates.RESULT), previous_tasks),
     )
 
 
@@ -377,6 +416,44 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
         return duration if waiting else ZERO
     receiver = function.child_by_field_name("expression")
     receiver_plan = lookup(receiver, method, bindings, estimator.index)
+    if (
+        name == "Unwrap"
+        and isinstance(receiver_plan, TaskPlan)
+        and isinstance(receiver_plan.result, TaskPlan)
+        and not args
+    ):
+        inner = receiver_plan.result
+        outer_end, inner_end = (
+            receiver_plan.start.plus(receiver_plan.duration),
+            inner.start.plus(inner.duration),
+        )
+        end = Cost(
+            max(outer_end.lower, inner_end.lower),
+            None
+            if outer_end.upper is None or inner_end.upper is None
+            else max(outer_end.upper, inner_end.upper),
+        )
+        effects = (
+            {**dict(receiver_plan.effects), **dict(inner.effects)}
+            if receiver_plan.result_is_fresh
+            else dict(receiver_plan.effects)
+        )
+        plan = TaskPlan(
+            ZERO,
+            end,
+            inner.result,
+            tuple(effects.items()),
+            tuple(dict.fromkeys((*receiver_plan.stage_ids, *inner.stage_ids))),
+            result_is_fresh=inner.result_is_fresh,
+        )
+        remember_plan(
+            node,
+            method,
+            bindings,
+            plan,
+            fresh=bool(bindings.get(task_key(receiver, method) + ":fresh")),
+        )
+        return ZERO
     if name in {"Start", "RunSynchronously"} and isinstance(receiver_plan, DeferredTask):
         synchronous = name == "RunSynchronously"
         duration = UNKNOWN
@@ -463,6 +540,17 @@ def handle_tasks(estimator, node, method, bindings, stack, conditions, backgroun
             bindings[call_args.return_key(node, method, bindings)] = (
                 receiver_plan.result if isinstance(receiver_plan, TaskPlan) else None
             )
+            if isinstance(receiver_plan, TaskPlan) and known_task(receiver_plan.result):
+                remember_plan(
+                    node,
+                    method,
+                    bindings,
+                    receiver_plan.result,
+                    fresh=bool(
+                        receiver_plan.result_is_fresh
+                        and bindings.get(task_key(receiver, method) + ":fresh")
+                    ),
+                )
     elif full_name in {"Task.WaitAll", "Task.WaitAny", "Task.WhenAll", "Task.WhenAny"}:
         groups = [task_group(argument, method, bindings, estimator.index) for argument in args]
         plans = [plan for group in groups if group for plan in group.tasks]

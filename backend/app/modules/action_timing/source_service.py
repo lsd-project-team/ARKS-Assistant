@@ -233,7 +233,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v16:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v17:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,
@@ -253,6 +253,8 @@ class SourceTiming:
                 "超时上限不计作必耗时；后台Task单独显示；并发轴不能逐项相加。",
                 "任务单轮只展开服务循环的一次工作体；线程启动入口与子动作不会叠加为节拍。",
                 "Task 模型只模拟源码显式耗时，假设可立即调度；不估算线程调度或CPU耗时。",
+                "Parallel.ForEach按最大并行度保留软件等待区间；"
+                "并行上限不保证同时开工，共享写入和未知项不套用隔离副本常量。",
                 "运动公式保留起点、目标、速度、加减速和驱动单位条件；"
                 "未证明单位、平滑及到位稳定时，不编造运动毫秒数。",
             ],

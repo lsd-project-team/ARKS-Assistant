@@ -72,8 +72,6 @@ def test_callback_uses_creating_instance_instead_of_helper_this():
         "int delay=5; Task.Run(()=>Run(()=>{delay=7;})); Thread.Sleep(delay);",
         "int delay=5; Action cb=()=>Thread.Sleep(delay); if(flag) delay=9; cb();",
         "Action cb=null; cb();",
-        "Action cb=async ()=>{await Task.Delay(20);}; cb();",
-        "Action cb=async ()=>{await Task.Delay(20);}; Task.Run(cb).Wait();",
     ],
 )
 def test_unknown_callback_order_or_target_does_not_become_a_known_total(body):
@@ -117,5 +115,15 @@ def test_async_void_method_group_does_not_appear_to_finish_its_awaited_body():
     result = analyze("""class Demo {public int DoWork(){
         Task.Run(Work).Wait(); return 0;}
         async void Work(){await Task.Delay(20);}}""")
-    assert result["total_ms"] is None
+    assert result["total_ms"] == 0
     assert all(stage["background"] for stage in result["stages"] if stage["kind"] == "delay")
+
+
+@pytest.mark.parametrize("invoke", ["cb();", "Task.Run(cb).Wait();"])
+def test_async_action_launch_returns_before_its_pending_delay(invoke):
+    result = analyze(f"""class Demo {{public int DoWork(){{
+        Action cb=async()=>{{await Task.Delay(20);}};{invoke}return 0;}}}}""")
+    assert result["total_ms"] == 0
+    assert any(
+        stage.get("milliseconds") == 20 and stage["background"] for stage in result["stages"]
+    )

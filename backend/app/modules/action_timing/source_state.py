@@ -6,7 +6,17 @@ PREFIX = "<member:"
 LOCAL_PREFIX = "<captured-local:"
 LOCAL_ALIAS = "<captured-alias:"
 COLLECTION_PREFIX = "<collection:"
+UNSTABLE = "<source-concurrent-writes>"
+UNKNOWN_MEMBERS = "<source-unknown-members>"
 MISSING = object()
+
+
+def object_marker(reference):
+    return f"<source-concurrent-object:{reference}>"
+
+
+def object_unstable(reference, bindings):
+    return object_marker(reference) in bindings.get(UNSTABLE, ())
 
 
 def local_slot(node, method, bindings):
@@ -75,18 +85,42 @@ def key(location):
 
 def read(index, node, method, bindings):
     local = local_slot(node, method, bindings)
+    unstable = bindings.get(UNSTABLE)
     if local in bindings:
-        return bindings[local]
+        return None if unstable and local in unstable else bindings[local]
     place = location(index, node, method, bindings)
     if place is None:
         return MISSING
     own = key(place)
     wildcard = key((None, place[1], place[2]))
+    if unstable and (
+        own in unstable or wildcard in unstable or object_marker(place[0]) in unstable
+    ):
+        return None
     if own in bindings:
         return bindings[own]
     if wildcard in bindings:
         return None
+    if bindings.get(UNKNOWN_MEMBERS):
+        return None
     return MISSING
+
+
+def is_unstable(index, node, method, bindings):
+    unstable = bindings.get(UNSTABLE)
+    if not unstable:
+        return False
+    if local_slot(node, method, bindings) in unstable:
+        return True
+    place = location(index, node, method, bindings)
+    return bool(
+        place
+        and (
+            key(place) in unstable
+            or key((None, place[1], place[2])) in unstable
+            or object_marker(place[0]) in unstable
+        )
+    )
 
 
 def write(index, node, method, bindings, value, owner=None):
@@ -115,6 +149,7 @@ def context(bindings):
         name: value
         for name, value in bindings.items()
         if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX))
+        or name in {UNSTABLE, UNKNOWN_MEMBERS}
     }
 
 
@@ -122,17 +157,23 @@ def materialize(value, bindings):
     if not isinstance(value, dict) or "<ref>" not in value:
         return value
     result = dict(value)
+    shared = object_unstable(value["<ref>"], bindings)
+    if shared or bindings.get(UNKNOWN_MEMBERS):
+        result.update({key: None for key in result if not key.startswith("<")})
     start = f"{PREFIX}{value['<ref>']}|"
     for name, assigned in bindings.items():
         if name.startswith(start):
             member_name = name[len(start) :].rsplit("|", 1)[-1].removesuffix(">")
-            result[member_name] = assigned
+            result[member_name] = None if shared or name in bindings.get(UNSTABLE, ()) else assigned
     return result
 
 
 def transfer(before, after, *, uncertain=False, locals=False):
     """把调用或后台分支的写入带回；未确定先后关系时只传播失效。"""
     for name, value in after.items():
+        if name == UNKNOWN_MEMBERS and value:
+            before[name] = True
+            continue
         if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX)) or (
             locals and not name.startswith("<")
         ):
@@ -149,14 +190,20 @@ def merge(bindings, branches):
         )
         return
     # 状态/出口的源顺序必须稳定；散列顺序会改变标签分支的展开与预算分配。
+    from app.modules.action_timing.source_tasks import TaskPlan, merge_plans
+
     for name in dict.fromkeys(name for branch in branches for name in branch):
         values = [branch.get(name) for branch in branches]
-        if all(value == values[0] for value in values):
+        if name == UNKNOWN_MEMBERS:
+            bindings[name] = any(value is True for value in values)
+        elif isinstance(values[0], TaskPlan) and all(
+            isinstance(value, TaskPlan) for value in values
+        ):
+            bindings[name] = merge_plans(values)
+        elif all(value == values[0] for value in values):
             bindings[name] = values[0]
         else:
-            from app.modules.action_timing.source_tasks import merge_plans
-
-            bindings[name] = merge_plans(values)
+            bindings[name] = None
 
 
 def receiver_for(index, target, node, caller, bindings):

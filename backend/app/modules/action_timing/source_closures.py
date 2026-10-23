@@ -64,11 +64,19 @@ def parameters(node):
     ]
 
 
-def enter(estimator, bound, node, bindings, values):
+def enter(estimator, bound, node, bindings, values, argument_types=()):
     from app.modules.action_timing.source_tasks import CLOCK
 
     closure = bound.closure
     args = parameters(node)
+    args = [
+        (
+            name,
+            argument_types[position] if kind == "var" and position < len(argument_types) else kind,
+            default,
+        )
+        for position, (name, kind, default) in enumerate(args)
+    ]
     estimator.frames += 1
     method = replace(
         closure.method,
