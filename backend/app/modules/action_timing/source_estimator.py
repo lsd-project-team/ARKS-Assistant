@@ -84,6 +84,7 @@ class Estimator:
         self.parameters = {}
         self.calls = 0
         self.budget = CallBudget()
+        self.literal_wait_summaries = {}
         self.iteration_budget = IterationBudget()
         self.jump_budget = JumpBudget()
         self.body_loop_steps = 0
@@ -847,6 +848,8 @@ class Estimator:
         ):
             from app.modules.action_timing.source_references import escape_this
 
+            # 标记为未知结果，禁止值求解器绕过边界再从声明中的return推断常量。
+            bindings[call_args.return_key(node, caller, bindings)] = None
             escape_this(self.index, node, caller, bindings)
             self.truncated = True
             self.record(
@@ -858,6 +861,16 @@ class Estimator:
                 background,
                 expression=text(node),
             )
+            if not metadata and self.budget.exhausted(self.calls):
+                from app.modules.action_timing import source_budget_sleeps
+
+                source_budget_sleeps.invalidate(
+                    self, target, node, caller, bindings, receiver_id, argument_values
+                )
+                if target.key not in stack and self.depth(stack) < 7:
+                    known = source_budget_sleeps.preserve(self, target, conditions, background)
+                    if known is not None:
+                        return known
             return UNKNOWN if delay_possible(self.index, target) else ZERO
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1

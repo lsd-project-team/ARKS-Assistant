@@ -330,4 +330,22 @@ def test_whole_trunk_follows_package_signal_source_without_exposing_packages_as_
             and not stage["background"]
             for stage in wafer_cycle["stages"]
         )
+    repeated_pick = next(
+        row
+        for row in report["rows"]
+        if row["class_name"] == "FrmTest2" and row["method"] == "simpleButton3_Click"
+    )
+    assert repeated_pick["known_delay_min_ms"] >= 150000 and repeated_pick["total_ms"] is None
+    # 100轮各含400ms取片、1000ms放片及100ms停留，不能只保留外层100次。
+    fixed_lines = Counter(
+        stage["line"]
+        for stage in repeated_pick["stages"]
+        if stage["kind"] == "delay"
+        and stage["path"] == "AKRS.ZX2200/Experiment/TestFunction/FrmTest2.cs"
+        and not stage["background"]
+        and not stage.get("repeat")
+    )
+    assert {line: fixed_lines[line] for line in (124, 158, 164, 171, 196, 202)} == dict.fromkeys(
+        (124, 158, 164, 171, 196, 202), 100
+    )
     assert all(row["entry"]["path"].startswith("AKRS.ZX2200/") for row in report["rows"])

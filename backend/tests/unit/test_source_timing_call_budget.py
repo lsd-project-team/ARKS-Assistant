@@ -48,14 +48,14 @@ def test_recursive_source_call_still_preserves_an_unknown_completion_time():
     assert result["truncated"] and result["total_ms"] is None
 
 
-def test_total_call_protection_keeps_only_the_executed_delay_prefix():
+def test_total_call_protection_preserves_mandatory_literal_waits_without_more_calls():
     estimator, result = limited(
         """class Demo{void Leaf(){Thread.Sleep(3);}
         public int DoWork(){for(int i=0;i<10;i++)Leaf();return 0;}}""",
         4,
     )
     assert estimator.budget.used == 4
-    assert result["known_delay_min_ms"] == 12 and result["known_delay_max_ms"] is None
+    assert result["known_delay_min_ms"] == 30 and result["known_delay_max_ms"] is None
     assert result["truncated"] and result["total_ms"] is None
 
 
