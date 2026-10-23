@@ -142,6 +142,10 @@ def handle(estimator, node, method, bindings, stack, conditions, background):
         else None
     )
     if not isinstance(bound, delegates.BoundDelegate) or bound.arity != 1:
+        if collections.length(data, bindings) != 0:
+            from app.modules.action_timing.source_parallel import invalidate_unexplored
+
+            invalidate_unexplored(bindings)
         estimator.record(
             "unresolved", "List.ForEach的回调未绑定或为空", node, method, conditions, background
         )

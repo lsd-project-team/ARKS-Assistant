@@ -43,7 +43,7 @@ def unwrap(index, node, method, bindings=None):
             if (
                 kind in index.classes
                 or simple_type(kind)
-                not in {"Action", "Func", "MethodInvoker", "SendOrPostCallback"}
+                not in {"Action", "Func", "Predicate", "MethodInvoker", "SendOrPostCallback"}
                 or len(args) != 1
             ):
                 return None
@@ -117,6 +117,7 @@ def execute(
     argument_values=(),
     creation_only=False,
     argument_types=(),
+    bounded_iteration=False,
 ):
     from app.modules.action_timing.source_tasks import CLOCK, is_fresh, task_ids
 
@@ -147,13 +148,20 @@ def execute(
         return UNKNOWN
     declaration = bound.closure.method
     marker = f"<delegate:{bound.method_key}:{node.start_byte}:{node.end_byte}>"
-    if marker in stack or estimator.depth(stack) >= 7 or estimator.calls >= 120:
+    if (
+        marker in stack
+        or estimator.depth(stack) >= 7
+        or (not bounded_iteration and estimator.calls >= 120)
+    ):
         estimator.truncated = True
         estimator.record(
             "unresolved", "回调达到展开边界", node, declaration, conditions, background
         )
         return UNKNOWN
-    estimator.calls += 1
+    # 查询迭代已由每动作/集合展开预算约束；不额外消耗一次源码调用名额，
+    # 否则纯字段投影也会挤掉后续真实方法中的已知等待。正文调用仍按原预算计算。
+    if not bounded_iteration:
+        estimator.calls += 1
     if node.type in {"lambda_expression", "anonymous_method_expression"}:
         if len(closures.parameters(node)) != len(argument_values):
             return UNKNOWN
@@ -384,14 +392,14 @@ def signature_arity(kind):
     base, separator, suffix = kind.replace("System.", "").partition("<")
     if base == "Action" and not separator:
         return 0
-    if base not in {"Action", "Func"} or not separator:
+    if base not in {"Action", "Func", "Predicate"} or not separator:
         return None
     depth, count = 0, 1
     for char in suffix[:-1]:
         depth += (char == "<") - (char == ">")
         if char == "," and depth == 0:
             count += 1
-    return count - (base == "Func")
+    return None if base == "Predicate" and count != 1 else count - (base == "Func")
 
 
 def bind_arguments(index, target, arguments, caller, bindings, saved=None):

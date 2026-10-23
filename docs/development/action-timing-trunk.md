@@ -521,3 +521,23 @@ trunk的6,281个非隐藏文件集合与SHA-256保持一致。前端本轮未改
 后续集合链已有明确依据：对提供的AKRS.Galaxy2.Infrastructure.dll静态读取，SHA-256为f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb；GetChildControls的两个重载实际返回List<Control>与List<T>。REA方法记录与独立PEReader的原IL哈希一致；REA对泛型实例签名报告unsupported 0x15，不能将补充解码伪称为完整REA结果。证据见collection-packages-rea.json及collection-package-type-findings.json。尚未接入本次发布。FindAll/ToList链的14个具体输入已有12个缺口复现，源方法与未消费Select两个对照保持正确；预期按微软参考源码的[List](https://github.com/microsoft/referencesource/blob/main/mscorlib/system/collections/generic/list.cs)和[Enumerable](https://github.com/microsoft/referencesource/blob/main/System.Core/System/Linq/Enumerable.cs)核对。提供的trunk中没有DevExpress DLL，负面结论仅限该文件集合，不外推为本机未安装。
 
 trunk的6,281个非隐藏文件集合与SHA-256保持一致。正式账号3、项目3、会话17、消息109、交接记录27、采集运行0，业务数据和任务状态保持不变。复杂集合/扩展链、运行时事件绑定、调度/信号、隐式转换与完整异常，以及缺少配置、反馈和SDK条件的完整运动仍需继续核对；整体目标保持未完成。
+
+### 筛选、集合复制与延迟查询（2026-10-23）
+
+接入框架List.FindAll及ToList复制：筛选先逐项执行，保留回调耗时、返回bool和当前共享状态；结果使用独立列表存储，元素对象仍共享引用。FindAll按当前_size继续并在谓词之后重读当前项，与ForEach的版本失效规则分开。补齐Predicate委托和声明文件中的集合命名空间，源码自有的同名方法继续执行原方法。已经求值的普通字段初值写入实际实例槽位，避免后续重建空List；未解析的实例初始化仍使相关旧状态失效。
+
+Where/Select创建查询时只捕获输入接收者与委托，ToList/ToArray时才逐项执行；读取当时的集合内容和闭包变量，按每项筛选后投影的顺序累加，重复物化重新执行。未知数量只追踪回调样本及实际写入，筛选条件未知时合并执行/跳过分支。查询回调本身受集合/动作展开预算限制，不额外占用一次普通源码调用名额；其正文里的源码调用仍受原预算约束。投影类型推断使用lambda自己的参数及词法边界，防止外层查询初值递归。
+
+实际18处ForEach中，10处已确认框架List（原5处、MainForm.ChangeData的FindAll结果及4处外部控件列表），2处仍为原Parallel.ForEach，6处外部Items或数组扩展保持未定。五个实际入口均展开到集合回调，见eager-collections-source.json。GetChildControls只按精确Infrastructure程序集SHA-256 `f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb` 绑定List<Control>/List<T>返回类型，不推断数量或接口耗时。原IL/元数据证据沿用collection-packages-rea.json、collection-infrastructure-static.json及collection-package-type-findings.json；未加载或执行目标程序集。该DLL加入范围指纹，变更文件即失效。框架语义依据为微软参考源码的[List](https://github.com/microsoft/referencesource/blob/main/mscorlib/system/collections/generic/list.cs)和[Enumerable](https://github.com/microsoft/referencesource/blob/main/System.Core/System/Linq/Enumerable.cs)。
+
+整仓复核拒绝了两类候选：将Where/Select结果当作任意枚举器清空全部状态，曾丢失标定循环的已知等待；后来直接ToList的未知枚举也误清空其他帧的延时对象。最终未知枚举只使相关接收者图失效，框架List/数组的未知数量复制不冒充有回调；不把这种范围模型当作完整CLR副作用证明。八个真实入口重新核对：取标定片115 ms、Bond到相机5,035 ms、晶圆相机标定39,105 ms、取片/基板相机取放片的20 ms及顶针标定10 ms已知组成均保留。998项检查通过但差异有问题的候选未发布；最终检查及缓存哈希以本节后文为准。
+
+最终目录仍2,737行、主表47项，无新增或删除。444条记录的依据变化，31条有数值/计数/状态字段变化，其中20条涉及延时范围或执行状态；14条主记录仅依据变化，47条主记录的耗时数值、状态及运动/等待/超时计数保持不变。三个初始化入口按源码默认空集合结束，0表示未发现显式固定延时；上下料两个Init因输入数量未知恢复未定。System2Domain.CheckIsReady在默认ProcessSteps为空时，由S2ActionNodeController.SelfCheck返回false，不推算成功耗时；不是正数下界下降。其status_reason仍可能保留展开中遇到的其他异常文案，不能当成唯一失败因果证明，完整失败路径说明仍待完善。
+
+83条记录的关键阶段集合有差异，80条仅后台依据变化；前台3条为上述无成功路径自检和两条编程辅助。编程辅助增加运动、传感器等待及50 ms依据，展开预算位置改变，使部分旧运动与一次RefreshNode的100 ms未再展开；完整耗时保持未定，不能据此称辅助流程已完整求解。47个主条目的原关键阶段均保留，BondTask另展开一处运动依据。逐行差异、关键阶段及复核结果见eager-collections-trace-differences.json、eager-collections-semantic-deltas.json、eager-collections-real-actions.json及eager-collections-review.json；所有18个返回Task入口仍在目录，原输送单轮505 ms、点胶单轮10 ms、自检每路光源2,000 ms等继续回归核对。
+
+新增58项检查（集合37、查询19、范围指纹1、接口1）。最终相关后端39文件1,000项完整通过，失败/跳过均为0，按逐项ID核对无重复；并行组总观察616.649秒，快速998项、主工程1项、全trunk与包源码1项均退出0，见eager-collections-pytest-process.json及三个逐项日志。源码相关单元35文件960项包含在该回归中。Ruff、87文件格式及git diff检查通过。前端本轮未改，未重复前端构建或浏览器验收；沿用既有表格、详情和CSV。覆盖率与Mutation Testing未执行，未执行设备程序，质量判断为中；测试不代表完整C#或全部工况。
+
+最终模型trunk-model-v26，源码指纹 `fb14e91f791d6a881a59d26e995cf8b36d836b6cc86621b2a4a46f9b542947e1`。首次整仓计算及保存616.940秒，新实例禁止重建后恢复12.015秒，全部完整行指纹一致；这些数字是本机分析器开销。压缩报告15,859,059字节，SHA-256 `e6428181cf491e04b5bc28ff66682bf9007b06e92b661b16e699d1c0f9ceb83f`，目录report-cache-v26-_2h6581f。先复核后停止旧服务、原子替换派生缓存并重启，发布证据见eager-collections-cache-publish.json及eager-collections-runtime-verification.json。
+
+trunk的6,281个文件集合和SHA-256未变；正式账号3、项目3、会话17、消息109、交接记录27、采集运行0，业务记录和任务状态未改。用户已确认没有Hardware.json，不再要求补配置或导入数据。未绑定的OrderBy/Distinct/其他扩展、foreach流式查询、运行时事件/隐式转换/异常因果、调度与缺配置的完整运动仍需继续；整体目标保持未完成。

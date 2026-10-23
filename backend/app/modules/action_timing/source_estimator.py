@@ -7,9 +7,11 @@ from app.modules.action_timing import (
     source_apm,
     source_dispatch,
     source_dynamic,
+    source_eager_collections,
     source_finally,
     source_list_callbacks,
     source_parallel,
+    source_queries,
 )
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
@@ -554,6 +556,16 @@ class Estimator:
         control_cost = source_parallel.control(self, node, method, bindings, conditions, background)
         if control_cost is not None:
             return control_cost
+        query_cost = source_queries.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if query_cost is not None:
+            return query_cost
+        eager_cost = source_eager_collections.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if eager_cost is not None:
+            return eager_cost
         list_cost = source_list_callbacks.handle(
             self, node, method, bindings, stack, conditions, background
         )
@@ -614,7 +626,18 @@ class Estimator:
             return Cost(value, value) if valid else UNKNOWN
         target = self.index.resolve(node, method)
         if target is None:
-            from app.modules.action_timing.source_references import escape_this
+            from app.modules.action_timing.source_references import (
+                escape_this,
+                invalidate_values,
+                self_value,
+            )
+
+            if name not in PURE_NAMES and (
+                function.type == "identifier"
+                or text(function.child_by_field_name("expression")) in {"this", "base"}
+            ):
+                # 未解析的实例初始化可改写字段及其集合，不能沿用初始化前的列表。
+                invalidate_values((self_value(self.index, method, bindings),), bindings)
 
             if escape_this(self.index, node, method, bindings):
                 self.record(
@@ -626,8 +649,11 @@ class Estimator:
                     background,
                 )
             collections.invalidate_arguments(self.index, node, method, bindings)
-        if name in PURE_NAMES or function_name.startswith(
-            ("Math.", "System.Math.", "TimeSpan.", "DateTime.", "Guid.", "Enumerable.")
+        if name in PURE_NAMES or (
+            target is None
+            and function_name.startswith(
+                ("Math.", "System.Math.", "TimeSpan.", "DateTime.", "Guid.", "Enumerable.")
+            )
         ):
             return ZERO
         if target is None:
@@ -964,9 +990,9 @@ class Estimator:
             return constructor_body(self, method, bindings, stack, conditions, background)
         if method.callable_kind == "initializer":
             cost = self.expression(method.body, method, bindings, stack, conditions, background)
-            from app.modules.action_timing.source_multicast import initialize_value
+            from app.modules.action_timing.source_construction import save_field_initializer
 
-            initialize_value(self.index, method, bindings)
+            save_field_initializer(self.index, method, bindings)
             return Flow(cost)
         flow = self.block(method.body, method, bindings, stack, conditions, background)
         from app.modules.action_timing.source_async import SUSPENDED

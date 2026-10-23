@@ -176,7 +176,11 @@ def load_scope(workspace):
             key = str(target).casefold() if target else ""
             name = reference.get("Include", "").split(",")[0]
             binary_hash = None
-            if key in by_path and name in {"AKRS.Galaxy2.Drive", "AKRS.Galaxy2.LogicHardware"}:
+            if key in by_path and name in {
+                "AKRS.Galaxy2.Drive",
+                "AKRS.Galaxy2.LogicHardware",
+                "AKRS.Galaxy2.Infrastructure",
+            }:
                 if key not in binary_versions:
                     binary_versions[key] = hashlib.sha256(target.read_bytes()).hexdigest()
                     versions.append((by_path[key], binary_versions[key]))

@@ -81,6 +81,11 @@ def hardware_operation(index, node, method):
 
 
 def bind_packages(references):
+    from app.modules.action_timing.source_collection_types import (
+        INFRASTRUCTURE,
+        INFRASTRUCTURE_SHA256,
+    )
+
     hashes = {}
     for item in references:
         if item["kind"] == "assembly" and item.get("sha256"):
@@ -93,6 +98,7 @@ def bind_packages(references):
         for name, expected in {
             "AKRS.Galaxy2.LogicHardware": HARDWARE["artifact"]["sha256"],
             "AKRS.Galaxy2.Drive": DRIVE["artifact_bindings"]["drive"]["sha256"],
+            INFRASTRUCTURE: INFRASTRUCTURE_SHA256,
         }.items()
     }
 

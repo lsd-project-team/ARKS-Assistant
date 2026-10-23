@@ -10,6 +10,22 @@ from app.modules.action_timing.source_properties import assign_property
 from app.modules.action_timing.source_tasks import CLOCK, create_task
 
 
+def save_field_initializer(index, method, bindings):
+    """保存在本次构造中已经求得的值，后续读取不能重建一份空List。"""
+    from app.modules.action_timing.source_dynamic import signature
+    from app.modules.action_timing.source_multicast import initialize_value
+
+    name = method.name.removeprefix(".initialize_")
+    info = index.classes[method.owner]
+    if signature(index, info.types.get(name, ""), method) is not None:
+        initialize_value(index, method, bindings)
+        return
+    reference = "static" if name in info.static_members else bindings.get(state.THIS)
+    slot = state.key((reference, method.owner, name))
+    bindings[slot] = index.value(method.body, method, bindings)
+    state.mark_write(bindings, slot)
+
+
 def field_initializers(
     estimator, owner, method, bindings, stack, conditions, background, static=False
 ):

@@ -144,10 +144,13 @@ def raw_type(index, node, method, seen=None):
     if node is None:
         return ""
     seen = set() if seen is None else seen
-    identity = (method.key, node.start_byte, node.end_byte)
+    identity = (method.key, node.type, node.start_byte, node.end_byte)
     if identity in seen:
         return ""
     seen = seen | {identity}
+    if node.type in {"argument", "parenthesized_expression"}:
+        parts = value_children(node)
+        return raw_type(index, parts[-1], method, seen) if parts else ""
     if node.type in ARRAYS | {"object_creation_expression"}:
         kind = text(node.child_by_field_name("type"))
         if node.type in ARRAYS and kind:
@@ -179,19 +182,33 @@ def raw_type(index, node, method, seen=None):
         owner = index.infer(node.child_by_field_name("expression"), method)
         found = state.member(index, owner, text(node.child_by_field_name("name")))
     elif node.type == "invocation_expression":
-        if text(node.child_by_field_name("function")) in {
-            "Enumerable.Range",
-            "System.Linq.Enumerable.Range",
-        }:
+        if (
+            text(node.child_by_field_name("function"))
+            in {
+                "Enumerable.Range",
+                "System.Linq.Enumerable.Range",
+            }
+            and index.resolve(node, method) is None
+        ):
             return "IEnumerable<int>"
         target = index.resolve(node, method)
-        return target.return_type if target else ""
+        if target:
+            from app.modules.action_timing.source_collection_types import declared_type
+
+            return declared_type(index, target.return_type, target, target.unit)
+        from app.modules.action_timing.source_collection_types import result_type
+
+        return result_type(index, node, method, seen)
     else:
         return ""
-    return (
-        index.classes[found[0]].types.get(text(node.child_by_field_name("name")) or text(node), "")
-        if found
-        else ""
+    if not found:
+        return ""
+    from app.modules.action_timing.source_collection_types import declared_type
+
+    info = index.classes[found[0]]
+    name = text(node.child_by_field_name("name")) or text(node)
+    return declared_type(
+        index, info.types.get(name, ""), found[0], info.member_units.get(name) or method.unit
     )
 
 

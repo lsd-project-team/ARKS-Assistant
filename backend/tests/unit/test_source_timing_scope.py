@@ -35,6 +35,26 @@ def index_sources(*sources):
     )
 
 
+def test_collection_package_fingerprint_tracks_the_referenced_binary(tmp_path):
+    folder = tmp_path / "AKRS.ZX2200"
+    project(
+        folder,
+        "AKRS.ZX2200",
+        {"Demo.cs": "class Demo{}"},
+        '<Reference Include="AKRS.Galaxy2.Infrastructure">'
+        "<HintPath>libs/AKRS.Galaxy2.Infrastructure.dll</HintPath></Reference>",
+    )
+    binary = folder / "libs/AKRS.Galaxy2.Infrastructure.dll"
+    binary.parent.mkdir()
+    binary.write_bytes(b"first-version")
+    before = load_scope(Workspace(tmp_path))
+    assert before.references[0]["sha256"] == hashlib.sha256(binary.read_bytes()).hexdigest()
+    binary.write_bytes(b"different-version")
+    after = load_scope(Workspace(tmp_path))
+    assert before.revision != after.revision
+    assert after.references[0]["sha256"] == hashlib.sha256(binary.read_bytes()).hexdigest()
+
+
 def test_project_compile_list_and_transitive_dependencies_exclude_unbuilt_copies(tmp_path):
     main = tmp_path / "AKRS.ZX2200"
     project(

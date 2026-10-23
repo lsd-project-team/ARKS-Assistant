@@ -46,7 +46,14 @@ def signature(index, kind, method):
     }
     if kind in special and index.lookup_type(base, method) not in index.classes:
         return special[kind]
-    if base not in {"Action", "System.Action", "Func", "System.Func"}:
+    if base not in {
+        "Action",
+        "System.Action",
+        "Func",
+        "System.Func",
+        "Predicate",
+        "System.Predicate",
+    }:
         return None
     if index.lookup_type(base, method) in index.classes:
         return None
@@ -61,6 +68,8 @@ def signature(index, kind, method):
             parts.append(content[start:position])
             start = position + 1
     parts.append(content[start:-1])
+    if simple_type(base) == "Predicate":
+        return (tuple(parts), "bool") if len(parts) == 1 else None
     return (
         (tuple(parts), "void") if simple_type(base) == "Action" else (tuple(parts[:-1]), parts[-1])
     )

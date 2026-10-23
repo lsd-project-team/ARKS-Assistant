@@ -112,9 +112,9 @@ def private_receiver(key, private, allocation_floor):
     return (
         receiver.startswith(("new:", "collection:")) and any(site in receiver for site in private)
     ) or (
-        receiver.startswith("array-copy:")
-        and receiver.removeprefix("array-copy:").isdigit()
-        and int(receiver.removeprefix("array-copy:")) > allocation_floor
+        receiver.startswith(("array-copy:", "list-copy:"))
+        and receiver.split(":", 1)[1].isdigit()
+        and int(receiver.split(":", 1)[1]) > allocation_floor
     )
 
 
