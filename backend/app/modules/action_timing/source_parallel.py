@@ -119,9 +119,13 @@ def private_receiver(key, private, allocation_floor):
 def shared_changes(before, after, private, allocation_floor):
     result = set()
     for key, value in state.context(after).items():
-        if key in {state.UNSTABLE, state.WRITES, state.FRESH} or (
-            key in before and value == before[key]
-        ):
+        if key in {
+            state.UNSTABLE,
+            state.WRITES,
+            state.FRESH,
+            state.PRIVATE_PENDING,
+            state.PRIVATE_ACTIVE,
+        } or (key in before and value == before[key]):
             continue
         if key.startswith(state.LOCAL_PREFIX) and key not in before:
             continue  # 每次callback新建的局部闭包槽不跨迭代共享。
@@ -177,7 +181,14 @@ def invalidate_unexplored(bindings, depth=0):
     invalidated = {
         key: None
         for key in state.context(bindings)
-        if key not in {state.UNSTABLE, state.UNKNOWN_MEMBERS, state.WRITES}
+        if key
+        not in {
+            state.UNSTABLE,
+            state.UNKNOWN_MEMBERS,
+            state.WRITES,
+            state.PRIVATE_PENDING,
+            state.PRIVATE_ACTIVE,
+        }
     }
     for key in invalidated:
         state.mark_write(bindings, key)

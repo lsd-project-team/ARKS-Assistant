@@ -10,6 +10,8 @@ UNSTABLE = "<source-concurrent-writes>"
 UNKNOWN_MEMBERS = "<source-unknown-members>"
 WRITES = "<source-dispatch-writes>"
 FRESH = "<source-queue-new-objects>"
+PRIVATE_PENDING = "<source-private-pending>"
+PRIVATE_ACTIVE = "<source-private-active>"
 MISSING = object()
 
 
@@ -98,6 +100,10 @@ def read(index, node, method, bindings):
     place = location(index, node, method, bindings)
     if place is None:
         return MISSING
+    from app.modules.action_timing.source_private_state import unsafe
+
+    if unsafe(index, place, bindings):
+        return None
     own = key(place)
     wildcard = key((None, place[1], place[2]))
     if unstable and (
@@ -122,6 +128,10 @@ def read(index, node, method, bindings):
 
 
 def is_unstable(index, node, method, bindings):
+    from app.modules.action_timing.source_private_state import unsafe
+
+    if unsafe(index, location(index, node, method, bindings), bindings):
+        return True
     unstable = bindings.get(UNSTABLE)
     if not unstable:
         return False
@@ -167,7 +177,7 @@ def context(bindings):
         name: value
         for name, value in bindings.items()
         if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX))
-        or name in {UNSTABLE, UNKNOWN_MEMBERS, WRITES, FRESH}
+        or name in {UNSTABLE, UNKNOWN_MEMBERS, WRITES, FRESH, PRIVATE_PENDING, PRIVATE_ACTIVE}
     }
 
 
@@ -191,8 +201,10 @@ def materialize(value, bindings):
 def transfer(before, after, *, uncertain=False, locals=False):
     """把调用或后台分支的写入带回；未确定先后关系时只传播失效。"""
     for name, value in after.items():
-        if name in {WRITES, FRESH}:
-            if name in before:
+        if name == PRIVATE_ACTIVE:
+            continue  # 当前执行目标属于调用帧，不带回发起者或其他并发分支。
+        if name in {WRITES, FRESH, PRIVATE_PENDING}:
+            if name in before or name == PRIVATE_PENDING:
                 before[name] = (before.get(name) or frozenset()) | (value or frozenset())
             continue
         if name == UNKNOWN_MEMBERS and value:
@@ -220,7 +232,9 @@ def merge(bindings, branches):
         values = [branch.get(name) for branch in branches]
         if name == UNKNOWN_MEMBERS:
             bindings[name] = any(value is True for value in values)
-        elif name in {WRITES, FRESH}:
+        elif name == PRIVATE_ACTIVE:
+            bindings[name] = frozenset.intersection(*(value or frozenset() for value in values))
+        elif name in {WRITES, FRESH, PRIVATE_PENDING}:
             bindings[name] = frozenset().union(*(value or () for value in values))
         elif isinstance(values[0], TaskPlan) and all(
             isinstance(value, TaskPlan) for value in values

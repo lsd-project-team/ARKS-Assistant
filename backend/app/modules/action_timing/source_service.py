@@ -233,7 +233,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v20:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v21:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,
@@ -255,6 +255,8 @@ class SourceTiming:
                 "Task 模型只模拟源码显式耗时，假设可立即调度；不估算线程调度或CPU耗时。",
                 "旧式委托BeginInvoke沿用立即调度假设，EndInvoke只等待对应目标的同步返回；"
                 "线程池排队、未知完成回调和不匹配的异步结果不作为固定耗时。",
+                "私有委托/结果身份仅在已知后台目标均无写入时保留；"
+                "存在潜在写入或未知回调时保持未定，暂不在join后撤销该保守限制。",
                 "已绑定Action/Func的DynamicInvoke按实际参数数组与返回值展开；"
                 "未知签名、装箱类型和反射异常不作为固定完成时间。",
                 "UI/上下文同步派发等待回调返回；异步派发只计发起，回调保留后台。"

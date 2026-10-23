@@ -37,8 +37,9 @@ def operation(index, node, method):
     )
 
 
-def invalidate(bindings, bound=None, caller=None):
+def invalidate(bindings, bound=None, caller=None, index=None):
     from app.modules.action_timing.source_parallel import invalidate_unexplored
+    from app.modules.action_timing.source_private_effects import preserve
 
     captured = (
         {slot for _, slot in bound.closure.cells}
@@ -63,11 +64,18 @@ def invalidate(bindings, bound=None, caller=None):
             )
             if slot not in captured and name in bindings:
                 protected[name] = bindings[name]
+        if index is not None:
+            protected.update(
+                preserve(index, bindings, lambda value: isinstance(value, AsyncInvocation))
+            )
     invalidate_unexplored(bindings)
     bindings.update(protected)
 
 
 def propagate_writes(estimator, scope, bindings, start, bound=None, caller=None):
+    state.transfer(
+        bindings, {state.PRIVATE_PENDING: scope.get(state.PRIVATE_PENDING)}, uncertain=True
+    )
     unresolved = any(
         stage["kind"] == "unresolved"
         and stage["label"]
@@ -80,7 +88,7 @@ def propagate_writes(estimator, scope, bindings, start, bound=None, caller=None)
         for stage in estimator.stages[start:]
     )
     if estimator.truncated or unresolved:
-        invalidate(bindings, bound, caller)
+        invalidate(bindings, bound, caller, estimator.index)
         return
     for key in scope.get(state.WRITES, ()):
         if key.startswith((state.PREFIX, state.LOCAL_PREFIX, state.COLLECTION_PREFIX)):
@@ -89,6 +97,8 @@ def propagate_writes(estimator, scope, bindings, start, bound=None, caller=None)
 
 
 def begin(estimator, node, method, bindings, stack, conditions, background, bound):
+    from app.modules.action_timing.source_private_state import activate, remember
+
     nodes = call_args.arguments(node)
     values = call_args.values(estimator.index, node, method, bindings)
     shape = (
@@ -112,6 +122,7 @@ def begin(estimator, node, method, bindings, stack, conditions, background, boun
         )
     )
     if not valid:
+        remember(bindings, None)
         invalidate(bindings)
         estimator.record(
             "unresolved",
@@ -123,7 +134,9 @@ def begin(estimator, node, method, bindings, stack, conditions, background, boun
             apm=True,
         )
         return UNKNOWN
+    activity = remember(bindings, bound)
     scope = source_dispatch.queued_scope(bound, bindings)
+    activate(estimator.index, scope, activity)
     # 共享值沿用排队后的保守快照，时钟沿用Task的立即调度假设。
     scope[CLOCK] = bindings.get(CLOCK, ZERO)
     start = len(estimator.stages)

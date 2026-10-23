@@ -322,7 +322,14 @@ def create_task(estimator, node, method, bindings):
 def run_delegate(
     estimator, delegate, method, bindings, stack, conditions, background, waiting, join_result=True
 ):
+    from app.modules.action_timing.source_private_state import activate, remember
+
+    if not waiting:
+        delegate = delegates.capture(estimator.index, delegate, method, bindings)
+        activity = remember(bindings, delegate)
     task_bindings = dict(bindings)
+    if not waiting:
+        activate(estimator.index, task_bindings, activity)
     previous_tasks = task_ids(task_bindings.values())
     stage_start = len(estimator.stages)
     duration = delegates.execute(
@@ -344,7 +351,8 @@ def run_delegate(
     effects = tuple(
         (key, value)
         for key, value in state.context(task_bindings).items()
-        if key not in bindings or value != bindings[key]
+        if key not in {state.PRIVATE_PENDING, state.PRIVATE_ACTIVE}
+        and (key not in bindings or value != bindings[key])
     )
     state.transfer(
         bindings,

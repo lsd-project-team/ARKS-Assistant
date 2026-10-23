@@ -129,6 +129,10 @@ def execute(estimator, method, values, stack, conditions, background):
         return prefix_cost, TaskPlan(started, duration, immediate.get("<return-value>"))
 
     begin = len(estimator.stages)
+    from app.modules.action_timing.source_private_state import activate, remember
+
+    activity = remember(values, method, method_target=True)
+    activate(estimator.index, values, activity, method=method, stack=stack)
     previous = [(stage, stage["background"]) for stage in estimator.stages]
     full = estimator.execute_body(method, values, stack, conditions, False)
     completion = completed_scope(full, values)
@@ -170,7 +174,8 @@ def execute(estimator, method, values, stack, conditions, background):
     effects = tuple(
         (key, value)
         for key, value in final_context.items()
-        if key not in initial or value != initial[key]
+        if key not in {state.PRIVATE_PENDING, state.PRIVATE_ACTIVE}
+        and (key not in initial or value != initial[key])
     )
     # 未join时共享写入可能和调用者交错，只传播失效，不能当作已发生的常量。
     concurrent = dict(immediate)

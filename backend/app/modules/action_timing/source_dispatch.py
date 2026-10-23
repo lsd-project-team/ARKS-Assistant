@@ -235,7 +235,9 @@ def handle(estimator, node, method, bindings, stack, conditions, background):
     ):
         if asynchronous and not isinstance(bound, delegates.BoundDelegate):
             from app.modules.action_timing.source_parallel import invalidate_unexplored
+            from app.modules.action_timing.source_private_state import remember
 
+            remember(bindings, None)
             invalidate_unexplored(bindings)
         estimator.record(
             "unresolved",
@@ -269,7 +271,13 @@ def handle(estimator, node, method, bindings, stack, conditions, background):
             dispatch=True,
         )
         return UNKNOWN
+    if asynchronous:
+        from app.modules.action_timing.source_private_state import activate, remember
+
+        activity = remember(bindings, bound)
     scope = queued_scope(bound, bindings) if asynchronous else bindings
+    if asynchronous:
+        activate(estimator.index, scope, activity)
     start = len(estimator.stages)
     previous = task_ids(bindings.values())
     cost = delegates.execute(
@@ -286,6 +294,9 @@ def handle(estimator, node, method, bindings, stack, conditions, background):
     )
     result = scope.get(delegates.RESULT)
     if asynchronous:
+        state.transfer(
+            bindings, {state.PRIVATE_PENDING: scope.get(state.PRIVATE_PENDING)}, uncertain=True
+        )
         for stage in estimator.stages[start:]:
             stage["background"] = True
         unknown_target = any(
