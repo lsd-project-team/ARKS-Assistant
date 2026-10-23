@@ -202,6 +202,11 @@ def evaluate(
     for position, arg in enumerate(nodes):
         bindings[CLOCK] = started.plus(cost)
         cost = cost.plus(estimator.expression(arg, method, bindings, stack, conditions, background))
+        from app.modules.action_timing.source_completion import failed
+
+        if failed(arg, method, bindings):
+            bindings[return_key(node, method, bindings) + ":normal"] = False
+            break
         scalars.append(estimator.index.value(arg, method, bindings))
         references.append(state.capture_ref(estimator.index, arg, method, bindings))
         bound = state.MISSING

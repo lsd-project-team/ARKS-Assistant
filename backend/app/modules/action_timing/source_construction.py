@@ -219,6 +219,11 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
         background,
         target=target,
     )
+    from app.modules.action_timing.source_completion import failed
+
+    if failed(node, method, bindings):
+        bindings[CLOCK] = started
+        return cost
     if create_task(estimator, node, method, bindings):
         bindings[CLOCK] = started
         return cost

@@ -98,6 +98,25 @@ def test_source_api_computes_filtered_and_materialized_callbacks_without_import(
         assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
 
 
+def test_source_api_consumes_queries_and_streams_foreach_without_import(services):
+    (services[2].root / "Demo.cs").write_text(
+        "using System.Linq;class Demo:ActionNode{public int DoWork(){"
+        "Thread.Sleep(new[]{1,2,3}.Count(n=>{Thread.Sleep(2);return n>1;}));"
+        "foreach(var n in new[]{2,3}.Select(n=>{Thread.Sleep(1);return n;}))"
+        "{Thread.Sleep(n);break;}return 0;}}",
+        encoding="utf-8",
+    )
+    with TestClient(create_app(services[0])) as client:
+        response = client.get(BASE)
+        assert response.status_code == 200
+        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
+        assert row["total_ms"] == row["known_delay_min_ms"] == row["known_delay_max_ms"] == 11
+        detail = client.get(BASE + "/" + row["id"])
+        assert detail.status_code == 200
+        assert sum(s["kind"] == "delay" for s in detail.json()["stages"]) == 6
+        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
+
+
 def test_main_zx_project_is_not_mixed_with_output_copy(tmp_path):
     original = tmp_path / "AKRS.ZX2200"
     copied = tmp_path / "output/AKRS.ZX2200"

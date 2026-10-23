@@ -541,3 +541,23 @@ Where/Select创建查询时只捕获输入接收者与委托，ToList/ToArray时
 最终模型trunk-model-v26，源码指纹 `fb14e91f791d6a881a59d26e995cf8b36d836b6cc86621b2a4a46f9b542947e1`。首次整仓计算及保存616.940秒，新实例禁止重建后恢复12.015秒，全部完整行指纹一致；这些数字是本机分析器开销。压缩报告15,859,059字节，SHA-256 `e6428181cf491e04b5bc28ff66682bf9007b06e92b661b16e699d1c0f9ceb83f`，目录report-cache-v26-_2h6581f。先复核后停止旧服务、原子替换派生缓存并重启，发布证据见eager-collections-cache-publish.json及eager-collections-runtime-verification.json。
 
 trunk的6,281个文件集合和SHA-256未变；正式账号3、项目3、会话17、消息109、交接记录27、采集运行0，业务记录和任务状态未改。用户已确认没有Hardware.json，不再要求补配置或导入数据。未绑定的OrderBy/Distinct/其他扩展、foreach流式查询、运行时事件/隐式转换/异常因果、调度与缺配置的完整运动仍需继续；整体目标保持未完成。
+
+### 查询消费与流式foreach（2026-10-24）
+
+只读清点主工程名称候选：Any 33、All 2、Count 22、First 8、FirstOrDefault 21、Last 18，共104处；这表示源码位置清单，不表示其接收者和外部实现均已解析。另有2处直接foreach查询，分别在BilinearCompensator.Interpolate与ParamService.GetAllParamMappings，见query-consumers-audit.json。保留已有Where/Select的惰性创建，补齐Count/LongCount、Any/All、First/Last及OrDefault形式；源码自有同名方法继续执行原方法。按输入顺序执行回调，Any/First等短路后不再枚举余项，Count/Last按所需输入计算；命名参数和返回类型用于后续源码重载绑定。
+
+QueryExecution改为传播Flow，允许物化、消费和流式foreach共享逐项筛选/投影。直接foreach每产出一项才执行正文，保留变量独立闭包、当前共享写入、continue/break/return/goto的出口，循环依据标明查询输入次数，不冒充输出数量。未知数量或筛选结果合并可能的执行/跳过状态，未知回调或展开限制不再误变成0项。列表在继续MoveNext时检查版本，短路返回后不再补做一次版本检查。框架语义按微软[Enumerable参考源码](https://raw.githubusercontent.com/microsoft/referencesource/main/System.Core/System/Linq/Enumerable.cs)的Count、Any/All、First/Last及迭代器核对，未执行目标程序集或设备程序。
+
+空First/Last、枚举失效或已证明无正常返回的调用，通过接收者、实参、普通语句、if条件及return传播，停止后续成功路径。失败的较早实参不会执行后面的实参或构造体；循环/重试重新求值前清除旧完成标志，短路跳过的旧失败不沿用。该改动只处理已证明的完成边界，尚不是完整CLR异常、捕获及因果证明。原始29项反例中28项先复现遗漏，最后新增查询单元37项、接口1项，覆盖顺序/返回值、空/未知输入、短路、枚举修改、源方法、类型和命名参数、闭包及求值失败。
+
+最终相关后端40文件1,038项完整通过，Failed=0、Skipped=0，逐项ID无重复；总观察727.390秒（快速1,036项、ZX2200实仓1项、全trunk与依赖源码1项均退出0），见query-consumers-pytest-process.json及三组逐项日志。997项源码相关单元包含在该回归中；较早的993项检查不是最终全回归。Ruff、91文件格式和差异检查通过。API通过隔离登录测试源码摘要、详情的11 ms组成及采集运行0；前端本轮未改，未重复构建或浏览器验收。覆盖率未采集，Mutation Testing未执行，质量为中，不能据此声明全部C#或全部工况完成。
+
+目录仍2,737行、主表47项，无新增或删除；668条依据变化，26条有汇总字段变化，其中6条涉及延时或状态，35条主记录仅依据变化。47条主记录的原关键阶段、耗时数值、状态及运动/等待/超时计数全部保留。原取片至少5 ms、上视20–40 ms、焊后500 ms、焊接20 ms、输送单轮505 ms、点胶单轮10 ms、自检每路光源2,000 ms、六条标定及18个Task返回入口继续核对；八个重点方法的115、5,035、39,105、20及10 ms已知组成均保留。
+
+两条辅助入口的已知下界提高：FrmBondCompensateCalibration.ValidateBondCompensateCalibration从200至300 ms，恢复原第429行Sleep(100)；FrmTest2.simpleButton3_Click从11,400至11,800 ms，恢复原第158/164/171行200+100+100 ms，完整运动仍未定。34条关键阶段集合变化中，7条仅后台、27条涉及前台；其中25条来自已证明不能正常返回的力控分支，不再计入原ForceRelated.cs第516/587/742/764/787行的GT运动和10/20/10 ms。原因包括空SmallForceConfigItemList.Last与CheckBeforeForceControlSet输入校验，不能解释为现场已配置设备一定失败。停止旧无效路径也释放了展开预算，因而上述两个辅助入口能继续展开后续明确停留，见query-consumers-failure-paths.json及query-consumers-semantic-deltas.json。
+
+另外两条前台变化为UnloadingSubSectionController.MapBelt和WaitingUnloadSubSectionController.MapBelt：原第73行先调用SearchBelt，而该类第62–64行的SearchBelt直接抛NotImplementedException，所以不再把后续报警确认计入成功动作；0转为不可推算成功耗时，不是正数等待的丢失。ClosedLoopCalibrationController.Save与UcShortcutMenu.InitControl按源码默认空集合Any为false收敛为无显式固定延时。全部变化及允许的状态转换已绑定最终哈希，见query-consumers-trace-differences.json、query-consumers-real-actions.json及query-consumers-review.json。
+
+最终模型trunk-model-v27，源码指纹 `204ad476e0f8b264512ca324edcbccc6c9a1c4b993a0e6fd0d078cd694800857`。首次整仓计算及保存721.552秒，新实例禁止重建后恢复11.955秒，全部完整行指纹一致；是本机分析器开销。压缩报告15,802,226字节，SHA-256 `6607a835d9fd373b214ff023d66fb517e30c0031640ffde59e2313dbb44de9cf`，目录report-cache-v27-yppp0mvh。通过复核后停止旧服务、原子替换派生缓存并重启，发布证据为query-consumers-cache-publish.json与query-consumers-runtime-verification.json。
+
+trunk的6,281个文件集合及哈希保持一致，正式账号3、项目3、会话17、消息109、交接记录27、采集运行0，业务记录和任务状态未改。当前仍有OrderBy/ThenBy/Distinct/SelectMany、字典等集合值、长循环展开预算、事件/隐式转换/完整异常因果和调度等未完成范围；缺Hardware.json、起点/反馈及SDK条件的运动继续标未定，不要求用户采集或导入。整体目标保持未完成。

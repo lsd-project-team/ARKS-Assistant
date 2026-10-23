@@ -12,6 +12,7 @@ from app.modules.action_timing import (
     source_list_callbacks,
     source_parallel,
     source_queries,
+    source_query_consumers,
 )
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
@@ -19,6 +20,8 @@ from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
+from app.modules.action_timing.source_completion import clear as clear_completion
+from app.modules.action_timing.source_completion import failed as expression_failed
 from app.modules.action_timing.source_condition_loops import execute_condition_loop
 from app.modules.action_timing.source_construction import constructor_body, create_object
 from app.modules.action_timing.source_delay_reachability import possible as delay_possible
@@ -237,6 +240,14 @@ class Estimator:
     def expression(self, node, method, bindings, stack, conditions, background):
         if node is None:
             return ZERO
+        if node.type in {
+            "invocation_expression",
+            "binary_expression",
+            "conditional_expression",
+            "conditional_access_expression",
+            "object_creation_expression",
+        }:
+            clear_completion(node, method, bindings)
         if node.type in {"this", "this_expression"}:
             from app.modules.action_timing.source_references import leaf_cost
 
@@ -345,6 +356,8 @@ class Estimator:
                 self, node, method, bindings, stack, conditions, background
             )
         if node.type == "invocation_expression":
+            # 同一语法位置可在循环/重试中再次调用，旧的失败完成标志不能复用。
+            bindings.pop(call_args.return_key(node, method, bindings) + ":normal", None)
             if text(node.child_by_field_name("function")) == "nameof":
                 return ZERO
             before = ZERO
@@ -385,6 +398,9 @@ class Estimator:
                 "cast_expression",
             }:
                 before = self.expression(function, method, bindings, stack, conditions, background)
+            if expression_failed(function, method, bindings):
+                bindings[call_args.return_key(node, method, bindings) + ":normal"] = False
+                return before
             receiver_id = (
                 state.receiver_for(self.index, target, node, method, bindings)
                 if target is not None
@@ -421,6 +437,8 @@ class Estimator:
                 receiver_value=receiver_value,
             )
             bindings[CLOCK] = started.plus(before)
+            if expression_failed(node, method, bindings):
+                return before
             result = before.plus(self.call(node, method, bindings, stack, conditions, background))
             bindings[CLOCK] = started
             return result
@@ -431,6 +449,8 @@ class Estimator:
             result_key = call_args.return_key(node, method, bindings)
             bindings.pop(result_key, None)
             before = self.expression(left, method, bindings, stack, conditions, background)
+            if expression_failed(left, method, bindings):
+                return before
             value = self.index.value(left, method, bindings)
             if op in {"&&", "||"}:
                 if (op == "&&" and value is False) or (op == "||" and value is True):
@@ -495,6 +515,8 @@ class Estimator:
         if node.type == "conditional_expression":
             condition = node.child_by_field_name("condition")
             before = self.expression(condition, method, bindings, stack, conditions, background)
+            if expression_failed(condition, method, bindings):
+                return before
             value = self.index.value(condition, method, bindings)
             costs, branches, values = [], [], []
             for flag, field in [(True, "consequence"), (False, "alternative")]:
@@ -525,6 +547,8 @@ class Estimator:
                 result = result.plus(
                     self.expression(child, method, bindings, stack, conditions, background)
                 )
+                if expression_failed(child, method, bindings):
+                    break
         return result
 
     def call(self, node, method, bindings, stack, conditions, background):
@@ -561,6 +585,11 @@ class Estimator:
         )
         if query_cost is not None:
             return query_cost
+        consumer_cost = source_query_consumers.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if consumer_cost is not None:
+            return consumer_cost
         eager_cost = source_eager_collections.handle(
             self, node, method, bindings, stack, conditions, background
         )
@@ -1130,6 +1159,8 @@ class Estimator:
         if kind == "if_statement":
             condition = node.child_by_field_name("condition")
             before = self.expression(condition, method, bindings, stack, conditions, background)
+            if expression_failed(condition, method, bindings):
+                return Flow(None, None)
             value = self.index.value(condition, method, bindings)
             branches = []
             continuing_bindings = []
@@ -1158,6 +1189,8 @@ class Estimator:
         if kind == "return_statement":
             value = text(node)
             cost = self.expression(node, method, bindings, stack, conditions, background)
+            if expression_failed(node, method, bindings):
+                return Flow(None, None)
             if method.body_override is not None:
                 # 服务循环内部 return 结束线程，并非该轮动作正常完成。
                 return Flow(None, None)
@@ -1293,7 +1326,8 @@ class Estimator:
                 state.merge(bindings, continuing_bindings)
             return result.prefix(before)
         if kind in {"expression_statement", "local_declaration_statement"}:
-            return Flow(self.expression(node, method, bindings, stack, conditions, background))
+            cost = self.expression(node, method, bindings, stack, conditions, background)
+            return Flow(None, None) if expression_failed(node, method, bindings) else Flow(cost)
         if kind in {
             "using_statement",
             "lock_statement",

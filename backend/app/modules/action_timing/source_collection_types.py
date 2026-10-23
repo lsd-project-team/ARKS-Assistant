@@ -103,7 +103,7 @@ def control_result(index, node, method):
 
 def result_type(index, node, method, seen):
     from app.modules.action_timing import source_collections as collections
-    from app.modules.action_timing.source_arguments import arguments
+    from app.modules.action_timing.source_arguments import argument_name, arguments
     from app.modules.action_timing.source_array_values import element
 
     receiver, name, _ = parts(node)
@@ -112,6 +112,25 @@ def result_type(index, node, method, seen):
     control = control_result(index, node, method)
     if control:
         return control
+    if name in {
+        "Count",
+        "LongCount",
+        "Any",
+        "All",
+        "First",
+        "FirstOrDefault",
+        "Last",
+        "LastOrDefault",
+    } and linq(index, node, method):
+        if name in {"Count", "LongCount"}:
+            return "long" if name == "LongCount" else "int"
+        if name in {"Any", "All"}:
+            return "bool"
+        args = arguments(node)
+        source = receiver
+        if text(receiver) in {"Enumerable", "System.Linq.Enumerable"} and args:
+            source = next((part for part in args if argument_name(part) == "source"), args[0])
+        return element(collections.raw_type(index, source, method, seen))
     if name == "FindAll":
         kind = collections.raw_type(index, receiver, method, seen)
         if framework_type(index, kind, method, "List", "System.Collections.Generic"):

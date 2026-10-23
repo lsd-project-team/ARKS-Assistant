@@ -8,7 +8,7 @@ from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_collection_types import framework_type, linq, parts
-from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Flow, choice
+from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Flow
 from app.modules.action_timing.source_index import text, walk
 from app.modules.action_timing.source_loops import (
     MAX_ACTION_ITERATIONS,
@@ -24,6 +24,26 @@ class Query:
     element_type: str
     steps: tuple
     trusted_source: bool
+
+
+def sequence(index, data, node, method):
+    if isinstance(data, Query):
+        return data
+    kind = collections.raw_type(index, node, method)
+    item_type = (
+        data.get("<element_type>", "var")
+        if collections.known(data)
+        else collections.element_type(index, node, method)
+    )
+    trusted = (
+        collections.known(data)
+        or kind.endswith("[]")
+        or any(
+            framework_type(index, kind, method, name, "System.Collections.Generic")
+            for name in ("List", "Dictionary")
+        )
+    )
+    return Query(data, item_type, (), trusted)
 
 
 def selected_type(index, callback, method, input_type):
@@ -80,30 +100,14 @@ def handle(estimator, node, method, bindings, stack, conditions, background):
         )
     )
     source_node = nodes[0] if static else receiver
-    source_kind = collections.raw_type(index, source_node, method)
-    input_type = (
-        data.element_type
-        if isinstance(data, Query)
-        else (
-            data.get("<element_type>", "var")
-            if collections.known(data)
-            else collections.element_type(index, source_node, method)
-        )
-    )
+    query = sequence(index, data, source_node, method)
+    input_type = query.element_type
     callback = delegates.capture(index, nodes[-1], method, bindings, arity=1, returns_task=False)
     output_type = (
         selected_type(index, callback, method, input_type) if name == "Select" else input_type
     )
     step = (name, callback, input_type, output_type)
-    if isinstance(data, Query):
-        result = replace(data, element_type=output_type, steps=(*data.steps, step))
-    else:
-        trusted = (
-            collections.known(data)
-            or source_kind.endswith("[]")
-            or framework_type(index, source_kind, method, "List", "System.Collections.Generic")
-        )
-        result = Query(data, output_type, (step,), trusted)
+    result = replace(query, element_type=output_type, steps=(*query.steps, step))
     bindings[arguments.return_key(node, method, bindings)] = result
     return ZERO
 
@@ -113,19 +117,22 @@ class QueryExecution(ForExecution):
         super().__init__(estimator, node, method, bindings, stack, conditions, background)
         self.query, self.value = query, None
         self.values, self.uncertain, self.completed = [], False, True
-        self.selected, self.output = None, None
         self.kind = "LINQ物化"
+
+    def projected(self, value, conditions):
+        self.values.append(value)
+        return Flow()
 
     def apply(self, position, value, conditions):
         if position >= len(self.query.steps):
-            return ZERO, True, value
+            return self.projected(value, conditions)
         name, callback, input_type, _ = self.query.steps[position]
         if not isinstance(callback, delegates.BoundDelegate) or callback.arity != 1:
             from app.modules.action_timing.source_parallel import invalidate_unexplored
 
             invalidate_unexplored(self.bindings)
             self.completed = False
-            return UNKNOWN, None, None
+            return Flow(UNKNOWN)
         started = self.bindings.get(CLOCK, ZERO)
         cost = delegates.execute(
             self.estimator,
@@ -143,27 +150,46 @@ class QueryExecution(ForExecution):
         result = self.bindings.get(delegates.RESULT)
         if self.bindings.get(delegates.COMPLETION) is not True:
             self.completed = False
+            return (
+                Flow(None, None)
+                if self.bindings.get(delegates.COMPLETION) is False
+                else Flow(UNKNOWN)
+            )
         self.bindings[CLOCK] = started.plus(cost)
         if name == "Where" and result is False:
-            return cost, False, None
+            return Flow(cost)
         maybe = name == "Where" and result is not True
         skipped = dict(self.bindings) if maybe else None
-        tail, selected, output = self.apply(
+        tail = self.apply(
             position + 1,
             result if name == "Select" else value,
             (*conditions, "筛选结果未定") if maybe else conditions,
         )
         if maybe:
-            state.merge(self.bindings, [skipped, dict(self.bindings)])
-            return cost.plus(choice(ZERO, tail)), False if selected is False else None, output
-        return cost.plus(tail), selected, output
+            # 回调/foreach正文里的break和return是退出路径，只合并仍继续的状态。
+            continuing = [skipped]
+            if tail.live is not None:
+                continuing.append(dict(self.bindings))
+            state.merge(self.bindings, continuing)
+            self.uncertain = True
+            tail = Flow().merge(tail)
+        return tail.prefix(cost)
 
     def body_flow(self, suffix):
         self.bindings[CLOCK] = self.started.plus(self.elapsed)
-        cost, self.selected, self.output = self.apply(0, self.value, (*self.conditions, suffix))
-        return Flow(cost)
+        return self.apply(0, self.value, (*self.conditions, suffix))
 
-    def execute(self):
+    def complete_sequence(self):
+        self.exit(self.elapsed, self.bindings)
+
+    def failed(self, label):
+        self.completed = False
+        self.estimator.failure_reasons.append(label)
+        self.estimator.record(
+            "unresolved", label, self.node, self.method, self.conditions, self.background
+        )
+
+    def run(self):
         data = self.query.source
         if not self.query.trusted_source:
             from app.modules.action_timing.source_eager_collections import invalidate_enumeration
@@ -182,15 +208,7 @@ class QueryExecution(ForExecution):
                 current = collections.version(data, self.bindings)
                 if current != version:
                     self.uncertain = True
-                    self.estimator.record(
-                        "unresolved",
-                        "查询枚举期间源集合发生变化",
-                        self.node,
-                        self.method,
-                        self.conditions,
-                        self.background,
-                    )
-                    self.exit(self.elapsed.plus(UNKNOWN), self.bindings)
+                    self.failed("查询枚举期间源集合发生变化，不能正常完成")
                     break
                 if (
                     self.count >= MAX_ITERATIONS
@@ -204,17 +222,16 @@ class QueryExecution(ForExecution):
                 if not self.run_body():
                     self.uncertain = True
                     break
-                if self.selected is True:
-                    self.values.append(self.output)
-                elif self.selected is not False:
-                    self.uncertain = True
             else:
                 if collections.version(data, self.bindings) != version:
                     self.uncertain = True
-                    self.exit(self.elapsed.plus(UNKNOWN), self.bindings)
+                    self.failed("查询枚举结束前源集合发生变化，不能正常完成")
                 else:
                     self.bounded = True
-                    self.exit(self.elapsed, self.bindings)
-        flow = self.finish()
+                    self.complete_sequence()
+        return self.finish()
+
+    def execute(self):
+        flow = self.run()
         values = None if self.uncertain or not self.completed else self.values
         return flow.cost(), values

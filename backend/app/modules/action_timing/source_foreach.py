@@ -45,6 +45,12 @@ class ForeachExecution(ForExecution):
             types={**self.method.types, text(variable): kind},
             type_scope=(*self.method.type_scope, (self.node.start_byte, kind)),
         )
+        from app.modules.action_timing.source_queries import Query
+
+        if isinstance(data, Query) and variable is not None and variable.type == "identifier":
+            from app.modules.action_timing.source_query_foreach import QueryForeach
+
+            return QueryForeach(self, data).run()
         if variable is None or variable.type != "identifier" or size is None:
             with self.iteration(variable):
                 state.write(self.estimator.index, variable, self.method, self.bindings, None)

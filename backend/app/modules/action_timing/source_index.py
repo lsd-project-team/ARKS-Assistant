@@ -807,6 +807,23 @@ class SourceIndex:
             found = self.resolve(node, method)
             if found:
                 return self.lookup_type(found.return_type, found)
+            if text(function.child_by_field_name("name")).split("<", 1)[0] in {
+                "Count",
+                "LongCount",
+                "Any",
+                "All",
+                "First",
+                "FirstOrDefault",
+                "Last",
+                "LastOrDefault",
+            }:
+                from app.modules.action_timing.source_collection_types import (
+                    result_type as collection_type,
+                )
+
+                collection = collection_type(self, node, method, set())
+                if collection:
+                    return self.lookup_type(collection, method)
             from app.modules.action_timing.source_delegates import result_type
 
             return result_type(self, node, method)

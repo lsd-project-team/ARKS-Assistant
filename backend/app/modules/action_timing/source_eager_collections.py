@@ -154,9 +154,11 @@ def handle(estimator, node, method, bindings, stack, conditions, background):
         if static and valid:
             data = arguments.values(index, node, method, bindings)[0]
         if valid and isinstance(data, Query):
-            cost, values = QueryExecution(
+            execution = QueryExecution(
                 estimator, node, method, bindings, stack, conditions, background, data
-            ).execute()
+            )
+            cost, values = execution.execute()
+            bindings[result_key + ":normal"] = execution.result.live is not None
             result = new_list(estimator, data.element_type, values)
             if name == "ToArray":
                 result.update(
