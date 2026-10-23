@@ -8,7 +8,6 @@ from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing.source_flow import UNKNOWN, Flow, choice
 from app.modules.action_timing.source_index import text
 from app.modules.action_timing.source_loops import (
-    MAX_ACTION_ITERATIONS,
     MAX_ITERATIONS,
     ForExecution,
 )
@@ -86,14 +85,14 @@ class ListExecution(ForExecution):
                 if (
                     current is None
                     or self.count >= MAX_ITERATIONS
-                    or self.estimator.loop_steps >= MAX_ACTION_ITERATIONS
+                    or self.estimator.loop_limit_reached()
                 ):
                     self.estimator.truncated = True
                     self.value = None
                     self.summarize("集合状态或剩余项数未定，或达到展开边界")
                     break
                 self.value = collections.item(self.data, position, self.bindings)
-                self.estimator.loop_steps += 1
+                self.estimator.consume_loop_step()
                 flow = self.body_flow(f"List.ForEach第{position + 1}项")
                 self.count += 1
                 self.each = choice(self.each, flow.cost())

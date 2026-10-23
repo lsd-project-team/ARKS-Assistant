@@ -310,11 +310,21 @@ def test_unsupported_custom_signatures_do_not_bypass_validation_through_a_lambda
     assert result["total_ms"] is None
 
 
-def test_a_future_private_event_write_is_not_hidden_by_a_later_subscription_assignment():
-    result = analyze("""using System;using System.Threading.Tasks;class Demo {
-        private event Action Done;void Empty(){}
-        void Later(){for(int i=0;i<130;i++)Empty();Done=null;}
+@pytest.mark.parametrize("declaration", ["private event Action Done;", "event Action Done;"])
+@pytest.mark.parametrize("work", ["", "for(int i=0;i<130;i++)Empty();"])
+def test_a_future_private_event_write_is_not_hidden_by_a_later_subscription_assignment(
+    declaration, work
+):
+    result = analyze(
+        """using System;using System.Threading.Tasks;class Demo {
+        """
+        + declaration
+        + """void Empty(){}
+        void Later(){"""
+        + work
+        + """Done=null;}
         public int DoWork(){Task.Run(Later);Done=()=>Thread.Sleep(7);
-        Done?.Invoke();return 0;}}""")
+        Done?.Invoke();return 0;}}"""
+    )
     assert result["total_ms"] is None
     assert result["known_delay_min_ms"] == 0

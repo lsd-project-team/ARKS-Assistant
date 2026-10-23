@@ -9,7 +9,6 @@ from app.modules.action_timing.source_scopes import inline_names, local_scope, r
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
 
 MAX_ITERATIONS = 128
-MAX_ACTION_ITERATIONS = 512
 
 
 def fields(node, name):
@@ -210,7 +209,7 @@ class ForExecution:
             if value is not True:
                 self.summarize("条件或次数由运行数据决定")
                 break
-            if self.count >= MAX_ITERATIONS or self.estimator.loop_steps >= MAX_ACTION_ITERATIONS:
+            if self.count >= MAX_ITERATIONS or self.estimator.loop_limit_reached():
                 self.estimator.truncated = True
                 self.summarize("达到迭代展开边界")
                 break
@@ -224,7 +223,7 @@ class ForExecution:
         return self.finish()
 
     def run_body(self):
-        self.estimator.loop_steps += 1
+        self.estimator.consume_loop_step()
         flow = self.body_flow(f"{self.kind}第{self.count + 1}轮：{text(self.condition) or 'true'}")
         self.last_flow = flow
         self.count += 1

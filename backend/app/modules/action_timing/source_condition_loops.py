@@ -5,7 +5,6 @@ from dataclasses import replace
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_delay_reachability import possible as delay_possible
 from app.modules.action_timing.source_loops import (
-    MAX_ACTION_ITERATIONS,
     MAX_ITERATIONS,
     ForExecution,
 )
@@ -39,7 +38,7 @@ class ConditionExecution(ForExecution):
                     self.summarize("循环状态重复，后续退出次数未定")
                     break
                 previous = current
-            if self.count >= MAX_ITERATIONS or self.estimator.loop_steps >= MAX_ACTION_ITERATIONS:
+            if self.count >= MAX_ITERATIONS or self.estimator.loop_limit_reached():
                 self.estimator.truncated = True
                 self.summarize("达到迭代展开边界")
                 break

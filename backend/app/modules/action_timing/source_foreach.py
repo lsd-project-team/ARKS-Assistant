@@ -7,7 +7,6 @@ from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_index import text
 from app.modules.action_timing.source_loops import (
-    MAX_ACTION_ITERATIONS,
     MAX_ITERATIONS,
     ForExecution,
 )
@@ -65,7 +64,7 @@ class ForeachExecution(ForExecution):
             if (
                 current is None
                 or self.count >= MAX_ITERATIONS
-                or self.estimator.loop_steps >= MAX_ACTION_ITERATIONS
+                or self.estimator.loop_limit_reached()
             ):
                 self.estimator.truncated = True
                 with self.iteration(variable):

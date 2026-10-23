@@ -11,7 +11,6 @@ from app.modules.action_timing.source_collection_types import framework_type, li
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Flow
 from app.modules.action_timing.source_index import text, walk
 from app.modules.action_timing.source_loops import (
-    MAX_ACTION_ITERATIONS,
     MAX_ITERATIONS,
     ForExecution,
 )
@@ -210,10 +209,7 @@ class QueryExecution(ForExecution):
                     self.uncertain = True
                     self.failed("查询枚举期间源集合发生变化，不能正常完成")
                     break
-                if (
-                    self.count >= MAX_ITERATIONS
-                    or self.estimator.loop_steps >= MAX_ACTION_ITERATIONS
-                ):
+                if self.count >= MAX_ITERATIONS or self.estimator.loop_limit_reached():
                     self.estimator.truncated = True
                     self.uncertain, self.value = True, None
                     self.summarize("达到查询展开边界")

@@ -151,7 +151,7 @@ def execute(
     if (
         marker in stack
         or estimator.depth(stack) >= 7
-        or (not bounded_iteration and estimator.calls >= 120)
+        or estimator.budget.exhausted(None if bounded_iteration else estimator.calls)
     ):
         estimator.truncated = True
         estimator.record(
@@ -162,6 +162,7 @@ def execute(
     # 否则纯字段投影也会挤掉后续真实方法中的已知等待。正文调用仍按原预算计算。
     if not bounded_iteration:
         estimator.calls += 1
+    estimator.budget.consume()
     if node.type in {"lambda_expression", "anonymous_method_expression"}:
         if len(closures.parameters(node)) != len(argument_values):
             return UNKNOWN

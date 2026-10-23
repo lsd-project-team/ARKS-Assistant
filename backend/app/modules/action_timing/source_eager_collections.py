@@ -12,7 +12,6 @@ from app.modules.action_timing.source_collection_types import (
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Flow
 from app.modules.action_timing.source_index import text
 from app.modules.action_timing.source_loops import (
-    MAX_ACTION_ITERATIONS,
     MAX_ITERATIONS,
     ForExecution,
 )
@@ -79,11 +78,7 @@ class FilterExecution(ForExecution):
                 self.exit(self.elapsed, self.bindings)
                 self.bounded = True
                 break
-            if (
-                size is None
-                or self.count >= MAX_ITERATIONS
-                or self.estimator.loop_steps >= MAX_ACTION_ITERATIONS
-            ):
+            if size is None or self.count >= MAX_ITERATIONS or self.estimator.loop_limit_reached():
                 if size is not None:
                     self.estimator.truncated = True
                 self.value, self.uncertain = None, True

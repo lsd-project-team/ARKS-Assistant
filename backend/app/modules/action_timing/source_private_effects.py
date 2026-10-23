@@ -17,7 +17,9 @@ def private_fields(index, owner):
         result = set()
         info = index.classes.get(owner)
         for _, declaration in info.declarations if info else ():
-            for field in children(declaration.child_by_field_name("body"), "field_declaration"):
+            for field in children(declaration.child_by_field_name("body")):
+                if field.type not in {"field_declaration", "event_field_declaration"}:
+                    continue
                 modifiers = {text(part) for part in children(field, "modifier")}
                 if modifiers & {"public", "protected", "internal", "static"}:
                     continue

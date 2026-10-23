@@ -3,6 +3,7 @@
 import csv
 import hashlib
 import io
+from collections import Counter
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -114,6 +115,26 @@ def test_source_api_consumes_queries_and_streams_foreach_without_import(services
         detail = client.get(BASE + "/" + row["id"])
         assert detail.status_code == 200
         assert sum(s["kind"] == "delay" for s in detail.json()["stages"]) == 6
+        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
+
+
+def test_source_api_includes_all_known_repeated_source_calls_without_import(services):
+    (services[2].root / "Demo.cs").write_text(
+        "class Demo:ActionNode{int A(int n){return B(n);}int B(int n){return C(n);}"
+        "int C(int n){Thread.Sleep(n+1);return n;}"
+        "public int DoWork(){for(int n=0;n<50;n++)A(n);return 0;}}",
+        encoding="utf-8",
+    )
+    with TestClient(create_app(services[0])) as client:
+        response = client.get(BASE)
+        assert response.status_code == 200
+        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
+        assert row["total_ms"] == row["known_delay_min_ms"] == row["known_delay_max_ms"] == 1275
+        detail = client.get(BASE + "/" + row["id"])
+        assert detail.status_code == 200
+        assert [
+            stage["milliseconds"] for stage in detail.json()["stages"] if stage["kind"] == "delay"
+        ] == list(range(1, 51))
         assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
 
 
@@ -230,6 +251,40 @@ def test_whole_trunk_follows_package_signal_source_without_exposing_packages_as_
         and stage["milliseconds"] == 5
         for stage in pick["stages"]
     )
+    wafer_calibration = next(
+        row for row in report["rows"] if row["method"] == "OnlyWaferCameraCaib"
+    )
+    assert wafer_calibration["known_delay_min_ms"] == 75375
+    assert wafer_calibration["total_ms"] is None
+    fixed_waits = [
+        stage["milliseconds"]
+        for stage in wafer_calibration["stages"]
+        if stage["kind"] == "delay" and not stage["background"] and not stage.get("repeat")
+    ]
+    assert {delay: fixed_waits.count(delay) for delay in (1000, 2000, 15)} == {
+        1000: 25,
+        2000: 25,
+        15: 25,
+    }
+    for method, expected_waits in (
+        ("StartBondToCamCalibTask", {1414: 2, 1490: 20}),
+        ("StartBondToCamCalibTaskWithLocate", {1796: 2, 1875: 20}),
+    ):
+        calibration = next(
+            row
+            for row in report["rows"]
+            if row["class_name"] == "FrmTestAccuary" and row["method"] == method
+        )
+        assert calibration["known_delay_min_ms"] >= 5035 and calibration["total_ms"] is None
+        lines = Counter(
+            stage["line"]
+            for stage in calibration["stages"]
+            if stage["kind"] == "delay"
+            and stage["path"] == calibration["entry"]["path"]
+            and not stage["background"]
+            and not stage.get("repeat")
+        )
+        assert {line: lines[line] for line in expected_waits} == expected_waits
     flux = next(row for row in report["rows"] if row["class_name"] == "DipFluxActionNode")
     assert flux["method"] == "DipFluxActionDryRun"
     assert flux["execution_status"] == "unavailable" and flux["total_ms"] is None

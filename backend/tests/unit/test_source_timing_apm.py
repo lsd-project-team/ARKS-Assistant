@@ -275,7 +275,7 @@ def test_actual_typed_expansion_start_and_end_expand_the_original_motion_body(re
     assert result["total_ms"] is None
 
 
-def test_target_budget_limits_remain_in_force_and_uncaptured_local_handle_can_still_be_joined():
+def test_joined_target_keeps_delays_after_more_than_120_empty_source_calls():
     result = analyze("""using System;class Demo {
         void Empty(){}void Hidden(){Thread.Sleep(999);}
         void Move(){for(int n=0;n<130;n++)Empty();Hidden();Thread.Sleep(7);}
@@ -283,7 +283,9 @@ def test_target_budget_limits_remain_in_force_and_uncaptured_local_handle_can_st
         action.EndInvoke(pending);return 0;}}""")
     assert result["truncated"] and result["total_ms"] is None
     assert any(stage.get("operation") == "end" for stage in result["stages"])
-    assert not any(stage["milliseconds"] == 999 for stage in delays(result))
+    assert [stage["milliseconds"] for stage in delays(result)] == [999, 7]
+    assert all(not stage["background"] for stage in delays(result))
+    assert result["known_delay_min_ms"] == result["known_delay_max_ms"] == 1006
 
 
 def test_infinite_async_rescheduling_is_still_bounded():

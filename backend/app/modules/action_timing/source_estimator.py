@@ -20,6 +20,7 @@ from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
+from app.modules.action_timing.source_budget import MAX_BODY_ITERATIONS, CallBudget, IterationBudget
 from app.modules.action_timing.source_completion import clear as clear_completion
 from app.modules.action_timing.source_completion import failed as expression_failed
 from app.modules.action_timing.source_condition_loops import execute_condition_loop
@@ -77,6 +78,9 @@ class Estimator:
         self.stages = []
         self.parameters = {}
         self.calls = 0
+        self.budget = CallBudget()
+        self.iteration_budget = IterationBudget()
+        self.body_loop_steps = 0
         self.truncated = False
         self.context = {"MachineStateModel.MachineState": "Working"}
         self.root_method = None
@@ -832,7 +836,9 @@ class Estimator:
         bindings.pop(call_args.return_key(node, caller, bindings), None)
         bindings.pop(call_args.return_key(node, caller, bindings) + ":normal", None)
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
-        if target.key in stack or (not metadata and (self.depth(stack) >= 7 or self.calls >= 120)):
+        if target.key in stack or (
+            not metadata and (self.depth(stack) >= 7 or self.budget.exhausted(self.calls))
+        ):
             from app.modules.action_timing.source_references import escape_this
 
             escape_this(self.index, node, caller, bindings)
@@ -849,6 +855,7 @@ class Estimator:
             return UNKNOWN if delay_possible(self.index, target) else ZERO
         if target.callable_kind in {"method", "constructor"}:
             self.calls += 1
+            self.budget.consume()
         self.frames += 1
         slots = call_args.plan(
             target.parameters, arguments, provided=argument_values or {}, variadic=target.variadic
@@ -1006,7 +1013,23 @@ class Estimator:
             remember_plan(node, caller, bindings, task, fresh=is_fresh(task, existing_tasks))
         return flow.cost()
 
+    def loop_limit_reached(self):
+        return self.body_loop_steps >= MAX_BODY_ITERATIONS or self.iteration_budget.exhausted()
+
+    def consume_loop_step(self):
+        self.loop_steps += 1
+        self.body_loop_steps += 1
+        self.iteration_budget.consume()
+
     def execute_body(self, method, bindings, stack, conditions, background):
+        previous = self.body_loop_steps
+        self.body_loop_steps = 0
+        try:
+            return self._execute_body(method, bindings, stack, conditions, background)
+        finally:
+            self.body_loop_steps = previous
+
+    def _execute_body(self, method, bindings, stack, conditions, background):
         if (
             method.callable_kind == "delegate"
             and method.body is not None
