@@ -177,6 +177,9 @@ def assign_property(
     custom = (setter and setter.body is not None) or (getter and getter.body is not None)
     if place is not None:
         collections.write(place, value, bindings)
+    elif left.type == "element_access_expression" and state.WRITES in bindings:
+        # 排队回调中的集合内容可能已变化；缺少实例也不能让调用者保留旧元素。
+        state.write(estimator.index, left.child_by_field_name("expression"), method, bindings, None)
     elif not custom:
         target_bindings = (
             bindings if receiver_id is state.MISSING else {**bindings, state.THIS: receiver_id}

@@ -233,7 +233,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v18:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v19:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,
@@ -255,6 +255,8 @@ class SourceTiming:
                 "Task 模型只模拟源码显式耗时，假设可立即调度；不估算线程调度或CPU耗时。",
                 "已绑定Action/Func的DynamicInvoke按实际参数数组与返回值展开；"
                 "未知签名、装箱类型和反射异常不作为固定完成时间。",
+                "UI/上下文同步派发等待回调返回；异步派发只计发起，回调保留后台。"
+                "窗口/队列条件与排队后的可变状态未定时，不给固定完整时长。",
                 "Parallel.ForEach按最大并行度保留软件等待区间；"
                 "并行上限不保证同时开工，共享写入和未知项不套用隔离副本常量。",
                 "运动公式保留起点、目标、速度、加减速和驱动单位条件；"

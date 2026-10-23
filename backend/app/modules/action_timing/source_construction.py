@@ -211,6 +211,8 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
         f"new:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}:{estimator.allocations}"
     )
     receiver_id = state.reference(estimator.index, node, method, bindings)
+    if state.FRESH in bindings and receiver_id is not None:
+        bindings[state.FRESH] = (bindings.get(state.FRESH) or frozenset()) | {receiver_id}
     bindings[CLOCK] = started.plus(cost)
     if target:
         cost = cost.plus(

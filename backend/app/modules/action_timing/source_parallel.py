@@ -119,7 +119,9 @@ def private_receiver(key, private, allocation_floor):
 def shared_changes(before, after, private, allocation_floor):
     result = set()
     for key, value in state.context(after).items():
-        if key == state.UNSTABLE or (key in before and value == before[key]):
+        if key in {state.UNSTABLE, state.WRITES, state.FRESH} or (
+            key in before and value == before[key]
+        ):
             continue
         if key.startswith(state.LOCAL_PREFIX) and key not in before:
             continue  # 每次callback新建的局部闭包槽不跨迭代共享。
@@ -171,13 +173,14 @@ def invalidate_unexplored(bindings, depth=0):
     from app.modules.action_timing.source_tasks import known_task
 
     values = list(bindings.values())
-    bindings.update(
-        {
-            key: None
-            for key in state.context(bindings)
-            if key not in {state.UNSTABLE, state.UNKNOWN_MEMBERS}
-        }
-    )
+    invalidated = {
+        key: None
+        for key in state.context(bindings)
+        if key not in {state.UNSTABLE, state.UNKNOWN_MEMBERS, state.WRITES}
+    }
+    for key in invalidated:
+        state.mark_write(bindings, key)
+    bindings.update(invalidated)
     bindings[state.UNKNOWN_MEMBERS] = True
     for key, value in list(bindings.items()):
         if (

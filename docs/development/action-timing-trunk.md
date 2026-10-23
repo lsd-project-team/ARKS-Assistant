@@ -315,4 +315,32 @@ trunk的6,281个非隐藏文件集合及SHA-256未变，前端本阶段未改；
 
 trunk的6,281个非隐藏文件集合和SHA-256未变，前端本阶段未改，未重复前端和普通账号浏览器验收。正式账号、项目、会话、消息、交接记录保持原数量，采集运行仍为0，没有写入测试记录。
 
+## 第十八阶段：UI与同步上下文派发（2026-10-23）
+
+按编译范围逐方法核对138处可绑定派发：131处WinForms/DevExpress控件调用和7处SynchronizationContext调用。使用声明文件的命名空间和源码继承链判断接收者，支持Control、Form、UserControl、ListView与本仓出现的XtraForm、XtraUserControl、SimpleButton；自有同名实现、未绑定重载及已知源码实例的自有派发方法不套用框架契约。逐项证据在 `ui-dispatch-scope-reviewed.json`，初始语法候选还包括事件、反射与旧式委托，不能将候选总数称为UI动作数。
+
+Send和Control.Invoke等待回调同步返回，回调内固定停留进入前台；Post和BeginInvoke只发起排队，正文作为后台阶段展示。已明确创建的基础SynchronizationContext.Send直接执行同步回调；其他同步派发保留UI线程、队列、窗口句柄等未定等待，不把回调7 ms当成完整7 ms。Invoke返回的普通值可继续参与计算，返回Task仅取得该任务，源码另行Wait/await时才接上内层完成边界。对应契约参照微软[Control.Invoke](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.invoke?view=netframework-4.8)、[Control.BeginInvoke](https://learn.microsoft.com/dotnet/api/system.windows.forms.control.begininvoke)与[SynchronizationContext.Send](https://learn.microsoft.com/dotnet/api/system.threading.synchronizationcontext.send)。
+
+参数按框架的method/args和d/state绑定，仍按出现顺序求值；保存回调及方法组接收者后，后续实参不会换掉本次目标。新增MethodInvoker和SendOrPostCallback签名；匿名回调在唯一具体委托与通用Delegate之间按具体委托选择，多个具体签名仍保留歧义。对应重载和参数规则不推成完整的C#泛型、动态派发或任意类型转换支持。
+
+异步排队后的可变成员、捕获标量及集合内容不冻结为排队前初值。回调写入单独追踪，即使旧/新值都是未知也使调用者旧值失效；只读回调不把其分析用的未知标记带回调用者。明确常量和回调内部新建的私有对象可以继续计算；重新赋值或ref/out可能改写的委托不沿用旧目标。回调目标未绑定或达到展开预算时保留未解析并使旧共享状态失效，不靠截断后未访问的写入维持旧常数。
+
+初始17个用例中16个先复现遗漏；最终新增 `test_source_timing_dispatch.py` 43项，源码单元26文件595项通过。覆盖同步/异步阶段、排队等待、具体基础上下文、返回标量/任务、显式join、参数顺序与接收者、共享写入/集合字段、常量/私有对象、未知目标、预算、源码同名/重载及空条件跳过等反例。直接读取原WinFormsPlatformProvider.cs验证Action同步与异步包装，回调7 ms分别保留前台和后台；真实源码不是重写的测试替身。未更改旧测试预期。
+
+具体委托的重载优先级还必须服从其余实参的类型约束。反例证明，Action/bool与Delegate/int同时存在时，传入整数不能误选前者；现先排除可证明不成立的数字与布尔转换，其他参数类型有分歧时不单靠匿名回调决定重载。两个补充反例进入最终整组回归；修正前未完成的整仓报告和全量测试已停止，不作为最终通过证据。
+
+最终模型为 `trunk-model-v19`，完整目录2,289行、主表47项。新增29个界面刷新、映射、调试及包装入口，未把它们当作29道新生产工序。相对v18逐行完整指纹共174行变化（145个原行、29个新增），其中79行有统计或参数变化，95行仅阶段依据变化；全部差异已经分组审阅，见 `dispatch-trace-differences.json`、`dispatch-real-actions.json` 和 `dispatch-review.json`。
+
+16个原辅助入口的已知停留上界由0修正为未定；没有原行的已知下界、总时长或执行状态发生变化。四处参数列表不再把排队后的可变值冻结为初值。47项主要动作的耗时数值保持一致，只有晶圆任务单轮的等待计数由4变9，增加了映射界面的同步等待。取片至少5 ms、上视20–40 ms、固晶20 ms、焊后检测500 ms、点胶单轮至少10 ms和两个输送单轮至少505 ms继续通过复核。
+
+更深展开使8条原记录新增预算截断，详细阶段仍保留未定；不把未完成展开当成完整零耗时。WaferSubSystemTask.ChangeSucceedOperation的运动计数由2变1，也是展开预算与UI链路变化后的可见阶段变化，不能解释为运动被删除或设备更快。部分InvokeRequired、自递归刷新及窗口创建的运行条件仍未证明，不声称完整UI线程调度已经求解。
+
+本次完整计算及保存487.164秒，禁止重建的新实例从缓存恢复12.883秒，全部2,289行完整指纹一致；这是本机分析器开销，不计入设备动作。压缩报告15,483,918字节，SHA-256为 `2692befeb0b55fab6a2e8415530bd0377d2d78ad451d15e8414281b372b460fd`。
+
+最终相关后端31文件661项通过（796.88秒，Failed=0、Skipped=0），其中源码单元26文件595项；保留真实主工程/整个trunk、API/导出、认证权限、源码失效、缓存重启和原采集协议回归。Ruff和66文件格式检查通过，未更改旧测试预期。覆盖率未采集，未执行Mutation Testing、目标程序集或设备程序，质量为中。
+
+trunk的6,281个非隐藏文件集合及SHA-256未变，前端本阶段未改，未重复前端和普通账号浏览器验收。发布前正式账号3、项目3、会话17、消息109、交接记录27，采集运行仍为0；任务状态保持原样，测试未写入正式库。新版派生缓存先审阅、停止旧服务后再原子替换，发布结果见 `dispatch-cache-publish.json` 与 `dispatch-runtime-verification.json`。
+
+本轮同时定位到WaferTableController中的4处Action.BeginInvoke和8处Action.EndInvoke，它们是旧式异步委托，不是Control.BeginInvoke；仍需继续接入发起与完成边界。四个反例已经保存于 `remaining-apm-baseline-v19.json`，可复现20 ms回调正文未展开，包括带参数、成员和跨方法转发。另有WPF Dispatcher/数据流排队、字典值接收者、事件/反射、异步信号、枚举/LINQ和物理运动等未完成路径，未用UI用例通过声称全部框架语义完成，整体目标保持未完成。
+
 本地清点与过程结果位于 `output/action-timing-trunk/`；该目录不提交业务代码或正式数据。功能使用说明见 [动作耗时统计](../features/action-timing.md)。

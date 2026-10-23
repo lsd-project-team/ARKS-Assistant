@@ -188,11 +188,15 @@ def evaluate(
     receiver_value=state.MISSING,
 ):
     from app.modules.action_timing import source_delegates as delegates
+    from app.modules.action_timing import source_dispatch
     from app.modules.action_timing.source_tasks import CLOCK
 
     nodes = arguments(node)
     bindings.pop(return_key(node, method, bindings), None)
     slots = plan(target.parameters, nodes, variadic=target.variadic) if target is not None else None
+    dispatch = (
+        source_dispatch.callback_position(estimator.index, node, method) if target is None else None
+    )
     started, cost = bindings.get(CLOCK, ZERO), prefix
     scalars, callbacks, references = [], [], []
     for position, arg in enumerate(nodes):
@@ -221,6 +225,10 @@ def evaluate(
                     discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
                     signature_kind=kind,
                 )
+        if dispatch is not None and position == dispatch[1]:
+            bound = source_dispatch.capture_callback(
+                estimator.index, arg, method, bindings, dispatch[0]
+            )
         callbacks.append(bound)
     # 下一次访问该调用时覆盖快照；快照仅属于当前帧，不进入被调方法的状态。
     bindings[snapshot_key(node, method, bindings)] = Evaluated(

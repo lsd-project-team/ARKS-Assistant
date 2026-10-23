@@ -40,7 +40,8 @@ def unwrap(index, node, method, bindings=None):
             args = children(node.child_by_field_name("arguments"), "argument")
             if (
                 kind in index.classes
-                or simple_type(kind) not in {"Action", "Func"}
+                or simple_type(kind)
+                not in {"Action", "Func", "MethodInvoker", "SendOrPostCallback"}
                 or len(args) != 1
             ):
                 return None
@@ -301,6 +302,10 @@ def explicit_return_kind(index, node, method):
 
 
 def signature_arity(kind):
+    if kind in {"MethodInvoker", "System.Windows.Forms.MethodInvoker"}:
+        return 0
+    if kind in {"SendOrPostCallback", "System.Threading.SendOrPostCallback"}:
+        return 1
     base, separator, suffix = kind.replace("System.", "").partition("<")
     if base == "Action" and not separator:
         return 0
@@ -397,7 +402,12 @@ def typed_invocation(index, node, method):
     if receiver is None:
         return False
     kind = index.infer(receiver, method)
-    return kind not in index.classes and simple_type(kind) in {"Action", "Func"}
+    return kind not in index.classes and simple_type(kind) in {
+        "Action",
+        "Func",
+        "MethodInvoker",
+        "SendOrPostCallback",
+    }
 
 
 def invoke(estimator, node, method, bindings, stack, conditions, background):

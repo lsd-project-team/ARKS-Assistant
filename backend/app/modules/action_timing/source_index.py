@@ -449,13 +449,23 @@ class SourceIndex:
         return self.overload(self.by_method.get((owner, ".ctor"), []), arguments, caller)
 
     def overload(self, methods, arguments, caller):
+        if not methods:
+            return None
+        kinds = [self.infer(argument, caller) for argument in arguments]
+
         candidates = [
             method
             for method in methods
-            if call_args.plan(method.parameters, arguments, variadic=method.variadic) is not None
+            if (slots := call_args.plan(method.parameters, arguments, variadic=method.variadic))
+            is not None
+            and not any(
+                (kind == "bool" and expected in NUMERIC_TYPES)
+                or (expected == "bool" and kind in NUMERIC_TYPES)
+                for kind, slot in zip(kinds, slots, strict=True)
+                for expected in [self.lookup_type(method.parameters[slot][1], method)]
+            )
         ]
         if len(candidates) > 1:
-            kinds = [self.infer(argument, caller) for argument in arguments]
             exact = [
                 method
                 for method in candidates
@@ -479,6 +489,10 @@ class SourceIndex:
                 ):
                     exact = fixed
             candidates = exact if len(exact) == 1 else candidates
+            if len(candidates) > 1:
+                from app.modules.action_timing.source_dynamic import prefer_typed_callback
+
+                candidates = prefer_typed_callback(self, candidates, arguments, caller)
         return candidates[0] if len(candidates) == 1 else None
 
     def property_method(self, owner, name, mode, seen=None):

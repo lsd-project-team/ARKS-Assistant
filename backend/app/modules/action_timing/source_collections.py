@@ -74,12 +74,16 @@ def invalidate(data, bindings):
     if not known(data):
         return
     bindings[key(data, "unknown")] = True
+    state.mark_write(bindings, key(data, "unknown"))
     for name in list(bindings):
         if name.startswith(f"{PREFIX}{data['<ref>']}|item:"):
             bindings[name] = None
+            state.mark_write(bindings, name)
     if data["<collection>"] == "list":
         bindings[key(data, "length")] = None
         bindings[key(data, "version")] = None
+        state.mark_write(bindings, key(data, "length"))
+        state.mark_write(bindings, key(data, "version"))
 
 
 def location(index, node, method, bindings):
@@ -112,8 +116,10 @@ def write(place, value, bindings):
         and 0 <= position < size
     ):
         bindings[key(data, f"item:{position}")] = value
+        state.mark_write(bindings, key(data, f"item:{position}"))
         if data.get("<element_type>") in {"object", "System.Object"}:
             bindings[key(data, f"type:{position}")] = None
+            state.mark_write(bindings, key(data, f"type:{position}"))
         if data["<collection>"] == "list":
             current = version(data, bindings)
             bindings[key(data, "version")] = current + 1 if current is not None else None
@@ -292,9 +298,31 @@ def call(estimator, node, method, bindings):
         if saved is not None and saved.receiver_value is not state.MISSING
         else estimator.index.value(receiver, method, bindings)
     )
-    if not known(data) or estimator.index.resolve(node, method) is not None:
+    if estimator.index.resolve(node, method) is not None:
         return False
     name = text(function.child_by_field_name("name"))
+    if not known(data):
+        kind = raw_type(estimator.index, receiver, method)
+        base = kind.split("<", 1)[0].split(".")[-1]
+        if (
+            state.WRITES in bindings
+            and base in {"List", "IList", "ICollection", "Dictionary", "IDictionary"}
+            and name
+            in {
+                "Add",
+                "Clear",
+                "Insert",
+                "Remove",
+                "RemoveAt",
+                "RemoveAll",
+                "RemoveRange",
+                "AddRange",
+                "Sort",
+                "Reverse",
+            }
+        ):
+            state.write(estimator.index, receiver, method, bindings, None)
+        return False
     values = call_args.values(estimator.index, node, method, bindings)
     if name == "ToArray" and not values:
         size = length(data, bindings)
@@ -346,6 +374,8 @@ def call(estimator, node, method, bindings):
             bindings[key(data, f"item:{size}")] = values[0]
             bindings[key(data, "length")] = size + 1
             bindings[key(data, "version")] = current + 1 if current is not None else None
+            for name in (f"item:{size}", "length", "version"):
+                state.mark_write(bindings, key(data, name))
         return True
     if data["<collection>"] == "list" and name == "Clear" and not values:
         current = version(data, bindings)

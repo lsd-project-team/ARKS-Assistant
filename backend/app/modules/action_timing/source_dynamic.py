@@ -11,6 +11,14 @@ from app.modules.action_timing.source_numbers import NUMERIC_TYPES
 def signature(index, kind, method):
     kind = "".join(kind.split()).removeprefix("global::")
     base, separator, content = kind.partition("<")
+    special = {
+        "MethodInvoker": ((), "void"),
+        "System.Windows.Forms.MethodInvoker": ((), "void"),
+        "SendOrPostCallback": (("object",), "void"),
+        "System.Threading.SendOrPostCallback": (("object",), "void"),
+    }
+    if kind in special and index.lookup_type(base, method) not in index.classes:
+        return special[kind]
     if base not in {"Action", "System.Action", "Func", "System.Func"}:
         return None
     if index.lookup_type(base, method) in index.classes:
@@ -49,6 +57,48 @@ def explicit_signature(index, node, method):
     return ""
 
 
+def prefer_typed_callback(index, methods, nodes, caller):
+    """匿名回调的具体委托优于通用Delegate；多个具体委托之间仍保留歧义。"""
+    from app.modules.action_timing import source_closures as closures
+
+    for position, node in enumerate(nodes):
+        value = unwrapped(node)
+        if value is None or value.type not in {"lambda_expression", "anonymous_method_expression"}:
+            continue
+        groups = []
+        for method in methods:
+            slots = call_args.plan(method.parameters, nodes, variadic=method.variadic)
+            kind = method.parameters[slots[position]][1]
+            shape = signature(index, kind, method)
+            groups.append((method, shape, kind))
+        # 其他实参也必须具有相同的参数目标；不能仅凭委托更具体忽略不同转换。
+        if any(
+            len(
+                {
+                    method.parameters[
+                        call_args.plan(method.parameters, nodes, variadic=method.variadic)[other]
+                    ][1]
+                    for method in methods
+                }
+            )
+            != 1
+            for other in range(len(nodes))
+            if other != position
+        ):
+            continue
+        concrete = [
+            method
+            for method, shape, _ in groups
+            if shape is not None and len(shape[0]) == len(closures.parameters(value))
+        ]
+        generic = {"Delegate", "System.Delegate", "MulticastDelegate", "System.MulticastDelegate"}
+        if len(concrete) == 1 and all(
+            method is concrete[0] or kind in generic for method, _, kind in groups
+        ):
+            return concrete
+    return methods
+
+
 def receiver(node):
     function = node.child_by_field_name("function")
     if function is None:
@@ -70,7 +120,15 @@ def operation(index, node, method):
     return (
         target is not None
         and kind not in index.classes
-        and simple_type(kind) in {"Action", "Func", "Delegate", "MulticastDelegate"}
+        and simple_type(kind)
+        in {
+            "Action",
+            "Func",
+            "Delegate",
+            "MulticastDelegate",
+            "MethodInvoker",
+            "SendOrPostCallback",
+        }
     )
 
 
@@ -94,10 +152,15 @@ def argument_type(index, node, method):
 
 def arguments(index, node, method, bindings):
     nodes = call_args.arguments(node)
+    return argument_values(
+        index, nodes, call_args.values(index, node, method, bindings), method, bindings
+    )
+
+
+def argument_values(index, nodes, values, method, bindings):
     names = [call_args.argument_name(part) for part in nodes]
     if any(names) and (len(nodes) != 1 or names != ["args"]):
         return None
-    values = call_args.values(index, node, method, bindings)
     types = tuple(argument_type(index, part, method) for part in nodes)
     if not nodes or (len(nodes) == 1 and text(unwrapped(nodes[0])) == "null"):
         return (), ()

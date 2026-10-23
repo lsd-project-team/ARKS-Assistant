@@ -8,6 +8,8 @@ LOCAL_ALIAS = "<captured-alias:"
 COLLECTION_PREFIX = "<collection:"
 UNSTABLE = "<source-concurrent-writes>"
 UNKNOWN_MEMBERS = "<source-unknown-members>"
+WRITES = "<source-dispatch-writes>"
+FRESH = "<source-queue-new-objects>"
 MISSING = object()
 
 
@@ -17,6 +19,11 @@ def object_marker(reference):
 
 def object_unstable(reference, bindings):
     return object_marker(reference) in bindings.get(UNSTABLE, ())
+
+
+def mark_write(bindings, name):
+    if WRITES in bindings:
+        bindings[WRITES] = (bindings.get(WRITES) or frozenset()) | {name}
 
 
 def local_slot(node, method, bindings):
@@ -101,8 +108,16 @@ def read(index, node, method, bindings):
         return bindings[own]
     if wildcard in bindings:
         return None
-    if bindings.get(UNKNOWN_MEMBERS):
-        return None
+    if bindings.get(UNKNOWN_MEMBERS) and place[0] not in (bindings.get(FRESH) or ()):
+        default = index.member_default(place[1], place[2])
+        node = default[1][1] if default else None
+        declaration = (
+            node.parent.parent.parent
+            if node is not None and node.parent and node.parent.parent
+            else None
+        )
+        if declaration is None or not any(source(part) == "const" for part in declaration.children):
+            return None
     return MISSING
 
 
@@ -127,6 +142,7 @@ def write(index, node, method, bindings, value, owner=None):
     local = local_slot(node, method, bindings)
     if owner is None and local in bindings:
         bindings[local] = value
+        mark_write(bindings, local)
         bindings[source(node)] = value
         return
     place = location(index, node, method, bindings, owner)
@@ -140,8 +156,10 @@ def write(index, node, method, bindings, value, owner=None):
         for existing in list(bindings):
             if existing.startswith(PREFIX) and existing.endswith(ending):
                 bindings[existing] = None
+                mark_write(bindings, existing)
         value = None
     bindings[key(place)] = value
+    mark_write(bindings, key(place))
 
 
 def context(bindings):
@@ -149,7 +167,7 @@ def context(bindings):
         name: value
         for name, value in bindings.items()
         if name.startswith((PREFIX, LOCAL_PREFIX, COLLECTION_PREFIX))
-        or name in {UNSTABLE, UNKNOWN_MEMBERS}
+        or name in {UNSTABLE, UNKNOWN_MEMBERS, WRITES, FRESH}
     }
 
 
@@ -158,7 +176,9 @@ def materialize(value, bindings):
         return value
     result = dict(value)
     shared = object_unstable(value["<ref>"], bindings)
-    if shared or bindings.get(UNKNOWN_MEMBERS):
+    if shared or (
+        bindings.get(UNKNOWN_MEMBERS) and value["<ref>"] not in (bindings.get(FRESH) or ())
+    ):
         result.update({key: None for key in result if not key.startswith("<")})
     start = f"{PREFIX}{value['<ref>']}|"
     for name, assigned in bindings.items():
@@ -171,6 +191,10 @@ def materialize(value, bindings):
 def transfer(before, after, *, uncertain=False, locals=False):
     """把调用或后台分支的写入带回；未确定先后关系时只传播失效。"""
     for name, value in after.items():
+        if name in {WRITES, FRESH}:
+            if name in before:
+                before[name] = (before.get(name) or frozenset()) | (value or frozenset())
+            continue
         if name == UNKNOWN_MEMBERS and value:
             before[name] = True
             continue
@@ -196,6 +220,8 @@ def merge(bindings, branches):
         values = [branch.get(name) for branch in branches]
         if name == UNKNOWN_MEMBERS:
             bindings[name] = any(value is True for value in values)
+        elif name in {WRITES, FRESH}:
+            bindings[name] = frozenset().union(*(value or () for value in values))
         elif isinstance(values[0], TaskPlan) and all(
             isinstance(value, TaskPlan) for value in values
         ):

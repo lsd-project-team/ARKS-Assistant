@@ -6,7 +6,12 @@ import re
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_delegates as delegates
-from app.modules.action_timing import source_dynamic, source_finally, source_parallel
+from app.modules.action_timing import (
+    source_dispatch,
+    source_dynamic,
+    source_finally,
+    source_parallel,
+)
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
@@ -471,6 +476,11 @@ class Estimator:
         )
         if dynamic_cost is not None:
             return dynamic_cost
+        dispatch_cost = source_dispatch.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if dispatch_cost is not None:
+            return dispatch_cost
         callback_cost = delegates.invoke(
             self, node, method, bindings, stack, conditions, background
         )
