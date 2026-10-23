@@ -75,6 +75,8 @@ def probe_estimator(estimator):
 
 
 def private_sites(index, bound):
+    if bound.targets:
+        return set().union(*(private_sites(index, target) for target in bound.targets))
     method = bound.closure.method
     node = bound.node
     if node.type not in {"lambda_expression", "anonymous_method_expression"}:

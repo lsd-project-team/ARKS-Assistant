@@ -200,6 +200,7 @@ class ClassInfo:
     constructor_writes: set = field(default_factory=set)
     initializers: list = field(default_factory=list)
     static_members: set = field(default_factory=set)
+    field_members: set = field(default_factory=set)
     member_units: dict = field(default_factory=dict)
 
 
@@ -213,6 +214,7 @@ class SourceIndex:
         self.type_names = defaultdict(list)
         self.enums = set()
         self.local_function_names = set()
+        self.source_delegate_names = set()
         self._inference_cache = {}
         self._local_definition_cache = {}
         self._inferring = set()
@@ -247,10 +249,13 @@ class SourceIndex:
                     self.local_function_names.add(text(node.child_by_field_name("name")))
                 if node.type == "enum_declaration":
                     self.enums.add(text(node.child_by_field_name("name")))
+                if node.type == "delegate_declaration":
+                    self.source_delegate_names.add(text(node.child_by_field_name("name")))
                 if node.type not in {
                     "class_declaration",
                     "struct_declaration",
                     "interface_declaration",
+                    "delegate_declaration",
                 }:
                     continue
                 name = text(node.child_by_field_name("name"))
@@ -322,6 +327,7 @@ class SourceIndex:
                         if name in info.types:
                             continue
                         info.types[name] = kind
+                        info.field_members.add(name)
                         info.member_units[name] = unit
                         if static:
                             info.static_members.add(name)
@@ -391,7 +397,7 @@ class SourceIndex:
                     if name == "set":
                         method.parameters = [("value", info.types[member_name], None)]
                         method.types["value"] = info.types[member_name]
-            elif member.type == "field_declaration":
+            elif member.type in {"field_declaration", "event_field_declaration"}:
                 declaration = next(iter(children(member, "variable_declaration")), None)
                 if not declaration:
                     continue
@@ -402,6 +408,7 @@ class SourceIndex:
                 for variable in children(declaration, "variable_declarator"):
                     member_name = text(variable.child_by_field_name("name"))
                     info.types[member_name] = kind
+                    info.field_members.add(member_name)
                     info.member_units[member_name] = unit
                     if static:
                         info.static_members.add(member_name)
@@ -458,9 +465,15 @@ class SourceIndex:
         return method
 
     def _initializer(self, info, unit, member, name, value):
-        if not any(
-            part.type in {"invocation_expression", "object_creation_expression"}
-            for part in walk(value)
+        from app.modules.action_timing.source_delegates import signature_arity
+
+        if (
+            not any(
+                part.type in {"invocation_expression", "object_creation_expression"}
+                for part in walk(value)
+            )
+            and signature_arity(info.types.get(name, "")) is None
+            and simple_type(info.types.get(name, "")) not in self.source_delegate_names
         ):
             return
         method = self._method(info, unit, member, f".initialize_{name}", "initializer", value)
@@ -1192,6 +1205,11 @@ class SourceIndex:
             left = self.value(node.child_by_field_name("left"), method, bindings, seen)
             right = self.value(node.child_by_field_name("right"), method, bindings, seen)
             op = text(node.child_by_field_name("operator"))
+            from app.modules.action_timing.source_multicast import binary
+
+            combined = binary(self, node, method, bindings, left, right)
+            if combined is not state.MISSING:
+                return combined
             from app.modules.action_timing.source_references import equality
 
             handled, value, _ = equality(self, node, method, left, right)

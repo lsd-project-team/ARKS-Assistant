@@ -11,6 +11,7 @@ from app.modules.action_timing.source_index import children, simple_type, text, 
 DELEGATE_PREFIX = "<delegate-variable:"
 NULL_DELEGATE = object()
 RESULT = "<delegate-result>"
+COMPLETION = "<delegate-normal-return>"
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,7 @@ class BoundDelegate:
     async_void: bool = False
     discards_result: bool = False
     signature: str = ""
+    targets: tuple = ()
 
 
 def unwrap(index, node, method, bindings=None):
@@ -52,7 +54,11 @@ def unwrap(index, node, method, bindings=None):
         value = stored(node, method, bindings or {}, index)
         if value is not None:
             return value
-    if node is not None and node.type in {"element_access_expression", "invocation_expression"}:
+    if node is not None and node.type in {
+        "element_access_expression",
+        "invocation_expression",
+        "binary_expression",
+    }:
         value = index.value(node, method, bindings or {})
         if isinstance(value, BoundDelegate) or value is NULL_DELEGATE:
             return value
@@ -117,6 +123,23 @@ def execute(
     bindings.pop(RESULT, None)
     previous_tasks = task_ids(bindings.values())
     bound = capture(estimator.index, node, method, bindings)
+    if isinstance(bound, BoundDelegate) and bound.targets:
+        from app.modules.action_timing import source_multicast
+
+        return source_multicast.execute(
+            estimator,
+            bound,
+            method,
+            bindings,
+            stack,
+            conditions,
+            background,
+            join_result=join_result,
+            argument_values=argument_values,
+            creation_only=creation_only,
+            argument_types=argument_types,
+        )
+    bindings[COMPLETION] = None
     node = bound.node if isinstance(bound, BoundDelegate) else None
     start = len(estimator.stages)
     started = bindings.get(CLOCK, ZERO)
@@ -146,6 +169,7 @@ def execute(
                 estimator, callback_method, callback_scope, (*stack, marker), conditions, background
             )
             bindings[RESULT] = plan if bound.returns_task else None
+            bindings[COMPLETION] = True
         elif body and body.type != "block":
             cost = estimator.expression(
                 body,
@@ -156,6 +180,9 @@ def execute(
                 background,
             )
             bindings[RESULT] = estimator.index.value(body, callback_method, callback_scope)
+            bindings[COMPLETION] = body.type != "throw_expression" and callback_scope.get(
+                call_args.return_key(body, callback_method, callback_scope) + ":normal", True
+            )
         else:
             flow = estimator.block(
                 body,
@@ -167,6 +194,7 @@ def execute(
             )
             cost = flow.cost() if flow.live is not None or flow.returned is not None else UNKNOWN
             bindings[RESULT] = flow.states.get("returned", {}).get("<return-value>")
+            bindings[COMPLETION] = flow.live is not None or flow.returned is not None
         state.transfer(bindings, callback_scope)
         from app.modules.action_timing.source_tasks import TaskPlan, join_stages, known_task
 
@@ -215,6 +243,9 @@ def execute(
         bindings[RESULT] = target_context.get(
             call_args.return_key(node, declaration, target_context)
         )
+        bindings[COMPLETION] = target_context.get(
+            call_args.return_key(node, declaration, target_context) + ":normal"
+        )
         if bound.async_void:
             bindings[RESULT] = None
         from app.modules.action_timing.source_task_returns import task_method
@@ -256,6 +287,13 @@ def capture(
 
     kind = source_dynamic.explicit_signature(index, node, method) or signature_kind
     shape = source_dynamic.signature(index, kind, method) if kind else None
+    declared = index.classes.get(index.lookup_type(kind, method)) if kind else None
+    if (
+        shape is None
+        and declared
+        and any(part.type == "delegate_declaration" for _, part in declared.declarations)
+    ):
+        return None  # 未绑定的泛型/ref签名不能由lambda语法绕过。
     explicit = explicit_return_kind(index, node, method)
     discards_result |= explicit is False
     if shape is not None:
@@ -337,6 +375,8 @@ def explicit_return_kind(index, node, method):
 
 
 def signature_arity(kind):
+    if kind.split("<", 1)[0].split(".")[-1] in {"EventHandler", "PropertyChangedEventHandler"}:
+        return 2
     if kind in {"MethodInvoker", "System.Windows.Forms.MethodInvoker"}:
         return 0
     if kind in {"SendOrPostCallback", "System.Threading.SendOrPostCallback"}:
@@ -359,14 +399,19 @@ def bind_arguments(index, target, arguments, caller, bindings, saved=None):
     slots = call_args.plan(target.parameters, arguments, variadic=target.variadic)
     sources = {slot: position for position, slot in enumerate(slots or ())}
     for slot, (name, kind, default) in enumerate(target.parameters):
-        arity = signature_arity(kind)
+        from app.modules.action_timing import source_dynamic
+
+        shape = source_dynamic.signature(index, kind, target)
+        arity = len(shape[0]) if shape else signature_arity(kind)
         generic = kind in {
             "Delegate",
             "System.Delegate",
             "MulticastDelegate",
             "System.MulticastDelegate",
         }
-        if (arity is None and not generic) or index.lookup_type(kind, target) in index.classes:
+        if (arity is None and not generic) or (
+            not shape and index.lookup_type(kind, target) in index.classes
+        ):
             continue
         position = sources.get(slot)
         value = arguments[position] if position is not None else default
@@ -430,9 +475,13 @@ def invocation_receiver(index, node, method):
             else None
         )
     else:
+        expression = function.child_by_field_name("expression")
+        name = text(function.child_by_field_name("name"))
         candidate = (
-            function.child_by_field_name("expression")
-            if text(function.child_by_field_name("name")) == "Invoke"
+            expression
+            if name == "Invoke"
+            else function
+            if index.member_type(index.infer(expression, method), name)
             else None
         )
     return candidate
@@ -442,13 +491,10 @@ def typed_invocation(index, node, method):
     receiver = invocation_receiver(index, node, method)
     if receiver is None:
         return False
-    kind = index.infer(receiver, method)
-    return kind not in index.classes and simple_type(kind) in {
-        "Action",
-        "Func",
-        "MethodInvoker",
-        "SendOrPostCallback",
-    }
+    from app.modules.action_timing.source_collections import raw_type
+    from app.modules.action_timing.source_dynamic import signature
+
+    return signature(index, raw_type(index, receiver, method), method) is not None
 
 
 def result_type(index, node, method):

@@ -38,11 +38,12 @@ def operation(index, node, method):
 
 
 def invalidate(bindings, bound=None, caller=None, index=None):
+    from app.modules.action_timing.source_multicast import targets
     from app.modules.action_timing.source_parallel import invalidate_unexplored
     from app.modules.action_timing.source_private_effects import preserve
 
     captured = (
-        {slot for _, slot in bound.closure.cells}
+        {slot for target in targets(bound) for _, slot in target.closure.cells}
         if isinstance(bound, delegates.BoundDelegate)
         else None
     )
@@ -98,6 +99,20 @@ def propagate_writes(estimator, scope, bindings, start, bound=None, caller=None)
 
 def begin(estimator, node, method, bindings, stack, conditions, background, bound):
     from app.modules.action_timing.source_private_state import activate, remember
+
+    if isinstance(bound, delegates.BoundDelegate) and bound.targets:
+        remember(bindings, None)
+        invalidate(bindings)
+        estimator.record(
+            "unresolved",
+            "多目标异步委托的运行库完成边界未核实",
+            node,
+            method,
+            conditions,
+            background,
+            apm=True,
+        )
+        return UNKNOWN
 
     nodes = call_args.arguments(node)
     values = call_args.values(estimator.index, node, method, bindings)

@@ -235,7 +235,12 @@ def captures(bound, bindings):
 
 
 def environment_functions(bound, bindings):
-    pending = [bindings.get(state.LOCAL_FUNCTIONS), bound.closure.functions]
+    from app.modules.action_timing.source_multicast import targets
+
+    pending = [
+        bindings.get(state.LOCAL_FUNCTIONS),
+        *(target.closure.functions for target in targets(bound)),
+    ]
     seen, result = set(), []
     while pending:
         environment = pending.pop()

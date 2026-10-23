@@ -59,6 +59,11 @@ class Effects:
         if depth >= 8:
             self.opaque.append("回调环境摘要达到边界")
             return ("boundary",)
+        if value.targets:
+            return (
+                "multicast",
+                tuple(self.callback_key(target, depth + 1) for target in value.targets),
+            )
         environment = self.callback_environments.get(id(value), (None, {}))[1]
         return (
             value.method_key,
@@ -122,6 +127,13 @@ class Effects:
             return
         if not isinstance(bound, delegates.BoundDelegate):
             self.opaque.append("回调目标未确定")
+            return
+        if bound.targets:
+            for target in bound.targets:
+                self.callback_environments.setdefault(
+                    id(target), (target, self.callback_environments.get(id(bound), (None, {}))[1])
+                )
+                self.add_callback(target)
             return
         node, method = bound.node, bound.closure.method
         if node.type not in {"lambda_expression", "anonymous_method_expression"}:
@@ -312,7 +324,16 @@ class Effects:
             delegates.typed_invocation(self.index, node, method)
             or source_dynamic.operation(self.index, node, method)
         ):
-            self.add_callback(self.callback(invoked, method, environment))
+            callback = self.callback(invoked, method, environment)
+            if callback is None:
+                from app.modules.action_timing.source_delegate_writes import possible_methods
+
+                possible = possible_methods(self.index, invoked, method)
+                if possible is not None:
+                    for target in possible:
+                        self.call_method(target, node, method, environment)
+                    return
+            self.add_callback(callback)
             return
         if name in {
             "Invoke",

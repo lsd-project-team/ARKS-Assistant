@@ -98,6 +98,10 @@ class Estimator:
             },
         }
         bindings.update(delegates.bind_arguments(self.index, method, [], method, bindings))
+        if method.callable_kind == "constructor" and not method.is_static:
+            from app.modules.action_timing.source_multicast import initialize_instance
+
+            initialize_instance(self.index, method.owner, bindings, bindings[state.THIS])
         flow = self.execute_body(method, bindings, (method.key,), (), False)
         cost = flow.cost()
         if task_returns.task_method(self.index, method) and not task_returns.async_method(method):
@@ -347,7 +351,10 @@ class Estimator:
                 return self.conditional_access(
                     function, node, method, bindings, stack, conditions, background
                 )
-            if function is not None and function.type == "member_access_expression":
+            callback_receiver = delegates.invocation_receiver(self.index, node, method)
+            if callback_receiver == function and function.type == "member_access_expression":
+                before = self.expression(function, method, bindings, stack, conditions, background)
+            elif function is not None and function.type == "member_access_expression":
                 receiver = function.child_by_field_name("expression")
                 static_receiver = self.index.lookup_type(
                     text(receiver), method
@@ -391,10 +398,11 @@ class Estimator:
                 "cast_expression",
             }:
                 receiver_value = self.index.value(function, method, bindings)
-            if function.type == "identifier" and delegates.typed_invocation(
-                self.index, node, method
-            ):
-                receiver_value = self.index.value(function, method, bindings)
+            if function.type in {
+                "identifier",
+                "member_access_expression",
+            } and delegates.typed_invocation(self.index, node, method):
+                receiver_value = self.index.value(callback_receiver, method, bindings)
             before = call_args.evaluate(
                 self,
                 node,
@@ -450,9 +458,14 @@ class Estimator:
             from app.modules.action_timing.source_references import equality
 
             handled, comparison, opaque = equality(self.index, node, method, value, right)
+            from app.modules.action_timing.source_multicast import binary
+
+            combined = binary(self.index, node, method, bindings, value, right)
             bindings[result_key] = (
-                comparison
-                if handled
+                combined
+                if combined is not state.MISSING
+                else comparison
+                if handled or combined is not state.MISSING
                 else (
                     binary_value(op, value, right) if null_comparison is None else null_comparison
                 )
@@ -755,6 +768,7 @@ class Estimator:
         captures=None,
     ):
         bindings.pop(call_args.return_key(node, caller, bindings), None)
+        bindings.pop(call_args.return_key(node, caller, bindings) + ":normal", None)
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
         if target.key in stack or (not metadata and (self.depth(stack) >= 7 or self.calls >= 120)):
             from app.modules.action_timing.source_references import escape_this
@@ -860,6 +874,7 @@ class Estimator:
                 self, target, values, (*stack, target.key), conditions, background
             )
             state.transfer(bindings, values)
+            bindings[call_args.return_key(node, caller, bindings) + ":normal"] = True
             if task_returns.task_method(self.index, target):
                 remember_plan(node, caller, bindings, plan, fresh=True)
             else:
@@ -872,6 +887,9 @@ class Estimator:
 
             existing_tasks = task_ids(values.values())
         flow = self.execute_body(target, values, (*stack, target.key), conditions, background)
+        bindings[call_args.return_key(node, caller, bindings) + ":normal"] = (
+            flow.live is not None or flow.returned is not None
+        )
         state.transfer(bindings, values, uncertain=uncertain_refs)
         for position, argument in state.byref_arguments(node):
             if position < len(slots) and target.parameters[slots[position]][0] in refs:
@@ -938,9 +956,11 @@ class Estimator:
         if method.callable_kind == "constructor":
             return constructor_body(self, method, bindings, stack, conditions, background)
         if method.callable_kind == "initializer":
-            return Flow(
-                self.expression(method.body, method, bindings, stack, conditions, background)
-            )
+            cost = self.expression(method.body, method, bindings, stack, conditions, background)
+            from app.modules.action_timing.source_multicast import initialize_value
+
+            initialize_value(self.index, method, bindings)
+            return Flow(cost)
         flow = self.block(method.body, method, bindings, stack, conditions, background)
         from app.modules.action_timing.source_async import SUSPENDED
 

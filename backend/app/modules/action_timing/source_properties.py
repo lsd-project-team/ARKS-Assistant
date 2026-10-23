@@ -121,6 +121,10 @@ def assign_property(
         before = estimator.expression(
             left.child_by_field_name("expression"), method, bindings, stack, conditions, background
         )
+    location_bindings = (
+        bindings if receiver_id is state.MISSING else {**bindings, state.THIS: receiver_id}
+    )
+    member_place = state.location(estimator.index, left, method, location_bindings, owner)
     if operator != "=":
         getter = estimator.index.accessor(left, method, "get", owner)
         before = before.plus(
@@ -136,7 +140,20 @@ def assign_property(
         estimator.expression(right, method, bindings, stack, conditions, background)
     )
     value = estimator.index.value(right, method, bindings)
-    if operator != "=":
+    from app.modules.action_timing.source_multicast import assignment
+
+    callback = assignment(
+        estimator.index,
+        left,
+        right,
+        method,
+        bindings,
+        current if operator != "=" else None,
+        operator,
+    )
+    if callback is not state.MISSING:
+        value = callback
+    elif operator != "=":
         value = assigned_value(current, value, operator)
     value, overflow = bounded(estimator.index, left, method, value)
     if overflow:
@@ -184,13 +201,21 @@ def assign_property(
         target_bindings = (
             bindings if receiver_id is state.MISSING else {**bindings, state.THIS: receiver_id}
         )
-        state.write(estimator.index, left, method, target_bindings, value, owner)
+        if callback is not state.MISSING and member_place is not None:
+            state.write_location(member_place, target_bindings, value)
+        else:
+            state.write(estimator.index, left, method, target_bindings, value, owner)
         if target_bindings is not bindings:
             state.transfer(bindings, target_bindings)
     elif setter and estimator.index.polymorphic(left, method, setter):
         state.write(estimator.index, left, method, bindings, None, owner)
     track_binding(
-        estimator.index, left, right if operator == "=" and not custom else None, method, bindings
+        estimator.index,
+        left,
+        right if operator == "=" and not custom else None,
+        method,
+        bindings,
+        assigned_delegate=callback if not custom else state.MISSING,
     )
     bindings[CLOCK] = started
     bindings[call_args.return_key(node, method, bindings)] = value

@@ -19,12 +19,18 @@ UNKNOWN_ACTIVITY = Activity(None, ())
 
 
 def remember(bindings, target, *, method_target=False):
+    from app.modules.action_timing.source_multicast import targets
+
     environment = {}
     if isinstance(target, delegates.BoundDelegate):
-        method = target.closure.method
-        for name, slot in target.closure.cells:
-            value = bindings.get(slot)
-            environment[name] = value if not source_dispatch.reassigned(method, name) else None
+        for callback in targets(target):
+            method = callback.closure.method
+            for name, slot in callback.closure.cells:
+                value = bindings.get(slot)
+                value = value if not source_dispatch.reassigned(method, name) else None
+                environment[name] = (
+                    value if name not in environment or environment[name] is value else None
+                )
     elif method_target:
         for name, _, _ in target.parameters:
             environment[name] = (
@@ -46,16 +52,21 @@ def remember(bindings, target, *, method_target=False):
 
 
 def activate(index, bindings, activity, *, method=None, stack=()):
+    from app.modules.action_timing.source_multicast import targets
+
     active = set() if activity is UNKNOWN_ACTIVITY else {activity}
     if method is not None and stack.count(method.key) <= 1:
         for previous in bindings.get(state.PRIVATE_ACTIVE) or ():
             bound = previous.target
             if not isinstance(bound, delegates.BoundDelegate):
                 continue
-            same_lambda = bound.node == method.node
-            target = delegates.method_group(index, bound.node, bound.closure.method, bound.arity)
-            if same_lambda or (target is not None and target.key == method.key):
-                active.add(previous)
+            for callback in targets(bound):
+                same_lambda = callback.node == method.node
+                target = delegates.method_group(
+                    index, callback.node, callback.closure.method, callback.arity
+                )
+                if same_lambda or (target is not None and target.key == method.key):
+                    active.add(previous)
     # 同步子调用沿用此集合；新后台目标重新建集合，重新看到发起者的潜在写入。
     bindings[state.PRIVATE_ACTIVE] = frozenset(active)
 

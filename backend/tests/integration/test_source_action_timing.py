@@ -91,7 +91,21 @@ def test_actual_zx_source_delays_and_entry_coverage_are_read_only():
     assert uplook["known_delay_min_ms"] == 20 and uplook["known_delay_max_ms"] == 40
     assert uplook["total_ms"] is None and uplook["motion_count"] > 0
     bond = rows["BondActionNode"]
-    assert bond["known_delay_min_ms"] == bond["known_delay_max_ms"] == 20
+    # 固定放置停留仍为20ms；末尾的公开刷新委托未绑定，不能再断言软件等待上界。
+    assert bond["known_delay_min_ms"] == 20 and bond["known_delay_max_ms"] is None
+    assert any(
+        stage["kind"] == "delay"
+        and stage["milliseconds"] == 20
+        and stage["code"] == "DelayHelper.Delay(component.PlacementDelay)"
+        for stage in bond["stages"]
+    )
+    assert any(
+        stage["kind"] == "unresolved"
+        and stage["label"] == "委托目标为空或尚未绑定"
+        and stage["code"] == "UcMainSystem.ReFreshSystem2TuAction()"
+        and stage["path"].endswith("BondActionNode.MoveHelper.cs")
+        for stage in bond["stages"]
+    )
     assert any(
         param["name"] == "BaseCarrierConfig.PlacementDelay" and param["value"] == 20
         for param in bond["parameters"]

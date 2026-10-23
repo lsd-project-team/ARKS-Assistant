@@ -164,15 +164,17 @@ def reassigned(method, name):
 
 def queued_scope(bound, bindings):
     from app.modules.action_timing.source_local_functions import environment_functions
+    from app.modules.action_timing.source_multicast import targets
 
     scope = dict(bindings)
     captured = [
-        bound,
+        *targets(bound),
         *environment_functions(bound, bindings),
         *(
-            value
+            target
             for value in state.context(bindings).values()
             if isinstance(value, delegates.BoundDelegate)
+            for target in targets(value)
         ),
     ]
     constants = {

@@ -160,6 +160,11 @@ def write(index, node, method, bindings, value, owner=None):
     if place is None:
         bindings[source(node)] = value
         return
+    write_location(place, bindings, value)
+
+
+def write_location(place, bindings, value):
+    """使用赋值前已经求值的接收者位置，右侧不能改换写入目标。"""
     if place[0] is None:
         # 无法证明两个引用是否指向同一对象。使该成员的所有已知实例失效，
         # 再保留通配失效标记，防止尚未读取的实例重新取声明初值。

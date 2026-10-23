@@ -211,6 +211,9 @@ def create_object(estimator, node, method, bindings, stack, conditions, backgrou
         f"new:{bindings.get(state.FRAME)}:{method.unit.path}:{node.start_byte}:{estimator.allocations}"
     )
     receiver_id = state.reference(estimator.index, node, method, bindings)
+    from app.modules.action_timing.source_multicast import initialize_instance
+
+    initialize_instance(estimator.index, owner, bindings, receiver_id)
     if state.FRESH in bindings and receiver_id is not None:
         bindings[state.FRESH] = (bindings.get(state.FRESH) or frozenset()) | {receiver_id}
     bindings[CLOCK] = started.plus(cost)

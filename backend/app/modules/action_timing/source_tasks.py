@@ -250,7 +250,7 @@ def task_group(node, method, bindings, index=None):
     return TaskGroup(tuple(lookup(item, method, bindings, index) for item in children(initializer)))
 
 
-def track_binding(index, left, right, method, bindings):
+def track_binding(index, left, right, method, bindings, *, assigned_delegate=state.MISSING):
     if left is None:
         return
     if left.type in {"tuple_pattern", "tuple_expression"}:
@@ -275,22 +275,28 @@ def track_binding(index, left, right, method, bindings):
 
     kind = raw_type(index, left, method)
     arity = delegates.signature_arity(kind)
-    delegate = delegates.capture(
-        index,
-        right,
-        method,
-        bindings,
-        arity or 0,
-        returns_task=None
-        if arity is None
-        else "Task" in kind and kind.replace("System.", "").startswith("Func<"),
-        discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
-        signature_kind=kind,
+    delegate = (
+        assigned_delegate
+        if assigned_delegate is not state.MISSING
+        else delegates.capture(
+            index,
+            right,
+            method,
+            bindings,
+            arity or 0,
+            returns_task=None
+            if arity is None
+            else "Task" in kind and kind.replace("System.", "").startswith("Func<"),
+            discards_result=kind.replace("System.", "").split("<", 1)[0] == "Action",
+            signature_kind=kind,
+        )
     )
     key = f"{delegates.DELEGATE_PREFIX}{name}>"
     if delegate is not None or key in bindings:
         bindings[key] = (method.key, delegate) if delegate is not None else None
-    if isinstance(delegate, delegates.BoundDelegate) or delegate is delegates.NULL_DELEGATE:
+    if assigned_delegate is state.MISSING and (
+        isinstance(delegate, delegates.BoundDelegate) or delegate is delegates.NULL_DELEGATE
+    ):
         state.write(index, left, method, bindings, delegate)
 
 

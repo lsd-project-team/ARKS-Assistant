@@ -9,13 +9,40 @@ from app.modules.action_timing.source_numbers import NUMERIC_TYPES
 
 
 def signature(index, kind, method):
-    kind = "".join(kind.split()).removeprefix("global::")
+    kind = "".join(kind.split()).removeprefix("global::").removesuffix("?")
     base, separator, content = kind.partition("<")
+    info = index.classes.get(index.lookup_type(base, method))
+    if (
+        info
+        and len(info.declarations) == 1
+        and info.declarations[0][1].type == "delegate_declaration"
+    ):
+        declaration = info.declarations[0][1]
+        parameters, variadic = call_args.declared_parameters(declaration)
+        if (
+            separator
+            or variadic
+            or any(
+                any(text(c) in {"ref", "out", "in"} for c in node.children)
+                for node in children(declaration.child_by_field_name("parameters"))
+            )
+        ):
+            return None
+        return tuple(kind for _, kind, _ in parameters), text(
+            declaration.child_by_field_name("returns") or declaration.child_by_field_name("type")
+        )
     special = {
         "MethodInvoker": ((), "void"),
         "System.Windows.Forms.MethodInvoker": ((), "void"),
         "SendOrPostCallback": (("object",), "void"),
         "System.Threading.SendOrPostCallback": (("object",), "void"),
+        "EventHandler": (("object", "EventArgs"), "void"),
+        "System.EventHandler": (("object", "System.EventArgs"), "void"),
+        "PropertyChangedEventHandler": (("object", "PropertyChangedEventArgs"), "void"),
+        "System.ComponentModel.PropertyChangedEventHandler": (
+            ("object", "System.ComponentModel.PropertyChangedEventArgs"),
+            "void",
+        ),
     }
     if kind in special and index.lookup_type(base, method) not in index.classes:
         return special[kind]
