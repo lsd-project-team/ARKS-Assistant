@@ -2,7 +2,7 @@
 
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
-from app.modules.action_timing.source_index import children, simple_type, text
+from app.modules.action_timing.source_index import children, simple_type, text, value_children
 from app.modules.action_timing.source_numbers import coerce
 
 PREFIX = "<collection:"
@@ -222,7 +222,7 @@ def created(index, node, method, bindings):
     init = node.child_by_field_name("initializer") or next(
         iter(children(node, "initializer_expression")), None
     )
-    parts = [n for n in children(init) if n.type != "comment"]
+    parts = value_children(init)
     size = len(parts) if init is not None and not is_list else 0 if is_list else None
     copied = None
     if is_list:

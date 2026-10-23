@@ -3,7 +3,7 @@
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
-from app.modules.action_timing.source_index import children, simple_type, text
+from app.modules.action_timing.source_index import children, simple_type, text, value_children
 
 
 def task_method(index, method):
@@ -30,7 +30,7 @@ def result_type(index, node, method):
     from app.modules.action_timing.source_collections import raw_type
 
     while node is not None and node.type in {"parenthesized_expression", "argument"}:
-        node = children(node)[-1] if children(node) else None
+        node = value_children(node)[-1] if value_children(node) else None
     if node is None:
         return ""
     if node.type == "invocation_expression":

@@ -2,7 +2,7 @@
 
 import math
 
-from app.modules.action_timing.source_index import children, text
+from app.modules.action_timing.source_index import children, text, value_children
 
 
 def first_rank(node):
@@ -38,7 +38,7 @@ def initial(node):
 
 
 def initializer_shape(node, depth):
-    parts = [part for part in children(node) if part.type != "comment"]
+    parts = value_children(node)
     if depth == 1:
         if any(part.type == "initializer_expression" for part in parts):
             return None, []

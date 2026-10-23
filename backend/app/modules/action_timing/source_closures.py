@@ -4,7 +4,7 @@ from dataclasses import dataclass, replace
 
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import ZERO
-from app.modules.action_timing.source_index import children, text, walk
+from app.modules.action_timing.source_index import children, text, value_children, walk
 
 
 @dataclass(frozen=True)
@@ -60,7 +60,7 @@ def returned(index, node, method, bindings):
     from app.modules.action_timing import source_delegates as delegates
 
     while node is not None and node.type in {"arrow_expression_clause", "parenthesized_expression"}:
-        node = children(node)[-1] if children(node) else None
+        node = value_children(node)[-1] if value_children(node) else None
     if node is not None and node.type in {"lambda_expression", "anonymous_method_expression"}:
         return delegates.capture(index, node, method, bindings, signature_kind=method.return_type)
     return index.value(node, method, bindings)

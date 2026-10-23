@@ -4,7 +4,7 @@ from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN
-from app.modules.action_timing.source_index import children, simple_type, text
+from app.modules.action_timing.source_index import children, simple_type, text, value_children
 from app.modules.action_timing.source_numbers import NUMERIC_TYPES
 
 
@@ -42,7 +42,7 @@ def signature(index, kind, method):
 def explicit_signature(index, node, method):
     while node is not None:
         if node.type in {"argument", "parenthesized_expression"}:
-            parts = children(node)
+            parts = value_children(node)
             node = parts[-1] if parts else None
         elif node.type in {"cast_expression", "object_creation_expression"}:
             kind = text(node.child_by_field_name("type"))
@@ -134,7 +134,7 @@ def operation(index, node, method):
 
 def unwrapped(node):
     while node is not None and node.type in {"argument", "parenthesized_expression"}:
-        parts = children(node)
+        parts = value_children(node)
         node = parts[-1] if parts else None
     return node
 

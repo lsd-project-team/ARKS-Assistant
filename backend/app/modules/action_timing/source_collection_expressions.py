@@ -5,7 +5,7 @@ from app.modules.action_timing import source_array_values as arrays
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import ZERO
-from app.modules.action_timing.source_index import children
+from app.modules.action_timing.source_index import children, value_children
 from app.modules.action_timing.source_tasks import CLOCK
 
 
@@ -52,7 +52,7 @@ def initializer_values(
     estimator, node, method, bindings, stack, conditions, background, parts=None
 ):
     started, cost, values = bindings.get(CLOCK, ZERO), ZERO, []
-    for part in children(node) if parts is None else parts:
+    for part in value_children(node) if parts is None else parts:
         if part.type == "comment":
             continue
         bindings[CLOCK] = started.plus(cost)

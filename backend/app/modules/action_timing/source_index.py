@@ -36,6 +36,19 @@ def children(node, kind=None):
     return [child for child in node.children if child.is_named and (not kind or child.type == kind)]
 
 
+def value_children(node):
+    """表达式中的this/base是非named节点；声明遍历仍沿用children。"""
+    return (
+        [
+            child
+            for child in node.children
+            if child.type != "comment" and (child.is_named or child.type in {"this", "base"})
+        ]
+        if node is not None
+        else []
+    )
+
+
 def text(node):
     return node.text.decode("utf-8") if node else ""
 
@@ -50,7 +63,11 @@ def initializer(node):
     for child in node.children:
         if child.type == "=":
             after_equal = True
-        elif after_equal and child.is_named:
+        elif (
+            after_equal
+            and child.type != "comment"
+            and (child.is_named or child.type in {"this", "base"})
+        ):
             return child
     return None
 
@@ -690,10 +707,12 @@ class SourceIndex:
                 result = result_type(self, function.child_by_field_name("expression"), method)
                 if result:
                     return result
-        if node.type == "cast_expression":
-            return self.lookup_type(text(node.child_by_field_name("type")), method)
+        if node.type in {"cast_expression", "as_expression"}:
+            return self.lookup_type(
+                text(node.child_by_field_name("type") or node.child_by_field_name("right")), method
+            )
         if node.type == "parenthesized_expression":
-            return self.infer(children(node)[-1], method) if children(node) else ""
+            return self.infer(value_children(node)[-1], method) if value_children(node) else ""
         if node.type == "binary_expression":
             operator = text(node.child_by_field_name("operator"))
             left = self.infer(node.child_by_field_name("left"), method)
@@ -773,9 +792,13 @@ class SourceIndex:
             if text(function).endswith(".GetInstance"):
                 return self.lookup_type(text(function.child_by_field_name("expression")), method)
             found = self.resolve(node, method)
-            return self.lookup_type(found.return_type, found) if found else ""
+            if found:
+                return self.lookup_type(found.return_type, found)
+            from app.modules.action_timing.source_delegates import result_type
+
+            return result_type(self, node, method)
         if node.type == "argument":
-            parts = children(node)
+            parts = value_children(node)
             return self.infer(parts[-1], method) if parts else ""
         if node.type in {"integer_literal", "real_literal"}:
             return literal_type(source, node.type == "real_literal")
@@ -979,6 +1002,10 @@ class SourceIndex:
             return None
         seen = set() if seen is None else seen
         kind, source = node.type, text(node)
+        if kind in {"this", "this_expression"}:
+            from app.modules.action_timing.source_references import self_value
+
+            return self_value(self, method, bindings)
         if kind in {
             "prefix_unary_expression",
             "postfix_unary_expression",
@@ -993,7 +1020,7 @@ class SourceIndex:
             if result_key in bindings:
                 return bindings[result_key]
         if kind == "argument":
-            parts = children(node)
+            parts = value_children(node)
             return self.value(parts[-1], method, bindings, seen) if parts else None
         if kind in {"identifier", "member_access_expression"}:
             if kind == "identifier":
@@ -1119,8 +1146,20 @@ class SourceIndex:
                 ),
             }
             return self.default_value(owner, name, context, seen)
-        if kind == "cast_expression":
-            value = self.value(children(node)[-1], method, bindings, seen)
+        if kind in {"cast_expression", "as_expression"}:
+            value = self.value(
+                node.child_by_field_name("value") or node.child_by_field_name("left"),
+                method,
+                bindings,
+                seen,
+            )
+            from app.modules.action_timing.source_references import cast_value
+
+            reference = cast_value(self, node, method, value)
+            if reference is not state.MISSING:
+                return reference
+            if kind == "as_expression":
+                return None
             from app.modules.action_timing.source_delegates import NULL_DELEGATE, BoundDelegate
             from app.modules.action_timing.source_tasks import known_task
 
@@ -1139,7 +1178,7 @@ class SourceIndex:
             "constant_pattern",
             "arrow_expression_clause",
         }:
-            parts = children(node)
+            parts = value_children(node)
             return self.value(parts[-1], method, bindings, seen) if parts else None
         if kind == "prefix_unary_expression":
             operand = children(node)[-1]
@@ -1153,7 +1192,10 @@ class SourceIndex:
             left = self.value(node.child_by_field_name("left"), method, bindings, seen)
             right = self.value(node.child_by_field_name("right"), method, bindings, seen)
             op = text(node.child_by_field_name("operator"))
-            return binary_value(op, left, right)
+            from app.modules.action_timing.source_references import equality
+
+            handled, value, _ = equality(self, node, method, left, right)
+            return value if handled else binary_value(op, left, right)
         if kind == "conditional_expression":
             condition = self.value(node.child_by_field_name("condition"), method, bindings, seen)
             if isinstance(condition, bool):
@@ -1180,7 +1222,7 @@ class SourceIndex:
                 receiver = self.value(
                     function_node.child_by_field_name("condition"), method, bindings, seen
                 )
-                if not isinstance(receiver, dict) or "<type>" not in receiver:
+                if not isinstance(receiver, dict) or not ({"<type>", "<ref>"} & receiver.keys()):
                     return None
             values = call_args.values(self, node, method, bindings, seen)
             if values and all(
@@ -1237,14 +1279,15 @@ class SourceIndex:
         arguments[state.THIS] = bindings.get(state.THIS)
         arguments[state.FRAME] = bindings.get(state.FRAME)
         if target.body.type == "arrow_expression_clause":
-            return self.value(children(target.body)[-1], target, arguments, seen | {identity})
+            parts = value_children(target.body)
+            return self.value(parts[-1], target, arguments, seen | {identity}) if parts else None
         statements = children(target.body)
         if (
             len(statements) > 1
             and all(part.type == "expression_statement" for part in statements[:-1])
             and statements[-1].type == "return_statement"
         ):
-            returned = children(statements[-1])
+            returned = value_children(statements[-1])
             if returned and returned[-1].type in {
                 "integer_literal",
                 "real_literal",
@@ -1252,7 +1295,7 @@ class SourceIndex:
             }:
                 statements = statements[-1:]
         if len(statements) == 1 and statements[0].type == "return_statement":
-            returned = children(statements[0])
+            returned = value_children(statements[0])
             return (
                 self.value(returned[-1], target, arguments, seen | {identity}) if returned else None
             )

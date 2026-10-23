@@ -22,7 +22,14 @@ from app.modules.action_timing.source_delay_reachability import possible as dela
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, choice
 from app.modules.action_timing.source_foreach import execute_foreach
 from app.modules.action_timing.source_hardware import hardware_call
-from app.modules.action_timing.source_index import children, initializer, simple_type, text, walk
+from app.modules.action_timing.source_index import (
+    children,
+    initializer,
+    simple_type,
+    text,
+    value_children,
+    walk,
+)
 from app.modules.action_timing.source_loops import execute_for
 from app.modules.action_timing.source_numbers import binary_value
 from app.modules.action_timing.source_properties import (
@@ -83,7 +90,7 @@ class Estimator:
         self.root_method = method.key
         bindings = {
             **self.context,
-            state.THIS: f"root:{method.owner}",
+            state.THIS: None if method.is_static else f"root:{method.owner}",
             state.FRAME: "root",
             **{
                 name: self.index.value(default, method, self.context)
@@ -222,6 +229,10 @@ class Estimator:
     def expression(self, node, method, bindings, stack, conditions, background):
         if node is None:
             return ZERO
+        if node.type in {"this", "this_expression"}:
+            from app.modules.action_timing.source_references import leaf_cost
+
+            return leaf_cost(self, node, method, bindings, conditions, background)
         if node.type in {
             "lambda_expression",
             "anonymous_method_expression",
@@ -233,24 +244,44 @@ class Estimator:
             "local_function_declaration",
         }:
             return ZERO
-        if node.type == "argument":
-            parts = children(node)
+        if node.type in {
+            "argument",
+            "parenthesized_expression",
+            "arrow_expression_clause",
+            "return_statement",
+        }:
+            parts = value_children(node)
             if not parts:
-                if not re.fullmatch(r"out\s+_", text(node).strip()):
+                if node.type == "argument" and not re.fullmatch(r"out\s+_", text(node).strip()):
                     self.truncated = True
                     self.record(
                         "unresolved", "参数表达式未解析", node, method, conditions, background
                     )
                 return ZERO
             return self.expression(parts[-1], method, bindings, stack, conditions, background)
-        if node.type == "cast_expression":
-            return self.expression(
-                node.child_by_field_name("value"), method, bindings, stack, conditions, background
+        if node.type in {"cast_expression", "as_expression"}:
+            from app.modules.action_timing.source_references import cast_value
+
+            operand = node.child_by_field_name("value") or node.child_by_field_name("left")
+            before = self.expression(operand, method, bindings, stack, conditions, background)
+            reference = cast_value(
+                self.index,
+                node,
+                method,
+                self.index.value(operand, method, bindings),
             )
-        if node.type == "as_expression":
-            return self.expression(
-                node.child_by_field_name("left"), method, bindings, stack, conditions, background
-            )
+            if reference is None:
+                source_parallel.invalidate_unexplored(bindings)
+                self.record(
+                    "unresolved",
+                    "this引用转换的运行时类型未确定",
+                    node,
+                    method,
+                    conditions,
+                    background,
+                )
+                return before.plus(UNKNOWN)
+            return before
         if node.type == "is_pattern_expression":
             result = source_dynamic.pattern(
                 self, node, method, bindings, stack, conditions, background
@@ -416,10 +447,33 @@ class Estimator:
             )
             right = self.index.value(node.child_by_field_name("right"), method, bindings)
             null_comparison = source_dynamic.null_comparison(node, value, right)
+            from app.modules.action_timing.source_references import equality
+
+            handled, comparison, opaque = equality(self.index, node, method, value, right)
             bindings[result_key] = (
-                binary_value(op, value, right) if null_comparison is None else null_comparison
+                comparison
+                if handled
+                else (
+                    binary_value(op, value, right) if null_comparison is None else null_comparison
+                )
             )
             bindings[CLOCK] = started
+            if opaque:
+                from app.modules.action_timing.source_references import invalidate_values
+
+                if opaque == "source":
+                    source_parallel.invalidate_unexplored(bindings)
+                else:
+                    invalidate_values((value, right), bindings)
+                self.record(
+                    "unresolved",
+                    "自定义或外部相等运算的正文未展开",
+                    node,
+                    method,
+                    conditions,
+                    background,
+                )
+                return before.plus(after).plus(UNKNOWN if opaque == "source" else ZERO)
             return before.plus(after)
         if node.type == "conditional_expression":
             condition = node.child_by_field_name("condition")
@@ -540,6 +594,17 @@ class Estimator:
             return Cost(value, value) if valid else UNKNOWN
         target = self.index.resolve(node, method)
         if target is None:
+            from app.modules.action_timing.source_references import escape_this
+
+            if escape_this(self.index, node, method, bindings):
+                self.record(
+                    "unresolved",
+                    "this对象传给未解析调用，后续成员保持未定",
+                    node,
+                    method,
+                    conditions,
+                    background,
+                )
             collections.invalidate_arguments(self.index, node, method, bindings)
         if name in PURE_NAMES or function_name.startswith(
             ("Math.", "System.Math.", "TimeSpan.", "DateTime.", "Guid.", "Enumerable.")
@@ -692,6 +757,9 @@ class Estimator:
         bindings.pop(call_args.return_key(node, caller, bindings), None)
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
         if target.key in stack or (not metadata and (self.depth(stack) >= 7 or self.calls >= 120)):
+            from app.modules.action_timing.source_references import escape_this
+
+            escape_this(self.index, node, caller, bindings)
             self.truncated = True
             self.record(
                 "unresolved",
@@ -901,9 +969,9 @@ class Estimator:
         callback = delegates.stored(receiver, method, bindings, self.index)
         if callback is delegates.NULL_DELEGATE:
             return before
-        present = (isinstance(value, dict) and "<type>" in value) or isinstance(
-            callback, delegates.BoundDelegate
-        )
+        present = (
+            isinstance(value, dict) and bool({"<type>", "<ref>"} & value.keys())
+        ) or isinstance(callback, delegates.BoundDelegate)
         started = bindings.get(CLOCK, ZERO)
         original = dict(bindings)
         bindings[CLOCK] = started.plus(before)
@@ -1051,7 +1119,7 @@ class Estimator:
                 r"return\s+false\b", value
             ):
                 return Flow(None, None)
-            expression = next(iter(children(node)), None)
+            expression = next(iter(value_children(node)), None)
             from app.modules.action_timing.source_closures import returned
 
             bindings["<return-value>"] = returned(self.index, expression, method, bindings)

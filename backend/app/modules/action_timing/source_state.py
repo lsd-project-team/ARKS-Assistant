@@ -194,6 +194,9 @@ def context(bindings):
 def materialize(value, bindings):
     if not isinstance(value, dict) or "<ref>" not in value:
         return value
+    if "<self-type>" in value:
+        # this不把基类/派生类的同名成员压成一个对象字典；访问时按声明所有者读取槽。
+        return dict(value)
     result = dict(value)
     shared = object_unstable(value["<ref>"], bindings)
     if shared or (
@@ -213,8 +216,8 @@ def transfer(before, after, *, uncertain=False, locals=False):
     for name, value in after.items():
         if name in {PRIVATE_ACTIVE, LOCAL_FUNCTIONS}:
             continue  # 当前执行目标属于调用帧，不带回发起者或其他并发分支。
-        if name in {WRITES, FRESH, PRIVATE_PENDING}:
-            if name in before or name == PRIVATE_PENDING:
+        if name in {WRITES, FRESH, PRIVATE_PENDING, UNSTABLE}:
+            if name in before or name in {PRIVATE_PENDING, UNSTABLE}:
                 before[name] = (before.get(name) or frozenset()) | (value or frozenset())
             continue
         if name == UNKNOWN_MEMBERS and value:
@@ -244,7 +247,7 @@ def merge(bindings, branches):
             bindings[name] = any(value is True for value in values)
         elif name == PRIVATE_ACTIVE:
             bindings[name] = frozenset.intersection(*(value or frozenset() for value in values))
-        elif name in {WRITES, FRESH, PRIVATE_PENDING}:
+        elif name in {WRITES, FRESH, PRIVATE_PENDING, UNSTABLE}:
             bindings[name] = frozenset().union(*(value or () for value in values))
         elif isinstance(values[0], TaskPlan) and all(
             isinstance(value, TaskPlan) for value in values

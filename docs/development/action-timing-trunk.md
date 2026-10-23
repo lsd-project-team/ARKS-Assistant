@@ -434,3 +434,36 @@ MainForm.cs第50、61、68行另行核对：SendUiAction是公开静态Action<Ac
 trunk的6,281个非隐藏文件集合与SHA-256保持一致；前端本轮未改，未重复前端和普通账号浏览器验收。正式账号、项目、会话、消息及交接记录保持原数量，采集运行仍为0。发布与运行证据使用 `local-functions-cache-publish.json`、`local-functions-runtime-verification.json`。
 
 剩余边界清点还发现53处this实参被解析为空参数；最小探针也复现了命名this/返回this时对象身份未保留、读取旧声明初值的问题，列为后续修正，不声称这些调用已经求解。原公开UI委托、事件、复杂调度/信号、SDK单位、缺失Hardware.json及完整物理运动仍有未定条件。整体目标继续保持未完成。
+
+## 第二十二阶段：this对象身份与引用状态（2026-10-23）
+
+上轮53处“参数表达式未解析”来自this关键字节点。对整个实际编译范围重新核对，共114处this实参、3处局部初值、1处return this；另外有6处lock(this)及Point2D结构体的1处this比较。语法树把this保留为非named关键字，原children过滤会漏掉它：普通实参被标成空参数，命名实参可能误取参数名，return与局部初值也会丢失对象。原最小探针在delay由7改为11后仍读取7，不能把这个结果作为确定耗时。
+
+新增表达式值节点读取，保留this/base关键字并排除注释，声明和类型遍历仍使用原children。普通参数、命名参数、括号、return、箭头正文、局部初值及数组/List初始化使用对应值节点；Func<T>的调用结果沿静态签名推断，供返回闭包的后续成员访问使用。来源语义参照微软[this关键字](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/this)和[参数传递](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)：类按值传递的是引用副本，结构体值副本不能当成同一对象别名。
+
+this值只携带当前接收者引用与声明所有者，不生成精确运行时类型标签；基类方法返回this不能据此断言对象恰好是基类。成员访问继续按声明所有者读取共享存储，不把基类、派生类同名字段压成一个对象字典。已证明的同类型、基类、接口和object引用转换保留身份；未证明的转换、静态上下文或值类型this的副本保持未定。普通引用比较使用引用身份，源码重载、record和值类型比较以及未核实外部基类的相等语义不替换成Python字典内容比较，见微软[相等运算符](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/equality-operators)。未展开的运算和转换不会沿用可能已被改写的旧状态。
+
+已通过原始源码的6个完整方法入口探针，未改写目标正文或运行程序集：UcVacuum构造、TransportUnit.GetBaseMatterByOppositeSex、GeneralCoordinateSystem的SelfPosToG0/G0PosToSelf/DegreeInG0，以及EpoxyPatternControl.InitActionHandlerDict。观测到TransportUnit.cs第653行return this、坐标系第48/80/109行局部初值、界面参数与处理器构造中的this都指向原调用接收者，且不带精确类型标签。未知父坐标、界面、循环和硬件条件仍未定；这是对象身份探针，不是这些方法的设备耗时验收。清单和探针见 `this-source-scope.json`、`self-reference-real-identity.json`。
+
+另补齐this逃逸的边界：传给未解析调用或达到展开预算的源码调用后，外部代码可能保留并改写它；已知可达成员、集合中的对象一并保持失效。不因GetInstance等名称而假定带this的未知调用只读。当前可达对象核对上限为4,096个容器节点，达到边界时扩大失效范围；不是完整别名或SDK副作用求解。失效标记在同步返回和分支合并时取并集，等待旧任务也不能恢复新逃逸对象的旧字段；无关实例仍保留自己的已知值。
+
+整仓审阅发现第一版把未知this身份也计成额外的软件停留，并将框架集合和外部比较的失效范围扩大到无关成员，导致原主动作的已知组成回退。该候选报告及失败回归保留为 `before-composition-*`，未发布。现值读取本身不增加软件等待；未核实外部相等运算沿SDK调用口径标记总耗时未定，只使显式操作数可达状态失效，可算软件延时继续汇总已展开的源码。数组和已绑定框架List的null比较按引用判定；有未展开正文的源码相等运算另保留潜在软件停留与写入。新增4个失败反例先复现，再修正；6个真实主入口的定向报告已复核到原已知组成和运动/等待计数，完整整仓结果仍需最终审阅。
+
+第二次整仓审阅进一步发现，PickActionService与BondActionService的component==null错误地使载具参数失效，已知100 ms配置和距离模式因此丢失。真实继承链为BaseCarrierConfig → BaseDsSetting → PropertyChangeAop → INotifyPropertyChanged；最后一项是System.ComponentModel接口，不是外部基类。相等运算候选只沿类的基类查找，依据微软[C#候选运算符规范](https://learn.microsoft.com/dotnet/csharp/language-reference/language-specification/expressions#1248-candidate-user-defined-operators)和[INotifyPropertyChanged定义](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.inotifypropertychanged?view=netframework-4.8.1)。现排除源码中可核实的接口及带确切命名空间依据的该框架接口，保留未知外部基类及源码自定义运算；不根据I前缀猜接口。新增5项反例覆盖源码接口、短名导入、全限定接口、未导入同名类型及源码同名类，防止白名单覆盖实际源码。未修正的候选报告和通过859项的测试记录保留为 `before-interface-*`，不作为发布依据。
+
+定向重算6个原标定入口确认修正有效：PickCalibrationPlate及按钮包装的已知停留下界115 ms；PutbackCalibrationPlate及按钮包装保留0–100 ms、3处运动/2处等待的距离模式路径；StartBondToCamCalibTask及WithLocate保留5,035 ms下界。它们完整总耗时仍未定，未将测试期望写入分析器。结果见 `self-reference-calibration-probe.json`。
+
+同时为后续事件阶段清点实际编译范围：23处事件字段，按名称候选匹配8处赋值/订阅和28处调用，其中SendUiAction为24处调用候选；同名事件尚未全部语义绑定，这不是事件求解覆盖率。MainForm构造在61行追加PostAction，68行正文执行同步this.Invoke(action)。FrmGlobalCalibrationEx在622行使用事件BeginInvoke，1613/1617行按循环开关订阅/取消；1626行处理器启动未等待的Task，内部await Task.Delay(500)之后再Invoke下一轮启动。该500 ms属于后台轮间间隔，不能直接加到当前动作的前台停留。证据见 `event-flow-source-scope.json`；本阶段只清点，没有把未绑定事件目标假定为已执行。
+
+最终整仓目录仍2,290行、主表47项，无新增/删除目录行。相对已发布v22共642条完整行变化，其中602条仅调用阶段变化、40条辅助记录有非阶段字段变化；19条主记录只更新明细，47条主记录的所有非阶段字段保持一致。所有2,290条的已知停留上下界、运动/等待/超时计数和参数列表均未变。移除84处原“参数表达式未解析：this”阶段；未知接收者、值类型副本、外部比较和逃逸状态仍各自保留未定依据，不把消除解析错误等同完成动作求解。
+
+40条非阶段变化已分类审阅：29个自动对焦界面包装只减少前台公式中的旧参数错误后缀，仍为partial、truncated且total_ms为空；10个界面、退出或坐标初始化入口不再因空this参数标记truncated，仍为partial且完整耗时未定。仅OppositeSexConfiguration.InitOppositeSexConfigPosition从complete/0 ms修正为partial/未定：ElementCoordinate.cs第20行比较外部AKRSPoint3D参数point==null，该点类型不在当前源码声明中，不能直接断言相等语义及完整时间。其已知软件停留仍为0，不代表整个初始化已经验证为零时间。
+
+另核对两处特殊明细：S1DispenseDefectActionNode沿this读取BondPosition.MatterProductState时保留虚访问器的运行时边界，未从声明类型推断精确实现；UcBondModuelSetting.button34_Click恢复PREntity.SetLight六路光源的后台循环，不把它当作500轮任务的前台耗时。全部变化、分类和缓存SHA绑定于 `self-reference-trace-differences.json`、`self-reference-call-boundaries.json`、`self-reference-detailed-review.json` 与 `self-reference-review.json`。四个主动作的5/20–40/20/500 ms已知组成、两条TransportTask单轮505 ms、DispenseWorkTask单轮至少10 ms，以及18个Task返回入口均保持原核对结果；这些仍不等于完整物理时长。
+
+
+最终相关后端35文件864项通过（977.71秒，Failed=0、Skipped=0），其中源码单元30文件798项，新增62项this/引用反例；Ruff及76文件格式检查通过。保留真实主工程/整个trunk、API/导出、权限、缓存重启和原采集协议回归。未采集覆盖率，未执行Mutation Testing、目标程序集或设备程序，质量为中。
+
+最终模型trunk-model-v23，源码指纹 `bf509662707769804f3fa77666644f78bd7b7ce7883f6c33c269956c7ede4dd7`。首次整仓计算及保存579.155秒，新实例禁止重建后的恢复12.672秒，所有完整行指纹一致；仅为本机分析器开销。压缩报告15,640,609字节，SHA-256为 `491b217bf103b2b73177abaa28c8a1d2fd8bf7b1040c39b25501d6d660f4c997`，生产目录为 `report-cache-v23-et0rfdi6`。先审阅并通过864项门槛，再停止旧服务后原子替换派生缓存；发布/运行证据在 `self-reference-cache-publish.json` 与 `self-reference-runtime-verification.json`。
+
+trunk的6,281个非隐藏文件集合及SHA-256未变；前端本轮未改，未重复前端和普通账号浏览器验收。正式账号、项目、会话、消息与交接记录保持原数量，采集运行0。另清点23处事件字段、7处运算符与6处转换声明，未发现本体直接的Sleep/Delay/Wait/Move候选，仍需沿调用链、事件注册和实际触发关系继续审阅；不能据此称所有隐式路径没有停留。复杂隐式转换、未绑定事件/公开委托、调度/信号、外部SDK及缺失Hardware.json的完整运动仍有剩余条件，整体目标保持未完成。

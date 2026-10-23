@@ -6,7 +6,7 @@ from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_closures as closures
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost
-from app.modules.action_timing.source_index import children, simple_type, text, walk
+from app.modules.action_timing.source_index import children, simple_type, text, value_children, walk
 
 DELEGATE_PREFIX = "<delegate-variable:"
 NULL_DELEGATE = object()
@@ -31,7 +31,7 @@ def unwrap(index, node, method, bindings=None):
         return node
     while node is not None:
         if node.type in {"argument", "parenthesized_expression"}:
-            parts = children(node)
+            parts = value_children(node)
             node = parts[-1] if parts else None
         elif node.type == "cast_expression":
             node = node.child_by_field_name("value")
@@ -324,7 +324,7 @@ def capture(
 def explicit_return_kind(index, node, method):
     while node is not None and not isinstance(node, BoundDelegate):
         if node.type in {"argument", "parenthesized_expression"}:
-            parts = children(node)
+            parts = value_children(node)
             node = parts[-1] if parts else None
             continue
         if node.type not in {"cast_expression", "object_creation_expression"}:
@@ -449,6 +449,17 @@ def typed_invocation(index, node, method):
         "MethodInvoker",
         "SendOrPostCallback",
     }
+
+
+def result_type(index, node, method):
+    """Func<T>调用结果沿声明签名推断，不把闭包所属类当成精确运行时类型。"""
+    from app.modules.action_timing import source_dynamic
+    from app.modules.action_timing.source_collections import raw_type
+
+    receiver = invocation_receiver(index, node, method)
+    shape = source_dynamic.signature(index, raw_type(index, receiver, method), method)
+    args = call_args.arguments(node)
+    return index.lookup_type(shape[1], method) if shape and len(shape[0]) == len(args) else ""
 
 
 def invoke(estimator, node, method, bindings, stack, conditions, background):
