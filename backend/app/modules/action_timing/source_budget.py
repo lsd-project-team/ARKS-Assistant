@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 MAX_ANALYSIS_CALLS = 4096
 MAX_ANALYSIS_ITERATIONS = 4096
+MAX_ANALYSIS_JUMPS = 4096
 MAX_BODY_ITERATIONS = 512
 
 
@@ -24,3 +25,8 @@ class CallBudget:
 @dataclass
 class IterationBudget(CallBudget):
     limit: int = MAX_ANALYSIS_ITERATIONS
+
+
+@dataclass
+class JumpBudget(CallBudget):
+    limit: int = MAX_ANALYSIS_JUMPS

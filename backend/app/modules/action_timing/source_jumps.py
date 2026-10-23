@@ -118,6 +118,20 @@ def can_leave(statements, position, table, method):
     return False
 
 
+def limited_exit(estimator, statements, position, table, method, scope, elapsed, result, completed):
+    estimator.truncated = True
+    if not can_leave(statements, position, table, method):
+        estimator.failure_reasons.append("标签循环没有正常出口")
+        return
+    for key in list(scope):
+        if not key.startswith("<") or key.startswith(
+            (state.PREFIX, state.LOCAL_PREFIX, state.COLLECTION_PREFIX)
+        ):
+            scope[key] = None
+    result.live = choice(result.live, Cost(elapsed.lower, None))
+    completed.append(scope)
+
+
 def sequence(estimator, node, method, bindings, stack, conditions, background):
     table = labels(node, method)
     statements = children(node)
@@ -126,24 +140,27 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
     result = Flow(None, None)
     completed = []
     jumps = 0
+    graph_steps = 0
     limited = False
+    shared_limit_recorded = False
     while queue:
         position, elapsed, scope, hops, history, widened = queue.popleft()
         while position < len(statements):
             estimator.jump_steps += 1
-            if estimator.jump_steps > MAX_GRAPH_STEPS or hops > MAX_JUMPS:
+            graph_steps += 1
+            if graph_steps > MAX_GRAPH_STEPS or hops > MAX_JUMPS:
                 limited = True
-                estimator.truncated = True
-                if not can_leave(statements, position, table, method):
-                    estimator.failure_reasons.append("标签循环没有正常出口")
-                    break
-                for key in list(scope):
-                    if not key.startswith("<") or key.startswith(
-                        (state.PREFIX, state.LOCAL_PREFIX, state.COLLECTION_PREFIX)
-                    ):
-                        scope[key] = None
-                result.live = choice(result.live, Cost(elapsed.lower, None))
-                completed.append(scope)
+                limited_exit(
+                    estimator,
+                    statements,
+                    position,
+                    table,
+                    method,
+                    scope,
+                    elapsed,
+                    result,
+                    completed,
+                )
                 break
             scope[CLOCK] = started.plus(elapsed)
             part = estimator.block(
@@ -184,6 +201,31 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
                         ):
                             value = Cost(value.lower, None)
                         next_widened = widened | {key}
+                    if estimator.jump_budget.exhausted():
+                        limited = True
+                        limited_exit(
+                            estimator,
+                            statements,
+                            table[key][0],
+                            table,
+                            method,
+                            context,
+                            value,
+                            result,
+                            completed,
+                        )
+                        if not shared_limit_recorded:
+                            estimator.record(
+                                "unresolved",
+                                "标签跳转达到共享展开边界",
+                                node,
+                                method,
+                                conditions,
+                                background,
+                            )
+                            shared_limit_recorded = True
+                        continue
+                    estimator.jump_budget.consume()
                     queue.append(
                         (table[key][0], value, context, hops + 1, next_history, next_widened)
                     )

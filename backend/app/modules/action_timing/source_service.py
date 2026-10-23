@@ -233,7 +233,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v29:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v30:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,

@@ -20,7 +20,12 @@ from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing import source_jumps as jumps
 from app.modules.action_timing import source_state as state
 from app.modules.action_timing import source_task_returns as task_returns
-from app.modules.action_timing.source_budget import MAX_BODY_ITERATIONS, CallBudget, IterationBudget
+from app.modules.action_timing.source_budget import (
+    MAX_BODY_ITERATIONS,
+    CallBudget,
+    IterationBudget,
+    JumpBudget,
+)
 from app.modules.action_timing.source_completion import clear as clear_completion
 from app.modules.action_timing.source_completion import failed as expression_failed
 from app.modules.action_timing.source_condition_loops import execute_condition_loop
@@ -80,6 +85,7 @@ class Estimator:
         self.calls = 0
         self.budget = CallBudget()
         self.iteration_budget = IterationBudget()
+        self.jump_budget = JumpBudget()
         self.body_loop_steps = 0
         self.truncated = False
         self.context = {"MachineStateModel.MachineState": "Working"}
