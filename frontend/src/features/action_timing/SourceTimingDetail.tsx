@@ -4,6 +4,12 @@ import { Button, ErrorText, Modal } from '../../shared/ui/ui';
 import { sourceTimingClient } from './source-client';
 import { actionPresentation } from './presentation';
 import type { SourceStage } from './source-types';
+import {
+  componentTime,
+  missingLabels,
+  motionFixedNote,
+  motionCompletion,
+} from './source-detail-presentation';
 
 const labels: Record<string, string> = {
   delay: '延时',
@@ -32,6 +38,7 @@ function Phase({ row }: { row: SourceStage }) {
         <p className="source-condition">条件：{row.conditions.join('；')}</p>
       )}
       {row.note && <p>{row.note}</p>}
+      {motionFixedNote(row.motion_model) && <p>{motionFixedNote(row.motion_model)}</p>}
       {row.motion_model && (
         <details>
           <summary>运动参数与计算公式</summary>
@@ -40,6 +47,14 @@ function Phase({ row }: { row: SourceStage }) {
             {row.motion_model.velocity ?? row.motion_model.velocity_expression}
           </p>
           <p>{row.motion_model.formula}</p>
+          <p>
+            加速度：{row.motion_model.acceleration ?? row.motion_model.acceleration_expression}；
+            减速度：{row.motion_model.deceleration ?? row.motion_model.deceleration_expression}；
+            J：{row.motion_model.jerk ?? '未定'}
+          </p>
+          {motionCompletion(row.motion_model) && (
+            <p>完成规则：{motionCompletion(row.motion_model)}</p>
+          )}
           <p>{row.motion_model.conditions}</p>
           <p>尚未确定：{row.motion_model.unresolved.join('；')}</p>
         </details>
@@ -82,6 +97,7 @@ export function SourceTimingDetail({
   });
   const [filter, setFilter] = useState('');
   const [limit, setLimit] = useState(40);
+  const [missingLimit, setMissingLimit] = useState(3);
   const data = detail.data;
   const view = data ? actionPresentation(data) : null;
   const stages = data?.stages?.filter((row) => !filter || row.kind === filter) || [];
@@ -102,9 +118,64 @@ export function SourceTimingDetail({
               {view.remainder && <small>{view.remainder}</small>}
               <p>{view.note}</p>
             </div>
+            {data.status_reason && <p>{data.status_reason}</p>}
+            {!!data.missing_requirements?.length && (
+              <section aria-label="完整耗时的具体缺项">
+                <h3>完整耗时还缺什么</h3>
+                <ul>
+                  {data.missing_requirements.slice(0, missingLimit).map((item, n) => (
+                    <li key={`${item.path}:${item.line}:${n}`}>
+                      <strong>{missingLabels[item.category] || item.category}</strong>
+                      {item.background && <small>（后台分支）</small>}
+                      <ul>
+                        {item.required.map((value) => (
+                          <li key={value}>{value}</li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+                {data.missing_requirements.length > missingLimit && (
+                  <Button onClick={() => setMissingLimit(missingLimit + 6)}>
+                    继续查看具体缺项（剩余 {data.missing_requirements.length - missingLimit} 处）
+                  </Button>
+                )}
+              </section>
+            )}
+            {!!(data.known_components?.length || data.source_components?.length) && (
+              <details>
+                <summary>查看可算的条件、后台及每轮等待组成</summary>
+                <p>以下是等待组成，不是完整动作总时长；可能与上方已知停留重合，不能逐项相加。</p>
+                {[...(data.source_components || []), ...(data.known_components || [])].map(
+                  (part, n) => (
+                    <div key={n} className="source-phase">
+                      <strong>
+                        {part.scope === 'background'
+                          ? '后台停留'
+                          : part.scope === 'expanded'
+                            ? '已展开停留'
+                            : '条件/每轮组成'}
+                        ：{componentTime(part)}
+                      </strong>
+                      {!!part.conditions.length && <p>条件：{part.conditions.join('；')}</p>}
+                      <p>{part.note}</p>
+                      {part.sources.map((source, i) => (
+                        <code key={i} className="source-location">
+                          {source.path}:{source.line}
+                          {source.fixed_repetitions != null && source.fixed_repetitions > 1 && (
+                            <span>
+                              （{source.fixed_repetitions} 次 × {source.milliseconds} ms）
+                            </span>
+                          )}
+                        </code>
+                      ))}
+                    </div>
+                  ),
+                )}
+              </details>
+            )}
             <details className="source-detail-evidence">
               <summary>查看计算依据</summary>
-              {data.status_reason && <p>{data.status_reason}</p>}
               <p>{data.formula}</p>
               {data.analysis_unit === 'single_cycle' && (
                 <p>此项计算一个工作循环，子动作已包含在本流程中。</p>

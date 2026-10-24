@@ -81,6 +81,32 @@ def test_source_api_keeps_per_item_timing_without_requiring_hardware_or_import(s
         assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
 
 
+def test_source_api_exposes_calculable_loop_parts_and_specific_missing_input(services):
+    (services[2].root / "Demo.cs").write_text(
+        "class Demo{public void Start(int count,int delay){"
+        "Thread.Sleep(delay);for(int i=0;i<count;i++){Thread.Sleep(30);Thread.Sleep(60);}}}",
+        encoding="utf-8",
+    )
+    with TestClient(create_app(services[0])) as client:
+        summary = client.get(BASE).json()
+        row = summary["rows"][0]
+        assert row["total_ms"] is None and "input" in row["missing_categories"]
+        assert row["source_components"][0]["milliseconds"] == 90
+        assert "missing_requirements" not in row
+        detail = client.get(BASE + "/" + row["id"]).json()
+        assert (
+            detail["source_components"][0]["milliseconds"]
+            == row["source_components"][0]["milliseconds"]
+        )
+        assert len(detail["source_components"][0]["sources"]) == 2
+        assert not row["source_components"][0]["sources"]
+        assert any(
+            "delay" in value
+            for requirement in detail["missing_requirements"]
+            for value in requirement["required"]
+        )
+
+
 def test_source_api_computes_filtered_and_materialized_callbacks_without_import(services):
     (services[2].root / "Demo.cs").write_text(
         "using System.Collections.Generic;using System.Linq;class Demo:ActionNode{"

@@ -1,5 +1,6 @@
 import { knownDelay, milliseconds } from './format.ts';
 import type { SourceAction } from './source-types.ts';
+import { componentPreview, missingLabels } from './source-detail-presentation.ts';
 
 const actionNames: Record<string, string> = {
   InteractiveAction: '流道交互',
@@ -49,15 +50,16 @@ export function actionPresentation(row: SourceAction) {
   const hasDelay = low != null && (low > 0 || (high != null && high > 0));
   const hasTotal = row.total_ms != null && row.total_ms > 0;
   const itemTiming = perItemTiming(row);
+  const component = row.total_ms == null ? componentPreview(row) : '';
   const duration = hasTotal
     ? `${milliseconds(row.total_ms)} ms`
     : hasDelay
       ? knownDelay(row)
-      : itemTiming || (row.total_ms === 0 ? '无固定停留' : '耗时未定');
+      : itemTiming || component || (row.total_ms === 0 ? '无固定停留' : '耗时未定');
 
   // 停留可能与已启动的运动重叠，不能用加号暗示可直接相加为总时长。
   const pending = [row.motion_count > 0 && '运动', row.wait_count > 0 && '等待'].filter(Boolean);
-  const remainder =
+  let remainder =
     row.total_ms == null && hasDelay
       ? pending.length
         ? `已知停留，${pending.join('与')}耗时未定`
@@ -81,13 +83,23 @@ export function actionPresentation(row: SourceAction) {
     note = hasDelay ? `${note}；${itemTiming}，数量未知` : '按每项顺序计算，数量及其余耗时未定';
   }
   if (row.kind === 'placeholder') note = '源码中尚无动作实现';
+  if (component && !hasDelay && !hasTotal && !itemTiming) {
+    remainder = '条件组成，完整耗时未定';
+    note = '当前能算出的等待组成；触发条件、次数及其他组成见详情';
+  }
+  if (row.total_ms == null && row.missing_categories?.length) {
+    note += `；未定项：${row.missing_categories
+      .slice(0, 2)
+      .map((key) => missingLabels[key] || key)
+      .join('、')}`;
+  }
   return {
     station,
     name,
     duration,
     remainder,
     note,
-    hasDuration: hasDelay || hasTotal || !!itemTiming,
+    hasDuration: hasDelay || hasTotal || !!itemTiming || !!component,
   };
 }
 

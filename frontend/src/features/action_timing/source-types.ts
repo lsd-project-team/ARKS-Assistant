@@ -13,6 +13,15 @@ export type SourceStage = SourceEvidence & {
   arguments?: string[];
   argument_values?: SourceValue[];
   motion_model?: {
+    kind?: string;
+    source_fixed_wait_ms?: number;
+    duration_ms?: number | null;
+    start_position?: number | null;
+    acceleration?: number | null;
+    deceleration?: number | null;
+    jerk?: number | null;
+    time_unit?: string;
+    completion?: string;
     formula: string;
     conditions: string;
     distance?: number | null;
@@ -31,6 +40,22 @@ export type SourceParameter = SourceEvidence & {
   value: SourceValue;
   expression: string;
 };
+export type SourceComponent = {
+  milliseconds: number;
+  factors: string[];
+  conditions: string[];
+  sources: (SourceEvidence & { milliseconds?: number; fixed_repetitions?: number })[];
+  scope: 'conditional' | 'background' | 'expanded';
+  note: string;
+};
+export type MissingRequirement = {
+  category: string;
+  required: string[];
+  background: boolean;
+  path: string;
+  line: number;
+  method: string;
+};
 export type SourceAction = {
   id: string;
   name: string;
@@ -39,7 +64,11 @@ export type SourceAction = {
   kind: 'node' | 'controller' | 'workflow' | 'placeholder';
   primary?: boolean;
   category?: string;
-  analysis_unit?: 'method' | 'single_cycle';
+  analysis_unit?: 'method' | 'single_cycle' | 'wizard_step' | 'callback';
+  known_components?: SourceComponent[];
+  source_components?: SourceComponent[];
+  missing_requirements?: MissingRequirement[];
+  missing_categories?: string[];
   group: string;
   branch: string;
   entry: SourceEvidence;

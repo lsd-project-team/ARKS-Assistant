@@ -4,7 +4,14 @@ import re
 from collections import Counter, defaultdict, deque
 from dataclasses import dataclass, replace
 
-from app.modules.action_timing import source_apm, source_dispatch, source_dynamic, source_parallel
+from app.modules.action_timing import (
+    source_apm,
+    source_dispatch,
+    source_dynamic,
+    source_entry_callbacks,
+    source_native,
+    source_parallel,
+)
 from app.modules.action_timing import source_delegates as delegates
 from app.modules.action_timing.source_hardware import hardware_operation
 from app.modules.action_timing.source_index import children, description, text, walk
@@ -258,6 +265,7 @@ def build_catalog(index, legacy):
             if (
                 timed_operation(function.split(".")[-1])
                 or hardware_operation(index, call, context)
+                or source_native.operation(index, call, context)
                 or delegates.typed_invocation(index, call, context)
                 or source_dynamic.operation(index, call, context)
                 or source_apm.operation(index, call, context)
@@ -343,6 +351,42 @@ def build_catalog(index, legacy):
             )
             entries.append(entry)
             original.primary = False
+
+    # 向导保存的操作在用户触发时才执行；独立列出，不能叠加给初始化方法。
+    def callback_has_timing(node, outer):
+        for call in walk(node):
+            if call.type != "invocation_expression":
+                continue
+            function = text(call.child_by_field_name("function"))
+            target = index.resolve(call, outer)
+            if (
+                (target and target.key in timed)
+                or timed_operation(function.rsplit(".", 1)[-1])
+                or hardware_operation(index, call, outer)
+                or source_native.operation(index, call, outer)
+            ):
+                return True
+        return False
+
+    callbacks = []
+    for method in methods.values():
+        if method.unit.role != "business":
+            continue
+        for callback, label, unit in source_entry_callbacks.discover(
+            index, method, callback_has_timing
+        ):
+            entries.append(
+                ActionEntry(
+                    callback,
+                    label,
+                    "workflow",
+                    "独立用户操作/后台工作体，不计入创建方法",
+                    "向导步骤" if unit == "wizard_step" else "后台工作体",
+                    False,
+                    unit,
+                )
+            )
+            callbacks.append({"key": callback.key, "parent": method.key, "unit": unit})
     # 每个编译方法都有去向；“未发现耗时路径”不等于方法不是业务动作。
     ledger = []
     for key, method in methods.items():
@@ -365,6 +409,7 @@ def build_catalog(index, legacy):
             }
         )
     return entries, {
+        "callback_entries": callbacks,
         "methods": ledger,
         "local_functions": [
             {**row, "linked_execution": row["key"] in linked_locals} for row in local_declarations

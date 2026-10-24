@@ -10,9 +10,11 @@ from app.modules.action_timing import (
     source_eager_collections,
     source_finally,
     source_list_callbacks,
+    source_native,
     source_parallel,
     source_queries,
     source_query_consumers,
+    source_ui_actions,
 )
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
@@ -100,6 +102,7 @@ class Estimator:
         self.allocations = 0
         self.jump_steps = 0
         self.apm_calls = 0
+        self.component_methods = {}
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
@@ -636,6 +639,11 @@ class Estimator:
         )
         if dispatch_cost is not None:
             return dispatch_cost
+        ui_cost = source_ui_actions.handle(
+            self, node, method, bindings, stack, conditions, background
+        )
+        if ui_cost is not None:
+            return ui_cost
         callback_cost = delegates.invoke(
             self, node, method, bindings, stack, conditions, background
         )
@@ -718,6 +726,9 @@ class Estimator:
             )
             return UNKNOWN
         if not target:
+            native_cost = source_native.handle(self, node, method, conditions, background)
+            if native_cost is not None:
+                return native_cost
             package_cost = hardware_call(self, node, method, bindings, conditions, background)
             if package_cost is not None:
                 return package_cost
@@ -861,6 +872,7 @@ class Estimator:
                 background,
                 expression=text(node),
             )
+            self.component_methods[target.key] = target
             if not metadata and self.budget.exhausted(self.calls):
                 from app.modules.action_timing import source_budget_sleeps
 
