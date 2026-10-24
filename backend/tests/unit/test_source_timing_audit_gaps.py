@@ -326,7 +326,8 @@ def test_unbound_or_mixed_task_return_keeps_specific_analysis_reason(tmp_path, b
         r
         for r in report(
             tmp_path,
-            f"class Demo{{Task Start(Task task,bool enabled){{if(false)return Task.Delay(99);{body}}}}}",
+            "class Demo{Task Start(Task task,bool enabled){"
+            f"if(false)return Task.Delay(99);{body}}}}}",
         )["rows"]
         if r["method"] == "Start"
     )
