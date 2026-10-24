@@ -93,7 +93,20 @@ def key(location):
     return f"{PREFIX}{receiver or '*'}|{owner}|{name}>"
 
 
+def receiver_unstable(index, node, method, bindings):
+    if node is None or node.type != "member_access_expression":
+        return False
+    target = node.child_by_field_name("expression")
+    found = member(index, index.infer(target, method), source(node.child_by_field_name("name")))
+    if found is not None and found[1]:
+        return False
+    # box已失效时，box.delay也必须未定，不能从Box声明重新取初值。
+    return is_unstable(index, target, method, bindings)
+
+
 def read(index, node, method, bindings):
+    if receiver_unstable(index, node, method, bindings):
+        return None
     local = local_slot(node, method, bindings)
     unstable = bindings.get(UNSTABLE)
     if local in bindings:
@@ -131,7 +144,9 @@ def read(index, node, method, bindings):
 def is_unstable(index, node, method, bindings):
     from app.modules.action_timing.source_private_state import unsafe
 
-    if unsafe(index, location(index, node, method, bindings), bindings):
+    if receiver_unstable(index, node, method, bindings) or unsafe(
+        index, location(index, node, method, bindings), bindings
+    ):
         return True
     unstable = bindings.get(UNSTABLE)
     if not unstable:

@@ -40,7 +40,7 @@ def private_controls(index, owner):
             for name in private_fields(index, owner)
             if delegates.signature_arity(index.member_type(owner, name)) is not None
             or simple_type(index.member_type(owner, name))
-            in {"Delegate", "MulticastDelegate", "IAsyncResult"}
+            in {"Delegate", "MulticastDelegate", "IAsyncResult", "Task"}
         )
     return cache[owner]
 

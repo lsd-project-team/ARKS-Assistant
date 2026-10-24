@@ -3,34 +3,10 @@
 import re
 
 from app.modules.action_timing import source_arguments as arguments
-from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_budget_state import invalidate as invalidate
 from app.modules.action_timing.source_flow import Cost
 from app.modules.action_timing.source_index import children, text, value_children
 from app.modules.action_timing.source_numbers import literal, literal_type
-from app.modules.action_timing.source_references import ancestors, invalidate_values
-
-
-def invalidate(estimator, target, node, caller, bindings, receiver, supplied):
-    """没有执行正文，接收对象、引用实参及本类型静态成员不能沿用旧值。"""
-    values = list(arguments.values(estimator.index, node, caller, bindings))
-    values.extend((supplied or {}).values())
-    if receiver is state.MISSING:
-        saved = arguments.snapshot(node, caller, bindings)
-        receiver = saved.receiver if saved else state.MISSING
-    if receiver is state.MISSING:
-        receiver = state.receiver_for(estimator.index, target, node, caller, bindings)
-    if receiver is not None:
-        values.append({"<ref>": receiver})
-    invalidate_values(values, bindings)
-    state.invalidate_byref(estimator.index, node, caller, bindings)
-    if target.is_static:
-        keys = {
-            state.key(("static", owner, name))
-            for owner in ancestors(estimator.index, target.owner)
-            if (info := estimator.index.classes.get(owner)) is not None
-            for name in info.static_members
-        }
-        bindings[state.UNSTABLE] = (bindings.get(state.UNSTABLE) or frozenset()) | keys
 
 
 def unsafe_expression(statement):
