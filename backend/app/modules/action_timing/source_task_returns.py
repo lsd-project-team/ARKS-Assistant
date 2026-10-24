@@ -6,6 +6,17 @@ from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, simple_type, text, value_children
 
 
+def null_expression(node):
+    while node is not None and node.type in {
+        "arrow_expression_clause",
+        "parenthesized_expression",
+        "cast_expression",
+    }:
+        parts = value_children(node)
+        node = parts[-1] if parts else None
+    return node is not None and node.type == "null_literal"
+
+
 def task_method(index, method):
     kind = method.return_type
     if method.callable_kind == "property_get":

@@ -291,3 +291,48 @@ def test_unreachable_task_body_wait_is_not_a_component(tmp_path):
         if r["method"] == "Start"
     )
     assert not row["source_components"]
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "return null;",
+        "if(enabled)return null;return (Task)null;",
+    ],
+)
+def test_explicit_null_task_return_has_no_task_completion_wait(tmp_path, body):
+    row = next(
+        r
+        for r in report(
+            tmp_path,
+            f"class Demo{{Task Start(bool enabled){{if(false)return Task.Delay(99);{body}}}}}",
+        )["rows"]
+        if r["method"] == "Start"
+    )
+    assert row["total_ms"] == 0 and row["execution_status"] == "complete"
+    assert "未创建任务" in row["status_reason"]
+    assert not row["missing_requirements"]
+
+
+def test_null_task_keeps_waits_before_return(tmp_path):
+    row = report(tmp_path, "class Demo{Task Start(){Thread.Sleep(7);return null;}} ")["rows"][0]
+    assert row["total_ms"] == row["known_delay_min_ms"] == 7
+    assert "未创建任务" in row["status_reason"]
+
+
+@pytest.mark.parametrize("body", ["return task;", "if(enabled)return Task.Delay(10);return null;"])
+def test_unbound_or_mixed_task_return_keeps_specific_analysis_reason(tmp_path, body):
+    row = next(
+        r
+        for r in report(
+            tmp_path,
+            f"class Demo{{Task Start(Task task,bool enabled){{if(false)return Task.Delay(99);{body}}}}}",
+        )["rows"]
+        if r["method"] == "Start"
+    )
+    assert row["total_ms"] is None
+    assert "未创建任务" not in row["status_reason"]
+    assert any(stage["label"] == "返回任务的完成关系未绑定" for stage in row["stages"])
+    assert any(
+        "返回分支" in value for item in row["missing_requirements"] for value in item["required"]
+    )

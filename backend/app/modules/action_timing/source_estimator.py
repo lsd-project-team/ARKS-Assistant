@@ -103,6 +103,7 @@ class Estimator:
         self.jump_steps = 0
         self.apm_calls = 0
         self.component_methods = {}
+        self.root_return_kinds = set()
 
     def estimate(self, method):
         if method.unit.tree.root_node.has_error:
@@ -124,11 +125,30 @@ class Estimator:
             initialize_instance(self.index, method.owner, bindings, bindings[state.THIS])
         flow = self.execute_body(method, bindings, (method.key,), (), False)
         cost = flow.cost()
+        null_task_return = False
         if task_returns.task_method(self.index, method) and not task_returns.async_method(method):
             from app.modules.action_timing.source_tasks import join_stages, known_task
 
             plan = flow.states.get("returned", {}).get("<return-value>")
-            cost = cost.plus(plan.remaining(cost) if known_task(plan) else UNKNOWN)
+            null_task_return = (
+                not known_task(plan)
+                and self.root_return_kinds == {True}
+                and flow.returned is not None
+                and all(value is None for value in (flow.live, flow.broken, flow.continued))
+            )
+            if known_task(plan):
+                cost = cost.plus(plan.remaining(cost))
+            elif not null_task_return:
+                cost = cost.plus(UNKNOWN)
+                self.record(
+                    "unresolved",
+                    "返回任务的完成关系未绑定",
+                    method.node,
+                    method,
+                    (),
+                    False,
+                    note="需确定此入口的返回分支、实际返回的Task及其完成条件。",
+                )
             join_stages(self, plan, False)
         has_success_path = any(
             value is not None for value in (flow.live, flow.returned, flow.broken, flow.continued)
@@ -182,6 +202,8 @@ class Estimator:
             if not has_success_path
             else "空跑分支直接返回，不执行动作"
             if self.skip_conditions and not self.stages and cost == ZERO
+            else "当前源码模拟分支返回null，未创建任务"
+            if null_task_return
             else "",
             "known_delay_min_ms": cost.lower if has_success_path else None,
             "known_delay_max_ms": cost.upper if has_success_path else None,
@@ -1068,6 +1090,8 @@ class Estimator:
         ):
             cost = self.expression(method.body, method, bindings, stack, conditions, background)
             bindings["<return-value>"] = self.index.value(method.body, method, bindings)
+            if method.key == self.root_method:
+                self.root_return_kinds.add(task_returns.null_expression(method.body))
             return Flow(None, cost).with_state("returned", bindings)
         if method.callable_kind == "constructor":
             return constructor_body(self, method, bindings, stack, conditions, background)
@@ -1197,6 +1221,8 @@ class Estimator:
 
             cost = self.expression(node, method, bindings, stack, conditions, background)
             bindings["<return-value>"] = returned(self.index, node, method, bindings)
+            if method.key == self.root_method:
+                self.root_return_kinds.add(task_returns.null_expression(node))
             return Flow(None, cost).with_state("returned", bindings)
         if kind in {"block", "switch_section"}:
             from app.modules.action_timing import source_local_functions
@@ -1263,6 +1289,8 @@ class Estimator:
             from app.modules.action_timing.source_closures import returned
 
             bindings["<return-value>"] = returned(self.index, expression, method, bindings)
+            if method.key == self.root_method:
+                self.root_return_kinds.add(task_returns.null_expression(expression))
             return Flow(None, cost).with_state("returned", bindings)
         if kind == "break_statement":
             return Flow(None, broken=ZERO).with_state("broken", bindings)
