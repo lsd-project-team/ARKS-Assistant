@@ -79,6 +79,26 @@ def attach(result):
                 "method": stage["method"],
             }
         )
+    for component in result.get("source_components", []):
+        if not component.get("deferred") or not component["sources"]:
+            continue
+        source = component["sources"][0]
+        required = ["任务回调是否实际触发、分支当前值及完成/等待关系"]
+        required.extend(f"实际{factor}" for factor in component["factors"])
+        key = (source["path"], source["line"], tuple(required))
+        if key in seen:
+            continue
+        seen.add(key)
+        missing.append(
+            {
+                "category": "input" if component["factors"] else "runtime",
+                "required": required,
+                "background": True,
+                "path": source["path"],
+                "line": source["line"],
+                "method": component["method"],
+            }
+        )
     priority = {
         "motion": 0,
         "input": 1,

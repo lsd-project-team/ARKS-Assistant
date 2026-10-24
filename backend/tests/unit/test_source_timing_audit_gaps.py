@@ -212,3 +212,82 @@ def test_single_cycle_component_does_not_multiply_outer_service_loop(tmp_path):
     )
     assert row["source_components"][0]["milliseconds"] == 500
     assert row["source_components"][0]["factors"] == []
+
+
+def test_task_callback_keeps_100ms_per_loop_without_adding_to_launcher(tmp_path):
+    row = next(
+        r
+        for r in report(
+            tmp_path,
+            "class Demo{void Start(int count){Task.Run(()=>{"
+            "for(int i=0;i<count;i++){if(Cancel())return;Thread.Sleep(100);}},token);}}",
+        )["rows"]
+        if r["method"] == "Start"
+    )
+    part = next(part for part in row["source_components"] if part.get("deferred"))
+    assert part["milliseconds"] == 100
+    assert any("count" in factor for factor in part["factors"])
+    assert any("Task.Run" in condition for condition in part["conditions"])
+    assert row["known_delay_min_ms"] == 0 and row["total_ms"] != 100
+    assert any(
+        item["background"] and any("count" in value for value in item["required"])
+        for item in row["missing_requirements"]
+    )
+
+
+def test_saved_callback_task_keeps_10ms_poll_but_is_not_executed(tmp_path):
+    row = next(
+        r
+        for r in report(
+            tmp_path,
+            "class Demo{void Start(int count){Action notify=()=>Task.Run(()=>{"
+            "while(count>0){Thread.Sleep(10);count--;}});}}",
+        )["rows"]
+        if r["method"] == "Start"
+    )
+    part = next(part for part in row["source_components"] if part.get("deferred"))
+    assert part["milliseconds"] == 10
+    assert any("外层保存的回调" in condition for condition in part["conditions"])
+    assert not any(stage["kind"] == "delay" for stage in row["stages"])
+    assert row["known_delay_min_ms"] == row["known_delay_max_ms"] == 0
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "return;Task.Run(()=>Thread.Sleep(999));",
+        "if(false)Task.Run(()=>Thread.Sleep(999));",
+        "for(int i=120;i<=0;i--)Task.Run(()=>Thread.Sleep(999));",
+    ],
+)
+def test_unreachable_task_creation_does_not_create_wait_component(tmp_path, body):
+    row = next(
+        r
+        for r in report(tmp_path, f"class Demo{{void Start(){{{body}}}}}")["rows"]
+        if r["method"] == "Start"
+    )
+    assert not row["source_components"]
+
+
+def test_same_named_source_task_is_not_external_task_dispatch(tmp_path):
+    row = next(
+        r
+        for r in report(
+            tmp_path,
+            "class Task{public static void Run(Action callback){}}"
+            "class Demo{void Start(){Task.Run(()=>Thread.Sleep(999));}}",
+        )["rows"]
+        if r["method"] == "Start"
+    )
+    assert not row["source_components"]
+
+
+def test_unreachable_task_body_wait_is_not_a_component(tmp_path):
+    row = next(
+        r
+        for r in report(
+            tmp_path, "class Demo{void Start(){Task.Run(()=>{return;Thread.Sleep(999);});}}"
+        )["rows"]
+        if r["method"] == "Start"
+    )
+    assert not row["source_components"]

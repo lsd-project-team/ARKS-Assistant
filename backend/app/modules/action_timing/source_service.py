@@ -6,7 +6,11 @@ import io
 import threading
 from collections import Counter
 
-from app.modules.action_timing import source_components, source_requirements
+from app.modules.action_timing import (
+    source_components,
+    source_deferred_components,
+    source_requirements,
+)
 from app.modules.action_timing.catalog import CATALOG
 from app.modules.action_timing.source_catalog import build_catalog
 from app.modules.action_timing.source_estimator import Estimator
@@ -196,13 +200,16 @@ class SourceTiming:
             else:
                 estimator = Estimator(index)
                 result = estimator.estimate(method)
-                source_requirements.attach(result)
                 result["known_components"] = source_components.calculated_stages(result["stages"])
                 result["source_components"] = [
                     fact
                     for target in {method.key: method, **estimator.component_methods}.values()
-                    for fact in source_components.literal_waits(index, target)
+                    for fact in (
+                        *source_components.literal_waits(index, target),
+                        *source_deferred_components.task_waits(index, target),
+                    )
                 ]
+                source_requirements.attach(result)
                 row = {
                     "id": hashlib.sha256(method.key.encode()).hexdigest()[:24],
                     "name": name[:120],
@@ -242,7 +249,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v34:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v35:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,

@@ -83,6 +83,65 @@ def fixed_loop(node):
     return count if count <= 100000 else None
 
 
+def call_context(call, method):
+    """同时用于直接等待和任务启动点；不把不可达回调当作条件组成。"""
+    conditions, factors, loops, parent, possible = [], [], [], call.parent, True
+    boundary = method.body_override.parent if method.body_override else method.node
+    multiplier = 1
+    while parent is not None and parent != boundary:
+        if parent.type in {"block", "switch_section"}:
+            statements = children(parent)
+            blocked = False
+            for statement in statements:
+                if statement.start_byte > call.start_byte:
+                    break
+                if statement.type == "labeled_statement":
+                    blocked = False
+                if statement.end_byte <= call.start_byte:
+                    if statement.type == "if_statement":
+                        yes = terminates(statement.child_by_field_name("consequence"))
+                        no = terminates(statement.child_by_field_name("alternative"))
+                        guard = text(statement.child_by_field_name("condition"))
+                        if yes and not no:
+                            conditions.append(f"!({guard})")
+                        elif no and not yes:
+                            conditions.append(guard)
+                    blocked |= terminates(statement)
+            possible &= not blocked
+        if parent.type == "switch_section":
+            conditions.append(text(parent).split("{", 1)[0].splitlines()[0])
+        elif parent.type == "catch_clause":
+            conditions.append("异常恢复分支")
+        if parent.type == "if_statement":
+            branch = parent.child_by_field_name("consequence")
+            yes = branch is not None and branch.start_byte <= call.start_byte < branch.end_byte
+            condition = text(parent.child_by_field_name("condition"))
+            if condition in {"true", "false"} and yes != (condition == "true"):
+                possible = False
+            conditions.append(condition if yes else f"!({condition})")
+        elif parent.type == "for_statement":
+            count = fixed_loop(parent)
+            if count == 0:
+                possible = False
+            if count is not None:
+                multiplier *= count
+            else:
+                factors.append(f"循环次数（{text(parent.child_by_field_name('condition'))}）")
+            loops.append(parent.start_byte)
+        elif parent.type in {"foreach_statement", "for_each_statement"}:
+            factors.append(f"{text(parent.child_by_field_name('right'))}的项数")
+            loops.append(parent.start_byte)
+        elif parent.type in {"while_statement", "do_statement"}:
+            condition = text(parent.child_by_field_name("condition"))
+            if parent.type == "while_statement" and condition == "false":
+                possible = False
+            else:
+                factors.append(f"满足({condition})的轮数")
+            loops.append(parent.start_byte)
+        parent = parent.parent
+    return conditions, factors, loops, multiplier, possible
+
+
 def literal_waits(index, method):
     cache = index.__dict__.setdefault("source_wait_components", {})
     if method.key in cache:
@@ -115,60 +174,7 @@ def literal_waits(index, method):
         duration = index.value(value_node, method, {})
         if not number(duration) or duration <= 0:
             continue
-        conditions, factors, loops, parent, possible = [], [], [], call.parent, True
-        boundary = method.body_override.parent if method.body_override else method.node
-        multiplier = 1
-        while parent is not None and parent != boundary:
-            if parent.type in {"block", "switch_section"}:
-                statements = children(parent)
-                blocked = False
-                for statement in statements:
-                    if statement.start_byte > call.start_byte:
-                        break
-                    if statement.type == "labeled_statement":
-                        blocked = False  # 标签可能是goto入口，不能按前方出口判不可达。
-                    if statement.end_byte <= call.start_byte:
-                        if statement.type == "if_statement":
-                            yes = terminates(statement.child_by_field_name("consequence"))
-                            no = terminates(statement.child_by_field_name("alternative"))
-                            guard = text(statement.child_by_field_name("condition"))
-                            if yes and not no:
-                                conditions.append(f"!({guard})")
-                            elif no and not yes:
-                                conditions.append(guard)
-                        blocked |= terminates(statement)
-                possible &= not blocked
-            if parent.type == "switch_section":
-                conditions.append(text(parent).split("{", 1)[0].splitlines()[0])
-            elif parent.type == "catch_clause":
-                conditions.append("异常恢复分支")
-            if parent.type == "if_statement":
-                branch = parent.child_by_field_name("consequence")
-                yes = branch is not None and branch.start_byte <= call.start_byte < branch.end_byte
-                condition = text(parent.child_by_field_name("condition"))
-                if condition in {"true", "false"} and yes != (condition == "true"):
-                    possible = False
-                conditions.append(condition if yes else f"!({condition})")
-            elif parent.type == "for_statement":
-                count = fixed_loop(parent)
-                if count == 0:
-                    possible = False
-                if count is not None:
-                    multiplier *= count
-                else:
-                    factors.append(f"循环次数（{text(parent.child_by_field_name('condition'))}）")
-                loops.append(parent.start_byte)
-            elif parent.type in {"foreach_statement", "for_each_statement"}:
-                factors.append(f"{text(parent.child_by_field_name('right'))}的项数")
-                loops.append(parent.start_byte)
-            elif parent.type in {"while_statement", "do_statement"}:
-                condition = text(parent.child_by_field_name("condition"))
-                if parent.type == "while_statement" and condition == "false":
-                    possible = False
-                else:
-                    factors.append(f"满足({condition})的轮数")
-                loops.append(parent.start_byte)
-            parent = parent.parent
+        conditions, factors, loops, multiplier, possible = call_context(call, method)
         if not possible:
             continue
         key = (tuple(conditions), tuple(factors), tuple(loops))
