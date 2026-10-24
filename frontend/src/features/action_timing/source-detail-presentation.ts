@@ -14,7 +14,7 @@ export const missingLabels: Record<string, string> = {
 export function motionFixedNote(model: SourceStage['motion_model']) {
   const value = model?.source_fixed_wait_ms;
   return value != null && value > 0
-    ? `包内固定等待 ${milliseconds(value)} ms，与已启动的运动重叠，不另加到完整运动时间`
+    ? `初始化等门禁通过时，包内固定等待 ${milliseconds(value)} ms；与已启动的运动重叠，不另加到完整运动时间`
     : '';
 }
 

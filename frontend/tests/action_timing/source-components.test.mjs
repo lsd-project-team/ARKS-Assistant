@@ -11,6 +11,7 @@ import {
 
 test('包内20 ms等待明确展示与运动重叠，不伪造完整运动时长', () => {
   assert.match(motionFixedNote({ source_fixed_wait_ms: 20 }), /20 ms.*重叠.*不另加/);
+  assert.match(motionFixedNote({ source_fixed_wait_ms: 20 }), /初始化等门禁通过时/);
   assert.equal(motionFixedNote({ source_fixed_wait_ms: 0 }), '');
   assert.equal(motionFixedNote(undefined), '');
 });
