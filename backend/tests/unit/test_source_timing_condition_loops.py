@@ -178,7 +178,10 @@ def test_unknown_coordinate_parent_chain_does_not_expand_an_arbitrary_128_links(
 
 
 @pytest.mark.parametrize("last", ["return;", "Thread.Sleep(3);"])
-def test_expansion_limit_keeps_cpu_unknown_separate_from_possible_fixed_delays(last):
+def test_expansion_limit_keeps_cpu_unknown_separate_from_possible_fixed_delays(last, monkeypatch):
+    from app.modules.action_timing import source_budget
+
+    monkeypatch.setattr(source_budget, "MAX_CALL_DEPTH", 7)
     methods = "".join(f"void M{i}(){{M{i + 1}();}}" for i in range(9))
     result = analyze(
         f"class Demo {{{methods}void M9(){{{last}}}"

@@ -143,6 +143,7 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
     graph_steps = 0
     limited = False
     shared_limit_recorded = False
+    resource_limit = None
     while queue:
         position, elapsed, scope, hops, history, widened = queue.popleft()
         while position < len(statements):
@@ -150,6 +151,12 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
             graph_steps += 1
             if graph_steps > MAX_GRAPH_STEPS or hops > MAX_JUMPS:
                 limited = True
+                resource_limit = {
+                    "kind": "control_graph",
+                    "target": method.key,
+                    "used": graph_steps if graph_steps > MAX_GRAPH_STEPS else hops,
+                    "limit": MAX_GRAPH_STEPS if graph_steps > MAX_GRAPH_STEPS else MAX_JUMPS,
+                }
                 limited_exit(
                     estimator,
                     statements,
@@ -203,6 +210,12 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
                         next_widened = widened | {key}
                     if estimator.jump_budget.exhausted():
                         limited = True
+                        resource_limit = {
+                            "kind": "jump_budget",
+                            "target": method.key,
+                            "used": estimator.jump_budget.used,
+                            "limit": estimator.jump_budget.limit,
+                        }
                         limited_exit(
                             estimator,
                             statements,
@@ -222,6 +235,7 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
                                 method,
                                 conditions,
                                 background,
+                                analysis_limit=resource_limit,
                             )
                             shared_limit_recorded = True
                         continue
@@ -242,7 +256,7 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
     if completed:
         state.merge(bindings, completed)
     bindings[CLOCK] = started
-    if jumps:
+    if jumps or resource_limit:
         estimator.record(
             "loop",
             "标签重试剩余次数未定" if limited else "标签跳转已按实际路径展开",
@@ -253,6 +267,7 @@ def sequence(estimator, node, method, bindings, stack, conditions, background):
             iterations=None,
             bounded=not limited,
             expanded_iterations=jumps,
+            **({"analysis_limit": resource_limit} if resource_limit else {}),
             label_names=[info[1] for info in table.values()],
         )
     return result

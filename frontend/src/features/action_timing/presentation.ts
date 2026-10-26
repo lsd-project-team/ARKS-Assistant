@@ -9,7 +9,7 @@ const actionNames: Record<string, string> = {
 };
 
 const pendingNotes: Record<string, string> = {
-  S1DispenseCorrectionActionNode: '定位耗时无法由现有源码确定',
+  S1DispenseCorrectionActionNode: '定位耗时仍有未定项，详见具体缺项',
   S1DispenseActionNode: '轨迹与等待耗时未定',
   PickActionNode: '运动与取料等待耗时未定',
 };
@@ -78,7 +78,7 @@ export function actionPresentation(row: SourceAction) {
       note = `固定停留 ${milliseconds(low)} ms，另含运动与抬起`;
     }
   } else if (node && pendingNotes[row.class_name]) note = pendingNotes[row.class_name];
-  else if (pending.length) note = `${pending.join('与')}耗时无法由现有源码确定`;
+  else if (pending.length) note = `${pending.join('与')}耗时仍有未定项，详见具体缺项`;
   if (itemTiming && row.total_ms == null) {
     note = hasDelay ? `${note}；${itemTiming}，数量未知` : '按每项顺序计算，数量及其余耗时未定';
   }

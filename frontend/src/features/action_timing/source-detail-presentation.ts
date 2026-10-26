@@ -7,7 +7,7 @@ export const missingLabels: Record<string, string> = {
   feedback: '实际信号或任务完成时刻',
   sdk: 'SDK重载、通信及设备完成时间',
   runtime: '运行门禁、锁或队列条件',
-  analysis: '尚未绑定的调用、参数或展开路径',
+  analysis: '源码分析尚未完成的调用或数值路径',
   external: '外部调用的内部耗时或完成约定',
 };
 

@@ -1,9 +1,10 @@
 """按for的实际执行顺序展开；无法确定的剩余迭代保留未知上界。"""
 
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_budget import MAX_BODY_ITERATIONS
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO, Cost, Flow, add, choice
 from app.modules.action_timing.source_index import children, initializer, text, walk
-from app.modules.action_timing.source_loop_bounds import pure_loop
+from app.modules.action_timing.source_loop_bounds import counted_range, pure_loop
 from app.modules.action_timing.source_numbers import INTEGER_RANGES
 from app.modules.action_timing.source_scopes import inline_names, local_scope, restore
 from app.modules.action_timing.source_tasks import CLOCK, track_binding
@@ -31,6 +32,8 @@ class ForExecution:
         self.exact = True
         self.analytical = False
         self.no_normal_exit = False
+        self.analysis_limit = None
+        self.iteration_limit = MAX_ITERATIONS
         self.body = node.child_by_field_name("body")
         self.condition = node.child_by_field_name("condition")
         self.updates = fields(node, "update")
@@ -90,6 +93,26 @@ class ForExecution:
 
     def summarize(self, reason):
         """剩余循环可能不执行，也可能多次执行；只展开一份条件样本追踪写入。"""
+        if "边界" in reason:
+            budget = self.estimator.iteration_budget
+            if self.count >= self.iteration_limit:
+                used, limit = self.count, self.iteration_limit
+            elif self.estimator.body_loop_steps >= max(MAX_BODY_ITERATIONS, self.iteration_limit):
+                used, limit = (
+                    self.estimator.body_loop_steps,
+                    max(MAX_BODY_ITERATIONS, self.iteration_limit),
+                )
+            elif budget.exhausted():
+                used, limit = budget.used, budget.limit
+            else:
+                used = limit = None  # 集合版本未知不能冒充分析资源用尽。
+            if limit is not None:
+                self.analysis_limit = {
+                    "kind": "loop_iterations",
+                    "used": used,
+                    "limit": limit,
+                    "target": f"{self.method.key}:{self.node.start_point[0] + 1}",
+                }
         original = dict(self.bindings)
         self.exact = False
         stage_start = len(self.estimator.stages)
@@ -174,6 +197,11 @@ class ForExecution:
 
     def execute(self):
         self.initialize()
+        limits = counted_range(self.estimator.index, self.node, self.method, self.bindings)
+        if limits and limits[3] <= self.estimator.iteration_budget.limit:
+            # 已知有限for继续按原顺序执行，不能把128轮保护当作源码次数。
+            # 正文改写计数器时仍以实际条件为准，并保留共享额度保护。
+            self.iteration_limit = max(MAX_ITERATIONS, limits[3])
         plan = pure_loop(self.estimator, self.node, self.method, self.bindings, MAX_ITERATIONS)
         if plan is not None:
             start = len(self.estimator.stages)
@@ -209,7 +237,11 @@ class ForExecution:
             if value is not True:
                 self.summarize("条件或次数由运行数据决定")
                 break
-            if self.count >= MAX_ITERATIONS or self.estimator.loop_limit_reached():
+            if (
+                self.count >= self.iteration_limit
+                or self.estimator.iteration_budget.exhausted()
+                or self.estimator.body_loop_steps >= max(MAX_BODY_ITERATIONS, self.iteration_limit)
+            ):
                 self.estimator.truncated = True
                 self.summarize("达到迭代展开边界")
                 break
@@ -277,6 +309,7 @@ class ForExecution:
             analytical=self.analytical,
             bounded=self.bounded,
             no_normal_exit=self.no_normal_exit,
+            **({"analysis_limit": self.analysis_limit} if self.analysis_limit else {}),
             per_iteration_min_ms=self.each.lower if self.each else 0,
             per_iteration_max_ms=self.each.upper if self.each else 0,
         )

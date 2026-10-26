@@ -11,6 +11,61 @@ def number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
+def unchanged(method, name):
+    """形参可被嵌套回调及ref/out改写，不能用调用点常量覆盖这些写入。"""
+    cache = method.unit.__dict__.setdefault("component_unchanged_parameters", {})
+    key = (method.key, name)
+    if key in cache:
+        return cache[key]
+    for node in walk(method.body):
+        if node.type == "assignment_expression" and text(node.child_by_field_name("left")) == name:
+            cache[key] = False
+            return False
+        if node.type in {"prefix_unary_expression", "postfix_unary_expression"}:
+            if re.fullmatch(
+                rf"(?:\+\+|--)\s*{re.escape(name)}|{re.escape(name)}\s*(?:\+\+|--)",
+                text(node).strip(),
+            ):
+                cache[key] = False
+                return False
+        if node.type == "argument" and re.fullmatch(
+            rf"\s*(ref|out)\s+{re.escape(name)}\s*", text(node)
+        ):
+            cache[key] = False
+            return False
+    cache[key] = True
+    return True
+
+
+def bound_context(index, node, method, bindings):
+    """仅用未改写的已知形参剔除确定不进入的分支，不猜字段/属性值。"""
+    parent = node.parent
+    while parent is not None and parent != method.node:
+        if parent.type in {"if_statement", "while_statement"}:
+            condition = parent.child_by_field_name("condition")
+            safe = all(
+                p.type
+                not in {
+                    "invocation_expression",
+                    "member_access_expression",
+                    "assignment_expression",
+                    "prefix_unary_expression",
+                    "postfix_unary_expression",
+                }
+                and (p.type != "identifier" or text(p) in bindings)
+                for p in walk(condition)
+            )
+            value = index.value(condition, method, bindings) if safe else None
+            body = parent.child_by_field_name(
+                "consequence" if parent.type == "if_statement" else "body"
+            )
+            yes = body is not None and body.start_byte <= node.start_byte < body.end_byte
+            if isinstance(value, bool) and yes != value:
+                return False
+        parent = parent.parent
+    return True
+
+
 def terminates(node):
     if node is None:
         return False
@@ -31,8 +86,11 @@ def terminates(node):
     return False
 
 
-def fixed_loop(node):
+def fixed_loop(node, bindings=None):
     header = text(node).split("{", 1)[0]
+    for name, value in (bindings or {}).items():
+        if isinstance(value, int) and not isinstance(value, bool):
+            header = re.sub(rf"\b{re.escape(name)}\b", str(value), header)
     match = re.match(
         r"for\s*\(\s*(?:int|short|double)\s+(\w+)\s*=\s*(-?\d+)\s*;"
         r"\s*\1\s*(<=|<|>=|>)\s*(-?\d+)\s*;\s*\1\s*(\+\+|--|\+=\s*-?\d+|-=\s*-?\d+)\s*\)",
@@ -83,7 +141,7 @@ def fixed_loop(node):
     return count if count <= 100000 else None
 
 
-def call_context(call, method):
+def call_context(call, method, bindings=None):
     """同时用于直接等待和任务启动点；不把不可达回调当作条件组成。"""
     conditions, factors, loops, parent, possible = [], [], [], call.parent, True
     boundary = method.body_override.parent if method.body_override else method.node
@@ -120,7 +178,7 @@ def call_context(call, method):
                 possible = False
             conditions.append(condition if yes else f"!({condition})")
         elif parent.type == "for_statement":
-            count = fixed_loop(parent)
+            count = fixed_loop(parent, bindings)
             if count == 0:
                 possible = False
             if count is not None:
@@ -142,10 +200,13 @@ def call_context(call, method):
     return conditions, factors, loops, multiplier, possible
 
 
-def literal_waits(index, method):
+def literal_waits(index, method, bindings=None):
+    contextual = bindings is not None
+    bindings = {name: value for name, value in (bindings or {}).items() if unchanged(method, name)}
     cache = index.__dict__.setdefault("source_wait_components", {})
-    if method.key in cache:
-        return cache[method.key]
+    cache_key = (method.key, contextual, tuple(sorted(bindings.items())))
+    if cache_key in cache:
+        return cache[cache_key]
     groups = {}
     for call in lexical_walk(method.body):
         if call.type != "invocation_expression":
@@ -165,41 +226,87 @@ def literal_waits(index, method):
         args = children(call.child_by_field_name("arguments"), "argument")
         parts = value_children(args[0]) if len(args) == 1 else []
         value_node = parts[-1] if parts else None
-        # 不从可变成员/形参初值猜当前值；这里只处理纯数值表达式。
-        if value_node is None or any(
-            n.type in {"identifier", "member_access_expression", "invocation_expression"}
-            for n in walk(value_node)
+        # 只使用纯数值或已从调用点证明、且正文未改写的实参；不猜当前成员值。
+        if value_node is None or (
+            not contextual
+            and any(
+                n.type in {"member_access_expression", "invocation_expression"}
+                or (n.type == "identifier" and text(n) not in bindings)
+                for n in walk(value_node)
+            )
         ):
             continue
-        duration = index.value(value_node, method, {})
-        if not number(duration) or duration <= 0:
-            continue
-        conditions, factors, loops, multiplier, possible = call_context(call, method)
+        if contextual:
+            from app.modules.action_timing.source_component_values import variants
+
+            alternatives = variants(index, value_node, method, bindings, call)
+        else:
+            alternatives = [(index.value(value_node, method, bindings), [])]
+        context = dict(bindings)
+        if contextual:
+            parent = call.parent
+            while parent is not None and parent != method.node:
+                if parent.type in {"for_statement", "if_statement", "while_statement"}:
+                    for name in {
+                        text(p)
+                        for p in walk(parent.child_by_field_name("condition"))
+                        if p.type == "identifier"
+                    }:
+                        if name not in context:
+                            values = variants(
+                                index,
+                                next(
+                                    p
+                                    for p in walk(parent.child_by_field_name("condition"))
+                                    if p.type == "identifier" and text(p) == name
+                                ),
+                                method,
+                                bindings,
+                                call,
+                            )
+                            if (
+                                len(values) == 1
+                                and not values[0][1]
+                                and isinstance(values[0][0], (int, float, bool))
+                            ):
+                                context[name] = values[0][0]
+                parent = parent.parent
+        conditions, factors, loops, multiplier, possible = call_context(call, method, context)
+        if context:
+            possible &= bound_context(index, call, method, context)
+        if bindings:
+            conditions.insert(
+                0, "调用参数：" + "，".join(f"{n}={v:g}" for n, v in sorted(bindings.items()))
+            )
         if not possible:
             continue
-        key = (tuple(conditions), tuple(factors), tuple(loops))
-        item = groups.setdefault(
-            key,
-            {
-                "milliseconds": 0,
-                "factors": factors,
-                "conditions": conditions,
-                "sources": [],
-                "scope": "conditional",
-                "method": f"{method.owner}.{method.name}",
-                "note": "进入这些分支并正常执行时的等待组成；可能与汇总重合，不另加到总时长。",
-            },
-        )
-        item["milliseconds"] += duration * multiplier
-        item["sources"].append(
-            {
-                **method.unit.evidence(call),
-                "milliseconds": duration,
-                "fixed_repetitions": multiplier,
-            }
-        )
-    cache[method.key] = list(groups.values())
-    return cache[method.key]
+        for duration, extra in alternatives:
+            if not number(duration) or duration <= 0:
+                continue
+            labels = [*conditions, *extra]
+            key = (tuple(labels), tuple(factors), tuple(loops))
+            item = groups.setdefault(
+                key,
+                {
+                    "milliseconds": 0,
+                    "factors": factors,
+                    "conditions": labels,
+                    "sources": [],
+                    "scope": "conditional",
+                    "method": f"{method.owner}.{method.name}",
+                    "note": "进入这些分支并正常执行时的等待组成；可能与汇总重合，不另加到总时长。",
+                },
+            )
+            item["milliseconds"] += duration * multiplier
+            item["sources"].append(
+                {
+                    **method.unit.evidence(call),
+                    "milliseconds": duration,
+                    "fixed_repetitions": multiplier,
+                }
+            )
+    cache[cache_key] = list(groups.values())
+    return cache[cache_key]
 
 
 def calculated_stages(stages):

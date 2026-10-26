@@ -5,7 +5,10 @@ import pytest
 from tests.unit.test_source_timing_dependencies import analyze
 
 
-def test_private_delegate_and_result_survive_a_partial_target_that_does_not_write_them():
+def test_private_delegate_and_result_survive_a_partial_target_that_does_not_write_them(
+    source_iteration_limit,
+):
+    source_iteration_limit(128)
     result = analyze("""using System;class Demo {private Action action;private IAsyncResult pending;
         void Empty(){}void Slow(){Thread.Sleep(20);for(int n=0;n<130;n++)Empty();}
         public int DoWork(){action=Slow;pending=action.BeginInvoke(null,null);
@@ -59,7 +62,8 @@ def test_an_opaque_callback_cannot_be_assumed_to_preserve_private_state():
     assert not any(stage.get("operation") == "end" for stage in result["stages"])
 
 
-def test_public_delegate_fields_stay_uncertain_at_an_unexplored_boundary():
+def test_public_delegate_fields_stay_uncertain_at_an_unexplored_boundary(source_iteration_limit):
+    source_iteration_limit(128)
     result = analyze("""using System;class Demo {public Action action;private IAsyncResult pending;
         void Empty(){}void Slow(){for(int n=0;n<130;n++)Empty();}
         public int DoWork(){action=Slow;pending=action.BeginInvoke(null,null);
@@ -148,7 +152,10 @@ def test_a_virtual_callback_with_an_unproven_runtime_type_is_not_a_pure_target()
         "var reading=Value;",
     ],
 )
-def test_creation_only_callbacks_and_known_read_only_calls_do_not_erase_the_handle(tail):
+def test_creation_only_callbacks_and_known_read_only_calls_do_not_erase_the_handle(
+    tail, source_iteration_limit
+):
+    source_iteration_limit(128)
     result = analyze(f"""using System;class Demo {{private Action action;
         private IAsyncResult pending;
         int Value{{get{{return 3;}}}}void Empty(){{}}void Safe(){{}}

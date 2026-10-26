@@ -252,7 +252,9 @@ def test_a_source_class_named_eventhandler_is_not_treated_as_a_framework_delegat
 @pytest.mark.parametrize("unknown_write", [False, True])
 def test_static_bridge_effects_follow_all_source_writes_without_binding_the_runtime_delegate(
     unknown_write,
+    source_iteration_limit,
 ):
+    source_iteration_limit(128)
     reset = "void Reset(){Send=External.Callback();}" if unknown_write else ""
     result = analyze(
         "using System;class Bridge {public static Action<Action> Send;"

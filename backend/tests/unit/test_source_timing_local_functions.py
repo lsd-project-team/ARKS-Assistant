@@ -199,7 +199,10 @@ def test_catalog_links_called_local_functions_without_promoting_unused_declarati
     assert not any(entry.method.callable_kind == "local_function" for entry in entries)
 
 
-def test_an_unused_local_delay_does_not_change_the_remaining_pure_call_bound():
+def test_an_unused_local_delay_does_not_change_the_remaining_pure_call_bound(
+    source_iteration_limit,
+):
+    source_iteration_limit(128)
     result = analyze("""class Demo {void Pure(){void Never(){Thread.Sleep(999);}}
         public int DoWork(){for(int i=0;i<130;i++)Pure();return 0;}}""")
     assert result["known_delay_min_ms"] == result["known_delay_max_ms"] == 0

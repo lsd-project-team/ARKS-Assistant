@@ -148,14 +148,20 @@ def execute(
         return UNKNOWN
     declaration = bound.closure.method
     marker = f"<delegate:{bound.method_key}:{node.start_byte}:{node.end_byte}>"
-    if (
-        marker in stack
-        or estimator.depth(stack) >= 7
-        or estimator.budget.exhausted(None if bounded_iteration else estimator.calls)
-    ):
+    from app.modules.action_timing.source_budget import call_limit
+
+    limit = call_limit(estimator, stack, marker, callback=bounded_iteration)
+    if limit:
         estimator.truncated = True
         estimator.record(
-            "unresolved", "回调达到展开边界", node, declaration, conditions, background
+            "unresolved",
+            "回调达到展开边界",
+            node,
+            declaration,
+            conditions,
+            background,
+            analysis_limit=limit,
+            note="回调源码可读取；需继续分析其调用/捕获状态，不能认定为缺少设备参数。",
         )
         return UNKNOWN
     # 查询迭代已由每动作/集合展开预算约束；不额外消耗一次源码调用名额，

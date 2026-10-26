@@ -244,7 +244,10 @@ def test_actual_wafer_controller_binds_all_three_field_delegate_starts(
     json.dumps(result)
 
 
-def test_an_async_target_has_its_own_budget_after_the_caller_reaches_the_limit():
+def test_an_async_target_has_its_own_budget_after_the_caller_reaches_the_limit(
+    source_iteration_limit,
+):
+    source_iteration_limit(128)
     result = analyze("""using System;class Demo {Action action;
         void Empty(){}void Fill(){for(int n=0;n<130;n++)Empty();}
         public int DoWork(){Fill();action=()=>Thread.Sleep(7);
@@ -275,7 +278,8 @@ def test_actual_typed_expansion_start_and_end_expand_the_original_motion_body(re
     assert result["total_ms"] is None
 
 
-def test_joined_target_keeps_delays_after_more_than_120_empty_source_calls():
+def test_joined_target_keeps_delays_after_more_than_120_empty_source_calls(source_iteration_limit):
+    source_iteration_limit(128)
     result = analyze("""using System;class Demo {
         void Empty(){}void Hidden(){Thread.Sleep(999);}
         void Move(){for(int n=0;n<130;n++)Empty();Hidden();Thread.Sleep(7);}

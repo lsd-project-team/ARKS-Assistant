@@ -3,6 +3,7 @@
 from app.modules.action_timing import source_arguments as call_args
 from app.modules.action_timing import source_collections as collections
 from app.modules.action_timing import source_state as state
+from app.modules.action_timing.source_budget import call_limit
 from app.modules.action_timing.source_collection_expressions import initializer_values
 from app.modules.action_timing.source_flow import UNKNOWN, ZERO
 from app.modules.action_timing.source_index import children, text
@@ -57,9 +58,19 @@ def implicit_constructor(estimator, owner, method, node, bindings, stack, condit
         and not estimator.index.by_method.get((owner, ".ctor"))
     ):
         return ZERO
-    if marker in stack or estimator.depth(stack) >= 7:
+    limit = call_limit(estimator, stack, marker, budget=False)
+    if limit:
         estimator.truncated = True
-        estimator.record("unresolved", "隐式构造链未能展开", node, method, conditions, background)
+        estimator.record(
+            "unresolved",
+            "隐式构造链未能展开",
+            node,
+            method,
+            conditions,
+            background,
+            analysis_limit=limit,
+            note="构造链触及分析器保护，不能认定为该源码没有可算耗时。",
+        )
         return UNKNOWN
     if owner not in estimator.index.classes:
         # 外部数据/界面对象不估算CPU初始化成本；明确的硬件类型仍保留未知。

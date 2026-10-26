@@ -217,7 +217,10 @@ def test_named_static_first_retains_its_element_type_for_following_source_calls(
     assert result["total_ms"] == 7
 
 
-def test_callback_expansion_limit_does_not_make_query_count_a_known_zero():
+def test_callback_expansion_limit_does_not_make_query_count_a_known_zero(monkeypatch):
+    from app.modules.action_timing import source_budget
+
+    monkeypatch.setattr(source_budget, "MAX_CALL_DEPTH", 7)
     chain = "".join(f"int A{i}(){{return A{i + 1}();}}" for i in range(5))
     result = analyze(
         "using System.Linq;class Demo{"

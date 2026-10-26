@@ -63,3 +63,18 @@ test('后台1秒不作为按钮同步总耗时，已有前台等待继续优先'
     '空跑不动作',
   );
 });
+
+test('展开保护明确归为未完成的分析，表格与导出不宣称源码无法计算', () => {
+  const action = {
+    ...row,
+    source_components: [{ ...component, milliseconds: 15, factors: [] }],
+    truncated: true,
+    missing_categories: ['analysis'],
+    motion_count: 1,
+  };
+  const view = actionPresentation(action);
+  assert.equal(view.duration, '条件组成 15 ms');
+  assert.match(view.note, /源码分析尚未完成/);
+  assert.doesNotMatch(view.note, /无法由.*源码|缺少.*硬件/);
+  assert.match(actionTableCsv([action]), /源码分析尚未完成/);
+});

@@ -260,7 +260,10 @@ def test_queued_unknown_delegate_does_not_leave_a_fixed_field_value_for_the_call
     assert not any(row.get("milliseconds") == 5 for row in result["stages"])
 
 
-def test_queued_callback_budget_exhaustion_invalidates_unvisited_shared_writes():
+def test_queued_callback_budget_exhaustion_invalidates_unvisited_shared_writes(
+    source_iteration_limit,
+):
+    source_iteration_limit(128)
     result = analyze("""using System.Threading;class Demo {int delay=5;
         void Empty(){}void Change(){delay=0;}public int DoWork(){
         var context=new SynchronizationContext();context.Post(_=>{

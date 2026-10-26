@@ -8,6 +8,26 @@ def stage_requirements(stage):
         return None
     kind, code = stage["kind"], stage["code"]
     call = " ".join(code.split("{", 1)[0].split())[:200]
+    limit = stage.get("analysis_limit")
+    if limit:
+        reason = {
+            "recursion": "递归返回路径仍需分析",
+            "call_depth": "分析调用深度保护",
+            "call_budget": "分析调用数量保护",
+            "loop_iterations": "分析循环展开保护",
+            "control_graph": "分析控制流展开保护",
+            "jump_budget": "分析标签跳转数量保护",
+        }.get(limit["kind"], "分析展开资源保护")
+        return "analysis", [
+            f"{reason}：{call}",
+            f"源码目标：{limit.get('target', stage['method'])}",
+            *(
+                [f"已分析{limit['used']}，分析上限{limit['limit']}；这个上限不是动作执行次数。"]
+                if "limit" in limit
+                else []
+            ),
+            "这是尚未完成的源码分析，不是缺少运行参数，也不表示源码算不出来。",
+        ]
     explicit = stage.get("missing_inputs")
     if explicit:
         return "sdk" if stage.get("label") == "直接设备SDK调用" else "runtime", explicit
@@ -97,6 +117,19 @@ def attach(result):
                 "path": source["path"],
                 "line": source["line"],
                 "method": component["method"],
+            }
+        )
+    audit = result.get("continuation_audit", {})
+    for target in audit.get("pending_targets", []):
+        missing.append(
+            {
+                "category": "analysis",
+                "background": False,
+                **target,
+                "required": [
+                    f"补充源码核对仍有{audit['pending_contexts']}个上下文未展开：{target['method']}",
+                    "这是分析资源限制，不是缺少运行参数或源码算不出来。",
+                ],
             }
         )
     priority = {

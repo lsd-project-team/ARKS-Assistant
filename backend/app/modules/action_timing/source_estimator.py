@@ -27,6 +27,7 @@ from app.modules.action_timing.source_budget import (
     CallBudget,
     IterationBudget,
     JumpBudget,
+    call_limit,
 )
 from app.modules.action_timing.source_completion import clear as clear_completion
 from app.modules.action_timing.source_completion import failed as expression_failed
@@ -876,9 +877,8 @@ class Estimator:
         bindings.pop(call_args.return_key(node, caller, bindings), None)
         bindings.pop(call_args.return_key(node, caller, bindings) + ":normal", None)
         metadata = target.callable_kind in {"property_get", "property_set", "initializer"}
-        if target.key in stack or (
-            not metadata and (self.depth(stack) >= 7 or self.budget.exhausted(self.calls))
-        ):
+        limit = call_limit(self, stack, target.key, metadata=metadata)
+        if limit:
             from app.modules.action_timing.source_references import escape_this
 
             # 标记为未知结果，禁止值求解器绕过边界再从声明中的return推断常量。
@@ -893,6 +893,9 @@ class Estimator:
                 conditions,
                 background,
                 expression=text(node),
+                analysis_limit=limit,
+                definitions=[target.unit.evidence(target.node)],
+                note="目标源码可读取；此处是分析器的资源/递归保护，不能认定为源码无法计算。",
             )
             self.component_methods[target.key] = target
             if not metadata and self.budget.exhausted(self.calls):
@@ -901,7 +904,7 @@ class Estimator:
                 source_budget_sleeps.invalidate(
                     self, target, node, caller, bindings, receiver_id, argument_values
                 )
-                if target.key not in stack and self.depth(stack) < 7:
+                if limit["kind"] == "call_budget":
                     known = source_budget_sleeps.preserve(self, target, conditions, background)
                     if known is not None:
                         return known
