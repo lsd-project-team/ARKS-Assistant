@@ -1,7 +1,8 @@
 import { knowledgePath, projectRoot } from './resources.mjs';
 import { resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { sourceGuides, sourceEvidence } from '../../src/features/knowledge/sourceGuides.ts';
+import { sourceGuides } from '../../src/features/knowledge/sourceGuides.ts';
+import sourceEvidence from './source-evidence.json' with { type: 'json' };
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 import { presentationTopics } from '../../src/features/knowledge/data/presentation.ts';
 import { validateSourceGuides } from './source-guide-validation.mjs';

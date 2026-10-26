@@ -91,7 +91,7 @@ frontend/src/
 
 ## 资源、脚本和文档
 
-- 知识资源归 `resources/knowledge/{flows,modules,generated}`，生成和校验脚本归 `frontend/scripts/knowledge/`。保持 `/archify/`、`/engineering/`、`/agent-knowledge.json` 的既有地址与资源映射。
+- 知识资源归 `resources/knowledge/{flows,generated}`，生成和校验脚本归 `frontend/scripts/knowledge/`。保持 `/archify/`、`/agent-knowledge.json` 的既有地址与资源映射；历史 `/engineering/` 模块索引和源码快照已按用户要求移除，不再恢复。
 - 启动实现归 `scripts/dev/`，维护归 `scripts/maintenance/`，显式验收归 `scripts/verification/`。保留根目录启动入口和既有恢复入口。
 - 文档按 `docs/{architecture,development,features,verification,archive}` 归类。当前规范与历史记录分开维护，不把旧报告视为当前验收。
 - 报告与历史构建归 `output/`；正式前端发布目录仍是 `frontend/dist/`。有发布任务时保留旧哈希资源并最后替换首页。

@@ -86,44 +86,6 @@
   line-height: 1.85;
   margin: 0;
 }
-.knowledge-workspace .source-claim-evidence {
-  margin-top: 10px;
-}
-.knowledge-workspace .source-claim-evidence > summary {
-  cursor: pointer;
-  width: fit-content;
-  color: var(--muted);
-  font-size: 11px;
-}
-.knowledge-workspace .source-claim-evidence > summary span {
-  margin-left: 5px;
-}
-.knowledge-workspace .source-evidence-range {
-  margin-top: 14px;
-  min-width: 0;
-}
-.knowledge-workspace .source-evidence-range small {
-  display: block;
-  margin: 6px 0;
-  overflow-wrap: anywhere;
-  color: var(--muted);
-  font-size: 10px;
-}
-.knowledge-workspace .source-evidence-range pre {
-  max-height: 280px;
-  overflow: auto;
-  white-space: pre;
-  font-size: 11px;
-  line-height: 1.7;
-  padding: 12px;
-  background: var(--surface-subtle);
-  border-radius: 8px;
-}
-.knowledge-workspace .source-claim-changed {
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--muted);
-}
 .knowledge-workspace .source-guide-boundary {
   margin-top: 16px;
   font-size: 12px;

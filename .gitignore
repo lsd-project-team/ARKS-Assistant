@@ -1,5 +1,5 @@
 trunk/
-data/
+/data/
 output/
 .venv/
 .tools/

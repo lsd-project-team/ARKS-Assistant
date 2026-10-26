@@ -24,7 +24,7 @@ export function ShowcaseHome({ onTopic, onDiagram, onAllDiagrams }: Navigation) 
             <br />
             <span>读懂每个环节</span>
           </h1>
-          <p>从业务流程理解模块职责，沿节点进入调用关系和对应源码，查看梳理与复核进度。</p>
+          <p>从业务流程理解模块职责，查看各环节的执行条件、协作关系与异常处理。</p>
           <div className="card-actions">
             <button className="button primary" onClick={() => onTopic('architecture')}>
               从系统架构开始
@@ -42,7 +42,7 @@ export function ShowcaseHome({ onTopic, onDiagram, onAllDiagrams }: Navigation) 
               ['建立系统模型', '理解边界与模块职责'],
               ['阅读生产主流程', '串起启动、加工与交接'],
               ['展开专题与条件', '了解执行条件与异常处理'],
-              ['定位调用与完整源码', '从业务节点追溯代码实现'],
+              ['理解协作与异常', '查看模块交接与失败分支'],
             ].map(([text, description], index) => (
               <li key={text}>
                 <span className="route-number">{String(index + 1).padStart(2, '0')}</span>

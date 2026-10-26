@@ -36,7 +36,7 @@ Agent 的入口、图构建、执行器和提示词分别维护。聊天、源�
 ## 资源与脚本
 
 - `resources/knowledge/flows/`：原 `/archify/` 图谱与复核资源。
-- `resources/knowledge/modules/`：原 `/engineering/` 索引与源码说明资源。
+- 历史 `/engineering/` 索引、模块与源码快照已移除；功能与流程仅展示图谱和环节说明。
 - `resources/knowledge/generated/`：Agent 使用的生成索引。
 - `frontend/scripts/knowledge/`：资源映射、校验、生成与构建发布。
 - `scripts/dev/`：本机环境和服务管理。

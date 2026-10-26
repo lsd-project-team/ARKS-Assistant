@@ -5,14 +5,11 @@ import { presentationTopics, topicForDiagram, displayDiagramTitle } from './data
 import { diagramReadings, isSupportingEntry } from './data/diagramReading';
 import { TopicReading } from './PresentationViews';
 import { ModuleCoordination, TopicCoordination, NodeSignalNotes } from './CooperationNotes';
-import { useEngineering } from './engineeringData';
-import { WorkflowSourceLinks, BindingLinks, TopicSourceModules } from './EngineeringViews';
-import type { EvidenceRef, FlowchartCatalogEntry } from './types';
+import type { FlowchartCatalogEntry } from './types';
 import type { Route } from './routes';
 import { UiIcon } from './UiIcon';
 import { Select } from '../../shared/ui/Select';
 import { SourceGuidePanel } from './SourceGuidePanel';
-import { sourceDiagramRevision } from './sourceGuides';
 import { useAppearance } from '../settings/lib/appearance';
 import diagramChrome from './diagramChrome.css?inline';
 import diagramLatinFont from '@fontsource-variable/geist/index.css?inline';
@@ -47,27 +44,6 @@ function PageHeader({
   );
 }
 
-function SupportingDocuments({ entries }: { entries: FlowchartCatalogEntry[] }) {
-  if (!entries.length) return null;
-  return (
-    <EvidenceDisclosure>
-      <p>以下 {entries.length} 份补充资料用于追溯分析过程，全部保留在这里。</p>
-      <div className="asset-list">
-        {entries.map(
-          (entry) =>
-            entry.html && (
-              <AssetLink
-                key={entry.id}
-                label={displayDiagramTitle(entry.id, entry.title)}
-                path={entry.html}
-              />
-            ),
-        )}
-      </div>
-    </EvidenceDisclosure>
-  );
-}
-
 export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Route) => void }) {
   const topic = presentationTopics.find((topic) => topic.id === id);
   if (!topic) return <Missing onBack={() => navigate({ kind: 'modules' })} />;
@@ -87,7 +63,7 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
       >
         {topic.summary}
       </PageHeader>
-      <SourceGuidePanel key={id} page={id} navigate={navigate} />
+      <SourceGuidePanel key={id} page={id} />
       <section className="section">
         <div className="section-heading">
           <div>
@@ -112,12 +88,6 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
         <TopicReading topic={topic} />
         <TopicCoordination diagrams={topic.diagrams} />
       </details>
-      <TopicSourceModules
-        diagrams={topic.diagrams}
-        all={topic.id === 'architecture'}
-        navigate={navigate}
-      />
-      <SupportingDocuments entries={entries.filter(isSupportingEntry)} />
     </>
   );
 }
@@ -295,7 +265,8 @@ export function DiagramDetail({
       setNodeFocused(true);
     }
   };
-  if (!entry) return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
+  if (!entry || isSupportingEntry(entry))
+    return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
   const reading = diagramReadings[id];
   const title = displayDiagramTitle(id, entry.title);
   const record = archifyData.diagramRecords[id];
@@ -328,13 +299,8 @@ export function DiagramDetail({
       >
         {reading.summary}
       </PageHeader>
-      <SourceGuidePanel key={id} page={id} navigate={navigate} />
-      {isSupportingEntry(entry) ? (
-        <details className="section card panel reading-disclosure">
-          <summary>展开补充资料原页</summary>
-          {entry.html && <OriginalDiagram path={entry.html} title={title} theme={theme} />}
-        </details>
-      ) : record.htmlAvailable && entry.html ? (
+      <SourceGuidePanel key={id} page={id} />
+      {record.htmlAvailable && entry.html ? (
         <OriginalDiagram
           path={entry.html}
           title={title}
@@ -402,15 +368,7 @@ export function DiagramDetail({
                       </button>
                     ))}
                 </div>
-                <WorkflowSourceLinks graphId={id} nodeId={node.id} navigate={navigate} />
                 <NodeSignalNotes graph={graph} node={node} />
-                <EvidenceDisclosure source>
-                  <div className="evidence-stack">
-                    {node.refs.map((id) => (
-                      <EvidenceItem key={id} id={id} navigate={navigate} />
-                    ))}
-                  </div>
-                </EvidenceDisclosure>
               </article>
             )}
           </div>
@@ -458,7 +416,7 @@ function OriginalDiagram({
 }) {
   const [document, setDocument] = useState<Document | null>(null);
   const [initialTheme] = useState(theme);
-  const revision = sourceDiagramRevision(resourceHref(path));
+  const revision = catalog.find((entry) => entry.html === path)?.htmlSha256?.slice(0, 16);
   const diagramURL = (color: string) =>
     `${resourceHref(path)}?theme=${color}${revision ? `&review=${revision}` : ''}`;
   const appearance = useAppearance((state) => state.mode);
@@ -509,7 +467,7 @@ function OriginalDiagram({
       <div className="panel-title">
         <div>
           <span className="eyebrow">流程图</span>
-          <p>使用图内缩放、查找与演示工具阅读。生产主流程可点击节点，查看下方对应模块与源码。</p>
+          <p>使用图内缩放、查找与演示工具阅读。生产主流程可点击节点，查看下方环节说明。</p>
         </div>
         <a className="button" href={diagramURL(theme)} target="_blank" rel="noreferrer">
           全屏阅读 ↗
@@ -521,62 +479,6 @@ function OriginalDiagram({
         onLoad={(event) => setDocument(event.currentTarget.contentDocument)}
       />
     </section>
-  );
-}
-function EvidenceDisclosure({
-  children,
-  source = false,
-}: {
-  children: ReactNode;
-  source?: boolean;
-}) {
-  return (
-    <details className="section card panel supporting-evidence">
-      <summary>
-        {source ? '源码依据' : '查看依据'}
-        <span>{source ? '关联代码片段、文件路径与行号' : '源码、复核文档与检查记录'}</span>
-      </summary>
-      <div className="supporting-evidence-body">{children}</div>
-    </details>
-  );
-}
-function AssetLink({ label, path, hash }: { label: string; path: string; hash?: string | null }) {
-  return (
-    <a className="asset-link" href={resourceHref(path)} target="_blank" rel="noreferrer">
-      <span>
-        <b>{label}</b>
-        <small>{path.replace(/^docs\/archify\//, '')}</small>
-      </span>
-      <span>{hash ? `${hash.slice(0, 12)}…` : '打开 ↗'}</span>
-    </a>
-  );
-}
-function EvidenceItem({ id, navigate }: { id: string; navigate: (route: Route) => void }) {
-  const engineering = useEngineering();
-  const binding =
-    engineering &&
-    Object.values(engineering.nodeBindings)
-      .flat()
-      .find((ref) => ref.id === id);
-  const ref = archifyData.refs[id] as EvidenceRef | undefined;
-  if (!ref) return null;
-  return (
-    <details className="card evidence-item">
-      <summary>
-        <span className="evidence-id">{id}</span>
-        <strong>{ref.method}</strong>
-        <small>
-          {ref.path}:{ref.start}
-        </small>
-      </summary>
-      <div className="evidence-body">
-        <p>
-          {ref.path}:{ref.start}–{ref.end} · SHA-256 {ref.sha256 ?? '未登记'}
-        </p>
-        <pre>{ref.code}</pre>
-        {binding && <BindingLinks binding={binding} navigate={navigate} />}
-      </div>
-    </details>
   );
 }
 function Missing({ onBack }: { onBack: () => void }) {

@@ -1,7 +1,8 @@
 // 导出已有人工复核资料给 Agent；不修改中文说明或接受新的源码指纹。
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { sourceGuides, sourceEvidence } from '../../src/features/knowledge/sourceGuides.ts';
+import { sourceGuides } from '../../src/features/knowledge/sourceGuides.ts';
+import sourceEvidence from './source-evidence.json' with { type: 'json' };
 
 const documents = [];
 for (const guide of sourceGuides) {

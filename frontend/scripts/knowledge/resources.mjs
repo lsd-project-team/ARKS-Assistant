@@ -1,5 +1,5 @@
 // 知识资源只有一个源目录，开发、校验和正式构建沿用相同的 URL 映射。
-import { cp, readFile } from 'node:fs/promises';
+import { cp, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,9 +7,32 @@ export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../
 export const knowledgeRoot = resolve(projectRoot, 'resources/knowledge');
 const mounts = {
   archify: resolve(knowledgeRoot, 'flows'),
-  engineering: resolve(knowledgeRoot, 'modules'),
   'agent-knowledge.json': resolve(knowledgeRoot, 'generated/agent-knowledge.json'),
 };
+
+// 发布阅读用图谱时去掉历史源码绑定；原始图谱仍供构建校验使用。
+export function readingDiagram(html) {
+  return html
+    .replace(/<script\b[^>]*id="archify-source-evidence-data"[^>]*>[\s\S]*?<\/script>/g, '')
+    .replace(
+      /<div class="card">\s*<div class="card-header">\s*<div class="card-dot[^"]*"><\/div>\s*<h3>(?:当前源码依据|源码依据与溯源)<\/h3><\/div>\s*<ul>[\s\S]*?<\/ul>\s*<\/div>/g,
+      '',
+    )
+    .replace(/<li>\s*&bull;\s*依据[:：][\s\S]*?<\/li>/g, '')
+    .replace(
+      '</head>',
+      '<style>.semantic-passport-evidence,.source-evidence-beacon{display:none!important}</style></head>',
+    );
+}
+
+async function prepareDiagrams(folder) {
+  for (const entry of await readdir(folder, { withFileTypes: true })) {
+    const path = resolve(folder, entry.name);
+    if (entry.isDirectory()) await prepareDiagrams(path);
+    else if (entry.name.endsWith('.html'))
+      await writeFile(path, readingDiagram(await readFile(path, 'utf8')));
+  }
+}
 
 export function knowledgePath(url) {
   const decoded = decodeURIComponent(url.split('?')[0]).replace(/^\/+/, '');
@@ -57,7 +80,8 @@ export function knowledgeMiddleware(request, response, next) {
         'Content-Type',
         mime[path.split('.').at(-1)] || 'application/octet-stream',
       );
-      response.end(request.method === 'HEAD' ? undefined : bytes);
+      const body = path.endsWith('.html') ? readingDiagram(bytes.toString('utf8')) : bytes;
+      response.end(request.method === 'HEAD' ? undefined : body);
     })
     .catch(() => {
       response.statusCode = 404;
@@ -82,6 +106,7 @@ export function knowledgeAssets() {
       for (const [name, source] of Object.entries(mounts)) {
         await cp(source, resolve(output, name), { recursive: true });
       }
+      await prepareDiagrams(resolve(output, 'archify'));
     },
   };
 }

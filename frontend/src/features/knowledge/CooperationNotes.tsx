@@ -35,44 +35,6 @@ function SignalDescriptions({
   );
 }
 
-function SignalEvidence({ signal }: { signal: SignalDefinition }) {
-  return (
-    <details className="coordination-evidence">
-      <summary>
-        {signalGuides[signal.name].title}
-        <code>{signal.name}</code>
-      </summary>
-      <p>{signalGuides[signal.name].description}</p>
-      <p>
-        复位方式：{signal.resetMode ?? '未登记'} · 声明：{signal.declarationPath ?? 'SignalPool.cs'}
-        :{signal.declarationLine ?? '—'}
-      </p>
-      {signal.references.length ? (
-        <div className="signal-refs">
-          {signal.references.map((reference, index) => (
-            <details
-              key={`${reference.path}-${reference.line}-${index}`}
-              className="card evidence-item"
-            >
-              <summary>
-                <strong>{reference.operation}</strong>
-                <small>
-                  {reference.path}:{reference.line}
-                </small>
-              </summary>
-              <div className="evidence-body">
-                <pre>{reference.code}</pre>
-              </div>
-            </details>
-          ))}
-        </div>
-      ) : (
-        <p>此项仅保留声明，当前数据没有活动引用。</p>
-      )}
-    </details>
-  );
-}
-
 export function ModuleCoordination({
   graph,
   focusedSignal,
@@ -82,7 +44,6 @@ export function ModuleCoordination({
 }) {
   const entries = coordinationSignals(graph.slug);
   const active = entries.filter(hasActivity);
-  const reserved = entries.filter((signal) => !hasActivity(signal));
   useEffect(() => {
     if (focusedSignal && entries.some((signal) => signal.name === focusedSignal)) {
       document.getElementById(signalElementId(focusedSignal))?.scrollIntoView({ block: 'center' });
@@ -99,28 +60,6 @@ export function ModuleCoordination({
       </div>
       {active.length > 0 && (
         <SignalDescriptions entries={active} focusedSignal={focusedSignal} identify />
-      )}
-      {entries.length > 0 && (
-        <details
-          className="coordination-source"
-          open={
-            Boolean(focusedSignal && reserved.some((signal) => signal.name === focusedSignal)) ||
-            undefined
-          }
-        >
-          <summary>
-            查看协作依据<span>信号定义与相关操作</span>
-          </summary>
-          {entries.map((signal) => (
-            <div
-              key={signal.name}
-              id={hasActivity(signal) ? undefined : signalElementId(signal.name)}
-              data-selected={signal.name === focusedSignal}
-            >
-              <SignalEvidence signal={signal} />
-            </div>
-          ))}
-        </details>
       )}
     </section>
   );
@@ -159,9 +98,8 @@ export function TopicCoordination({ diagrams }: { diagrams: string[] }) {
 }
 
 export function NodeSignalNotes({ graph, node }: { graph: FlowGraph; node: GraphNode }) {
-  const code = node.refs.map((id) => archifyData.refs[id]?.code ?? '').join('\n');
   const entries = coordinationSignals(graph.slug).filter(
-    (signal) => hasActivity(signal) && new RegExp(`\\b${signal.name}\\b`).test(code),
+    (signal) => hasActivity(signal) && node.signals.includes(signal.name),
   );
   if (!entries.length) return null;
   return (

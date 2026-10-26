@@ -1,7 +1,7 @@
 export interface GraphNode {
   id: string;
   label: string;
-  refs: string[];
+  signals: string[];
   detail?: string;
 }
 
@@ -34,22 +34,8 @@ export interface FlowGraph {
   reviewDocument?: string;
 }
 
-export interface EvidenceRef {
-  method: string;
-  path: string;
-  start: number;
-  end: number;
-  code: string;
-  sha256?: string;
-  id?: string;
-  [key: string]: unknown;
-}
-
 export interface SignalReference {
-  path: string;
-  line: number;
   operation: string;
-  code: string;
 }
 
 export interface SignalDefinition {
@@ -106,7 +92,6 @@ export interface ReviewSummary {
 
 export interface ArchifyData {
   graphs: FlowGraph[];
-  refs: Record<string, EvidenceRef>;
   signals: Record<string, SignalDefinition>;
   reviewSummary: ReviewSummary;
   resourceLinks: ResourceLink[];

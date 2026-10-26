@@ -18,13 +18,7 @@ export function useKnowledgeNavigation() {
     if (preparing.current) return;
     preparing.current = true;
     try {
-      if (next.kind === 'project-source' && next.path) {
-        const { openKnowledgeSource } = await import('../discussion');
-        if (await openKnowledgeSource(next.path, next.start, next.end, next.expectedVersion))
-          visit({ kind: 'chat' });
-        return;
-      }
-      if (next.kind === 'chat' && (next.flow || next.method || next.sourceFile || next.message)) {
+      if (next.kind === 'chat' && (next.flow || next.message)) {
         const { discussKnowledge } = await import('../discussion');
         if (await discussKnowledge(next)) {
           visit({ kind: 'chat' });

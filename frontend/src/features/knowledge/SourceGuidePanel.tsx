@@ -1,13 +1,10 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { ArrowDown, ChevronRight } from 'lucide-react';
-import { BaselineContext } from './engineeringData';
-import { guideForPage, sourceCheckId, sourceEvidence } from './sourceGuides';
+import { guideForPage } from './sourceGuides';
 import type { SourceClaim, SourceFlow } from './sourceGuides';
-import type { Route } from './routes';
 import './source-guides.css';
 
-type Navigate = (route: Route) => void;
-export function SourceGuidePanel({ page, navigate }: { page: string; navigate: Navigate }) {
+export function SourceGuidePanel({ page }: { page: string }) {
   const guide = guideForPage(page);
   // 专题保留整体入口；局部图默认展示对应环节，避免胶检页先打开配方排序。
   const [selected, setSelected] = useState(guide?.initialFlows?.[page] ?? guide?.flows[0]?.id);
@@ -34,18 +31,18 @@ export function SourceGuidePanel({ page, navigate }: { page: string; navigate: N
           </button>
         ))}
       </div>
-      <SourceFlowPanel key={flow.id} flow={flow} navigate={navigate} />
+      <SourceFlowPanel key={flow.id} flow={flow} />
       <details className="source-guide-boundary">
-        <summary>本次说明的源码范围</summary>
+        <summary>说明范围</summary>
         {guide.boundaries.map((claim, index) => (
-          <SourceClaimText key={index} claim={claim} navigate={navigate} />
+          <SourceClaimText key={index} claim={claim} />
         ))}
       </details>
     </section>
   );
 }
 
-function SourceFlowPanel({ flow, navigate }: { flow: SourceFlow; navigate: Navigate }) {
+function SourceFlowPanel({ flow }: { flow: SourceFlow }) {
   const [selected, setSelected] = useState(flow.steps[0].id);
   const step = flow.steps.find((item) => item.id === selected) ?? flow.steps[0];
   return (
@@ -55,7 +52,7 @@ function SourceFlowPanel({ flow, navigate }: { flow: SourceFlow; navigate: Navig
       id={`source-flow-${flow.id}`}
       aria-labelledby={`source-tab-${flow.id}`}
     >
-      <SourceClaimText claim={flow} navigate={navigate} />
+      <SourceClaimText claim={flow} />
       <div className="source-flow-layout">
         <ol
           className="source-flow-nodes"
@@ -80,11 +77,11 @@ function SourceFlowPanel({ flow, navigate }: { flow: SourceFlow; navigate: Navig
         </ol>
         <article className="source-step-detail" aria-live="polite">
           <h3>{step.title}</h3>
-          <SourceClaimText claim={step} navigate={navigate} />
+          <SourceClaimText claim={step} />
           {step.outcomes.map((branch, index) => (
             <section className="source-flow-outcome" key={index}>
               <h4>{branch.label}</h4>
-              <SourceClaimText claim={branch} navigate={navigate} />
+              <SourceClaimText claim={branch} />
             </section>
           ))}
         </article>
@@ -93,56 +90,10 @@ function SourceFlowPanel({ flow, navigate }: { flow: SourceFlow; navigate: Navig
   );
 }
 
-function SourceClaimText({ claim, navigate }: { claim: SourceClaim; navigate: Navigate }) {
-  const checks = useContext(BaselineContext);
-  const changed = claim.refs.some((id) => {
-    const file = sourceEvidence.ranges[id].file;
-    const check = checks[sourceCheckId(file)];
-    return check && check.status !== 'match';
-  });
+function SourceClaimText({ claim }: { claim: SourceClaim }) {
   return (
     <div className="source-claim">
       <p>{claim.text}</p>
-      {changed && (
-        <p className="source-claim-changed">
-          对应源码已变化或无法读取，以下保存的依据需要重新核对。
-        </p>
-      )}
-      <details className="source-claim-evidence">
-        <summary>
-          源码依据 <span>{claim.refs.length}</span>
-        </summary>
-        {claim.refs.map((id) => {
-          const ref = sourceEvidence.ranges[id];
-          const source = sourceEvidence.sources[ref.file];
-          // 跳转时按本条依据的版本再次读取当前文件，不借用历史索引版本。
-          return (
-            <div key={id} className="source-evidence-range">
-              <button
-                className="text-button"
-                onClick={() =>
-                  navigate({
-                    kind: 'project-source',
-                    path: source.path,
-                    start: ref.start,
-                    end: ref.end,
-                    expectedVersion: source.sha256,
-                  })
-                }
-              >
-                {ref.method} · L{ref.start}–{ref.end} ↗
-              </button>
-              <small>{source.path}</small>
-              <pre>
-                {ref.code
-                  .split('\n')
-                  .map((line, index) => `${ref.start + index}: ${line}`)
-                  .join('\n')}
-              </pre>
-            </div>
-          );
-        })}
-      </details>
     </div>
   );
 }
