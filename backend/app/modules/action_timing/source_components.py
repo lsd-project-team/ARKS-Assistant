@@ -204,7 +204,7 @@ def literal_waits(index, method, bindings=None):
     contextual = bindings is not None
     bindings = {name: value for name, value in (bindings or {}).items() if unchanged(method, name)}
     cache = index.__dict__.setdefault("source_wait_components", {})
-    cache_key = (method.key, contextual, tuple(sorted(bindings.items())))
+    cache_key = (method.key, method.type_scope, contextual, tuple(sorted(bindings.items())))
     if cache_key in cache:
         return cache[cache_key]
     groups = {}

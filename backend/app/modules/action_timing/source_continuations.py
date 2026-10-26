@@ -75,10 +75,26 @@ def construction_links(index, owner, caller, node, seen=None):
     return result
 
 
+def initializer_owner(index, left, method):
+    assignment = left.parent
+    area = assignment.parent if assignment is not None else None
+    if area is None or area.type != "initializer_expression":
+        return None
+    creation = area.parent
+    if creation is not None and creation.type == "object_creation_expression":
+        return index.lookup_type(text(creation.child_by_field_name("type")), method)
+    if creation is not None and creation.type == "assignment_expression":
+        member = creation.child_by_field_name("left")
+        owner = initializer_owner(index, member, method)
+        return index.member_type(owner, text(member)) if owner else ""
+    return ""
+
+
 def links(index, method):
     cache = index.__dict__.setdefault("continuation_links", {})
-    if method.key in cache:
-        return cache[method.key]
+    identity = (method.key, method.type_scope)
+    if identity in cache:
+        return cache[identity]
     result = []
     if method.callable_kind == "constructor":
         initial = next(iter(children(method.node, "constructor_initializer")), None)
@@ -147,11 +163,14 @@ def links(index, method):
                 and parent.child_by_field_name("left") == node
             )
             if not selector:
-                target = index.accessor(node, method, "set" if assigned else "get")
+                owner = initializer_owner(index, node, method) if assigned else None
+                # 对象初始化中的裸成员属于被创建对象，不能绑定到调用者的同名属性。
+                if owner is None or owner in index.classes:
+                    target = index.accessor(node, method, "set" if assigned else "get", owner)
         if target and target.body is not None and not index.polymorphic(node, method, target):
             result.append((node, target, False))
-    cache[method.key] = tuple(result)
-    return cache[method.key]
+    cache[identity] = tuple(result)
+    return cache[identity]
 
 
 def collect(index, roots, existing):

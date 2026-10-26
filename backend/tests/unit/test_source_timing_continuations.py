@@ -204,3 +204,18 @@ def test_numeric_expression_protection_is_not_reported_as_missing_parameters(tmp
     )
     assert row["continuation_audit"]["pending_contexts"] > 0
     assert any("补充源码核对仍有" in s for r in row["missing_requirements"] for s in r["required"])
+
+
+@pytest.mark.parametrize("creation", ["new Item{Delay=7};", "new Container{Item={Delay=7}};"])
+def test_initializer_setter_belongs_to_created_object(tmp_path, monkeypatch, creation):
+    monkeypatch.setattr(source_budget, "MAX_CALL_DEPTH", 1)
+    result = report(
+        tmp_path,
+        "class Item{public int Delay{set{Thread.Sleep(value);}}}"
+        "class Container{public Item Item{get;set;}=new Item();}"
+        "class Demo{int Delay{set{Thread.Sleep(999);}}"
+        "void Start(){A();}void A(){" + creation + "}}",
+    )
+    row = next(r for r in result["rows"] if r["method"] == "Start")
+    assert any(p["milliseconds"] == 7 for p in parts(row))
+    assert not any(p["milliseconds"] == 999 for p in parts(row))
