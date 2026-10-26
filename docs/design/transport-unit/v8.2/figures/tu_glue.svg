@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<text x="590" y="180" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">胶头对准A点</text>
+<rect x="110" y="650" width="960" height="330" rx="16" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="138.0" y="673.0" width="286.6666666666667" height="127.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="229.73333333333335" cy="739.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="338.66666666666663" cy="739.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="443.3333333333333" y="673.0" width="286.6666666666667" height="127.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="535.0666666666666" cy="739.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="535.0666666666666" cy="739.04" r="34" fill="white" stroke="#246B99" stroke-width="7"/>
+<circle cx="535.0666666666666" cy="739.04" r="13" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="644.0" cy="739.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="748.6666666666666" y="673.0" width="286.6666666666667" height="127.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="840.4" cy="739.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="949.3333333333333" cy="739.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="138.0" y="821.5" width="286.6666666666667" height="127.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="229.73333333333335" cy="887.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="338.66666666666663" cy="887.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="443.3333333333333" y="821.5" width="286.6666666666667" height="127.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="535.0666666666666" cy="887.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="644.0" cy="887.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="748.6666666666666" y="821.5" width="286.6666666666667" height="127.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="840.4" cy="887.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="949.3333333333333" cy="887.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="493.0666666666666" y="469.03999999999996" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="510.0666666666666,564.04 560.0666666666666,564.04 550.0666666666666,599.04 520.0666666666666,599.04" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polyline points="535.0666666666666,624.04 535.0666666666666,703.04" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="535.0666666666666,703.04 523.3225972456634,678.7279282364777 546.8107360876699,678.7279282364777" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<polyline points="1100,700 1310,700" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1310,700 1285.6879282364778,711.7440694210032 1285.6879282364778,688.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1855.0" y="320" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">这块板的记录</text>
+<rect x="1380" y="415" width="950" height="165" rx="0" fill="white" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1425" y="497" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">位置</text>
+<text x="2102.0" y="497" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#246B99">当前工位</text>
+<rect x="1380" y="580" width="950" height="165" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1425" y="662" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">A点点胶</text>
+<text x="2102.0" y="662" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#246B99">已做</text>
+<rect x="1380" y="745" width="950" height="165" rx="0" fill="white" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1425" y="827" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">A点贴芯片</text>
+<text x="2102.0" y="827" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#246B99">没做</text>
+<text x="1200" y="1190" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">点胶动作正常成功后写入</text></svg>

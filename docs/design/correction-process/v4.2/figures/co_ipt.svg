@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="120" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">放到台面</text>
+<rect x="180" y="570" width="840" height="70" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="558" y="200" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="575,295 625,295 615,330 585,330" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="510.9936563949677,412.7833889546004 709.0472701432817,440.6180091466135 689.0063436050324,583.2166110453996 490.95272985671824,555.3819908533866" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="498" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="533.2452422962258" cy="434.0875417159503" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="880,290 880,470" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="880,470 868.2559305789968,445.6879282364777 891.7440694210032,445.6879282364777" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1800" y="120" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">从上面拍照</text>
+<rect x="1380" y="570" width="840" height="70" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1730" y="215" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="1800" cy="260" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="1760,305 1800,360 1840,305" stroke="#246B99" stroke-width="5" fill="none"/>
+<polygon points="1710.9936563949677,412.7833889546004 1909.0472701432818,440.6180091466135 1889.0063436050323,583.2166110453996 1690.9527298567182,555.3819908533866" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="498" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1733.2452422962258" cy="434.0875417159503" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="600" y="765" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">吸嘴对准新位置</text>
+<rect x="180" y="1215" width="840" height="70" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="628" y="860" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="645,955 695,955 685,990 655,990" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="510.9936563949677,1057.7833889546005 709.0472701432817,1085.6180091466135 689.0063436050324,1228.2166110453995 490.95272985671824,1200.3819908533865" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="1143" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="533.2452422962258" cy="1079.0875417159505" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="880,975 715,975" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="715,975 739.3120717635222,963.2559305789968 739.3120717635222,986.7440694210032" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1800" y="765" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">重新取起来</text>
+<rect x="1380" y="1215" width="840" height="70" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1758" y="845" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="1775,940 1825,940 1815,975 1785,975" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="1710.9936563949677,961.7833889546004 1909.0472701432818,989.6180091466134 1889.0063436050323,1132.2166110453995 1690.9527298567182,1104.3819908533865" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="1047" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1733.2452422962258" cy="983.0875417159502" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="2070,1155 2070,955" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="2070,955 2081.744069421003,979.3120717635222 2058.255930578997,979.3120717635222" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<polyline points="1200,130 1200,1300" stroke="#B7C6CF" stroke-width="3" fill="none"/></svg>

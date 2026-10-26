@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="95" y="210" width="850" height="280" rx="16" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="123.0" y="233.0" width="250.0" height="102.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="203.0" cy="286.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="298.0" cy="286.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="391.6666666666667" y="233.0" width="250.0" height="102.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="471.6666666666667" cy="286.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="471.6666666666667" cy="286.04" r="34" fill="white" stroke="#246B99" stroke-width="7"/>
+<circle cx="471.6666666666667" cy="286.04" r="13" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="566.6666666666667" cy="286.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="660.3333333333334" y="233.0" width="250.0" height="102.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="740.3333333333334" cy="286.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="835.3333333333334" cy="286.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="123.0" y="356.5" width="250.0" height="102.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="203.0" cy="409.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="298.0" cy="409.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="391.6666666666667" y="356.5" width="250.0" height="102.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="471.6666666666667" cy="409.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="566.6666666666667" cy="409.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="660.3333333333334" y="356.5" width="250.0" height="102.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="740.3333333333334" cy="409.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="835.3333333333334" cy="409.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="520" y="590" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#287054">板子上的A点</text>
+<polyline points="1000,350 2070,350 2070,600" stroke="#287054" stroke-width="7" fill="none"/>
+<polygon points="2070,600 2058.255930578997,575.6879282364778 2081.744069421003,575.6879282364778" fill="#287054" stroke="#287054" stroke-width="4"/>
+<text x="400" y="700" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">找到芯片</text>
+<text x="1200" y="700" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">取起并拍照</text>
+<text x="2050" y="700" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">对准A点贴下</text>
+<rect x="100" y="850" width="600" height="260" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="100.0" y="843.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="130.0,864.6 270.0,864.6 270.0,965.4 130.0,965.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="200.0" cy="915.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="147.5" cy="877.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="300.0" y="843.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="333.6862427585162,859.839818704816 473.3452097948916,869.6057250289937 466.3137572414838,970.160181295184 326.6547902051084,960.3942749710063" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="400.0" cy="915.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="350.26468206888717" cy="873.629864028612" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="500.0" y="843.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="530.0,864.6 670.0,864.6 670.0,965.4 530.0,965.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600.0" cy="915.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="547.5" cy="877.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="100.0" y="973.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="130.0,994.6 270.0,994.6 270.0,1095.4 130.0,1095.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="200.0" cy="1045.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="147.5" cy="1007.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="300.0" y="973.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="330.0,994.6 470.0,994.6 470.0,1095.4 330.0,1095.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="400.0" cy="1045.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="347.5" cy="1007.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="500.0" y="973.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="530.0,994.6 670.0,994.6 670.0,1095.4 530.0,1095.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600.0" cy="1045.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="547.5" cy="1007.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1138" y="790" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="1155,885 1205,885 1195,920 1165,920" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="1113.2452422962258,908.0875417159504 1261.7854526074614,928.9635068599601 1246.7547577037742,1035.9124582840498 1098.2145473925386,1015.0364931400399" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1180" cy="972" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1129.9339317221693" cy="924.0656562869627" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1110" y="1195" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="1180" cy="1240" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="1140,1195 1180,1140 1220,1195" stroke="#246B99" stroke-width="5" fill="none"/>
+<rect x="1770" y="900" width="560" height="220" rx="16" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="1798.0" y="923.0" width="153.33333333333334" height="72.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1847.0666666666666" cy="960.44" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1905.3333333333333" cy="960.44" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1970.0" y="923.0" width="153.33333333333334" height="72.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2019.0666666666666" cy="960.44" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2019.0666666666666" cy="960.44" r="34" fill="white" stroke="#246B99" stroke-width="7"/>
+<circle cx="2019.0666666666666" cy="960.44" r="13" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="2077.3333333333335" cy="960.44" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="2142.0" y="923.0" width="153.33333333333334" height="72.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2191.0666666666666" cy="960.44" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2249.3333333333335" cy="960.44" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1798.0" y="1016.5" width="153.33333333333334" height="72.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1847.0666666666666" cy="1053.94" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1905.3333333333333" cy="1053.94" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1970.0" y="1016.5" width="153.33333333333334" height="72.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2019.0666666666666" cy="1053.94" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2077.3333333333335" cy="1053.94" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="2142.0" y="1016.5" width="153.33333333333334" height="72.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2191.0666666666666" cy="1053.94" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2249.3333333333335" cy="1053.94" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<polygon points="1973.0666666666666,927.32 2065.0666666666666,927.32 2065.0666666666666,993.5600000000001 1973.0666666666666,993.5600000000001" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="2019.0666666666666" cy="960.44" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1984.5666666666666" cy="935.6" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="745,1000 920,1000" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="920,1000 895.6879282364778,1011.7440694210032 895.6879282364778,988.2559305789968" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<polyline points="1510,1000 1690,1000" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="1690,1000 1665.6879282364778,1011.7440694210032 1665.6879282364778,988.2559305789968" fill="#B75D21" stroke="#B75D21" stroke-width="4"/></svg>

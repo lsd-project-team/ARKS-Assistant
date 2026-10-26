@@ -1,0 +1,101 @@
+{
+  "book": "Transport Unit 设计文档",
+  "revision": "8.2",
+  "pages": 15,
+  "topics": 13,
+  "paragraphs_checked": 58,
+  "image_placements": 14,
+  "unique_figures": 13,
+  "source_files_unchanged": 78,
+  "fonts": {
+    "/BCDEEE+MicrosoftYaHei": true,
+    "/BCDFEE+MicrosoftYaHei": true,
+    "/BCDGEE+MicrosoftYaHei-Bold": true,
+    "/BCDHEE+MicrosoftYaHei-Bold": true,
+    "/BCDIEE+MS-Gothic": true
+  },
+  "removed_words_checked": [
+    "第一部分",
+    "第二部分",
+    "第三部分",
+    "跟着产品完成一轮",
+    "下一页",
+    "G0",
+    "N1",
+    "D_A",
+    "T_A",
+    "WorkIndex",
+    "ComponentOffSet",
+    "本册将",
+    "阅读主线"
+  ],
+  "layout_bounds": [
+    {
+      "page": 1,
+      "images": 1
+    },
+    {
+      "page": 2,
+      "images": 0
+    },
+    {
+      "page": 3,
+      "images": 1
+    },
+    {
+      "page": 4,
+      "images": 1
+    },
+    {
+      "page": 5,
+      "images": 1
+    },
+    {
+      "page": 6,
+      "images": 1
+    },
+    {
+      "page": 7,
+      "images": 1
+    },
+    {
+      "page": 8,
+      "images": 1
+    },
+    {
+      "page": 9,
+      "images": 1
+    },
+    {
+      "page": 10,
+      "images": 1
+    },
+    {
+      "page": 11,
+      "images": 1
+    },
+    {
+      "page": 12,
+      "images": 1
+    },
+    {
+      "page": 13,
+      "images": 1
+    },
+    {
+      "page": 14,
+      "images": 1
+    },
+    {
+      "page": 15,
+      "images": 1
+    }
+  ],
+  "renderer": "本轮实际尝试render_docx；缺soffice.exe时用独立隐藏Word原生导出和Poppler逐页渲染",
+  "visual_review": "本版全部页面已直接查看，最终哈希见visual-review.json",
+  "files": {
+    "TransportUnit设计文档.pdf": "2a4c72faffbe79fe6c9942a523a32169892e8d73929499ab34b54b394d42dc21",
+    "TransportUnit设计文档.docx": "cbcfb8bd9f48eacbdf5e49b107ce87f5bc4bfc4c47eaf3a2370adad529c66662",
+    "TransportUnit设计文档.md": "04ef505471d563794aa3fb38f48045b8221fca21580ba1c39b48e998a19bc411"
+  }
+}

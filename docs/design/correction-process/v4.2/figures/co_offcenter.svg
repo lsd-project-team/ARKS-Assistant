@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="110" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">理想情况</text>
+<text x="1800" y="110" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">实际可能吸偏一点</text>
+<polyline points="1200,190 1200,1220" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<circle cx="600" cy="650" r="260" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<polygon points="435.0,531.2 765.0,531.2 765.0,768.8 435.0,768.8" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="650" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="476.25" cy="560.9000000000001" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="300,650 900,650" stroke="#647481" stroke-width="5" fill="none"/>
+<polyline points="600,350 600,950" stroke="#647481" stroke-width="5" fill="none"/>
+<circle cx="1800" cy="650" r="260" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<polygon points="1725.072004263585,510.3197150919122 2051.8604669483034,464.3925917750907 2084.9279957364147,699.6802849080877 1758.1395330516968,745.6074082249092" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1905" cy="605" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1770.0540031976889" cy="533.9897863189342" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="1500,650 2100,650" stroke="#647481" stroke-width="5" fill="none"/>
+<polyline points="1800,350 1800,950" stroke="#647481" stroke-width="5" fill="none"/>
+<text x="600" y="1120" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">芯片中心与参考重合</text>
+<text x="1800" y="1120" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">芯片中心偏在一边</text></svg>

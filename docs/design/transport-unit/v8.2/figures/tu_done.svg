@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<text x="400" y="200" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">实际加工成功</text>
+<rect x="90" y="470" width="620" height="230" rx="16" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="118.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="173.46666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="239.33333333333331" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="310.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="365.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="365.4666666666667" cy="533.04" r="34" fill="white" stroke="#246B99" stroke-width="7"/>
+<circle cx="365.4666666666667" cy="533.04" r="13" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="431.3333333333333" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="502.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="557.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="623.3333333333334" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="118.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="173.46666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="239.33333333333331" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="310.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="365.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="431.3333333333333" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="502.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="557.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="623.3333333333334" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="400" y="900" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">对应工序记完成</text>
+<text x="1200" y="200" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">设置为不参加</text>
+<rect x="890" y="470" width="620" height="230" rx="16" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="918.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="973.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1039.3333333333333" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1110.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1165.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1165.4666666666667" cy="533.04" r="34" fill="white" stroke="#246B99" stroke-width="7"/>
+<circle cx="1165.4666666666667" cy="533.04" r="13" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="1231.3333333333333" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1302.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1357.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1423.3333333333333" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="918.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="973.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1039.3333333333333" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1110.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1165.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1231.3333333333333" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1302.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1357.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1423.3333333333333" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="1200" y="900" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">这道工序跳过</text>
+<text x="2000" y="200" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">人工改成成功</text>
+<rect x="1690" y="470" width="620" height="230" rx="16" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="1718.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1773.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1839.3333333333333" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1910.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1965.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1965.4666666666667" cy="533.04" r="34" fill="white" stroke="#246B99" stroke-width="7"/>
+<circle cx="1965.4666666666667" cy="533.04" r="13" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="2031.3333333333333" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="2102.0" y="493.0" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2157.4666666666667" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2223.3333333333335" cy="533.04" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1718.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1773.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1839.3333333333333" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1910.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1965.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2031.3333333333333" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="2102.0" y="591.5" width="173.33333333333334" height="77.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2157.4666666666667" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2223.3333333333335" cy="631.54" r="13" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="2000" y="900" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">只是人工改记录</text>
+<text x="1200" y="1160" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">检测合格要看另外的实际结果</text></svg>

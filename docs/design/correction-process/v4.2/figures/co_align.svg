@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="110" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">芯片还偏在A点右边</text>
+<text x="1800" y="110" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">芯片中心对上A点</text>
+<polyline points="1200,190 1200,1220" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<rect x="150" y="865" width="900" height="100" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<circle cx="600" cy="865" r="30" fill="white" stroke="#246B99" stroke-width="7"/>
+<rect x="658" y="440" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="675,535 725,535 715,570 685,570" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="660.0,570.8 880.0,570.8 880.0,729.2 660.0,729.2" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="770" cy="650" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="687.5" cy="590.5999999999999" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="700,585 700,830" stroke="#647481" stroke-width="4" fill="none" stroke-dasharray="16 14"/>
+<polyline points="600,720 600,830" stroke="#246B99" stroke-width="4" fill="none" stroke-dasharray="16 14"/>
+<text x="600" y="1120" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">蓝圈是A点</text>
+<rect x="1350" y="865" width="900" height="100" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<circle cx="1800" cy="865" r="30" fill="white" stroke="#246B99" stroke-width="7"/>
+<rect x="1688" y="440" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="1705,535 1755,535 1745,570 1715,570" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="1690.0,570.8 1910.0,570.8 1910.0,729.2 1690.0,729.2" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="650" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1717.5" cy="590.5999999999999" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="1730,585 1730,830" stroke="#647481" stroke-width="4" fill="none" stroke-dasharray="16 14"/>
+<polyline points="1800,720 1800,830" stroke="#246B99" stroke-width="4" fill="none" stroke-dasharray="16 14"/>
+<text x="1800" y="1120" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">蓝圈是A点</text>
+<polyline points="820,420 570,420" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="570,420 594.3120717635222,408.25593057899675 594.3120717635222,431.7440694210032" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="650" y="285" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">吸嘴往左修正</text>
+<text x="1800" y="285" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">横向对准后再贴下</text></svg>
