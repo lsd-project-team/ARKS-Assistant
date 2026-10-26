@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">各入口写入的对象不同  读每一行</text>
+<text x="270" y="240" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU入口</text>
+<rect x="650" y="175" width="620" height="150" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="960.0" y="250.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU坐标</text>
+<polyline points="1320,245 1460,245" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1460,245 1435.6879282364778,256.7440694210032 1435.6879282364778,233.25593057899678" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1520" y="175" width="780" height="150" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1910.0" y="250.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU配置角</text>
+<text x="270" y="425" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">基板入口</text>
+<rect x="650" y="360" width="620" height="150" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="960.0" y="435.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU坐标</text>
+<polyline points="1320,430 1460,430" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1460,430 1435.6879282364778,441.7440694210032 1435.6879282364778,418.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1520" y="360" width="780" height="150" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1910.0" y="435.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">基板运行与配置角</text>
+<text x="270" y="610" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">基岛入口</text>
+<rect x="650" y="545" width="620" height="150" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="960.0" y="620.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">基板坐标</text>
+<polyline points="1320,615 1460,615" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1460,615 1435.6879282364778,626.7440694210032 1435.6879282364778,603.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1520" y="545" width="780" height="150" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1910.0" y="620.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">基岛运行与配置角</text>
+<text x="270" y="795" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">焊点入口</text>
+<rect x="650" y="730" width="620" height="150" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="960.0" y="805.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">基岛坐标</text>
+<polyline points="1320,800 1460,800" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1460,800 1435.6879282364778,811.7440694210032 1435.6879282364778,788.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1520" y="730" width="780" height="150" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1910.0" y="805.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">焊点配置角</text>
+<text x="1200" y="1000" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">窗口先修改传入坐标并Save  调用方继续写目标</text></svg>

@@ -1,0 +1,423 @@
+{
+  "book": "纠偏过程设计文档",
+  "revision": "4.1",
+  "pages": 36,
+  "topics": 34,
+  "unique_figures": 34,
+  "image_placements": 35,
+  "text_paragraphs_checked": 315,
+  "source_files_unchanged": 80,
+  "fonts": {
+    "/BCDEEE+MicrosoftYaHei": true,
+    "/BCDFEE+MicrosoftYaHei": true,
+    "/BCDGEE+MicrosoftYaHei-Bold": true,
+    "/BCDHEE+MicrosoftYaHei-Bold": true,
+    "/BCDIEE+MS-Gothic": true
+  },
+  "topic_pages": [
+    {
+      "topic": 1,
+      "title": "接着TU册把C1贴到当前A点",
+      "page": 3
+    },
+    {
+      "topic": 2,
+      "title": "先确认产品上的A点在哪里",
+      "page": 4
+    },
+    {
+      "topic": 3,
+      "title": "在华夫盒里找到这次要取的C1",
+      "page": 5
+    },
+    {
+      "topic": 4,
+      "title": "取片时吸嘴为什么转到33度",
+      "page": 6
+    },
+    {
+      "topic": 5,
+      "title": "把取片位置落到C1上",
+      "page": 7
+    },
+    {
+      "topic": 6,
+      "title": "带着C1到上视相机准备拍照",
+      "page": 8
+    },
+    {
+      "topic": 7,
+      "title": "这张照片怎样看出C1偏在哪里",
+      "page": 9
+    },
+    {
+      "topic": 8,
+      "title": "先保存偏移还没有走到A点",
+      "page": 10
+    },
+    {
+      "topic": 9,
+      "title": "贴装前还要转3度偏移也跟着转",
+      "page": 11
+    },
+    {
+      "topic": 10,
+      "title": "把产品位置和C1偏移合成贴装目标",
+      "page": 12
+    },
+    {
+      "topic": 11,
+      "title": "C1贴到A点后回看这一次完整贴装",
+      "page": 13
+    },
+    {
+      "topic": 12,
+      "title": "上视模式和中转台怎样选择阅读路线",
+      "page": 14
+    },
+    {
+      "topic": 13,
+      "title": "普通上视先转方向再用新照片算位置",
+      "page": 15
+    },
+    {
+      "topic": 14,
+      "title": "普通镜像上视单独核对转向",
+      "page": 16
+    },
+    {
+      "topic": 15,
+      "title": "中转台纠偏先放下再重新取起",
+      "page": 17
+    },
+    {
+      "topic": 16,
+      "title": "Mark不在芯片中心该怎么找中心",
+      "page": 18
+    },
+    {
+      "topic": 17,
+      "title": "多次定位为什么有时还是不通过",
+      "page": 19
+    },
+    {
+      "topic": 18,
+      "title": "九宫格有缓存为什么还会拍照",
+      "page": 20
+    },
+    {
+      "topic": 19,
+      "title": "多个Mark到底用哪几个来算位置",
+      "page": 21
+    },
+    {
+      "topic": 20,
+      "title": "产品既偏了又歪了怎样一起修",
+      "page": 22
+    },
+    {
+      "topic": 21,
+      "title": "最终贴装前还有哪些补偿",
+      "page": 23
+    },
+    {
+      "topic": 22,
+      "title": "温漂补偿为什么不能统一理解",
+      "page": 24
+    },
+    {
+      "topic": 23,
+      "title": "焊后发现偏差怎样影响后面的点",
+      "page": 25
+    },
+    {
+      "topic": 24,
+      "title": "实时补偿为什么最后只加到轴X",
+      "page": 26
+    },
+    {
+      "topic": 25,
+      "title": "设备轴补偿和TU区域补偿差在哪",
+      "page": 27
+    },
+    {
+      "topic": 26,
+      "title": "回零成功是否说明轴补偿已打开",
+      "page": 28
+    },
+    {
+      "topic": 27,
+      "title": "拉角度就是让相机找两个点",
+      "page": 29
+    },
+    {
+      "topic": 28,
+      "title": "拉角度后取消为什么仍可能改过数据",
+      "page": 30
+    },
+    {
+      "topic": 29,
+      "title": "TU区域表怎样按位置给补偿",
+      "page": 31
+    },
+    {
+      "topic": 30,
+      "title": "区域表生成以后还要怎样用到生产",
+      "page": 32
+    },
+    {
+      "topic": 31,
+      "title": "Mark间距不对时重新拍会做什么",
+      "page": 33
+    },
+    {
+      "topic": 32,
+      "title": "中转台字段有值为什么仍可能没取成功",
+      "page": 34
+    },
+    {
+      "topic": 33,
+      "title": "手动贴片测试为什么不能直接当生产结果",
+      "page": 35
+    },
+    {
+      "topic": 34,
+      "title": "遇到纠偏问题先把这几件事连起来",
+      "page": 36
+    }
+  ],
+  "layout_bounds": [
+    {
+      "page": 1,
+      "body_bottom": 495.7,
+      "images": 1
+    },
+    {
+      "page": 2,
+      "body_bottom": 693.25,
+      "images": 0
+    },
+    {
+      "page": 3,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 4,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 5,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 6,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 7,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 8,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 9,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 10,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 11,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 12,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 13,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 14,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 15,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 16,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 17,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 18,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 19,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 20,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 21,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 22,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 23,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 24,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 25,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 26,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 27,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 28,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 29,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 30,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 31,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 32,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 33,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 34,
+      "body_bottom": 564.7,
+      "images": 1
+    },
+    {
+      "page": 35,
+      "body_bottom": 547.18,
+      "images": 1
+    },
+    {
+      "page": 36,
+      "body_bottom": 540.22,
+      "images": 1
+    }
+  ],
+  "renderer": "render_docx本轮实际尝试失败：缺soffice.exe；独立隐藏Word原生导出并由Poppler全页渲染",
+  "visual_review": "本版全部页面已直接查看，见visual-review.json和绑定的最终文件哈希",
+  "files": {
+    "纠偏过程设计文档.docx": "c122d118edf8fc43dfb0eb9ab49399c2559d61a2f5b1eae5e8c02f6de6ec6c8f",
+    "纠偏过程设计文档.pdf": "cf5164e8b1f192e09b48e9418fe7f2b3d66f68c4a0bfd29628df138f1e421559",
+    "纠偏过程设计文档.md": "742bb36396e8cc9e2e7bf4d1d8e3de793247696fcdd8d39fc402145ac7715e7f"
+  },
+  "legacy_isolated_arithmetic_checks": [
+    "TU逐层与90度旋转",
+    "TU工位偏移与测高",
+    "产品对象及焊点数量",
+    "蛇形第四加工对象",
+    "静态华夫盒取片XY",
+    "翻转与未翻转取片角",
+    "快速上视保存偏移",
+    "快速偏移剩余8度旋转",
+    "快速例追加G0目标",
+    "普通非镜像角度追踪",
+    "普通镜像角度追踪",
+    "中转台中心与取片G0",
+    "两点角度示教单位",
+    "产品两点定角保留Atan",
+    "TU网格中心与相减符号",
+    "自动行中位数边界",
+    "人工导入3点与5点均值",
+    "焊后样本单位与比例",
+    "手动目标独立路径",
+    "产品锚点平移旋转说明模型"
+  ],
+  "continuous_case_checks": [
+    "initial",
+    "at_s1",
+    "at_s1_height",
+    "refreshed",
+    "localized",
+    "pick_vector",
+    "pick_xy",
+    "pick_t",
+    "saved",
+    "photo_t",
+    "target_t",
+    "remaining",
+    "addition",
+    "target_g0",
+    "普通上视对照",
+    "普通镜像对照",
+    "正文舍入结果"
+  ],
+  "navigation_pages_checked": 34,
+  "bridges_checked": 34,
+  "case_ledger_sha256": "7ce35c565d9a949292e0636c46095895f6046c809648a4f5b952061d2bfa0dba",
+  "body_precision": "三位小数显示，未舍入值继续计算；完整计算另附索引"
+}

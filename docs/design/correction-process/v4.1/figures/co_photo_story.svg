@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="70" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">取片之后  带着C1转到上视拍照准备角</text>
+<text x="1200" y="965" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">选择快速单点  本例几何PR正常拍1次</text>
+<text x="590" y="190" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">已取起C1  当前T33°</text>
+<text x="1810" y="190" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">拍照准备后  当前T30°</text>
+<polyline points="1200,160 1200,860" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<rect x="548" y="330" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="565,425 615,425 605,460 575,460" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="556.5102152949047,425.86386170482007 682.3108004867182,507.5597169570741 623.4897847050953,598.1361382951799 497.6891995132818,516.4402830429259" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="590" cy="512" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="564.8826614711785" cy="447.39789627861506" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1768" y="330" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="1785,425 1835,425 1825,460 1795,460" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="1772.048094716167,427.7346281956403 1901.951905283833,502.7346281956403 1847.951905283833,596.2653718043597 1718.048094716167,521.2653718043597" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1810" cy="512" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1781.5360710371253" cy="448.80097114673026" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1740" y="715" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="1810" cy="760" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="1770,715 1810,660 1850,715" stroke="#246B99" stroke-width="5" fill="none"/>
+<polyline points="1040,470 1350,470" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1350,470 1325.6879282364778,481.7440694210032 1325.6879282364778,458.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="590" y="790" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">C1仍在同一吸嘴上</text>
+<text x="1810" y="890" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">准备角 = 示教0° + 校准30°</text></svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="85" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">配方画面改变后续产品规则</text>
+<rect x="65.0" y="180" width="710.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420.0" y="305.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">配方Mapping</text>
+<circle cx="105.0" cy="145" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="105.0" y="145" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">1</text>
+<polyline points="784.0,305 836.0,305" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="836.0,305 811.6879282364778,316.7440694210032 811.6879282364778,293.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="845.0" y="180" width="710.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1200.0" y="305.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">窗口样本</text>
+<circle cx="885.0" cy="145" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="885.0" y="145" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">2</text>
+<polyline points="1564.0,305 1616.0,305" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1616.0,305 1591.6879282364778,316.7440694210032 1591.6879282364778,293.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1625.0" y="180" width="710.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1980.0" y="305.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">后续参与规则</text>
+<circle cx="1665.0" cy="145" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1665.0" y="145" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">3</text>
+<text x="1200" y="555" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">生产画面改变当前产品记录</text>
+<rect x="65.0" y="650" width="710.0" height="250" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420.0" y="775.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">生产Mapping</text>
+<circle cx="105.0" cy="615" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="105.0" y="615" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">1</text>
+<polyline points="784.0,775 836.0,775" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="836.0,775 811.6879282364778,786.7440694210032 811.6879282364778,763.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="845.0" y="650" width="710.0" height="250" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1200.0" y="775.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">区段当前P1</text>
+<circle cx="885.0" cy="615" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="885.0" y="615" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">2</text>
+<polyline points="1564.0,775 1616.0,775" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1616.0,775 1591.6879282364778,786.7440694210032 1591.6879282364778,763.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1625.0" y="650" width="710.0" height="250" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1980.0" y="775.0" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">当前点的参与和工序</text>
+<circle cx="1665.0" cy="615" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1665.0" y="615" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">3</text></svg>

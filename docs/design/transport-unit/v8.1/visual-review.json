@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-26",
+  "reviewer": "Codex",
+  "scope": "代理逐页视觉校样，不替代真人试读和设备验证",
+  "render_dpi": 110,
+  "status": "通过",
+  "files": {
+    "TransportUnit设计文档.docx": "f04f6bfbf09ffbfba32c0dbd000ca6ac0d23ed4f080892a2c51b2db6228008fa",
+    "TransportUnit设计文档.pdf": "b499ac2f86c5d5d8b64ad5665325dac897685b3be852920b1262cfae9519a91a",
+    "TransportUnit设计文档.md": "9a1e5bffeb663e1602eeb277a9e638c6ab8078227dc3d14c66eb63d07f6e1f5f"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "pixels_sha256": "a6f36958a49efbdde9f85986a9934571f740d87564cce93f50a86aa8c04948c3",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 2,
+      "pixels_sha256": "eb1d379854ee16ce1fcdbd1fca3cafdedaca770f13cd5e3f239849b10df5bb38",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 3,
+      "pixels_sha256": "e1cca59c7c2fbd39997599bfbf545b6beb2774f6ffed0a7ed7468bedf9a3b2f9",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 4,
+      "pixels_sha256": "f610c3be03d08640dd56eb68b0c04281b94dae46748c31512fccf91dbf3ac6ae",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 5,
+      "pixels_sha256": "f244698ed530bf4c85deb7fba43deb0a492b550cdba2e9df5d72b06bbfdfc879",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 6,
+      "pixels_sha256": "0716b174cd95aeba42ed922ff248c877f3ae2958c06960e5bf7b6d3e97254c09",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 7,
+      "pixels_sha256": "d6af0e0121ef0bedc951f2dc6f2eb13abe73ba88d10bab3373f770f8e01effcd",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 8,
+      "pixels_sha256": "576936bf4f7a421997cd556ab56d88482a64594e99e0ed8fdc16b1195a2e3b12",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 9,
+      "pixels_sha256": "5b53b83087c7dd771e1700a32b518bca27f3583d7a8e87d1849e98ccbe602a67",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 10,
+      "pixels_sha256": "71d6a717e303e059bb3ebd690b2699bec104a09cec9a294606bef97959779db0",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 11,
+      "pixels_sha256": "b27cdd6a3e032405a674b38f703eb296cf0aeed7806fcb137ca49779cdc7f0ae",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 12,
+      "pixels_sha256": "89ad80742f690573e004f24cfa47eb434d04ccbe61f15e76e53027d4953ecbb0",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 13,
+      "pixels_sha256": "9e27c7da44f061cf6aadcbdb59c6e91aefca93cfe94f705836989695d8451af0",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 14,
+      "pixels_sha256": "b58f357eacbbcf031494245247ce42de0d2eadc070182ae4e297c505dff93d9e",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 15,
+      "pixels_sha256": "e3958e28d7425563374d081d9f8fd90867725e5bde3cc6581c48c69c96a6f8c4",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 16,
+      "pixels_sha256": "cf67f6c47cade8d6ed7338eabec23cf21aa9231e4f8297bb41ace82f349e6993",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 17,
+      "pixels_sha256": "a8698ebf8ab4e38ec45861306aa011302e1d1cc766f682d3b102571c62209f2a",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 18,
+      "pixels_sha256": "c5962a169911f1258785f97178fde1e0a2b93259ae92022e60d0222172644587",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 19,
+      "pixels_sha256": "700e066725e1d624ed24da652020fa666016210e8ebc0432f825d571b26d872c",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 20,
+      "pixels_sha256": "971f907dc90dfa0bd785eb05a200a11e85c2b8a86c5867ee94e4137beb82fffd",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 21,
+      "pixels_sha256": "43b53a58e099e27e7fa1ba94c2b75db61f1b9e97bc8bed4fdc7eb73a229fd139",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 22,
+      "pixels_sha256": "9d7569c748ed948443490cd38f884d8a40bc294701d4085c15b9e7779f83adbe",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 23,
+      "pixels_sha256": "27deae512e746e95bc98cf878a8116217869de01a32f12604c9522e98e18d4f4",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 24,
+      "pixels_sha256": "43efc2e8c08c7b0bc6fb573e8247b35169183db6605fe913c68bd1586f220333",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 25,
+      "pixels_sha256": "9e80ca7104db4fb8eced4c6a72fb4aeff12ec3be9f26abc749de0bb8d02c3282",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 26,
+      "pixels_sha256": "876ea04419b4cb17309f55961a0db5100e826d305db9d9a6a0ae8f77fd478bc6",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 27,
+      "pixels_sha256": "6b08553b92fc59889de82712a3a9e66c558a11f952cbf66a0cbbffa32c16409a",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 28,
+      "pixels_sha256": "6443acda0387714c3b1e60a1968686e2204944b285e0e70cb4593a28fdb89d96",
+      "review": "本版终稿逐页直接查看"
+    },
+    {
+      "page": 29,
+      "pixels_sha256": "673649a690fa22e32b208fade08e929f04ee9fab06c623d883d1326ee6babb93",
+      "review": "本版终稿逐页直接查看"
+    }
+  ],
+  "items": [
+    "标题和原生目录",
+    "每页阶段导航",
+    "图像和图注对应",
+    "主例前后位置与状态",
+    "可选分支对照",
+    "段落与下一页承接",
+    "无裁切或溢出"
+  ]
+}
