@@ -5,44 +5,67 @@
   min-height: 0;
   height: 100%;
   overflow: auto;
-  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-warm);
   color: var(--text);
-  font: 400 13px/1.65 var(--font-ui);
+  font: 400 14px/1.65 var(--font-ui);
   container-type: inline-size;
 }
+.ledger-workspace,
+.ledger-dialog {
+  box-sizing: border-box;
+}
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.ledger-workspace, .ledger-dialog) {
+  --panel: var(--surface);
+}
 .ledger-content {
-  max-width: 1440px;
-  min-height: 100%;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin: 0 auto;
-  padding: 24px clamp(16px, 2.4cqw, 32px);
+  padding: 20px 26px 32px;
 }
 .ledger-heading {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 18px;
+  padding: 22px 26px 16px;
+  background: var(--panel);
 }
 .ledger-heading h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
   margin: 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+}
+.ledger-heading h1 svg {
+  flex-shrink: 0;
 }
 .ledger-heading-controls {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+.ledger-primary-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
 }
 .ledger-heading-controls > .ui-select-trigger {
-  min-width: 140px;
-  width: 170px;
-  max-width: 170px;
+  min-width: 160px;
+  width: 220px;
+  max-width: 260px;
 }
 .ledger-workspace .button,
 .ledger-dialog .button {
@@ -50,77 +73,80 @@
   gap: 7px;
   align-items: center;
   justify-content: center;
+  min-height: 38px;
+  font-size: 13px;
   white-space: nowrap;
 }
-.ledger-layout {
-  display: grid;
-  flex: 1;
-  min-height: 380px;
-  grid-template-columns: 180px minmax(0, 1fr);
-  gap: 16px;
-  align-items: stretch;
-}
-.ledger-categories,
 .ledger-table-panel {
   border: 1px solid var(--border);
-  border-radius: var(--popup-radius);
+  border-radius: 12px;
   background: var(--panel);
   min-width: 0;
 }
 .ledger-categories {
-  padding: 14px 10px;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 20px;
+  padding: 0 26px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.ledger-workspace .ledger-category-manage {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 5px 10px;
+  font-size: 12px;
 }
 .ledger-table-panel {
   display: flex;
   flex-direction: column;
-}
-.ledger-section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 2px 8px 12px;
-}
-.ledger-section-heading h2 {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
+  flex: 1;
+  min-height: 360px;
+  overflow: hidden;
 }
 .ledger-category-options {
-  display: grid;
-  gap: 5px;
-  max-height: calc(100dvh - 230px);
-  overflow: auto;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 24px;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 .ledger-category {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  width: 100%;
+  gap: 7px;
+  flex: 0 0 auto;
+  min-height: 54px;
   text-align: left;
-  padding: 9px 10px;
+  padding: 15px 1px;
   border: 0;
-  border-radius: 8px;
-  color: var(--text);
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--text-secondary);
   background: transparent;
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
   cursor: pointer;
 }
-.ledger-category > span {
-  overflow-wrap: anywhere;
-}
 .ledger-category small {
-  color: var(--muted);
+  color: var(--text-secondary);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 .ledger-category:hover {
-  background: var(--surface-hover);
+  color: var(--text);
 }
 .ledger-category.selected {
-  background: var(--selection-background);
-  color: var(--accent);
-  font-weight: 500;
+  border-bottom-color: var(--text);
+  color: var(--text);
+  font-weight: 600;
 }
 .ledger-category.selected small {
   color: inherit;
@@ -431,49 +457,17 @@ th[aria-sort='descending'] .ledger-sort {
   color: var(--danger-text);
   font-size: 12px;
 }
-/* 按工作区实际宽度布局，避免左侧导航挤压表格而仍保持双栏。 */
-@container (max-width: 850px) {
-  .ledger-heading {
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-  .ledger-layout {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(360px, 1fr);
-    gap: 12px;
+/* 分类沿用工作台的横向导航，窄工作区只滚动分类，不挤压动作表。 */
+@container (max-width: 600px) {
+  .ledger-content {
+    padding: 18px 16px 24px;
   }
   .ledger-categories {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 12px;
-  }
-  .ledger-section-heading {
-    flex: 0 0 auto;
-    padding: 0;
-  }
-  .ledger-section-heading h2 {
-    font-size: 13px;
+    gap: 16px;
+    padding-inline: 16px;
   }
   .ledger-category-options {
-    display: flex;
-    flex: 1;
-    max-height: none;
-    overflow-x: auto;
-  }
-  .ledger-category {
-    width: auto;
-    flex: 0 0 auto;
-    gap: 8px;
-    padding: 7px 10px;
-    white-space: nowrap;
-  }
-  .ledger-heading-controls {
-    width: 100%;
-  }
-  .ledger-heading-controls > .ui-select-trigger {
-    flex: 1;
-    max-width: 240px;
+    gap: 20px;
   }
 }
 @container (max-width: 480px) {

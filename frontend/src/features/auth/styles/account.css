@@ -7,7 +7,13 @@
   grid-row: 1 / -1;
 }
 .app-shell.legacy-visual.has-account-header
-  > :is(.workspace-main, .project-home, .knowledge-workspace, .handover-workbench) {
+  > :is(
+    .workspace-main,
+    .project-home,
+    .knowledge-workspace,
+    .handover-workbench,
+    .ledger-workspace
+  ) {
   grid-column: 2;
   grid-row: 2;
   height: 100%;
@@ -30,7 +36,13 @@
   overflow: hidden;
 }
 .workspace-topbar
-  :is(.chat-heading, .handover-header, .project-home-header, .knowledge-page-heading) {
+  :is(
+    .chat-heading,
+    .handover-header,
+    .project-home-header,
+    .knowledge-page-heading,
+    .ledger-heading
+  ) {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,7 +58,7 @@
 .workspace-topbar .chat-heading {
   font-size: 13px;
 }
-.workspace-topbar :is(.handover-header, .project-home-header) h1 {
+.workspace-topbar :is(.handover-header, .project-home-header, .ledger-heading) h1 {
   margin: 0;
   font-size: 17px;
   line-height: 1.45;
@@ -261,7 +273,7 @@
   .workspace-topbar .handover-header p {
     display: none;
   }
-  .workspace-topbar :is(.handover-header, .project-home-header) h1,
+  .workspace-topbar :is(.handover-header, .project-home-header, .ledger-heading) h1,
   .workspace-topbar .knowledge-heading-title strong {
     font-size: 14px;
   }
