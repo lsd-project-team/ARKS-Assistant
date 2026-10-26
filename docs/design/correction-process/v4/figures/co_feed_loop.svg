@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="50" y="110" width="650" height="220" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="375.0" y="174" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">识别当前芯片</text>
+<text x="375.0" y="255" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">标定成XY物理偏差</text>
+<rect x="870" y="110" width="650" height="220" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1195.0" y="174" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检查XY和角度</text>
+<text x="1195.0" y="255" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">全部满足阈值？</text>
+<polyline points="720,220 850,220" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="850,220 825.6879282364778,231.74406942100322 825.6879282364778,208.25593057899678" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1720" y="110" width="610" height="220" rx="12" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="2025.0" y="174" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">自动通过</text>
+<text x="2025.0" y="255" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">包含等于阈值</text>
+<polyline points="1540,220 1700,220" stroke="#287054" stroke-width="7" fill="none"/>
+<polygon points="1700,220 1675.6879282364778,231.74406942100322 1675.6879282364778,208.25593057899678" fill="#287054" stroke="#287054" stroke-width="4"/>
+<text x="1615" y="140" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#287054">是</text>
+<polyline points="1195,350 1195,520" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="1195,520 1183.2559305789969,495.6879282364777 1206.7440694210031,495.6879282364777" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1350" y="435" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">否</text>
+<rect x="870" y="540" width="650" height="230" rx="12" fill="#FFF1E4" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1195.0" y="604" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检查剩余次数</text>
+<text x="1195.0" y="685" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">有次数才校正XY</text>
+<polyline points="850,650 375,650 375,350" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="375,350 386.74406942100325,374.3120717635223 363.2559305789968,374.3120717635223" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="360" y="760" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#246B99">有：校正XY后重拍</text>
+<rect x="1720" y="540" width="610" height="230" rx="12" fill="#FFF1E4" stroke="#B7C6CF" stroke-width="4"/>
+<text x="2025.0" y="604" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">次数用完</text>
+<text x="2025.0" y="685" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">返回未通过</text>
+<polyline points="1540,650 1700,650" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="1700,650 1675.6879282364778,661.7440694210032 1675.6879282364778,638.2559305789968" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1615" y="580" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">无</text>
+<text x="1200" y="970" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">角度也参加检查  这个校正调用不直接转T</text></svg>

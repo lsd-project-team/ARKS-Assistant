@@ -1,0 +1,344 @@
+[
+  {
+    "figure": "tu_route",
+    "page": 1,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_route",
+    "page": 3,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_product",
+    "page": 4,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_tree",
+    "page": 4,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_owners",
+    "page": 5,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_snake",
+    "page": 6,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_address",
+    "page": 6,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_create",
+    "page": 7,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_coordinates",
+    "page": 8,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_rotation",
+    "page": 9,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_inverse",
+    "page": 9,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_station_offset",
+    "page": 10,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_vision_height",
+    "page": 11,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_dispense",
+    "page": 12,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_handover",
+    "page": 13,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_signals",
+    "page": 13,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_refresh",
+    "page": 14,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_refresh_values",
+    "page": 14,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_s2_entry",
+    "page": 15,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_ledgers",
+    "page": 16,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_exit",
+    "page": 17,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_divide",
+    "page": 18,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_participation",
+    "page": 19,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_live_mapping",
+    "page": 20,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_recipe_mapping",
+    "page": 21,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_search",
+    "page": 22,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_clear",
+    "page": 23,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_clear_compare",
+    "page": 23,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_irregular",
+    "page": 24,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_node_identity",
+    "page": 25,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_mapping_import",
+    "page": 26,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_persistence",
+    "page": 27,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_partial_failure",
+    "page": 28,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_failure_compare",
+    "page": 28,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_helpers",
+    "page": 29,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_lookup",
+    "page": 30,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_recap",
+    "page": 31,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_recap_steps",
+    "page": 31,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  }
+]

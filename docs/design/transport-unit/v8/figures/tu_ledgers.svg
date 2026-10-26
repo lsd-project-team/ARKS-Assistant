@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="550.0" y="120" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">产品A点的工序</text>
+<rect x="70" y="200" width="960" height="132" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="112" y="266" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">D_A</text>
+<text x="720" y="266" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#246B99">true</text>
+<rect x="70" y="332" width="960" height="132" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="112" y="398" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">T_A</text>
+<text x="720" y="398" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#246B99">true</text>
+<rect x="70" y="464" width="960" height="132" rx="0" fill="white" stroke="#B7C6CF" stroke-width="4"/>
+<text x="112" y="530" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">记录归属</text>
+<text x="720" y="530" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#246B99">当前N1</text>
+<text x="1850.0" y="120" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">控制器的工作消息</text>
+<rect x="1370" y="200" width="960" height="132" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1412" y="266" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">取片消息</text>
+<text x="2020" y="266" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#246B99">完成</text>
+<rect x="1370" y="332" width="960" height="132" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1412" y="398" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">纠偏消息</text>
+<text x="2020" y="398" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#246B99">完成</text>
+<rect x="1370" y="464" width="960" height="132" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1412" y="530" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#172B3A">贴装消息</text>
+<text x="2020" y="530" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#246B99">完成</text>
+<text x="600" y="800" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#287054">Finish不清产品工序</text>
+<text x="1840" y="800" font-family="Microsoft YaHei" font-size="45" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">Finish复位消息供后续使用</text>
+<text x="1200" y="970" font-family="Microsoft YaHei" font-size="57" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">消息和产品记录是两本不同的账</text></svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="65.0" y="300" width="515.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="322.5" y="364" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">配方画面</text>
+<text x="322.5" y="445" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">窗口自己的对象</text>
+<circle cx="105.0" cy="265" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="105.0" y="265" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">1</text>
+<polyline points="589.0,425 641.0,425" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="641.0,425 616.6879282364778,436.7440694210032 616.6879282364778,413.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="650.0" y="300" width="515.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="907.5" y="364" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">样本TU</text>
+<text x="907.5" y="445" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">改哪些点参加</text>
+<circle cx="690.0" cy="265" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="690.0" y="265" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">2</text>
+<polyline points="1174.0,425 1226.0,425" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1226.0,425 1201.6879282364778,436.7440694210032 1201.6879282364778,413.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1235.0" y="300" width="515.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="1492.5" y="364" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">内存参与配置</text>
+<text x="1492.5" y="445" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">新画面关闭可写回</text>
+<circle cx="1275.0" cy="265" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1275.0" y="265" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">3</text>
+<polyline points="1759.0,425 1811.0,425" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1811.0,425 1786.6879282364778,436.7440694210032 1786.6879282364778,413.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1820.0" y="300" width="515.0" height="250" rx="12" fill="#EDF4F8" stroke="#B7C6CF" stroke-width="4"/>
+<text x="2077.5" y="364" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">后续新产品</text>
+<text x="2077.5" y="445" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">创建时读取</text>
+<circle cx="1860.0" cy="265" r="29" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1860.0" y="265" font-family="Microsoft YaHei" font-size="37" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="white">4</text>
+<text x="1200" y="850" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">画面改过、内存改过和已保存到文件，要分开确认。</text></svg>

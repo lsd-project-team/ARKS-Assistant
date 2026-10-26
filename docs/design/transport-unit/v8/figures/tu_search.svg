@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="70" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">S1和已配置输送S2的主要分支</text>
+<rect x="90" y="170" width="2220" height="135" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420" y="237" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检测有料</text>
+<text x="1110" y="237" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU存在</text>
+<text x="1860" y="237" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">保留并Refresh</text>
+<rect x="90" y="320" width="2220" height="135" rx="0" fill="white" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420" y="387" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检测有料</text>
+<text x="1110" y="387" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU为空</text>
+<text x="1860" y="387" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">确认有料才新建</text>
+<rect x="90" y="470" width="2220" height="135" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420" y="537" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检测无料</text>
+<text x="1110" y="537" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU存在</text>
+<text x="1860" y="537" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">确认有料则保留</text>
+<rect x="90" y="620" width="2220" height="135" rx="0" fill="white" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420" y="687" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检测无料</text>
+<text x="1110" y="687" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU存在</text>
+<text x="1860" y="687" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">确认无料则清空</text>
+<rect x="90" y="770" width="2220" height="135" rx="0" fill="#EAF4EE" stroke="#B7C6CF" stroke-width="4"/>
+<text x="420" y="837" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">检测无料</text>
+<text x="1110" y="837" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU为空</text>
+<text x="1860" y="837" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">保持空引用</text>
+<text x="1200" y="1000" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">保留原对象才能保留旧Info和工序</text></svg>

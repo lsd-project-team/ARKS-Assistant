@@ -1,0 +1,416 @@
+[
+  {
+    "figure": "co_route",
+    "page": 1,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_route",
+    "page": 3,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_units",
+    "page": 4,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_terms",
+    "page": 4,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_supply",
+    "page": 5,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_feed_loop",
+    "page": 6,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_feed_decisions",
+    "page": 6,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_pick_angle",
+    "page": 7,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_pick_xy",
+    "page": 8,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_nine",
+    "page": 9,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_product",
+    "page": 10,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_product_write",
+    "page": 11,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_anchor",
+    "page": 12,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_anchor_options",
+    "page": 12,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_rigid",
+    "page": 13,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_product_retry",
+    "page": 14,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_uplook_counts",
+    "page": 15,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_quick",
+    "page": 16,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_quick_record",
+    "page": 16,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_normal",
+    "page": 17,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_mirror",
+    "page": 18,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_mirror_modes",
+    "page": 18,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_consume",
+    "page": 19,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_scene",
+    "page": 20,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_compare",
+    "page": 20,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_ipt_center",
+    "page": 21,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_records",
+    "page": 22,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_retry",
+    "page": 22,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_order",
+    "page": 23,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_z",
+    "page": 23,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_thermal",
+    "page": 24,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_postbond",
+    "page": 25,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_realtime",
+    "page": 26,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_layers",
+    "page": 27,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_home",
+    "page": 28,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_teach",
+    "page": 29,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_teach_writes",
+    "page": 30,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_grid",
+    "page": 31,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_grid_sign",
+    "page": 31,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_collect",
+    "page": 32,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_calculate_grid",
+    "page": 33,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_median",
+    "page": 33,
+    "pixels": [
+      2400,
+      360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "co_enable",
+    "page": 34,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_import",
+    "page": 35,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_manual",
+    "page": 36,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_recap",
+    "page": 37,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  }
+]
