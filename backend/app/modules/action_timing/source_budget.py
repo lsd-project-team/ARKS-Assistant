@@ -14,8 +14,9 @@ def call_limit(estimator, stack, marker, *, metadata=False, callback=False, budg
     if marker in stack:
         return {"kind": "recursion", "target": marker}
     depth = estimator.depth(stack)
-    if not metadata and depth >= MAX_CALL_DEPTH:
-        return {"kind": "call_depth", "limit": MAX_CALL_DEPTH, "used": depth, "target": marker}
+    maximum = getattr(estimator, "max_call_depth", MAX_CALL_DEPTH)
+    if not metadata and depth >= maximum:
+        return {"kind": "call_depth", "limit": maximum, "used": depth, "target": marker}
     if (
         not metadata
         and budget

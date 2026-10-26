@@ -86,6 +86,8 @@ export type SourceAction = {
   stage_count?: number;
   parameter_count?: number;
   stages?: SourceStage[];
+  supplementary_stages?: SourceStage[];
+  supplementary_stage_count?: number;
   per_item_timing?: { element_type: string; min_ms: number; max_ms: number | null }[];
   parameters?: SourceParameter[];
 };

@@ -77,7 +77,7 @@ def stage_requirements(stage):
 
 def attach(result):
     missing, seen = [], set()
-    for stage in result["stages"]:
+    for stage in [*result["stages"], *result.get("supplementary_stages", [])]:
         requirement = stage_requirements(stage)
         if requirement is None:
             continue

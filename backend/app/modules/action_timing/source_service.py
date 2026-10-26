@@ -10,6 +10,7 @@ from app.modules.action_timing import (
     source_components,
     source_continuations,
     source_deferred_components,
+    source_profile_refinement,
     source_requirements,
 )
 from app.modules.action_timing.catalog import CATALOG
@@ -201,7 +202,13 @@ class SourceTiming:
             else:
                 estimator = Estimator(index)
                 result = estimator.estimate(method)
-                result["known_components"] = source_components.calculated_stages(result["stages"])
+                estimator, result = source_profile_refinement.refine(
+                    index, method, estimator, result, Estimator
+                )
+                if "known_components" not in result:
+                    result["known_components"] = source_components.calculated_stages(
+                        result["stages"]
+                    )
                 result["source_components"] = [
                     fact
                     for target in [method]
@@ -258,7 +265,7 @@ class SourceTiming:
             "mode": "DryCycle",
             "basis": "source_defaults",
             "source_revision": hashlib.sha256(
-                f"trunk-model-v37:{index.revision}:{self.loaded_scope.revision}".encode()
+                f"trunk-model-v38:{index.revision}:{self.loaded_scope.revision}".encode()
             ).hexdigest(),
             "source_files": len(index.units),
             "source_projects": self.loaded_scope.projects,
@@ -310,6 +317,7 @@ class SourceTiming:
                     if key
                     not in {
                         "stages",
+                        "supplementary_stages",
                         "parameters",
                         "missing_requirements",
                         "known_components",
@@ -318,6 +326,11 @@ class SourceTiming:
                 }
                 | {
                     "stage_count": len(row["stages"]),
+                    **(
+                        {"supplementary_stage_count": len(row["supplementary_stages"])}
+                        if row.get("supplementary_stages")
+                        else {}
+                    ),
                     "parameter_count": len(row["parameters"]),
                     "known_components": source_components.preview(row.get("known_components", [])),
                     "source_components": source_components.preview(

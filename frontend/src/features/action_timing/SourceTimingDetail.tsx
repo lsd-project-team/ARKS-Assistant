@@ -97,10 +97,13 @@ export function SourceTimingDetail({
   });
   const [filter, setFilter] = useState('');
   const [limit, setLimit] = useState(40);
+  const [supplementaryLimit, setSupplementaryLimit] = useState(40);
   const [missingLimit, setMissingLimit] = useState(3);
   const data = detail.data;
   const view = data ? actionPresentation(data) : null;
   const stages = data?.stages?.filter((row) => !filter || row.kind === filter) || [];
+  const supplementary =
+    data?.supplementary_stages?.filter((row) => !filter || row.kind === filter) || [];
   return (
     <Modal
       open
@@ -235,6 +238,7 @@ export function SourceTimingDetail({
                 onChange={(event) => {
                   setFilter(event.target.value);
                   setLimit(40);
+                  setSupplementaryLimit(40);
                 }}
               >
                 <option value="">全部阶段</option>
@@ -256,6 +260,26 @@ export function SourceTimingDetail({
                 <Button onClick={() => setLimit(limit + 40)}>
                   继续展开（剩余 {stages.length - limit} 项）
                 </Button>
+              )}
+              {!!data.supplementary_stages?.length && (
+                <details>
+                  <summary>查看补充源码依据（不重复计时）</summary>
+                  <p>
+                    以下保留另一次展开核对到的参数、运动和等待依据；不与上方阶段合成执行顺序，
+                    不重复加到已知停留中。
+                  </p>
+                  <ol className="source-phases">
+                    {supplementary.slice(0, supplementaryLimit).map((row, n) => (
+                      <Phase key={`${row.path}:${row.line}:${n}`} row={row} />
+                    ))}
+                  </ol>
+                  {!supplementary.length && <p className="muted">当前筛选没有补充阶段。</p>}
+                  {supplementary.length > supplementaryLimit && (
+                    <Button onClick={() => setSupplementaryLimit(supplementaryLimit + 40)}>
+                      继续查看补充依据（剩余 {supplementary.length - supplementaryLimit} 项）
+                    </Button>
+                  )}
+                </details>
               )}
             </details>
           </>
