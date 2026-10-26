@@ -7,46 +7,37 @@ from typing import Literal
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 
 from app.modules.action_timing.catalog import CATALOG
+from app.modules.action_timing.ledger_router import create_router as ledger_router
 from app.modules.action_timing.packages import MAX_BYTES
 from app.modules.action_timing.schemas import Status
 from app.modules.action_timing.service import ActionTiming
-from app.modules.action_timing.source_service import SourceTiming
 
 
 def create_router(services):
     router = APIRouter(prefix="/api/action-timing", tags=["action-timing"])
     timing = ActionTiming(services)
-    source = SourceTiming(services.workspace, services.paths.data / "cache" / "action-timing")
+    router.include_router(ledger_router(services))
 
     def source_scope():
         with services.database.session() as session:
             timing.scope(session)
+        raise HTTPException(410, "源码模拟已暂停，请使用动作耗时台账")
 
     @router.get("/source-analysis")
     async def source_analysis():
         source_scope()
-        return await asyncio.to_thread(source.summary)
 
     @router.get("/source-analysis/export")
     async def source_export():
         source_scope()
-        return Response(
-            await asyncio.to_thread(source.export_csv),
-            media_type="text/csv",
-            headers={
-                "Content-Disposition": 'attachment; filename="zx2200-source-action-timing.csv"'
-            },
-        )
 
     @router.get("/source-analysis/coverage")
     async def source_coverage():
         source_scope()
-        return await asyncio.to_thread(source.coverage)
 
     @router.get("/source-analysis/{identifier}")
     async def source_detail(identifier: str):
         source_scope()
-        return await asyncio.to_thread(source.detail, identifier)
 
     @router.get("/catalog")
     async def catalog():

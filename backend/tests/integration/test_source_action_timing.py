@@ -1,11 +1,10 @@
-"""直接读源码的真实API、权限、缓存失效与ZX2200参数依据。"""
+"""源码模拟HTTP入口已暂停；保留独立分析器的只读回归。"""
 
-import csv
 import hashlib
-import io
 from collections import Counter
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
@@ -16,178 +15,19 @@ ROOT = Path(__file__).resolve().parents[3]
 BASE = "/api/p/independent/action-timing/source-analysis"
 
 
-def test_page_data_is_available_without_import_and_changes_with_source(services):
-    path = services[2].root / "Demo.cs"
-    path.write_text(
-        "class Demo : ActionNode { public int DoWork() { Thread.Sleep(12); return 0; } }",
-        encoding="utf-8",
-    )
+@pytest.mark.parametrize("suffix", ["", "/export", "/coverage", "/old-action-id"])
+def test_source_http_routes_are_paused_without_constructing_the_analyzer(
+    services, monkeypatch, suffix
+):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("暂停的源码模拟不得构造分析器")
+
+    monkeypatch.setattr(SourceTiming, "__init__", forbidden)
     with TestClient(create_app(services[0])) as client:
-        response = client.get(BASE)
-        assert response.status_code == 200, response.text
-        first = response.json()
-        row = next(row for row in first["rows"] if row["class_name"] == "Demo")
-        assert first["basis"] == "source_defaults" and first["mode"] == "DryCycle"
-        assert row["known_delay_min_ms"] == row["known_delay_max_ms"] == 12
-        assert "stages" not in row
-        coverage = client.get(BASE + "/coverage")
-        assert coverage.status_code == 200
-        assert coverage.json()["source_revision"] == first["source_revision"]
-        assert coverage.json()["uncatalogued_timing_methods"] == 0
-        assert any(
-            item["method"] == "Demo.DoWork" and item["status"] == "catalogued"
-            for item in coverage.json()["methods"]
-        )
-        detail = client.get(BASE + "/" + row["id"])
-        assert detail.status_code == 200
-        assert detail.json()["stages"][0]["path"] == "Demo.cs"
-        assert detail.json()["stages"][0]["milliseconds"] == 12
-        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
-        path.write_text(
-            path.read_text(encoding="utf-8").replace("Sleep(12)", "Sleep(21)"), encoding="utf-8"
-        )
-        updated = client.get(BASE).json()
-        assert updated["source_revision"] != first["source_revision"]
-        assert updated["rows"][0]["known_delay_min_ms"] == 21
-        exported = client.get(BASE + "/export")
-        assert exported.status_code == 200
-        rows = list(csv.reader(io.StringIO(exported.text.lstrip("\ufeff"))))
-        assert rows[1][3:5] == ["21", "21"]
-        assert rows[1][-1] == "源码默认值推算，非现场实测"
-        assert client.get(BASE + "/missing").status_code == 404
-
-
-def test_source_api_keeps_per_item_timing_without_requiring_hardware_or_import(services):
-    (services[2].root / "Demo.cs").write_text(
-        "using System.Collections.Generic;class Demo : ActionNode {List<int> items;"
-        "public int DoWork(){items.ForEach(n=>Thread.Sleep(7));return 0;}}",
-        encoding="utf-8",
-    )
-    with TestClient(create_app(services[0])) as client:
-        response = client.get(BASE)
-        assert response.status_code == 200
-        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
-        assert row["known_delay_min_ms"] == 0 and row["known_delay_max_ms"] is None
-        assert row["total_ms"] is None
-        assert row["per_item_timing"] == [{"element_type": "int", "min_ms": 7, "max_ms": 7}]
-        assert "stages" not in row
-        detail = client.get(BASE + "/" + row["id"])
-        assert detail.status_code == 200
-        assert detail.json()["per_item_timing"] == row["per_item_timing"]
-        assert any(
-            stage["kind"] == "delay" and stage["milliseconds"] == 7 and stage["repeat"]
-            for stage in detail.json()["stages"]
-        )
-        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
-
-
-def test_source_api_exposes_calculable_loop_parts_and_specific_missing_input(services):
-    (services[2].root / "Demo.cs").write_text(
-        "class Demo{public void Start(int count,int delay){"
-        "Thread.Sleep(delay);for(int i=0;i<count;i++){Thread.Sleep(30);Thread.Sleep(60);}}}",
-        encoding="utf-8",
-    )
-    with TestClient(create_app(services[0])) as client:
-        summary = client.get(BASE).json()
-        row = summary["rows"][0]
-        assert row["total_ms"] is None and "input" in row["missing_categories"]
-        assert row["source_components"][0]["milliseconds"] == 90
-        assert "missing_requirements" not in row
-        detail = client.get(BASE + "/" + row["id"]).json()
-        assert (
-            detail["source_components"][0]["milliseconds"]
-            == row["source_components"][0]["milliseconds"]
-        )
-        assert len(detail["source_components"][0]["sources"]) == 2
-        assert not row["source_components"][0]["sources"]
-        assert any(
-            "delay" in value
-            for requirement in detail["missing_requirements"]
-            for value in requirement["required"]
-        )
-
-
-def test_source_api_computes_filtered_and_materialized_callbacks_without_import(services):
-    (services[2].root / "Demo.cs").write_text(
-        "using System.Collections.Generic;using System.Linq;class Demo:ActionNode{"
-        "public int DoWork(){new List<int>{1,2,3}.FindAll(n=>{Thread.Sleep(2);return n>1;})"
-        ".ToList().ForEach(n=>Thread.Sleep(n));return 0;}}",
-        encoding="utf-8",
-    )
-    with TestClient(create_app(services[0])) as client:
-        response = client.get(BASE)
-        assert response.status_code == 200
-        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
-        assert row["total_ms"] == row["known_delay_min_ms"] == row["known_delay_max_ms"] == 11
-        detail = client.get(BASE + "/" + row["id"])
-        assert detail.status_code == 200
-        assert sum(s["kind"] == "delay" for s in detail.json()["stages"]) == 5
-        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
-
-
-def test_source_api_consumes_queries_and_streams_foreach_without_import(services):
-    (services[2].root / "Demo.cs").write_text(
-        "using System.Linq;class Demo:ActionNode{public int DoWork(){"
-        "Thread.Sleep(new[]{1,2,3}.Count(n=>{Thread.Sleep(2);return n>1;}));"
-        "foreach(var n in new[]{2,3}.Select(n=>{Thread.Sleep(1);return n;}))"
-        "{Thread.Sleep(n);break;}return 0;}}",
-        encoding="utf-8",
-    )
-    with TestClient(create_app(services[0])) as client:
-        response = client.get(BASE)
-        assert response.status_code == 200
-        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
-        assert row["total_ms"] == row["known_delay_min_ms"] == row["known_delay_max_ms"] == 11
-        detail = client.get(BASE + "/" + row["id"])
-        assert detail.status_code == 200
-        assert sum(s["kind"] == "delay" for s in detail.json()["stages"]) == 6
-        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
-
-
-def test_source_api_includes_all_known_repeated_source_calls_without_import(services):
-    (services[2].root / "Demo.cs").write_text(
-        "class Demo:ActionNode{int A(int n){return B(n);}int B(int n){return C(n);}"
-        "int C(int n){Thread.Sleep(n+1);return n;}"
-        "public int DoWork(){for(int n=0;n<50;n++)A(n);return 0;}}",
-        encoding="utf-8",
-    )
-    with TestClient(create_app(services[0])) as client:
-        response = client.get(BASE)
-        assert response.status_code == 200
-        row = next(row for row in response.json()["rows"] if row["class_name"] == "Demo")
-        assert row["total_ms"] == row["known_delay_min_ms"] == row["known_delay_max_ms"] == 1275
-        detail = client.get(BASE + "/" + row["id"])
-        assert detail.status_code == 200
-        assert [
-            stage["milliseconds"] for stage in detail.json()["stages"] if stage["kind"] == "delay"
-        ] == list(range(1, 51))
-        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
-
-
-def test_source_api_flattens_inputs_and_updates_counts_without_import(services):
-    path = services[2].root / "Demo.cs"
-    source = (
-        "using System.Linq;class Demo:ActionNode{public int DoWork(){"
-        "Thread.Sleep(new[]{1,2}.SelectMany(n=>{Thread.Sleep(n);return new[]{n,n+1};}).Count());"
-        "return 0;}}"
-    )
-    path.write_text(source, encoding="utf-8")
-    with TestClient(create_app(services[0])) as client:
-        first = client.get(BASE)
-        assert first.status_code == 200
-        first = first.json()
-        row = next(row for row in first["rows"] if row["class_name"] == "Demo")
-        assert row["total_ms"] == 7 and "stages" not in row
-        detail = client.get(BASE + "/" + row["id"])
-        assert detail.status_code == 200
-        assert [
-            stage["milliseconds"] for stage in detail.json()["stages"] if stage["kind"] == "delay"
-        ] == [1, 2, 4]
-        path.write_text(source.replace("new[]{n,n+1}", "new[]{n,n+1,n+2}"), encoding="utf-8")
-        updated = client.get(BASE).json()
-        assert updated["source_revision"] != first["source_revision"]
-        assert next(row for row in updated["rows"] if row["class_name"] == "Demo")["total_ms"] == 9
-        assert client.get("/api/p/independent/action-timing/runs").json()["total"] == 0
+        response = client.get(BASE + suffix)
+        assert response.status_code == 410
+        assert response.json()["detail"] == "源码模拟已暂停，请使用动作耗时台账"
+    assert not (services[0].data / "cache/action-timing").exists()
 
 
 def test_main_zx_project_is_not_mixed_with_output_copy(tmp_path):

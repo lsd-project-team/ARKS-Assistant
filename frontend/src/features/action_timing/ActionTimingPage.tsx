@@ -1,245 +1,357 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, RefreshCw, Search } from 'lucide-react';
+import { Download, FolderOpen, Plus, Search, Upload } from 'lucide-react';
 import { api } from '../../app/api/client';
 import { useWorkspace } from '../../app/state/store';
 import type { ProjectList } from '../../shared/types/api';
 import { Button, ErrorText } from '../../shared/ui/ui';
+import { Select } from '../../shared/ui/Select';
 import { timingHash, useTimingNavigation } from './navigation';
-import { actionPresentation, filterActions } from './presentation';
-import { sourceTimingClient } from './source-client';
-import { SourceTimingDetail } from './SourceTimingDetail';
-import './action-timing.css';
-import './source-timing.css';
-
-const pageSize = 10;
+import { ledgerClient } from './ledger-client';
+import { durationText } from './ledger-format';
+import type { DurationStatus, LedgerFilters, TimingAction } from './ledger-types';
+import { ActionEditor, DeleteActionDialog } from './ActionEditor';
+import { CategoryManager } from './CategoryManager';
+import { ImportDialog } from './ImportDialog';
+import { ExportDialog } from './ExportDialog';
+import './ledger.css';
 
 export default function ActionTimingPage() {
   const navigation = useTimingNavigation();
   const currentProject = useWorkspace((state) => state.projectId);
   const scope = navigation.projectId || currentProject || 'independent';
-  const [auxiliary, setAuxiliary] = useState(false);
-  const [group, setGroup] = useState('');
-  const [search, setSearch] = useState('');
-  const [offset, setOffset] = useState(0);
-  const [selected, setSelected] = useState('');
-  const [error, setError] = useState<unknown>();
-  const client = sourceTimingClient(scope);
+  // 项目切换时销毁旧项目的表单和请求，避免草稿或预览跨项目沿用。
+  return <ActionLedger key={scope} scope={scope} />;
+}
+
+function ActionLedger({ scope }: { scope: string }) {
   const cache = useQueryClient();
+  const [category, setCategory] = useState('');
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<DurationStatus>('all');
+  const [offset, setOffset] = useState(0);
+  const [dialog, setDialog] = useState<'categories' | 'action' | 'import' | 'export' | ''>('');
+  const [editing, setEditing] = useState<TimingAction | null>(null);
+  const [deleting, setDeleting] = useState<TimingAction | null>(null);
+  const [message, setMessage] = useState('');
+  const filters: LedgerFilters = { category_id: category, search, duration_status: status };
   const projects = useQuery({
-    queryKey: ['projects', 'source-timing'],
+    queryKey: ['projects', 'action-ledger'],
     queryFn: ({ signal }) => api<ProjectList>('/projects', { signal }),
   });
   const report = useQuery({
-    queryKey: ['source-timing', scope],
-    queryFn: ({ signal }) => client.report(signal),
-    staleTime: 0,
+    queryKey: ['action-ledger', scope, filters, offset],
+    queryFn: ({ signal }) => ledgerClient(scope).list(filters, offset, signal),
   });
   const data = report.data;
+  const categories = data?.categories || [];
+  const writable = !!data?.writable;
   useEffect(() => {
-    setSelected('');
-    setOffset(0);
-    setGroup('');
-    setError(undefined);
-  }, [scope, data?.source_revision]);
-  useEffect(() => {
-    setOffset(0);
-  }, [auxiliary, group, search]);
-  const rows = data?.rows || [];
-  const filtered = filterActions(rows, { auxiliary, group, search });
-  const groups = [
-    ...new Set(
-      rows
-        .filter((row) => !(row.primary ?? row.kind === 'node') === auxiliary)
-        .map((row) => row.group),
-    ),
-  ];
-  // 刷新或切换筛选后，旧页码不能让仍有结果的列表显示为空。
-  const pageOffset = Math.min(
-    offset,
-    Math.max(0, Math.ceil(filtered.length / pageSize) - 1) * pageSize,
-  );
-
-  function download() {
-    setError(undefined);
-    try {
-      client.download(filtered);
-    } catch (reason) {
-      setError(reason);
+    if (!data) return;
+    if (
+      category &&
+      category !== 'uncategorized' &&
+      !data.categories.some((item) => item.id === category)
+    ) {
+      setCategory('');
+      setOffset(0);
     }
+    if (offset && offset >= data.total) setOffset(Math.max(0, Math.ceil(data.total / 20) - 1) * 20);
+  }, [data, category, offset]);
+  function chooseCategory(value: string) {
+    setCategory(value);
+    setOffset(0);
+  }
+  async function saved(value: string) {
+    await cache.invalidateQueries({ queryKey: ['action-ledger', scope] });
+    setMessage(value);
+  }
+  function addAction() {
+    setEditing(null);
+    setDialog('action');
   }
   return (
-    <section className="action-timing-workspace source-timing-workspace" aria-label="动作耗时统计">
-      <div className="timing-content">
-        <header className="timing-heading">
+    <section className="action-timing-workspace ledger-workspace" aria-label="动作耗时管理">
+      <div className="ledger-content">
+        <header className="ledger-heading">
           <div>
-            <h1>动作耗时统计</h1>
-            <p>
-              {auxiliary ? '查看换料、放行及控制器子动作的模拟耗时' : '查看各工位动作的模拟耗时'}
-            </p>
+            <h1>动作耗时</h1>
+            <p>管理动作分类与耗时数据</p>
+          </div>
+          <div className="ledger-heading-controls">
+            <Select
+              aria-label="统计所属项目"
+              value={scope}
+              onValueChange={(value) => {
+                location.hash = timingHash(value);
+              }}
+            >
+              <option value="independent">独立工作区</option>
+              {projects.data?.projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </Select>
+            <Button disabled={!writable} onClick={() => setDialog('import')}>
+              <Upload size={16} />
+              导入
+            </Button>
+            <Button disabled={!data} onClick={() => setDialog('export')}>
+              <Download size={16} />
+              导出
+            </Button>
+            <Button className="primary" disabled={!writable} onClick={addAction}>
+              <Plus size={16} />
+              添加动作
+            </Button>
           </div>
         </header>
-        <div className="source-timing-toolbar">
-          <select
-            aria-label="统计所属项目"
-            value={scope}
-            onChange={(event) => {
-              location.hash = timingHash(event.target.value);
-            }}
-          >
-            <option value="independent">独立工作区</option>
-            {projects.data?.projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label="筛选工位"
-            value={group}
-            onChange={(event) => setGroup(event.target.value)}
-          >
-            <option value="">全部工位</option>
-            {groups.map((label) => (
-              <option key={label}>{label}</option>
-            ))}
-          </select>
-          <label className="timing-source-search">
-            <Search size={16} aria-hidden="true" />
-            <input
-              aria-label="搜索动作名称"
-              placeholder="搜索动作名称"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </label>
-          <Button
-            className="source-refresh-button"
-            aria-label="刷新耗时"
-            title="刷新耗时"
-            disabled={report.isFetching}
-            onClick={() => void cache.invalidateQueries({ queryKey: ['source-timing', scope] })}
-          >
-            <RefreshCw size={16} className={report.isFetching ? 'source-refreshing' : ''} />
-          </Button>
-          <Button className="source-export-button" disabled={!filtered.length} onClick={download}>
-            <Download size={16} /> 导出表格
-          </Button>
-        </div>
-        <ErrorText error={error || projects.error || report.error} />
-        {report.isPending && (
-          <p role="status" className="timing-notice">
-            正在计算动作耗时…
+        <ErrorText error={report.error || projects.error} />
+        {message && (
+          <p className="ledger-notice" role="status">
+            {message}
           </p>
         )}
-        {data && (
-          <>
-            <div className="timing-table-wrap">
-              <table
-                className="timing-table source-action-table"
-                aria-label={auxiliary ? '辅助动作耗时表' : '动作耗时表'}
+        {data && !writable && (
+          <p className="ledger-muted">项目已归档，可查看和导出；恢复项目后可继续编辑。</p>
+        )}
+        <div className="ledger-layout">
+          <aside className="ledger-categories" aria-label="动作分类">
+            <div className="ledger-section-heading">
+              <h2>分类</h2>
+              <button
+                className="ledger-link"
+                disabled={!writable}
+                onClick={() => setDialog('categories')}
               >
+                管理
+              </button>
+            </div>
+            <div className="ledger-category-options">
+              <CategoryButton
+                name="全部动作"
+                count={data?.action_count || 0}
+                active={!category}
+                onClick={() => chooseCategory('')}
+              />
+              {categories.map((item) => (
+                <CategoryButton
+                  key={item.id}
+                  name={item.name}
+                  count={item.count}
+                  active={category === item.id}
+                  onClick={() => chooseCategory(item.id)}
+                />
+              ))}
+              <CategoryButton
+                name="未分类"
+                count={data?.uncategorized_count || 0}
+                active={category === 'uncategorized'}
+                onClick={() => chooseCategory('uncategorized')}
+              />
+            </div>
+            <Button
+              className="ledger-new-category"
+              disabled={!writable}
+              onClick={() => setDialog('categories')}
+            >
+              <Plus size={15} />
+              新增分类
+            </Button>
+          </aside>
+          <div className="ledger-table-panel" aria-busy={report.isFetching}>
+            <div className="ledger-toolbar">
+              <label className="ledger-search">
+                <Search size={16} aria-hidden="true" />
+                <input
+                  aria-label="搜索动作名称"
+                  placeholder="搜索动作名称"
+                  maxLength={120}
+                  value={search}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                    setOffset(0);
+                  }}
+                />
+              </label>
+              <Select
+                aria-label="筛选耗时状态"
+                value={status}
+                onValueChange={(value) => {
+                  setStatus(value as DurationStatus);
+                  setOffset(0);
+                }}
+              >
+                <option value="all">全部耗时状态</option>
+                <option value="filled">已填写耗时</option>
+                <option value="missing">待填写耗时</option>
+              </Select>
+            </div>
+            <div className="ledger-table-scroll">
+              <table className="ledger-table">
+                <caption className="sr-only">动作耗时表</caption>
                 <thead>
                   <tr>
-                    <th scope="col">工位</th>
-                    <th scope="col">动作名称</th>
-                    <th scope="col">动作耗时</th>
-                    <th scope="col">说明</th>
-                    <th scope="col">操作</th>
+                    <th>动作名称</th>
+                    <th>分类</th>
+                    <th className="ledger-number">耗时（秒）</th>
+                    <th>备注</th>
+                    <th>操作</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.slice(pageOffset, pageOffset + pageSize).map((row) => {
-                    const view = actionPresentation(row);
-                    return (
-                      <tr key={row.id}>
-                        <td>{view.station}</td>
-                        <td className="source-action-name">{view.name}</td>
-                        <td>
-                          <strong
-                            className={
-                              view.hasDuration ? 'source-action-duration' : 'source-action-pending'
-                            }
-                          >
-                            {view.duration}
-                          </strong>
-                          {view.remainder && (
-                            <small className="source-action-remainder">{view.remainder}</small>
-                          )}
-                        </td>
-                        <td className="source-action-note">{view.note}</td>
-                        <td>
+                  {data?.items.map((action) => (
+                    <tr key={action.id}>
+                      <td className="ledger-action-name">{action.name}</td>
+                      <td>{action.category}</td>
+                      <td
+                        className={`ledger-number ${action.duration_seconds === null ? 'ledger-muted' : ''}`}
+                      >
+                        {durationText(action.duration_seconds)}
+                      </td>
+                      <td className="ledger-action-notes">{action.notes || '—'}</td>
+                      <td>
+                        <div className="ledger-row-actions">
                           <button
-                            type="button"
-                            className="source-detail-link"
-                            onClick={() => setSelected(row.id)}
+                            className="ledger-link"
+                            disabled={!writable}
+                            onClick={() => {
+                              setEditing(action);
+                              setDialog('action');
+                            }}
                           >
-                            查看详情
+                            编辑
                           </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          <button
+                            className="ledger-link ledger-delete"
+                            disabled={!writable}
+                            onClick={() => setDeleting(action)}
+                          >
+                            删除
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
-              {!filtered.length && (
-                <div className="timing-empty">
-                  <p>
-                    {rows.length
-                      ? '没有找到符合条件的动作。'
-                      : '当前项目没有可分析的动作，请选择关联 ZX2200 源码的项目。'}
-                  </p>
-                </div>
-              )}
             </div>
-            <div className="timing-pagination">
-              <span>共 {filtered.length} 个动作</span>
-              {filtered.length > pageSize && (
+            {report.isPending && (
+              <p className="ledger-empty" role="status">
+                正在加载动作…
+              </p>
+            )}
+            {report.isError && !data && (
+              <div className="ledger-empty">
+                <p>暂时无法加载，请重试。</p>
+                <Button onClick={() => void report.refetch()}>重新加载</Button>
+              </div>
+            )}
+            {data && !data.items.length && (
+              <div className="ledger-empty">
+                <FolderOpen size={30} strokeWidth={1.4} />
+                <h2>{data.action_count ? '没有符合条件的动作' : '还没有动作'}</h2>
+                <p>
+                  {data.action_count
+                    ? '试试其他分类、名称或耗时状态。'
+                    : '可先建立分类和动作，耗时后续填写或批量导入。'}
+                </p>
+                {!data.action_count && writable && (
+                  <Button onClick={addAction}>
+                    <Plus size={15} />
+                    添加第一个动作
+                  </Button>
+                )}
+              </div>
+            )}
+            <div className="ledger-pagination">
+              <span>共 {data?.total || 0} 个动作</span>
+              {(data?.total || 0) > 20 && (
                 <>
-                  <span className="source-page-number">
-                    第 {Math.floor(pageOffset / pageSize) + 1} /{' '}
-                    {Math.ceil(filtered.length / pageSize)} 页
-                  </span>
+                  <small>
+                    第 {Math.floor(offset / 20) + 1} / {Math.ceil((data?.total || 0) / 20)} 页
+                  </small>
                   <Button
-                    disabled={!pageOffset}
-                    onClick={() => setOffset(Math.max(0, pageOffset - pageSize))}
+                    disabled={!offset || report.isFetching}
+                    onClick={() => setOffset(Math.max(0, offset - 20))}
                   >
                     上一页
                   </Button>
                   <Button
-                    disabled={pageOffset + pageSize >= filtered.length}
-                    onClick={() => setOffset(pageOffset + pageSize)}
+                    disabled={offset + 20 >= (data?.total || 0) || report.isFetching}
+                    onClick={() => setOffset(offset + 20)}
                   >
                     下一页
                   </Button>
                 </>
               )}
             </div>
-            <footer className="source-timing-footer">
-              <p>耗时根据源码模拟逻辑计算，详情中可查看计算依据。</p>
-              <button
-                type="button"
-                className="source-detail-link"
-                onClick={() => {
-                  setAuxiliary(!auxiliary);
-                  setGroup('');
-                  setSearch('');
-                }}
-              >
-                {auxiliary ? '返回主要动作' : '查看辅助动作'}
-              </button>
-            </footer>
-          </>
-        )}
-        {selected && (
-          <SourceTimingDetail
-            scope={scope}
-            identifier={selected}
-            revision={data?.source_revision || ''}
-            onClose={() => setSelected('')}
-          />
-        )}
+          </div>
+        </div>
+        <p className="ledger-footnote">可先添加动作，耗时后续填写或批量导入。</p>
       </div>
+      {dialog === 'categories' && (
+        <CategoryManager
+          scope={scope}
+          categories={categories}
+          onSaved={saved}
+          onClose={() => setDialog('')}
+        />
+      )}
+      {dialog === 'action' && (
+        <ActionEditor
+          scope={scope}
+          categories={categories}
+          action={editing}
+          categoryId={category === 'uncategorized' ? '' : category}
+          onSaved={saved}
+          onClose={() => setDialog('')}
+        />
+      )}
+      {dialog === 'import' && (
+        <ImportDialog scope={scope} onSaved={saved} onClose={() => setDialog('')} />
+      )}
+      {dialog === 'export' && (
+        <ExportDialog
+          scope={scope}
+          filters={filters}
+          total={data?.total || 0}
+          actionCount={data?.action_count || 0}
+          onClose={() => setDialog('')}
+        />
+      )}
+      {deleting && (
+        <DeleteActionDialog
+          scope={scope}
+          action={deleting}
+          onSaved={saved}
+          onClose={() => setDeleting(null)}
+        />
+      )}
     </section>
+  );
+}
+
+function CategoryButton({
+  name,
+  count,
+  active,
+  onClick,
+}: {
+  name: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`ledger-category${active ? ' selected' : ''}`}
+      onClick={onClick}
+      aria-pressed={active}
+    >
+      <span>{name}</span>
+      <small>{count}</small>
+    </button>
   );
 }

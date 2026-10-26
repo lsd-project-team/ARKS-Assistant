@@ -53,8 +53,10 @@ test('两个角色都有入口，工作区导航把统计放在交接下面', ()
     'utf8',
   );
   assert.ok(page.includes('动作耗时表'));
-  assert.ok(page.includes('查看详情'));
-  assert.ok(!page.includes('type="file"'));
+  assert.ok(page.includes('添加动作'));
+  assert.ok(page.includes('ImportDialog'));
+  assert.ok(page.includes('CategoryManager'));
+  assert.ok(!page.includes('sourceTimingClient'));
 });
 
 test('源码已知配置耗时与未定总时长区分，缺参数不显示零', () => {
