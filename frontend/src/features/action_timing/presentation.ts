@@ -50,7 +50,7 @@ export function actionPresentation(row: SourceAction) {
   const hasDelay = low != null && (low > 0 || (high != null && high > 0));
   const hasTotal = row.total_ms != null && row.total_ms > 0;
   const itemTiming = perItemTiming(row);
-  const component = row.total_ms == null ? componentPreview(row) : '';
+  const component = !hasTotal ? componentPreview(row) : '';
   const duration = hasTotal
     ? `${milliseconds(row.total_ms)} ms`
     : hasDelay
@@ -84,8 +84,11 @@ export function actionPresentation(row: SourceAction) {
   }
   if (row.kind === 'placeholder') note = '源码中尚无动作实现';
   if (component && !hasDelay && !hasTotal && !itemTiming) {
-    remainder = '条件组成，完整耗时未定';
-    note = '当前能算出的等待组成；触发条件、次数及其他组成见详情';
+    remainder = row.total_ms === 0 ? '当前同步路径无固定停留' : '条件组成，完整耗时未定';
+    note =
+      row.total_ms === 0
+        ? '与当前同步停留分开；触发条件、次数和完成关系见详情'
+        : '当前能算出的等待组成；触发条件、次数及其他组成见详情';
   }
   if (row.total_ms == null && row.missing_categories?.length) {
     note += `；未定项：${row.missing_categories

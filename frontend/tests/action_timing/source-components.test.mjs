@@ -78,3 +78,45 @@ test('展开保护明确归为未完成的分析，表格与导出不宣称源�
   assert.doesNotMatch(view.note, /无法由.*源码|缺少.*硬件/);
   assert.match(actionTableCsv([action]), /源码分析尚未完成/);
 });
+
+test('同步发起为零仍显示后台等待，表格和导出不把1秒误报成同步耗时', () => {
+  const action = {
+    ...row,
+    total_ms: 0,
+    execution_status: 'complete',
+    source_components: [],
+    known_components: [{ ...component, milliseconds: 1000, factors: [], scope: 'background' }],
+  };
+  const view = actionPresentation(action);
+  assert.equal(view.duration, '后台停留 1,000 ms');
+  assert.equal(view.remainder, '当前同步路径无固定停留');
+  assert.match(view.note, /与当前同步停留分开.*完成关系/);
+  assert.equal(view.hasDuration, true);
+  assert.match(actionTableCsv([action]), /后台停留 1,000 ms 当前同步路径无固定停留/);
+});
+
+test('同步路径无等待时仍可展示条件组成，不能暗示该条件当前已经执行', () => {
+  const action = {
+    ...row,
+    total_ms: 0,
+    execution_status: 'complete',
+    source_components: [{ ...component, milliseconds: 100, factors: [] }],
+  };
+  const view = actionPresentation(action);
+  assert.equal(view.duration, '条件组成 100 ms');
+  assert.equal(view.remainder, '当前同步路径无固定停留');
+  assert.match(view.note, /触发条件.*完成关系/);
+  assert.equal(actionPresentation({ ...action, execution_status: 'skipped' }).hasDuration, false);
+});
+
+test('已有同步耗时继续显示同步结果，不与后台组成相加', () => {
+  const action = {
+    ...row,
+    known_delay_min_ms: 20,
+    known_delay_max_ms: 20,
+    total_ms: 20,
+    known_components: [{ ...component, milliseconds: 1000, factors: [], scope: 'background' }],
+  };
+  assert.equal(actionPresentation(action).duration, '20 ms');
+  assert.doesNotMatch(actionTableCsv([action]), /1,020|1,000/);
+});
