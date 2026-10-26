@@ -6,6 +6,7 @@ import type {
   DuplicateMode,
   ImportCounts,
   ImportPreview,
+  ImportUnit,
   LedgerData,
   LedgerFilters,
   TimingAction,
@@ -52,9 +53,9 @@ export function ledgerClient(scope: string) {
         { method: 'DELETE', signal },
         scope,
       ),
-    preview: (file: File, mode: DuplicateMode, signal?: AbortSignal) =>
+    preview: (file: File, mode: DuplicateMode, unit: ImportUnit, signal?: AbortSignal) =>
       api<ImportPreview>(
-        `${root}/import-preview?${new URLSearchParams({ filename: file.name, mode })}`,
+        `${root}/import-preview?${new URLSearchParams({ filename: file.name, mode, unit })}`,
         {
           method: 'POST',
           body: file,
@@ -85,8 +86,14 @@ export function ledgerClient(scope: string) {
       filters?: LedgerFilters,
       template = false,
       signal?: AbortSignal,
+      templateUnit: 's' | 'ms' = 's',
     ) => {
-      const params = new URLSearchParams({ ...filters, format, template: String(template) });
+      const params = new URLSearchParams({
+        ...filters,
+        format,
+        template: String(template),
+        template_unit: templateUnit,
+      });
       const response = await requestJsonResponse(
         sessionFetch,
         apiUrl(`${root}/export?${params}`, scope),

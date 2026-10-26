@@ -26,7 +26,9 @@ export function ExportDialog({
       await operation.run((signal) =>
         ledgerClient(scope).download(
           format,
-          range === 'filtered' ? filters : undefined,
+          range === 'filtered'
+            ? filters
+            : { category_id: '', search: '', duration_status: 'all', sort: filters.sort },
           false,
           signal,
         ),
@@ -38,7 +40,6 @@ export function ExportDialog({
     <Modal
       open
       title="导出动作耗时"
-      description="导出文件与导入模板格式一致，可编辑后重新导入。"
       className="ledger-dialog"
       onClose={() => !operation.busy && onClose()}
     >
@@ -52,7 +53,7 @@ export function ExportDialog({
             disabled={operation.busy}
           >
             <option value="all">全部动作（{actionCount} 个）</option>
-            <option value="filtered">当前筛选结果（{total} 个，包含所有分页）</option>
+            <option value="filtered">当前筛选（{total} 个）</option>
           </Select>
         </label>
         <label>

@@ -44,8 +44,8 @@ class LedgerTransfer:
     def __init__(self, ledger):
         self.ledger = ledger
 
-    def preview(self, raw, filename, mode):
-        rows, errors = read_rows(raw, filename)
+    def preview(self, raw, filename, mode, unit="auto"):
+        rows, errors = read_rows(raw, filename, unit=unit)
         with self.ledger.transaction() as (session, scope):
             categories, actions = self.ledger.load(session, scope)
             planned, counts, duplicates = plan_rows(rows, categories, actions, mode)
@@ -94,7 +94,18 @@ class LedgerTransfer:
             session.flush()
             return {"counts": counts}
 
-    def export(self, format, category_id="", search="", duration_status="all", template=False):
+    def export(
+        self,
+        format,
+        category_id="",
+        search="",
+        duration_status="all",
+        template=False,
+        sort="name",
+        template_unit="s",
+    ):
         # 模板下载也校验项目权限，但不创建分类或示例动作。
-        data = self.ledger.listing(category_id, search, duration_status, limit=None)
-        return export_file([] if template else data["items"], format)
+        data = self.ledger.listing(category_id, search, duration_status, limit=None, sort=sort)
+        return export_file(
+            [] if template else data["items"], format, unit=template_unit if template else "s"
+        )

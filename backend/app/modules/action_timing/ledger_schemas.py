@@ -8,6 +8,8 @@ from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, field_validator
 MAX_ROWS = 5000
 MAX_FILE_BYTES = 5 * 1024 * 1024
 DurationStatus = Literal["all", "filled", "missing"]
+ActionSort = Literal["name", "duration_asc", "duration_desc"]
+ImportUnit = Literal["auto", "s", "ms"]
 DuplicateMode = Literal["skip", "update"]
 
 

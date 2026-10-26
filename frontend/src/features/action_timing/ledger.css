@@ -8,33 +8,34 @@
   background: var(--canvas);
   color: var(--text);
   font: 400 13px/1.65 var(--font-ui);
+  container-type: inline-size;
 }
 .ledger-content {
-  max-width: 1480px;
+  max-width: 1440px;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   margin: 0 auto;
-  padding: 32px clamp(20px, 3vw, 48px) 48px;
+  padding: 24px clamp(16px, 2.4cqw, 32px);
 }
 .ledger-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 26px;
+  gap: 18px;
 }
 .ledger-heading h1 {
-  margin: 0 0 5px;
-  font-size: 27px;
+  margin: 0;
+  font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.5px;
-}
-.ledger-heading p {
-  margin: 0;
-  color: var(--muted);
 }
 .ledger-heading-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: nowrap;
   flex-shrink: 0;
 }
@@ -53,9 +54,11 @@
 }
 .ledger-layout {
   display: grid;
-  grid-template-columns: 210px minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
+  flex: 1;
+  min-height: 380px;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
 }
 .ledger-categories,
 .ledger-table-panel {
@@ -65,14 +68,18 @@
   min-width: 0;
 }
 .ledger-categories {
-  padding: 16px 12px;
+  padding: 14px 10px;
+}
+.ledger-table-panel {
+  display: flex;
+  flex-direction: column;
 }
 .ledger-section-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 2px 8px 14px;
+  padding: 2px 8px 12px;
 }
 .ledger-section-heading h2 {
   margin: 0;
@@ -82,8 +89,7 @@
 .ledger-category-options {
   display: grid;
   gap: 5px;
-  max-height: calc(100dvh - 350px);
-  min-height: 110px;
+  max-height: calc(100dvh - 230px);
   overflow: auto;
 }
 .ledger-category {
@@ -93,7 +99,7 @@
   gap: 14px;
   width: 100%;
   text-align: left;
-  padding: 10px 12px;
+  padding: 9px 10px;
   border: 0;
   border-radius: 8px;
   color: var(--text);
@@ -119,15 +125,11 @@
 .ledger-category.selected small {
   color: inherit;
 }
-.ledger-new-category {
-  width: 100%;
-  margin-top: 18px;
-}
 .ledger-toolbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
 }
 .ledger-search {
@@ -135,7 +137,6 @@
   gap: 9px;
   align-items: center;
   min-width: 150px;
-  max-width: 340px;
   flex: 1;
   min-height: var(--control-height);
   padding: 0 11px;
@@ -162,15 +163,15 @@
   box-shadow: none;
 }
 .ledger-toolbar > .ui-select-trigger {
-  flex: 0 0 175px;
-  width: 175px;
+  flex: 0 0 120px;
+  width: 120px;
 }
 .ledger-table-scroll {
   overflow-x: auto;
 }
 .ledger-table {
   width: 100%;
-  min-width: 650px;
+  min-width: 520px;
   border-collapse: collapse;
   text-align: left;
   font-size: 13px;
@@ -180,20 +181,17 @@
   color: var(--text-secondary, var(--muted));
   font-size: 12px;
   font-weight: 500;
-  padding: 12px 20px;
+  padding: 11px 14px;
   white-space: nowrap;
 }
 .ledger-table td {
   border-top: 1px solid var(--border);
-  padding: 16px 20px;
-  vertical-align: top;
+  padding: 13px 14px;
+  vertical-align: middle;
   overflow-wrap: anywhere;
 }
-.ledger-table th:first-child {
-  width: 25%;
-}
 .ledger-table th:last-child {
-  width: 115px;
+  width: 96px;
 }
 .ledger-table td:last-child {
   white-space: nowrap;
@@ -202,6 +200,39 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+.ledger-action-table {
+  table-layout: fixed;
+}
+.ledger-action-table th:first-child {
+  width: 26%;
+}
+.ledger-action-table th:nth-child(2) {
+  width: 17%;
+}
+.ledger-action-table th:nth-child(3) {
+  width: 140px;
+}
+.ledger-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.ledger-sort:hover,
+th[aria-sort='ascending'] .ledger-sort,
+th[aria-sort='descending'] .ledger-sort {
+  color: var(--accent);
+}
+.ledger-sort:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 .ledger-action-name {
   font-weight: 500;
@@ -213,7 +244,7 @@
 }
 .ledger-row-actions {
   display: flex;
-  gap: 16px;
+  gap: 12px;
 }
 .ledger-link {
   color: var(--accent);
@@ -236,8 +267,11 @@
 .ledger-empty {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 64px 20px;
+  flex: 1;
+  min-height: 240px;
+  padding: 36px 20px;
   color: var(--muted);
   text-align: center;
   gap: 10px;
@@ -258,7 +292,8 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 14px 20px;
+  padding: 12px 16px;
+  margin-top: auto;
   border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 12px;
@@ -266,17 +301,12 @@
 .ledger-pagination > span {
   margin-right: auto;
 }
-.ledger-footnote,
 .ledger-muted {
   color: var(--muted);
 }
-.ledger-footnote {
-  font-size: 12px;
-  margin: 18px 0 0;
-}
 .ledger-notice {
   color: var(--success-text, var(--accent));
-  margin: -8px 0 18px;
+  margin: 0;
 }
 .ledger-dialog {
   width: min(520px, calc(100vw - 32px));
@@ -285,7 +315,8 @@
   display: grid;
   gap: 18px;
 }
-.ledger-fields > label {
+.ledger-fields > label,
+.ledger-import-options > label {
   display: grid;
   gap: 8px;
   color: var(--text-secondary, var(--text));
@@ -302,7 +333,8 @@
   padding: 9px 11px;
   resize: vertical;
 }
-.ledger-fields > label > .ui-select-trigger {
+.ledger-fields > label > .ui-select-trigger,
+.ledger-import-options > label > .ui-select-trigger {
   width: 100%;
 }
 .ledger-fields .ledger-muted {
@@ -359,6 +391,11 @@
   gap: 8px;
   flex: 1;
 }
+.ledger-import-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
 .ledger-fields input[type='file'] {
   padding: 10px;
   border: 1px dashed var(--border);
@@ -394,50 +431,66 @@
   color: var(--danger-text);
   font-size: 12px;
 }
-@media (max-width: 1050px) {
+/* 按工作区实际宽度布局，避免左侧导航挤压表格而仍保持双栏。 */
+@container (max-width: 850px) {
   .ledger-heading {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 18px;
-  }
-  .ledger-layout {
-    grid-template-columns: 175px minmax(0, 1fr);
+    flex-wrap: wrap;
     gap: 14px;
   }
-  .ledger-content {
-    padding: 24px 20px 40px;
-  }
-}
-@media (max-width: 760px) {
   .ledger-layout {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(360px, 1fr);
+    gap: 12px;
+  }
+  .ledger-categories {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+  }
+  .ledger-section-heading {
+    flex: 0 0 auto;
+    padding: 0;
+  }
+  .ledger-section-heading h2 {
+    font-size: 13px;
   }
   .ledger-category-options {
     display: flex;
-    flex-wrap: wrap;
-    max-height: 180px;
-    min-height: 0;
+    flex: 1;
+    max-height: none;
+    overflow-x: auto;
   }
   .ledger-category {
     width: auto;
+    flex: 0 0 auto;
+    gap: 8px;
+    padding: 7px 10px;
+    white-space: nowrap;
   }
-  .ledger-new-category {
-    width: auto;
-    margin-top: 12px;
+  .ledger-heading-controls {
+    width: 100%;
   }
+  .ledger-heading-controls > .ui-select-trigger {
+    flex: 1;
+    max-width: 240px;
+  }
+}
+@container (max-width: 480px) {
   .ledger-toolbar {
     flex-wrap: wrap;
-    padding: 14px;
-  }
-  .ledger-search {
-    max-width: none;
+    padding: 12px;
   }
   .ledger-heading-controls > .ui-select-trigger {
     max-width: none;
     flex: 1 1 100%;
   }
   .ledger-heading-controls {
-    width: 100%;
     flex-wrap: wrap;
+  }
+}
+@media (max-width: 520px) {
+  .ledger-import-options {
+    grid-template-columns: 1fr;
   }
 }

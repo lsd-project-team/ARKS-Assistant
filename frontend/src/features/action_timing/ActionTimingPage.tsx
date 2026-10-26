@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, FolderOpen, Plus, Search, Upload } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Download,
+  FolderOpen,
+  Plus,
+  Search,
+  Upload,
+} from 'lucide-react';
 import { api } from '../../app/api/client';
 import { useWorkspace } from '../../app/state/store';
 import type { ProjectList } from '../../shared/types/api';
@@ -9,7 +18,7 @@ import { Select } from '../../shared/ui/Select';
 import { timingHash, useTimingNavigation } from './navigation';
 import { ledgerClient } from './ledger-client';
 import { durationText } from './ledger-format';
-import type { DurationStatus, LedgerFilters, TimingAction } from './ledger-types';
+import type { ActionSort, DurationStatus, LedgerFilters, TimingAction } from './ledger-types';
 import { ActionEditor, DeleteActionDialog } from './ActionEditor';
 import { CategoryManager } from './CategoryManager';
 import { ImportDialog } from './ImportDialog';
@@ -29,12 +38,15 @@ function ActionLedger({ scope }: { scope: string }) {
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<DurationStatus>('all');
+  const [sort, setSort] = useState<ActionSort>('name');
   const [offset, setOffset] = useState(0);
   const [dialog, setDialog] = useState<'categories' | 'action' | 'import' | 'export' | ''>('');
   const [editing, setEditing] = useState<TimingAction | null>(null);
   const [deleting, setDeleting] = useState<TimingAction | null>(null);
   const [message, setMessage] = useState('');
-  const filters: LedgerFilters = { category_id: category, search, duration_status: status };
+  const filters: LedgerFilters = { category_id: category, search, duration_status: status, sort };
+  const SortIcon =
+    sort === 'duration_desc' ? ArrowDown : sort === 'duration_asc' ? ArrowUp : ArrowUpDown;
   const projects = useQuery({
     queryKey: ['projects', 'action-ledger'],
     queryFn: ({ signal }) => api<ProjectList>('/projects', { signal }),
@@ -74,10 +86,7 @@ function ActionLedger({ scope }: { scope: string }) {
     <section className="action-timing-workspace ledger-workspace" aria-label="动作耗时管理">
       <div className="ledger-content">
         <header className="ledger-heading">
-          <div>
-            <h1>动作耗时</h1>
-            <p>管理动作分类与耗时数据</p>
-          </div>
+          <h1>动作耗时</h1>
           <div className="ledger-heading-controls">
             <Select
               aria-label="统计所属项目"
@@ -151,14 +160,6 @@ function ActionLedger({ scope }: { scope: string }) {
                 onClick={() => chooseCategory('uncategorized')}
               />
             </div>
-            <Button
-              className="ledger-new-category"
-              disabled={!writable}
-              onClick={() => setDialog('categories')}
-            >
-              <Plus size={15} />
-              新增分类
-            </Button>
           </aside>
           <div className="ledger-table-panel" aria-busy={report.isFetching}>
             <div className="ledger-toolbar">
@@ -183,19 +184,59 @@ function ActionLedger({ scope }: { scope: string }) {
                   setOffset(0);
                 }}
               >
-                <option value="all">全部耗时状态</option>
-                <option value="filled">已填写耗时</option>
-                <option value="missing">待填写耗时</option>
+                <option value="all">全部状态</option>
+                <option value="filled">已填写</option>
+                <option value="missing">待填写</option>
               </Select>
             </div>
             <div className="ledger-table-scroll">
-              <table className="ledger-table">
+              <table className="ledger-table ledger-action-table">
                 <caption className="sr-only">动作耗时表</caption>
                 <thead>
                   <tr>
                     <th>动作名称</th>
                     <th>分类</th>
-                    <th className="ledger-number">耗时（秒）</th>
+                    <th
+                      className="ledger-number"
+                      aria-sort={
+                        sort === 'duration_asc'
+                          ? 'ascending'
+                          : sort === 'duration_desc'
+                            ? 'descending'
+                            : 'none'
+                      }
+                    >
+                      <button
+                        className="ledger-sort"
+                        aria-label={
+                          sort === 'name'
+                            ? '按耗时从长到短排序'
+                            : sort === 'duration_desc'
+                              ? '按耗时从短到长排序'
+                              : '恢复默认排序'
+                        }
+                        title={
+                          sort === 'name'
+                            ? '从长到短'
+                            : sort === 'duration_desc'
+                              ? '从短到长'
+                              : '恢复默认排序'
+                        }
+                        onClick={() => {
+                          setSort(
+                            sort === 'name'
+                              ? 'duration_desc'
+                              : sort === 'duration_desc'
+                                ? 'duration_asc'
+                                : 'name',
+                          );
+                          setOffset(0);
+                        }}
+                      >
+                        耗时（秒）
+                        <SortIcon size={14} aria-hidden="true" />
+                      </button>
+                    </th>
                     <th>备注</th>
                     <th>操作</th>
                   </tr>
@@ -251,18 +292,7 @@ function ActionLedger({ scope }: { scope: string }) {
             {data && !data.items.length && (
               <div className="ledger-empty">
                 <FolderOpen size={30} strokeWidth={1.4} />
-                <h2>{data.action_count ? '没有符合条件的动作' : '还没有动作'}</h2>
-                <p>
-                  {data.action_count
-                    ? '试试其他分类、名称或耗时状态。'
-                    : '可先建立分类和动作，耗时后续填写或批量导入。'}
-                </p>
-                {!data.action_count && writable && (
-                  <Button onClick={addAction}>
-                    <Plus size={15} />
-                    添加第一个动作
-                  </Button>
-                )}
+                <h2>{data.action_count ? '没有符合条件的动作' : '暂无动作'}</h2>
               </div>
             )}
             <div className="ledger-pagination">
@@ -289,7 +319,6 @@ function ActionLedger({ scope }: { scope: string }) {
             </div>
           </div>
         </div>
-        <p className="ledger-footnote">可先添加动作，耗时后续填写或批量导入。</p>
       </div>
       {dialog === 'categories' && (
         <CategoryManager

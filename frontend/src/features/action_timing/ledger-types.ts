@@ -1,9 +1,12 @@
 export type DurationStatus = 'all' | 'filled' | 'missing';
+export type ActionSort = 'name' | 'duration_asc' | 'duration_desc';
+export type ImportUnit = 'auto' | 's' | 'ms';
 export type DuplicateMode = 'skip' | 'update';
 export type LedgerFilters = {
   category_id: string;
   search: string;
   duration_status: DurationStatus;
+  sort: ActionSort;
 };
 export type TimingCategory = { id: string; name: string; version: number; count: number };
 export type TimingAction = {

@@ -4,7 +4,7 @@ import { Button, ErrorText, Modal } from '../../shared/ui/ui';
 import { Select } from '../../shared/ui/Select';
 import { ledgerClient } from './ledger-client';
 import { durationText, importSummary } from './ledger-format';
-import type { DuplicateMode, ImportPreview } from './ledger-types';
+import type { DuplicateMode, ImportPreview, ImportUnit } from './ledger-types';
 import { useLedgerOperation } from './useLedgerOperation';
 
 const operationNames = { add: '新增', update: '更新', skip: '跳过' };
@@ -20,6 +20,7 @@ export function ImportDialog({
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [mode, setMode] = useState<DuplicateMode>('skip');
+  const [unit, setUnit] = useState<ImportUnit>('auto');
   const [preview, setPreview] = useState<ImportPreview | null>(null);
   const [offset, setOffset] = useState(0);
   const operation = useLedgerOperation();
@@ -28,7 +29,7 @@ export function ImportDialog({
       if (!file) throw new Error('请先选择要导入的文件');
       if (file.size > 5 * 1024 * 1024) throw new Error('文件超过5MiB，请分批导入');
       setPreview(null);
-      const result = await ledgerClient(scope).preview(file, mode, signal);
+      const result = await ledgerClient(scope).preview(file, mode, unit, signal);
       if (!signal.aborted) {
         setPreview(result);
         setOffset(0);
@@ -49,20 +50,26 @@ export function ImportDialog({
     <Modal
       open
       title="导入动作耗时"
-      description="支持CSV与Excel（.xlsx），Excel读取第一个工作表；每次最多5000行、5MiB。"
+      description="Excel / CSV，最多5000行、5MiB；Excel读取首个工作表。"
       className="ledger-dialog ledger-import-dialog"
       onClose={() => !operation.busy && onClose()}
     >
       <div className="dialog-body ledger-fields">
         <div className="ledger-import-template">
           <span>
-            <FileSpreadsheet size={18} /> 按模板填写，耗时单位为秒
+            <FileSpreadsheet size={18} /> 导入模板
           </span>
           <Button
             disabled={operation.busy}
             onClick={() =>
               void operation.run((signal) =>
-                ledgerClient(scope).download('xlsx', undefined, true, signal),
+                ledgerClient(scope).download(
+                  'xlsx',
+                  undefined,
+                  true,
+                  signal,
+                  unit === 'ms' ? 'ms' : 's',
+                ),
               )
             }
           >
@@ -75,7 +82,13 @@ export function ImportDialog({
             disabled={operation.busy}
             onClick={() =>
               void operation.run((signal) =>
-                ledgerClient(scope).download('csv', undefined, true, signal),
+                ledgerClient(scope).download(
+                  'csv',
+                  undefined,
+                  true,
+                  signal,
+                  unit === 'ms' ? 'ms' : 's',
+                ),
               )
             }
           >
@@ -95,24 +108,43 @@ export function ImportDialog({
             }}
           />
         </label>
-        <label>
-          遇到同分类、同名动作时
-          <Select
-            aria-label="重复动作处理方式"
-            value={mode}
-            disabled={operation.busy}
-            onValueChange={(value) => {
-              setMode(value as DuplicateMode);
-              setPreview(null);
-              operation.clearError();
-            }}
-          >
-            <option value="skip">跳过已有动作</option>
-            <option value="update">更新已有动作（空耗时保留原值）</option>
-          </Select>
-        </label>
+        <div className="ledger-import-options">
+          <label>
+            耗时单位
+            <Select
+              aria-label="导入耗时单位"
+              value={unit}
+              disabled={operation.busy}
+              onValueChange={(value) => {
+                setUnit(value as ImportUnit);
+                setPreview(null);
+                operation.clearError();
+              }}
+            >
+              <option value="auto">按表头识别</option>
+              <option value="s">秒（s）</option>
+              <option value="ms">毫秒（ms）</option>
+            </Select>
+          </label>
+          <label>
+            同分类同名动作
+            <Select
+              aria-label="重复动作处理方式"
+              value={mode}
+              disabled={operation.busy}
+              onValueChange={(value) => {
+                setMode(value as DuplicateMode);
+                setPreview(null);
+                operation.clearError();
+              }}
+            >
+              <option value="skip">跳过已有动作</option>
+              <option value="update">更新已有动作</option>
+            </Select>
+          </label>
+        </div>
         <p className="ledger-muted">
-          新分类会随动作一并创建。空分类归入“未分类”；更新时备注以文件内容为准。
+          预览与保存统一为秒。{mode === 'update' && '更新时空耗时保留原值，备注替换为文件内容。'}
         </p>
         <ErrorText error={operation.error} reveal />
         {preview && (
@@ -121,7 +153,7 @@ export function ImportDialog({
               {importSummary(preview.counts)}
               {preview.errors.length
                 ? `，发现 ${preview.errors.length} 处问题，请修正后重新预览。`
-                : '，确认后写入。'}
+                : ''}
             </p>
             {!!preview.errors.length && (
               <ul className="ledger-import-errors" role="alert">

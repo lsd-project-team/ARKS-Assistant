@@ -200,6 +200,110 @@ def test_filtered_export_contains_all_pages_and_can_be_imported_again(services, 
         assert imported.json()["counts"] == {"add": 0, "update": 0, "skip": 25}
 
 
+def test_duration_sort_is_global_before_pagination_nulls_last_and_export_matches(services):
+    with TestClient(create_app(services[0])) as client:
+        preview = upload(
+            client,
+            [["A" if i % 2 else "B", f"动作{i:02d}", 25 - i, ""] for i in range(25)]
+            + [["A", "零值", 0, ""], ["A", "待填1", "", ""], ["B", "待填2", "", ""]],
+        )
+        assert commit(client, preview).status_code == 200
+        for sort, values in [
+            ("duration_asc", list(range(26))),
+            ("duration_desc", list(range(25, -1, -1))),
+        ]:
+            pages = [
+                client.get(BASE, params={"sort": sort, "offset": offset, "limit": 20}).json()
+                for offset in (0, 20)
+            ]
+            assert [page["total"] for page in pages] == [28, 28]
+            items = pages[0]["items"] + pages[1]["items"]
+            assert [row["duration_seconds"] for row in items] == values + [None, None]
+            exported = client.get(BASE + "/export", params={"sort": sort, "format": "csv"})
+            assert exported.status_code == 200
+            records = list(csv.reader(io.StringIO(exported.content.decode("utf-8-sig"))))
+            assert [row[1] for row in records[1:]] == [row["name"] for row in items]
+        filtered = client.get(BASE, params={"sort": "duration_desc", "search": "动作0"}).json()
+        assert [row["duration_seconds"] for row in filtered["items"]] == list(range(25, 15, -1))
+        missing = client.get(
+            BASE, params={"sort": "duration_desc", "duration_status": "missing"}
+        ).json()
+        assert missing["total"] == 2 and all(
+            row["duration_seconds"] is None for row in missing["items"]
+        )
+        assert client.get(BASE, params={"sort": "invalid"}).status_code == 422
+
+
+def test_equal_durations_keep_stable_order_and_zero_is_not_missing(services):
+    with TestClient(create_app(services[0])) as client:
+        preview = upload(
+            client, [["B", "b", 1, ""], ["A", "z", 1, ""], ["A", "a", 1, ""], ["", "zero", 0, ""]]
+        )
+        assert commit(client, preview).status_code == 200
+        for sort in ("duration_asc", "duration_desc"):
+            tied = client.get(BASE, params={"sort": sort, "search": ""}).json()["items"]
+            assert [row["name"] for row in tied if row["duration_seconds"] == 1] == ["a", "z", "b"]
+        assert client.get(BASE, params={"duration_status": "filled"}).json()["total"] == 4
+
+
+@pytest.mark.parametrize("format", ["csv", "xlsx"])
+def test_millisecond_template_import_preview_commit_and_export_only_convert_once(services, format):
+    from openpyxl import load_workbook
+
+    with TestClient(create_app(services[0])) as client:
+        template = client.get(
+            BASE + "/export", params={"format": format, "template": True, "template_unit": "ms"}
+        )
+        assert template.status_code == 200
+        if format == "csv":
+            assert "耗时（毫秒）" in template.content.decode("utf-8-sig")
+            raw = (
+                template.content + "固晶,取片,1250,换算\r\n固晶,零值,0,\r\n固晶,待填,,\r\n".encode()
+            )
+        else:
+            book = load_workbook(io.BytesIO(template.content))
+            assert book.active["C1"].value == "耗时（毫秒）"
+            for row in [
+                ["固晶", "取片", 1250, "换算"],
+                ["固晶", "零值", 0, ""],
+                ["固晶", "待填", None, ""],
+            ]:
+                book.active.append(row)
+            output = io.BytesIO()
+            book.save(output)
+            book.close()
+            raw = output.getvalue()
+        response = client.post(
+            BASE + "/import-preview", params={"filename": "现场." + format}, content=raw
+        )
+        assert response.status_code == 200
+        preview = response.json()
+        assert not preview["errors"]
+        assert [row["duration_seconds"] for row in preview["rows"]] == [1.25, 0, None]
+        assert client.get(BASE).json()["total"] == 0
+        assert commit(client, preview).status_code == 200
+        stored = {row["name"]: row["duration_seconds"] for row in client.get(BASE).json()["items"]}
+        assert stored == {"取片": 1.25, "零值": 0, "待填": None}
+        exported = client.get(BASE + "/export", params={"format": "csv"})
+        rows = list(csv.reader(io.StringIO(exported.content.decode("utf-8-sig"))))
+        assert rows[0][2] == "耗时（秒）"
+        assert next(row for row in rows if row[1] == "取片")[2] == "1.25"
+        bad = client.post(
+            BASE + "/import-preview",
+            params={"filename": "现场." + format, "unit": "s"},
+            content=raw,
+        )
+        assert bad.status_code == 422 and "与表头不一致" in bad.json()["detail"]
+        assert (
+            client.post(
+                BASE + "/import-preview",
+                params={"filename": "现场.csv", "unit": "minutes"},
+                content=b"bad",
+            ).status_code
+            == 422
+        )
+
+
 @pytest.mark.authentication
 def test_accounts_projects_archive_and_csrf_cannot_be_bypassed(services):
     app = create_app(services[0])

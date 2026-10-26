@@ -10,10 +10,10 @@ from app.modules.action_timing.ledger_files import HEADERS, export_file, read_ro
 from app.modules.action_timing.ledger_schemas import ActionInput
 
 
-def csv_file(rows, encoding="utf-8-sig"):
+def csv_file(rows, encoding="utf-8-sig", *, headers=HEADERS):
     output = io.StringIO(newline="")
     writer = csv.writer(output)
-    writer.writerow(HEADERS)
+    writer.writerow(headers)
     writer.writerows(rows)
     return output.getvalue().encode(encoding)
 
@@ -121,3 +121,71 @@ def test_extra_columns_are_reported_instead_of_silently_dropping_data():
     assert not rows and errors[0]["row_number"] == 2
     with pytest.raises(ValueError, match="模板之外"):
         read_rows("分类,动作名称,耗时（秒）,备注,来源\n取料,动作,1,备注,现场".encode(), "extra.csv")
+
+
+@pytest.mark.parametrize("format", ["csv", "xlsx"])
+@pytest.mark.parametrize(
+    "header,unit,expected",
+    [
+        ("耗时（毫秒）", "auto", [1.25, 0, None, 0.000125]),
+        ("耗时(ms)", "auto", [1.25, 0, None, 0.000125]),
+        ("耗时（秒）", "auto", [1250, 0, None, 0.125]),
+        ("耗时(s)", "auto", [1250, 0, None, 0.125]),
+        ("耗时", "ms", [1.25, 0, None, 0.000125]),
+        ("耗时", "s", [1250, 0, None, 0.125]),
+    ],
+)
+def test_import_normalizes_explicit_units_to_seconds_before_preview(format, header, unit, expected):
+    headers = ["分类", "动作名称", header, "备注"]
+    values = [
+        ["固晶", name, duration, ""]
+        for name, duration in [("取片", 1250), ("零值", 0), ("待填", None), ("小数", 0.125)]
+    ]
+    if format == "csv":
+        raw = csv_file(values, headers=headers)
+    else:
+        book = Workbook()
+        book.active.append(headers)
+        for row in values:
+            book.active.append(row)
+        output = io.BytesIO()
+        book.save(output)
+        book.close()
+        raw = output.getvalue()
+    rows, errors = read_rows(raw, "耗时." + format, unit=unit)
+    assert errors == []
+    assert [row.duration_seconds for row in rows] == expected
+    assert [row.row_number for row in rows] == [2, 3, 4, 5]
+
+
+@pytest.mark.parametrize(
+    "header,unit,message",
+    [
+        ("耗时", "auto", "未标明单位"),
+        ("耗时（秒）", "ms", "与表头不一致"),
+        ("耗时（毫秒）", "s", "与表头不一致"),
+        ("耗时（秒）", "minutes", "耗时单位"),
+    ],
+)
+def test_import_rejects_ambiguous_or_conflicting_units_instead_of_guessing(header, unit, message):
+    with pytest.raises(ValueError, match=message):
+        read_rows(
+            csv_file([["", "取片", 1000, ""]], headers=["分类", "动作名称", header, "备注"]),
+            "单位.csv",
+            unit=unit,
+        )
+
+
+def test_two_duration_columns_are_rejected_and_tiny_milliseconds_do_not_become_zero():
+    with pytest.raises(ValueError, match="表头须包含"):
+        read_rows(
+            "分类,动作名称,耗时（秒）,耗时（毫秒）,备注\n固晶,取片,1,1000,".encode(), "重复.csv"
+        )
+    rows, errors = read_rows(
+        csv_file(
+            [["", "过小", "1e-323", ""]], headers=["分类", "动作名称", "耗时（毫秒）", "备注"]
+        ),
+        "小数.csv",
+    )
+    assert rows == [] and errors[0]["row_number"] == 2
+    assert "超出可保存范围" in errors[0]["message"]

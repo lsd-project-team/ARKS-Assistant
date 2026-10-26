@@ -74,13 +74,15 @@ class ActionLedger:
         }
         return hashlib.sha256(json.dumps(state, ensure_ascii=False).encode()).hexdigest()
 
-    def listing(self, category_id="", search="", duration_status="all", limit=20, offset=0):
+    def listing(
+        self, category_id="", search="", duration_status="all", limit=20, offset=0, sort="name"
+    ):
         with self.transaction() as (session, scope):
             categories, actions = self.load(session, scope)
             names = {row.id: row.name for row in categories}
             counts = Counter(row.category_id for row in actions)
             items = [self.action_data(row, names) for row in actions]
-            items = self.filter_items(items, category_id, search, duration_status)
+            items = self.filter_items(items, category_id, search, duration_status, sort)
             return {
                 "items": items[offset : offset + limit] if limit is not None else items,
                 "total": len(items),
@@ -96,8 +98,18 @@ class ActionLedger:
             }
 
     @staticmethod
-    def filter_items(items, category_id, search, duration_status):
+    def filter_items(items, category_id, search, duration_status, sort="name"):
         needle = name_key(search)
+
+        def order(row):
+            identity = (name_key(row["category"]), name_key(row["name"]), row["id"])
+            if sort == "name":
+                return identity
+            duration = row["duration_seconds"]
+            value = 0 if duration is None else duration
+            # 未填写始终排在最后，实际零值参与排序；同耗时使用稳定次序跨页展示。
+            return (duration is None, -value if sort == "duration_desc" else value, *identity)
+
         return sorted(
             (
                 row
@@ -107,7 +119,7 @@ class ActionLedger:
                 and (duration_status != "filled" or row["duration_seconds"] is not None)
                 and (duration_status != "missing" or row["duration_seconds"] is None)
             ),
-            key=lambda row: (name_key(row["category"]), name_key(row["name"]), row["id"]),
+            key=order,
         )
 
     @staticmethod
