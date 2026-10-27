@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'consumables',
+    title: '耗材寿命与提醒',
+    summary: '从胶水、助焊剂与工具汇集，到次数和时间寿命、后台提醒及清零保存。',
+    purpose: '分清实际接入、寿命公式、报警门控与更换后的复位范围。',
+    conditions: ['当前配置、Enable、已提醒标志和报警间隔共同决定提示路径。'],
+    exceptions: ['整数提醒、固定卡片、停止清零和仓库保存按实际入口判断。'],
+    diagrams: ['consumables-process'],
+  },
+  {
     id: 'manual-maintenance',
     title: '清嘴排胶与手动维护',
     summary: '从清嘴触发、区域占用和抛料，到 S1 试胶、板面示教与换胶保存。',
@@ -117,6 +126,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'consumables-scan-overview': {
+    path: 'functional-atlas/consumables-scan-overview.html',
+    sha256: '3c462c35267233259a555db5eb96fd6f3f70cb4858fd551b8ed7556a67667136',
+    specificationSha256: '17b31e9e5c0543da08378a3afaedf4b79342b102195d8e109b448d7aa9730476',
+  },
+  'consumables-scan-reading': {
+    path: 'functional-atlas/consumables-scan-reading.html',
+    sha256: '87ecf9d00e4721ed04f891609c4f743f1f505a2008201e542448bd22c40e0488',
+    specificationSha256: '63c3ae59b6e910b8240bb0eedfb245a8ba60a5e054648588034aed936010b402',
+  },
   'nozzle-clean-overview': {
     path: 'functional-atlas/nozzle-clean-overview.html',
     sha256: 'f3826e8179821ccc11ab1bcc42ebbb330fc5c144b7494627dbf166142006b6f5',

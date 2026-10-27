@@ -2566,26 +2566,103 @@
         {
           "id": "37.01",
           "text": "胶水、吸嘴、翻转工具、顶针耗材汇集。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-sources",
+              "steps": [
+                "overview",
+                "time-owners",
+                "frequency-owners",
+                "unwired"
+              ]
+            }
+          ]
         },
         {
           "id": "37.02",
           "text": "次数寿命与时间寿命的计算。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-count",
+              "steps": [
+                "formula",
+                "example",
+                "nozzle",
+                "eject"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-time",
+              "steps": [
+                "formula",
+                "clock",
+                "legacy"
+              ]
+            }
+          ]
         },
         {
           "id": "37.03",
           "text": "后台扫描、到期和提前提醒门控。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-scan",
+              "steps": [
+                "overview",
+                "caller",
+                "cooldown"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-reset",
+              "steps": [
+                "stop"
+              ]
+            }
+          ]
         },
         {
           "id": "37.04",
           "text": "寿命参数编辑、清零与更换后复位。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-ui",
+              "steps": [
+                "entry",
+                "cards",
+                "frequency",
+                "time"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-reset",
+              "steps": [
+                "overview",
+                "assistant",
+                "stop"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-save",
+              "steps": [
+                "window",
+                "dispenser",
+                "global"
+              ]
+            }
+          ]
         }
       ]
     },

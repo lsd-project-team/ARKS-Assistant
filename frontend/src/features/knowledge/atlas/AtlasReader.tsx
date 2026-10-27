@@ -11,9 +11,12 @@ import { HeightReadingTable, HeightPersistenceTable } from './HeightMeasurementT
 import { ForceReadingTable, ForcePersistenceTable } from './ForceControlTables';
 import { ToolBankStatusTable, ToolBankPersistenceTable } from './ToolBankTables';
 import { MaintenanceEntryTable, MaintenanceSaveTable } from './MaintenanceTables';
+import { ConsumableSourceTable, ConsumableResetTable } from './ConsumableTables';
 import '../coordinates/coordinates.css';
 
 const tablesByStep: Record<string, ComponentType> = {
+  'life-sources/overview': ConsumableSourceTable,
+  'life-reset/overview': ConsumableResetTable,
   'mn-manual/overview': MaintenanceEntryTable,
   'mn-results/persistence': MaintenanceSaveTable,
   'nb-identity/overview': ToolBankStatusTable,
@@ -33,6 +36,12 @@ const diagramsByStep: Record<
   string,
   { id: string; title: string; narrow?: string; readingMinWidth?: number }
 > = {
+  'life-scan/overview': {
+    id: 'consumables-scan-overview',
+    title: '单项耗材的到期与提醒分派',
+    narrow: 'consumables-scan-reading',
+    readingMinWidth: 860,
+  },
   'mn-trigger/overview': {
     id: 'nozzle-clean-overview',
     title: '非离线取晶的清嘴触发',
@@ -144,6 +153,16 @@ export function AtlasReader({ page }: { page: string }) {
             </a>
             <a className="text-button" href="#topic/motion-safety">
               安全运动与等待边界 →
+            </a>
+          </>
+        )}
+        {page === 'consumables' && (
+          <>
+            <a className="text-button" href="#topic/tool-bank">
+              工具更换与槽位状态 →
+            </a>
+            <a className="text-button" href="#topic/manual-maintenance">
+              换胶与手动维护的保存 →
             </a>
           </>
         )}

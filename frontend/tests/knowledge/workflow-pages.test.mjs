@@ -385,3 +385,18 @@ test('维护专题默认展示清嘴图，目录共用并区分六个手动入�
   for (const link of ['tool-bank', 'height-measurement', 'force-control', 'motion-safety'])
     assert.ok(topic.includes('href="#topic/' + link + '"'), link);
 });
+
+test('耗材专题与目录共用扫描图，汇集和复位分表并链接更换与维护', () => {
+  const topic = render(TopicDetail, { id: 'consumables' });
+  assert.equal(topic, render(DiagramDetail, { id: 'consumables-process', theme: 'light' }));
+  assert.match(topic, /data-archify-source="functional-atlas\/consumables-scan-overview.html"/);
+  const sources = renderToStaticMarkup(functionalVisual('life-sources', 'overview'));
+  assert.equal((sources.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 7);
+  assert.match(sources, /翻转工具/);
+  assert.match(sources, /未接入这条扫描与窗口/);
+  const reset = renderToStaticMarkup(functionalVisual('life-reset', 'overview'));
+  assert.equal((reset.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 4);
+  assert.match(reset, /保留报警时间与IsAlarmed/);
+  for (const link of ['tool-bank', 'manual-maintenance'])
+    assert.ok(topic.includes('href="#topic/' + link + '"'), link);
+});

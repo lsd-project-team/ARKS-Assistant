@@ -1071,6 +1071,98 @@
     "mn-device": {
       "path": "AKRS.ZX2200/DispenseSystem/Models/DeviceParams/DispenseDevicePara.cs",
       "sha256": "3ef728107812e4951a7404713c9073497b4fe7e83640ddf611c5d9bcb4cf43ee"
+    },
+    "life-base": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/BaseConsumable.cs",
+      "sha256": "4f151951db4504859f2d2af0c0fd87f13b2794774710a80a95e9e01bbc240500"
+    },
+    "life-frequency": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/FrequencyConsumables.cs",
+      "sha256": "3bf26cb1c508241bc9f72357a670e018c5401acb80b6b3488ae978253c94e990"
+    },
+    "life-time": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/TimeConsumable.cs",
+      "sha256": "f4c8bffeb4ffcbd62f1ade27c895f1e2d962ead19a610626410372c40cca1c12"
+    },
+    "life-scan": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/ConsumablesProgram.cs",
+      "sha256": "15894c930cb2721feb3e675c21e98470be59bd569b94134540403510371eae39"
+    },
+    "life-window": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/FrmConsumables.cs",
+      "sha256": "377173a086ec2e46ba30a084f8ad85da72a110420685bd2223b0c673a777890c"
+    },
+    "life-windowui": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/FrmConsumables.Designer.cs",
+      "sha256": "3d0b45d80c773bae93e355aa6b12997fc35e1fee53afb07c6c129041f92ebaf1"
+    },
+    "life-frequencyui": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/UcConsumables.cs",
+      "sha256": "577071985c5e5642999d8e25172c0524e24a8052d91ba61faaa63799bd1e2500"
+    },
+    "life-frequencybind": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/UcConsumables.Designer.cs",
+      "sha256": "90020023f397575a271b4e2d8e4a8169c6fbbf53fcf2752b59704ba774ff5c06"
+    },
+    "life-timeui": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/UcTimeConsumable.cs",
+      "sha256": "766ce14eea1a8cfa56668f6f672b78b123b78156f97801edd5e8d9eceb4f8b11"
+    },
+    "life-timebind": {
+      "path": "AKRS.ZX2200/SupportFeature/Consumables/UcTimeConsumable.Designer.cs",
+      "sha256": "0378534bce4d390d96e47d377da82abfebd9ec1942c2300004943a3b39ee5633"
+    },
+    "life-s1": {
+      "path": "AKRS.ZX2200/DispenseSystem/Models/System1Program.cs",
+      "sha256": "9fe64aac4c568f4acf1c38ee416346c51f62c04c5f8bf4ad2e4fa241ba986ee7"
+    },
+    "life-bond": {
+      "path": "AKRS.ZX2200/BondSystem/Models/Programs/BondProgram.cs",
+      "sha256": "261095632b6703ac2fe26c5c03243562bdf9e24628c4fca6e0328f5544cadae2"
+    },
+    "life-ejectbank": {
+      "path": "AKRS.ZX2200/WaferSubSystem/Models/Programs/EjectionBankProgram.cs",
+      "sha256": "94f577b849e8d4057346a643d294f801d90dda8aa02b185195a067ae2ddff734"
+    },
+    "life-flip": {
+      "path": "AKRS.ZX2200/WaferSubSystem/Models/Programs/FlipModuleProgram.cs",
+      "sha256": "8d56bd54db138bd5bec6b62e4047e330497694ad825f7f154ef36ac5c8cf7448"
+    },
+    "life-glue": {
+      "path": "AKRS.ZX2200/DispenseSystem/Models/Repositories/EpoxyMaterial/EpoxyMaterial.cs",
+      "sha256": "6cc20bc6936b519c980627c57828bad384aac09b00e84faf584f5e2965cb16a1"
+    },
+    "life-glueprogram": {
+      "path": "AKRS.ZX2200/DispenseSystem/Models/Programs/EpoxyMaterialProgram.cs",
+      "sha256": "ea1f5735a4419989873f95234a45f47af1347def171d072ae19e28d9f0b991cc"
+    },
+    "life-slide": {
+      "path": "AKRS.ZX2200/BondSystem/Models/Programs/SlideFluxerProgram.cs",
+      "sha256": "2d202328416d3f2827ec39be0e52fb3515dd5aec8f133dfd3c6c5e7489668bc6"
+    },
+    "life-dispenser": {
+      "path": "AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57"
+    },
+    "life-fliptool": {
+      "path": "AKRS.ZX2200/WaferSubSystem/Models/Repositories/FlipTool/FlipTool.cs",
+      "sha256": "f09e1137489682d0061a5d247394f13e67c9ee89a412d91fb5c2cbb02580b886"
+    },
+    "life-ejectconfig": {
+      "path": "AKRS.ZX2200/WaferSubSystem/Models/Repositories/Ejection/EjectionConfig.cs",
+      "sha256": "22f98443b4db12440c3b6f8239ba49043c2aa9c93b1cf1d729b2b35326c56cb8"
+    },
+    "life-carrier": {
+      "path": "AKRS.ZX2200/WaferSubSystem/Models/Repositories/Carrier/BaseCarrierConfig.cs",
+      "sha256": "9d41f35fdd56c99bf8e7faf52185dfb6057ae2523d1d15014921b4a62c16e0b7"
+    },
+    "life-assistant": {
+      "path": "AKRS.ZX2200/BondSystem/Controls/Assistant/FrmAssistantDispense.cs",
+      "sha256": "a9623de367d496765e4c9c17578fddca38538378a20fc74d98c95a2a19beab22"
+    },
+    "life-dispenserui": {
+      "path": "AKRS.ZX2200/DispenseSystem/Controls/Setting/Dispenser/UcDispenser.cs",
+      "sha256": "d247fb3ba3e1b23d01c710ee8c51151b886b0fb8e5f07648632044f2ace0ff73"
     }
   },
   "ranges": {
@@ -9340,6 +9432,300 @@
       "end": 1608,
       "method": "旧实验按钮仅占用清嘴点",
       "code": "        private void BtnNozzleShelfTest_Click(object sender, EventArgs e)\n        {\n            //for (int i = 0; i < 50; i++)\n            //{\n            //    this.NozzleShelfController.MoveShelfToHome();\n\n            //    this.NozzleShelfController.MoveShelfToChangeNozzlePos();\n            //}\n\n            //AKRSPoint3D pos = BondDevicePara.GetInstance().CameraDevicePara.UpLookPos;\n\n            this.system2Controller.GetCleanPos();\n        }"
+    },
+    "life-base": {
+      "file": "life-base",
+      "start": 14,
+      "end": 67,
+      "method": "名称启用提醒标志和十分钟门控",
+      "code": "        public string Name { get; set; }\n\n        /// <summary>\n        /// 是否启用\n        /// </summary>\n        public bool Enable { get; set; } = false;\n\n        /// <summary>\n        /// 是否已经提醒过了\n        /// </summary>\n        public bool IsReminded { get; set; } = false;\n\n        /// <summary>\n        /// 耗材是否使用完成或者耗材是否过期\n        /// </summary>\n        /// <returns>结果</returns>\n        public abstract bool IsExpired();\n\n        /// <summary>\n        /// 是否应该提醒\n        /// </summary>\n        /// <returns>结果</returns>\n        public abstract bool IsRemind();\n\n        /// <summary>\n        /// 清空当前记录\n        /// </summary>\n        public abstract void Clear();\n\n        /// <summary>\n        /// 最近一次报警的时间\n        /// 10分钟之内不会再报警\n        /// </summary>\n        public DateTime LastAlarmTime { get; set; } = DateTime.Now;\n\n        /// <summary>\n        /// 距离上次报警是否有10分钟，如果超过10分钟就再次报警\n        /// </summary>\n        /// <returns>结果</returns>\n        public bool IsEnableTimeToAlarm()\n        {\n            if (this.IsAlarmed)\n            {\n                return (DateTime.Now - this.LastAlarmTime).TotalMinutes > 10;\n            }\n\n            this.IsAlarmed = true;\n            return true;\n        }\n\n        /// <summary>\n        /// 是否已经报过警\n        /// </summary>\n        public bool IsAlarmed { get; set; } = false;"
+    },
+    "life-frequency": {
+      "file": "life-frequency",
+      "start": 15,
+      "end": 84,
+      "method": "次数模型整数计算与Clear",
+      "code": "        public FrequencyConsumables(string name)\n        {\n            this.Name = name;\n        }\n\n        /// <summary>\n        /// 总共使用的次数\n        /// </summary>\n        public int TotalUseTimes { get; set; } = 10000;\n\n        /// <summary>\n        /// 当前使用次数\n        /// </summary>\n        public int CurrentUseTimes { get; set; } = 0;\n\n        /// <summary>\n        /// 使用多少次之后提醒\n        /// </summary>\n        public int RemindUserTimes { get; set; } = 90;\n\n        /// <summary>\n        /// 使用次数清空\n        /// </summary>\n        public override void Clear()\n        {\n            this.IsReminded = false;\n            this.CurrentUseTimes = 0;\n        }\n\n        /// <summary>\n        /// 是否达到使用次数\n        /// </summary>\n        /// <returns>结果</returns>\n        public override bool IsExpired()\n        {\n            if (!this.Enable)\n            {\n                return false;\n            }\n\n            if (this.CurrentUseTimes > this.TotalUseTimes)\n            {\n                return true;\n            }\n            else\n            {\n                return false;\n            }\n        }\n\n        /// <summary>\n        /// 是否提醒\n        /// </summary>\n        /// <returns>结果</returns>\n        public override bool IsRemind()\n        {\n            if (!this.Enable)\n            {\n                return false;\n            }\n\n            if ((this.CurrentUseTimes / this.TotalUseTimes) > (this.RemindUserTimes / 100))\n            {\n                return true;\n            }\n            else\n            {\n                return false;\n            }\n        }"
+    },
+    "life-time": {
+      "file": "life-time",
+      "start": 14,
+      "end": 99,
+      "method": "时间模型到期提醒剩余与Clear",
+      "code": "        public DateTime StartDateTime { get; set; } = DateTime.Now;\n\n        /// <summary>\n        /// 到期时间\n        /// </summary>\n        public DateTime DueDate => this.GetExpirationDate();\n\n        /// <summary>\n        /// 胶水使用时间\n        /// 单位为分钟\n        /// </summary>\n        public int UseDateTime { get; set; } = 1440;\n\n        /// <summary>\n        /// 胶水提醒时间\n        /// 百分比\n        /// </summary>\n        public int RemindTimeRate { get; set; } = 80;\n\n        /// <summary>\n        /// 获取到期时间\n        /// </summary>\n        /// <returns>时间</returns>\n        private DateTime GetExpirationDate()\n        {\n            DateTime dateTime = this.StartDateTime;\n            return dateTime.AddMinutes(this.UseDateTime);\n        }\n\n        /// <summary>\n        /// 清空记录\n        /// </summary>\n        public override void Clear()\n        {\n            this.IsReminded = false;\n            this.StartDateTime = DateTime.Now;\n        }\n\n        /// <summary>\n        /// 是否到期\n        /// </summary>\n        /// <returns>结果</returns>\n        public override bool IsExpired()\n        {\n            if (!this.Enable)\n            {\n                return false;\n            }\n\n            if (DateTime.Now > this.DueDate)\n            {\n                return true;\n            }\n\n            return false;\n        }\n\n        /// <summary>\n        /// 是否提醒\n        /// </summary>\n        /// <returns>结果</returns>\n        public override bool IsRemind()\n        {\n            if (!this.Enable)\n            {\n                return false;\n            }\n\n            DateTime dateTime = this.StartDateTime;\n            if (DateTime.Now > dateTime.AddMinutes((int)(this.UseDateTime * this.RemindTimeRate / 100.0)))\n            {\n                return true;\n            }\n\n            return false;\n        }\n\n        /// <summary>\n        /// 获取剩余时间\n        /// </summary>\n        /// <returns>时间</returns>\n        public int GetRemainingTime()\n        {\n            TimeSpan minuteSpan = new TimeSpan(this.DueDate.Ticks - DateTime.Now.Ticks);\n            return (int)minuteSpan.TotalMinutes;\n        }"
+    },
+    "life-collection": {
+      "file": "life-scan",
+      "start": 36,
+      "end": 58,
+      "method": "后台四类耗材汇集",
+      "code": "        private void GetConsumablesList()\n        {\n            this.Consumables = new List<BaseConsumable>();\n\n            foreach (TimeConsumable timeConsumable in System1Program.GetInstance().GetEpoxyConsumable())\n            {\n                this.Consumables.Add(timeConsumable);\n            }\n\n            foreach (TimeConsumable timeConsumable in BondProgram.GetInstance().GetConsumable())\n            {\n                this.Consumables.Add(timeConsumable);\n            }\n\n            foreach (FrequencyConsumables frequencyConsumables in BondProgram.GetInstance().NozzleShelfProgram.GetToolConsumable())\n            {\n                this.Consumables.Add(frequencyConsumables);\n            }\n\n            foreach (FrequencyConsumables frequencyConsumables in WaferSystemProgram.GetInstance().EjectionBankProgram.GetEjectFrequencyList())\n            {\n                this.Consumables.Add(frequencyConsumables);\n            }"
+    },
+    "life-scan": {
+      "file": "life-scan",
+      "start": 64,
+      "end": 114,
+      "method": "同步扫描与到期提醒分派",
+      "code": "        public void BackgroundConsumable()\n        {\n            this.ScanConsumables();\n        }\n\n        /// <summary>\n        /// 扫描耗材对象\n        /// </summary>\n        public void ScanConsumables()\n        {\n            this.GetConsumablesList();\n            foreach (BaseConsumable baseConsumable in this.Consumables)\n            {\n                if (baseConsumable != null)\n                {\n                    if (baseConsumable.IsExpired() && baseConsumable.IsEnableTimeToAlarm())\n                    {\n                        baseConsumable.IsReminded = true;\n\n                        baseConsumable.LastAlarmTime = DateTime.Now;\n\n                        DialogResult dialogResult = AKRSMessageBoxExt.Show(\n                            $\"耗材名字为： {baseConsumable.Name} 寿命已经到期 , 请选择怎么去处理\\r\\n\" + $\"忽略 : 继续工作，10分钟后再次提醒\\r\\n\"\n                            + \"停止 : 设备停止，然后立即更换\\r\\n\",\n                            \"耗材到期\",\n                            new[] { \"忽略\", \"停止\" },\n                            new[] { DialogResult.Ignore, DialogResult.Abort });\n\n                        switch (dialogResult)\n                        {\n                            case DialogResult.Ignore:\n                                break;\n                            case DialogResult.Abort:\n                                Machine.GetInstance().Stop();\n                                baseConsumable.Clear();\n                                break;\n                        }\n                    }\n                    else if (baseConsumable.IsRemind() && !baseConsumable.IsReminded)\n                    {\n                        DialogResult dialogResult = AKRSMessageBoxExt.Show(\n                            $\"耗材名字为： {baseConsumable.Name} 寿命即将到期 , 请即使处理\\r\\n\",\n                            \"耗材即将到期\",\n                            new[] { \"确定\" },\n                            new[] { DialogResult.OK});\n\n                        baseConsumable.IsReminded = true;\n                    }\n                }\n            }\n        }"
+    },
+    "life-window-lists": {
+      "file": "life-window",
+      "start": 28,
+      "end": 55,
+      "method": "窗体输入集合与未使用flux字段",
+      "code": "        public FrmConsumables(List<FrequencyConsumables> ppTools, List<FrequencyConsumables> needles, List<TimeConsumable> dispensers, TimeConsumable flux)\n        {\n            this.InitializeComponent();\n            this.ppToolConsumables = ppTools;\n            this.needleConsumables = needles;\n            this.dispenserConsumables = dispensers;\n            this.fluxConsumable=flux;\n        }\n\n        /// <summary>\n        /// 吸嘴集合\n        /// </summary>\n        private readonly List<FrequencyConsumables> ppToolConsumables = new List<FrequencyConsumables>();\n\n        /// <summary>\n        /// 顶针集合\n        /// </summary>\n        private readonly List<FrequencyConsumables> needleConsumables = new List<FrequencyConsumables>();\n\n        /// <summary>\n        /// 点胶头\n        /// </summary>\n        private readonly List<TimeConsumable> dispenserConsumables = new List<TimeConsumable>();\n\n        /// <summary>\n        /// 助焊剂\n        /// </summary>\n        private readonly TimeConsumable fluxConsumable = new TimeConsumable();"
+    },
+    "life-window-cards": {
+      "file": "life-window",
+      "start": 78,
+      "end": 150,
+      "method": "固定卡片初始化与刷新",
+      "code": "        private void FrmConsumables_Load(object sender, EventArgs e)\n        {\n            this.BingingData();\n            this.InitData();\n        }\n\n        /// <summary>\n        /// 绑定数据源\n        /// </summary>\n        private void BingingData()\n        {\n            this.ucPpToolConsumables.Add(this.ucConsumables1);\n            this.ucPpToolConsumables.Add(this.ucConsumables2);\n            this.ucPpToolConsumables.Add(this.ucConsumables3);\n            this.ucPpToolConsumables.Add(this.ucConsumables4);\n            this.ucPpToolConsumables.Add(this.ucConsumables5);\n            this.ucPpToolConsumables.Add(this.ucConsumables6);\n            this.ucPpToolConsumables.Add(this.ucConsumables7);\n\n            this.ucNeedleConsumables.Add(this.ucConsumables8);\n            this.ucNeedleConsumables.Add(this.ucConsumables9);\n            this.ucNeedleConsumables.Add(this.ucConsumables10);\n            this.ucNeedleConsumables.Add(this.ucConsumables11);\n            this.ucNeedleConsumables.Add(this.ucConsumables12);\n\n            this.dispenserConsumablesList.Add(this.ucTimeConsumable1);\n\n            this.dispenserConsumablesList.Add(this.ucTimeConsumable2);\n        }\n\n        /// <summary>\n        /// 初始化\n        /// </summary>\n        private void InitData()\n        {\n            for (int i = 0; i < this.ppToolConsumables.Count; i++)\n            {\n                this.ucPpToolConsumables[i].Init(this.ppToolConsumables[i]);\n            }\n\n            for (int i = 0; i < this.needleConsumables.Count; i++)\n            {\n                this.ucNeedleConsumables[i].Init(this.needleConsumables[i]);\n            }\n\n            for (int i = 0; i < this.dispenserConsumables.Count; i++)\n            {\n                this.dispenserConsumablesList[i].Init(this.dispenserConsumables[i]);\n            }\n        }\n\n        /// <summary>\n        /// 刷新\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void Timer1_Tick(object sender, EventArgs e)\n        {\n            foreach (UcConsumables ucConsumable in this.ucNeedleConsumables)\n            {\n                ucConsumable.RefreshData();\n            }\n\n            foreach (UcConsumables ucConsumable in this.ucPpToolConsumables)\n            {\n                ucConsumable.RefreshData();\n            }\n\n            foreach (UcTimeConsumable ucTimeConsumable in this.dispenserConsumablesList)\n            {\n                ucTimeConsumable.RefreshData();\n            }\n        }"
+    },
+    "life-window-timer": {
+      "file": "life-windowui",
+      "start": 325,
+      "end": 340,
+      "method": "五百毫秒刷新与Load",
+      "code": "            // Timer1\n            // \n            this.Timer1.Enabled = true;\n            this.Timer1.Interval = 500;\n            this.Timer1.Tick += new System.EventHandler(this.Timer1_Tick);\n            // \n            // FrmConsumables\n            // \n            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);\n            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;\n            this.ClientSize = new System.Drawing.Size(1184, 330);\n            this.Controls.Add(this.xtraTabControl1);\n            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);\n            this.Name = \"FrmConsumables\";\n            this.Text = \"吸嘴\";\n            this.Load += new System.EventHandler(this.FrmConsumables_Load);"
+    },
+    "life-frequency-ui": {
+      "file": "life-frequencyui",
+      "start": 28,
+      "end": 99,
+      "method": "次数编辑绑定颜色与清零",
+      "code": "        public void Init(FrequencyConsumables frequencyConsumables)\n        {\n            this.frequencyConsumable = frequencyConsumables;\n\n            if (this.frequencyConsumable != null)\n            {\n                this.SpPPToolTotalTimes1.DataBindings.Add(\"EditValue\", this.frequencyConsumable, \"TotalUseTimes\");\n                this.RefreshData();\n            }\n        }\n\n        /// <summary>\n        /// 刷新\n        /// </summary>\n        public void RefreshData()\n        {\n            if (this.frequencyConsumable == null)\n            {\n                this.Visible = false;\n                return;\n            }\n\n            this.Visible = true;\n\n            this.LbPPTools1.Text = this.frequencyConsumable.Name;\n            this.ChkPPTools1.Checked = this.frequencyConsumable.Enable;\n           // this.SpPPToolTotalTimes1.Value = this.frequencyConsumable.TotalUseTimes;\n            this.SpPPToolUseTimes1.Value = this.frequencyConsumable.CurrentUseTimes;\n\n\n            if (!this.frequencyConsumable.Enable)\n            {\n                this.SpPPToolTotalTimes1.BackColor = Color.DarkGray; \n                this.SpPPToolUseTimes1.BackColor = Color.DarkGray;\n            }\n            else\n            {\n                this.SpPPToolTotalTimes1.BackColor = Color.Azure;\n                if (this.frequencyConsumable.IsExpired())\n                {\n                    this.SpPPToolUseTimes1.BackColor = Color.Red;\n                }\n                else if (this.frequencyConsumable.IsRemind())\n                {\n                    this.SpPPToolUseTimes1.BackColor = Color.Yellow;\n                }\n                else\n                {\n                    this.SpPPToolUseTimes1.BackColor = Color.LightGreen;\n                }\n            }\n        }\n\n        /// <summary>\n        /// 清空\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void BtnClearNozzle1_Click(object sender, EventArgs e)\n        {\n            this.frequencyConsumable.Clear();\n        }\n\n        /// <summary>\n        /// 是否启用\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void ChkPPTools1_CheckedChanged(object sender, EventArgs e)\n        {\n            this.frequencyConsumable.Enable = this.ChkPPTools1.Checked;\n        }"
+    },
+    "life-frequency-bind": {
+      "file": "life-frequencybind",
+      "start": 40,
+      "end": 105,
+      "method": "开关清零绑定和当前次数只读",
+      "code": "            // \n            // ChkPPTools1\n            // \n            this.ChkPPTools1.Location = new System.Drawing.Point(91, 1);\n            this.ChkPPTools1.Name = \"ChkPPTools1\";\n            this.ChkPPTools1.Properties.Caption = \"开启\";\n            this.ChkPPTools1.Size = new System.Drawing.Size(94, 24);\n            this.ChkPPTools1.TabIndex = 8;\n            this.ChkPPTools1.CheckedChanged += new System.EventHandler(this.ChkPPTools1_CheckedChanged);\n            // \n            // LbPPTools1\n            // \n            this.LbPPTools1.Location = new System.Drawing.Point(3, 4);\n            this.LbPPTools1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);\n            this.LbPPTools1.Name = \"LbPPTools1\";\n            this.LbPPTools1.Size = new System.Drawing.Size(38, 18);\n            this.LbPPTools1.TabIndex = 4;\n            this.LbPPTools1.Tag = \"Needle\";\n            this.LbPPTools1.Text = \"吸嘴1\";\n            // \n            // SpPPToolTotalTimes1\n            // \n            this.SpPPToolTotalTimes1.EditValue = new decimal(new int[] {\n            0,\n            0,\n            0,\n            0});\n            this.SpPPToolTotalTimes1.Location = new System.Drawing.Point(236, 4);\n            this.SpPPToolTotalTimes1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);\n            this.SpPPToolTotalTimes1.Name = \"SpPPToolTotalTimes1\";\n            this.SpPPToolTotalTimes1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {\n            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});\n            this.SpPPToolTotalTimes1.Properties.IsFloatValue = false;\n            this.SpPPToolTotalTimes1.Properties.MaskSettings.Set(\"mask\", \"N00\");\n            this.SpPPToolTotalTimes1.Size = new System.Drawing.Size(110, 24);\n            this.SpPPToolTotalTimes1.TabIndex = 6;\n            this.SpPPToolTotalTimes1.Tag = \"\";\n            // \n            // BtnClearNozzle1\n            // \n            this.BtnClearNozzle1.Location = new System.Drawing.Point(524, 1);\n            this.BtnClearNozzle1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);\n            this.BtnClearNozzle1.Name = \"BtnClearNozzle1\";\n            this.BtnClearNozzle1.Size = new System.Drawing.Size(95, 30);\n            this.BtnClearNozzle1.TabIndex = 5;\n            this.BtnClearNozzle1.Tag = \"Needle\";\n            this.BtnClearNozzle1.Text = \"清空记忆\";\n            this.BtnClearNozzle1.Click += new System.EventHandler(this.BtnClearNozzle1_Click);\n            // \n            // SpPPToolUseTimes1\n            // \n            this.SpPPToolUseTimes1.EditValue = new decimal(new int[] {\n            0,\n            0,\n            0,\n            0});\n            this.SpPPToolUseTimes1.Enabled = false;\n            this.SpPPToolUseTimes1.Location = new System.Drawing.Point(379, 4);\n            this.SpPPToolUseTimes1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);\n            this.SpPPToolUseTimes1.Name = \"SpPPToolUseTimes1\";\n            this.SpPPToolUseTimes1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {\n            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});\n            this.SpPPToolUseTimes1.Properties.IsFloatValue = false;\n            this.SpPPToolUseTimes1.Properties.MaskSettings.Set(\"mask\", \"N00\");\n            this.SpPPToolUseTimes1.Size = new System.Drawing.Size(110, 24);\n            this.SpPPToolUseTimes1.TabIndex = 7;"
+    },
+    "life-time-ui": {
+      "file": "life-timeui",
+      "start": 24,
+      "end": 158,
+      "method": "时间编辑清零开始时刻与颜色",
+      "code": "        public UcTimeConsumable()\n        {\n            this.InitializeComponent();\n            //this.dateEdit1.Properties.DisplayFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            //this.dateEdit1.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            //this.dateEdit2.Properties.DisplayFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            //this.dateEdit2.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            //this.dateEdit1.Properties.EditFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            //this.dateEdit1.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            //this.dateEdit2.Properties.EditFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            //this.dateEdit2.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n\n            this.dateEdit1.Properties.DisplayFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            this.dateEdit1.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            this.dateEdit1.Properties.EditFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            this.dateEdit1.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            this.dateEdit1.Properties.Mask.EditMask = \"yy-MM-dd HH:mm:ss\";\n\n            this.dateEdit2.Properties.DisplayFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            this.dateEdit2.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            this.dateEdit2.Properties.EditFormat.FormatString = \"yy-MM-dd HH:mm:ss\";\n            this.dateEdit2.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;\n            this.dateEdit2.Properties.Mask.EditMask = \"yy-MM-dd HH:mm:ss\";\n\n\n            this.dateEdit2.Properties.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.True;\n            this.dateEdit2.Properties.VistaEditTime = DevExpress.Utils.DefaultBoolean.True;\n\n            this.dateEdit1.Enabled = false;\n            // this.dateEdit2.Enabled = false;\n            this.SpRemainingTime.Enabled = false;\n        }\n\n        /// <summary>\n        /// 耗材\n        /// </summary>\n        private TimeConsumable timeConsumable;\n\n        /// <summary>\n        /// 初始化\n        /// </summary>\n        /// <param name=\"timeConsumables\">耗材</param>\n        public void Init(TimeConsumable timeConsumables)\n        {\n            this.timeConsumable = timeConsumables;\n            this.SpLifeSpanTime.Value = this.timeConsumable.UseDateTime;\n            this.RefreshData();\n\n            this.dateEdit2.EditValueChanged += new System.EventHandler(this.dateEdit2_EditValueChanged);\n        }\n\n        /// <summary>\n        /// 刷新\n        /// </summary>\n        public void RefreshData()\n        {\n            if (this.timeConsumable == null)\n            {\n                this.Visible = false;\n                return;\n            }\n\n            this.Visible = true;\n\n            this.LbPPTools1.Text = this.timeConsumable.Name;\n            this.ChkPPTools1.Checked = this.timeConsumable.Enable;\n            this.dateEdit1.EditValue = this.timeConsumable.DueDate;\n            this.dateEdit2.EditValue = this.timeConsumable.StartDateTime;\n            this.SpRemainingTime.Value = this.timeConsumable.GetRemainingTime();\n\n            if (!this.timeConsumable.Enable)\n            {\n                this.dateEdit1.BackColor = Color.DarkGray;\n                this.dateEdit2.BackColor = Color.DarkGray;\n                this.SpRemainingTime.BackColor = Color.DarkGray;\n            }\n            else\n            {\n                this.dateEdit1.BackColor = Color.Azure;\n                this.dateEdit2.BackColor = Color.Azure;\n                if (this.timeConsumable.IsExpired())\n                {\n                    this.SpRemainingTime.BackColor = Color.Red;\n                }\n                else if (this.timeConsumable.IsRemind())\n                {\n                    this.SpRemainingTime.BackColor = Color.Yellow;\n                }\n                else\n                {\n                    this.SpRemainingTime.BackColor = Color.LightGreen;\n                }\n            }\n        }\n\n        /// <summary>\n        /// 清空\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void BtnClearNozzle1_Click(object sender, EventArgs e)\n        {\n            this.timeConsumable.Clear();\n        }\n\n        /// <summary>\n        /// 改变事件\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void ChkPPTools1_CheckedChanged_1(object sender, EventArgs e)\n        {\n            this.timeConsumable.Enable = this.ChkPPTools1.Checked;\n        }\n\n        /// <summary>\n        /// 寿命发生改变\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void SpLifeSpanTime_EditValueChanged(object sender, EventArgs e)\n        {\n            this.timeConsumable.UseDateTime = (int)this.SpLifeSpanTime.Value;\n        }\n\n        /// <summary>\n        /// 当选择发生改变时\n        /// </summary>\n        /// <param name=\"sender\">事件源</param>\n        /// <param name=\"e\">封装参数</param>\n        private void dateEdit2_EditValueChanged(object sender, EventArgs e)\n        {\n            this.timeConsumable.IsReminded = false;\n            this.timeConsumable.StartDateTime = (DateTime)this.dateEdit2.EditValue;\n        }"
+    },
+    "life-time-bind": {
+      "file": "life-timebind",
+      "start": 60,
+      "end": 76,
+      "method": "时间清零与启用绑定",
+      "code": "            this.BtnClearNozzle1.Location = new System.Drawing.Point(1030, 8);\n            this.BtnClearNozzle1.Name = \"BtnClearNozzle1\";\n            this.BtnClearNozzle1.Size = new System.Drawing.Size(83, 23);\n            this.BtnClearNozzle1.TabIndex = 10;\n            this.BtnClearNozzle1.Tag = \"Needle\";\n            this.BtnClearNozzle1.Text = \"清空记忆\";\n            this.BtnClearNozzle1.Click += new System.EventHandler(this.BtnClearNozzle1_Click);\n            // \n            // ChkPPTools1\n            // \n            this.ChkPPTools1.Location = new System.Drawing.Point(82, 9);\n            this.ChkPPTools1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);\n            this.ChkPPTools1.Name = \"ChkPPTools1\";\n            this.ChkPPTools1.Properties.Caption = \"开启\";\n            this.ChkPPTools1.Size = new System.Drawing.Size(82, 20);\n            this.ChkPPTools1.TabIndex = 13;\n            this.ChkPPTools1.CheckedChanged += new System.EventHandler(this.ChkPPTools1_CheckedChanged_1);"
+    },
+    "life-time-life-bind": {
+      "file": "life-timebind",
+      "start": 128,
+      "end": 142,
+      "method": "寿命分钟编辑绑定",
+      "code": "            // SpLifeSpanTime\n            // \n            this.SpLifeSpanTime.EditValue = new decimal(new int[] {\n            0,\n            0,\n            0,\n            0});\n            this.SpLifeSpanTime.Location = new System.Drawing.Point(817, 8);\n            this.SpLifeSpanTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);\n            this.SpLifeSpanTime.Name = \"SpLifeSpanTime\";\n            this.SpLifeSpanTime.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {\n            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});\n            this.SpLifeSpanTime.Size = new System.Drawing.Size(109, 20);\n            this.SpLifeSpanTime.TabIndex = 22;\n            this.SpLifeSpanTime.EditValueChanged += new System.EventHandler(this.SpLifeSpanTime_EditValueChanged);"
+    },
+    "life-s1-source": {
+      "file": "life-s1",
+      "start": 66,
+      "end": 86,
+      "method": "S1胶水硬件门控与对象修复",
+      "code": "        public List<TimeConsumable> GetEpoxyConsumable()\n        {\n            List<TimeConsumable> list = new List<TimeConsumable>();\n\n            if (!MachineHardwareConfiguration.GetInstance().IsSystem1Configrated)\n            {\n                return list;\n            }\n            \n            if (this.EpoxyMaterialProgram.EpoxyMaterial != null)\n            {\n                if (this.EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable == null)\n                {\n                    this.EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable = new TimeConsumable();\n                }\n\n                this.EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable.Name = this.EpoxyMaterialProgram.EpoxyMaterial.Name;\n                list.Add(this.EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable);\n            }\n\n            return list;"
+    },
+    "life-bond-source": {
+      "file": "life-bond",
+      "start": 227,
+      "end": 259,
+      "method": "S2胶水与助焊剂汇集",
+      "code": "        public List<TimeConsumable> GetConsumable()\n        {\n            List<TimeConsumable> list = new List<TimeConsumable>();\n\n            if (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense)\n            {\n                // 点胶耗材\n                if (this.S2EpoxyMaterialProgram.EpoxyMaterial != null)\n                {\n                    if (this.S2EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable == null)\n                    {\n                        this.S2EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable = new TimeConsumable();\n                    }\n\n                    this.S2EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable.Name = this.S2EpoxyMaterialProgram.EpoxyMaterial.Name;\n                    list.Add(this.S2EpoxyMaterialProgram.EpoxyMaterial.EpoxyMaterialConsumable);\n                }\n\n            }\n\n\n            // 助焊剂耗材\n            if (MachineHardwareConfiguration.GetInstance().IsSlideFluxerConfigured)\n            {\n                if(this.SlideFluxerProgram.FluxConsumable==null)\n                {\n                    this.SlideFluxerProgram.FluxConsumable=new TimeConsumable() { Name = \"助焊剂\" };\n\n                }\n                list.Add(this.SlideFluxerProgram.FluxConsumable);\n            }\n\n            return list;"
+    },
+    "life-shelf-source": {
+      "file": "nb-program",
+      "start": 170,
+      "end": 196,
+      "method": "当前吸嘴架名称与寿命重建",
+      "code": "        public List<FrequencyConsumables> GetToolConsumable()\n        {\n            List<FrequencyConsumables> frequencyConsumablesList = new List<FrequencyConsumables>();\n            if (this.GetNozzleNameList() != null)\n            {\n                foreach (var item in this.GetNozzleNameList())\n                {\n                    if (NozzleRepository.GetInstance().GetNozzle(item) == null)\n                    {\n                        continue;\n                    }\n\n                    FrequencyConsumables frequencyConsumables = NozzleRepository.GetInstance().GetNozzle(item)?.FrequencyConsumables;\n                    if (frequencyConsumables == null || frequencyConsumables.Name != NozzleRepository.GetInstance().GetNozzle(item).Name)\n                    {\n                        NozzleRepository.GetInstance().GetNozzle(item).FrequencyConsumables = new FrequencyConsumables(NozzleRepository.GetInstance().GetNozzle(item).Name);\n                        frequencyConsumablesList.Add(NozzleRepository.GetInstance().GetNozzle(item).FrequencyConsumables);\n                        BondProgram.GetInstance().Save();\n                    }\n                    else\n                    {\n                        frequencyConsumablesList.Add(frequencyConsumables);\n                    }\n                }\n            }\n\n            return frequencyConsumablesList;"
+    },
+    "life-eject-source": {
+      "file": "life-ejectbank",
+      "start": 57,
+      "end": 81,
+      "method": "当前顶针库修复保存与去重",
+      "code": "        public List<FrequencyConsumables> GetEjectFrequencyList()\n        {\n            List<FrequencyConsumables> list = new List<FrequencyConsumables>();\n\n            if (this.CurrentBankConfig != null)\n            {\n                foreach (var item in this.CurrentBankConfig.EjectionBankSlots)\n                {\n                    if (item.EjectionConfig != null)\n                    {\n                        if (item.EjectionConfig?.Frequency == null || item.EjectionConfig?.Frequency?.Name != item.EjectionConfig.Name)\n                        {\n                            item.EjectionConfig.Frequency = new FrequencyConsumables(item.EjectionConfig.Name);\n\n                            EjectionBankConfigRepository.GetInstance().Save();\n                        }\n\n                        list.Add(item.EjectionConfig?.Frequency);\n                    }\n                }\n\n                list = list?.Filter(a => a != null).Distinct().ToList();\n            }\n\n            return list;"
+    },
+    "life-flip-source": {
+      "file": "life-flip",
+      "start": 44,
+      "end": 55,
+      "method": "当前翻转工具获取接口",
+      "code": "        public List<FrequencyConsumables> GetFlipToolFrequencyList()\n        {\n            List<FrequencyConsumables> list = new List<FrequencyConsumables>();\n\n            if (this.CurrentFlipTool != null)\n            {\n                list.Add(this.CurrentFlipTool.Frequency);\n\n                list = list?.Filter(a => a != null).Distinct().ToList();\n            }\n\n            return list;"
+    },
+    "life-nozzle-repo": {
+      "file": "nb-repo",
+      "start": 116,
+      "end": 125,
+      "method": "未被主线调用的配方仓库接口",
+      "code": "        public List<FrequencyConsumables> GetFrequencyConsumables()\n        {\n            List<FrequencyConsumables> frequencyConsumablesList = new List<FrequencyConsumables>();\n\n            foreach (var nozzle in this.GetDataSourceByCurrentRecipe()) \n            {\n                frequencyConsumablesList.Add(nozzle.FrequencyConsumables); \n            }\n\n            return frequencyConsumablesList;"
+    },
+    "life-nozzle-create": {
+      "file": "tc-file-117",
+      "start": 30,
+      "end": 35,
+      "method": "吸嘴有名构造寿命对象",
+      "code": "        public Nozzle(string name)\n        {\n            this.Name = name;\n            this.FrequencyConsumables = new FrequencyConsumables(name);\n            this.ResetAssistantStates();\n        }"
+    },
+    "life-nozzle-field": {
+      "file": "tc-file-117",
+      "start": 214,
+      "end": 217,
+      "method": "吸嘴次数寿命字段",
+      "code": "        /// <summary>\n        /// 使用频率\n        /// </summary>\n        public FrequencyConsumables FrequencyConsumables { get; set; }"
+    },
+    "life-glue-fields": {
+      "file": "life-glue",
+      "start": 24,
+      "end": 110,
+      "method": "胶水嵌入时间寿命与旧字段",
+      "code": "    public class EpoxyMaterial : BaseDsSetting\n    {\n        /// <summary>\n        /// 胶水的耗材\n        /// </summary>\n        public TimeConsumable EpoxyMaterialConsumable { get; set; } = new TimeConsumable();\n\n        /// <summary>\n        /// 按时间填充还是按周期填充\n        /// 这个是刷胶的\n        /// </summary>\n        public RefillCriteriaEnum RefillCriteria;\n\n        /// <summary>\n        /// 比重\n        /// </summary>\n        public double SpecificWeight;\n\n        /// <summary>\n        /// 胶水寿命获取的方式\n        /// </summary>\n        public  EpoxyLifetimeEntryMethodEnum EpoxyLifetimeEntryMethod;\n\n        /// <summary>\n        /// 可能是某些胶水是按次数来限制的\n        /// </summary>\n        public double MaxNumberOfCycles;\n\n        /// <summary>\n        /// 防止胶水变干的延迟参数\n        /// </summary>\n        public int DryOutPreventionDelay;\n\n        /// <summary>\n        /// 胶水的编号,这个应该是批次号\n        /// </summary>\n        public int GlueIdMask;\n\n        /// <summary>\n        /// 胶水已经使用的时间\n        /// </summary>\n        public double EpoxyOrFluxUsableTime;\n\n        /// <summary>\n        /// 胶水类型，刷胶特指点胶头那边的参数\n        /// </summary>\n        public EpoxyUseTypeEnum EpoxyUseType;\n\n        /// <summary>\n        /// 胶水余量报警\n        /// </summary>\n        public bool IsGlueResidueAlarm;\n\n        /// <summary>\n        /// 胶水寿命到期报警\n        /// </summary>\n        public bool IsEpoxyServiceLifeAlarm;\n\n        /// <summary>\n        /// 胶水寿命时间\n        /// </summary>\n        public int EpoxyServiceLife;\n\n        /// <summary>\n        /// 胶水隔多长时间没有点胶报警\n        /// </summary>\n        public bool IsEpoxyMaximumIntervalTimeAlarm;\n\n        /// <summary>\n        /// 胶水隔多长时间没有点胶\n        /// </summary>\n        public double EpoxyMaximumIntervalTime;\n\n        /// <summary>\n        /// 使用寿命预提示\n        /// </summary>\n        public bool IsServiceLifePreWarning;\n\n        /// <summary>\n        /// 使用寿命预提示时间\n        /// </summary>\n        public int PreWarningTimePeriod;\n\n        /// <summary>\n        /// 使用寿命预提示次数\n        /// </summary>\n        public int NumberOfPreWarningTimes;"
+    },
+    "life-glue-owner": {
+      "file": "life-glueprogram",
+      "start": 20,
+      "end": 32,
+      "method": "胶水程序按名查仓库",
+      "code": "    public class EpoxyMaterialProgram\n    {\n        /// <summary>\n        /// 胶水参数\n        /// </summary>\n        [JsonIgnore]\n        public EpoxyMaterial EpoxyMaterial =>\n            (EpoxyMaterial)EpoxyMaterialRepository.GetInstance().Find(this.EpoxyMaterialName);\n\n        /// <summary>\n        /// 点胶参数的名称\n        /// </summary>\n        public string EpoxyMaterialName { get; set; }"
+    },
+    "life-flux-field": {
+      "file": "life-slide",
+      "start": 31,
+      "end": 34,
+      "method": "助焊剂时间寿命对象",
+      "code": "        /// <summary>\n        ///  助焊剂耗材\n        /// </summary>\n        public TimeConsumable FluxConsumable { get; set; } = new TimeConsumable() { Name=\"助焊剂\"};"
+    },
+    "life-dispenser-field": {
+      "file": "life-dispenser",
+      "start": 83,
+      "end": 93,
+      "method": "点胶头次数寿命对象",
+      "code": "        public Dispenser()\n        {\n            this.ResetAssistantStates();\n\n            this.DispenseTimes.Name = this.Name;\n        }\n\n        /// <summary>\n        /// 焊材\n        /// </summary>\n        public FrequencyConsumables DispenseTimes { get; set; } = new FrequencyConsumables(\"点胶头\");"
+    },
+    "life-flip-field": {
+      "file": "life-fliptool",
+      "start": 87,
+      "end": 95,
+      "method": "翻转工具次数寿命定义",
+      "code": "        /// <summary>\n        /// 翻转工具耗材\n        /// </summary>\n        public FrequencyConsumables Frequency { get; set; }\n\n        /// <summary>\n        /// DispenserAssistant\n        /// </summary>\n        public AssistantState FlipToolAssistant { get; set; }"
+    },
+    "life-eject-field": {
+      "file": "life-ejectconfig",
+      "start": 93,
+      "end": 96,
+      "method": "顶针次数寿命定义",
+      "code": "        /// <summary>\n        /// 顶针耗材\n        /// </summary>\n        public FrequencyConsumables Frequency { get; set; }"
+    },
+    "life-carrier-count": {
+      "file": "life-carrier",
+      "start": 1048,
+      "end": 1054,
+      "method": "物料可用次数递增",
+      "code": "        /// <summary>\n        /// AddCountOfUseable\n        /// </summary>\n        public void AddCountOfUseable()\n        {\n            this.CountOfUseable++;\n        }"
+    },
+    "life-bond-mode": {
+      "file": "s2-bond",
+      "start": 125,
+      "end": 141,
+      "method": "离线空跑提前返回",
+      "code": "            try\n            {\n                // 参数准备\n                this.PrepareBeforeBondAction();\n                \n                // 离线模式\n                if (MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.OffLineWork)\n                {\n                    this.bondPosition.S2FinishedStep(this.system2Domain.ActionNodesService.GetCurrentProcessStepName());\n                    return ExcuteResult.Success;\n                }\n\n                // 空跑模式\n                if (MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.DryCycle)\n                {\n                    return this.BondActionDryRun();\n                }"
+    },
+    "life-bond-count": {
+      "file": "s2-bond",
+      "start": 343,
+      "end": 364,
+      "method": "固晶尾部工具使用次数递增",
+      "code": "                SkipBond:\n\n                System2RunTimeProvider.IsMaterialOnBondhead = false;\n\n                // 修改制程\n                this.bondPosition.S2FinishedStep(this.actionNodesService.GetCurrentProcessStepName());\n\n                // 统计固精周期，异步，如果出现卡顿，屏蔽掉\n                StatisticsDomain.GetInstance().StatisticsBondPositionInfo(this.bondPosition,this.component);\n\n                System2RunTimeProvider.RecordTime(\"BondAction\", \"统计固精周期 完成\");\n\n                this.bondHeadController.GetCurrentNozzle().FrequencyConsumables.CurrentUseTimes++;\n\n                // 检查贴片颗数是否超上限 \n                this.CheckBondedNumber();\n\n                UcMainSystem.ReFreshSystem2TuAction();\n\n                System2RunTimeProvider.RecordTime(\"BondAction\", \"Action 结束\");\n\n                return ExcuteResult.Success;"
+    },
+    "life-pick-count": {
+      "file": "s2-pick",
+      "start": 337,
+      "end": 371,
+      "method": "取片后顶针递增与漏晶检查顺序",
+      "code": "                {\n                    case ExcuteResult.Success:\n                        Static.IsComponentOnFlipTool = false;\n                        break;\n\n                    case ExcuteResult.Abort:\n                        return ExcuteResult.Abort;\n\n                    case ExcuteResult.Exception:\n\n                        // 顶针缩回\n                        WaferSubController.GetInstance().EjectController.MoveEjectToReadyLiftPositionAndBlow();\n\n                        return ExcuteResult.Exception;\n                }\n\n                //this.StopSetBondForceRealTimeCurve();\n\n                #endregion\n\n                // 被顶起的芯片+1\n                component.AddCountOfUseable();\n                WaferSubController.GetInstance().EjectController.AddCountOfUseable();\n\n                #region 漏晶检测\n\n                // 空跑模式不检测\n                if (MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle)\n                {\n                ReCheckVacuum:\n\n                    if (component.IsActiveComponentDetection)\n                    {\n                        // 检测真空\n                        if (!this.bondHeadController.ComponentCheckAfterPickup(this.bondHeadController.GetCurrentNozzle()))"
+    },
+    "life-eject-count": {
+      "file": "eject-controller",
+      "start": 1059,
+      "end": 1065,
+      "method": "顶针未屏蔽才递增",
+      "code": "        public void AddCountOfUseable()\n        {\n            if (this.EjectDevicePara.IsShieldEjectModule == false)\n            {\n                this.EjectDevicePara.CurrentSlotConfig.EjectionConfig.Frequency.CurrentUseTimes++;\n            }\n        }"
+    },
+    "life-assistant-reset": {
+      "file": "life-assistant",
+      "start": 372,
+      "end": 388,
+      "method": "S2完成后选择清次数与胶水时钟",
+      "code": "                                          System1Program.GetInstance().Save();\n                                          DispenseDevicePara.GetInstance().Save();\n\n                                          this.BondProgram.S2DispenserProgram.Dispenser.DispenserAssistant.State = AssistantStateEnum.Able;\n                                          DispenserRepository.GetInstance().Save();\n                                          this.DialogResult = DialogResult.OK;\n\n                                          this.BondModuleController.MoveToSafePos();\n\n                                          if (this.BondProgram.S2EpoxyMaterialProgram.EpoxyMaterial != null )\n                                          {\n                                             DialogResult dialogResult = AKRSXtraMessageBox.Show(\"是否重置胶水有效期和点胶头累计次数\", \"提示\", MessageBoxButtons.OKCancel);\n\n                                             if (dialogResult == DialogResult.OK)\n                                             {\n                                                   this.BondProgram.S2DispenserProgram?.Dispenser?.DispenseTimes?.Clear();\n                                                  this.BondProgram.S2EpoxyMaterialProgram?.EpoxyMaterial?.EpoxyMaterialConsumable?.Clear();"
+    },
+    "life-dispenser-read": {
+      "file": "life-dispenserui",
+      "start": 165,
+      "end": 176,
+      "method": "编辑器读取次数与胶水寿命",
+      "code": "            this.CmbEpoxyDefect.SelectedItem = this.Dispenser.PreDispense.PreDispenseCheckName;\n\n            this.ChkDispenserTimes.Checked = this.Dispenser.DispenseTimes.Enable;\n\n            this.SpDispenseTimes.Value = this.Dispenser.DispenseTimes.TotalUseTimes;\n\n            if (this.EpoxyMaterial != null)\n            {\n                this.ChkEpoxyDueTime.Checked = this.EpoxyMaterial.EpoxyMaterialConsumable.Enable;\n\n                this.SpEpoxyDueTime.Value = this.EpoxyMaterial.EpoxyMaterialConsumable.UseDateTime;\n            }"
+    },
+    "life-dispenser-save": {
+      "file": "life-dispenserui",
+      "start": 215,
+      "end": 233,
+      "method": "参数确认与仓库程序保存",
+      "code": "                this.Dispenser.PreDispense.PreDispenseCheckName = this.CmbEpoxyDefect.SelectedItem?.ToString();\n\n                this.Dispenser.DispenseTimes.Enable = this.ChkDispenserTimes.Checked;\n\n                this.Dispenser.DispenseTimes.TotalUseTimes = (int)this.SpDispenseTimes.Value;\n\n                DispenseDevicePara.GetInstance().DispenserPara.AssistanceOpenDispenseVacuum = (int)this.spinEdit2.Value;\n\n                if (this.EpoxyMaterial != null)\n                {\n                    this.EpoxyMaterial.EpoxyMaterialConsumable.Enable = this.ChkEpoxyDueTime.Checked;\n\n                    this.EpoxyMaterial.EpoxyMaterialConsumable.UseDateTime = (int)this.SpEpoxyDueTime.Value;\n                }\n                \n                // 赋值完成后保存\n                DispenserRepository.GetInstance().Save();\n\n                System1Domain.GetInstance().System1Program.Save();"
+    },
+    "life-window-entry": {
+      "file": "fc-source-curveentry",
+      "start": 120,
+      "end": 138,
+      "method": "使用耗材窗口的构造与复用",
+      "code": "        private void BtConsumables_ItemClick(object sender, ItemClickEventArgs e)\n        {\n            if (this.frmConsumables == null || this.frmConsumables.IsDisposed)\n            {\n                List<TimeConsumable> epoxyConsumables = System1Program.GetInstance().GetEpoxyConsumable();\n\n                epoxyConsumables.AddRange(BondProgram.GetInstance().GetConsumable());\n\n                this.frmConsumables = new FrmConsumables(\n                    BondProgram.GetInstance().NozzleShelfProgram.GetToolConsumable(),\n                    WaferSystemProgram.GetInstance().EjectionBankProgram.GetEjectFrequencyList(),\n                    epoxyConsumables,\n                    BondProgram.GetInstance().SlideFluxerProgram.FluxConsumable);\n            }\n\n            this.frmConsumables.TopLevel = false;\n            this.frmConsumables.TopLevel = true;\n            this.frmConsumables.WindowState = FormWindowState.Normal;\n            this.frmConsumables.Show();"
+    },
+    "life-window-bind": {
+      "file": "lc-file-143",
+      "start": 1422,
+      "end": 1428,
+      "method": "使用耗材菜单事件",
+      "code": "            // BtConsumables\n            // \n            this.BtConsumables.Caption = \"使用耗材\";\n            this.BtConsumables.Id = 256;\n            this.BtConsumables.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject(\"BtConsumables.ImageOptions.SvgImage\")));\n            this.BtConsumables.Name = \"BtConsumables\";\n            this.BtConsumables.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtConsumables_ItemClick);"
+    },
+    "life-background": {
+      "file": "operate",
+      "start": 662,
+      "end": 700,
+      "method": "后台线程循环和扫描调用",
+      "code": "        public void StartBackGroundThread()\n        {\n            if (this.BackGroundThreadThread == null || !this.BackGroundThreadThread.IsAlive)\n            {\n                this.BackGroundThreadThread = new Thread(\n                                  () =>\n                                  {\n                                      while (RuntimeProvider.ThreadFlag)\n                                      {\n                                          // 检测是否安全门关闭，安全门关闭则允许设备工作\n                                          this.StartCheckSafeDoorTask();\n\n                                          // 检测激光干涉尺状态\n                                          this.StartLaserEncoderCheckTask();\n\n                                          // 长时间未操作登出高级权限账户\n                                          this.AutoLogOut();\n\n                                          // 后台加热检测\n                                          this.BackgroundTemperatureAlarm();\n\n                                          // 后台耗材检测\n                                          ConsumablesProgram.GetInstance().BackgroundConsumable();\n\n                                          // 后台信号检测\n                                          NeedScanSensorPool.GetInstance().StartScan();\n\n                                          // 存图\n                                          VisionService.StartSaveThread();\n\n                                          // 存数据库\n                                          StatisticsService.StartSaveThread();\n\n                                          Thread.Sleep(100);\n                                      }\n                                  })\n                { Name = \"后台监控线程\", IsBackground = true };\n                this.BackGroundThreadThread.Start();\n            }"
+    },
+    "life-exit-save": {
+      "file": "operate",
+      "start": 706,
+      "end": 712,
+      "method": "退出调用数据保存",
+      "code": "        public void ExitSoftware()\n        {\n            try\n            {\n                SplashScreenManager.ShowForm(typeof(SplashScreen1));\n                SplashScreenManager.Default.SendCommand(SplashScreen1.SplashScreenCommand.SetProgress, \"保存数据中。。。\");\n                Machine.GetInstance().DataSave();"
+    },
+    "life-startup": {
+      "file": "form",
+      "start": 244,
+      "end": 257,
+      "method": "主窗加载后启动后台",
+      "code": "            Machine.GetInstance().DataLoad();\n\n            this.ChangeData();\n\n            // 参数初始化\n            UcProgramArgs.InitParamerer = ParameterManage.InitControl;\n\n            // 连接压力表\n            ModbusService.GetInstance().ConnectBondhead();\n            ModbusService.GetInstance().ConnectManometer();\n\n            Machine.GetInstance().ChoseAllLight();\n\n            Machine.GetInstance().StartBackGroundThread();"
+    },
+    "life-all-save": {
+      "file": "tasks",
+      "start": 352,
+      "end": 410,
+      "method": "机器批量保存相关仓库",
+      "code": "        public void DataSave()\n        {\n            try\n            {\n                // WaferSub System\n                WaferSubDevicePara.GetInstance().Save();\n                AdapterConfigRepository.GetInstance().Save();\n                CarrierConfigRepository.GetInstance().Save();\n                EjectionBankConfigRepository.GetInstance().Save();\n                EjectionConfigRepository.GetInstance().Save();\n                MagazineAllocationsConfigRepository.GetInstance().Save();\n                MagazineBoxGeoConfigRepository.GetInstance().Save();\n                MagazineBoxConfigRepository.GetInstance().Save();\n                WaferSystemProgram.GetInstance().Save();\n                FlipToolRepository.GetInstance().Save();\n\n                // Bond system\n                BondDevicePara.GetInstance().Save();\n                NozzleRepository.GetInstance().Save();\n                NozzleShelfRepository.GetInstance().Save();\n                PostBondInspectionRepository.GetInstance().Save();\n                ProductDomain.GetInstance().Save();\n                ForceConfig.GetInstance().Save();\n                System2Configuration.GetInstance().Save();\n                MachineCoordinateSystem.GetInstance().Save();\n                BondProgram.GetInstance().Save();\n                ForceCalibrationData.GetInstance().Save();\n\n                // TU system\n                ProductConfiguration.GetInstance().Save();\n                TransportDevicePara.GetInstance().Save();\n                MachineConfigContext.GetInstance().SaveMachineConfig();\n                TransportProgram.GetInstance().Save();\n                LoaderBinRepository.GetInstance().Save();\n                UnLoaderBinRepository.GetInstance().Save();\n                TransportBeltSettingRepository.GetInstance().Save();\n                BondinsertSettingRepository.GetInstance().Save();\n                InOutPutBeltSettingRepository.GetInstance().Save();\n\n                // System1\n                DispenseDevicePara.GetInstance().Save();\n                System1Program.GetInstance().Save();\n                DispenserRepository.GetInstance().Save();\n                EpoxyApplicationRepository.GetInstance().Save();\n                EpoxyMaterialRepository.GetInstance().Save();\n\n                // machine\n                MachineHardwareConfiguration.GetInstance().Save();\n                MachineSoftwareConfiguration.GetInstance().Save();\n                VisionEntityRepository.GetInstance().Save();\n                RtuConnectConfig.GetInstance().Save();\n                MachineDevicePara.Save();\n\n                PropertyChangeAop.InitSuccess = true;\n            }\n            catch (Exception exception)\n            {\n                LogHelper.Post(Level.Error, \"加载数据失败\", exception, LogCategory.MainSoftWare, ViewType.InFileAndUI);\n                AKRSXtraMessageBox.Show(\"加载数据失败\\n\" + exception.Message);"
+    },
+    "life-manual-save": {
+      "file": "main-ui",
+      "start": 632,
+      "end": 690,
+      "method": "主界面保存按钮",
+      "code": "        private void BtSave_ItemClick(object sender, ItemClickEventArgs e)\n        {\n            try\n            {\n                // WaferSub System\n                WaferSubDevicePara.GetInstance().Save();\n                AdapterConfigRepository.GetInstance().Save();\n                CarrierConfigRepository.GetInstance().Save();\n                EjectionBankConfigRepository.GetInstance().Save();\n                EjectionConfigRepository.GetInstance().Save();\n                MagazineAllocationsConfigRepository.GetInstance().Save();\n                MagazineBoxGeoConfigRepository.GetInstance().Save();\n                MagazineBoxConfigRepository.GetInstance().Save();\n                WaferSystemProgram.GetInstance().Save();\n                FlipToolRepository.GetInstance().Save();\n\n                // Bond system\n                BondDevicePara.GetInstance().Save();\n                NozzleRepository.GetInstance().Save();\n                NozzleShelfRepository.GetInstance().Save();\n                PostBondInspectionRepository.GetInstance().Save();\n                ProductDomain.GetInstance().Save();\n                ForceConfig.GetInstance().Save();\n                System2Configuration.GetInstance().Save();\n                MachineCoordinateSystem.GetInstance().Save();\n                BondProgram.GetInstance().Save();\n                ForceCalibrationData.GetInstance().Save();\n\n                // TU system\n                ProductConfiguration.GetInstance().Save();\n                TransportDevicePara.GetInstance().Save();\n                MachineConfigContext.GetInstance().SaveMachineConfig();\n                TransportProgram.GetInstance().Save();\n                LoaderBinRepository.GetInstance().Save();\n                UnLoaderBinRepository.GetInstance().Save();\n                TransportBeltSettingRepository.GetInstance().Save();\n                BondinsertSettingRepository.GetInstance().Save();\n                InOutPutBeltSettingRepository.GetInstance().Save();\n\n                // System1\n                DispenseDevicePara.GetInstance().Save();\n                System1Program.GetInstance().Save();\n                DispenserRepository.GetInstance().Save();\n                EpoxyApplicationRepository.GetInstance().Save();\n                EpoxyMaterialRepository.GetInstance().Save();\n\n                // machine\n                MachineHardwareConfiguration.GetInstance().Save();\n                MachineSoftwareConfiguration.GetInstance().Save();\n                VisionEntityRepository.GetInstance().Save();\n                RtuConnectConfig.GetInstance().Save();\n                MachineDevicePara.GetInstance().Save();\n\n                AKRSXtraMessageBox.Show(\"保存成功！\");\n            }\n            catch (Exception exception)\n            {\n                LogHelper.Post(Level.Error, \"保存出错\", exception, LogCategory.MainSoftWare, ViewType.InFileAndUI);\n                AKRSXtraMessageBox.Show(\"保存失败\\n\" + exception.Message);"
     }
   },
   "diagrams": {

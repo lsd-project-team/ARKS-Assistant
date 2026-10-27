@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "单项耗材的到期与提醒分派",
+    "locale": "zh-CN",
+    "output": "resources/knowledge/flows/functional-atlas/consumables-scan-overview.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "5abd63e1554109516a0542fc1957c386d5e8df62",
+      "link_mode": "local-only"
+    },
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "耗材扫描"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "list",
+      "type": "backend",
+      "icon": "none",
+      "label": "汇集并逐项扫描",
+      "sublabel": "每轮重取；跳过空项",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 7,
+          "end_line": 10,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "type": "backend",
+      "icon": "none",
+      "label": "到期且允许报警",
+      "sublabel": "首次或间隔＞10分钟",
+      "pos": [
+        254,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 28,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "expired",
+      "type": "backend",
+      "icon": "none",
+      "label": "记录并提示到期",
+      "sublabel": "先写已提醒与时间",
+      "pos": [
+        488,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 27,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "ignore",
+      "type": "backend",
+      "icon": "none",
+      "label": "忽略当前提示",
+      "sublabel": "继续遍历；不清零",
+      "pos": [
+        722,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 27,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "stop",
+      "type": "backend",
+      "icon": "none",
+      "label": "请求停止后清零",
+      "sublabel": "不等待更换确认",
+      "pos": [
+        488,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 27,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "remind-gate",
+      "type": "backend",
+      "icon": "none",
+      "label": "需提醒且未提醒",
+      "sublabel": "到期门控的否则分支",
+      "pos": [
+        254,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 27,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "remind",
+      "type": "backend",
+      "icon": "none",
+      "label": "弹出提前提醒",
+      "sublabel": "完成后标记已提醒",
+      "pos": [
+        254,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 27,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    },
+    {
+      "id": "skip",
+      "type": "backend",
+      "icon": "none",
+      "label": "本项不弹提示",
+      "sublabel": "继续遍历下一项",
+      "pos": [
+        20,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-consumables-review.md",
+          "line": 27,
+          "end_line": 27,
+          "label": "已提交的耗材源码复核"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "list-gate",
+      "from": "list",
+      "to": "gate"
+    },
+    {
+      "id": "gate-expired",
+      "from": "gate",
+      "to": "expired",
+      "label": "满足"
+    },
+    {
+      "id": "gate-remind-gate",
+      "from": "gate",
+      "to": "remind-gate",
+      "label": "否则"
+    },
+    {
+      "id": "expired-ignore",
+      "from": "expired",
+      "to": "ignore",
+      "label": "忽略"
+    },
+    {
+      "id": "expired-stop",
+      "from": "expired",
+      "to": "stop",
+      "label": "停止"
+    },
+    {
+      "id": "remind-gate-remind",
+      "from": "remind-gate",
+      "to": "remind",
+      "label": "满足"
+    },
+    {
+      "id": "remind-gate-skip",
+      "from": "remind-gate",
+      "to": "skip",
+      "label": "否则"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "扫描条件与提示",
+      "items": [
+        "图示针对单个非空耗材。Enable由各模型的到期和提醒方法判断。",
+        "到期且冷却未过仍会检查提前提醒；不是一律跳过。",
+        "同一后台线程同步等待提示，忽略不清零，停止后直接清零。"
+      ]
+    }
+  ]
+}

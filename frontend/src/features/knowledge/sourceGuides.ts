@@ -16,6 +16,7 @@ import { heightMeasurementGuide } from './reviews/heightMeasurement.ts';
 import { forceControlGuide } from './reviews/forceControl.ts';
 import { toolBankGuide } from './reviews/toolBank.ts';
 import { manualMaintenanceGuide } from './reviews/manualMaintenance.ts';
+import { consumablesGuide } from './reviews/consumables.ts';
 
 export interface SourceClaim {
   text: string;
@@ -57,6 +58,7 @@ export const sourceGuides: SourceGuide[] = [
   forceControlGuide,
   toolBankGuide,
   manualMaintenanceGuide,
+  consumablesGuide,
   startupGuide,
   recoveryGuide,
   transportGuide,

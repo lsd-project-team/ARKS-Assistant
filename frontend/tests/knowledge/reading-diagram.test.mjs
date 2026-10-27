@@ -410,3 +410,36 @@ test('清嘴图保留关闭不计数、未到间隔加一及先清洁再清零�
     assert.match(page.html, /区域Count先占用/);
   }
 });
+
+test('耗材扫描保留到期优先、冷却回落提醒及忽略与停止的不同清零边界', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const load = async (id) => JSON.parse(await readFile(new URL(id + '.json', folder), 'utf8'));
+  const wide = await load('consumables-scan-overview');
+  const narrow = await load('consumables-scan-reading');
+  const meaning = ({ pos, size, ...node }) => node;
+  assert.deepEqual(wide.components.map(meaning), narrow.components.map(meaning));
+  assert.deepEqual(wide.connections, narrow.connections);
+  const edges = wide.connections.map(({ from, to }) => from + '>' + to);
+  for (const edge of [
+    'list>gate',
+    'gate>expired',
+    'gate>remind-gate',
+    'expired>ignore',
+    'expired>stop',
+    'remind-gate>remind',
+    'remind-gate>skip',
+  ])
+    assert.ok(edges.includes(edge), edge);
+  for (const missing of ['gate>skip', 'ignore>stop', 'expired>remind'])
+    assert.ok(!edges.includes(missing), missing);
+  for (const id of ['consumables-scan-overview', 'consumables-scan-reading']) {
+    const page = createReadingDiagram(
+      await readFile(new URL(id + '.html', folder), 'utf8'),
+      'classic',
+    );
+    assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 8);
+    assert.match(page.html, /先写已提醒与时间/);
+    assert.match(page.html, /不等待更换确认/);
+    assert.match(page.html, /继续遍历；不清零/);
+  }
+});

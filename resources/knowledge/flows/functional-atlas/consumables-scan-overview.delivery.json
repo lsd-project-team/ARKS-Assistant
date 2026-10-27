@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "2a99a5ff-5b23-446e-9cf5-62e61e8d6a2f",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\consumables-scan-overview.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\consumables-scan-overview.html",
+  "specification": {
+    "sha256": "17b31e9e5c0543da08378a3afaedf4b79342b102195d8e109b448d7aa9730476",
+    "bytes": 5611
+  },
+  "artifact": {
+    "sha256": "3c462c35267233259a555db5eb96fd6f3f70cb4858fd551b8ed7556a67667136",
+    "bytes": 817928
+  }
+}
