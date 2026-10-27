@@ -20,7 +20,7 @@ Nozzle.IsAssistantSucceed 检查 ToolHeight、ToolAlignment、ToolGeometryAssist
 
 ## 吸嘴自动校准
 
-准备检查所选吸嘴存在、示教状态、PR、上视中心位置；重做 PR 时才进入会 ChangeNozzle 的窗口，准备方法没有无条件把当前工具换成所选吸嘴。取消重教直接 false，重教后拒绝开始会去安全位。实际 NozzleCaliAssistance 中自动测高区全部注释，仅执行中心 XY 校准：按 AlignAngle 定位第一次，成功即写 NozzleToUplookCenterPos；按当前角度正负旋转 180 度，用既有旋转偏移修正 XY，再定位第二次，计算两次 G0 结果半差写 NozzleOffset。成功后去安全位并 Save；第二次失败时第一次的对象写入不自动回滚，也没有这条成功尾部保存。两个定位调用的移动参数分别 false/true，不能简化为完全相同的拍照步骤。
+准备检查所选吸嘴存在、示教状态、PR、上视中心位置；重做 PR 时才进入会 ChangeNozzle 的窗口，准备方法没有无条件把当前工具换成所选吸嘴。取消重教直接 false，重教后拒绝开始会去安全位。实际 NozzleCaliAssistance 中自动测高区全部注释，仅执行中心 XY 校准：按 AlignAngle 定位第一次，成功即写 NozzleToUplookCenterPos；按当前角度正负旋转 180 度，用既有旋转偏移修正 XY，再定位第二次，计算两次 G0 结果半差写 NozzleOffset。成功后去安全位并 Save；第二次失败时第一次的对象写入不自动回滚，也没有这条成功尾部保存。第一次提供拍照位置，第二次传 null；第二次虽传 isZSafe=true，但位置为 null 时不进入该参数控制的移动分支。
 
 依据：System2Controller.AutoCali.cs 69–129、389–495；FrmSystem2Calibrate.cs 130–183。
 
