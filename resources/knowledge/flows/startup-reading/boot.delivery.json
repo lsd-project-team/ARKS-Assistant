@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "d7c999de-37e2-48af-aa74-880a073990d9",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-reading\\boot.archify.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-reading\\boot.html",
+  "specification": {
+    "sha256": "2d71621d0e3a4733ab37dd9141824d89b71bb31131c8fe7fc1fb9bc92a605fb0",
+    "bytes": 2495
+  },
+  "artifact": {
+    "sha256": "e4b6d41678deca115059b87bba37d9ffeaf1fb300fc7af189884845760fb210e",
+    "bytes": 813568
+  }
+}

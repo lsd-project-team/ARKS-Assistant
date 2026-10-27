@@ -1,0 +1,156 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "确认、准备检查与任务放行",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/startup-reading/production.html",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "界面 / 入口"
+        },
+        "backend": {
+          "label": "程序动作"
+        },
+        "security": {
+          "label": "条件 / 返回"
+        },
+        "messagebus": {
+          "label": "任务调用"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "prepare",
+      "label": "确认与准备"
+    },
+    {
+      "id": "release",
+      "label": "环境检查与状态"
+    },
+    {
+      "id": "result",
+      "label": "返回或任务放行"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "production-confirm",
+      "lane": "prepare",
+      "col": 0,
+      "type": "security",
+      "label": "配方允许继续?"
+    },
+    {
+      "id": "production-reset",
+      "lane": "prepare",
+      "col": 1,
+      "type": "backend",
+      "label": "清理文件与复位"
+    },
+    {
+      "id": "production-gates",
+      "lane": "prepare",
+      "col": 2,
+      "type": "security",
+      "label": "门控检查通过?"
+    },
+    {
+      "id": "production-safe",
+      "lane": "release",
+      "col": 0,
+      "type": "backend",
+      "label": "请求安全位置"
+    },
+    {
+      "id": "production-environment",
+      "lane": "release",
+      "col": 1,
+      "type": "security",
+      "label": "六项检查通过?"
+    },
+    {
+      "id": "production-working",
+      "lane": "release",
+      "col": 2,
+      "type": "backend",
+      "label": "设置 Working"
+    },
+    {
+      "id": "production-dispatch",
+      "lane": "result",
+      "col": 2,
+      "type": "messagebus",
+      "label": "调用任务入口"
+    },
+    {
+      "id": "production-return",
+      "lane": "result",
+      "col": 0,
+      "type": "security",
+      "label": "本次启动返回"
+    }
+  ],
+  "edges": [
+    {
+      "id": "production-confirm-to-production-reset",
+      "from": "production-confirm",
+      "to": "production-reset",
+      "label": "继续"
+    },
+    {
+      "id": "production-confirm-to-production-return",
+      "from": "production-confirm",
+      "to": "production-return",
+      "label": "取消",
+      "variant": "security"
+    },
+    {
+      "id": "production-reset-to-production-gates",
+      "from": "production-reset",
+      "to": "production-gates"
+    },
+    {
+      "id": "production-gates-to-production-safe",
+      "from": "production-gates",
+      "to": "production-safe",
+      "label": "是"
+    },
+    {
+      "id": "production-gates-to-production-return",
+      "from": "production-gates",
+      "to": "production-return",
+      "label": "否",
+      "variant": "security"
+    },
+    {
+      "id": "production-safe-to-production-environment",
+      "from": "production-safe",
+      "to": "production-environment"
+    },
+    {
+      "id": "production-environment-to-production-working",
+      "from": "production-environment",
+      "to": "production-working",
+      "label": "是",
+      "variant": "emphasis"
+    },
+    {
+      "id": "production-environment-to-production-return",
+      "from": "production-environment",
+      "to": "production-return",
+      "label": "否",
+      "variant": "security"
+    },
+    {
+      "id": "production-working-to-production-dispatch",
+      "from": "production-working",
+      "to": "production-dispatch"
+    }
+  ]
+}

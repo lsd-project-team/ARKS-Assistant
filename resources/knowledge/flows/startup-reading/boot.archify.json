@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "开机回零与主窗体门控",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/startup-reading/boot.html",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": {
+          "label": "界面 / 入口"
+        },
+        "backend": {
+          "label": "程序动作"
+        },
+        "security": {
+          "label": "条件 / 返回"
+        },
+        "messagebus": {
+          "label": "任务调用"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "program",
+      "label": "Main：开机调用"
+    },
+    {
+      "id": "window",
+      "label": "Load：加载门控"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "boot-option",
+      "lane": "program",
+      "col": 0,
+      "type": "security",
+      "label": "要求开机回零?"
+    },
+    {
+      "id": "boot-home",
+      "lane": "program",
+      "col": 1,
+      "type": "backend",
+      "label": "调用开机回零"
+    },
+    {
+      "id": "boot-form",
+      "lane": "program",
+      "col": 2,
+      "type": "frontend",
+      "label": "创建主窗体"
+    },
+    {
+      "id": "boot-gate",
+      "lane": "window",
+      "col": 0,
+      "type": "security",
+      "label": "非离线且未回零?"
+    },
+    {
+      "id": "boot-blocked",
+      "lane": "window",
+      "col": 1,
+      "type": "security",
+      "label": "禁用主区域并返回"
+    },
+    {
+      "id": "boot-load",
+      "lane": "window",
+      "col": 2,
+      "type": "backend",
+      "label": "加载并启动后台"
+    }
+  ],
+  "edges": [
+    {
+      "id": "boot-option-to-boot-home",
+      "from": "boot-option",
+      "to": "boot-home",
+      "label": "是"
+    },
+    {
+      "id": "boot-option-to-boot-form",
+      "from": "boot-option",
+      "to": "boot-form",
+      "label": "否",
+      "variant": "dashed"
+    },
+    {
+      "id": "boot-home-to-boot-form",
+      "from": "boot-home",
+      "to": "boot-form",
+      "label": "返回后"
+    },
+    {
+      "id": "boot-form-to-boot-gate",
+      "from": "boot-form",
+      "to": "boot-gate",
+      "label": "Load"
+    },
+    {
+      "id": "boot-gate-to-boot-blocked",
+      "from": "boot-gate",
+      "to": "boot-blocked",
+      "label": "是",
+      "variant": "security"
+    },
+    {
+      "id": "boot-gate-to-boot-load",
+      "from": "boot-gate",
+      "to": "boot-load",
+      "label": "否",
+      "variant": "emphasis"
+    }
+  ]
+}

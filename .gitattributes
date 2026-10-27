@@ -11,3 +11,4 @@ resources/deployment/Dockerfile.linux text eol=lf
 frontend/public/** -text
 # 新版样例的交付回执按原始字节核对 HTML 和输入文件。
 resources/knowledge/flows/startup-v3-sample/** -text
+resources/knowledge/flows/startup-reading/** -text

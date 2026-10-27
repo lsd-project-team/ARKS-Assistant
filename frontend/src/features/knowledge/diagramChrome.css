@@ -1,4 +1,23 @@
 /* Embedded diagrams share the workspace chrome; semantic node colors stay intact. */
+g.guided-node-active {
+  filter: drop-shadow(0 0 4px var(--chrome-accent, #4a75dd));
+}
+g.guided-node-active > rect {
+  stroke-width: 2.5;
+}
+/* 内嵌图按画布比例展示，避免阅读器再次按 iframe 高度缩小，留下大片空白。 */
+html[data-embed='true'] .diagram-container {
+  display: block;
+  min-height: 0;
+  padding: 8px;
+}
+html[data-embed='true'] .diagram-container > svg {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  height: auto;
+  transform: none !important;
+}
 body,
 button,
 input,

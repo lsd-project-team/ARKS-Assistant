@@ -2,6 +2,7 @@ import { knowledgePath } from './resources.mjs';
 import { access } from 'node:fs/promises';
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 import './check-source-guides.mjs';
+import './check-guided-diagrams.mjs';
 
 const missing = [];
 let checked = 0;
