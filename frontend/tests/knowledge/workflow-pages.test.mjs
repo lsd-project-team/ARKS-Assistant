@@ -10,7 +10,8 @@ import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 
 const result = await build({
   stdin: {
-    contents: "export * from './src/features/knowledge/KnowledgePages.tsx';",
+    contents:
+      "export * from './src/features/knowledge/KnowledgePages.tsx'; export { coordinateVisual } from './src/features/knowledge/coordinates/CoordinateReader.tsx';",
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -44,7 +45,7 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module,
   module.exports,
 );
-const { TopicDetail, DiagramDetail, GraphAtlas } = module.exports;
+const { TopicDetail, DiagramDetail, GraphAtlas, coordinateVisual } = module.exports;
 const render = (component, props) =>
   renderToStaticMarkup(createElement(component, { navigate() {}, ...props }));
 
@@ -78,11 +79,15 @@ test('生产流程保留原图、节点说明和协作条件，移除节点依�
   }
 });
 
-test('G0 从专题和图谱目录进入同一阅读页，提供原生关系图而非缺失原图提示', () => {
+test('G0 从专题和图谱目录进入同一阅读页，使用 Archify 交付图', () => {
   const topic = render(TopicDetail, { id: 'g0' });
   const catalog = render(DiagramDetail, { id: 'g0-coordinate-system', theme: 'light' });
   assert.equal(catalog, topic);
-  assert.match(topic, /<svg[^>]+role="img"/);
+  assert.match(
+    topic,
+    /<iframe[^>]+src="\/archify\/g0-archify\/device-tree\.html\?theme=light&amp;review=/,
+  );
+  assert.doesNotMatch(topic, /<svg[^>]+role="img"|g0-map-wide|g0-map-compact/);
   for (const label of [
     '坐标关系',
     '普通转换',
@@ -95,6 +100,21 @@ test('G0 从专题和图谱目录进入同一阅读页，提供原生关系图�
     assert.ok(topic.includes(label), label);
   assert.doesNotMatch(topic, /原图尚未生成|业务介绍|展开专题概览与协作条件/);
   assert.equal((topic.match(/<h1>/g) ?? []).length, 1);
+});
+
+test('G0 三张关系图都引用实际 Archify HTML，公式与数值例子继续留在节点内', () => {
+  for (const [flow, step, file] of [
+    ['g0-relations', 'reference', 'device-tree'],
+    ['g0-relations', 'product', 'product-tree'],
+    ['g0-camera', 'inputs', 'camera-workflow'],
+  ]) {
+    const html = renderToStaticMarkup(coordinateVisual(flow, step));
+    assert.ok(html.includes(`/archify/g0-archify/${file}.html?theme=`));
+    assert.equal((html.match(/<iframe/g) ?? []).length, 1);
+    assert.match(html, /全屏阅读/);
+  }
+  assert.match(renderToStaticMarkup(coordinateVisual('g0-general', 'forward')), /cos θ/);
+  assert.match(renderToStaticMarkup(coordinateVisual('g0-general', 'example')), /<table>/);
 });
 
 test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱仍可展示', () => {

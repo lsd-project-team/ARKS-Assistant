@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "tool": "Archify",
+  "toolVersion": "3.2.0",
+  "repository": {
+    "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+    "revision": "abadbc51c573732843b579e6c058bc28992298da"
+  },
+  "evidenceSource": "Pinned references use the committed source review, not untracked trunk files. Original source ranges and fingerprints remain in frontend/scripts/knowledge/source-evidence.json.",
+  "diagrams": [
+    {
+      "id": "device-tree",
+      "type": "tree",
+      "specification": {
+        "path": "device-tree.json",
+        "sha256": "41125b4eae4ec8335fd5fee66d06bdce7dd787e48d00c404bbfe0ae4dc656944"
+      },
+      "artifact": {
+        "path": "device-tree.html",
+        "sha256": "a2b1c13ad99e306ec337715e955acc2a03b83621fefe6862388b64e964fdc541"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "browserCheck": {
+        "status": "pass",
+        "artifactSha256": "a2b1c13ad99e306ec337715e955acc2a03b83621fefe6862388b64e964fdc541",
+        "visualReview": "not-requested"
+      }
+    },
+    {
+      "id": "product-tree",
+      "type": "tree",
+      "specification": {
+        "path": "product-tree.json",
+        "sha256": "d6de0c64c5bee67da5215bf3e0bb35b6bceae2336bb38959005eef7ffe5b0b38"
+      },
+      "artifact": {
+        "path": "product-tree.html",
+        "sha256": "bc44763ae5e33ffc955b69c5fc2154a97358b0d45857eb74bf1bbc4e9dd0bab7"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "browserCheck": {
+        "status": "pass",
+        "artifactSha256": "bc44763ae5e33ffc955b69c5fc2154a97358b0d45857eb74bf1bbc4e9dd0bab7",
+        "visualReview": "not-requested"
+      }
+    },
+    {
+      "id": "camera-workflow",
+      "type": "workflow",
+      "specification": {
+        "path": "camera-workflow.json",
+        "sha256": "5f6cfe2bde96abe816377e947367f87ef937361b6d67f9e600b93c17bd023dd8"
+      },
+      "artifact": {
+        "path": "camera-workflow.html",
+        "sha256": "9be54f1597bc6247a3dd4c70e1c2d7f05cfbb77d4277e0683a3a35645c6d77fa"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "browserCheck": {
+        "status": "pass",
+        "artifactSha256": "9be54f1597bc6247a3dd4c70e1c2d7f05cfbb77d4277e0683a3a35645c6d77fa",
+        "visualReview": "not-requested"
+      }
+    }
+  ],
+  "manualReview": {
+    "surface": "Published reading copy, with existing readingDiagram source hiding and workspace chrome",
+    "standaloneArtifacts": [
+      "device-tree",
+      "product-tree",
+      "camera-workflow"
+    ],
+    "embeddedHosts": [
+      "g0-relations/reference",
+      "g0-relations/product",
+      "g0-camera/inputs"
+    ],
+    "interactions": [
+      "native zoom"
+    ],
+    "notes": [
+      "Narrow embed supports readable local inspection by zooming and panning; full overview is available in the standalone viewer."
+    ]
+  }
+}

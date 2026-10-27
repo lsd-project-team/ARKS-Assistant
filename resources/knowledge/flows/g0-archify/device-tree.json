@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "diagram_type": "tree",
+  "meta": {
+    "title": "设备与相机的典型父级",
+    "locale": "zh-CN",
+    "output": "resources/knowledge/flows/g0-archify/device-tree.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "abadbc51c573732843b579e6c058bc28992298da"
+    }
+  },
+  "layout": {
+    "direction": "right",
+    "nodeW": 154,
+    "nodeMaxW": 184,
+    "gapX": 52,
+    "gapY": 34
+  },
+  "nodes": [
+    {
+      "id": "g0",
+      "label": "G0",
+      "sublabel": "统一参考",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "transport",
+      "parent": "g0",
+      "label": "输送坐标",
+      "sublabel": "Transport",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "dispense",
+      "parent": "g0",
+      "label": "点胶坐标",
+      "sublabel": "Dispense",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "dispense-camera",
+      "parent": "dispense",
+      "label": "点胶相机坐标",
+      "sublabel": "相机从属坐标",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 187,
+          "end_line": 196,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "bond",
+      "parent": "g0",
+      "label": "固晶坐标",
+      "sublabel": "Bond",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "bond-camera",
+      "parent": "bond",
+      "label": "Bond 相机坐标",
+      "sublabel": "相机从属坐标",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 187,
+          "end_line": 196,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "uplook-camera",
+      "parent": "bond",
+      "label": "上视相机坐标",
+      "sublabel": "相机从属坐标",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 187,
+          "end_line": 196,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "wafer",
+      "parent": "g0",
+      "label": "晶圆台坐标",
+      "sublabel": "WaferTable",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "wafer-camera",
+      "parent": "wafer",
+      "label": "晶圆相机坐标",
+      "sublabel": "相机从属坐标",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 187,
+          "end_line": 196,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "连线的含义",
+      "items": [
+        "父坐标在左，子坐标在右；连线表示典型父级关系。",
+        "实际父级由加载的 UpperName 绑定，不表示控制命令。"
+      ]
+    }
+  ]
+}

@@ -75,3 +75,22 @@ export function ProductionPath({ bond = false }: { bond?: boolean }) {
     </ol>
   );
 }
+
+export function StorageMap() {
+  return (
+    <div className="g0-storage" aria-label="坐标参数、标定文件与内存对象的保存关系">
+      <div>
+        <b>坐标目录 JSON</b>
+        <span>名称、父级名称、平移、角度、模式与采点</span>
+      </div>
+      <div>
+        <b>标定文件 .iwcal</b>
+        <span>相机像素到物理 XY 的转换关系</span>
+      </div>
+      <div>
+        <b>内存中的对象</b>
+        <span>父引用与转换工具按需重建，旧引用需单独核对</span>
+      </div>
+    </div>
+  );
+}

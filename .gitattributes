@@ -11,3 +11,5 @@ resources/deployment/Dockerfile.linux text eol=lf
 frontend/public/** -text
 # 新版样例的交付回执按原始字节核对 HTML 和输入文件。
 resources/knowledge/flows/startup-v3-sample/** -text
+# Archify 交付与候选指纹需要在检出后保持一致。
+resources/knowledge/flows/g0-archify/** -text

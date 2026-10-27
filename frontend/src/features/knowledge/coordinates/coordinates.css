@@ -7,62 +7,42 @@
 .knowledge-workspace .g0-reader .source-flow-nodes li + li {
   margin-top: 8px;
 }
-.knowledge-workspace .g0-reader .source-step-detail {
-  container-type: inline-size;
-}
-.knowledge-workspace .g0-figure {
+.knowledge-workspace .g0-archify {
   margin: 22px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
 }
-.knowledge-workspace .g0-figure svg {
+.knowledge-workspace .g0-archify .panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.knowledge-workspace .g0-archify .eyebrow {
+  letter-spacing: 0;
+  font-size: 12px;
+}
+.knowledge-workspace .g0-archify .button {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.knowledge-workspace .g0-archify iframe {
   display: block;
   width: 100%;
-  height: auto;
-  overflow: visible;
+  height: 600px;
+  border: 0;
 }
-.knowledge-workspace .g0-figure .g0-map-compact {
-  display: none;
-}
-@container (max-width: 520px) {
-  .knowledge-workspace .g0-figure .g0-map-wide {
-    display: none;
-  }
-  .knowledge-workspace .g0-figure .g0-map-compact {
-    display: block;
-  }
-}
-.knowledge-workspace .g0-figure figcaption {
-  margin-top: 12px;
+.knowledge-workspace .g0-archify figcaption {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
   color: var(--muted);
   font-size: 12px;
   line-height: 1.8;
-}
-.knowledge-workspace .g0-map-box rect {
-  fill: var(--panel);
-  stroke: var(--border);
-  stroke-width: 1.3;
-}
-.knowledge-workspace .g0-map-root rect {
-  fill: var(--surface-subtle);
-  stroke: var(--accent);
-}
-.knowledge-workspace .g0-map-box text {
-  fill: var(--text);
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 500;
-}
-.knowledge-workspace .g0-figure .g0-map-detail {
-  fill: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-}
-.knowledge-workspace .g0-map-line {
-  fill: none;
-  stroke: var(--muted);
-  stroke-width: 1.25;
-}
-.knowledge-workspace .g0-map-arrow {
-  color: var(--muted);
 }
 .knowledge-workspace .g0-formula,
 .knowledge-workspace .g0-storage,
