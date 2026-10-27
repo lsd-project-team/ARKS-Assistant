@@ -19,14 +19,53 @@
 .knowledge-workspace :is(.g0-reader, .atlas-reader) .source-step-detail {
   width: 100%;
 }
+.knowledge-workspace .knowledge-content:has(.g0-reader) {
+  padding: 24px 24px 72px;
+}
+.knowledge-workspace .page-header:has(+ .g0-reader) {
+  margin-bottom: 18px;
+}
+.knowledge-workspace .g0-reader .source-guide {
+  margin-top: 0;
+}
+.knowledge-workspace .g0-reader .section-heading {
+  margin: 0 0 12px;
+}
+.knowledge-workspace .g0-reader .section-heading > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.knowledge-workspace .g0-reader .section-heading h2 {
+  font-size: 16px;
+}
+.knowledge-workspace .g0-reader .section-heading p {
+  margin: 0;
+}
+.knowledge-workspace .g0-reader .source-flow-panel {
+  padding: 16px;
+}
+.knowledge-workspace .g0-reader .source-flow-panel > .source-claim {
+  margin-bottom: 12px;
+}
+.knowledge-workspace .g0-reader .source-flow-nodes button {
+  padding: 9px 10px;
+}
 .knowledge-workspace .g0-reader .source-flow-layout {
-  gap: 16px;
+  gap: 12px;
+}
+.knowledge-workspace .g0-reader .source-step-detail h3 {
+  margin-bottom: 6px;
 }
 .knowledge-workspace .g0-reader .g0-archify {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 .knowledge-workspace .g0-reader .g0-archify .panel-title {
   padding: 8px 12px;
+}
+.knowledge-workspace .g0-reader .g0-reading-surface {
+  padding: 8px;
 }
 .knowledge-workspace .g0-reading-surface {
   display: flex;
@@ -155,6 +194,9 @@
   margin-bottom: 3px;
 }
 @media (max-width: 760px) {
+  .knowledge-workspace .knowledge-content:has(.g0-reader) {
+    padding-inline: 16px;
+  }
   .knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-layout {
     grid-template-columns: 1fr;
   }

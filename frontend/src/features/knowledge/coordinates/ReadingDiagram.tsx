@@ -26,8 +26,8 @@ export function ReadingDiagram({
   const appearance = useAppearance((state) => state.mode);
   // 按图的可读宽度切换排布，避免宽图整体缩小后文字难辨。
   const selected = narrow && width !== null && width < readingMinWidth ? narrow : source;
-  // 宽图扩大字号并利用正文宽度；纵图保持原字号，避免长标签挤出节点。
-  const fontSize = selected === source ? readingFontSize : 18;
+  // 横纵图使用同一阅读字号，切换排布时仍保持文字清晰。
+  const fontSize = readingFontSize;
   const naturalWidth = page ? (page.width * fontSize) / 18 : 0;
   const url = `/archify/${selected.path}?review=${selected.sha256.slice(0, 16)}`;
 
