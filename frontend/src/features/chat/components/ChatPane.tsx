@@ -4,13 +4,7 @@ import { X, FileCode2, ChevronDown, RotateCcw, Folders } from 'lucide-react';
 import { api as request, jsonBody } from '../../../app/api/client';
 import { useWorkspace, draftFor, draftKey, type ConversationDraft } from '../../../app/state/store';
 import { useRunStream } from '../hooks/useRunStream';
-import type {
-  QueuedQuestion,
-  Run,
-  Settings,
-  Thread,
-  SourceOptions,
-} from '../../../shared/types/api';
+import type { QueuedQuestion, Run, Settings, SourceOptions } from '../../../shared/types/api';
 import { AnswerMarkdown } from './AnswerMarkdown';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useChatScroll } from '../hooks/useChatScroll';
@@ -191,26 +185,6 @@ export function ChatPane({
       toast('问题已修改，原始版本保留');
     },
   });
-  const fork = useMutation({
-    mutationFn: ({ id, messageId }: { id: string; messageId: string }) =>
-      api<Thread>(`/threads/${id}/fork`, {
-        method: 'POST',
-        body: jsonBody({ message_id: messageId }),
-      }),
-    onSuccess: (branch, { id }) => {
-      const open = () => {
-        const state = useWorkspace.getState();
-        state.switchProject(projectId);
-        state.selectThread(branch.id);
-      };
-      if (useWorkspace.getState().threadId === id) open();
-      void cache.invalidateQueries({ queryKey: ['threads'] });
-      toast('已创建会话分支', { label: '打开分支', run: open });
-    },
-    onError: (error) =>
-      toast(error instanceof Error ? error.message : '创建分支失败', undefined, 'error'),
-  });
-  const forkMessage = (messageId: string) => fork.mutate({ id: threadId, messageId });
   const resume = useMutation({
     mutationFn: (id: string) => api<Run>(`/runs/${id}/resume`, { method: 'POST' }),
     onSuccess: (run) => {
@@ -392,8 +366,6 @@ export function ChatPane({
                       }
                       onRegenerate={(id) => regenerate.mutate(id)}
                       onContext={(id) => setContext({ runId: id })}
-                      onFork={forkMessage}
-                      forking={fork.isPending}
                     />
                   </MessageArchive>
                 </div>
@@ -425,8 +397,6 @@ export function ChatPane({
                         })
                     : undefined
                 }
-                onFork={archivedProject ? undefined : forkMessage}
-                forking={fork.isPending}
                 recent={run?.id === latest?.id}
               />
             );

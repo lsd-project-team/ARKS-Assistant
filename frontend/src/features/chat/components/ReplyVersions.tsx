@@ -9,16 +9,12 @@ export function ReplyVersions({
   canRegenerate,
   onRegenerate,
   onContext,
-  onFork,
-  forking,
 }: {
   versions: { message: Message; run: Run }[];
   selectedMessage: string;
   canRegenerate: boolean;
   onRegenerate: (id: string) => void;
   onContext: (id: string) => void;
-  onFork?: (messageId: string) => void;
-  forking?: boolean;
 }) {
   const [chosen, setChosen] = useState('');
   const wanted = chosen || selectedMessage;
@@ -53,8 +49,6 @@ export function ReplyVersions({
         canRegenerate={canRegenerate && index === versions.length - 1}
         onRegenerate={onRegenerate}
         onContext={onContext}
-        onFork={onFork}
-        forking={forking}
       />
     </div>
   );

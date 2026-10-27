@@ -1,6 +1,6 @@
 import { useProjectApi } from '../../projects/hooks/useProjectApi';
 import { useQuery } from '@tanstack/react-query';
-import { Check, ChevronDown } from 'lucide-react';
+import { BookOpen, ChevronDown, ListTree } from 'lucide-react';
 import type { ToolEvent, RunCompletion, AnalysisProgress } from '../../../shared/types/api';
 import { ToolActivity } from './ToolActivity';
 import { toolSummary } from '../lib/runCompletion';
@@ -10,7 +10,13 @@ interface Event {
   kind: string;
   payload: Record<string, unknown>;
 }
-export function RunTrace({ runId }: { runId: string }) {
+export function RunTrace({
+  runId,
+  onContext,
+}: {
+  runId: string;
+  onContext: (runId: string) => void;
+}) {
   const api = useProjectApi();
   const trace = useQuery({
     queryKey: ['trace', runId],
@@ -33,17 +39,24 @@ export function RunTrace({ runId }: { runId: string }) {
     ?.slice()
     .reverse()
     .find((event) => event.kind === 'analysis_progress')?.payload as AnalysisProgress | undefined;
-  if (!tools?.length && !completion) return null;
+  // 历史运行可能没有工具或完成事件，仍需保留本轮上下文的查看入口。
   return (
     <details className="saved-trace">
       <summary>
-        <Check size={12} />
+        <ListTree size={12} />
+        <span>运行详情</span>
         {tools?.length ? toolSummary(tools) : completion?.label}
         {!!tools?.length && completion && <span>{completion.label}</span>}
         <ChevronDown size={12} />
       </summary>
       <AnalysisRunDetails completion={completion} progress={progress} />
       <ToolActivity tools={tools || []} />
+      <div className="answer-actions">
+        <button type="button" onClick={() => onContext(runId)}>
+          <BookOpen size={14} />
+          查看本轮上下文
+        </button>
+      </div>
     </details>
   );
 }

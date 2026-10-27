@@ -3,11 +3,9 @@ import {
   Copy,
   Check,
   RotateCcw,
-  BookOpen,
   FileCode2,
   Quote,
   Pencil,
-  GitBranch,
   BookmarkPlus,
   MessageSquare,
 } from 'lucide-react';
@@ -34,8 +32,6 @@ export function MessageBubble({
   onRegenerate,
   onContext,
   onEdit,
-  onFork,
-  forking = false,
   recent = false,
 }: {
   message: Message;
@@ -44,8 +40,6 @@ export function MessageBubble({
   onRegenerate: (id: string) => void;
   onContext: (id: string) => void;
   onEdit?: (content: string) => Promise<unknown>;
-  onFork?: (messageId: string) => void;
-  forking?: boolean;
   recent?: boolean;
 }) {
   const setDraft = useWorkspace((state) => state.setDraft);
@@ -121,7 +115,7 @@ export function MessageBubble({
             {selection.stale && <span>旧版本</span>}
           </button>
         ))}
-        {run && <RunTrace runId={run.id} />}
+        {run && <RunTrace runId={run.id} onContext={onContext} />}
         <div
           ref={body}
           onMouseUp={() => {
@@ -200,16 +194,6 @@ export function MessageBubble({
                 <RotateCcw size={14} />
               </button>
             )}
-            {run && (
-              <button
-                aria-label="查看本轮上下文"
-                title="查看本轮上下文"
-                onClick={() => onContext(run.id)}
-              >
-                <BookOpen size={14} />
-                <span>上下文</span>
-              </button>
-            )}
           </>
         )}
         {onEdit && (
@@ -220,16 +204,6 @@ export function MessageBubble({
             onClick={() => setEditing(true)}
           >
             <Pencil size={14} />
-          </button>
-        )}
-        {message.role === 'assistant' && onFork && (
-          <button
-            aria-label="从此消息创建分支"
-            title="从此消息创建分支"
-            disabled={forking}
-            onClick={() => onFork(message.id)}
-          >
-            <GitBranch size={14} />
           </button>
         )}
         {message.role === 'assistant' && (
