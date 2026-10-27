@@ -48,37 +48,48 @@ export function KnowledgeFeedback({
           {save.text} · {save.scope === 'user' ? '个人偏好' : '项目记忆'} · {save.name}
         </p>
       ))}
-      {(sources.length > 0 || notices.length > 0) && (
-        <details>
-          <summary>
-            {mode === 'context' ? '资料检索记录' : '本轮参考'}
-            {sources.length > 0 ? ` · ${sources.length} 条资料` : ' · 检索结果'}
-          </summary>
-          {sources.length > 0 && (
-            <p className="muted">
-              {mode === 'context'
-                ? '本轮自动带入或检索返回的资料，不表示回答已经引用。'
-                : '本轮回答明确引用的资料，点开可核对原文。'}
-            </p>
+      {mode === 'answer'
+        ? sources.length > 0 && (
+            <details>
+              <summary>参考资料</summary>
+              {sources.map((row) => (
+                <div className="knowledge-reference" key={row.citation}>
+                  <Markdown content={`[${row.title.replace(/[\[\]\n]/g, ' ')}](${row.citation})`} />
+                </div>
+              ))}
+            </details>
+          )
+        : (sources.length > 0 || notices.length > 0) && (
+            <details>
+              <summary>
+                资料检索记录
+                {sources.length > 0 ? ` · ${sources.length} 条资料` : ' · 检索结果'}
+              </summary>
+              {sources.length > 0 && (
+                <p className="muted">本轮自动带入或检索返回的资料，不表示回答已经引用。</p>
+              )}
+              {sources.map((row) => (
+                <div className="knowledge-reference" key={row.citation}>
+                  <small>
+                    {knowledgeKindLabels[row.kind]} · v{row.version}
+                  </small>
+                  <Markdown content={`[${row.title.replace(/[\[\]\n]/g, ' ')}](${row.citation})`} />
+                  {row.resolution_status === 'open' && <small>未解决，不能作为已验证方案</small>}
+                  {row.compatibility?.status === 'needs_confirmation' && (
+                    <small>适用条件待核对</small>
+                  )}
+                  {row.compatibility?.status === 'mismatch' && (
+                    <small>条件不符，仅供历史对照</small>
+                  )}
+                </div>
+              ))}
+              {notices.map((notice) => (
+                <p className="muted" key={notice}>
+                  {notice}
+                </p>
+              ))}
+            </details>
           )}
-          {sources.map((row) => (
-            <div className="knowledge-reference" key={row.citation}>
-              <small>
-                {knowledgeKindLabels[row.kind]} · v{row.version}
-              </small>
-              <Markdown content={`[${row.title.replace(/[\[\]\n]/g, ' ')}](${row.citation})`} />
-              {row.resolution_status === 'open' && <small>未解决，不能作为已验证方案</small>}
-              {row.compatibility?.status === 'needs_confirmation' && <small>适用条件待核对</small>}
-              {row.compatibility?.status === 'mismatch' && <small>条件不符，仅供历史对照</small>}
-            </div>
-          ))}
-          {notices.map((notice) => (
-            <p className="muted" key={notice}>
-              {notice}
-            </p>
-          ))}
-        </details>
-      )}
     </div>
   );
 }
