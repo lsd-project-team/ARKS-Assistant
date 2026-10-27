@@ -10,6 +10,7 @@ import type { Route } from './routes';
 import { UiIcon } from './UiIcon';
 import { Select } from '../../shared/ui/Select';
 import { SourceGuidePanel } from './SourceGuidePanel';
+import { CoordinateReader } from './coordinates/CoordinateReader';
 import { useAppearance } from '../settings/lib/appearance';
 import diagramChrome from './diagramChrome.css?inline';
 import diagramLatinFont from '@fontsource-variable/geist/index.css?inline';
@@ -63,31 +64,37 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
       >
         {topic.summary}
       </PageHeader>
-      <SourceGuidePanel key={id} page={id} />
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <h2>建议阅读顺序</h2>
-            <p>先了解整体流程，再阅读具体条件与异常</p>
-          </div>
-        </div>
-        <div className="graph-grid">
-          {entries
-            .filter((entry) => !isSupportingEntry(entry))
-            .map((entry) => (
-              <CatalogCard
-                key={entry.id}
-                entry={entry}
-                onOpen={() => navigate(diagramRoute(entry.id))}
-              />
-            ))}
-        </div>
-      </section>
-      <details className="section card panel reading-disclosure">
-        <summary>展开专题概览与协作条件</summary>
-        <TopicReading topic={topic} />
-        <TopicCoordination diagrams={topic.diagrams} />
-      </details>
+      {topic.id === 'g0' ? (
+        <CoordinateReader />
+      ) : (
+        <>
+          <SourceGuidePanel key={id} page={id} />
+          <section className="section">
+            <div className="section-heading">
+              <div>
+                <h2>建议阅读顺序</h2>
+                <p>先了解整体流程，再阅读具体条件与异常</p>
+              </div>
+            </div>
+            <div className="graph-grid">
+              {entries
+                .filter((entry) => !isSupportingEntry(entry))
+                .map((entry) => (
+                  <CatalogCard
+                    key={entry.id}
+                    entry={entry}
+                    onOpen={() => navigate(diagramRoute(entry.id))}
+                  />
+                ))}
+            </div>
+          </section>
+          <details className="section card panel reading-disclosure">
+            <summary>展开专题概览与协作条件</summary>
+            <TopicReading topic={topic} />
+            <TopicCoordination diagrams={topic.diagrams} />
+          </details>
+        </>
+      )}
     </>
   );
 }
@@ -267,6 +274,7 @@ export function DiagramDetail({
   };
   if (!entry || isSupportingEntry(entry))
     return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
+  if (entry.inlineTopic) return <TopicDetail id={entry.inlineTopic} navigate={navigate} />;
   const reading = diagramReadings[id];
   const title = displayDiagramTitle(id, entry.title);
   const record = archifyData.diagramRecords[id];

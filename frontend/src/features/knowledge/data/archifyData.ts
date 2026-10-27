@@ -1,4 +1,5 @@
 import type { ArchifyData } from '../types';
+import { coordinateCatalogEntry } from './coordinateTopic.ts';
 
 export const archifyData: ArchifyData = {
   graphs: [
@@ -10102,11 +10103,11 @@ export const archifyData: ArchifyData = {
   flowchartCatalog: {
     schemaVersion: 1,
     title: 'ZX2200 已处理流程图总览',
-    generatedOn: '2026-10-08',
-    scope:
-      'docs/archify 中的 Archify 图纸规格、交付 HTML 与补充图页；视觉证据指 *.visual-check.html 自动化产物。',
+    generatedOn: '2026-10-27',
+    scope: '独立图谱、补充图页与应用内功能阅读；视觉证据指 *.visual-check.html 自动化产物。',
     counts: {
-      total: 65,
+      total: 66,
+      inlineReaders: 1,
       archifySpecs: 62,
       deliveredHtml: 65,
       visualEvidence: 27,
@@ -10121,8 +10122,10 @@ export const archifyData: ArchifyData = {
       dataflow: '04 数据流图',
       architecture: '05 架构图',
       supplemental: '06 HTML 补充页',
+      reader: '07 功能阅读',
     },
     entries: [
+      coordinateCatalogEntry,
       {
         id: 'startup-workflow',
         title: '01 · 启动、回零与生产放行',
@@ -12582,6 +12585,11 @@ export const archifyData: ArchifyData = {
     'config-production-gates': [],
   },
   diagramRecords: {
+    'g0-coordinate-system': {
+      htmlAvailable: false,
+      reviewDocuments: [],
+      visualAvailable: true,
+    },
     'startup-workflow': {
       htmlAvailable: true,
       reviewDocuments: ['docs/archify/startup-semantic-revalidation.md'],

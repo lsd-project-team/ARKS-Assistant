@@ -44,7 +44,7 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module,
   module.exports,
 );
-const { TopicDetail, DiagramDetail } = module.exports;
+const { TopicDetail, DiagramDetail, GraphAtlas } = module.exports;
 const render = (component, props) =>
   renderToStaticMarkup(createElement(component, { navigate() {}, ...props }));
 
@@ -76,4 +76,39 @@ test('生产流程保留原图、节点说明和协作条件，移除节点依�
       /源码依据|查看依据|查看协作依据|evidence-item|source-file|source-method|<pre/,
     );
   }
+});
+
+test('G0 从专题和图谱目录进入同一阅读页，提供原生关系图而非缺失原图提示', () => {
+  const topic = render(TopicDetail, { id: 'g0' });
+  const catalog = render(DiagramDetail, { id: 'g0-coordinate-system', theme: 'light' });
+  assert.equal(catalog, topic);
+  assert.match(topic, /<svg[^>]+role="img"/);
+  for (const label of [
+    '坐标关系',
+    '普通转换',
+    '相机转换',
+    '加载与保存',
+    '标定与修正',
+    '生产应用',
+    '使用边界',
+  ])
+    assert.ok(topic.includes(label), label);
+  assert.doesNotMatch(topic, /原图尚未生成|业务介绍|展开专题概览与协作条件/);
+  assert.equal((topic.match(/<h1>/g) ?? []).length, 1);
+});
+
+test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱仍可展示', () => {
+  const html = render(GraphAtlas, {});
+  assert.match(html, /设备、产品和相机中的位置怎样转换为同一个 G0 目标/);
+  const entry = archifyData.flowchartCatalog.entries.find(
+    (item) => item.id === 'g0-coordinate-system',
+  );
+  assert.equal(entry.inlineTopic, 'g0');
+  assert.equal(
+    archifyData.flowchartCatalog.counts.total,
+    archifyData.flowchartCatalog.entries.length,
+  );
+  const startup = render(DiagramDetail, { id: 'startup-workflow', theme: 'light' });
+  assert.match(startup, /<iframe/);
+  assert.doesNotMatch(startup, /g0-reader/);
 });

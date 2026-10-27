@@ -1,10 +1,19 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { ArrowDown, ChevronRight } from 'lucide-react';
 import { guideForPage } from './sourceGuides';
 import type { SourceClaim, SourceFlow } from './sourceGuides';
 import './source-guides.css';
 
-export function SourceGuidePanel({ page }: { page: string }) {
+export type StepVisual = (flow: string, step: string) => ReactNode;
+
+export function SourceGuidePanel({
+  page,
+  renderVisual,
+}: {
+  page: string;
+  renderVisual?: StepVisual;
+}) {
   const guide = guideForPage(page);
   // 专题保留整体入口；局部图默认展示对应环节，避免胶检页先打开配方排序。
   const [selected, setSelected] = useState(guide?.initialFlows?.[page] ?? guide?.flows[0]?.id);
@@ -31,7 +40,7 @@ export function SourceGuidePanel({ page }: { page: string }) {
           </button>
         ))}
       </div>
-      <SourceFlowPanel key={flow.id} flow={flow} />
+      <SourceFlowPanel key={flow.id} flow={flow} renderVisual={renderVisual} />
       <details className="source-guide-boundary">
         <summary>说明范围</summary>
         {guide.boundaries.map((claim, index) => (
@@ -42,7 +51,7 @@ export function SourceGuidePanel({ page }: { page: string }) {
   );
 }
 
-function SourceFlowPanel({ flow }: { flow: SourceFlow }) {
+function SourceFlowPanel({ flow, renderVisual }: { flow: SourceFlow; renderVisual?: StepVisual }) {
   const [selected, setSelected] = useState(flow.steps[0].id);
   const step = flow.steps.find((item) => item.id === selected) ?? flow.steps[0];
   return (
@@ -78,6 +87,7 @@ function SourceFlowPanel({ flow }: { flow: SourceFlow }) {
         <article className="source-step-detail" aria-live="polite">
           <h3>{step.title}</h3>
           <SourceClaimText claim={step} />
+          {renderVisual?.(flow.id, step.id)}
           {step.outcomes.map((branch, index) => (
             <section className="source-flow-outcome" key={index}>
               <h4>{branch.label}</h4>

@@ -53,6 +53,7 @@ export interface ResourceLink {
 
 export interface FlowchartCatalogEntry {
   id: string;
+  inlineTopic?: string;
   title: string;
   type: string;
   typeLabel: string;

@@ -1,3 +1,5 @@
+import { coordinateTopic } from './coordinateTopic.ts';
+
 export interface PresentationTopic {
   id: string;
   title: string;
@@ -10,6 +12,7 @@ export interface PresentationTopic {
 
 // Reader-facing summaries of the existing diagrams; these describe source behavior.
 export const presentationTopics: PresentationTopic[] = [
+  coordinateTopic,
   {
     id: 'architecture',
     title: '系统架构与生产总流程',

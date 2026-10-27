@@ -4,6 +4,7 @@ import { transportGuide } from './reviews/transport.ts';
 import { s1Guide } from './reviews/s1.ts';
 import { s2Guide } from './reviews/s2.ts';
 import { waferGuide } from './reviews/wafer.ts';
+import { g0Guide } from './reviews/g0.ts';
 
 export interface SourceClaim {
   text: string;
@@ -33,6 +34,7 @@ export interface SourceGuide {
   boundaries: SourceClaim[];
 }
 export const sourceGuides: SourceGuide[] = [
+  g0Guide,
   startupGuide,
   recoveryGuide,
   transportGuide,
