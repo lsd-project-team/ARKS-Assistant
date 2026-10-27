@@ -3,6 +3,7 @@ import { access, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 import { coordinateArtifacts } from '../../src/features/knowledge/data/coordinateDiagrams.ts';
+import { functionalArtifacts } from '../../src/features/knowledge/data/functionalTopics.ts';
 import './check-source-guides.mjs';
 
 const missing = [];
@@ -22,7 +23,7 @@ for (const entry of archifyData.flowchartCatalog.entries) {
   if (!archifyData.diagramRecords[entry.id]) missing.push(`图谱记录：${entry.id}`);
 }
 // 源交付文件须保持 Archify 校验的字节；发布仍沿用现有源码依据隐藏规则。
-for (const diagram of coordinateArtifacts) {
+for (const diagram of [...coordinateArtifacts, ...Object.values(functionalArtifacts)]) {
   for (const [path, sha256] of [
     [diagram.path, diagram.sha256],
     [diagram.path.replace(/\.html$/, '.json'), diagram.specificationSha256],

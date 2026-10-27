@@ -11,6 +11,8 @@ import { UiIcon } from './UiIcon';
 import { Select } from '../../shared/ui/Select';
 import { SourceGuidePanel } from './SourceGuidePanel';
 import { CoordinateReader } from './coordinates/CoordinateReader';
+import { AtlasReader } from './atlas/AtlasReader';
+import { functionalTopics } from './data/functionalTopics';
 import { OriginalDiagram } from './OriginalDiagram';
 const catalog = archifyData.flowchartCatalog.entries;
 const publicCatalog = catalog.filter((entry) => !isSupportingEntry(entry));
@@ -62,6 +64,8 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
       </PageHeader>
       {topic.id === 'g0' ? (
         <CoordinateReader />
+      ) : functionalTopics.some((item) => item.id === topic.id) ? (
+        <AtlasReader page={topic.id} />
       ) : (
         <>
           <SourceGuidePanel key={id} page={id} />

@@ -6,6 +6,7 @@ import sourceEvidence from './source-evidence.json' with { type: 'json' };
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 import { presentationTopics } from '../../src/features/knowledge/data/presentation.ts';
 import { validateSourceGuides } from './source-guide-validation.mjs';
+import './check-atlas.mjs';
 
 const trunkRoot = resolve(projectRoot, 'trunk');
 const counts = await validateSourceGuides({

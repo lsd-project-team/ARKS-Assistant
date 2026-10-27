@@ -5,6 +5,10 @@ import { ReadingDiagram } from './ReadingDiagram';
 
 export function ArchifyFigure({ id }: { id: (typeof coordinateDiagrams)[number]['id'] }) {
   const diagram: CoordinateDiagram = coordinateDiagrams.find((item) => item.id === id)!;
+  return <ReadingFigure diagram={diagram} />;
+}
+
+export function ReadingFigure({ diagram }: { diagram: CoordinateDiagram }) {
   const appearance = useAppearance((state) => state.mode);
   return (
     <figure className="g0-archify">

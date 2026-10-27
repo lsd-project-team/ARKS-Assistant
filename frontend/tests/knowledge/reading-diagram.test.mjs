@@ -66,3 +66,27 @@ test('无法确定图形尺寸时不输出裁切或空白阅读图', () => {
     assert.throws(() => createReadingDiagram(html, 'white'));
   }
 });
+
+test('产品定位图在阅读副本中保留限内写回与超限异常的方向', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../resources/knowledge/flows/functional-atlas/product-update.html',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const page = createReadingDiagram(source, 'classic');
+  for (const [from, to, label] of [
+    ['gate', 'write', '通过'],
+    ['gate', 'error', '超限'],
+  ]) {
+    assert.ok(
+      page.html.includes(
+        `data-edge-from="${from}" data-edge-to="${to}" data-edge-label="${label}"`,
+      ),
+    );
+  }
+  assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
+  assert.doesNotMatch(page.html, /<script\b/);
+  assert.match(page.html, /\[data-edge-id\] text \{ font-size: 14px/);
+});

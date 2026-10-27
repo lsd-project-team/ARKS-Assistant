@@ -1,22 +1,22 @@
-.knowledge-workspace .g0-reader .source-flow-panel {
+.knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-panel {
   padding: 24px;
 }
-.knowledge-workspace .g0-reader .source-flow-layout {
+.knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-layout {
   grid-template-columns: 1fr;
   gap: 24px;
 }
-.knowledge-workspace .g0-reader .source-flow-nodes {
+.knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-nodes {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
-.knowledge-workspace .g0-reader .source-flow-nodes li + li {
+.knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-nodes li + li {
   margin-top: 0;
 }
-.knowledge-workspace .g0-reader .source-flow-nodes button {
+.knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-nodes button {
   height: 100%;
 }
-.knowledge-workspace .g0-reader .source-step-detail {
+.knowledge-workspace :is(.g0-reader, .atlas-reader) .source-step-detail {
   width: 100%;
 }
 .knowledge-workspace .g0-reading-surface {
@@ -140,13 +140,13 @@
   margin-bottom: 3px;
 }
 @media (max-width: 760px) {
-  .knowledge-workspace .g0-reader .source-flow-layout {
+  .knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-layout {
     grid-template-columns: 1fr;
   }
-  .knowledge-workspace .g0-reader .source-flow-panel {
+  .knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-panel {
     padding: 16px;
   }
-  .knowledge-workspace .g0-reader .source-flow-nodes {
+  .knowledge-workspace :is(.g0-reader, .atlas-reader) .source-flow-nodes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .knowledge-workspace .g0-archify {

@@ -13,3 +13,4 @@ frontend/public/** -text
 resources/knowledge/flows/startup-v3-sample/** -text
 # Archify 交付与候选指纹需要在检出后保持一致。
 resources/knowledge/flows/g0-archify/** -text
+resources/knowledge/flows/functional-atlas/** -text

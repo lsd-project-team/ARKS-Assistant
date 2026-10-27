@@ -34,6 +34,7 @@ export function createReadingDiagram(source: string, appearance: ReadingAppearan
       svg[role="img"] { display: block !important; width: 100% !important; height: auto !important; min-width: 0 !important; min-height: 0 !important; max-width: none !important; max-height: none !important; margin: 0 !important; }
       svg .tree-label, svg [data-node-id] text.t-primary { font-size: 18px !important; font-weight: 500; }
       svg .tree-sublabel, svg [data-node-id] text.t-muted { font-size: 14px !important; }
+      svg [data-edge-id] text { font-size: 14px !important; }
       svg .source-evidence-beacon { display: none !important; }
       * { animation: none !important; transition: none !important; }
     </style></head><body>${readingSvg}</body></html>`,

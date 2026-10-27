@@ -11,7 +11,7 @@ import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 const result = await build({
   stdin: {
     contents:
-      "export * from './src/features/knowledge/KnowledgePages.tsx'; export { coordinateVisual } from './src/features/knowledge/coordinates/CoordinateReader.tsx';",
+      "export * from './src/features/knowledge/KnowledgePages.tsx'; export { coordinateVisual } from './src/features/knowledge/coordinates/CoordinateReader.tsx'; export { functionalVisual } from './src/features/knowledge/atlas/AtlasReader.tsx';",
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -45,7 +45,8 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module,
   module.exports,
 );
-const { TopicDetail, DiagramDetail, GraphAtlas, coordinateVisual } = module.exports;
+const { TopicDetail, DiagramDetail, GraphAtlas, coordinateVisual, functionalVisual } =
+  module.exports;
 const render = (component, props) =>
   renderToStaticMarkup(createElement(component, { navigate() {}, ...props }));
 
@@ -129,4 +130,28 @@ test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱�
   const startup = render(DiagramDetail, { id: 'startup-workflow', theme: 'light' });
   assert.match(startup, /<iframe/);
   assert.doesNotMatch(startup, /g0-reader/);
+});
+
+test('产品专题与目录共用整宽阅读页，并复用父链原图和定位更新交付', () => {
+  const topic = render(TopicDetail, { id: 'product-coordinates' });
+  const catalog = render(DiagramDetail, { id: 'product-coordinate-lifecycle', theme: 'light' });
+  assert.equal(catalog, topic);
+  for (const text of [
+    '对象与父级',
+    '实例展开与顺序',
+    '定位参考点与角度',
+    '结果写回与后续目标',
+    '工位偏移与焊点补偿',
+  ])
+    assert.ok(topic.includes(text));
+  assert.match(topic, /class="atlas-reader"/);
+  assert.match(topic, /href="#topic\/g0"/);
+  for (const [flow, step, source] of [
+    ['product-hierarchy', 'chain', 'g0-archify/product-tree.html'],
+    ['product-update', 'overview', 'functional-atlas/product-update.html'],
+  ]) {
+    const figure = renderToStaticMarkup(functionalVisual(flow, step));
+    assert.ok(figure.includes(`data-archify-source="${source}"`));
+    assert.equal((figure.match(/<figure/g) ?? []).length, 1);
+  }
 });

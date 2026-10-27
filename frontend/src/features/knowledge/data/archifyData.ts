@@ -1,5 +1,6 @@
 import type { ArchifyData } from '../types';
 import { coordinateCatalogEntry } from './coordinateTopic.ts';
+import { functionalCatalogEntries } from './functionalTopics.ts';
 
 export const archifyData: ArchifyData = {
   graphs: [
@@ -10106,8 +10107,8 @@ export const archifyData: ArchifyData = {
     generatedOn: '2026-10-27',
     scope: '独立图谱、补充图页与应用内功能阅读；视觉证据指 *.visual-check.html 自动化产物。',
     counts: {
-      total: 66,
-      inlineReaders: 1,
+      total: 66 + functionalCatalogEntries.length,
+      inlineReaders: 1 + functionalCatalogEntries.length,
       archifySpecs: 62,
       deliveredHtml: 65,
       visualEvidence: 27,
@@ -10126,6 +10127,7 @@ export const archifyData: ArchifyData = {
     },
     entries: [
       coordinateCatalogEntry,
+      ...functionalCatalogEntries,
       {
         id: 'startup-workflow',
         title: '01 · 启动、回零与生产放行',
@@ -12585,6 +12587,11 @@ export const archifyData: ArchifyData = {
     'config-production-gates': [],
   },
   diagramRecords: {
+    'product-coordinate-lifecycle': {
+      htmlAvailable: false,
+      reviewDocuments: [],
+      visualAvailable: false,
+    },
     'g0-coordinate-system': {
       htmlAvailable: false,
       reviewDocuments: [],

@@ -72,62 +72,176 @@
         {
           "id": "03.01",
           "text": "G0、普通坐标与从属坐标的关系。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-relations",
+              "steps": [
+                "reference",
+                "objects"
+              ]
+            }
+          ]
         },
         {
           "id": "03.02",
           "text": "坐标 JSON 加载、父级绑定、创建、查找、刷新和保存。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-registry",
+              "steps": [
+                "load",
+                "create",
+                "storage",
+                "refresh",
+                "lookup"
+              ]
+            }
+          ]
         },
         {
           "id": "03.03",
           "text": "本地坐标逐级转换为 G0。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-general",
+              "steps": [
+                "forward"
+              ]
+            }
+          ]
         },
         {
           "id": "03.04",
           "text": "G0 逆序转换为本地坐标。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-general",
+              "steps": [
+                "inverse"
+              ]
+            }
+          ]
         },
         {
           "id": "03.05",
           "text": "像素坐标结合拍照时轴位置转换为 G0。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-camera",
+              "steps": [
+                "inputs",
+                "parent"
+              ]
+            }
+          ]
         },
         {
           "id": "03.06",
           "text": "平移、旋转、Z 偏移与角度累积。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-general",
+              "steps": [
+                "units",
+                "example"
+              ]
+            }
+          ]
         },
         {
           "id": "03.07",
           "text": "General、VM 和其他标定类型的转换分支。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-camera",
+              "steps": [
+                "modes"
+              ]
+            },
+            {
+              "topic": "g0",
+              "flow": "g0-limits",
+              "steps": [
+                "capability"
+              ]
+            }
+          ]
         },
         {
           "id": "03.08",
           "text": "标定文件和转换工具的载入与缓存。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-camera",
+              "steps": [
+                "calibration"
+              ]
+            },
+            {
+              "topic": "g0",
+              "flow": "g0-calibration",
+              "steps": [
+                "samples",
+                "effect"
+              ]
+            }
+          ]
         },
         {
           "id": "03.09",
           "text": "父级缺失、首次创建 G0、删除接口和未实现逆变换的边界。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-registry",
+              "steps": [
+                "create",
+                "lookup"
+              ]
+            },
+            {
+              "topic": "g0",
+              "flow": "g0-limits",
+              "steps": [
+                "chain",
+                "capability"
+              ]
+            }
+          ]
         },
         {
           "id": "03.10",
           "text": "点胶、焊头、晶圆模块消费 G0 的入口。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-production",
+              "steps": [
+                "s1",
+                "s2",
+                "wafer",
+                "axes"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -139,32 +253,86 @@
         {
           "id": "04.01",
           "text": "载具、基板、模块、焊点的对象和坐标继承关系。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-hierarchy",
+              "steps": [
+                "chain",
+                "construct",
+                "inherit",
+                "refresh"
+              ]
+            }
+          ]
         },
         {
           "id": "04.02",
           "text": "矩阵、蛇形顺序、异形结构的实例展开。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-expansion",
+              "steps": [
+                "single",
+                "matrix",
+                "order",
+                "irregular"
+              ]
+            }
+          ]
         },
         {
           "id": "04.03",
           "text": "定位点使用规则及新旧位置、角度计算。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-locate",
+              "steps": [
+                "components",
+                "match-angle",
+                "two-point",
+                "circle"
+              ]
+            }
+          ]
         },
         {
           "id": "04.04",
           "text": "定位结果更新父子坐标与后续目标点。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-update",
+              "steps": [
+                "overview",
+                "limits",
+                "write",
+                "consume"
+              ]
+            }
+          ]
         },
         {
           "id": "04.05",
           "text": "S1、S2 偏移和焊点位置、旋转补偿的来源。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-offsets",
+              "steps": [
+                "stations",
+                "divide",
+                "bond"
+              ]
+            }
+          ]
         }
       ]
     },

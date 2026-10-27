@@ -2042,6 +2042,996 @@
       ]
     },
     {
+      "id": "product-coordinates-review:product-hierarchy",
+      "title": "建议阅读顺序 / 对象与父级",
+      "topic": "product-coordinates",
+      "text": "载具、基板、模块和焊点各有自己的局部坐标；父级引用把它们连接到设备坐标。",
+      "references": [
+        {
+          "id": "pc-root",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-root",
+          "start": 261,
+          "end": 279,
+          "code": "        public void InitTransportUnitCoordinateSystem()\n        {\n            GeneralCoordinateSystem transportCoordinateSystem = (GeneralCoordinateSystem)MachineCoordinateSystem\n                .GetInstance().CoordinateSystems.Find(it => it.Name == \"TransportCoordinateSystem\");\n\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex)\n            {\n                TuService.CreateMatterCoordinate(\n                    this,\n                    transportCoordinateSystem,\n                    this.OppositeSex.ElementCoordinate);\n            }\n            else\n            {\n                TuService.CreateMatterCoordinate(\n                    this,\n                    transportCoordinateSystem,\n                    this.TransportUnitConfig.ElementCoordinate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-substrate",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-substrate",
+          "start": 51,
+          "end": 98,
+          "code": "        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n            \n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.SubstrateConfig.ColumnCount,\n                this.SubstrateConfig.RowCount,\n                this.SubstrateConfig.Arrangement,\n                this.SubstrateConfig.WorkOrderEnum);\n\n            this.Name = $\"基板{index}\";\n\n            this.BaseInfo = new SubstrateInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SubstrateConfig.ElementCoordinates[index - 1]);\n\n            this.CreateModule();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"opposite\">异性基板配置</param>\n        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex opposite)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n\n            this.OppositeSex = opposite;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = opposite.Name;\n\n            this.BaseInfo = new SubstrateInfo();\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, opposite.ElementCoordinate);\n\n            this.InitModuleByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-module",
+          "file": "g0-file-10",
+          "method": "产品坐标复核 pc-module",
+          "start": 54,
+          "end": 101,
+          "code": "        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.ModuleConfig.ColumnCount,\n                this.ModuleConfig.RowCount,\n                this.ModuleConfig.Arrangement,\n                this.ModuleConfig.WorkOrderEnum);\n            \n            this.Name = $\"基岛{index}\";\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.ModuleConfig.ElementCoordinates[index - 1]);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPosition();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性基板配置</param>\n        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = oppositeSex.Name;\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, oppositeSex.ElementCoordinate);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPositionByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+          "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+        },
+        {
+          "id": "pc-bond",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-bond",
+          "start": 40,
+          "end": 81,
+          "code": "        public BondPosition(string name, int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.Name = name;\n\n            this.Index = index;\n\n            this.MatterTypeEnum = EntityTypeEnum.BondPosition;\n\n            this.BaseInfo = new BondPositionInfo();\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SingleBondPositionConfig.ElementCoordinate);\n\n            this.IsMirror = this.SingleBondPositionConfig.IsMirror;\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性配置</param>\n        public BondPosition(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.Name = oppositeSex.Name;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.MatterTypeEnum = EntityTypeEnum.BondPosition;\n\n            this.BaseInfo = new BondPositionInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                oppositeSex.ElementCoordinate);\n\n            this.IsMirror = this.OppositeSex.Config.IsMirror;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        },
+        {
+          "id": "pc-create",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-create",
+          "start": 872,
+          "end": 879,
+          "code": "        public static void CreateMatterCoordinate(BaseMatter baseMatter, GeneralCoordinateSystem upperCoordinateSystem, ElementCoordinate elementCoordinate)\n        {\n            baseMatter.CoordinateSystem = new GeneralCoordinateSystem(\n                baseMatter.Name,\n                CoordinateSystemTypeEnum.General,\n                upperCoordinateSystem);\n\n            baseMatter.CoordinateSystem.Init(elementCoordinate);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-hierarchy:chain",
+      "title": "建议阅读顺序 / 对象与父级 / 从载具连接到焊点",
+      "topic": "product-coordinates",
+      "text": "载具坐标以 TransportCoordinateSystem 为父级；基板引用载具，模块引用基板，焊点引用模块。创建每层对象时，新建普通坐标并装入该层的 ElementCoordinate。",
+      "references": [
+        {
+          "id": "pc-root",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-root",
+          "start": 261,
+          "end": 279,
+          "code": "        public void InitTransportUnitCoordinateSystem()\n        {\n            GeneralCoordinateSystem transportCoordinateSystem = (GeneralCoordinateSystem)MachineCoordinateSystem\n                .GetInstance().CoordinateSystems.Find(it => it.Name == \"TransportCoordinateSystem\");\n\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex)\n            {\n                TuService.CreateMatterCoordinate(\n                    this,\n                    transportCoordinateSystem,\n                    this.OppositeSex.ElementCoordinate);\n            }\n            else\n            {\n                TuService.CreateMatterCoordinate(\n                    this,\n                    transportCoordinateSystem,\n                    this.TransportUnitConfig.ElementCoordinate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-substrate",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-substrate",
+          "start": 51,
+          "end": 98,
+          "code": "        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n            \n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.SubstrateConfig.ColumnCount,\n                this.SubstrateConfig.RowCount,\n                this.SubstrateConfig.Arrangement,\n                this.SubstrateConfig.WorkOrderEnum);\n\n            this.Name = $\"基板{index}\";\n\n            this.BaseInfo = new SubstrateInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SubstrateConfig.ElementCoordinates[index - 1]);\n\n            this.CreateModule();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"opposite\">异性基板配置</param>\n        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex opposite)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n\n            this.OppositeSex = opposite;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = opposite.Name;\n\n            this.BaseInfo = new SubstrateInfo();\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, opposite.ElementCoordinate);\n\n            this.InitModuleByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-module",
+          "file": "g0-file-10",
+          "method": "产品坐标复核 pc-module",
+          "start": 54,
+          "end": 101,
+          "code": "        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.ModuleConfig.ColumnCount,\n                this.ModuleConfig.RowCount,\n                this.ModuleConfig.Arrangement,\n                this.ModuleConfig.WorkOrderEnum);\n            \n            this.Name = $\"基岛{index}\";\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.ModuleConfig.ElementCoordinates[index - 1]);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPosition();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性基板配置</param>\n        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = oppositeSex.Name;\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, oppositeSex.ElementCoordinate);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPositionByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+          "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+        },
+        {
+          "id": "pc-bond",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-bond",
+          "start": 40,
+          "end": 81,
+          "code": "        public BondPosition(string name, int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.Name = name;\n\n            this.Index = index;\n\n            this.MatterTypeEnum = EntityTypeEnum.BondPosition;\n\n            this.BaseInfo = new BondPositionInfo();\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SingleBondPositionConfig.ElementCoordinate);\n\n            this.IsMirror = this.SingleBondPositionConfig.IsMirror;\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性配置</param>\n        public BondPosition(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.Name = oppositeSex.Name;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.MatterTypeEnum = EntityTypeEnum.BondPosition;\n\n            this.BaseInfo = new BondPositionInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                oppositeSex.ElementCoordinate);\n\n            this.IsMirror = this.OppositeSex.Config.IsMirror;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        },
+        {
+          "id": "pc-create",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-create",
+          "start": 872,
+          "end": 879,
+          "code": "        public static void CreateMatterCoordinate(BaseMatter baseMatter, GeneralCoordinateSystem upperCoordinateSystem, ElementCoordinate elementCoordinate)\n        {\n            baseMatter.CoordinateSystem = new GeneralCoordinateSystem(\n                baseMatter.Name,\n                CoordinateSystemTypeEnum.General,\n                upperCoordinateSystem);\n\n            baseMatter.CoordinateSystem.Init(elementCoordinate);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-hierarchy:construct",
+      "title": "建议阅读顺序 / 对象与父级 / 创建实例再注入工艺",
+      "topic": "product-coordinates",
+      "text": "载具先建立坐标和普通或异形子对象，再按配置修改焊点加工状态，最后分别注入 S2、S1 步骤。带工位参数的构造在 Init 完成后才添加对应工位偏移。",
+      "references": [
+        {
+          "id": "pc-init",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-init",
+          "start": 86,
+          "end": 125,
+          "code": "        public TransportUnit(CurrentMachineSystemEnum currentMachineSystem)\n        {\n            this.BaseInfo = new TransportUnitInfo();\n            this.Init();\n            this.Name = DateTime.Now.ToString(\"yyMMddHHmmssfff\");\n\n            // 设置载具偏移\n            if (currentMachineSystem == CurrentMachineSystemEnum.System1)\n            {\n                this.SetSystem1OffSet();\n            }\n            else\n            {\n                this.SetSystem2OffSet();\n            }\n        }\n\n\n        /// <summary>\n        /// 初始化\n        /// </summary>\n        private void Init()\n        {\n            this.OppositeSex = ProductConfiguration.GetInstance().OppositeSexConfiguration.OppositeSexConfigs;\n            this.InitTransportUnitCoordinateSystem();\n\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex)\n            {\n                this.InitSubstrateByOppositeSex();\n            }\n            else\n            {\n                this.InitSubstrateCoordinateSystem();\n            }\n\n            TuService.ModifyMatter(this, ProductConfiguration.GetInstance().OtherConfig);\n\n            System2Domain.GetInstance().ActionNodesService.InjectSteps(this);\n            System1Domain.GetInstance().ActionNodeController.InjectSteps(this);\n        }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-modify",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-modify",
+          "start": 887,
+          "end": 956,
+          "code": "        public static void ModifyMatter(TransportUnit transportUnit, OtherConfig config)\n        {\n            try\n            {\n                if (ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex)\n                {\n                    foreach (Substrate substrate in transportUnit.Substrates)\n                    {\n                        foreach (Module module in substrate.Modules)\n                        {\n                            foreach (BondPosition bondPosition in module.BondPositions)\n                            {\n                                bondPosition.MatterProductState = bondPosition.OppositeSex.MatterProductState;\n                            }\n                        }\n                    }\n                }\n                else\n                {\n                    if (ProductConfiguration.GetInstance().TransportUnitConfig.LagerNumber)\n                    {\n                        foreach (Substrate substrate in transportUnit.Substrates)\n                        {\n                            foreach (Module module in substrate.Modules)\n                            {\n                                module.SubstrateNum = substrate.Index;\n                                foreach (BondPosition bondPosition in module.BondPositions)\n                                {\n                                    bondPosition.SubstrateNum = substrate.Index;\n                                    bondPosition.ModuleNum = module.Index;\n\n                                    List<MatterProductInformationMin> MatterProductInformationMins = config.MatterProductInfoMax[substrate.Index - 1][module.Index - 1];\n\n                                    MatterProductInformationMin matterProductInformationMin = MatterProductInformationMins.Find(it => it.BondPositionName == bondPosition.Name);\n                                    bondPosition.MatterProductState = matterProductInformationMin.MatterProductState;\n                                }\n                            }\n                        }\n                    }\n                    else\n                    {\n                        foreach (Substrate substrate in transportUnit.Substrates)\n                        {\n                            foreach (Module module in substrate.Modules)\n                            {\n                                module.SubstrateNum = substrate.Index;\n                                foreach (BondPosition bondPosition in module.BondPositions)\n                                {\n                                    bondPosition.SubstrateNum = substrate.Index;\n                                    bondPosition.ModuleNum = module.Index;\n                                    if (config.MatterProductInfo.Exists(\n                                            it => it.SubstrateIndex == substrate.Index && it.ModuleIndex == module.Index\n                                                  && it.BondPositionName == bondPosition.Name))\n                                    {\n                                        MatterProductInformation matterProductInformation = config.MatterProductInfo.Find(\n                                            it => it.SubstrateIndex == substrate.Index && it.ModuleIndex == module.Index\n                                                  && it.BondPositionName == bondPosition.Name);\n                                        bondPosition.MatterProductState = matterProductInformation.MatterProductState;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            catch (Exception e)\n            {\n                config.ClearInformation();\n                ProductConfiguration.GetInstance().Save();\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-hierarchy:construct:0",
+      "title": "建议阅读顺序 / 创建实例再注入工艺 / 配置异常",
+      "topic": "product-coordinates",
+      "text": "ModifyMatter 捕获异常后清空 OtherConfig 信息并保存产品配置，未重新抛出。不能把继续构造解释为屏蔽数据全部正确。",
+      "references": [
+        {
+          "id": "pc-modify",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-modify",
+          "start": 887,
+          "end": 956,
+          "code": "        public static void ModifyMatter(TransportUnit transportUnit, OtherConfig config)\n        {\n            try\n            {\n                if (ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex)\n                {\n                    foreach (Substrate substrate in transportUnit.Substrates)\n                    {\n                        foreach (Module module in substrate.Modules)\n                        {\n                            foreach (BondPosition bondPosition in module.BondPositions)\n                            {\n                                bondPosition.MatterProductState = bondPosition.OppositeSex.MatterProductState;\n                            }\n                        }\n                    }\n                }\n                else\n                {\n                    if (ProductConfiguration.GetInstance().TransportUnitConfig.LagerNumber)\n                    {\n                        foreach (Substrate substrate in transportUnit.Substrates)\n                        {\n                            foreach (Module module in substrate.Modules)\n                            {\n                                module.SubstrateNum = substrate.Index;\n                                foreach (BondPosition bondPosition in module.BondPositions)\n                                {\n                                    bondPosition.SubstrateNum = substrate.Index;\n                                    bondPosition.ModuleNum = module.Index;\n\n                                    List<MatterProductInformationMin> MatterProductInformationMins = config.MatterProductInfoMax[substrate.Index - 1][module.Index - 1];\n\n                                    MatterProductInformationMin matterProductInformationMin = MatterProductInformationMins.Find(it => it.BondPositionName == bondPosition.Name);\n                                    bondPosition.MatterProductState = matterProductInformationMin.MatterProductState;\n                                }\n                            }\n                        }\n                    }\n                    else\n                    {\n                        foreach (Substrate substrate in transportUnit.Substrates)\n                        {\n                            foreach (Module module in substrate.Modules)\n                            {\n                                module.SubstrateNum = substrate.Index;\n                                foreach (BondPosition bondPosition in module.BondPositions)\n                                {\n                                    bondPosition.SubstrateNum = substrate.Index;\n                                    bondPosition.ModuleNum = module.Index;\n                                    if (config.MatterProductInfo.Exists(\n                                            it => it.SubstrateIndex == substrate.Index && it.ModuleIndex == module.Index\n                                                  && it.BondPositionName == bondPosition.Name))\n                                    {\n                                        MatterProductInformation matterProductInformation = config.MatterProductInfo.Find(\n                                            it => it.SubstrateIndex == substrate.Index && it.ModuleIndex == module.Index\n                                                  && it.BondPositionName == bondPosition.Name);\n                                        bondPosition.MatterProductState = matterProductInformation.MatterProductState;\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n            catch (Exception e)\n            {\n                config.ClearInformation();\n                ProductConfiguration.GetInstance().Save();\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-hierarchy:inherit",
+      "title": "建议阅读顺序 / 对象与父级 / 父级变化如何传到子级",
+      "topic": "product-coordinates",
+      "text": "子坐标保留父坐标对象引用。后续把局部点转换为 G0 时，沿父链逐层读取当前值；不需要预先给每个焊点复制一份绝对位置。正反转换公式统一见 G0 坐标系。",
+      "references": [
+        {
+          "id": "pc-create",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-create",
+          "start": 872,
+          "end": 879,
+          "code": "        public static void CreateMatterCoordinate(BaseMatter baseMatter, GeneralCoordinateSystem upperCoordinateSystem, ElementCoordinate elementCoordinate)\n        {\n            baseMatter.CoordinateSystem = new GeneralCoordinateSystem(\n                baseMatter.Name,\n                CoordinateSystemTypeEnum.General,\n                upperCoordinateSystem);\n\n            baseMatter.CoordinateSystem.Init(elementCoordinate);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "g0-forward",
+          "file": "g0-file-2",
+          "method": "SelfPosToG0",
+          "start": 44,
+          "end": 68,
+          "code": "        public AKRSPoint3D SelfPosToG0(AKRSPoint3D point3D)\n        {\n            AKRSPoint3D point = new AKRSPoint3D(point3D.X, point3D.Y, point3D.Z);\n\n            BaseCoordinateSystem baseCoordinateSystem = this;\n            List<BaseCoordinateSystem> baseCoordinateSystems = new List<BaseCoordinateSystem>();\n            while (true)\n            {\n                if (baseCoordinateSystem.UpperCoordinateSystem != null)\n                {\n                    baseCoordinateSystems.Add(baseCoordinateSystem);\n                    baseCoordinateSystem = baseCoordinateSystem.UpperCoordinateSystem;\n                }\n                else\n                {\n                    break;\n                }\n            }\n\n            for (int i = 0; i < baseCoordinateSystems.Count; i++)\n            {\n                point = baseCoordinateSystems[i].ForwardConvertCoordinate(point);\n            }\n           \n            return point;",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+          "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-hierarchy:refresh",
+      "title": "建议阅读顺序 / 对象与父级 / 刷新会重建坐标与状态",
+      "topic": "product-coordinates",
+      "text": "Refresh 重建载具坐标，再刷新现有基板、模块和焊点的坐标；随后清视觉、清测高，复位 S1/S2 偏移标志。这条路径不会重新按 Count 创建整套子对象。",
+      "references": [
+        {
+          "id": "pc-refresh",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-refresh",
+          "start": 135,
+          "end": 142,
+          "code": "        public void Refresh()\n        {\n            this.InitTransportUnitCoordinateSystem();\n            this.RefreshSubstrate();\n            this.ClearVision();\n            this.ClearMeasureHeight();\n            this.TransportUnitInfo.IsSystem1Offset = false;\n            this.TransportUnitInfo.IsSystem2Offset = false;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-sub-refresh",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-sub-refresh",
+          "start": 182,
+          "end": 208,
+          "code": "        public void Refresh(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.Index = index;\n\n            if (this.OppositeSex != null)\n            {\n                TuService.CreateMatterCoordinate(this, upperCoordinateSystem, this.OppositeSex.ElementCoordinate);\n            }\n            else\n            {\n                this.WorkIndex = TuService.GetIndex(\n                    index,\n                    this.SubstrateConfig.ColumnCount,\n                    this.SubstrateConfig.RowCount,\n                    this.SubstrateConfig.Arrangement,\n                    this.SubstrateConfig.WorkOrderEnum);\n\n                TuService.CreateMatterCoordinate(\n                    this,\n                    upperCoordinateSystem,\n                    this.SubstrateConfig.ElementCoordinates[index - 1]);\n            }\n\n            for (int i = 0; i < this.Modules.Count; i++)\n            {\n                this.Modules[i].Refresh(i + 1, this.CoordinateSystem);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-module-refresh",
+          "file": "g0-file-10",
+          "method": "产品坐标复核 pc-module-refresh",
+          "start": 148,
+          "end": 173,
+          "code": "        public void Refresh(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.Index = index;\n\n            if (this.OppositeSex != null)\n            {\n                TuService.CreateMatterCoordinate(this, upperCoordinateSystem, this.OppositeSex.ElementCoordinate);\n            }\n            else\n            {\n                this.WorkIndex = TuService.GetIndex(\n                    index,\n                    this.ModuleConfig.ColumnCount,\n                    this.ModuleConfig.RowCount,\n                    this.ModuleConfig.Arrangement,\n                    this.ModuleConfig.WorkOrderEnum);\n                TuService.CreateMatterCoordinate(\n                    this,\n                    upperCoordinateSystem,\n                    this.ModuleConfig.ElementCoordinates[index - 1]);\n            }\n\n            foreach (BondPosition bondPosition in this.BondPositions)\n            {\n                bondPosition.Refresh(this.CoordinateSystem);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+          "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+        },
+        {
+          "id": "pc-bond-refresh",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-bond-refresh",
+          "start": 88,
+          "end": 103,
+          "code": "        public void Refresh(GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            if (this.OppositeSex != null)\n            {\n                TuService.CreateMatterCoordinate(\n                    this,\n                    upperCoordinateSystem,\n                    this.OppositeSex.ElementCoordinate);\n            }\n            else\n            {\n                TuService.CreateMatterCoordinate(\n                    this,\n                    upperCoordinateSystem,\n                    this.SingleBondPositionConfig.ElementCoordinate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion",
+      "title": "建议阅读顺序 / 实例展开与顺序",
+      "topic": "product-coordinates",
+      "text": "先区分实例的物理位置、行列标记和加工序号，再看普通矩阵与异形配置。",
+      "references": [
+        {
+          "id": "pc-matrix",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-matrix",
+          "start": 285,
+          "end": 342,
+          "code": "        public void InitSubstrateCoordinateSystem()\n        {\n            SubstrateConfig substrateConfig = ProductConfiguration.GetInstance().SubstrateConfig;\n\n            this.Substrates.Clear();\n\n            if (!substrateConfig.IsMultiple)\n            {\n                substrateConfig.Count = 1;\n                substrateConfig.ColumnCount = 1;\n                substrateConfig.RowCount = 1;\n                substrateConfig.ElementCoordinates.Clear();\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (substrateConfig.ElementCoordinates.Count == 0)\n            {\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (substrateConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = substrateConfig.ElementCoordinates[0];\n                substrateConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < substrateConfig.RowCount; i++)\n                {\n                    for (int j = 0; j <substrateConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + substrateConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + substrateConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        substrateConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < substrateConfig.Count; i++)\n            {\n                Substrate substrate = new Substrate(i + 1, this.CoordinateSystem);\n\n                // 判断行列数\n                if (substrateConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (substrate.RowIndex, substrate.ColumnIndex) = TuService.RowAndColumn(\n                        substrateConfig.RowCount,\n                        substrateConfig.ColumnCount,\n                        i + 1,\n                        substrateConfig.Arrangement);\n                }\n\n                this.Substrates.Add(substrate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-sub-matrix",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-sub-matrix",
+          "start": 104,
+          "end": 161,
+          "code": "        public void CreateModule()\n        {\n            ModuleConfig moduleConfig = ProductConfiguration.GetInstance().ModuleConfig;\n\n            if (!moduleConfig.IsMultiple)\n            {\n                moduleConfig.Count = 1;\n                moduleConfig.ColumnCount = 1;\n                moduleConfig.RowCount = 1;\n                moduleConfig.ElementCoordinates.Clear();\n                moduleConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (moduleConfig.ElementCoordinates.Count == 0)\n            {\n                moduleConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (moduleConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = moduleConfig.ElementCoordinates[0];\n                moduleConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < moduleConfig.RowCount; i++)\n                {\n                    for (int j = 0; j < moduleConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + moduleConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + moduleConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        moduleConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < moduleConfig.Count; i++)\n            {\n                Module module = new Module(\n                    i + 1,\n                    this.CoordinateSystem);\n\n                // 判断行列数\n                if (moduleConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (module.RowIndex, module.ColumnIndex) = TuService.RowAndColumn(\n                        moduleConfig.RowCount,\n                        moduleConfig.ColumnCount,\n                        i + 1,\n                        moduleConfig.Arrangement);\n                }\n\n                this.Modules.Add(module);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-order",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-order",
+          "start": 98,
+          "end": 260,
+          "code": "        public static int GetIndex(int index, int columnCount = 1, int rowCount = 1, ArrangementEnum arrangement = ArrangementEnum.Normal, WorkOrderEnum workOrder = WorkOrderEnum.LeftDownToRight)\n        {\n            int rowIndex = (index - 1) / columnCount + 1;\n\n            int columnIndex = index - (rowIndex - 1) * columnCount;\n\n            int realIndex = 0;\n\n            if (workOrder == WorkOrderEnum.LeftDownToRight)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = index;\n                }\n                else\n                {\n                    if (rowIndex % 2 == 0)\n                    {\n                        realIndex = rowIndex * columnCount - index + (rowIndex - 1) * columnCount + 1;\n                    }\n                    else\n                    {\n                        realIndex = index;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftDownToUp)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                }\n                else\n                {\n                    if (columnIndex % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n\n                        realIndex = realIndex - rowIndex + rowCount - rowIndex + 1;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftUpToRight)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex) % 2 == 0)\n                    {\n                        realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                    }\n                    else\n                    {\n                        realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                        realIndex = realIndex - columnIndex + columnCount - columnIndex + 1;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftUpToDown)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnIndex - 1) + (rowCount - rowIndex + 1);\n                }\n                else\n                {\n                    if ((columnCount - columnIndex + 1) % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + (rowCount - rowIndex + 1);\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightDownToUp)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                }\n                else\n                {\n                    if (columnIndex % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightDownToLeft)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex + 1) % 2 == 0)\n                    {\n                        realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                    }\n                    else\n                    {\n                        realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                        realIndex = columnCount * (rowIndex - 1) + columnIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightUpToDown)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnCount - columnIndex) + rowCount - rowIndex + 1;\n                }\n                else\n                {\n                    if ((columnCount - columnIndex + 1) % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                        realIndex = rowCount * (columnCount - columnIndex) + rowCount - rowIndex + 1;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightUpToLeft)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * columnCount - index + 1;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex) % 2 == 0)\n                    {\n                        realIndex = rowCount * columnCount - index + 1;\n                    }\n                    else\n                    {\n                        realIndex = columnCount * (rowCount - rowIndex) + columnIndex;\n                    }\n                }\n            }\n            else\n            {\n                throw new Exception(\"顺序出现问题，请联系软件人员\");\n            }\n\n            return realIndex;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-row",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-row",
+          "start": 49,
+          "end": 86,
+          "code": "        public static (int, int) RowAndColumn(int rowCount, int columnCount, int index, ArrangementEnum arrangement)\n        {\n            if (arrangement == ArrangementEnum.Normal)\n            {\n                int row = index / columnCount + 1;\n\n                if (index % columnCount == 0)\n                {\n                    row--;\n                }\n\n                int column = index - ((row - 1) * columnCount);\n\n                return (row, column);\n            }\n            else if (arrangement == ArrangementEnum.Snake)\n            {\n                int row = index / columnCount + 1;\n\n                if (index % columnCount == 0)\n                {\n                    row--;\n                }\n\n                int column;\n                if (row % 2 == 0)\n                {\n                    column = index - ((row - 1) * columnCount);\n                }\n                else\n                {\n                    column = columnCount - (row * columnCount - index);\n                }\n\n                return (row, column);\n            }\n\n            return (0, 0);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-irregular",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-irregular",
+          "start": 348,
+          "end": 355,
+          "code": "        private void InitSubstrateByOppositeSex()\n        {\n            this.Substrates.Clear();\n\n            for (int i = 0; i < this.OppositeSex.DownConfigs.Count; i++)\n            {\n                Substrate substrate = new Substrate(i + 1, this.CoordinateSystem, this.OppositeSex.DownConfigs[i]);\n                this.Substrates.Add(substrate);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion:single",
+      "title": "建议阅读顺序 / 实例展开与顺序 / 单个对象与默认元素",
+      "topic": "product-coordinates",
+      "text": "基板或模块未启用多实例时，Count、行数和列数都改为 1，并清空原元素列表、补一个默认坐标。列表为空时也会补一个默认元素；这不保证任意 Count 都有足够的元素。",
+      "references": [
+        {
+          "id": "pc-matrix",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-matrix",
+          "start": 285,
+          "end": 342,
+          "code": "        public void InitSubstrateCoordinateSystem()\n        {\n            SubstrateConfig substrateConfig = ProductConfiguration.GetInstance().SubstrateConfig;\n\n            this.Substrates.Clear();\n\n            if (!substrateConfig.IsMultiple)\n            {\n                substrateConfig.Count = 1;\n                substrateConfig.ColumnCount = 1;\n                substrateConfig.RowCount = 1;\n                substrateConfig.ElementCoordinates.Clear();\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (substrateConfig.ElementCoordinates.Count == 0)\n            {\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (substrateConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = substrateConfig.ElementCoordinates[0];\n                substrateConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < substrateConfig.RowCount; i++)\n                {\n                    for (int j = 0; j <substrateConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + substrateConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + substrateConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        substrateConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < substrateConfig.Count; i++)\n            {\n                Substrate substrate = new Substrate(i + 1, this.CoordinateSystem);\n\n                // 判断行列数\n                if (substrateConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (substrate.RowIndex, substrate.ColumnIndex) = TuService.RowAndColumn(\n                        substrateConfig.RowCount,\n                        substrateConfig.ColumnCount,\n                        i + 1,\n                        substrateConfig.Arrangement);\n                }\n\n                this.Substrates.Add(substrate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-sub-matrix",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-sub-matrix",
+          "start": 104,
+          "end": 161,
+          "code": "        public void CreateModule()\n        {\n            ModuleConfig moduleConfig = ProductConfiguration.GetInstance().ModuleConfig;\n\n            if (!moduleConfig.IsMultiple)\n            {\n                moduleConfig.Count = 1;\n                moduleConfig.ColumnCount = 1;\n                moduleConfig.RowCount = 1;\n                moduleConfig.ElementCoordinates.Clear();\n                moduleConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (moduleConfig.ElementCoordinates.Count == 0)\n            {\n                moduleConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (moduleConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = moduleConfig.ElementCoordinates[0];\n                moduleConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < moduleConfig.RowCount; i++)\n                {\n                    for (int j = 0; j < moduleConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + moduleConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + moduleConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        moduleConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < moduleConfig.Count; i++)\n            {\n                Module module = new Module(\n                    i + 1,\n                    this.CoordinateSystem);\n\n                // 判断行列数\n                if (moduleConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (module.RowIndex, module.ColumnIndex) = TuService.RowAndColumn(\n                        moduleConfig.RowCount,\n                        moduleConfig.ColumnCount,\n                        i + 1,\n                        moduleConfig.Arrangement);\n                }\n\n                this.Modules.Add(module);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion:matrix",
+      "title": "建议阅读顺序 / 实例展开与顺序 / 按间距生成坐标",
+      "topic": "product-coordinates",
+      "text": "启用间距输入时，以首点为基准，X 加列间距×列号，Y 加行间距×行号；Z 保留首点值，新元素角度设为 0。实例循环仍取 Count，矩阵模式再计算行列标记。",
+      "references": [
+        {
+          "id": "pc-matrix",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-matrix",
+          "start": 285,
+          "end": 342,
+          "code": "        public void InitSubstrateCoordinateSystem()\n        {\n            SubstrateConfig substrateConfig = ProductConfiguration.GetInstance().SubstrateConfig;\n\n            this.Substrates.Clear();\n\n            if (!substrateConfig.IsMultiple)\n            {\n                substrateConfig.Count = 1;\n                substrateConfig.ColumnCount = 1;\n                substrateConfig.RowCount = 1;\n                substrateConfig.ElementCoordinates.Clear();\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (substrateConfig.ElementCoordinates.Count == 0)\n            {\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (substrateConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = substrateConfig.ElementCoordinates[0];\n                substrateConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < substrateConfig.RowCount; i++)\n                {\n                    for (int j = 0; j <substrateConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + substrateConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + substrateConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        substrateConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < substrateConfig.Count; i++)\n            {\n                Substrate substrate = new Substrate(i + 1, this.CoordinateSystem);\n\n                // 判断行列数\n                if (substrateConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (substrate.RowIndex, substrate.ColumnIndex) = TuService.RowAndColumn(\n                        substrateConfig.RowCount,\n                        substrateConfig.ColumnCount,\n                        i + 1,\n                        substrateConfig.Arrangement);\n                }\n\n                this.Substrates.Add(substrate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-sub-matrix",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-sub-matrix",
+          "start": 104,
+          "end": 161,
+          "code": "        public void CreateModule()\n        {\n            ModuleConfig moduleConfig = ProductConfiguration.GetInstance().ModuleConfig;\n\n            if (!moduleConfig.IsMultiple)\n            {\n                moduleConfig.Count = 1;\n                moduleConfig.ColumnCount = 1;\n                moduleConfig.RowCount = 1;\n                moduleConfig.ElementCoordinates.Clear();\n                moduleConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (moduleConfig.ElementCoordinates.Count == 0)\n            {\n                moduleConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (moduleConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = moduleConfig.ElementCoordinates[0];\n                moduleConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < moduleConfig.RowCount; i++)\n                {\n                    for (int j = 0; j < moduleConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + moduleConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + moduleConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        moduleConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < moduleConfig.Count; i++)\n            {\n                Module module = new Module(\n                    i + 1,\n                    this.CoordinateSystem);\n\n                // 判断行列数\n                if (moduleConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (module.RowIndex, module.ColumnIndex) = TuService.RowAndColumn(\n                        moduleConfig.RowCount,\n                        moduleConfig.ColumnCount,\n                        i + 1,\n                        moduleConfig.Arrangement);\n                }\n\n                this.Modules.Add(module);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion:matrix:0",
+      "title": "建议阅读顺序 / 按间距生成坐标 / 数量约束",
+      "topic": "product-coordinates",
+      "text": "创建对象直接读取 ElementCoordinates[index−1]，此处没有统一核对 Count、行列乘积与元素数量；不一致可能越界。",
+      "references": [
+        {
+          "id": "pc-matrix",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-matrix",
+          "start": 285,
+          "end": 342,
+          "code": "        public void InitSubstrateCoordinateSystem()\n        {\n            SubstrateConfig substrateConfig = ProductConfiguration.GetInstance().SubstrateConfig;\n\n            this.Substrates.Clear();\n\n            if (!substrateConfig.IsMultiple)\n            {\n                substrateConfig.Count = 1;\n                substrateConfig.ColumnCount = 1;\n                substrateConfig.RowCount = 1;\n                substrateConfig.ElementCoordinates.Clear();\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            // 如果没有，初始化一个\n            if (substrateConfig.ElementCoordinates.Count == 0)\n            {\n                substrateConfig.ElementCoordinates.Add(new ElementCoordinate());\n            }\n\n            if (substrateConfig.IsAssistanceDistanceByInput)\n            {\n                ElementCoordinate elementCoordinateFirst = substrateConfig.ElementCoordinates[0];\n                substrateConfig.ElementCoordinates.Clear();\n\n                for (int i = 0; i < substrateConfig.RowCount; i++)\n                {\n                    for (int j = 0; j <substrateConfig.ColumnCount; j++)\n                    {\n                        // Z轴的位置是跟随TU的，如果需要设置，需要到单独的测高界面\n                        ElementCoordinate elementCoordinate = new ElementCoordinate();\n                        elementCoordinate.Point = new AKRSPoint3D(\n                            elementCoordinateFirst.Point.X + substrateConfig.ColumnSpacing * j,\n                            elementCoordinateFirst.Point.Y + substrateConfig.RowSpacing * i,\n                            elementCoordinateFirst.Point.Z);\n                        elementCoordinate.Degree = 0;\n                        substrateConfig.ElementCoordinates.Add(elementCoordinate);\n                    }\n                }\n            }\n\n            for (int i = 0; i < substrateConfig.Count; i++)\n            {\n                Substrate substrate = new Substrate(i + 1, this.CoordinateSystem);\n\n                // 判断行列数\n                if (substrateConfig.Multiplication == MultiplicationEnum.Matrix)\n                {\n                    (substrate.RowIndex, substrate.ColumnIndex) = TuService.RowAndColumn(\n                        substrateConfig.RowCount,\n                        substrateConfig.ColumnCount,\n                        i + 1,\n                        substrateConfig.Arrangement);\n                }\n\n                this.Substrates.Add(substrate);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-substrate",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-substrate",
+          "start": 51,
+          "end": 98,
+          "code": "        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n            \n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.SubstrateConfig.ColumnCount,\n                this.SubstrateConfig.RowCount,\n                this.SubstrateConfig.Arrangement,\n                this.SubstrateConfig.WorkOrderEnum);\n\n            this.Name = $\"基板{index}\";\n\n            this.BaseInfo = new SubstrateInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SubstrateConfig.ElementCoordinates[index - 1]);\n\n            this.CreateModule();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"opposite\">异性基板配置</param>\n        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex opposite)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n\n            this.OppositeSex = opposite;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = opposite.Name;\n\n            this.BaseInfo = new SubstrateInfo();\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, opposite.ElementCoordinate);\n\n            this.InitModuleByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-module",
+          "file": "g0-file-10",
+          "method": "产品坐标复核 pc-module",
+          "start": 54,
+          "end": 101,
+          "code": "        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.ModuleConfig.ColumnCount,\n                this.ModuleConfig.RowCount,\n                this.ModuleConfig.Arrangement,\n                this.ModuleConfig.WorkOrderEnum);\n            \n            this.Name = $\"基岛{index}\";\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.ModuleConfig.ElementCoordinates[index - 1]);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPosition();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性基板配置</param>\n        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = oppositeSex.Name;\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, oppositeSex.ElementCoordinate);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPositionByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+          "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion:order",
+      "title": "建议阅读顺序 / 实例展开与顺序 / 蛇形改变加工序号",
+      "topic": "product-coordinates",
+      "text": "基板和模块的 WorkIndex 另由 GetIndex 计算，组合八种起始方向与 Normal/Snake 分支。它不会改写前一步生成的物理坐标。",
+      "references": [
+        {
+          "id": "pc-order",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-order",
+          "start": 98,
+          "end": 260,
+          "code": "        public static int GetIndex(int index, int columnCount = 1, int rowCount = 1, ArrangementEnum arrangement = ArrangementEnum.Normal, WorkOrderEnum workOrder = WorkOrderEnum.LeftDownToRight)\n        {\n            int rowIndex = (index - 1) / columnCount + 1;\n\n            int columnIndex = index - (rowIndex - 1) * columnCount;\n\n            int realIndex = 0;\n\n            if (workOrder == WorkOrderEnum.LeftDownToRight)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = index;\n                }\n                else\n                {\n                    if (rowIndex % 2 == 0)\n                    {\n                        realIndex = rowIndex * columnCount - index + (rowIndex - 1) * columnCount + 1;\n                    }\n                    else\n                    {\n                        realIndex = index;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftDownToUp)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                }\n                else\n                {\n                    if (columnIndex % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n\n                        realIndex = realIndex - rowIndex + rowCount - rowIndex + 1;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftUpToRight)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex) % 2 == 0)\n                    {\n                        realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                    }\n                    else\n                    {\n                        realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                        realIndex = realIndex - columnIndex + columnCount - columnIndex + 1;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftUpToDown)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnIndex - 1) + (rowCount - rowIndex + 1);\n                }\n                else\n                {\n                    if ((columnCount - columnIndex + 1) % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + (rowCount - rowIndex + 1);\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightDownToUp)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                }\n                else\n                {\n                    if (columnIndex % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightDownToLeft)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex + 1) % 2 == 0)\n                    {\n                        realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                    }\n                    else\n                    {\n                        realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                        realIndex = columnCount * (rowIndex - 1) + columnIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightUpToDown)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnCount - columnIndex) + rowCount - rowIndex + 1;\n                }\n                else\n                {\n                    if ((columnCount - columnIndex + 1) % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                        realIndex = rowCount * (columnCount - columnIndex) + rowCount - rowIndex + 1;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightUpToLeft)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * columnCount - index + 1;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex) % 2 == 0)\n                    {\n                        realIndex = rowCount * columnCount - index + 1;\n                    }\n                    else\n                    {\n                        realIndex = columnCount * (rowCount - rowIndex) + columnIndex;\n                    }\n                }\n            }\n            else\n            {\n                throw new Exception(\"顺序出现问题，请联系软件人员\");\n            }\n\n            return realIndex;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-substrate",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-substrate",
+          "start": 51,
+          "end": 98,
+          "code": "        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n            \n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.SubstrateConfig.ColumnCount,\n                this.SubstrateConfig.RowCount,\n                this.SubstrateConfig.Arrangement,\n                this.SubstrateConfig.WorkOrderEnum);\n\n            this.Name = $\"基板{index}\";\n\n            this.BaseInfo = new SubstrateInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SubstrateConfig.ElementCoordinates[index - 1]);\n\n            this.CreateModule();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"opposite\">异性基板配置</param>\n        public Substrate(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex opposite)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Substrate;\n\n            this.OppositeSex = opposite;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = opposite.Name;\n\n            this.BaseInfo = new SubstrateInfo();\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, opposite.ElementCoordinate);\n\n            this.InitModuleByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-module",
+          "file": "g0-file-10",
+          "method": "产品坐标复核 pc-module",
+          "start": 54,
+          "end": 101,
+          "code": "        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.Index = index;\n\n            this.WorkIndex = TuService.GetIndex(\n                index,\n                this.ModuleConfig.ColumnCount,\n                this.ModuleConfig.RowCount,\n                this.ModuleConfig.Arrangement,\n                this.ModuleConfig.WorkOrderEnum);\n            \n            this.Name = $\"基岛{index}\";\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.ModuleConfig.ElementCoordinates[index - 1]);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPosition();\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性基板配置</param>\n        public Module(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.MatterTypeEnum = EntityTypeEnum.Module;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.WorkIndex = index;\n\n            this.Name = oppositeSex.Name;\n\n            TuService.CreateMatterCoordinate(this, upperCoordinateSystem, oppositeSex.ElementCoordinate);\n\n            this.BaseInfo = new ModuleInfo();\n\n            this.CreateBondPositionByOppositeSex();",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+          "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion:order:0",
+      "title": "建议阅读顺序 / 蛇形改变加工序号 / 按当前实现阅读",
+      "topic": "product-coordinates",
+      "text": "RowAndColumn 的 Snake 奇偶分支实际得到相同列值；GetIndex 的 RightDownToUp 蛇形分支也未区分奇偶结果。不能把所有方向都解释成理想蛇形反转。",
+      "references": [
+        {
+          "id": "pc-row",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-row",
+          "start": 49,
+          "end": 86,
+          "code": "        public static (int, int) RowAndColumn(int rowCount, int columnCount, int index, ArrangementEnum arrangement)\n        {\n            if (arrangement == ArrangementEnum.Normal)\n            {\n                int row = index / columnCount + 1;\n\n                if (index % columnCount == 0)\n                {\n                    row--;\n                }\n\n                int column = index - ((row - 1) * columnCount);\n\n                return (row, column);\n            }\n            else if (arrangement == ArrangementEnum.Snake)\n            {\n                int row = index / columnCount + 1;\n\n                if (index % columnCount == 0)\n                {\n                    row--;\n                }\n\n                int column;\n                if (row % 2 == 0)\n                {\n                    column = index - ((row - 1) * columnCount);\n                }\n                else\n                {\n                    column = columnCount - (row * columnCount - index);\n                }\n\n                return (row, column);\n            }\n\n            return (0, 0);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-order",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-order",
+          "start": 98,
+          "end": 260,
+          "code": "        public static int GetIndex(int index, int columnCount = 1, int rowCount = 1, ArrangementEnum arrangement = ArrangementEnum.Normal, WorkOrderEnum workOrder = WorkOrderEnum.LeftDownToRight)\n        {\n            int rowIndex = (index - 1) / columnCount + 1;\n\n            int columnIndex = index - (rowIndex - 1) * columnCount;\n\n            int realIndex = 0;\n\n            if (workOrder == WorkOrderEnum.LeftDownToRight)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = index;\n                }\n                else\n                {\n                    if (rowIndex % 2 == 0)\n                    {\n                        realIndex = rowIndex * columnCount - index + (rowIndex - 1) * columnCount + 1;\n                    }\n                    else\n                    {\n                        realIndex = index;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftDownToUp)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                }\n                else\n                {\n                    if (columnIndex % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n\n                        realIndex = realIndex - rowIndex + rowCount - rowIndex + 1;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftUpToRight)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex) % 2 == 0)\n                    {\n                        realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                    }\n                    else\n                    {\n                        realIndex = (rowCount - rowIndex) * columnCount + columnIndex;\n                        realIndex = realIndex - columnIndex + columnCount - columnIndex + 1;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.LeftUpToDown)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnIndex - 1) + (rowCount - rowIndex + 1);\n                }\n                else\n                {\n                    if ((columnCount - columnIndex + 1) % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnIndex - 1) + (rowCount - rowIndex + 1);\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightDownToUp)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                }\n                else\n                {\n                    if (columnIndex % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightDownToLeft)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex + 1) % 2 == 0)\n                    {\n                        realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                    }\n                    else\n                    {\n                        realIndex = columnCount * (rowIndex - 1) + columnCount - columnIndex + 1;\n                        realIndex = columnCount * (rowIndex - 1) + columnIndex;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightUpToDown)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * (columnCount - columnIndex) + rowCount - rowIndex + 1;\n                }\n                else\n                {\n                    if ((columnCount - columnIndex + 1) % 2 == 0)\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                    }\n                    else\n                    {\n                        realIndex = rowCount * (columnCount - columnIndex) + rowIndex;\n                        realIndex = rowCount * (columnCount - columnIndex) + rowCount - rowIndex + 1;\n                    }\n                }\n            }\n            else if (workOrder == WorkOrderEnum.RightUpToLeft)\n            {\n                if (arrangement == ArrangementEnum.Normal)\n                {\n                    realIndex = rowCount * columnCount - index + 1;\n                }\n                else\n                {\n                    if ((rowCount - rowIndex) % 2 == 0)\n                    {\n                        realIndex = rowCount * columnCount - index + 1;\n                    }\n                    else\n                    {\n                        realIndex = columnCount * (rowCount - rowIndex) + columnIndex;\n                    }\n                }\n            }\n            else\n            {\n                throw new Exception(\"顺序出现问题，请联系软件人员\");\n            }\n\n            return realIndex;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-expansion:irregular",
+      "title": "建议阅读顺序 / 实例展开与顺序 / 异形结构按子列表展开",
+      "topic": "product-coordinates",
+      "text": "异形载具从 DownConfigs 创建基板，基板再创建模块，模块再创建焊点。每个对象使用自己的名称与 ElementCoordinate，WorkIndex 取当前列表序号。普通焊点则按 SingleBpPositionConfigList 创建。",
+      "references": [
+        {
+          "id": "pc-irregular",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-irregular",
+          "start": 348,
+          "end": 355,
+          "code": "        private void InitSubstrateByOppositeSex()\n        {\n            this.Substrates.Clear();\n\n            for (int i = 0; i < this.OppositeSex.DownConfigs.Count; i++)\n            {\n                Substrate substrate = new Substrate(i + 1, this.CoordinateSystem, this.OppositeSex.DownConfigs[i]);\n                this.Substrates.Add(substrate);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-sub-irregular",
+          "file": "g0-file-9",
+          "method": "产品坐标复核 pc-sub-irregular",
+          "start": 167,
+          "end": 174,
+          "code": "        private void InitModuleByOppositeSex()\n        {\n            this.Modules.Clear();\n            for (int i = 0; i < this.OppositeSex.DownConfigs.Count; i++)\n            {\n                Module module = new Module(i + 1, this.CoordinateSystem, this.OppositeSex.DownConfigs[i]);\n                this.Modules.Add(module);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs",
+          "sha256": "f71ed3154cd9b1caa330acd9940c48d226daf900b0a004d9c3ab449c0eff2df0"
+        },
+        {
+          "id": "pc-module-bonds",
+          "file": "g0-file-10",
+          "method": "产品坐标复核 pc-module-bonds",
+          "start": 107,
+          "end": 140,
+          "code": "        public void CreateBondPosition()\n        {\n            BondPositionConfig bondPositionConfig = ProductConfiguration.GetInstance().BondPositionConfig;\n\n            this.BondPositions.Clear();\n\n\n            for (int i = 0; i < bondPositionConfig.SingleBpPositionConfigList.Count; i++)\n            {\n                BondPosition bondPosition = new BondPosition(\n                    bondPositionConfig.SingleBpPositionConfigList[i].Name,\n                    i + 1,\n                    this.CoordinateSystem);\n\n                this.BondPositions.Add(bondPosition);\n            }\n        }\n\n        /// <summary>\n        /// 是否初始化自己\n        /// </summary>\n        public void CreateBondPositionByOppositeSex()\n        {\n            this.BondPositions.Clear();\n\n            for (int i = 0; i < this.OppositeSex.DownConfigs.Count; i++)\n            {\n                BondPosition bondPosition = new BondPosition(\n                    i + 1,\n                    this.CoordinateSystem,\n                    this.OppositeSex.DownConfigs[i]);\n\n                this.BondPositions.Add(bondPosition);\n            }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs",
+          "sha256": "c59412d851cea4d75e1e4c4c9b04d3c23794ac081ca42bf8177e8bd9498af58f"
+        },
+        {
+          "id": "pc-bond",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-bond",
+          "start": 40,
+          "end": 81,
+          "code": "        public BondPosition(string name, int index, GeneralCoordinateSystem upperCoordinateSystem)\n        {\n            this.Name = name;\n\n            this.Index = index;\n\n            this.MatterTypeEnum = EntityTypeEnum.BondPosition;\n\n            this.BaseInfo = new BondPositionInfo();\n\n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                this.SingleBondPositionConfig.ElementCoordinate);\n\n            this.IsMirror = this.SingleBondPositionConfig.IsMirror;\n        }\n\n        /// <summary>\n        /// 构造函数\n        /// </summary>\n        /// <param name=\"index\">序号</param>\n        /// <param name=\"upperCoordinateSystem\">上层坐标系</param>\n        /// <param name=\"oppositeSex\">异性配置</param>\n        public BondPosition(int index, GeneralCoordinateSystem upperCoordinateSystem, OppositeSex oppositeSex)\n        {\n            this.Name = oppositeSex.Name;\n\n            this.OppositeSex = oppositeSex;\n\n            this.Index = index;\n\n            this.MatterTypeEnum = EntityTypeEnum.BondPosition;\n\n            this.BaseInfo = new BondPositionInfo();\n            \n            TuService.CreateMatterCoordinate(\n                this,\n                upperCoordinateSystem,\n                oppositeSex.ElementCoordinate);\n\n            this.IsMirror = this.OppositeSex.Config.IsMirror;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-locate",
+      "title": "建议阅读顺序 / 定位参考点与角度",
+      "topic": "product-coordinates",
+      "text": "新旧参考点、匹配角、两点角和拟圆是不同计算分支，按配置选用。",
+      "references": [
+        {
+          "id": "pc-old",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-old",
+          "start": 721,
+          "end": 818,
+          "code": "        public static AKRSPoint3D CalculateOldPoint(LocateConfig locateConfig)\n        {\n            double x = 0;\n            double y = 0;\n            double xCount = 0;\n            double yCount = 0;\n\n            if (locateConfig.LocateUseConfig1.UseX)\n            {\n                x = locateConfig.P1VisionRelativePos.X;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseX && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                x = locateConfig.P2VisionRelativePos.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseX && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                x = locateConfig.P3VisionRelativePos.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseX && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                x = locateConfig.P4VisionRelativePos.X + x;\n                xCount++;\n            }\n\n            if (xCount != 0)\n            {\n                x = x / xCount;\n            }\n\n\n            if (locateConfig.LocateUseConfig1.UseY)\n            {\n                y = locateConfig.P1VisionRelativePos.Y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseY && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                y = locateConfig.P2VisionRelativePos.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseY && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                y = locateConfig.P3VisionRelativePos.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseY && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                y = locateConfig.P4VisionRelativePos.Y + y;\n                yCount++;\n            }\n\n            if (yCount != 0)\n            {\n                y = y / yCount;\n            }\n\n\n            #region 弃用\n\n            //if (locateConfig.LocateUseConfig1.UseX && locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = ((locateConfig.P1VisionRelativePos + locateConfig.P2VisionRelativePos) / 2).X;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseX && !locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = locateConfig.P1VisionRelativePos.X;\n            //}\n            //else\n            //{\n            //    x = locateConfig.P2VisionRelativePos.X;\n            //}\n\n            //if (locateConfig.LocateUseConfig1.UseY && locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = ((locateConfig.P1VisionRelativePos + locateConfig.P2VisionRelativePos) / 2).Y;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseY && !locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = locateConfig.P1VisionRelativePos.Y;\n            //}\n            //else\n            //{\n            //    y = locateConfig.P2VisionRelativePos.Y;\n            //}\n\n            #endregion\n\n            return new AKRSPoint3D(x, y, 0);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-new",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-new",
+          "start": 617,
+          "end": 713,
+          "code": "        public static AKRSPoint3D CalculateNewPoint(LocateResultInfo locateResultInfo, LocateConfig locateConfig)\n        {\n            double x = 0;\n            double y = 0;\n            int xCount = 0;\n            int yCount = 0;\n\n            if (locateConfig.LocateUseConfig1.UseX)\n            {\n                x = locateResultInfo.P1Info.ResultPoint3D.X;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseX && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                x = locateResultInfo.P2Info.ResultPoint3D.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseX && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                x = locateResultInfo.P3Info.ResultPoint3D.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseX && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                x = locateResultInfo.P4Info.ResultPoint3D.X + x;\n                xCount++;\n            }\n\n            if (xCount != 0)\n            {\n                x = x / xCount;\n            }\n\n\n            if (locateConfig.LocateUseConfig1.UseY)\n            {\n                y = locateResultInfo.P1Info.ResultPoint3D.Y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseY && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                y = locateResultInfo.P2Info.ResultPoint3D.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseY && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                y = locateResultInfo.P3Info.ResultPoint3D.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseY && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                y = locateResultInfo.P4Info.ResultPoint3D.Y + y;\n                yCount++;\n            }\n\n            if (yCount != 0)\n            {\n                y = y / yCount;\n            }\n\n            #region 弃用\n\n            //if (locateConfig.LocateUseConfig1.UseX && locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = ((locateResultInfo.P1Info.ResultPoint3D + locateResultInfo.P2Info.ResultPoint3D) / 2).X;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseX && !locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = locateResultInfo.P1Info.ResultPoint3D.X;\n            //}\n            //else\n            //{\n            //    x = locateResultInfo.P2Info.ResultPoint3D.X;\n            //}\n\n            //if (locateConfig.LocateUseConfig1.UseY && locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = ((locateResultInfo.P1Info.ResultPoint3D + locateResultInfo.P2Info.ResultPoint3D) / 2).Y;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseY && !locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = locateResultInfo.P1Info.ResultPoint3D.Y;\n            //}\n            //else\n            //{\n            //    y = locateResultInfo.P2Info.ResultPoint3D.Y;\n            //}\n\n            #endregion\n\n            return new AKRSPoint3D(x, y, 0);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-angle",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-angle",
+          "start": 827,
+          "end": 863,
+          "code": "        public static double CalculateUpdateAngle(LocateResultInfo locateResultInfo, LocateConfig locateConfig)\n        {\n            double newAngle = 0;\n            double newAngleCount = 0;\n\n            /* 这里两点定位的时候也可以用两个点去确认角度 */\n\n            if (locateConfig.LocateUseConfig1.UseAngle)\n            {\n                newAngle = locateResultInfo.P1Info.MatchResult.Angle;\n                newAngleCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseAngle && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                newAngle = locateResultInfo.P2Info.MatchResult.Angle + newAngle;\n                newAngleCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseAngle && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                newAngle = locateResultInfo.P3Info.MatchResult.Angle + newAngle;\n                newAngleCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseAngle && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                newAngle = locateResultInfo.P4Info.MatchResult.Angle + newAngle;\n                newAngleCount++;\n            }\n\n            if (newAngleCount != 0)\n            {\n                newAngle = newAngle / newAngleCount;\n            }\n\n            return newAngle * Math.PI / 180;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-locate:components",
+      "title": "建议阅读顺序 / 定位参考点与角度 / X 和 Y 分别选点",
+      "topic": "product-coordinates",
+      "text": "旧点取示教位置，新点取识别结果。X、Y 各自按 UseX/UseY 和已配置点数累加平均；一个分量未启用任何点时保持 0，两种计算返回的 Z 都为 0。",
+      "references": [
+        {
+          "id": "pc-old",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-old",
+          "start": 721,
+          "end": 818,
+          "code": "        public static AKRSPoint3D CalculateOldPoint(LocateConfig locateConfig)\n        {\n            double x = 0;\n            double y = 0;\n            double xCount = 0;\n            double yCount = 0;\n\n            if (locateConfig.LocateUseConfig1.UseX)\n            {\n                x = locateConfig.P1VisionRelativePos.X;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseX && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                x = locateConfig.P2VisionRelativePos.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseX && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                x = locateConfig.P3VisionRelativePos.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseX && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                x = locateConfig.P4VisionRelativePos.X + x;\n                xCount++;\n            }\n\n            if (xCount != 0)\n            {\n                x = x / xCount;\n            }\n\n\n            if (locateConfig.LocateUseConfig1.UseY)\n            {\n                y = locateConfig.P1VisionRelativePos.Y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseY && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                y = locateConfig.P2VisionRelativePos.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseY && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                y = locateConfig.P3VisionRelativePos.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseY && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                y = locateConfig.P4VisionRelativePos.Y + y;\n                yCount++;\n            }\n\n            if (yCount != 0)\n            {\n                y = y / yCount;\n            }\n\n\n            #region 弃用\n\n            //if (locateConfig.LocateUseConfig1.UseX && locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = ((locateConfig.P1VisionRelativePos + locateConfig.P2VisionRelativePos) / 2).X;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseX && !locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = locateConfig.P1VisionRelativePos.X;\n            //}\n            //else\n            //{\n            //    x = locateConfig.P2VisionRelativePos.X;\n            //}\n\n            //if (locateConfig.LocateUseConfig1.UseY && locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = ((locateConfig.P1VisionRelativePos + locateConfig.P2VisionRelativePos) / 2).Y;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseY && !locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = locateConfig.P1VisionRelativePos.Y;\n            //}\n            //else\n            //{\n            //    y = locateConfig.P2VisionRelativePos.Y;\n            //}\n\n            #endregion\n\n            return new AKRSPoint3D(x, y, 0);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-new",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-new",
+          "start": 617,
+          "end": 713,
+          "code": "        public static AKRSPoint3D CalculateNewPoint(LocateResultInfo locateResultInfo, LocateConfig locateConfig)\n        {\n            double x = 0;\n            double y = 0;\n            int xCount = 0;\n            int yCount = 0;\n\n            if (locateConfig.LocateUseConfig1.UseX)\n            {\n                x = locateResultInfo.P1Info.ResultPoint3D.X;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseX && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                x = locateResultInfo.P2Info.ResultPoint3D.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseX && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                x = locateResultInfo.P3Info.ResultPoint3D.X + x;\n                xCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseX && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                x = locateResultInfo.P4Info.ResultPoint3D.X + x;\n                xCount++;\n            }\n\n            if (xCount != 0)\n            {\n                x = x / xCount;\n            }\n\n\n            if (locateConfig.LocateUseConfig1.UseY)\n            {\n                y = locateResultInfo.P1Info.ResultPoint3D.Y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseY && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                y = locateResultInfo.P2Info.ResultPoint3D.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseY && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                y = locateResultInfo.P3Info.ResultPoint3D.Y + y;\n                yCount++;\n            }\n\n            if (locateConfig.LocateUseConfig4.UseY && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                y = locateResultInfo.P4Info.ResultPoint3D.Y + y;\n                yCount++;\n            }\n\n            if (yCount != 0)\n            {\n                y = y / yCount;\n            }\n\n            #region 弃用\n\n            //if (locateConfig.LocateUseConfig1.UseX && locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = ((locateResultInfo.P1Info.ResultPoint3D + locateResultInfo.P2Info.ResultPoint3D) / 2).X;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseX && !locateConfig.LocateUseConfig2.UseX)\n            //{\n            //    x = locateResultInfo.P1Info.ResultPoint3D.X;\n            //}\n            //else\n            //{\n            //    x = locateResultInfo.P2Info.ResultPoint3D.X;\n            //}\n\n            //if (locateConfig.LocateUseConfig1.UseY && locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = ((locateResultInfo.P1Info.ResultPoint3D + locateResultInfo.P2Info.ResultPoint3D) / 2).Y;\n            //}\n            //else if (locateConfig.LocateUseConfig1.UseY && !locateConfig.LocateUseConfig2.UseY)\n            //{\n            //    y = locateResultInfo.P1Info.ResultPoint3D.Y;\n            //}\n            //else\n            //{\n            //    y = locateResultInfo.P2Info.ResultPoint3D.Y;\n            //}\n\n            #endregion\n\n            return new AKRSPoint3D(x, y, 0);",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-locate:match-angle",
+      "title": "建议阅读顺序 / 定位参考点与角度 / 匹配角取平均再转换",
+      "topic": "product-coordinates",
+      "text": "CalculateUpdateAngle 按 UseAngle 累加匹配角并平均，再乘 π/180。UpdateEntity 对它取负并扣除父链角度；第四个匹配角实际仍由第三点的 UseAngle 控制。",
+      "references": [
+        {
+          "id": "pc-angle",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-angle",
+          "start": 827,
+          "end": 863,
+          "code": "        public static double CalculateUpdateAngle(LocateResultInfo locateResultInfo, LocateConfig locateConfig)\n        {\n            double newAngle = 0;\n            double newAngleCount = 0;\n\n            /* 这里两点定位的时候也可以用两个点去确认角度 */\n\n            if (locateConfig.LocateUseConfig1.UseAngle)\n            {\n                newAngle = locateResultInfo.P1Info.MatchResult.Angle;\n                newAngleCount++;\n            }\n\n            if (locateConfig.LocateUseConfig2.UseAngle && locateConfig.AdjustType > AdjustTypeEnum.OnePoint)\n            {\n                newAngle = locateResultInfo.P2Info.MatchResult.Angle + newAngle;\n                newAngleCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseAngle && locateConfig.AdjustType > AdjustTypeEnum.TwoPoints)\n            {\n                newAngle = locateResultInfo.P3Info.MatchResult.Angle + newAngle;\n                newAngleCount++;\n            }\n\n            if (locateConfig.LocateUseConfig3.UseAngle && locateConfig.AdjustType > AdjustTypeEnum.ThreePoints)\n            {\n                newAngle = locateResultInfo.P4Info.MatchResult.Angle + newAngle;\n                newAngleCount++;\n            }\n\n            if (newAngleCount != 0)\n            {\n                newAngle = newAngle / newAngleCount;\n            }\n\n            return newAngle * Math.PI / 180;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-locate:two-point",
+      "title": "建议阅读顺序 / 定位参考点与角度 / 两点角度有独立公式",
+      "topic": "product-coordinates",
+      "text": "启用两点算角且定位点数至少为二时，先分别用 atan2 求新旧两点方向，再用 atan(新方向−旧方向) 扣除父链角度。这里保留源码中的额外 atan，不能直接当作标准方向角差。",
+      "references": [
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-locate:circle",
+      "title": "建议阅读顺序 / 定位参考点与角度 / 拟圆只使用前三点",
+      "topic": "product-coordinates",
+      "text": "三点或四点定位启用拟圆时，以前三个示教点和结果点的圆心替换新旧参考点；第四点不参与圆心计算。角度仍使用前面选出的计算分支。",
+      "references": [
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update",
+      "title": "建议阅读顺序 / 结果写回与后续目标",
+      "topic": "product-coordinates",
+      "text": "已有定位结果进入 UpdateEntity 后，先计算，再检查与写回当前坐标；末尾才设置定位标志。",
+      "references": [
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "g0-update",
+          "file": "g0-file-1",
+          "method": "UpdateCoordinateSystem",
+          "start": 204,
+          "end": 236,
+          "code": "        public void UpdateCoordinateSystem(AKRSPoint3D oldPoint3D, AKRSPoint3D newPoint3D, double degree)\n        {\n            #region 新代码\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperOldPoint = this.ForwardConvertCoordinate(oldPoint3D);\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperNewPoint3D = this.ForwardConvertCoordinate(newPoint3D);\n\n            // 差值\n            AKRSPoint3D distance = upperNewPoint3D - upperOldPoint;\n\n            if (Math.Abs(distance.X) > 10 || Math.Abs(distance.Y) > 10 || Math.Abs(distance.Z) > 10)\n            {\n                throw new Exception(\"坐标系矫正XYZ超出范围，矫正失败\");\n            }\n\n            if (Math.Abs(degree) > 0.2)\n            {\n                throw new Exception(\"坐标系矫正角度超出范围，矫正失败\");\n            }\n\n            AKRSPoint3D rotatePoint = this.Distance + distance;\n\n            this.Distance.X = (rotatePoint.X - upperNewPoint3D.X) * Math.Cos(degree) - (rotatePoint.Y - upperNewPoint3D.Y) * Math.Sin(degree) + upperNewPoint3D.X;\n            this.Distance.Y = (rotatePoint.Y - upperNewPoint3D.Y) * Math.Cos(degree) + (rotatePoint.X - upperNewPoint3D.X) * Math.Sin(degree) + upperNewPoint3D.Y;\n\n            this.Degree = this.Degree + degree;\n\n            this.Distance.Z = this.Distance.Z + distance.Z;\n\n            #endregion",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+          "sha256": "c6e5ae892f8617da2fa1809e9e5793382d9712106e2932d15cb3844de60bedff"
+        },
+        {
+          "id": "g0-forward",
+          "file": "g0-file-2",
+          "method": "SelfPosToG0",
+          "start": 44,
+          "end": 68,
+          "code": "        public AKRSPoint3D SelfPosToG0(AKRSPoint3D point3D)\n        {\n            AKRSPoint3D point = new AKRSPoint3D(point3D.X, point3D.Y, point3D.Z);\n\n            BaseCoordinateSystem baseCoordinateSystem = this;\n            List<BaseCoordinateSystem> baseCoordinateSystems = new List<BaseCoordinateSystem>();\n            while (true)\n            {\n                if (baseCoordinateSystem.UpperCoordinateSystem != null)\n                {\n                    baseCoordinateSystems.Add(baseCoordinateSystem);\n                    baseCoordinateSystem = baseCoordinateSystem.UpperCoordinateSystem;\n                }\n                else\n                {\n                    break;\n                }\n            }\n\n            for (int i = 0; i < baseCoordinateSystems.Count; i++)\n            {\n                point = baseCoordinateSystems[i].ForwardConvertCoordinate(point);\n            }\n           \n            return point;",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+          "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update:overview",
+      "title": "建议阅读顺序 / 结果写回与后续目标 / 从结果到后续目标",
+      "topic": "product-coordinates",
+      "text": "先清空四张结果图片，计算新旧参考点与角度，然后调用当前对象的 UpdateCoordinateSystem。调用失败时，不能把此前的图片清理视为已回滚。",
+      "references": [
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update:limits",
+      "title": "建议阅读顺序 / 结果写回与后续目标 / 差值和角度先过限值",
+      "topic": "product-coordinates",
+      "text": "坐标更新先把新旧参考点各做一次当前坐标的正向变换，再求差。任一 XYZ 差值绝对值大于 10，或角度绝对值大于 0.2，都会抛异常；这里按源码数值展示，长度单位需跟随参数来源。",
+      "references": [
+        {
+          "id": "g0-update",
+          "file": "g0-file-1",
+          "method": "UpdateCoordinateSystem",
+          "start": 204,
+          "end": 236,
+          "code": "        public void UpdateCoordinateSystem(AKRSPoint3D oldPoint3D, AKRSPoint3D newPoint3D, double degree)\n        {\n            #region 新代码\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperOldPoint = this.ForwardConvertCoordinate(oldPoint3D);\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperNewPoint3D = this.ForwardConvertCoordinate(newPoint3D);\n\n            // 差值\n            AKRSPoint3D distance = upperNewPoint3D - upperOldPoint;\n\n            if (Math.Abs(distance.X) > 10 || Math.Abs(distance.Y) > 10 || Math.Abs(distance.Z) > 10)\n            {\n                throw new Exception(\"坐标系矫正XYZ超出范围，矫正失败\");\n            }\n\n            if (Math.Abs(degree) > 0.2)\n            {\n                throw new Exception(\"坐标系矫正角度超出范围，矫正失败\");\n            }\n\n            AKRSPoint3D rotatePoint = this.Distance + distance;\n\n            this.Distance.X = (rotatePoint.X - upperNewPoint3D.X) * Math.Cos(degree) - (rotatePoint.Y - upperNewPoint3D.Y) * Math.Sin(degree) + upperNewPoint3D.X;\n            this.Distance.Y = (rotatePoint.Y - upperNewPoint3D.Y) * Math.Cos(degree) + (rotatePoint.X - upperNewPoint3D.X) * Math.Sin(degree) + upperNewPoint3D.Y;\n\n            this.Degree = this.Degree + degree;\n\n            this.Distance.Z = this.Distance.Z + distance.Z;\n\n            #endregion",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+          "sha256": "c6e5ae892f8617da2fa1809e9e5793382d9712106e2932d15cb3844de60bedff"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update:limits:0",
+      "title": "建议阅读顺序 / 差值和角度先过限值 / 异常出口",
+      "topic": "product-coordinates",
+      "text": "限值检查位于本次 Distance/Degree 写入之前。UpdateEntity 不会执行末尾的 IsVisioned=true，但也未在入口统一清除原有标志。",
+      "references": [
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "g0-update",
+          "file": "g0-file-1",
+          "method": "UpdateCoordinateSystem",
+          "start": 204,
+          "end": 236,
+          "code": "        public void UpdateCoordinateSystem(AKRSPoint3D oldPoint3D, AKRSPoint3D newPoint3D, double degree)\n        {\n            #region 新代码\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperOldPoint = this.ForwardConvertCoordinate(oldPoint3D);\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperNewPoint3D = this.ForwardConvertCoordinate(newPoint3D);\n\n            // 差值\n            AKRSPoint3D distance = upperNewPoint3D - upperOldPoint;\n\n            if (Math.Abs(distance.X) > 10 || Math.Abs(distance.Y) > 10 || Math.Abs(distance.Z) > 10)\n            {\n                throw new Exception(\"坐标系矫正XYZ超出范围，矫正失败\");\n            }\n\n            if (Math.Abs(degree) > 0.2)\n            {\n                throw new Exception(\"坐标系矫正角度超出范围，矫正失败\");\n            }\n\n            AKRSPoint3D rotatePoint = this.Distance + distance;\n\n            this.Distance.X = (rotatePoint.X - upperNewPoint3D.X) * Math.Cos(degree) - (rotatePoint.Y - upperNewPoint3D.Y) * Math.Sin(degree) + upperNewPoint3D.X;\n            this.Distance.Y = (rotatePoint.Y - upperNewPoint3D.Y) * Math.Cos(degree) + (rotatePoint.X - upperNewPoint3D.X) * Math.Sin(degree) + upperNewPoint3D.Y;\n\n            this.Degree = this.Degree + degree;\n\n            this.Distance.Z = this.Distance.Z + distance.Z;\n\n            #endregion",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+          "sha256": "c6e5ae892f8617da2fa1809e9e5793382d9712106e2932d15cb3844de60bedff"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update:write",
+      "title": "建议阅读顺序 / 结果写回与后续目标 / 写当前坐标后置标志",
+      "topic": "product-coordinates",
+      "text": "检查通过后，按修正角旋转更新当前坐标的 XY，累加 Degree 与 Z 差值；正常返回后置 IsVisioned=true。这里没有保存产品配置，也没有执行机械运动。",
+      "references": [
+        {
+          "id": "g0-update",
+          "file": "g0-file-1",
+          "method": "UpdateCoordinateSystem",
+          "start": 204,
+          "end": 236,
+          "code": "        public void UpdateCoordinateSystem(AKRSPoint3D oldPoint3D, AKRSPoint3D newPoint3D, double degree)\n        {\n            #region 新代码\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperOldPoint = this.ForwardConvertCoordinate(oldPoint3D);\n\n            // 转换到上层坐标系计算\n            AKRSPoint3D upperNewPoint3D = this.ForwardConvertCoordinate(newPoint3D);\n\n            // 差值\n            AKRSPoint3D distance = upperNewPoint3D - upperOldPoint;\n\n            if (Math.Abs(distance.X) > 10 || Math.Abs(distance.Y) > 10 || Math.Abs(distance.Z) > 10)\n            {\n                throw new Exception(\"坐标系矫正XYZ超出范围，矫正失败\");\n            }\n\n            if (Math.Abs(degree) > 0.2)\n            {\n                throw new Exception(\"坐标系矫正角度超出范围，矫正失败\");\n            }\n\n            AKRSPoint3D rotatePoint = this.Distance + distance;\n\n            this.Distance.X = (rotatePoint.X - upperNewPoint3D.X) * Math.Cos(degree) - (rotatePoint.Y - upperNewPoint3D.Y) * Math.Sin(degree) + upperNewPoint3D.X;\n            this.Distance.Y = (rotatePoint.Y - upperNewPoint3D.Y) * Math.Cos(degree) + (rotatePoint.X - upperNewPoint3D.X) * Math.Sin(degree) + upperNewPoint3D.Y;\n\n            this.Degree = this.Degree + degree;\n\n            this.Distance.Z = this.Distance.Z + distance.Z;\n\n            #endregion",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+          "sha256": "c6e5ae892f8617da2fa1809e9e5793382d9712106e2932d15cb3844de60bedff"
+        },
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update:consume",
+      "title": "建议阅读顺序 / 结果写回与后续目标 / 后续转换使用新父链",
+      "topic": "product-coordinates",
+      "text": "后续焊点局部点转 G0 时，会读到父级更新后的位姿。S1、S2 对工具、设备及焊后补偿的叠加，继续在 G0 的生产应用中阅读；坐标计算完成与轴到位属于不同阶段。",
+      "references": [
+        {
+          "id": "g0-forward",
+          "file": "g0-file-2",
+          "method": "SelfPosToG0",
+          "start": 44,
+          "end": 68,
+          "code": "        public AKRSPoint3D SelfPosToG0(AKRSPoint3D point3D)\n        {\n            AKRSPoint3D point = new AKRSPoint3D(point3D.X, point3D.Y, point3D.Z);\n\n            BaseCoordinateSystem baseCoordinateSystem = this;\n            List<BaseCoordinateSystem> baseCoordinateSystems = new List<BaseCoordinateSystem>();\n            while (true)\n            {\n                if (baseCoordinateSystem.UpperCoordinateSystem != null)\n                {\n                    baseCoordinateSystems.Add(baseCoordinateSystem);\n                    baseCoordinateSystem = baseCoordinateSystem.UpperCoordinateSystem;\n                }\n                else\n                {\n                    break;\n                }\n            }\n\n            for (int i = 0; i < baseCoordinateSystems.Count; i++)\n            {\n                point = baseCoordinateSystems[i].ForwardConvertCoordinate(point);\n            }\n           \n            return point;",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+          "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+        },
+        {
+          "id": "g0-s1",
+          "file": "s1-point-node",
+          "method": "dispense position and angle calculation",
+          "start": 85,
+          "end": 112,
+          "code": "                }\n\n                // 获取需要执行的图案\n                EpoxyApplication correctApplication = this.ActionNodeController.CurrentEpoxyApplication;\n\n                AKRSPoint3D point = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(correctApplication.OffsetX, correctApplication.OffsetY, 0));\n\n                DispenseRunTimeProvider.RecordTime(\"系统1点胶动作执行\", $\"点胶的焊点位置为{point}\");\n\n                point += bondPosition.GetDispensePositionCompensate() + DispenseDevicePara.GetInstance().DispenseModulePara.DispenseOffset;\n\n                DispenseRunTimeProvider.RecordTime(\"系统1点胶动作执行\", $\"点胶的真实位置为{point}\");\n\n                // 空跑模式不出胶\n                bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;\n\n                double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();\n\n                DispenseRunTimeProvider.RecordTime(\"系统1点胶动作执行\", $\"点胶的角度为{angle}\");\n\n                // 执行点胶\n                if (System1Domain.GetInstance().DispenseController.InterpolationApplication(correctApplication, point, isDrip, false, angle) != ExcuteResult.Success)\n                {\n                    return ExcuteResult.Alarm;\n                }\n\n                // 修改当前焊点的状态为点胶完成\n                bondPosition.S1FinishedStep(this.ActionNodeController.SingleProcessStepName);",
+          "path": "AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs",
+          "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41"
+        },
+        {
+          "id": "g0-s2",
+          "file": "s2-bond-provider",
+          "method": "CalculateBondPos",
+          "start": 498,
+          "end": 633,
+          "code": "        private AKRSPoint4D CalculateBondPos()\n        {\n            #region 贴片角度计算\n\n            // 当前焊点的角度\n            double bpAngle = this.bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI;\n\n            // 角度计算 = 当前角度 + 回正角度 + 下视定位结果 + 焊点的角度 + 贴片角度硬补偿\n            double needRotaryAngle = this.bondHeadController.GetAxisTRealPos()\n                                     + this.bondPosition.BondPositionInfo.ComponentAngleOffSet + bpAngle\n                                     + this.bondPosition.GetRotaryCompensate();\n\n            #endregion\n\n            #region 焊点所在的位置计算\n\n            // 焊点XY位置硬补偿\n            AKRSPoint3D bondPosOffset = new AKRSPoint3D(this.bondPosition.GetPositionCompensate().X, this.bondPosition.GetPositionCompensate().Y, 0);\n\n            // 焊点在G0中的位置（硬补偿随角度旋转） \n            AKRSPoint3D bondPosAddOffset = this.bondPosition.CoordinateSystem.SelfPosToG0(bondPosOffset);\n\n            // 焊后补偿\n            AKRSPoint3D defectCompensation = DefectCompensate.GetPostBondCompensation(this.bondPosition.Name);\n\n            // 单科焊点的单独补偿\n            AKRSPoint3D singleBpCompensation = DefectCompensate.GetBpSeparateOffset(this.bondPosition);\n   \n            // 真实贴片的位置为焊点的焊点的位置+焊点硬补偿 - 上视的偏移值 + 温漂补偿\n            this.realBondPositionInG0 = bondPosAddOffset + defectCompensation + singleBpCompensation;\n\n            #endregion\n\n            #region 芯片位置计算\n\n            AKRSPoint3D point3D = new AKRSPoint3D();\n\n            // 判断纠偏相机类型\n            if (component.AccuracyMode == AccuracyModeEnum.Off)\n            {\n                // 盲贴模式下只能默认芯片和吸嘴重合\n                // 盲贴模式吸嘴还需要回到原来的位置\n                needRotaryAngle -= component.PickAngleOffset;\n\n                AKRSPoint2D nozzleOffsetRotated = this.bondHeadController.GetNozzleOffset(\n                    nozzle.Name,\n                    needRotaryAngle - nozzle.AlignAngle);\n\n                realBondPositionInG0.X -= nozzleOffsetRotated.X;\n\n                realBondPositionInG0.Y -= nozzleOffsetRotated.Y;\n            }\n            else if (component.AdjustCamera == CameraTypeEnum.BondCamera)\n            {\n                // 中转台模式下芯片和吸嘴重合\n                AKRSPoint2D nozzleOffsetRotated = this.bondHeadController.GetNozzleOffset(\n                    nozzle.Name,\n                    needRotaryAngle - nozzle.AlignAngle);\n\n                realBondPositionInG0.X -= nozzleOffsetRotated.X;\n\n                realBondPositionInG0.Y -= nozzleOffsetRotated.Y;\n\n                point3D = RealTimeCorrection.GetInstance().GetCompensatePoint3D(\n                this.bondPosition.BondPositionInfo.IPTVisionPos,\n                this.bondPosition.BondPositionInfo.IPTPickPos,\n               realBondPositionInG0 - BondDevicePara.GetInstance().BondHeadParam.HeadToCameraOffset,\n               realBondPositionInG0);\n\n                this.bondPosition.BondPositionInfo.TpMarkCompensate = point3D;\n            }\n            else if (component.AdjustCamera == CameraTypeEnum.UpLookCamera)\n            {\n                // 上视计算芯片和旋转中心的距离(旋转相对距离)\n                double angle = needRotaryAngle - this.bondHeadController.GetAxisTRealPos();\n\n                AKRSPoint3D upLookOff = MathHelper.RotateCenter(this.bondPosition.BondPositionInfo.ComponentOffSet, angle / 180.0 * Math.PI);\n                upLookOff = new AKRSPoint3D(upLookOff.X, upLookOff.Y, 0);\n                realBondPositionInG0 += upLookOff;\n            }\n\n            realBondPositionInG0 -= TransportUnitCompensate.GetInstance().GetBondCompensate(\n                this.realBondPositionInG0.X,\n                this.realBondPositionInG0.Y);\n\n            if (this.component.IsConfirmReferencePoint)\n            {\n                realBondPositionInG0 += this.component.IPTComponentReference;\n            }\n\n            this.bondPosition.BondPositionInfo.RealBondPoint3D = realBondPositionInG0;\n\n            \n\n            // 真实贴片位，换到轴坐标\n            AKRSPoint3D realBondPosition = this.bondModuleController.ConvertG0ToMachinePos(realBondPositionInG0) + point3D;\n            \n            System2RunTimeProvider.RecordTime(\"BondAction\", \"真实贴片位转到轴坐标\" + $\" X：{realBondPosition.X},\" + $\" Y: {realBondPosition.Y}\");\n\n            #endregion\n\n            #region 固精高度\n\n            // 力控模式不用这个硬补偿\n            double bondingDistance =\n                component.BondingForceMode == ForceModeEnum.Distance ? component.BondingDistance : 0;\n\n            // 计算最终固晶高度=焊点示教高度+当前吸嘴测高补偿+芯片厚度+焊点贴片补偿\n            this.bondLevel = this.bondModuleController.ConvertG0ToMachinePos(bondPosAddOffset).Z\n                             + this.bondHeadController.GetCurrentNozzle().MeasureHeightOffset + component.ComponentThickness\n                             + this.bondPosition.GetPositionCompensate().Z + bondingDistance;\n\n            // 蘸胶安全高度\n            double dipSafeLevel =\n                this.bondModuleController\n                    .ConvertG0ToMachinePos(BondDevicePara.GetInstance().SlideFluxerParam.SlideFluxerRightBottomPos).Z\n                + this.bondHeadController.GetCurrentNozzle().MeasureHeightOffset + 3;\n\n            // 计算抬起高度\n            liftLevel = component.DipMode == DipModeEnum.AfterAccuracyMode\n                            ? dipSafeLevel\n                            : this.bondModuleController.GetBondheadSafeLevel();\n\n            double offsetAngle = 0;\n\n            #endregion\n\n            // 固晶位置\n            return new AKRSPoint4D()\n                       {\n                           X = realBondPosition.X, Y = realBondPosition.Y, Z = this.bondLevel, T = needRotaryAngle\n                       };\n        }\n\n        /// <summary>\n        /// 去看已经贴完的BondPosition",
+          "path": "AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+          "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-update:consume:0",
+      "title": "建议阅读顺序 / 后续转换使用新父链 / S1 双点距离分支",
+      "topic": "product-coordinates",
+      "text": "距离检查返回 Retry 时重读首点，Abort 时停机返回；返回 None 时先屏蔽物料，仍继续更新坐标。三、四点调用也分别在对应定位完成且实体未 Fail 时写回。",
+      "references": [
+        {
+          "id": "pc-s1-locate",
+          "file": "s1",
+          "method": "产品坐标复核 pc-s1-locate",
+          "start": 96,
+          "end": 196,
+          "code": "        public bool System1MatterVision(BaseMatter baseEntity, bool byMapping = true)\n        {\n            // 如果没有开启定位，直接退出\n            if (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.None)\n            {\n                baseEntity.BaseInfo.IsVisioned = true;\n                return true;\n            }\n\n            // 被屏蔽则不做\n            if (baseEntity.MatterProductState == MatterProductState.Disable\n                && byMapping)\n            {\n                return true;\n            }\n\n            bool visionAlarm = false;\n\n            RetryCommand:\n\n            // P1定位\n            if (!this.System1VisionByPos(baseEntity, TuService.NormalVisionType.P1Vision, visionAlarm))\n            {\n                return false;\n            }\n\n            if (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.OnePoint && baseEntity.EntityState != EntityState.Fail)\n            {\n                // 纠偏计算\n                TuService.UpdateEntity(baseEntity, TuService.NormalVisionType.P1Vision);\n                return true;\n            }\n\n            // P2定位\n            if (!this.System1VisionByPos(baseEntity, TuService.NormalVisionType.P2Vision, visionAlarm))\n            {\n                return false;\n            }\n\n            if (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.TwoPoints && baseEntity.EntityState != EntityState.Fail)\n            {\n                if (!visionAlarm)\n                {\n                    // 距离检查\n                    DialogResult dialogResult = VisionService.DistanceCheck(baseEntity);\n\n                    if (dialogResult == DialogResult.Abort)\n                    {\n                        Machine.GetInstance().Stop();\n                        return false;\n                    }\n                    else if (dialogResult == DialogResult.Retry)\n                    {\n                        visionAlarm = true;\n                        goto RetryCommand;\n                    }\n                    else if (dialogResult == DialogResult.None)\n                    {\n                        baseEntity.MatterProductState = MatterProductState.Disable;\n                    }\n                }\n                \n                // 纠偏计算\n                TuService.UpdateEntity(baseEntity, TuService.NormalVisionType.P2Vision);\n\n                return true;\n            }\n\n            // P3定位\n            if (!this.System1VisionByPos(baseEntity, TuService.NormalVisionType.P3Vision))\n            {\n                return false;\n            }\n\n            if (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints && baseEntity.EntityState != EntityState.Fail)\n            {\n                // 距离检查\n\n                // 纠偏计算\n                TuService.UpdateEntity(baseEntity, TuService.NormalVisionType.P3Vision);\n\n                return true;\n            }\n\n            // P3定位\n            if (!this.System1VisionByPos(baseEntity, TuService.NormalVisionType.P4Vision))\n            {\n                return false;\n            }\n\n            if (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints && baseEntity.EntityState != EntityState.Fail)\n            {\n                // 距离检查\n\n                // 纠偏计算\n                TuService.UpdateEntity(baseEntity, TuService.NormalVisionType.P4Vision);\n\n                return true;\n            }\n\n            return false;",
+          "path": "AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+          "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-offsets",
+      "title": "建议阅读顺序 / 工位偏移与焊点补偿",
+      "topic": "product-coordinates",
+      "text": "载具整体偏移、分段移动和焊点局部补偿由不同对象管理。",
+      "references": [
+        {
+          "id": "pc-offsets",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-offsets",
+          "start": 526,
+          "end": 550,
+          "code": "        public void SetSystem1OffSet()\n        {\n            if (this.TransportUnitInfo.IsSystem1Offset)\n            {\n                return;\n            }\n\n            this.CoordinateSystem.Distance += ProductConfiguration.GetInstance().TransportUnitConfig.System1Offset;\n\n            this.TransportUnitInfo.IsSystem1Offset = true;\n        }\n\n        /// <summary>\n        /// 设置系统2的偏移\n        /// </summary>\n        public void SetSystem2OffSet()\n        {\n            if (this.TransportUnitInfo.IsSystem2Offset)\n            {\n                return;\n            }\n\n            this.CoordinateSystem.Distance += ProductConfiguration.GetInstance().TransportUnitConfig.System2Offset;\n\n            this.TransportUnitInfo.IsSystem2Offset = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-divide",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-divide",
+          "start": 373,
+          "end": 390,
+          "code": "        public void System1MoveDistance()\n        {\n            // 点胶分段的时候坐标系要往前移动\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n            {\n                this.CoordinateSystem.Distance.X = this.CoordinateSystem.Distance.X + ProductConfiguration.GetInstance().TransportUnitConfig.DistanceToRight;\n            }\n        }\n\n        /// <summary>\n        /// 点胶1传输\n        /// </summary>\n        public void System1BackMoveDistance()\n        {\n            // 点胶分段往后移动\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n            {\n                this.CoordinateSystem.Distance.X = this.CoordinateSystem.Distance.X - ProductConfiguration.GetInstance().TransportUnitConfig.DistanceToRight;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-compensate",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-compensate",
+          "start": 254,
+          "end": 291,
+          "code": "        public double GetRotaryCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.AngleCompensate\n                       : this.SingleBondPositionConfig.RotaryPosition;\n        }\n\n        /// <summary>\n        /// 获取位置补偿\n        /// </summary>\n        /// <returns>结果</returns>\n        public AKRSPoint3D GetPositionCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.PositionCompensate\n                       : this.SingleBondPositionConfig.BondPosOffset;\n        }\n\n        /// <summary>\n        /// 获取角度\n        /// </summary>\n        /// <returns>结果</returns>\n        public double GetDispenseRotaryCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.DispenseAngleCompensate\n                       : this.SingleBondPositionConfig.DispenseRotaryPosition;\n        }\n\n        /// <summary>\n        /// 获取位置补偿\n        /// </summary>\n        /// <returns>结果</returns>\n        public AKRSPoint3D GetDispensePositionCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.DispensePositionCompensate\n                       : this.SingleBondPositionConfig.DispensePosOffset;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-offsets:stations",
+      "title": "建议阅读顺序 / 工位偏移与焊点补偿 / S1 与 S2 各有偏移标志",
+      "topic": "product-coordinates",
+      "text": "设置工位偏移时，先检查对应标志；未设置才给载具 Distance 加该工位偏移并置标志。S1、S2 标志彼此独立，设置 S2 不会自动撤销 S1；Refresh 会复位两者。",
+      "references": [
+        {
+          "id": "pc-offsets",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-offsets",
+          "start": 526,
+          "end": 550,
+          "code": "        public void SetSystem1OffSet()\n        {\n            if (this.TransportUnitInfo.IsSystem1Offset)\n            {\n                return;\n            }\n\n            this.CoordinateSystem.Distance += ProductConfiguration.GetInstance().TransportUnitConfig.System1Offset;\n\n            this.TransportUnitInfo.IsSystem1Offset = true;\n        }\n\n        /// <summary>\n        /// 设置系统2的偏移\n        /// </summary>\n        public void SetSystem2OffSet()\n        {\n            if (this.TransportUnitInfo.IsSystem2Offset)\n            {\n                return;\n            }\n\n            this.CoordinateSystem.Distance += ProductConfiguration.GetInstance().TransportUnitConfig.System2Offset;\n\n            this.TransportUnitInfo.IsSystem2Offset = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-refresh",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-refresh",
+          "start": 135,
+          "end": 142,
+          "code": "        public void Refresh()\n        {\n            this.InitTransportUnitCoordinateSystem();\n            this.RefreshSubstrate();\n            this.ClearVision();\n            this.ClearMeasureHeight();\n            this.TransportUnitInfo.IsSystem1Offset = false;\n            this.TransportUnitInfo.IsSystem2Offset = false;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-offsets:divide",
+      "title": "建议阅读顺序 / 工位偏移与焊点补偿 / 分段通过载具 X 推进",
+      "topic": "product-coordinates",
+      "text": "分段模式为 Divide 时，正向传输给载具坐标 X 加 DistanceToRight，反向操作减去相同值；未启用 Divide 则不改该值。子级继续通过父链体现这次位移。",
+      "references": [
+        {
+          "id": "pc-divide",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-divide",
+          "start": 373,
+          "end": 390,
+          "code": "        public void System1MoveDistance()\n        {\n            // 点胶分段的时候坐标系要往前移动\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n            {\n                this.CoordinateSystem.Distance.X = this.CoordinateSystem.Distance.X + ProductConfiguration.GetInstance().TransportUnitConfig.DistanceToRight;\n            }\n        }\n\n        /// <summary>\n        /// 点胶1传输\n        /// </summary>\n        public void System1BackMoveDistance()\n        {\n            // 点胶分段往后移动\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)\n            {\n                this.CoordinateSystem.Distance.X = this.CoordinateSystem.Distance.X - ProductConfiguration.GetInstance().TransportUnitConfig.DistanceToRight;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "g0-forward",
+          "file": "g0-file-2",
+          "method": "SelfPosToG0",
+          "start": 44,
+          "end": 68,
+          "code": "        public AKRSPoint3D SelfPosToG0(AKRSPoint3D point3D)\n        {\n            AKRSPoint3D point = new AKRSPoint3D(point3D.X, point3D.Y, point3D.Z);\n\n            BaseCoordinateSystem baseCoordinateSystem = this;\n            List<BaseCoordinateSystem> baseCoordinateSystems = new List<BaseCoordinateSystem>();\n            while (true)\n            {\n                if (baseCoordinateSystem.UpperCoordinateSystem != null)\n                {\n                    baseCoordinateSystems.Add(baseCoordinateSystem);\n                    baseCoordinateSystem = baseCoordinateSystem.UpperCoordinateSystem;\n                }\n                else\n                {\n                    break;\n                }\n            }\n\n            for (int i = 0; i < baseCoordinateSystems.Count; i++)\n            {\n                point = baseCoordinateSystems[i].ForwardConvertCoordinate(point);\n            }\n           \n            return point;",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+          "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:product-offsets:bond",
+      "title": "建议阅读顺序 / 工位偏移与焊点补偿 / 点胶与固晶各取对应补偿",
+      "topic": "product-coordinates",
+      "text": "普通焊点的固晶位置和角度取 BondPosOffset、RotaryPosition，点胶取 DispensePosOffset、DispenseRotaryPosition；普通配置为 null 时改用异形配置的对应字段。它们与载具工位偏移分别读取。",
+      "references": [
+        {
+          "id": "pc-compensate",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-compensate",
+          "start": 254,
+          "end": 291,
+          "code": "        public double GetRotaryCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.AngleCompensate\n                       : this.SingleBondPositionConfig.RotaryPosition;\n        }\n\n        /// <summary>\n        /// 获取位置补偿\n        /// </summary>\n        /// <returns>结果</returns>\n        public AKRSPoint3D GetPositionCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.PositionCompensate\n                       : this.SingleBondPositionConfig.BondPosOffset;\n        }\n\n        /// <summary>\n        /// 获取角度\n        /// </summary>\n        /// <returns>结果</returns>\n        public double GetDispenseRotaryCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.DispenseAngleCompensate\n                       : this.SingleBondPositionConfig.DispenseRotaryPosition;\n        }\n\n        /// <summary>\n        /// 获取位置补偿\n        /// </summary>\n        /// <returns>结果</returns>\n        public AKRSPoint3D GetDispensePositionCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.DispensePositionCompensate\n                       : this.SingleBondPositionConfig.DispensePosOffset;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        }
+      ]
+    },
+    {
+      "id": "product-coordinates-review:boundary:0",
+      "title": "建议阅读顺序 / 复核边界",
+      "topic": "product-coordinates",
+      "text": "覆盖产品层级、普通与异形展开、定位计算和写回、工位偏移及焊点补偿。图文说明当前静态实现；公共坐标转换见 G0，视觉采集和报警另见视觉专题，设备实际定位与运动未在这里运行。",
+      "references": [
+        {
+          "id": "pc-init",
+          "file": "transport-unit",
+          "method": "产品坐标复核 pc-init",
+          "start": 86,
+          "end": 125,
+          "code": "        public TransportUnit(CurrentMachineSystemEnum currentMachineSystem)\n        {\n            this.BaseInfo = new TransportUnitInfo();\n            this.Init();\n            this.Name = DateTime.Now.ToString(\"yyMMddHHmmssfff\");\n\n            // 设置载具偏移\n            if (currentMachineSystem == CurrentMachineSystemEnum.System1)\n            {\n                this.SetSystem1OffSet();\n            }\n            else\n            {\n                this.SetSystem2OffSet();\n            }\n        }\n\n\n        /// <summary>\n        /// 初始化\n        /// </summary>\n        private void Init()\n        {\n            this.OppositeSex = ProductConfiguration.GetInstance().OppositeSexConfiguration.OppositeSexConfigs;\n            this.InitTransportUnitCoordinateSystem();\n\n            if (ProductConfiguration.GetInstance().TransportUnitConfig.IsOppositeSex)\n            {\n                this.InitSubstrateByOppositeSex();\n            }\n            else\n            {\n                this.InitSubstrateCoordinateSystem();\n            }\n\n            TuService.ModifyMatter(this, ProductConfiguration.GetInstance().OtherConfig);\n\n            System2Domain.GetInstance().ActionNodesService.InjectSteps(this);\n            System1Domain.GetInstance().ActionNodeController.InjectSteps(this);\n        }",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+          "sha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c"
+        },
+        {
+          "id": "pc-update",
+          "file": "tu-service",
+          "method": "产品坐标复核 pc-update",
+          "start": 553,
+          "end": 608,
+          "code": "        public static void UpdateEntity(BaseMatter baseEntity, NormalVisionType type)\n        {\n            baseEntity.BaseInfo.LocateResultInfo.P1Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P2Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P3Info.Bitmap = null;\n            baseEntity.BaseInfo.LocateResultInfo.P4Info.Bitmap = null;\n\n            // 根据定位的配置计算出原始点位和现在的点位\n            AKRSPoint3D oldPoint = CalculateOldPoint(baseEntity.Config.LocateConfig);\n            AKRSPoint3D newPoint = CalculateNewPoint(baseEntity.BaseInfo.LocateResultInfo, baseEntity.Config.LocateConfig);\n\n\n            // 海康的坐标系是顺时针的，所有需要加负号\n            double newDegree = -CalculateUpdateAngle(\n                baseEntity.BaseInfo.LocateResultInfo,\n                baseEntity.Config.LocateConfig);\n\n            double oldDegree = baseEntity.CoordinateSystem.Degree;\n\n            // 上层坐标系现在的角度\n            GeneralCoordinateSystem upperSystem = (GeneralCoordinateSystem)baseEntity.CoordinateSystem.UpperCoordinateSystem;\n            double upperSystemAngle = upperSystem.DegreeInG0();\n\n            // 更新的角度为：视觉定位的角度 - 示教时的角度 - 上层的角度\n            double updateDegree = newDegree - upperSystemAngle - 0;\n\n            if (baseEntity.Config.LocateConfig.IsCalculateAngleByTwoPoint && baseEntity.Config.LocateConfig.AdjustType >= AdjustTypeEnum.TwoPoints)\n            {\n                double oldAngle = Math.Atan2(\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.Y - baseEntity.Config.LocateConfig.P1VisionRelativePos.Y,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos.X - baseEntity.Config.LocateConfig.P1VisionRelativePos.X);\n\n                double newAngle = Math.Atan2(\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.Y - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.Y,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D.X - baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D.X);\n\n                updateDegree = Math.Atan(newAngle - oldAngle) - upperSystemAngle - 0;\n            }\n\n            if (baseEntity.Config.LocateConfig.IsThreePointFittingCircle\n                && (baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.ThreePoints || baseEntity.Config.LocateConfig.AdjustType == AdjustTypeEnum.FourPoints))\n            {\n                oldPoint = MathHelper.GetCentre(\n                    baseEntity.Config.LocateConfig.P1VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P2VisionRelativePos,\n                    baseEntity.Config.LocateConfig.P3VisionRelativePos);\n\n                newPoint = MathHelper.GetCentre(\n                    baseEntity.BaseInfo.LocateResultInfo.P1Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P2Info.ResultPoint3D,\n                    baseEntity.BaseInfo.LocateResultInfo.P3Info.ResultPoint3D);\n            }\n\n            baseEntity.CoordinateSystem.UpdateCoordinateSystem(oldPoint, newPoint, updateDegree);\n\n            baseEntity.BaseInfo.IsVisioned = true;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+          "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5"
+        },
+        {
+          "id": "pc-compensate",
+          "file": "bond-position",
+          "method": "产品坐标复核 pc-compensate",
+          "start": 254,
+          "end": 291,
+          "code": "        public double GetRotaryCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.AngleCompensate\n                       : this.SingleBondPositionConfig.RotaryPosition;\n        }\n\n        /// <summary>\n        /// 获取位置补偿\n        /// </summary>\n        /// <returns>结果</returns>\n        public AKRSPoint3D GetPositionCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.PositionCompensate\n                       : this.SingleBondPositionConfig.BondPosOffset;\n        }\n\n        /// <summary>\n        /// 获取角度\n        /// </summary>\n        /// <returns>结果</returns>\n        public double GetDispenseRotaryCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.DispenseAngleCompensate\n                       : this.SingleBondPositionConfig.DispenseRotaryPosition;\n        }\n\n        /// <summary>\n        /// 获取位置补偿\n        /// </summary>\n        /// <returns>结果</returns>\n        public AKRSPoint3D GetDispensePositionCompensate()\n        {\n            return this.SingleBondPositionConfig == null\n                       ? this.OppositeSex.Config.DispensePositionCompensate\n                       : this.SingleBondPositionConfig.DispensePosOffset;",
+          "path": "AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+          "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454"
+        },
+        {
+          "id": "g0-forward",
+          "file": "g0-file-2",
+          "method": "SelfPosToG0",
+          "start": 44,
+          "end": 68,
+          "code": "        public AKRSPoint3D SelfPosToG0(AKRSPoint3D point3D)\n        {\n            AKRSPoint3D point = new AKRSPoint3D(point3D.X, point3D.Y, point3D.Z);\n\n            BaseCoordinateSystem baseCoordinateSystem = this;\n            List<BaseCoordinateSystem> baseCoordinateSystems = new List<BaseCoordinateSystem>();\n            while (true)\n            {\n                if (baseCoordinateSystem.UpperCoordinateSystem != null)\n                {\n                    baseCoordinateSystems.Add(baseCoordinateSystem);\n                    baseCoordinateSystem = baseCoordinateSystem.UpperCoordinateSystem;\n                }\n                else\n                {\n                    break;\n                }\n            }\n\n            for (int i = 0; i < baseCoordinateSystems.Count; i++)\n            {\n                point = baseCoordinateSystems[i].ForwardConvertCoordinate(point);\n            }\n           \n            return point;",
+          "path": "AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+          "sha256": "248d9171f2f2cc01f7c95e5ed1cf2b045efa819ee52d530840000910ad35403d"
+        }
+      ]
+    },
+    {
       "id": "startup-source-review:production-start",
       "title": "启动检查与任务放行 / 生产启动",
       "topic": "startup",
