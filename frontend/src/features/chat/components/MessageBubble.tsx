@@ -4,12 +4,11 @@ import {
   Check,
   RotateCcw,
   FileCode2,
-  Quote,
   Pencil,
   BookmarkPlus,
   MessageSquare,
 } from 'lucide-react';
-import { useWorkspace, draftFor } from '../../../app/state/store';
+import { useWorkspace } from '../../../app/state/store';
 import type { Message, Run } from '../../../shared/types/api';
 import { Markdown } from '../../../app/components/Markdown';
 import { AnswerMarkdown } from './AnswerMarkdown';
@@ -42,12 +41,8 @@ export function MessageBubble({
   onEdit?: (content: string) => Promise<unknown>;
   recent?: boolean;
 }) {
-  const setDraft = useWorkspace((state) => state.setDraft);
-  const draft = useWorkspace((state) => draftFor(state).content);
-  const body = useRef<HTMLDivElement>(null);
   const editButton = useRef<HTMLButtonElement>(null);
   const [editing, setEditing] = useState(false);
-  const [quote, setQuote] = useState('');
   const [preview, setPreview] = useState<Selection>();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<unknown>();
@@ -116,21 +111,7 @@ export function MessageBubble({
           </button>
         ))}
         {run && <RunTrace runId={run.id} onContext={onContext} />}
-        <div
-          ref={body}
-          onMouseUp={() => {
-            const selection = document.getSelection();
-            const content = selection?.toString().trim() || '';
-            setQuote(
-              message.role === 'assistant' &&
-                selection &&
-                body.current?.contains(selection.anchorNode) &&
-                body.current?.contains(selection.focusNode)
-                ? content.slice(0, 6000)
-                : '',
-            );
-          }}
-        >
+        <div>
           <Content
             content={message.content}
             runId={run?.id}
@@ -144,26 +125,6 @@ export function MessageBubble({
             projectId={project.data?.id || useWorkspace.getState().projectId}
             recent={recent}
           />
-        )}
-        {quote && (
-          <button
-            className="quote-answer"
-            onClick={() => {
-              setDraft(
-                `${draft.trim()}${draft.trim() ? '\n\n' : ''}${quote
-                  .split('\n')
-                  .map((line) => `> ${line}`)
-                  .join('\n')}\n\n`,
-              );
-              setQuote('');
-              document.getSelection()?.removeAllRanges();
-              document.querySelector<HTMLTextAreaElement>('[aria-label="对话输入"]')?.focus();
-              toast('已引用到输入框');
-            }}
-          >
-            <Quote size={13} />
-            引用选中文字
-          </button>
         )}
       </div>
       <div className={`answer-actions ${message.role === 'user' ? 'question-actions' : ''}`}>
