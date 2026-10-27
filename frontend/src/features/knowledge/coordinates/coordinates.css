@@ -2,10 +2,27 @@
   padding: 24px;
 }
 .knowledge-workspace .g0-reader .source-flow-layout {
-  grid-template-columns: minmax(180px, 0.65fr) minmax(0, 1.8fr);
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.knowledge-workspace .g0-reader .source-flow-nodes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
 }
 .knowledge-workspace .g0-reader .source-flow-nodes li + li {
-  margin-top: 8px;
+  margin-top: 0;
+}
+.knowledge-workspace .g0-reader .source-flow-nodes button {
+  height: 100%;
+}
+.knowledge-workspace .g0-reader .source-step-detail {
+  width: 100%;
+}
+.knowledge-workspace .g0-reading-surface {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
 }
 .knowledge-workspace .g0-archify {
   margin: 22px 0 0;
@@ -34,15 +51,15 @@
 .knowledge-workspace .g0-archify iframe {
   display: block;
   width: 100%;
-  height: 600px;
+  height: auto;
   border: 0;
 }
-.knowledge-workspace .g0-archify figcaption {
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--border);
+.knowledge-workspace .g0-diagram-loading {
+  min-height: 240px;
+  margin: 0;
+  padding: 40px 16px;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.8;
+  font-size: 13px;
 }
 .knowledge-workspace .g0-formula,
 .knowledge-workspace .g0-storage,
@@ -127,9 +144,18 @@
     grid-template-columns: 1fr;
   }
   .knowledge-workspace .g0-reader .source-flow-panel {
-    padding: 18px;
+    padding: 16px;
   }
-  .knowledge-workspace .g0-reader .source-flow-nodes li + li {
-    margin-top: 0;
+  .knowledge-workspace .g0-reader .source-flow-nodes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .knowledge-workspace .g0-archify {
+    margin-inline: -16px;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+  .knowledge-workspace .g0-reading-surface {
+    padding: 8px;
   }
 }

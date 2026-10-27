@@ -83,10 +83,7 @@ test('G0 从专题和图谱目录进入同一阅读页，使用 Archify 交付�
   const topic = render(TopicDetail, { id: 'g0' });
   const catalog = render(DiagramDetail, { id: 'g0-coordinate-system', theme: 'light' });
   assert.equal(catalog, topic);
-  assert.match(
-    topic,
-    /<iframe[^>]+src="\/archify\/g0-archify\/device-tree\.html\?theme=light&amp;review=/,
-  );
+  assert.match(topic, /data-archify-source="g0-archify\/device-tree\.html"/);
   assert.doesNotMatch(topic, /<svg[^>]+role="img"|g0-map-wide|g0-map-compact/);
   for (const label of [
     '坐标关系',
@@ -103,15 +100,16 @@ test('G0 从专题和图谱目录进入同一阅读页，使用 Archify 交付�
 });
 
 test('G0 三张关系图都引用实际 Archify HTML，公式与数值例子继续留在节点内', () => {
-  for (const [flow, step, file] of [
+  for (const [flow, step, source] of [
     ['g0-relations', 'reference', 'device-tree'],
     ['g0-relations', 'product', 'product-tree'],
-    ['g0-camera', 'inputs', 'camera-workflow'],
+    ['g0-camera', 'inputs', 'camera-reading'],
   ]) {
     const html = renderToStaticMarkup(coordinateVisual(flow, step));
-    assert.ok(html.includes(`/archify/g0-archify/${file}.html?theme=`));
-    assert.equal((html.match(/<iframe/g) ?? []).length, 1);
-    assert.match(html, /全屏阅读/);
+    assert.ok(html.includes(`data-archify-source="g0-archify/${source}.html"`));
+    assert.equal((html.match(/<figure/g) ?? []).length, 1);
+    assert.match(html, /完整图谱/);
+    assert.doesNotMatch(html, /图内可放大、拖动查看/);
   }
   assert.match(renderToStaticMarkup(coordinateVisual('g0-general', 'forward')), /cos θ/);
   assert.match(renderToStaticMarkup(coordinateVisual('g0-general', 'example')), /<table>/);
