@@ -12,6 +12,7 @@ import { safeMotionGuide } from './reviews/safeMotion.ts';
 import { toolCalibrationGuide } from './reviews/toolCalibration.ts';
 import { globalCalibrationGuide } from './reviews/globalCalibration.ts';
 import { lightnessGuide } from './reviews/lightness.ts';
+import { heightMeasurementGuide } from './reviews/heightMeasurement.ts';
 
 export interface SourceClaim {
   text: string;
@@ -49,6 +50,7 @@ export const sourceGuides: SourceGuide[] = [
   toolCalibrationGuide,
   globalCalibrationGuide,
   lightnessGuide,
+  heightMeasurementGuide,
   startupGuide,
   recoveryGuide,
   transportGuide,

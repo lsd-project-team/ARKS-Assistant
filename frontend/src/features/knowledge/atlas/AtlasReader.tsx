@@ -7,9 +7,12 @@ import { MotionOrdering } from './MotionOrdering';
 import { ToolCalibrationPersistence } from './ToolCalibrationPersistence';
 import { GlobalCalibrationPersistence } from './GlobalCalibrationPersistence';
 import { LightHardwareTable } from './LightHardwareTable';
+import { HeightReadingTable, HeightPersistenceTable } from './HeightMeasurementTables';
 import '../coordinates/coordinates.css';
 
 const tablesByStep: Record<string, ComponentType> = {
+  'mh-entry/overview': HeightReadingTable,
+  'mh-results/persistence': HeightPersistenceTable,
   'lc-hardware/overview': LightHardwareTable,
   'gc-completion/persistence': GlobalCalibrationPersistence,
   'tc-results/persistence': ToolCalibrationPersistence,
@@ -18,6 +21,8 @@ const tablesByStep: Record<string, ComponentType> = {
 };
 
 const diagramsByStep: Record<string, { id: string; title: string; narrow?: string }> = {
+  'mh-product/overview': { id: 'height-s1-writeback', title: 'S1 多点有效返回的高度回写路径' },
+  'mh-flatness/overview': { id: 'height-flat-batch', title: '平面度单批次的结果链' },
   'lc-acquisition/overview': { id: 'lightness-calibration', title: '亮度采集到保存的正常主链' },
   'lc-application/overview': { id: 'lightness-alarm-edit', title: '点胶相机保持不变的报警编辑' },
   'gc-points/overview': { id: 'global-region-chain', title: '新版扫描数据与区域补偿主链' },
@@ -78,6 +83,16 @@ export function AtlasReader({ page }: { page: string }) {
           <a className="text-button" href="#topic/camera-calibration">
             相机与机械坐标标定 →
           </a>
+        )}
+        {page === 'height-measurement' && (
+          <>
+            <a className="text-button" href="#topic/motion-safety">
+              安全运动与等待边界 →
+            </a>
+            <a className="text-button" href="#topic/global-calibration">
+              全局标定与旧偏移插值 →
+            </a>
+          </>
         )}
         {page === 'global-calibration' && (
           <a className="text-button" href="#topic/motion-safety">

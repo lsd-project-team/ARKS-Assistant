@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'height-measurement',
+    title: '测高与测量工具',
+    summary: '从 S1 探针、S2 激光与焊头测高，到产品多点、平面度复测和结果导出。',
+    purpose: '区分传感器读数、不同坐标中的高度与最终物料 Z 更新。',
+    conditions: ['工位、工具、硬件和对象配置共同决定测量路径。'],
+    exceptions: ['跳过、成功返回、保存、复测与设备实际到位分别判断。'],
+    diagrams: ['height-measurement-process'],
+  },
+  {
     id: 'lightness',
     title: '光源控制与亮度标定',
     summary: '从相机灯光对应和手动调光，到六组亮度采集、映射补全与视觉应用。',
@@ -81,6 +90,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'height-s1-writeback': {
+    path: 'functional-atlas/height-s1-writeback.html',
+    sha256: 'e6df853337bcf4f84e54884665edc92115f6abaa1b919e6abc76a5e0733b7675',
+    specificationSha256: '3640c42083f2efd2802d6ec295b59a45d751d62bb73fec4044a0bcdb1614f1ae',
+  },
+  'height-flat-batch': {
+    path: 'functional-atlas/height-flat-batch.html',
+    sha256: 'a51a8184aa27d1dd31aeef27b248a18fc47856f01d7f050faf158907f41cd7d7',
+    specificationSha256: 'ff7cca427610aaf1a730253d4ee6103f24530a00ca36e0322cfc43483622ba8b',
+  },
   'lightness-calibration': {
     path: 'functional-atlas/lightness-calibration.html',
     sha256: '7afb12ac4c962fb44959836d203cbafcf119af566b3cf5f8b27b4ca2e545c3c2',

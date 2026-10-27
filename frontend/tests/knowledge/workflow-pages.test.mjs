@@ -283,3 +283,37 @@ test('光源专题共用目录入口，区分硬件、采集、缓存和视觉�
   assert.ok(capture.includes('data-archify-source="functional-atlas/lightness-calibration.html"'));
   assert.ok(alarm.includes('data-archify-source="functional-atlas/lightness-alarm-edit.html"'));
 });
+
+test('测高专题共用目录入口，读数和保存分表并保留两条实际结果链', () => {
+  const topic = render(TopicDetail, { id: 'height-measurement' });
+  assert.equal(topic, render(DiagramDetail, { id: 'height-measurement-process', theme: 'light' }));
+  for (const title of [
+    '入口与读数口径',
+    'S1 探针与激光',
+    'S2 焊头与激光',
+    '物料多点与回写',
+    '产品测高点示教',
+    '固晶水平',
+    'S1/S2 平面度',
+    '多高度测量',
+    '距离与标准工具',
+    '结果与保存出口',
+  ])
+    assert.ok(topic.includes(title), title);
+  assert.equal((topic.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 7);
+  assert.match(topic, /原始|传感器读数/);
+  const persistence = renderToStaticMarkup(functionalVisual('mh-results', 'persistence'));
+  assert.equal((persistence.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 7);
+  assert.match(persistence, /Save 先于点击处理中的新点列赋值/);
+  assert.match(persistence, /Count &gt; 100/);
+  for (const [flow, id] of [
+    ['mh-product', 'height-s1-writeback'],
+    ['mh-flatness', 'height-flat-batch'],
+  ])
+    assert.ok(
+      renderToStaticMarkup(functionalVisual(flow, 'overview')).includes(
+        'data-archify-source="functional-atlas/' + id + '.html"',
+      ),
+    );
+  assert.match(topic, /href="#topic\/global-calibration"/);
+});

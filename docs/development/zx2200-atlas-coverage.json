@@ -1863,38 +1863,185 @@
         {
           "id": "29.01",
           "text": "S1 探针气缸测高与结果回写。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-s1",
+              "steps": [
+                "mode",
+                "cylinder",
+                "probe",
+                "laser",
+                "return"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-product",
+              "steps": [
+                "s1",
+                "outcome",
+                "s1-gates"
+              ]
+            }
+          ]
         },
         {
           "id": "29.02",
           "text": "S2 激光、力控测高及在途测高。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-s2",
+              "steps": [
+                "laser",
+                "sensor",
+                "retry",
+                "pressure",
+                "cylinder",
+                "batch"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-product",
+              "steps": [
+                "s2",
+                "outcome",
+                "s2-gates"
+              ]
+            }
+          ]
         },
         {
           "id": "29.03",
           "text": "载具、基板、模块、焊点多点测高与平面插值。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-product",
+              "steps": [
+                "overview",
+                "s1",
+                "s2",
+                "outcome",
+                "s1-gates",
+                "s2-gates",
+                "plane"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-teaching",
+              "steps": [
+                "objects",
+                "points",
+                "helper",
+                "save"
+              ]
+            }
+          ]
         },
         {
           "id": "29.04",
           "text": "固晶水平、S1 S2 平面度的示教、测量与复测。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-bond-level",
+              "steps": [
+                "teach",
+                "four",
+                "values",
+                "repeat"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-flatness",
+              "steps": [
+                "overview",
+                "teach",
+                "height",
+                "s1",
+                "s2",
+                "options"
+              ]
+            }
+          ]
         },
         {
           "id": "29.05",
           "text": "距离、焊头标准量块及多高度测量工具。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-multiple",
+              "steps": [
+                "teach",
+                "run",
+                "relative",
+                "stop",
+                "export"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-tools",
+              "steps": [
+                "distance",
+                "threshold",
+                "standard-entry",
+                "standard"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-entry",
+              "steps": [
+                "tools",
+                "touchdown"
+              ]
+            }
+          ]
         },
         {
           "id": "29.06",
           "text": "测量结果展示、范围统计和导出。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-results",
+              "steps": [
+                "persistence",
+                "range",
+                "bond",
+                "flat-export",
+                "data-window"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-multiple",
+              "steps": [
+                "relative",
+                "export"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-tools",
+              "steps": [
+                "distance"
+              ]
+            }
+          ]
         }
       ]
     },

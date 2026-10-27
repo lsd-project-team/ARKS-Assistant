@@ -1,0 +1,33 @@
+{
+  "generator": "Archify 3.2.0",
+  "artifact": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\height-flat-batch.html",
+    "sha256": "a51a8184aa27d1dd31aeef27b248a18fc47856f01d7f050faf158907f41cd7d7",
+    "bytes": 812589
+  },
+  "specification": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\height-flat-batch.json",
+    "sha256": "ff7cca427610aaf1a730253d4ee6103f24530a00ca36e0322cfc43483622ba8b",
+    "bytes": 3413
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "source": "Committed review at pinned revision 708ac411eb635da6b30c42d3fe32ec6d584a057f; exact source ranges separately fingerprinted against read-only trunk.",
+  "manualReview": {
+    "page": "/#topic/height-measurement",
+    "widths": [
+      1280,
+      497
+    ],
+    "readingCopy": true,
+    "nodesSwitched": 49,
+    "nodeHeadingsVerified": 49,
+    "diagramZoomOrPan": false,
+    "scope": "All six flatness nodes inspected, including nonempty-list gate without a full-point-count check, per-round range and result/retest entry. Both seven-row tables also inspected."
+  }
+}

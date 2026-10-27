@@ -241,3 +241,30 @@ test('亮度图保留全部返回才保存，以及报警编辑先正向后反�
   assert.match(alarm.html, /关闭后仍为点胶/);
   assert.doesNotMatch(alarm.html, /data-edge-from="editor" data-edge-to="save"/);
 });
+
+test('测高回写图保留先收集再校验，平面度图只以非空列表进入极差', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const writeback = createReadingDiagram(
+    await readFile(new URL('height-s1-writeback.html', folder), 'utf8'),
+    'classic',
+  );
+  assert.equal((writeback.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 8);
+  for (const [from, to] of [
+    ['measure', 'append'],
+    ['append', 'check'],
+    ['check', 'average'],
+    ['average', 'result'],
+    ['result', 'complete'],
+  ])
+    assert.ok(writeback.html.includes('data-edge-from="' + from + '" data-edge-to="' + to + '"'));
+  assert.match(writeback.html, /失败项在列表中保留/);
+  assert.match(writeback.html, /未检出 NaN 时/);
+  const flat = createReadingDiagram(
+    await readFile(new URL('height-flat-batch.html', folder), 'utf8'),
+    'classic',
+  );
+  assert.equal((flat.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 6);
+  assert.ok(flat.html.includes('data-edge-from="nonempty" data-edge-to="range"'));
+  assert.match(flat.html, /仅检查列表非空/);
+  assert.match(flat.html, /未核对点数齐全/);
+});
