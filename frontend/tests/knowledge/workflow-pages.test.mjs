@@ -353,3 +353,20 @@ test('力控专题与目录共用阅读页，读数和保存分表并保留真�
   assert.match(topic, /href="#topic\/height-measurement"/);
   assert.match(topic, /href="#topic\/motion-safety"/);
 });
+
+test('工具库专题与目录共用阅读页，区分四种状态并绑定保存表和真实换嘴图', () => {
+  const topic = render(TopicDetail, { id: 'tool-bank' });
+  assert.equal(topic, render(DiagramDetail, { id: 'tool-bank-process', theme: 'light' }));
+  assert.match(topic, /data-archify-source="functional-atlas\/tool-change-overview.html"/);
+  const states = renderToStaticMarkup(functionalVisual('nb-identity', 'overview'));
+  for (const state of ['工具实体', '工具槽位', '当前工具', '物理在位'])
+    assert.ok(states.includes(state), state);
+  assert.equal((states.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 4);
+  const persistence = renderToStaticMarkup(functionalVisual('nb-results', 'persistence'));
+  assert.equal((persistence.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 6);
+  assert.match(persistence, /取消不统一回滚/);
+  const change = renderToStaticMarkup(functionalVisual('nb-change', 'overview'));
+  assert.match(change, /data-archify-source="functional-atlas\/tool-change-overview.html"/);
+  assert.match(topic, /href="#topic\/tool-calibration"/);
+  assert.match(topic, /href="#topic\/motion-safety"/);
+});

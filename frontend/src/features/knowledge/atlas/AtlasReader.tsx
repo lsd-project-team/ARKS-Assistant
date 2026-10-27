@@ -9,9 +9,12 @@ import { GlobalCalibrationPersistence } from './GlobalCalibrationPersistence';
 import { LightHardwareTable } from './LightHardwareTable';
 import { HeightReadingTable, HeightPersistenceTable } from './HeightMeasurementTables';
 import { ForceReadingTable, ForcePersistenceTable } from './ForceControlTables';
+import { ToolBankStatusTable, ToolBankPersistenceTable } from './ToolBankTables';
 import '../coordinates/coordinates.css';
 
 const tablesByStep: Record<string, ComponentType> = {
+  'nb-identity/overview': ToolBankStatusTable,
+  'nb-results/persistence': ToolBankPersistenceTable,
   'fc-entry/overview': ForceReadingTable,
   'fc-results/persistence': ForcePersistenceTable,
   'mh-entry/overview': HeightReadingTable,
@@ -27,6 +30,12 @@ const diagramsByStep: Record<
   string,
   { id: string; title: string; narrow?: string; readingMinWidth?: number }
 > = {
+  'nb-change/overview': {
+    id: 'tool-change-overview',
+    title: '按工具名称判断与换嘴主链',
+    narrow: 'tool-change-reading',
+    readingMinWidth: 860,
+  },
   'fc-start/overview': {
     id: 'force-calibration-overview',
     title: '闭环标定的驱动分派与保存',
@@ -102,6 +111,16 @@ export function AtlasReader({ page }: { page: string }) {
           <a className="text-button" href="#topic/camera-calibration">
             相机与机械坐标标定 →
           </a>
+        )}
+        {page === 'tool-bank' && (
+          <>
+            <a className="text-button" href="#topic/tool-calibration">
+              工具高度与中心校准 →
+            </a>
+            <a className="text-button" href="#topic/motion-safety">
+              安全运动与等待边界 →
+            </a>
+          </>
         )}
         {page === 'height-measurement' && (
           <>

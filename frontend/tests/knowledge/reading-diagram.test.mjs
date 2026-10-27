@@ -346,3 +346,37 @@ test('力控宽屏图与纵图保留相同节点和分支，桌面画布可完�
     assert.ok(page.height <= 650, wide);
   }
 });
+
+test('换嘴主链保留同名早退、先还后取及直接取嘴，纵图不丢分支', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const load = async (id) => JSON.parse(await readFile(new URL(id + '.json', folder), 'utf8'));
+  const wide = await load('tool-change-overview');
+  const narrow = await load('tool-change-reading');
+  const meaning = ({ pos, size, ...node }) => node;
+  assert.deepEqual(wide.components.map(meaning), narrow.components.map(meaning));
+  assert.deepEqual(wide.connections, narrow.connections);
+  const edges = wide.connections.map(({ from, to }) => `${from}>${to}`);
+  for (const edge of [
+    'name>same',
+    'name>change',
+    'change>manual',
+    'change>check',
+    'check>put',
+    'check>take',
+    'put>take',
+    'take>home',
+    'home>success',
+  ])
+    assert.ok(edges.includes(edge), edge);
+  assert.ok(!edges.some((edge) => edge.startsWith('same>') || edge.startsWith('manual>')));
+  for (const id of ['tool-change-overview', 'tool-change-reading']) {
+    const page = createReadingDiagram(
+      await readFile(new URL(id + '.html', folder), 'utf8'),
+      'classic',
+    );
+    assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 9);
+    assert.match(page.html, /未用回位结果门控/);
+    assert.match(page.html, /冲突或终止→false/);
+    assert.match(page.html, /可经人工忽略到达/);
+  }
+});

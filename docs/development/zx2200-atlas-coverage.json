@@ -2230,32 +2230,190 @@
         {
           "id": "31.01",
           "text": "吸嘴、工具槽、TouchDown BMC 工具及当前工具的对应。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-identity",
+              "steps": [
+                "overview",
+                "definition",
+                "slots",
+                "current",
+                "special"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-library",
+              "steps": [
+                "assignment"
+              ]
+            }
+          ]
         },
         {
           "id": "31.02",
           "text": "工具几何、高度、对中与工具库位置示教。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-teaching",
+              "steps": [
+                "entry",
+                "first",
+                "endpoints",
+                "count",
+                "done",
+                "old"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-geometry",
+              "steps": [
+                "entry",
+                "rectangle",
+                "round",
+                "finish"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-center",
+              "steps": [
+                "two-positions",
+                "search",
+                "states"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-height",
+              "steps": [
+                "prepare",
+                "methods",
+                "service",
+                "completion"
+              ]
+            }
+          ]
         },
         {
           "id": "31.03",
           "text": "取嘴、还嘴、自动判断换嘴及参数更新。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-change",
+              "steps": [
+                "overview",
+                "same",
+                "conflict",
+                "callers"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-take",
+              "steps": [
+                "manual",
+                "availability",
+                "movement",
+                "retry",
+                "finish"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-return",
+              "steps": [
+                "manual",
+                "prepare",
+                "release",
+                "commit"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-library",
+              "steps": [
+                "assignment",
+                "save"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-results",
+              "steps": [
+                "persistence"
+              ]
+            }
+          ]
         },
         {
           "id": "31.04",
           "text": "工具在位、工具库回零、真空与安全高度检查。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-checks",
+              "steps": [
+                "physical",
+                "configuration",
+                "home",
+                "safety"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-take",
+              "steps": [
+                "availability",
+                "movement",
+                "retry"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-return",
+              "steps": [
+                "prepare",
+                "release"
+              ]
+            }
+          ]
         },
         {
           "id": "31.05",
           "text": "工具重复动作测试与人工操作入口。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-manual",
+              "steps": [
+                "entry",
+                "refresh",
+                "change",
+                "cancel"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-test",
+              "steps": [
+                "entry",
+                "wait",
+                "stop",
+                "legacy",
+                "independent"
+              ]
+            }
+          ]
         }
       ]
     },

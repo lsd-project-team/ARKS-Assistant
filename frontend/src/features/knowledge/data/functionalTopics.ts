@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'tool-bank',
+    title: '工具库与吸嘴更换',
+    summary: '从工具与槽位配置、几何和工具架示教，到取还嘴、在位检测与重复测试。',
+    purpose: '分清当前工具名、槽位状态和实际在位，理解换嘴条件与保存边界。',
+    conditions: ['工具架、检测开关、工作模式和人工选择共同决定实际路径。'],
+    exceptions: ['同名早退、人工忽略、取消、保存与物理动作完成分别判断。'],
+    diagrams: ['tool-bank-process'],
+  },
+  {
     id: 'force-control',
     title: '力控标定与反馈',
     summary: '从压力计连接、大小力与角度标定，到取放力控、实时曲线和结果导出。',
@@ -99,6 +108,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'tool-change-overview': {
+    path: 'functional-atlas/tool-change-overview.html',
+    sha256: 'd6ced45d4afdb494c3b6dd9ddb5c689d6aba378753bddef36e0a299da0d9ddeb',
+    specificationSha256: 'da40b3cefd0664c8c7c646cb1c1938443b687255193c2b0a7420e271ea118a70',
+  },
+  'tool-change-reading': {
+    path: 'functional-atlas/tool-change-reading.html',
+    sha256: 'fd9865c5fd35b55dd22d527960c8cd6886460bf2d45027328b330f5f722c557a',
+    specificationSha256: '8dc83635f4a7d28a2a20879c8df5d3de3691fba24c6f467dd521ff01158f5c27',
+  },
   'force-calibration-overview': {
     path: 'functional-atlas/force-calibration-overview.html',
     sha256: '887ccb43832de166dc440decbe9320ca6d02307bccbd3f9a129ad074a52b97d9',
