@@ -317,3 +317,39 @@ test('测高专题共用目录入口，读数和保存分表并保留两条实�
     );
   assert.match(topic, /href="#topic\/global-calibration"/);
 });
+
+test('力控专题与目录共用阅读页，读数和保存分表并保留真实驱动及换算图', () => {
+  const topic = render(TopicDetail, { id: 'force-control' });
+  assert.equal(topic, render(DiagramDetail, { id: 'force-control-process', theme: 'light' }));
+  for (const title of [
+    '入口与读数',
+    '启动与驱动分派',
+    '固高大小力采样',
+    'ETEL 采样差异',
+    '目标与反馈换算',
+    '设定、复位与清零',
+    '生产取放与末次力',
+    '平台、力与 LVDT 曲线',
+    '力值检验与诊断',
+    '保存与有效范围',
+  ])
+    assert.ok(topic.includes(title), title);
+  assert.equal((topic.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 7);
+  assert.match(topic, /未先除 32767/);
+  assert.match(topic, /仅力模式且非 ETEL/);
+  const persistence = renderToStaticMarkup(functionalVisual('fc-results', 'persistence'));
+  assert.equal((persistence.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 8);
+  assert.match(persistence, /单独刷新按钮未在同处 Save/);
+  assert.match(persistence, /不是跨文件事务/);
+  for (const [flow, id] of [
+    ['fc-start', 'force-calibration-overview'],
+    ['fc-conversion', 'force-input-overview'],
+  ])
+    assert.ok(
+      renderToStaticMarkup(functionalVisual(flow, 'overview')).includes(
+        'data-archify-source="functional-atlas/' + id + '.html"',
+      ),
+    );
+  assert.match(topic, /href="#topic\/height-measurement"/);
+  assert.match(topic, /href="#topic\/motion-safety"/);
+});

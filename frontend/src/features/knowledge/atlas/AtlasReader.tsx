@@ -8,9 +8,12 @@ import { ToolCalibrationPersistence } from './ToolCalibrationPersistence';
 import { GlobalCalibrationPersistence } from './GlobalCalibrationPersistence';
 import { LightHardwareTable } from './LightHardwareTable';
 import { HeightReadingTable, HeightPersistenceTable } from './HeightMeasurementTables';
+import { ForceReadingTable, ForcePersistenceTable } from './ForceControlTables';
 import '../coordinates/coordinates.css';
 
 const tablesByStep: Record<string, ComponentType> = {
+  'fc-entry/overview': ForceReadingTable,
+  'fc-results/persistence': ForcePersistenceTable,
   'mh-entry/overview': HeightReadingTable,
   'mh-results/persistence': HeightPersistenceTable,
   'lc-hardware/overview': LightHardwareTable,
@@ -20,7 +23,22 @@ const tablesByStep: Record<string, ComponentType> = {
   'cc-persistence/order': CalibrationPersistence,
 };
 
-const diagramsByStep: Record<string, { id: string; title: string; narrow?: string }> = {
+const diagramsByStep: Record<
+  string,
+  { id: string; title: string; narrow?: string; readingMinWidth?: number }
+> = {
+  'fc-start/overview': {
+    id: 'force-calibration-overview',
+    title: '闭环标定的驱动分派与保存',
+    narrow: 'force-calibration-dispatch',
+    readingMinWidth: 780,
+  },
+  'fc-conversion/overview': {
+    id: 'force-input-overview',
+    title: '目标力到驱动输入的正常多点路径',
+    narrow: 'force-input-conversion',
+    readingMinWidth: 780,
+  },
   'mh-product/overview': { id: 'height-s1-writeback', title: 'S1 多点有效返回的高度回写路径' },
   'mh-flatness/overview': { id: 'height-flat-batch', title: '平面度单批次的结果链' },
   'lc-acquisition/overview': { id: 'lightness-calibration', title: '亮度采集到保存的正常主链' },
@@ -52,6 +70,7 @@ export function functionalVisual(flow: string, step: string) {
         id: diagram.id,
         title: diagram.title,
         narrow: diagram.narrow ? functionalArtifacts[diagram.narrow] : undefined,
+        readingMinWidth: diagram.readingMinWidth,
       }}
     />
   );
@@ -98,6 +117,16 @@ export function AtlasReader({ page }: { page: string }) {
           <a className="text-button" href="#topic/motion-safety">
             安全运动与等待边界 →
           </a>
+        )}
+        {page === 'force-control' && (
+          <>
+            <a className="text-button" href="#topic/height-measurement">
+              TouchDown 准备与焊头测高 →
+            </a>
+            <a className="text-button" href="#topic/motion-safety">
+              安全运动与等待边界 →
+            </a>
+          </>
         )}
       </nav>
     </div>

@@ -295,3 +295,54 @@ test('测高回写图保留先收集再校验，平面度图只以非空列表�
   assert.match(flat.html, /仅检查列表非空/);
   assert.match(flat.html, /未核对点数齐全/);
 });
+
+test('力控分派保留两路 finally，目标力换算保留大小力初值差异和多点前提', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const dispatch = createReadingDiagram(
+    await readFile(new URL('force-calibration-dispatch.html', folder), 'utf8'),
+    'classic',
+  );
+  for (const [from, to] of [
+    ['dispatch', 'gt-prepare'],
+    ['dispatch', 'etel-prepare'],
+    ['gt-finally', 'save'],
+    ['etel-finally', 'save'],
+    ['save', 'safe'],
+  ])
+    assert.ok(dispatch.html.includes(`data-edge-from="${from}" data-edge-to="${to}"`));
+  assert.match(dispatch.html, /停止\/异常仍写局部表/);
+  assert.match(dispatch.html, /单角结果未加入表/);
+  assert.match(dispatch.html, /仅在 Save 返回后/);
+  assert.doesNotMatch(dispatch.html, /data-edge-from="gt-samples" data-edge-to="etel-samples"/);
+  const conversion = createReadingDiagram(
+    await readFile(new URL('force-input-conversion.html', folder), 'utf8'),
+    'classic',
+  );
+  for (const branch of ['small', 'large']) {
+    assert.ok(conversion.html.includes(`data-edge-from="range" data-edge-to="${branch}"`));
+    assert.ok(conversion.html.includes(`data-edge-from="${branch}" data-edge-to="samples"`));
+  }
+  assert.match(conversion.html, /正常多点路径/);
+  assert.match(conversion.html, /小力用传入初值/);
+  assert.match(conversion.html, /大力用角度初值/);
+});
+
+test('力控宽屏图与纵图保留相同节点和分支，桌面画布可完整展开', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  for (const [compact, wide] of [
+    ['force-calibration-dispatch', 'force-calibration-overview'],
+    ['force-input-conversion', 'force-input-overview'],
+  ]) {
+    const original = JSON.parse(await readFile(new URL(compact + '.json', folder), 'utf8'));
+    const desktop = JSON.parse(await readFile(new URL(wide + '.json', folder), 'utf8'));
+    const meaning = ({ pos, size, ...node }) => node;
+    assert.deepEqual(desktop.components.map(meaning), original.components.map(meaning));
+    assert.deepEqual(desktop.connections, original.connections);
+    const page = createReadingDiagram(
+      await readFile(new URL(wide + '.html', folder), 'utf8'),
+      'classic',
+    );
+    assert.ok(page.width >= 800 && page.width <= 900, wide);
+    assert.ok(page.height <= 650, wide);
+  }
+});

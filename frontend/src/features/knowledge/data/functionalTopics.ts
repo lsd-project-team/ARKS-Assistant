@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'force-control',
+    title: '力控标定与反馈',
+    summary: '从压力计连接、大小力与角度标定，到取放力控、实时曲线和结果导出。',
+    purpose: '区分原始读数、目标输入、标定样本与生产反馈的实际口径。',
+    conditions: ['驱动、通道、标定表、角度和动作模式共同决定路径。'],
+    exceptions: ['停止、部分结果、参数保存和实际动作成功分别判断。'],
+    diagrams: ['force-control-process'],
+  },
+  {
     id: 'height-measurement',
     title: '测高与测量工具',
     summary: '从 S1 探针、S2 激光与焊头测高，到产品多点、平面度复测和结果导出。',
@@ -90,6 +99,26 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'force-calibration-overview': {
+    path: 'functional-atlas/force-calibration-overview.html',
+    sha256: '887ccb43832de166dc440decbe9320ca6d02307bccbd3f9a129ad074a52b97d9',
+    specificationSha256: 'd13dee5b8ac87e447215f1232cfa981f3b787d722674e99313cc554c841425d8',
+  },
+  'force-input-overview': {
+    path: 'functional-atlas/force-input-overview.html',
+    sha256: '525649a807a9991cf61057d5f2e40934ffa3f63ab6aed9ee8e9fb95b20ec6766',
+    specificationSha256: 'c7a83800a7b12c5da2599003187f52c05ceccd5cfec2ca7c834775bd36f92388',
+  },
+  'force-calibration-dispatch': {
+    path: 'functional-atlas/force-calibration-dispatch.html',
+    sha256: '289d02d083f8421e0f204cd5611abdf0633857325996ad0d6fb16e83b948b159',
+    specificationSha256: 'e1fc124ff44b80dcd94a7660b0f77fe181b3cf2e034e7eca4799156f20cf746a',
+  },
+  'force-input-conversion': {
+    path: 'functional-atlas/force-input-conversion.html',
+    sha256: 'bc7852d4f413063d21ac0e24b3ba41453bc7d76ff403a3c9400c58e82469af7f',
+    specificationSha256: '5e00aaa2b83911d733477dc108726934651c819244142fb5c7cd7d916677b9b4',
+  },
   'height-s1-writeback': {
     path: 'functional-atlas/height-s1-writeback.html',
     sha256: 'e6df853337bcf4f84e54884665edc92115f6abaa1b919e6abc76a5e0733b7675',

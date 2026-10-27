@@ -2053,38 +2053,172 @@
         {
           "id": "30.01",
           "text": "压力计和焊头 Modbus 连接、清零与采集。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-entry",
+              "steps": [
+                "connection",
+                "registers",
+                "configuration",
+                "channels"
+              ]
+            }
+          ]
         },
         {
           "id": "30.02",
           "text": "闭环与音圈电机的不同标定入口。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-start",
+              "steps": [
+                "overview",
+                "tool",
+                "parameters",
+                "prepare",
+                "voice",
+                "stop"
+              ]
+            }
+          ]
         },
         {
           "id": "30.03",
           "text": "ETEL 固高、大小力区间及角度对应标定。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-gt",
+              "steps": [
+                "angles",
+                "initial",
+                "initial-state",
+                "input",
+                "sample",
+                "finish"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-etel",
+              "steps": [
+                "inputs",
+                "sample",
+                "single",
+                "finish"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-results",
+              "steps": [
+                "limits",
+                "failure"
+              ]
+            }
+          ]
         },
         {
           "id": "30.04",
           "text": "输入力、实际力、增量和初始值转换。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-conversion",
+              "steps": [
+                "overview",
+                "selection",
+                "forward",
+                "invalid",
+                "reverse",
+                "pid"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-entry",
+              "steps": [
+                "overview",
+                "channels"
+              ]
+            }
+          ]
         },
         {
           "id": "30.05",
           "text": "取放力控设定、复位和焊头清零。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-motion",
+              "steps": [
+                "set",
+                "gt-input",
+                "gt-config",
+                "wait",
+                "reset",
+                "zero",
+                "auto-zero"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-production",
+              "steps": [
+                "parameters",
+                "motion",
+                "baseline",
+                "last",
+                "summary",
+                "process"
+              ]
+            }
+          ]
         },
         {
           "id": "30.06",
           "text": "力 LVDT 实时曲线、检测结果与导出。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-curves",
+              "steps": [
+                "platform",
+                "force",
+                "cache",
+                "lvdt",
+                "operations",
+                "files"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-inspection",
+              "steps": [
+                "repeat",
+                "stop",
+                "export",
+                "combined",
+                "stability",
+                "other"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-results",
+              "steps": [
+                "persistence"
+              ]
+            }
+          ]
         }
       ]
     },

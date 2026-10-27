@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "d6b8d1d7-330e-4e55-be99-70822923ff62",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\force-input-overview.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\force-input-overview.html",
+  "specification": {
+    "sha256": "c7a83800a7b12c5da2599003187f52c05ceccd5cfec2ca7c834775bd36f92388",
+    "bytes": 5162
+  },
+  "artifact": {
+    "sha256": "525649a807a9991cf61057d5f2e40934ffa3f63ab6aed9ee8e9fb95b20ec6766",
+    "bytes": 815992
+  }
+}

@@ -8,7 +8,7 @@
     "link_mode": "local-only"
   },
   "sourceReview": "docs/development/zx2200-force-control-review.md",
-  "evidenceSource": "Source references point to the committed review. Original trunk hashes and read ranges remain in output/functional-atlas/force-control-source-audit.json until guide evidence binding is completed.",
+  "evidenceSource": "Pinned references use the committed source review. Original trunk hashes and exact ranges are bound in frontend/scripts/knowledge/source-evidence.json; the read audit remains in output/functional-atlas/force-control/.",
   "diagrams": [
     {
       "id": "force-calibration-dispatch",
@@ -71,6 +71,68 @@
           "dark"
         ]
       }
+    },
+    {
+      "id": "force-calibration-overview",
+      "type": "architecture",
+      "specification": {
+        "path": "force-calibration-overview.json",
+        "sha256": "d13dee5b8ac87e447215f1232cfa981f3b787d722674e99313cc554c841425d8"
+      },
+      "artifact": {
+        "path": "force-calibration-overview.html",
+        "sha256": "887ccb43832de166dc440decbe9320ca6d02307bccbd3f9a129ad074a52b97d9"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "captures": {
+        "status": "pass",
+        "artifactSha256": "887ccb43832de166dc440decbe9320ca6d02307bccbd3f9a129ad074a52b97d9",
+        "viewportWidths": [
+          1440,
+          2048
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ]
+      }
+    },
+    {
+      "id": "force-input-overview",
+      "type": "architecture",
+      "specification": {
+        "path": "force-input-overview.json",
+        "sha256": "c7a83800a7b12c5da2599003187f52c05ceccd5cfec2ca7c834775bd36f92388"
+      },
+      "artifact": {
+        "path": "force-input-overview.html",
+        "sha256": "525649a807a9991cf61057d5f2e40934ffa3f63ab6aed9ee8e9fb95b20ec6766"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "captures": {
+        "status": "pass",
+        "artifactSha256": "525649a807a9991cf61057d5f2e40934ffa3f63ab6aed9ee8e9fb95b20ec6766",
+        "viewportWidths": [
+          1440,
+          2048
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ]
+      }
     }
   ],
   "manualReview": {
@@ -87,6 +149,34 @@
         "output/functional-atlas/force-control/reading-preview-bottom.png"
       ]
     },
-    "scope": "Prepared resources only. Full topic integration, narrow embedded page checks and requirement coverage remain pending."
+    "scope": "Initial resource-only review; final published topic checks are recorded in embeddedTopicReview."
+  },
+  "embeddedTopicReview": {
+    "page": "/#topic/force-control",
+    "catalog": "/#catalog/force-control-process",
+    "hostViewportWidths": [
+      1280,
+      497
+    ],
+    "flows": 10,
+    "nodes": 55,
+    "nodesSwitchedAndHeadingsChecked": true,
+    "desktopArtifacts": [
+      "force-calibration-overview",
+      "force-input-overview"
+    ],
+    "narrowArtifacts": [
+      "force-calibration-dispatch",
+      "force-input-conversion"
+    ],
+    "readingCopy": true,
+    "zoomOrPanUsed": false,
+    "tables": {
+      "readingRows": 7,
+      "persistenceRows": 8,
+      "finalNarrowNamesChecked": true
+    },
+    "screenshots": "output/functional-atlas/force-control/",
+    "scope": "Static source explanation and published frontend review; no equipment or force precision verification."
   }
 }

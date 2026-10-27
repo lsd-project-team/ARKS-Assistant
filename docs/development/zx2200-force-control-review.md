@@ -84,7 +84,7 @@
 
 - 主界面诊断以及“标定并检验”可打开 FrmBondheadTest；组合按钮后台先标定，再 BeginInvoke 打开自动启动检验窗，UI线程同步 task.Wait，不能把它描述成已等待检验窗完成。`UcMainSystem.Diagnosis.cs:199–203`、`FrmCalibrationRelationship.cs:250–329`。
 - FrmBondheadTest 的主 Start 遍历目标力和 −180°至180°角度，记录保持前/后平台净力、焊头值、Z、输入和退回后读数；超500条、停止或总小时数到达时追加写 `D:\焊头力控稳定性测试数据.xlsx`。计时器在设定下压后、保持延时前就停止，虽然列标题写“下压到抬起”，该列不能按标题解释为完整周期。`FrmBondheadTest.cs:177–258,263–488,1000–1102`。
-- 另外三个已绑按钮分别是定角定力循环、定角变力循环、−360°至360°每5°读数/计时循环。定角变力旋转使用 SpAngle3 而保存角度使用 SpAngle；定角定力部分 Modbus 读数用整数 `/10`；第四种计时里的 ResetBondhead 调用被注释，所记 resetTime 不是清零耗时。`FrmBondheadTest.cs:494–794,1239–1365` 及 Designer 的四个 Click 绑定。
+- 另外三个已绑按钮分别是定角定力循环、定角变力循环、−360°至360°每5°读数/计时循环；第四按钮在 Designer:257 默认禁用。定角变力旋转使用 SpAngle3 而保存角度使用 SpAngle；定角定力部分 Modbus 读数用整数 `/10`；第四种计时里的 ResetBondhead 调用被注释，所记 resetTime 不是清零耗时。`FrmBondheadTest.cs:494–794,1239–1365` 及 Designer 的四个 Click 绑定。
 - 主界面的 GT 调试窗另有直接 GTForceControlSet 循环，并开启力与 LVDT 曲线，输入是模拟量而非共用换算后的目标g力。`Controls/Experiment/FrmGTForceTest.cs:471–568`。`FrmForceControlInspection` 还有同窗力/LVDT读取实现，但未检出主程序直接 new 调用，不把它并为标准检验入口。`FrmForceControlInspection.cs:177–220`。
 - 本轮先固定源事实与边界。后续仍须制作完整专题、读数/保存对照、实际 Archify 图、逐项绑定及浏览器验收，完成前不将30.01–30.06改为已复核；原45专题、241条范围继续有效。
 
@@ -94,4 +94,16 @@
 
 随后以本记录提交 `3b9b305cd688af0d35fe03456fc778428f85ab14` 为固定来源，实际生成 `force-calibration-dispatch`（驱动分派与保存，10节点）和 `force-input-conversion`（有效多点目标力换算，8节点）。规格、原始HTML与交付回执位于 `resources/knowledge/flows/functional-atlas/`，两图最终四个交付检查及原生浏览器捕获均通过，无诊断。
 
-最终阅读副本按现有18px主文字、14px辅助文字目视检查，全部节点与分支保留；只用普通页面滚动核对底部，没有图内缩放或拖动。捕获和阅读副本的检查范围分别记在 `force-control.verification.json`。两图目前是待接入资源，完整专题、对照表、逐条绑定、497px页面验收及正式发布仍待继续，清单完成数不变。
+该阶段的阅读副本按现有18px主文字、14px辅助文字目视检查，全部节点与分支保留；只用普通页面滚动核对底部，没有图内缩放或拖动。捕获和阅读副本的检查范围分别记在 `force-control.verification.json`。两图当时作为待接入资源保存，完整专题的后续发布见下节。
+
+## 11 完整阅读页发布
+
+新增 `/#topic/force-control`，与 `/#catalog/force-control-process` 共用同一阅读页。10个环节、55个节点覆盖本清单六项要求，读数七行、保存八行集中对照；TouchDown测高、G0与安全运动链接到公共专题。节点依据绑定当前源码94段范围，涉及39个主程序文件，全部在当前1,137个Compile项中；主程序1,157个C#文件与原基线一致。
+
+另生成 `force-calibration-overview` 和 `force-input-overview` 两张横向阅读图，保留纵图的全部节点、文字、来源和方向关系。图框可用宽度不足780px时自动使用原纵图；其他专题继续沿用各自阈值。宽图规格/HTML指纹、四个交付检查、原生捕获以及最终页内检查分别记录于 `force-control.verification.json`，四份图均无最终诊断。
+
+前端355项通过；最后仅缩短三处表格名称后，相关29项再次通过。清单/资源检查、TypeScript和最终生产构建通过（本次40.59秒）；总体16组专题、183环节、738节点、1,126条说明，223文件1,038段依据，75项目录115资源链接。未采集测试覆盖率。
+
+浏览器逐项切换55节点并确认标题；桌面和497px分别目视两图、读数表和保存表完整行。窄屏初次有名称拆出孤字，后缩短为GT当前值、范围和时间、检验与生产，重新构建发布后已确认。检查中仅作普通页面滚动，没有图内缩放或拖动。目录入口也核对为同一专题，相关截图、节点记录及审计在 `output/functional-atlas/force-control/`。
+
+复用健康8765服务（进程23012），旧首页、索引和公开资源清单备份在 `output/functional-atlas/before-force-control/`，保留旧哈希资源，最后替换首页。正式业务数据和原设备配置未改；临时窄屏检查页验收后移除。此处完成的是功能图文与静态复核，没有运行设备程序、驱动动作或力值精度验收。累计61/241条，剩余180条继续制作。
