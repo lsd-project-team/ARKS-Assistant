@@ -5,14 +5,16 @@ import { toast } from '../../../shared/utils/toasts';
 export function AnalysisRunDetails({
   completion,
   progress,
+  showSummary = true,
 }: {
   completion?: RunCompletion | null;
   progress?: AnalysisProgress | null;
+  showSummary?: boolean;
 }) {
   if (!completion && !progress) return null;
   return (
     <div className="analysis-run-details">
-      {completion && <p role="status">{completion.label}</p>}
+      {showSummary && completion && <p role="status">{completion.label}</p>}
       {completion?.output !== undefined && completion.output !== 'complete' && (
         <p className="muted">
           {completion.output === 'incomplete'
@@ -47,7 +49,7 @@ export function AnalysisRunDetails({
           准备继续
         </button>
       )}
-      <p className="muted">{progress?.scope || completion?.scope}</p>
+      {showSummary && <p className="muted">{progress?.scope || completion?.scope}</p>}
     </div>
   );
 }

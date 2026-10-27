@@ -43,8 +43,8 @@ export function RunTrace({ runId }: { runId: string }) {
         {!!tools?.length && completion && <span>{completion.label}</span>}
         <ChevronDown size={12} />
       </summary>
-      <AnalysisRunDetails completion={completion} progress={progress} />
-      <ToolActivity tools={tools || []} />
+      <AnalysisRunDetails completion={completion} progress={progress} showSummary={false} />
+      <ToolActivity tools={tools || []} showSummary={false} />
     </details>
   );
 }

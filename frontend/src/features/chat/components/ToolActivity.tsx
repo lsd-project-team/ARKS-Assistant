@@ -3,11 +3,17 @@ import type { ToolEvent } from '../../../shared/types/api';
 import { toolLabel } from '../lib/toolLabels';
 import { toolState, toolSummary } from '../lib/runCompletion';
 
-export function ToolActivity({ tools }: { tools: ToolEvent[] }) {
+export function ToolActivity({
+  tools,
+  showSummary = true,
+}: {
+  tools: ToolEvent[];
+  showSummary?: boolean;
+}) {
   if (!tools.length) return null;
   return (
     <div className="tool-activity">
-      <p className="muted">{toolSummary(tools)}</p>
+      {showSummary && <p className="muted">{toolSummary(tools)}</p>}
       {tools.map((tool) => (
         <details key={tool.id}>
           <summary>
