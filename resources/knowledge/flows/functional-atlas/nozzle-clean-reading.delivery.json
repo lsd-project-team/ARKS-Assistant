@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "a7610943-4092-4c2a-b5cb-008c942f8711",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\nozzle-clean-reading.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\nozzle-clean-reading.html",
+  "specification": {
+    "sha256": "f0eaa5e25bb86312dd009339c2317dd6c63fbd895cf7a3e2b7aa73bfd782b365",
+    "bytes": 5817
+  },
+  "artifact": {
+    "sha256": "4699806e4af63d2c7d5657bc1c1fe135f6af122dc9a0d4a0e9a401c3db3a73e5",
+    "bytes": 817805
+  }
+}

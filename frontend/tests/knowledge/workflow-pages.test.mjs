@@ -370,3 +370,18 @@ test('工具库专题与目录共用阅读页，区分四种状态并绑定保�
   assert.match(topic, /href="#topic\/tool-calibration"/);
   assert.match(topic, /href="#topic\/motion-safety"/);
 });
+
+test('维护专题默认展示清嘴图，目录共用并区分六个手动入口与八类保存', () => {
+  const topic = render(TopicDetail, { id: 'manual-maintenance' });
+  assert.equal(topic, render(DiagramDetail, { id: 'manual-maintenance-process', theme: 'light' }));
+  assert.match(topic, /data-archify-source="functional-atlas\/nozzle-clean-overview.html"/);
+  const entries = renderToStaticMarkup(functionalVisual('mn-manual', 'overview'));
+  assert.equal((entries.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 6);
+  assert.match(entries, /直接传出胶 true/);
+  const saves = renderToStaticMarkup(functionalVisual('mn-results', 'persistence'));
+  assert.equal((saves.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 8);
+  assert.match(saves, /早于实际清洁/);
+  assert.match(saves, /该方法自身未 Save/);
+  for (const link of ['tool-bank', 'height-measurement', 'force-control', 'motion-safety'])
+    assert.ok(topic.includes('href="#topic/' + link + '"'), link);
+});

@@ -380,3 +380,33 @@ test('换嘴主链保留同名早退、先还后取及直接取嘴，纵图不�
     assert.match(page.html, /可经人工忽略到达/);
   }
 });
+
+test('清嘴图保留关闭不计数、未到间隔加一及先清洁再清零，纵图不改触发顺序', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const wide = JSON.parse(await readFile(new URL('nozzle-clean-overview.json', folder), 'utf8'));
+  const narrow = JSON.parse(await readFile(new URL('nozzle-clean-reading.json', folder), 'utf8'));
+  const meaning = ({ pos, size, ...node }) => node;
+  assert.deepEqual(wide.components.map(meaning), narrow.components.map(meaning));
+  assert.deepEqual(wide.connections, narrow.connections);
+  const edges = wide.connections.map(({ from, to }) => `${from}>${to}`);
+  for (const edge of [
+    'check>skip',
+    'check>interval',
+    'interval>clean',
+    'interval>increment',
+    'clean>reset',
+    'reset>increment',
+    'increment>resume',
+  ])
+    assert.ok(edges.includes(edge), edge);
+  assert.ok(!edges.some((edge) => edge.startsWith('skip>')));
+  for (const id of ['nozzle-clean-overview', 'nozzle-clean-reading']) {
+    const page = createReadingDiagram(
+      await readFile(new URL(id + '.html', folder), 'utf8'),
+      'classic',
+    );
+    assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 8);
+    assert.match(page.html, /随后才判断DryCycle/);
+    assert.match(page.html, /区域Count先占用/);
+  }
+});

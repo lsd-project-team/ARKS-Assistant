@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'manual-maintenance',
+    title: '清嘴排胶与手动维护',
+    summary: '从清嘴触发、区域占用和抛料，到 S1 试胶、板面示教与换胶保存。',
+    purpose: '分清动作请求、区域计数、示教完成和实际清洁结果。',
+    conditions: ['入口、工位、工作模式、计数与工具配置共同决定路径。'],
+    exceptions: ['点位占用早于动作，取消、返回和保存不构成统一回滚。'],
+    diagrams: ['manual-maintenance-process'],
+  },
+  {
     id: 'tool-bank',
     title: '工具库与吸嘴更换',
     summary: '从工具与槽位配置、几何和工具架示教，到取还嘴、在位检测与重复测试。',
@@ -108,6 +117,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'nozzle-clean-overview': {
+    path: 'functional-atlas/nozzle-clean-overview.html',
+    sha256: 'f3826e8179821ccc11ab1bcc42ebbb330fc5c144b7494627dbf166142006b6f5',
+    specificationSha256: '1381b999ad367deea80d7167b78cb42e2bb11842c937a9a299be498383d698df',
+  },
+  'nozzle-clean-reading': {
+    path: 'functional-atlas/nozzle-clean-reading.html',
+    sha256: '4699806e4af63d2c7d5657bc1c1fe135f6af122dc9a0d4a0e9a401c3db3a73e5',
+    specificationSha256: 'f0eaa5e25bb86312dd009339c2317dd6c63fbd895cf7a3e2b7aa73bfd782b365',
+  },
   'tool-change-overview': {
     path: 'functional-atlas/tool-change-overview.html',
     sha256: 'd6ced45d4afdb494c3b6dd9ddb5c689d6aba378753bddef36e0a299da0d9ddeb',

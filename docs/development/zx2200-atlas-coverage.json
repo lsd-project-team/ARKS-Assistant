@@ -2425,26 +2425,136 @@
         {
           "id": "32.01",
           "text": "清嘴触发、清嘴区域索引与清洁动作。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-trigger",
+              "steps": [
+                "overview",
+                "interval",
+                "parameters"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-area",
+              "steps": [
+                "grid",
+                "index",
+                "limit",
+                "reserve"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-clean",
+              "steps": [
+                "prepare",
+                "press",
+                "blow"
+              ]
+            }
+          ]
         },
         {
           "id": "32.02",
           "text": "吹气盒、抛料位置和持晶清理。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-throw",
+              "steps": [
+                "action",
+                "memory",
+                "head",
+                "teach",
+                "output"
+              ]
+            }
+          ]
         },
         {
           "id": "32.03",
           "text": "S1 手动试胶、板上试胶与换胶入口。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-manual",
+              "steps": [
+                "overview",
+                "output",
+                "gates"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-pre",
+              "steps": [
+                "gates",
+                "work",
+                "board",
+                "reset",
+                "reserve"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-change",
+              "steps": [
+                "entry",
+                "positions",
+                "measure",
+                "offset",
+                "cancel"
+              ]
+            }
+          ]
         },
         {
           "id": "32.04",
           "text": "工具和设备参数示教的准备、取消与保存。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-teaching",
+              "steps": [
+                "clean",
+                "plate-height",
+                "plate-save",
+                "distance"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-change",
+              "steps": [
+                "entry",
+                "positions",
+                "measure",
+                "offset",
+                "cancel"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-results",
+              "steps": [
+                "persistence"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-throw",
+              "steps": [
+                "teach",
+                "output"
+              ]
+            }
+          ]
         }
       ]
     },

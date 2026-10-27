@@ -10,9 +10,12 @@ import { LightHardwareTable } from './LightHardwareTable';
 import { HeightReadingTable, HeightPersistenceTable } from './HeightMeasurementTables';
 import { ForceReadingTable, ForcePersistenceTable } from './ForceControlTables';
 import { ToolBankStatusTable, ToolBankPersistenceTable } from './ToolBankTables';
+import { MaintenanceEntryTable, MaintenanceSaveTable } from './MaintenanceTables';
 import '../coordinates/coordinates.css';
 
 const tablesByStep: Record<string, ComponentType> = {
+  'mn-manual/overview': MaintenanceEntryTable,
+  'mn-results/persistence': MaintenanceSaveTable,
   'nb-identity/overview': ToolBankStatusTable,
   'nb-results/persistence': ToolBankPersistenceTable,
   'fc-entry/overview': ForceReadingTable,
@@ -30,6 +33,12 @@ const diagramsByStep: Record<
   string,
   { id: string; title: string; narrow?: string; readingMinWidth?: number }
 > = {
+  'mn-trigger/overview': {
+    id: 'nozzle-clean-overview',
+    title: '非离线取晶的清嘴触发',
+    narrow: 'nozzle-clean-reading',
+    readingMinWidth: 860,
+  },
   'nb-change/overview': {
     id: 'tool-change-overview',
     title: '按工具名称判断与换嘴主链',
@@ -116,6 +125,22 @@ export function AtlasReader({ page }: { page: string }) {
           <>
             <a className="text-button" href="#topic/tool-calibration">
               工具高度与中心校准 →
+            </a>
+            <a className="text-button" href="#topic/motion-safety">
+              安全运动与等待边界 →
+            </a>
+          </>
+        )}
+        {page === 'manual-maintenance' && (
+          <>
+            <a className="text-button" href="#topic/tool-bank">
+              工具更换与人工入口 →
+            </a>
+            <a className="text-button" href="#topic/height-measurement">
+              测高与工具准备 →
+            </a>
+            <a className="text-button" href="#topic/force-control">
+              清洁力控的设定与复位 →
             </a>
             <a className="text-button" href="#topic/motion-safety">
               安全运动与等待边界 →

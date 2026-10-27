@@ -12589,6 +12589,11 @@ export const archifyData: ArchifyData = {
   diagramRecords: {
     'force-control-process': { htmlAvailable: false, reviewDocuments: [], visualAvailable: false },
     'tool-bank-process': { htmlAvailable: false, reviewDocuments: [], visualAvailable: false },
+    'manual-maintenance-process': {
+      htmlAvailable: false,
+      reviewDocuments: [],
+      visualAvailable: false,
+    },
     'height-measurement-process': {
       htmlAvailable: false,
       reviewDocuments: [],
