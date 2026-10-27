@@ -1,7 +1,12 @@
 export type ReadingAppearance = 'white' | 'classic' | 'dark';
 
 // 从 Archify 已交付的 HTML 提取原 SVG；保留节点、连线与 viewBox，阅读副本不执行查看器脚本。
-export function createReadingDiagram(source: string, appearance: ReadingAppearance, chrome = '') {
+export function createReadingDiagram(
+  source: string,
+  appearance: ReadingAppearance,
+  chrome = '',
+  fontSize = 18,
+) {
   const svgStart = source.indexOf('<svg ');
   const svgEnd = source.indexOf('</svg>', svgStart);
   if (svgStart < 0 || svgEnd < 0) throw new Error('Archify 交付中缺少图形');
@@ -32,8 +37,9 @@ export function createReadingDiagram(source: string, appearance: ReadingAppearan
     html: `<!doctype html><html lang="zh-CN" data-theme="${theme}" data-appearance="${appearance}"><head><meta charset="utf-8"><style>${styles}\n${chrome}
       html, body { margin: 0 !important; padding: 0 !important; min-height: 0 !important; height: auto !important; background: var(--bg); }
       svg[role="img"] { display: block !important; width: 100% !important; height: auto !important; min-width: 0 !important; min-height: 0 !important; max-width: none !important; max-height: none !important; margin: 0 !important; }
-      svg .tree-label, svg [data-node-id] text.t-primary { font-size: 18px !important; font-weight: 500; }
-      svg .tree-sublabel, svg [data-node-id] text.t-muted { font-size: 14px !important; }
+      svg .tree-label, svg [data-node-id] text.t-primary { font-size: ${fontSize}px !important; font-weight: 500; }
+      svg .tree-sublabel, svg [data-node-id] text.t-muted { font-size: ${fontSize - 4}px !important; }
+      ${fontSize > 18 ? 'svg [data-node-id] text.t-primary { transform: translateY(-2px); } svg [data-node-id] text.t-muted { transform: translateY(2px); }' : ''}
       svg [data-edge-id] text { font-size: 14px !important; }
       svg .source-evidence-beacon { display: none !important; }
       * { animation: none !important; transition: none !important; }

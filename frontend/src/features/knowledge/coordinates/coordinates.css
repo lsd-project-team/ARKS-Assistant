@@ -19,6 +19,15 @@
 .knowledge-workspace :is(.g0-reader, .atlas-reader) .source-step-detail {
   width: 100%;
 }
+.knowledge-workspace .g0-reader .source-flow-layout {
+  gap: 16px;
+}
+.knowledge-workspace .g0-reader .g0-archify {
+  margin-top: 16px;
+}
+.knowledge-workspace .g0-reader .g0-archify .panel-title {
+  padding: 8px 12px;
+}
 .knowledge-workspace .g0-reading-surface {
   display: flex;
   justify-content: center;

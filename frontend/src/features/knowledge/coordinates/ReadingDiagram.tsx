@@ -11,11 +11,13 @@ export function ReadingDiagram({
   narrow,
   title,
   readingMinWidth = 640,
+  readingFontSize = 18,
 }: {
   source: CoordinateArtifact;
   narrow?: CoordinateArtifact;
   title: string;
   readingMinWidth?: number;
+  readingFontSize?: number;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number | null>(null);
@@ -24,6 +26,9 @@ export function ReadingDiagram({
   const appearance = useAppearance((state) => state.mode);
   // 按图的可读宽度切换排布，避免宽图整体缩小后文字难辨。
   const selected = narrow && width !== null && width < readingMinWidth ? narrow : source;
+  // 宽图扩大字号并利用正文宽度；纵图保持原字号，避免长标签挤出节点。
+  const fontSize = selected === source ? readingFontSize : 18;
+  const naturalWidth = page ? (page.width * fontSize) / 18 : 0;
   const url = `/archify/${selected.path}?review=${selected.sha256.slice(0, 16)}`;
 
   useEffect(() => {
@@ -58,6 +63,7 @@ export function ReadingDiagram({
               html,
               appearance,
               `${latinFont}\n${chineseFont}\n${diagramChrome}`,
+              fontSize,
             ),
           );
       })
@@ -65,7 +71,7 @@ export function ReadingDiagram({
         if (!abort.signal.aborted) setFailed(true);
       });
     return () => abort.abort();
-  }, [url, appearance, width === null]);
+  }, [url, appearance, fontSize, width === null]);
 
   return (
     <div ref={container} className="g0-reading-surface" data-archify-source={selected.path}>
@@ -75,10 +81,12 @@ export function ReadingDiagram({
           srcDoc={page.html}
           sandbox="allow-same-origin"
           style={{
-            maxWidth: page.width,
+            maxWidth: naturalWidth,
             // 向上取整并留出两像素，避免分数像素造成 iframe 内出现细小滚动条。
             height:
-              Math.ceil((Math.min(width ?? page.width, page.width) * page.height) / page.width) + 2,
+              Math.ceil(
+                (Math.min(width ?? naturalWidth, naturalWidth) * page.height) / page.width,
+              ) + 2,
           }}
         />
       ) : (

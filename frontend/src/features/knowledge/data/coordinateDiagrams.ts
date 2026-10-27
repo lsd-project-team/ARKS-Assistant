@@ -9,6 +9,7 @@ export interface CoordinateDiagram extends CoordinateArtifact {
   reading?: CoordinateArtifact;
   narrow?: CoordinateArtifact;
   readingMinWidth?: number;
+  readingFontSize?: number;
 }
 // 路径和指纹来自 Archify 3.2.0 finalize 的实际通过回执。
 export const coordinateDiagrams = [
@@ -20,6 +21,7 @@ export const coordinateDiagrams = [
       specificationSha256: 'f0568d4fb46dfdd031f60d1e0fde68ac910e6be6d95031f892ed8301ba4c6821',
     },
     readingMinWidth: 840,
+    readingFontSize: 20,
     narrow: {
       path: 'g0-archify/device-reading.html',
       sha256: '18141b1be7b2eb237203d3496595e74ac259217e8766cf9801051ced1bdba639',
@@ -43,6 +45,7 @@ export const coordinateDiagrams = [
       specificationSha256: 'd6de0c64c5bee67da5215bf3e0bb35b6bceae2336bb38959005eef7ffe5b0b38',
     },
     readingMinWidth: 960,
+    readingFontSize: 20,
     title: '产品坐标的逐层父链',
     path: 'g0-archify/product-tree.html',
     sha256: 'bc44763ae5e33ffc955b69c5fc2154a97358b0d45857eb74bf1bbc4e9dd0bab7',
@@ -56,6 +59,7 @@ export const coordinateDiagrams = [
       specificationSha256: '36ae2e373d30db8e62166f13c385a191d9d997161f857b689f586b7c5b9ea1ea',
     },
     readingMinWidth: 880,
+    readingFontSize: 20,
     narrow: {
       path: 'g0-archify/camera-reading.html',
       sha256: '64bb14e52d264a092ac59949be57831c70507f45347e4b98d328304d854baa86',
