@@ -214,3 +214,26 @@ test('安全运动专题展示实际高度分支，并保留 XY 恢复原 Z 的�
   assert.match(table, /安全 Z → XY → 恢复原 Z/);
   assert.match(table, /“含 T”只适用于 XYZT/);
 });
+
+test('工具校准专题共用阅读页，独立入口与七行保存边界均可阅读', () => {
+  const topic = render(TopicDetail, { id: 'tool-calibration' });
+  assert.equal(topic, render(DiagramDetail, { id: 'tool-calibration-process', theme: 'light' }));
+  assert.ok(topic.includes('data-archify-source="functional-atlas/tool-calibration-entry.html"'));
+  for (const title of [
+    '入口与组合状态',
+    '吸嘴中心示教',
+    '吸嘴高度示教',
+    '吸嘴自动校准',
+    '单顶针与重教',
+    '全部顶针旧接口',
+    '取片偏移校准',
+    '保存取消与工具',
+  ])
+    assert.ok(topic.includes(title), title);
+  assert.match(topic, /href="#topic\/camera-calibration"/);
+  const table = renderToStaticMarkup(functionalVisual('tc-results', 'persistence'));
+  assert.equal((table.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 7);
+  assert.match(table, /收尾保存代码已注释/);
+  assert.match(table, /Fail \/ Exception 也进入/);
+  assert.match(table, /缺模板或定位失败早退后仍会调用保存/);
+});

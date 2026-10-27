@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'tool-calibration',
+    title: '吸嘴顶针与三点一线校准',
+    summary: '区分吸嘴中心、高度、顶针与取片偏移的独立入口、采样和保存。',
+    purpose: '把工具示教与定位结果连接到后续校准偏移。',
+    conditions: ['工具配置、示教状态、相机选择和物料决定实际路径。'],
+    exceptions: ['一键组合未启用，旧接口和失败后的保存分别说明。'],
+    diagrams: ['tool-calibration-process'],
+  },
+  {
     id: 'product-coordinates',
     title: '产品层级与产品坐标',
     summary: '看清载具到焊点的层级、实例展开，以及定位结果怎样改变后续加工目标。',
@@ -54,6 +63,11 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'tool-calibration-entry': {
+    path: 'functional-atlas/tool-calibration-entry.html',
+    sha256: 'a022b2af9bd3a9210c50e69e44efb3e25b774fd4542dc4a01c2dd4a770452bb9',
+    specificationSha256: '09679f6fcdd0e41d6da317036ee8e5ed1862f78c32bf9294cbdb0fdd129eb568',
+  },
   'safe-motion-reading': {
     path: 'functional-atlas/safe-motion-reading.html',
     sha256: 'f0e055f26cfd9a9b5f8a50cdcceb813a10287794fa55d23ae208cf5d4417f41d',

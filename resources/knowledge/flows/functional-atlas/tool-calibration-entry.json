@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "S2 校准页面的独立入口",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/functional-atlas/tool-calibration-entry.html",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "03efd54b8c18fb376b4d3b7f7b266dc207b8a48d",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "page",
+      "type": "frontend",
+      "label": "S2 校准页面",
+      "sublabel": "一键组合未启用",
+      "pos": [
+        20,
+        184
+      ],
+      "size": [
+        176,
+        80
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-calibration-review.md",
+          "line": 7,
+          "end_line": 7
+        }
+      ]
+    },
+    {
+      "id": "nozzle",
+      "type": "backend",
+      "label": "吸嘴中心校准",
+      "sublabel": "PR 检查、两次定位",
+      "pos": [
+        240,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-calibration-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "ejection",
+      "type": "backend",
+      "label": "单顶针校准",
+      "sublabel": "晶圆 / Bond 相机",
+      "pos": [
+        240,
+        190
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-calibration-review.md",
+          "line": 29,
+          "end_line": 31
+        }
+      ]
+    },
+    {
+      "id": "pick",
+      "type": "backend",
+      "label": "取片偏移校准",
+      "sublabel": "准备、取片与上视",
+      "pos": [
+        240,
+        340
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-calibration-review.md",
+          "line": 41,
+          "end_line": 45
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "page-nozzle",
+      "from": "page",
+      "to": "nozzle"
+    },
+    {
+      "id": "page-ejection",
+      "from": "page",
+      "to": "ejection"
+    },
+    {
+      "id": "page-pick",
+      "from": "page",
+      "to": "pick"
+    }
+  ]
+}

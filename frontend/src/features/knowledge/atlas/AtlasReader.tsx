@@ -3,9 +3,21 @@ import { ArchifyFigure, ReadingFigure } from '../coordinates/ArchifyFigure';
 import { functionalArtifacts } from '../data/functionalTopics';
 import { CalibrationPersistence } from './CalibrationPersistence';
 import { MotionOrdering } from './MotionOrdering';
+import { ToolCalibrationPersistence } from './ToolCalibrationPersistence';
 import '../coordinates/coordinates.css';
 
 export function functionalVisual(flow: string, step: string) {
+  if (`${flow}/${step}` === 'tc-entry/overview')
+    return (
+      <ReadingFigure
+        diagram={{
+          ...functionalArtifacts['tool-calibration-entry'],
+          id: 'tool-calibration-entry',
+          title: 'S2 校准页面的独立入口',
+        }}
+      />
+    );
+  if (`${flow}/${step}` === 'tc-results/persistence') return <ToolCalibrationPersistence />;
   if (`${flow}/${step}` === 'sm-order/table') return <MotionOrdering />;
   if (`${flow}/${step}` === 'sm-order/overview')
     return (
@@ -73,6 +85,11 @@ export function AtlasReader({ page }: { page: string }) {
         {page === 'motion-safety' && (
           <a className="text-button" href="#topic/recovery">
             暂停停止与物料恢复 →
+          </a>
+        )}
+        {page === 'tool-calibration' && (
+          <a className="text-button" href="#topic/camera-calibration">
+            相机与机械坐标标定 →
           </a>
         )}
       </nav>

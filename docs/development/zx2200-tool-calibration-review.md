@@ -30,11 +30,11 @@ Nozzle.IsAssistantSucceed 检查 ToolHeight、ToolAlignment、ToolGeometryAssist
 
 晶圆相机自动路径先 Bond 安全位，再到顶针校准 Z 和相机校准 Z，用 Block 匹配并取 MatchResultToWorld 的首点写偏差。Bond 相机路径另归还吸嘴，用共同视觉结果与机械 (0,0) 通过 CalibService 转换，写 XY、Z=0。两者不混成同一种转换。方法捕获异常转 Exception；finally 先去安全位再 Save，即使 try 返回 Fail/Exception 也进入，若安全移动自身抛出则后续 Save 并非保证执行。
 
-顶针重教 IsShowDialog 当前只返回 true，实际动作在 Load：关真空，按相机选择 Bond 安全位或归还吸嘴/到中心位置，再归还顶针、晶圆台准备、料片检查、ChangeEjection(Index,true)。完成时晶圆分支取世界结果，Bond 分支取像素转 G0 减当前 G0；保存相机 Z/拍照位置、顶针 Z、PRTeach.Able，并归还顶针。外层点完成仍调用 Save，关闭再次归还顶针并到安全位。下拉框显示 EjectionConfig.Name，手动换针却按槽 Name 查找，不把选择文本一致性当成已保证。
+顶针重教 IsShowDialog 当前只返回 true，实际动作在 Load：关真空，按相机选择 Bond 安全位或归还吸嘴/到中心位置，再归还顶针、晶圆台准备、料片检查、ChangeEjection(Index,true)。完成时晶圆分支取世界结果，Bond 分支取像素转 G0 减当前 G0；保存相机 Z/拍照位置、顶针 Z、PRTeach.Able，并归还顶针。外层点完成仍调用 Save，关闭再次归还顶针并到安全位。手动换针按槽 Name 查找并切换 Index；EjectionBankSlotConfig.EjectionConfig 正是按槽自身 Name 从配置库查找，因此两种名字由同名关联。
 
-GetDistinctEjectionBankSlotConfig 按当前针库及配置存在性收集槽，经 Filter/Distinct 返回。PrepareBeforeAllEjectionsCali 按 EjectionConfig.Name 与列表项 Name 再查找，没有统一空结果保护。AllEjectionsCaliAssistance 标记 Obsolete，当前主工程直接调用检索仅找到声明；先取列表 [0]，每轮校准后访问 [i+1]，最后一轮越界被 catch 转 Exception；空表也在 [0] 失败。旧方法的 finally/Save 全部注释，不宣称全部校准有正常收尾与统一保存。另一个 PrepareBeforeCaliAllEjection 按针库非空槽检查状态，属于实验入口准备，不等同于当前页面的一键功能。
+GetDistinctEjectionBankSlotConfig 按当前针库及配置存在性收集槽，经 Filter/Distinct 返回。槽对象通过同名 getter 关联顶针配置；PrepareBeforeAllEjectionsCali 逐项检查示教、PR 和校准位置后整理工作区域。AllEjectionsCaliAssistance 标记 Obsolete，当前主工程直接调用检索仅找到声明；先取列表 [0]，每轮校准后访问 [i+1]，最后一轮越界被 catch 转 Exception；空表也在 [0] 失败。旧方法的 finally/Save 全部注释，不宣称全部校准有正常收尾与统一保存。另一个 PrepareBeforeCaliAllEjection 按针库非空槽检查状态，属于实验入口准备，不等同于当前页面的一键功能。
 
-依据：System2Controller.AutoCali.cs 134–338、502–691；FrmSystem2Calibrate.cs 286–355；FrmEjectionCaliTeach.cs 108–143、148–338、385–408、498–535；WaferSystemProgram.cs 272–291；FrmMachineFunctionTest.cs 705–735。
+依据：System2Controller.AutoCali.cs 134–338、502–691；FrmSystem2Calibrate.cs 286–355；FrmEjectionCaliTeach.cs 108–143、148–338、385–408、498–535；WaferSystemProgram.cs 272–291；EjectionBankSlotConfig.cs 21–42；FrmMachineFunctionTest.cs 705–735。
 
 ## 取片偏移与工具边界
 
@@ -47,3 +47,9 @@ GetDistinctEjectionBankSlotConfig 按当前针库及配置存在性收集槽，�
 ChangeNozzleAssistance 在工具不同且针架启用/已配置时调用自动更换，否则提示人工确认；Cancel 返回 false，OK 写当前工具名并开真空。PutbackNozzleAssitance 的两个手工分支只在 OK 内做检测/清工具名，但 Cancel 后仍可能更新槽状态并返回 true；不能把 true 当作已验证工具实际归位。具体自动换嘴工艺继续由维护专题展开。
 
 依据：FrmSystem2Calibrate.cs 362–454、586–616；System2Controller.AutoCali.cs 344–382、698–833；System2Controller.Assistant.cs 69–402、410–568、1244–1373、1706–1864。
+
+## 保存接口之后的配置落点
+
+三个配置库均继承本地主工程 BaseSettingRepository，Save 将整个 BaseDsSettingList 与 GetFileName 交给 JsonFormatHelper<T>.SaveGenericList。NozzleRepository 对应设备目录下 NozzleRepositoryPath.json；EjectionConfigRepository 对应设备目录 WaferSub/EjectionRepository.json；CarrierConfigRepository 对应设备目录 WaferSub/CarrierRepository.json。路径来源是设备目录配置，未推定当前机器存在这些文件或给出未经核实的绝对路径。当前 trunk 中未找到 JsonFormatHelper 类定义，底层序列化、原子替换及掉电持久性停在该引用边界；没有把“调用 Save”说成已实测落盘成功。
+
+依据：BaseSettingRepository.cs 82–85；NozzleRepository.cs 17–40；EjectionConfigRepository.cs 18–38；CarrierConfigRepository.cs 19–39；ZX2200PathConfig.cs 128、202、227。

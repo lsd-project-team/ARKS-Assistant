@@ -654,32 +654,130 @@
         {
           "id": "07.01",
           "text": "吸嘴中心与高度示教、自动校准。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-center",
+              "steps": [
+                "two-positions",
+                "search",
+                "states"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-height",
+              "steps": [
+                "prepare",
+                "methods",
+                "service",
+                "completion"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-nozzle",
+              "steps": [
+                "prepare",
+                "first",
+                "second",
+                "write"
+              ]
+            }
+          ]
         },
         {
           "id": "07.02",
           "text": "单顶针及全部顶针配置校准。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-ejection",
+              "steps": [
+                "prepare",
+                "wafer",
+                "bond",
+                "teach",
+                "teach-result"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-batch",
+              "steps": [
+                "list",
+                "loop",
+                "state"
+              ]
+            }
+          ]
         },
         {
           "id": "07.03",
           "text": "取片偏移校准与准备门控。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-pick",
+              "steps": [
+                "selection",
+                "ready",
+                "source",
+                "single",
+                "double",
+                "write"
+              ]
+            }
+          ]
         },
         {
           "id": "07.04",
           "text": "系统 2 三点一线校准的组合顺序。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-entry",
+              "steps": [
+                "overview",
+                "combined"
+              ]
+            }
+          ]
         },
         {
           "id": "07.05",
           "text": "校准取消、工具更换与结果保存。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-results",
+              "steps": [
+                "persistence",
+                "tools",
+                "cancel"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-nozzle",
+              "steps": [
+                "prepare"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-pick",
+              "steps": [
+                "selection",
+                "write"
+              ]
+            }
+          ]
         }
       ]
     },

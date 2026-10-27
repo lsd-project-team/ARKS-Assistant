@@ -167,3 +167,20 @@ test('安全移动窄图保留原图的全部节点、含义和分支，仅缩�
   assert.ok(page.width < 430);
   for (const node of full.components) assert.ok(page.html.includes(`data-node-id="${node.id}"`));
 });
+
+test('工具校准入口图保留三个并列按钮，不把未启用组合串成执行链', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../resources/knowledge/flows/functional-atlas/tool-calibration-entry.html',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const page = createReadingDiagram(source, 'classic');
+  for (const target of ['nozzle', 'ejection', 'pick'])
+    assert.ok(page.html.includes(`data-edge-from="page" data-edge-to="${target}"`));
+  assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 4);
+  assert.match(page.html, /一键组合未启用/);
+  assert.doesNotMatch(page.html, /data-edge-from="nozzle" data-edge-to="ejection"/);
+  assert.doesNotMatch(page.html, /data-edge-from="ejection" data-edge-to="pick"/);
+});
