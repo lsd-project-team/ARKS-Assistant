@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'global-calibration',
+    title: '全局标定与扫描采集',
+    summary: '从扫描点和温漂采集，到区域插值、旧驱动映射与 Bond/BC 偏移。',
+    purpose: '区分预期轴点、实测结果与不同补偿实现的建立和使用。',
+    conditions: ['点列、标定模板、驱动类型和所选入口共同决定路径。'],
+    exceptions: ['完成标志、保存、下载与启用分别判断，保留未启用和旧接口边界。'],
+    diagrams: ['global-calibration-process'],
+  },
+  {
     id: 'tool-calibration',
     title: '吸嘴顶针与三点一线校准',
     summary: '区分吸嘴中心、高度、顶针与取片偏移的独立入口、采样和保存。',
@@ -63,6 +72,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'global-region-chain': {
+    path: 'functional-atlas/global-region-chain.html',
+    sha256: '6368e43fdce385ee9712c93a3f92ec4bfc500ddc0a0f8cebf3ca1f56d924e702',
+    specificationSha256: '966faa70d55c6b5ee712d57634e64b8419b7bac3d67fcf54436f23a5616580a7',
+  },
+  'global-driver-mapping': {
+    path: 'functional-atlas/global-driver-mapping.html',
+    sha256: 'db0ebba018dd097f2fa1d7291ac9d8cd3bdebb54fb53e80c6d9deefde36a5be9',
+    specificationSha256: '4af64cb504c40ef6b3f338a5cd9866c1b732be22d4517c40bc89eb8520c4ab60',
+  },
   'tool-calibration-entry': {
     path: 'functional-atlas/tool-calibration-entry.html',
     sha256: 'a022b2af9bd3a9210c50e69e44efb3e25b774fd4542dc4a01c2dd4a770452bb9',

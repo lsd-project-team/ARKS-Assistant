@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "旧版二维映射的驱动分支",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/functional-atlas/global-driver-mapping.html",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "2ccb9e1b4ef680e3f584070cb3d359929857bdbd",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "mapping",
+      "type": "backend",
+      "label": "二维累计映射",
+      "sublabel": "X / Y 误差列表",
+      "pos": [
+        20,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-global-calibration-review.md",
+          "line": 47,
+          "end_line": 47
+        }
+      ]
+    },
+    {
+      "id": "driver",
+      "type": "security",
+      "label": "驱动类型分支",
+      "sublabel": "读取 X 轴驱动类型",
+      "pos": [
+        220,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-global-calibration-review.md",
+          "line": 55,
+          "end_line": 55
+        }
+      ]
+    },
+    {
+      "id": "etel-file",
+      "type": "backend",
+      "label": "ETEL 文本与下载",
+      "sublabel": "StageXY 映射文件",
+      "pos": [
+        220,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-global-calibration-review.md",
+          "line": 55,
+          "end_line": 55
+        }
+      ]
+    },
+    {
+      "id": "etel-enable",
+      "type": "backend",
+      "label": "ETEL 激活链",
+      "sublabel": "关闭、回零、再下载",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-global-calibration-review.md",
+          "line": 55,
+          "end_line": 55
+        }
+      ]
+    },
+    {
+      "id": "gt-table",
+      "type": "backend",
+      "label": "固高整数网格",
+      "sublabel": "偏差 ×10000",
+      "pos": [
+        220,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-global-calibration-review.md",
+          "line": 57,
+          "end_line": 57
+        }
+      ]
+    },
+    {
+      "id": "gt-enable",
+      "type": "backend",
+      "label": "固高启用调用",
+      "sublabel": "GTAxis；bool 未门控",
+      "pos": [
+        20,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-global-calibration-review.md",
+          "line": 57,
+          "end_line": 57
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "map-driver",
+      "from": "mapping",
+      "to": "driver"
+    },
+    {
+      "id": "driver-etel",
+      "from": "driver",
+      "to": "etel-file"
+    },
+    {
+      "id": "etel-enable",
+      "from": "etel-file",
+      "to": "etel-enable"
+    },
+    {
+      "id": "driver-gt",
+      "from": "driver",
+      "to": "gt-table"
+    },
+    {
+      "id": "gt-enable",
+      "from": "gt-table",
+      "to": "gt-enable"
+    }
+  ]
+}

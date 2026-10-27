@@ -184,3 +184,27 @@ test('工具校准入口图保留三个并列按钮，不把未启用组合串�
   assert.doesNotMatch(page.html, /data-edge-from="nozzle" data-edge-to="ejection"/);
   assert.doesNotMatch(page.html, /data-edge-from="ejection" data-edge-to="pick"/);
 });
+
+test('全局区域主链保留粗略完成与四点构造门控，驱动图保留分派而非顺次下载两种驱动', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const main = createReadingDiagram(
+    await readFile(new URL('global-region-chain.html', folder), 'utf8'),
+    'classic',
+  );
+  assert.equal((main.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
+  assert.match(main.html, /粗略完成门控/);
+  assert.match(main.html, /零值标量少于3个/);
+  assert.match(main.html, /构造至少4个点/);
+  assert.ok(
+    main.html.includes('data-edge-from="gate" data-edge-to="region" data-edge-label="通过"'),
+  );
+  const driver = createReadingDiagram(
+    await readFile(new URL('global-driver-mapping.html', folder), 'utf8'),
+    'classic',
+  );
+  for (const target of ['etel-file', 'gt-table'])
+    assert.ok(driver.html.includes(`data-edge-from="driver" data-edge-to="${target}"`));
+  assert.equal((driver.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 6);
+  assert.doesNotMatch(driver.html, /data-edge-from="etel-enable" data-edge-to="gt-table"/);
+  assert.match(driver.html, /GTAxis；bool 未门控/);
+});

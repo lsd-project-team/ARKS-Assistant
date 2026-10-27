@@ -237,3 +237,30 @@ test('工具校准专题共用阅读页，独立入口与七行保存边界均�
   assert.match(table, /Fail \/ Exception 也进入/);
   assert.match(table, /缺模板或定位失败早退后仍会调用保存/);
 });
+
+test('全局标定专题区分新区域与旧驱动链，并保留八条保存路径', () => {
+  const topic = render(TopicDetail, { id: 'global-calibration' });
+  assert.equal(topic, render(DiagramDetail, { id: 'global-calibration-process', theme: 'light' }));
+  assert.ok(topic.includes('data-archify-source="functional-atlas/global-region-chain.html"'));
+  for (const title of [
+    '扫描点与范围',
+    '扫描与温漂',
+    '区域补偿',
+    '点序与文件',
+    '旧版单轴与模式',
+    '旧版二维采集',
+    '驱动生成与开关',
+    'Bond 偏移标定',
+    'BC 偏移关系',
+    '暂停停止与保存',
+  ])
+    assert.ok(topic.includes(title), title);
+  const driver = renderToStaticMarkup(functionalVisual('gc-driver', 'overview'));
+  assert.ok(driver.includes('data-archify-source="functional-atlas/global-driver-mapping.html"'));
+  assert.match(topic, /href="#topic\/motion-safety"/);
+  const table = renderToStaticMarkup(functionalVisual('gc-completion', 'persistence'));
+  assert.equal((table.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 8);
+  assert.match(table, /没有同样的尾部域保存/);
+  assert.match(table, /替换之前先保存旧域/);
+  assert.match(table, /域配置由保存按钮写入/);
+});

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "b3543f01-863a-4b55-93a9-1f58ab6e536d",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\global-region-chain.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\global-region-chain.html",
+  "specification": {
+    "sha256": "966faa70d55c6b5ee712d57634e64b8419b7bac3d67fcf54436f23a5616580a7",
+    "bytes": 3879
+  },
+  "artifact": {
+    "sha256": "6368e43fdce385ee9712c93a3f92ec4bfc500ddc0a0f8cebf3ca1f56d924e702",
+    "bytes": 815175
+  }
+}

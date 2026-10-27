@@ -10,6 +10,7 @@ import { publicVisionGuide } from './reviews/publicVision.ts';
 import { cameraCalibrationGuide } from './reviews/cameraCalibration.ts';
 import { safeMotionGuide } from './reviews/safeMotion.ts';
 import { toolCalibrationGuide } from './reviews/toolCalibration.ts';
+import { globalCalibrationGuide } from './reviews/globalCalibration.ts';
 
 export interface SourceClaim {
   text: string;
@@ -45,6 +46,7 @@ export const sourceGuides: SourceGuide[] = [
   cameraCalibrationGuide,
   safeMotionGuide,
   toolCalibrationGuide,
+  globalCalibrationGuide,
   startupGuide,
   recoveryGuide,
   transportGuide,

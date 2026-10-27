@@ -1,0 +1,33 @@
+{
+  "generator": "Archify 3.2.0",
+  "artifact": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\global-driver-mapping.html",
+    "sha256": "db0ebba018dd097f2fa1d7291ac9d8cd3bdebb54fb53e80c6d9deefde36a5be9",
+    "bytes": 812986
+  },
+  "specification": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\global-driver-mapping.json",
+    "sha256": "4af64cb504c40ef6b3f338a5cd9866c1b732be22d4517c40bc89eb8520c4ab60",
+    "bytes": 3391
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "source": "Committed review at the pinned revision; source excerpts separately fingerprinted against the read-only trunk.",
+  "manualReview": {
+    "page": "/#topic/global-calibration",
+    "widths": [
+      1280,
+      497
+    ],
+    "readingCopy": true,
+    "nodesSwitched": 45,
+    "nodeHeadingsVerified": 45,
+    "diagramZoomOrPan": false,
+    "scope": "All six driver nodes inspected in desktop and narrow views; GTAxis activation condition and unconsumed bool retained. Software-region chain remains separate."
+  }
+}

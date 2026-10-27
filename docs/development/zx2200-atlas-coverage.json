@@ -789,38 +789,161 @@
         {
           "id": "08.01",
           "text": "扫描范围、预定义点及补偿区域建立。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-points",
+              "steps": [
+                "overview",
+                "manual",
+                "automatic",
+                "generate",
+                "measured-fit",
+                "completion"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-regions",
+              "steps": [
+                "create",
+                "cell"
+              ]
+            }
+          ]
         },
         {
           "id": "08.02",
           "text": "X、Y 比例与二维平台采集。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-scale",
+              "steps": [
+                "modes",
+                "x",
+                "y",
+                "assistant"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-mapping",
+              "steps": [
+                "init",
+                "preliminary",
+                "mapping",
+                "record",
+                "test"
+              ]
+            }
+          ]
         },
         {
           "id": "08.03",
           "text": "普通扫描、温漂采集、带补偿扫描及暂停停止。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-scan",
+              "steps": [
+                "start",
+                "ordinary",
+                "drift",
+                "compensated",
+                "simulation",
+                "prediction"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-completion",
+              "steps": [
+                "control",
+                "old-stop"
+              ]
+            }
+          ]
         },
         {
           "id": "08.04",
           "text": "点序与区域排序、扫描清单导入导出。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-list",
+              "steps": [
+                "sort",
+                "edit",
+                "import",
+                "export"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-regions",
+              "steps": [
+                "priority",
+                "refresh"
+              ]
+            }
+          ]
         },
         {
           "id": "08.05",
           "text": "标定数据生成、ETEL 或固高补偿开关及下载。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-driver",
+              "steps": [
+                "overview",
+                "etel",
+                "gugao",
+                "boundaries"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-completion",
+              "steps": [
+                "persistence"
+              ]
+            }
+          ]
         },
         {
           "id": "08.06",
           "text": "Bond 偏移标定、校验与 BC 偏移关系计算。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-bond",
+              "steps": [
+                "legacy",
+                "calibrate",
+                "validate",
+                "model",
+                "completion"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-bc",
+              "steps": [
+                "sample",
+                "row",
+                "linear",
+                "diagnostic"
+              ]
+            }
+          ]
         }
       ]
     },
