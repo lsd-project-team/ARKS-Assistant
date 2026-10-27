@@ -365,7 +365,6 @@ export function ChatPane({
                         !busy && !regenerate.isPending && versions.at(-1)?.run.id === latest?.id
                       }
                       onRegenerate={(id) => regenerate.mutate(id)}
-                      onContext={(id) => setContext({ runId: id })}
                     />
                   </MessageArchive>
                 </div>
@@ -383,7 +382,6 @@ export function ChatPane({
                   latest?.status === 'completed'
                 }
                 onRegenerate={(id) => regenerate.mutate(id)}
-                onContext={(id) => setContext({ runId: id })}
                 onEdit={
                   !archivedProject && !busy && conversation.data?.editable_message_id === message.id
                     ? (content) =>

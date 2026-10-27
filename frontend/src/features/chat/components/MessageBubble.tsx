@@ -29,7 +29,6 @@ export function MessageBubble({
   run,
   canRegenerate,
   onRegenerate,
-  onContext,
   onEdit,
   recent = false,
 }: {
@@ -37,7 +36,6 @@ export function MessageBubble({
   run?: Run;
   canRegenerate?: boolean;
   onRegenerate: (id: string) => void;
-  onContext: (id: string) => void;
   onEdit?: (content: string) => Promise<unknown>;
   recent?: boolean;
 }) {
@@ -110,7 +108,7 @@ export function MessageBubble({
             {selection.stale && <span>旧版本</span>}
           </button>
         ))}
-        {run && <RunTrace runId={run.id} onContext={onContext} />}
+        {run && <RunTrace runId={run.id} />}
         <div>
           <Content
             content={message.content}

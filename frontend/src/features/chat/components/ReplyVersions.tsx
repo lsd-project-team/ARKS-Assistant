@@ -8,13 +8,11 @@ export function ReplyVersions({
   selectedMessage,
   canRegenerate,
   onRegenerate,
-  onContext,
 }: {
   versions: { message: Message; run: Run }[];
   selectedMessage: string;
   canRegenerate: boolean;
   onRegenerate: (id: string) => void;
-  onContext: (id: string) => void;
 }) {
   const [chosen, setChosen] = useState('');
   const wanted = chosen || selectedMessage;
@@ -48,7 +46,6 @@ export function ReplyVersions({
         run={current.run}
         canRegenerate={canRegenerate && index === versions.length - 1}
         onRegenerate={onRegenerate}
-        onContext={onContext}
       />
     </div>
   );
