@@ -9,7 +9,7 @@
     "knowledge:check": "node --experimental-strip-types scripts/knowledge/check-knowledge.mjs",
     "knowledge:source-check": "node --experimental-strip-types scripts/knowledge/check-source-guides.mjs",
     "dev": "vite --host 127.0.0.1",
-    "build": "npm run knowledge:check && npm run knowledge:agent-index && tsc -b && vite build",
+    "build": "npm run knowledge:source-check && npm run knowledge:agent-index && tsc -b && vite build",
     "knowledge:agent-index": "node --experimental-strip-types scripts/knowledge/build-agent-knowledge.mjs",
     "preview": "vite preview --host 127.0.0.1"
   },

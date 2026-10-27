@@ -6,11 +6,6 @@ export const startupGuide: SourceGuide = {
   id: 'startup-source-review',
   topic: 'startup',
   diagrams: ['startup-workflow', 'machine-start-readiness-workflow'],
-  initialFlows: {
-    startup: 'boot',
-    'startup-workflow': 'boot',
-    'machine-start-readiness-workflow': 'production-start',
-  },
   title: '启动检查与任务放行',
   flows: [
     flow(
@@ -117,7 +112,7 @@ export const startupGuide: SourceGuide = {
           [
             outcome(
               '状态与任务',
-              '这次状态赋值没有汇总各任务入口的成功结果。',
+              'Working 的设置先于任务调用；该语句不构成所有模块已经启动成功的确认。',
               'working-state',
               'start-options',
             ),
@@ -148,7 +143,7 @@ export const startupGuide: SourceGuide = {
     flow(
       'wafer-ready',
       '供晶自检',
-      '先准备状态，再按在线、示教和换料模式阅读各分支。',
+      '供晶 CheckIsReady 先进行状态赋值及控制器调用，再按在线、示教和换料模式分支检查。整个方法的异常在末尾转为 false。',
       ['wafer-prefix', 'wafer-magazine', 'wafer-ready'],
       [
         step(
@@ -261,7 +256,7 @@ export const startupGuide: SourceGuide = {
     flow(
       's2-ready',
       'S2 自检',
-      '从自检开关进入，再看程式、工具配置和物料处理。',
+      'S2 自检包含焊头真空、配置与工具检查，也可能修改吸嘴记忆或调用抛料。自检开关关闭时会提前放行。',
       ['s2-open', 's2-tools', 's2-material'],
       [
         step(
@@ -325,7 +320,7 @@ export const startupGuide: SourceGuide = {
     flow(
       's1-ready',
       'S1 自检',
-      '按点胶头、预点胶和点胶材料三个检查环节阅读。',
+      'S1 未配置时直接返回 true；已配置时按点胶头、预点胶条件和材料检查顺序放行。',
       ['s1-ready'],
       [
         step(
@@ -445,7 +440,7 @@ export const startupGuide: SourceGuide = {
     flow(
       'boot',
       '开机与主窗体',
-      '先看开机回零配置，再看主窗体的加载门控。',
+      'Main 中的回零调用与主窗体 Load 是两个入口。回零返回 false 并不会在 Main 中阻止创建主窗体。',
       ['boot-home', 'form-load-gate'],
       [
         step(
@@ -479,7 +474,7 @@ export const startupGuide: SourceGuide = {
     flow(
       'home',
       '回零动作',
-      '回零按确认、准备、轴复位和标记提交分段阅读。',
+      'AllAxisGoHome 在确认后准备气缸和补偿，再调用 OneKeyHome。以下节点表示成功路径，取消、false 和异常各自提前结束本方法。',
       ['home-confirm', 'home-prepare', 'home-result'],
       [
         step(

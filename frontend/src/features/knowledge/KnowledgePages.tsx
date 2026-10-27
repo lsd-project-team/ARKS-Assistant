@@ -10,10 +10,13 @@ import type { Route } from './routes';
 import { UiIcon } from './UiIcon';
 import { Select } from '../../shared/ui/Select';
 import { SourceGuidePanel } from './SourceGuidePanel';
-import { DiagramFrame, diagramHref } from './DiagramFrame';
-import { hasGuidedReading } from './guidedDiagrams';
+import { useAppearance } from '../settings/lib/appearance';
+import diagramChrome from './diagramChrome.css?inline';
+import diagramLatinFont from '@fontsource-variable/geist/index.css?inline';
+import diagramChineseFont from '@fontsource-variable/noto-sans-sc/index.css?inline';
 const catalog = archifyData.flowchartCatalog.entries;
 const publicCatalog = catalog.filter((entry) => !isSupportingEntry(entry));
+const resourceHref = (href: string) => `/archify/${href.replace(/^docs[\\/]archify[\\/]/, '')}`;
 export const diagramRoute = (id: string): Route =>
   archifyData.graphs.some((graph) => graph.slug === id)
     ? { kind: 'graph', slug: id }
@@ -81,8 +84,8 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
         </div>
       </section>
       <details className="section card panel reading-disclosure">
-        <summary>{hasGuidedReading(id) ? '查看模块协作' : '展开专题概览与协作条件'}</summary>
-        {!hasGuidedReading(id) && <TopicReading topic={topic} />}
+        <summary>展开专题概览与协作条件</summary>
+        <TopicReading topic={topic} />
         <TopicCoordination diagrams={topic.diagrams} />
       </details>
     </>
@@ -269,12 +272,6 @@ export function DiagramDetail({
   const record = archifyData.diagramRecords[id];
   const topic = topicForDiagram(id);
   const node = graph?.nodes.find((node) => node.id === selected) ?? graph?.nodes[0];
-  const guided = hasGuidedReading(id);
-  // 启动主路径已在逐步阅读中说明，这里只保留其余入口的独有内容。
-  const supplementalNodes =
-    graph?.nodes.filter(
-      (item) => !guided || ['entry', 'init', 'monitor', 'stop', 'restart'].includes(item.id),
-    ) ?? [];
   const related = publicCatalog.filter(
     (item) => item.id !== id && topic?.diagrams.includes(item.id),
   );
@@ -303,56 +300,49 @@ export function DiagramDetail({
         {reading.summary}
       </PageHeader>
       <SourceGuidePanel key={id} page={id} />
-      {!guided &&
-        (record.htmlAvailable && entry.html ? (
-          <OriginalDiagram
-            path={entry.html}
-            title={title}
-            onNode={selectOriginalNode}
-            theme={theme}
-          />
-        ) : (
-          <div className="empty-state compact">原图尚未生成</div>
-        ))}
-      {!guided && (
-        <section className="section" aria-label="业务介绍">
-          <div className="section-heading">
-            <h2>业务介绍</h2>
-          </div>
-          <div className="diagram-reading">
-            <article className="card panel">
-              <span className="eyebrow">条件</span>
-              <h2>执行前看什么</h2>
-              <p>{reading.condition}</p>
-            </article>
-            <article className="card panel">
-              <span className="eyebrow">异常</span>
-              <h2>结果怎样理解</h2>
-              <p>{reading.exception}</p>
-            </article>
-          </div>
-        </section>
+      {record.htmlAvailable && entry.html ? (
+        <OriginalDiagram
+          path={entry.html}
+          title={title}
+          onNode={selectOriginalNode}
+          theme={theme}
+        />
+      ) : (
+        <div className="empty-state compact">原图尚未生成</div>
       )}
-      {guided && !graph && record.htmlAvailable && entry.html && (
-        <details className="section card panel reading-disclosure">
-          <summary>完整启动检查关系图</summary>
-          <OriginalDiagram path={entry.html} title={title} theme={theme} hideNotes />
-        </details>
-      )}
+      <section className="section" aria-label="业务介绍">
+        <div className="section-heading">
+          <h2>业务介绍</h2>
+        </div>
+        <div className="diagram-reading">
+          <article className="card panel">
+            <span className="eyebrow">用途</span>
+            <h2>这张图回答什么</h2>
+            <p>{reading.summary}</p>
+          </article>
+          <article className="card panel">
+            <span className="eyebrow">条件</span>
+            <h2>执行前看什么</h2>
+            <p>{reading.condition}</p>
+          </article>
+          <article className="card panel">
+            <span className="eyebrow">异常</span>
+            <h2>结果怎样理解</h2>
+            <p>{reading.exception}</p>
+          </article>
+        </div>
+      </section>
       {graph && (
         <details
           className="section card panel reading-disclosure"
           ref={reader}
           open={nodeFocused || Boolean(focusedSignal) || undefined}
         >
-          <summary>{guided ? '完整关系图与其他控制入口' : '深入阅读节点与模块协作'}</summary>
-          {guided && record.htmlAvailable && entry.html && (
-            <OriginalDiagram path={entry.html} title={title} theme={theme} hideNotes />
-          )}
+          <summary>深入阅读节点与模块协作</summary>
           <ModuleCoordination graph={graph} focusedSignal={focusedSignal} />
           <div className="node-reader">
             <div className="node-tabs" role="group" aria-label="选择节点">
-              {supplementalNodes.map((item) => (
+              {graph.nodes.map((item) => (
                 <button
                   key={item.id}
                   className={item.id === node?.id ? 'selected' : ''}
@@ -370,11 +360,7 @@ export function DiagramDetail({
                 <div className="branch-list">
                   <b>后续分支</b>
                   {graph.edges
-                    .filter(
-                      (edge) =>
-                        edge.from === node.id &&
-                        supplementalNodes.some((item) => item.id === edge.to),
-                    )
+                    .filter((edge) => edge.from === node.id)
                     .map((edge) => (
                       <button key={edge.id} onClick={() => setSelected(edge.to)}>
                         {edge.label || '继续'} →{' '}
@@ -422,28 +408,76 @@ function OriginalDiagram({
   title,
   onNode,
   theme,
-  hideNotes = false,
 }: {
   path: string;
   title: string;
   onNode?: (id: string) => void;
   theme: 'dark' | 'light';
-  hideNotes?: boolean;
 }) {
+  const [document, setDocument] = useState<Document | null>(null);
+  const [initialTheme] = useState(theme);
+  const revision = catalog.find((entry) => entry.html === path)?.htmlSha256?.slice(0, 16);
+  const diagramURL = (color: string) =>
+    `${resourceHref(path)}?theme=${color}${revision ? `&review=${revision}` : ''}`;
+  const appearance = useAppearance((state) => state.mode);
+  useEffect(() => {
+    // 图谱预设控制节点样式，页面外观单独控制工具栏和阅读底色。
+    if (document) document.documentElement.dataset.appearance = appearance;
+  }, [document, appearance]);
+  useEffect(() => {
+    if (!document) return;
+    const style = document.createElement('style');
+    // iframe 有独立的字体上下文；同样引用本地字体，避免原图退回粗重的系统字形。
+    style.textContent = `${diagramLatinFont}\n${diagramChineseFont}\n${diagramChrome}`;
+    document.head.appendChild(style);
+    const guide = document.getElementById('btn-diagram-guide');
+    // 原图只比较按钮本身，图标点击会被误判为外部点击；保留按钮原有处理，再阻止冒泡。
+    const keepGuideOpen = (event: Event) => event.stopPropagation();
+    guide?.addEventListener('click', keepGuideOpen);
+    return () => {
+      style.remove();
+      guide?.removeEventListener('click', keepGuideOpen);
+    };
+  }, [document]);
+  useEffect(() => {
+    if (!document || document.documentElement.dataset.theme === theme) return;
+    const toggle = document.getElementById('btn-theme');
+    if (toggle) toggle.click();
+    else document.documentElement.dataset.theme = theme;
+  }, [document, theme]);
+  useEffect(() => {
+    if (!document || !onNode) return;
+    const select = (event: Event) => {
+      const target = event.target as Element | null;
+      const node = target?.closest?.('[data-node-id]');
+      if (node) onNode(node.getAttribute('data-node-id')!);
+    };
+    const selectKeyboard = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' || event.key === ' ') select(event);
+    };
+    document.addEventListener('click', select, true);
+    document.addEventListener('keyup', selectKeyboard, true);
+    return () => {
+      document.removeEventListener('click', select, true);
+      document.removeEventListener('keyup', selectKeyboard, true);
+    };
+  }, [document, onNode]);
   return (
     <section className="section card panel original-diagram">
       <div className="panel-title">
         <div>
           <span className="eyebrow">流程图</span>
-          {!hideNotes && (
-            <p>使用图内缩放、查找与演示工具阅读。生产主流程可点击节点，查看下方环节说明。</p>
-          )}
+          <p>使用图内缩放、查找与演示工具阅读。生产主流程可点击节点，查看下方环节说明。</p>
         </div>
-        <a className="button" href={diagramHref(path, theme)} target="_blank" rel="noreferrer">
+        <a className="button" href={diagramURL(theme)} target="_blank" rel="noreferrer">
           全屏阅读 ↗
         </a>
       </div>
-      <DiagramFrame path={path} title={title} theme={theme} onNode={onNode} hideNotes={hideNotes} />
+      <iframe
+        title={`${title} 流程图`}
+        src={diagramURL(initialTheme)}
+        onLoad={(event) => setDocument(event.currentTarget.contentDocument)}
+      />
     </section>
   );
 }
