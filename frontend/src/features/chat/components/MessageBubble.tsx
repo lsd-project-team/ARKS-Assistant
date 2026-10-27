@@ -9,6 +9,7 @@ import {
   Pencil,
   GitBranch,
   BookmarkPlus,
+  MessageSquare,
 } from 'lucide-react';
 import { useWorkspace, draftFor } from '../../../app/state/store';
 import type { Message, Run } from '../../../shared/types/api';
@@ -229,6 +230,17 @@ export function MessageBubble({
             onClick={() => onFork(message.id)}
           >
             <GitBranch size={14} />
+          </button>
+        )}
+        {message.role === 'assistant' && (
+          <button
+            type="button"
+            aria-label="反馈回复"
+            title="反馈回复"
+            onClick={() => toast('反馈功能暂未开放')}
+          >
+            <MessageSquare size={14} />
+            <span>反馈</span>
           </button>
         )}
         {message.created_at && (
