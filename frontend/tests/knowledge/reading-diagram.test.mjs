@@ -131,3 +131,39 @@ test('标定图保留可跳过的同标记步骤及真实 S2 调度顺序', asyn
   assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
   assert.match(page.html, /确认执行，取消跳过/);
 });
+
+test('安全移动图先经限位和单步门控，再分成三种顺序而非顺序执行全部路径', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../resources/knowledge/flows/functional-atlas/safe-motion-branches.html',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const page = createReadingDiagram(source, 'classic');
+  for (const [from, to] of [
+    ['target', 'prepare'],
+    ['prepare', 'single'],
+    ['single', 'branch'],
+    ['branch', 'xy-first'],
+    ['branch', 'z-first'],
+    ['branch', 'lift-first'],
+  ])
+    assert.ok(page.html.includes(`data-edge-from="${from}" data-edge-to="${to}"`));
+  assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
+  assert.doesNotMatch(page.html, /data-edge-from="xy-first" data-edge-to="z-first"/);
+  assert.match(page.html, /拒绝则直接返回/);
+});
+
+test('安全移动窄图保留原图的全部节点、含义和分支，仅缩紧排布', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const full = JSON.parse(await readFile(new URL('safe-motion-branches.json', folder), 'utf8'));
+  const narrow = JSON.parse(await readFile(new URL('safe-motion-reading.json', folder), 'utf8'));
+  const meaning = ({ pos, size, ...node }) => node;
+  assert.deepEqual(narrow.components.map(meaning), full.components.map(meaning));
+  assert.deepEqual(narrow.connections, full.connections);
+  const source = await readFile(new URL('safe-motion-reading.html', folder), 'utf8');
+  const page = createReadingDiagram(source, 'classic');
+  assert.ok(page.width < 430);
+  for (const node of full.components) assert.ok(page.html.includes(`data-node-id="${node.id}"`));
+});

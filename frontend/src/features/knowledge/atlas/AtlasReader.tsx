@@ -2,9 +2,22 @@ import { SourceGuidePanel } from '../SourceGuidePanel';
 import { ArchifyFigure, ReadingFigure } from '../coordinates/ArchifyFigure';
 import { functionalArtifacts } from '../data/functionalTopics';
 import { CalibrationPersistence } from './CalibrationPersistence';
+import { MotionOrdering } from './MotionOrdering';
 import '../coordinates/coordinates.css';
 
 export function functionalVisual(flow: string, step: string) {
+  if (`${flow}/${step}` === 'sm-order/table') return <MotionOrdering />;
+  if (`${flow}/${step}` === 'sm-order/overview')
+    return (
+      <ReadingFigure
+        diagram={{
+          ...functionalArtifacts['safe-motion-branches'],
+          narrow: functionalArtifacts['safe-motion-reading'],
+          id: 'safe-motion-branches',
+          title: 'XYZ 安全移动的高度分支',
+        }}
+      />
+    );
   if (`${flow}/${step}` === 'cc-persistence/order') return <CalibrationPersistence />;
   if (`${flow}/${step}` === 'cc-dispatch/overview')
     return (
@@ -55,6 +68,11 @@ export function AtlasReader({ page }: { page: string }) {
         ) : (
           <a className="text-button" href="#topic/public-vision">
             公共视觉与失败处理 →
+          </a>
+        )}
+        {page === 'motion-safety' && (
+          <a className="text-button" href="#topic/recovery">
+            暂停停止与物料恢复 →
           </a>
         )}
       </nav>

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "1e8f5259-1abb-41cc-a036-90d4bc45fb4a",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\safe-motion-reading.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\safe-motion-reading.html",
+  "specification": {
+    "sha256": "4a61ee89f8cc8c3d0e172560a9eb58d480b9261cdea06d0995dda53e20dc7098",
+    "bytes": 4251
+  },
+  "artifact": {
+    "sha256": "f0e055f26cfd9a9b5f8a50cdcceb813a10287794fa55d23ae208cf5d4417f41d",
+    "bytes": 815828
+  }
+}

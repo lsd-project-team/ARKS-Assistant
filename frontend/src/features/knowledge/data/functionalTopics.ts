@@ -31,6 +31,15 @@ export const functionalTopics: PresentationTopic[] = [
     exceptions: ['中途可能已有写入，任务返回与最终精度复核分别判断。'],
     diagrams: ['camera-calibration-process'],
   },
+  {
+    id: 'motion-safety',
+    title: '安全运动与连续轨迹',
+    summary: '从目标转换、软限位和安全高度，到区域过渡、插补与等待停止。',
+    purpose: '按工位和运动模式组织轴目标，区分软件门控与实际动作完成。',
+    conditions: ['载具、工具、运行模式和所属轴卡共同决定路径。'],
+    exceptions: ['子调用返回、驱动等待和停止状态需要分别确认。'],
+    diagrams: ['safe-motion-process'],
+  },
 ];
 
 export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopics.map((topic) => ({
@@ -45,6 +54,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'safe-motion-reading': {
+    path: 'functional-atlas/safe-motion-reading.html',
+    sha256: 'f0e055f26cfd9a9b5f8a50cdcceb813a10287794fa55d23ae208cf5d4417f41d',
+    specificationSha256: '4a61ee89f8cc8c3d0e172560a9eb58d480b9261cdea06d0995dda53e20dc7098',
+  },
+  'safe-motion-branches': {
+    path: 'functional-atlas/safe-motion-branches.html',
+    sha256: '4d94e3b2ea036bf6008eb8ad79a01f11fb9d95b6a5646868c1dd891a74a10e3f',
+    specificationSha256: '5c8768441721740279574c79b3f9c30a16be02446577c1944602d66a00bf00a8',
+  },
   'camera-calibration': {
     path: 'functional-atlas/camera-calibration.html',
     sha256: 'c4ee19672e758363cb8f5c877b426ec48985b5fe428926782871d85ea95a75d8',

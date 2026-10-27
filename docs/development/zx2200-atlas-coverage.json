@@ -765,38 +765,120 @@
         {
           "id": "10.01",
           "text": "机械目标与 G0 目标的转换及软限位检查。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-targets",
+              "steps": [
+                "convert",
+                "overloads",
+                "limits",
+                "commands"
+              ]
+            }
+          ]
         },
         {
           "id": "10.02",
           "text": "二维、三维、四维安全位与高度动作顺序。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-height",
+              "steps": [
+                "product",
+                "regions",
+                "checks"
+              ]
+            },
+            {
+              "topic": "motion-safety",
+              "flow": "sm-order",
+              "steps": [
+                "overview",
+                "table",
+                "return"
+              ]
+            }
+          ]
         },
         {
           "id": "10.03",
           "text": "取片、固晶、上视、IPT 和换嘴区域间的运动。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-regions",
+              "steps": [
+                "pick",
+                "bond",
+                "uplook",
+                "ipt",
+                "maintenance"
+              ]
+            }
+          ]
         },
         {
           "id": "10.04",
           "text": "碰撞圆、运动区域及路径交点计算。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-geometry",
+              "steps": [
+                "circle",
+                "wafer",
+                "intersection",
+                "tools"
+              ]
+            }
+          ]
         },
         {
           "id": "10.05",
           "text": "插补组、连续轨迹与驱动分支选择。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-interpolation",
+              "steps": [
+                "groups",
+                "production",
+                "gugao",
+                "pick-helper"
+              ]
+            }
+          ]
         },
         {
           "id": "10.06",
           "text": "发指令、等待到位、异常和停止的不同完成边界。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-completion",
+              "steps": [
+                "wait",
+                "tasks",
+                "failures",
+                "stop"
+              ]
+            },
+            {
+              "topic": "motion-safety",
+              "flow": "sm-order",
+              "steps": [
+                "return"
+              ]
+            }
+          ]
         }
       ]
     },

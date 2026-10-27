@@ -8,6 +8,7 @@ import { g0Guide } from './reviews/g0.ts';
 import { productCoordinatesGuide } from './reviews/productCoordinates.ts';
 import { publicVisionGuide } from './reviews/publicVision.ts';
 import { cameraCalibrationGuide } from './reviews/cameraCalibration.ts';
+import { safeMotionGuide } from './reviews/safeMotion.ts';
 
 export interface SourceClaim {
   text: string;
@@ -41,6 +42,7 @@ export const sourceGuides: SourceGuide[] = [
   productCoordinatesGuide,
   publicVisionGuide,
   cameraCalibrationGuide,
+  safeMotionGuide,
   startupGuide,
   recoveryGuide,
   transportGuide,

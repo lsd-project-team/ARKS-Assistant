@@ -72,14 +72,10 @@ export function ReadingDiagram({
           srcDoc={page.html}
           sandbox="allow-same-origin"
           style={{
-            maxWidth: Math.min(page.width, 600, (page.width * 600) / page.height),
+            maxWidth: page.width,
             // 向上取整并留出两像素，避免分数像素造成 iframe 内出现细小滚动条。
             height:
-              Math.ceil(
-                (Math.min(width ?? page.width, page.width, 600, (page.width * 600) / page.height) *
-                  page.height) /
-                  page.width,
-              ) + 2,
+              Math.ceil((Math.min(width ?? page.width, page.width) * page.height) / page.width) + 2,
           }}
         />
       ) : (

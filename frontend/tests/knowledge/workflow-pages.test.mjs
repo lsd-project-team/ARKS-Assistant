@@ -193,3 +193,24 @@ test('相机标定专题绑定 S2 调度图，并提供保存与复核的对照�
   assert.match(table, /BMC 测高结果立即保存设备参数/);
   assert.match(table, /最终两角度复核/);
 });
+
+test('安全运动专题展示实际高度分支，并保留 XY 恢复原 Z 的差异', () => {
+  const topic = render(TopicDetail, { id: 'motion-safety' });
+  assert.equal(topic, render(DiagramDetail, { id: 'safe-motion-process', theme: 'light' }));
+  assert.ok(topic.includes('data-archify-source="functional-atlas/safe-motion-branches.html"'));
+  for (const text of [
+    '目标与软限位',
+    '安全高度来源',
+    '二维三维四维',
+    '生产区域切换',
+    '碰撞圆与规划工具',
+    '插补与驱动',
+    '等待、异常与停止',
+  ])
+    assert.ok(topic.includes(text), text);
+  assert.match(topic, /href="#topic\/recovery"/);
+  const table = renderToStaticMarkup(functionalVisual('sm-order', 'table'));
+  assert.equal((table.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 5);
+  assert.match(table, /安全 Z → XY → 恢复原 Z/);
+  assert.match(table, /“含 T”只适用于 XYZT/);
+});
