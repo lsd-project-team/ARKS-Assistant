@@ -12587,6 +12587,7 @@ export const archifyData: ArchifyData = {
     'config-production-gates': [],
   },
   diagramRecords: {
+    'lightness-process': { htmlAvailable: false, reviewDocuments: [], visualAvailable: false },
     'global-calibration-process': {
       htmlAvailable: false,
       reviewDocuments: [],

@@ -6,9 +6,11 @@ import { CalibrationPersistence } from './CalibrationPersistence';
 import { MotionOrdering } from './MotionOrdering';
 import { ToolCalibrationPersistence } from './ToolCalibrationPersistence';
 import { GlobalCalibrationPersistence } from './GlobalCalibrationPersistence';
+import { LightHardwareTable } from './LightHardwareTable';
 import '../coordinates/coordinates.css';
 
 const tablesByStep: Record<string, ComponentType> = {
+  'lc-hardware/overview': LightHardwareTable,
   'gc-completion/persistence': GlobalCalibrationPersistence,
   'tc-results/persistence': ToolCalibrationPersistence,
   'sm-order/table': MotionOrdering,
@@ -16,6 +18,8 @@ const tablesByStep: Record<string, ComponentType> = {
 };
 
 const diagramsByStep: Record<string, { id: string; title: string; narrow?: string }> = {
+  'lc-acquisition/overview': { id: 'lightness-calibration', title: '亮度采集到保存的正常主链' },
+  'lc-application/overview': { id: 'lightness-alarm-edit', title: '点胶相机保持不变的报警编辑' },
   'gc-points/overview': { id: 'global-region-chain', title: '新版扫描数据与区域补偿主链' },
   'gc-driver/overview': { id: 'global-driver-mapping', title: '旧版二维映射的驱动分支' },
   'tc-entry/overview': { id: 'tool-calibration-entry', title: 'S2 校准页面的独立入口' },

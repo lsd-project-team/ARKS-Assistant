@@ -63,3 +63,7 @@ PREntity.SetLight 优先采用传入 lights/intensities，按位置逐个 SetInt
 报警编辑在 PRHardware 非 null 时锁 entity；若进入时相机为点胶，先把模板中的已用强度正向换算并写回对象，再 SetHardware、打开编辑器。编辑器关闭后，若此时仍为点胶相机，反向换算并再写回；两个判断使用各自时点的 Camera。最后仓库 Save、设备 Continue、恢复 isAllowWork。没有统一 try/finally 保证异常后反向恢复或继续；编辑过程中仓库也可先保存点胶侧数值。
 
 依据：LightCalibrationPara.cs:364–451；DispenseVisionController.cs:123–245、252–263；PREntity.cs:101–159；System2Controller.Vision.cs:159–219；FrmVisionAlarm.cs:426–498。
+
+## 补充：模板硬件切换后的回读
+
+FrmPREditor.BarBtHardwareSet_ItemClick 在硬件设置确认 OK 后调用 InitModel，把曝光、增益、Gamma 分别改为 3000、1、10，再对六个槽中的已启用光源读取 GetIntensity 更新滑块和数字框。该同步入口与模组 UcLight 的颜色读值方法不同。依据：FrmPREditor.cs:583–604。

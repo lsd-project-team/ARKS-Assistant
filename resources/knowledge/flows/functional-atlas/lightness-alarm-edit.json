@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "点胶相机保持不变的报警编辑",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/functional-atlas/lightness-alarm-edit.html",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "4c6759b44eaf779ab8dde585cd0806f511e239bf",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "entry",
+      "type": "backend",
+      "label": "报警编辑入口",
+      "sublabel": "有 PRHardware；点胶",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-lightness-review.md",
+          "line": 63,
+          "end_line": 63
+        }
+      ]
+    },
+    {
+      "id": "forward",
+      "type": "backend",
+      "label": "正向换算并写回",
+      "sublabel": "Bond 强度 → 点胶",
+      "pos": [
+        220,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-lightness-review.md",
+          "line": 63,
+          "end_line": 63
+        }
+      ]
+    },
+    {
+      "id": "editor",
+      "type": "backend",
+      "label": "打开模板编辑器",
+      "sublabel": "绑定硬件并编辑",
+      "pos": [
+        220,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-lightness-review.md",
+          "line": 63,
+          "end_line": 63
+        }
+      ]
+    },
+    {
+      "id": "reverse",
+      "type": "backend",
+      "label": "反向换算并写回",
+      "sublabel": "关闭后仍为点胶",
+      "pos": [
+        20,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-lightness-review.md",
+          "line": 63,
+          "end_line": 63
+        }
+      ]
+    },
+    {
+      "id": "save",
+      "type": "backend",
+      "label": "模板仓库保存",
+      "sublabel": "反向写回之后",
+      "pos": [
+        20,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-lightness-review.md",
+          "line": 63,
+          "end_line": 63
+        }
+      ]
+    },
+    {
+      "id": "resume",
+      "type": "backend",
+      "label": "继续设备工作",
+      "sublabel": "恢复允许工作标记",
+      "pos": [
+        220,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-lightness-review.md",
+          "line": 63,
+          "end_line": 63
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "entry-forward",
+      "from": "entry",
+      "to": "forward"
+    },
+    {
+      "id": "forward-editor",
+      "from": "forward",
+      "to": "editor"
+    },
+    {
+      "id": "editor-reverse",
+      "from": "editor",
+      "to": "reverse"
+    },
+    {
+      "id": "reverse-save",
+      "from": "reverse",
+      "to": "save"
+    },
+    {
+      "id": "save-resume",
+      "from": "save",
+      "to": "resume"
+    }
+  ]
+}

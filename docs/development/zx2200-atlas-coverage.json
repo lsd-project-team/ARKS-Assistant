@@ -955,26 +955,88 @@
         {
           "id": "09.01",
           "text": "各相机红绿蓝环光、点光的硬件对应。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-hardware",
+              "steps": [
+                "overview",
+                "mode",
+                "shared",
+                "panel",
+                "z-camera"
+              ]
+            }
+          ]
         },
         {
           "id": "09.02",
           "text": "灯光亮度手动调整与同步。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-manual",
+              "steps": [
+                "percent",
+                "color",
+                "sync",
+                "template",
+                "hardware-refresh",
+                "close"
+              ]
+            }
+          ]
         },
         {
           "id": "09.03",
           "text": "点胶和 Bond 亮度映射采集、补全与保存。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-acquisition",
+              "steps": [
+                "overview",
+                "positions",
+                "prepare",
+                "samples",
+                "search",
+                "gray",
+                "completion"
+              ]
+            },
+            {
+              "topic": "lightness",
+              "flow": "lc-mapping",
+              "steps": [
+                "forward",
+                "reverse",
+                "empty",
+                "roundtrip",
+                "cache"
+              ]
+            }
+          ]
         },
         {
           "id": "09.04",
           "text": "正反向亮度映射在视觉流程中的应用。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-application",
+              "steps": [
+                "overview",
+                "production",
+                "lists",
+                "output",
+                "alarm"
+              ]
+            }
+          ]
         }
       ]
     },

@@ -11,6 +11,7 @@ import { cameraCalibrationGuide } from './reviews/cameraCalibration.ts';
 import { safeMotionGuide } from './reviews/safeMotion.ts';
 import { toolCalibrationGuide } from './reviews/toolCalibration.ts';
 import { globalCalibrationGuide } from './reviews/globalCalibration.ts';
+import { lightnessGuide } from './reviews/lightness.ts';
 
 export interface SourceClaim {
   text: string;
@@ -47,6 +48,7 @@ export const sourceGuides: SourceGuide[] = [
   safeMotionGuide,
   toolCalibrationGuide,
   globalCalibrationGuide,
+  lightnessGuide,
   startupGuide,
   recoveryGuide,
   transportGuide,

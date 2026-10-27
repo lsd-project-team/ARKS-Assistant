@@ -208,3 +208,36 @@ test('全局区域主链保留粗略完成与四点构造门控，驱动图保�
   assert.doesNotMatch(driver.html, /data-edge-from="etel-enable" data-edge-to="gt-table"/);
   assert.match(driver.html, /GTAxis；bool 未门控/);
 });
+
+test('亮度图保留全部返回才保存，以及报警编辑先正向后反向的条件和顺序', async () => {
+  const folder = new URL('../../../resources/knowledge/flows/functional-atlas/', import.meta.url);
+  const capture = createReadingDiagram(
+    await readFile(new URL('lightness-calibration.html', folder), 'utf8'),
+    'classic',
+  );
+  assert.equal((capture.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
+  assert.match(capture.html, /Done 发起后台任务/);
+  assert.match(capture.html, /每组五个 Bond 点/);
+  assert.match(capture.html, /每点八次匹配/);
+  assert.ok(
+    capture.html.includes(
+      'data-edge-from="pairs" data-edge-to="save" data-edge-label="全部正常返回"',
+    ),
+  );
+  const alarm = createReadingDiagram(
+    await readFile(new URL('lightness-alarm-edit.html', folder), 'utf8'),
+    'classic',
+  );
+  assert.equal((alarm.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 6);
+  for (const [from, to] of [
+    ['entry', 'forward'],
+    ['forward', 'editor'],
+    ['editor', 'reverse'],
+    ['reverse', 'save'],
+    ['save', 'resume'],
+  ])
+    assert.ok(alarm.html.includes('data-edge-from="' + from + '" data-edge-to="' + to + '"'));
+  assert.match(alarm.html, /有 PRHardware；点胶/);
+  assert.match(alarm.html, /关闭后仍为点胶/);
+  assert.doesNotMatch(alarm.html, /data-edge-from="editor" data-edge-to="save"/);
+});

@@ -5,6 +5,15 @@ import type { CoordinateArtifact } from './coordinateDiagrams';
 // 只发布已经逐条复核的专题；全部制作范围保存在开发覆盖清单，避免空目录冒充已完成内容。
 export const functionalTopics: PresentationTopic[] = [
   {
+    id: 'lightness',
+    title: '光源控制与亮度标定',
+    summary: '从相机灯光对应和手动调光，到六组亮度采集、映射补全与视觉应用。',
+    purpose: '区分模板强度、点胶输出与正反向换算的建立和使用。',
+    conditions: ['相机、灯光模式、列表顺序和当前缓存状态共同决定路径。'],
+    exceptions: ['后台发起、样点保存、字典初始化与设备输出分别判断。'],
+    diagrams: ['lightness-process'],
+  },
+  {
     id: 'global-calibration',
     title: '全局标定与扫描采集',
     summary: '从扫描点和温漂采集，到区域插值、旧驱动映射与 Bond/BC 偏移。',
@@ -72,6 +81,16 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'lightness-calibration': {
+    path: 'functional-atlas/lightness-calibration.html',
+    sha256: '7afb12ac4c962fb44959836d203cbafcf119af566b3cf5f8b27b4ca2e545c3c2',
+    specificationSha256: '900f2867b4ef02e1da33e42055e9ce751a4ef713505bfa0b0bfa7db2b80eafd8',
+  },
+  'lightness-alarm-edit': {
+    path: 'functional-atlas/lightness-alarm-edit.html',
+    sha256: 'b7368f885432b81cb8164ee41c714dffd780110630a2605f2b7a9b1ce1b31724',
+    specificationSha256: '118d70ede9090655136b1dfb0549b6a77143e6fd428e29d8c4f7c9411491d8fc',
+  },
   'global-region-chain': {
     path: 'functional-atlas/global-region-chain.html',
     sha256: '6368e43fdce385ee9712c93a3f92ec4bfc500ddc0a0f8cebf3ca1f56d924e702',

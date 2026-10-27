@@ -264,3 +264,22 @@ test('全局标定专题区分新区域与旧驱动链，并保留八条保存�
   assert.match(table, /替换之前先保存旧域/);
   assert.match(table, /域配置由保存按钮写入/);
 });
+
+test('光源专题共用目录入口，区分硬件、采集、缓存和视觉换算', () => {
+  const topic = render(TopicDetail, { id: 'lightness' });
+  assert.equal(topic, render(DiagramDetail, { id: 'lightness-process', theme: 'light' }));
+  for (const title of [
+    '相机与灯光',
+    '手动调光与同步',
+    '亮度采集与保存',
+    '映射补全与缓存',
+    '视觉中的正反向',
+  ])
+    assert.ok(topic.includes(title), title);
+  assert.equal((topic.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 5);
+  assert.match(topic, /下视环光（同名共用）/);
+  const capture = renderToStaticMarkup(functionalVisual('lc-acquisition', 'overview'));
+  const alarm = renderToStaticMarkup(functionalVisual('lc-application', 'overview'));
+  assert.ok(capture.includes('data-archify-source="functional-atlas/lightness-calibration.html"'));
+  assert.ok(alarm.includes('data-archify-source="functional-atlas/lightness-alarm-edit.html"'));
+});
