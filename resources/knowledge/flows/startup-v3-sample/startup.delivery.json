@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "e1d170da-7848-4cdf-af12-e094d712b503",
+  "status": "current",
+  "command": "deliver",
+  "type": "explainer",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-v3-sample\\candidate.archify.md",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-v3-sample\\startup.html",
+  "specification": {
+    "sha256": "9aaa6d7df7ee24bf4262c87a54bc7723583970d896753c9f66adf376927c68b3",
+    "bytes": 7829
+  },
+  "artifact": {
+    "sha256": "ee01d81ba6e3d7e8e1c02e1b4e92148885348772b23b81e658457d2e2c956e69",
+    "bytes": 1601052
+  },
+  "explainer": {
+    "preparedSha256": "fe048a0a34efd5637008d886d799c5816043263c4368101321a106869bef0cf6",
+    "dependencies": [
+      {
+        "kind": "repository",
+        "id": "boot-home",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "form-load-gate",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "home-confirm",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "home-prepare",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "home-result",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "ui-start",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "prepare-reset",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "prepare-gates",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "prepare-motion",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "environment",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "working-state",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "repository",
+        "id": "start-options",
+        "path": "resources/knowledge/flows/startup-v3-sample/source-snapshot.md",
+        "revision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+        "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a",
+        "bytes": 14992
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "boot-flow",
+        "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-v3-sample\\boot.workflow.json",
+        "relativePath": "boot.workflow.json",
+        "sha256": "64560f459f3b420ffa53f2662f785bdbf626c371571e99c8593be3fb0db026e6",
+        "bytes": 3686
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "home-flow",
+        "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-v3-sample\\home.workflow.json",
+        "relativePath": "home.workflow.json",
+        "sha256": "afe4e25b694d82818411181bf26dadbdf39c1d2ffb97044a3eb3d12c35b70a9f",
+        "bytes": 3268
+      },
+      {
+        "kind": "diagram-spec",
+        "id": "production-flow",
+        "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\startup-v3-sample\\production.workflow.json",
+        "relativePath": "production.workflow.json",
+        "sha256": "cd6856fa24b2ca6cda02e7f0125bf054b32e73e318d8622dddd6575c633d9a77",
+        "bytes": 5580
+      }
+    ]
+  }
+}
