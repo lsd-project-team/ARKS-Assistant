@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "52d72a83-6b8e-42fd-81e8-cd4ed05c5db5",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\force-input-conversion.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\force-input-conversion.html",
+  "specification": {
+    "sha256": "5e00aaa2b83911d733477dc108726934651c819244142fb5c7cd7d916677b9b4",
+    "bytes": 5163
+  },
+  "artifact": {
+    "sha256": "bc7852d4f413063d21ac0e24b3ba41453bc7d76ff403a3c9400c58e82469af7f",
+    "bytes": 816116
+  }
+}

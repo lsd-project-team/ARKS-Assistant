@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "tool": "Archify",
+  "toolVersion": "3.2.0",
+  "repository": {
+    "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+    "revision": "3b9b305cd688af0d35fe03456fc778428f85ab14",
+    "link_mode": "local-only"
+  },
+  "sourceReview": "docs/development/zx2200-force-control-review.md",
+  "evidenceSource": "Source references point to the committed review. Original trunk hashes and read ranges remain in output/functional-atlas/force-control-source-audit.json until guide evidence binding is completed.",
+  "diagrams": [
+    {
+      "id": "force-calibration-dispatch",
+      "type": "architecture",
+      "specification": {
+        "path": "force-calibration-dispatch.json",
+        "sha256": "e1fc124ff44b80dcd94a7660b0f77fe181b3cf2e034e7eca4799156f20cf746a"
+      },
+      "artifact": {
+        "path": "force-calibration-dispatch.html",
+        "sha256": "289d02d083f8421e0f204cd5611abdf0633857325996ad0d6fb16e83b948b159"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "captures": {
+        "status": "pass",
+        "artifactSha256": "289d02d083f8421e0f204cd5611abdf0633857325996ad0d6fb16e83b948b159",
+        "viewportWidths": [
+          1440,
+          2048
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ]
+      }
+    },
+    {
+      "id": "force-input-conversion",
+      "type": "architecture",
+      "specification": {
+        "path": "force-input-conversion.json",
+        "sha256": "5e00aaa2b83911d733477dc108726934651c819244142fb5c7cd7d916677b9b4"
+      },
+      "artifact": {
+        "path": "force-input-conversion.html",
+        "sha256": "bc7852d4f413063d21ac0e24b3ba41453bc7d76ff403a3c9400c58e82469af7f"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "captures": {
+        "status": "pass",
+        "artifactSha256": "bc7852d4f413063d21ac0e24b3ba41453bc7d76ff403a3c9400c58e82469af7f",
+        "viewportWidths": [
+          1440,
+          2048
+        ],
+        "themes": [
+          "light",
+          "dark"
+        ]
+      }
+    }
+  ],
+  "manualReview": {
+    "standaloneCapture": "1440x900 light screenshots inspected before final dispatch wording revision",
+    "readingCopy": {
+      "fontSize": 18,
+      "hostViewportWidth": 1280,
+      "diagramWidth": 448,
+      "diagramHeight": 760,
+      "allNodesInspected": true,
+      "zoomOrPanUsed": false,
+      "screenshots": [
+        "output/functional-atlas/force-control/reading-preview-final.png",
+        "output/functional-atlas/force-control/reading-preview-bottom.png"
+      ]
+    },
+    "scope": "Prepared resources only. Full topic integration, narrow embedded page checks and requirement coverage remain pending."
+  }
+}
