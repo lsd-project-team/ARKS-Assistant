@@ -91,6 +91,7 @@
 }
 .knowledge-workspace .g0-example table {
   width: 100%;
+  min-width: 0;
   border-collapse: collapse;
   font-size: 13px;
 }

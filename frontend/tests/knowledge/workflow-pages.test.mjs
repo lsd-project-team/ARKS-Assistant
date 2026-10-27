@@ -172,3 +172,24 @@ test('公共视觉默认先展示实际单点链路，保留六个环节和产�
   assert.match(topic, /href="#topic\/product-coordinates"/);
   assert.doesNotMatch(topic, /源码依据|source-evidence|<pre/);
 });
+
+test('相机标定专题绑定 S2 调度图，并提供保存与复核的对照表', () => {
+  const topic = render(TopicDetail, { id: 'camera-calibration' });
+  assert.equal(topic, render(DiagramDetail, { id: 'camera-calibration-process', theme: 'light' }));
+  assert.ok(topic.includes('data-archify-source="functional-atlas/camera-calibration.html"'));
+  for (const text of [
+    '自动标定入口',
+    '点胶与 Bond 采点',
+    '上视坐标与位置',
+    '晶圆相机与晶圆台',
+    '焊头偏移与旋转',
+    '保存与复核',
+    '对中与自动对焦',
+    '独立方法的差异',
+  ])
+    assert.ok(topic.includes(text));
+  const table = renderToStaticMarkup(functionalVisual('cc-persistence', 'order'));
+  assert.match(table, /<table>/);
+  assert.match(table, /BMC 测高结果立即保存设备参数/);
+  assert.match(table, /最终两角度复核/);
+});

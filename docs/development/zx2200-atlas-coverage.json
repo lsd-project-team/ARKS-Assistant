@@ -503,44 +503,146 @@
         {
           "id": "06.01",
           "text": "系统自动标定各子任务的调度顺序。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-dispatch",
+              "steps": [
+                "overview",
+                "confirm",
+                "optional",
+                "finish"
+              ]
+            }
+          ]
         },
         {
           "id": "06.02",
           "text": "点胶与 Bond 相机采点、比例和坐标建立。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-cameras",
+              "steps": [
+                "grid",
+                "dispense",
+                "bond",
+                "transforms"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-single",
+              "steps": [
+                "cameras"
+              ]
+            }
+          ]
         },
         {
           "id": "06.03",
           "text": "上视相机坐标及机械拍照位置标定。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-uplook",
+              "steps": [
+                "sampling",
+                "rotation",
+                "position"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-single",
+              "steps": [
+                "uplook"
+              ]
+            }
+          ]
         },
         {
           "id": "06.04",
           "text": "晶圆相机、晶圆台与 N 点标定。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-wafer",
+              "steps": [
+                "distance",
+                "sampling",
+                "general"
+              ]
+            }
+          ]
         },
         {
           "id": "06.05",
           "text": "焊头到相机偏移和旋转中心标定。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-offset",
+              "steps": [
+                "prepare",
+                "rotate",
+                "base",
+                "review"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-single",
+              "steps": [
+                "offset"
+              ]
+            }
+          ]
         },
         {
           "id": "06.06",
           "text": "标定成功、参数更新、文件保存与最后复核的先后顺序。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-persistence",
+              "steps": [
+                "order",
+                "files",
+                "window"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-offset",
+              "steps": [
+                "review"
+              ]
+            }
+          ]
         },
         {
           "id": "06.07",
           "text": "自动对焦、对中和目标像素移动的公共调用。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-common",
+              "steps": [
+                "center",
+                "pixel",
+                "focus",
+                "search"
+              ]
+            }
+          ]
         }
       ]
     },

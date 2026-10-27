@@ -22,6 +22,15 @@ export const functionalTopics: PresentationTopic[] = [
     exceptions: ['初始化标志、算法调用成功和物料定位成功需要分别判断。'],
     diagrams: ['public-vision-process'],
   },
+  {
+    id: 'camera-calibration',
+    title: '相机与机械坐标标定',
+    summary: '从 S1/S2 标定入口到采点、坐标建立、旋转修正与结果保存。',
+    purpose: '连接像素、机械位置、焊头偏移与设备坐标。',
+    conditions: ['工位、工具确认、采样点阵与公共对中方法共同决定路径。'],
+    exceptions: ['中途可能已有写入，任务返回与最终精度复核分别判断。'],
+    diagrams: ['camera-calibration-process'],
+  },
 ];
 
 export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopics.map((topic) => ({
@@ -36,6 +45,11 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'camera-calibration': {
+    path: 'functional-atlas/camera-calibration.html',
+    sha256: 'c4ee19672e758363cb8f5c877b426ec48985b5fe428926782871d85ea95a75d8',
+    specificationSha256: 'b4b49dbe5f57358fcc2429aa841cf3bc009be55fe4c264188e52f8392d864190',
+  },
   'vision-point': {
     path: 'functional-atlas/vision-point.html',
     sha256: '99b6d6b8861bc64db92ef5b51aae70bcaea317346afc653b90f44245f292d5ca',

@@ -113,3 +113,21 @@ test('公共视觉图保留自动结果、人工回传与退出，不能把失�
   assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
   assert.doesNotMatch(page.html, /data-edge-from="exit" data-edge-to="save"/);
 });
+
+test('标定图保留可跳过的同标记步骤及真实 S2 调度顺序', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../resources/knowledge/flows/functional-atlas/camera-calibration.html',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const page = createReadingDiagram(source, 'classic');
+  const path = ['prepare', 'bond', 'offset', 'optional', 'position', 'wafer', 'results'];
+  for (let index = 0; index < path.length - 1; index++)
+    assert.ok(
+      page.html.includes(`data-edge-from="${path[index]}" data-edge-to="${path[index + 1]}"`),
+    );
+  assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
+  assert.match(page.html, /确认执行，取消跳过/);
+});

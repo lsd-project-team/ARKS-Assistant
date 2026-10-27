@@ -1,9 +1,21 @@
 import { SourceGuidePanel } from '../SourceGuidePanel';
 import { ArchifyFigure, ReadingFigure } from '../coordinates/ArchifyFigure';
 import { functionalArtifacts } from '../data/functionalTopics';
+import { CalibrationPersistence } from './CalibrationPersistence';
 import '../coordinates/coordinates.css';
 
 export function functionalVisual(flow: string, step: string) {
+  if (`${flow}/${step}` === 'cc-persistence/order') return <CalibrationPersistence />;
+  if (`${flow}/${step}` === 'cc-dispatch/overview')
+    return (
+      <ReadingFigure
+        diagram={{
+          ...functionalArtifacts['camera-calibration'],
+          id: 'camera-calibration',
+          title: 'S2 自动标定执行顺序',
+        }}
+      />
+    );
   if (`${flow}/${step}` === 'pv-acquisition/overview')
     return (
       <ReadingFigure
