@@ -1,4 +1,6 @@
 export type DurationStatus = 'all' | 'filled' | 'missing';
+export type TimingProject = { id: string; name: string; version: number };
+export type TimingProjectList = { projects: TimingProject[]; default_project_id: string };
 export type ActionSort = 'name' | 'duration_asc' | 'duration_desc';
 export type ImportUnit = 'auto' | 's' | 'ms';
 export type DuplicateMode = 'skip' | 'update';

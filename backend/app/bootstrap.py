@@ -18,6 +18,7 @@ from app.core.container import AppServices
 from app.core.deployment_security import DeploymentSecurity
 from app.core.process_lock import service_lock
 from app.infrastructure.database.session import Database
+from app.modules.action_timing.ledger_router import create_router as timing_ledger_router
 from app.modules.admin.router import create_router as admin_router
 from app.modules.admin.router import usage_router
 from app.modules.admin.tracking import UsageTracking
@@ -104,6 +105,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     for module in (health, configuration, data):
         app.include_router(module.create_router(services))
     app.include_router(projects_router(projects))
+    app.include_router(timing_ledger_router(services))
     app.include_router(
         handover_router(projects, handover_store, DocumentParser(), DocumentPackageExporter())
     )

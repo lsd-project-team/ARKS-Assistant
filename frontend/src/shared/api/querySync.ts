@@ -9,6 +9,8 @@ export function changed(path: string) {
 }
 
 export function queryGroups(path: string): string[] {
+  if (/^\/action-timing\/(ledger|projects)(\/|\?|$)/.test(path))
+    return ['timing-projects', 'action-ledger'];
   if (/^\/projects(\/|\?|$)/.test(path))
     return ['projects', 'project', 'project-threads', 'project-materials', 'threads', 'storage'];
   if (/^\/(threads|runs|queue)(\/|$)/.test(path)) {

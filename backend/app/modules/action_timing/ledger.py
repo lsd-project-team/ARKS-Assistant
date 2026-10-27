@@ -1,4 +1,4 @@
-"""按项目/个人工作区维护台账；短事务与版本号防止并发覆盖。"""
+"""按独立耗时项目维护台账；短事务与版本号防止并发覆盖。"""
 
 import hashlib
 import json
@@ -11,28 +11,30 @@ from sqlalchemy.exc import IntegrityError
 from app.core.identifiers import now_iso
 from app.modules.action_timing.ledger_schemas import name_key
 from app.modules.action_timing.models import TimingAction, TimingCategory
-from app.modules.auth.ownership import private_workspace_id, require_project
+from app.modules.action_timing.projects import TimingProjects
 
 
 class ActionLedger:
-    def __init__(self, services):
+    def __init__(self, services, timing_project_id=None):
         self.database = services.database
-        self.project_id = services.repository.project_id
+        self.project_id = timing_project_id
 
     def scope(self, session, *, writing=False):
-        if not self.project_id:
-            return private_workspace_id("independent")
-        project = require_project(session, self.project_id)
-        if writing and project.state != "active":
-            raise ValueError("请先恢复项目，再修改动作耗时")
-        return self.project_id
+        project = (
+            TimingProjects.require(session, self.project_id)
+            if self.project_id
+            else TimingProjects.default(session)
+        )
+        return project.id
 
     @contextmanager
     def transaction(self, *, writing=False):
         with self.database.session() as session:
             try:
                 # SQLite 写锁覆盖读取版本至提交，避免校验与写入之间出现竞争。
-                session.connection().exec_driver_sql("BEGIN IMMEDIATE" if writing else "BEGIN")
+                session.connection().exec_driver_sql(
+                    "BEGIN IMMEDIATE" if writing or not self.project_id else "BEGIN"
+                )
                 scope = self.scope(session, writing=writing)
                 yield session, scope
                 session.commit()
@@ -93,8 +95,7 @@ class ActionLedger:
                     for row in sorted(categories, key=lambda row: (row.name_key, row.id))
                 ],
                 "revision": self.revision(categories, actions),
-                "writable": not self.project_id
-                or require_project(session, self.project_id).state == "active",
+                "writable": True,
             }
 
     @staticmethod

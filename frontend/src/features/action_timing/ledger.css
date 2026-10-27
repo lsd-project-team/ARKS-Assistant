@@ -62,7 +62,13 @@
   flex-wrap: wrap;
   gap: 8px;
 }
-.ledger-heading-controls > .ui-select-trigger {
+.ledger-project-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ledger-project-controls > .ui-select-trigger {
   min-width: 160px;
   width: 220px;
   max-width: 260px;
@@ -475,7 +481,10 @@ th[aria-sort='descending'] .ledger-sort {
     flex-wrap: wrap;
     padding: 12px;
   }
-  .ledger-heading-controls > .ui-select-trigger {
+  .ledger-project-controls {
+    width: 100%;
+  }
+  .ledger-project-controls > .ui-select-trigger {
     max-width: none;
     flex: 1 1 100%;
   }

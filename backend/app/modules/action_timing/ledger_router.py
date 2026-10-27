@@ -1,8 +1,8 @@
-"""用户台账接口；复用现有会话、CSRF及项目路由。"""
+"""独立耗时项目与台账接口；复用会话和CSRF，不经过聊天项目分派。"""
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 
 from app.modules.action_timing.ledger import ActionLedger
 from app.modules.action_timing.ledger_files import MEDIA
@@ -18,17 +18,37 @@ from app.modules.action_timing.ledger_schemas import (
     DurationStatus,
     ImportCommit,
     ImportUnit,
+    TimingProjectInput,
+    TimingProjectUpdate,
 )
 from app.modules.action_timing.ledger_transfer import LedgerTransfer
+from app.modules.action_timing.projects import TimingProjects
 
 
 def create_router(services):
-    router = APIRouter(prefix="/ledger")
-    ledger = ActionLedger(services)
-    transfer = LedgerTransfer(ledger)
+    router = APIRouter(prefix="/api/action-timing", tags=["action-timing-ledger"])
+    projects = TimingProjects(services.database)
 
-    @router.get("")
+    def selected_ledger(timing_project: str | None = Query(None, min_length=1, max_length=160)):
+        return ActionLedger(services, timing_project)
+
+    selected = Annotated[ActionLedger, Depends(selected_ledger)]
+
+    @router.get("/projects")
+    def list_projects():
+        return projects.listing()
+
+    @router.post("/projects", status_code=201)
+    def create_project(payload: TimingProjectInput):
+        return projects.save(payload)
+
+    @router.patch("/projects/{identifier}")
+    def rename_project(identifier: str, payload: TimingProjectUpdate):
+        return projects.save(payload, identifier)
+
+    @router.get("/ledger")
     def listing(
+        ledger: selected,
         category_id: str = Query("", max_length=36),
         search: str = Query("", max_length=120),
         duration_status: DurationStatus = "all",
@@ -38,33 +58,34 @@ def create_router(services):
     ):
         return ledger.listing(category_id, search, duration_status, limit, offset, sort)
 
-    @router.post("/categories", status_code=201)
-    def create_category(payload: CategoryInput):
+    @router.post("/ledger/categories", status_code=201)
+    def create_category(payload: CategoryInput, ledger: selected):
         return ledger.save_category(payload)
 
-    @router.patch("/categories/{identifier}")
-    def update_category(identifier: str, payload: CategoryUpdate):
+    @router.patch("/ledger/categories/{identifier}")
+    def update_category(identifier: str, payload: CategoryUpdate, ledger: selected):
         return ledger.save_category(payload, identifier)
 
-    @router.delete("/categories/{identifier}")
-    def delete_category(identifier: str, payload: CategoryDelete):
+    @router.delete("/ledger/categories/{identifier}")
+    def delete_category(identifier: str, payload: CategoryDelete, ledger: selected):
         return ledger.delete_category(identifier, payload)
 
-    @router.post("/actions", status_code=201)
-    def create_action(payload: ActionInput):
+    @router.post("/ledger/actions", status_code=201)
+    def create_action(payload: ActionInput, ledger: selected):
         return ledger.save_action(payload)
 
-    @router.patch("/actions/{identifier}")
-    def update_action(identifier: str, payload: ActionUpdate):
+    @router.patch("/ledger/actions/{identifier}")
+    def update_action(identifier: str, payload: ActionUpdate, ledger: selected):
         return ledger.save_action(payload, identifier)
 
-    @router.delete("/actions/{identifier}")
-    def delete_action(identifier: str, version: int = Query(ge=1)):
+    @router.delete("/ledger/actions/{identifier}")
+    def delete_action(identifier: str, ledger: selected, version: int = Query(ge=1)):
         return ledger.delete_action(identifier, version)
 
-    @router.post("/import-preview")
+    @router.post("/ledger/import-preview")
     async def preview(
         request: Request,
+        ledger: selected,
         filename: str = Query(max_length=255),
         mode: DuplicateMode = "skip",
         unit: ImportUnit = "auto",
@@ -80,16 +101,19 @@ def create_router(services):
         from starlette.concurrency import run_in_threadpool
 
         try:
-            return await run_in_threadpool(transfer.preview, bytes(raw), filename, mode, unit)
+            return await run_in_threadpool(
+                LedgerTransfer(ledger).preview, bytes(raw), filename, mode, unit
+            )
         except ValueError as error:
             raise HTTPException(422, str(error)) from error
 
-    @router.post("/imports")
-    def import_rows(payload: ImportCommit):
-        return transfer.commit(payload)
+    @router.post("/ledger/imports")
+    def import_rows(payload: ImportCommit, ledger: selected):
+        return LedgerTransfer(ledger).commit(payload)
 
-    @router.get("/export")
+    @router.get("/ledger/export")
     def export(
+        ledger: selected,
         format: Literal["csv", "xlsx"] = "xlsx",
         category_id: str = Query("", max_length=36),
         search: str = Query("", max_length=120),
@@ -100,7 +124,7 @@ def create_router(services):
     ):
         filename = "action-timing-template" if template else "action-timing"
         return Response(
-            transfer.export(
+            LedgerTransfer(ledger).export(
                 format, category_id, search, duration_status, template, sort, template_unit
             ),
             media_type=MEDIA[format],

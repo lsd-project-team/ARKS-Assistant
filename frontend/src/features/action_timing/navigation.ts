@@ -3,11 +3,15 @@ import { useSyncExternalStore } from 'react';
 export function parseTimingHash(hash: string) {
   const match = /^#action-timing(?:\?(.*))?$/.exec(hash);
   const params = new URLSearchParams(match?.[1]);
-  return { open: !!match, projectId: params.get('project') || '', runId: params.get('run') || '' };
+  return {
+    open: !!match,
+    timingProjectId: params.get('timing_project') || params.get('project') || '',
+    runId: params.get('run') || '',
+  };
 }
-export function timingHash(projectId = '', runId = '') {
+export function timingHash(timingProjectId = '', runId = '') {
   const params = new URLSearchParams();
-  if (projectId) params.set('project', projectId);
+  if (timingProjectId) params.set('timing_project', timingProjectId);
   if (runId) params.set('run', runId);
   return `action-timing${params.size ? `?${params}` : ''}`;
 }

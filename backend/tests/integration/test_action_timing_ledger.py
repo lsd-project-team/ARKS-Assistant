@@ -13,7 +13,7 @@ from app.modules.action_timing.source_service import SourceTiming
 from app.modules.auth.models import Account
 from tests.helpers.accounts import sign_in
 
-BASE = "/api/p/independent/action-timing/ledger"
+BASE = "/api/action-timing/ledger"
 
 
 def upload(client, rows, *, base=BASE, mode="skip"):
@@ -305,7 +305,7 @@ def test_millisecond_template_import_preview_commit_and_export_only_convert_once
 
 
 @pytest.mark.authentication
-def test_accounts_projects_archive_and_csrf_cannot_be_bypassed(services):
+def test_accounts_and_csrf_protect_independent_timing_projects(services):
     app = create_app(services[0])
     with TestClient(app) as client:
         assert client.get(BASE).status_code == 401
@@ -330,28 +330,78 @@ def test_accounts_projects_archive_and_csrf_cannot_be_bypassed(services):
             client.headers["X-Arks-CSRF"] = response.json()["csrf_token"]
 
         login("ledger-a")
-        project = client.post("/api/projects", json={"name": "台账项目"}).json()
-        scoped = f"/api/p/{project['id']}/action-timing/ledger"
         a = action(client, "个人动作")
-        c = category(client, "项目分类", scoped)
-        action(client, "项目动作", c["id"], base=scoped)
+        project = client.post("/api/action-timing/projects", json={"name": "第二台设备"}).json()
+        scope = {"timing_project": project["id"]}
+        c = client.post(BASE + "/categories", params=scope, json={"name": "项目分类"}).json()
+        added = client.post(
+            BASE + "/actions", params=scope, json={"name": "项目动作", "category_id": c["id"]}
+        )
+        assert added.status_code == 201
         assert (
             client.post(
                 BASE + "/actions", json={"name": "越界分类", "category_id": c["id"]}
             ).status_code
             == 404
         )
-        assert (
-            client.patch("/api/projects/" + project["id"], json={"state": "archived"}).status_code
-            == 200
-        )
-        assert not client.get(scoped).json()["writable"]
-        assert client.post(scoped + "/actions", json={"name": "禁止修改"}).status_code == 409
-        assert client.get(scoped + "/export").status_code == 200
         login("ledger-b")
         assert client.get(BASE).json()["total"] == 0
-        assert client.get(scoped).status_code == 404
-        assert client.get(scoped + "/export").status_code == 404
+        assert project["id"] not in {
+            row["id"] for row in client.get("/api/action-timing/projects").json()["projects"]
+        }
+        assert client.get(BASE, params=scope).status_code == 404
+        assert client.get(BASE + "/export", params=scope).status_code == 404
+        assert (
+            client.post(BASE + "/actions", params=scope, json={"name": "越权"}).status_code == 404
+        )
+        assert (
+            client.patch(
+                "/api/action-timing/projects/" + project["id"],
+                json={"name": "越权改名", "version": 1},
+            ).status_code
+            == 404
+        )
         assert client.delete(BASE + "/actions/" + a["id"], params={"version": 1}).status_code == 404
         client.headers.pop("X-Arks-CSRF")
         assert client.post(BASE + "/actions", json={"name": "无CSRF"}).status_code == 403
+
+
+def test_timing_project_names_and_data_are_independent_of_chat_lifecycle(services):
+    with TestClient(create_app(services[0])) as client:
+        timing = client.get("/api/action-timing/projects").json()["projects"][0]
+        assert timing["name"] == "智芯2200"
+        item = action(client, "取片", duration=0.12)
+        chat = client.post("/api/projects", json={"name": "软件分析"}).json()
+        assert client.get("/api/projects/" + timing["id"]).status_code == 404
+        assert client.get(BASE, params={"timing_project": chat["id"]}).status_code == 404
+        renamed = client.patch(
+            "/api/action-timing/projects/" + timing["id"],
+            json={"name": "智芯2200现场", "version": 1},
+        )
+        assert renamed.status_code == 200 and renamed.json()["version"] == 2
+        assert client.get("/api/projects/" + chat["id"]).json()["name"] == "软件分析"
+        assert (
+            client.patch(
+                "/api/action-timing/projects/" + timing["id"], json={"name": "过期", "version": 1}
+            ).status_code
+            == 409
+        )
+        assert (
+            client.post("/api/action-timing/projects", json={"name": " 智芯2200现场 "}).status_code
+            == 409
+        )
+        assert client.post("/api/action-timing/projects", json={"name": "  "}).status_code == 422
+        for changes in ({"name": "个人对话"}, {"state": "archived"}):
+            assert client.patch("/api/projects/" + chat["id"], json=changes).status_code == 200
+            data = client.get(BASE).json()
+            assert data["writable"] and data["items"] == [item]
+        assert client.delete("/api/projects/" + chat["id"]).status_code == 200
+        assert (
+            client.get("/api/action-timing/projects").json()["projects"][0]["name"]
+            == "智芯2200现场"
+        )
+        assert client.get(BASE).json()["items"] == [item]
+        action(client, "删除聊天项目后仍可添加", duration=0)
+        other = client.post("/api/action-timing/projects", json={"name": "另一台设备"}).json()
+        assert client.get(BASE, params={"timing_project": other["id"]}).json()["total"] == 0
+        assert client.get(BASE, params={"timing_project": timing["id"]}).json()["total"] == 2

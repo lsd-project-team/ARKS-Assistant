@@ -16,15 +16,17 @@ import type {
 const root = '/action-timing/ledger';
 
 export function ledgerClient(scope: string) {
+  function endpoint(path: string) {
+    return `${root}${path}${path.includes('?') ? '&' : '?'}timing_project=${encodeURIComponent(scope)}`;
+  }
   function json<T>(path: string, method: string, body: unknown, signal?: AbortSignal) {
-    return api<T>(`${root}${path}`, { method, body: JSON.stringify(body), signal }, scope);
+    return api<T>(endpoint(path), { method, body: JSON.stringify(body), signal });
   }
   return {
     list: (filters: LedgerFilters, offset: number, signal?: AbortSignal) =>
       api<LedgerData>(
-        `${root}?${new URLSearchParams({ ...filters, offset: String(offset), limit: '20' })}`,
+        endpoint(`?${new URLSearchParams({ ...filters, offset: String(offset), limit: '20' })}`),
         { signal },
-        scope,
       ),
     saveCategory: (name: string, category?: TimingCategory | null, signal?: AbortSignal) =>
       json<TimingCategory>(
@@ -48,21 +50,19 @@ export function ledgerClient(scope: string) {
         signal,
       ),
     deleteAction: (action: TimingAction, signal?: AbortSignal) =>
-      api(
-        `${root}/actions/${action.id}?version=${action.version}`,
-        { method: 'DELETE', signal },
-        scope,
-      ),
+      api(endpoint(`/actions/${action.id}?version=${action.version}`), {
+        method: 'DELETE',
+        signal,
+      }),
     preview: (file: File, mode: DuplicateMode, unit: ImportUnit, signal?: AbortSignal) =>
       api<ImportPreview>(
-        `${root}/import-preview?${new URLSearchParams({ filename: file.name, mode, unit })}`,
+        endpoint(`/import-preview?${new URLSearchParams({ filename: file.name, mode, unit })}`),
         {
           method: 'POST',
           body: file,
           headers: { 'Content-Type': 'application/octet-stream' },
           signal,
         },
-        scope,
       ),
     commit: (preview: ImportPreview, mode: DuplicateMode, signal?: AbortSignal) =>
       json<{ counts: ImportCounts }>(
@@ -96,7 +96,7 @@ export function ledgerClient(scope: string) {
       });
       const response = await requestJsonResponse(
         sessionFetch,
-        apiUrl(`${root}/export?${params}`, scope),
+        apiUrl(endpoint(`/export?${params}`)),
         { signal },
       );
       const blob = await response.blob();

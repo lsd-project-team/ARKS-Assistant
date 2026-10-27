@@ -9,12 +9,13 @@ import {
   knownDelay,
 } from '../../src/features/action_timing/format.ts';
 import { adminRoute } from '../../src/features/admin/navigation.ts';
+import { scopedApiUrl } from '../../src/shared/api/apiRoutes.ts';
 
 test('刷新和历史导航恢复所属项目及批次，交接导航继续独立工作', () => {
   const hash = timingHash('project-a', 'run-b');
   assert.deepEqual(parseTimingHash(`#${hash}`), {
     open: true,
-    projectId: 'project-a',
+    timingProjectId: 'project-a',
     runId: 'run-b',
   });
   assert.equal(parseTimingHash('#handover/overview').open, false);
@@ -22,6 +23,22 @@ test('刷新和历史导航恢复所属项目及批次，交接导航继续独�
   assert.equal(adminRoute(`#${hash}`).page, 'action-timing');
   assert.equal(adminRoute(`#${hash}`).valid, true);
   assert.equal(adminRoute('#handover/materials').page, 'handover');
+});
+
+test('耗时项目使用独立地址，切换聊天项目不改变台账请求', () => {
+  const ledger = '/action-timing/ledger?timing_project=device-a';
+  for (const chat of ['chat-a', 'chat-b', 'independent']) {
+    assert.equal(scopedApiUrl(ledger, chat), '/api' + ledger);
+    assert.equal(scopedApiUrl('/action-timing/projects', chat), '/api/action-timing/projects');
+    assert.equal(
+      scopedApiUrl('/action-timing/ledger/export?timing_project=device-a', chat),
+      '/api/action-timing/ledger/export?timing_project=device-a',
+    );
+  }
+  assert.equal(parseTimingHash('#action-timing').timingProjectId, '');
+  assert.equal(parseTimingHash('#action-timing?project=old-scope').timingProjectId, 'old-scope');
+  assert.equal(timingHash('device-a'), 'action-timing?timing_project=device-a');
+  assert.equal(scopedApiUrl('/threads', 'chat-a'), '/api/p/chat-a/threads');
 });
 
 test('未完成和无样本不渲染为零，实际零耗时可显示', () => {

@@ -7,6 +7,18 @@ from app.core.identifiers import new_id, now_iso
 from app.infrastructure.database.base import Base
 
 
+class TimingProject(Base):
+    """设备/业务耗时项目独立保存，不引用聊天项目及其生命周期。"""
+
+    __tablename__ = "action_timing_projects"
+    id: Mapped[str] = mapped_column(String(160), primary_key=True, default=new_id)
+    owner_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    name: Mapped[str] = mapped_column(String(120))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+    updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
 class TimingRun(Base):
     __tablename__ = "action_timing_runs"
     __table_args__ = (

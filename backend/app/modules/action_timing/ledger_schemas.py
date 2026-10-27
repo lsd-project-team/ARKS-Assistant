@@ -44,6 +44,14 @@ class CategoryInput(LedgerInput):
         return value
 
 
+class TimingProjectInput(LedgerInput):
+    name: str = Field(min_length=1, max_length=120)
+
+
+class TimingProjectUpdate(TimingProjectInput):
+    version: int = Field(ge=1)
+
+
 class CategoryUpdate(CategoryInput):
     version: int = Field(ge=1)
 

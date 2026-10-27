@@ -7,7 +7,6 @@ from typing import Literal
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 
 from app.modules.action_timing.catalog import CATALOG
-from app.modules.action_timing.ledger_router import create_router as ledger_router
 from app.modules.action_timing.packages import MAX_BYTES
 from app.modules.action_timing.schemas import Status
 from app.modules.action_timing.service import ActionTiming
@@ -16,7 +15,6 @@ from app.modules.action_timing.service import ActionTiming
 def create_router(services):
     router = APIRouter(prefix="/api/action-timing", tags=["action-timing"])
     timing = ActionTiming(services)
-    router.include_router(ledger_router(services))
 
     def source_scope():
         with services.database.session() as session:

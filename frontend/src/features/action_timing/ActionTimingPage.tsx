@@ -12,51 +12,73 @@ import {
   Timer,
   Upload,
 } from 'lucide-react';
-import { api } from '../../app/api/client';
 import { WorkspaceHeading } from '../../app/layouts/WorkspaceHeader';
-import { useWorkspace } from '../../app/state/store';
-import type { ProjectList } from '../../shared/types/api';
 import { Button, ErrorText } from '../../shared/ui/ui';
 import { Select } from '../../shared/ui/Select';
 import { timingHash, useTimingNavigation } from './navigation';
 import { ledgerClient } from './ledger-client';
 import { durationText } from './ledger-format';
-import type { ActionSort, DurationStatus, LedgerFilters, TimingAction } from './ledger-types';
+import type {
+  ActionSort,
+  DurationStatus,
+  LedgerFilters,
+  TimingAction,
+  TimingProject,
+} from './ledger-types';
 import { ActionEditor, DeleteActionDialog } from './ActionEditor';
 import { CategoryManager } from './CategoryManager';
 import { ImportDialog } from './ImportDialog';
 import { ExportDialog } from './ExportDialog';
+import { timingProjects } from './project-client';
+import { TimingProjectManager } from './TimingProjectManager';
 import './ledger.css';
 
 export default function ActionTimingPage() {
   const navigation = useTimingNavigation();
-  const currentProject = useWorkspace((state) => state.projectId);
-  const scope = navigation.projectId || currentProject || 'independent';
+  const projects = useQuery({
+    queryKey: ['timing-projects'],
+    queryFn: ({ signal }) => timingProjects.list(signal),
+  });
+  const scope = navigation.timingProjectId || projects.data?.default_project_id || '';
   // 项目切换时销毁旧项目的表单和请求，避免草稿或预览跨项目沿用。
-  return <ActionLedger key={scope} scope={scope} />;
+  return (
+    <ActionLedger
+      key={scope}
+      scope={scope}
+      projects={projects.data?.projects || []}
+      projectError={projects.error}
+    />
+  );
 }
 
-function ActionLedger({ scope }: { scope: string }) {
+function ActionLedger({
+  scope,
+  projects,
+  projectError,
+}: {
+  scope: string;
+  projects: TimingProject[];
+  projectError: unknown;
+}) {
   const cache = useQueryClient();
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<DurationStatus>('all');
   const [sort, setSort] = useState<ActionSort>('name');
   const [offset, setOffset] = useState(0);
-  const [dialog, setDialog] = useState<'categories' | 'action' | 'import' | 'export' | ''>('');
+  const [dialog, setDialog] = useState<
+    'projects' | 'categories' | 'action' | 'import' | 'export' | ''
+  >('');
   const [editing, setEditing] = useState<TimingAction | null>(null);
   const [deleting, setDeleting] = useState<TimingAction | null>(null);
   const [message, setMessage] = useState('');
   const filters: LedgerFilters = { category_id: category, search, duration_status: status, sort };
   const SortIcon =
     sort === 'duration_desc' ? ArrowDown : sort === 'duration_asc' ? ArrowUp : ArrowUpDown;
-  const projects = useQuery({
-    queryKey: ['projects', 'action-ledger'],
-    queryFn: ({ signal }) => api<ProjectList>('/projects', { signal }),
-  });
   const report = useQuery({
     queryKey: ['action-ledger', scope, filters, offset],
     queryFn: ({ signal }) => ledgerClient(scope).list(filters, offset, signal),
+    enabled: !!scope,
     // 仅在同一项目内切换筛选时保留表格，避免分类导航闪空、页面跳动。
     placeholderData: keepPreviousData,
   });
@@ -130,20 +152,30 @@ function ActionLedger({ scope }: { scope: string }) {
       </div>
       <div className="ledger-content">
         <div className="ledger-heading-controls" aria-label="动作耗时操作">
-          <Select
-            aria-label="统计所属项目"
-            value={scope}
-            onValueChange={(value) => {
-              location.hash = timingHash(value);
-            }}
-          >
-            <option value="independent">独立工作区</option>
-            {projects.data?.projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            ))}
-          </Select>
+          <div className="ledger-project-controls">
+            <Select
+              aria-label="耗时所属项目"
+              value={scope}
+              disabled={!projects.length}
+              onValueChange={(value) => {
+                location.hash = timingHash(value);
+              }}
+            >
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </Select>
+            <Button
+              className="icon-button"
+              aria-label="管理耗时项目"
+              title="管理耗时项目"
+              onClick={() => setDialog('projects')}
+            >
+              <Settings2 size={15} />
+            </Button>
+          </div>
           <div className="ledger-primary-actions">
             <Button disabled={!writable} onClick={() => setDialog('import')}>
               <Upload size={16} />
@@ -159,14 +191,11 @@ function ActionLedger({ scope }: { scope: string }) {
             </Button>
           </div>
         </div>
-        <ErrorText error={report.error || projects.error} />
+        <ErrorText error={report.error || projectError} />
         {message && (
           <p className="ledger-notice" role="status">
             {message}
           </p>
-        )}
-        {data && !writable && (
-          <p className="ledger-muted">项目已归档，可查看和导出；恢复项目后可继续编辑。</p>
         )}
         <div className="ledger-table-panel" aria-busy={report.isFetching}>
           <div className="ledger-toolbar">
@@ -326,6 +355,19 @@ function ActionLedger({ scope }: { scope: string }) {
           </div>
         </div>
       </div>
+      {dialog === 'projects' && (
+        <TimingProjectManager
+          projects={projects}
+          onSaved={async (project, created) => {
+            await cache.invalidateQueries({ queryKey: ['timing-projects'] });
+            if (created) {
+              setDialog('');
+              location.hash = timingHash(project.id);
+            } else setMessage('耗时项目已重命名');
+          }}
+          onClose={() => setDialog('')}
+        />
+      )}
       {dialog === 'categories' && (
         <CategoryManager
           scope={scope}
