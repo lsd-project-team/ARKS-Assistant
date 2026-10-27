@@ -84,7 +84,7 @@ test('G0 从专题和图谱目录进入同一阅读页，使用 Archify 交付�
   const topic = render(TopicDetail, { id: 'g0' });
   const catalog = render(DiagramDetail, { id: 'g0-coordinate-system', theme: 'light' });
   assert.equal(catalog, topic);
-  assert.match(topic, /data-archify-source="g0-archify\/device-tree\.html"/);
+  assert.match(topic, /data-archify-source="g0-archify\/device-overview\.html"/);
   assert.doesNotMatch(topic, /<svg[^>]+role="img"|g0-map-wide|g0-map-compact/);
   for (const label of [
     '坐标关系',
@@ -102,9 +102,9 @@ test('G0 从专题和图谱目录进入同一阅读页，使用 Archify 交付�
 
 test('G0 三张关系图都引用实际 Archify HTML，公式与数值例子继续留在节点内', () => {
   for (const [flow, step, source] of [
-    ['g0-relations', 'reference', 'device-tree'],
-    ['g0-relations', 'product', 'product-tree'],
-    ['g0-camera', 'inputs', 'camera-reading'],
+    ['g0-relations', 'reference', 'device-overview'],
+    ['g0-relations', 'product', 'product-reading'],
+    ['g0-camera', 'inputs', 'camera-overview'],
   ]) {
     const html = renderToStaticMarkup(coordinateVisual(flow, step));
     assert.ok(html.includes(`data-archify-source="g0-archify/${source}.html"`));
@@ -147,7 +147,7 @@ test('产品专题与目录共用整宽阅读页，并复用父链原图和定�
   assert.match(topic, /class="atlas-reader"/);
   assert.match(topic, /href="#topic\/g0"/);
   for (const [flow, step, source] of [
-    ['product-hierarchy', 'chain', 'g0-archify/product-tree.html'],
+    ['product-hierarchy', 'chain', 'g0-archify/product-reading.html'],
     ['product-update', 'overview', 'functional-atlas/product-update.html'],
   ]) {
     const figure = renderToStaticMarkup(functionalVisual(flow, step));

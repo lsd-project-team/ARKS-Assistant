@@ -27,6 +27,7 @@ export function ReadingFigure({ diagram }: { diagram: CoordinateDiagram }) {
         source={diagram.reading ?? diagram}
         narrow={diagram.narrow}
         title={diagram.title}
+        readingMinWidth={diagram.readingMinWidth}
       />
     </figure>
   );

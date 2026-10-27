@@ -10,17 +10,20 @@ export function ReadingDiagram({
   source,
   narrow,
   title,
+  readingMinWidth = 640,
 }: {
   source: CoordinateArtifact;
   narrow?: CoordinateArtifact;
   title: string;
+  readingMinWidth?: number;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number | null>(null);
   const [page, setPage] = useState<ReturnType<typeof createReadingDiagram> | null>(null);
   const [failed, setFailed] = useState(false);
   const appearance = useAppearance((state) => state.mode);
-  const selected = narrow && width !== null && width < 640 ? narrow : source;
+  // 按图的可读宽度切换排布，避免宽图整体缩小后文字难辨。
+  const selected = narrow && width !== null && width < readingMinWidth ? narrow : source;
   const url = `/archify/${selected.path}?review=${selected.sha256.slice(0, 16)}`;
 
   useEffect(() => {

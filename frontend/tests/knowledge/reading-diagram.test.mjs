@@ -13,6 +13,9 @@ test('阅读副本保留 Archify 全部节点、连线与自然尺寸，移除�
     'camera-workflow',
     'device-reading',
     'camera-reading',
+    'device-overview',
+    'product-reading',
+    'camera-overview',
   ]) {
     const spec = await json(name);
     const source = await readFile(new URL(`${name}.html`, resources), 'utf8');
@@ -34,6 +37,30 @@ test('阅读副本保留 Archify 全部节点、连线与自然尺寸，移除�
     assert.equal(/<script\b|tabindex=|role="button"/.test(body), false);
     assert.match(page.html, /height: auto !important/);
     assert.match(createReadingDiagram(source, 'dark').html, /data-theme="dark"/);
+  }
+});
+
+test('桌面坐标图保留全部关系，减少长竖图并在窄屏保留纵向版本', async () => {
+  const semantics = (spec) => {
+    const nodes = spec.nodes ?? spec.components;
+    const edges =
+      spec.connections ??
+      nodes.filter((node) => node.parent).map((node) => ({ from: node.parent, to: node.id }));
+    return {
+      nodes: nodes.map(({ id, label, sublabel, sources }) => ({ id, label, sublabel, sources })),
+      edges: edges.map(({ from, to, label }) => ({ from, to, label })),
+    };
+  };
+  for (const [original, desktop] of [
+    ['device-tree', 'device-overview'],
+    ['product-tree', 'product-reading'],
+    ['camera-reading', 'camera-overview'],
+  ]) {
+    assert.deepEqual(semantics(await json(desktop)), semantics(await json(original)));
+    const source = await readFile(new URL(`${desktop}.html`, resources), 'utf8');
+    const page = createReadingDiagram(source, 'classic');
+    assert.ok(page.width >= 900 && page.width <= 1100, desktop);
+    assert.ok(page.height <= 430, desktop);
   }
 });
 

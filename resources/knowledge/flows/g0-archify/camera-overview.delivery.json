@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "523d6c18-9074-45ee-aa07-e20c1d308e8f",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\g0-archify\\camera-overview.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\g0-archify\\camera-overview.html",
+  "specification": {
+    "sha256": "36ae2e373d30db8e62166f13c385a191d9d997161f857b689f586b7c5b9ea1ea",
+    "bytes": 4180
+  },
+  "artifact": {
+    "sha256": "33127602bb80a17ea59e879c4310e85ce6f9fa6beabcc0aaa87246c326d0e780",
+    "bytes": 813361
+  }
+}

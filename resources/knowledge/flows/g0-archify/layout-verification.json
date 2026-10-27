@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "tool": "Archify",
+  "toolVersion": "3.2.0",
+  "repository": {
+    "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+    "revision": "abadbc51c573732843b579e6c058bc28992298da"
+  },
+  "evidenceSource": "Layout revisions preserve the existing committed G0 source-review references. Original trunk ranges and hashes remain in frontend/scripts/knowledge/source-evidence.json.",
+  "diagrams": [
+    {
+      "id": "device-overview",
+      "type": "tree",
+      "specification": {
+        "path": "device-overview.json",
+        "sha256": "f0568d4fb46dfdd031f60d1e0fde68ac910e6be6d95031f892ed8301ba4c6821"
+      },
+      "artifact": {
+        "path": "device-overview.html",
+        "sha256": "ce363902b398a38727e012f7ba2dc5228a14be18db0d6468e232369b6bb9fad1"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "product-reading",
+      "type": "tree",
+      "specification": {
+        "path": "product-reading.json",
+        "sha256": "0db718782120f163b195fdae77378d1085ef520551253f6ef9c52dc9efaf25f2"
+      },
+      "artifact": {
+        "path": "product-reading.html",
+        "sha256": "5bc6762cf8a9ba5ef379ff9da5844050d79a5b7217913bb96c653184664fbf93"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": []
+    },
+    {
+      "id": "camera-overview",
+      "type": "architecture",
+      "specification": {
+        "path": "camera-overview.json",
+        "sha256": "36ae2e373d30db8e62166f13c385a191d9d997161f857b689f586b7c5b9ea1ea"
+      },
+      "artifact": {
+        "path": "camera-overview.html",
+        "sha256": "33127602bb80a17ea59e879c4310e85ce6f9fa6beabcc0aaa87246c326d0e780"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": []
+    }
+  ],
+  "manualReview": {
+    "surface": "Published G0 reading page",
+    "viewportWidths": [
+      1280,
+      497
+    ],
+    "diagrams": [
+      "device-overview",
+      "product-reading",
+      "camera-overview"
+    ],
+    "narrowArtifacts": [
+      "device-reading",
+      "product-tree",
+      "camera-reading"
+    ],
+    "allNodesAndInputsVisible": true,
+    "diagramZoomOrPanUsed": false,
+    "desktopMetrics": [
+      {
+        "diagram": "device-overview",
+        "height": 425,
+        "naturalHeight": 423,
+        "naturalWidth": 930,
+        "projectedPrimaryFont": 18,
+        "width": 930
+      },
+      {
+        "diagram": "product-reading",
+        "height": 238,
+        "naturalHeight": 240,
+        "naturalWidth": 1068,
+        "projectedPrimaryFont": 17.679775280898877,
+        "width": 1049
+      },
+      {
+        "diagram": "camera-overview",
+        "height": 342,
+        "naturalHeight": 340,
+        "naturalWidth": 968,
+        "projectedPrimaryFont": 18,
+        "width": 968
+      }
+    ],
+    "screenshots": "output/g0-layout-review/"
+  }
+}
