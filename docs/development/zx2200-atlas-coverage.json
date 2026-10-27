@@ -344,38 +344,111 @@
         {
           "id": "05.01",
           "text": "配方视觉名称收集、方案载入与初始化结果。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-templates",
+              "steps": [
+                "names",
+                "load",
+                "algorithm",
+                "ready"
+              ]
+            }
+          ]
         },
         {
           "id": "05.02",
           "text": "相机、曝光、灯光设置与图像采集。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-acquisition",
+              "steps": [
+                "overview",
+                "hardware",
+                "capture",
+                "modes"
+              ]
+            }
+          ]
         },
         {
           "id": "05.03",
           "text": "定位与缺陷检测结果分流、距离校验。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-results",
+              "steps": [
+                "match",
+                "defect",
+                "backside",
+                "distance",
+                "distance-branches"
+              ]
+            }
+          ]
         },
         {
           "id": "05.04",
           "text": "载具、基板、模块、焊点的视觉调用关系。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-objects",
+              "steps": [
+                "entries",
+                "gates",
+                "returns",
+                "save"
+              ]
+            }
+          ]
         },
         {
           "id": "05.05",
           "text": "身份识别与墨点节点的门控、状态写入和实际实现边界。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-identity",
+              "steps": [
+                "identity",
+                "placeholder",
+                "nine"
+              ]
+            }
+          ]
         },
         {
           "id": "05.06",
           "text": "视觉失败的报警对话、重试、跳过与修改模板。",
-          "status": "pending",
-          "bindings": []
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-alarm",
+              "steps": [
+                "dialog",
+                "ok",
+                "buttons",
+                "edit"
+              ]
+            },
+            {
+              "topic": "public-vision",
+              "flow": "pv-acquisition",
+              "steps": [
+                "modes"
+              ]
+            }
+          ]
         }
       ]
     },

@@ -24,6 +24,11 @@
   justify-content: center;
   padding: 12px;
 }
+.knowledge-workspace .atlas-reader nav[aria-label='公共流程'] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
 .knowledge-workspace .g0-archify {
   margin: 22px 0 0;
   overflow: hidden;

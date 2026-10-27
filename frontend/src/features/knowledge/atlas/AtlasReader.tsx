@@ -4,6 +4,16 @@ import { functionalArtifacts } from '../data/functionalTopics';
 import '../coordinates/coordinates.css';
 
 export function functionalVisual(flow: string, step: string) {
+  if (`${flow}/${step}` === 'pv-acquisition/overview')
+    return (
+      <ReadingFigure
+        diagram={{
+          ...functionalArtifacts['vision-point'],
+          id: 'vision-point',
+          title: '单个物料定位点的公共链路',
+        }}
+      />
+    );
   if (`${flow}/${step}` === 'product-hierarchy/chain') return <ArchifyFigure id="product-tree" />;
   if (`${flow}/${step}` === 'product-update/overview')
     return (
@@ -26,6 +36,15 @@ export function AtlasReader({ page }: { page: string }) {
         <a className="text-button" href="#topic/g0">
           G0 坐标转换与生产应用 →
         </a>
+        {page === 'public-vision' ? (
+          <a className="text-button" href="#topic/product-coordinates">
+            产品坐标写回与定位限值 →
+          </a>
+        ) : (
+          <a className="text-button" href="#topic/public-vision">
+            公共视觉与失败处理 →
+          </a>
+        )}
       </nav>
     </div>
   );

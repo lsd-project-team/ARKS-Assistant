@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "单个物料定位点的公共链路",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/functional-atlas/vision-point.html",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "6f7d4542b51e5354f07cb1074d29fab1afe716ed",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "target",
+      "type": "backend",
+      "label": "读取定位点配置",
+      "sublabel": "模板、位置与对焦",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 15,
+          "end_line": 15
+        }
+      ]
+    },
+    {
+      "id": "automatic",
+      "type": "backend",
+      "label": "自动移动与定位",
+      "sublabel": "S1 / S2 所属硬件",
+      "pos": [
+        40,
+        144
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 15,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "type": "backend",
+      "label": "本次定位结果",
+      "sublabel": "匹配结果或空值",
+      "pos": [
+        40,
+        248
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 17,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "convert",
+      "type": "backend",
+      "label": "换算结果坐标",
+      "sublabel": "G0 与本地点",
+      "pos": [
+        40,
+        352
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 17,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "save",
+      "type": "backend",
+      "label": "保存当前点信息",
+      "sublabel": "对象字段与成功标志",
+      "pos": [
+        40,
+        456
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 17,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "alarm",
+      "type": "security",
+      "label": "定位失败对话",
+      "sublabel": "OK 使用回传值",
+      "pos": [
+        302,
+        248
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 17,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "type": "security",
+      "label": "退出当前点定位",
+      "sublabel": "跳过禁用；终止停机",
+      "pos": [
+        302,
+        456
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-public-vision-review.md",
+          "line": 17,
+          "end_line": 17
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "target-automatic",
+      "from": "target",
+      "to": "automatic"
+    },
+    {
+      "id": "automatic-result",
+      "from": "automatic",
+      "to": "result"
+    },
+    {
+      "id": "result-convert",
+      "from": "result",
+      "to": "convert",
+      "label": "有结果"
+    },
+    {
+      "id": "convert-save",
+      "from": "convert",
+      "to": "save"
+    },
+    {
+      "id": "result-alarm",
+      "from": "result",
+      "to": "alarm",
+      "label": "空值",
+      "variant": "security"
+    },
+    {
+      "id": "alarm-convert",
+      "from": "alarm",
+      "to": "convert",
+      "label": "OK"
+    },
+    {
+      "id": "alarm-exit",
+      "from": "alarm",
+      "to": "exit",
+      "label": "非 OK",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "范围与例外",
+      "items": [
+        "图从当前物料的一个定位点开始；模板初始化、缺陷检测和点数调度分开阅读。",
+        "对话 OK 不统一保证匹配值非空；不同视觉包装入口的返回契约分别说明。",
+        "SaveInfo 写对象字段；坐标更新与落盘保存不在本图中。"
+      ]
+    }
+  ]
+}

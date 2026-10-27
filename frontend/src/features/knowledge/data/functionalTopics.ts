@@ -13,6 +13,15 @@ export const functionalTopics: PresentationTopic[] = [
     exceptions: ['定位更新有差值限值；坐标更新、参数保存和轴到位分别判断。'],
     diagrams: ['product-coordinate-lifecycle'],
   },
+  {
+    id: 'public-vision',
+    title: '视觉模板与公共视觉流程',
+    summary: '串起模板加载、采图、定位与缺陷结果，分清各层调用和人工处理。',
+    purpose: '把相机图像变成供物料定位和检测使用的结果。',
+    conditions: ['模板、硬件、点数配置与运行模式共同决定视觉路径。'],
+    exceptions: ['初始化标志、算法调用成功和物料定位成功需要分别判断。'],
+    diagrams: ['public-vision-process'],
+  },
 ];
 
 export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopics.map((topic) => ({
@@ -27,6 +36,11 @@ export const functionalCatalogEntries: FlowchartCatalogEntry[] = functionalTopic
 }));
 
 export const functionalArtifacts: Record<string, CoordinateArtifact> = {
+  'vision-point': {
+    path: 'functional-atlas/vision-point.html',
+    sha256: '99b6d6b8861bc64db92ef5b51aae70bcaea317346afc653b90f44245f292d5ca',
+    specificationSha256: '15a2e8e7acee52af62928c2f7a015381d1ff0cee184cf97e2c508fb93859ade0',
+  },
   'product-update': {
     path: 'functional-atlas/product-update.html',
     sha256: '549a0bb2d54fe761b0d1a6f76b54b7c3666dbc6903fa88418481630ad50a0eba',

@@ -6,6 +6,7 @@ import { s2Guide } from './reviews/s2.ts';
 import { waferGuide } from './reviews/wafer.ts';
 import { g0Guide } from './reviews/g0.ts';
 import { productCoordinatesGuide } from './reviews/productCoordinates.ts';
+import { publicVisionGuide } from './reviews/publicVision.ts';
 
 export interface SourceClaim {
   text: string;
@@ -37,6 +38,7 @@ export interface SourceGuide {
 export const sourceGuides: SourceGuide[] = [
   g0Guide,
   productCoordinatesGuide,
+  publicVisionGuide,
   startupGuide,
   recoveryGuide,
   transportGuide,

@@ -90,3 +90,26 @@ test('产品定位图在阅读副本中保留限内写回与超限异常的方�
   assert.doesNotMatch(page.html, /<script\b/);
   assert.match(page.html, /\[data-edge-id\] text \{ font-size: 14px/);
 });
+
+test('公共视觉图保留自动结果、人工回传与退出，不能把失败统一连到成功', async () => {
+  const source = await readFile(
+    new URL(
+      '../../../resources/knowledge/flows/functional-atlas/vision-point.html',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const page = createReadingDiagram(source, 'classic');
+  for (const [from, to, label] of [
+    ['result', 'alarm', '空值'],
+    ['alarm', 'convert', 'OK'],
+    ['alarm', 'exit', '非 OK'],
+  ])
+    assert.ok(
+      page.html.includes(
+        `data-edge-from="${from}" data-edge-to="${to}" data-edge-label="${label}"`,
+      ),
+    );
+  assert.equal((page.html.match(/<g\b[^>]*data-node-id=/g) ?? []).length, 7);
+  assert.doesNotMatch(page.html, /data-edge-from="exit" data-edge-to="save"/);
+});

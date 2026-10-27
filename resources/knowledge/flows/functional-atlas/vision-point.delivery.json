@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "74cf6e3f-9317-4b4f-be15-eb513bacb117",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\vision-point.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\vision-point.html",
+  "specification": {
+    "sha256": "15a2e8e7acee52af62928c2f7a015381d1ff0cee184cf97e2c508fb93859ade0",
+    "bytes": 4510
+  },
+  "artifact": {
+    "sha256": "99b6d6b8861bc64db92ef5b51aae70bcaea317346afc653b90f44245f292d5ca",
+    "bytes": 817705
+  }
+}

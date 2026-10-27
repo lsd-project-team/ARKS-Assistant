@@ -155,3 +155,20 @@ test('产品专题与目录共用整宽阅读页，并复用父链原图和定�
     assert.equal((figure.match(/<figure/g) ?? []).length, 1);
   }
 });
+
+test('公共视觉默认先展示实际单点链路，保留六个环节和产品写回链接', () => {
+  const topic = render(TopicDetail, { id: 'public-vision' });
+  assert.equal(topic, render(DiagramDetail, { id: 'public-vision-process', theme: 'light' }));
+  for (const text of [
+    '模板与初始化',
+    '采图与定位',
+    '结果与距离检查',
+    '产品各层怎样调用',
+    '身份识别与墨点',
+    '失败处理与修改模板',
+  ])
+    assert.ok(topic.includes(text));
+  assert.ok(topic.includes('data-archify-source="functional-atlas/vision-point.html"'));
+  assert.match(topic, /href="#topic\/product-coordinates"/);
+  assert.doesNotMatch(topic, /源码依据|source-evidence|<pre/);
+});
