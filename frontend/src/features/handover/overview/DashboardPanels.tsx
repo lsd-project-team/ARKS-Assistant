@@ -1,18 +1,21 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { ArrowUpRight, BookOpen, CircleDot, Package, Activity, NotebookPen } from 'lucide-react';
 import { InteractiveRing, OperationBars, PackageBars } from './DashboardCharts';
-import { DashboardEventList, DashboardRecordList, SelectionHeading } from './DashboardRecords';
+import {
+  DashboardEventList,
+  DashboardMaterialList,
+  DashboardRecordList,
+  SelectionHeading,
+} from './DashboardRecords';
 import {
   eventsInRange,
   overviewSummary,
   selectEvents,
   selectTasks,
   selectIssues,
+  selectMaterials,
 } from './overviewData';
 import { tabs, type Definitions, type Event, type Overview, type Tab } from '../shared/types';
-
-import { MaterialFileList } from '../materials/MaterialsPage';
-import { materialFiles } from '../materials/materialRecords';
 
 type Summary = ReturnType<typeof overviewSummary>;
 type PanelProps = {
@@ -70,22 +73,38 @@ function DashboardPanel({
 }
 
 export function MaterialsPanel({ data, onOpen, onNavigate }: PanelProps) {
-  const rows = materialFiles(data.materials);
+  const [fileType, setFileType] = useState('all');
+  const rows = selectMaterials(data.materials, fileType);
+  const active = data.materialTypes.find((item) => item.id === fileType);
   return (
     <DashboardPanel
       tab="materials"
       icon={<BookOpen size={17} />}
-      count={rows.length}
+      count={data.materials.length}
       unit="份"
-      summary="保存并查看原始文件"
-      hint="点击资料查看原文件"
+      summary="按文件类型统计"
+      hint="点击图表筛选，点击资料查看原文件"
       onNavigate={onNavigate}
     >
-      {rows.length ? (
-        <MaterialFileList rows={rows.slice(0, 5)} onOpen={onOpen} />
-      ) : (
-        <p className="muted">暂无资料</p>
-      )}
+      <div className="dashboard-chart-heading">
+        <span>文件类型分布</span>
+        <small>类型与资料联动</small>
+      </div>
+      <InteractiveRing
+        data={data.materialTypes}
+        selected={fileType}
+        onSelect={setFileType}
+        label="资料文件类型分布"
+        unit="份"
+        totalLabel="资料总数"
+      />
+      <SelectionHeading
+        label={active ? active.label + '资料' : '最近资料'}
+        count={rows.length}
+        filtered={fileType !== 'all'}
+        onReset={() => setFileType('all')}
+      />
+      <DashboardMaterialList key={fileType} rows={rows} onOpen={onOpen} />
     </DashboardPanel>
   );
 }

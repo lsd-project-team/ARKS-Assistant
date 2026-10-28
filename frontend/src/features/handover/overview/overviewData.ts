@@ -2,6 +2,11 @@ import type { Event, HandoverRecord, Overview } from '../shared/types';
 import { refs } from '../shared/types.ts';
 import { taskStage } from '../tasks/taskProgress.ts';
 import { debugRecordType, debugRecordTypes } from '../debug_issues/debugIssues.ts';
+import {
+  materialFiles,
+  materialFileType,
+  materialFileTypes,
+} from '../materials/materialRecords.ts';
 
 export type ChartTone = 'green' | 'blue' | 'red' | 'amber' | 'gray';
 export interface ChartDatum {
@@ -22,6 +27,13 @@ const issueTypeTones = {
   experience: 'green',
   progress: 'blue',
   archive: 'gray',
+} as const;
+const materialTypeTones = {
+  pdf: 'red',
+  word: 'blue',
+  spreadsheet: 'green',
+  image: 'amber',
+  other: 'gray',
 } as const;
 const eventGroups: Omit<ChartDatum, 'value'>[] = [
   { id: 'created', label: '新增', tone: 'green' },
@@ -65,6 +77,12 @@ export function selectIssues(records: HandoverRecord[], recordType: string) {
   );
 }
 
+export function selectMaterials(records: HandoverRecord[], fileType: string) {
+  return materialFiles(records).filter(
+    (row) => fileType === 'all' || materialFileType(row) === fileType,
+  );
+}
+
 export function eventsInRange(events: Event[], days: number, now = Date.now()) {
   if (!days) return events;
   const start = now - days * 86400000;
@@ -102,7 +120,13 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
   );
   const sources = records.filter((row) => row.kind === 'source');
   const interviews = records.filter((row) => row.kind === 'interview');
-  const materials = [...sources, ...interviews];
+  const materials = selectMaterials([...sources, ...interviews], 'all');
+  const materialTypes: ChartDatum[] = materialFileTypes.map(({ id, label }) => ({
+    id,
+    label,
+    tone: materialTypeTones[id],
+    value: materials.filter((row) => materialFileType(row) === id).length,
+  }));
   const tasks = records.filter((row) => row.kind === 'task');
   const issues = selectIssues(records, 'all');
   const problems = issues.filter((row) => debugRecordType(row.payload).value === 'problem');
@@ -150,6 +174,7 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
     sources,
     interviews,
     materials,
+    materialTypes,
     latestSource: newestRecords(sources)[0],
     latestInterview: newestRecords(interviews)[0],
     tasks,

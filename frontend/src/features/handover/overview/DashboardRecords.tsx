@@ -13,6 +13,7 @@ import { Status } from '../shared/RecordCard';
 import { text, type Definitions, type Event, type HandoverRecord } from '../shared/types';
 import { eventActionLabels } from './overviewData';
 import { debugRecordType, debugStatus } from '../debug_issues/debugIssues';
+import { materialName } from '../materials/materialRecords';
 
 export function compactTime(value: string) {
   const date = new Date(value);
@@ -174,6 +175,51 @@ export function DashboardRecordList({
         size={limit}
         onPage={pagination.setPage}
         label="记录"
+      />
+    </div>
+  );
+}
+
+export function DashboardMaterialList({
+  rows,
+  onOpen,
+}: {
+  rows: HandoverRecord[];
+  onOpen: (id: string) => void;
+}) {
+  const pagination = useListPage(rows, 2);
+  return (
+    <div className="dashboard-record-list">
+      {pagination.rows.map((row) => (
+        <button
+          key={row.id}
+          className="dashboard-record-row"
+          onClick={() => onOpen(row.id)}
+          aria-label={'查看原文件：' + materialName(row)}
+        >
+          <span className="dashboard-record-icon">
+            <FileText size={15} />
+          </span>
+          <div>
+            <strong title={materialName(row)}>{materialName(row)}</strong>
+            <span>
+              {row.created_by || '—'}
+              <i>·</i>
+              <time dateTime={row.created_at} title={localTime(row.created_at)}>
+                {compactTime(row.created_at)}
+              </time>
+            </span>
+          </div>
+          <ArrowUpRight className="dashboard-row-arrow" size={14} />
+        </button>
+      ))}
+      {!rows.length && <p className="dashboard-empty">此类型暂无资料</p>}
+      <ListPager
+        total={rows.length}
+        page={pagination.page}
+        size={2}
+        onPage={pagination.setPage}
+        label="资料"
       />
     </div>
   );

@@ -7,6 +7,7 @@ import {
   selectEvents,
   selectTasks,
   selectIssues,
+  selectMaterials,
 } from '../../src/features/handover/overview/overviewData.ts';
 
 function record(id, kind, state = 'draft', payload = {}) {
@@ -23,6 +24,67 @@ function record(id, kind, state = 'draft', payload = {}) {
   };
 }
 const overview = (records, blocks = {}) => ({ scope_id: 'global', records, blocks });
+
+test('资料图表按原文件名统计，分类合计与有效资料列表一致，不读取正文或审核状态', () => {
+  const rows = [
+    {
+      ...record('误导标题.docx', 'source', 'needs_review', {
+        filename: '旧名称.png',
+        content: '正文.xlsx',
+      }),
+      original_file: { name: '实际文件.PDF' },
+    },
+    record('记录.docx', 'source'),
+    record('统计表.XLSX', 'source'),
+    record('图片.JPEG', 'source'),
+    record('历史文本', 'interview', 'rejected', { transcript: '历史正文' }),
+    record('未知格式.pdf.exe', 'source'),
+    record('已归档.pdf', 'source', 'archived'),
+    record('任务.pdf', 'task'),
+  ];
+  const original = structuredClone(rows);
+  const result = overviewSummary(overview(rows));
+  assert.equal(result.materials.length, 6);
+  assert.deepEqual(
+    result.materialTypes.map(({ id, value }) => [id, value]),
+    [
+      ['pdf', 1],
+      ['word', 1],
+      ['spreadsheet', 1],
+      ['image', 1],
+      ['other', 2],
+    ],
+  );
+  assert.equal(
+    result.materialTypes.reduce((sum, item) => sum + item.value, 0),
+    result.materials.length,
+  );
+  assert.deepEqual(rows, original);
+});
+
+test('资料图表筛选与列表同一口径，按上传时间排列，未知类型不返回其他记录', () => {
+  const rows = [
+    { ...record('先上传.pdf', 'source'), updated_at: '2026-10-20T08:00:00Z' },
+    { ...record('后上传.PDF', 'source'), created_at: '2026-10-14T08:00:00Z' },
+    record('旧资料', 'interview', 'draft', { filename: '旧文件.doc' }),
+    record('已归档.pdf', 'source', 'archived'),
+    record('问题.pdf', 'debug_issue'),
+  ];
+  assert.deepEqual(
+    selectMaterials(rows, 'pdf').map((row) => row.id),
+    ['后上传.PDF', '先上传.pdf'],
+  );
+  assert.deepEqual(
+    selectMaterials(rows, 'word').map((row) => row.id),
+    ['旧资料'],
+  );
+  assert.equal(selectMaterials(rows, 'all').length, 3);
+  assert.deepEqual(selectMaterials(rows, 'missing'), []);
+  assert.deepEqual(
+    overviewSummary(overview([])).materialTypes.map((item) => item.value),
+    [0, 0, 0, 0, 0],
+  );
+});
 
 test('资料只计有效文件和历史文本，不进入待审核统计', () => {
   const rows = [
