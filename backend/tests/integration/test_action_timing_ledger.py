@@ -9,7 +9,6 @@ from fastapi.testclient import TestClient
 
 from app.main import create_app
 from app.modules.action_timing.ledger_files import HEADERS
-from app.modules.action_timing.source_service import SourceTiming
 from app.modules.auth.models import Account
 from tests.helpers.accounts import sign_in
 
@@ -55,13 +54,7 @@ def action(client, name, category_id=None, duration=None, base=BASE):
     return response.json()
 
 
-def test_empty_ledger_does_not_analyze_source_or_seed_data_and_survives_restart(
-    services, monkeypatch
-):
-    def forbidden(*args, **kwargs):
-        raise AssertionError("新台账不得启动源码模拟")
-
-    monkeypatch.setattr(SourceTiming, "__init__", forbidden)
+def test_empty_ledger_does_not_seed_data_and_survives_restart(services):
     with TestClient(create_app(services[0])) as client:
         data = client.get(BASE).json()
         assert data["items"] == data["categories"] == []
@@ -72,6 +65,31 @@ def test_empty_ledger_does_not_analyze_source_or_seed_data_and_survives_restart(
         assert item["duration_seconds"] is None and item["category"] == "未分类"
     with TestClient(create_app(services[0])) as client:
         assert client.get(BASE).json()["items"][0]["id"] == item["id"]
+
+
+def test_retired_source_routes_are_absent_and_preserve_ledger_and_historical_reports(services):
+    directory = services[0].data / "cache/action-timing"
+    directory.mkdir(parents=True)
+    report = directory / "historical.json.gz"
+    historical = b"historical-report-not-for-loading"
+    report.write_bytes(historical)
+    with TestClient(create_app(services[0])) as client:
+        item = action(client, "保留动作", duration=0)
+        before = client.get(BASE).json()
+        # 已移除的接口不再返回暂停占位，也不能读缓存或改变现有台账。
+        for prefix in ("/api/action-timing", "/api/p/independent/action-timing"):
+            for suffix in ("", "/export", "/coverage", "/old-action-id"):
+                response = client.get(prefix + "/source-analysis" + suffix)
+                assert response.status_code == 404
+                expected = "接口不存在" if prefix == "/api/action-timing" else "Not Found"
+                assert response.json() == {"detail": expected}
+        assert client.get(BASE).json() == before
+        assert report.read_bytes() == historical
+    with TestClient(create_app(services[0])) as client:
+        stored = client.get(BASE).json()["items"]
+        assert len(stored) == 1 and stored[0]["id"] == item["id"]
+        assert stored[0]["duration_seconds"] == 0
+        assert report.read_bytes() == historical
 
 
 def test_category_action_crud_zero_blank_filters_and_stale_updates(services):

@@ -16,27 +16,6 @@ def create_router(services):
     router = APIRouter(prefix="/api/action-timing", tags=["action-timing"])
     timing = ActionTiming(services)
 
-    def source_scope():
-        with services.database.session() as session:
-            timing.scope(session)
-        raise HTTPException(410, "源码模拟已暂停，请使用动作耗时台账")
-
-    @router.get("/source-analysis")
-    async def source_analysis():
-        source_scope()
-
-    @router.get("/source-analysis/export")
-    async def source_export():
-        source_scope()
-
-    @router.get("/source-analysis/coverage")
-    async def source_coverage():
-        source_scope()
-
-    @router.get("/source-analysis/{identifier}")
-    async def source_detail(identifier: str):
-        source_scope()
-
     @router.get("/catalog")
     async def catalog():
         return {"protocol_version": 1, "actions": CATALOG}

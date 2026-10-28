@@ -11,20 +11,6 @@ from app.modules.memory.service import MemoryService
 from app.modules.source_analysis.workspace import Workspace
 
 
-@pytest.fixture
-def source_iteration_limit(monkeypatch):
-    """显式压低分析额度，让保护路径用例不依赖生产环境的默认展开能力。"""
-    from app.modules.action_timing import source_estimator
-    from app.modules.action_timing.source_budget import IterationBudget
-
-    def apply(limit):
-        monkeypatch.setattr(
-            source_estimator, "IterationBudget", lambda: IterationBudget(limit=limit)
-        )
-
-    return apply
-
-
 @pytest.fixture(autouse=True)
 def authenticate_business_clients(request, monkeypatch, tmp_path):
     """原有业务回归通过真实管理员登录；认证用例自行控制所有登录状态。"""
