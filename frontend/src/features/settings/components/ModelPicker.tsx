@@ -17,7 +17,7 @@ export function ModelPicker({ preference, busy }: { preference: ModelPreference;
     onSuccess: (result) => {
       cache.setQueryData(['model-preference'], result);
       void cache.invalidateQueries({ queryKey: ['context'] });
-      toast(busy ? '模型已切换，下一轮使用新配置' : '模型已切换');
+      toast(busy ? '模型已切换，下一轮使用新配置' : '模型已切换', undefined, 'success', 1000);
     },
     onError: (error) => {
       void cache.invalidateQueries({ queryKey: ['model-preference'] });

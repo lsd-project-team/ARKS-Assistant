@@ -8,9 +8,12 @@ function Toast({ item }: { item: ToastItem }) {
   const [paused, setPaused] = useState(false);
   useEffect(() => {
     if (paused || busy) return;
-    const timeout = setTimeout(() => dismiss(item.id), item.action ? 10_000 : 5000);
+    const timeout = setTimeout(
+      () => dismiss(item.id),
+      item.durationMs ?? (item.action ? 10_000 : 5000),
+    );
     return () => clearTimeout(timeout);
-  }, [item.id, item.action, paused, busy, dismiss]);
+  }, [item.id, item.action, item.durationMs, paused, busy, dismiss]);
   return (
     <div
       className={`toast ${item.tone}`}

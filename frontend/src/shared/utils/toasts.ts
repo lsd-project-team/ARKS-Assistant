@@ -4,6 +4,7 @@ export interface ToastItem {
   id: number;
   message: string;
   tone: 'success' | 'error';
+  durationMs?: number;
   action?: { label: string; run: () => Promise<unknown> | void };
 }
 let sequence = 0;
@@ -19,8 +20,9 @@ export function toast(
   message: string,
   action?: ToastItem['action'],
   tone: ToastItem['tone'] = 'success',
+  durationMs?: number,
 ) {
   useToasts.setState((state) => ({
-    items: [...state.items.slice(-2), { id: ++sequence, message, tone, action }],
+    items: [...state.items.slice(-2), { id: ++sequence, message, tone, action, durationMs }],
   }));
 }
