@@ -18,6 +18,7 @@ const environment = {
   states: [],
   cursor: 0,
   effects: [],
+  cleanups: [],
   user: undefined,
   useState(initial) {
     const index = this.cursor++;
@@ -30,8 +31,15 @@ const environment = {
       },
     ];
   },
+  useEffect(effect) {
+    const index = this.cursor++;
+    if (!(index in this.states)) {
+      this.states[index] = true;
+      this.effects.push(effect);
+    }
+  },
 };
-// 仅隔离 React 调度、弹窗容器和 HTTP；执行真实表单、草稿持久化及保存逻辑。
+// 仅隔离 React 调度、弹窗容器和 HTTP；执行真实表单、上传队列和重试逻辑。
 const bundled = await build({
   entryPoints: [
     fileURLToPath(
@@ -51,7 +59,7 @@ const bundled = await build({
       setup(builder) {
         const stubs = {
           react:
-            'export const useState = (initial) => environment.useState(initial); export const useEffect = (effect) => environment.effects.push(effect);',
+            'export const useState = (initial) => environment.useState(initial); export const useRef = (initial) => environment.useState(() => ({current:initial}))[0]; export const useEffect = (effect) => environment.useEffect(effect);',
           modal:
             'export const HandoverModal = ({children, footer}) => environment.createElement("form", null, children, footer);',
           ui: 'export const Button = "button"; export const ErrorText = ({error}) => error ? environment.createElement("p", {role:"alert"}, String(error)) : null;',
@@ -90,6 +98,7 @@ function reset() {
   environment.states = [];
   environment.cursor = 0;
   environment.effects = [];
+  environment.cleanups = [];
   environment.user = { display_name: '当前登录人', username: 'current' };
 }
 function render(props) {
@@ -99,7 +108,7 @@ function render(props) {
     onClose() {},
     ...props,
   });
-  for (const effect of environment.effects.splice(0)) effect();
+  for (const effect of environment.effects.splice(0)) environment.cleanups.push(effect());
   return tree;
 }
 function nodes(tree) {
@@ -134,9 +143,10 @@ test('上传表单仅选择原文件，不恢复旧文本或提交隐藏元信�
         return { id: 'file' };
       },
     },
-    onSaved: (row) => saved.push(row),
+    onSaved: () => saved.push('changed'),
   };
   let tree = render(props);
+  assert.equal(input(tree, '文件').props.multiple, true);
   const html = renderToStaticMarkup(tree);
   for (const obsolete of [
     '整理人',
@@ -155,7 +165,7 @@ test('上传表单仅选择原文件，不恢复旧文本或提交隐藏元信�
   tree = render(props);
   await submit(tree);
   assert.deepEqual(uploads, [[file, {}]]);
-  assert.deepEqual(saved, [{ id: 'file' }]);
+  assert.deepEqual(saved, ['changed']);
   assert.equal(storage.get('arks-handover-draft:global:import'), oldDraft);
 });
 
@@ -174,7 +184,7 @@ test('失败后保留所选文件，可重试；上传过程中阻止重复提�
         });
       },
     },
-    onSaved: (row) => saved.push(row),
+    onSaved: () => saved.push('changed'),
   };
   let tree = render(props);
   const file = new File(['原文件'], '文件.zip');
@@ -193,7 +203,155 @@ test('失败后保留所选文件，可重试；上传过程中阻止重复提�
   assert.equal(uploads[1][0], file);
   resolveUpload({ id: 'retry' });
   await new Promise(setImmediate);
-  assert.deepEqual(saved, [{ id: 'retry' }]);
+  assert.deepEqual(saved, ['changed']);
+});
+
+test('多文件逐个保存，全部完成后只刷新一次并关闭；不合并文件或提交额外元信息', async () => {
+  reset();
+  const files = [new File(['PDF'], '手册.pdf'), new File(['DOCX'], '说明.docx')];
+  const uploads = [];
+  let changed = 0,
+    closed = 0;
+  const props = {
+    client: { upload: async (...args) => uploads.push(args) },
+    onSaved: () => changed++,
+    onClose: () => closed++,
+  };
+  input(render(props), '文件').props.onChange({ target: { files } });
+  const html = renderToStaticMarkup(render(props));
+  assert.ok(html.includes('手册.pdf') && html.includes('说明.docx'));
+  await submit(render(props));
+  assert.deepEqual(
+    uploads,
+    files.map((file) => [file, {}]),
+  );
+  assert.equal(changed, 1);
+  assert.equal(closed, 1);
+});
+
+test('部分失败后继续其他文件，窗口保留；重试只上传失败项，不重复保存成功文件', async () => {
+  reset();
+  const files = ['a.pdf', 'b.docx', 'c.txt'].map((name) => new File([name], name));
+  const uploads = [];
+  let failed = false,
+    changed = 0,
+    closed = 0;
+  const props = {
+    client: {
+      upload: async (file) => {
+        uploads.push(file);
+        if (file === files[1] && !failed) {
+          failed = true;
+          throw new Error('网络失败');
+        }
+      },
+    },
+    onSaved: () => changed++,
+    onClose: () => closed++,
+  };
+  input(render(props), '文件').props.onChange({ target: { files } });
+  await submit(render(props));
+  assert.deepEqual(uploads, files);
+  assert.equal(changed, 1);
+  assert.equal(closed, 0);
+  const html = renderToStaticMarkup(render(props));
+  assert.ok(html.includes('已上传 2 个'));
+  assert.ok(html.includes('重试失败文件（1）'));
+  assert.ok(html.includes('网络失败'));
+  await submit(render(props));
+  assert.deepEqual(uploads, [...files, files[1]]);
+  assert.equal(changed, 2);
+  assert.equal(closed, 1);
+});
+
+test('非法文件分别报错，不阻塞其他有效文件；移除非法项后可完成', async () => {
+  reset();
+  const empty = new File([], '空.txt');
+  const oversized = { name: '超限.zip', size: 32 * 1024 * 1024 + 1 };
+  const valid = new File(['原文'], '原文.txt');
+  const uploads = [];
+  let closed = 0;
+  const props = {
+    client: { upload: async (file) => uploads.push(file) },
+    onClose: () => closed++,
+  };
+  input(render(props), '文件').props.onChange({ target: { files: [empty, valid, oversized] } });
+  let html = renderToStaticMarkup(render(props));
+  assert.ok(html.includes('文件不能为空') && html.includes('文件不能超过 32 MB'));
+  await submit(render(props));
+  assert.deepEqual(uploads, [valid]);
+  assert.equal(closed, 0);
+  for (const file of [empty, oversized]) {
+    nodes(render(props))
+      .find((node) => node.props?.['aria-label'] === `移除 ${file.name}`)
+      .props.onClick();
+  }
+  const tree = render(props);
+  const complete = nodes(tree).find((node) => node.props?.children === '完成');
+  assert.equal(complete.props.type, 'button');
+  complete.props.onClick();
+  assert.equal(closed, 1);
+});
+
+test('同一渲染内连点也只启动一个队列，期间禁止关闭和更改；文件顺序执行', async () => {
+  reset();
+  const files = ['1.txt', '2.txt'].map((name) => new File([name], name));
+  const uploads = [],
+    releases = [];
+  let closed = 0;
+  const props = {
+    client: {
+      upload: (file) => {
+        uploads.push(file);
+        return new Promise((resolve) => releases.push(resolve));
+      },
+    },
+    onClose: () => closed++,
+  };
+  input(render(props), '文件').props.onChange({ target: { files } });
+  const tree = render(props);
+  await submit(tree);
+  await submit(tree);
+  tree.props.onClose();
+  input(tree, '文件').props.onChange({ target: { files: [new File(['x'], '替换.txt')] } });
+  assert.deepEqual(uploads, [files[0]]);
+  assert.equal(closed, 0);
+  releases[0]();
+  await new Promise(setImmediate);
+  assert.deepEqual(uploads, files);
+  assert.ok(renderToStaticMarkup(render(props)).includes('已上传 1 个'));
+  releases[1]();
+  await new Promise(setImmediate);
+  assert.equal(closed, 1);
+});
+
+test('离开上传界面后停止发送剩余文件，已成功保存的文件仍通知刷新', async () => {
+  reset();
+  const files = ['1.txt', '2.txt'].map((name) => new File([name], name));
+  const uploads = [];
+  let release,
+    changed = 0,
+    closed = 0;
+  const props = {
+    client: {
+      upload: (file) => {
+        uploads.push(file);
+        return new Promise((resolve) => {
+          release = resolve;
+        });
+      },
+    },
+    onSaved: () => changed++,
+    onClose: () => closed++,
+  };
+  input(render(props), '文件').props.onChange({ target: { files } });
+  await submit(render(props));
+  for (const cleanup of environment.cleanups) cleanup?.();
+  release();
+  await new Promise(setImmediate);
+  assert.deepEqual(uploads, [files[0]]);
+  assert.equal(changed, 1);
+  assert.equal(closed, 0);
 });
 
 test('空文件及超限文件不能上传，32 MB 边界允许，未登录时阻止提交', async () => {

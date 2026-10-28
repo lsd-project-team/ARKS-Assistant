@@ -4,6 +4,45 @@
   gap: 16px;
   margin-bottom: 20px;
 }
+.material-upload-summary {
+  margin: 16px 0 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.material-upload-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+.material-upload-list > li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+}
+.material-upload-list > li + li {
+  border-top: 1px solid var(--border);
+}
+.material-upload-list > li > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.material-upload-list strong,
+.material-upload-list span {
+  display: block;
+  font-size: 13px;
+}
+.material-upload-list strong {
+  font-weight: 500;
+}
+.material-upload-list span {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
 .dashboard-panel-materials {
   container-type: inline-size;
 }

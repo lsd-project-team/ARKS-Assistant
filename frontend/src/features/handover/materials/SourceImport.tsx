@@ -1,11 +1,16 @@
-import { useState } from 'react';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useAuth } from '../../auth/AuthContext';
 import type { Client } from '../shared/client';
 import { HandoverModal } from '../shared/HandoverModal';
-import type { HandoverRecord } from '../shared/types';
+import { useMaterialUploads } from './useMaterialUploads';
 
-const maxFileSize = 32 * 1024 * 1024;
+const uploadLabels = {
+  pending: '待上传',
+  uploading: '正在上传…',
+  uploaded: '上传成功',
+  failed: '上传失败',
+  invalid: '无法上传',
+};
 
 export function SourceImport({
   client,
@@ -13,67 +18,91 @@ export function SourceImport({
   onClose,
 }: {
   client: Client;
-  onSaved: (row: HandoverRecord) => void;
+  onSaved: () => void;
   onClose: () => void;
 }) {
   const user = useAuth().session?.user;
-  const [file, setFile] = useState<File>();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<unknown>();
-  const fileError =
-    file && (!file.size ? '文件不能为空。' : file.size > maxFileSize ? '文件不能超过 32 MB。' : '');
-  async function save() {
-    if (!file || fileError || !user || busy) return;
-    setBusy(true);
-    setError(undefined);
-    try {
-      // 上传人由服务端登录会话确定，表单仅提交原文件。
-      onSaved(await client.upload<HandoverRecord>(file, {}));
-    } catch (failure) {
-      setError(failure);
-    } finally {
-      setBusy(false);
-    }
-  }
+  const upload = useMaterialUploads(client, onSaved, onClose);
+  const { items, busy, pending } = upload;
+  const succeeded = items.filter((item) => item.state === 'uploaded').length;
+  const failuresOnly = pending > 0 && !items.some((item) => item.state === 'pending');
+  const complete = items.length > 0 && succeeded === items.length;
   return (
     <HandoverModal
       title="添加资料"
-      description="上传原文件，点击资料即可查看或下载。"
-      onClose={onClose}
+      description="可一次选择多个原文件，上传后点击资料即可查看或下载。"
+      onClose={upload.close}
       onSubmit={(event) => {
         event.preventDefault();
-        void save();
+        if (user) void upload.save();
       }}
       footer={
         <>
-          <Button type="button" disabled={busy} onClick={onClose}>
-            取消
+          <Button type="button" disabled={busy} onClick={upload.close}>
+            {succeeded ? '关闭' : '取消'}
           </Button>
           <Button
             className="primary"
-            type="submit"
-            disabled={busy || !file || !!fileError || !user}
+            type={complete ? 'button' : 'submit'}
+            onClick={complete ? upload.close : undefined}
+            disabled={busy || (!pending && !complete) || !user}
           >
-            {busy ? '正在上传…' : '上传'}
+            {busy
+              ? `正在上传（${succeeded}/${items.length}）…`
+              : complete
+                ? '完成'
+                : failuresOnly
+                  ? `重试失败文件（${pending}）`
+                  : pending
+                    ? `上传（${pending}）`
+                    : '上传'}
           </Button>
         </>
       }
     >
-      <ErrorText error={error || fileError} reveal />
       <label className="handover-field-wide">
         <span>文件</span>
         <input
-          required
+          multiple
           disabled={busy}
           type="file"
           aria-label="文件"
+          onClick={(event) => {
+            event.currentTarget.value = '';
+          }}
           onChange={(event) => {
-            setFile(event.target.files?.[0]);
-            setError(undefined);
+            if (event.target.files?.length) upload.select(Array.from(event.target.files));
           }}
         />
-        <small>原样保存，单个文件不超过 32 MB。</small>
+        <small>支持多选，原样保存；单个文件不超过 32 MB。</small>
       </label>
+      {items.length > 0 && (
+        <>
+          <p className="material-upload-summary" role="status">
+            已选 {items.length} 个文件，已上传 {succeeded} 个
+          </p>
+          <ul className="material-upload-list" aria-label="所选文件">
+            {items.map((item, index) => (
+              <li key={index}>
+                <div>
+                  <strong>{item.file.name}</strong>
+                  <span>{uploadLabels[item.state]}</span>
+                  <ErrorText error={item.error} />
+                </div>
+                {!busy && item.state !== 'uploaded' && (
+                  <Button
+                    type="button"
+                    aria-label={`移除 ${item.file.name}`}
+                    onClick={() => upload.remove(index)}
+                  >
+                    移除
+                  </Button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </HandoverModal>
   );
 }

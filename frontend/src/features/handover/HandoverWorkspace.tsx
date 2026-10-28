@@ -410,9 +410,17 @@ export default function HandoverWorkspace({
               ))}
             {operation === 'import' && (
               <SourceImport
+                key={currentOperationGeneration}
                 client={client}
-                onSaved={(row) => saved(row, { generation: currentOperationGeneration })}
-                onClose={() => setOperation('')}
+                onSaved={changed}
+                onClose={() => {
+                  if (
+                    alive.current &&
+                    activeTab.current === tab &&
+                    currentOperationGeneration === operationGeneration.current
+                  )
+                    setOperation('');
+                }}
               />
             )}
             {operation === 'package' && (
