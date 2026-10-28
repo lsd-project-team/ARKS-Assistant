@@ -5,6 +5,9 @@ import type { ModelPreference } from '../../../shared/types/api';
 import { api, jsonBody } from '../../../app/api/client';
 import { toast } from '../../../shared/utils/toasts';
 
+// 配置名只有额外信息时才显示，忽略大小写、空格和常见分隔符造成的重复。
+const labelKey = (value: string) => value.toLowerCase().replace(/[\s._-]/g, '');
+
 export function ModelPicker({ preference, busy }: { preference: ModelPreference; busy: boolean }) {
   const cache = useQueryClient();
   const current = preference;
@@ -39,7 +42,10 @@ export function ModelPicker({ preference, busy }: { preference: ModelPreference;
         {current.model_profiles.map((profile) => (
           <option value={profile.id} key={profile.id}>
             {profile.model || profile.name}
-            {current.model_profiles.length > 1 ? ` · ${profile.name}` : ''}
+            {current.model_profiles.length > 1 &&
+            labelKey(profile.model || profile.name) !== labelKey(profile.name)
+              ? ` · ${profile.name}`
+              : ''}
           </option>
         ))}
       </Select>
