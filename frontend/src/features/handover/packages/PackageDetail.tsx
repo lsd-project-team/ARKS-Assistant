@@ -30,42 +30,35 @@ export function PackageDetail({
   onClose: () => void;
   onOpen: (id: string, version?: number) => void;
 }) {
-  const [downloading, setDownloading] = useState('');
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<unknown>();
   const groups = packageGroups(row.payload, records);
   const count = groups.reduce((total, group) => total + group.items.length, 0);
-  async function download(format: string) {
-    setDownloading(format);
+  async function download() {
+    setDownloading(true);
     setError(undefined);
     try {
       await client.download(
-        `/packages/${row.id}/export?format=${format}&version=${row.version}`,
-        `${row.title}.${format}`,
+        `/packages/${row.id}/export?format=zip&version=${row.version}`,
+        `${row.title}.zip`,
       );
     } catch (error) {
       setError(error);
     } finally {
-      setDownloading('');
+      setDownloading(false);
     }
   }
   return (
     <HandoverModal
       title={row.title}
-      description={version ? `正在查看历史交接包 · v${version}` : '查看交接内容并下载'}
+      description={version ? '查看历史交接内容' : '查看交接内容并下载'}
       className="package-detail"
       onClose={onClose}
       footer={
         <>
           {version && <Button onClick={() => onOpen(row.id)}>返回当前交接包</Button>}
-          <Button
-            className="primary"
-            disabled={!!downloading}
-            onClick={() => void download('docx')}
-          >
-            {downloading === 'docx' ? '正在下载…' : '下载 Word'}
-          </Button>
-          <Button disabled={!!downloading} onClick={() => void download('zip')}>
-            {downloading === 'zip' ? '正在下载…' : '下载完整包（含附件）'}
+          <Button className="primary" disabled={downloading} onClick={() => void download()}>
+            {downloading ? '正在下载…' : '下载完整包'}
           </Button>
           <Button onClick={onClose}>关闭</Button>
         </>
@@ -76,7 +69,6 @@ export function PackageDetail({
         <span className={`handover-status handover-status-${row.state}`}>
           {definitions.states[row.state]}
         </span>
-        <span>v{row.version}</span>
       </div>
       <dl className="package-detail-summary">
         {text(row.payload.recipient).trim() && (
@@ -102,9 +94,7 @@ export function PackageDetail({
           <p>{item.content}</p>
         </section>
       ))}
-      <section className="package-detail-contents">
-        <h3>包内内容</h3>
-        <p>点击查看生成交接包时保存的内容。</p>
+      <section className="package-detail-contents" aria-label="交接内容">
         <PackageContentsList groups={groups} client={client} onOpen={onOpen} />
         {!count && <p className="handover-muted">这个交接包暂无包内内容。</p>}
       </section>
@@ -114,8 +104,7 @@ export function PackageDetail({
           {refs(row.payload.evidence).map((item, index) => (
             <div className="handover-evidence" key={index}>
               <Button onClick={() => onOpen(item.record_id, item.version)}>
-                {records.find((record) => record.id === item.record_id)?.title || item.record_id} ·
-                v{item.version}
+                {records.find((record) => record.id === item.record_id)?.title || '关联记录'}
               </Button>
               {item.locator && <span>{item.locator}</span>}
               {item.quote && <blockquote>{item.quote}</blockquote>}

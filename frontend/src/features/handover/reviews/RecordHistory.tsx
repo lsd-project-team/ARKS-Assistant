@@ -17,6 +17,7 @@ export function RecordHistory({
   definitions,
   onOpen,
   onRetry,
+  showVersion = true,
 }: {
   identifier: string;
   history?: RecordRevision[];
@@ -25,6 +26,7 @@ export function RecordHistory({
   definitions: Definitions;
   onOpen: (id: string, version?: number) => void;
   onRetry: () => void;
+  showVersion?: boolean;
 }) {
   return (
     <details className="handover-form-section handover-record-history">
@@ -35,7 +37,8 @@ export function RecordHistory({
       {history?.map((item) => (
         <div className="handover-history" key={item.version}>
           <Button onClick={() => onOpen(identifier, item.version)}>
-            v{item.version} · {definitions.states[item.state] || item.state}
+            {showVersion && `v${item.version} · `}
+            {definitions.states[item.state] || item.state}
           </Button>
           <span>
             {item.confirmation?.actor && `${item.confirmation.actor} · `}

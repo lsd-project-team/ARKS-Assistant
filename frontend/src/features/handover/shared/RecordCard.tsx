@@ -35,7 +35,7 @@ export function RecordCard({
       <div>
         <span className="handover-eyebrow">
           {definitions.kinds[row.kind]}
-          {row.kind !== 'debug_issue' && ` · v${row.version}`}
+          {!['debug_issue', 'package'].includes(row.kind) && ` · v${row.version}`}
         </span>
         <Status row={row} definitions={definitions} />
       </div>

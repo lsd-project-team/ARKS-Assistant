@@ -94,7 +94,8 @@ export function CatalogCard({
         <div className="record-catalog-card-top">
           <Icon size={17} />
           <span>
-            {label} · v{row.version}
+            {label}
+            {row.kind !== 'package' && ` · v${row.version}`}
           </span>
           <Status row={row} definitions={definitions} />
         </div>

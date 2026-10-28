@@ -100,6 +100,7 @@ test('交接包卡片保留打开与归档入口，收录数按固定版本去�
   assert.ok(html.includes('aria-label="查看记录：交接包 A"'));
   assert.ok(html.includes('aria-label="归档交接包：交接包 A"'));
   assert.ok(html.includes('2 条记录'));
+  assert.ok(!html.includes('v2'));
   assert.ok(!html.includes('接收：'));
   assert.deepEqual(record, original);
   const archived = render(PackageList, [{ ...record, state: 'archived' }], true);

@@ -48,7 +48,7 @@
 }
 .package-content-groups {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
   align-items: start;
 }
@@ -97,11 +97,6 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
-.package-content-group small {
-  flex-shrink: 0;
-  color: var(--text-secondary);
-  font-size: 12px;
-}
 .package-content-group .package-item-error {
   display: block;
   padding: 0 12px 8px;
@@ -112,9 +107,6 @@
   flex-wrap: wrap;
 }
 @media (max-width: 620px) {
-  .package-content-groups {
-    grid-template-columns: 1fr;
-  }
   .package-detail .handover-modal-body {
     padding: 18px 20px;
   }

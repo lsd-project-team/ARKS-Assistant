@@ -80,6 +80,7 @@ export function RecordView({
       error={history.error}
       loading={history.isPending}
       definitions={definitions}
+      showVersion={row?.kind !== 'package'}
       onOpen={onOpen}
       onRetry={() => void history.refetch()}
     />

@@ -24,10 +24,9 @@ function FixedPackageItem({
         <span>
           {snapshot.data?.title || (item.title === item.record_id ? '关联记录' : item.title)}
         </span>
-        {snapshot.data && snapshot.data.kind !== 'debug_issue' && <small>v{item.version}</small>}
       </button>
       {!!snapshot.error && (
-        <span className="package-item-error">此固定版本暂时无法读取，点击查看详情。</span>
+        <span className="package-item-error">这条内容暂时无法读取，点击查看详情。</span>
       )}
     </li>
   );

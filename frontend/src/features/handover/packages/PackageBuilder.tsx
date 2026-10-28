@@ -43,7 +43,7 @@ export function PackageBuilder({
   return (
     <HandoverModal
       title="生成交接包"
-      description="保存所选记录的当前版本，后续修改不影响此包。"
+      description="保存所选内容，后续修改不影响此包。"
       className="package-builder"
       onClose={onClose}
       onSubmit={(event) => {
@@ -114,15 +114,14 @@ export function PackageBuilder({
                 {row.title}
                 <small>
                   {definitions.kinds[row.kind]}
-                  {row.kind !== 'debug_issue' &&
-                    ` · v${row.version} · ${definitions.states[row.state]}`}
+                  {row.kind !== 'debug_issue' && ` · ${definitions.states[row.state]}`}
                 </small>
               </span>
             </label>
           ))}
         </div>
         {!eligible.length && (
-          <EmptyState title="暂无可打包的记录">先补充交接内容，再生成固定版本的交接包。</EmptyState>
+          <EmptyState title="暂无可打包的记录">先补充交接内容，再生成交接包。</EmptyState>
         )}
         <details className="handover-form-section">
           <summary>补充信息（选填）</summary>

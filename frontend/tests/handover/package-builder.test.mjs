@@ -54,6 +54,7 @@ const { PackageBuilder } = bundledModule.exports;
 const draftKey = 'arks-handover-draft:global:package';
 const records = [
   { id: 'issue', title: '调试经验', kind: 'debug_issue', state: 'draft', version: 2 },
+  { id: 'source', title: '设备手册', kind: 'source', state: 'confirmed', version: 8 },
   { id: 'archived', title: '归档资料', kind: 'source', state: 'archived', version: 1 },
   { id: 'receipt', title: '旧接收记录', kind: 'receipt', state: 'draft', version: 1 },
 ];
@@ -63,7 +64,10 @@ function render(client, onSaved = () => {}) {
       scopeId: 'global',
       client,
       records,
-      definitions: { kinds: { debug_issue: '问题与经验' }, states: { draft: '待确认' } },
+      definitions: {
+        kinds: { debug_issue: '问题与经验', source: '资料' },
+        states: { draft: '待确认', confirmed: '已确认' },
+      },
       onSaved,
       onClose() {},
     }),
@@ -99,6 +103,8 @@ test('生成时使用当前登录人，恢复旧草稿仍保留范围和缺项�
   );
   assert.ok(html.includes('问题与经验'));
   assert.ok(!html.includes('问题与经验 · v2'));
+  assert.ok(html.includes('设备手册'));
+  assert.ok(!html.includes('v8'));
   assert.ok(!html.includes('整理人'));
   await submit();
   assert.deepEqual(sent, {
