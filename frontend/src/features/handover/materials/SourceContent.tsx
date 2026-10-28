@@ -1,4 +1,3 @@
-import { Button } from '../../../shared/ui/ui';
 import { text, type HandoverRecord } from '../shared/types';
 import './source-detail.css';
 
@@ -41,37 +40,5 @@ export function SourceContent({ row }: { row: HandoverRecord }) {
         )
       )}
     </div>
-  );
-}
-
-export function SourceDetailFooter({
-  row,
-  version,
-  readOnly,
-  onUpdate,
-  onDownload,
-  onClose,
-  onOpen,
-}: {
-  row: HandoverRecord;
-  version?: number;
-  readOnly: boolean;
-  onUpdate: () => void;
-  onDownload: () => void;
-  onClose: () => void;
-  onOpen: (id: string, version?: number) => void;
-}) {
-  return (
-    <>
-      {version ? (
-        <Button onClick={() => onOpen(row.id)}>返回当前资料</Button>
-      ) : (
-        !readOnly && row.state !== 'archived' && <Button onClick={onUpdate}>更新资料</Button>
-      )}
-      <Button className="primary" onClick={onDownload}>
-        下载原始附件
-      </Button>
-      <Button onClick={onClose}>关闭</Button>
-    </>
   );
 }

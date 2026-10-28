@@ -95,7 +95,6 @@ function reset() {
 function render(props) {
   environment.cursor = 0;
   const tree = SourceImport({
-    scopeId: 'global',
     onSaved() {},
     onClose() {},
     ...props,
@@ -119,143 +118,86 @@ async function submit(tree) {
   await new Promise(setImmediate);
 }
 
-test('新增只上传文件，旧文本草稿可下载且不能切回文字提交，保存后仍保留', async (context) => {
+test('上传表单仅选择原文件，不恢复旧文本或提交隐藏元信息', async () => {
   reset();
-  const old = JSON.stringify({
+  const oldDraft = JSON.stringify({
     title: '旧纪要',
-    payload: { mode: 'text', content: '旧原文\r\n  保留空白 ', notes: '旧来源' },
+    payload: { mode: 'text', content: '旧草稿原文' },
   });
-  storage.set('arks-handover-draft:global:import', old);
-  storage.set('arks-handover-actor:global', '旧手填整理人');
-  const activeKey = 'arks-handover-draft:global:source-file-import';
-  storage.set(
-    activeKey,
-    JSON.stringify({ title: '', payload: { notes: '新附件来源', provider: '隐藏的旧字段' } }),
-  );
-  const uploads = [];
-  const saved = [];
+  storage.set('arks-handover-draft:global:import', oldDraft);
+  const uploads = [],
+    saved = [];
   const props = {
     client: {
-      send() {
-        assert.fail('新增资料不能调用直接文本接口');
-      },
       upload: async (...args) => {
         uploads.push(args);
-        return { id: 'new-file' };
+        return { id: 'file' };
       },
     },
     onSaved: (row) => saved.push(row),
   };
   let tree = render(props);
   const html = renderToStaticMarkup(tree);
-  assert.ok(!html.includes('输入文本'));
-  assert.ok(!html.includes('AI 提取'));
-  assert.ok(!input(tree, '文本内容'));
-  assert.ok(!input(tree, '整理人'));
-  assert.ok(html.includes('下载文本草稿'));
-  let originalBlob;
-  let download;
-  context.mock.method(URL, 'createObjectURL', (blob) => {
-    originalBlob = blob;
-    return 'blob:legacy-draft';
-  });
-  context.mock.method(URL, 'revokeObjectURL', () => {});
-  const oldDocument = globalThis.document;
-  globalThis.document = {
-    createElement: () => ({
-      click() {
-        download = { href: this.href, filename: this.download };
-      },
-    }),
-  };
-  context.after(() => {
-    globalThis.document = oldDocument;
-  });
-  nodes(tree)
-    .find((node) => node.type === 'button' && node.props.children === '下载文本草稿')
-    .props.onClick();
-  assert.equal(await originalBlob.text(), '旧原文\r\n  保留空白 ');
-  assert.deepEqual(download, { href: 'blob:legacy-draft', filename: '旧纪要.txt' });
+  for (const obsolete of [
+    '整理人',
+    '来源说明',
+    '文本内容',
+    '输入文本',
+    '下载文本草稿',
+    'AI 提取',
+    '版本',
+  ])
+    assert.ok(!html.includes(obsolete), obsolete);
   await submit(tree);
   assert.equal(uploads.length, 0);
-  const file = new File(['新附件原文'], '说明.txt', { type: 'text/plain' });
+  const file = new File(['不解析的原文件'], '资料.docx');
   input(tree, '文件').props.onChange({ target: { files: [file] } });
   tree = render(props);
   await submit(tree);
-  assert.deepEqual(uploads, [[file, { actor: '当前登录人', notes: '新附件来源' }]]);
-  assert.deepEqual(saved, [{ id: 'new-file' }]);
-  assert.equal(storage.has(activeKey), false);
-  assert.equal(storage.get('arks-handover-draft:global:import'), old);
-  environment.states = [];
-  const emptyText = JSON.stringify({
-    title: '尚未填写正文的旧草稿',
-    payload: { mode: 'text', content: '', notes: '仅属于旧文本的来源' },
-  });
-  storage.set('arks-handover-draft:global:import', emptyText);
-  tree = render(props);
-  assert.equal(input(tree, '来源说明（选填）').props.value, '');
-  input(tree, '文件').props.onChange({ target: { files: [file] } });
-  await submit(render(props));
-  assert.equal(uploads[1][1].notes, '');
-  assert.equal(storage.get('arks-handover-draft:global:import'), emptyText);
+  assert.deepEqual(uploads, [[file, {}]]);
+  assert.deepEqual(saved, [{ id: 'file' }]);
+  assert.equal(storage.get('arks-handover-draft:global:import'), oldDraft);
 });
 
-test('历史文本仍可修改，正文不裁剪，换版保留来源元信息和原记录关系', async () => {
+test('失败后保留所选文件，可重试；上传过程中阻止重复提交', async () => {
   reset();
-  const sent = [];
-  const replacing = {
-    id: 'old-text',
-    title: '已有文本',
-    payload: {
-      format: 'text',
-      content: '原版',
-      notes: '原来源',
-      provider: '原作者',
-      source_version: '原版本',
-      device: '设备 A',
-    },
-  };
+  let resolveUpload, rejectUpload;
+  const uploads = [],
+    saved = [];
   const props = {
-    replacing,
     client: {
-      upload() {
-        assert.fail('历史文本更新应使用文本接口');
-      },
-      send: async (...args) => {
-        sent.push(args);
-        return { id: 'new-text' };
+      upload: (...args) => {
+        uploads.push(args);
+        return new Promise((resolve, reject) => {
+          resolveUpload = resolve;
+          rejectUpload = reject;
+        });
       },
     },
+    onSaved: (row) => saved.push(row),
   };
   let tree = render(props);
-  assert.ok(!renderToStaticMarkup(tree).includes('输入文本'));
-  assert.ok(!input(tree, '文件'));
-  const content = '  新原文\r\n尾部空白  \n';
-  input(tree, '文本内容').props.onChange({ target: { value: content } });
+  const file = new File(['原文件'], '文件.zip');
+  input(tree, '文件').props.onChange({ target: { files: [file] } });
   tree = render(props);
   await submit(tree);
-  assert.deepEqual(sent, [
-    [
-      '/sources/text',
-      {
-        title: '已有文本',
-        content,
-        actor: '当前登录人',
-        notes: '原来源',
-        provider: '原作者',
-        source_version: '原版本',
-        device: '设备 A',
-        supersedes: 'old-text',
-      },
-    ],
-  ]);
-  assert.equal(replacing.payload.content, '原版');
+  tree = render(props);
+  assert.ok(input(tree, '文件').props.disabled);
+  await submit(tree);
+  assert.equal(uploads.length, 1);
+  rejectUpload(new Error('上传失败，请重试'));
+  await new Promise(setImmediate);
+  assert.ok(renderToStaticMarkup(render(props)).includes('上传失败，请重试'));
+  await submit(render(props));
+  assert.equal(uploads.length, 2);
+  assert.equal(uploads[1][0], file);
+  resolveUpload({ id: 'retry' });
+  await new Promise(setImmediate);
+  assert.deepEqual(saved, [{ id: 'retry' }]);
 });
 
-test('旧文件草稿说明在上传成功后迁移完成，不在下一次添加时重复带入', async () => {
+test('空文件及超限文件不能上传，32 MB 边界允许，未登录时阻止提交', async () => {
   reset();
-  const key = 'arks-handover-draft:global:import';
-  storage.set(key, JSON.stringify({ title: '', payload: { mode: 'file', notes: '上次文件来源' } }));
   const uploads = [];
   const props = {
     client: {
@@ -266,127 +208,21 @@ test('旧文件草稿说明在上传成功后迁移完成，不在下一次添�
     },
   };
   let tree = render(props);
-  assert.equal(input(tree, '来源说明（选填）').props.value, '上次文件来源');
-  input(tree, '文件').props.onChange({ target: { files: [new File(['原文'], '资料.txt')] } });
+  input(tree, '文件').props.onChange({ target: { files: [new File([], '空文件.txt')] } });
+  tree = render(props);
+  assert.ok(renderToStaticMarkup(tree).includes('文件不能为空'));
+  await submit(tree);
+  const boundary = new File([new Uint8Array(32 * 1024 * 1024)], '大文件.pdf');
+  const tooLarge = new File([boundary, 'x'], '超限.pdf');
+  input(tree, '文件').props.onChange({ target: { files: [tooLarge] } });
+  tree = render(props);
+  assert.ok(renderToStaticMarkup(tree).includes('文件不能超过 32 MB'));
+  await submit(tree);
+  assert.equal(uploads.length, 0);
+  input(tree, '文件').props.onChange({ target: { files: [boundary] } });
   await submit(render(props));
-  assert.equal(uploads[0][1].notes, '上次文件来源');
-  assert.equal(storage.has(key), false);
-  environment.states = [];
-  tree = render(props);
-  assert.equal(input(tree, '来源说明（选填）').props.value, '');
-});
-
-test('文件换版失败保留当前草稿与旧文本草稿，重试仍提交文件和原关系', async () => {
-  reset();
-  const legacyKey = 'arks-handover-draft:global:source-update:document';
-  const legacy = JSON.stringify({
-    title: '未保存内容',
-    payload: { mode: 'text', content: '旧换版草稿', notes: '旧文字来源' },
-  });
-  storage.set(legacyKey, legacy);
-  const activeKey = 'arks-handover-draft:global:source-file-update:document';
-  const current = JSON.stringify({ title: '原文档', payload: { notes: '当前文件来源' } });
-  storage.set(activeKey, current);
-  const uploads = [];
-  let failing = true;
-  const props = {
-    replacing: {
-      id: 'document',
-      title: '原文档',
-      payload: {
-        format: 'pdf',
-        notes: '原来源',
-        provider: '原作者',
-        source_version: '1',
-        device: '设备 A',
-      },
-    },
-    client: {
-      upload: async (...args) => {
-        uploads.push(args);
-        if (failing) throw new Error('上传失败');
-        return { id: 'replacement' };
-      },
-    },
-  };
-  let tree = render(props);
-  const file = new File(['PDF fixture'], '新版.pdf');
-  input(tree, '文件').props.onChange({ target: { files: [file] } });
-  tree = render(props);
-  await submit(tree);
-  assert.deepEqual(uploads, [
-    [
-      file,
-      {
-        actor: '当前登录人',
-        notes: '当前文件来源',
-        supersedes: 'document',
-        provider: '原作者',
-        source_version: '1',
-        device: '设备 A',
-      },
-    ],
-  ]);
-  assert.equal(storage.get(activeKey), current);
-  assert.equal(storage.get(legacyKey), legacy);
-  assert.ok(renderToStaticMarkup(render(props)).includes('上传失败'));
-  failing = false;
-  await submit(render(props));
-  assert.equal(uploads.length, 2);
-  assert.deepEqual(uploads[1], uploads[0]);
-  assert.equal(storage.has(activeKey), false);
-  assert.equal(storage.get(legacyKey), legacy);
-});
-
-test('历史文本按 Unicode 字符校验上限，超限阻止提交且正文不被截断', async () => {
-  reset();
-  const requests = [];
-  const props = {
-    replacing: {
-      id: 'text',
-      title: '历史原文',
-      payload: { format: 'text', content: '字'.repeat(99999) + '😀' },
-    },
-    client: {
-      send: async (...args) => {
-        requests.push(args);
-        return { id: 'updated' };
-      },
-    },
-  };
-  let tree = render(props);
-  await submit(tree);
-  assert.equal(requests.length, 1);
-  const overLimit = '字'.repeat(100000) + '😀';
-  input(tree, '文本内容').props.onChange({ target: { value: overLimit } });
-  tree = render(props);
-  await submit(tree);
-  assert.equal(requests.length, 1);
-  assert.equal(input(tree, '文本内容').props.value, overLimit);
-  assert.ok(renderToStaticMarkup(tree).includes('文本超过 100,000 字符'));
-});
-
-test('整理人随登录账号变化，无显示名时使用用户名，未登录时不能提交', async () => {
-  reset();
-  const uploads = [];
-  const props = {
-    client: {
-      upload: async (...args) => {
-        uploads.push(args);
-        return { id: 'new-file' };
-      },
-    },
-  };
-  let tree = render(props);
-  const file = new File(['原文'], '资料.txt');
-  input(tree, '文件').props.onChange({ target: { files: [file] } });
-  environment.user = { display_name: '', username: 'new-account' };
-  tree = render(props);
-  assert.ok(!input(tree, '整理人'));
-  await submit(tree);
-  assert.equal(uploads[0][1].actor, 'new-account');
+  assert.equal(uploads.length, 1);
   environment.user = undefined;
-  tree = render(props);
-  await submit(tree);
+  await submit(render(props));
   assert.equal(uploads.length, 1);
 });

@@ -5,7 +5,6 @@ import {
   overviewSummary,
   packageRecordCount,
   selectEvents,
-  selectMaterials,
   selectTasks,
   selectIssues,
 } from '../../src/features/handover/overview/overviewData.ts';
@@ -25,7 +24,7 @@ function record(id, kind, state = 'draft', payload = {}) {
 }
 const overview = (records, blocks = {}) => ({ scope_id: 'global', records, blocks });
 
-test('资料确认统计只包含有效资料与访谈，草稿和待复核均计入待处理', () => {
+test('资料只计有效文件和历史文本，不进入待审核统计', () => {
   const rows = [
     record('source', 'source', 'confirmed'),
     record('interview', 'interview', 'confirmed'),
@@ -37,10 +36,9 @@ test('资料确认统计只包含有效资料与访谈，草稿和待复核均�
   ];
   const result = overviewSummary(overview(rows));
   assert.equal(result.materials.length, 4);
-  assert.equal(result.materialConfirmed, 2);
   assert.equal(result.sources.length, 2);
   assert.equal(result.interviews.length, 2);
-  assert.equal(result.reviewCount, 1);
+  assert.equal(result.reviewCount, 0);
 });
 
 test('工作进度只按登记状态统计，旧验收记录计入已完成，关联条件不自动改变阻塞数', () => {
@@ -115,7 +113,6 @@ test('操作图统计每次操作而非唯一记录，其他动作不丢失，�
 
 test('空交接范围保留零值，不产生假记录或图表数据', () => {
   const result = overviewSummary(overview([]), []);
-  assert.equal(result.materialConfirmed, 0);
   assert.equal(result.materials.length, 0);
   assert.equal(result.unfinished.length, 0);
   assert.deepEqual(result.packageBars, []);
@@ -204,22 +201,6 @@ test('问题与经验图表筛选使用同一分类，按最近更新排序并�
   );
   assert.equal(selectIssues(rows, 'all').length, 3);
   assert.deepEqual(selectIssues(rows, 'unknown'), []);
-  assert.deepEqual(rows, original);
-});
-
-test('资料类型与确认状态组合筛选，不改变全局记录及其顺序', () => {
-  const rows = [
-    record('source', 'source', 'confirmed'),
-    record('draft', 'interview'),
-    record('review', 'interview', 'needs_review'),
-  ];
-  const original = structuredClone(rows);
-  assert.deepEqual(
-    selectMaterials(rows, 'interview', 'needs_review').map((row) => row.id),
-    ['review'],
-  );
-  assert.equal(selectMaterials(rows, 'all', 'all').length, 3);
-  assert.equal(selectMaterials(rows, 'source', 'draft').length, 0);
   assert.deepEqual(rows, original);
 });
 

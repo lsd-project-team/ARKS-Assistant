@@ -34,6 +34,7 @@ export interface HandoverRecord {
   created_at: string;
   updated_at: string;
   created_by?: string;
+  original_file?: { name: string; previewable: boolean } | null;
   confirmation?: {
     actor?: string;
     role?: string;

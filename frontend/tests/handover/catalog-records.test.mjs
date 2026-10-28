@@ -1,10 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { filterCatalogRecords } from '../../src/features/handover/shared/catalogRecords.ts';
-import { materialPreview } from '../../src/features/handover/materials/materialRecords.ts';
+import {
+  materialFiles,
+  materialName,
+} from '../../src/features/handover/materials/materialRecords.ts';
 
 function record(id, kind, payload = {}, state = 'draft') {
-  return { id, kind, title: id, state, payload, updated_at: '2026-10-16T08:00:00Z' };
+  return {
+    id,
+    kind,
+    title: id,
+    state,
+    payload,
+    created_at: '2026-10-16T08:00:00Z',
+    updated_at: '2026-10-16T08:00:00Z',
+  };
 }
 
 test('资料搜索组合名称和提供人，历史访谈可检索且不混入问题或交接包', () => {
@@ -50,20 +61,36 @@ test('交接包状态和接收对象共同筛选，排序不改输入，归档�
   assert.deepEqual(rows, original);
 });
 
-test('资料预览优先正文，扫描文档保留解析说明，无正文不生成虚构说明', () => {
-  const source = record('manual', 'source', {
-    content: '原始正文',
-    notes: '备注',
-    parse_notes: '解析信息',
-  });
-  assert.equal(materialPreview(source), '原始正文');
-  assert.equal(
-    materialPreview(record('scan', 'source', { parse_notes: '共 71 页，需补充文字' })),
-    '共 71 页，需补充文字',
+test('原文件按名称与实际上传人搜索，不搜索隐藏正文；按上传时间排序且不改输入', () => {
+  const older = {
+    ...record('旧标题', 'source', { content: '隐藏正文', provider: '原作者' }),
+    created_by: '上传甲',
+    original_file: { name: '手册.PDF', previewable: true },
+  };
+  const newer = {
+    ...record('新文件', 'source'),
+    created_at: '2026-10-17T08:00:00Z',
+    created_by: '上传乙',
+  };
+  const legacy = record('旧访谈', 'interview', { transcript: '旧正文' });
+  const rows = [
+    older,
+    newer,
+    legacy,
+    record('已移出', 'source', {}, 'archived'),
+    record('任务', 'task'),
+  ];
+  const original = structuredClone(rows);
+  assert.equal(materialName(older), '手册.PDF');
+  assert.deepEqual(
+    materialFiles(rows, ' 手册   上传甲 ').map((row) => row.id),
+    ['旧标题'],
   );
-  assert.equal(materialPreview(record('old', 'interview', { transcript: '访谈原文' })), '访谈原文');
-  assert.equal(materialPreview(record('empty', 'source')), '');
-  const long = record('long', 'source', { content: '字'.repeat(1000) });
-  assert.equal(materialPreview(long).length, 600);
-  assert.equal(long.payload.content.length, 1000);
+  assert.deepEqual(materialFiles(rows, '隐藏正文'), []);
+  assert.deepEqual(materialFiles(rows, '原作者'), []);
+  assert.deepEqual(
+    materialFiles(rows).map((row) => row.id),
+    ['新文件', '旧标题', '旧访谈'],
+  );
+  assert.deepEqual(rows, original);
 });

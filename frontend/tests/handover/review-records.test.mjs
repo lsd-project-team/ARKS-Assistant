@@ -28,7 +28,7 @@ const event = (id, record_id, version, action = 'updated', detail = '') => ({
   created_at: '2026-10-14T08:00:00Z',
 });
 
-test('统一待审核队列包含首次确认与重新复核，任务及 AI 运行、候选不进入队列', () => {
+test('待审核队列排除资料、任务和 AI 记录，保留其他记录的确认流程', () => {
   const rows = [
     row('source', 'source'),
     row('interview'),
@@ -45,25 +45,25 @@ test('统一待审核队列包含首次确认与重新复核，任务及 AI 运�
     row('rejected', 'interview', 'rejected'),
   ];
   const original = structuredClone(rows);
-  assert.deepEqual(reviewCounts(rows), { all: 7, source: 2, interview: 1, package: 1, other: 3 });
-  assert.equal(pendingReviewRows(rows).length, 7);
+  assert.deepEqual(reviewCounts(rows), { all: 4, package: 1, other: 3 });
+  assert.equal(pendingReviewRows(rows).length, 4);
   assert.deepEqual(
     selectReviewRows(rows, 'other').map((item) => item.id),
     ['issue', 'plan', 'decision'],
   );
   assert.deepEqual(
-    selectReviewRows(rows, 'source').map((item) => item.id),
-    ['source', 'draft'],
+    selectReviewRows(rows, 'package').map((item) => item.id),
+    ['package'],
   );
-  assert.equal(selectReviewRows(rows, 'all').length, 7);
+  assert.equal(selectReviewRows(rows, 'all').length, 4);
   assert.deepEqual(rows, original);
 });
 
 test('空分类只清空当前结果，分类计数仍基于全部待复核记录', () => {
   const rows = [row('interview'), row('package', 'package')];
-  assert.deepEqual(selectReviewRows(rows, 'source'), []);
-  assert.deepEqual(reviewCounts(rows), { all: 2, source: 0, interview: 1, package: 1, other: 0 });
-  assert.deepEqual(reviewCounts([]), { all: 0, source: 0, interview: 0, package: 0, other: 0 });
+  assert.deepEqual(selectReviewRows(rows, 'other'), []);
+  assert.deepEqual(reviewCounts(rows), { all: 1, package: 1, other: 0 });
+  assert.deepEqual(reviewCounts([]), { all: 0, package: 0, other: 0 });
 });
 
 test('复核原因匹配当前记录、当前版本的最新操作，不依赖日志排列顺序', () => {

@@ -1,65 +1,69 @@
-import { FileText } from 'lucide-react';
+import { FileText, Search } from 'lucide-react';
 import { useState } from 'react';
-import { filterCatalogRecords } from '../shared/catalogRecords';
-import { CatalogCard, CatalogEmpty, CatalogToolbar } from '../shared/RecordCatalog';
-import { text, type Definitions, type HandoverRecord } from '../shared/types';
-import { materialPreview } from './materialRecords';
+import { localTime } from '../shared/format';
+import type { HandoverRecord } from '../shared/types';
+import { materialFiles, materialName } from './materialRecords';
+import './materials.css';
 
-export function MaterialsPage({
+export function MaterialFileList({
   rows,
-  definitions,
-  archived,
   onOpen,
 }: {
   rows: HandoverRecord[];
-  definitions: Definitions;
-  archived: boolean;
+  onOpen: (id: string) => void;
+}) {
+  return (
+    <ul className="material-file-list">
+      {rows.map((row) => (
+        <li key={row.id}>
+          <button
+            className="material-file"
+            aria-label={`查看原文件：${materialName(row)}`}
+            onClick={() => onOpen(row.id)}
+          >
+            <FileText size={22} />
+            <strong>{materialName(row)}</strong>
+            <span className="material-uploader" aria-label="上传人">
+              {row.created_by || '—'}
+            </span>
+            <time dateTime={row.created_at}>{localTime(row.created_at)}</time>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function MaterialsPage({
+  rows,
+  onOpen,
+}: {
+  rows: HandoverRecord[];
   onOpen: (id: string) => void;
 }) {
   const [search, setSearch] = useState('');
-  const [state, setState] = useState('');
-  // 历史访谈作为文本资料展示，保留原类型、原记录与固定版本引用。
-  const matches = filterCatalogRecords(
-    rows,
-    ['source', 'interview'],
-    search,
-    archived ? '' : state,
-  );
+  const matches = materialFiles(rows, search);
   return (
-    <section aria-label="资料记录">
-      <CatalogToolbar
-        search={search}
-        onSearch={setSearch}
-        label="搜索资料"
-        placeholder="搜索资料名称、内容或提供人…"
-        state={state}
-        onState={setState}
-        archived={archived}
-        definitions={definitions}
-        count={matches.length}
-        unit="份资料"
-      />
-      <div className="record-catalog-grid">
-        {matches.map((row) => (
-          <CatalogCard
-            key={row.id}
-            row={row}
-            definitions={definitions}
-            icon={FileText}
-            label="资料"
-            preview={materialPreview(row)}
-            metadata={[
-              text(row.payload.provider) || text(row.payload.author),
-              row.updated_at.slice(0, 10),
-            ]
-              .filter(Boolean)
-              .join(' · ')}
-            onOpen={onOpen}
+    <section aria-label="资料文件">
+      <div className="material-file-tools">
+        <label className="material-file-search">
+          <Search size={16} />
+          <input
+            aria-label="搜索资料"
+            placeholder="搜索文件名或上传人…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
           />
-        ))}
+        </label>
+        <span>{matches.length} 份资料</span>
       </div>
-      {!matches.length && (
-        <CatalogEmpty icon={FileText} filtered={!!(search || (!archived && state))} />
+      {matches.length ? (
+        <MaterialFileList rows={matches} onOpen={onOpen} />
+      ) : (
+        <div className="material-file-empty">
+          <FileText size={28} />
+          <p>{search ? '没有匹配的资料' : '暂无资料'}</p>
+        </div>
       )}
     </section>
   );

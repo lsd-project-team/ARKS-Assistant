@@ -5,7 +5,51 @@ import re
 from pathlib import PurePosixPath
 
 from app.modules.handover.application.ports import MaterialParser, RecordRepository
-from app.modules.handover.domain.materials import MAX_TEXT
+from app.modules.handover.domain.materials import MAX_TEXT, MAX_UPLOAD, original_media_type
+
+
+def upload_original(store: RecordRepository, data: bytes, filename: str, actor: str):
+    """新上传只保存原始字节，不调用文档解析器或建立正文索引。"""
+    if not data or len(data) > MAX_UPLOAD:
+        raise ValueError("文件不能为空且不能超过 32 MB")
+    filename = PurePosixPath(filename.replace("\\", "/")).name
+    filename = re.sub(r"[\x00-\x1f\x7f]", "", filename).strip()[:250]
+    if filename in {"", ".", ".."}:
+        raise ValueError("请提供有效文件名")
+    sha256 = hashlib.sha256(data).hexdigest()
+    return store.create(
+        "source",
+        filename[:200],
+        {
+            "origin": "import",
+            "filename": filename,
+            "format": PurePosixPath(filename).suffix.lstrip(".").lower(),
+            "sha256": sha256,
+        },
+        actor,
+        blob={
+            "name": filename,
+            "media_type": original_media_type(filename) or "application/octet-stream",
+            "sha256": sha256,
+            "content": data,
+        },
+    )
+
+
+def original_file(store: RecordRepository, identifier: str):
+    try:
+        return store.blob(identifier)
+    except FileNotFoundError:
+        row = store.get(identifier)
+        payload = row["payload"]
+        content = (
+            payload.get("content", "") if row["kind"] == "source" else payload.get("transcript", "")
+        )
+        if row["kind"] not in {"source", "interview"} or not content:
+            raise FileNotFoundError("原始附件不存在") from None
+        # 仅兼容旧的纯文本记录；不解析新文件，也不改写或覆盖历史正文。
+        filename = re.sub(r'[\\/:*?"<>|\r\n]', "_", row["title"]) + ".txt"
+        return {"content": content.encode("utf-8"), "name": filename, "media_type": "text/plain"}
 
 
 def import_source(store: RecordRepository, data, filename, metadata, actor, parser: MaterialParser):

@@ -46,12 +46,6 @@ export function newestRecords(records: HandoverRecord[]) {
   return [...records].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
 }
 
-export function selectMaterials(records: HandoverRecord[], kind: string, state: string) {
-  return newestRecords(records).filter(
-    (row) => (kind === 'all' || row.kind === kind) && (state === 'all' || row.state === state),
-  );
-}
-
 export function selectTasks(records: HandoverRecord[], stage: string) {
   return records
     .filter((row) => stage === 'all' || taskStage(row.payload) === stage)
@@ -109,7 +103,6 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
   const sources = records.filter((row) => row.kind === 'source');
   const interviews = records.filter((row) => row.kind === 'interview');
   const materials = [...sources, ...interviews];
-  const materialConfirmed = materials.filter((row) => row.state === 'confirmed').length;
   const tasks = records.filter((row) => row.kind === 'task');
   const issues = selectIssues(records, 'all');
   const problems = issues.filter((row) => debugRecordType(row.payload).value === 'problem');
@@ -157,7 +150,6 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
     sources,
     interviews,
     materials,
-    materialConfirmed,
     latestSource: newestRecords(sources)[0],
     latestInterview: newestRecords(interviews)[0],
     tasks,
@@ -186,7 +178,8 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
     })),
     eventBars,
     recentEvents: [...(events || [])].sort((a, b) => b.id - a.id).slice(0, 2),
-    reviewCount: records.filter((row) => row.kind !== 'task' && row.state === 'needs_review')
-      .length,
+    reviewCount: records.filter(
+      (row) => !['task', 'source', 'interview'].includes(row.kind) && row.state === 'needs_review',
+    ).length,
   };
 }

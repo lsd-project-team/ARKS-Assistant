@@ -3,15 +3,13 @@ import { canReviewRecord } from './reviewPolicy.ts';
 
 export const reviewCategories = [
   { id: 'all', label: '全部' },
-  { id: 'source', label: '资料' },
-  { id: 'interview', label: '访谈' },
   { id: 'package', label: '交接包' },
   { id: 'other', label: '其他记录' },
 ] as const;
 export type ReviewCategory = (typeof reviewCategories)[number]['id'];
 
 function categoryOf(row: HandoverRecord): ReviewCategory {
-  if (row.kind === 'source' || row.kind === 'interview' || row.kind === 'package') return row.kind;
+  if (row.kind === 'package') return row.kind;
   return 'other';
 }
 
@@ -21,7 +19,7 @@ export function pendingReviewRows(rows: HandoverRecord[]) {
 }
 
 export function reviewCounts(rows: HandoverRecord[]): Record<ReviewCategory, number> {
-  const counts = { all: 0, source: 0, interview: 0, package: 0, other: 0 };
+  const counts = { all: 0, package: 0, other: 0 };
   for (const row of pendingReviewRows(rows)) {
     counts.all += 1;
     counts[categoryOf(row)] += 1;

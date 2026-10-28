@@ -64,26 +64,45 @@ function render(Component, rows, archived = false) {
   );
 }
 
-test('资料列表展示正文、版本与真实作者，旧访谈仍可打开，空元信息不补造负责人', () => {
+test('资料列表只显示原文件、真实上传人和上传时间，不显示正文、版本或审核状态', () => {
+  const source = {
+    ...row('用户手册', 'source', {
+      format: 'pdf',
+      content: '不展示的已提取正文',
+      provider: '非上传人',
+    }),
+    created_by: '贺强',
+    original_file: { name: '原始手册.pdf', previewable: true },
+  };
+  const legacy = {
+    ...row('旧记录', 'interview', { transcript: '不展示的访谈正文' }),
+    created_by: '李少达',
+  };
   const html = render(MaterialsPage, [
-    row('用户手册', 'source', { format: 'pdf', content: '使用说明', provider: '贺强' }),
-    row('旧记录', 'interview', { transcript: '原有问答', author: '李少达' }),
+    source,
+    legacy,
     row('非资料', 'task'),
+    row('已移出的文件', 'source', {}, 'archived'),
   ]);
-  assert.equal((html.match(/aria-label="查看记录：/g) || []).length, 2);
-  for (const value of [
-    '用户手册',
-    '使用说明',
-    '资料 · v2',
-    '原有问答',
-    '李少达',
-    '贺强',
-    '搜索资料',
-  ])
+  assert.equal((html.match(/aria-label="查看原文件：/g) || []).length, 2);
+  for (const value of ['原始手册.pdf', '旧记录', '李少达', '贺强', '搜索资料'])
     assert.ok(html.includes(value), value);
-  assert.ok(!html.includes('未指定负责人'));
-  assert.ok(!html.includes('非资料'));
-  for (const obsolete of ['资料类型', '全部类型', '文件资料', '文本记录', '源码资料'])
+  for (const obsolete of [
+    '不展示的已提取正文',
+    '不展示的访谈正文',
+    '非上传人',
+    '非资料',
+    '已移出的文件',
+    'v2',
+    '待确认',
+    '资料类型',
+    '全部类型',
+    '全部状态',
+    '记录状态',
+    '文件资料',
+    '文本记录',
+    '源码资料',
+  ])
     assert.ok(!html.includes(obsolete), obsolete);
 });
 
@@ -111,7 +130,7 @@ test('交接包卡片保留打开与归档入口，收录数按固定版本去�
 test('资料与交接包空列表只显示简洁状态，不带重复分组与引导说明', () => {
   for (const Component of [MaterialsPage, PackageList]) {
     const html = render(Component, []);
-    assert.ok(html.includes('暂无记录'));
+    assert.ok(html.includes(Component === MaterialsPage ? '暂无资料' : '暂无记录'));
     assert.ok(!html.includes('handover-group'));
     assert.ok(!html.includes('保留生成时的记录版本'));
   }

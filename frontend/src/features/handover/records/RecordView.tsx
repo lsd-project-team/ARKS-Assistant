@@ -2,12 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { DebugIssueDetail } from '../debug_issues/DebugIssueDetail';
-import { SourceDetailFooter } from '../materials/SourceContent';
-import { SourceImport } from '../materials/SourceImport';
+import { OriginalMaterialViewer } from '../materials/OriginalMaterialViewer';
 import { PackageDetail } from '../packages/PackageDetail';
 import { RecordHistory, type RecordRevision } from '../reviews/RecordHistory';
 import { RecordReview } from '../reviews/RecordReview';
-import { HandoverSelect } from '../shared/Controls';
 import { HandoverModal } from '../shared/HandoverModal';
 import { Status } from '../shared/RecordCard';
 import type { Client } from '../shared/client';
@@ -33,7 +31,6 @@ export function RecordView({
   onEdit,
   onChanged,
   onDiscuss,
-  onCurrentSource,
 }: {
   scopeId: string;
   identifier: string;
@@ -50,7 +47,6 @@ export function RecordView({
   onEdit: (row: HandoverRecord) => void;
   onChanged: () => void;
   onDiscuss?: (row: HandoverRecord) => void;
-  onCurrentSource?: (row: HandoverRecord) => Promise<void>;
 }) {
   const readOnly = version !== undefined;
 
@@ -62,16 +58,13 @@ export function RecordView({
   const history = useQuery({
     queryKey: ['handover-history', scopeId, identifier],
     queryFn: () => client.get<RecordRevision[]>(`/records/${identifier}/history`),
-    enabled: canReview,
+    enabled: canReview && !!query.data && !['source', 'interview'].includes(query.data.kind),
   });
   const [action, setAction] = useState<'' | 'archive' | 'restore'>('');
   const [opinion, setOpinion] = useState('');
   const [role, setRole] = useState('');
   const [error, setError] = useState<unknown>();
   const [busy, setBusy] = useState(false);
-  const [snapshot, setSnapshot] = useState<{ path: string; content: string; sha256: string }>();
-  const [comparison, setComparison] = useState<{ changed: boolean }>();
-  const [updatingSource, setUpdatingSource] = useState(false);
   const row = query.data;
   const historyContent = canReview ? (
     <RecordHistory
@@ -105,6 +98,9 @@ export function RecordView({
     } finally {
       setBusy(false);
     }
+  }
+  if (row && ['source', 'interview'].includes(row.kind)) {
+    return <OriginalMaterialViewer row={row} client={client} onClose={onClose} />;
   }
   if (row && reviewOnly && canReview) {
     return (
@@ -217,79 +213,29 @@ export function RecordView({
       />
     );
   }
-  if (
-    updatingSource &&
-    row?.kind === 'source' &&
-    !readOnly &&
-    !version &&
-    row.state !== 'archived'
-  ) {
-    return (
-      <SourceImport
-        key={row.id}
-        scopeId={scopeId}
-        replacing={row}
-        client={client}
-        onClose={() => setUpdatingSource(false)}
-        onSaved={(updated) => {
-          setUpdatingSource(false);
-          onChanged();
-          onOpen(updated.id);
-        }}
-      />
-    );
-  }
   return (
     <HandoverModal
       title={row?.title || '交接记录'}
-      description={
-        version
-          ? '正在查看固定历史版本'
-          : row?.kind === 'source'
-            ? '查看资料内容'
-            : '复核内容、关联证据和接续条件'
-      }
+      description={version ? '正在查看固定历史版本' : '复核内容、关联证据和接续条件'}
       onClose={onClose}
-      className={row?.kind === 'source' ? 'source-detail' : 'handover-detail'}
-      footer={
-        row?.kind === 'source' && (
-          <SourceDetailFooter
-            row={row}
-            version={version}
-            readOnly={readOnly}
-            onUpdate={() => setUpdatingSource(true)}
-            onDownload={() =>
-              void client
-                .download(
-                  `/sources/${row.id}/original`,
-                  text(row.payload.filename).split(/[\\/]/).pop() || '原始资料',
-                )
-                .catch(setError)
-            }
-            onClose={onClose}
-            onOpen={onOpen}
-          />
-        )
-      }
+      className="handover-detail"
     >
       {query.isPending && <p role="status">正在读取记录…</p>}
       <ErrorText error={query.error || error} reveal />
       {query.error && <Button onClick={() => void query.refetch()}>重试</Button>}
       {row && (
         <>
-          {row.kind !== 'source' && (
-            <div className="handover-actions handover-detail-toolbar">
-              <Status row={row} definitions={definitions} />
-              <span>
-                v{row.version} · {definitions.values[text(row.payload.origin)] || '人工整理'}
-              </span>
-              {!version &&
-                !readOnly &&
-                !['source', 'package', 'job', 'candidate'].includes(row.kind) &&
-                row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
-              {onDiscuss && <Button onClick={() => onDiscuss(row)}>在对话中讨论</Button>}
-            </div>
-          )}
+          <div className="handover-actions handover-detail-toolbar">
+            <Status row={row} definitions={definitions} />
+            <span>
+              v{row.version} · {definitions.values[text(row.payload.origin)] || '人工整理'}
+            </span>
+            {!version &&
+              !readOnly &&
+              !['source', 'package', 'job', 'candidate'].includes(row.kind) &&
+              row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
+            {onDiscuss && <Button onClick={() => onDiscuss(row)}>在对话中讨论</Button>}
+          </div>
           {row.kind === 'candidate' ? (
             <>
               <p className="handover-notice">
@@ -311,76 +257,6 @@ export function RecordView({
           ) : (
             <RecordContent row={row} records={records} definitions={definitions} onOpen={onOpen} />
           )}
-          {row.kind === 'source' &&
-            (text(row.payload.path) ||
-              (Array.isArray(row.payload.files) && row.payload.files.length > 0)) && (
-              <section className="handover-form-section">
-                <div className="handover-actions">
-                  {text(row.payload.path) && (
-                    <>
-                      <Button
-                        onClick={() =>
-                          void client
-                            .get<{ changed: boolean }>(`/sources/${row.id}/compare`)
-                            .then(setComparison)
-                            .catch(setError)
-                        }
-                      >
-                        比对当前版本
-                      </Button>
-                      {onCurrentSource && (
-                        <Button onClick={() => void onCurrentSource(row).catch(setError)}>
-                          在源码阅读器打开
-                        </Button>
-                      )}
-                    </>
-                  )}
-                </div>
-                {comparison && (
-                  <p className="handover-notice" role="status">
-                    {comparison.changed
-                      ? '当前源码已经变化，交接记录仍保留原快照。'
-                      : '比对完成：当前源码与固定快照一致。'}
-                  </p>
-                )}
-                {Array.isArray(row.payload.files) && row.payload.files.length > 0 && (
-                  <label className="handover-file-select">
-                    <span>查看快照文件</span>
-                    <HandoverSelect
-                      label="查看快照文件"
-                      value={snapshot?.path || ''}
-                      onValueChange={(path) => {
-                        if (!path) {
-                          setSnapshot(undefined);
-                          return;
-                        }
-                        void client
-                          .get<{ path: string; content: string; sha256: string }>(
-                            `/sources/${row.id}/file?path=${encodeURIComponent(path)}`,
-                          )
-                          .then(setSnapshot)
-                          .catch(setError);
-                      }}
-                      options={[
-                        { value: '', label: '选择文件' },
-                        ...(row.payload.files as { path: string }[]).map((file) => ({
-                          value: file.path,
-                          label: file.path,
-                        })),
-                      ]}
-                    />
-                  </label>
-                )}
-                {snapshot && (
-                  <>
-                    <p>
-                      {snapshot.path} · SHA256 {snapshot.sha256}
-                    </p>
-                    <pre className="handover-source">{snapshot.content}</pre>
-                  </>
-                )}
-              </section>
-            )}
           {!readOnly && !version && !['job', 'candidate'].includes(row.kind) && (
             <div className="handover-actions handover-form-section">
               <Button

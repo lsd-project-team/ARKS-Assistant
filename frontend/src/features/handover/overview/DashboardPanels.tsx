@@ -6,12 +6,13 @@ import {
   eventsInRange,
   overviewSummary,
   selectEvents,
-  selectMaterials,
   selectTasks,
   selectIssues,
-  type ChartDatum,
 } from './overviewData';
 import { tabs, type Definitions, type Event, type Overview, type Tab } from '../shared/types';
+
+import { MaterialFileList } from '../materials/MaterialsPage';
+import { materialFiles } from '../materials/materialRecords';
 
 type Summary = ReturnType<typeof overviewSummary>;
 type PanelProps = {
@@ -68,70 +69,23 @@ function DashboardPanel({
   );
 }
 
-export function MaterialsPanel({ data, definitions, onOpen, onNavigate }: PanelProps) {
-  const [state, setState] = useState('all');
-  const typedRows = data.materials;
-  const selectedRows = selectMaterials(data.materials, 'all', state);
-  const chartData: ChartDatum[] = [
-    {
-      id: 'confirmed',
-      label: '已确认',
-      tone: 'green',
-      value: typedRows.filter((row) => row.state === 'confirmed').length,
-    },
-    {
-      id: 'draft',
-      label: '待确认',
-      tone: 'blue',
-      value: typedRows.filter((row) => row.state === 'draft').length,
-    },
-    {
-      id: 'needs_review',
-      label: '待复核',
-      tone: 'amber',
-      value: typedRows.filter((row) => row.state === 'needs_review').length,
-    },
-  ];
+export function MaterialsPanel({ data, onOpen, onNavigate }: PanelProps) {
+  const rows = materialFiles(data.materials);
   return (
     <DashboardPanel
       tab="materials"
       icon={<BookOpen size={17} />}
-      count={data.materials.length}
+      count={rows.length}
       unit="份"
-      summary={'资料 ' + data.materials.length + ' · 已确认 ' + data.materialConfirmed}
+      summary="保存并查看原始文件"
+      hint="点击资料查看原文件"
       onNavigate={onNavigate}
     >
-      <InteractiveRing
-        data={chartData}
-        selected={state}
-        onSelect={setState}
-        label="资料确认分布"
-        unit="份"
-        totalLabel="资料总数"
-        summary={{
-          value: typedRows.length
-            ? Math.round((chartData[0].value / typedRows.length) * 100) + '%'
-            : '—',
-          label: '已确认比例',
-        }}
-      />
-      <SelectionHeading
-        label={
-          state === 'all' ? '最近资料' : chartData.find((item) => item.id === state)!.label + '记录'
-        }
-        count={selectedRows.length}
-        filtered={state !== 'all'}
-        onReset={() => {
-          setState('all');
-        }}
-      />
-      <DashboardRecordList
-        key={state}
-        rows={selectedRows}
-        definitions={definitions}
-        onOpen={onOpen}
-        empty="此筛选范围暂无资料"
-      />
+      {rows.length ? (
+        <MaterialFileList rows={rows.slice(0, 5)} onOpen={onOpen} />
+      ) : (
+        <p className="muted">暂无资料</p>
+      )}
     </DashboardPanel>
   );
 }

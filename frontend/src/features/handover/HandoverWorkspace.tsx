@@ -22,7 +22,6 @@ import { PageHeading, pageDescriptions } from './shared/Presentation';
 import {
   handoverScope,
   tabs,
-  text,
   type Definitions,
   type Event,
   type HandoverContext,
@@ -150,7 +149,10 @@ export default function HandoverWorkspace({
     if (owner?.generation !== undefined && owner.generation !== operationGeneration.current) return;
     setEditor(undefined);
     setOperation('');
-    navigate(tab, row.kind === 'task' && !owner?.editor?.row ? undefined : row.id);
+    const showList =
+      (row.kind === 'source' && tab === 'materials') ||
+      (row.kind === 'task' && !owner?.editor?.row);
+    navigate(tab, showList ? undefined : row.id);
   }
   function cacheTask(row: HandoverRecord) {
     queryClient.setQueryData(['handover-record', scopeId, row.id, undefined], row);
@@ -185,23 +187,6 @@ export default function HandoverWorkspace({
     const draft = draftFor(workspace).content;
     workspace.setDraft(draft ? `${draft}\n\n${context}` : context);
     workspace.setProjectPage(false);
-    onWorkspaceNavigate?.('chat');
-  }
-  async function openCurrentSource(row: HandoverRecord) {
-    const workspace = useWorkspace.getState();
-    const result = await client.get<{ changed: boolean; reader_matches: boolean }>(
-      `/sources/${row.id}/compare?reader_project_id=${encodeURIComponent(workspace.projectId)}`,
-    );
-    if (!alive.current) return;
-    if (result.changed) throw new Error('当前源码已变化，请先查看固定快照，或重新捕获并复核来源。');
-    if (!result.reader_matches)
-      throw new Error(
-        '当前对话的源码目录与这份交接来源不同，请查看固定快照或在对应源码项目中打开。',
-      );
-    workspace.openFile(text(row.payload.path));
-    workspace.setWorkspaceOpen(true);
-    workspace.setProjectPage(false);
-    workspace.setMobile('code');
     onWorkspaceNavigate?.('chat');
   }
   const current = rows.filter((row) =>
@@ -286,7 +271,7 @@ export default function HandoverWorkspace({
                 title={tabs.find((item) => item.id === tab)!.label}
                 description={pageDescriptions[tab]}
               >
-                {tab !== 'updates' && (
+                {!['updates', 'materials'].includes(tab) && (
                   <label className="handover-checkbox">
                     <input
                       type="checkbox"
@@ -353,14 +338,7 @@ export default function HandoverWorkspace({
                 onChanged={changed}
               />
             )}
-            {tab === 'materials' && (
-              <MaterialsPage
-                rows={current}
-                definitions={definitions.data}
-                archived={archive}
-                onOpen={open}
-              />
-            )}
+            {tab === 'materials' && <MaterialsPage rows={rows} onOpen={open} />}
             {tab === 'updates' && reviewAccess && (
               <ActivityPage
                 events={events.data || []}
@@ -393,7 +371,6 @@ export default function HandoverWorkspace({
                 }
                 onChanged={changed}
                 onDiscuss={management ? undefined : discuss}
-                onCurrentSource={management ? undefined : openCurrentSource}
               />
             )}
             {editor &&
@@ -433,7 +410,6 @@ export default function HandoverWorkspace({
               ))}
             {operation === 'import' && (
               <SourceImport
-                scopeId={scopeId}
                 client={client}
                 onSaved={(row) => saved(row, { generation: currentOperationGeneration })}
                 onClose={() => setOperation('')}

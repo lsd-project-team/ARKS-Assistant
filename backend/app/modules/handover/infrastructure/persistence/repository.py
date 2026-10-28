@@ -16,6 +16,7 @@ from app.modules.handover.domain.rules import (
 )
 from app.modules.handover.domain.schemas import validate_payload
 from app.modules.handover.infrastructure.persistence.debug_images import DebugImageStorage
+from app.modules.handover.infrastructure.persistence.material_files import attach_material_files
 from app.modules.handover.infrastructure.persistence.models import (
     HandoverBlob,
     HandoverEvent,
@@ -56,7 +57,7 @@ class HandoverStore(DebugImageStorage):
 
     def list(self):
         with self.database.session() as session:
-            return list(self._rows(session).values())
+            return attach_material_files(session, list(self._rows(session).values()))
 
     def debug_rows(self, include_archived=False):
         with self.database.session() as session:
@@ -94,17 +95,7 @@ class HandoverStore(DebugImageStorage):
             "confirmation": json.loads(revision.confirmation_json),
             "updated_at": revision.created_at,
         }
-        if row.kind == "source":
-            # 仅展示上传时填写的整理人；不借用当前登录人或后续审核人。
-            result["created_by"] = (
-                session.scalar(
-                    select(HandoverEvent.actor)
-                    .where(HandoverEvent.record_id == identifier, HandoverEvent.action == "created")
-                    .order_by(HandoverEvent.id)
-                    .limit(1)
-                )
-                or ""
-            )
+        attach_material_files(session, [result])
         return result
 
     def get(self, identifier, version=None):

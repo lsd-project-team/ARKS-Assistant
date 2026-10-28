@@ -23,7 +23,7 @@ export function handoverClient() {
         body: JSON.stringify(body),
       }),
     upload: <T>(file: File, metadata: Record<string, string>) =>
-      request<T>(`/sources/import?${new URLSearchParams({ ...metadata, filename: file.name })}`, {
+      request<T>(`/sources/upload?${new URLSearchParams({ ...metadata, filename: file.name })}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream' },
         body: file,

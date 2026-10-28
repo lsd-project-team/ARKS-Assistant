@@ -3,108 +3,42 @@ import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useAuth } from '../../auth/AuthContext';
 import type { Client } from '../shared/client';
 import { HandoverModal } from '../shared/HandoverModal';
-import { useHandoverDraft } from '../shared/drafts';
-import { text, type HandoverRecord } from '../shared/types';
-import {
-  clearPreviousFileDraft,
-  downloadTextDraft,
-  previousSourceDraft,
-} from './sourceImportDraft';
-import './source-import.css';
+import type { HandoverRecord } from '../shared/types';
 
-const maxCharacters = 100000;
+const maxFileSize = 32 * 1024 * 1024;
 
 export function SourceImport({
-  scopeId,
   client,
   onSaved,
   onClose,
-  replacing,
 }: {
-  scopeId: string;
   client: Client;
   onSaved: (row: HandoverRecord) => void;
   onClose: () => void;
-  replacing?: HandoverRecord;
 }) {
   const user = useAuth().session?.user;
-  const actor = user?.display_name || user?.username || '';
-  // 仅已有文本资料保留文字更新；新增和文件换版都固定使用文件上传。
-  const editingText = replacing?.payload.format === 'text';
-  const [previous] = useState(() =>
-    editingText ? undefined : previousSourceDraft(scopeId, replacing?.id),
-  );
-  const textDraft = previous && text(previous.payload.content).trim() ? previous : undefined;
   const [file, setFile] = useState<File>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
-  const { draft, setDraft, clear, restored, warning } = useHandoverDraft(
-    scopeId,
-    replacing
-      ? `${editingText ? 'source-update' : 'source-file-update'}:${replacing.id}`
-      : 'source-file-import',
-    {
-      title: replacing?.title || '',
-      payload: {
-        ...(editingText && { content: text(replacing.payload.content) }),
-        notes: text(
-          !textDraft && previous?.payload.mode !== 'text' && previous?.payload.notes !== undefined
-            ? previous.payload.notes
-            : replacing?.payload.notes,
-        ),
-      },
-    },
-  );
-  const content = text(draft.payload.content);
-  const characterCount = Array.from(content).length;
-  const tooLong = characterCount > maxCharacters;
-  const canSave =
-    !!actor.trim() && (editingText ? !!draft.title.trim() && !!content.trim() && !tooLong : !!file);
-
-  function field(key: string, value: string) {
-    setDraft({ ...draft, payload: { ...draft.payload, [key]: value } });
-  }
+  const fileError =
+    file && (!file.size ? '文件不能为空。' : file.size > maxFileSize ? '文件不能超过 32 MB。' : '');
   async function save() {
-    if (!canSave || busy) return;
+    if (!file || fileError || !user || busy) return;
     setBusy(true);
     setError(undefined);
     try {
-      // 新资料不提交旧草稿中已隐藏的字段；更新时从指定资料保留历史元信息。
-      const metadata = {
-        notes: text(draft.payload.notes),
-        ...(replacing && {
-          supersedes: replacing.id,
-          provider: text(replacing.payload.provider),
-          source_version: text(replacing.payload.source_version),
-          device: text(replacing.payload.device),
-        }),
-      };
-      const row = editingText
-        ? await client.send<HandoverRecord>('/sources/text', {
-            ...metadata,
-            title: draft.title.trim(),
-            content,
-            actor: actor.trim(),
-          })
-        : await client.upload<HandoverRecord>(file!, { ...metadata, actor: actor.trim() });
-      clear();
-      if (previous && !textDraft && previous.payload.mode !== 'text')
-        clearPreviousFileDraft(scopeId, previous, replacing?.id);
-      onSaved(row);
-    } catch (error) {
-      setError(error);
+      // 上传人由服务端登录会话确定，表单仅提交原文件。
+      onSaved(await client.upload<HandoverRecord>(file, {}));
+    } catch (failure) {
+      setError(failure);
     } finally {
       setBusy(false);
     }
   }
   return (
     <HandoverModal
-      title={replacing ? '更新交接资料' : '添加交接资料'}
-      description={
-        replacing
-          ? `更新“${replacing.title}”，旧原件与历史版本会保留。关联内容需重新复核。`
-          : '上传原始文件，保存后可查看内容、追溯版本和下载原件。'
-      }
+      title="添加资料"
+      description="上传原文件，点击资料即可查看或下载。"
       onClose={onClose}
       onSubmit={(event) => {
         event.preventDefault();
@@ -113,94 +47,33 @@ export function SourceImport({
       footer={
         <>
           <Button type="button" disabled={busy} onClick={onClose}>
-            关闭并保留草稿
+            取消
           </Button>
-          <Button className="primary" disabled={busy || !canSave} type="submit">
-            {busy ? '正在保存…' : '保存资料'}
+          <Button
+            className="primary"
+            type="submit"
+            disabled={busy || !file || !!fileError || !user}
+          >
+            {busy ? '正在上传…' : '上传'}
           </Button>
         </>
       }
     >
-      <ErrorText error={error || warning} reveal />
-      {restored && (
-        <p className="handover-notice">
-          已恢复上次填写的信息。{!editingText ? '上传文件请重新选择附件。' : ''}
-        </p>
-      )}
-      {textDraft && (
-        <div className="handover-notice source-import-draft">
-          <p>上次未保存的文本草稿仍保留，可下载为 TXT 文件后上传。</p>
-          <Button type="button" onClick={() => downloadTextDraft(textDraft)}>
-            下载文本草稿
-          </Button>
-        </div>
-      )}
-      <fieldset disabled={busy}>
-        <div className="handover-fields">
-          {editingText && (
-            <label className="handover-field-wide">
-              <span>资料标题</span>
-              <input
-                required
-                maxLength={200}
-                value={draft.title}
-                placeholder="例如：ZX2200 HS（DAF）项目日志"
-                onChange={(event) => setDraft({ ...draft, title: event.target.value })}
-              />
-            </label>
-          )}
-          {!editingText ? (
-            <label className="handover-field-wide">
-              <span>文件</span>
-              <input
-                required
-                type="file"
-                aria-label="文件"
-                accept=".docx,.pdf,.zip,.txt,.md,.cs,.cpp,.c,.h,.json,.yaml,.yml,.xml,.ini,.log"
-                onChange={(event) => setFile(event.target.files?.[0])}
-              />
-              <small>
-                DOCX、文本 PDF、源码 ZIP 或文本文件，最大 32 MB。扫描 PDF 会标出需补充文字的页。
-              </small>
-            </label>
-          ) : (
-            <label className="handover-field-wide">
-              <span>文本内容</span>
-              {/* 不设置 maxlength，避免粘贴时静默截断；超限提示并阻止提交。 */}
-              <textarea
-                required
-                rows={9}
-                value={content}
-                aria-label="文本内容"
-                aria-invalid={tooLong || undefined}
-                placeholder="直接粘贴会议纪要、项目日志、聊天记录或技术说明，保留日期、作者与原文。"
-                onChange={(event) => field('content', event.target.value)}
-              />
-              <div className="source-import-text-meta">
-                <small>原文会完整保存，供后续查阅和版本追溯。</small>
-                <small className={tooLong ? 'source-import-limit' : undefined}>
-                  {characterCount.toLocaleString('zh-CN')} / 100,000 字符
-                </small>
-              </div>
-              {tooLong && (
-                <small className="source-import-limit" role="alert">
-                  文本超过 100,000 字符，请按主题拆分后保存；当前内容未被截断。
-                </small>
-              )}
-            </label>
-          )}
-          <label className="handover-field-wide">
-            <span>来源说明（选填）</span>
-            <textarea
-              rows={2}
-              maxLength={2000}
-              value={text(draft.payload.notes)}
-              placeholder="例如：贺强的项目沟通记录，2026年8月14日至9月2日；保留发布时间与事件日期。"
-              onChange={(event) => field('notes', event.target.value)}
-            />
-          </label>
-        </div>
-      </fieldset>
+      <ErrorText error={error || fileError} reveal />
+      <label className="handover-field-wide">
+        <span>文件</span>
+        <input
+          required
+          disabled={busy}
+          type="file"
+          aria-label="文件"
+          onChange={(event) => {
+            setFile(event.target.files?.[0]);
+            setError(undefined);
+          }}
+        />
+        <small>原样保存，单个文件不超过 32 MB。</small>
+      </label>
     </HandoverModal>
   );
 }

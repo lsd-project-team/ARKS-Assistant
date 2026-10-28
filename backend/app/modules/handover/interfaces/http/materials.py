@@ -4,11 +4,14 @@ import asyncio
 
 from fastapi import APIRouter, Query, Request
 
+from app.modules.auth.router import identity
 from app.modules.handover.application.materials import (
     capture_source,
     import_source,
     import_text,
+    original_file,
     snapshot_file,
+    upload_original,
 )
 from app.modules.handover.domain.materials import MAX_UPLOAD
 from app.modules.handover.interfaces.http.context import HandoverHTTPContext
@@ -25,6 +28,22 @@ def register(router: APIRouter, ctx: HandoverHTTPContext):
     store = ctx.repository_factory
     projects = ctx.projects
     source_workspace = ctx.source_workspace
+
+    @router.post("/sources/upload", status_code=201)
+    async def upload_file(request: Request, filename: str = Query(min_length=1, max_length=250)):
+        data = bytearray()
+        async for chunk in request.stream():
+            data.extend(chunk)
+            if len(data) > MAX_UPLOAD:
+                raise ValueError("文件不能超过 32 MB")
+        user = identity(request)["user"]
+        return await asyncio.to_thread(
+            upload_original,
+            store(),
+            bytes(data),
+            filename,
+            user["display_name"] or user["username"],
+        )
 
     @router.post("/sources/import", status_code=201)
     async def upload(
@@ -101,9 +120,9 @@ def register(router: APIRouter, ctx: HandoverHTTPContext):
         )
 
     @router.get("/sources/{identifier}/original")
-    async def original(identifier: str):
-        blob = await asyncio.to_thread(store().blob, identifier)
-        return attachment(blob["content"], blob["name"], blob["media_type"])
+    async def original(identifier: str, inline: bool = False):
+        blob = await asyncio.to_thread(original_file, store(), identifier)
+        return attachment(blob["content"], blob["name"], blob["media_type"], inline=inline)
 
     @router.get("/sources/{identifier}/file")
     async def file(identifier: str, path: str):
