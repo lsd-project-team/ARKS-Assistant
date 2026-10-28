@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { NotebookPen, Search } from 'lucide-react';
 import { HandoverSelect } from '../shared/Controls';
-import { debugRecordType, debugRecordTypes, debugStatus, filterDebugIssues } from './debugIssues';
+import {
+  debugRecordType,
+  debugRecordTypes,
+  debugStatus,
+  debugVisiblePayload,
+  filterDebugIssues,
+} from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import './debug-issues.css';
 
@@ -15,7 +21,10 @@ export function DebugIssuePage({
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [recordType, setRecordType] = useState('');
-  const matches = filterDebugIssues(rows, search, status, recordType);
+  const matches = filterDebugIssues(rows, search, status, recordType).map((row) => ({
+    ...row,
+    payload: debugVisiblePayload(row.payload),
+  }));
   return (
     <section className="debug-issue-page" aria-label="问题与经验记录">
       <div className="debug-issue-tools">
@@ -80,8 +89,7 @@ export function DebugIssuePage({
               {text(row.payload.recorded_by) || text(row.payload.reported_by) || '未记录姓名'} ·{' '}
               {text(row.payload.recorded_at) ||
                 text(row.payload.occurred_on) ||
-                row.updated_at.slice(0, 10)}{' '}
-              · {row.payload.origin === 'ai' ? 'AI 整理' : '手动录入'}
+                row.updated_at.slice(0, 10)}
             </small>
           </button>
         ))}

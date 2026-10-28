@@ -38,7 +38,35 @@ export function debugStatus(payload: Payload) {
   return payload.resolution_status === 'resolved' ? '已解决' : '未解决';
 }
 
+export function debugVisiblePayload(payload: Payload): Payload {
+  let original: Payload | undefined;
+  if (payload.origin === 'import') {
+    try {
+      const parsed: unknown = JSON.parse(text(payload.original_text));
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        original = parsed as Payload;
+      }
+    } catch {
+      // 非 JSON 原文仍逐字展示，不因来源信息隐藏而丢弃正文。
+    }
+  }
+  // 仅移除导入时附加的来源行，业务条件、判断及处理结果继续保留。
+  const notes = text(payload.notes).replace(
+    /^[ \t]*(?:来源编号|原始来源|本(?:次|包)提供文件|导入标识)[ \t]*[：:][^\r\n]*(?:\r?\n|$)/gm,
+    '',
+  );
+  if (!original) return { ...payload, notes };
+  const { id: sourceId, source: _source, ...content } = original;
+  return {
+    ...payload,
+    notes: notes.replace(/\bEXP-\d{3}\b[ \t]*/g, ''),
+    keywords: ids(payload.keywords).filter((keyword) => keyword !== sourceId),
+    original_text: JSON.stringify(content, null, 2),
+  };
+}
+
 export function debugEditablePayload(payload: Payload): Payload {
+  payload = debugVisiblePayload(payload);
   const recordType = debugRecordType(payload).value;
   return {
     ...Object.fromEntries(debugIssueFields.map(({ key }) => [key, text(payload[key])])),

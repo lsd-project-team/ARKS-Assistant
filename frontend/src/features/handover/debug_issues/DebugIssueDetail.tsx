@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { HandoverModal } from '../shared/HandoverModal';
-import { debugIssueFields, debugRecordType, debugStatus } from './debugIssues';
+import { debugIssueFields, debugRecordType, debugStatus, debugVisiblePayload } from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
 import { DebugIssueImages } from './DebugIssueImages';
@@ -26,6 +26,7 @@ export function DebugIssueDetail({
   onClose: () => void;
 }) {
   const { session } = useAuth();
+  const payload = debugVisiblePayload(row.payload);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
   async function archive() {
@@ -62,7 +63,7 @@ export function DebugIssueDetail({
           {debugStatus(row.payload)}
         </span>
         <span className="handover-muted">
-          v{row.version} · {row.payload.origin === 'ai' ? 'AI 整理' : '手动录入'} · 录入人：
+          v{row.version} · 录入人：
           {text(row.payload.reported_by) || '未记录姓名'}
         </span>
         {!version && row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
@@ -75,17 +76,17 @@ export function DebugIssueDetail({
       </div>
       <dl className="debug-issue-detail-fields">
         {debugIssueFields
-          .filter(({ key }) => text(row.payload[key]))
+          .filter(({ key }) => text(payload[key]))
           .map(({ key, label }) => (
             <div key={key}>
               <dt>{label}</dt>
-              <dd>{text(row.payload[key])}</dd>
+              <dd>{text(payload[key])}</dd>
             </div>
           ))}
-        {!!ids(row.payload.keywords).length && (
+        {!!ids(payload.keywords).length && (
           <div>
             <dt>关键词</dt>
-            <dd>{ids(row.payload.keywords).join('、')}</dd>
+            <dd>{ids(payload.keywords).join('、')}</dd>
           </div>
         )}
       </dl>
@@ -93,10 +94,10 @@ export function DebugIssueDetail({
         <DebugIssueImageUpload row={row} client={client} onChanged={onChanged} />
       )}
       <DebugIssueImages row={row} />
-      {text(row.payload.original_text) && (
+      {text(payload.original_text) && (
         <details className="debug-issue-original">
           <summary>查看录入原文</summary>
-          <pre>{text(row.payload.original_text)}</pre>
+          <pre>{text(payload.original_text)}</pre>
         </details>
       )}
     </HandoverModal>

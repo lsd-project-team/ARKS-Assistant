@@ -24,7 +24,7 @@ export function DebugIssueEditor({
     version: row?.version,
     payload: {
       ...debugEditablePayload(row?.payload || {}),
-      keywords_text: ids(row?.payload.keywords).join('，'),
+      keywords_text: ids(debugEditablePayload(row?.payload || {}).keywords).join('，'),
     },
   });
   const { draft, setDraft } = state;

@@ -4,6 +4,7 @@ import {
   filterDebugIssues,
   debugEditablePayload,
   debugStatus,
+  debugVisiblePayload,
 } from '../../src/features/handover/debug_issues/debugIssues.ts';
 import { parseHandoverHash } from '../../src/features/handover/navigation.ts';
 
@@ -41,6 +42,57 @@ test('调试问题搜索可组合报警码、处理方法和状态，不混入�
     rows.map((row) => row.id),
     ['a', 'b', 'c'],
   );
+});
+
+test('导入来源编号和文件不进入展示及编辑，正文、状态与原始对象保留', () => {
+  const original = {
+    id: 'EXP-099',
+    source: '原始交接.xlsx',
+    title: '保留标题',
+    question: '保留问题',
+    answer: '保留处理',
+    caution: '保留条件',
+    status: '待验证',
+  };
+  const payload = {
+    origin: 'import',
+    original_text: JSON.stringify(original),
+    problem: '完整正文',
+    notes:
+      '来源编号：EXP-099\n原始来源：原始交接.xlsx\n本次提供文件：本次.xlsx\n本包提供文件：本包.xlsx\n导入标识：包哈希\n关联记录：EXP-001《其他问题》\n处理后仍需验证。',
+    keywords: ['EXP-099', 'ZX2200', '力控'],
+    resolution_status: 'open',
+  };
+  const before = structuredClone(payload);
+  const visible = debugVisiblePayload(payload);
+  assert.deepEqual(JSON.parse(visible.original_text), {
+    title: original.title,
+    question: original.question,
+    answer: original.answer,
+    caution: original.caution,
+    status: original.status,
+  });
+  assert.equal(visible.notes, '关联记录：《其他问题》\n处理后仍需验证。');
+  assert.deepEqual(visible.keywords, ['ZX2200', '力控']);
+  assert.equal(visible.problem, '完整正文');
+  assert.equal(visible.resolution_status, 'open');
+  const editable = debugEditablePayload(payload);
+  assert.equal(editable.notes, visible.notes);
+  assert.deepEqual(editable.keywords, visible.keywords);
+  assert.deepEqual(payload, before);
+});
+
+test('非导入原文、损坏 JSON 和正常说明不误删，来源词出现在正文中仍保留', () => {
+  const original_text = '{"id":"业务对象","source":"信号来源"}';
+  const notes = '检查信号来源：编码器\r\n第二行。';
+  for (const payload of [
+    { origin: 'human', original_text, notes },
+    { origin: 'import', original_text: '{未完成JSON', notes },
+    { origin: 'import', original_text: '[1,2]', notes },
+  ]) {
+    assert.equal(debugVisiblePayload(payload).original_text, payload.original_text);
+    assert.equal(debugVisiblePayload(payload).notes, notes);
+  }
 });
 
 test('工作进展和经验按已记录展示，记录人和两个日期可独立编辑及检索', () => {
