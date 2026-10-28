@@ -176,10 +176,10 @@
   border-radius: var(--control-radius);
   background: var(--control-background, var(--panel));
   color: var(--muted);
+  box-shadow: none;
 }
 .ledger-search:focus-within {
   border-color: var(--accent);
-  box-shadow: var(--focus-ring);
 }
 .ledger-search input {
   width: 100%;
@@ -187,12 +187,10 @@
   padding: 0;
   border: 0;
   outline: 0;
-  background: transparent;
-  box-shadow: none;
+  /* 外层已提供边框和底色，避免主题聚焦样式再给内层输入框叠一圈光晕。 */
+  background: transparent !important;
+  box-shadow: none !important;
   font-size: 13px;
-}
-.ledger-search input:focus {
-  box-shadow: none;
 }
 .ledger-toolbar > .ui-select-trigger {
   flex: 0 0 120px;
