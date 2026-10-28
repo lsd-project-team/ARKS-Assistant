@@ -4,7 +4,10 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { remarkRecordAnswer } from '../../src/features/chat/lib/recordAnswerPresentation.ts';
+import {
+  remarkRecordAnswer,
+  remarkDebugCitationLabels,
+} from '../../src/features/chat/lib/recordAnswerPresentation.ts';
 
 const citation = '[7月23—24日｜adv-3 温补方案贴片精度试验 · v4](debug-issue:trial/4)';
 const displayNotice = '（3张原图随上述引用直接展示）';
@@ -12,7 +15,11 @@ function render(content) {
   return renderToStaticMarkup(
     createElement(ReactMarkdown, {
       children: content,
-      remarkPlugins: [[remarkGfm, { singleTilde: false }], remarkRecordAnswer],
+      remarkPlugins: [
+        [remarkGfm, { singleTilde: false }],
+        remarkRecordAnswer,
+        remarkDebugCitationLabels,
+      ],
       // 与应用保持一致，测试固定版本业务引用的 Markdown 渲染。
       urlTransform: (url) => url,
     }),
@@ -26,8 +33,25 @@ test('已有回复移除两句原图展示说明，来源引用紧接事实正�
   assert.equal((html.match(/<p>/g) || []).length, 1);
   assert.match(html, /Y方向受影响有限。 <a href="debug-issue:trial\/4">/);
   assert.match(html, /<strong>25.2℃<\/strong>/);
-  assert.match(html, /温补方案贴片精度试验 · v4<\/a><\/p>$/);
+  assert.match(html, /温补方案贴片精度试验<\/a><\/p>$/);
+  assert.doesNotMatch(html, /· v4/);
   assert.doesNotMatch(html, /原图如下|随上述引用直接展示/);
+});
+
+test('历史引用隐藏修订及裸编号，地址保留固定版本，业务软件版本和其他引用不变', () => {
+  const html = render(
+    '[**试验** · v4](debug-issue:trial/4) ' +
+      '[软件 v4](debug-issue:software/4) ' +
+      '[trial · 版本 4](debug-issue:trial/4) ' +
+      '[debug-issue:trial/4](debug-issue:trial/4) ' +
+      '[手册 · v4](handover-source:manual/4#L1) ' +
+      '`[示例 · v4](debug-issue:trial/4)`',
+  );
+  assert.match(html, /<a href="debug-issue:trial\/4">试验<\/a>/);
+  assert.match(html, /<a href="debug-issue:software\/4">软件 v4<\/a>/);
+  assert.equal((html.match(/>参考资料<\/a>/g) || []).length, 2);
+  assert.match(html, /手册 · v4<\/a>/);
+  assert.match(html, /<code>\[示例 · v4\]\(debug-issue:trial\/4\)<\/code>/);
 });
 
 test('独立来源标签合并到正文，新回复已有行内引用时保持排版', () => {

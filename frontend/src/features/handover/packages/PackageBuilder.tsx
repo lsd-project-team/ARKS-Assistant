@@ -113,7 +113,9 @@ export function PackageBuilder({
               <span>
                 {row.title}
                 <small>
-                  {definitions.kinds[row.kind]} · v{row.version} · {definitions.states[row.state]}
+                  {definitions.kinds[row.kind]}
+                  {row.kind !== 'debug_issue' &&
+                    ` · v${row.version} · ${definitions.states[row.state]}`}
                 </small>
               </span>
             </label>

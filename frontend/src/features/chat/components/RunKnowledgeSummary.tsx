@@ -71,7 +71,8 @@ export function KnowledgeFeedback({
               {sources.map((row) => (
                 <div className="knowledge-reference" key={row.citation}>
                   <small>
-                    {knowledgeKindLabels[row.kind]} · v{row.version}
+                    {knowledgeKindLabels[row.kind]}
+                    {row.kind !== 'debug_issue' && ` · v${row.version}`}
                   </small>
                   <Markdown content={`[${row.title.replace(/[\[\]\n]/g, ' ')}](${row.citation})`} />
                   {row.resolution_status === 'open' && <small>未解决，不能作为已验证方案</small>}

@@ -50,7 +50,7 @@ export function DebugIssueDetail({
   return (
     <HandoverModal
       title={row.title}
-      description={version ? `固定历史版本 v${row.version}` : '回看事项原文、处理经过与结果'}
+      description={version ? '查看本次引用的记录内容' : '回看事项原文、处理经过与结果'}
       onClose={onClose}
       className="handover-detail debug-issue-detail"
     >
@@ -63,8 +63,7 @@ export function DebugIssueDetail({
           {debugStatus(row.payload)}
         </span>
         <span className="handover-muted">
-          v{row.version} · 录入人：
-          {text(row.payload.reported_by) || '未记录姓名'}
+          录入人：{text(row.payload.reported_by) || '未记录姓名'}
         </span>
         {!version && row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
         {version && <Button onClick={() => onOpen(row.id)}>查看最新记录</Button>}

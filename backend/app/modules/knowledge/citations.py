@@ -28,7 +28,8 @@ def canonical_knowledge_citations(answer, references):
                 if not int(returned[1]) <= start <= end <= int(returned[2] or returned[1]):
                     continue
             title = row["title"].replace("[", "（").replace("]", "）").replace("\n", " ")
-            return f"[{title} · v{row['version']}]({target})"
+            label = title if target.startswith("debug-issue:") else f"{title} · v{row['version']}"
+            return f"[{label}]({target})"
         return f"{label or '资料'}（资料引用未核对）" if label is not None else target
 
     edits = []

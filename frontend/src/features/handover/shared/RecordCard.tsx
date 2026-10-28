@@ -1,9 +1,12 @@
 import { TaskStatus } from '../tasks/TaskStatus';
 import type { Definitions, HandoverRecord } from './types';
 import { text } from './types';
+import { debugStatus } from '../debug_issues/debugIssues';
 
 export function Status({ row, definitions }: { row: HandoverRecord; definitions: Definitions }) {
   if (row.kind === 'task') return <TaskStatus row={row} />;
+  if (row.kind === 'debug_issue')
+    return <span className="debug-status">{debugStatus(row.payload)}</span>;
   return (
     <span className={`handover-status handover-status-${row.state}`}>
       {definitions.states[row.state]}
@@ -31,7 +34,8 @@ export function RecordCard({
     >
       <div>
         <span className="handover-eyebrow">
-          {definitions.kinds[row.kind]} · v{row.version}
+          {definitions.kinds[row.kind]}
+          {row.kind !== 'debug_issue' && ` · v${row.version}`}
         </span>
         <Status row={row} definitions={definitions} />
       </div>

@@ -65,7 +65,7 @@ export function DebugIssuePage({
               <span
                 className={`debug-status ${row.payload.resolution_status === 'recorded' ? 'recorded' : row.payload.resolution_status === 'resolved' ? 'resolved' : ''}`}
               >
-                {row.state === 'archived' ? '已归档' : debugStatus(row.payload)}
+                {debugStatus(row.payload)}
               </span>
             </div>
             <strong>{row.title}</strong>

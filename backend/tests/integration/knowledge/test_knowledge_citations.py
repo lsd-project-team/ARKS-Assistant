@@ -12,7 +12,8 @@ def test_known_titles_and_ranges_are_preserved_without_guessing_unknown_links():
         "[错误范围](handover-source:b/3#L1-L9) [猜测版本](debug-issue:a/1)",
         rows,
     )
-    assert "[取片异常 · v2](debug-issue:a/2)" in result
+    assert "[取片异常](debug-issue:a/2)" in result
+    assert "· v2" not in result
     assert "[停机规程 · v3](handover-source:b/3#L3-L5)" in result
     assert "错误范围（资料引用未核对）" in result
     assert "猜测版本（资料引用未核对）" in result
@@ -20,7 +21,7 @@ def test_known_titles_and_ranges_are_preserved_without_guessing_unknown_links():
     assert canonical_knowledge_citations(literal, []) == literal
     assert (
         canonical_knowledge_citations("历史方案（debug-issue:a/2）", rows)
-        == "历史方案（[取片异常 · v2](debug-issue:a/2)）"
+        == "历史方案（[取片异常](debug-issue:a/2)）"
     )
 
 

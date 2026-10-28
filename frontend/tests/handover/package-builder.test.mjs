@@ -97,7 +97,8 @@ test('生成时使用当前登录人，恢复旧草稿仍保留范围和缺项�
       saved = row;
     },
   );
-  assert.ok(html.includes('问题与经验 · v2 · 待确认'));
+  assert.ok(html.includes('问题与经验'));
+  assert.ok(!html.includes('问题与经验 · v2'));
   assert.ok(!html.includes('整理人'));
   await submit();
   assert.deepEqual(sent, {

@@ -27,7 +27,7 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     )
     issues.save(DebugWrite(title="通信故障X778", payload={"problem": "不应发送的其他记录"}), {})
     reviewed = []
-    reference = f"[蓝膜刺穿经验 · v1](debug-issue:{saved['id']}/1)"
+    reference = f"[蓝膜刺穿经验](debug-issue:{saved['id']}/1)"
     revision = (
         "本次组合调整后216颗无刺穿。\n\n### 如何复用\n先核对发生条件。"
         "\n\n### 适用范围\n记录不足以证明长期根治。" + reference

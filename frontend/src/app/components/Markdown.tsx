@@ -19,6 +19,7 @@ import { HandoverMaterialViewer } from '../../features/handover/materials/compon
 import type { HandoverRecord } from '../../features/handover/shared/types';
 import { isKnowledgeReference } from '../../features/knowledge/lib/knowledgeReference';
 import { citationEndLine } from '../../features/source_reader/lib/citationRange';
+import { remarkDebugCitationLabels } from '../../features/chat/lib/recordAnswerPresentation';
 
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
@@ -189,7 +190,11 @@ export function Markdown({
           <div className="markdown">
             <ReactMarkdown
               // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
-              remarkPlugins={[[remarkGfm, { singleTilde: false }], ...remarkPlugins]}
+              remarkPlugins={[
+                [remarkGfm, { singleTilde: false }],
+                ...remarkPlugins,
+                remarkDebugCitationLabels,
+              ]}
               urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
               components={markdownComponents}
             >

@@ -99,6 +99,7 @@ test('上下文保留完整候选与检索提示，并明确区分于回答引�
   assert.match(html, /中转台取片异常/);
   assert.match(html, /未找到相关可用内容/);
   assert.match(html, /不表示回答已经引用/);
+  assert.doesNotMatch(html, /v2/);
   assert.match(html, /未解决，不能作为已验证方案/);
   assert.doesNotMatch(html, /本轮参考/);
 });

@@ -21,8 +21,10 @@ function FixedPackageItem({
     <li>
       <button onClick={() => onOpen(item.record_id, item.version)}>
         {/* 名称也读取固定修订，避免工作后来改名后改变旧包的展示。 */}
-        <span>{snapshot.data?.title || item.title}</span>
-        <small>v{item.version}</small>
+        <span>
+          {snapshot.data?.title || (item.title === item.record_id ? '关联记录' : item.title)}
+        </span>
+        {snapshot.data && snapshot.data.kind !== 'debug_issue' && <small>v{item.version}</small>}
       </button>
       {!!snapshot.error && (
         <span className="package-item-error">此固定版本暂时无法读取，点击查看详情。</span>

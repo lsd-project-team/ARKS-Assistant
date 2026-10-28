@@ -93,6 +93,11 @@ test('当前列表与固定版本详情隐藏来源信息，仍显示记录人�
       '原始来源',
       '手动录入',
       'AI 整理',
+      'v3',
+      '记录ID',
+      '归档状态',
+      '原图数',
+      '详情起始行',
     ]) {
       assert.ok(!markup.includes(value), value);
     }
@@ -100,7 +105,15 @@ test('当前列表与固定版本详情隐藏来源信息，仍显示记录人�
       assert.ok(markup.includes(value), value);
     }
   }
-  for (const value of ['实际结果保留', '原始回答保留', '待验证', 'v3', '查看最新记录']) {
+  for (const value of ['实际结果保留', '原始回答保留', '待验证', '查看最新记录']) {
     assert.ok(detail.includes(value), value);
   }
+  const archived = renderToStaticMarkup(
+    createElement(DebugIssuePage, {
+      rows: [{ ...row, state: 'archived' }],
+      onOpen() {},
+    }),
+  );
+  assert.ok(archived.includes('已记录'));
+  assert.ok(!archived.includes('已归档'));
 });

@@ -17,6 +17,28 @@ function plainText(node: MarkdownNode): string {
   return node.value || node.children?.map(plainText).join('') || '';
 }
 
+// 新旧回复共用显示规则；定位所需的记录编号和修订始终留在链接地址中。
+export function remarkDebugCitationLabels() {
+  return (tree: MarkdownNode) => {
+    function visit(node: MarkdownNode) {
+      if (isRecordLink(node)) {
+        const match = /^debug-issue:([\w-]+)\/([1-9]\d*)$/.exec(node.url || '')!;
+        const label = plainText(node).replace(
+          new RegExp(`\\s*·\\s*(?:v\\s*|版本\\s*)${match[2]}\\s*$`, 'i'),
+          '',
+        );
+        node.children = [
+          {
+            type: 'text',
+            value: !label || label === match[1] || label === node.url ? '参考资料' : label,
+          },
+        ];
+      } else node.children?.forEach(visit);
+    }
+    visit(tree);
+  };
+}
+
 function isImageDisplayNotice(node: MarkdownNode) {
   if (node.type !== 'paragraph' || node.children?.some((child) => child.type !== 'text'))
     return false;
