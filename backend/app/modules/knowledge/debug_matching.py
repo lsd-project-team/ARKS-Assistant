@@ -4,6 +4,8 @@ import re
 
 from app.modules.knowledge.search import alarm_codes
 
+_STAGE = re.compile(r"(?<![a-z0-9])s[12](?![a-z0-9])", re.IGNORECASE)
+
 
 def compact(value):
     return re.sub(r"[^a-z0-9\u4e00-\u9fff]", "", str(value).casefold())
@@ -17,7 +19,7 @@ def explicit_filters(query, device="", software_version="", module="", condition
         r"(?i)(?<![a-z0-9])(?:zx\s*\d{3,5}(?:\s*(?:hs|ls))?|adv[\s-]*\d+(?![a-z0-9]))",
         query,
     )
-    stage = re.search(r"(?i)(?<![a-z0-9])s[12](?![a-z0-9])", query)
+    stage = _STAGE.search(query)
     return {
         "device": device or (machine[0] if machine else ""),
         "software_version": software_version or (version[1] if version else ""),
@@ -50,6 +52,9 @@ def compatibility(row, filters):
             )
             known = match[0] if match else ""
         actual = compact(known)
+        if field == "module" and requested in {"s1", "s2"}:
+            # “中转台取片”等功能名没有说明所属S区，属于缺少信息，不能当作明确冲突。
+            actual = "".join(_STAGE.findall(str(known))).casefold()
         differs = requested not in actual and actual not in requested
         if field == "device" and requested.startswith("adv") and actual.startswith("adv"):
             differs = requested != actual

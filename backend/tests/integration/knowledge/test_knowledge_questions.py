@@ -75,3 +75,25 @@ def test_twenty_realistic_question_variants(services):
     documents = HandoverMaterialCorpus(services[1])
     for question in ("停机以后怎样重新生产", "恢复生产前要确认什么", "交接资料里怎样恢复运行"):
         assert documents.search(question)[0]["id"] == row["id"]
+
+
+def test_function_description_remains_candidate_when_requested_stage_is_unknown(services):
+    issues = DebugIssues(HandoverStore(database=services[1]))
+    saved = [
+        issues.save(
+            DebugWrite(
+                title=f"中转台取片记录 {module}",
+                payload={
+                    "problem": "中转台加热后取片不稳",
+                    "module": module,
+                },
+            ),
+            {},
+        )
+        for module in ("中转台取片", "S1点胶")
+    ]
+    result = DebugIssueCorpus(services[1]).search_report("S2 中转台加热取片不稳")
+    assert [row["id"] for row in result["matches"]] == [saved[0]["id"]]
+    assert result["matches"][0]["compatibility"]["status"] == "needs_confirmation"
+    assert "module" in result["matches"][0]["compatibility"]["missing"]
+    assert saved[1]["id"] in {row["id"] for row in result["excluded_records"]}
