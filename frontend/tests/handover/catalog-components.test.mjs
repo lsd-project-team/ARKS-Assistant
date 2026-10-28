@@ -74,7 +74,7 @@ test('资料列表展示正文、版本与真实作者，旧访谈仍可打开�
   for (const value of [
     '用户手册',
     '使用说明',
-    '文件资料 · v2',
+    '资料 · v2',
     '原有问答',
     '李少达',
     '贺强',
@@ -83,6 +83,8 @@ test('资料列表展示正文、版本与真实作者，旧访谈仍可打开�
     assert.ok(html.includes(value), value);
   assert.ok(!html.includes('未指定负责人'));
   assert.ok(!html.includes('非资料'));
+  for (const obsolete of ['资料类型', '全部类型', '文件资料', '文本记录', '源码资料'])
+    assert.ok(!html.includes(obsolete), obsolete);
 });
 
 test('交接包卡片保留打开与归档入口，收录数按固定版本去重，不伪造接收对象', () => {

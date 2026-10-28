@@ -435,8 +435,6 @@ export default function HandoverWorkspace({
               <SourceImport
                 scopeId={scopeId}
                 client={client}
-                actor={actor}
-                onActor={setActor}
                 onSaved={(row) => saved(row, { generation: currentOperationGeneration })}
                 onClose={() => setOperation('')}
               />

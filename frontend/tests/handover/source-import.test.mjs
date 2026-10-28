@@ -18,6 +18,7 @@ const environment = {
   states: [],
   cursor: 0,
   effects: [],
+  user: undefined,
   useState(initial) {
     const index = this.cursor++;
     if (!(index in this.states))
@@ -54,16 +55,19 @@ const bundled = await build({
           modal:
             'export const HandoverModal = ({children, footer}) => environment.createElement("form", null, children, footer);',
           ui: 'export const Button = "button"; export const ErrorText = ({error}) => error ? environment.createElement("p", {role:"alert"}, String(error)) : null;',
+          auth: 'export const useAuth = () => ({session: environment.user ? {user: environment.user} : null});',
         };
         builder.onResolve({ filter: /.*/ }, ({ path }) => {
           const name =
             path === 'react'
               ? 'react'
-              : path.endsWith('/HandoverModal')
-                ? 'modal'
-                : path.endsWith('/ui/ui')
-                  ? 'ui'
-                  : '';
+              : path.endsWith('/auth/AuthContext')
+                ? 'auth'
+                : path.endsWith('/HandoverModal')
+                  ? 'modal'
+                  : path.endsWith('/ui/ui')
+                    ? 'ui'
+                    : '';
           if (name) return { path: name, namespace: 'source-boundary' };
         });
         builder.onLoad({ filter: /.*/, namespace: 'source-boundary' }, ({ path }) => ({
@@ -86,13 +90,12 @@ function reset() {
   environment.states = [];
   environment.cursor = 0;
   environment.effects = [];
+  environment.user = { display_name: '当前登录人', username: 'current' };
 }
 function render(props) {
   environment.cursor = 0;
   const tree = SourceImport({
     scopeId: 'global',
-    actor: '整理人',
-    onActor() {},
     onSaved() {},
     onClose() {},
     ...props,
@@ -123,6 +126,7 @@ test('新增只上传文件，旧文本草稿可下载且不能切回文字提�
     payload: { mode: 'text', content: '旧原文\r\n  保留空白 ', notes: '旧来源' },
   });
   storage.set('arks-handover-draft:global:import', old);
+  storage.set('arks-handover-actor:global', '旧手填整理人');
   const activeKey = 'arks-handover-draft:global:source-file-import';
   storage.set(
     activeKey,
@@ -147,6 +151,7 @@ test('新增只上传文件，旧文本草稿可下载且不能切回文字提�
   assert.ok(!html.includes('输入文本'));
   assert.ok(!html.includes('AI 提取'));
   assert.ok(!input(tree, '文本内容'));
+  assert.ok(!input(tree, '整理人'));
   assert.ok(html.includes('下载文本草稿'));
   let originalBlob;
   let download;
@@ -177,7 +182,7 @@ test('新增只上传文件，旧文本草稿可下载且不能切回文字提�
   input(tree, '文件').props.onChange({ target: { files: [file] } });
   tree = render(props);
   await submit(tree);
-  assert.deepEqual(uploads, [[file, { actor: '整理人', notes: '新附件来源' }]]);
+  assert.deepEqual(uploads, [[file, { actor: '当前登录人', notes: '新附件来源' }]]);
   assert.deepEqual(saved, [{ id: 'new-file' }]);
   assert.equal(storage.has(activeKey), false);
   assert.equal(storage.get('arks-handover-draft:global:import'), old);
@@ -235,7 +240,7 @@ test('历史文本仍可修改，正文不裁剪，换版保留来源元信息�
       {
         title: '已有文本',
         content,
-        actor: '整理人',
+        actor: '当前登录人',
         notes: '原来源',
         provider: '原作者',
         source_version: '原版本',
@@ -313,7 +318,7 @@ test('文件换版失败保留当前草稿与旧文本草稿，重试仍提交�
     [
       file,
       {
-        actor: '整理人',
+        actor: '当前登录人',
         notes: '当前文件来源',
         supersedes: 'document',
         provider: '原作者',
@@ -359,4 +364,29 @@ test('历史文本按 Unicode 字符校验上限，超限阻止提交且正文�
   assert.equal(requests.length, 1);
   assert.equal(input(tree, '文本内容').props.value, overLimit);
   assert.ok(renderToStaticMarkup(tree).includes('文本超过 100,000 字符'));
+});
+
+test('整理人随登录账号变化，无显示名时使用用户名，未登录时不能提交', async () => {
+  reset();
+  const uploads = [];
+  const props = {
+    client: {
+      upload: async (...args) => {
+        uploads.push(args);
+        return { id: 'new-file' };
+      },
+    },
+  };
+  let tree = render(props);
+  const file = new File(['原文'], '资料.txt');
+  input(tree, '文件').props.onChange({ target: { files: [file] } });
+  environment.user = { display_name: '', username: 'new-account' };
+  tree = render(props);
+  assert.ok(!input(tree, '整理人'));
+  await submit(tree);
+  assert.equal(uploads[0][1].actor, 'new-account');
+  environment.user = undefined;
+  tree = render(props);
+  await submit(tree);
+  assert.equal(uploads.length, 1);
 });

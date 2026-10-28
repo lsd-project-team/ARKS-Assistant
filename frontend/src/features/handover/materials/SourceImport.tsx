@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, ErrorText } from '../../../shared/ui/ui';
+import { useAuth } from '../../auth/AuthContext';
 import type { Client } from '../shared/client';
 import { HandoverModal } from '../shared/HandoverModal';
 import { useHandoverDraft } from '../shared/drafts';
@@ -16,20 +17,18 @@ const maxCharacters = 100000;
 export function SourceImport({
   scopeId,
   client,
-  actor,
-  onActor,
   onSaved,
   onClose,
   replacing,
 }: {
   scopeId: string;
   client: Client;
-  actor: string;
-  onActor: (value: string) => void;
   onSaved: (row: HandoverRecord) => void;
   onClose: () => void;
   replacing?: HandoverRecord;
 }) {
+  const user = useAuth().session?.user;
+  const actor = user?.display_name || user?.username || '';
   // 仅已有文本资料保留文字更新；新增和文件换版都固定使用文件上传。
   const editingText = replacing?.payload.format === 'text';
   const [previous] = useState(() =>
@@ -139,7 +138,7 @@ export function SourceImport({
       <fieldset disabled={busy}>
         <div className="handover-fields">
           {editingText && (
-            <label>
+            <label className="handover-field-wide">
               <span>资料标题</span>
               <input
                 required
@@ -150,15 +149,6 @@ export function SourceImport({
               />
             </label>
           )}
-          <label>
-            <span>整理人</span>
-            <input
-              required
-              maxLength={120}
-              value={actor}
-              onChange={(event) => onActor(event.target.value)}
-            />
-          </label>
           {!editingText ? (
             <label className="handover-field-wide">
               <span>文件</span>

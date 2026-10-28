@@ -1,10 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { filterCatalogRecords } from '../../src/features/handover/shared/catalogRecords.ts';
-import {
-  materialType,
-  materialPreview,
-} from '../../src/features/handover/materials/materialRecords.ts';
+import { materialPreview } from '../../src/features/handover/materials/materialRecords.ts';
 
 function record(id, kind, payload = {}, state = 'draft') {
   return { id, kind, title: id, state, payload, updated_at: '2026-10-16T08:00:00Z' };
@@ -51,17 +48,6 @@ test('交接包状态和接收对象共同筛选，排序不改输入，归档�
   assert.deepEqual(filterCatalogRecords(rows, ['package'], '', 'unknown'), []);
   assert.deepEqual(filterCatalogRecords([], ['package'], '', ''), []);
   assert.deepEqual(rows, original);
-});
-
-test('资料分类涵盖文件、文字和源码，旧访谈仍为文字资料而不改写类型', () => {
-  for (const format of ['pdf', 'docx', 'txt', 'custom', ''])
-    assert.equal(materialType(record('file', 'source', { format })).value, 'file');
-  for (const format of ['source', 'zip', 'cs', 'CPP', 'c', 'h'])
-    assert.equal(materialType(record('code', 'source', { format })).value, 'code');
-  const interview = record('old', 'interview', { transcript: '原文' });
-  assert.equal(materialType(interview).value, 'text');
-  assert.equal(interview.kind, 'interview');
-  assert.equal(materialType(record('text', 'source', { format: 'text' })).value, 'text');
 });
 
 test('资料预览优先正文，扫描文档保留解析说明，无正文不生成虚构说明', () => {

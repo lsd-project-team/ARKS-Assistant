@@ -229,8 +229,6 @@ export function RecordView({
         scopeId={scopeId}
         replacing={row}
         client={client}
-        actor={actor}
-        onActor={onActor}
         onClose={() => setUpdatingSource(false)}
         onSaved={(updated) => {
           setUpdatingSource(false);
