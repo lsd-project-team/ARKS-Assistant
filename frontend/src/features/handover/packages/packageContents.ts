@@ -45,3 +45,11 @@ export function packageNotes(payload: HandoverRecord['payload']) {
     { id: 'notes', label: '补充说明', content: text(payload.notes) },
   ].filter((item) => item.content.trim());
 }
+
+export function packageDescription(payload: HandoverRecord['payload']) {
+  // 旧草稿仍可能分开保存范围和缺项，合并填写时保留原文及缺项的含义。
+  const gaps = text(payload.gaps);
+  return [text(payload.scope), gaps.trim() ? `待补充事项：\n${gaps}` : '']
+    .filter((content) => content.trim())
+    .join('\n\n');
+}

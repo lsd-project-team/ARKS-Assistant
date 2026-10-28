@@ -644,6 +644,24 @@
   border: 1px solid var(--border);
   border-radius: 10px;
 }
+.package-builder .handover-fields {
+  margin-top: 0;
+}
+.package-builder h3 {
+  margin: 22px 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.package-builder .handover-selection-list {
+  max-height: min(350px, 38vh);
+}
+.package-builder .handover-form-footer > span {
+  display: inline;
+  flex-basis: auto;
+}
+.package-builder .handover-form-section .handover-fields {
+  margin-top: 16px;
+}
 .handover-selection-list:empty {
   display: none;
 }

@@ -447,8 +447,6 @@ export default function HandoverWorkspace({
                 client={client}
                 records={rows}
                 definitions={definitions.data}
-                actor={actor}
-                onActor={setActor}
                 onSaved={(row) => saved(row, { generation: currentOperationGeneration })}
                 onClose={() => setOperation('')}
               />

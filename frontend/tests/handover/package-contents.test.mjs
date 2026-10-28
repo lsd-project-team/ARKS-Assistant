@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   packageGroups,
   packageNotes,
+  packageDescription,
 } from '../../src/features/handover/packages/packageContents.ts';
 
 test('历史访谈归入资料，包内分类保留打包时版本，更新和归档不替换固定引用', () => {
@@ -64,4 +65,19 @@ test('空交接说明隐藏，有内容的待补充事项和备注保留原始�
   ]);
   assert.deepEqual(packageNotes({}), []);
   assert.deepEqual(payload, original);
+});
+
+test('旧交接包草稿合并说明时保留范围、缺项原文和含义，不改写原草稿', () => {
+  const payload = { scope: '  设备软件\n版本二  ', gaps: '  待核对 SDK\n现场记录  ' };
+  const original = structuredClone(payload);
+  assert.equal(packageDescription(payload), `${payload.scope}\n\n待补充事项：\n${payload.gaps}`);
+  assert.equal(packageDescription({ gaps: payload.gaps }), `待补充事项：\n${payload.gaps}`);
+  assert.deepEqual(payload, original);
+});
+
+test('新说明反复恢复不会重复添加缺项，空草稿不生成额外说明', () => {
+  assert.equal(packageDescription({}), '');
+  assert.equal(packageDescription({ scope: ' \n ', gaps: '\n' }), '');
+  const scope = packageDescription({ scope: '交接背景', gaps: '配方尚未核对' });
+  assert.equal(packageDescription({ scope, gaps: '' }), scope);
 });
