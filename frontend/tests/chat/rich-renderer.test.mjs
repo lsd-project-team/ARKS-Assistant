@@ -32,6 +32,7 @@ const result = await build({
     'zustand',
   ],
   jsx: 'automatic',
+  loader: { '.css': 'empty' },
   plugins: [
     {
       name: 'boundaries',
@@ -137,4 +138,18 @@ test('格式损坏的业务引用不能降为任意外部协议链接', () => {
   const html = render('[坏引用](source:not-a-location)');
   assert.match(html, /引用格式无效/);
   assert.doesNotMatch(html, /href="source:/);
+});
+
+test('经验引用只显示记录标题，使用当前页弹窗按钮并隐藏记录修订', () => {
+  const html = render('处理结果。 [取片经验 · v2](debug-issue:pickup/2)');
+  assert.match(html, /<button[^>]*aria-haspopup="dialog"[^>]*>取片经验<\/button>/);
+  assert.doesNotMatch(html, /· v2|handover\/issues|href="debug-issue:|参考资料/);
+});
+
+test('无效经验版本不能触发记录查看或变成外部跳转', () => {
+  for (const href of ['debug-issue:pickup/0', 'debug-issue:pickup/9007199254740992']) {
+    const html = render(`[经验](${href})`);
+    assert.match(html, /引用格式无效/);
+    assert.doesNotMatch(html, /aria-haspopup="dialog"|href="debug-issue:/);
+  }
 });

@@ -20,6 +20,7 @@ import type { HandoverRecord } from '../../features/handover/shared/types';
 import { isKnowledgeReference } from '../../features/knowledge/lib/knowledgeReference';
 import { citationEndLine } from '../../features/source_reader/lib/citationRange';
 import { remarkDebugCitationLabels } from '../../features/chat/lib/recordAnswerPresentation';
+import { DebugIssueReference } from '../../features/chat/components/DebugIssueReference';
 
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
@@ -69,17 +70,18 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
         )}
       </>
     );
-  const debugIssue = href?.match(/^debug-issue:([\w-]+)\/(\d+)$/);
-  if (debugIssue)
+  const debugIssue = href?.match(/^debug-issue:([\w-]+)\/([1-9]\d*)$/);
+  if (debugIssue && Number.isSafeInteger(Number(debugIssue[2])))
     return (
-      <button
-        className="source-link"
-        onClick={() => {
-          window.location.hash = `handover/issues?record=${encodeURIComponent(debugIssue[1])}&version=${debugIssue[2]}`;
-        }}
+      <DebugIssueReference
+        id={debugIssue[1]}
+        version={Number(debugIssue[2])}
+        label={Children.toArray(children)
+          .filter((child) => typeof child === 'string')
+          .join('')}
       >
         {children}
-      </button>
+      </DebugIssueReference>
     );
   const reference = href?.match(/^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
   if (reference)

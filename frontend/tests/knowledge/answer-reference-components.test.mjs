@@ -75,7 +75,7 @@ test('流式问候有候选和检索未命中时，也不显示本轮参考或�
   assert.equal(render({ answer: '你好！', references, searches }), '');
 });
 
-test('回答默认收起为参考资料，展开内容仅含引用名称并保留版本链接', () => {
+test('问题经验的出处已在正文中显示，底部不再重复标题或版本信息', () => {
   const html = render({
     answer: '[记录](debug-issue:pickup/2)',
     references: references.map((row) => ({
@@ -84,8 +84,7 @@ test('回答默认收起为参考资料，展开内容仅含引用名称并保�
     })),
     searches,
   });
-  assert.match(html, /<details><summary>参考资料<\/summary>/);
-  assert.match(html, /\[中转台取片异常\]\(debug-issue:pickup\/2\)/);
+  assert.equal(html, '');
   assert.doesNotMatch(
     html,
     /本轮参考|条资料|点开可核对|调试记录|v2|未解决|适用条件待核对|M8 DAF|未找到相关可用内容|<details[^>]*\sopen/,
@@ -146,10 +145,7 @@ test('历史引用回答使用本条回复的内容筛选缓存记录，切换�
   assert.match(first, /handover-source:daf\/1#L5/);
   assert.doesNotMatch(first, /中转台取片异常/);
   const second = renderHistory('[记录](debug-issue:pickup/2)', context);
-  assert.match(second, /<details><summary>参考资料<\/summary>/);
-  assert.doesNotMatch(second, /本轮参考/);
-  assert.match(second, /中转台取片异常/);
-  assert.doesNotMatch(second, /M8 DAF/);
+  assert.equal(second, '<div class="run-knowledge-summary"></div>');
 });
 
 test('历史候选匹配失败或引用上下文尚未加载时不假造参考列表', () => {
@@ -224,7 +220,7 @@ for (const historical of [false, true]) {
     assert.doesNotMatch(html, /7月25|7月27日｜|7月28|other-|images\/1\/|<script>/);
     assert.doesNotMatch(html, /原图\.png|另一张\.png|图片ID/);
     assert.equal((html.match(/aria-label="原图：/g) || []).length, 1);
-    assert.equal((html.match(/class="knowledge-reference"/g) || []).length, 1);
+    assert.equal((html.match(/class="knowledge-reference"/g) || []).length, 0);
     assert.doesNotMatch(html, /本轮参考/);
   });
 
@@ -242,18 +238,18 @@ test('记录正文缺失时仍只展示原图，不回退展示录入原文', ()
   assert.equal((html.match(/<img /g) || []).length, 3);
 });
 
-test('没有原图的引用只保留参考入口，不显示空图片区或重复正文', () => {
+test('没有原图的引用使用正文标题入口，底部不显示空图片区或重复出处', () => {
   const html = render({
     answer: '[文字记录](debug-issue:pickup/2)',
     references: [{ ...references[1], image_count: 0 }],
   });
-  assert.match(html, /\[中转台取片异常\]\(debug-issue:pickup\/2\)/);
+  assert.equal(html, '');
   assert.doesNotMatch(html, /aria-label="原图：|正在加载原图|<img |记录文字/);
 });
 
 test('明确引用多条记录时按引用顺序展示，未引用的其他日期仍不展开', () => {
   const html = renderOriginals('[7月27日](debug-issue:other-1/2) [7月23日](debug-issue:pickup/2)');
-  assert.equal((html.match(/class="knowledge-reference"/g) || []).length, 2);
+  assert.equal((html.match(/class="knowledge-reference"/g) || []).length, 0);
   assert.equal((html.match(/<img /g) || []).length, 4);
   assert.ok(html.indexOf('aria-label="原图：7月27日') < html.indexOf('aria-label="原图：7月23'));
   assert.doesNotMatch(html, /7月25|7月28|other-0|other-2/);
@@ -270,7 +266,7 @@ test('条件不符的历史记录即使被引用对照，也不作为适用记�
       },
     ],
   });
-  assert.match(html, /\[中转台取片异常\]\(debug-issue:pickup\/2\)/);
+  assert.equal(html, '');
   assert.doesNotMatch(html, /本轮参考|条件不符，仅供历史对照/);
   assert.doesNotMatch(html, /aria-label="原图：|<img /);
 });

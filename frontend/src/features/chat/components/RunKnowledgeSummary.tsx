@@ -33,9 +33,12 @@ export function KnowledgeFeedback({
   const sources =
     mode === 'context' ? distinctReferences(references) : answerReferences(answer, references);
   const notices = mode === 'context' ? searchNotices(searches, sources) : [];
+  // 问题与经验的标题已在回答正文中可点击，不再在底部重复列出。
+  const listedSources =
+    mode === 'answer' ? sources.filter((row) => row.kind !== 'debug_issue') : sources;
   // 检索候选不等于回答依据；原图必须跟随回答实际引用的固定版本。
   const originals = mode === 'answer' ? originalDebugReferences(sources) : [];
-  if (!sources.length && !notices.length && !saves.length && !originals.length) return null;
+  if (!listedSources.length && !notices.length && !saves.length && !originals.length) return null;
   return (
     <div className="knowledge-feedback">
       {originals.length > 0 && <DebugIssueSources references={originals} />}
@@ -49,10 +52,10 @@ export function KnowledgeFeedback({
         </p>
       ))}
       {mode === 'answer'
-        ? sources.length > 0 && (
+        ? listedSources.length > 0 && (
             <details>
               <summary>参考资料</summary>
-              {sources.map((row) => (
+              {listedSources.map((row) => (
                 <div className="knowledge-reference" key={row.citation}>
                   <Markdown content={`[${row.title.replace(/[\[\]\n]/g, ' ')}](${row.citation})`} />
                 </div>
