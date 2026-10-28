@@ -12,6 +12,7 @@ from langchain_core.messages import AIMessage, ToolMessage
 
 from app.agents.tools.engineering import engineering_tools
 from app.core.config import dump_json
+from app.infrastructure.storage.paths import ordinary_path
 from app.modules.code_changes import CodeChanges
 from app.modules.source_analysis.evidence import SourceEvidence, SourceEvidenceGuard, source_excerpt
 from app.modules.source_analysis.review import REVIEW, review_answer
@@ -297,7 +298,8 @@ async def test_manifest_binds_sent_source_change_and_real_verification_without_r
 async def test_missing_test_log_is_explicit_and_does_not_invent_test_counts(work):
     verified, _ = await modify_and_verify(work)
     log = work.changes.log_path(verified["id"])
-    assert log.is_relative_to(work.changes.paths.data)
+    # Windows I/O可使用长路径前缀；去掉展示前缀后仍须实际位于本用例的数据目录。
+    assert ordinary_path(log).resolve().is_relative_to(work.changes.paths.data.resolve())
     log.unlink()
 
     payload = await inspect(work)

@@ -3,6 +3,7 @@
 import json
 
 from app.core.identifiers import now_iso
+from app.modules.handover.domain.records import assert_version
 from app.modules.handover.domain.schemas import validate_payload
 from app.modules.handover.infrastructure.persistence.models import HandoverDebugImage
 
@@ -11,7 +12,7 @@ class DebugImageStorage:
     def append_debug_image(self, identifier, version, metadata, data, actor):
         with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
-            self._version(row, version)
+            assert_version(row.version, version)
             if row.kind != "debug_issue" or row.state == "archived":
                 raise ValueError("只能为未归档的问题与经验记录添加原图")
             payload = json.loads(row.payload_json)

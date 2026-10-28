@@ -17,12 +17,12 @@ from app.modules.action_timing.projects import TimingProjects
 class ActionLedger:
     def __init__(self, services, timing_project_id=None):
         self.database = services.database
-        self.project_id = timing_project_id
+        self.timing_project_id = timing_project_id
 
-    def scope(self, session, *, writing=False):
+    def scope(self, session):
         project = (
-            TimingProjects.require(session, self.project_id)
-            if self.project_id
+            TimingProjects.require(session, self.timing_project_id)
+            if self.timing_project_id
             else TimingProjects.default(session)
         )
         return project.id
@@ -33,9 +33,9 @@ class ActionLedger:
             try:
                 # SQLite 写锁覆盖读取版本至提交，避免校验与写入之间出现竞争。
                 session.connection().exec_driver_sql(
-                    "BEGIN IMMEDIATE" if writing or not self.project_id else "BEGIN"
+                    "BEGIN IMMEDIATE" if writing or not self.timing_project_id else "BEGIN"
                 )
-                scope = self.scope(session, writing=writing)
+                scope = self.scope(session)
                 yield session, scope
                 session.commit()
             except IntegrityError as error:

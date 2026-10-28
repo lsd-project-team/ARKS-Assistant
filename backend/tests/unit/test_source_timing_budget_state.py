@@ -26,9 +26,7 @@ def test_read_only_refresh_does_not_discard_the_task_that_is_awaited(kind, callb
     assert result["known_delay_min_ms"] == 10
     assert result["total_ms"] is None and result["truncated"]
     assert any(
-        stage["kind"] == "delay"
-        and stage.get("milliseconds") == 3
-        and not stage["background"]
+        stage["kind"] == "delay" and stage.get("milliseconds") == 3 and not stage["background"]
         for stage in result["stages"]
     )
 
@@ -57,9 +55,7 @@ def test_possible_task_writes_are_not_treated_as_read_only_refresh(body):
     )
     assert result["total_ms"] is None
     assert any(
-        stage["kind"] == "delay"
-        and stage.get("milliseconds") == 3
-        and stage["background"]
+        stage["kind"] == "delay" and stage.get("milliseconds") == 3 and stage["background"]
         for stage in result["stages"]
     )
 
@@ -76,9 +72,7 @@ def test_an_externally_writable_task_is_not_given_private_field_protection(visib
     )
     assert result["total_ms"] is None
     assert any(
-        stage["kind"] == "delay"
-        and stage.get("milliseconds") == 3
-        and stage["background"]
+        stage["kind"] == "delay" and stage.get("milliseconds") == 3 and stage["background"]
         for stage in result["stages"]
     )
 
@@ -93,9 +87,7 @@ def test_read_only_refresh_does_not_clear_an_existing_escape_invalidation():
     )
     assert result["total_ms"] is None
     assert any(
-        stage["kind"] == "delay"
-        and stage.get("milliseconds") == 3
-        and stage["background"]
+        stage["kind"] == "delay" and stage.get("milliseconds") == 3 and stage["background"]
         for stage in result["stages"]
     )
 
@@ -113,6 +105,5 @@ def test_private_task_protection_does_not_freeze_other_fields_or_reachable_objec
     assert result["known_delay_min_ms"] == 10 and result["total_ms"] is None
     assert not any(stage.get("milliseconds") in {999, 1000} for stage in result["stages"])
     assert any(
-        stage["kind"] == "delay" and stage.get("milliseconds") is None
-        for stage in result["stages"]
+        stage["kind"] == "delay" and stage.get("milliseconds") is None for stage in result["stages"]
     )

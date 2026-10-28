@@ -12,6 +12,7 @@ from sqlalchemy import func, select
 
 from app.core.identifiers import new_id, now_iso
 from app.infrastructure.execution import sandbox_evidence_valid
+from app.infrastructure.storage.paths import io_path
 from app.modules.code_changes.files import (
     changes_diff,
     copy_snapshot,
@@ -643,7 +644,7 @@ class CodeChanges:
             )
             if verification is None:
                 raise FileNotFoundError("验证记录不存在")
-            folder = self._folder(row)
+            folder = io_path(self._folder(row))
             if not folder.is_dir():
                 raise FileNotFoundError("验证临时日志已清理，验证档案仍保留")
             target = safe_path(folder, f"logs/{verification.id}.log")
@@ -691,7 +692,7 @@ class CodeChanges:
 
     def _verification(self, row, verification, *, environment_current=True):
         output, truncated = "", False
-        folder = self._folder(row)
+        folder = io_path(self._folder(row))
         log = safe_path(folder, f"logs/{verification.id}.log") if folder.is_dir() else None
         if log is not None and log.is_file():
             with log.open("rb") as stream:

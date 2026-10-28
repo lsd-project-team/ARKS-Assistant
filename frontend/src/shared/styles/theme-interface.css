@@ -408,12 +408,6 @@
 
 :root:is([data-appearance='classic'], [data-appearance='dark'])
   .knowledge-workspace
-  .source-warning {
-  color: var(--warning-text);
-}
-
-:root:is([data-appearance='classic'], [data-appearance='dark'])
-  .knowledge-workspace
   .original-diagram
   iframe {
   background: var(--reading-background);

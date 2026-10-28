@@ -6,13 +6,11 @@ export function parseTimingHash(hash: string) {
   return {
     open: !!match,
     timingProjectId: params.get('timing_project') || params.get('project') || '',
-    runId: params.get('run') || '',
   };
 }
-export function timingHash(timingProjectId = '', runId = '') {
+export function timingHash(timingProjectId = '') {
   const params = new URLSearchParams();
   if (timingProjectId) params.set('timing_project', timingProjectId);
-  if (runId) params.set('run', runId);
   return `action-timing${params.size ? `?${params}` : ''}`;
 }
 function subscribe(listener: () => void) {

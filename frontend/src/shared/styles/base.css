@@ -341,27 +341,6 @@ strong {
   color: var(--muted);
   margin: 0 0 29px;
 }
-.suggestions {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.suggestions button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 2px;
-  border-bottom: 1px solid var(--surface-hover);
-  text-align: left;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-.suggestions button svg {
-  color: var(--text-faint);
-}
-.suggestions button:hover {
-  color: var(--text);
-}
 .message {
   margin-bottom: 32px;
   overflow-wrap: anywhere;

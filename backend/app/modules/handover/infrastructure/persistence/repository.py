@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from app.core.identifiers import new_id, now_iso
 from app.modules.auth.context import can_read_review
-from app.modules.handover.domain.records import Record
+from app.modules.handover.domain.records import Record, assert_version
 from app.modules.handover.domain.rules import (
     confirmation_gate,
     dependency_cycle,
@@ -210,15 +210,10 @@ class HandoverStore(DebugImageStorage):
             )
             return record_dict(row)
 
-    @staticmethod
-    def _version(row, version):
-        if row.version != version:
-            raise ValueError("记录已被更新。草稿已保留，请读取新版本后合并修改")
-
     def update(self, identifier, body):
         with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
-            self._version(row, body.version)
+            assert_version(row.version, body.version)
             if row.kind != body.kind:
                 raise ValueError("不能改变记录类型")
             if row.kind in {"source", "package"}:
@@ -279,7 +274,7 @@ class HandoverStore(DebugImageStorage):
             row = self._get(session, identifier)
             if row.kind in {"job", "candidate"}:
                 raise ValueError("历史 AI 候选与作业仅可查看")
-            self._version(row, body.version)
+            assert_version(row.version, body.version)
             records = self._rows(session) if action == "confirm" else {}
             outcome = Record.from_mapping(record_dict(row)).review(action, records)
             row.state = outcome.state

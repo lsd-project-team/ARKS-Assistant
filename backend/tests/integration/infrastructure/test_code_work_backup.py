@@ -16,6 +16,7 @@ from sqlalchemy import select, text
 from app.core.config import PROJECT_ROOT, Paths
 from app.infrastructure.database.session import Database
 from app.infrastructure.storage.backup import create_backup
+from app.infrastructure.storage.paths import io_path
 from app.infrastructure.storage.restore import restore_backup
 from app.infrastructure.storage.validation import checked_backup
 from app.modules.code_changes import CodeChanges
@@ -55,9 +56,10 @@ def work_records(database):
 
 
 def scratch_contents(paths):
+    root = io_path(paths.scratch)
     return {
-        file.relative_to(paths.scratch).as_posix(): file.read_bytes()
-        for file in paths.scratch.rglob("*")
+        file.relative_to(root).as_posix(): file.read_bytes()
+        for file in root.rglob("*")
         if file.is_file()
     }
 
@@ -192,6 +194,9 @@ async def test_restore_keeps_code_work(tmp_path, monkeypatch):
     try:
         assert work_records(restored_database) == records
         assert restored.get(change["id"]) == expected
+        assert restored.log_path(change["id"], expected["latest_verification"]["id"]).read_text(
+            encoding="utf-8"
+        ) == expected["latest_verification"]["output"].replace("\r\n", "\n")
         assert restored.profiles() == [profile]
         assert restored.policy.get().model_dump() == policy
         assert restored.policy.tokens() == usage

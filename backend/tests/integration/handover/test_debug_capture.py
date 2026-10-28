@@ -5,7 +5,6 @@ import time
 
 import pytest
 from fastapi.testclient import TestClient
-from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
@@ -14,6 +13,7 @@ from app.main import create_app
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from tests.helpers.accounts import sign_in
+from tests.helpers.models import DeterministicModel
 
 pytestmark = pytest.mark.authentication
 
@@ -51,7 +51,7 @@ def terminal(client, run):
     pytest.fail("运行未在测试期限内结束")
 
 
-class HistoricalAnswer(BaseChatModel):
+class HistoricalAnswer(DeterministicModel):
     @property
     def _llm_type(self):
         return "historical-test"
@@ -61,6 +61,8 @@ class HistoricalAnswer(BaseChatModel):
 
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         prompt = str(messages[0].content)
+        if "你只负责筛选资料" in prompt or "你负责核查历史经验回答" in prompt:
+            return super()._generate(messages, stop, run_manager, **kwargs)
         assert "debug_issue_records" in prompt and "更换密封圈" in prompt
         assert '"处理状态": "记录人反馈已解决"' in prompt
         assert "resolution_status" not in prompt

@@ -8,7 +8,8 @@ from tests.helpers.models import DeterministicModel
 
 async def test_native_compaction_archives_and_preserves_original(services, monkeypatch):
     paths, _, workspace, repository, memories, settings = services
-    settings.save(AppSettings(model=ModelSettings(context_tokens=8192, output_tokens=512)))
+    # 当前完整工具定义已超过8K窗口；为历史压缩留出实际可用空间，超大工具拒绝由预算反例覆盖。
+    settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512)))
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_model",
         lambda *_args, **_kwargs: DeterministicModel(),

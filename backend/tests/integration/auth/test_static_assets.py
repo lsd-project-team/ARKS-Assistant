@@ -191,7 +191,7 @@ def test_actual_built_login_dependencies_and_private_knowledge_require_real_sess
     for name in [
         *public,
         "public-assets.json",
-        "engineering/manifest.json",
+        "agent-knowledge.json",
         "archify/module-source-explorer.html",
     ]:
         destination = frontend / name
@@ -217,7 +217,7 @@ def test_actual_built_login_dependencies_and_private_knowledge_require_real_sess
                         assert urljoin("/" + name, url).lstrip("/") in public
         for file in private_scripts:
             assert client.get("/" + file.relative_to(frontend).as_posix()).status_code == 401
-        for url in ("/engineering/manifest.json", "/archify/module-source-explorer.html"):
+        for url in ("/agent-knowledge.json", "/archify/module-source-explorer.html"):
             assert client.get(url).status_code == 401
         sign_in(client, "user")
         sample = next(
@@ -226,5 +226,5 @@ def test_actual_built_login_dependencies_and_private_knowledge_require_real_sess
         assert (
             client.get("/" + sample.relative_to(frontend).as_posix()).content == sample.read_bytes()
         )
-        for name in ("engineering/manifest.json", "archify/module-source-explorer.html"):
+        for name in ("agent-knowledge.json", "archify/module-source-explorer.html"):
             assert client.get("/" + name).content == (built / name).read_bytes()

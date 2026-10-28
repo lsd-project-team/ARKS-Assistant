@@ -5,6 +5,17 @@ import re
 from pathlib import Path
 
 
+def io_path(path: Path) -> Path:
+    """为已核对边界的路径提供Windows长路径I/O形式，不替代权限与链接检查。"""
+    path = Path(path)
+    if os.name != "nt":
+        return path
+    value = os.path.abspath(path)
+    if value.startswith("\\\\?\\"):
+        return Path(value)
+    return Path("\\\\?\\UNC\\" + value[2:] if value.startswith("\\\\") else "\\\\?\\" + value)
+
+
 def ordinary_path(path: Path) -> Path:
     value = str(path)
     if os.name == "nt" and value.startswith("\\\\?\\"):

@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.modules.handover.domain.records import Record
+from app.modules.handover.domain.records import Record, assert_version
 
 
 def record(state="draft", kind="debug_issue", payload=None):
@@ -40,7 +40,7 @@ def test_confirm_pins_exact_current_source_version():
 def test_version_conflict_is_detected_before_state_change():
     current = record()
     with pytest.raises(ValueError, match="记录已被更新"):
-        current.assert_version(2)
+        assert_version(current.version, 2)
     assert current.state == "draft" and current.version == 3
 
 

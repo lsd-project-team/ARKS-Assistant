@@ -2,9 +2,9 @@
 
 import os
 import re
-import stat
 from pathlib import Path, PureWindowsPath
 
+from app.modules.code_changes.files import is_link
 from app.modules.source_analysis.workspace import IGNORED
 
 MAX_FILE_BYTES = 2_000_000
@@ -15,14 +15,6 @@ PROJECT_SUFFIXES = {".csproj", ".vbproj", ".fsproj"}
 
 def display(value, maximum=240):
     return re.sub(r"[\x00-\x1f\x7f]", "", str(value))[:maximum]
-
-
-def is_link(path):
-    info = path.lstat()
-    return path.is_symlink() or bool(
-        getattr(info, "st_file_attributes", 0)
-        & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
-    )
 
 
 def local_file(root, path):

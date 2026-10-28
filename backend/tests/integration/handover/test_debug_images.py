@@ -218,7 +218,11 @@ def test_sqlite_backup_restore_keeps_record_text_and_every_original_image(servic
             row = upload(client, row, data).json()
         backup = create_backup(services[0])
         report = validate_backup(backup)
-        assert report["valid"] and report["database_revision"] == "0021"
+        with client.app.state.auth.database.engine.connect() as connection:
+            revision = connection.exec_driver_sql(
+                "SELECT version_num FROM alembic_version"
+            ).scalar_one()
+        assert report["valid"] and report["database_revision"] == revision
     restored = Paths(tmp_path / "restored", services[0].workspace)
     restore_backup(backup, restored.data)
     database = Database(restored.data / "app.sqlite3")

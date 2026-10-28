@@ -7,6 +7,11 @@ from typing import Any
 from app.modules.handover.domain.rules import confirmation_gate, linked_ids
 
 
+def assert_version(actual, expected):
+    if actual != expected:
+        raise ValueError("记录已被更新。草稿已保留，请读取新版本后合并修改")
+
+
 @dataclass(frozen=True, slots=True)
 class ReviewOutcome:
     state: str
@@ -24,10 +29,6 @@ class Record:
     @classmethod
     def from_mapping(cls, row):
         return cls(row["id"], row["kind"], row["version"], row["state"], row["payload"])
-
-    def assert_version(self, expected):
-        if self.version != expected:
-            raise ValueError("记录已被更新。草稿已保留，请读取新版本后合并修改")
 
     def review(self, action, records) -> ReviewOutcome:
         if self.kind == "job":

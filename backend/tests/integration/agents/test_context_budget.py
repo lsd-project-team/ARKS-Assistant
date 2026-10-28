@@ -120,7 +120,8 @@ async def test_tool_overhead_triggers_native_compaction_without_losing_originals
     services, monkeypatch
 ):
     paths, _, workspace, repository, memories, settings = services
-    limit, output = 8192, 512
+    # 必须先能容纳完整工具定义，才能验证历史正文压缩；不可压缩请求仍单独使用8K验证拒绝。
+    limit, output = 16384, 512
     settings.save(AppSettings(model=ModelSettings(context_tokens=limit, output_tokens=output)))
     generated = []
     original_generate = DeterministicModel._generate

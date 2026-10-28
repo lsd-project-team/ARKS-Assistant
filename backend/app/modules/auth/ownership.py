@@ -2,6 +2,7 @@
 
 from sqlalchemy import exists, or_, select, true
 
+from app.modules.auth.context import can_read_review as unrestricted
 from app.modules.auth.context import request_identity
 from app.modules.chat.models import Message, Thread
 from app.modules.projects.models import Project
@@ -16,11 +17,6 @@ def current_owner():
 def private_workspace_id(identifier):
     owner = current_owner()
     return f"independent-{owner}" if identifier == "independent" and owner else identifier
-
-
-def unrestricted():
-    current = request_identity.get()
-    return current is None or current["user"]["role"] == "admin"
 
 
 def owner_filter(model):

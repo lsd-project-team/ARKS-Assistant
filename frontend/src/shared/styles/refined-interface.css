@@ -511,20 +511,11 @@ textarea::placeholder {
   box-shadow: var(--surface-stroke), var(--shadow-raised);
   border-radius: 13px;
 }
-.legacy-visual .knowledge-workspace .topbar {
-  background: var(--panel);
-  border-color: var(--border);
-}
 .legacy-visual .knowledge-workspace .breadcrumb strong {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.4;
-}
-.legacy-visual .knowledge-workspace .topbar .button {
-  border-color: transparent;
-  box-shadow: none;
-  background: var(--surface-subtle);
 }
 .legacy-visual .knowledge-workspace .page-header h1 {
   font-size: clamp(26px, 2.3vw, 32px);
@@ -731,11 +722,6 @@ textarea::placeholder {
     inset 0 1px 0 #ffffff18,
     0 2px 5px #1d263012;
 }
-.legacy-visual .knowledge-workspace .source-code-panel,
-.legacy-visual .knowledge-workspace .node-source-links {
-  border-radius: 12px;
-  box-shadow: var(--surface-stroke);
-}
 .appearance-option {
   border-color: transparent;
   border-radius: 14px;
@@ -777,15 +763,6 @@ textarea::placeholder {
 .legacy-visual .chat-welcome p {
   font-size: 14px;
   color: var(--text-secondary);
-}
-.legacy-visual .suggestions button {
-  border-radius: 9px;
-  padding: 12px 10px;
-  font-size: 14px;
-}
-.legacy-visual .suggestions button:hover {
-  background: var(--surface-subtle);
-  color: var(--text);
 }
 .legacy-visual
   :is(.message-label, .run-activity, .tool-activity, .branch-origin, .composer-context) {
