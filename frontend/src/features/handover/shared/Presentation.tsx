@@ -3,7 +3,7 @@ import type { Tab } from './types';
 
 export const pageDescriptions: Partial<Record<Tab, string>> = {
   overview: '查看交接现状，安排下一步工作。',
-  materials: '集中保存文档与文字资料，便于后续查阅和问答。',
+  materials: '保存原始文件，支持查看、版本追溯和下载。',
   tasks: '记录工作项、负责人和进度，随时更新状态与备注。',
   issues: '记录问题处理、工作进展与经验，便于后续查阅和复用。',
   packages: '汇总交接内容并保留固定版本，支持查阅与下载。',

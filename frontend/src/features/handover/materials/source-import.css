@@ -1,16 +1,5 @@
-.source-import-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-.source-import-modes {
-  display: inline-flex;
-}
-.source-import-modes .button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding-inline: 14px;
+.source-import-draft p {
+  margin: 0 0 10px;
 }
 .source-import-text-meta {
   display: flex;

@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { FileUp, AlignLeft } from 'lucide-react';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import type { Client } from '../shared/client';
 import { HandoverModal } from '../shared/HandoverModal';
 import { useHandoverDraft } from '../shared/drafts';
 import { text, type HandoverRecord } from '../shared/types';
+import {
+  clearPreviousFileDraft,
+  downloadTextDraft,
+  previousSourceDraft,
+} from './sourceImportDraft';
 import './source-import.css';
 
 const maxCharacters = 100000;
@@ -26,36 +30,40 @@ export function SourceImport({
   onClose: () => void;
   replacing?: HandoverRecord;
 }) {
+  // 仅已有文本资料保留文字更新；新增和文件换版都固定使用文件上传。
+  const editingText = replacing?.payload.format === 'text';
+  const [previous] = useState(() =>
+    editingText ? undefined : previousSourceDraft(scopeId, replacing?.id),
+  );
+  const textDraft = previous && text(previous.payload.content).trim() ? previous : undefined;
   const [file, setFile] = useState<File>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
   const { draft, setDraft, clear, restored, warning } = useHandoverDraft(
     scopeId,
-    replacing ? `source-update:${replacing.id}` : 'import',
+    replacing
+      ? `${editingText ? 'source-update' : 'source-file-update'}:${replacing.id}`
+      : 'source-file-import',
     {
       title: replacing?.title || '',
       payload: {
-        mode: replacing?.payload.format === 'text' ? 'text' : 'file',
-        content: replacing?.payload.format === 'text' ? text(replacing.payload.content) : '',
-        notes: text(replacing?.payload.notes),
+        ...(editingText && { content: text(replacing.payload.content) }),
+        notes: text(
+          !textDraft && previous?.payload.mode !== 'text' && previous?.payload.notes !== undefined
+            ? previous.payload.notes
+            : replacing?.payload.notes,
+        ),
       },
     },
   );
-  const mode = draft.payload.mode === 'text' ? 'text' : 'file';
   const content = text(draft.payload.content);
   const characterCount = Array.from(content).length;
   const tooLong = characterCount > maxCharacters;
   const canSave =
-    !!actor.trim() &&
-    (mode === 'text' ? !!draft.title.trim() && !!content.trim() && !tooLong : !!file);
+    !!actor.trim() && (editingText ? !!draft.title.trim() && !!content.trim() && !tooLong : !!file);
 
   function field(key: string, value: string) {
     setDraft({ ...draft, payload: { ...draft.payload, [key]: value } });
-  }
-  function changeMode(next: string) {
-    setFile(undefined);
-    field('mode', next);
-    setError(undefined);
   }
   async function save() {
     if (!canSave || busy) return;
@@ -72,16 +80,17 @@ export function SourceImport({
           device: text(replacing.payload.device),
         }),
       };
-      const row =
-        mode === 'text'
-          ? await client.send<HandoverRecord>('/sources/text', {
-              ...metadata,
-              title: draft.title.trim(),
-              content,
-              actor: actor.trim(),
-            })
-          : await client.upload<HandoverRecord>(file!, { ...metadata, actor: actor.trim() });
+      const row = editingText
+        ? await client.send<HandoverRecord>('/sources/text', {
+            ...metadata,
+            title: draft.title.trim(),
+            content,
+            actor: actor.trim(),
+          })
+        : await client.upload<HandoverRecord>(file!, { ...metadata, actor: actor.trim() });
       clear();
+      if (previous && !textDraft && previous.payload.mode !== 'text')
+        clearPreviousFileDraft(scopeId, previous, replacing?.id);
       onSaved(row);
     } catch (error) {
       setError(error);
@@ -95,7 +104,7 @@ export function SourceImport({
       description={
         replacing
           ? `更新“${replacing.title}”，旧原件与历史版本会保留。关联内容需重新复核。`
-          : '上传文件或直接输入文本，保存原文后可继续确认与 AI 提取。'
+          : '上传原始文件，保存后可查看内容、追溯版本和下载原件。'
       }
       onClose={onClose}
       onSubmit={(event) => {
@@ -116,37 +125,20 @@ export function SourceImport({
       <ErrorText error={error || warning} reveal />
       {restored && (
         <p className="handover-notice">
-          已恢复上次填写的信息。{mode === 'file' ? '上传文件请重新选择附件。' : ''}
+          已恢复上次填写的信息。{!editingText ? '上传文件请重新选择附件。' : ''}
         </p>
+      )}
+      {textDraft && (
+        <div className="handover-notice source-import-draft">
+          <p>上次未保存的文本草稿仍保留，可下载为 TXT 文件后上传。</p>
+          <Button type="button" onClick={() => downloadTextDraft(textDraft)}>
+            下载文本草稿
+          </Button>
+        </div>
       )}
       <fieldset disabled={busy}>
         <div className="handover-fields">
-          <div className="handover-field-wide">
-            <span className="source-import-label">添加方式</span>
-            <div
-              className="handover-view-switch source-import-modes"
-              role="group"
-              aria-label="添加方式"
-            >
-              <Button
-                type="button"
-                aria-pressed={mode === 'file'}
-                onClick={() => changeMode('file')}
-              >
-                <FileUp size={15} />
-                上传文件
-              </Button>
-              <Button
-                type="button"
-                aria-pressed={mode === 'text'}
-                onClick={() => changeMode('text')}
-              >
-                <AlignLeft size={15} />
-                输入文本
-              </Button>
-            </div>
-          </div>
-          {mode === 'text' && (
+          {editingText && (
             <label>
               <span>资料标题</span>
               <input
@@ -167,7 +159,7 @@ export function SourceImport({
               onChange={(event) => onActor(event.target.value)}
             />
           </label>
-          {mode === 'file' ? (
+          {!editingText ? (
             <label className="handover-field-wide">
               <span>文件</span>
               <input
@@ -195,7 +187,7 @@ export function SourceImport({
                 onChange={(event) => field('content', event.target.value)}
               />
               <div className="source-import-text-meta">
-                <small>原文会完整保存，供后续查阅与问答检索。</small>
+                <small>原文会完整保存，供后续查阅和版本追溯。</small>
                 <small className={tooLong ? 'source-import-limit' : undefined}>
                   {characterCount.toLocaleString('zh-CN')} / 100,000 字符
                 </small>
