@@ -144,12 +144,6 @@ export function ContextDialog({
                     close();
                   })
                 }
-                onDebug={(id, version) =>
-                  guard.request(() => {
-                    window.location.hash = `handover/issues?record=${id}&version=${version}`;
-                    close();
-                  })
-                }
               />
             )}
           </div>

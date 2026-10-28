@@ -53,11 +53,13 @@ export function DebugIssueReference({
   version,
   label,
   children,
+  className = 'source-link',
 }: {
   id: string;
   version: number;
   label: string;
   children: ReactNode;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -83,7 +85,7 @@ export function DebugIssueReference({
       <button
         ref={trigger}
         type="button"
-        className="source-link"
+        className={className}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >

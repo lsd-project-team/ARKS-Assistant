@@ -4,17 +4,16 @@ import { toolLabel } from '../lib/toolLabels';
 import { ContextBudgetDetails } from './ContextBudgetDetails';
 import { KnowledgeFeedback } from './RunKnowledgeSummary';
 import { RunEvidenceDetails } from './RunEvidenceDetails';
+import { DebugIssueReference } from './DebugIssueReference';
 
 export function RunContextPanel({
   context,
   onOpen,
   onSelection,
-  onDebug,
 }: {
   context: RunContext;
   onOpen: (path: string, line: number, endLine: number, version: string) => void;
   onSelection: (selection: Selection) => void;
-  onDebug: (id: string, version: number) => void;
 }) {
   const references = distinctReferences(context.references || []);
   const referenceCount =
@@ -41,13 +40,15 @@ export function RunContextPanel({
       />
       {!references.length &&
         context.debug_issues?.map((issue) => (
-          <button
+          <DebugIssueReference
             key={issue.id}
+            id={issue.id}
+            version={issue.version}
+            label={issue.title}
             className="context-source"
-            onClick={() => onDebug(issue.id, issue.version)}
           >
-            问题与经验 · {issue.title}
-          </button>
+            {issue.title}
+          </DebugIssueReference>
         ))}
       <section className="context-card">
         <h3>

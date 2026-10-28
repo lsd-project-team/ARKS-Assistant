@@ -7,11 +7,14 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 const bundled = await build({
-  entryPoints: [
-    fileURLToPath(
-      new URL('../../src/features/chat/components/DebugIssueReference.tsx', import.meta.url),
-    ),
-  ],
+  stdin: {
+    contents: `
+      export * from './src/features/chat/components/DebugIssueReference.tsx';
+      export * from './src/features/chat/components/RunContextPanel.tsx';
+    `,
+    resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
+    loader: 'tsx',
+  },
   bundle: true,
   write: false,
   format: 'cjs',
@@ -23,12 +26,19 @@ const bundled = await build({
     {
       name: 'no-network',
       setup(builder) {
+        builder.onResolve({ filter: /app\/components\/Markdown$/ }, () => ({
+          path: 'markdown',
+          namespace: 'boundary',
+        }));
         builder.onResolve({ filter: /app\/api\/client$/ }, () => ({
           path: 'http',
           namespace: 'boundary',
         }));
-        builder.onLoad({ filter: /.*/, namespace: 'boundary' }, () => ({
-          contents: 'export const api = () => { throw new Error("测试禁止网络请求"); };',
+        builder.onLoad({ filter: /.*/, namespace: 'boundary' }, ({ path }) => ({
+          contents:
+            path === 'markdown'
+              ? 'export const Markdown = ({content}) => content;'
+              : 'export const api = () => { throw new Error("测试禁止网络请求"); };',
         }));
       },
     },
@@ -41,7 +51,7 @@ new Function('require', 'module', 'exports', bundled.outputFiles[0].text)(
   module,
   module.exports,
 );
-const { DebugIssueReference, DebugIssueReferenceContent } = module.exports;
+const { DebugIssueReference, DebugIssueReferenceContent, RunContextPanel } = module.exports;
 const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
 
 test('未点击出处时只渲染标题按钮，不读取记录或展示内部信息', () => {
@@ -61,6 +71,41 @@ test('未点击出处时只渲染标题按钮，不读取记录或展示内部�
     assert.match(html, /aria-haspopup="dialog"/);
     assert.match(html, />取片经验<\/button>/);
     assert.doesNotMatch(html, /issue|版本|v2|正在加载|记录内容|href=/);
+  } finally {
+    client.clear();
+  }
+});
+
+test('旧运行上下文中的问题经验也使用原页弹窗入口，只显示标题', () => {
+  const client = new QueryClient();
+  try {
+    const html = renderToStaticMarkup(
+      createElement(
+        QueryClientProvider,
+        { client },
+        createElement(RunContextPanel, {
+          context: {
+            references: [],
+            debug_issues: [{ id: 'legacy-issue', title: '旧记录标题', version: 2 }],
+            memories: [],
+            selections: [],
+            tools: [],
+            recorded: true,
+          },
+          onOpen() {
+            throw new Error('不应打开源码');
+          },
+          onSelection() {
+            throw new Error('不应打开选区');
+          },
+        }),
+      ),
+    );
+    assert.match(
+      html,
+      /<button[^>]*class="context-source"[^>]*aria-haspopup="dialog"[^>]*>旧记录标题<\/button>/,
+    );
+    assert.doesNotMatch(html, /handover\/issues|href=|legacy-issue|v2|问题与经验 ·/);
   } finally {
     client.clear();
   }
