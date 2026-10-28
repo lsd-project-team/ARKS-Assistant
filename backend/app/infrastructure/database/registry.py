@@ -9,6 +9,7 @@ from app.modules.code_changes import models as code_changes
 from app.modules.handover.infrastructure.persistence import models as handover
 from app.modules.memory import models as memory
 from app.modules.projects import models as projects
+from app.modules.settings import models as settings
 from app.modules.source_analysis import models as source_analysis
 from app.modules.source_analysis.reading import models as project_reading
 
@@ -23,5 +24,6 @@ REGISTERED_MODELS = (
     handover,
     project_reading,
     code_changes,
+    settings,
 )
 __all__ = ["Base"]

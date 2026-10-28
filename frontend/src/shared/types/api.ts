@@ -166,6 +166,11 @@ export interface McpServer {
   headers: Record<string, string>;
   env: Record<string, string>;
 }
+export interface ModelPreference {
+  active_profile_id: string;
+  model_profiles: { id: string; name: string; model: string }[];
+}
+
 export interface Settings {
   model: ModelSettings;
   model_profiles: ModelProfile[];

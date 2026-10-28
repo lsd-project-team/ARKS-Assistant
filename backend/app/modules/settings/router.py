@@ -1,24 +1,36 @@
-"""全局模型与 MCP 配置 API，不再重复挂载到各项目。"""
+"""系统模型/MCP配置与个人模型选择，不重复挂载到各项目。"""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from app.agents.runtime.feedback import error_feedback
 from app.core.config import AppSettings, McpSettings
 from app.core.container import AppServices
 from app.infrastructure.mcp.client import probe_mcp
+from app.modules.auth.router import identity
 from app.modules.chat.schemas import (
     McpProbe,
     ModelProbe,
     SettingsWrite,
 )
+from app.modules.settings.model_preferences import ModelPreferences
 from app.modules.settings.model_probe import probe_capabilities
+from app.modules.settings.schemas import ModelPreferenceWrite
 
 
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
     settings = services.settings
     runtime = services.runtime
+    preferences = ModelPreferences(services.database, settings)
+
+    @router.get("/api/model-preference")
+    async def get_model_preference(request: Request):
+        return preferences.public(identity(request)["user"]["id"])
+
+    @router.put("/api/model-preference")
+    async def save_model_preference(body: ModelPreferenceWrite, request: Request):
+        return preferences.save(identity(request)["user"]["id"], body.profile_id)
 
     @router.get("/api/settings")
     async def get_settings():

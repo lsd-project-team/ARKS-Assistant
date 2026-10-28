@@ -17,7 +17,8 @@ export function queryGroups(path: string): string[] {
     return ['threads', 'thread', 'queue', 'context', 'memories', 'storage'];
   }
   if (/^\/memories(\/|$)/.test(path)) return ['memories', 'memory-history', 'storage'];
-  if (path === '/settings') return ['settings'];
+  if (path === '/settings') return ['settings', 'model-preference', 'context'];
+  if (path === '/model-preference') return ['model-preference', 'context'];
   if (path === '/source-options') return ['source-preferences'];
   return [];
 }

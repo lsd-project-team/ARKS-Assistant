@@ -4,6 +4,7 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.context.summary_text import summary_parts
 from app.agents.context.tokens import current_budget
+from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.engine import AgentRuntime
 from app.infrastructure.providers.models import close_models
 from app.modules.chat.schemas import SummaryCorrection
@@ -32,7 +33,7 @@ class ConversationContext:
         effective = (
             [event["summary_message"], *messages[event["cutoff_index"] :]] if event else messages
         )
-        settings = self.runtime.settings.load().model
+        settings = current_configuration(self.runtime.settings, self.repository.database).model
         snapshot = self.repository.latest_event(thread_id, "context_budget")
         return {
             "summary": summary_parts(event["summary_message"].text)[1] if event else None,

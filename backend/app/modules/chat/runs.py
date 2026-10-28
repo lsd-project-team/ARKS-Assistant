@@ -11,6 +11,7 @@ from app.modules.auth.context import request_identity
 from app.modules.chat.models import Run
 from app.modules.chat.repository import TERMINAL, Repository
 from app.modules.projects.context import bind_project
+from app.modules.settings.model_preferences import ModelPreferences
 
 
 class RunManager:
@@ -40,7 +41,9 @@ class RunManager:
         with self.repository.database.session.begin() as session:
             session.get(Run, run["id"]).project_snapshot_json = dump_json(project)
         run["project_snapshot"] = project
-        configuration = self.settings.load()
+        configuration = ModelPreferences(self.repository.database, self.settings).configuration(
+            actor.get("id")
+        )
         if project:
             configuration = configuration.model_copy(
                 update={"deepwiki_repo": project.get("deepwiki_repo", "")}

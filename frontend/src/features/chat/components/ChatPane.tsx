@@ -4,7 +4,12 @@ import { X, FileCode2, ChevronDown, RotateCcw, Folders } from 'lucide-react';
 import { api as request, jsonBody } from '../../../app/api/client';
 import { useWorkspace, draftFor, draftKey, type ConversationDraft } from '../../../app/state/store';
 import { useRunStream } from '../hooks/useRunStream';
-import type { QueuedQuestion, Run, Settings, SourceOptions } from '../../../shared/types/api';
+import type {
+  ModelPreference,
+  QueuedQuestion,
+  Run,
+  SourceOptions,
+} from '../../../shared/types/api';
 import { AnswerMarkdown } from './AnswerMarkdown';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useChatScroll } from '../hooks/useChatScroll';
@@ -73,7 +78,10 @@ export function ChatPane({
   const cache = useQueryClient();
   const conversation = useConversation(threadId);
   const messageJump = useWorkspace((state) => state.messageJump);
-  const settings = useQuery({ queryKey: ['settings'], queryFn: () => api<Settings>('/settings') });
+  const modelPreference = useQuery({
+    queryKey: ['model-preference'],
+    queryFn: () => api<ModelPreference>('/model-preference'),
+  });
   const latest = conversation.data?.runs.at(-1);
   const active = activeRun(started, conversation.data, threadId);
   const stream = useRunStream(active);
@@ -549,8 +557,14 @@ export function ChatPane({
           canContext={canContext}
           canCompact={!archivedProject && canCompact}
           compactDisabledReason={!messages.length ? '请先发送一条消息' : '请等待当前运行完成'}
-          model={settings.data?.model.model || '配置模型'}
-          modelControl={settings.data && <ModelPicker settings={settings.data} busy={busy} />}
+          model={
+            modelPreference.data?.model_profiles.find(
+              (profile) => profile.id === modelPreference.data.active_profile_id,
+            )?.model || '配置模型'
+          }
+          modelControl={
+            modelPreference.data && <ModelPicker preference={modelPreference.data} busy={busy} />
+          }
           context={
             <ComposerContext
               threadId={threadId}

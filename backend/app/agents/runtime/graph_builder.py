@@ -68,7 +68,7 @@ class AgentGraphBuilder:
                 debug_references[payload["id"]] = payload["version"]
             return original_emit(kind, payload)
 
-        settings = current_configuration(runtime.settings)
+        settings = current_configuration(runtime.settings, runtime.repository.database)
         options = SourceOptions.model_validate(source_options or {})
         if not inspection:
             emit("stage", {"stage": "connecting_model"})

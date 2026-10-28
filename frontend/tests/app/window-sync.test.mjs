@@ -50,7 +50,8 @@ test('两个窗口的草稿和阅读位置不被另一个窗口的布局写入�
 test('变更路径只触发对应数据重读，检测和备份上传不改变设置草稿', () => {
   assert.ok(queryGroups('/threads/id/restore').includes('threads'));
   assert.ok(queryGroups('/runs/id/cancel').includes('thread'));
-  assert.deepEqual(queryGroups('/settings'), ['settings']);
+  assert.deepEqual(queryGroups('/settings'), ['settings', 'model-preference', 'context']);
+  assert.deepEqual(queryGroups('/model-preference'), ['model-preference', 'context']);
   assert.deepEqual(queryGroups('/backup/validate'), []);
   assert.deepEqual(queryGroups('/settings/probe'), []);
 });

@@ -1,29 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Zap } from 'lucide-react';
 import { Select } from '../../../shared/ui/Select';
-import type { Settings } from '../../../shared/types/api';
+import type { ModelPreference } from '../../../shared/types/api';
 import { api, jsonBody } from '../../../app/api/client';
-import { normalizeSettings, settingsPayload } from '../lib/settingsDraft';
 import { toast } from '../../../shared/utils/toasts';
 
-export function ModelPicker({ settings, busy }: { settings: Settings; busy: boolean }) {
+export function ModelPicker({ preference, busy }: { preference: ModelPreference; busy: boolean }) {
   const cache = useQueryClient();
-  const current = normalizeSettings(settings);
+  const current = preference;
   const change = useMutation({
     mutationFn: (id: string) =>
-      api<Settings>('/settings', {
+      api<ModelPreference>('/model-preference', {
         method: 'PUT',
-        body: jsonBody({
-          settings: settingsPayload({ ...current, active_profile_id: id }),
-          version: current.version,
-        }),
+        body: jsonBody({ profile_id: id }),
       }),
     onSuccess: (result) => {
-      cache.setQueryData(['settings'], result);
+      cache.setQueryData(['model-preference'], result);
+      void cache.invalidateQueries({ queryKey: ['context'] });
       toast(busy ? '模型已切换，下一轮使用新配置' : '模型已切换');
     },
     onError: (error) => {
-      void cache.invalidateQueries({ queryKey: ['settings'] });
+      void cache.invalidateQueries({ queryKey: ['model-preference'] });
       toast(error instanceof Error ? error.message : '模型切换失败', undefined, 'error');
     },
   });
@@ -41,7 +38,7 @@ export function ModelPicker({ settings, busy }: { settings: Settings; busy: bool
       >
         {current.model_profiles.map((profile) => (
           <option value={profile.id} key={profile.id}>
-            {profile.config.model || profile.name}
+            {profile.model || profile.name}
             {current.model_profiles.length > 1 ? ` · ${profile.name}` : ''}
           </option>
         ))}

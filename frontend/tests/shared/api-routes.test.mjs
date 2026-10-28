@@ -22,6 +22,7 @@ test('全局配置与管理路径不重复挂载到项目，匹配要求完整�
     '/sources/id/file',
     '/health',
     '/settings',
+    '/model-preference',
     '/mcp/probe',
     '/backup',
     '/storage?scope=all',
