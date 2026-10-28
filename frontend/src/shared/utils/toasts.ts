@@ -5,6 +5,7 @@ export interface ToastItem {
   message: string;
   tone: 'success' | 'error';
   durationMs?: number;
+  plain?: boolean;
   action?: { label: string; run: () => Promise<unknown> | void };
 }
 let sequence = 0;
@@ -20,9 +21,9 @@ export function toast(
   message: string,
   action?: ToastItem['action'],
   tone: ToastItem['tone'] = 'success',
-  durationMs?: number,
+  options: Pick<ToastItem, 'durationMs' | 'plain'> = {},
 ) {
   useToasts.setState((state) => ({
-    items: [...state.items.slice(-2), { id: ++sequence, message, tone, action, durationMs }],
+    items: [...state.items.slice(-2), { id: ++sequence, message, tone, action, ...options }],
   }));
 }

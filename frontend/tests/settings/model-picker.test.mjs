@@ -87,7 +87,7 @@ test('切换只提交个人模型 ID，成功刷新选择及上下文，运行�
   const view = ModelPicker({ preference, busy: true });
   const select = view.props.children[1];
   assert.equal(select.props.value, 'second');
-  assert.match(select.props.children[1].props.children.join(''), /second-model.*备用/);
+  assert.equal(select.props.children[1].props.children, 'second-model');
   select.props.onValueChange('first');
   await environment.completion;
   assert.deepEqual(environment.requests, [

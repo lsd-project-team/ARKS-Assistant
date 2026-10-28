@@ -22,7 +22,7 @@ function Toast({ item }: { item: ToastItem }) {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      {item.tone === 'error' ? <CircleAlert size={15} /> : <Check size={15} />}
+      {!item.plain && (item.tone === 'error' ? <CircleAlert size={15} /> : <Check size={15} />)}
       <span>{item.message}</span>
       {item.action && (
         <button
@@ -46,9 +46,11 @@ function Toast({ item }: { item: ToastItem }) {
           {busy ? '处理中…' : item.action.label}
         </button>
       )}
-      <button aria-label="关闭提示" onClick={() => dismiss(item.id)}>
-        <X size={13} />
-      </button>
+      {!item.plain && (
+        <button aria-label="关闭提示" onClick={() => dismiss(item.id)}>
+          <X size={13} />
+        </button>
+      )}
     </div>
   );
 }
