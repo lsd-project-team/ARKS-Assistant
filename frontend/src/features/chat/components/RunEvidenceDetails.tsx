@@ -28,7 +28,7 @@ export function RunEvidenceDetails({
         <p className="muted">
           本轮允许检索：本地源码
           {context.source_options.use_deepwiki && '、DeepWiki'}
-          {context.source_options.use_knowledge && '、本地知识资料'}
+          {context.source_options.use_knowledge && '、问题与经验'}
           {context.source_options.use_memory && '、长期记忆'}
         </p>
       )}

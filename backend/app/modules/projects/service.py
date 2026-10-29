@@ -30,7 +30,6 @@ from app.modules.projects.models import Project
 from app.modules.projects.ownership import AccountProjects
 from app.modules.source_analysis.collection import ProjectAnalysis, SourceCollection
 from app.modules.source_analysis.models import SourceWorkspace
-from app.modules.source_analysis.reading.models import ProjectReadingJob
 from app.modules.source_analysis.workspace import Workspace
 
 INDEPENDENT = "independent"
@@ -267,12 +266,6 @@ class Projects:
             return record_dict(row)
 
     def ensure_idle(self, session, project_id):
-        if session.scalar(
-            select(ProjectReadingJob.id).where(
-                ProjectReadingJob.project_id == project_id, ProjectReadingJob.status == "running"
-            )
-        ):
-            raise ValueError("项目仍在阅读源码，请先暂停阅读")
         if session.scalar(
             select(CodeChangeRecord.id).where(
                 CodeChangeRecord.project_id == project_id, CodeChangeRecord.status == "verifying"
@@ -532,6 +525,5 @@ class Projects:
             id(item): item for item in [self.base, *self.contexts.values(), *self.retired]
         }.values():
             await services.runs.shutdown()
-            await services.runtime.project_reading.shutdown()
             await services.runtime.code_changes.shutdown()
             services.runtime.semantic.close()

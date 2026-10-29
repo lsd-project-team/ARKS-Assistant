@@ -65,7 +65,6 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 usage.initialize()
                 projects.initialize()
                 services.repository.recover()
-                services.runtime.project_reading.recover(all_projects=True)
                 services.runtime.code_changes.recover(all_projects=True)
                 await asyncio.to_thread(services.runtime.code_changes.cleanup_executors)
                 yield

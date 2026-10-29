@@ -1,4 +1,4 @@
-"""持久保存阅读快照、逐文件断点和各次分析成果。"""
+"""历史阅读表结构；不再创建任务、执行分析或向问答提供成果。"""
 
 from sqlalchemy import Boolean, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column

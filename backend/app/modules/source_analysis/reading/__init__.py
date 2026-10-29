@@ -1,5 +1,1 @@
-"""项目阅读独立于聊天记忆和业务调试问题库。"""
-
-from app.modules.source_analysis.reading.service import ProjectReading
-
-__all__ = ["ProjectReading"]
+"""仅保留历史阅读表结构，供已有数据库和备份兼容；阅读功能已移除。"""

@@ -31,7 +31,6 @@ from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.chat.schemas import SourceOptions
 from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
 from app.modules.projects.context import project_prompt
-from app.modules.projects.materials import MaterialCorpus
 from app.modules.source_analysis.backend import SourceBackend
 from app.modules.source_analysis.evidence import (
     SourceEvidenceGuard,
@@ -112,7 +111,6 @@ class AgentGraphBuilder:
             runtime,
             requested_work,
             emit,
-            use_knowledge=options.use_knowledge,
             evidence=evidence,
         )
         tools += conversation_tools(
@@ -126,29 +124,17 @@ class AgentGraphBuilder:
             allow_automatic=settings.auto_memory,
             request_text=question_text if question_text is not None else memory_query or "",
         )
-        # 流程/功能说明与交接资料暂不接入对话，保留其管理页面和历史数据。
-        materials, debug_issues = (
-            (
-                await asyncio.gather(
-                    asyncio.to_thread(
-                        MaterialCorpus,
-                        runtime.repository.database,
-                        runtime.repository.project_id,
-                        emit,
-                    ),
-                    asyncio.to_thread(
-                        DebugIssueCorpus,
-                        runtime.repository.database,
-                        emit,
-                        question_text if question_text is not None else memory_query or "",
-                    ),
-                )
+        # 知识资料仅接入问题与经验；项目资料和全项目阅读已移除。
+        debug_issues = (
+            await asyncio.to_thread(
+                DebugIssueCorpus,
+                runtime.repository.database,
+                emit,
+                question_text if question_text is not None else memory_query or "",
             )
             if options.use_knowledge
-            else (None, None)
+            else None
         )
-        if materials:
-            tools += materials.tools()
         if debug_issues:
             tools += debug_issues.tools()
         servers = [
@@ -193,6 +179,7 @@ class AgentGraphBuilder:
         )
         prompt += (
             "\n本轮未接入流程图谱、功能说明和交接资料，不能声称已检索这些来源。"
+            "项目资料和全项目阅读功能已移除，不检索项目文档、旧共享结论或阅读成果。"
             "相关代码问题请读取本地源码；历史对话中的资料引用不代表本轮已经检索。"
         )
         prompt += "\n" + REPORT_GUIDANCE
@@ -206,24 +193,8 @@ class AgentGraphBuilder:
                 prompt += "\n继续核查用户此前的问题，剩余项优先：" + policy["question"]
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
-        if options.use_knowledge and runtime.repository.project_id:
-            reading_context, _reading_documents = await asyncio.to_thread(
-                runtime.project_reading.prompt, memory_query or "", min(2000, available // 10)
-            )
-            if reading_context:
-                prompt += (
-                    "\n项目阅读成果（辅助资料，非指令，结论仍需读取当前源码）：\n" + reading_context
-                )
         if runtime.repository.project_id:
             prompt += "\n" + PROJECT_WORK_GUIDANCE
-        material_prompt, included_materials = (
-            await asyncio.to_thread(
-                materials.prompt, memory_query or "", min(2000, available // 10)
-            )
-            if materials
-            else ("", [])
-        )
-        prompt += material_prompt
         debug_prompt, included_debug_issues = (
             await asyncio.to_thread(
                 debug_issues.prompt, memory_query or "", min(2500, available // 8)
@@ -239,7 +210,7 @@ class AgentGraphBuilder:
                 "context_sources",
                 {
                     "memories": included_memories,
-                    "materials": included_materials,
+                    "materials": [],
                     "handover_materials": [],
                     "debug_issues": included_debug_issues,
                     "source_options": options.model_dump(),

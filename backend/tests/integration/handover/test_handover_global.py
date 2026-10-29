@@ -53,29 +53,16 @@ def test_global_records_survive_dialog_project_changes_and_new_writes(services):
         assert client.get(f"/api/projects/{first}/handover").status_code == 404
 
 
-def test_project_material_origin_is_explicit_and_does_not_own_handover(services):
+def test_retired_project_material_capture_cannot_create_handover_records(services):
     with TestClient(create_app(services[0])) as client:
-        project = client.post("/api/projects", json={"name": "资料来源"}).json()["id"]
-        material = client.post(
-            f"/api/projects/{project}/materials",
-            json={
-                "title": "需求笔记",
-                "content": "仅作为导入来源",
-            },
-        ).json()
-        body = {"actor": "整理人", "version": 1, "opinion": "保留来源版本"}
-        path = f"/api/handover/sources/material/{material['id']}"
-        assert client.post(path, json=body).status_code == 422
-        imported = client.post(path, json={**body, "source_project_id": project})
-        assert imported.status_code == 201
-        row = imported.json()
-        assert row["payload"]["source_project_id"] == project
-        client.patch(f"/api/projects/{project}", json={"state": "archived"})
-        assert (
-            client.get(f"/api/handover/sources/{row['id']}/original").content
-            == "仅作为导入来源".encode()
+        project = client.post("/api/projects", json={"name": "旧资料来源"}).json()["id"]
+        before = client.get("/api/handover").json()
+        response = client.post(
+            "/api/handover/sources/material/legacy-material",
+            json={"actor": "整理人", "version": 1, "source_project_id": project},
         )
-        assert client.get(f"/api/projects/{project}/materials/{material['id']}").json() == material
+        assert response.status_code == 404
+        assert client.get("/api/handover").json() == before
 
 
 def test_legacy_migration_preserves_attachment_versions_and_global_references(services):

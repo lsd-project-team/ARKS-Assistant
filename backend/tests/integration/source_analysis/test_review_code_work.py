@@ -29,7 +29,6 @@ async def work(services):
     runtime = SimpleNamespace(
         repository=repository,
         code_changes=changes,
-        project_reading=None,
         project_lock=asyncio.Lock(),
     )
     events = []

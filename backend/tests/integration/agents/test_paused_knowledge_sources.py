@@ -11,9 +11,7 @@ from app.modules.handover.application.commands import DebugWrite
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.knowledge.corpora.handover_materials import HandoverMaterialCorpus
-from app.modules.projects.materials import Materials
-from app.modules.projects.materials_router import MaterialCreate
-from app.modules.projects.models import Project
+from app.modules.projects.models import Project, ProjectMaterial
 from tests.helpers.models import DeterministicModel
 
 
@@ -32,10 +30,21 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     project_id = "sources-project"
     with database.session.begin() as session:
         session.add(Project(id=project_id, name="来源测试", source_root=str(paths.workspace)))
+        session.flush()
+        session.add_all(
+            [
+                ProjectMaterial(
+                    project_id=project_id, title="取片不稳定", content="项目文档暂停标记"
+                ),
+                ProjectMaterial(
+                    project_id=project_id,
+                    title="取片不稳定",
+                    kind="conclusion",
+                    content="旧共享结论暂停标记",
+                ),
+            ]
+        )
     repository.project_id = project_id
-    material = Materials(database, project_id).create(
-        MaterialCreate(title="取片不稳定", content="取片不稳定的项目文档保留标记")
-    )
     store = HandoverStore(database=database)
     handover = store.create(
         "source", "取片不稳定", {"content": "取片不稳定的交接资料暂停标记"}, "测试"
@@ -73,9 +82,6 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
 
     monkeypatch.setattr(runtime.knowledge, "tools", forbidden)
     monkeypatch.setattr(HandoverMaterialCorpus, "__init__", forbidden)
-    monkeypatch.setattr(
-        runtime.project_reading, "prompt", lambda *_args: ("项目阅读成果保留标记", [])
-    )
 
     @tool
     async def deepwiki_probe(query: str) -> str:
@@ -99,22 +105,25 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
         "search_project_knowledge",
         "search_handover_materials",
         "read_handover_material",
+        "search_project_materials",
+        "read_project_material",
+        "search_project_reading",
+        "project_reading_status",
+        "start_project_reading",
     } & set(tools)
     text = "\n".join(prompts)
     assert "个人偏好保留标记" in text
     assert "交接资料暂停标记" not in text
     assert "本轮未接入流程图谱、功能说明和交接资料" in text
-    assert ("项目文档保留标记" in text) is use_knowledge
+    assert "项目文档暂停标记" not in text
+    assert "旧共享结论暂停标记" not in text
+    assert not hasattr(runtime, "project_reading")
     assert ("问题与经验保留标记" in text) is use_knowledge
-    assert ("项目阅读成果保留标记" in text) is use_knowledge
-    for name in ("search_project_materials", "search_debug_issues", "search_project_reading"):
-        assert (name in tools) is use_knowledge
+    assert ("search_debug_issues" in tools) is use_knowledge
     snapshot = ConversationContext(runtime).run_sources(run["id"])
     assert snapshot["handover_materials"] == []
     assert snapshot["knowledge_retrieval"] == []
-    assert [row["id"] for row in snapshot["materials"]] == (
-        [material["id"]] if use_knowledge else []
-    )
+    assert snapshot["materials"] == []
     assert [row["id"] for row in snapshot["debug_issues"]] == (
         [issue["id"]] if use_knowledge else []
     )

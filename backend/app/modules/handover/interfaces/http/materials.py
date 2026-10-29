@@ -18,15 +18,12 @@ from app.modules.handover.interfaces.http.context import HandoverHTTPContext
 from app.modules.handover.interfaces.http.responses import attachment
 from app.modules.handover.interfaces.http.schemas import (
     Capture,
-    MaterialCapture,
     TextSourceInput,
 )
-from app.modules.projects.materials import Materials
 
 
 def register(router: APIRouter, ctx: HandoverHTTPContext):
     store = ctx.repository_factory
-    projects = ctx.projects
     source_workspace = ctx.source_workspace
 
     @router.post("/sources/upload", status_code=201)
@@ -93,30 +90,6 @@ def register(router: APIRouter, ctx: HandoverHTTPContext):
         metadata = body.model_dump(exclude={"actor", "path"})
         return await asyncio.to_thread(
             capture_source, current, workspace, body.path, metadata, body.actor
-        )
-
-    @router.post("/sources/material/{material_id}", status_code=201)
-    async def capture_material(material_id: str, body: MaterialCapture):
-        current = store()
-        projects.get(body.source_project_id)
-        material = Materials(projects.database, body.source_project_id).read(
-            material_id, body.version
-        )
-        metadata = {
-            "supersedes": body.supersedes,
-            "provider": body.actor,
-            "source_version": f"项目资料 {material_id} v{body.version}",
-            "source_project_id": body.source_project_id,
-            "notes": body.opinion,
-        }
-        return await asyncio.to_thread(
-            import_source,
-            current,
-            material["content"].encode("utf-8"),
-            material["title"] + ".txt",
-            metadata,
-            body.actor,
-            ctx.parser,
         )
 
     @router.get("/sources/{identifier}/original")

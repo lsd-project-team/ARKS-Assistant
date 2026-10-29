@@ -217,7 +217,6 @@ async def execute(case, config, directory, case_timeout_seconds=600):
                 word for word in case["forbidden"] if word in result["answer"]
             ]
             write(directory / f"{case['id']}.json", result)
-            await runtime.project_reading.shutdown()
             await runtime.code_changes.shutdown()
             runtime.semantic.close()
             database.close()

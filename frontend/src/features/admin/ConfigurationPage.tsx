@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { SettingsDialog } from '../settings/components/SettingsDialog';
 import { ProjectEditor } from '../projects/components/ProjectEditor';
-import { ProjectDocuments } from '../projects/components/ProjectDocuments';
 import { ProjectVerificationProfiles } from '../projects/components/ProjectVerificationProfiles';
 import { Button, ErrorText } from '../../shared/ui/ui';
 import { Select } from '../../shared/ui/Select';
@@ -36,7 +35,6 @@ export function ConfigurationPage({
     },
     [onDirtyChange],
   );
-  const [documents, setDocuments] = useState(false);
   const events = useQuery({
     queryKey: ['admin-events'],
     queryFn: () =>
@@ -53,9 +51,6 @@ export function ConfigurationPage({
     refetchInterval: 15000,
     enabled: !dataOnly,
   });
-  useEffect(() => {
-    setDocuments(false);
-  }, [projectId]);
   return (
     <div className="admin-page">
       <header className="admin-heading">
@@ -97,18 +92,6 @@ export function ConfigurationPage({
             </div>
           </div>
           <ErrorText error={projects.error || current.error} />
-          <div className="admin-row-actions">
-            <Button disabled={!current.data} onClick={() => setDocuments(!documents)}>
-              {documents ? '收起项目资料' : '项目资料'}
-            </Button>
-          </div>
-          {documents && (
-            <ProjectDocuments
-              key={projectId}
-              projectId={projectId}
-              readOnly={current.data?.state !== 'active'}
-            />
-          )}
         </section>
       )}
       {!dataOnly && (

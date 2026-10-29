@@ -1,6 +1,5 @@
 """隔离真实文件与命令，替换外部模型，验证失败反馈确实进入下一轮修复。"""
 
-import asyncio
 import json
 import sys
 import time
@@ -14,7 +13,6 @@ from langchain_core.outputs import ChatGeneration, ChatResult
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.analysis.retrieval_budget import RetrievalBudget
-from app.agents.runtime.project_analyzer import ModelReadingAnalyzer
 from app.agents.tools.engineering import engineering_tools
 from app.main import create_app
 from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
@@ -291,21 +289,12 @@ def test_new_project_endpoints_obey_ownership_and_admin_command_configuration(se
         assert client.get("/api/p/independent/code-changes").status_code == 404
 
 
-def test_project_cannot_rebind_archive_or_delete_while_reading_or_verifying(services, tmp_path):
+def test_project_cannot_rebind_archive_or_delete_while_verifying(services, tmp_path):
     paths = services[0]
     other = tmp_path / "new-source"
     other.mkdir()
     with TestClient(create_app(paths)) as client:
         identifier, url = project_client(client, paths)
-        runtime = client.app.state.projects.services(identifier).runtime
-
-        async def blocked(_text, _metadata):
-            await asyncio.sleep(3600)
-
-        runtime.project_reading.analyzer = blocked
-        job = client.post(f"{url}/project-reading", json={}).json()
-        assert client.post(f"{url}/project-reading/{job['id']}/start").status_code == 200
-        assert client.post("/api/backup").status_code == 409
 
         def rejected():
             for body in ({"source_root": str(other)}, {"state": "archived"}):
@@ -313,8 +302,6 @@ def test_project_cannot_rebind_archive_or_delete_while_reading_or_verifying(serv
                 assert response.status_code == 409, response.text
             assert client.delete(f"/api/projects/{identifier}").status_code == 409
 
-        rejected()
-        client.post(f"{url}/project-reading/{job['id']}/pause")
         change = client.post(
             f"{url}/code-changes", json={"title": "生命周期", "goal": "取消测试"}
         ).json()
@@ -345,7 +332,6 @@ def test_project_cannot_rebind_archive_or_delete_while_reading_or_verifying(serv
         assert (
             client.post(f"{url}/code-changes", json={"title": "x", "goal": "x"}).status_code == 409
         )
-        assert client.post(f"{url}/project-reading/{job['id']}/start").status_code == 409
 
 
 async def test_engineering_budget_survives_exhausted_search_then_stops_its_own_calls():
@@ -398,37 +384,6 @@ async def test_analysis_only_tools_do_not_create_or_modify_isolated_copy(service
     tools = {item.name: item for item in engineering_tools(current.runtime, question)}
     result = await tools["create_code_change"].ainvoke({"title": "x", "goal": "x"})
     assert "尚未要求修改" in result and current.runtime.code_changes.list() == []
-    reading = await tools["start_project_reading"].ainvoke({})
-    assert "没有要求启动" in reading and current.runtime.project_reading.list()["jobs"] == []
+    assert "start_project_reading" not in tools
     current.runtime.semantic.close()
     current.database.close()
-
-
-async def test_reading_model_structure_error_is_redacted_and_resources_closed(
-    services, monkeypatch
-):
-    store = services[-1]
-    from app.core.config import ModelSettings
-
-    settings = SimpleNamespace(
-        model=ModelSettings(
-            base_url="http://invalid.test", model="test", api_key="private-test-key"
-        )
-    )
-    monkeypatch.setattr(
-        "app.agents.runtime.project_analyzer.current_configuration", lambda _: settings
-    )
-    closed = []
-
-    class Model:
-        async def ainvoke(self, _messages):
-            raise RuntimeError("network private-test-key failed")
-
-    async def close(models):
-        closed.extend(models)
-
-    monkeypatch.setattr("app.agents.runtime.project_analyzer.create_model", lambda _: Model())
-    monkeypatch.setattr("app.agents.runtime.project_analyzer.close_models", close)
-    with pytest.raises(ValueError, match="密钥已隐藏") as error:
-        await ModelReadingAnalyzer(store)("class A {}", {"path": "A.cs"})
-    assert "private-test-key" not in str(error.value) and len(closed) == 1

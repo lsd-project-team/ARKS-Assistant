@@ -68,7 +68,7 @@ export function CodeWorkPolicyPanel({
     <details className="code-work-config">
       <summary>本项目用量与清理（管理员）</summary>
       <p className="muted">
-        策略仅作用于当前项目；聊天和项目阅读共享按 UTC 日结算的模型 token 额度。 Windows
+        策略仅作用于当前项目；聊天按 UTC 日结算模型 token 额度。 Windows
         临时磁盘预算包含系统写入层，执行前核对节点可用空间。
       </p>
       <form

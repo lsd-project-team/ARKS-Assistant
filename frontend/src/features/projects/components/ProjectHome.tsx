@@ -239,7 +239,7 @@ export function ProjectHome() {
               <div className="project-empty">
                 <Folder size={28} />
                 <h2>{filter ? '没有匹配的对话' : '从这个项目的新对话开始'}</h2>
-                <p>项目中的对话各自保留历史，共享你设置的指令和资料。</p>
+                <p>项目中的对话各自保留历史，使用本项目关联的源码和项目指令。</p>
                 {!filter && state === 'active' && project?.state === 'active' && (
                   <Button onClick={() => startConversation(projectId)}>新对话</Button>
                 )}

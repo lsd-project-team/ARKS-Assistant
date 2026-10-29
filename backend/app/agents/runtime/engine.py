@@ -9,7 +9,6 @@ from app.agents.runtime.configuration import bind_configuration, current_configu
 from app.agents.runtime.executor import AgentRunExecutor
 from app.agents.runtime.feedback import tool_stage
 from app.agents.runtime.graph_builder import AgentGraphBuilder
-from app.agents.runtime.project_analyzer import ModelReadingAnalyzer
 from app.agents.tools.debug_capture import capture_command
 from app.core.config import Paths, SettingsStore
 from app.infrastructure.mcp.client import ToolCatalog, adapt_tool
@@ -20,7 +19,6 @@ from app.modules.code_changes import CodeChanges
 from app.modules.knowledge.source_guides import ProjectKnowledge
 from app.modules.memory.service import MemoryService
 from app.modules.source_analysis.csharp import CSharpAnalysis
-from app.modules.source_analysis.reading import ProjectReading
 from app.modules.source_analysis.workspace import Workspace
 
 
@@ -46,10 +44,7 @@ class AgentRuntime:
         def project_id():
             return repository.project_id or repository.workspace_id
 
-        self.project_reading = ProjectReading(paths, repository.database, workspace, project_id)
         self.code_changes = CodeChanges(paths, repository.database, workspace, project_id)
-        self.project_reading.analyzer = ModelReadingAnalyzer(settings)
-        self.project_reading.analyzer.budget = self.code_changes.policy
         self.project_lock = asyncio.Lock()
 
     async def remote_tools(self, servers, emit):

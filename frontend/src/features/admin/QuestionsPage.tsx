@@ -423,7 +423,8 @@ function ContextSources({
   return (
     <div>
       <p>
-        项目资料：{sources.materials?.length || 0} 份 · 长期记忆：{sources.memories?.length || 0} 条
+        {!!sources.materials?.length && <>历史项目资料：{sources.materials.length} 份 · </>}
+        长期记忆：{sources.memories?.length || 0} 条
       </p>
       {sources.materials?.map((material) => (
         <p key={material.id}>

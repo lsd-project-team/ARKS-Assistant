@@ -19,7 +19,7 @@ from app.modules.admin.models import (
 from app.modules.chat.models import Message, Thread
 from app.modules.handover.infrastructure.persistence.models import HandoverRecord
 from app.modules.memory.models import MemoryRecord
-from app.modules.projects.models import Project, ProjectMaterial
+from app.modules.projects.models import Project
 
 
 def submission(session, user, key, category):
@@ -161,7 +161,6 @@ class UsageTracking:
             commits = BusinessSubmission.created_at >= start
             stock = {
                 "项目": count(Project, Project.state != "deleted"),
-                "项目资料": count(ProjectMaterial, ProjectMaterial.state != "deleted"),
                 "长期记忆": count(MemoryRecord),
                 "问答消息": session.scalar(
                     select(func.count())

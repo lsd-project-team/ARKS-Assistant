@@ -1,8 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  readingCanStart,
-  documentCanReview,
   changeCanEdit,
   changeCanVerify,
   changeCanRecordExperience,
@@ -14,20 +12,6 @@ import {
 } from '../../src/features/projects/lib/codeWorkRules.ts';
 import { boundProjectApi } from '../../src/features/projects/lib/projectRequest.ts';
 import { scopedApiUrl } from '../../src/shared/api/apiRoutes.ts';
-
-test('中断、部分完成和失败的阅读可继续，运行中与完成状态不重复启动', () => {
-  for (const status of ['ready', 'paused', 'interrupted', 'partial', 'failed'])
-    assert.equal(readingCanStart({ status }), true, status);
-  for (const status of ['running', 'completed'])
-    assert.equal(readingCanStart({ status }), false, status);
-});
-
-test('空分析和过期、失败、待处理成果不能被评审为理解完成', () => {
-  for (const status of ['stale', 'failed', 'pending'])
-    assert.equal(documentCanReview({ status, summary: '旧分析' }), false, status);
-  assert.equal(documentCanReview({ status: 'analyzed', summary: '  ' }), false);
-  assert.equal(documentCanReview({ status: 'analyzed', summary: '有源码证据的分析' }), true);
-});
 
 test('运行中与丢弃的副本禁止编辑和再启动验证，未保存内容也阻止验证', () => {
   for (const status of ['verifying', 'discarded']) {
@@ -198,7 +182,7 @@ test('阅读、修改与命令配置请求在等待和切换项目时保持所�
     return {};
   });
   await Promise.all([
-    original('/project-reading/id/start', { method: 'POST' }),
+    original('/code-changes/id/verify', { method: 'POST' }),
     original('/code-changes/id/file?path=src%2FA.cs'),
     original('/code-changes/profiles', { method: 'POST' }),
     original('/code-changes/id/experience', { method: 'POST' }),
@@ -206,7 +190,7 @@ test('阅读、修改与命令配置请求在等待和切换项目时保持所�
   assert.deepEqual(
     calls.map((call) => call.url),
     [
-      '/api/p/project-a/project-reading/id/start',
+      '/api/p/project-a/code-changes/id/verify',
       '/api/p/project-a/code-changes/id/file?path=src%2FA.cs',
       '/api/p/project-a/code-changes/profiles',
       '/api/p/project-a/code-changes/id/experience',

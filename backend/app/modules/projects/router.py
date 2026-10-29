@@ -21,7 +21,6 @@ from app.modules.projects.materials_router import create_router as materials_rou
 from app.modules.projects.service import Projects
 from app.modules.source_analysis import router as workspace
 from app.modules.source_analysis.collection import source_prefix
-from app.modules.source_analysis.reading import router as project_reading
 from app.modules.source_analysis.workspace import Workspace
 
 
@@ -243,7 +242,7 @@ class ProjectDispatcher:
             app = FastAPI(exception_handlers=self.exception_handlers)
             modules = [workspace, conversations, memories, knowledge, action_timing]
             if services.repository.project_id:
-                modules += [project_reading, code_changes, code_experiences]
+                modules += [code_changes, code_experiences]
             for module in modules:
                 app.include_router(module.create_router(services))
             self.apps[project_id] = (services, app)

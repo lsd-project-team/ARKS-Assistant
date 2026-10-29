@@ -54,7 +54,6 @@ async def execute_case(workspace, case, config, key, before):
         try:
             return await _execute_case(services, workspace, case, config, key, before)
         finally:
-            await services.runtime.project_reading.shutdown()
             await services.runtime.code_changes.shutdown()
             services.runtime.semantic.close()
             services.database.close()
@@ -112,7 +111,6 @@ async def _execute_case(services, workspace, case, config, key, before):
         failure = {"type": type(error).__name__, "message": clean(str(error), key)}
         repository.set_status(run["id"], "failed", failure["message"])
     finally:
-        await runtime.project_reading.shutdown()
         await runtime.code_changes.shutdown()
         runtime.semantic.close()
     events, cursor = [], 0

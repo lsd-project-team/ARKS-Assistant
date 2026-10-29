@@ -1,8 +1,7 @@
-"""项目阅读与隔离开发工具；模型只能选用管理员配置的验证命令。"""
+"""隔离开发工具；模型只能选用管理员配置的验证命令。"""
 
 import asyncio
 import logging
-import re
 from functools import partial
 
 from langchain_core.tools import tool
@@ -10,9 +9,7 @@ from langchain_core.tools import tool
 from app.agents.context.tokens import fit_text
 from app.agents.tools.engineering_evidence import code_work_evidence
 from app.agents.tools.engineering_intent import (
-    command_text,
     explicit_edit_request,
-    is_discussion,
     requested_requirement_fields,
 )
 from app.agents.tools.guards import safe_source_tools
@@ -29,34 +26,9 @@ CHANGE_TOOLS = {
     "list_verification_profiles",
     "verify_code_change",
 }
-READ_REQUEST = re.compile(
-    r"^(?:(?:请(?:你)?|帮我|麻烦(?:你)?|现在|立即|直接|先)\s*)*"
-    r"(?:(?:把|将).{1,40})?"
-    r"(?:通读(?!功能|能力|需求|原理|方案|机制)|全量阅读|完整阅读|从头阅读"
-    r"|阅读(?:整个|全部|所有|本|这个)?项目|阅读全部"
-    r"|(?:开始|启动|继续|恢复|重新(?:开始)?)\s*(?:进行\s*)?"
-    r"(?:项目阅读|(?:全量|完整|从头)?阅读|通读))"
-)
-READ_INQUIRY = re.compile(
-    r"如何|怎样|怎么|为什么|为何|是否|能否|可否|什么|有何|多少|多久|何时|有没有|是不是"
-    r"|吗|么|能不能|可不可以|会不会|并不|并非|不代表|不意味着|[?？]"
-)
 VERIFICATION_CANCEL_TIMEOUT = 30
 _verification_cleanups = set()
 _logger = logging.getLogger(__name__)
-
-
-def _explicit_read_request(request_text):
-    text = command_text(request_text)
-    # 在动作分句内识别命令；“如何开始通读”不能因命中名词或动词子串触发付费任务。
-    clauses = re.split(
-        r"[，,。！!\n；;]|并(?:且)?(?=总结|分析|说明|解释|告诉|给出|列出|梳理|开始|继续|通读)"
-        r"|然后|接着|后(?=分析|说明|解释|总结|告诉)",
-        text,
-    )
-    return any(
-        READ_REQUEST.match(clause.strip()) and not READ_INQUIRY.search(clause) for clause in clauses
-    )
 
 
 def _retain_verification_cleanup(task):
@@ -105,14 +77,13 @@ async def _cancel_launched_verification(launch, changes, change_id):
     await asyncio.to_thread(cancel_current)
 
 
-def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True, evidence=None):
+def engineering_tools(runtime, request_text="", emit=None, *, evidence=None):
     if not runtime.repository.project_id:
         return []
-    changes, reading = runtime.code_changes, runtime.project_reading
+    changes = runtime.code_changes
     if evidence is not None:
         evidence.code_work_reader = partial(code_work_evidence, changes)
         evidence.user_request = request_text
-    discussion = is_discussion(request_text, reading=True)
     can_edit = explicit_edit_request(request_text)
     requirement_fields = requested_requirement_fields(request_text)
     origin = RequestOrigin(
@@ -152,38 +123,6 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
         async with runtime.project_lock:
             await asyncio.to_thread(runtime.repository.creation_guard)
             return await asyncio.to_thread(operation, *arguments, **options)
-
-    @tool
-    async def project_reading_status(job_id: str = "") -> str:
-        """Inspect persistent project reading coverage; read/analyzed/reviewed are distinct."""
-        return dump_json(
-            await asyncio.to_thread(
-                reading.get if job_id else reading.list, *([job_id] if job_id else [])
-            )
-        )
-
-    @tool
-    async def search_project_reading(query: str) -> str:
-        """Find current versioned reading summaries. Re-read current code before conclusions."""
-        context, documents = await asyncio.to_thread(reading.prompt, query, 2000)
-        return dump_json({"context": context, "documents": documents})
-
-    @tool
-    async def start_project_reading(job_id: str = "", title: str = "项目阅读") -> str:
-        """Start/resume a persistent whole-project analysis only when the user requested it."""
-        if not _explicit_read_request(request_text) or discussion:
-            raise ValueError("本轮用户没有要求启动全项目阅读，可先查看阅读状态")
-        async with runtime.project_lock:
-            await asyncio.to_thread(runtime.repository.creation_guard)
-            job = await asyncio.to_thread(reading.get, job_id) if job_id else None
-            if job is None and "继续" in request_text:
-                job = (await asyncio.to_thread(reading.list))["latest"]
-            if job is None:
-                job = await asyncio.to_thread(reading.create, title)
-            elif job["status"] not in {"running", "pausing"}:
-                # 显式恢复付费阅读时刷新源码快照；原 analyzed 状态不能遮住已变化的源码。
-                await asyncio.to_thread(reading.refresh, job["id"])
-            return dump_json(await reading.start(job["id"]))
 
     @tool
     async def list_code_changes() -> str:
@@ -350,9 +289,6 @@ def engineering_tools(runtime, request_text="", emit=None, *, use_knowledge=True
 
     return safe_source_tools(
         [
-            project_reading_status,
-            *([search_project_reading] if use_knowledge else []),
-            start_project_reading,
             list_code_changes,
             create_code_change,
             read_change_file,

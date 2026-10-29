@@ -2,7 +2,6 @@
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.modules.handover.application.commands import Action
 from app.modules.handover.domain.materials import MAX_TEXT
 
 
@@ -40,11 +39,6 @@ class TextSourceInput(BaseModel):
         if not value.strip():
             raise ValueError("文本内容不能为空")
         return value
-
-
-class MaterialCapture(Action):
-    source_project_id: str = Field(min_length=1, max_length=32)
-    supersedes: str = Field(default="", max_length=36)
 
 
 class PackageCreate(BaseModel):

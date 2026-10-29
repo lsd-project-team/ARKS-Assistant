@@ -45,7 +45,7 @@ code_agent/
 | `backend/migrations/` | 数据库迁移 |
 | `backend/tests/` | 后端测试 |
 
-业务模块包括 `auth`、`projects`、`chat`、`source_analysis`、`code_changes`、`knowledge`、`memory`、`handover`、`settings`、`admin`。新增行为先放入所属业务，不重新堆到应用根目录。项目阅读归 `source_analysis/reading/`；隔离副本、补丁及命令验证归 `code_changes/`，模型与工具适配仍归 `agents/`。
+业务模块包括 `auth`、`projects`、`chat`、`source_analysis`、`code_changes`、`knowledge`、`memory`、`handover`、`settings`、`admin`。新增行为先放入所属业务，不重新堆到应用根目录。全项目阅读和项目资料管理已移除；`source_analysis/reading/` 仅保留历史表结构。隔离副本、补丁及命令验证归 `code_changes/`，模型与工具适配仍归 `agents/`。
 
 - 普通模块按需要使用 `router.py`、`schemas.py`、`service.py`、`models.py` 及职责明确的辅助文件；复杂度不足时不强套 DDD 四层。
 - HTTP 接口负责请求、身份与响应，业务规则归服务或用例；统一装配留在 `bootstrap.py`，业务模块不反向导入 `main.py` 或 `bootstrap.py`。

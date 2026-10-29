@@ -1,14 +1,4 @@
-import type { ChangeFile, CodeChange, ReadingJob, ReadingDocument } from '../types/codeWork';
-
-export const readingStatusLabels: Record<ReadingJob['status'], string> = {
-  ready: '待开始',
-  running: '阅读中',
-  paused: '已暂停',
-  interrupted: '已中断，可继续',
-  completed: '本次阅读完成',
-  partial: '部分完成，可继续',
-  failed: '阅读失败，可重试',
-};
+import type { ChangeFile, CodeChange } from '../types/codeWork';
 
 export const changeStatusLabels: Record<CodeChange['status'], string> = {
   ready: '副本已准备',
@@ -19,14 +9,6 @@ export const changeStatusLabels: Record<CodeChange['status'], string> = {
   interrupted: '验证已中断',
   discarded: '已丢弃',
 };
-
-export function readingCanStart(job: ReadingJob) {
-  return ['ready', 'paused', 'interrupted', 'partial', 'failed'].includes(job.status);
-}
-
-export function documentCanReview(document: ReadingDocument) {
-  return !!document.summary?.trim() && !['stale', 'failed', 'pending'].includes(document.status);
-}
 
 export function changeCanEdit(change: CodeChange) {
   return !['discarded', 'verifying'].includes(change.status);

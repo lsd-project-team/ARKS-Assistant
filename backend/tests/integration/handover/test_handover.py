@@ -333,7 +333,7 @@ def test_source_files_fixed_versions_quotations_and_exports(client, services):
     )
 
 
-def test_zip_readonly_paths_docx_and_project_material_capture(client):
+def test_zip_readonly_paths_and_retired_project_material_capture(client):
     identifier = project(client)
     stream = io.BytesIO()
     with zipfile.ZipFile(stream, "w") as archive:
@@ -359,17 +359,10 @@ def test_zip_readonly_paths_docx_and_project_material_capture(client):
         ).status_code
         == 409
     )
-    material = client.post(
-        f"/api/projects/{identifier}/materials", json={"title": "现有资料", "content": "原内容"}
-    ).json()
+    before = client.get("/api/handover").json()
     captured = client.post(
-        url(identifier) + f"/sources/material/{material['id']}",
-        json={
-            "version": 1,
-            "actor": "人",
-            "opinion": "选择固定版本",
-            "source_project_id": identifier,
-        },
+        url(identifier) + "/sources/material/legacy-material",
+        json={"version": 1, "actor": "人", "source_project_id": identifier},
     )
-    assert captured.status_code == 201
-    assert client.get(f"/api/projects/{identifier}/materials/{material['id']}").json() == material
+    assert captured.status_code == 404
+    assert client.get("/api/handover").json() == before

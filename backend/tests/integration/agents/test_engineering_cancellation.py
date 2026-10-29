@@ -68,7 +68,6 @@ def verification_tool(changes):
         repository=SimpleNamespace(project_id="isolated-project", creation_guard=lambda: None),
         project_lock=asyncio.Lock(),
         code_changes=changes,
-        project_reading=object(),
     )
     return {tool.name: tool for tool in engineering.engineering_tools(runtime, "请修复代码并验证")}[
         "verify_code_change"

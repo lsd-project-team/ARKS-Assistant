@@ -99,7 +99,7 @@ def test_review_context_rejects_unknown_or_wrong_version_references(services):
     corpus = DebugIssueCorpus(services[1])
     assert corpus.review_records({saved["id"]: 2, "unknown": 1}) == []
     records = corpus.review_records({saved["id"]: 1})
-    assert len(records) == 1 and records[0]["content"]["记录正文"] == "原始事实"
+    assert len(records) == 1 and records[0]["content"]["内容说明"] == "原始事实"
     assert "compatibility" in records[0]
 
 

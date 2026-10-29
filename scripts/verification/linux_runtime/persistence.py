@@ -25,7 +25,7 @@ def database_integrity(data):
                 connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] > 0,
                 "sqlite_fixture_rows_missing",
             )
-        for table in ("runs", "project_reading_jobs", "code_verifications"):
+        for table in ("runs", "code_verifications"):
             require(
                 connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] == 0,
                 "unexpected_agent_or_verification_execution",

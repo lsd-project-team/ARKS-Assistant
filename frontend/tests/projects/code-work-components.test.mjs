@@ -16,7 +16,7 @@ const environment = {
 const bundled = await build({
   stdin: {
     contents:
-      "export { CodeChangesPanel } from './src/features/projects/components/CodeChangesPanel'; export { ReadinessPanel } from './src/features/projects/components/ReadinessPanel'; export { ChangeDelivery } from './src/features/projects/components/ChangeDelivery'; export { ExecutorFields } from './src/features/projects/components/ExecutorFields'; export { ProjectReadingPanel } from './src/features/projects/components/ProjectReadingPanel'; export { ProjectVerificationProfiles, ProjectVerificationProfileList } from './src/features/projects/components/ProjectVerificationProfiles'; export { ConfigurationPage } from './src/features/admin/ConfigurationPage'; export { ChangeFileEditor } from './src/features/projects/components/ChangeFileEditor';",
+      "export { CodeChangesPanel } from './src/features/projects/components/CodeChangesPanel'; export { ReadinessPanel } from './src/features/projects/components/ReadinessPanel'; export { ChangeDelivery } from './src/features/projects/components/ChangeDelivery'; export { ExecutorFields } from './src/features/projects/components/ExecutorFields'; export { CodeWork } from './src/features/projects/components/CodeWork'; export { ProjectVerificationProfiles, ProjectVerificationProfileList } from './src/features/projects/components/ProjectVerificationProfiles'; export { ConfigurationPage } from './src/features/admin/ConfigurationPage'; export { ChangeFileEditor } from './src/features/projects/components/ChangeFileEditor';",
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -85,7 +85,7 @@ new Function('require', 'module', 'exports', 'environment', bundled.outputFiles[
 );
 const {
   CodeChangesPanel,
-  ProjectReadingPanel,
+  CodeWork,
   ProjectVerificationProfiles,
   ProjectVerificationProfileList,
   ConfigurationPage,
@@ -273,68 +273,6 @@ test('运行中可取消，已归档项目禁用取消和命令配置保存', ()
   const archived = renderChanges(true);
   assert.match(archived, /<button[^>]*disabled=""[^>]*>取消运行<\/button>/);
   assert.match(archived, /<button[^>]*disabled=""[^>]*>保存命令配置<\/button>/);
-});
-
-test('阅读页面保留读取、分析、评审独立统计，展示证据版本与未知项', () => {
-  const job = {
-    id: 'read-a',
-    title: '项目阅读',
-    status: 'partial',
-    snapshot_version: 3,
-    updated_at: 'now',
-    counts: {
-      files: 8,
-      indexed: 8,
-      read: 7,
-      analyzed: 5,
-      reviewed: 1,
-      pending: 2,
-      failed: 1,
-      excluded: 4,
-      stale: 1,
-    },
-    modules: [
-      {
-        name: '模块A',
-        total: 8,
-        read: 7,
-        analyzed: 5,
-        reviewed: 1,
-        pending: 2,
-        failed: 1,
-        stale: 1,
-      },
-    ],
-  };
-  setup({
-    job,
-    documents: [
-      {
-        id: 'doc-a',
-        path: 'src/A.cs',
-        module: '模块A',
-        version: 2,
-        source_version: 'source-hash',
-        start_line: 4,
-        end_line: 20,
-        status: 'analyzed',
-        summary: '入口处理',
-        unknowns: ['设备时序需要验证'],
-      },
-    ],
-  });
-  const html = renderToStaticMarkup(
-    createElement(ProjectReadingPanel, { projectId: 'project-a', readOnly: false }),
-  );
-  assert.match(html, /已读取<\/dt><dd>7/);
-  assert.match(html, /已分析<\/dt><dd>5/);
-  assert.match(html, /已评审<\/dt><dd>1/);
-  assert.match(html, /继续阅读/);
-  assert.match(html, /设备时序需要验证/);
-  assert.match(html, /source-hash/);
-  assert.match(html, /确认本版成果/);
-  assert.match(html, /64 个分块/);
-  assert.match(html, /供应商额度/);
 });
 
 test('源码冲突阻止验证和经验入口，但允许导出旧基线补丁保留成果', () => {
@@ -532,7 +470,7 @@ test('前置报告诚实展示Windows缺项，普通用户仍可阅读修改但�
     createElement(ReadinessPanel, { projectId: 'project-a', readOnly: false }),
   );
   assert.match(admin, /本项目用量与清理/);
-  assert.match(admin, /聊天和项目阅读共享按 UTC 日结算的模型 token 额度/);
+  assert.match(admin, /聊天按 UTC 日结算模型 token 额度/);
   assert.match(admin, /当日模型预留 token（UTC）/);
   assert.match(admin, /预览可清理文件/);
   assert.doesNotMatch(admin, /确认清理到期临时文件/);
@@ -619,4 +557,15 @@ test('交付要求固定当前审核和沙箱证明，旧审核不能解锁ZIP�
   assert.match(html, /当前版本已审核/);
   assert.match(html, /<button class="button">下载已审核交付包/);
   assert.match(html, /反向回退说明/);
+});
+
+test('移除项目资料管理和全项目阅读，代码工作直接展示隔离修改', () => {
+  setup({ role: 'admin' });
+  const settings = renderToStaticMarkup(createElement(ConfigurationPage, { dataOnly: false }));
+  assert.doesNotMatch(settings, /项目资料|添加项目文档|导入文件/);
+  const work = renderToStaticMarkup(
+    createElement(CodeWork, { projectId: 'project-a', readOnly: false }),
+  );
+  assert.doesNotMatch(work, /全项目阅读|阅读计划|建立阅读快照/);
+  assert.match(work, /隔离修改/);
 });

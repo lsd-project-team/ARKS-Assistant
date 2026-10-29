@@ -18,7 +18,7 @@ from app.modules.code_changes.models import VerificationRecord
 pytestmark = pytest.mark.authentication
 BACKEND = Path(__file__).resolve().parents[2]
 
-# 只替换阅读供应商边界；FastAPI、认证、迁移、SQLite、进程和启动恢复均真实运行。
+# FastAPI、认证、迁移、SQLite、进程和验证启动恢复均真实运行。
 SERVER_PROGRAM = r"""
 import asyncio
 import json
@@ -27,31 +27,10 @@ from pathlib import Path
 
 import uvicorn
 
-from app.agents.runtime import engine
 from app.core.config import Paths
 from app.bootstrap import create_app
 
-data, source, port, phase, call_log = sys.argv[1:]
-
-class TestReadingAnalyzer:
-    def __init__(self, _settings):
-        pass
-
-    def validate(self):
-        pass
-
-    async def __call__(self, text, metadata):
-        with Path(call_log).open('a', encoding='utf-8') as stream:
-            stream.write(json.dumps({'phase': phase, 'path': metadata['path'],
-                                     'chunk_index': metadata['chunk_index']}) + '\n')
-        if phase == 'blocked' and metadata['chunk_index'] == 1:
-            await asyncio.sleep(3600)
-        return {'summary': 'Saved source chunk ' + metadata['path'],
-                'unknowns': ['No external supplier is used in this test'],
-                'references': [{key: metadata[key] for key in
-                                ('path', 'source_version', 'start_line', 'end_line')}]}
-
-engine.ModelReadingAnalyzer = TestReadingAnalyzer
+data, source, port = sys.argv[1:]
 app = create_app(Paths(Path(data), Path(source)))
 uvicorn.run(app, host='127.0.0.1', port=int(port), log_level='warning', access_log=False)
 """
@@ -109,8 +88,6 @@ class TemporaryApp:
                 str(self.temporary / "data"),
                 str(self.temporary / "source"),
                 str(self.port),
-                self.phase,
-                str(self.temporary / "reading-calls.jsonl"),
             ],
             cwd=BACKEND,
             stdin=subprocess.DEVNULL,
@@ -146,12 +123,11 @@ class TemporaryApp:
 
 
 @pytest.mark.skipif(os.name != "nt", reason="异常退出后代清理由 Windows Job Object 提供")
-def test_killed_app_recovers_verification_logs_and_resumes_saved_reading_via_api(tmp_path):
+def test_killed_app_recovers_verification_logs_without_relaunching_commands(tmp_path):
     import _winapi
 
     source, data = tmp_path / "source", tmp_path / "data"
     source.mkdir()
-    (source / "Long.cs").write_text("// persisted chunk\n" * 3000, encoding="utf-8")
     (source / "value.py").write_text("answer = 1\n", encoding="utf-8")
     originals = {path.name: path.read_bytes() for path in source.iterdir()}
     executions = tmp_path / "verification-starts.txt"
@@ -211,16 +187,6 @@ def test_killed_app_recovers_verification_logs_and_resumes_saved_reading_via_api
             log_url = change_url + f"/verifications/{verification['id']}/log"
             saved_log = client.get(log_url)
             assert saved_log.status_code == 200 and b"RESTART-LOG" in saved_log.content
-            job = api(client, "POST", prefix + "/project-reading", json={"title": "Checkpoint"})
-            job_url = prefix + "/project-reading/" + job["id"]
-            api(client, "POST", job_url + "/start")
-            documents = wait_until(
-                lambda: api(client, "GET", job_url + "/documents")["documents"],
-                lambda rows: len(rows) == 1,
-            )
-            files = api(client, "GET", job_url + "/files")["files"]
-            assert next(row for row in files if row["path"] == "Long.cs")["next_chunk"] == 1
-            assert api(client, "GET", job_url)["status"] == "running"
             assert executions.read_text() == "1"
             initial.kill()
             assert _winapi.WaitForSingleObject(verifier_handle, 5000) == 0
@@ -238,25 +204,6 @@ def test_killed_app_recovers_verification_logs_and_resumes_saved_reading_via_api
             )
             assert recovered["latest_verification"]["exit_code"] is None
             assert client.get(log_url).content == saved_log.content
-            assert api(client, "GET", job_url)["status"] == "interrupted"
-            assert api(client, "GET", job_url + "/documents")["documents"] == documents
-            api(client, "POST", job_url + "/start", json={"max_chunks": 256})
-            completed = wait_until(
-                lambda: api(client, "GET", job_url), lambda row: row["status"] != "running"
-            )
-            assert completed["status"] == "completed"
-            resumed = api(client, "GET", job_url + "/documents")["documents"]
-            assert any(row["id"] == documents[0]["id"] for row in resumed)
-            calls = [
-                json.loads(line)
-                for line in (tmp_path / "reading-calls.jsonl").read_text().splitlines()
-            ]
-            resumed_chunks = [
-                row["chunk_index"]
-                for row in calls
-                if row["phase"] == "resumed" and row["path"] == "Long.cs"
-            ]
-            assert resumed_chunks and min(resumed_chunks) == 1 and 0 not in resumed_chunks
             assert executions.read_text() == "1"
             assert api(client, "GET", change_url)["status"] == "interrupted"
             assert {path.name: path.read_bytes() for path in source.iterdir()} == originals
