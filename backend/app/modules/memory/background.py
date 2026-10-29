@@ -265,18 +265,21 @@ class BackgroundMemories:
                     snapshot, {"groups": groups}, lease_token=token, expected_revision=revision
                 )
         except asyncio.CancelledError:
-            self.update_job(snapshot, token, state="pending", lease_until=0)
+            # 来源可能已被删除；清理失败不能吞掉取消，导致服务关闭时后台继续运行。
+            with suppress(Exception):
+                self.update_job(snapshot, token, state="pending", lease_until=0)
             raise
         except Exception as error:
             code = str(error) if str(error).startswith("memory_") else type(error).__name__
-            self.update_job(
-                snapshot,
-                token,
-                state="failed",
-                lease_until=0,
-                retry_after=time.time() + 300,
-                error_code=code[:64],
-            )
+            with suppress(ValueError):
+                self.update_job(
+                    snapshot,
+                    token,
+                    state="failed",
+                    lease_until=0,
+                    retry_after=time.time() + 300,
+                    error_code=code[:64],
+                )
 
     def fact_chunks(self, facts, config):
         limit = input_budget(config.model.context_tokens, config.model.output_tokens) // 2

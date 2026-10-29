@@ -303,6 +303,26 @@ async def test_shutdown_cancels_background_work_without_affecting_chat(
     assert worker[0].task is None
 
 
+async def test_cancel_after_source_job_deleted_still_propagates_cancellation(
+    services, worker, monkeypatch
+):
+    thread_id = make_chat(services)
+    entered = asyncio.Event()
+
+    async def blocked(*_args):
+        entered.set()
+        await asyncio.Event().wait()
+
+    monkeypatch.setattr(worker[0], "extract", blocked)
+    task = asyncio.create_task(worker[0].run_once())
+    await asyncio.wait_for(entered.wait(), 1)
+    with services[1].session.begin() as session:
+        session.delete(session.get(MemoryExtraction, thread_id))
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await asyncio.wait_for(task, 1)
+
+
 def test_secret_values_never_enter_snapshot(services, worker):
     thread_id = make_chat(services)
     with services[1].session.begin() as session:
