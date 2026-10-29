@@ -1,13 +1,15 @@
-"""项目资料的隔离、版本引用、确认入口、导出和多源码目录。"""
+"""项目资料隔离、历史共享结论与版本引用、导出和多源码目录。"""
 
 import io
 import json
 import zipfile
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
 from app.modules.projects.materials import MaterialCorpus
+from app.modules.projects.models import ProjectMaterial, ProjectMaterialRevision
 from app.modules.source_analysis.backend import SourceBackend
 from app.modules.source_analysis.evidence import SourceEvidence, source_excerpt
 
@@ -104,7 +106,38 @@ def test_material_isolation_versions_and_archive_guard(services):
         assert client.get(url).status_code == 200
 
 
-def test_conclusion_source_validation_and_project_export(services):
+@pytest.mark.parametrize(
+    "retired_fields",
+    [
+        {"kind": "conclusion"},
+        {"origin_message_id": "old-answer"},
+        {"kind": "conclusion", "origin_message_id": "old-answer"},
+    ],
+)
+def test_retired_conclusion_creation_is_rejected_without_saving(services, retired_fields):
+    app = create_app(services[0])
+    with TestClient(app) as client:
+        saved_project = project(client, "资料项目")
+        response = client.post(
+            materials(saved_project),
+            json={"title": "旧版保存请求", "content": "不能保存为新结论。", **retired_fields},
+        )
+        assert response.status_code == 422
+        detail = response.json()["detail"]
+        assert isinstance(detail, str)
+        assert all(f"body.{field}:" in detail for field in retired_fields)
+        assert "old-answer" not in response.text
+        assert "不能保存为新结论。" not in response.text
+        assert client.get(materials(saved_project)).json() == []
+        document = client.post(
+            materials(saved_project), json={"title": "普通文档", "content": "文档仍可新增。"}
+        )
+        assert document.status_code == 201
+        assert document.json()["kind"] == "document"
+        assert document.json()["origin_message_id"] is None
+
+
+def test_historical_conclusion_versions_retrieval_and_project_export(services):
     app = create_app(services[0])
     with TestClient(app) as client:
         first, second = project(client, "A"), project(client, "B")
@@ -113,26 +146,47 @@ def test_conclusion_source_validation_and_project_export(services):
         repo.finish(run["id"], "有待核对的回复")
         conversation = repo.thread(run["thread_id"])
         answer = conversation["messages"][-1]
-        body = {
-            "title": "用户整理的结论",
-            "content": "报警时先停机。",
-            "kind": "conclusion",
-            "origin_message_id": answer["id"],
-        }
-        assert client.post(materials(second), json=body).status_code == 409
-        assert (
-            client.post(
-                materials(first), json={**body, "origin_message_id": run["message_id"]}
-            ).status_code
-            == 409
-        )
-        saved = client.post(materials(first), json=body)
-        assert saved.status_code == 201
-        assert saved.json()["origin_thread_id"] == run["thread_id"]
-        corpus = MaterialCorpus(app.state.projects.database, first["id"])
+        database = app.state.projects.database
+        # 直接准备旧版已保存记录，验证停用新增后仍完整兼容历史数据。
+        with database.session.begin() as session:
+            saved = ProjectMaterial(
+                project_id=first["id"],
+                title="用户整理的结论",
+                content="报警时先停机。",
+                kind="conclusion",
+                origin_thread_id=run["thread_id"],
+                origin_message_id=answer["id"],
+            )
+            session.add(saved)
+            session.flush()
+            material_id = saved.id
+            session.add(
+                ProjectMaterialRevision(
+                    material_id=material_id, version=1, title=saved.title, content=saved.content
+                )
+            )
+        url = materials(first) + "/" + material_id
+        original = client.get(url).json()
+        assert original["kind"] == "conclusion"
+        assert original["origin_thread_id"] == run["thread_id"]
+        assert original["origin_message_id"] == answer["id"]
+        assert client.get(materials(first)).json()[0]["id"] == material_id
+        assert client.get(materials(second) + "/" + material_id + "?version=1").status_code == 404
+        corpus = MaterialCorpus(database, first["id"])
         prompt, included = corpus.prompt("报警", 1000)
         assert "报警时先停机。" in prompt and "用户确认" in prompt
         assert included[0]["citation"].startswith("material:" + first["id"])
+        edited = client.patch(url, json={"content": "报警时先确认轴停止。", "version": 1})
+        assert edited.status_code == 200
+        assert edited.json()["kind"] == "conclusion"
+        assert edited.json()["origin_message_id"] == answer["id"]
+        assert client.get(url + "?version=1").json()["content"] == "报警时先停机。"
+        assert "报警时先停机。" in corpus.excerpt(material_id)["content"]
+        assert client.patch(url, json={"state": "deleted", "version": 2}).status_code == 200
+        assert MaterialCorpus(database, first["id"]).search("报警") == []
+        assert client.get(url + "?version=1").json()["content"] == "报警时先停机。"
+        assert client.patch(url, json={"state": "active", "version": 3}).status_code == 200
+        assert MaterialCorpus(database, first["id"]).search("报警")[0]["version"] == 4
         other_repo = app.state.projects.services(second["id"]).repository
         other_repo.create_thread("B 的私有对话")
         downloaded = client.get(f"/api/projects/{first['id']}/export")
@@ -140,8 +194,12 @@ def test_conclusion_source_validation_and_project_export(services):
         with zipfile.ZipFile(io.BytesIO(downloaded.content)) as archive:
             data = json.loads(archive.read(f"conversations/{run['thread_id']}.json"))
             assert data["messages"][-1]["content"] == answer["content"]
-            material = json.loads(archive.read(f"materials/{saved.json()['id']}.json"))
+            material = json.loads(archive.read(f"materials/{material_id}.json"))
+            assert material["kind"] == "conclusion"
+            assert material["origin_message_id"] == answer["id"]
             assert material["revisions"][0]["version"] == 1
+            assert material["revisions"][0]["content"] == "报警时先停机。"
+            assert len(material["revisions"]) == 4
             assert (
                 len([name for name in archive.namelist() if name.startswith("conversations/")]) == 1
             )
@@ -150,10 +208,7 @@ def test_conclusion_source_validation_and_project_export(services):
             )
             assert not any("settings" in name or "key" in name for name in archive.namelist())
         assert client.delete(f"/api/projects/{first['id']}").status_code == 200
-        assert (
-            client.get(materials(first) + "/" + saved.json()["id"] + "?version=1").status_code
-            == 200
-        )
+        assert client.get(url + "?version=1").status_code == 200
 
 
 def test_multiple_roots_paths_evidence_and_detachment(services, tmp_path):

@@ -9,23 +9,18 @@ export function MaterialEditor({
   material,
   initialContent = '',
   sourceName = '',
-  kind = 'document',
-  originMessageId,
   onClose,
 }: {
   projectId: string;
   material?: ProjectMaterial;
   initialContent?: string;
   sourceName?: string;
-  kind?: 'document' | 'conclusion';
-  originMessageId?: string;
   onClose: () => void;
 }) {
   const [title, setTitle] = useState(material?.title || sourceName || '');
   const [content, setContent] = useState(material?.content || initialContent);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<unknown>();
-  const conclusion = (material?.kind || kind) === 'conclusion';
   async function save() {
     setPending(true);
     setError(undefined);
@@ -35,10 +30,10 @@ export function MaterialEditor({
         body: jsonBody(
           material
             ? { title, content, version: material.version }
-            : { title, content, kind, source_name: sourceName, origin_message_id: originMessageId },
+            : { title, content, source_name: sourceName },
         ),
       });
-      toast(conclusion ? '共享结论已保存到此项目' : '项目资料已保存');
+      toast('项目资料已保存');
       onClose();
     } catch (reason) {
       setError(reason);
@@ -49,11 +44,9 @@ export function MaterialEditor({
   return (
     <Modal
       open
-      title={material ? '编辑项目资料' : conclusion ? '确认并保存共享结论' : '添加项目文档'}
+      title={material ? '编辑项目资料' : '添加项目文档'}
       description={
-        conclusion
-          ? '请核对并整理正文，保存后可供此项目的其他对话参考。'
-          : '文档会用于此项目的资料检索。'
+        material ? '修改后生成新版本，已有引用保留原版本。' : '文档会用于此项目的资料检索。'
       }
       onClose={() => !pending && onClose()}
       className="project-editor material-editor"
@@ -73,7 +66,7 @@ export function MaterialEditor({
               maxLength={200}
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              placeholder={conclusion ? '例如：报警处理的已确认结论' : '文档标题'}
+              placeholder="资料标题"
             />
           </label>
           <label>
@@ -99,7 +92,7 @@ export function MaterialEditor({
             className="primary"
             disabled={pending || !title.trim() || !content.trim()}
           >
-            {pending ? '正在保存…' : conclusion ? '确认并保存' : '保存'}
+            {pending ? '正在保存…' : '保存'}
           </Button>
         </div>
       </form>

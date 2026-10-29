@@ -9,8 +9,6 @@ from app.agents.context.tokens import fit_text
 from app.core.config import dump_json
 from app.core.identifiers import now_iso
 from app.infrastructure.database.serialization import record_dict
-from app.modules.auth.ownership import require_thread
-from app.modules.chat.models import Message, Thread
 from app.modules.knowledge.feedback import numbered_prompt_block, references
 from app.modules.knowledge.search import catalog
 from app.modules.projects.models import ProjectMaterial, ProjectMaterialRevision
@@ -87,28 +85,11 @@ class Materials:
             )
             if count >= 200:
                 raise ValueError("每个项目最多保存 200 份资料，请先整理已有内容")
-            if body.origin_message_id:
-                message = session.get(Message, body.origin_message_id)
-                thread = session.get(Thread, message.thread_id) if message else None
-                if thread:
-                    require_thread(session, thread)
-                if (
-                    not thread
-                    or thread.project_id != self.project_id
-                    or thread.state == "deleted"
-                    or message.role != "assistant"
-                ):
-                    raise ValueError("结论来源必须是此项目中保留的助手回复")
-            else:
-                thread = None
             row = ProjectMaterial(
                 project_id=self.project_id,
                 title=body.title,
                 content=body.content,
-                kind=body.kind,
                 source_name=body.source_name,
-                origin_thread_id=thread.id if thread else None,
-                origin_message_id=body.origin_message_id,
             )
             session.add(row)
             session.flush()

@@ -22,7 +22,6 @@ export function ProjectDocuments({
     material?: ProjectMaterial;
     content?: string;
     sourceName?: string;
-    kind?: 'document' | 'conclusion';
   }>();
   const [viewing, setViewing] = useState<ProjectMaterial>();
   const [pending, setPending] = useState(false);
@@ -87,7 +86,7 @@ export function ProjectDocuments({
       <div className="material-heading">
         <h2>
           <FileText size={16} />
-          项目文档与共享结论
+          项目资料
         </h2>
         <button
           className="material-trash-toggle"
@@ -112,7 +111,6 @@ export function ProjectDocuments({
               <Plus size={14} />
               文档
             </Button>
-            <Button onClick={() => setEditor({ kind: 'conclusion' })}>共享结论</Button>
             <Button onClick={() => file.current?.click()}>
               <Upload size={14} />
               导入文件
@@ -136,9 +134,7 @@ export function ProjectDocuments({
         <p className="muted">正在读取资料…</p>
       ) : !listing.data?.length ? (
         <p className="muted">
-          {state === 'active'
-            ? '还没有项目资料。可以添加文档，或从回复中保存已确认的结论。'
-            : '资料回收站为空。'}
+          {state === 'active' ? '还没有项目资料，可以添加文档或导入文件。' : '资料回收站为空。'}
         </p>
       ) : (
         listing.data.map((item) => (
@@ -179,7 +175,6 @@ export function ProjectDocuments({
           material={editor.material}
           initialContent={editor.content}
           sourceName={editor.sourceName}
-          kind={editor.kind}
           onClose={() => setEditor(undefined)}
         />
       )}

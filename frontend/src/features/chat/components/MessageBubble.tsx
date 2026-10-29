@@ -1,13 +1,5 @@
 import { useRef, useState } from 'react';
-import {
-  Copy,
-  Check,
-  RotateCcw,
-  FileCode2,
-  Pencil,
-  BookmarkPlus,
-  MessageSquare,
-} from 'lucide-react';
+import { Copy, Check, RotateCcw, FileCode2, Pencil, MessageSquare } from 'lucide-react';
 import { useWorkspace } from '../../../app/state/store';
 import type { Message, Run } from '../../../shared/types/api';
 import { Markdown } from '../../../app/components/Markdown';
@@ -19,7 +11,6 @@ import type { Selection } from '../../../shared/types/api';
 import { toast } from '../../../shared/utils/toasts';
 import { elapsedRun } from '../lib/runFeedback';
 import { useCurrentProject } from '../../projects/hooks/useProjects';
-import { MaterialEditor } from '../../projects/components/MaterialEditor';
 import { RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { InlineQuestionEditor } from './InlineQuestionEditor';
 import { contentToMarkdown } from '../rich/contentToMarkdown';
@@ -44,7 +35,6 @@ export function MessageBubble({
   const [preview, setPreview] = useState<Selection>();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<unknown>();
-  const [savingConclusion, setSavingConclusion] = useState(false);
   const project = useCurrentProject();
   const Content = message.role === 'assistant' ? AnswerMarkdown : Markdown;
   async function copy() {
@@ -128,15 +118,6 @@ export function MessageBubble({
       <div className={`answer-actions ${message.role === 'user' ? 'question-actions' : ''}`}>
         {message.role === 'assistant' && (
           <>
-            {project.data?.state === 'active' && (!run || run.status === 'completed') && (
-              <button
-                aria-label="保存为项目共享结论"
-                title="保存为项目共享结论"
-                onClick={() => setSavingConclusion(true)}
-              >
-                <BookmarkPlus size={14} />
-              </button>
-            )}
             <button
               aria-label={copied ? '已复制回复' : '复制回复'}
               title={copied ? '已复制' : '复制回复'}
@@ -189,15 +170,6 @@ export function MessageBubble({
         )}
       </div>
       <ErrorText error={error} />
-      {savingConclusion && project.data && (
-        <MaterialEditor
-          projectId={project.data.id}
-          initialContent={contentToMarkdown(message.content)}
-          kind="conclusion"
-          originMessageId={message.id}
-          onClose={() => setSavingConclusion(false)}
-        />
-      )}
       {preview && <SelectionPreview selection={preview} onClose={() => setPreview(undefined)} />}
     </div>
   );

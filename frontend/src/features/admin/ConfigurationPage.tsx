@@ -106,7 +106,7 @@ export function ConfigurationPage({
           <ErrorText error={projects.error || current.error} />
           <div className="admin-row-actions">
             <Button disabled={!current.data} onClick={() => setDocuments(!documents)}>
-              {documents ? '收起项目资料' : '项目资料与共享结论'}
+              {documents ? '收起项目资料' : '项目资料'}
             </Button>
           </div>
           {documents && (

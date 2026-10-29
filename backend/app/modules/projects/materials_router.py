@@ -5,18 +5,19 @@ from typing import Literal
 
 from fastapi import APIRouter, Query
 from fastapi.responses import Response
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.modules.projects.export import export_project
 from app.modules.projects.materials import Materials
 
 
 class MaterialCreate(BaseModel):
+    # 创建仅接受文档字段，旧版保存回复的请求不能被静默转成普通文档。
+    model_config = ConfigDict(extra="forbid")
+
     title: str = Field(min_length=1, max_length=200)
     content: str = Field(min_length=1, max_length=500000)
-    kind: Literal["document", "conclusion"] = "document"
     source_name: str = Field(default="", max_length=250)
-    origin_message_id: str | None = None
 
     @field_validator("title", "content")
     @classmethod
