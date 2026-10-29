@@ -12,14 +12,15 @@ import pytest
 from app.infrastructure.storage.backup import create_backup
 from app.infrastructure.storage.paths import ordinary_path
 from app.infrastructure.storage.restore import restore_backup
-from app.modules.chat.schemas import MemoryWrite
+from tests.helpers.memories import MemorySeed as MemoryWrite
+from tests.helpers.memories import seed_legacy_memory
 
 
 @pytest.fixture
 def volume_backup(services):
     paths, _, _, repository, memories, _ = services
     repository.create_thread("临时数据卷恢复")
-    memories.save(MemoryWrite(name="卷内记忆.md", content="保留字节及数据库关联"))
+    seed_legacy_memory(memories, MemoryWrite(name="卷内记忆.md", content="保留字节及数据库关联"))
     (paths.scratch / "附件.bin").write_bytes(b"\x00archive\xff\r\n")
     with closing(sqlite3.connect(paths.data / "checkpoints.sqlite3")) as connection, connection:
         connection.execute("CREATE TABLE fixture (content TEXT)")

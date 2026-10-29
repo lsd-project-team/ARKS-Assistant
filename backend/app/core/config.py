@@ -124,12 +124,26 @@ class AnalysisSettings(BaseModel):
         return self
 
 
+class MemoryGenerationSettings(BaseModel):
+    """后台记忆的候选、额度和重试边界，不占用聊天执行槽位。"""
+
+    idle_hours: float = Field(default=6, ge=0.01, le=48)
+    poll_seconds: int = Field(default=60, ge=5, le=3600)
+    max_age_days: int = Field(default=30, ge=1, le=90)
+    max_chats_per_pass: int = Field(default=16, ge=1, le=128)
+    min_completed_turns: int = Field(default=2, ge=1, le=20)
+    min_remaining_percent: int = Field(default=25, ge=0, le=100)
+    extract_model: str = ""
+    consolidation_model: str = ""
+
+
 class AppSettings(BaseModel):
     model: ModelSettings = Field(default_factory=ModelSettings)
     model_profiles: list[ModelProfile] = Field(default_factory=list, max_length=20)
     active_profile_id: str = ""
     mcp_servers: list[McpSettings] = Field(default_factory=list, max_length=20)
     auto_memory: bool = True
+    memory_generation: MemoryGenerationSettings = Field(default_factory=MemoryGenerationSettings)
     deepwiki_repo: str = ""
     analysis: AnalysisSettings = Field(default_factory=AnalysisSettings)
 

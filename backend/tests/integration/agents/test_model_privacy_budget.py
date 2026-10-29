@@ -19,7 +19,6 @@ from app.agents.tools.debug_capture import capture_command
 from app.core.config import AppSettings, ModelSettings
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
-from app.modules.memory.conflicts import review_pairs
 from app.modules.projects.models import Project
 from app.modules.settings.model_ledger import ModelLedger
 from app.modules.source_analysis.evidence import SourceEvidence, source_excerpt
@@ -170,30 +169,6 @@ async def test_real_langchain_boundary_masks_request_and_preserves_local_source(
     assert original.read_text(encoding="utf-8") == source
     assert tool.content == json.dumps({"content": source})
     assert ledger.tokens()["reserved_tokens"] == 120 and ledger.tokens()["actual_tokens"] == 120
-
-
-async def test_memory_conflict_direct_provider_call_masks_proposed_and_existing_records():
-    content = '运行模式开启，password="proposed-dummy"'
-    candidates = [{"name": "模式", "content": '运行模式关闭，api_key="existing-dummy"'}]
-    model = ObservedProvider(
-        answer=json.dumps(
-            [
-                {
-                    "name": "模式",
-                    "relation": "conflict",
-                    "reason": "模式相反",
-                    "left_quote": "运行模式开启",
-                    "right_quote": "运行模式关闭",
-                }
-            ],
-            ensure_ascii=False,
-        )
-    )
-    checked, _ = await review_pairs(model, content, candidates)
-    assert checked == {"模式": {"relation": "conflict", "reason": "模式相反"}}
-    sent = model.seen[0][1].content
-    assert "proposed-dummy" not in sent and "existing-dummy" not in sent
-    assert "proposed-dummy" in content and "existing-dummy" in candidates[0]["content"]
 
 
 async def test_source_audit_direct_provider_call_masks_current_source_and_keeps_version(services):

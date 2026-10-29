@@ -7,11 +7,7 @@ import {
   validateSettings,
   parseMcpJson,
 } from '../../src/features/settings/lib/settingsDraft.ts';
-import {
-  blankMemory,
-  memorySignature,
-  validateMemory,
-} from '../../src/features/memory/lib/memoryDraft.ts';
+
 
 const settings = () =>
   normalizeSettings({
@@ -82,13 +78,4 @@ test('高级 MCP JSON 类型检查，并保留凭据掩码和未启用草稿', (
   server.headers = { 'Bad Header': 'secret\nvalue' };
   assert.match(validateSettings(value).join(' '), /名称无效/);
   assert.match(validateSettings(value).join(' '), /不能包含换行/);
-});
-
-test('记忆草稿验证中文名称、空白内容和保护判断', () => {
-  const draft = { ...blankMemory(), name: '项目结构.md', content: '按中文回复' };
-  assert.deepEqual(validateMemory(draft), []);
-  assert.notEqual(memorySignature(draft), memorySignature({ ...draft, content: '修改' }));
-  assert.equal(memorySignature(draft), memorySignature({ ...draft, updated_at: 123 }));
-  assert.match(validateMemory({ ...draft, name: '../secret.md' }).join(' '), /名称需为/);
-  assert.match(validateMemory({ ...draft, content: ' \n ' }).join(' '), /内容不能为空/);
 });

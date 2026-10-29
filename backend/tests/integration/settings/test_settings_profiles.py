@@ -258,11 +258,10 @@ async def test_running_configuration_snapshot_survives_global_switch(services, f
     assert repository.run(first["id"])["status"] == ("failed" if fail_first else "completed")
 
 
-def test_blank_memory_write_is_rejected_and_original_preserved(services):
+def test_removed_manual_memory_write_is_rejected(services):
     with TestClient(create_app(services[0])) as client:
-        memory = client.put(
+        response = client.put(
             project_api(client, "/memories"), json={"name": "验收.md", "content": "原内容"}
-        ).json()
-        invalid = client.put(project_api(client, "/memories"), json={**memory, "content": " \n "})
-        assert invalid.status_code == 409
-        assert client.get(project_api(client, "/memories")).json()[0]["content"] == "原内容"
+        )
+        assert response.status_code == 405
+        assert client.get(project_api(client, "/memories")).json() == []

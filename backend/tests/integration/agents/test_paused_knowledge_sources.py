@@ -6,12 +6,14 @@ from langchain_core.tools import tool
 from app.agents.runtime.engine import AgentRuntime
 from app.core.config import AppSettings, McpSettings, ModelSettings
 from app.modules.chat.context import ConversationContext
-from app.modules.chat.schemas import MemoryWrite, SourceOptions
+from app.modules.chat.schemas import SourceOptions
 from app.modules.handover.application.commands import DebugWrite
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.knowledge.corpora.handover_materials import HandoverMaterialCorpus
 from app.modules.projects.models import Project, ProjectMaterial
+from tests.helpers.memories import MemorySeed as MemoryWrite
+from tests.helpers.memories import seed_memory
 from tests.helpers.models import DeterministicModel
 
 
@@ -60,7 +62,9 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
         ),
         {},
     )
-    memories.save(MemoryWrite(name="偏好.md", scope="user", content="个人偏好保留标记，用中文回答"))
+    seed_memory(
+        memories, MemoryWrite(name="偏好.md", scope="user", content="个人偏好保留标记，用中文回答")
+    )
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     tools, prompts, connections = [], [], []
 
@@ -100,7 +104,8 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     )
     assert answer == "测试回复"
     assert connections == ["DeepWiki"]
-    assert {"read_source", "remember", "deepwiki_probe"} <= set(tools)
+    assert {"read_source", "deepwiki_probe"} <= set(tools)
+    assert "remember" not in tools
     assert not {
         "search_project_knowledge",
         "search_handover_materials",

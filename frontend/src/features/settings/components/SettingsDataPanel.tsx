@@ -108,7 +108,7 @@ export function SettingsDataPanel({
           checked={settings.auto_memory}
           onChange={(event) => onChange({ ...settings, auto_memory: event.target.checked })}
         />
-        允许 Agent 主动保存稳定的项目事实
+        允许后台从闲置聊天提取和整理长期记忆
       </label>
       <div className="button-row">
         <Button disabled={busy} onClick={() => void perform(backup)}>

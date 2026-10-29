@@ -9,11 +9,9 @@ import { UnsavedNotice } from '../../../shared/ui/UnsavedNotice';
 import { ConfirmationNotice } from '../../../shared/ui/ConfirmationNotice';
 import { AppearanceSettings } from './AppearanceSettings';
 import { MemorySettingsPanel } from '../../memory/components/MemorySettingsPanel';
-import { useMemoryDraft } from '../../memory/hooks/useMemoryDraft';
 import { useSourcePreferences } from '../../chat/hooks/useSourcePreferences';
 import { KnowledgeSourceSettings } from './KnowledgeSourceSettings';
 import { useAuth } from '../../auth/AuthContext';
-import { api } from '../../../app/api/client';
 
 export function SettingsDialog({
   open,
@@ -34,14 +32,8 @@ export function SettingsDialog({
   const startingTab = initialTab;
   const [tab, setTab] = useState(startingTab);
   const [advancedDirty, setAdvancedDirty] = useState(false);
-  const [sourcePreview, setSourcePreview] = useState<{
-    path: string;
-    content?: string;
-    error?: unknown;
-  }>();
   const [mcpEditorVersion, setMcpEditorVersion] = useState(0);
   const controller = useSettingsDraft(open, onClose, advancedDirty);
-  const memoryController = useMemoryDraft(open && tab === 'memory', closeSettings);
   const sourceController = useSourcePreferences(open && tab === 'sources');
   const configurationTab = tab === 'model' || tab === 'mcp' || tab === 'data';
   // 未应用的 JSON 也是草稿，切换标签页前要避免把它留在已卸载的编辑器里。
@@ -56,11 +48,10 @@ export function SettingsDialog({
   const { draft, busy } = controller;
   useEffect(() => {
     onDirtyChange?.(
-      controller.dirty || memoryController.dirty || sourceController.dirty || advancedDirty,
+      controller.dirty || sourceController.dirty || advancedDirty,
     );
   }, [
     controller.dirty,
-    memoryController.dirty,
     sourceController.dirty,
     advancedDirty,
     onDirtyChange,
@@ -77,7 +68,7 @@ export function SettingsDialog({
   return (
     <Container
       open={open}
-      onClose={memoryController.close}
+      onClose={closeSettings}
       title="工作区设置"
       className="settings-dialog"
       description="外观、模型配置、知识来源、长期记忆与本地数据"
@@ -96,14 +87,12 @@ export function SettingsDialog({
             <button
               key={item.id}
               className={tab === item.id ? 'selected' : ''}
-              disabled={busy || memoryController.busy || sourceController.busy}
+              disabled={busy || sourceController.busy}
               onClick={() => {
                 if (tab === item.id) return;
-                memoryController.leave(() => {
-                  sourceController.leave(() => {
-                    if (advancedDirty) setPendingTab(item.id);
-                    else setTab(item.id);
-                  });
+                sourceController.leave(() => {
+                  if (advancedDirty) setPendingTab(item.id);
+                  else setTab(item.id);
                 });
               }}
             >
@@ -115,37 +104,7 @@ export function SettingsDialog({
       <div className="dialog-body">
         {tab === 'appearance' && <AppearanceSettings />}
         {tab === 'sources' && <KnowledgeSourceSettings controller={sourceController} />}
-        {tab === 'memory' && (
-          <MemorySettingsPanel
-            controller={memoryController}
-            onNavigate={(action) => memoryController.leave(() => controller.navigate(action))}
-            onOpenThread={
-              embedded
-                ? (id) => {
-                    window.location.hash = `admin/questions/${id}`;
-                  }
-                : undefined
-            }
-            onOpenSource={
-              embedded
-                ? (path) => {
-                    setSourcePreview({ path });
-                    void api<{ content: string }>(`/file?path=${encodeURIComponent(path)}`)
-                      .then((saved) =>
-                        setSourcePreview((current) =>
-                          current?.path === path ? { path, content: saved.content } : current,
-                        ),
-                      )
-                      .catch((error) =>
-                        setSourcePreview((current) =>
-                          current?.path === path ? { path, error } : current,
-                        ),
-                      );
-                  }
-                : undefined
-            }
-          />
-        )}
+        {tab === 'memory' && <MemorySettingsPanel />}
         {configurationTab && controller.saved.isPending && <p className="muted">正在读取设置…</p>}
         {configurationTab && draft && (
           <fieldset className="settings-content" disabled={busy || !canConfigure}>
@@ -209,7 +168,6 @@ export function SettingsDialog({
           </p>
         )}
         <UnsavedNotice guard={controller.guard} />
-        <UnsavedNotice guard={memoryController.guard} />
         <UnsavedNotice guard={sourceController.guard} />
         {pendingTab && (
           <ConfirmationNotice>
@@ -241,9 +199,7 @@ export function SettingsDialog({
                   ? '有未保存的知识来源修改'
                   : ''
                 : tab === 'memory'
-                  ? memoryController.dirty
-                    ? '有未保存的记忆修改'
-                    : ''
+                  ? ''
                   : controller.dirty || advancedDirty
                     ? '有未保存的修改'
                     : ''}
@@ -274,24 +230,6 @@ export function SettingsDialog({
           </Button>
         )}
       </div>
-      {sourcePreview && (
-        <Modal open title={sourcePreview.path} onClose={() => setSourcePreview(undefined)}>
-          <div className="dialog-body">
-            <ErrorText error={sourcePreview.error} />
-            {sourcePreview.content === undefined && !sourcePreview.error ? (
-              <p>正在读取当前源码…</p>
-            ) : (
-              <>
-                <p className="muted">当前源码，仅供核对记忆依据。</p>
-                <pre className="admin-reference-text">{sourcePreview.content}</pre>
-              </>
-            )}
-          </div>
-          <div className="modal-footer">
-            <Button onClick={() => setSourcePreview(undefined)}>关闭</Button>
-          </div>
-        </Modal>
-      )}
     </Container>
   );
 }

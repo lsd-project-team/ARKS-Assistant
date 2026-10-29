@@ -219,6 +219,7 @@ export interface McpProbeResult {
   tools: { name: string; description: string; schema?: unknown }[];
 }
 export interface Memory {
+  generated?: boolean;
   name: string;
   scope: string;
   content: string;
@@ -235,25 +236,6 @@ export interface Memory {
   inclusion_reason?: string;
   conflicts?: string[];
   sources: { path: string; version: string; stale: boolean }[];
-}
-export interface MemoryReview {
-  name: string;
-  scope: string;
-  version: string;
-  content: string;
-  kind: 'duplicate' | 'conflict' | 'similar';
-  reason: string;
-}
-export interface MemoryRevision {
-  id: number;
-  name: string;
-  scope: string;
-  content: string;
-  version: string;
-  source_thread_id?: string;
-  sources: Memory['sources'];
-  action: string;
-  created_at: string;
 }
 export interface ToolEvent {
   id: string;

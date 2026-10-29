@@ -5,7 +5,7 @@ import '../../settings/styles/source-options.css';
 const choices = [
   ['use_deepwiki', 'DeepWiki', '查阅远端架构说明'],
   ['use_knowledge', '问题与经验', '检索历史问题、处理办法和经验记录'],
-  ['use_memory', '长期记忆', '带入相关记忆，并允许按设置保存记忆'],
+  ['use_memory', '长期记忆', '带入后台生成的记忆，并允许按设置参与后台提取'],
 ] as const;
 
 export function SourceOptionsControl({

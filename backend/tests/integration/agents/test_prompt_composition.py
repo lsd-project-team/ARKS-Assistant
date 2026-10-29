@@ -84,7 +84,7 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert ("调试经验检索：" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
     assert ("compatibility" in prompt) is knowledge
-    assert ("remember" in tools) is memory
-    assert ("本轮不检索或保存长期记忆" in prompt) is (not memory)
-    assert ("可主动调用 remember" in prompt) is (memory and automatic)
-    assert ("只有用户明确要求记住时才调用 remember" in prompt) is (memory and not automatic)
+    assert "remember" not in tools
+    assert ("本轮不使用长期记忆" in prompt) is (not memory)
+    assert "长期记忆由后台" in prompt
+    assert "没有即时保存或修改记忆工具" in prompt

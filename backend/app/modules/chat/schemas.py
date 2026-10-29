@@ -84,27 +84,6 @@ class BranchCreate(BaseModel):
     message_id: str = Field(min_length=1, max_length=36)
 
 
-class MemoryWrite(BaseModel):
-    name: str = Field(pattern=r"^[\w\-\u4e00-\u9fff]{1,80}\.md$")
-    content: str = Field(max_length=50000)
-    scope: str = Field(default="project", pattern=r"^(project|user)$")
-    version: str | None = None
-    record_version: str | None = None
-    source_thread_id: str | None = None
-    source_paths: list[str] = Field(default_factory=list)
-    confirm_conflicts: bool = False
-    reviewed_versions: dict[str, str] = Field(default_factory=dict, max_length=1000)
-    lifecycle: str = Field(default="valid", pattern=r"^(valid|needs_review|invalid)$")
-
-
-class MemoryRestore(BaseModel):
-    revision_id: int = Field(ge=1)
-    version: str | None = None
-    record_version: str | None = None
-    confirm_conflicts: bool = False
-    reviewed_versions: dict[str, str] = Field(default_factory=dict, max_length=1000)
-
-
 class SettingsWrite(BaseModel):
     settings: dict
     clear_api_key: bool = False

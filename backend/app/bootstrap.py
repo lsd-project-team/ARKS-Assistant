@@ -30,6 +30,7 @@ from app.modules.handover.infrastructure.exporters.archive import DocumentPackag
 from app.modules.handover.infrastructure.parsers.documents import DocumentParser
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.handover.interfaces.http.router import create_router as handover_router
+from app.modules.memory.background import BackgroundMemories
 from app.modules.memory.service import MemoryService
 from app.modules.projects.router import ProjectDispatcher
 from app.modules.projects.router import create_router as projects_router
@@ -52,6 +53,9 @@ def create_app(paths: Paths | None = None) -> FastAPI:
 
     auth = AuthService(services.database, paths)
     usage = UsageTracking(services.database)
+    background_memories = BackgroundMemories(
+        services, runtime_for=lambda scope: projects.services(scope).runtime
+    )
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -64,8 +68,11 @@ def create_app(paths: Paths | None = None) -> FastAPI:
                 usage.initialize()
                 projects.initialize()
                 services.repository.recover()
+                background_memories.initialize()
+                background_memories.start()
                 yield
             finally:
+                await background_memories.shutdown()
                 await projects.shutdown()
                 services.database.close()
 
@@ -75,6 +82,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     app.state.projects = projects
     app.state.auth = auth
     app.state.usage = usage
+    app.state.background_memories = background_memories
     frontend = PROJECT_ROOT / "frontend/dist"
     install_authentication(app, auth, usage, deployment=deployment, frontend=frontend)
     app.include_router(auth_router(auth, projects, deployment=deployment))

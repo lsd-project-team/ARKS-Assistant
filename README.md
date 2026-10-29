@@ -100,3 +100,5 @@ API 密钥保存在本机 `data/settings.private.json`，Git 和应用导出的�
 应用代码位于 `frontend/` 和 `backend/`，知识资源位于 `resources/knowledge/`。详细目录和依赖方向见[工程结构](docs/architecture/overview.md)；`trunk/` 为被分析的只读业务源码，`data/` 为本机运行数据。
 
 开始修改前请阅读[项目协作说明](agent.md)、[开发规范](skills/project-development/SKILL.md)、[项目结构规范](skills/project-structure/SKILL.md)和[测试规范](skills/project-testing/SKILL.md)。开发命令见[开发指南](docs/development/local-development.md#开发与检查)，历史重构与验收记录见[重构清单](docs/architecture/refactoring.md)。
+
+长期记忆采用后台闲置聊天提取、整理和后续带入，使用说明见[后台长期记忆](docs/features/background-memory.md)。

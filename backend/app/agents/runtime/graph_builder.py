@@ -105,17 +105,7 @@ class AgentGraphBuilder:
             requested_work += "\n此前已授权的请求：" + policy["question"]
         if evidence is not None:
             evidence.user_request = requested_work
-        tools += conversation_tools(
-            runtime.repository,
-            runtime.memories,
-            thread_id,
-            use_memory=options.use_memory,
-            review_model=None if inspection else model,
-            emit=emit,
-            evidence=evidence,
-            allow_automatic=settings.auto_memory,
-            request_text=question_text if question_text is not None else memory_query or "",
-        )
+        tools += conversation_tools(runtime.repository, thread_id)
         # 知识资料仅接入问题与经验；项目资料和全项目阅读已移除。
         debug_issues = (
             await asyncio.to_thread(
@@ -210,14 +200,12 @@ class AgentGraphBuilder:
                     "source_options": options.model_dump(),
                 },
             )
-            if options.use_memory and runtime.memories.retrieval.error:
-                emit("notice", {"text": runtime.memories.retrieval.error + "，本轮使用词面检索。"})
         if not options.use_memory:
-            prompt += "\n本轮不检索或保存长期记忆，历史对话中的结论仍需按当前证据核对。"
-        elif settings.auto_memory:
-            prompt += "\n可主动调用 remember 保存已核实且适合后续使用的项目事实。"
-        else:
-            prompt += "\n只有用户明确要求记住时才调用 remember。"
+            prompt += "\n本轮不使用长期记忆。"
+        prompt += (
+            "\n长期记忆由后台从符合条件的闲置聊天提取整理，本轮没有即时保存或修改记忆工具。"
+            "不能声称已经记住或已保存；用户提出稳定偏好时正常回应，是否生成由后台处理。"
+        )
         prompt += (
             "\n个人偏好以当前登录账号带入的记忆为准，"
             "不把其他人在共享对话里的偏好当作本账号长期偏好。"

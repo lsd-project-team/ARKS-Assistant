@@ -3,7 +3,6 @@
 import sqlite3
 
 from app.modules.knowledge.semantic import SemanticRetrieval
-from app.modules.memory.matching import rank_memories
 
 
 def test_real_multilingual_embedding_finds_paraphrase_and_caches_versions(tmp_path):
@@ -24,33 +23,3 @@ def test_real_multilingual_embedding_finds_paraphrase_and_caches_versions(tmp_pa
     documents["恢复"] = "按钮字体采用十六像素，界面背景颜色为白色。"
     changed = engine.scores("停机以后怎样重新生产", documents)
     assert changed["恢复"] < scores["恢复"]
-
-
-def test_semantic_only_match_keeps_exact_facts_and_preferences_first():
-    rows = [
-        {"name": "偏好.md", "scope": "user", "content": "回答中文", "sources": [], "updated_at": 1},
-        {
-            "name": "符号.md",
-            "scope": "project",
-            "content": "参数 K9 是补偿值",
-            "sources": [],
-            "updated_at": 1,
-        },
-        {
-            "name": "相近.md",
-            "scope": "project",
-            "content": "机器停止后恢复运行",
-            "sources": [],
-            "updated_at": 1,
-        },
-        {
-            "name": "无关.md",
-            "scope": "project",
-            "content": "字体颜色",
-            "sources": [],
-            "updated_at": 1,
-        },
-    ]
-    ranked = list(rank_memories(rows, "K9", {"project/相近.md": 0.85, "project/无关.md": 0.1}))
-    assert [row["name"] for row in ranked] == ["偏好.md", "符号.md", "相近.md"]
-    assert "语义检索" in ranked[-1]["inclusion_reason"]

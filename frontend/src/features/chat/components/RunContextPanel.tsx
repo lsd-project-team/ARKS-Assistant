@@ -60,7 +60,7 @@ export function RunContextPanel({
             <summary>
               {memory.name}
               <span>
-                {memory.scope === 'user' ? '用户偏好' : '项目记忆'}
+                {memory.generated ? '后台生成' : memory.scope === 'user' ? '用户偏好' : '项目记忆'}
                 {memory.partial && ' · 部分带入'}
               </span>
             </summary>

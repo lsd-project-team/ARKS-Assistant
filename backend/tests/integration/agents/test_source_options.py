@@ -3,8 +3,10 @@
 from app.agents.runtime.engine import AgentRuntime
 from app.core.config import AppSettings, ModelSettings
 from app.modules.chat.context import ConversationContext
-from app.modules.chat.schemas import MemoryWrite, RunCreate, SourceOptions, SourcePreferencesWrite
+from app.modules.chat.schemas import RunCreate, SourceOptions, SourcePreferencesWrite
 from tests.helpers.api_paths import project_api
+from tests.helpers.memories import MemorySeed as MemoryWrite
+from tests.helpers.memories import seed_memory
 from tests.helpers.models import DeterministicModel
 
 LOCAL = {"use_deepwiki": False, "use_knowledge": False, "use_memory": False}
@@ -33,7 +35,9 @@ def test_queue_edit_branch_and_regenerate_preserve_sources(services):
 async def test_disabled_sources_do_not_connect_mcp_or_inject_memory(services, monkeypatch):
     paths, _, workspace, repository, memories, settings = services
     settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512)))
-    memories.save(MemoryWrite(name="偏好.md", scope="user", content="仅供来源隔离测试的记忆事实"))
+    seed_memory(
+        memories, MemoryWrite(name="偏好.md", scope="user", content="仅供来源隔离测试的记忆事实")
+    )
     tools, prompts = [], []
 
     class Model(DeterministicModel):

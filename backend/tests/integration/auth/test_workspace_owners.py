@@ -8,14 +8,27 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
+from app.modules.auth.context import request_identity
 from app.modules.auth.models import Account
 from app.modules.chat.models import Message
 from app.modules.chat.runs import RunManager
 from app.modules.projects.models import Project, ProjectMaterial, ProjectMaterialRevision
 from app.modules.source_analysis.workspace import Workspace
 from tests.helpers.accounts import login_second, sign_in
+from tests.helpers.memories import MemorySeed, seed_memory
 
 pytestmark = pytest.mark.authentication
+
+
+def generated_memory(app, scope, user, content):
+    token = request_identity.set({"user": user})
+    try:
+        seed_memory(
+            app.state.projects.services(scope).memories,
+            MemorySeed(name="后台记忆.md", content=content),
+        )
+    finally:
+        request_identity.reset(token)
 
 
 def create_project(client, name):
@@ -148,8 +161,9 @@ def test_independent_chats_memories_preferences_and_queue_are_private(owned):
         prefix + "/memories",
         json={"scope": "project", "name": "独立.md", "content": "乙的独立记忆"},
     )
-    assert memory.status_code == 200, memory.text
-    history = client.get(prefix + "/memories/project/独立.md/history").json()
+    assert memory.status_code == 405, memory.text
+    generated_memory(app, "independent", second_user, "乙的独立记忆")
+    assert "乙的独立记忆" in client.get(prefix + "/memories").text
     preference = client.put(
         prefix + "/source-options", json={"version": 0, "source_options": {"use_memory": False}}
     )
@@ -158,10 +172,10 @@ def test_independent_chats_memories_preferences_and_queue_are_private(owned):
     assert client.get(prefix + "/threads").json() == []
     assert client.get(prefix + "/source-options").json()["version"] == 0
     assert client.get(prefix + "/memories").json() == []
-    assert client.get(prefix + "/memories/project/独立.md/history").json() == []
+    assert client.get(prefix + "/memories/project/独立.md/history").status_code == 404
     assert (
         client.post(
-            prefix + "/memories/project/独立.md/restore", json={"revision_id": history[0]["id"]}
+            prefix + "/memories/project/独立.md/restore", json={"revision_id": 1}
         ).status_code
         == 404
     )
@@ -259,7 +273,10 @@ def test_project_materials_memories_and_original_sources_cannot_cross_accounts(
         prefix + "/memories",
         json={"scope": "project", "name": "项目.md", "content": "PRIVATE-PROJECT-MEMORY"},
     )
-    assert memory.status_code == 200
+    assert memory.status_code == 405
+    user = sign_in(client, "user").json()["user"]
+    generated_memory(app, first["id"], user, "PRIVATE-PROJECT-MEMORY")
+    assert "PRIVATE-PROJECT-MEMORY" in client.get(prefix + "/memories").text
     login_second(client)
     assert client.get(source).status_code == 404
     assert client.get(material_url).status_code == 404

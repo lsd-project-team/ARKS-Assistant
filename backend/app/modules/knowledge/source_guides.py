@@ -9,7 +9,7 @@ from langchain_core.tools import tool
 from app.agents.context.tokens import text_tokens
 from app.core.config import PROJECT_ROOT, dump_json
 from app.infrastructure.cache.versions import VersionCache
-from app.modules.memory.matching import terms
+from app.modules.knowledge.terms import terms
 from app.modules.source_analysis.evidence import source_excerpt
 from app.modules.source_analysis.workspace import content_version
 

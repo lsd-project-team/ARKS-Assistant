@@ -8,8 +8,6 @@ from app.core.config import AppSettings, ModelSettings
 from app.infrastructure.database.session import Database
 from app.infrastructure.storage.backup import create_backup
 from app.modules.chat.repository import Repository
-from app.modules.chat.schemas import MemoryWrite
-from app.modules.memory.service import MemoryService
 
 
 def test_archive_events_and_restart_recovery(services):
@@ -36,26 +34,6 @@ def test_archive_events_and_restart_recovery(services):
     assert resumed["message_id"] == run["message_id"]
     assert len(restored.thread(thread["id"])["messages"]) == 1
     reopened.close()
-
-
-def test_memory_versions_provenance_and_reload(services):
-    paths, database, workspace, repository, memory, _ = services
-    thread = repository.create_thread("来源")
-    request = MemoryWrite(
-        name="项目.md",
-        content="入口在 Program.cs",
-        source_paths=["Program.cs"],
-        source_thread_id=thread["id"],
-    )
-    saved = memory.save(request)
-    with pytest.raises(ValueError):
-        memory.save(request)
-    reloaded = MemoryService(paths, database, workspace)
-    assert reloaded.read("project", "项目.md")["source_thread_id"] == thread["id"]
-    (workspace.root / "Program.cs").write_text("class Changed {}", encoding="utf-8")
-    assert reloaded.read("project", "项目.md")["sources"][0]["stale"]
-    reloaded.delete("project", "项目.md", saved["version"])
-    assert reloaded.list() == []
 
 
 def test_secret_mask_and_backup(services):

@@ -24,8 +24,9 @@ from app.infrastructure.storage.restore import (
 )
 from app.infrastructure.storage.validation import validate_backup
 from app.main import create_app
-from app.modules.chat.schemas import MemoryWrite
 from tests.helpers.api_paths import project_api
+from tests.helpers.memories import MemorySeed as MemoryWrite
+from tests.helpers.memories import seed_legacy_memory
 from tests.helpers.models import DeterministicModel
 
 
@@ -69,13 +70,14 @@ async def test_full_backup_restore_preserves_graph_messages_memory_and_private_s
             run, lambda kind, payload: repository.event(run["id"], kind, payload)
         ),
     )
-    memories.save(
+    seed_legacy_memory(
+        memories,
         MemoryWrite(
             name="恢复事实.md",
             content="入口：Program.cs",
             source_paths=["Program.cs"],
             source_thread_id=thread["id"],
-        )
+        ),
     )
     archive = paths.scratch / "原文档案.md"
     archive.write_text("必须保留的原文\r\n", encoding="utf-8", newline="")
@@ -102,9 +104,9 @@ async def test_full_backup_restore_preserves_graph_messages_memory_and_private_s
         assert client.get(project_api(client, f"/threads/{thread['id']}/context")).json()[
             "complete"
         ]
-        rows = client.get(project_api(client, "/memories")).json()
-        assert rows[0]["name"] == "恢复事实.md" and not rows[0]["sources"][0]["stale"]
-        assert client.get(project_api(client, "/memories/project/恢复事实.md/history")).json()
+        assert client.get(project_api(client, "/memories")).json() == []
+        archived = list(target.memories.rglob("恢复事实.md"))
+        assert len(archived) == 1 and archived[0].read_text(encoding="utf-8") == "入口：Program.cs"
         stats = client.get("/api/storage").json()
         assert stats["counts"]["messages"] == 2 and stats["groups"]["recovery"] > 0
 
@@ -140,7 +142,7 @@ def test_invalid_archive_paths_are_rejected_without_touching_destination(
 def test_hash_version_legacy_and_truncated_zip_validation(services, tmp_path):
     paths, _, _, repository, memories, _ = services
     repository.create_thread("哈希检查")
-    memories.save(MemoryWrite(name="记录.md", content="原文事实"))
+    seed_legacy_memory(memories, MemoryWrite(name="记录.md", content="原文事实"))
     backup = create_backup(paths)
     with ZipFile(backup) as zipped:
         memory_path = next(name for name in zipped.namelist() if name.startswith("memories/"))
@@ -199,7 +201,7 @@ def test_running_service_lock_refuses_restore_and_partial_failure_rolls_back(
 ):
     paths, _, _, repository, memories, _ = services
     repository.create_thread("回滚检查")
-    memories.save(MemoryWrite(name="新事实.md", content="新数据"))
+    seed_legacy_memory(memories, MemoryWrite(name="新事实.md", content="新数据"))
     backup = create_backup(paths)
     target = tmp_path / "target"
     target.mkdir()

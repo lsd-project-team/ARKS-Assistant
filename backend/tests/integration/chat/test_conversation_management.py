@@ -11,7 +11,6 @@ from app.main import create_app
 from app.modules.chat.lifecycle import ConversationLifecycle
 from app.modules.chat.models import Message, Run, RunEvent, Thread
 from app.modules.chat.runs import RunManager
-from app.modules.chat.schemas import MemoryWrite
 from tests.helpers.api_paths import project_api
 
 
@@ -80,9 +79,9 @@ async def test_trash_stops_active_reply_and_purge_cleans_checkpoints_and_preserv
     lifecycle = ConversationLifecycle(services_object)
     thread = repository.create_thread("删除测试")
     run = repository.create_run(thread["id"], "问题", [])
-    memories.save(
-        MemoryWrite(name="持久事实.md", content="保留独立记忆", source_thread_id=thread["id"])
-    )
+    legacy = paths.memories / "legacy-archive" / "持久事实.md"
+    legacy.parent.mkdir()
+    legacy.write_text("保留旧记忆归档", encoding="utf-8")
     session_id = "session_" + "a" * 32
     async with AsyncSqliteSaver.from_conn_string(str(paths.data / "checkpoints.sqlite3")) as saver:
         from app.agents.runtime.engine import AgentRuntime
@@ -105,7 +104,7 @@ async def test_trash_stops_active_reply_and_purge_cleans_checkpoints_and_preserv
     await lifecycle.trash(thread["id"])
     assert not manager.tasks
     assert repository.threads("deleted")[0]["latest_status"] == "cancelled"
-    assert memories.read("project", "持久事实.md")["source_thread_status"] == "deleted"
+    assert not memories.list()
     await lifecycle.purge(thread["id"])
     with database.session() as session:
         for model in (Thread, Message, Run, RunEvent):
@@ -113,7 +112,7 @@ async def test_trash_stops_active_reply_and_purge_cleans_checkpoints_and_preserv
     async with AsyncSqliteSaver.from_conn_string(str(paths.data / "checkpoints.sqlite3")) as saver:
         assert await saver.aget_tuple({"configurable": {"thread_id": thread["id"]}}) is None
     assert not artifacts.exists() and not old_archive.exists()
-    assert memories.read("project", "持久事实.md")["content"] == "保留独立记忆"
+    assert legacy.read_text(encoding="utf-8") == "保留旧记忆归档"
 
 
 def test_management_api_and_workspace_scope(services):

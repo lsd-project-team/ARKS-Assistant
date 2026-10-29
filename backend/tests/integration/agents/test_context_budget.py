@@ -18,7 +18,9 @@ from app.agents.runtime.engine import AgentRuntime
 from app.agents.runtime.feedback import error_feedback
 from app.core.config import AppSettings, McpSettings, ModelSettings
 from app.modules.chat.context import ConversationContext
-from app.modules.chat.schemas import MemoryWrite, SummaryCorrection
+from app.modules.chat.schemas import SummaryCorrection
+from tests.helpers.memories import MemorySeed as MemoryWrite
+from tests.helpers.memories import seed_memory
 from tests.helpers.models import DeterministicModel
 
 
@@ -67,21 +69,23 @@ def test_breakdown_does_not_double_count_memory_or_selection():
 def test_memory_injection_respects_token_budget_and_preserves_original(services):
     _, _, _, _, memories, _ = services
     original = "用户偏好：默认中文回答。\n" + "稳定偏好" * 1000
-    saved = memories.save(MemoryWrite(name="偏好.md", scope="user", content=original))
-    memories.save(MemoryWrite(name="项目.md", content="入口：Program.cs\n" + "项目事实" * 1000))
+    seed_memory(memories, MemoryWrite(name="偏好.md", scope="user", content=original))
+    seed_memory(
+        memories, MemoryWrite(name="项目.md", content="入口：Program.cs\n" + "项目事实" * 1000)
+    )
     prompt, selected = memories.prompt_snapshot("Program.cs 入口", max_tokens=400)
     assert text_tokens(prompt) <= 400
     assert selected[0]["scope"] == "user" and selected[0]["partial"]
-    assert "源码来源：" in selected[0]["injected_text"]
-    assert memories.read("user", "偏好.md")["content"] == original
-    assert memories.read("user", "偏好.md")["version"] == saved["version"]
+    assert "历史源码状态：" in selected[0]["injected_text"]
+    assert original in memories.list()[0]["content"]
+    assert memories.list()[0]["version"] == "2"
 
 
 async def test_framework_budget_snapshot_survives_configuration_change(services, monkeypatch):
     paths, _, workspace, repository, memories, settings = services
     configuration = AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512))
     settings.save(configuration)
-    memories.save(MemoryWrite(name="偏好.md", scope="user", content="回答偏好：中文"))
+    seed_memory(memories, MemoryWrite(name="偏好.md", scope="user", content="回答偏好：中文"))
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_model",
         lambda *_args, **_kwargs: DeterministicModel(),

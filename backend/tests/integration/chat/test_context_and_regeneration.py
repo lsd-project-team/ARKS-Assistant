@@ -5,7 +5,9 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from app.agents.runtime.engine import AgentRuntime
 from app.core.config import AppSettings, ModelSettings
 from app.modules.chat.context import ConversationContext
-from app.modules.chat.schemas import MemoryWrite, SummaryCorrection
+from app.modules.chat.schemas import SummaryCorrection
+from tests.helpers.memories import MemorySeed as MemoryWrite
+from tests.helpers.memories import seed_memory
 from tests.helpers.models import DeterministicModel
 
 
@@ -185,22 +187,25 @@ async def test_summary_correction_changes_actual_context_without_model_call(serv
 def test_run_memory_snapshot_is_exact_and_survives_later_edits(services):
     paths, _, workspace, repository, memories, settings = services
     thread = repository.create_thread("记忆快照")
-    saved = memories.save(MemoryWrite(name="偏好.md", scope="user", content="当时的回答偏好"))
+    saved = seed_memory(
+        memories, MemoryWrite(name="偏好.md", scope="user", content="当时的回答偏好")
+    )
     prompt, snapshot = memories.prompt_snapshot()
     assert "当时的回答偏好" in prompt
     run = repository.create_run(thread["id"], "问题", [])
     repository.event(run["id"], "context_sources", {"memories": snapshot})
-    memories.save(
+    seed_memory(
+        memories,
         MemoryWrite(
             name="偏好.md", scope="user", content="后来修改的偏好", version=saved["version"]
-        )
+        ),
     )
     recorded = ConversationContext(
         AgentRuntime(paths, settings, workspace, repository, memories)
     ).run_sources(run["id"])
     assert recorded["recorded"]
-    assert recorded["memories"][0]["content"] == "当时的回答偏好"
-    memories.save(MemoryWrite(name="长记忆.md", content="长内容" * 12000))
+    assert "当时的回答偏好" in recorded["memories"][0]["content"]
+    seed_memory(memories, MemoryWrite(name="长记忆.md", content="长内容" * 12000))
     prompt, snapshot = memories.prompt_snapshot()
     assert len(prompt) <= 24000
     assert any(memory["partial"] for memory in snapshot)

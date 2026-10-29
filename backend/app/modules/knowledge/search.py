@@ -9,7 +9,7 @@ from threading import RLock
 from sqlalchemy import select
 
 from app.modules.knowledge.semantic import SemanticRetrieval
-from app.modules.memory.matching import terms
+from app.modules.knowledge.terms import terms
 
 ALIASES = (
     ("取片", "拾取", "抓取", "取不下来", "吸不起来", "pick"),

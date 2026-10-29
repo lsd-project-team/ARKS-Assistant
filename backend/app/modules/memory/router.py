@@ -1,18 +1,18 @@
-"""项目知识来源与记忆 API，统一通过 /api/p/{project_id} 装配。"""
+"""后台记忆只读接口；来源选择继续复用项目设置。"""
 
 import asyncio
 
 from fastapi import APIRouter
+from sqlalchemy import select
 
-from app.agents.runtime.model_budget import ProjectModelBudget
 from app.core.container import AppServices
-from app.infrastructure.providers.models import close_models, create_model
-from app.modules.chat.schemas import MemoryRestore, MemoryWrite, SourcePreferencesWrite
+from app.modules.chat.schemas import SourcePreferencesWrite
+from app.modules.memory.identity import user_memory_owner
+from app.modules.memory.models import MemoryExtraction
 
 
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
-    memories = services.memories
 
     @router.get("/api/source-options")
     async def get_source_options():
@@ -24,45 +24,31 @@ def create_router(services: AppServices) -> APIRouter:
             return services.repository.source_preferences.save(body)
 
     @router.get("/api/memories")
-    async def list_memories(include_deleted: bool = False):
-        return await asyncio.to_thread(memories.list, include_deleted)
+    async def list_memories():
+        return await asyncio.to_thread(services.memories.list)
 
-    @router.post("/api/memories/review")
-    async def review_memory(body: MemoryWrite):
-        config = services.settings.load().model
-        model = (
-            create_model(config) if config.model and config.base_url and config.api_key else None
-        )
-        if model is not None and services.repository.project_id:
-            model.callbacks = [
-                *(getattr(model, "callbacks", None) or []),
-                ProjectModelBudget(
-                    services.runtime.model_ledger,
-                    config.context_tokens,
-                    output_tokens=config.output_tokens,
+    @router.get("/api/memories/status")
+    async def memory_status():
+        config = services.settings.load()
+        with services.database.session() as session:
+            rows = list(
+                session.scalars(
+                    select(MemoryExtraction).where(
+                        MemoryExtraction.owner_id == (user_memory_owner() or "local"),
+                        MemoryExtraction.workspace_id == services.workspace.id,
+                    )
+                )
+            )
+            return {
+                "enabled": config.auto_memory,
+                "idle_hours": config.memory_generation.idle_hours,
+                "states": {
+                    state: sum(row.state == state for row in rows)
+                    for state in ("pending", "running", "extracted", "completed", "failed")
+                },
+                "last_error": next(
+                    (row.error_code for row in reversed(rows) if row.state == "failed"), ""
                 ),
-            ]
-        try:
-            return await memories.semantic_review(body, model)
-        finally:
-            await close_models([model] if model else [])
-
-    @router.get("/api/memories/{scope}/{name}/history")
-    async def memory_history(scope: str, name: str):
-        MemoryWrite(name=name, scope=scope, content="")
-        return await asyncio.to_thread(memories.history.list, scope, name)
-
-    @router.post("/api/memories/{scope}/{name}/restore")
-    async def restore_memory(scope: str, name: str, body: MemoryRestore):
-        return await asyncio.to_thread(memories.restore, scope, name, body)
-
-    @router.put("/api/memories")
-    async def write_memory(body: MemoryWrite):
-        return await asyncio.to_thread(memories.save, body)
-
-    @router.delete("/api/memories/{scope}/{name}")
-    async def delete_memory(scope: str, name: str, version: str):
-        await asyncio.to_thread(memories.delete, scope, name, version)
-        return {"ok": True}
+            }
 
     return router

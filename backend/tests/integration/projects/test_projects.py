@@ -59,7 +59,7 @@ def test_project_isolation_same_source_and_empty_project(services):
                 scoped(first, "/memories"),
                 json={"name": "项目.md", "scope": "project", "content": "项目 A 的约定"},
             ).status_code
-            == 200
+            == 405
         )
         assert client.get(scoped(second, "/memories")).json() == []
         assert client.get(scoped(first, "/file?path=Program.cs")).status_code == 200
