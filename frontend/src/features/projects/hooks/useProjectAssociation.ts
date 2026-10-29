@@ -3,11 +3,7 @@ import { api } from '../../../app/api/client';
 import { useDebouncedValue } from '../../../shared/hooks/useDebouncedValue';
 
 interface Association {
-  source_root: string | null;
   deepwiki_repo: string;
-  knowledge_available: boolean;
-  status: 'matched' | 'unknown';
-  note: string;
 }
 
 export function useProjectAssociation(root: string, folders: string[], enabled: boolean) {

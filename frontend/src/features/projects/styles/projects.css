@@ -75,8 +75,7 @@
   color: var(--text);
   font-size: 13px;
 }
-.project-form input,
-.project-form textarea {
+.project-form input {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -86,16 +85,6 @@
   font: inherit;
   line-height: 1.6;
 }
-.project-form textarea {
-  resize: vertical;
-  min-height: 64px;
-  max-height: 260px;
-}
-.project-form .form-hint {
-  font-size: 12px;
-  line-height: 1.7;
-  margin: -8px 0 0;
-}
 .project-form .ui-select-trigger {
   width: 100%;
 }
@@ -103,15 +92,6 @@
   .project-form {
     padding: 20px;
   }
-}
-
-.source-folder-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
 }
 
 .project-form .project-association-toggle {
@@ -127,7 +107,6 @@
   padding: 0;
   flex: none;
 }
-.project-association-summary,
 .knowledge-source-binding {
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -136,9 +115,6 @@
 }
 .knowledge-source-binding {
   margin-bottom: 16px;
-}
-.project-form .project-association-summary .form-hint {
-  margin: 0;
 }
 .material-view-lines > div {
   white-space: pre-wrap;

@@ -7,7 +7,6 @@ import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { toast } from '../../../shared/utils/toasts';
 import { useProjects } from '../hooks/useProjects';
 import { useProjectAssociation } from '../hooks/useProjectAssociation';
-import { Select } from '../../../shared/ui/Select';
 import { useAuth } from '../../auth/AuthContext';
 
 export function ProjectEditor({
@@ -23,9 +22,8 @@ export function ProjectEditor({
   const availableProjects = useProjects();
   const [name, setName] = useState(project?.name || '');
   const [root, setRoot] = useState(project?.source_root || '');
-  const [folders, setFolders] = useState(
-    (project?.source_folders || []).map(({ root, label }) => ({ root, label })),
-  );
+  // 精简表单不再编辑附加目录，保存时保留已有项目的关联。
+  const folders = project?.source_folders || [];
   const [wiki, setWiki] = useState(project?.deepwiki_repo || '');
   const [automatic, setAutomatic] = useState(!project);
   const effectiveRoot =
@@ -33,13 +31,6 @@ export function ProjectEditor({
     (!project && !canConfigureSource
       ? availableProjects.data?.default_source?.source_root || ''
       : '');
-  const sourceChoices = [
-    ...new Map(
-      (availableProjects.data?.projects || [])
-        .filter((row) => row.source_root)
-        .map((row) => [row.source_root!, row]),
-    ).values(),
-  ];
   const association = useProjectAssociation(
     effectiveRoot,
     folders.map((folder) => folder.root),
@@ -107,19 +98,17 @@ export function ProjectEditor({
         }}
       >
         <div className="dialog-body project-form">
+          <input
+            aria-label="项目名称"
+            autoFocus
+            required
+            maxLength={120}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="项目名称"
+          />
           <label>
-            项目名称
-            <input
-              autoFocus
-              required
-              maxLength={120}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="例如：ZX2200 软件分析"
-            />
-          </label>
-          <label>
-            主源码目录 {canConfigureSource && <span className="muted">可选</span>}
+            主源码目录
             <input
               value={effectiveRoot}
               readOnly={!canConfigureSource}
@@ -128,83 +117,6 @@ export function ProjectEditor({
               placeholder={'本机目录，如 D:\\projects\\ZX2200'}
             />
           </label>
-          {!!sourceChoices.length && (
-            <label>
-              选择已关联的源码目录
-              <Select
-                disabled={!canConfigureSource}
-                aria-label="选择已关联的源码目录"
-                value={
-                  sourceChoices.some((row) => row.source_root === effectiveRoot)
-                    ? effectiveRoot
-                    : '__manual__'
-                }
-                onValueChange={(value) => setRoot(value === '__manual__' ? '' : value)}
-              >
-                <option value="__manual__">填写其他目录</option>
-                {sourceChoices.map((row) => (
-                  <option key={row.id} value={row.source_root!}>
-                    {row.name} · {row.source_root}
-                  </option>
-                ))}
-              </Select>
-            </label>
-          )}
-          {!canConfigureSource && (
-            <p className="muted form-hint">自动关联公司 ZX2200 源码，项目和对话仅自己可见。</p>
-          )}
-          {folders.map((folder, index) => (
-            <div className="source-folder-fields" key={index}>
-              <label>
-                目录显示名称
-                <input
-                  maxLength={80}
-                  readOnly={!canConfigureSource}
-                  value={folder.label}
-                  onChange={(event) =>
-                    setFolders(
-                      folders.map((item, position) =>
-                        position === index ? { ...item, label: event.target.value } : item,
-                      ),
-                    )
-                  }
-                  placeholder="例如：设备接口"
-                />
-              </label>
-              <label>
-                附加源码目录
-                <input
-                  required
-                  maxLength={1024}
-                  readOnly={!canConfigureSource}
-                  value={folder.root}
-                  onChange={(event) =>
-                    setFolders(
-                      folders.map((item, position) =>
-                        position === index ? { ...item, root: event.target.value } : item,
-                      ),
-                    )
-                  }
-                  placeholder="本机已存在的绝对目录"
-                />
-              </label>
-              <Button
-                type="button"
-                disabled={!canConfigureSource}
-                onClick={() => setFolders(folders.filter((_, position) => position !== index))}
-              >
-                解除此目录关联
-              </Button>
-            </div>
-          ))}
-          <Button
-            type="button"
-            disabled={!canConfigureSource || folders.length >= 8}
-            onClick={() => setFolders([...folders, { root: '', label: '' }])}
-          >
-            添加源码目录
-          </Button>
-          {!!folders.length && <p className="muted form-hint">解除关联保留真实文件和历史引用。</p>}
           <label>
             DeepWiki 仓库 <span className="muted">可选</span>
             <input
@@ -228,17 +140,7 @@ export function ProjectEditor({
             />
             自动关联 DeepWiki 仓库
           </label>
-          {automatic && (
-            <div className="project-association-summary">
-              <p className="muted form-hint">
-                {association.detecting
-                  ? '正在识别源码关联…'
-                  : association.data?.note || '选择源码目录后自动识别，也可以先创建空项目。'}
-              </p>
-              <ErrorText error={association.error} />
-            </div>
-          )}
-          <ErrorText error={error} />
+          <ErrorText error={error || (automatic ? association.error : undefined)} />
         </div>
         <div className="modal-footer">
           <Button type="button" disabled={pending} onClick={onClose}>
