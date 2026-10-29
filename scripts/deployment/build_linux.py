@@ -18,7 +18,6 @@ TREES = (
     "backend/migrations",
     "frontend/dist",
     "resources/knowledge",
-    "resources/execution",
 )
 FILES = (
     "backend/pyproject.toml",

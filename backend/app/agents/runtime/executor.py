@@ -62,13 +62,6 @@ class AgentRunExecutor:
             hold_flow_answer = bool(
                 evidence.required and re.search(r"流程|步骤|怎么走|启动前检查", message["content"])
             )
-            # 追加展示使用新消息，隔离修改的授权与约定仍绑定原始人类请求。
-            evidence.request_identity = {
-                "message_id": regeneration_context["before_message_id"]
-                if regeneration_context
-                else message["id"],
-                "run_id": run["id"],
-            }
             policy = run["analysis_policy"]
             previous = (
                 previous_run_event(runtime.repository, run, "analysis_progress")
@@ -98,10 +91,6 @@ class AgentRunExecutor:
                 while True:
                     events = runtime.repository.events(previous_run, cursor)
                     for event in events:
-                        if event["kind"] == "code_change_reference":
-                            if run.get("resumed_from"):
-                                evidence.observe_code_change(event["payload"]["id"])
-                            continue
                         if event["kind"] != "source_evidence":
                             continue
                         row = event["payload"]

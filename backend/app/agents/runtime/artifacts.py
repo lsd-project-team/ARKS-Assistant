@@ -5,7 +5,7 @@ from hashlib import sha256
 from pathlib import Path
 from threading import RLock
 
-from app.modules.code_changes.files import digest, inventory, safe_path
+from app.infrastructure.storage.files import digest, inventory, safe_path
 
 _migration_lock = RLock()
 

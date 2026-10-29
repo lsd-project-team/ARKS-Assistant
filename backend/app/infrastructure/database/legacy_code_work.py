@@ -1,4 +1,4 @@
-"""隔离修改和验证记录；每个入口均额外限定项目身份。"""
+"""已移除修改流程的历史表及共用模型额度表，仅供迁移和备份兼容。"""
 
 from sqlalchemy import Boolean, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -7,7 +7,7 @@ from app.core.identifiers import new_id, now_iso
 from app.infrastructure.database.base import Base
 
 
-class CodeChangeRecord(Base):
+class LegacyCodeChange(Base):
     __tablename__ = "code_changes"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
@@ -28,7 +28,7 @@ class CodeChangeRecord(Base):
     delivered_at: Mapped[str] = mapped_column(String(40), default="")
 
 
-class VerificationProfileRecord(Base):
+class LegacyVerificationProfile(Base):
     __tablename__ = "code_verification_profiles"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True, default=new_id)
@@ -44,7 +44,7 @@ class VerificationProfileRecord(Base):
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
 
-class VerificationRecord(Base):
+class LegacyVerification(Base):
     __tablename__ = "code_verifications"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
@@ -66,7 +66,7 @@ class VerificationRecord(Base):
     ended_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
 
 
-class CodeWorkPolicyRecord(Base):
+class ModelBudgetPolicy(Base):
     __tablename__ = "code_work_policies"
 
     project_id: Mapped[str] = mapped_column(String(64), primary_key=True)
@@ -74,7 +74,7 @@ class CodeWorkPolicyRecord(Base):
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
 
-class CodeWorkUsageRecord(Base):
+class ModelBudgetUsage(Base):
     __tablename__ = "code_work_usage"
 
     project_id: Mapped[str] = mapped_column(String(64), primary_key=True)
@@ -84,7 +84,7 @@ class CodeWorkUsageRecord(Base):
     calls: Mapped[int] = mapped_column(Integer, default=0)
 
 
-class CodeWorkReservation(Base):
+class ModelBudgetReservation(Base):
     __tablename__ = "code_work_reservations"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)

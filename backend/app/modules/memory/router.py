@@ -37,7 +37,7 @@ def create_router(services: AppServices) -> APIRouter:
             model.callbacks = [
                 *(getattr(model, "callbacks", None) or []),
                 ProjectModelBudget(
-                    services.runtime.code_changes.policy,
+                    services.runtime.model_ledger,
                     config.context_tokens,
                     output_tokens=config.output_tokens,
                 ),

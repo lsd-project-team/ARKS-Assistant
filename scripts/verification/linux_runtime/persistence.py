@@ -20,7 +20,7 @@ def database_integrity(data):
             "sqlite_foreign_keys_failed",
         )
         require(connection.execute("PRAGMA journal_mode").fetchone()[0] == "wal", "sqlite_not_wal")
-        for table in ("accounts", "projects", "code_changes", "handover_records", "handover_blobs"):
+        for table in ("accounts", "projects", "handover_records", "handover_blobs"):
             require(
                 connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] > 0,
                 "sqlite_fixture_rows_missing",
@@ -44,10 +44,6 @@ def online_backup(client, root, token):
         require(
             "settings.private.json" not in names and "auth.initial-accounts.json" not in names,
             "backup_contains_private_configuration",
-        )
-        require(
-            any(name.startswith("scratch/code-changes/") for name in names),
-            "backup_isolated_copy_missing",
         )
     return archive
 

@@ -1,6 +1,5 @@
 """历史重答追加、末条版本、隔离上下文与恢复均使用真实数据库和图状态。"""
 
-import json
 from types import SimpleNamespace
 
 import pytest
@@ -10,7 +9,6 @@ from langchain_core.outputs import ChatGeneration, ChatResult
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.runtime.engine import AgentRuntime
-from app.agents.tools.engineering import engineering_tools
 from app.core.config import AppSettings, ModelSettings
 from app.main import create_app
 from app.modules.chat.context import ConversationContext
@@ -18,8 +16,6 @@ from app.modules.chat.lifecycle import ConversationLifecycle
 from app.modules.chat.models import Thread
 from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
 from app.modules.chat.runs import RunManager
-from app.modules.code_changes.request_binding import RequestOrigin
-from app.modules.projects.models import Project
 from tests.helpers.models import DeterministicModel
 
 SOURCES = {"use_memory": False, "use_knowledge": False, "use_deepwiki": False}
@@ -132,71 +128,6 @@ async def test_latest_regeneration_without_checkpoint_keeps_preceding_answer(
     prompt = "\n".join(message.text for message in calls[-1])
     assert "必须保留的较早答案" in prompt
     assert "应被替换的末条答案" not in prompt
-
-
-async def test_historical_code_request_reuses_original_copy_and_contract(
-    services, model_runtime, monkeypatch
-):
-    repository = services[3]
-    runtime, _ = model_runtime
-    repository.project_id = repository.workspace_id
-    with repository.database.session.begin() as session:
-        session.add(
-            Project(
-                id=repository.project_id,
-                name="重答代码请求",
-                source_root=str(runtime.workspace.root),
-            )
-        )
-    request = "请修复Program.cs入口，只允许修改Program.cs"
-    original = answered(repository, None, request, "原代码建议")
-    changes = runtime.code_changes
-    first = changes.create(
-        "入口修改",
-        "修复入口",
-        acceptance_criteria=["入口仍存在"],
-        constraints="不得改测试",
-        allowed_paths=["Program.cs"],
-        request_origin=RequestOrigin(
-            "chat", request, message_id=original["message_id"], run_id=original["id"]
-        ),
-    )
-    loaded = changes.read_file(first["id"], "Program.cs")
-    changes.edit_file(first["id"], "Program.cs", "Main", "Start", loaded["version"])
-    answered(repository, original["thread_id"], "后续普通问题", "后续普通答案")
-    regenerated = repository.regenerate(original["id"])
-
-    class ReachedCodeTool(Exception):
-        pass
-
-    async def inspect_graph(*_args, **kwargs):
-        tools = {
-            item.name: item
-            for item in engineering_tools(
-                runtime, kwargs["question_text"], evidence=kwargs["evidence"]
-            )
-        }
-        result = json.loads(
-            await tools["create_code_change"].ainvoke(
-                {
-                    "title": "重答时的创建尝试",
-                    "goal": "修复入口",
-                    "acceptance_criteria": [],
-                    "allowed_paths": [],
-                }
-            )
-        )
-        assert result["id"] == first["id"] and result["reused"] is True
-        assert result["acceptance_criteria"] == ["入口仍存在"]
-        assert result["constraints"] == "不得改测试"
-        assert result["allowed_paths"] == ["Program.cs"]
-        assert "Start" in changes.read_file(first["id"], "Program.cs")["content"]
-        assert len(changes.list()) == 1
-        raise ReachedCodeTool
-
-    monkeypatch.setattr(runtime, "graph", inspect_graph)
-    with pytest.raises(ReachedCodeTool):
-        await runtime.execute(regenerated, lambda *_: None)
 
 
 async def test_regenerating_completed_version_after_a_failed_attempt_stays_in_same_group(

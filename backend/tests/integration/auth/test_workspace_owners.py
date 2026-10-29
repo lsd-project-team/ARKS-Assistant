@@ -19,7 +19,9 @@ pytestmark = pytest.mark.authentication
 
 
 def create_project(client, name):
-    response = client.post("/api/projects", json={"name": name, "owner_id": "forged"})
+    forged = client.post("/api/projects", json={"name": name, "owner_id": "forged"})
+    assert forged.status_code == 422 and "owner_id" in forged.json()["detail"]
+    response = client.post("/api/projects", json={"name": name})
     assert response.status_code == 201, response.text
     return response.json()
 

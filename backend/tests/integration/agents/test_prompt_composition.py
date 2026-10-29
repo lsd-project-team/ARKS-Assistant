@@ -76,9 +76,11 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert prompt.count("回答展示协议") == 1
     assert "[文件名:行号](source:相对路径#L行号)" in prompt
 
-    assert ("项目工具要求：" in prompt) is project
-    assert ("create_code_change" in tools) is project
-    assert ("update_code_change_requirements" in prompt) is project
+    assert "项目工具要求：" not in prompt
+    assert "create_code_change" not in tools
+    assert "edit_change_file" not in tools and "verify_code_change" not in tools
+    assert "update_code_change_requirements" not in prompt
+    assert "没有修改文件、执行命令或审核交付工具" in prompt
     assert ("调试经验检索：" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
     assert ("compatibility" in prompt) is knowledge

@@ -99,28 +99,4 @@ def review_context_manifest(messages, payload, estimated_tokens):
             for row in payload["source"]
         ],
         "source_omissions": payload["source_omissions"],
-        "changes": [
-            {
-                "id": row["id"],
-                "available": row["available"],
-                "change_version": row.get("change_version"),
-                "requirements_version": row.get("requirements_version"),
-                "verifications": [
-                    {
-                        key: proof[key]
-                        for key in (
-                            "id",
-                            "current",
-                            "successful_current",
-                            "sandbox_verified",
-                            "output_truncated",
-                        )
-                    }
-                    for proof in row.get("verifications", [])
-                ],
-                "omitted_verifications": row.get("omitted_verifications", 0),
-            }
-            for row in payload["code_work"]["changes"]
-        ],
-        "omitted_changes": payload["code_work"]["omitted_changes"],
     }

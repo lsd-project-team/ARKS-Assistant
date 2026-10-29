@@ -129,15 +129,7 @@ class SourceEvidence:
         self.workspace, self.emit, self.required = workspace, emit, required
         self.reads = []
         self.audit_input_limit = 16000
-        self.code_change_ids = []
-        self.code_work_reader = None
         self.user_request = ""
-        self.request_identity = {}
-
-    def observe_code_change(self, identifier):
-        if identifier not in self.code_change_ids:
-            self.code_change_ids.append(identifier)
-            self.emit("code_change_reference", {"id": identifier})
 
     def covered(self, path, start, end, *, include_reviews=True):
         if not isinstance(path, str) or not isinstance(start, int) or not isinstance(end, int):
@@ -374,7 +366,7 @@ class SourceEvidenceGuard(AgentMiddleware):
         )
         if (
             report["passed"]
-            and (self.evidence.required or self.evidence.code_change_ids)
+            and self.evidence.required
             and self.audit_model is not None
             and self.audits < 2
         ):

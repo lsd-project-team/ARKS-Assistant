@@ -23,7 +23,6 @@ from app.modules.auth.ownership import (
 from app.modules.chat.models import Message, QueuedQuestion, Run, Thread
 from app.modules.chat.repository import Repository
 from app.modules.chat.runs import RunManager
-from app.modules.code_changes.models import CodeChangeRecord
 from app.modules.memory.service import MemoryService
 from app.modules.projects.association import associate_repository
 from app.modules.projects.models import Project
@@ -261,12 +260,6 @@ class Projects:
             return record_dict(row)
 
     def ensure_idle(self, session, project_id):
-        if session.scalar(
-            select(CodeChangeRecord.id).where(
-                CodeChangeRecord.project_id == project_id, CodeChangeRecord.status == "verifying"
-            )
-        ):
-            raise ValueError("项目仍在验证修改，请先取消验证或等待完成")
         if session.scalar(
             select(Run.id)
             .join(Thread)
@@ -520,5 +513,4 @@ class Projects:
             id(item): item for item in [self.base, *self.contexts.values(), *self.retired]
         }.values():
             await services.runs.shutdown()
-            await services.runtime.code_changes.shutdown()
             services.runtime.semantic.close()

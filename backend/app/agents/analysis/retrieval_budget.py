@@ -3,8 +3,6 @@
 from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.messages import SystemMessage, ToolMessage
 
-from app.agents.tools.engineering import CHANGE_TOOLS
-
 VERIFY_TOOLS = {
     "read_source",
     "read_source_context",
@@ -20,7 +18,6 @@ class RetrievalBudget(AgentMiddleware):
         self.reserve, self.evidence, self.progress = reserve, evidence, progress
         self.announced, self.warned = False, False
         self.counts = {"attempted": 0, "success": 0, "failed": 0, "skipped": 0, "cached": 0}
-        self.engineering_used, self.engineering_limit = 0, 20
 
     def announce(self, exhausted=True):
         if (exhausted and self.announced) or (not exhausted and self.warned):
@@ -44,21 +41,6 @@ class RetrievalBudget(AgentMiddleware):
 
     async def awrap_tool_call(self, request, handler):
         call = request.tool_call
-        if call["name"] in CHANGE_TOOLS:
-            # 修改/验证有独立上限；源码搜索耗尽不能吞掉测试结果，也不能无限修复。
-            if self.engineering_used >= self.engineering_limit:
-                return ToolMessage(
-                    content="本轮代码工作已达到20次调用，请保留差异、验证结果与剩余事项。",
-                    tool_call_id=call["id"],
-                    name=call["name"],
-                    status="error",
-                    additional_kwargs={
-                        "execution_status": "skipped",
-                        "skip_reason": "engineering_limit",
-                    },
-                )
-            self.engineering_used += 1
-            return await handler(request)
         self.counts["attempted"] += 1
         arguments = call.get("args", {})
         if self.progress:
@@ -116,26 +98,7 @@ class RetrievalBudget(AgentMiddleware):
         prompt = (request.system_message.text if request.system_message else "") + guidance
         overrides = {"system_message": SystemMessage(content=prompt)}
         if exhausted:
-            engineering = (
-                [
-                    item
-                    for item in request.tools
-                    if (item.get("name") if isinstance(item, dict) else item.name) in CHANGE_TOOLS
-                ]
-                if self.engineering_used < self.engineering_limit
-                else []
+            overrides["tool_choice"] = (
+                {"type": "none"} if "anthropic" in request.model._llm_type else "none"
             )
-            if engineering:
-                overrides["tools"] = engineering
-                overrides["system_message"] = SystemMessage(
-                    content=prompt
-                    + (
-                        "\n代码工作仍可使用独立额度完成已授权的副本修改和验证；"
-                        "不得继续广泛源码搜索，缺少证据的部分保留未知。"
-                    )
-                )
-            else:
-                overrides["tool_choice"] = (
-                    {"type": "none"} if "anthropic" in request.model._llm_type else "none"
-                )
         return await handler(request.override(**overrides))

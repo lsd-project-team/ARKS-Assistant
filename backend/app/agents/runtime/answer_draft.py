@@ -58,9 +58,7 @@ class FlowAnswerDraft(AgentMiddleware):
             return response
         if not self.evidence.required:
             return response
-        if self.evidence.code_change_ids or not re.search(
-            r"流程|步骤|怎么走|启动前检查", self.question
-        ):
+        if not re.search(r"流程|步骤|怎么走|启动前检查", self.question):
             return response
         plain = bool(PLAIN_REQUEST.search(self.question))
         if plain:

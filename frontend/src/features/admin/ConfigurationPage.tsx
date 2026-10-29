@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { SettingsDialog } from '../settings/components/SettingsDialog';
 import { ProjectEditor } from '../projects/components/ProjectEditor';
-import { ProjectVerificationProfiles } from '../projects/components/ProjectVerificationProfiles';
 import { Button, ErrorText } from '../../shared/ui/ui';
 import { Select } from '../../shared/ui/Select';
 import { useWorkspace } from '../../app/state/store';
@@ -92,11 +91,6 @@ export function ConfigurationPage({
             </div>
           </div>
           <ErrorText error={projects.error || current.error} />
-        </section>
-      )}
-      {!dataOnly && (
-        <section className="admin-panel">
-          <ProjectVerificationProfiles projects={projects.data?.projects || []} />
         </section>
       )}
       <SettingsDialog

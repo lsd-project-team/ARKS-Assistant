@@ -17,11 +17,11 @@ from app.agents.runtime.model_budget import ProjectModelBudget, usage_tokens
 from app.agents.runtime.privacy import MASK, redact, redact_messages
 from app.agents.tools.debug_capture import capture_command
 from app.core.config import AppSettings, ModelSettings
-from app.modules.code_changes.policy import WorkPolicy
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.memory.conflicts import review_pairs
 from app.modules.projects.models import Project
+from app.modules.settings.model_ledger import ModelLedger
 from app.modules.source_analysis.evidence import SourceEvidence, source_excerpt
 from app.modules.source_analysis.review import review_answer
 from tests.helpers.models import DeterministicModel
@@ -30,9 +30,9 @@ from tests.helpers.models import DeterministicModel
 @pytest.fixture
 def ledger(services, monkeypatch):
     paths, database, *_ = services
-    ledger = WorkPolicy(paths, database, "provider-project")
-    ledger.save({"reading_token_limit": 1000})
-    monkeypatch.setattr(WorkPolicy, "day", staticmethod(lambda: "2026-10-16"))
+    ledger = ModelLedger(database, "provider-project")
+    ledger.save({"token_limit": 1000})
+    monkeypatch.setattr(ModelLedger, "day", staticmethod(lambda: "2026-10-16"))
     return ledger
 
 
@@ -228,7 +228,7 @@ async def test_debug_capture_masks_provider_preserves_raw_record_and_only_budget
         repository.project_id = "provider-project"
     settings.save(AppSettings(model=ModelSettings(context_tokens=8192, output_tokens=256)))
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    runtime.code_changes.policy.save({"reading_token_limit": 10000})
+    runtime.model_ledger.save({"token_limit": 10000})
     model = ObservedProvider(
         answer='{"title":"真空报警","payload":{"problem":"真空报警","resolution_status":"open"}}',
         usage={"input_tokens": 100, "output_tokens": 20, "total_tokens": 120},
@@ -243,7 +243,7 @@ async def test_debug_capture_masks_provider_preserves_raw_record_and_only_budget
     (row,) = DebugIssues(HandoverStore(database=database)).rows()
     assert row["payload"]["original_text"] == original
     assert "debug-capture-dummy" not in model.seen[0][1].content
-    assert runtime.code_changes.policy.tokens()["actual_tokens"] == (120 if project else 0)
+    assert runtime.model_ledger.tokens()["actual_tokens"] == (120 if project else 0)
 
 
 async def test_real_langchain_rejects_start_before_provider_when_budget_insufficient(ledger):
@@ -320,7 +320,7 @@ async def test_duplicate_callbacks_and_zero_usage_only_settle_once(ledger):
 
 
 async def test_unlimited_project_allows_large_provider_calls_and_records_actual_usage(ledger):
-    ledger.save({"reading_token_limit": None})
+    ledger.save({"token_limit": None})
     model = ObservedProvider(
         usage={"input_tokens": 1_200_000, "output_tokens": 1000, "total_tokens": 1_201_000},
         callbacks=[ProjectModelBudget(ledger, 2_000_000)],

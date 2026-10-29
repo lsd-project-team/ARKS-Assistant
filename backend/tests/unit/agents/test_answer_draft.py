@@ -32,7 +32,7 @@ async def compose(reply=SHORT, text=LONG, question="给设备启动流程", limi
     draft = FlowAnswerDraft(
         Model(),
         question,
-        SimpleNamespace(code_change_ids=[], required=True),
+        SimpleNamespace(required=True),
         lambda *e: events.append(e),
         limit,
     )

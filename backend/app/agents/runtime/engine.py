@@ -15,9 +15,9 @@ from app.infrastructure.mcp.client import ToolCatalog, adapt_tool
 from app.infrastructure.providers.models import close_models
 from app.modules.chat.regeneration import previous_run_event
 from app.modules.chat.repository import Repository
-from app.modules.code_changes import CodeChanges
 from app.modules.knowledge.source_guides import ProjectKnowledge
 from app.modules.memory.service import MemoryService
+from app.modules.settings.model_ledger import ModelLedger
 from app.modules.source_analysis.csharp import CSharpAnalysis
 from app.modules.source_analysis.workspace import Workspace
 
@@ -44,7 +44,7 @@ class AgentRuntime:
         def project_id():
             return repository.project_id or repository.workspace_id
 
-        self.code_changes = CodeChanges(paths, repository.database, workspace, project_id)
+        self.model_ledger = ModelLedger(repository.database, project_id)
         self.project_lock = asyncio.Lock()
 
     async def remote_tools(self, servers, emit):

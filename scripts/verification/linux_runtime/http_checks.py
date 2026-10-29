@@ -143,33 +143,6 @@ def populate(client, source):
     thread = request(
         client, "POST", base + "/threads", status=201, json={"title": "Linux persistent fixture"}
     ).json()
-    change = request(
-        client,
-        "POST",
-        base + "/code-changes",
-        json={
-            "title": "Linux isolated fixture edit",
-            "goal": "Only update the fixture string",
-            "acceptance_criteria": ["Original source hash stays unchanged"],
-            "allowed_paths": ["Entry.cs"],
-        },
-    ).json()
-    change_url = base + f"/code-changes/{change['id']}"
-    old = request(client, "GET", change_url + "/file", params={"path": "Entry.cs"}).json()
-    request(
-        client,
-        "PATCH",
-        change_url + "/file",
-        json={
-            "path": "Entry.cs",
-            "before": 'Run("text")',
-            "after": 'Run("updated")',
-            "version": old["version"],
-            "requirements_version": old["requirements_version"],
-        },
-    )
-    content = request(client, "GET", change_url + "/file", params={"path": "Entry.cs"}).json()
-    require('Run("updated")' in content["content"], "isolated_edit_missing")
     text = request(
         client,
         "POST",
@@ -192,7 +165,6 @@ def populate(client, source):
     return {
         "project_id": project["id"],
         "thread_id": thread["id"],
-        "change_url": change_url,
         "text_id": text["id"],
         "attachment_id": attached["id"],
         "source_hash": tree_hash(source),
@@ -203,8 +175,6 @@ def persistent(client, saved):
     base = f"/api/p/{saved['project_id']}"
     thread = request(client, "GET", base + f"/threads/{saved['thread_id']}").json()
     require(thread["title"] == "Linux persistent fixture", "thread_not_persistent")
-    copy = request(client, "GET", saved["change_url"] + "/file", params={"path": "Entry.cs"}).json()
-    require('Run("updated")' in copy["content"], "isolated_copy_not_persistent")
     text = request(client, "GET", f"/api/handover/records/{saved['text_id']}").json()
     require(text["payload"]["content"] == TEXT, "material_text_not_persistent")
     blob = request(client, "GET", f"/api/handover/sources/{saved['attachment_id']}/original")

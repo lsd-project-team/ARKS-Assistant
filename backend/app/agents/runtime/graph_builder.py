@@ -13,7 +13,6 @@ from app.agents.context.budget import BudgetedSummarization, ContextBudget
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.system import (
     DEBUG_ISSUE_GUIDANCE,
-    PROJECT_WORK_GUIDANCE,
     SYSTEM_PROMPT,
 )
 from app.agents.runtime.answer_completion import AnswerCompletion
@@ -23,7 +22,6 @@ from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.tools.conversation import conversation_tools
-from app.agents.tools.engineering import engineering_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
@@ -80,7 +78,7 @@ class AgentGraphBuilder:
                 owned.callbacks = [
                     *(getattr(owned, "callbacks", None) or []),
                     ProjectModelBudget(
-                        runtime.code_changes.policy,
+                        runtime.model_ledger,
                         settings.model.context_tokens,
                         output_tokens=settings.model.output_tokens,
                     ),
@@ -107,12 +105,6 @@ class AgentGraphBuilder:
             requested_work += "\n此前已授权的请求：" + policy["question"]
         if evidence is not None:
             evidence.user_request = requested_work
-        tools += engineering_tools(
-            runtime,
-            requested_work,
-            emit,
-            evidence=evidence,
-        )
         tools += conversation_tools(
             runtime.repository,
             runtime.memories,
@@ -193,8 +185,10 @@ class AgentGraphBuilder:
                 prompt += "\n继续核查用户此前的问题，剩余项优先：" + policy["question"]
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
-        if runtime.repository.project_id:
-            prompt += "\n" + PROJECT_WORK_GUIDANCE
+        prompt += (
+            "\n当前仅提供源码读取与分析，可给出修改建议；"
+            "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
+        )
         debug_prompt, included_debug_issues = (
             await asyncio.to_thread(
                 debug_issues.prompt, memory_query or "", min(2500, available // 8)

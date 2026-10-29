@@ -1,5 +1,7 @@
 # Windows 隔离执行适配
 
+2026-10-29更新：旧隔离修改、预设命令验证和审核交付流程已移除。以下执行方案为历史记录；当前功能见[代码工作清理说明](../features/code-work.md)。
+
 Windows 协议 3 已有适配代码和边界测试。当前电脑没有 Windows 容器节点，尚未执行 Windows Hyper-V、SDK 或 ZX2200 构建验收。Linux 协议 2 保持独立，不用 Linux 测试代替 Windows 结果。
 
 ## 执行与结果来源

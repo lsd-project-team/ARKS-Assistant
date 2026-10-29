@@ -1,11 +1,11 @@
 """统一注册业务表；保持一个元数据集合和既有迁移历史。"""
 
+from app.infrastructure.database import legacy_code_work
 from app.infrastructure.database.base import Base
 from app.modules.action_timing import models as action_timing
 from app.modules.admin import models as admin
 from app.modules.auth import models as auth
 from app.modules.chat import models as chat
-from app.modules.code_changes import models as code_changes
 from app.modules.handover.infrastructure.persistence import models as handover
 from app.modules.memory import models as memory
 from app.modules.projects import models as projects
@@ -23,7 +23,7 @@ REGISTERED_MODELS = (
     admin,
     handover,
     project_reading,
-    code_changes,
+    legacy_code_work,
     settings,
 )
 __all__ = ["Base"]

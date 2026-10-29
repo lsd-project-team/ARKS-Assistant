@@ -12,10 +12,8 @@ from app.modules.action_timing import router as action_timing
 from app.modules.auth.ownership import require_source, require_thread
 from app.modules.auth.router import require_admin
 from app.modules.chat import router as conversations
-from app.modules.code_changes import router as code_changes
 from app.modules.knowledge import router as knowledge
 from app.modules.memory import router as memories
-from app.modules.projects import code_experiences
 from app.modules.projects.association import repository_name
 from app.modules.projects.materials_router import create_router as materials_router
 from app.modules.projects.service import Projects
@@ -241,8 +239,6 @@ class ProjectDispatcher:
         if not entry or entry[0] is not services:
             app = FastAPI(exception_handlers=self.exception_handlers)
             modules = [workspace, conversations, memories, knowledge, action_timing]
-            if services.repository.project_id:
-                modules += [code_changes, code_experiences]
             for module in modules:
                 app.include_router(module.create_router(services))
             self.apps[project_id] = (services, app)

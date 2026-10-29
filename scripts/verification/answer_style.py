@@ -114,7 +114,6 @@ async def execute_case(config, name):
                 "drafts": [payload["text"] for kind, payload in events if kind == "answer_replace"],
             }
         finally:
-            await runtime.code_changes.shutdown()
             runtime.semantic.close()
             database.close()
 

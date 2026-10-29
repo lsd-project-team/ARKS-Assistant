@@ -34,7 +34,6 @@ COPY backend/alembic.ini ./alembic.ini
 COPY --from=roslyn /helper ./tools/SourceAnalysis/bin/Release/net8.0
 COPY frontend/dist /opt/arks/frontend/dist
 COPY resources/knowledge /opt/arks/resources/knowledge
-COPY resources/execution /opt/arks/resources/execution
 COPY resources/deployment/healthcheck.py /opt/arks/healthcheck.py
 RUN /usr/sbin/groupadd --gid 10001 arks \
     && /usr/sbin/useradd --uid 10001 --gid arks --no-create-home arks \

@@ -143,11 +143,11 @@ def main():
                 app.state.projects.account_defaults.ensure(identity)
                 services = app.state.projects.services(app.state.projects.list()[0]["id"])
                 if args.live:
-                    policy = services.runtime.code_changes.policy
+                    policy = services.runtime.model_ledger
                     policy.save(
                         {
                             **policy.get().model_dump(),
-                            "reading_token_limit": args.live_token_budget,
+                            "token_limit": args.live_token_budget,
                         }
                     )
                     print(f"真实模型：{configuration.model.model}；业务源码：{source}", flush=True)

@@ -130,7 +130,7 @@ async def capture_command(runtime, run, emit, owned_models):
             model.callbacks = [
                 *(getattr(model, "callbacks", None) or []),
                 ProjectModelBudget(
-                    runtime.code_changes.policy,
+                    runtime.model_ledger,
                     settings.context_tokens,
                     output_tokens=settings.output_tokens,
                 ),
