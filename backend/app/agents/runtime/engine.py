@@ -14,6 +14,7 @@ from app.agents.tools.debug_capture import capture_command
 from app.core.config import Paths, SettingsStore
 from app.infrastructure.mcp.client import ToolCatalog, adapt_tool
 from app.infrastructure.providers.models import close_models
+from app.modules.chat.regeneration import previous_run_event
 from app.modules.chat.repository import Repository
 from app.modules.code_changes import CodeChanges
 from app.modules.knowledge.source_guides import ProjectKnowledge
@@ -130,7 +131,7 @@ class AgentRuntime:
         configuration, policy = configured_analysis(
             current_configuration(self.settings),
             self.repository.message(run["message_id"])["content"],
-            self.repository.latest_event(run["thread_id"], "analysis_plan"),
+            previous_run_event(self.repository, run, "analysis_plan"),
         )
         run = {**run, "analysis_policy": policy}
         try:

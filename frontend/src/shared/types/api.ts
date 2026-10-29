@@ -41,6 +41,7 @@ export interface Message {
   context_active?: boolean;
   replaces_id?: string | null;
   origin_message_id?: string | null;
+  reanswered_from?: string;
 }
 export interface Run {
   id: string;

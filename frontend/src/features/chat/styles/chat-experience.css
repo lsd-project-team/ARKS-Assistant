@@ -71,6 +71,18 @@
   color: var(--text-secondary);
   margin: 14px 0 0;
 }
+.reanswered-question {
+  margin: 24px 0 12px;
+  padding: 10px 14px;
+  border-left: 2px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.reanswered-question > span {
+  font-weight: 600;
+}
 .reply-version-switch button {
   display: grid;
   place-items: center;

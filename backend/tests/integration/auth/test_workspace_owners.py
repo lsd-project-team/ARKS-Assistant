@@ -83,6 +83,18 @@ def test_lists_search_pagination_and_account_ownership(owned):
     assert client.get(f"/api/admin/questions/{run['thread_id']}").status_code == 200
 
 
+def test_historical_regeneration_cannot_access_another_accounts_conversation(owned):
+    client, app, _, _, first, _, original = owned
+    repository = app.state.projects.services(first["id"]).repository
+    later = repository.create_run(original["thread_id"], "后续私人问题", [])
+    repository.finish(later["id"], "后续私人答案")
+    before = repository.thread(original["thread_id"])
+    response = client.post(f"/api/p/{first['id']}/runs/{original['id']}/regenerate")
+    assert response.status_code == 404
+    assert response.json()["detail"]
+    assert repository.thread(original["thread_id"])["messages"] == before["messages"]
+
+
 def test_other_account_cannot_read_write_export_or_reuse_cached_services(owned):
     client, app, _, _, first, second, run = owned
     project = f"/api/projects/{first['id']}"

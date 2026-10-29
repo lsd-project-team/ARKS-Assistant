@@ -15,6 +15,12 @@ from app.modules.chat.catalog import ConversationCatalog, title_from_question
 from app.modules.chat.history import ConversationHistory
 from app.modules.chat.models import Message, QueuedQuestion, Run, RunEvent, Thread
 from app.modules.chat.queue import ConversationQueue
+from app.modules.chat.regeneration import (
+    CONTEXT_EVENT,
+    mark_reanswered_questions,
+    record_context,
+    regenerate,
+)
 from app.modules.projects.source_preferences import SourcePreferences
 
 TERMINAL = {"completed", "failed", "cancelled", "interrupted"}
@@ -96,6 +102,7 @@ class Repository:
                 select(Run).where(Run.thread_id == thread_id, run_filter).order_by(Run.created_at)
             )
             result["runs"] = [record_dict(run) for run in runs]
+            mark_reanswered_questions(session, thread_id, result["messages"], result["runs"])
             return result
 
     def rename(self, thread_id: str, title: str):
@@ -309,6 +316,7 @@ class Repository:
         if previous["status"] not in {"interrupted", "failed", "cancelled"}:
             raise ValueError("此运行不能继续")
         source = previous
+        regeneration_context = self.run_event(run_id, CONTEXT_EVENT)
         # 兼容旧版本的恢复记录：重新生成与旧回复的关联沿恢复链查找。
         while source.get("resumed_from") and not source.get("regenerated_from"):
             source = self.run(source["resumed_from"])
@@ -338,6 +346,8 @@ class Repository:
             )
             session.add(row)
             session.flush()
+            record_context(session, row.id, regeneration_context)
+            session.flush()
             return record_dict(row)
 
     def has_active_run(self, thread_id: str) -> bool:
@@ -363,26 +373,7 @@ class Repository:
             )
 
     def regenerate(self, run_id: str) -> dict:
-        self.creation_guard()
-        previous = self.run(run_id)
-        self.ensure_source_compatible(previous["message_id"])
-        with self.lock, self.database.session.begin() as session:
-            latest = session.scalar(
-                select(Run)
-                .where(Run.thread_id == previous["thread_id"])
-                .order_by(Run.created_at.desc())
-                .limit(1)
-            )
-            if not latest or latest.id != run_id or latest.status != "completed":
-                raise ValueError("只能重新生成当前对话最近完成的回复")
-            run = Run(
-                thread_id=previous["thread_id"],
-                message_id=previous["message_id"],
-                regenerated_from=run_id,
-            )
-            session.add(run)
-            session.flush()
-            return record_dict(run)
+        return regenerate(self, run_id)
 
     def ensure_source_compatible(self, message_id):
         message = self.message(message_id)

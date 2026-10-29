@@ -44,8 +44,11 @@ export function ReplyVersions({
       <MessageBubble
         message={current.message}
         run={current.run}
-        canRegenerate={canRegenerate && index === versions.length - 1}
-        onRegenerate={onRegenerate}
+        canRegenerate={canRegenerate && current.run.status === 'completed'}
+        onRegenerate={(id) => {
+          setChosen('');
+          onRegenerate(id);
+        }}
       />
     </div>
   );

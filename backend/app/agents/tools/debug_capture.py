@@ -15,6 +15,7 @@ from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.runtime.privacy import redact_messages
 from app.infrastructure.providers.models import create_model
 from app.infrastructure.providers.usage import reported_usage
+from app.modules.chat.regeneration import CONTEXT_EVENT
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.domain.debug_issues import DebugContent
 from app.modules.handover.infrastructure.ai import json_model
@@ -109,6 +110,10 @@ async def capture_command(runtime, run, emit, owned_models):
     original = command_text(message["content"])
     if original is None:
         return None
+    context = runtime.repository.run_event(run["id"], CONTEXT_EVENT)
+    if context:
+        # 历史命令重答仍复用原消息的录库提交键，不能因追加展示而重复保存经验。
+        message = runtime.repository.message(context["before_message_id"])
     if not original:
         raise ValueError("请在 /记录问题 后输入问题、经验或工作进展。")
     if len(original) > TEXT_LIMIT:

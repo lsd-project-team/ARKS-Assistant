@@ -38,6 +38,8 @@ import { ChatWelcome } from './ChatWelcome';
 import { KnowledgeFeedback } from './RunKnowledgeSummary';
 import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
+import { groupReplies } from '../lib/replyHistory';
+import { ReansweredQuestion } from './ReansweredQuestion';
 
 export function ChatPane({
   onUploadFiles,
@@ -213,9 +215,13 @@ export function ChatPane({
   const regenerate = useMutation({
     mutationFn: (id: string) => api<Run>(`/runs/${id}/regenerate`, { method: 'POST' }),
     onSuccess: (run) => {
-      setStarted(run);
-      scroll.toLatest();
+      const state = useWorkspace.getState();
+      if (state.projectId === projectId && state.threadId === run.thread_id) {
+        setStarted(run);
+        scroll.toLatest();
+      }
       void cache.invalidateQueries({ queryKey: ['thread', run.thread_id] });
+      void cache.invalidateQueries({ queryKey: ['threads'] });
     },
   });
   const cancel = useMutation({
@@ -228,17 +234,7 @@ export function ChatPane({
   const messages = conversation.data?.messages || [];
   const showWelcome = !messages.length && !active && (!threadId || !!conversation.data);
   const runs = conversation.data?.runs || [];
-  const replyRuns = new Map(
-    runs.filter((run) => run.response_message_id).map((run) => [run.response_message_id, run]),
-  );
-  const versionGroups = new Map<string, { message: (typeof messages)[number]; run: Run }[]>();
-  for (const message of messages) {
-    const run = replyRuns.get(message.id);
-    if (!run) continue;
-    const versions = versionGroups.get(run.message_id) || [];
-    versions.push({ message, run });
-    versionGroups.set(run.message_id, versions);
-  }
+  const { replyRuns, versionGroups } = groupReplies(messages, runs);
   const interrupted = latest && ['failed', 'cancelled', 'interrupted'].includes(latest.status);
   const canContext = !!threadId;
   const canCompact =
@@ -369,25 +365,21 @@ export function ChatPane({
                     <ReplyVersions
                       versions={versions}
                       selectedMessage={messageJump.id}
-                      canRegenerate={
-                        !busy && !regenerate.isPending && versions.at(-1)?.run.id === latest?.id
-                      }
+                      canRegenerate={!archivedProject && !busy && !regenerate.isPending}
                       onRegenerate={(id) => regenerate.mutate(id)}
                     />
                   </MessageArchive>
                 </div>
               );
             }
-            const bubble = (
+            const bubble = message.reanswered_from ? (
+              <ReansweredQuestion message={message} />
+            ) : (
               <MessageBubble
                 message={message}
                 run={run}
                 canRegenerate={
-                  !archivedProject &&
-                  !busy &&
-                  !regenerate.isPending &&
-                  run?.id === latest?.id &&
-                  latest?.status === 'completed'
+                  !archivedProject && !busy && !regenerate.isPending && run?.status === 'completed'
                 }
                 onRegenerate={(id) => regenerate.mutate(id)}
                 onEdit={

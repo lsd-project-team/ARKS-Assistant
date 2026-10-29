@@ -99,6 +99,16 @@ def test_command_persists_actual_user_and_raw_text_retry_deduplicates_then_qa_ci
         again = client.post(f"/api/p/independent/runs/{run['id']}/regenerate").json()
         assert terminal(client, again)["status"] == "completed"
         assert len(issues.rows()) == 1 and model.calls == 1
+        # 后续问题出现后，历史命令重答追加展示，仍复用原消息的录库提交键。
+        later = client.post(
+            f"/api/p/independent/threads/{run['thread_id']}/runs",
+            json={"content": "取片真空报警 E901，之前如何处理的？"},
+        ).json()
+        assert terminal(client, later)["status"] == "completed"
+        historical = client.post(f"/api/p/independent/runs/{run['id']}/regenerate").json()
+        assert historical["message_id"] != run["message_id"]
+        assert terminal(client, historical)["status"] == "completed"
+        assert len(issues.rows()) == 1 and model.calls == 1
         # 独立的新对话也从全局问题库检索，不依赖上一轮消息碰巧留在上下文里。
         followup = client.post(
             "/api/p/independent/threads/start",

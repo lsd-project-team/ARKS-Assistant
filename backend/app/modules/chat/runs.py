@@ -9,6 +9,7 @@ from app.agents.runtime.feedback import error_feedback
 from app.core.config import SettingsStore, dump_json
 from app.modules.auth.context import request_identity
 from app.modules.chat.models import Run
+from app.modules.chat.regeneration import previous_run_event
 from app.modules.chat.repository import TERMINAL, Repository
 from app.modules.projects.context import bind_project
 from app.modules.settings.model_preferences import ModelPreferences
@@ -51,7 +52,7 @@ class RunManager:
         configuration, _policy = configured_analysis(
             configuration,
             self.repository.message(run["message_id"])["content"],
-            self.repository.latest_event(run["thread_id"], "analysis_plan"),
+            previous_run_event(self.repository, run, "analysis_plan"),
         )
         snapshot = model_snapshot(configuration)
         self.repository.record_model(run["id"], snapshot)

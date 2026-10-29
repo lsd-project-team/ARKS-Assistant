@@ -13,6 +13,7 @@ from app.agents.runtime.answer_completion import termination
 from app.agents.runtime.answer_presentation import format_answer
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
+from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
 from app.modules.knowledge.citations import canonical_knowledge_citations
 from app.modules.source_analysis.evidence import (
     SourceEvidence,
@@ -43,6 +44,11 @@ class AgentRunExecutor:
             str(runtime.paths.data / "checkpoints.sqlite3")
         ) as saver:
             message = runtime.repository.message(run["message_id"])
+            regeneration_context = (
+                runtime.repository.run_event(run["id"], CONTEXT_EVENT)
+                if run.get("regenerated_from")
+                else None
+            )
             evidence = SourceEvidence(
                 runtime.workspace,
                 emit,
@@ -56,10 +62,16 @@ class AgentRunExecutor:
             hold_flow_answer = bool(
                 evidence.required and re.search(r"流程|步骤|怎么走|启动前检查", message["content"])
             )
-            evidence.request_identity = {"message_id": message["id"], "run_id": run["id"]}
+            # 追加展示使用新消息，隔离修改的授权与约定仍绑定原始人类请求。
+            evidence.request_identity = {
+                "message_id": regeneration_context["before_message_id"]
+                if regeneration_context
+                else message["id"],
+                "run_id": run["id"],
+            }
             policy = run["analysis_policy"]
             previous = (
-                runtime.repository.latest_event(run["thread_id"], "analysis_progress")
+                previous_run_event(runtime.repository, run, "analysis_progress")
                 if policy["continuing"] or run.get("resumed_from")
                 else None
             )
@@ -101,7 +113,7 @@ class AgentRunExecutor:
                                 != current_source.get("source_workspace_id")
                             ):
                                 continue
-                            # 重新生成沿用同一模型检查点；同版本、同目录的历史已读范围需同步登记。
+                            # 同版本、同目录的历史已读范围可复用，并同步登记到本轮证据。
                             restored = {**row, "reason": reuse_reason}
                             if restored not in evidence.reads:
                                 evidence.reads.append(restored)
@@ -158,7 +170,11 @@ class AgentRunExecutor:
                 retrieval=retrieval,
                 policy=policy,
             )
-            checkpoint_id = runtime.checkpoint_id(run["thread_id"])
+            checkpoint_id = (
+                f"{run['thread_id']}:project:{regeneration_context['generation']}"
+                if regeneration_context
+                else runtime.checkpoint_id(run["thread_id"])
+            )
             config = {
                 "configurable": {"thread_id": checkpoint_id},
                 "recursion_limit": max(60, policy["limit"] * 4 + 20),
@@ -171,7 +187,12 @@ class AgentRunExecutor:
                 await saver.adelete_thread(checkpoint_id)
                 state = await graph.aget_state(config)
             if not state.values.get("messages"):
-                prior = runtime.repository.branches.context(run["thread_id"], before=message["id"])
+                before = (
+                    regeneration_context["before_message_id"]
+                    if regeneration_context
+                    else message["id"]
+                )
+                prior = runtime.repository.branches.context(run["thread_id"], before=before)
                 if prior:
                     seeds = [
                         runtime.current_input(row)
@@ -185,7 +206,11 @@ class AgentRunExecutor:
                 request = run
                 while request.get("resumed_from"):
                     request = runtime.repository.run(request["resumed_from"])
-                instruction_id = f"regenerate:{request['id']}"
+                instruction_id = (
+                    regeneration_context["instruction_id"]
+                    if regeneration_context
+                    else f"regenerate:{request['id']}"
+                )
                 # 保留档案中的旧答案；图里替换最近回复，并携带原问题和原选区重新回答。
                 instruction = HumanMessage(
                     content="请重新回答以下用户问题，核对依据并给出完整回答：\n"
@@ -196,7 +221,10 @@ class AgentRunExecutor:
                 last = graph_messages[-1] if graph_messages else None
                 edits = (
                     [RemoveMessage(id=last.id)]
-                    if isinstance(last, AIMessage) and not last.tool_calls
+                    if isinstance(last, AIMessage)
+                    and not last.tool_calls
+                    and any(item.id == message["id"] for item in graph_messages)
+                    and not (regeneration_context and regeneration_context["mode"] == "append")
                     else []
                 )
                 # 中断后沿用第一次重新生成的稳定 ID，避免重复指令或返回旧答案。

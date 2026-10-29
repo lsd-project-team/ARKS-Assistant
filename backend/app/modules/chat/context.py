@@ -1,5 +1,6 @@
 """上下文透明度：读取真实检查点与本轮注入记录，纠错不改原始对话。"""
 
+from langchain_core.messages import AIMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.context.summary_text import summary_parts
@@ -24,10 +25,22 @@ class ConversationContext:
                 thread_id, saver, lambda *_event: None, inspection=True
             )
             # LangGraph 增量通道不会在每个检查点重复保存全部消息，必须由图还原状态。
-            state = await graph.aget_state(
-                {"configurable": {"thread_id": self.runtime.checkpoint_id(thread_id)}}
-            )
-        values = state.values
+            config = {"configurable": {"thread_id": self.runtime.checkpoint_id(thread_id)}}
+            state = await graph.aget_state(config)
+            values = state.values
+            if not state.values.get("messages") and not self.repository.has_active_run(thread_id):
+                # 返回待重建的完整会话，不在读取接口写检查点，避免与新运行竞争。
+                prior = self.repository.branches.context(thread_id)
+                if prior:
+                    values = {
+                        **values,
+                        "messages": [
+                            self.runtime.current_input(row)
+                            if row["role"] == "user"
+                            else AIMessage(content=row["content"], id=row["id"])
+                            for row in prior
+                        ],
+                    }
         event = values.get("_summarization_event")
         messages = values.get("messages", [])
         effective = (
