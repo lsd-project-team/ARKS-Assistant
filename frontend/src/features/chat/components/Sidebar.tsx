@@ -266,7 +266,7 @@ function RecentThreads({
         renderThread(row, row.project_state === 'archived' && row.state !== 'deleted', 'recent'),
       )}
       {!threads.isPending && !rows.length && view !== 'archived' && (
-        <p className="muted sidebar-empty">{view === 'deleted' ? '回收站为空' : '从新对话开始'}</p>
+        <p className="muted sidebar-empty">{view === 'deleted' ? '回收站为空' : '无聊天'}</p>
       )}
       {!all && rows.length > recentThreadPreview && (
         <button className="sidebar-show-more" onClick={() => setAll(true)}>
