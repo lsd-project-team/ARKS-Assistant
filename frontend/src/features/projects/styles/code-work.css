@@ -240,8 +240,6 @@
   overflow-wrap: anywhere;
 }
 @media (max-width: 680px) {
-  .project-home .project-home-bar,
-  .project-home .project-home-tabs,
   .code-work-heading,
   .code-work-inline {
     flex-wrap: wrap;

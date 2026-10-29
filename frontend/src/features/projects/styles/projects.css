@@ -102,21 +102,10 @@
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
-.project-home-tabs {
-  display: flex;
-  gap: 6px;
-}
-.project-home-tabs button {
-  border: 0;
-  background: none;
-  color: var(--text-muted);
-  padding: 8px 12px;
+.project-chat-heading {
+  margin: 0;
   font-size: 14px;
-  border-radius: 7px;
-}
-.project-home-tabs button[aria-pressed='true'] {
-  color: var(--text);
-  background: var(--surface-hover);
+  font-weight: 600;
 }
 .project-chat-tools {
   display: flex;

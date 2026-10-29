@@ -14,7 +14,6 @@ import { Select } from '../../../shared/ui/Select';
 import { toast } from '../../../shared/utils/toasts';
 import { useDebouncedValue } from '../../../shared/hooks/useDebouncedValue';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
-import { CodeWork } from './CodeWork';
 
 export function ProjectHome() {
   const api = useProjectApi();
@@ -22,8 +21,6 @@ export function ProjectHome() {
   const projects = useProjects();
   const startConversation = useNewConversation();
   const { projectId, selectThread, switchProject } = useWorkspace();
-  const [tab, setTab] = useState<'chats' | 'code'>('chats');
-  const [codeVisited, setCodeVisited] = useState(false);
   const [filter, setFilter] = useState('');
   const [state, setState] = useState('active');
   const [editor, setEditor] = useState(false);
@@ -128,20 +125,7 @@ export function ProjectHome() {
         </WorkspaceHeading>
         <ErrorText error={current.error || error} />
         <div className="project-home-bar">
-          <div className="project-home-tabs">
-            <button aria-pressed={tab === 'chats'} onClick={() => setTab('chats')}>
-              对话
-            </button>
-            <button
-              aria-pressed={tab === 'code'}
-              onClick={() => {
-                setCodeVisited(true);
-                setTab('code');
-              }}
-            >
-              代码工作
-            </button>
-          </div>
+          <h2 className="project-chat-heading">对话</h2>
           {project?.state === 'archived' ? (
             <Button
               className="primary"
@@ -161,99 +145,83 @@ export function ProjectHome() {
             </Button>
           )}
         </div>
-        {tab === 'chats' && (
-          <>
-            <div className="project-chat-tools">
-              <label className="search-box">
-                <Search size={15} />
-                <input
-                  aria-label="搜索项目对话"
-                  placeholder="搜索此项目的对话…"
-                  value={filter}
-                  onChange={(event) => {
-                    setFilter(event.target.value);
-                    setSelected([]);
-                  }}
-                />
-              </label>
-              <Select
-                value={state}
-                onValueChange={(value) => {
-                  setState(value);
-                  setSelected([]);
-                }}
-                aria-label="项目对话状态"
-              >
-                <option value="active">最近对话</option>
-                <option value="archived">已归档</option>
-                <option value="deleted">回收站</option>
-              </Select>
-            </div>
-            {!!selected.length && (
-              <div className="project-batch-bar">
-                <span>已选 {selected.length} 个对话</span>
-                <Button onClick={() => setMoving(true)}>移动至项目</Button>
-                <Button onClick={() => setSelected([])}>取消选择</Button>
-              </div>
-            )}
-            <ErrorText error={threads.error} />
-            <div className="project-chat-list">
-              {rows.map((thread) => (
-                <div className="project-chat-row" key={thread.id}>
-                  <input
-                    type="checkbox"
-                    aria-label={`选择对话：${thread.title}`}
-                    checked={selected.includes(thread.id)}
-                    disabled={thread.state === 'deleted'}
-                    onChange={(event) =>
-                      setSelected(
-                        event.target.checked && selected.length < 200
-                          ? [...selected, thread.id]
-                          : selected.filter((id) => id !== thread.id),
-                      )
-                    }
-                  />
-                  <button
-                    disabled={thread.state === 'deleted'}
-                    onClick={() => selectThread(thread.id)}
-                  >
-                    <strong>{thread.title}</strong>
-                    <small>
-                      {thread.message_count || 0} 条消息 ·{' '}
-                      {new Date(thread.updated_at).toLocaleDateString('zh-CN')}
-                      {thread.latest_status === 'running' ? ' · 正在回复' : ''}
-                    </small>
-                  </button>
-                </div>
-              ))}
-            </div>
-            {threads.hasNextPage && (
-              <Button
-                disabled={threads.isFetchingNextPage}
-                onClick={() => void threads.fetchNextPage()}
-              >
-                {threads.isFetchingNextPage ? '正在读取…' : '加载更多对话'}
-              </Button>
-            )}
-            {threads.isSuccess && filter.trim() === settled && !rows.length && (
-              <div className="project-empty">
-                <Folder size={28} />
-                <h2>{filter ? '没有匹配的对话' : '从这个项目的新对话开始'}</h2>
-                <p>项目中的对话各自保留历史，使用本项目关联的源码。</p>
-                {!filter && state === 'active' && project?.state === 'active' && (
-                  <Button onClick={() => startConversation(projectId)}>新对话</Button>
-                )}
-              </div>
-            )}
-          </>
-        )}
-        {codeVisited && (
-          <div hidden={tab !== 'code'}>
-            <CodeWork
-              key={projectId}
-              projectId={projectId}
-              readOnly={project?.state === 'archived' || !project}
+        <div className="project-chat-tools">
+          <label className="search-box">
+            <Search size={15} />
+            <input
+              aria-label="搜索项目对话"
+              placeholder="搜索此项目的对话…"
+              value={filter}
+              onChange={(event) => {
+                setFilter(event.target.value);
+                setSelected([]);
+              }}
             />
+          </label>
+          <Select
+            value={state}
+            onValueChange={(value) => {
+              setState(value);
+              setSelected([]);
+            }}
+            aria-label="项目对话状态"
+          >
+            <option value="active">最近对话</option>
+            <option value="archived">已归档</option>
+            <option value="deleted">回收站</option>
+          </Select>
+        </div>
+        {!!selected.length && (
+          <div className="project-batch-bar">
+            <span>已选 {selected.length} 个对话</span>
+            <Button onClick={() => setMoving(true)}>移动至项目</Button>
+            <Button onClick={() => setSelected([])}>取消选择</Button>
+          </div>
+        )}
+        <ErrorText error={threads.error} />
+        <div className="project-chat-list">
+          {rows.map((thread) => (
+            <div className="project-chat-row" key={thread.id}>
+              <input
+                type="checkbox"
+                aria-label={`选择对话：${thread.title}`}
+                checked={selected.includes(thread.id)}
+                disabled={thread.state === 'deleted'}
+                onChange={(event) =>
+                  setSelected(
+                    event.target.checked && selected.length < 200
+                      ? [...selected, thread.id]
+                      : selected.filter((id) => id !== thread.id),
+                  )
+                }
+              />
+              <button disabled={thread.state === 'deleted'} onClick={() => selectThread(thread.id)}>
+                <strong>{thread.title}</strong>
+                <small>
+                  {thread.message_count || 0} 条消息 ·{' '}
+                  {new Date(thread.updated_at).toLocaleDateString('zh-CN')}
+                  {thread.latest_status === 'running' ? ' · 正在回复' : ''}
+                </small>
+              </button>
+            </div>
+          ))}
+        </div>
+        {threads.hasNextPage && (
+          <Button
+            disabled={threads.isFetchingNextPage}
+            onClick={() => void threads.fetchNextPage()}
+          >
+            {threads.isFetchingNextPage ? '正在读取…' : '加载更多对话'}
+          </Button>
+        )}
+        {threads.isSuccess && filter.trim() === settled && !rows.length && (
+          <div className="project-empty">
+            <Folder size={28} />
+            <h2>{filter ? '没有匹配的对话' : '从这个项目的新对话开始'}</h2>
+            <p>项目中的对话各自保留历史，使用本项目关联的源码。</p>
+            {!filter && state === 'active' && project?.state === 'active' && (
+              <Button onClick={() => startConversation(projectId)}>新对话</Button>
+            )}
           </div>
         )}
         <footer className="project-home-footer">
