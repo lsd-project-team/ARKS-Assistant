@@ -10,6 +10,7 @@ from deepagents.middleware.summarization import SummarizationToolMiddleware
 from app.agents.analysis.policy import CONTINUE_QUESTION, REPORT_GUIDANCE
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.budget import BudgetedSummarization, ContextBudget
+from app.agents.context.instructions import GlobalAgentInstructions, instruction_snapshot
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.system import (
     DEBUG_ISSUE_GUIDANCE,
@@ -21,6 +22,7 @@ from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.agents.runtime.model_budget import ProjectModelBudget
+from app.agents.runtime.privacy import redact
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
@@ -67,6 +69,9 @@ class AgentGraphBuilder:
 
         settings = current_configuration(runtime.settings, runtime.repository.database)
         options = SourceOptions.model_validate(source_options or {})
+        instructions = await asyncio.to_thread(instruction_snapshot, runtime.paths)
+        if not inspection:
+            emit("agent_instructions", redact(instructions))
         if not inspection:
             emit("stage", {"stage": "connecting_model"})
         model = StateInspectionModel() if inspection else create_model(settings.model)
@@ -220,6 +225,7 @@ class AgentGraphBuilder:
             middleware=[
                 summary,
                 SummarizationToolMiddleware(summary),
+                GlobalAgentInstructions(instructions),
                 *(
                     [SourceEvidenceGuard(evidence, None if inspection else model)]
                     if evidence is not None
@@ -234,7 +240,12 @@ class AgentGraphBuilder:
                     source_required=bool(evidence and evidence.required),
                 ),
                 FlowAnswerDraft(
-                    None if inspection else model, question_text or "", evidence, emit, available
+                    None if inspection else model,
+                    question_text or "",
+                    evidence,
+                    emit,
+                    available,
+                    instructions=instructions,
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations

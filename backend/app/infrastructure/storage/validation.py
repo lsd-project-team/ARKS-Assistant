@@ -43,7 +43,7 @@ def safe_member(name: str) -> bool:
     ):
         return False
     return name in {"app.sqlite3", "checkpoints.sqlite3", "manifest.json"} or (
-        len(parts) > 1 and parts[0] in {"memories", "scratch"}
+        len(parts) > 1 and parts[0] in {"memories", "scratch", "instructions"}
     )
 
 
@@ -126,7 +126,7 @@ def checked_backup(source, *, temporary_parent: Path | None = None):
                     # Windows 的 zipfile 会规范化 filename，原始头部名字才能检出反斜杠和空字节。
                     raw_name = member.orig_filename
                     name = raw_name.rstrip("/") if member.is_dir() else raw_name
-                    if member.is_dir() and name in {"memories", "scratch"}:
+                    if member.is_dir() and name in {"memories", "scratch", "instructions"}:
                         continue
                     if not safe_member(name) or stat.S_ISLNK(member.external_attr >> 16):
                         raise ValueError("备份包含非法路径、链接或不允许恢复的文件")

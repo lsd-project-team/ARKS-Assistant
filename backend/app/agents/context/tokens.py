@@ -53,15 +53,22 @@ def input_budget(limit: int, output: int) -> int:
 def message_breakdown(messages) -> dict:
     rows = list(messages)
     total = estimate_tokens(rows)
+    instructions = [row for row in rows if row.id == "global-agent-instructions"]
+    instruction_tokens = min(total, estimate_tokens(instructions)) if instructions else 0
     selection_tokens = sum(
         text_tokens(block)
         for row in rows
+        if row.id != "global-agent-instructions"
         for block in re.findall(
             r"<code_selection\b.*?</code_selection>", str(row.content), flags=re.DOTALL
         )
     )
-    selection_tokens = min(selection_tokens, total)
-    return {"messages": total - selection_tokens, "selections": selection_tokens}
+    selection_tokens = min(selection_tokens, total - instruction_tokens)
+    return {
+        "messages": total - selection_tokens - instruction_tokens,
+        "selections": selection_tokens,
+        **({"instructions": instruction_tokens} if instructions else {}),
+    }
 
 
 def request_budget(request, limit: int, output: int, memory_prompt: str = "") -> dict:

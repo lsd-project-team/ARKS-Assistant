@@ -31,8 +31,10 @@ def create_backup(paths: Paths) -> Path:
                 ):
                     source.backup(target)
             # 密钥配置不进入导出备份；恢复后通过设置页重新填写。
-            for group in ("memories", "scratch"):
+            for group in ("memories", "scratch", "instructions"):
                 for file in (paths.data / group).rglob("*"):
+                    if group == "instructions" and file.name != "agent.md":
+                        continue
                     if file.is_file():
                         if file.is_symlink() or not file.resolve().is_relative_to(paths.data):
                             raise ValueError("备份资料包含越界链接，请先核对资料目录")

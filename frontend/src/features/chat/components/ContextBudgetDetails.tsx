@@ -4,6 +4,7 @@ const categories = [
   ['system', '系统提示'],
   ['tools', '工具定义'],
   ['memory', '长期记忆'],
+  ['instructions', '全局指令'],
   ['messages', '对话与摘要'],
   ['selections', '代码选区'],
 ] as const;

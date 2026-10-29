@@ -1,4 +1,6 @@
-"""系统模型/MCP配置与个人模型选择，不重复挂载到各项目。"""
+"""系统配置、个人模型选择和账号全局指令，不重复挂载到各项目。"""
+
+import asyncio
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -13,9 +15,10 @@ from app.modules.chat.schemas import (
     ModelProbe,
     SettingsWrite,
 )
+from app.modules.settings.agent_instructions import AgentInstructionsStore
 from app.modules.settings.model_preferences import ModelPreferences
 from app.modules.settings.model_probe import probe_capabilities
-from app.modules.settings.schemas import ModelPreferenceWrite
+from app.modules.settings.schemas import AgentInstructionsWrite, ModelPreferenceWrite
 
 
 def create_router(services: AppServices) -> APIRouter:
@@ -23,6 +26,17 @@ def create_router(services: AppServices) -> APIRouter:
     settings = services.settings
     runtime = services.runtime
     preferences = ModelPreferences(services.database, settings)
+    instructions = AgentInstructionsStore(services.paths.data)
+
+    @router.get("/api/agent-instructions")
+    async def get_agent_instructions(request: Request):
+        return await asyncio.to_thread(instructions.read, identity(request)["user"]["id"])
+
+    @router.put("/api/agent-instructions")
+    async def save_agent_instructions(body: AgentInstructionsWrite, request: Request):
+        return await asyncio.to_thread(
+            instructions.save, identity(request)["user"]["id"], body.content, body.version
+        )
 
     @router.get("/api/model-preference")
     async def get_model_preference(request: Request):

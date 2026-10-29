@@ -27,7 +27,7 @@ def error_feedback(error, settings):
     ):
         code, hint, action = (
             "context_limit",
-            "上下文超过输入预算，可减少选区、工具或记忆，或调整模型容量配置。原始内容保留。",
+            "上下文超过输入预算，可精简全局指令、减少选区、工具或记忆，或调整模型容量配置。原始内容保留。",
             "context",
         )
     elif status and status >= 500:

@@ -1,4 +1,4 @@
-"""共享对话的来源与运行事件不向其他账号暴露个人记忆正文。"""
+"""共享对话的来源与运行事件不向其他账号暴露个人记忆和指令正文。"""
 
 from app.modules.memory.identity import user_memory_owner
 
@@ -20,6 +20,8 @@ def visible_memories(rows, actor_id=None):
 def visible_run_event(event, actor_id):
     owner = user_memory_owner()
     kind, payload = event["kind"], event["payload"]
+    if kind == "agent_instructions" and owner and payload.get("owner_id") != owner:
+        return None
     if kind == "context_sources":
         return {
             **event,

@@ -38,6 +38,13 @@ export function RunContextPanel({
         searches={context.searches}
         saves={context.memory_saves}
       />
+      {context.agent_instructions?.content && (
+        <details className="context-card">
+          <summary>本轮全局 agent.md</summary>
+          <pre>{context.agent_instructions.content}</pre>
+          <small>使用版本：{context.agent_instructions.version.slice(0, 10)}</small>
+        </details>
+      )}
       {!references.length &&
         context.debug_issues?.map((issue) => (
           <DebugIssueReference

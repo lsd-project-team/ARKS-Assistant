@@ -129,6 +129,6 @@ class ContextBudget(AgentMiddleware):
             # 外层原生摘要中间件可尝试压缩；仍超量时不向供应商发送已知过大的请求。
             raise ContextOverflowError(
                 f"context token 估算 {budget['tokens']} 超过输入预算 {budget['input_limit']}；"
-                "请减少选区或工具定义、调整记忆，或增大上下文配置。原始问题和选区已保留。"
+                "请精简全局指令、减少选区或工具定义、调整记忆，或增大上下文配置。原始问题和选区已保留。"
             )
         return await handler(request)

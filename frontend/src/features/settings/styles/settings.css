@@ -329,3 +329,16 @@
   font-size: 12px;
   line-height: 1.65;
 }
+
+.agent-instructions-panel, .agent-instructions-panel > label {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.agent-instructions-panel textarea {
+  width: 100%;
+  min-height: 280px;
+  resize: vertical;
+  line-height: 1.7;
+  font-family: var(--font-mono, monospace);
+}

@@ -120,12 +120,15 @@ class ConversationContext:
         source_review = None
         completion, progress, plan = None, None, None
         tool_ends = {}
+        instructions = None
         references, searches, memory_saves = {}, [], []
         cursor = 0
         while True:
             events = self.repository.events(run_id, cursor)
             for original in events:
                 event = visible_run_event(original, actor_id)
+                if event and event["kind"] == "agent_instructions":
+                    instructions = event["payload"]
                 if event is None:
                     continue
                 if event["kind"] == "knowledge_reference":
@@ -183,6 +186,7 @@ class ConversationContext:
                 references.setdefault(key, {"kind": kind, **row})
         return {
             "model": run["model_snapshot"],
+            "agent_instructions": instructions,
             "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
             "materials": snapshot.get("materials", []) if snapshot else [],

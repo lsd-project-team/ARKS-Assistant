@@ -296,3 +296,5 @@ v30将标签控制图额度归属各执行块，实际跳转另共用4,096次保
 2026-10-16 的工程结构重构与自动化功能回归已完成，后端 311 通过、1 跳过，前端 145 通过；结构、验证范围和数据保护证据见 [重构清单](docs/architecture/refactoring.md) 与 [验收记录](docs/verification/engineering-refactor.md)。依赖约定见 [工程结构](docs/architecture/overview.md)。实际供应商、设备运行和浏览器视觉验收不包含在这组自动化结果中；产品能力仍以第三节列出的实际状态为准。
 
 2026-10-29，长期记忆改为后台提取与整理：移除聊天 `remember` 即时写入和手动条目管理，按账号与项目从符合条件的闲置聊天生成记忆，持久化提取、租约与发布状态，后续会话按来源开关带入。旧文件归档、原聊天和历史版本表保留。实际范围、默认筛选条件与验证见[后台记忆功能](docs/features/background-memory.md)和[本轮验证](docs/verification/background-memory-20261029.md)。
+
+同日参考 Codex 的全局用户指令设计，增加“设置 → 全局 agent.md”：每个账号各自一份，适用于自己的所有项目和独立对话；不增加项目指令。执行开始固定版本，作为用户指令在摘要后带入，独立于后台记忆；设置提供 UTF-8 字节限制、并发版本保护和草稿提示。私人快照对其他账号隐藏，文件纳入备份与失败回滚。见[全局指令功能](docs/features/global-agent-instructions.md)和[验收记录](docs/verification/global-agent-instructions-20261029.md)。

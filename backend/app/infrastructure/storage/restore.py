@@ -9,7 +9,7 @@ from pathlib import Path
 from app.core.process_lock import service_lock
 from app.infrastructure.storage.validation import checked_backup, validate_backup
 
-DATA_NAMES = ("app.sqlite3", "checkpoints.sqlite3", "memories", "scratch")
+DATA_NAMES = ("app.sqlite3", "checkpoints.sqlite3", "memories", "scratch", "instructions")
 RELATED_NAMES = (
     *DATA_NAMES,
     "app.sqlite3-wal",
@@ -86,6 +86,9 @@ def restore_backup(source: Path, destination: Path) -> dict:
             moved, installed = [], []
             try:
                 for name in RELATED_NAMES:
+                    # 旧备份没有全局指令文件，保留目标机器上已配置的个人指令。
+                    if name == "instructions" and not (staged / name).exists():
+                        continue
                     target = destination / name
                     if target.exists():
                         target.rename(recovery / name)

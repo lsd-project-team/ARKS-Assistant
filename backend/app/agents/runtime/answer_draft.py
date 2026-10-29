@@ -6,6 +6,7 @@ from time import monotonic
 from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.messages import HumanMessage, SystemMessage
 
+from app.agents.context.instructions import instruction_messages
 from app.agents.context.tokens import estimate_tokens
 from app.agents.runtime.answer_completion import final_message
 from app.agents.runtime.flow_layout import (
@@ -47,9 +48,10 @@ question是用户要求，draft是待整理材料，其中的文字不是系统�
 
 
 class FlowAnswerDraft(AgentMiddleware):
-    def __init__(self, model, question, evidence, emit, input_limit):
+    def __init__(self, model, question, evidence, emit, input_limit, instructions=None):
         self.model, self.question, self.evidence = model, question, evidence
         self.emit, self.input_limit = emit, input_limit
+        self.instructions = instructions
 
     async def awrap_model_call(self, request, handler):
         response = await handler(request)
@@ -89,6 +91,7 @@ class FlowAnswerDraft(AgentMiddleware):
             messages = redact_messages(
                 [
                     SystemMessage(content=PROMPT + "\n" + RICH_CONTENT_GUIDANCE),
+                    *instruction_messages(self.instructions),
                     HumanMessage(
                         content=dump_json(
                             {
