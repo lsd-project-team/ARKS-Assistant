@@ -43,7 +43,12 @@ def source_and_package(client):
         },
     )
     assert package.status_code == 201, package.text
-    return confirmed.json(), package.json()
+    confirmed_package = client.post(
+        f"/api/handover/records/{package.json()['id']}/confirm",
+        json={"version": package.json()["version"], "actor": "管理员", "opinion": "已核对交接包"},
+    )
+    assert confirmed_package.status_code == 200, confirmed_package.text
+    return confirmed.json(), confirmed_package.json()
 
 
 def test_unauthenticated_api_and_valid_login_cookie(services):

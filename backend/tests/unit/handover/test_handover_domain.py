@@ -44,7 +44,13 @@ def test_version_conflict_is_detected_before_state_change():
     assert current.state == "draft" and current.version == 3
 
 
-@pytest.mark.parametrize("kind", ["job", "task", "candidate"])
+@pytest.mark.parametrize("kind", ["job", "task", "candidate", "package"])
 def test_special_records_cannot_be_rejected_in_common_review(kind):
     with pytest.raises(ValueError):
         record(kind=kind).review("reject", {})
+
+
+def test_legacy_rejected_package_can_be_confirmed_without_changing_other_rejected_records():
+    package = record("rejected", "package", {"records": [{"record_id": "source", "version": 1}]})
+    outcome = package.review("confirm", {"source": {"state": "draft", "version": 1}})
+    assert outcome.state == "confirmed" and outcome.linked_versions == {"source": 1}

@@ -33,11 +33,20 @@ def package_references(store, record_ids):
 def export_package(
     store: RecordRepository, identifier, exporter: PackageExporter, zipped=False, version=None
 ):
-    package = store.get(identifier, version)
-    if package["kind"] != "package":
-        raise ValueError("请选择交接包")
-    records = [store.get(ref["record_id"], ref["version"]) for ref in package["payload"]["records"]]
-    blobs = {
-        row["id"]: store.blob(row["id"]) for row in records if zipped and row["kind"] == "source"
-    }
+    with store.lock:
+        current = store.get(identifier)
+        if current["kind"] != "package":
+            raise ValueError("请选择交接包")
+        # 同步核对当前状态和固定快照，旧链接不能绕过撤回、归档或来源变化。
+        package = store.get(identifier, version) if version is not None else current
+        if current["state"] != "confirmed" or package["state"] != "confirmed":
+            raise ValueError("交接包未确认，请确认后再下载")
+        records = [
+            store.get(ref["record_id"], ref["version"]) for ref in package["payload"]["records"]
+        ]
+        blobs = {
+            row["id"]: store.blob(row["id"])
+            for row in records
+            if zipped and row["kind"] == "source"
+        }
     return exporter.render(package, records, blobs, zipped)

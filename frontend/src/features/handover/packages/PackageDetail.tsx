@@ -7,18 +7,19 @@ import { refs, text } from '../shared/types';
 import { localTime } from '../shared/format';
 import { packageGroups, packageNotes } from './packageContents';
 import { PackageContentsList } from './PackageContentsList';
+import { packageStatus } from './packageStatus';
 import './package-detail.css';
 
 export function PackageDetail({
   row,
   version,
   records,
-  definitions,
   client,
   readError,
   history,
   onClose,
   onOpen,
+  onConfirm,
 }: {
   row: HandoverRecord;
   version?: number;
@@ -29,12 +30,30 @@ export function PackageDetail({
   history: ReactNode;
   onClose: () => void;
   onOpen: (id: string, version?: number) => void;
+  onConfirm?: () => Promise<void>;
 }) {
   const [downloading, setDownloading] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<unknown>();
   const groups = packageGroups(row.payload, records);
   const count = groups.reduce((total, group) => total + group.items.length, 0);
+  const confirmed = row.state === 'confirmed';
+  const current = records.find((record) => record.id === row.id);
+  const downloadable = confirmed && (!current || current.state === 'confirmed');
+  async function confirm() {
+    if (!onConfirm || confirming) return;
+    setConfirming(true);
+    setError(undefined);
+    try {
+      await onConfirm();
+    } catch (error) {
+      setError(error);
+    } finally {
+      setConfirming(false);
+    }
+  }
   async function download() {
+    if (!downloadable || downloading || confirming) return;
     setDownloading(true);
     setError(undefined);
     try {
@@ -57,7 +76,17 @@ export function PackageDetail({
       footer={
         <>
           {version && <Button onClick={() => onOpen(row.id)}>返回当前交接包</Button>}
-          <Button className="primary" disabled={downloading} onClick={() => void download()}>
+          {!version && row.state !== 'archived' && !confirmed && onConfirm && (
+            <Button disabled={confirming} onClick={() => void confirm()}>
+              {confirming ? '正在确认…' : '确认交接包'}
+            </Button>
+          )}
+          <Button
+            className="primary"
+            disabled={!downloadable || downloading || confirming}
+            title={downloadable ? undefined : '确认后可下载'}
+            onClick={() => void download()}
+          >
             {downloading ? '正在下载…' : '下载完整包'}
           </Button>
           <Button onClick={onClose}>关闭</Button>
@@ -66,9 +95,10 @@ export function PackageDetail({
     >
       <ErrorText error={error || readError} reveal />
       <div className="package-detail-state">
-        <span className={`handover-status handover-status-${row.state}`}>
-          {definitions.states[row.state]}
+        <span className={`handover-status handover-status-${confirmed ? 'confirmed' : 'draft'}`}>
+          {packageStatus(row.state)}
         </span>
+        {!downloadable && <span className="handover-muted">确认后可下载</span>}
       </div>
       <dl className="package-detail-summary">
         {text(row.payload.recipient).trim() && (

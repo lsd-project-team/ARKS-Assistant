@@ -36,6 +36,8 @@ class Record:
         if action == "confirm":
             return self._confirm(records)
         if action == "reject":
+            if self.kind == "package":
+                raise ValueError("交接包仅使用未确认和已确认状态")
             if self.kind in {"task", "candidate"}:
                 raise ValueError("工作项和 AI 候选请使用各自的处理入口")
             if self.state not in {"draft", "needs_review"}:
@@ -53,6 +55,8 @@ class Record:
             "archived": "请先恢复记录",
             "rejected": "此内容已被拒绝，请补充并保存新版本后重新审核",
         }
+        if self.kind == "package":
+            errors.pop("rejected")
         if self.state in errors:
             raise ValueError(errors[self.state])
         # supersedes 是历史链路，旧资料被拒绝不阻止补充后的新资料审核。

@@ -51,7 +51,8 @@ export default function HandoverWorkspace({
   management?: boolean;
 }) {
   const scopeId = handoverScope;
-  const role = useAuth().session?.user.role;
+  const account = useAuth().session?.user;
+  const role = account?.role;
   const reviewAccess = canReview(role);
   const pageAllowed = allowedHandoverTab(tab, role);
   useEffect(() => {
@@ -360,6 +361,7 @@ export default function HandoverWorkspace({
                 records={rows}
 
                 actor={actor}
+                confirmationActor={account?.display_name || account?.username}
                 onActor={setActor}
                 onClose={() => navigate(tab)}
                 onOpen={open}

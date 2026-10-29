@@ -308,11 +308,15 @@ def test_source_files_fixed_versions_quotations_and_exports(client, services):
         url(identifier) + "/packages",
         json={"title": "交接包", "actor": "人", "record_ids": [row["id"], captured["id"]]},
     ).json()
+    package = action(client, identifier, package).json()
     word = client.get(url(identifier) + f"/packages/{package['id']}/export")
     assert word.status_code == 200 and word.content[:2] == b"PK"
     content, _, _, _ = parse_docx(word.content)
     assert "包含 <符号> & 文本" in content and "待确认" in content and "class Program" in content
     update(client, identifier, row, goal="新目标")
+    package = client.get(url(identifier) + f"/records/{package['id']}").json()
+    confirmed = action(client, identifier, package)
+    assert confirmed.status_code == 200, confirmed.text
     assert (
         "新目标"
         not in parse_docx(

@@ -1,6 +1,5 @@
 import { Search, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { HandoverSelect } from './Controls';
 import { Status } from './RecordCard';
 import type { Definitions, HandoverRecord } from './types';
 import './record-catalog.css';
@@ -10,10 +9,6 @@ export function CatalogToolbar({
   onSearch,
   label,
   placeholder,
-  state,
-  onState,
-  archived,
-  definitions,
   count,
   unit,
   children,
@@ -22,10 +17,6 @@ export function CatalogToolbar({
   onSearch: (value: string) => void;
   label: string;
   placeholder: string;
-  state: string;
-  onState: (value: string) => void;
-  archived: boolean;
-  definitions: Definitions;
   count: number;
   unit: string;
   children?: ReactNode;
@@ -42,22 +33,6 @@ export function CatalogToolbar({
         />
       </label>
       {children}
-      <HandoverSelect
-        label="记录状态"
-        value={archived ? 'archived' : state}
-        onValueChange={onState}
-        disabled={archived}
-        options={
-          archived
-            ? [{ value: 'archived', label: definitions.states.archived || '已归档' }]
-            : [
-                { value: '', label: '全部状态' },
-                ...Object.entries(definitions.states)
-                  .filter(([value]) => value !== 'archived')
-                  .map(([value, label]) => ({ value, label })),
-              ]
-        }
-      />
       <span className="record-catalog-count">
         {count} {unit}
       </span>

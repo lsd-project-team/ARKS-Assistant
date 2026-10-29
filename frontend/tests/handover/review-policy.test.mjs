@@ -7,9 +7,11 @@ test('只允许审核当前待处理正式记录，历史版本、已有结果�
     assert.equal(canReviewRecord({ kind, state: 'draft' }), true);
     assert.equal(canReviewRecord({ kind, state: 'needs_review' }), true);
     assert.equal(canReviewRecord({ kind, state: 'needs_review' }, true), false);
-    for (const state of ['confirmed', 'rejected', 'archived']) {
+    for (const state of ['confirmed', 'archived']) {
       assert.equal(canReviewRecord({ kind, state }), false);
     }
+    assert.equal(canReviewRecord({ kind, state: 'rejected' }), kind === 'package');
+    assert.equal(canReviewRecord({ kind, state: 'rejected' }, true), false);
   }
   for (const kind of ['source', 'interview', 'task', 'candidate', 'job']) {
     assert.equal(canReviewRecord({ kind, state: 'needs_review' }), false);

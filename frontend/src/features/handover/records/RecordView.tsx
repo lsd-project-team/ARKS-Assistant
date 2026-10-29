@@ -4,6 +4,7 @@ import { Button, ErrorText } from '../../../shared/ui/ui';
 import { DebugIssueDetail } from '../debug_issues/DebugIssueDetail';
 import { OriginalMaterialViewer } from '../materials/OriginalMaterialViewer';
 import { PackageDetail } from '../packages/PackageDetail';
+import { packageStatus } from '../packages/packageStatus';
 import { RecordHistory, type RecordRevision } from '../reviews/RecordHistory';
 import { RecordReview } from '../reviews/RecordReview';
 import { HandoverModal } from '../shared/HandoverModal';
@@ -25,6 +26,7 @@ export function RecordView({
   reviewOnly = false,
   canReview = false,
   actor,
+  confirmationActor,
   onActor,
   onClose,
   onOpen,
@@ -41,6 +43,7 @@ export function RecordView({
   reviewOnly?: boolean;
   canReview?: boolean;
   actor: string;
+  confirmationActor?: string;
   onActor: (value: string) => void;
   onClose: () => void;
   onOpen: (id: string, version?: number) => void;
@@ -74,6 +77,7 @@ export function RecordView({
       loading={history.isPending}
       definitions={definitions}
       showVersion={row?.kind !== 'package'}
+      stateLabel={row?.kind === 'package' ? packageStatus : undefined}
       onOpen={onOpen}
       onRetry={() => void history.refetch()}
     />
@@ -102,7 +106,7 @@ export function RecordView({
   if (row && ['source', 'interview'].includes(row.kind)) {
     return <OriginalMaterialViewer row={row} client={client} onClose={onClose} />;
   }
-  if (row && reviewOnly && canReview) {
+  if (row && row.kind !== 'package' && reviewOnly && canReview) {
     return (
       <RecordReview
         key={`${row.id}:${version || 'current'}`}
@@ -210,6 +214,21 @@ export function RecordView({
         history={historyContent}
         onClose={onClose}
         onOpen={onOpen}
+        onConfirm={
+          canReview && !readOnly && row.state !== 'archived'
+            ? async () => {
+                await client.send(`/records/${row.id}/confirm`, {
+                  version: row.version,
+                  actor: confirmationActor || actor,
+                  opinion: '已核对交接包内容，确认可下载。',
+                });
+                onChanged();
+                const result = await query.refetch();
+                if (result.error) throw result.error;
+                void history.refetch();
+              }
+            : undefined
+        }
       />
     );
   }

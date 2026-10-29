@@ -54,7 +54,7 @@ const row = {
   id: 'package',
   kind: 'package',
   title: '设备软件交接包',
-  state: 'draft',
+  state: 'confirmed',
   version: 3,
   created_at: '2026-10-28T03:00:00Z',
   payload: {
@@ -63,7 +63,7 @@ const row = {
     evidence: [{ record_id: 'source', version: 2, locator: '原定位', quote: '保留引文' }],
   },
 };
-function render(client, version) {
+function render(client, version, overrides = {}) {
   const cache = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   cache.setQueryData(['handover-record', 'global', 'source', 2], {
     ...source,
@@ -83,6 +83,7 @@ function render(client, version) {
         history: null,
         onClose() {},
         onOpen() {},
+        ...overrides,
       }),
     ),
   );
@@ -107,6 +108,59 @@ test('详情只保留绿色完整包下载，隐藏全部修订号和重复内�
     assert.ok(html.includes(text), text);
   }
   assert.deepEqual(row, before);
+});
+
+test('未确认、待复核、旧拒绝和归档包均不能从按钮触发下载', async () => {
+  for (const state of ['draft', 'needs_review', 'rejected', 'archived']) {
+    const calls = [];
+    const html = render({ download: async () => calls.push('download') }, undefined, {
+      row: { ...row, state },
+    });
+    assert.match(html, /未确认/);
+    assert.doesNotMatch(html, /待确认|待重新复核|已拒绝/);
+    const button = Children.toArray(environment.modal.footer.props.children)
+      .filter(isValidElement)
+      .find((element) => element.props.className === 'primary');
+    assert.equal(button.props.disabled, true);
+    button.props.onClick();
+    await new Promise(setImmediate);
+    assert.deepEqual(calls, []);
+  }
+});
+
+test('当前未确认包提供确认入口，历史及归档内容不能确认', async () => {
+  const calls = [];
+  const props = {
+    row: { ...row, state: 'draft' },
+    onConfirm: async () => calls.push('confirm'),
+  };
+  const html = render({}, undefined, props);
+  assert.match(html, /确认交接包/);
+  const button = Children.toArray(environment.modal.footer.props.children)
+    .filter(isValidElement)
+    .find((element) => element.props.children === '确认交接包');
+  button.props.onClick();
+  await new Promise(setImmediate);
+  assert.deepEqual(calls, ['confirm']);
+  assert.doesNotMatch(render({}, 3, props), /确认交接包/);
+  assert.doesNotMatch(
+    render({}, undefined, { ...props, row: { ...row, state: 'archived' } }),
+    /确认交接包/,
+  );
+});
+
+test('历史快照已确认但当前包待复核时仍禁用下载', async () => {
+  const calls = [];
+  render({ download: async () => calls.push('download') }, 3, {
+    records: [source, { ...row, state: 'needs_review', version: 4 }],
+  });
+  const button = Children.toArray(environment.modal.footer.props.children)
+    .filter(isValidElement)
+    .find((element) => element.props.className === 'primary');
+  assert.equal(button.props.disabled, true);
+  button.props.onClick();
+  await new Promise(setImmediate);
+  assert.deepEqual(calls, []);
 });
 
 test('隐藏版本展示后完整包仍按选中的包修订下载', async () => {

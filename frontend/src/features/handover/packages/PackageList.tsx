@@ -2,6 +2,7 @@ import { Archive, ArchiveRestore, Package } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../../shared/ui/ui';
 import type { Client } from '../shared/client';
+import { HandoverSelect } from '../shared/Controls';
 import { filterCatalogRecords } from '../shared/catalogRecords';
 import { CatalogCard, CatalogEmpty, CatalogToolbar } from '../shared/RecordCatalog';
 import { text, type Definitions, type HandoverRecord } from '../shared/types';
@@ -31,7 +32,9 @@ export function PackageList({
   const [selected, setSelected] = useState<HandoverRecord>();
   const [search, setSearch] = useState('');
   const [state, setState] = useState('');
-  const packages = filterCatalogRecords(rows, ['package'], search, archived ? '' : state);
+  const packages = filterCatalogRecords(rows, ['package'], search, '').filter(
+    (row) => archived || !state || (row.state === 'confirmed') === (state === 'confirmed'),
+  );
   return (
     <section aria-label="交接包记录">
       <CatalogToolbar
@@ -39,13 +42,22 @@ export function PackageList({
         onSearch={setSearch}
         label="搜索交接包"
         placeholder="搜索交接包名称、接收对象或内容…"
-        state={state}
-        onState={setState}
-        archived={archived}
-        definitions={definitions}
         count={packages.length}
         unit="份交接包"
-      />
+      >
+        {!archived && (
+          <HandoverSelect
+            label="交接包确认状态"
+            value={state}
+            onValueChange={setState}
+            options={[
+              { value: '', label: '全部状态' },
+              { value: 'unconfirmed', label: '未确认' },
+              { value: 'confirmed', label: '已确认' },
+            ]}
+          />
+        )}
+      </CatalogToolbar>
       <div className="record-catalog-grid">
         {packages.map((row) => (
           <CatalogCard

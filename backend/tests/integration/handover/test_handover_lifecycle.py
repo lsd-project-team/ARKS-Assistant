@@ -105,6 +105,7 @@ def test_framework_training_decision_receipt_and_package_sources(services):
             training["id"],
             decision["id"],
         }
+        package = confirm(package)
         receipt = confirm(
             create(
                 "receipt",

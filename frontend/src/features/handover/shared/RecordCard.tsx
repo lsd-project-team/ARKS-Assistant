@@ -2,11 +2,20 @@ import { TaskStatus } from '../tasks/TaskStatus';
 import type { Definitions, HandoverRecord } from './types';
 import { text } from './types';
 import { debugStatus } from '../debug_issues/debugIssues';
+import { packageStatus } from '../packages/packageStatus';
 
 export function Status({ row, definitions }: { row: HandoverRecord; definitions: Definitions }) {
   if (row.kind === 'task') return <TaskStatus row={row} />;
   if (row.kind === 'debug_issue')
     return <span className="debug-status">{debugStatus(row.payload)}</span>;
+  if (row.kind === 'package')
+    return (
+      <span
+        className={`handover-status handover-status-${row.state === 'confirmed' ? 'confirmed' : 'draft'}`}
+      >
+        {packageStatus(row.state)}
+      </span>
+    );
   return (
     <span className={`handover-status handover-status-${row.state}`}>
       {definitions.states[row.state]}

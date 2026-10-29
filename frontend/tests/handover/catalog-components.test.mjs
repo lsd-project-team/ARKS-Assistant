@@ -124,7 +124,7 @@ test('交接包卡片保留打开与归档入口，收录数按固定版本去�
   assert.deepEqual(record, original);
   const archived = render(PackageList, [{ ...record, state: 'archived' }], true);
   assert.ok(archived.includes('aria-label="恢复交接包：交接包 A"'));
-  assert.ok(archived.includes('已归档'));
+  assert.ok(archived.includes('未确认'));
 });
 
 test('资料与交接包空列表只显示简洁状态，不带重复分组与引导说明', () => {

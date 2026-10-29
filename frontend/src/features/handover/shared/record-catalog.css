@@ -24,9 +24,6 @@
   background: transparent;
   padding: 9px 0;
 }
-.record-catalog-tools .ui-select-trigger {
-  min-width: 120px;
-}
 .record-catalog-count {
   color: var(--text-secondary);
   font-size: 13px;
