@@ -63,7 +63,7 @@ export function ConfigurationPage({
           <div className="admin-panel-heading">
             <h2>源码与知识配置</h2>
             <Button disabled={!current.data} onClick={() => setEditing(true)}>
-              编辑源码与项目指令
+              编辑项目与源码关联
             </Button>
           </div>
           <div className="admin-source-selector">

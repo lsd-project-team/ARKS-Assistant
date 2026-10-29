@@ -6,7 +6,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, FastAPI, Query, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.modules.action_timing import router as action_timing
 from app.modules.auth.ownership import require_source, require_thread
@@ -30,10 +30,10 @@ class SourceFolder(BaseModel):
 
 
 class ProjectCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     name: str = Field(min_length=1, max_length=120)
-    description: str = Field(default="", max_length=5000)
     source_root: str | None = Field(default=None, max_length=1024)
-    instructions: str = Field(default="", max_length=20000)
     deepwiki_repo: str = Field(default="", max_length=200)
     auto_associate: bool = True
     source_folders: list[SourceFolder] = Field(default_factory=list, max_length=8)
@@ -57,17 +57,17 @@ class ProjectCreate(BaseModel):
 
 
 class ProjectUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     name: str | None = Field(default=None, min_length=1, max_length=120)
-    description: str | None = Field(default=None, max_length=5000)
     source_root: str | None = Field(default=None, max_length=1024)
-    instructions: str | None = Field(default=None, max_length=20000)
     deepwiki_repo: str | None = Field(default=None, max_length=200)
     auto_associate: bool = False
     state: Literal["active", "archived"] | None = None
     pinned: bool | None = None
     source_folders: list[SourceFolder] = Field(default_factory=list, max_length=8)
 
-    @field_validator("name", "description", "instructions", "deepwiki_repo", "state", "pinned")
+    @field_validator("name", "deepwiki_repo", "state", "pinned")
     @classmethod
     def non_null(cls, value):
         if value is None:

@@ -49,7 +49,9 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     # 仅替换外部图编译边界；规则选择、工具装配和上下文拼接实际执行。
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_deep_agent", create_graph)
     verified = "\n<verified_source_context>本轮源码标记</verified_source_context>"
-    with bind_project({"name": "本轮项目标记", "instructions": "本轮项目指令标记"}):
+    with bind_project(
+        {"name": "本轮项目标记", "instructions": "旧项目指令标记", "description": "旧项目说明标记"}
+    ):
         result = await runtime.graph(
             "prompt-thread",
             None,
@@ -65,7 +67,8 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert result is graph
     prompt = captured["system_prompt"]
     tools = {item.name for item in captured["tools"]}
-    assert "本轮项目标记" in prompt and "本轮项目指令标记" in prompt
+    assert "本轮项目标记" in prompt
+    assert "旧项目指令标记" not in prompt and "旧项目说明标记" not in prompt
     assert verified in prompt
     assert "同路径异版本" in prompt
     assert "本轮未接入流程图谱、功能说明和交接资料" in prompt

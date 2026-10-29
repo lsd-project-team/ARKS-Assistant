@@ -83,17 +83,14 @@ def test_normal_new_projects_inherit_company_source_but_arbitrary_paths_stay_for
             assert client.post("/api/projects", json=body).status_code == 403
 
 
-def test_existing_owners_keep_project_and_private_instructions_are_not_copied(services):
+def test_existing_owners_keep_project_and_private_names_are_not_copied(services):
     with TestClient(create_app(services[0])) as client:
         # 模拟已经明确归属的旧默认项目，不能给原账号重复创建副本。
         with client.app.state.projects.database.session.begin() as session:
             user = session.scalar(select(Account).where(Account.username == "user"))
             original = session.get(Project, services[2].id)
             original.owner_id = user.id
-            original.description, original.instructions = (
-                "PRIVATE-DESCRIPTION",
-                "PRIVATE-INSTRUCTION",
-            )
+            original.name = "PRIVATE-PROJECT"
             original.deepwiki_repo = "company/ZX2200"
         sign_in(client, "user")
         assert default_project(client)["id"] == services[2].id
@@ -101,7 +98,8 @@ def test_existing_owners_keep_project_and_private_instructions_are_not_copied(se
         add_second(client)
         login_second(client)
         second = default_project(client)
-        assert second["description"] == second["instructions"] == ""
+        assert "description" not in second and "instructions" not in second
+        assert second["name"] == "ZX2200 软件分析"
         assert second["deepwiki_repo"] == "company/ZX2200"
         assert "PRIVATE-" not in client.get("/api/projects").text
         snapshot = client.app.state.projects.snapshot("independent")

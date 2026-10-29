@@ -19,7 +19,7 @@ def test_independent_and_same_source_project_have_identical_source_capabilities(
         assert (
             client.patch(
                 f"/api/projects/{project['id']}",
-                json={"instructions": "PRIVATE-INSTRUCTION", "description": "PRIVATE-DESCRIPTION"},
+                json={"name": "PRIVATE-PROJECT"},
             ).status_code
             == 200
         )

@@ -1,4 +1,4 @@
-"""数据库表结构保持不变，按业务模块组织模型。"""
+"""项目身份、源码关联与历史资料模型。"""
 
 from sqlalchemy import ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -13,10 +13,8 @@ class Project(Base):
     id: Mapped[str] = mapped_column(String(32), primary_key=True)
     owner_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     name: Mapped[str] = mapped_column(String(120))
-    description: Mapped[str] = mapped_column(Text, default="", server_default="")
     source_root: Mapped[str | None] = mapped_column(Text, nullable=True)
     source_folders_json: Mapped[str] = mapped_column(Text, default="[]", server_default="[]")
-    instructions: Mapped[str] = mapped_column(Text, default="", server_default="")
     deepwiki_repo: Mapped[str] = mapped_column(String(200), default="", server_default="")
     state: Mapped[str] = mapped_column(String(20), default="active", server_default="active")
     pinned_order: Mapped[int | None] = mapped_column(Integer, nullable=True)

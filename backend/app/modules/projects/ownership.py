@@ -18,7 +18,7 @@ class AccountProjects:
             original = session.get(Project, self.projects.default_id)
             if original and original.source_root == root and original.deepwiki_repo:
                 repo = original.deepwiki_repo
-        # 只使用管理员已配置的公司源码关联，不复制任何人的说明、指令、资料或记忆。
+        # 只使用管理员已配置的公司源码关联，不复制任何人的资料或记忆。
         return {"source_root": root, "source_folders": [], "deepwiki_repo": repo}
 
     def ensure(self, user):

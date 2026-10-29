@@ -4,6 +4,7 @@ import asyncio
 import threading
 from datetime import UTC, datetime, timedelta
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
@@ -11,10 +12,8 @@ from app.modules.chat.models import Thread
 from app.modules.projects.context import bind_project, project_prompt
 
 
-def create_project(client, name, root=None, instructions=""):
-    response = client.post(
-        "/api/projects", json={"name": name, "source_root": root, "instructions": instructions}
-    )
+def create_project(client, name, root=None):
+    response = client.post("/api/projects", json={"name": name, "source_root": root})
     assert response.status_code == 201, response.text
     return response.json()
 
@@ -46,7 +45,7 @@ def test_legacy_adoption_and_restart_preserves_identity(services):
 def test_project_isolation_same_source_and_empty_project(services):
     paths = services[0]
     with TestClient(create_app(paths)) as client:
-        first = create_project(client, "A", str(paths.workspace), "简短回答")
+        first = create_project(client, "A", str(paths.workspace))
         second = create_project(client, "B", str(paths.workspace))
         empty = create_project(client, "空项目")
         thread = client.post(scoped(first, "/threads"), json={}).json()
@@ -146,11 +145,32 @@ def test_archive_remove_and_running_guard(services):
         assert client.get(f"/api/p/independent/threads/{run['thread_id']}").status_code == 200
 
 
-def test_instruction_snapshot_is_task_local():
-    with bind_project({"name": "项目 A", "instructions": "先核对源码"}):
-        assert "项目 A" in project_prompt()
-        assert "先核对源码" in project_prompt()
+def test_project_name_is_task_local_and_retired_fields_are_ignored():
+    with bind_project({"name": "项目 A", "instructions": "旧指令", "description": "旧说明"}):
+        assert project_prompt() == "\n当前项目：项目 A\n"
     assert project_prompt() == ""
+
+
+@pytest.mark.parametrize("field", ["description", "instructions"])
+def test_retired_project_settings_are_rejected_and_not_returned(services, field):
+    with TestClient(create_app(services[0])) as client:
+        project = create_project(client, "保留名称", str(services[0].workspace))
+        for body, path, method in (
+            ({"name": "不应创建", field: "旧设置"}, "/api/projects", client.post),
+            ({"name": "不应改名", field: "旧设置"}, f"/api/projects/{project['id']}", client.patch),
+        ):
+            response = method(path, json=body)
+            assert response.status_code == 422
+            assert f"body.{field}:" in response.json()["detail"]
+        response = client.get(f"/api/projects/{project['id']}")
+        assert response.status_code == 200 and response.json()["name"] == "保留名称"
+        assert field not in response.json()
+        assert field not in project
+        assert all(
+            row["name"] != "不应创建" for row in client.get("/api/projects").json()["projects"]
+        )
+        assert field not in client.app.state.projects.snapshot(project["id"])
+        assert field not in client.app.state.projects.snapshot("independent")
 
 
 def test_removed_default_project_does_not_break_restart(services):
@@ -374,7 +394,7 @@ def test_project_order_pinning_and_archive_queue_guard(services):
         )
 
 
-def test_running_projects_keep_instruction_and_source_snapshots(services, tmp_path, monkeypatch):
+def test_running_projects_keep_name_and_source_snapshots(services, tmp_path, monkeypatch):
     other = tmp_path / "run-b"
     other.mkdir()
     (other / "Program.cs").write_text("source B", encoding="utf-8")
@@ -392,15 +412,15 @@ def test_running_projects_keep_instruction_and_source_snapshots(services, tmp_pa
     monkeypatch.setattr("app.agents.runtime.engine.AgentRuntime.execute", execute)
     app = create_app(services[0])
     with TestClient(app) as client:
-        first = create_project(client, "项目 A", str(services[0].workspace), "A 的旧指令")
-        second = create_project(client, "项目 B", str(other), "B 的指令")
+        first = create_project(client, "项目 A", str(services[0].workspace))
+        second = create_project(client, "项目 B", str(other))
         try:
             run_a = client.post(scoped(first, "/threads/start"), json={"content": "问题 A"}).json()
             run_b = client.post(scoped(second, "/threads/start"), json={"content": "问题 B"}).json()
             assert all(event.wait(3) for event in started.values())
             assert (
                 client.patch(
-                    f"/api/projects/{first['id']}", json={"instructions": "A 的新指令"}
+                    f"/api/projects/{first['id']}", json={"name": "项目 A 新名称"}
                 ).status_code
                 == 200
             )
@@ -414,9 +434,11 @@ def test_running_projects_keep_instruction_and_source_snapshots(services, tmp_pa
                 await asyncio.wait_for(asyncio.gather(*tasks), 3)
 
             client.portal.call(finish_tasks)
-            assert "A 的旧指令" in seen["项目 A"][0] and "A 的新指令" not in seen["项目 A"][0]
+            assert seen["项目 A"][0] == "\n当前项目：项目 A\n"
             assert seen["项目 A"][1].startswith("class Program")
-            assert "B 的指令" in seen["项目 B"][0] and seen["项目 B"][1] == "source B"
+            assert seen["项目 B"] == ("\n当前项目：项目 B\n", "source B")
+            snapshot = client.get(scoped(first, f"/runs/{run_a['id']}")).json()["project_snapshot"]
+            assert "description" not in snapshot and "instructions" not in snapshot
             assert client.get(scoped(first, f"/runs/{run_a['id']}")).json()["status"] == "completed"
             assert (
                 client.get(scoped(second, f"/runs/{run_b['id']}")).json()["status"] == "completed"

@@ -14,12 +14,10 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
   const canConfigureSource = useAuth().session?.user.role === 'admin';
   const availableProjects = useProjects();
   const [name, setName] = useState(project?.name || '');
-  const [description, setDescription] = useState(project?.description || '');
   const [root, setRoot] = useState(project?.source_root || '');
   const [folders, setFolders] = useState(
     (project?.source_folders || []).map(({ root, label }) => ({ root, label })),
   );
-  const [instructions, setInstructions] = useState(project?.instructions || '');
   const [wiki, setWiki] = useState(project?.deepwiki_repo || '');
   const [automatic, setAutomatic] = useState(!project);
   const effectiveRoot =
@@ -50,13 +48,11 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
         method: project ? 'PATCH' : 'POST',
         body: jsonBody({
           name: name.trim(),
-          description,
           source_root: effectiveRoot.trim() || null,
           source_folders: folders.map((folder) => ({
             root: folder.root.trim(),
             label: folder.label.trim(),
           })),
-          instructions,
           deepwiki_repo: automatic ? '' : wiki.trim(),
           auto_associate: automatic,
         }),
@@ -111,16 +107,6 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="例如：ZX2200 软件分析"
-            />
-          </label>
-          <label>
-            项目说明
-            <textarea
-              rows={2}
-              maxLength={5000}
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              placeholder="这个项目希望解决什么问题？"
             />
           </label>
           <label>
@@ -243,16 +229,6 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
               <ErrorText error={association.error} />
             </div>
           )}
-          <label>
-            项目指令
-            <textarea
-              rows={4}
-              maxLength={20000}
-              value={instructions}
-              onChange={(event) => setInstructions(event.target.value)}
-              placeholder="例如：使用中文回答；分析报警时列出触发条件和源码行号。"
-            />
-          </label>
           <ErrorText error={error} />
         </div>
         <div className="modal-footer">

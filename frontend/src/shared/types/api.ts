@@ -86,9 +86,7 @@ export interface Project {
   deepwiki_repo: string;
   id: string;
   name: string;
-  description: string;
   source_root: string | null;
-  instructions: string;
   state: 'active' | 'archived';
   pinned_order: number | null;
   created_at: string;

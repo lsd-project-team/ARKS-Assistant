@@ -138,7 +138,6 @@ class Projects:
             return {
                 "id": None,
                 "name": "独立对话",
-                "instructions": "",
                 **self.account_defaults.source(),
             }
         project = self.get(project_id)
@@ -149,8 +148,6 @@ class Projects:
             for key in (
                 "id",
                 "name",
-                "description",
-                "instructions",
                 "source_root",
                 "source_folders",
                 "deepwiki_repo",
@@ -248,8 +245,6 @@ class Projects:
                 owner_id=current_owner(),
                 id=uuid.uuid4().hex,
                 name=body.name,
-                description=body.description,
-                instructions=body.instructions,
                 deepwiki_repo=repo,
                 source_root=root,
                 source_folders_json=json.dumps(folders, ensure_ascii=False),
