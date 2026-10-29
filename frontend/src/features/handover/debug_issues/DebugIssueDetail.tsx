@@ -64,7 +64,7 @@ export function DebugIssueDetail({
   return (
     <HandoverModal
       title={row.title}
-      description={version ? '正在查看引用版本' : undefined}
+      description={version ? '查看本次引用的记录内容' : '回看事项原文、处理经过与结果'}
       onClose={onClose}
       className="handover-detail debug-issue-detail"
     >

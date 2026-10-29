@@ -18,7 +18,7 @@ import { ActivityPage } from './reviews/ActivityPage';
 import { allowedHandoverTab, canReview, handoverTabs } from './shared/access';
 import { handoverClient } from './shared/client';
 import './shared/handover.css';
-import { PageHeading } from './shared/Presentation';
+import { PageHeading, pageDescriptions } from './shared/Presentation';
 import {
   handoverScope,
   tabs,
@@ -269,6 +269,7 @@ export default function HandoverWorkspace({
             {tab !== 'overview' && (
               <PageHeading
                 title={tabs.find((item) => item.id === tab)!.label}
+                description={management ? undefined : pageDescriptions[tab]}
               >
                 {!['updates', 'materials'].includes(tab) && (
                   <label className="handover-checkbox">

@@ -40,6 +40,7 @@ export function OverviewPage({
       <div className="dashboard-intro">
         <div>
           <h2>交接概况</h2>
+          <p>掌握资料、工作进度、问题与经验和最新交接动态</p>
         </div>
         <div
           className="dashboard-sync"

@@ -35,6 +35,7 @@ export function TimingProjectManager({
     <Modal
       open
       title="耗时项目管理"
+      description="按设备或业务项目分别维护动作耗时。"
       className="ledger-dialog"
       onClose={() => !operation.busy && onClose()}
     >

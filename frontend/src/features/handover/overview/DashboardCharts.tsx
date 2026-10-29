@@ -100,7 +100,9 @@ export function InteractiveRing({
             {active ? active.value : summary?.value || total}
           </strong>
           <span>{active ? active.label : summary?.label || totalLabel}</span>
-          {active && total > 0 && <small>{Math.round((active.value / total) * 100)}%</small>}
+          <small>
+            {active && total ? Math.round((active.value / total) * 100) + '%' : '点击筛选'}
+          </small>
         </button>
       </div>
       <figcaption className="dashboard-chart-legend">
@@ -140,7 +142,9 @@ export function PackageBars({
       className="dashboard-interactive-chart dashboard-package-chart"
       aria-label="交接包固定版本收录记录数"
     >
-      <figcaption>收录记录数</figcaption>
+      <figcaption>
+        收录记录数<span>按交接包固定版本统计</span>
+      </figcaption>
       {data.map((item) => (
         <button
           key={item.id}

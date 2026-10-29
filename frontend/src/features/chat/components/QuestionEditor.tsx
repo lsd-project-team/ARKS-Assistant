@@ -62,6 +62,7 @@ export function QuestionEditor({
       onClose={close}
       title={title}
       className="question-editor-dialog"
+      description="保留原始记录，修改不会覆盖输入框里的草稿。"
     >
       <div className="dialog-body question-editor">
         <SourceOptionsControl value={sources} onChange={setSources} disabled={busy} />

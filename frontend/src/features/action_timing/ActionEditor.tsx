@@ -44,6 +44,7 @@ export function ActionEditor({
     <Modal
       open
       title={action ? '编辑动作' : '添加动作'}
+      description="耗时以秒为单位，可留空，后续填写或导入。"
       className="ledger-dialog"
       onClose={() => !operation.busy && onClose()}
     >

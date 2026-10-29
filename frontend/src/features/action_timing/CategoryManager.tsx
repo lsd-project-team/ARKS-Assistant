@@ -36,6 +36,7 @@ export function CategoryManager({ scope, categories, onSaved, onClose }: Props) 
     <Modal
       open
       title="分类管理"
+      description="新增、重命名或删除分类，动作可在编辑时调整分类。"
       className="ledger-dialog"
       onClose={() => !operation.busy && onClose()}
     >
@@ -108,6 +109,7 @@ export function CategoryManager({ scope, categories, onSaved, onClose }: Props) 
           ))}
         </ul>
         {!categories.length && <p className="ledger-muted">还没有自定义分类，可以在上方添加。</p>}
+        <p className="ledger-muted">“未分类”为默认分组，无需创建。</p>
       </div>
       <div className="modal-footer">
         <Button disabled={operation.busy} onClick={onClose}>

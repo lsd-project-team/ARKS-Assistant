@@ -60,7 +60,7 @@ export function TaskDetail({
   return (
     <HandoverModal
       title={row.title}
-      description={version ? `正在查看历史内容 · v${version}` : undefined}
+      description={version ? `正在查看历史内容 · v${version}` : '查看工作内容和最新进展。'}
       className="task-detail"
       onClose={onClose}
       footer={

@@ -33,13 +33,13 @@ function DashboardPanel({
   summary,
   children,
   onNavigate,
-  hint,
+  hint = '点击图表探索记录',
 }: {
   tab: Tab;
   icon: ReactNode;
   count: number | undefined;
   unit: string;
-  summary?: string;
+  summary: string;
   children: ReactNode;
   onNavigate: (tab: Tab) => void;
   hint?: string;
@@ -53,7 +53,7 @@ function DashboardPanel({
             <span className="dashboard-panel-icon">{icon}</span>
             {title}
           </h2>
-          {summary && <p>{summary}</p>}
+          <p>{summary}</p>
         </div>
         <div className="dashboard-panel-metric">
           <strong>{count === undefined ? '—' : count}</strong>
@@ -62,7 +62,7 @@ function DashboardPanel({
       </header>
       <div className="dashboard-panel-content">{children}</div>
       <footer>
-        {hint && <span>{hint}</span>}
+        <span>{hint}</span>
         <button onClick={() => onNavigate(tab)} className="dashboard-page-link">
           查看全部
           <ArrowUpRight size={14} />
@@ -82,10 +82,13 @@ export function MaterialsPanel({ data, onOpen, onNavigate }: PanelProps) {
       icon={<BookOpen size={17} />}
       count={data.materials.length}
       unit="份"
+      summary="按文件类型统计"
+      hint="点击图表筛选，点击资料查看原文件"
       onNavigate={onNavigate}
     >
       <div className="dashboard-chart-heading">
         <span>文件类型分布</span>
+        <small>类型与资料联动</small>
       </div>
       <InteractiveRing
         data={data.materialTypes}
@@ -128,6 +131,7 @@ export function TasksPanel({ data, definitions, onOpen, onNavigate }: PanelProps
     >
       <div className="dashboard-chart-heading">
         <span>工作状态分布</span>
+        <small>状态与记录联动</small>
       </div>
       <InteractiveRing
         data={data.workStages}
@@ -164,6 +168,7 @@ export function PackagesPanel({ data, onOpen, onNavigate }: PanelProps) {
   return (
     <DashboardPanel
       tab="packages"
+      hint="点击横条查看交接包"
       icon={<Package size={17} />}
       count={data.packages.length}
       unit="份"
@@ -189,6 +194,7 @@ export function PackagesPanel({ data, onOpen, onNavigate }: PanelProps) {
           </strong>
         </div>
       </div>
+      <p className="dashboard-chart-note">收录数量随包内固定版本保存；点击横条查看内容与来源。</p>
     </DashboardPanel>
   );
 }
@@ -208,6 +214,7 @@ export function IssuesPanel({ data, definitions, onOpen, onNavigate }: PanelProp
     >
       <div className="dashboard-chart-heading">
         <span>记录类型分布</span>
+        <small>类型与记录联动</small>
       </div>
       <InteractiveRing
         data={data.issueTypes}
