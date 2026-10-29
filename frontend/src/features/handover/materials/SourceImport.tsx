@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useAuth } from '../../auth/AuthContext';
 import type { Client } from '../shared/client';
@@ -22,6 +23,7 @@ export function SourceImport({
   onClose: () => void;
 }) {
   const user = useAuth().session?.user;
+  const fileInput = useRef<HTMLInputElement>(null);
   const upload = useMaterialUploads(client, onSaved, onClose);
   const { items, busy, pending } = upload;
   const succeeded = items.filter((item) => item.state === 'uploaded').length;
@@ -30,7 +32,7 @@ export function SourceImport({
   return (
     <HandoverModal
       title="添加资料"
-      description="可一次选择多个原文件，上传后点击资料即可查看或下载。"
+      description="保存后可继续选择文件上传，点击资料即可查看或下载。"
       onClose={upload.close}
       onSubmit={(event) => {
         event.preventDefault();
@@ -44,13 +46,13 @@ export function SourceImport({
           <Button
             className="primary"
             type={complete ? 'button' : 'submit'}
-            onClick={complete ? upload.close : undefined}
+            onClick={complete ? () => fileInput.current?.click() : undefined}
             disabled={busy || (!pending && !complete) || !user}
           >
             {busy
               ? `正在上传（${succeeded}/${items.length}）…`
               : complete
-                ? '完成'
+                ? '继续选择文件'
                 : failuresOnly
                   ? `重试失败文件（${pending}）`
                   : pending
@@ -63,6 +65,7 @@ export function SourceImport({
       <label className="handover-field-wide">
         <span>文件</span>
         <input
+          ref={fileInput}
           multiple
           disabled={busy}
           type="file"
@@ -76,6 +79,11 @@ export function SourceImport({
         />
         <small>支持多选，原样保存；单个文件不超过 32 MB。</small>
       </label>
+      {complete && (
+        <p className="handover-notice" role="status">
+          文件已保存，可以继续选择文件上传。
+        </p>
+      )}
       {items.length > 0 && (
         <>
           <p className="material-upload-summary" role="status">

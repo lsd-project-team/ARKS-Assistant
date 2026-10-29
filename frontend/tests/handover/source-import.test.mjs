@@ -206,7 +206,7 @@ test('失败后保留所选文件，可重试；上传过程中阻止重复提�
   assert.deepEqual(saved, ['changed']);
 });
 
-test('多文件逐个保存，全部完成后只刷新一次并关闭；不合并文件或提交额外元信息', async () => {
+test('多文件逐个保存，全部完成后只刷新一次并保留窗口；不合并文件或提交额外元信息', async () => {
   reset();
   const files = [new File(['PDF'], '手册.pdf'), new File(['DOCX'], '说明.docx')];
   const uploads = [];
@@ -226,7 +226,8 @@ test('多文件逐个保存，全部完成后只刷新一次并关闭；不合�
     files.map((file) => [file, {}]),
   );
   assert.equal(changed, 1);
-  assert.equal(closed, 1);
+  assert.equal(closed, 0);
+  assert.ok(renderToStaticMarkup(render(props)).includes('文件已保存，可以继续选择文件上传'));
 });
 
 test('部分失败后继续其他文件，窗口保留；重试只上传失败项，不重复保存成功文件', async () => {
@@ -261,7 +262,7 @@ test('部分失败后继续其他文件，窗口保留；重试只上传失败�
   await submit(render(props));
   assert.deepEqual(uploads, [...files, files[1]]);
   assert.equal(changed, 2);
-  assert.equal(closed, 1);
+  assert.equal(closed, 0);
 });
 
 test('非法文件分别报错，不阻塞其他有效文件；移除非法项后可完成', async () => {
@@ -287,10 +288,13 @@ test('非法文件分别报错，不阻塞其他有效文件；移除非法项�
       .props.onClick();
   }
   const tree = render(props);
-  const complete = nodes(tree).find((node) => node.props?.children === '完成');
+  const complete = nodes(tree).find((node) => node.props?.children === '继续选择文件');
   assert.equal(complete.props.type, 'button');
+  let chosen = 0;
+  input(tree, '文件').props.ref.current = { click: () => chosen++ };
   complete.props.onClick();
-  assert.equal(closed, 1);
+  assert.equal(chosen, 1);
+  assert.equal(closed, 0);
 });
 
 test('同一渲染内连点也只启动一个队列，期间禁止关闭和更改；文件顺序执行', async () => {
@@ -322,7 +326,63 @@ test('同一渲染内连点也只启动一个队列，期间禁止关闭和更�
   assert.ok(renderToStaticMarkup(render(props)).includes('已上传 1 个'));
   releases[1]();
   await new Promise(setImmediate);
+  assert.equal(closed, 0);
+});
+
+test('连续选择保存三轮，窗口保留已成功文件；只上传新选择的文件，最后主动关闭', async () => {
+  reset();
+  const files = ['第一份.pdf', '第二份.docx', '第三份.txt'].map((name) => new File([name], name));
+  const uploads = [];
+  let changed = 0,
+    closed = 0;
+  const props = {
+    client: { upload: async (file) => uploads.push(file) },
+    onSaved: () => changed++,
+    onClose: () => closed++,
+  };
+  for (const [index, file] of files.entries()) {
+    input(render(props), '文件').props.onChange({ target: { files: [file] } });
+    await submit(render(props));
+    assert.deepEqual(uploads, files.slice(0, index + 1));
+    assert.equal(changed, index + 1);
+    assert.equal(closed, 0);
+    const html = renderToStaticMarkup(render(props));
+    assert.ok(html.includes(`已上传 ${index + 1} 个`));
+    for (const previous of files.slice(0, index + 1)) assert.ok(html.includes(previous.name));
+    await submit(render(props));
+    assert.equal(uploads.length, index + 1);
+  }
+  nodes(render(props))
+    .find((node) => node.props?.children === '关闭')
+    .props.onClick();
   assert.equal(closed, 1);
+});
+
+test('继续选择不会清除失败文件；再次保存时保留成功项，只上传失败项和新文件', async () => {
+  reset();
+  const [saved, failed, added] = ['已存.txt', '失败.txt', '新增.txt'].map(
+    (name) => new File([name], name),
+  );
+  const uploads = [];
+  let rejectOnce = true;
+  const props = {
+    client: {
+      upload: async (file) => {
+        uploads.push(file);
+        if (file === failed && rejectOnce) {
+          rejectOnce = false;
+          throw new Error('临时失败');
+        }
+      },
+    },
+  };
+  input(render(props), '文件').props.onChange({ target: { files: [saved, failed] } });
+  await submit(render(props));
+  input(render(props), '文件').props.onChange({ target: { files: [added] } });
+  assert.ok(renderToStaticMarkup(render(props)).includes('临时失败'));
+  await submit(render(props));
+  assert.deepEqual(uploads, [saved, failed, failed, added]);
+  assert.ok(renderToStaticMarkup(render(props)).includes('已上传 3 个'));
 });
 
 test('离开上传界面后停止发送剩余文件，已成功保存的文件仍通知刷新', async () => {

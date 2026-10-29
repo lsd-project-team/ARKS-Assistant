@@ -27,7 +27,8 @@ export function useMaterialUploads(client: Client, onSaved: () => void, onClose:
   }, []);
 
   function select(files: File[]) {
-    if (!uploading.current) setItems(files.map(selectedFile));
+    // 分次选择时保留已保存结果和待重试文件，下一轮只处理新文件及失败项。
+    if (!uploading.current) setItems((current) => [...current, ...files.map(selectedFile)]);
   }
   function remove(index: number) {
     if (!uploading.current) setItems((current) => current.filter((_, at) => at !== index));
@@ -46,7 +47,6 @@ export function useMaterialUploads(client: Client, onSaved: () => void, onClose:
     uploading.current = true;
     setBusy(true);
     let saved = 0;
-    let complete = !items.some((item) => item.state === 'invalid');
     // 每个原文件独立保存；部分失败仍继续，重试只处理尚未成功的文件。
     try {
       for (const [index, item] of items.entries()) {
@@ -58,7 +58,6 @@ export function useMaterialUploads(client: Client, onSaved: () => void, onClose:
           saved += 1;
           update(index, 'uploaded');
         } catch (error) {
-          complete = false;
           update(index, 'failed', error);
         }
       }
@@ -67,7 +66,6 @@ export function useMaterialUploads(client: Client, onSaved: () => void, onClose:
       if (alive.current) setBusy(false);
       if (saved) onSaved();
     }
-    if (complete && alive.current) onClose();
   }
   return { items, busy, select, remove, close, save, pending: items.filter(canUpload).length };
 }
