@@ -24,7 +24,6 @@ export function ShowcaseHome({ onTopic, onDiagram, onAllDiagrams }: Navigation) 
             <br />
             <span>读懂每个环节</span>
           </h1>
-          <p>从业务流程理解模块职责，查看各环节的执行条件、协作关系与异常处理。</p>
           <div className="card-actions">
             <button className="button primary" onClick={() => onTopic('architecture')}>
               从系统架构开始
@@ -78,7 +77,6 @@ export function ShowcaseHome({ onTopic, onDiagram, onAllDiagrams }: Navigation) 
         <div className="section-heading">
           <div>
             <h2>生产主流程</h2>
-            <p>沿启动、来料、加工、交接与恢复逐步阅读</p>
           </div>
           <button className="text-button" onClick={onAllDiagrams}>
             全部图谱
@@ -118,7 +116,6 @@ export function TopicDirectory({
           <div>
             <span className="eyebrow">功能与流程</span>
             <h1>按你关心的问题阅读</h1>
-            <p>从系统全局到生产、维护与数据，查看用途、条件、异常处理和相关原始图谱。</p>
           </div>
         </div>
       )}
@@ -126,7 +123,6 @@ export function TopicDirectory({
         <div className="section-heading">
           <div>
             <h2>功能与专题</h2>
-            <p>把已形成的成果按实际用途整理</p>
           </div>
         </div>
       )}

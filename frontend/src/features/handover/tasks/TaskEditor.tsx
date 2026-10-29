@@ -81,7 +81,6 @@ export function TaskEditor({
   return (
     <HandoverModal
       title={row ? '编辑工作' : '新增工作'}
-      description="记录工作内容，直接更新状态和进度备注。"
       className="task-editor"
       onClose={onClose}
       onSubmit={(event) => {

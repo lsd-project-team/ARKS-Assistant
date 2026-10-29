@@ -32,7 +32,6 @@ export function SourceImport({
   return (
     <HandoverModal
       title="添加资料"
-      description="保存后可继续选择文件上传，点击资料即可查看或下载。"
       onClose={upload.close}
       onSubmit={(event) => {
         event.preventDefault();
@@ -77,7 +76,7 @@ export function SourceImport({
             if (event.target.files?.length) upload.select(Array.from(event.target.files));
           }}
         />
-        <small>支持多选，原样保存；单个文件不超过 32 MB。</small>
+        <small>可多选，单个文件不超过 32 MB。</small>
       </label>
       {complete && (
         <p className="handover-notice" role="status">

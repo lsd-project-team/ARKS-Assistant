@@ -47,7 +47,6 @@ export function MoveThreadsDialog({
       open
       onClose={() => !pending && onClose()}
       title="移动对话"
-      description="保留历史消息和原始源码引用。"
       className="project-move-dialog"
     >
       <div className="dialog-body project-form">

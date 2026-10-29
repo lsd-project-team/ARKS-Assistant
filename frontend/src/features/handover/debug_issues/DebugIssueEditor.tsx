@@ -71,7 +71,6 @@ export function DebugIssueEditor({
   return (
     <HandoverModal
       title={row ? '编辑记录' : '添加记录'}
-      description="按统一六项整理，未记录的信息可留空。"
       onClose={onClose}
       onSubmit={(event) => {
         event.preventDefault();
@@ -80,7 +79,6 @@ export function DebugIssueEditor({
       className="debug-issue-editor"
       footer={
         <>
-          <span className="handover-muted">保存后可在后续问答中检索</span>
           <Button type="button" disabled={busy} onClick={onClose}>
             关闭并保留草稿
           </Button>

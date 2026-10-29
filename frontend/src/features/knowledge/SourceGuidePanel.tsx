@@ -24,7 +24,6 @@ export function SourceGuidePanel({
       <div className="section-heading">
         <div>
           <h2>{guide.title}</h2>
-          <p>选择环节，阅读对应的条件、调用和返回分支。</p>
         </div>
       </div>
       <div className="source-guide-tabs" role="group" aria-label="选择阅读环节">

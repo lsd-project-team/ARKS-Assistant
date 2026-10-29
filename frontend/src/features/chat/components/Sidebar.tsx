@@ -160,10 +160,12 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
           onNavigate={onNavigate}
         />
       </div>
-      <div className={`sidebar-footer ${checking ? 'checking' : connected ? '' : 'offline'}`}>
-        <span className="tiny-dot" />
-        <span>{checking ? '正在连接…' : connected ? '本机工作区' : '服务未连接'}</span>
-      </div>
+      {(checking || !connected) && (
+        <div className={`sidebar-footer ${checking ? 'checking' : 'offline'}`} role="status">
+          <span className="tiny-dot" />
+          <span>{checking ? '正在连接…' : '服务未连接'}</span>
+        </div>
+      )}
       <Modal
         open={!!actions.purging}
         onClose={() => {

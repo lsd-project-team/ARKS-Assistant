@@ -80,7 +80,6 @@ export function SettingsDialog({
       onClose={memoryController.close}
       title="工作区设置"
       className="settings-dialog"
-      description="外观、模型配置、知识来源、长期记忆与本地数据"
     >
       <div className="dialog-tabs">
         {[

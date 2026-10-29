@@ -70,7 +70,7 @@ export function PackageDetail({
   return (
     <HandoverModal
       title={row.title}
-      description={version ? '查看历史交接内容' : '查看交接内容并下载'}
+      description={version ? '正在查看历史交接包' : undefined}
       className="package-detail"
       onClose={onClose}
       footer={

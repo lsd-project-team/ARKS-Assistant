@@ -11,7 +11,7 @@ export function HandoverModal({
   className = '',
 }: {
   title: string;
-  description: string;
+  description?: string;
   onClose: () => void;
   onSubmit?: FormEventHandler<HTMLFormElement>;
   footer?: ReactNode;
