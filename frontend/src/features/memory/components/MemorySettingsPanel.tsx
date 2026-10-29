@@ -24,9 +24,6 @@ export function MemorySettingsPanel({
   const selectThread = useWorkspace((state) => state.selectThread);
   return (
     <section className="settings-memory-panel" aria-label="长期记忆管理">
-      <p className="muted">
-        个人偏好仅当前账号使用，项目记忆由项目内的对话共享。可以查看、编辑或删除。
-      </p>
       <div className="memory-layout">
         <div className="memory-list">
           <Button disabled={busy} onClick={() => controller.select(blankMemory())}>

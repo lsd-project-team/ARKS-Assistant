@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, ArrowUpRight, Database, Eye, ListChecks, Timer, Users } from 'lucide-react';
+import { ArrowUpRight, Database, Eye, ListChecks, Timer, Users } from 'lucide-react';
 import { ErrorText } from '../../shared/ui/ui';
 import type { Event, Overview } from '../handover/shared/types';
 import { adminApi, dateTime, duration } from './client';
@@ -69,35 +69,30 @@ export function OverviewPage() {
       value: data.active_users.toLocaleString(),
       unit: '人',
       icon: Users,
-      note: '发生有效使用行为的去重用户',
     },
     {
       title: '访问量',
       value: data.visits.toLocaleString(),
       unit: '次',
       icon: Eye,
-      note: '进入用户端登记一次访问',
     },
     {
       title: '有效使用时长',
       value: duration(data.active_ms),
       unit: '',
       icon: Timer,
-      note: '仅累计前台、有焦点的活动时间',
     },
     {
       title: '任务次数',
       value: data.tasks.toLocaleString(),
       unit: '次',
       icon: ListChecks,
-      note: '成功业务提交，问答成功后计一次',
     },
     {
       title: '累计数据量',
       value: data.data_total.toLocaleString(),
       unit: '条 · 当前',
       icon: Database,
-      note: '当前业务记录存量，含归档记录',
     },
   ];
   const daily = data?.daily.slice(-30) || [];
@@ -106,9 +101,7 @@ export function OverviewPage() {
     <div className="admin-page">
       <header className="admin-heading">
         <div>
-          <span className="admin-eyebrow">WORKSPACE / OVERVIEW</span>
           <h1>管理概览</h1>
-          <p>了解使用情况，跟进需要处理的工作。</p>
         </div>
         <div className="admin-segments" aria-label="统计时间范围">
           {[
@@ -142,21 +135,12 @@ export function OverviewPage() {
                   {item.value}
                   <small>{item.unit}</small>
                 </strong>
-                <p>{item.note}</p>
               </article>
             ))}
           </div>
-          <p className="admin-collection-note">
-            <Activity size={14} />
-            采集开始于 {dateTime(data.collected_since)} · 统计普通用户的实际使用 ·
-            历史访问与时长不补造
-          </p>
           <section className="admin-panel">
             <div className="admin-panel-heading">
-              <div>
-                <h2>使用趋势</h2>
-                <p>按北京时间汇总{data.daily.length > 30 ? '，图表展示最近 30 天' : ''}</p>
-              </div>
+              <h2>使用趋势</h2>
               <div className="admin-segments">
                 {(
                   [
@@ -191,6 +175,11 @@ export function OverviewPage() {
             <details className="admin-metric-rules">
               <summary>查看统计口径与数据构成</summary>
               <p>
+                采集开始于 {dateTime(data.collected_since)}
+                ，统计普通用户的实际使用，历史访问与时长不补造。 按北京时间汇总
+                {data.daily.length > 30 ? '，图表展示最近 30 天' : ''}。
+              </p>
+              <p>
                 访问量按每次加载用户端页面计数；同页切换功能不新增访问。失焦、后台、超过 60
                 秒无操作均停止累计时长，同一用户多窗口的重叠时长只计一次。成功的业务保存计为任务；AI
                 问答在成功完成后按问题计一次，失败、取消、重新生成和内部调用不重复计数。
@@ -213,13 +202,11 @@ export function OverviewPage() {
             title: '等待审核',
             count: formal.filter((row) => row.state === 'draft').length,
             url: '#handover/updates',
-            note: '查看首次提交的内容',
           },
           {
             title: '需要重新复核',
             count: formal.filter((row) => row.state === 'needs_review').length,
             url: '#handover/updates',
-            note: '跟进资料变更与关联影响',
           },
           {
             title: '进行中的工作',
@@ -231,7 +218,6 @@ export function OverviewPage() {
             title: '交接包',
             count: rows.filter((row) => row.kind === 'package' && row.state !== 'archived').length,
             url: '#handover/packages',
-            note: '查看固定版本与下载文件',
           },
         ].map((item) => (
           <a className="admin-business-card" href={item.url} key={item.title}>
@@ -240,7 +226,7 @@ export function OverviewPage() {
               <ArrowUpRight size={16} />
             </div>
             <strong>{business.isPending ? '—' : item.count}</strong>
-            <p>{item.note}</p>
+            {item.note && <p>{item.note}</p>}
           </a>
         ))}
       </div>

@@ -43,9 +43,7 @@ export function UsersPage() {
     <div className="admin-page">
       <header className="admin-heading">
         <div>
-          <span className="admin-eyebrow">WORKSPACE / ACCOUNTS</span>
           <h1>用户管理</h1>
-          <p>维护账号、角色与登录状态。</p>
         </div>
         <Button className="primary" onClick={() => setEditor('new')}>
           <Plus size={16} />
@@ -268,9 +266,7 @@ function AccountEditor({
               onChange={(e) => setRepeat(e.target.value)}
             />
           </label>
-          <p className="muted">
-            密码至少 12 个字符。修改账号后撤销该账号的全部登录会话；最后一个有效管理员受保护。
-          </p>
+          <p className="muted">密码至少 12 个字符；修改后该账号需重新登录。</p>
           <ErrorText error={error} />
         </div>
         <div className="modal-footer">

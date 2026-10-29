@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Download, HardDrive, RefreshCw, Upload } from 'lucide-react';
+import { Download, RefreshCw, Upload } from 'lucide-react';
 import type { BackupReport, Settings, StorageStats } from '../../../shared/types/api';
 import { api } from '../../../app/api/client';
 import { Button, ErrorText } from '../../../shared/ui/ui';
@@ -68,13 +68,6 @@ export function SettingsDataPanel({
   }
   return (
     <div className="settings-fields">
-      <div className="data-card">
-        <HardDrive size={22} />
-        <div>
-          <strong>对话存储在本机</strong>
-          <p>原始消息、代码选区和运行事件保存在 SQLite；压缩后仍可找回原文。</p>
-        </div>
-      </div>
       {storage.isPending && <p className="muted">正在统计本机存储…</p>}
       <ErrorText error={storage.error} />
       {storage.data && (
@@ -139,9 +132,7 @@ export function SettingsDataPanel({
           if (file) void perform(() => inspect(file));
         }}
       />
-      <p className="muted">
-        备份包含对话、检查点、长期记忆和原文档案，不包含密钥配置。导出前请完成或停止当前回复。
-      </p>
+      <p className="muted">备份不含密钥。导出前请完成或停止当前回复。</p>
       {preview && <BackupPreview {...preview} />}
     </div>
   );

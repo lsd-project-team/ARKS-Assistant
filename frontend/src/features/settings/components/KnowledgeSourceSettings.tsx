@@ -17,14 +17,13 @@ export function KnowledgeSourceSettings({
         <div className="knowledge-source-binding">
           <p className="muted">源码目录：{project.data.source_root || '未关联主目录'}</p>
           <p className="muted">DeepWiki 仓库：{project.data.deepwiki_repo || '未关联'}</p>
-          <p className="muted">这些关联随项目切换，可在项目设置中调整。</p>
         </div>
       )}
       {controller.saved.isPending && <p className="muted">正在读取知识来源…</p>}
       {controller.draft && (
         <SourceOptionsControl
+          compact
           legend="默认知识来源"
-          description="本地源码始终可读。保存后，新问题自动使用这些资料；历史回复和已排队的问题保留原来的配置。"
           value={controller.draft.source_options}
           onChange={controller.change}
           disabled={controller.busy}

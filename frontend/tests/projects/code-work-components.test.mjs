@@ -362,7 +362,7 @@ test('管理员系统配置的命令入口先选择项目，显式查询不沿�
     }),
   );
   assert.match(chooser, /选择验证命令所属项目/);
-  assert.match(chooser, /先选择一个项目/);
+  assert.match(chooser, /请选择项目/);
   assert.doesNotMatch(chooser, /保存命令配置/);
   const html = renderToStaticMarkup(
     createElement(ProjectVerificationProfileList, { projectId: 'project-b', readOnly: false }),

@@ -25,11 +25,6 @@
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
-.settings-memory-panel > p {
-  margin: 0 0 16px;
-  font-size: 12px;
-  line-height: 1.7;
-}
 .settings-memory-panel .memory-layout {
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -159,9 +154,15 @@
   border-radius: 9px;
   padding: 10px 12px;
 }
-.capability-results > small {
+.capability-results > summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.capability-results > summary small {
+  margin-left: 12px;
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 .capability-results > div {
   padding: 10px 0 6px;

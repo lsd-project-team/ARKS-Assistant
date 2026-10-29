@@ -47,9 +47,6 @@ export function AnalysisSettingsPanel({
           />
         </label>
       ))}
-      <p className="muted">
-        深度分析用于项目进度和完整流程。复核预留包含在总预算中，同版本已读源码复用不重复占用额度。回复达到长度上限时自动续写，最多两次。
-      </p>
     </details>
   );
 }

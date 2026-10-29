@@ -1196,25 +1196,6 @@ strong {
   font-size: 10px;
   color: var(--muted);
 }
-.data-card {
-  display: flex;
-  gap: 13px;
-  background: var(--surface-subtle);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 17px;
-  color: var(--text-secondary);
-}
-.data-card strong {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-.data-card p {
-  margin: 7px 0 0;
-  font-size: 11px;
-  line-height: 1.9;
-  color: var(--muted);
-}
 .settings-fields .checkbox-label {
   display: flex;
   flex-direction: row;

@@ -105,7 +105,6 @@ export default function AdminShell() {
             <span>管理工作区</span>
           </div>
         </a>
-        <span className="admin-nav-caption">工作区管理</span>
         <nav>
           {navigation.map((item) => (
             <a

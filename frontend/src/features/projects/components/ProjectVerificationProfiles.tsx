@@ -17,7 +17,6 @@ export function ProjectVerificationProfiles({ projects }: { projects: Project[] 
   return (
     <div className="code-work">
       <h2>项目验证命令</h2>
-      <p className="muted">选择项目后维护该项目的构建与测试命令。保存配置不会自动执行。</p>
       <Select
         value={project?.id || ''}
         onValueChange={setSelectedId}
@@ -31,14 +30,12 @@ export function ProjectVerificationProfiles({ projects }: { projects: Project[] 
           </option>
         ))}
       </Select>
-      {project ? (
+      {project && (
         <ProjectVerificationProfileList
           key={project.id}
           projectId={project.id}
           readOnly={project.state !== 'active'}
         />
-      ) : (
-        <p className="muted">先选择一个项目，再查看或新增其验证命令。</p>
       )}
     </div>
   );

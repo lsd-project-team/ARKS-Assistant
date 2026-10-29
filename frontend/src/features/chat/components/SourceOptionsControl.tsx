@@ -14,20 +14,22 @@ export function SourceOptionsControl({
   disabled = false,
   legend = '本轮知识来源',
   description = '本地源码始终可读，选择要额外使用的资料。',
+  compact = false,
 }: {
   value?: Partial<SourceOptions>;
   onChange: (value: SourceOptions) => void;
   disabled?: boolean;
   legend?: string;
   description?: string;
+  compact?: boolean;
 }) {
   const selected = resolvedSources(value);
   return (
     <fieldset className="source-options" disabled={disabled}>
       <legend>{legend}</legend>
-      <p className="muted">{description}</p>
+      {!compact && <p className="muted">{description}</p>}
       {choices.map(([key, label, description]) => (
-        <label key={key}>
+        <label key={key} title={compact ? description : undefined}>
           <input
             type="checkbox"
             checked={selected[key]}
@@ -35,7 +37,7 @@ export function SourceOptionsControl({
           />
           <span>
             {label}
-            <small>{description}</small>
+            {!compact && <small>{description}</small>}
           </span>
         </label>
       ))}

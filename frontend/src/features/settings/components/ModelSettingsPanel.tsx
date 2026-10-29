@@ -100,13 +100,8 @@ export function ModelSettingsPanel({
           <Trash2 size={14} />
         </Button>
       </div>
-      <div className="profile-current">
-        <span>
-          {settings.active_profile_id === profile.id
-            ? '当前对话模型配置'
-            : '此配置尚未设为当前模型'}
-        </span>
-        {settings.active_profile_id !== profile.id && (
+      {settings.active_profile_id !== profile.id && (
+        <div className="profile-current">
           <Button
             disabled={busy}
             onClick={() => onChange({ ...settings, active_profile_id: profile.id })}
@@ -114,8 +109,8 @@ export function ModelSettingsPanel({
             <Check size={13} />
             设为当前模型
           </Button>
-        )}
-      </div>
+        </div>
+      )}
       <div className="settings-fields">
         <label>
           配置名称
@@ -233,17 +228,20 @@ export function ModelSettingsPanel({
             placeholder="留空使用对话模型"
           />
         </label>
-        <Button disabled={busy} onClick={() => onProbe(profile.id)}>
+        <Button
+          disabled={busy}
+          title="检测普通回复、流式、工具往返和压缩模型，最多发送 5 次短请求"
+          onClick={() => onProbe(profile.id)}
+        >
           <Cable size={14} />
           {busy ? '正在检测…' : '检测当前配置'}
         </Button>
-        <p className="muted">
-          检测普通回复、流式、工具往返和压缩模型，最多发送 5
-          次短请求。上下文容量是配置值，不是实测窗口上限。
-        </p>
         {result && (
-          <div className="capability-results">
-            <small>检测于 {new Date(result.checked_at).toLocaleString('zh-CN')}</small>
+          <details className="capability-results" key={result.checked_at} open={!result.ok}>
+            <summary>
+              {result.ok ? '检测通过' : '检测未通过'}
+              <small>{new Date(result.checked_at).toLocaleString('zh-CN')}</small>
+            </summary>
             {result.checks.map((check) => (
               <div key={check.id} className={check.status}>
                 <span>
@@ -259,7 +257,7 @@ export function ModelSettingsPanel({
                 <p>{check.detail}</p>
               </div>
             ))}
-          </div>
+          </details>
         )}
       </div>
       <AnalysisSettingsPanel settings={settings} onChange={onChange} />

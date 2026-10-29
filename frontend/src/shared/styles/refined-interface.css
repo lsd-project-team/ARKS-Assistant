@@ -462,7 +462,7 @@ textarea::placeholder {
   color: var(--text-secondary);
 }
 .profile-current,
-.capability-results > small,
+.capability-results > summary small,
 .mcp-server-list small,
 .add-secret-field {
   color: var(--text-muted);

@@ -65,9 +65,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
     <div className="admin-page">
       <header className="admin-heading">
         <div>
-          <span className="admin-eyebrow">WORKSPACE / AI RECORDS</span>
           <h1>AI 问答记录</h1>
-          <p>查看用户的完整问答、来源与运行结果。</p>
         </div>
       </header>
       <section className="admin-panel">
@@ -202,9 +200,6 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
           </Button>
         </div>
       </section>
-      <p className="admin-collection-note">
-        每次提问分别记录用户身份。历史缺少身份的记录显示“未记录”，不推断归属。
-      </p>
     </div>
   );
 }
@@ -257,10 +252,9 @@ function QuestionViewer({ identifier }: { identifier: string }) {
       </a>
       <header className="admin-heading">
         <div>
-          <span className="admin-eyebrow">AI RECORD / READ ONLY</span>
           <h1>{first?.thread.title || '问答详情'}</h1>
           <p>
-            {first?.project_name} · {first?.total || 0} 条原始消息 · 保留历史回答版本
+            {first?.project_name} · {first?.total || 0} 条消息
           </p>
         </div>
       </header>

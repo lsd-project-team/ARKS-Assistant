@@ -211,7 +211,6 @@ export default function HandoverWorkspace({
             <ClipboardList size={23} />
             {management ? (tab === 'updates' ? '复核与追溯' : '交接管理') : '交接工作台'}
           </h1>
-          {management && <p>统一维护交接资料、工作进度与固定版本记录</p>}
         </div>
         <div className="handover-actions">
           <Button aria-label="刷新交接记录" onClick={refresh}>
@@ -270,7 +269,7 @@ export default function HandoverWorkspace({
             {tab !== 'overview' && (
               <PageHeading
                 title={tabs.find((item) => item.id === tab)!.label}
-                description={pageDescriptions[tab]}
+                description={management ? undefined : pageDescriptions[tab]}
               >
                 {!['updates', 'materials'].includes(tab) && (
                   <label className="handover-checkbox">

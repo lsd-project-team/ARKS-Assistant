@@ -235,18 +235,18 @@ export function SettingsDialog({
           {!canConfigure && configurationTab
             ? '系统配置由管理员维护'
             : tab === 'appearance'
-              ? '外观已自动保存到本机'
+              ? ''
               : tab === 'sources'
                 ? sourceController.dirty
                   ? '有未保存的知识来源修改'
-                  : '按项目保存，后续新问题自动使用'
+                  : ''
                 : tab === 'memory'
                   ? memoryController.dirty
                     ? '有未保存的记忆修改'
-                    : '记忆保存在本机，用于后续对话'
+                    : ''
                   : controller.dirty || advancedDirty
                     ? '有未保存的修改'
-                    : '密钥仅保存在本机'}
+                    : ''}
         </span>
         {tab === 'sources' && (
           <Button

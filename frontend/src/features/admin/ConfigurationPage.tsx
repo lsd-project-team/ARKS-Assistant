@@ -60,20 +60,13 @@ export function ConfigurationPage({
     <div className="admin-page">
       <header className="admin-heading">
         <div>
-          <span className="admin-eyebrow">WORKSPACE / {dataOnly ? 'DATA' : 'CONFIGURATION'}</span>
           <h1>{dataOnly ? '数据维护' : '系统配置'}</h1>
-          <p>
-            {dataOnly ? '查看数据占用，导出与校验本地备份。' : '维护模型连接、源码关联与知识配置。'}
-          </p>
         </div>
       </header>
       {!dataOnly && (
         <section className="admin-panel">
           <div className="admin-panel-heading">
-            <div>
-              <h2>源码与知识配置</h2>
-              <p>为用户问答选择对应的源码、仓库与共享资料。</p>
-            </div>
+            <h2>源码与知识配置</h2>
             <Button disabled={!current.data} onClick={() => setEditing(true)}>
               编辑源码与项目指令
             </Button>
@@ -135,12 +128,11 @@ export function ConfigurationPage({
       {dataOnly && (
         <section className="admin-panel">
           <h2>恢复备份</h2>
-          <p>
-            先使用上方“选择备份并校验”核对备份。实际恢复需要停止服务后执行项目中的恢复工具，恢复完成再启动服务。
-          </p>
           <details className="admin-metric-rules">
             <summary>查看恢复步骤</summary>
-            <p>在服务所在电脑打开 PowerShell，进入本项目目录。先校验备份，再停止服务并应用恢复：</p>
+            <p>
+              先在上方校验备份。然后在服务所在电脑打开 PowerShell，进入项目目录，停止服务后恢复：
+            </p>
             <pre className="admin-reference-text">{`.\\scripts\\RestoreData.ps1 -Backup '备份 ZIP 的完整路径'\n.\\Stop.ps1\n.\\scripts\\RestoreData.ps1 -Backup '备份 ZIP 的完整路径' -Apply\n.\\Start.ps1`}</pre>
             <p>
               现有密钥配置保留，替换前的旧数据会保存到恢复目录供核对。恢复中断时，保持停服，执行恢复工具的

@@ -5,7 +5,6 @@ import { parseMcpJson } from '../lib/settingsDraft';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { SecretFields } from './SecretFields';
 import { Select } from '../../../shared/ui/Select';
-import { useCurrentProject } from '../../projects/hooks/useProjects';
 
 export function McpSettingsPanel({
   settings,
@@ -22,13 +21,12 @@ export function McpSettingsPanel({
   onProbe: (server: McpServer) => void;
   onAdvancedDirty: (dirty: boolean) => void;
 }) {
-  const project = useCurrentProject();
   const [chosen, setChosen] = useState(settings.mcp_servers[0]?.id || '');
   const [advanced, setAdvanced] = useState<string>();
   const [error, setError] = useState<unknown>();
   const server = settings.mcp_servers.find((row) => row.id === chosen) || settings.mcp_servers[0];
   const tested = server && probes[server.id];
-  const result = tested?.signature === JSON.stringify(server) ? tested.result : undefined;
+  const result = tested && tested.signature === JSON.stringify(server) ? tested.result : undefined;
   function change<K extends keyof McpServer>(key: K, value: McpServer[K]) {
     if (!server) return;
     onChange({
@@ -51,10 +49,6 @@ export function McpSettingsPanel({
   }
   return (
     <div className="mcp-settings-panel">
-      <p className="muted">
-        当前项目的 DeepWiki 仓库：{project.data?.deepwiki_repo || '未关联'}。
-        可在项目设置中调整，切换项目时自动使用对应仓库。
-      </p>
       <div className="mcp-server-list">
         {settings.mcp_servers.map((row) => (
           <div key={row.id} className={server?.id === row.id ? 'selected' : ''}>
@@ -111,7 +105,6 @@ export function McpSettingsPanel({
         <Plus size={14} />
         新增 MCP 服务
       </Button>
-      {!server && <p className="muted">添加知识服务后，可以测试连接并查看它提供的工具。</p>}
       {server && (
         <div className="settings-fields mcp-server-fields">
           <label>
@@ -220,9 +213,7 @@ export function McpSettingsPanel({
       )}
       <details className="advanced-mcp">
         <summary>高级 JSON 配置</summary>
-        <p className="muted">
-          headers / env 中的掩码保留已保存值。修改 JSON 后，先应用到表单，再保存配置。
-        </p>
+        <p className="muted">掩码保留原密钥；修改后先应用到表单，再保存。</p>
         <textarea
           aria-label="高级 MCP JSON"
           className="json-editor"

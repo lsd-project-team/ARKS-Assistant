@@ -93,7 +93,6 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
       open
       onClose={() => !pending && onClose()}
       title={project ? '项目设置' : '新建项目'}
-      description="将相关对话和资料放在一起。"
       className="project-editor"
     >
       <form
@@ -156,11 +155,9 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
               </Select>
             </label>
           )}
-          <p className="muted form-hint">
-            {canConfigureSource
-              ? '可以先创建空项目，之后再关联源码目录。'
-              : '自动关联公司 ZX2200 源码，项目和对话仅自己可见。'}
-          </p>
+          {!canConfigureSource && (
+            <p className="muted form-hint">自动关联公司 ZX2200 源码，项目和对话仅自己可见。</p>
+          )}
           {folders.map((folder, index) => (
             <div className="source-folder-fields" key={index}>
               <label>
@@ -212,11 +209,7 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
           >
             添加源码目录
           </Button>
-          {!!folders.length && (
-            <p className="muted form-hint">
-              最多关联 8 个附加目录，文件树分别显示。解除关联保留真实文件和历史引用。
-            </p>
-          )}
+          {!!folders.length && <p className="muted form-hint">解除关联保留真实文件和历史引用。</p>}
           <label>
             DeepWiki 仓库 <span className="muted">可选</span>
             <input
@@ -247,10 +240,6 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
                   ? '正在识别源码关联…'
                   : association.data?.note || '选择源码目录后自动识别，也可以先创建空项目。'}
               </p>
-              {association.data?.knowledge_available && (
-                <p className="muted form-hint">该目录已有的流程与功能资料也会自动关联。</p>
-              )}
-              <p className="muted form-hint">创建后，源码、仓库和项目资料会跟随项目切换。</p>
               <ErrorText error={association.error} />
             </div>
           )}
@@ -264,7 +253,6 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
               placeholder="例如：使用中文回答；分析报警时列出触发条件和源码行号。"
             />
           </label>
-          <p className="muted form-hint">适用于此项目中的所有对话，保存后从下一次回复开始生效。</p>
           <ErrorText error={error} />
         </div>
         <div className="modal-footer">
