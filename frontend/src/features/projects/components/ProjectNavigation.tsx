@@ -86,7 +86,7 @@ function ProjectGroup({
   renderThread: ThreadRenderer;
   selectedThread?: Thread;
 }) {
-  const { projectId, projectPage, expandedProjects, setProjectExpanded } = useWorkspace();
+  const { projectId, expandedProjects, setProjectExpanded } = useWorkspace();
   const startConversation = useNewConversation();
   const current = projectId === project.id;
   const expanded = expandedProjects[project.id] ?? current;
@@ -124,21 +124,16 @@ function ProjectGroup({
       ? selectedThread
       : undefined;
   const visible = visibleThreads(rows, matchingSelected, all ? undefined : projectThreadPreview);
-  const openProjectPage = () => {
-    onNavigate();
-    useWorkspace.getState().switchProject(project.id, true);
-  };
   return (
     <div className={`project-group ${current ? 'current' : ''}`}>
-      <div className={`project-navigation-row ${current && projectPage ? 'selected' : ''}`}>
+      <div className="project-navigation-row">
         <button
           className="project-name"
           title={project.name}
-          aria-current={current && projectPage ? 'page' : undefined}
           aria-expanded={expanded}
           aria-controls={`project-conversations-${project.id}`}
           onClick={(event) => {
-            // 双击只处理第一次点击，避免列表连续收放；项目页面由菜单打开。
+            // 双击只处理第一次点击，避免列表连续收放。
             if (event.detail > 1) return;
             setProjectExpanded(project.id, !expanded);
           }}
@@ -159,7 +154,7 @@ function ProjectGroup({
             <Plus size={14} />
           </button>
         )}
-        <ProjectMenu project={project} onEdit={onEdit} onHome={openProjectPage} />
+        <ProjectMenu project={project} onEdit={onEdit} />
       </div>
       {expanded && (
         <div

@@ -9,7 +9,7 @@
 .app-shell.legacy-visual.has-account-header
   > :is(
     .workspace-main,
-    .project-home,
+    .workspace-placeholder,
     .knowledge-workspace,
     .handover-workbench,
     .ledger-workspace
@@ -35,14 +35,7 @@
   min-width: 0;
   overflow: hidden;
 }
-.workspace-topbar
-  :is(
-    .chat-heading,
-    .handover-header,
-    .project-home-header,
-    .knowledge-page-heading,
-    .ledger-heading
-  ) {
+.workspace-topbar :is(.chat-heading, .handover-header, .knowledge-page-heading, .ledger-heading) {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,7 +51,7 @@
 .workspace-topbar .chat-heading {
   font-size: 13px;
 }
-.workspace-topbar :is(.handover-header, .project-home-header, .ledger-heading) h1 {
+.workspace-topbar :is(.handover-header, .ledger-heading) h1 {
   margin: 0;
   font-size: 17px;
   line-height: 1.45;
@@ -273,7 +266,7 @@
   .workspace-topbar .handover-header p {
     display: none;
   }
-  .workspace-topbar :is(.handover-header, .project-home-header, .ledger-heading) h1,
+  .workspace-topbar :is(.handover-header, .ledger-heading) h1,
   .workspace-topbar .knowledge-heading-title strong {
     font-size: 14px;
   }
@@ -281,10 +274,6 @@
     min-height: 32px;
     font-size: 12px;
     padding: 6px 8px;
-  }
-  .workspace-topbar .project-home-actions .button {
-    font-size: 11px;
-    padding: 6px;
   }
   .workspace-topbar .chat-heading {
     gap: 8px;

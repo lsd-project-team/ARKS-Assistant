@@ -9,21 +9,17 @@ export function projectsState(
 ): Pick<
   WorkspaceState,
   | 'projectId'
-  | 'projectPage'
   | 'projectSessions'
   | 'sourceBindings'
   | 'expandedProjects'
   | 'setProjectExpanded'
   | 'initializeProject'
   | 'switchProject'
-  | 'setProjectPage'
   | 'startConversation'
   | 'resetProjectSource'
 > {
   return {
     projectId: '',
-
-    projectPage: false,
 
     projectSessions: {},
 
@@ -45,15 +41,14 @@ export function projectsState(
         return { projectId, drafts };
       }),
 
-    switchProject: (projectId, projectPage = false) =>
+    switchProject: (projectId) =>
       set((state) => {
-        if (state.projectId === projectId) return { projectPage };
+        if (state.projectId === projectId) return {};
         const sessions = { ...state.projectSessions, [state.projectId]: projectSession(state) };
         const next = sessions[projectId] || emptyProjectSession();
         return {
           ...next,
           projectId,
-          projectPage,
           projectSessions: sessions,
           historicalSource: null,
           readingFocused: false,
@@ -65,8 +60,6 @@ export function projectsState(
           jump: { line: next.positions[next.activePath] || 1, time: Date.now(), align: 'start' },
         };
       }),
-
-    setProjectPage: (projectPage) => set({ projectPage }),
 
     startConversation: (projectId) => {
       // 先固定项目，再进入新草稿，源码、仓库、资料开关沿用该项目的配置。

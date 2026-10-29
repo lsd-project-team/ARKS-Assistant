@@ -58,12 +58,10 @@ test('统一新对话动作保留当前项目源码阅读位置及已有对话�
   state().setDraft('B 的旧对话草稿');
   state().openFile('Program.cs', 40);
   state().savePosition('Program.cs', 40);
-  state().setProjectPage(true);
   state().setSidebarView('archived');
   state().startConversation(newConversationProject(creationProjects, 'B'));
   assert.equal(state().projectId, 'B');
   assert.equal(state().threadId, '');
-  assert.equal(state().projectPage, false);
   assert.equal(state().sidebarView, 'active');
   assert.equal(state().positions['Program.cs'], 40);
   assert.equal(draftFor(state()).content, 'B 的新对话草稿');
@@ -81,7 +79,6 @@ test('从项目新建独立对话时保留项目会话和草稿，独立草稿�
   state().startConversation(newConversationProject(creationProjects));
   assert.equal(state().projectId, 'independent');
   assert.equal(state().threadId, '');
-  assert.equal(state().projectPage, false);
   assert.equal(state().sidebarView, 'active');
   assert.equal(state().activePath, '');
   state().setDraft('独立对话的草稿');
@@ -156,8 +153,6 @@ test('刷新和项目切换仍恢复最后点击的入口，独立对话仅在�
   );
   assert.equal(threadSelectedAt(row, 'recent', state()), true);
   assert.equal(threadSelectedAt(row, 'project', state()), false);
-  state().setProjectPage(true);
-  assert.equal(threadSelectedAt(row, 'recent', state()), false);
   state().switchProject('independent');
   state().selectThread('standalone');
   const standalone = { id: 'standalone', project_id: null };
@@ -260,21 +255,32 @@ test('空白新对话草稿也按项目隔离，发送旧草稿不覆盖新项�
   assert.equal(api().drafts['new:project-a'], undefined);
 });
 
-test('刷新后从持久化状态恢复当前项目与其他项目的阅读记录', () => {
+test('刷新时丢弃旧项目首页开关，恢复对话、草稿和各项目的阅读记录', () => {
   reset();
   const api = () => useWorkspace.getState();
   api().initializeProject('project-a');
+  api().selectThread('chat-a');
+  api().setDraft('A 的草稿');
   api().openFile('A.cs', 2);
   api().savePosition('A.cs', 2);
   api().switchProject('project-b');
+  api().selectThread('chat-b');
+  api().setDraft('B 的草稿');
   api().openFile('B.cs', 5);
   const options = useWorkspace.persist.getOptions();
-  const persisted = options.partialize(api());
+  const persisted = { ...options.partialize(api()), projectPage: true };
   const restored = options.merge(persisted, useWorkspace.getInitialState());
   useWorkspace.setState(restored, true);
   assert.equal(api().projectId, 'project-b');
+  assert.equal(api().threadId, 'chat-b');
+  assert.equal(draftFor(api()).content, 'B 的草稿');
+  assert.equal('projectPage' in api(), false);
+  assert.equal('setProjectPage' in api(), false);
+  assert.equal('projectPage' in options.partialize(api()), false);
   assert.equal(api().activePath, 'B.cs');
   api().switchProject('project-a');
+  assert.equal(api().threadId, 'chat-a');
+  assert.equal(draftFor(api()).content, 'A 的草稿');
   assert.equal(api().activePath, 'A.cs');
   assert.equal(api().jump.line, 2);
 });

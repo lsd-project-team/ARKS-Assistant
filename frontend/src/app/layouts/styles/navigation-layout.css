@@ -19,3 +19,34 @@
 .navigation-divider:focus-visible::after {
   background: var(--text-secondary);
 }
+
+.workspace-placeholder {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100dvh;
+  overflow: auto;
+  background: var(--surface);
+}
+.workspace-empty {
+  display: flex;
+  min-height: 320px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px 24px;
+  color: var(--text-muted);
+}
+.workspace-empty h2 {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 500;
+  margin: 18px 0 0;
+}
+.workspace-empty p {
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 10px 0 20px;
+}

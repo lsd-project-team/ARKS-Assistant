@@ -10,7 +10,15 @@ import { useProjectAssociation } from '../hooks/useProjectAssociation';
 import { Select } from '../../../shared/ui/Select';
 import { useAuth } from '../../auth/AuthContext';
 
-export function ProjectEditor({ project, onClose }: { project?: Project; onClose: () => void }) {
+export function ProjectEditor({
+  project,
+  onClose,
+  onCreated,
+}: {
+  project?: Project;
+  onClose: () => void;
+  onCreated?: () => void;
+}) {
   const canConfigureSource = useAuth().session?.user.role === 'admin';
   const availableProjects = useProjects();
   const [name, setName] = useState(project?.name || '');
@@ -75,7 +83,8 @@ export function ProjectEditor({ project, onClose }: { project?: Project; onClose
       if (!project) {
         useWorkspace.getState().setSidebarView('active');
         useWorkspace.getState().setProjectExpanded(saved.id, true);
-        useWorkspace.getState().switchProject(saved.id, true);
+        useWorkspace.getState().switchProject(saved.id);
+        onCreated?.();
       }
       toast(project ? '项目已保存' : '项目已创建');
     } catch (reason) {

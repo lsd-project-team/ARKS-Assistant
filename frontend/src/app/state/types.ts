@@ -12,7 +12,6 @@ import type { ConversationDraft } from '../../features/chat/state/drafts.ts';
 export interface WorkspaceState extends FileNavigation {
   historicalSource: { source: SourceFile; start: number; end: number } | null;
   projectId: string;
-  projectPage: boolean;
   projectSessions: Record<string, ProjectSession>;
   sourceBindings: Record<string, string>;
   sidebarView: SidebarView;
@@ -21,10 +20,9 @@ export interface WorkspaceState extends FileNavigation {
   setThreadEntry: (id: string, entry: ThreadEntry) => void;
   setSidebarView: (view: SidebarView) => void;
   setProjectExpanded: (id: string, expanded: boolean) => void;
-  switchProject: (id: string, page?: boolean) => void;
+  switchProject: (id: string) => void;
   startConversation: (projectId: string) => void;
   initializeProject: (id: string) => void;
-  setProjectPage: (page: boolean) => void;
   resetProjectSource: (id: string) => void;
   threadId: string;
   messageJump: MessageJump;

@@ -50,7 +50,6 @@ export function chatState(
     selectThread: (threadId) =>
       set((state) => ({
         threadId,
-        projectPage: false,
         mobile: 'chat',
         messageJump: restoredMessageJump(state.chatPositions[threadId]),
       })),

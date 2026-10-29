@@ -273,14 +273,10 @@ export function ChatPane({
       <WorkspaceHeading className="chat-heading" active={showHeader}>
         <div>
           {project.data && (
-            <button
-              className="chat-project-name"
-              title="打开项目首页"
-              onClick={() => useWorkspace.getState().setProjectPage(true)}
-            >
+            <span className="chat-project-name" title={project.data.name}>
               {project.data.name}
               <span>/</span>
-            </button>
+            </span>
           )}
           <strong title={conversation.data?.title}>
             {conversation.data?.title || (threadId ? '正在打开对话…' : '新对话')}
@@ -499,8 +495,7 @@ export function ChatPane({
       <div className="composer-area">
         {archivedProject && (
           <div className="project-readonly-notice">
-            此项目已归档，历史内容可以查看。
-            <button onClick={() => useWorkspace.getState().setProjectPage(true)}>恢复项目</button>
+            此项目已归档，历史内容可以查看。可在侧栏项目菜单中恢复后继续对话。
           </div>
         )}
         <QuestionQueuePanel key={`queue:${threadId}`} queue={queue} threadId={threadId} />

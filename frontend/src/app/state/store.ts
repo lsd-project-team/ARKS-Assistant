@@ -23,7 +23,13 @@ export const useWorkspace = create<WorkspaceState>()(
       storage: createJSONStorage(() => mergedStorage(accountWorkspaceStorage)),
       skipHydration: true,
       merge: (persisted, current) => {
-        const state = { ...current, ...(persisted as Partial<WorkspaceState>) };
+        // 只恢复仍存在的字段，丢弃已移除页面留下的旧开关。
+        const restored = Object.fromEntries(
+          Object.entries((persisted || {}) as Partial<WorkspaceState>).filter(([key]) =>
+            Object.hasOwn(current, key),
+          ),
+        ) as Partial<WorkspaceState>;
+        const state = { ...current, ...restored };
         const history = state.history.length
           ? state.history
           : state.activePath
@@ -45,7 +51,6 @@ export const useWorkspace = create<WorkspaceState>()(
       },
       partialize: (state) => ({
         projectId: state.projectId,
-        projectPage: state.projectPage,
         projectSessions: state.projectSessions,
         sourceBindings: state.sourceBindings,
         sidebarView: state.sidebarView,

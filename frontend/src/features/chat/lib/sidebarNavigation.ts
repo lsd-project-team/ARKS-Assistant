@@ -13,17 +13,13 @@ export function threadSelectedAt(
   current: {
     projectId: string;
     threadId: string;
-    projectPage: boolean;
     threadEntries: Record<string, ThreadEntry>;
   },
 ) {
   // 同一对话在两处出现时，只高亮最后点击的入口；独立对话只有最近列表入口。
   const chosen = row.project_id ? current.threadEntries[row.id] || 'project' : 'recent';
   return (
-    !current.projectPage &&
-    current.projectId === threadProject(row) &&
-    current.threadId === row.id &&
-    chosen === entry
+    current.projectId === threadProject(row) && current.threadId === row.id && chosen === entry
   );
 }
 

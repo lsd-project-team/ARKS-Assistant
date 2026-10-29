@@ -19,7 +19,6 @@ import { useWindowSync } from './hooks/useWindowSync';
 import { useNavigationLayout } from './layouts/hooks/useNavigationLayout';
 import { useLayoutMotion } from './layouts/hooks/useLayoutMotion';
 import { WorkspaceLoadBoundary } from './layouts/WorkspaceLoadBoundary';
-import { ProjectHome } from '../features/projects/components/ProjectHome';
 import { useSourceContext } from '../features/source_reader/hooks/useSourceContext';
 import { ErrorText } from '../shared/ui/ui';
 import { useNewConversation } from '../features/chat/hooks/useNewConversation';
@@ -81,7 +80,6 @@ export default function App() {
     setMobile,
     navigationVersion,
     threadId,
-    projectPage,
     collapsed,
     codeOpen,
     explorerOpen,
@@ -178,11 +176,12 @@ export default function App() {
             />
           )}
         </WorkspaceNavigation>
-        {projectPage && !knowledgeOpen && !handover.open && !timing.open && <ProjectHome />}
         {timing.open && (
           <Suspense
             fallback={
-              <section className="project-home padded muted">正在加载动作耗时统计…</section>
+              <section className="workspace-placeholder padded muted">
+                正在加载动作耗时统计…
+              </section>
             }
           >
             <ActionTimingPage />
@@ -190,7 +189,9 @@ export default function App() {
         )}
         {handover.open && (
           <Suspense
-            fallback={<section className="project-home padded muted">正在加载交接工作台…</section>}
+            fallback={
+              <section className="workspace-placeholder padded muted">正在加载交接工作台…</section>
+            }
           >
             <HandoverWorkspace
               tab={handover.tab}
@@ -204,12 +205,12 @@ export default function App() {
           </Suspense>
         )}
         {knowledgeOpen && sourceContext.isPending && (
-          <section className="project-home padded muted" role="status">
+          <section className="workspace-placeholder padded muted" role="status">
             正在读取流程与功能资料…
           </section>
         )}
         {knowledgeOpen && sourceContext.isError && (
-          <section className="project-home padded">
+          <section className="workspace-placeholder padded">
             <ErrorText error={sourceContext.error} />
             <button className="button" onClick={() => void sourceContext.refetch()}>
               重新加载
@@ -217,8 +218,8 @@ export default function App() {
           </section>
         )}
         {knowledgeOpen && sourceContext.isSuccess && !sourceContext.data.knowledge_available && (
-          <section className="project-home">
-            <div className="project-empty">
+          <section className="workspace-placeholder">
+            <div className="workspace-empty">
               <h2>此项目还没有流程与功能资料</h2>
               <p>关联源码后，可以在对话中分析当前项目。已复核图谱属于原来的源码项目。</p>
               <button
@@ -251,10 +252,7 @@ export default function App() {
             </Suspense>
           </WorkspaceLoadBoundary>
         )}
-        <main
-          className="workspace-main"
-          hidden={knowledgeOpen || projectPage || handover.open || timing.open}
-        >
+        <main className="workspace-main" hidden={knowledgeOpen || handover.open || timing.open}>
           <div className="mobile-switch">
             <button
               className={mobile === 'chat' ? 'selected' : ''}
@@ -274,7 +272,7 @@ export default function App() {
             </button>
           </div>
           <ChatPane
-            showHeader={!knowledgeOpen && !projectPage && !handover.open && !timing.open}
+            showHeader={!knowledgeOpen && !handover.open && !timing.open}
             onSettings={(tab) => setDialog(tab === 'mcp' ? 'mcp' : 'settings')}
             onToggleWorkspace={toggleWorkspace}
           />

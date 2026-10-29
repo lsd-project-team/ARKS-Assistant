@@ -29,14 +29,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
-  const {
-    sidebarView: view,
-    setSidebarView,
-    projectId,
-    threadId,
-    projectPage,
-    threadEntries,
-  } = useWorkspace();
+  const { sidebarView: view, setSidebarView, projectId, threadId, threadEntries } = useWorkspace();
   const actions = useSidebarActions();
   const [creatingProject, setCreatingProject] = useState(false);
   const [locatedThread, setLocatedThread] = useState<Thread>();
@@ -59,11 +52,11 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
   const selected = useQuery({
     queryKey: ['thread', threadId, 'navigation'],
     queryFn: () => api<Thread>(`/threads/${threadId}?limit=1`, undefined, projectId),
-    enabled: !!threadId && !projectPage,
+    enabled: !!threadId,
     retry: false,
   });
   const selectedThread =
-    threadId && !projectPage && selected.data
+    threadId && selected.data
       ? { ...selected.data, project_state: project.data?.state || null }
       : undefined;
   const renderThread = (row: Thread, readOnly = false, entry: ThreadEntry = 'project') => (
@@ -73,7 +66,7 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
       selected={
         row.state === 'deleted'
           ? view === 'deleted' && locatedThread?.id === row.id
-          : threadSelectedAt(row, entry, { projectId, threadId, projectPage, threadEntries })
+          : threadSelectedAt(row, entry, { projectId, threadId, threadEntries })
       }
       filter=""
       busy={actions.pending === row.id}
@@ -197,7 +190,9 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
       {actions.moving && (
         <MoveThreadsDialog ids={actions.moving} onClose={() => actions.setMoving(undefined)} />
       )}
-      {creatingProject && <ProjectEditor onClose={() => setCreatingProject(false)} />}
+      {creatingProject && (
+        <ProjectEditor onClose={() => setCreatingProject(false)} onCreated={onNavigate} />
+      )}
     </aside>
   );
 }

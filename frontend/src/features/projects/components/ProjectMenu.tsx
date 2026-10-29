@@ -6,15 +6,7 @@ import { api, jsonBody } from '../../../app/api/client';
 import { toast } from '../../../shared/utils/toasts';
 import type { Project } from '../../../shared/types/api';
 
-export function ProjectMenu({
-  project,
-  onEdit,
-  onHome,
-}: {
-  project: Project;
-  onEdit: () => void;
-  onHome: () => void;
-}) {
+export function ProjectMenu({ project, onEdit }: { project: Project; onEdit: () => void }) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -128,15 +120,6 @@ export function ProjectMenu({
               }
             >
               {project.state === 'archived' ? '恢复项目' : '归档项目'}
-            </button>
-            <button
-              role="menuitem"
-              onClick={() => {
-                close();
-                onHome();
-              }}
-            >
-              查看项目
             </button>
           </div>,
           document.body,

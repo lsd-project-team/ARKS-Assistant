@@ -79,9 +79,6 @@
 .project-navigation-row:hover {
   background: var(--surface-hover);
 }
-.project-navigation-row.selected {
-  background: var(--selection-background);
-}
 .project-navigation-row .project-hover-action:hover {
   background: var(--selection-hover);
 }

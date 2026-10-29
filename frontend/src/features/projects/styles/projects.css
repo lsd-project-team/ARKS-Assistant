@@ -37,178 +37,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.project-home {
-  grid-column: 2;
-  grid-row: 1;
-  min-width: 0;
-  min-height: 0;
-  height: 100dvh;
-  overflow: auto;
-  background: var(--surface);
-}
-.project-home-content {
-  width: min(920px, 100%);
-  margin: 0 auto;
-  padding: 56px 40px 32px;
-}
-.project-home-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.project-home-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.45;
-  font-weight: 600;
-}
-.project-home-title > svg {
-  flex: none;
-  color: var(--text-secondary);
-}
-.project-home-name {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.project-archived-badge {
-  flex: none;
-  padding: 2px 6px;
-  border-radius: 5px;
-  background: var(--surface-hover);
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 400;
-}
-.project-home-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-}
-.project-home-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 34px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.project-chat-heading {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-}
-.project-chat-tools {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 22px 0 12px;
-}
-.project-chat-tools .search-box {
-  flex: 1;
-  margin: 0;
-}
-.project-chat-tools .ui-select-trigger {
-  width: 130px;
-}
-.project-chat-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 2px;
-  border-bottom: 1px solid var(--border);
-}
-.project-chat-row input[type='checkbox'] {
-  width: 14px;
-  height: 14px;
-  flex: none;
-  accent-color: var(--text);
-}
-.project-chat-row > button {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  gap: 7px;
-  background: transparent;
-  border: 0;
-  text-align: left;
-  padding: 4px;
-  color: var(--text);
-  border-radius: 6px;
-}
-.project-chat-row > button:hover {
-  background: var(--surface-hover);
-}
-.project-chat-row strong {
-  display: block;
-  width: 100%;
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.project-chat-row small {
-  color: var(--text-muted);
-  font-size: 11px;
-}
-.project-batch-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  font-size: 12px;
-}
-.project-empty {
-  display: flex;
-  min-height: 320px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 36px 24px;
-  color: var(--text-muted);
-}
-.project-empty h2 {
-  color: var(--text);
-  font-size: 18px;
-  font-weight: 500;
-  margin: 18px 0 0;
-}
-.project-empty p {
-  font-size: 13px;
-  line-height: 1.8;
-  margin: 10px 0 20px;
-}
-.project-home-footer {
-  display: flex;
-  gap: 8px;
-  padding-top: 32px;
-  margin-top: 28px;
-  border-top: 1px solid var(--border);
-}
 .project-readonly-notice {
   padding: 10px 16px;
   font-size: 12px;
   line-height: 1.7;
   color: var(--text-muted);
-}
-.project-readonly-notice button {
-  border: 0;
-  background: transparent;
-  color: var(--text);
-  text-decoration: underline;
-  cursor: pointer;
 }
 .project-editor > form {
   display: flex;
@@ -266,38 +99,12 @@
 .project-form .ui-select-trigger {
   width: 100%;
 }
-@media (max-width: 800px) {
-  .project-home-content {
-    padding: 28px 20px;
-  }
-}
 @media (max-width: 480px) {
-  .project-home-content {
-    padding: 24px 16px;
-  }
-  .project-home-bar {
-    flex-wrap: wrap;
-  }
-  .project-chat-tools {
-    flex-wrap: wrap;
-  }
-  .project-chat-tools .search-box {
-    flex-basis: 100%;
-  }
-  .project-batch-bar {
-    flex-wrap: wrap;
-  }
   .project-form {
     padding: 20px;
   }
 }
 
-.project-search-scope {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
 .source-folder-fields {
   display: flex;
   flex-direction: column;
@@ -345,13 +152,6 @@
 .material-view-lines span {
   position: sticky;
   left: 0;
-}
-.project-home-footer {
-  flex-wrap: wrap;
-}
-.project-search-scope .ui-select-trigger {
-  width: 190px;
-  font-size: 12px;
 }
 .historical-source-dialog {
   width: min(880px, calc(100vw - 32px));

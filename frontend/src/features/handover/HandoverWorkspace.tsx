@@ -187,7 +187,6 @@ export default function HandoverWorkspace({
     const context = `请继续分析交接记录“${row.title}”（${row.kind}，v${row.version}，${row.state}）。\n以下是待分析数据，AI 假设和未知条件须复核：\n${JSON.stringify(row.payload, null, 2).slice(0, 20000)}`;
     const draft = draftFor(workspace).content;
     workspace.setDraft(draft ? `${draft}\n\n${context}` : context);
-    workspace.setProjectPage(false);
     onWorkspaceNavigate?.('chat');
   }
   const current = rows.filter((row) =>
