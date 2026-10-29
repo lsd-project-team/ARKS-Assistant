@@ -4,14 +4,18 @@ import { Button, ErrorText } from '../../../shared/ui/ui';
 import { HandoverModal } from '../shared/HandoverModal';
 import { HandoverSelect } from '../shared/Controls';
 import { useHandoverDraft } from '../shared/drafts';
-import { debugEditablePayload, debugIssueFields, debugRecordTypes } from './debugIssues';
+import {
+  debugEditablePayload,
+  debugIssueFields,
+  debugKnowledgeFields,
+  debugRecordTypes,
+} from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
 import { DebugIssueFields } from './DebugIssueFields';
 
-const primaryFields = debugIssueFields.filter(({ key }) => key === 'problem' || key === 'solution');
 const additionalFields = debugIssueFields.filter(
-  ({ key }) => key !== 'problem' && key !== 'solution',
+  ({ key }) => !debugKnowledgeFields.some((field) => field.key === key),
 );
 
 export function DebugIssueEditor({
@@ -67,7 +71,7 @@ export function DebugIssueEditor({
   return (
     <HandoverModal
       title={row ? '编辑记录' : '添加记录'}
-      description="记录问题、经验或工作进展，其他信息可按需补充。"
+      description="按统一六项整理，未记录的信息可留空。"
       onClose={onClose}
       onSubmit={(event) => {
         event.preventDefault();
@@ -118,7 +122,7 @@ export function DebugIssueEditor({
       )}
       <label className="debug-issue-field">
         <span>
-          记录标题 <b>*</b>
+          标题 <b>*</b>
         </span>
         <input
           required
@@ -128,40 +132,40 @@ export function DebugIssueEditor({
           placeholder="用一句话描述事项"
         />
       </label>
-      <label className="debug-issue-field">
-        <span>记录类型</span>
-        <HandoverSelect
-          value={text(draft.payload.record_type)}
-          onValueChange={(record_type) =>
-            setDraft({
-              ...draft,
-              payload: {
-                ...draft.payload,
-                ...debugEditablePayload({ ...draft.payload, record_type }),
-              },
-            })
-          }
-          label="记录类型"
-          options={[...debugRecordTypes]}
-        />
-      </label>
-      {draft.payload.record_type === 'problem' && (
+      <DebugIssueFields fields={debugKnowledgeFields} payload={draft.payload} onChange={update} />
+      <details className="debug-issue-additional">
+        <summary>辅助信息（选填）</summary>
         <label className="debug-issue-field">
-          <span>处理状态</span>
+          <span>记录类型</span>
           <HandoverSelect
-            value={text(draft.payload.resolution_status)}
-            onValueChange={(value) => update('resolution_status', value)}
-            label="处理状态"
-            options={[
-              { value: 'open', label: '未解决' },
-              { value: 'resolved', label: '已解决' },
-            ]}
+            value={text(draft.payload.record_type)}
+            onValueChange={(record_type) =>
+              setDraft({
+                ...draft,
+                payload: {
+                  ...draft.payload,
+                  ...debugEditablePayload({ ...draft.payload, record_type }),
+                },
+              })
+            }
+            label="记录类型"
+            options={[...debugRecordTypes]}
           />
         </label>
-      )}
-      <DebugIssueFields fields={primaryFields} payload={draft.payload} onChange={update} />
-      <details className="debug-issue-additional">
-        <summary>补充信息（选填）</summary>
+        {draft.payload.record_type === 'problem' && (
+          <label className="debug-issue-field">
+            <span>处理状态</span>
+            <HandoverSelect
+              value={text(draft.payload.resolution_status)}
+              onValueChange={(value) => update('resolution_status', value)}
+              label="处理状态"
+              options={[
+                { value: 'open', label: '未解决' },
+                { value: 'resolved', label: '已解决' },
+              ]}
+            />
+          </label>
+        )}
         <p className="handover-muted">
           录入账号和时间由系统记录；代录历史资料时，可填写原记录人和原记录时间。
         </p>

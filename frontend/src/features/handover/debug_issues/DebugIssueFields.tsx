@@ -1,7 +1,7 @@
 import { text, type Payload } from '../shared/types';
-import { debugIssueFields } from './debugIssues';
+import { debugIssueFields, debugKnowledgeFields } from './debugIssues';
 
-type Field = (typeof debugIssueFields)[number];
+type Field = (typeof debugIssueFields)[number] | (typeof debugKnowledgeFields)[number];
 
 export function DebugIssueFields({
   fields,
@@ -39,13 +39,7 @@ export function DebugIssueFields({
                 maxLength={30000}
                 rows={3}
                 value={text(payload[field.key])}
-                placeholder={
-                  field.key === 'problem'
-                    ? '记录问题或经验，可把发生条件、处理经过和已知原因一并写在这里。'
-                    : 'placeholder' in field
-                      ? field.placeholder
-                      : '可选'
-                }
+                placeholder={'placeholder' in field ? field.placeholder : '可选'}
                 onChange={(event) => onChange(field.key, event.target.value)}
               />
             )}

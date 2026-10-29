@@ -91,20 +91,21 @@ async function submit() {
   await new Promise(setImmediate);
 }
 
-test('主表仅有五项，补充信息默认收起；已解决时处理办法必填，其他类型不显示处理状态', () => {
+test('主表统一六项，辅助信息默认收起；已解决时处理方法必填', () => {
   storage.clear();
   const html = render({}, row);
   const primary = html.split('<details')[0];
-  assert.equal((primary.match(/<label\b/g) || []).length, 5);
-  for (const label of ['记录标题', '记录类型', '处理状态', '记录内容', '处理办法'])
+  assert.equal((primary.match(/<label\b/g) || []).length, 6);
+  for (const label of ['标题', '适用条件', '内容说明', '处理方法', '结果记录', '注意事项'])
     assert.ok(primary.includes(label), label);
   assert.match(primary, /<textarea required=""[^>]*>更换密封圈<\/textarea>/);
   assert.match(
     html,
-    /<details class="debug-issue-additional"><summary>补充信息（选填）<\/summary>/,
+    /<details class="debug-issue-additional"><summary>辅助信息（选填）<\/summary>/,
   );
   for (const label of [
-    '发生条件',
+    '记录类型',
+    '处理状态',
     '设备与环境',
     '事项日期',
     '原记录人',

@@ -108,6 +108,11 @@ test('当前列表与固定版本详情隐藏来源信息，仍显示记录人�
   for (const value of ['实际结果保留', '原始回答保留', '待验证', '查看最新记录']) {
     assert.ok(detail.includes(value), value);
   }
+  const primary = detail.split('<details')[0];
+  for (const label of ['标题', '适用条件', '内容说明', '处理方法', '结果记录', '注意事项']) {
+    assert.ok(primary.includes(`<dt>${label}</dt>`), label);
+  }
+  assert.ok(!primary.includes('<dt>关键词</dt>'));
   const archived = renderToStaticMarkup(
     createElement(DebugIssuePage, {
       rows: [{ ...row, state: 'archived' }],

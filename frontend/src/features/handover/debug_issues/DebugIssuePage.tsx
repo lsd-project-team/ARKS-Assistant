@@ -72,7 +72,7 @@ export function DebugIssuePage({
             <p>{text(row.payload.problem)}</p>
             {text(row.payload.solution) && (
               <div className="debug-issue-solution">
-                <span>处理办法</span>
+                <span>处理方法</span>
                 {text(row.payload.solution)}
               </div>
             )}

@@ -134,7 +134,7 @@ async def test_read_tool_keeps_complete_business_text_without_image_or_source_in
             offset = page["next_offset"]
         assert len(chunks) > 1
         content = json.loads("".join(chunks))
-        assert content["记录正文"] == problem
+        assert content["内容说明"] == problem
         assert content["录入原文"] == problem
         assert content["处理状态"] == "未解决"
         assert content["记录类别"] == "问题处理"

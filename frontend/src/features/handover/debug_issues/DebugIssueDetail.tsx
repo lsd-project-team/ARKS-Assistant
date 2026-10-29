@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { HandoverModal } from '../shared/HandoverModal';
-import { debugIssueFields, debugRecordType, debugStatus, debugVisiblePayload } from './debugIssues';
+import {
+  debugIssueFields,
+  debugKnowledgeFields,
+  debugKnowledgePayload,
+  debugRecordType,
+  debugStatus,
+  debugVisiblePayload,
+} from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
 import { DebugIssueImages } from './DebugIssueImages';
@@ -27,6 +34,13 @@ export function DebugIssueDetail({
 }) {
   const { session } = useAuth();
   const payload = debugVisiblePayload(row.payload);
+  const knowledge = debugKnowledgePayload(payload);
+  const auxiliaryFields = debugIssueFields.filter(
+    ({ key }) =>
+      !debugKnowledgeFields.some((field) => field.key === key) &&
+      key !== 'investigation' &&
+      key !== 'cause',
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
   async function archive() {
@@ -74,21 +88,36 @@ export function DebugIssueDetail({
         )}
       </div>
       <dl className="debug-issue-detail-fields">
-        {debugIssueFields
-          .filter(({ key }) => text(payload[key]))
-          .map(({ key, label }) => (
-            <div key={key}>
-              <dt>{label}</dt>
-              <dd>{text(payload[key])}</dd>
-            </div>
-          ))}
-        {!!ids(payload.keywords).length && (
-          <div>
-            <dt>关键词</dt>
-            <dd>{ids(payload.keywords).join('、')}</dd>
+        <div>
+          <dt>标题</dt>
+          <dd>{row.title}</dd>
+        </div>
+        {debugKnowledgeFields.map(({ key, label }) => (
+          <div key={key}>
+            <dt>{label}</dt>
+            <dd>{text(knowledge[key]) || '—'}</dd>
           </div>
-        )}
+        ))}
       </dl>
+      <details className="debug-issue-additional">
+        <summary>辅助信息</summary>
+        <dl className="debug-issue-detail-fields">
+          {auxiliaryFields
+            .filter(({ key }) => text(payload[key]))
+            .map(({ key, label }) => (
+              <div key={key}>
+                <dt>{label}</dt>
+                <dd>{text(payload[key])}</dd>
+              </div>
+            ))}
+          {!!ids(payload.keywords).length && (
+            <div>
+              <dt>关键词</dt>
+              <dd>{ids(payload.keywords).join('、')}</dd>
+            </div>
+          )}
+        </dl>
+      </details>
       {!version && row.state !== 'archived' && (
         <DebugIssueImageUpload row={row} client={client} onChanged={onChanged} />
       )}

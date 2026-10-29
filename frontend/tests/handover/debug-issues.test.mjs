@@ -5,7 +5,32 @@ import {
   debugEditablePayload,
   debugStatus,
   debugVisiblePayload,
+  debugKnowledgePayload,
 } from '../../src/features/handover/debug_issues/debugIssues.ts';
+
+test('六项投影保留旧字段事实，已合入方法和注意事项的内容不重复，也不补造结果', () => {
+  const payload = {
+    problem: '取片不稳定',
+    conditions: '现场加热',
+    device: 'ZX2200 HS',
+    module: 'S1',
+    investigation: '检查真空管路',
+    solution: '检查真空管路，再更换密封圈',
+    cause: '原记录认为密封圈破损',
+    notes: '原因判断：原记录认为密封圈破损',
+    original_text: '完整原文',
+    images: [{ id: '原图' }],
+  };
+  const original = structuredClone(payload);
+  const projected = debugKnowledgePayload(payload);
+  assert.equal(projected.problem, payload.problem);
+  assert.ok(projected.conditions.includes('设备：ZX2200 HS'));
+  assert.ok(projected.conditions.includes('模块：S1'));
+  assert.equal(projected.original_text, payload.original_text);
+  assert.deepEqual(projected.images, payload.images);
+  assert.equal(projected.verification, undefined);
+  assert.deepEqual(payload, original);
+});
 import { parseHandoverHash } from '../../src/features/handover/navigation.ts';
 
 test('调试问题搜索可组合报警码、处理方法和状态，不混入工作项', () => {

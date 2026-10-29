@@ -6,6 +6,7 @@ import json
 from langchain_core.tools import tool
 
 from app.agents.context.tokens import fit_text
+from app.modules.handover.domain.debug_knowledge import knowledge_sections
 from app.modules.handover.infrastructure.persistence.models import HandoverRecord
 from app.modules.knowledge.debug_matching import compatibility, explicit_filters, heating
 from app.modules.knowledge.feedback import references
@@ -24,24 +25,24 @@ SEARCH_FIELDS = {
     "device": 3,
 }
 READ_FIELDS = {
-    "problem": "记录正文",
+    "problem": "内容说明",
     "module": "模块",
     "keywords": "关键词",
     "cause": "原因",
-    "solution": "处理办法",
-    "conditions": "试验条件",
+    "solution": "处理方法",
+    "conditions": "适用条件",
     "environment": "环境",
     "software_version": "软件版本",
     "investigation": "排查经过",
     "device": "设备",
-    "verification": "验证记录",
+    "verification": "结果记录",
     "resolution_status": "处理状态",
     "record_type": "记录类别",
     "occurred_on": "事项日期",
     "recorded_by": "原记录人",
     "recorded_at": "原记录时间",
     "original_text": "录入原文",
-    "notes": "备注",
+    "notes": "注意事项",
 }
 STATUS_LABELS = {"open": "未解决", "resolved": "记录人反馈已解决", "recorded": "已记录"}
 TYPE_LABELS = {
@@ -109,7 +110,26 @@ def readable_payload(payload):
         "resolution_status": STATUS_LABELS.get(payload.get("resolution_status"), "未说明"),
         "record_type": TYPE_LABELS.get(payload.get("record_type"), "未说明"),
     }
-    return {label: values[key] for key, label in READ_FIELDS.items() if values.get(key)}
+    auxiliary = {
+        label: values[key]
+        for key, label in READ_FIELDS.items()
+        if key
+        not in {
+            "conditions",
+            "problem",
+            "investigation",
+            "cause",
+            "solution",
+            "verification",
+            "notes",
+        }
+        and values.get(key)
+    }
+    # 标题在外层记录及引用中；正文统一为其余五项，原文和检索辅助字段仍保留。
+    return {
+        **{key: value for key, value in knowledge_sections(payload).items() if value},
+        **auxiliary,
+    }
 
 
 class DebugIssueCorpus:
