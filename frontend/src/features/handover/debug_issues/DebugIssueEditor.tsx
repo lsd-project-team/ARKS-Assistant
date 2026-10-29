@@ -7,6 +7,12 @@ import { useHandoverDraft } from '../shared/drafts';
 import { debugEditablePayload, debugIssueFields, debugRecordTypes } from './debugIssues';
 import { ids, text, type HandoverRecord } from '../shared/types';
 import type { Client } from '../shared/client';
+import { DebugIssueFields } from './DebugIssueFields';
+
+const primaryFields = debugIssueFields.filter(({ key }) => key === 'problem' || key === 'solution');
+const additionalFields = debugIssueFields.filter(
+  ({ key }) => key !== 'problem' && key !== 'solution',
+);
 
 export function DebugIssueEditor({
   client,
@@ -61,7 +67,7 @@ export function DebugIssueEditor({
   return (
     <HandoverModal
       title={row ? '编辑记录' : '添加记录'}
-      description="保存问题、经验和工作进展，按原文填写记录人及时间。"
+      description="记录问题、经验或工作进展，其他信息可按需补充。"
       onClose={onClose}
       onSubmit={(event) => {
         event.preventDefault();
@@ -153,43 +159,22 @@ export function DebugIssueEditor({
           />
         </label>
       )}
-      <div className="debug-issue-editor-fields">
-        {debugIssueFields.map((field) => (
-          <label key={field.key} className={`debug-issue-field ${'short' in field ? 'short' : ''}`}>
-            <span>
-              {field.label}
-              {'required' in field && <b> *</b>}
-            </span>
-            {'short' in field ? (
-              <input
-                maxLength={2000}
-                value={text(draft.payload[field.key])}
-                onChange={(event) => update(field.key, event.target.value)}
-              />
-            ) : (
-              <textarea
-                required={
-                  'required' in field ||
-                  (field.key === 'solution' && draft.payload.resolution_status === 'resolved')
-                }
-                maxLength={30000}
-                rows={3}
-                value={text(draft.payload[field.key])}
-                placeholder={'placeholder' in field ? field.placeholder : '可选'}
-                onChange={(event) => update(field.key, event.target.value)}
-              />
-            )}
-          </label>
-        ))}
-      </div>
-      <label className="debug-issue-field">
-        <span>关键词</span>
-        <input
-          value={text(draft.payload.keywords_text)}
-          onChange={(event) => update('keywords_text', event.target.value)}
-          placeholder="用逗号分隔，如：取片、真空、报警码"
-        />
-      </label>
+      <DebugIssueFields fields={primaryFields} payload={draft.payload} onChange={update} />
+      <details className="debug-issue-additional">
+        <summary>补充信息（选填）</summary>
+        <p className="handover-muted">
+          录入账号和时间由系统记录；代录历史资料时，可填写原记录人和原记录时间。
+        </p>
+        <DebugIssueFields fields={additionalFields} payload={draft.payload} onChange={update} />
+        <label className="debug-issue-field">
+          <span>关键词</span>
+          <input
+            value={text(draft.payload.keywords_text)}
+            onChange={(event) => update('keywords_text', event.target.value)}
+            placeholder="用逗号分隔，如：取片、真空、报警码"
+          />
+        </label>
+      </details>
     </HandoverModal>
   );
 }

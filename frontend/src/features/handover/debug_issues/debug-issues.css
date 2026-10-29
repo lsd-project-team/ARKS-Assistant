@@ -151,6 +151,20 @@
 .debug-issue-editor-fields > .debug-issue-field:not(.short) {
   grid-column: 1/-1;
 }
+.debug-issue-additional {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.debug-issue-additional > summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.debug-issue-additional > p {
+  margin: 16px 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
 .debug-issue-detail-fields {
   margin: 0;
 }

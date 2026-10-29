@@ -167,3 +167,59 @@ def test_record_rejects_unknown_type_and_problem_without_problem_status(services
         response = client.post("/api/handover/debug-issues", json=issue_body(**changes))
         assert response.status_code == 422, response.text
         assert not DebugIssues(HandoverStore(database=client.app.state.auth.database)).rows()
+
+
+def test_compact_editor_roundtrip_keeps_supplementary_facts_and_fixed_ai_references(services):
+    with TestClient(create_app(services[0])) as client:
+        user = sign_in(client, "user").json()["user"]
+        payload = {
+            "record_type": "problem",
+            "resolution_status": "resolved",
+            "problem": "S1 真空报警 E901",
+            "solution": "更换密封圈",
+            "occurred_on": "8月24日",
+            "recorded_by": "原作者",
+            "recorded_at": "8月25日 10:14",
+            "conditions": "S1 加热时取片",
+            "environment": "离线环境，配方 A",
+            "device": "ZX2200 HS",
+            "software_version": "2.1.0",
+            "module": "S1 取片",
+            "investigation": "检查真空管路",
+            "cause": "密封圈破损",
+            "verification": "连续取片20次正常",
+            "notes": "保留原有说明",
+            "keywords": ["E901", "真空", "取片"],
+        }
+        created = client.post(
+            "/api/handover/debug-issues", json={"title": "真空报警", "payload": payload}
+        )
+        assert created.status_code == 201, created.text
+        row = created.json()
+        before = DebugIssueCorpus(services[1])
+        response = client.patch(
+            f"/api/handover/debug-issues/{row['id']}",
+            json={
+                "title": "更新标题",
+                "version": row["version"],
+                "payload": {**payload, "problem": "S1 真空报警 E901，补充现场现象"},
+            },
+        )
+        assert response.status_code == 200, response.text
+        updated = response.json()
+        for key, expected in payload.items():
+            if key != "problem":
+                assert updated["payload"][key] == expected
+        assert updated["payload"]["original_text"] == payload["problem"]
+        assert updated["payload"]["reported_by"] == user["display_name"]
+        assert updated["version"] == 2
+        current = DebugIssueCorpus(services[1])
+        matches = current.search("ZX2200 HS V2.1.0 S1 加热 E901")
+        assert matches[0]["id"] == row["id"] and matches[0]["version"] == 2
+        assert before.search("E901")[0]["version"] == 1
+        old = client.get(f"/api/handover/records/{row['id']}?version=1").json()
+        assert old["payload"]["problem"] == payload["problem"]
+        prompt, sources = current.prompt("E901 真空报警", 6000)
+        assert sources[0]["citation"] == f"debug-issue:{row['id']}/2"
+        for value in ("加热时取片", "密封圈破损", "更换密封圈", "连续取片20次正常", "原作者"):
+            assert value in prompt
