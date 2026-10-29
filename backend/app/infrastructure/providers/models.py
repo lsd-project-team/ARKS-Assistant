@@ -3,6 +3,7 @@
 import inspect
 import logging
 from functools import cached_property
+from urllib.parse import urlparse
 
 import anthropic
 import httpx
@@ -56,6 +57,13 @@ def create_model(settings: ModelSettings, *, summary: bool = False):
             "tool_calling": True,
         },
     }
+    # 官方 DeepSeek 默认开启思考，但不支持本应用的强制工具选择；
+    # 两种协议统一显式关闭，避免工具往返失败和未保留的思考内容导致 400。
+    if urlparse(settings.base_url).hostname == "api.deepseek.com":
+        if settings.protocol == "anthropic":
+            common["thinking"] = {"type": "disabled"}
+        else:
+            common["extra_body"] = {"thinking": {"type": "disabled"}}
     if settings.protocol == "anthropic":
         return OwnedChatAnthropic(**common)
     return ChatOpenAI(

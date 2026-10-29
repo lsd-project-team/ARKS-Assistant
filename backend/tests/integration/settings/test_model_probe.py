@@ -120,13 +120,34 @@ def streaming(protocol):
 
 
 @pytest.mark.parametrize("protocol", ["openai", "anthropic"])
-async def test_sdk_probe_streaming_tool_roundtrip_and_separate_summary(monkeypatch, protocol):
+@pytest.mark.parametrize(
+    "api_root,official_deepseek",
+    [
+        ("https://test.invalid", False),
+        ("https://api.deepseek.com", True),
+        ("https://api.deepseek.com.evil.invalid", False),
+        ("https://proxy.invalid/api.deepseek.com", False),
+    ],
+)
+async def test_sdk_probe_streaming_tool_roundtrip_and_separate_summary(
+    monkeypatch, protocol, api_root, official_deepseek
+):
     transport_api = httpx2 if protocol == "anthropic" else httpx
     requests = []
 
     def response(request):
         body = json.loads(request.content)
         requests.append(body)
+        if (
+            official_deepseek
+            and body.get("tool_choice") not in (None, "auto", "none")
+            and body.get("thinking") != {"type": "disabled"}
+        ):
+            # 官方默认思考模式不接受强制工具选择；HTTP 替身保留这条供应商契约。
+            return transport_api.Response(
+                400,
+                json={"error": {"type": "invalid_request_error", "message": "thinking enabled"}},
+            )
         if body.get("stream"):
             return transport_api.Response(
                 200, text=streaming(protocol), headers={"content-type": "text/event-stream"}
@@ -152,7 +173,7 @@ async def test_sdk_probe_streaming_tool_roundtrip_and_separate_summary(monkeypat
     monkeypatch.setattr(transport_api.AsyncHTTPTransport, "handle_async_request", send)
     settings = ModelSettings(
         protocol=protocol,
-        base_url="https://test.invalid/v1",
+        base_url=api_root + ("/anthropic" if protocol == "anthropic" else "/v1"),
         model="main",
         summary_model="compress",
         api_key="test-only-key",
@@ -165,6 +186,10 @@ async def test_sdk_probe_streaming_tool_roundtrip_and_separate_summary(monkeypat
     assert [row["model"] for row in requests] == ["main"] * 4 + ["compress"]
     budget_field = "max_tokens" if protocol == "anthropic" else "max_completion_tokens"
     assert all(row[budget_field] == 256 for row in requests)
+    if official_deepseek:
+        assert all(row["thinking"] == {"type": "disabled"} for row in requests)
+    else:
+        assert all("thinking" not in row for row in requests)
     assert "test-only-key" not in json.dumps(result)
 
 
