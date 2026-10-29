@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { SettingsDialog } from '../settings/components/SettingsDialog';
+import { DataMaintenancePanel } from './DataMaintenancePanel';
 import { ProjectEditor } from '../projects/components/ProjectEditor';
 import { Button, ErrorText } from '../../shared/ui/ui';
 import { Select } from '../../shared/ui/Select';
@@ -93,15 +94,21 @@ export function ConfigurationPage({
           <ErrorText error={projects.error || current.error} />
         </section>
       )}
-      <SettingsDialog
-        key={`${dataOnly}:${projectId}`}
-        open
-        embedded
-        initialTab={dataOnly ? 'data' : 'model'}
-        onDirtyChange={dirtyChanged}
-        allowedTabs={dataOnly ? ['data'] : ['model', 'mcp', 'sources', 'memory', 'appearance']}
-        onClose={() => {}}
-      />
+      {dataOnly ? (
+        <section className="admin-panel">
+          <DataMaintenancePanel />
+        </section>
+      ) : (
+        <SettingsDialog
+          key={projectId}
+          open
+          embedded
+          initialTab="model"
+          onDirtyChange={dirtyChanged}
+          allowedTabs={['model', 'mcp', 'sources', 'memory', 'appearance']}
+          onClose={() => {}}
+        />
+      )}
       {dataOnly && (
         <section className="admin-panel">
           <h2>恢复备份</h2>

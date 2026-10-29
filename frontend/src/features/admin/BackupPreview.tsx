@@ -1,4 +1,4 @@
-import type { BackupReport } from '../../../shared/types/api';
+import type { BackupReport } from '../../shared/types/api';
 
 export function BackupPreview({ report, filename }: { report: BackupReport; filename: string }) {
   return (

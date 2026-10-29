@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, Brain, Cable, Check, Cpu, HardDrive, LoaderCircle, Palette } from 'lucide-react';
+import { BookOpen, Brain, Cable, Check, Cpu, LoaderCircle, Palette } from 'lucide-react';
 import { useSettingsDraft } from '../hooks/useSettingsDraft';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { ModelSettingsPanel } from './ModelSettingsPanel';
 import { McpSettingsPanel } from './McpSettingsPanel';
-import { SettingsDataPanel } from './SettingsDataPanel';
 import { UnsavedNotice } from '../../../shared/ui/UnsavedNotice';
 import { ConfirmationNotice } from '../../../shared/ui/ConfirmationNotice';
 import { AppearanceSettings } from './AppearanceSettings';
@@ -35,7 +34,7 @@ export function SettingsDialog({
   const [mcpEditorVersion, setMcpEditorVersion] = useState(0);
   const controller = useSettingsDraft(open, onClose, advancedDirty);
   const sourceController = useSourcePreferences(open && tab === 'sources');
-  const configurationTab = tab === 'model' || tab === 'mcp' || tab === 'data';
+  const configurationTab = tab === 'model' || tab === 'mcp' || tab === 'memory';
   // 未应用的 JSON 也是草稿，切换标签页前要避免把它留在已卸载的编辑器里。
   const [pendingTab, setPendingTab] = useState<string>();
   useEffect(() => {
@@ -47,15 +46,8 @@ export function SettingsDialog({
   }, [open, startingTab]);
   const { draft, busy } = controller;
   useEffect(() => {
-    onDirtyChange?.(
-      controller.dirty || sourceController.dirty || advancedDirty,
-    );
-  }, [
-    controller.dirty,
-    sourceController.dirty,
-    advancedDirty,
-    onDirtyChange,
-  ]);
+    onDirtyChange?.(controller.dirty || sourceController.dirty || advancedDirty);
+  }, [controller.dirty, sourceController.dirty, advancedDirty, onDirtyChange]);
   useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
   function closeSettings() {
     if (advancedDirty) {
@@ -71,7 +63,7 @@ export function SettingsDialog({
       onClose={closeSettings}
       title="工作区设置"
       className="settings-dialog"
-      description="外观、模型配置、知识来源、长期记忆与本地数据"
+      description="外观、模型配置、知识来源与长期记忆"
     >
       <div className="dialog-tabs">
         {[
@@ -80,7 +72,6 @@ export function SettingsDialog({
           { id: 'mcp', title: 'MCP', icon: Cable },
           { id: 'sources', title: '知识来源', icon: BookOpen },
           { id: 'memory', title: '长期记忆', icon: Brain },
-          { id: 'data', title: '数据', icon: HardDrive },
         ]
           .filter((item) => !allowedTabs || allowedTabs.includes(item.id))
           .map((item) => (
@@ -104,7 +95,6 @@ export function SettingsDialog({
       <div className="dialog-body">
         {tab === 'appearance' && <AppearanceSettings />}
         {tab === 'sources' && <KnowledgeSourceSettings controller={sourceController} />}
-        {tab === 'memory' && <MemorySettingsPanel />}
         {configurationTab && controller.saved.isPending && <p className="muted">正在读取设置…</p>}
         {configurationTab && draft && (
           <fieldset className="settings-content" disabled={busy || !canConfigure}>
@@ -133,16 +123,21 @@ export function SettingsDialog({
                 }}
               />
             )}
-            {tab === 'data' && (
-              <SettingsDataPanel
-                settings={draft}
-                onChange={controller.setDraft}
-                busy={busy}
-                perform={controller.perform}
-              />
+            {tab === 'memory' && (
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={draft.auto_memory}
+                  onChange={(event) =>
+                    controller.setDraft({ ...draft, auto_memory: event.target.checked })
+                  }
+                />
+                允许后台从闲置聊天提取和整理长期记忆
+              </label>
             )}
           </fieldset>
         )}
+        {tab === 'memory' && <MemorySettingsPanel />}
         {configurationTab && !!controller.errors.length && (
           <ul className="settings-validation" role="alert">
             {controller.errors.map((message) => (
@@ -150,18 +145,18 @@ export function SettingsDialog({
             ))}
           </ul>
         )}
-        {tab !== 'memory' && tab !== 'sources' && (
+        {tab !== 'sources' && (
           <ErrorText
             error={controller.error || controller.saved.error}
             reveal={!!controller.error}
           />
         )}
-        {tab !== 'memory' && tab !== 'sources' && !!controller.error && (
+        {tab !== 'sources' && !!controller.error && (
           <Button disabled={busy} onClick={controller.reload}>
             读取最新设置
           </Button>
         )}
-        {tab !== 'memory' && tab !== 'sources' && controller.feedback && (
+        {tab !== 'sources' && controller.feedback && (
           <p className="success-text">
             <Check size={14} />
             {controller.feedback}
@@ -188,7 +183,7 @@ export function SettingsDialog({
           </ConfirmationNotice>
         )}
       </div>
-      <div className={tab === 'memory' ? 'modal-footer memory-footer' : 'modal-footer'}>
+      <div className="modal-footer">
         <span>
           {!canConfigure && configurationTab
             ? '系统配置由管理员维护'
@@ -198,11 +193,9 @@ export function SettingsDialog({
                 ? sourceController.dirty
                   ? '有未保存的知识来源修改'
                   : ''
-                : tab === 'memory'
-                  ? ''
-                  : controller.dirty || advancedDirty
-                    ? '有未保存的修改'
-                    : ''}
+                : controller.dirty || advancedDirty
+                  ? '有未保存的修改'
+                  : ''}
         </span>
         {tab === 'sources' && (
           <Button

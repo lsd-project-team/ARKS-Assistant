@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Download, RefreshCw, Upload } from 'lucide-react';
-import type { BackupReport, Settings, StorageStats } from '../../../shared/types/api';
-import { api } from '../../../app/api/client';
-import { Button, ErrorText } from '../../../shared/ui/ui';
-import { toast } from '../../../shared/utils/toasts';
+import type { BackupReport, StorageStats } from '../../shared/types/api';
+import { api } from '../../app/api/client';
+import { Button, ErrorText } from '../../shared/ui/ui';
+import { toast } from '../../shared/utils/toasts';
 import { BackupPreview } from './BackupPreview';
-import { sessionFetch } from '../../auth/session';
+import { sessionFetch } from '../auth/session';
+import './data-maintenance.css';
 
 function bytes(value: number) {
   if (value < 1024) return `${value} B`;
@@ -25,20 +26,28 @@ const groups = [
   ['other', '其他数据'],
 ] as const;
 
-export function SettingsDataPanel({
-  settings,
-  onChange,
-  busy,
-  perform,
-}: {
-  settings: Settings;
-  onChange: (settings: Settings) => void;
-  busy: boolean;
-  perform: (action: () => Promise<void>) => Promise<void>;
-}) {
+export function DataMaintenancePanel() {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<unknown>();
+  const submitting = useRef(false);
   const storage = useQuery({ queryKey: ['storage'], queryFn: () => api<StorageStats>('/storage') });
   const fileInput = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<{ filename: string; report: BackupReport }>();
+
+  async function perform(action: () => Promise<void>) {
+    if (submitting.current) return;
+    submitting.current = true;
+    setBusy(true);
+    setError(undefined);
+    try {
+      await action();
+    } catch (reason) {
+      setError(reason);
+    } finally {
+      submitting.current = false;
+      setBusy(false);
+    }
+  }
 
   async function inspect(file: File) {
     setPreview(undefined);
@@ -69,7 +78,7 @@ export function SettingsDataPanel({
   return (
     <div className="settings-fields">
       {storage.isPending && <p className="muted">正在统计本机存储…</p>}
-      <ErrorText error={storage.error} />
+      <ErrorText error={error || storage.error} reveal={!!error} />
       {storage.data && (
         <section className="storage-summary" aria-label="本机存储统计">
           <div className="storage-heading">
@@ -102,14 +111,6 @@ export function SettingsDataPanel({
           </p>
         </section>
       )}
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={settings.auto_memory}
-          onChange={(event) => onChange({ ...settings, auto_memory: event.target.checked })}
-        />
-        允许后台从闲置聊天提取和整理长期记忆
-      </label>
       <div className="button-row">
         <Button disabled={busy} onClick={() => void perform(backup)}>
           <Download size={14} />

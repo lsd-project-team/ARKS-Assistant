@@ -79,6 +79,7 @@ export function useSettingsDraft(open: boolean, onClose: () => void, advancedDir
       }),
     });
     cache.setQueryData(['settings'], response);
+    void cache.invalidateQueries({ queryKey: ['memory-status'] });
     const verifiedMcp: typeof mcpProbes = {};
     for (const server of response.mcp_servers) {
       const source = draft.mcp_servers.find((row) => row.id === server.id);
