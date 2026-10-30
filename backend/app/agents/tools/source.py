@@ -67,8 +67,12 @@ def source_tools(workspace: Workspace, evidence=None, progress=None):
 
     @tool
     async def search_source(query: str, glob: str = "*") -> str:
-        """Search literal text across this project's source roots with numbered snippets."""
-        return dump_json(await asyncio.to_thread(workspace.search, query, glob))
+        """Find literal numbered snippets across relevant source files, prioritizing code entries.
+
+        Results sample up to four snippets per file. If truncated, narrow glob or read
+        the relevant source range. Search hits do not prove callers or complete workflows.
+        """
+        return dump_json(await asyncio.to_thread(workspace.search, query, glob, diverse=True))
 
     @tool
     async def find_source_files(query: str) -> str:

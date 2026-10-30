@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import ReactMarkdown from 'react-markdown';
 import { JSDOM } from 'jsdom';
 import { init, use } from 'echarts/core';
 import { BarChart, LineChart, PieChart, TreeChart } from 'echarts/charts';
@@ -154,6 +155,31 @@ try {
     assert.match(html, /class="rich-content"/);
     assert.doesNotMatch(html, /未知内容块类型|此内容块暂时无法显示|<script>/);
     let graphics = 0;
+    const markdownDiagrams = [];
+    const markdown = [
+      ...segments
+        .filter((segment) => segment.type === 'markdown')
+        .map((segment) => segment.content),
+      ...blocks
+        .filter((block) => ['text', 'markdown'].includes(block.type))
+        .map((block) => block.content),
+    ];
+    // 普通mermaid围栏也是正式支持的格式，沿用同一Markdown解析器识别代码节点。
+    for (const content of markdown) {
+      renderToStaticMarkup(
+        createElement(ReactMarkdown, {
+          skipHtml: true,
+          components: {
+            code: ({ className, children }) => {
+              if (className?.split(/\s+/).includes('language-mermaid'))
+                markdownDiagrams.push(String(children));
+              return createElement('code', null, children);
+            },
+          },
+          children: content,
+        }),
+      );
+    }
     for (const block of blocks) {
       if (block.type === 'chart' || block.type === 'mindmap') {
         const chart = init(null, null, { renderer: 'svg', ssr: true, width: 640, height: 420 });
@@ -170,9 +196,13 @@ try {
         graphics++;
       }
     }
+    for (const content of markdownDiagrams) {
+      assert.match(await renderMermaid(content, false), /<svg/);
+      graphics++;
+    }
     summary.push({
       run_id: report.run_id,
-      types: blocks.map((block) => block.type),
+      types: [...blocks.map((block) => block.type), ...markdownDiagrams.map(() => 'mermaid')],
       graphics,
       rendered: true,
     });

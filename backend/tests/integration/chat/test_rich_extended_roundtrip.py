@@ -111,7 +111,8 @@ def test_actual_graph_api_stream_history_files_and_frontend_are_compatible(servi
         ]
         answer = rows[-1]["payload"]["answer"]
         assert all(document is not None for _, _, document in rich_documents(answer))
-        assert state["source_reviews"] == 1
+        assert state["source_reviews"] == 0
+        assert not any(row["kind"] == "source_review" for row in rows)
         formats = [row["payload"] for row in rows if row["kind"] == "answer_format_validation"]
         assert formats[-1] == {"passed": True, "blocks": 1, "errors": []}
         assert [row["payload"]["name"] for row in rows if row["kind"] == "tool_start"] == [
@@ -169,3 +170,130 @@ def test_actual_graph_api_stream_history_files_and_frontend_are_compatible(servi
         assert len(restored["messages"]) == 4
         assert restored["messages"][1]["content"] == answer
     assert (workspace.root / "Program.cs").read_bytes() == original
+
+
+def test_frontend_roundtrip_verifier_renders_standard_markdown_mermaid_fence():
+    report = {
+        "reports": [
+            {
+                "run_id": "markdown-flow",
+                "answer": (
+                    "实际主线示意：\n\n```mermaid\nflowchart TD\n A[接收输入] --> B[返回结果]\n```"
+                ),
+            }
+        ]
+    }
+    rendered = subprocess.run(
+        ["node", "--experimental-strip-types", "scripts/verification/rich-content-roundtrip.mjs"],
+        cwd=ROOT / "frontend",
+        input=json.dumps(report),
+        encoding="utf-8",
+        capture_output=True,
+        timeout=60,
+        check=False,
+    )
+    assert rendered.returncode == 0, rendered.stderr
+    assert json.loads(rendered.stdout)["reports"] == [
+        {"run_id": "markdown-flow", "types": ["mermaid"], "graphics": 1, "rendered": True}
+    ]
+
+
+def test_source_syntax_repair_keeps_steps_and_version_without_conclusion_review(
+    services, monkeypatch
+):
+    paths, _, workspace, _, _, settings = services
+    settings.save(AppSettings(model=ModelSettings(context_tokens=32768, output_tokens=4096)))
+    version = workspace.read("Program.cs")["version"]
+    good = (
+        "入口依据：[Program.cs:2](source:Program.cs#L2)\n\n```rich-content\n"
+        + json.dumps(
+            {
+                "version": 1,
+                "blocks": [
+                    {
+                        "id": "flow",
+                        "type": "step_flow",
+                        "steps": [
+                            {
+                                "id": "main",
+                                "title": "入口",
+                                "description": "Main方法体为空，没有后续动作。",
+                                "sources": [
+                                    {
+                                        "path": "Program.cs",
+                                        "start_line": 2,
+                                        "end_line": 2,
+                                        "version": version,
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            }
+        )
+        + "\n```"
+    )
+    broken = good.replace("]}\n```", "]\n```")
+    calls = {"main": 0, "repair": 0, "review": 0}
+
+    class Model(DeterministicModel):
+        def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            if "独立的源码结论复核器" in messages[0].text:
+                calls["review"] += 1
+                raise AssertionError("源码回答不能再调用结论复核")
+            calls["main"] += 1
+            if any(
+                isinstance(row, HumanMessage) and row.text.startswith("系统展示语法校验")
+                for row in messages
+            ):
+                calls["repair"] += 1
+                result = AIMessage(content=good)
+            elif any(
+                isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
+            ):
+                result = AIMessage(content=broken)
+            else:
+                result = AIMessage(
+                    content="",
+                    tool_calls=[
+                        {
+                            "id": "read-main",
+                            "name": "read_source",
+                            "args": {"path": "Program.cs", "start_line": 2, "end_line": 2},
+                        }
+                    ],
+                )
+            return ChatResult(generations=[ChatGeneration(message=result)])
+
+    monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
+    with TestClient(create_app(paths)) as client:
+        created = client.post(
+            project_api(client, "/threads/start"),
+            json={
+                "content": "Program.cs的入口步骤",
+                "source_options": {
+                    "use_knowledge": False,
+                    "use_memory": False,
+                    "use_deepwiki": False,
+                },
+            },
+        )
+        assert created.status_code == 201
+        run = created.json()
+        rows = events(client.get(project_api(client, f"/runs/{run['id']}/events")))
+        assert rows[-1]["payload"]["status"] == "completed"
+        assert rows[-1]["payload"]["answer"] == good
+        assert calls == {"main": 3, "repair": 1, "review": 0}
+        assert [
+            row["payload"]["passed"] for row in rows if row["kind"] == "answer_format_validation"
+        ] == [False, True]
+        assert not any(row["kind"] == "source_review" for row in rows)
+        assert [row["payload"]["name"] for row in rows if row["kind"] == "tool_start"] == [
+            "read_source"
+        ]
+        document = list(rich_documents(good))[0][2]
+        assert document.blocks[0].steps[0].sources[0].version == version
+        history = client.get(project_api(client, f"/threads/{run['thread_id']}")).json()
+        assert len(history["messages"]) == 2 and history["messages"][-1]["content"] == good
+        assert all("系统展示语法校验" not in row["content"] for row in history["messages"])

@@ -233,9 +233,8 @@ class AgentGraphBuilder:
                 ),
                 AnswerFormatValidation(emit),
                 *(
-                    [SourceEvidenceGuard(evidence, None if inspection else model)]
-                    if evidence is not None
-                    else []
+                    # 按用户要求不再调用源码结论复核模型，保留确定性的路径/行号/版本校验。
+                    [SourceEvidenceGuard(evidence)] if evidence is not None else []
                 ),
                 KnowledgeAnswerGuard(
                     None if inspection else model,

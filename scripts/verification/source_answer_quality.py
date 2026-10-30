@@ -143,7 +143,11 @@ async def verify(destination, selected):
                     documents = list(rich_documents(answer, include_incomplete=True))
                     checks = {
                         "citations": bool(validations and validations[-1]["passed"]),
-                        "source_review": bool(reviews and reviews[-1]["verdict"] == "passed"),
+                        "no_source_review": not reviews
+                        and not any(
+                            k == "provider_usage" and p.get("purpose") == "source_verification"
+                            for k, p in events
+                        ),
                         "format": all(doc is not None for _, _, doc in documents),
                         "history": repository.thread(run["thread_id"])["messages"][-1]["content"]
                         == answer,

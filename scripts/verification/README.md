@@ -1,6 +1,8 @@
 # 验证脚本
 
-`source_answer_quality.py --live --output output/source-answer/<新文件>.json` 使用当前供应商，在临时C#源码及数据库中验证方法解释、调用流程、问题定位与修改建议、逐字原文。只读正式配置至内存，支持`--cases explain flow fix verbatim`选择场景；不覆盖既有输出，不写正式账号或聊天。自动检查引用、模型事实复核、格式、历史一致性及原文，阅读质量仍须人工核对，见[本轮源码回答验收](../../docs/verification/source-answer-organization-20261030.md)。
+`source_answer_quality.py --live --output output/source-answer/<新文件>.json` 使用当前供应商，在临时C#源码及数据库中验证方法解释、调用流程、问题定位与修改建议、逐字原文。只读正式配置至内存，支持`--cases explain flow fix verbatim`选择场景；不覆盖既有输出，不写正式账号或聊天。自动检查引用、未调用源码结论复核、格式、历史一致性及原文，阅读质量仍须人工核对，历史结果见[源码回答验收](../../docs/verification/source-answer-organization-20261030.md)。
+
+`arks_source_answers.py --live --settings-data <正式配置所在目录> --source-root <真实只读源码根> --output output/arks-source-steps/live.json` 在隔离账号和数据库上复测“取片的步骤”及漏晶分支流程图；先放入无关经验话题检查切换，再实际检索ARKS源码。核对HTTP/SSE精确重放、当前引用、4/6条历史、无结论复核调用、源码指纹不变，以及步骤组件和普通Mermaid围栏的真实前端渲染。不执行设备，不向正式库写样例；消耗当前供应商额度，见[专项验收](../../docs/verification/source-retrieval-steps-20261030.md)。
 
 `rich_content_roundtrip.py --live` 使用当前真实供应商，在临时账号、源码、数据库及附件上验证新增富内容块的生成、现有 HTTP/SSE、重连重放、多轮历史及前端引擎渲染；只读正式配置至内存，不复制密钥或业务历史。需要前后端依赖，明确消耗模型额度，结果只写入 `output/`。见[本轮验收](../../docs/verification/rich-content-roundtrip-20261030.md)。
 

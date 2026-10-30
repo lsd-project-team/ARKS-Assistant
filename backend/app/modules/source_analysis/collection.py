@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from app.modules.source_analysis.csharp import CSharpAnalysis
+from app.modules.source_analysis.search_results import select_matches
 from app.modules.source_analysis.workspace import Workspace
 
 
@@ -74,17 +75,29 @@ class SourceCollection(Workspace):
             )
         return results
 
-    def search(self, query, glob="*", limit=100):
+    def search(self, query, glob="*", limit=100, *, diverse=False, path=""):
+        if path:
+            workspace, relative, prefix = self.locate(path)
+            result = workspace.search(query, glob, limit, diverse=diverse, path=relative)
+            return {
+                **result,
+                "matches": [{**row, "path": prefix + row["path"]} for row in result["matches"]],
+            }
         results = []
         truncated = False
         for prefix, workspace in [
             ("", self.primary),
             *[(source_prefix(key), workspace) for key, (_, workspace) in self.attached.items()],
         ]:
-            result = workspace.search(query, glob, limit + 1)
+            result = workspace.search(query, glob, limit + 1, diverse=diverse)
             results.extend({**row, "path": prefix + row["path"]} for row in result["matches"])
             truncated |= result["truncated"] or len(results) > limit
-        return {"matches": results[:limit], "truncated": truncated, "engine": "project-directories"}
+        chosen = select_matches(iter(results), query, limit, diverse=diverse)
+        return {
+            **chosen,
+            "truncated": truncated or chosen["truncated"],
+            "engine": "project-directories",
+        }
 
 
 class ProjectAnalysis(CSharpAnalysis):

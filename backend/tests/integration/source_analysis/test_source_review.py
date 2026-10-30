@@ -41,7 +41,9 @@ class SequenceReviewModel(DeterministicModel):
                 content="最后一次 return false 在 Move 调用之后。[依据](source:Program.cs#L4-L5)"
             )
         else:
-            answer = AIMessage(content="全部返回在 Move 前。[依据](source:Program.cs#L3-L5)")
+            answer = AIMessage(
+                content="Move 调用之后还有返回 false。[依据](source:Program.cs#L4-L5)"
+            )
         return ChatResult(generations=[ChatGeneration(message=answer)])
 
 
@@ -81,14 +83,17 @@ async def test_long_flow_keeps_model_format_through_source_fact_check_and_displa
     events = []
     answer = await runtime.execute(run, lambda *e: events.append(e))
     repository.finish(run["id"], answer)
-    assert answer == original and checked == [original]
+    assert answer == original and checked == []
+    assert not any(kind == "source_review" for kind, _ in events)
     assert repository.thread(run["thread_id"])["messages"][-1]["content"] == original
     assert not any(kind == "token" for kind, _ in events)
     assert any(kind == "answer_replace" and row["text"] == original for kind, row in events)
     runtime.semantic.close()
 
 
-async def test_semantic_correction_and_review_stream_are_separate(services, monkeypatch):
+async def test_chat_preserves_main_answer_without_calling_source_conclusion_reviewer(
+    services, monkeypatch
+):
     paths, _, workspace, repository, memory, settings = services
     (workspace.root / "Program.cs").write_text(
         "class Program {\n bool Ready() {\n if (false) return false;\n Move();\n"
@@ -117,7 +122,11 @@ async def test_semantic_correction_and_review_stream_are_separate(services, monk
     answer = await runtime.execute(run, lambda *event: events.append(event))
     assert "Move 调用之后" in answer and "全部返回在 Move 前" not in answer
     reviews = [payload["verdict"] for kind, payload in events if kind == "source_review"]
-    assert reviews == ["needs_correction", "passed"]
+    assert reviews == []
+    assert not any(
+        kind == "provider_usage" and payload.get("purpose") == "source_verification"
+        for kind, payload in events
+    )
     assert not any('"verdict"' in payload["text"] for kind, payload in events if kind == "token")
     runtime.semantic.close()
 

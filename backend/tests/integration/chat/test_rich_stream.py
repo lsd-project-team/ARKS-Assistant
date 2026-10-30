@@ -151,7 +151,7 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
     assert actual == answer
     validation = repository.run_event(run["id"], "answer_validation")
     assert validation["passed"] and validation["citations"][0]["start_line"] == 2
-    assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
+    assert repository.run_event(run["id"], "source_review") is None
 
 
 async def test_long_flow_is_reviewed_and_published_without_layout_rewriting(services, monkeypatch):
@@ -222,7 +222,8 @@ async def test_long_flow_is_reviewed_and_published_without_layout_rewriting(serv
     try:
         actual = await runtime.execute(run, lambda *event: events.append(event))
         repository.finish(run["id"], actual)
-        assert phases == ["review"] and actual == original
+        assert phases == [] and actual == original
+        assert not any(kind == "source_review" for kind, _ in events)
         displayed = [row["text"] for kind, row in events if kind == "answer_replace"]
         assert displayed == [original]
         assert repository.thread(run["thread_id"])["messages"][-1]["content"] == original

@@ -16,6 +16,7 @@ import tree_sitter_c_sharp
 from tree_sitter import Language, Parser
 
 from app.infrastructure.cache.versions import VersionCache
+from app.modules.source_analysis.search_results import select_matches
 
 IGNORED = {
     ".git",
@@ -134,20 +135,26 @@ class Workspace:
         )
         return list(islice(matches, limit))
 
-    def search(self, query: str, glob: str = "*", limit: int = 100) -> dict:
+    def search(
+        self, query: str, glob: str = "*", limit: int = 100, *, diverse=False, path=""
+    ) -> dict:
         if not query or len(query) > 300:
             raise ValueError("搜索词长度必须在 1 到 300 之间")
+        # 目录/文件范围须在截断之前生效，不能先取全库前100条再过滤。
+        self.resolve(path)
         # GB18030 的中文字节不能直接匹配 UTF-8 查询，先按文件编码解码。
         if not query.isascii():
-            return self._search_python(query, glob, limit)
+            return self._search_python(query, glob, limit, diverse=diverse, path=path)
         executable = shutil.which("rg")
         if executable:
-            result = self._ripgrep(executable, query, glob, limit)
+            result = self._ripgrep(executable, query, glob, limit, diverse=diverse, path=path)
             if result is not None:
                 return result
-        return self._search_python(query, glob, limit)
+        return self._search_python(query, glob, limit, diverse=diverse, path=path)
 
-    def _ripgrep(self, executable: str, query: str, glob: str, limit: int):
+    def _ripgrep(
+        self, executable: str, query: str, glob: str, limit: int, *, diverse=False, path=""
+    ):
         arguments = [
             executable,
             "--json",
@@ -161,7 +168,7 @@ class Workspace:
         ]
         for directory in IGNORED:
             arguments.extend(["--glob", f"!**/{directory}/**"])
-        arguments.extend(["--", query, "."])
+        arguments.extend(["--", query, path.replace("\\", "/") or "."])
         try:
             result = subprocess.run(
                 arguments, cwd=self.root, capture_output=True, timeout=12, check=False
@@ -170,50 +177,53 @@ class Workspace:
             return None
         if result.returncode not in (0, 1):
             return None
-        matches = []
-        for row in result.stdout.decode("utf-8", errors="replace").splitlines():
-            event = json.loads(row)
-            if event["type"] != "match":
-                continue
-            data = event["data"]
-            path = data["path"].get("text", "").replace("\\", "/").removeprefix("./")
-            try:
-                self.resolve(path)
-            except ValueError:
-                continue
-            text = data["lines"].get("text")
-            if text is None:
-                try:
-                    text, _ = decode_source(base64.b64decode(data["lines"]["bytes"]))
-                except (KeyError, ValueError):
+
+        def rows():
+            for row in result.stdout.decode("utf-8", errors="replace").splitlines():
+                event = json.loads(row)
+                if event["type"] != "match":
                     continue
-            matches.append(
-                {
+                data = event["data"]
+                path = data["path"].get("text", "").replace("\\", "/").removeprefix("./")
+                try:
+                    self.resolve(path)
+                except ValueError:
+                    continue
+                text = data["lines"].get("text")
+                if text is None:
+                    try:
+                        text, _ = decode_source(base64.b64decode(data["lines"]["bytes"]))
+                    except (KeyError, ValueError):
+                        continue
+                yield {
                     "path": path,
                     "line": data["line_number"],
                     "text": text.strip()[:500],
                 }
-            )
-            if len(matches) > limit:
-                break
-        return {"matches": matches[:limit], "truncated": len(matches) > limit, "engine": "ripgrep"}
 
-    def _search_python(self, query: str, glob: str, limit: int) -> dict:
-        matches = []
-        for target in self.files():
-            path = self.relative(target)
-            if not fnmatch.fnmatch(path, glob) and not fnmatch.fnmatch(target.name, glob):
-                continue
-            try:
-                source = self.read(path)
-            except (ValueError, OSError):
-                continue
-            for line, text in enumerate(source["content"].splitlines(), 1):
-                if query.casefold() in text.casefold():
-                    matches.append({"path": path, "line": line, "text": text.strip()[:500]})
-                if len(matches) > limit:
-                    return {"matches": matches[:limit], "truncated": True, "engine": "python"}
-        return {"matches": matches, "truncated": False, "engine": "python"}
+        return {**select_matches(rows(), query, limit, diverse=diverse), "engine": "ripgrep"}
+
+    def _search_python(self, query: str, glob: str, limit: int, *, diverse=False, path="") -> dict:
+        scope = self.resolve(path)
+
+        def rows():
+            for target in self.files():
+                if path and target != scope and not target.is_relative_to(scope):
+                    continue
+                relative_path = self.relative(target)
+                if not fnmatch.fnmatch(relative_path, glob) and not fnmatch.fnmatch(
+                    target.name, glob
+                ):
+                    continue
+                try:
+                    source = self.read(relative_path)
+                except (ValueError, OSError):
+                    continue
+                for line, text in enumerate(source["content"].splitlines(), 1):
+                    if query.casefold() in text.casefold():
+                        yield {"path": relative_path, "line": line, "text": text.strip()[:500]}
+
+        return {**select_matches(rows(), query, limit, diverse=diverse), "engine": "python"}
 
     def symbols(self, path: str) -> dict:
         source = self.read(path)

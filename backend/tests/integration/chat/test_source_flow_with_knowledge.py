@@ -119,16 +119,13 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
         saved = repository.run(run["id"])
         assert saved["status"] == "completed", saved.get("error")
         answer = saved["answer"]
-        if verdict == "passed":
-            assert answer == compact
-        else:
-            assert answer.startswith(compact)
+        assert answer == compact
         events = repository.events(run["id"])
         context = repository.run_event(run["id"], "context_sources")
         assert context["debug_issues"] == []
         assert not any(event["kind"] == "knowledge_search" for event in events)
-        assert phases == ["read", "answer", "review"]
-        assert repository.run_event(run["id"], "source_review")["verdict"] == verdict
+        assert phases == ["read", "answer"]
+        assert repository.run_event(run["id"], "source_review") is None
         validation = repository.run_event(run["id"], "answer_validation")
         assert validation["passed"] and all(row["valid"] for row in validation["citations"])
         assert len(validation["citations"]) == 1
@@ -210,10 +207,12 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
         answer = await runtime.execute(
             run, lambda kind, payload: repository.event(run["id"], kind, payload)
         )
-        assert answer == corrected and calls.count("answer") == 2
-        assert calls.count("review") == (2 if defect == "claim" else 1)
+        # 引用校验不再承诺语义纠错；只修路径、版本和工作区，主模型负责正文事实。
+        assert answer == (broken if defect == "claim" else corrected)
+        assert calls.count("answer") == (1 if defect == "claim" else 2)
+        assert calls.count("review") == 0
         assert repository.run_event(run["id"], "answer_validation")["passed"]
-        assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
+        assert repository.run_event(run["id"], "source_review") is None
         assert repository.run_event(run["id"], "context_sources")["debug_issues"] == []
         assert not any(
             event["kind"] == "knowledge_search" for event in repository.events(run["id"])

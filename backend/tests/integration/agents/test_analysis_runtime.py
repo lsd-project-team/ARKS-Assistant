@@ -198,8 +198,5 @@ async def test_partial_run_keeps_pending_target_and_continue_reuses_evidence(ser
     assert not next_progress["pending"]
     assert any(item["reason"] == "reuse_previous_analysis" for item in next_progress["reads"])
     assert repository.run_event(following["id"], "run_completion")["counts"]["success"] == 1
-    assert (
-        repository.run_event(following["id"], "run_completion")["semantic_review"]["verdict"]
-        == "passed"
-    )
+    assert repository.run_event(following["id"], "run_completion")["semantic_review"] is None
     runtime.semantic.close()

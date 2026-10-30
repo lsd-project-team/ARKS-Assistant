@@ -73,7 +73,7 @@ async def test_search_read_review_display_and_history_preserve_model_format(
         saved = repository.run(run["id"])
         assert saved["status"] == "completed", saved.get("error")
         assert saved["answer"] == answer
-        assert calls == {"main": 3, "review": 1}
+        assert calls == {"main": 3, "review": 0}
         events = repository.events(run["id"])
         assert [row["payload"]["name"] for row in events if row["kind"] == "tool_start"] == [
             "search_source",
@@ -81,7 +81,7 @@ async def test_search_read_review_display_and_history_preserve_model_format(
         ]
         assert repository.run_event(run["id"], "answer_validation")["passed"]
         assert repository.run_event(run["id"], "answer_format_validation")["passed"]
-        assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
+        assert repository.run_event(run["id"], "source_review") is None
         assert not any(
             row["kind"] in {"answer_draft", "answer_presentation", "token"} for row in events
         )

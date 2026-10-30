@@ -8,6 +8,7 @@ from langchain_core.tools import tool
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from sqlalchemy import func, select
 
+from app.agents.context.task_guidance import SOURCE_ANSWER_NOTE_ID
 from app.agents.runtime.engine import AgentRuntime
 from app.agents.runtime.feedback import error_feedback
 from app.core.config import AppSettings, McpSettings, ModelSettings
@@ -383,6 +384,7 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
         return "Program 是入口模块"
 
     def generate(_self, messages, *_a, **_kw):
+        messages = [row for row in messages if row.id != SOURCE_ANSWER_NOTE_ID]
         last = messages[-1]
         if getattr(last, "name", "") == "mcp_wiki_lookup":
             answer = AIMessage(content="核对完成。[Program.cs:2](source:Program.cs#L2)")
@@ -417,5 +419,7 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
     assert answer.startswith("核对完成。[Program.cs:2](source:Program.cs#L2)")
     assert stages[:2] == ["connecting_model", "connecting_mcp"]
     assert "reading_source" in stages and "reading_wiki" in stages
-    assert stages.count("generating") == 3 and stages[-1] == "checking_sources"
+    assert stages.count("generating") == 3 and "checking_sources" not in stages
+    assert any(kind == "answer_validation" and row["passed"] for kind, row in events)
+    assert not any(kind == "source_review" for kind, _ in events)
     assert len([kind for kind, _ in events if kind == "tool_end"]) == 2
