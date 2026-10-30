@@ -44,11 +44,7 @@ export function ContextDialog({
     queryKey: ['run-context', runId],
     queryFn: () => api<RunContext>(`/runs/${runId}/context`),
     enabled: open && !!runId,
-    staleTime: 1000,
-    refetchInterval: (query) =>
-      ['queued', 'running', 'cancelling'].includes(query.state.data?.trace?.status || '')
-        ? 1000
-        : false,
+    staleTime: Infinity,
   });
   const correction = useMutation({
     mutationFn: () =>
