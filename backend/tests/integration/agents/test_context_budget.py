@@ -71,12 +71,13 @@ def test_memory_injection_respects_token_budget_and_preserves_original(services)
     original = "用户偏好：默认中文回答。\n" + "稳定偏好" * 1000
     seed_memory(memories, MemoryWrite(name="偏好.md", scope="user", content=original))
     seed_memory(
-        memories, MemoryWrite(name="项目.md", content="入口：Program.cs\n" + "项目事实" * 1000)
+        memories, MemoryWrite(name="项目.md", content="入口：Program.cs，Main 是程序入口。")
     )
     prompt, selected = memories.prompt_snapshot("Program.cs 入口", max_tokens=400)
     assert text_tokens(prompt) <= 400
     assert selected[0]["scope"] == "user" and selected[0]["partial"]
     assert "历史源码状态：" in selected[0]["injected_text"]
+    assert "Main 是程序入口" in prompt and "稳定偏好" not in prompt
     assert original in memories.list()[0]["content"]
     assert memories.list()[0]["version"] == "2"
 
@@ -85,7 +86,7 @@ async def test_framework_budget_snapshot_survives_configuration_change(services,
     paths, _, workspace, repository, memories, settings = services
     configuration = AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512))
     settings.save(configuration)
-    seed_memory(memories, MemoryWrite(name="偏好.md", scope="user", content="回答偏好：中文"))
+    seed_memory(memories, MemoryWrite(name="入口.md", content="Program.cs 的 Main 是程序入口。"))
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_model",
         lambda *_args, **_kwargs: DeterministicModel(),

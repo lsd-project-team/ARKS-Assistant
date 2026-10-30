@@ -63,7 +63,12 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
         {},
     )
     seed_memory(
-        memories, MemoryWrite(name="偏好.md", scope="user", content="个人偏好保留标记，用中文回答")
+        memories,
+        MemoryWrite(
+            name="取片偏好.md",
+            scope="user",
+            content="个人偏好保留标记：讲解取片时保留适用条件，用中文回答",
+        ),
     )
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     tools, prompts, connections = [], [], []

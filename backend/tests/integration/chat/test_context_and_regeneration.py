@@ -190,7 +190,7 @@ def test_run_memory_snapshot_is_exact_and_survives_later_edits(services):
     saved = seed_memory(
         memories, MemoryWrite(name="偏好.md", scope="user", content="当时的回答偏好")
     )
-    prompt, snapshot = memories.prompt_snapshot()
+    prompt, snapshot = memories.prompt_snapshot("回答偏好")
     assert "当时的回答偏好" in prompt
     run = repository.create_run(thread["id"], "问题", [])
     repository.event(run["id"], "context_sources", {"memories": snapshot})
@@ -206,7 +206,7 @@ def test_run_memory_snapshot_is_exact_and_survives_later_edits(services):
     assert recorded["recorded"]
     assert "当时的回答偏好" in recorded["memories"][0]["content"]
     seed_memory(memories, MemoryWrite(name="长记忆.md", content="长内容" * 12000))
-    prompt, snapshot = memories.prompt_snapshot()
+    prompt, snapshot = memories.prompt_snapshot("偏好")
     assert len(prompt) <= 24000
     assert any(memory["partial"] for memory in snapshot)
     assert "\n\n".join(memory["injected_text"] for memory in snapshot) == prompt

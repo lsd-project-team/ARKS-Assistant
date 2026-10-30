@@ -107,7 +107,7 @@ async def test_extract_consolidate_publish_and_next_session_inject(services, wor
     assert not services[4].list()
     await background.run_once()
     assert calls == ["extract", "consolidate"]
-    prompt, rows = services[4].prompt_snapshot("回答")
+    prompt, rows = services[4].prompt_snapshot("回答偏好")
     assert "用户希望回答先说明结果" in prompt
     assert rows[0]["generated"] and rows[0]["source_thread_ids"] == [thread_id]
     files = list((services[0].memories / "automatic").rglob("MEMORY.md"))
@@ -181,7 +181,7 @@ async def test_changed_or_deleted_source_is_not_injected(services, worker):
     assert not services[4].list()
     with services[1].session.begin() as session:
         session.get(Thread, thread_id).state = "deleted"
-    assert not services[4].prompt_snapshot()[0]
+    assert not services[4].prompt_snapshot("回答偏好")[0]
 
 
 async def test_durable_memory_outlives_candidate_window_and_survives_next_consolidation(
@@ -269,7 +269,7 @@ def test_legacy_memory_archived_once_without_becoming_new_input(services):
     archived = services[0].memories / result / "user" / "旧记忆.md"
     assert archived.read_text(encoding="utf-8") == "旧的即时记忆"
     assert archive_legacy_memories(services[0]) is None
-    assert services[4].prompt_snapshot() == ("", [])
+    assert services[4].prompt_snapshot("回答偏好") == ("", [])
 
 
 def test_memory_api_is_read_only(services):
