@@ -10,6 +10,9 @@ export class BlockBoundary extends Component<
   static getDerivedStateFromError() {
     return { failed: true };
   }
+  componentDidUpdate(previous: Readonly<{ block: ContentBlock; children: ReactNode }>) {
+    if (this.state.failed && previous.block !== this.props.block) this.setState({ failed: false });
+  }
   render() {
     if (!this.state.failed) return this.props.children;
     return (

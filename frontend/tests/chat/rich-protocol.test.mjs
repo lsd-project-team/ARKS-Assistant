@@ -25,19 +25,38 @@ test('普通围栏、较长围栏里的协议示例不转换，CRLF 和波浪围
   );
 });
 test('损坏、未知版本、未知组件与多余操作字段安全降级', () => {
-  for (const content of [
-    '```rich-content\n{坏JSON}\n```',
-    fence({ version: 2, blocks: [] }),
-    fence({ version: 1, blocks: [{ id: 'x', type: 'iframe', src: 'javascript:alert(1)' }] }),
-    fence({
-      version: 1,
-      blocks: [{ id: 'x', type: 'text', content: '内容', onClick: 'delete()' }],
-    }),
-  ]) {
+  for (const content of ['```rich-content\n{坏JSON}\n```', fence({ version: 2, blocks: [] })]) {
     const [segment] = parseContent(content);
     assert.equal(segment.type, 'fallback');
     assert.equal(segment.content, content);
   }
+});
+test('未知和损坏块局部降级，相邻块及嵌套块保持正常且保留原文', () => {
+  const raw = { id: 'bad', type: 'iframe', src: 'javascript:alert(1)' };
+  const document = {
+    version: 1,
+    blocks: [
+      { id: 'before', type: 'markdown', content: '前文' },
+      raw,
+      {
+        id: 'after',
+        type: 'collapsible',
+        title: '详情',
+        blocks: [
+          { id: 'broken', type: 'text', onClick: 'delete()' },
+          { id: 'good', type: 'text', content: '后文' },
+        ],
+      },
+    ],
+  };
+  const [segment] = parseContent(fence(document));
+  assert.equal(segment.type, 'rich');
+  assert.equal(segment.document.blocks[0].type, 'markdown');
+  assert.deepEqual(segment.document.blocks[1].raw, raw);
+  assert.equal(segment.document.blocks[1].id, 'bad');
+  assert.equal(segment.document.blocks[2].blocks[0].type, 'unsupported');
+  assert.equal(segment.document.blocks[2].blocks[1].content, '后文');
+  assert.ok(parseDocument(JSON.stringify(document)).error);
 });
 test('缺失字段、重复 ID、表格错列、未知节点、非法路径被拒绝', () => {
   const invalid = [

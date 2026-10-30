@@ -7,6 +7,7 @@ import { createContentParser } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
 import { SourceReference } from './SourceReference';
 import { BlockBoundary } from './BlockBoundary';
+import { CodeContent, SourceReferenceBlock, ToolCall, UnsupportedContent } from './BasicBlocks';
 
 type Context = Pick<ComponentProps<typeof Markdown>, 'runId' | 'sourceId'>;
 const TextBlock = memo(function TextBlock({
@@ -27,28 +28,20 @@ const Block = memo(function Block({ block, runId, sourceId }: Context & { block:
   );
   switch (block.type) {
     case 'text':
+    case 'markdown':
       return renderText(block.content);
     case 'overview_grid':
       return <OverviewGrid block={block} renderText={renderText} renderSource={renderSource} />;
     case 'step_flow':
       return <StepFlow block={block} renderText={renderText} renderSource={renderSource} />;
     case 'source_reference':
-      return (
-        <div className="rich-sources">
-          {block.sources.map((source, index) => renderSource(source, `${block.id}:${index}`))}
-        </div>
-      );
+      return <SourceReferenceBlock block={block} renderSource={renderSource} />;
     case 'code':
-      return (
-        <div>
-          <CodeBlock filename={block.filename} startLine={block.start_line}>
-            <code className={block.language ? `language-${block.language}` : undefined}>
-              {block.content}
-            </code>
-          </CodeBlock>
-          {block.source && renderSource(block.source, block.id)}
-        </div>
-      );
+      return <CodeContent block={block} renderSource={renderSource} />;
+    case 'tool_call':
+      return <ToolCall block={block} />;
+    case 'unsupported':
+      return <UnsupportedContent block={block} />;
     case 'table':
       return <DataTable block={block} />;
     case 'diagram':

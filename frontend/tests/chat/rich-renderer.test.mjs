@@ -212,3 +212,35 @@ test('Markdown 表格使用独立滚动容器且保留转义竖线及单元格�
   assert.match(html, /A\|B/);
   assert.match(html, /text-align:right/);
 });
+
+test('markdown 和 tool_call 块真实分发，工具参数始终为文字且失败不影响相邻内容', () => {
+  const html = render(
+    '```rich-content\n' +
+      JSON.stringify({
+        version: 1,
+        blocks: [
+          { id: 'm', type: 'markdown', content: '**正常正文**' },
+          {
+            id: 't',
+            type: 'tool_call',
+            tool: {
+              id: 'call',
+              name: 'read_source',
+              arguments: { path: '**不能作为强调**<script>bad()</script>' },
+              status: 'error',
+              result: '文件不存在',
+            },
+          },
+          { id: 'bad', type: 'unknown' },
+          { id: 'end', type: 'text', content: '结尾正文' },
+        ],
+      }) +
+      '\n```',
+  );
+  assert.match(html, /<strong>正常正文<\/strong>/);
+  assert.match(html, /执行失败/);
+  assert.match(html, /文件不存在/);
+  assert.match(html, /\*\*不能作为强调\*\*/);
+  assert.doesNotMatch(html, /<script>|<strong>不能作为强调/);
+  assert.match(html, /结尾正文/);
+});

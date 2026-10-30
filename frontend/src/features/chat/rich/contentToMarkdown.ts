@@ -13,6 +13,7 @@ function blocksToMarkdown(blocks: ContentBlock[]): string {
       const title = 'title' in block && block.title ? `### ${block.title}\n\n` : '';
       switch (block.type) {
         case 'text':
+        case 'markdown':
           return block.content;
         case 'overview_grid':
           return (
@@ -74,6 +75,10 @@ function blocksToMarkdown(blocks: ContentBlock[]): string {
           );
         case 'collapsible':
           return title + blocksToMarkdown(block.blocks);
+        case 'tool_call':
+          return `工具：${block.tool.name}\n\n${JSON.stringify(block.tool.arguments, null, 2) ?? ''}\n\n${block.tool.result ?? '执行中'}`;
+        case 'unsupported':
+          return JSON.stringify(block.raw, null, 2);
       }
     })
     .join('\n\n');

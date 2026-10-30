@@ -10,8 +10,19 @@ interface BlockBase {
   id: string;
 }
 export interface TextBlock extends BlockBase {
-  type: 'text';
+  type: 'text' | 'markdown';
   content: string;
+}
+export interface ToolCallBlock extends BlockBase {
+  type: 'tool_call';
+  tool: ToolEvent;
+}
+// 仅由前端校验器生成，模型不能借此注册组件或事件。
+export interface UnsupportedBlock extends BlockBase {
+  type: 'unsupported';
+  original_type: string;
+  raw: unknown;
+  error: string;
 }
 export interface OverviewBlock extends BlockBase {
   type: 'overview_grid';
@@ -77,8 +88,11 @@ export type ContentBlock =
   | CodeContentBlock
   | TableBlock
   | DiagramBlock
+  | ToolCallBlock
+  | UnsupportedBlock
   | CollapsibleBlock;
 export interface RichDocument {
   version: 1;
   blocks: ContentBlock[];
 }
+import type { ToolEvent } from '../../../shared/types/api';
