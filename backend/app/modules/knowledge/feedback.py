@@ -42,7 +42,9 @@ def references(emit, kind, rows):
                 **({"compatibility": row["compatibility"]} if "compatibility" in row else {}),
                 **({"image_count": row.get("image_count", 0)} if kind == "debug_issue" else {}),
                 **(
-                    {"resolution_status": row["payload"].get("resolution_status")}
+                    {"resolution_status": row["resolution_status"]}
+                    if "resolution_status" in row
+                    else {"resolution_status": row["payload"].get("resolution_status")}
                     if "payload" in row
                     else {}
                 ),

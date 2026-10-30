@@ -20,6 +20,7 @@ from app.agents.runtime.answer_draft import FlowAnswerDraft
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
+from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.runtime.privacy import redact
 from app.agents.tools.conversation import conversation_tools
@@ -58,14 +59,7 @@ class AgentGraphBuilder:
         policy=None,
     ):
         runtime = self.runtime
-        # 自动带入及工具检索共用来源事件；复核不能读取未检索的其他记录。
-        debug_references, original_emit = {}, emit
-
-        def emit(kind, payload):
-            if kind == "knowledge_reference" and payload.get("kind") == "debug_issue":
-                debug_references[payload["id"]] = payload["version"]
-            return original_emit(kind, payload)
-
+        # 筛选后的工具结果和最终核查共用本轮资料范围。
         settings = current_configuration(runtime.settings, runtime.repository.database)
         options = SourceOptions.model_validate(source_options or {})
         instructions = await asyncio.to_thread(instruction_snapshot, runtime.paths)
@@ -111,12 +105,16 @@ class AgentGraphBuilder:
         if evidence is not None:
             evidence.user_request = requested_work
         tools += conversation_tools(runtime.repository, thread_id)
+        available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
         debug_issues = (
-            DebugIssueLookup(
-                runtime.repository.database,
-                emit,
+            KnowledgeRetrieval(
+                DebugIssueLookup(runtime.repository.database, emit, requested_work),
+                model,
                 requested_work,
+                emit,
+                available,
+                timeout=min(30, settings.model.timeout_seconds),
             )
             if options.use_knowledge
             else None
@@ -131,7 +129,6 @@ class AgentGraphBuilder:
         ]
         if not inspection and servers:
             tools += await runtime.remote_tools(servers, emit)
-        available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         budget = min(int(settings.model.context_tokens * 0.75), int(available * 0.9))
         memory_prompt, included_memories = (
             await MemorySelection(runtime.memories, model, settings.model, emit).prepare(
@@ -229,11 +226,12 @@ class AgentGraphBuilder:
                 KnowledgeAnswerGuard(
                     None if inspection else model,
                     question_text or "",
-                    lambda: debug_issues.review_records(debug_references) if debug_issues else [],
+                    lambda: debug_issues.review_records() if debug_issues else [],
                     emit,
                     available,
                     source_required=bool(evidence and evidence.required),
                     resolve=debug_issues.resolve_references if debug_issues else None,
+                    preselected=debug_issues.selected if debug_issues else None,
                 ),
                 FlowAnswerDraft(
                     None if inspection else model,

@@ -158,6 +158,10 @@ class DebugIssueCorpus:
             if row and row["version"] == version:
                 result.append(
                     {
+                        **{key: row[key] for key in ("id", "title", "version")},
+                        "citation": citation(row),
+                        "image_count": len(row["payload"].get("images", [])),
+                        "resolution_status": row["payload"].get("resolution_status", "open"),
                         "reference": reference(row),
                         "compatibility": compatibility(
                             row, self.context_filters or explicit_filters("")
@@ -353,7 +357,7 @@ class DebugIssueCorpus:
         return debug_issue_tools(self)
 
 
-def debug_issue_tools(corpus):
+def debug_issue_tools(corpus, *, search=None, read=None):
     @tool
     async def search_debug_issues(
         query: str,
@@ -365,8 +369,21 @@ def debug_issue_tools(corpus):
     ) -> str:
         """检索本系统已保存的问题与经验，包括历史故障、处理办法、设备试验结果和工作记录。
         按标题、设备、日期、现象或报警码关键词查找，内容来自本地记录库，不是项目源码。
+        运行时先独立筛选，仅返回与当前问题相关的原文片段；筛选失败不提供候选原文。
         未解决记录不是已验证方案；引用返回的真实 reference，包括实际标题和固定版本。
         """
+        if search is not None:
+            return json.dumps(
+                await search(
+                    query,
+                    limit,
+                    device=device,
+                    software_version=software_version,
+                    module=module,
+                    conditions=conditions,
+                ),
+                ensure_ascii=False,
+            )
         report = await asyncio.to_thread(
             corpus.search_report,
             query,
@@ -384,12 +401,16 @@ def debug_issue_tools(corpus):
     @tool
     async def read_debug_issue(record_id: str, offset: int = 0) -> str:
         """按 record_id 读取本系统问题与经验的固定版本原文，包括历史设备试验和处理记录。
+        运行时先独立筛选，仅返回与当前问题相关的原文片段，不返回未选中的内容。
         内容来自记录库，不是项目源码。存在 next_offset 时继续读取余文；历史方案须核对适用条件。
         使用返回的真实 reference，页面据此显示原图；不输出图片ID、文件名或内部字段名。
         图片由页面显示，本工具不识别图片内容。
         """
         return json.dumps(
-            await asyncio.to_thread(corpus.read, record_id, offset), ensure_ascii=False
+            await read(record_id, offset)
+            if read is not None
+            else await asyncio.to_thread(corpus.read, record_id, offset),
+            ensure_ascii=False,
         )
 
     from app.agents.tools.guards import safe_source_tools

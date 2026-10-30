@@ -123,7 +123,9 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
             ):
                 result = AIMessage(content=answer)
             else:
-                assert "默认用step_flow" in messages[0].text
+                # 入口解释只追加源码规则；流程布局规则仅用于明确的流程问法。
+                assert "【源码核查】" in messages[0].text
+                assert "默认用step_flow" not in messages[0].text
                 result = AIMessage(
                     content="",
                     tool_calls=[

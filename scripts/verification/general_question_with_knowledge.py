@@ -42,7 +42,7 @@ async def verify():
         original_scores = SemanticRetrieval.scores
         original_init = DebugIssueCorpus.__init__
         original_create = graph_builder.create_model
-        opened, searches, model_calls = [], [], []
+        opened, searches, model_calls, answer_contexts = [], [], [], []
         try:
             Base.metadata.create_all(services.database.engine)
             services.settings.load = lambda: configuration.model_copy(deep=True)
@@ -50,7 +50,16 @@ async def verify():
             DebugIssues(HandoverStore(database=services.database)).save(
                 DebugWrite(
                     title="合成阀门试验",
-                    payload={"problem": "2026年10月1日合成阀门试验，读数为42。仅记录了该日。"},
+                    payload={
+                        "problem": "2026年10月1日合成阀门试验，读数为42。"
+                        "其他阶段的候选专用干扰值999。"
+                    },
+                ),
+                {},
+            )
+            DebugIssues(HandoverStore(database=services.database)).save(
+                DebugWrite(
+                    title="其他事项", payload={"problem": "候选专用干扰串888，与阀门试验无关。"}
                 ),
                 {},
             )
@@ -69,7 +78,13 @@ async def verify():
 
             class CountCalls(BaseCallbackHandler):
                 def on_chat_model_start(self, _serialized, _messages, *, metadata=None, **_kwargs):
-                    model_calls.append((metadata or {}).get("lc_source", "answer"))
+                    purpose = (metadata or {}).get("lc_source", "answer")
+                    model_calls.append(purpose)
+                    if purpose == "answer":
+                        # 只检查模型实际收到的正文，避免调用ID、用量元数据碰巧包含测试数值。
+                        answer_contexts.append(
+                            "\n".join(message.text for batch in _messages for message in batch)
+                        )
 
             def counted_model(*args, **kwargs):
                 model = original_create(*args, **kwargs)
@@ -90,6 +105,7 @@ async def verify():
             ):
                 previous_opened, previous_searches = len(opened), len(searches)
                 previous_calls = len(model_calls)
+                previous_contexts = len(answer_contexts)
                 run = services.repository.create_run(prior["thread_id"], question, [], options)
                 services.runs.start(run)
                 await asyncio.gather(*services.runs.tasks.values())
@@ -103,6 +119,9 @@ async def verify():
                     row["payload"]["name"] for row in events if row["kind"] == "tool_start"
                 ]
                 requests = model_calls[previous_calls:]
+                contexts = "\n".join(answer_contexts[previous_contexts:])
+                assert "候选专用干扰串888" not in contexts
+                assert "候选专用干扰值999" not in contexts
                 if expected_scope == "general":
                     assert len(opened) == previous_opened and len(searches) == previous_searches
                     assert not tool_names and selection is None and review is None
@@ -129,12 +148,24 @@ async def verify():
                         "answer": answer,
                     }
                     assert len(opened) == previous_opened + 1 and len(searches) > previous_searches
-                    assert not selection["references"] and "没有选到" in answer
+                    assert selection and not selection["references"]
+                    assert any(
+                        text in answer for text in ("未找到", "没有", "未记录", "未能", "无相关")
+                    )
                     assert "42" not in answer and "debug-issue:" not in answer
+                    assert "42" not in contexts
                 else:
                     assert len(opened) == previous_opened + 1
                     assert selection["references"] and "42" in answer
-                    assert review["verdict"] in ("passed", "revised")
+                    assert review["verdict"] in ("passed", "revised"), {
+                        "answer": answer,
+                        "review": review,
+                        "checks": [
+                            row
+                            for row in events
+                            if row["kind"] in {"knowledge_stage_error", "knowledge_answer_check"}
+                        ],
+                    }
                 checks.append(
                     {
                         "question": question,
@@ -142,6 +173,7 @@ async def verify():
                         "answer": answer,
                         "tools": tool_names,
                         "model_requests": len(requests),
+                        "unselected_candidates_in_answer_context": False,
                         "corpus_loads": len(opened) - previous_opened,
                         "searches": len(searches) - previous_searches,
                     }

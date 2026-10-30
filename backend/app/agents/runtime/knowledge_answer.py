@@ -1,19 +1,19 @@
 """经验事实核查：筛选独立执行，终审不处理排版或重复抄录证据。"""
 
 import asyncio
+from inspect import iscoroutinefunction
 
 from langchain.agents.middleware.types import AgentMiddleware
 
 from app.agents.runtime.answer_completion import final_message
 from app.agents.runtime.knowledge_scope import (
-    SELECTION_GUIDANCE,
+    NO_MATCH,
     knowledge_references,
     scope_problems,
     scoped_fallback,
-    selection_input,
-    selection_result,
     source_only_answer,
 )
+from app.agents.runtime.knowledge_selection import KnowledgeSelection
 from app.agents.runtime.review_protocol import ReviewCalls, ReviewUnavailable
 from app.modules.chat.rich_presentation import project_rich_content
 from app.modules.source_analysis.evidence import citation_matches
@@ -53,12 +53,22 @@ def factual_result(result):
 
 class KnowledgeAnswerGuard(AgentMiddleware):
     def __init__(
-        self, model, question, sources, emit, input_limit, *, source_required=False, resolve=None
+        self,
+        model,
+        question,
+        sources,
+        emit,
+        input_limit,
+        *,
+        source_required=False,
+        resolve=None,
+        preselected=None,
     ):
         self.model, self.question, self.sources, self.emit = model, question, sources, emit
         self.calls = ReviewCalls(model, emit, input_limit)
         self.source_required = source_required
         self.resolve = resolve
+        self.preselected = preselected
 
     def unavailable(self, stage, code):
         self.emit("knowledge_stage_error", {"stage": stage, "code": code})
@@ -73,18 +83,28 @@ class KnowledgeAnswerGuard(AgentMiddleware):
         )
 
     async def select(self, records):
-        self.emit("stage", {"stage": "checking_sources", "detail": "选择符合本题的资料片段"})
-        scope, selected = await self.calls.ask(
-            SELECTION_GUIDANCE,
-            {"question": self.question, "records": selection_input(records)},
-            "knowledge_selection",
-            lambda result: selection_result(result, records),
-        )
-        self.emit(
-            "knowledge_selection",
-            {"scope": scope, "references": [row["reference"] for row in selected]},
-        )
-        return scope, selected
+        return await KnowledgeSelection(
+            self.model, self.question, self.emit, self.calls.input_limit
+        ).select(records)
+
+    def empty_preselection(self, answer):
+        """查询无合适资料和筛选失败分开处理，均不能放行模型补造的历史事实。"""
+        if not self.preselected or source_only_answer(
+            answer.text, source_required=self.source_required, question=self.question
+        ):
+            return False
+        scope, _ = self.preselected()
+        if scope == "general" and not knowledge_references(answer.text):
+            return False
+        if scope == "unavailable":
+            self.unavailable("knowledge_selection", "selection_unavailable")
+            candidate = scoped_fallback([])
+        else:
+            candidate = NO_MATCH
+            self.emit("knowledge_answer_review", {"verdict": "revised", "references": []})
+        answer.content = candidate
+        self.emit("answer_replace", {"text": candidate})
+        return True
 
     async def verify(self, candidate, records, record_context):
         for attempt in range(2):
@@ -130,13 +150,20 @@ class KnowledgeAnswerGuard(AgentMiddleware):
             return response
         records = self.sources()
         if not records and self.resolve and (references := knowledge_references(answer.text)):
-            records = await asyncio.to_thread(self.resolve, references)
+            if iscoroutinefunction(self.resolve):
+                await self.resolve(references)
+                records = self.sources()
+            else:
+                records = await asyncio.to_thread(self.resolve, references)
             if not records:
+                if self.empty_preselection(answer):
+                    return response
                 self.unavailable("knowledge_reference", "reference_unavailable")
                 answer.content = scoped_fallback([])
                 self.emit("answer_replace", {"text": answer.content})
                 return response
         if not records:
+            self.empty_preselection(answer)
             return response
         if source_only_answer(
             answer.text, source_required=self.source_required, question=self.question
@@ -149,7 +176,7 @@ class KnowledgeAnswerGuard(AgentMiddleware):
             return response
         original, selected, stage = answer.text, None, "knowledge_selection"
         try:
-            scope, selected = await self.select(records)
+            scope, selected = self.preselected() if self.preselected else await self.select(records)
             if scope == "general" and not knowledge_references(original):
                 # 候选不等于回答依据；普通问答的空筛选不能被替换成“资料不足”。
                 self.emit(
@@ -158,10 +185,7 @@ class KnowledgeAnswerGuard(AgentMiddleware):
                 )
                 return response
             if not selected and not citation_matches(project_rich_content(original)):
-                candidate = (
-                    "本轮返回的资料中，没有选到符合所问设备、时段或事项的内容，"
-                    "无法据此确认结果或展示对应原图。"
-                )
+                candidate = NO_MATCH
             else:
                 stage = "knowledge_verification"
                 references = {row["reference"] for row in selected}

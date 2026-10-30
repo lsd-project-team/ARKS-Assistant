@@ -30,13 +30,28 @@ class AgentRunExecutor:
         original_emit, observed = emit, {}
         knowledge_references = []
         hold_flow_answer, publishing_final = False, False
+        hold_knowledge_answer = False
 
         def emit(kind, payload):
+            nonlocal hold_knowledge_answer
             observed[kind] = payload
             if kind == "knowledge_reference":
                 knowledge_references.append(payload)
+                hold_knowledge_answer = (
+                    hold_knowledge_answer or payload.get("kind") == "debug_issue"
+                )
+            if kind == "tool_start" and payload.get("name") in {
+                "search_debug_issues",
+                "read_debug_issue",
+            }:
+                # 空筛选及筛选失败同样要等最后的事实边界处理，不能先流出补造的历史结果。
+                hold_knowledge_answer = True
             # 续写中间稿同样会发 answer_replace；只挡 token 会提前露出未整理、未复核正文。
-            if kind == "answer_replace" and hold_flow_answer and not publishing_final:
+            if (
+                kind == "answer_replace"
+                and (hold_flow_answer or hold_knowledge_answer)
+                and not publishing_final
+            ):
                 return
             return original_emit(kind, payload)
 
@@ -273,10 +288,8 @@ class AgentRunExecutor:
                             emit("stage", {"stage": "generating"})
                             generating = True
                         text += part
-                        # 经验草稿可能尚未筛除其他日期的候选，复核完成后统一显示最终稿。
-                        if not hold_flow_answer and not any(
-                            row.get("kind") == "debug_issue" for row in knowledge_references
-                        ):
+                        # 已筛选的经验仍可能被草稿误述，事实核查完成后统一显示最终稿。
+                        if not hold_flow_answer and not hold_knowledge_answer:
                             emit("token", {"text": part})
                 else:
                     if any(
@@ -350,6 +363,7 @@ class AgentRunExecutor:
                 formatted = format_answer(formatted, message["content"], emit)
             if (
                 hold_flow_answer
+                or hold_knowledge_answer
                 or formatted != text
                 or any(row.get("kind") == "debug_issue" for row in knowledge_references)
             ):
