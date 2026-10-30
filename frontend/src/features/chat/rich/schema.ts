@@ -1,4 +1,5 @@
 import type { ContentBlock, RichDocument, SourcePointer } from './types.ts';
+import { validateChart, validateMindmap, validateMermaidContent } from './visualValidation.ts';
 
 export const RICH_LIMITS = { bytes: 262144, blocks: 128, depth: 4 } as const;
 type ObjectValue = Record<string, unknown>;
@@ -178,6 +179,23 @@ export function validateDocument(value: unknown, recoverBlocks = false): RichDoc
             if (block.default_open !== undefined && typeof block.default_open !== 'boolean')
               throw new Error('折叠状态无效');
             return { ...block, blocks: blocks(block.blocks, depth + 1) } as unknown as ContentBlock;
+          case 'chart':
+            validateChart(block);
+            break;
+          case 'mindmap':
+            validateMindmap(block);
+            break;
+          case 'mermaid':
+            allowed(['title', 'content']);
+            text(block.content);
+            validateMermaidContent(block.content);
+            break;
+          case 'file':
+            allowed(['record_id', 'name', 'version']);
+            id(block.record_id);
+            text(block.name, 1024);
+            if (block.version !== undefined) integer(block.version);
+            break;
           case 'tool_call': {
             allowed(['tool']);
             const tool = object(block.tool);

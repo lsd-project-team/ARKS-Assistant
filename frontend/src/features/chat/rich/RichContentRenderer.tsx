@@ -1,4 +1,4 @@
-import { memo, useMemo, type ComponentProps } from 'react';
+import { lazy, memo, Suspense, useMemo, type ComponentProps } from 'react';
 import { Markdown } from '../../../app/components/Markdown';
 import { CodeBlock } from '../../../shared/ui/markdown/CodeBlock';
 import { CollapsibleSection, DataTable, OverviewGrid, StepFlow } from './ContentBlocks';
@@ -8,6 +8,19 @@ import type { ContentBlock, SourcePointer } from './types';
 import { SourceReference } from './SourceReference';
 import { BlockBoundary } from './BlockBoundary';
 import { CodeContent, SourceReferenceBlock, ToolCall, UnsupportedContent } from './BasicBlocks';
+
+const ChartBlock = lazy(() =>
+  import('./ChartBlock').then((module) => ({ default: module.ChartBlock })),
+);
+const MermaidBlock = lazy(() =>
+  import('./MermaidBlock').then((module) => ({ default: module.MermaidBlock })),
+);
+const MindmapBlock = lazy(() =>
+  import('./MindmapBlock').then((module) => ({ default: module.MindmapBlock })),
+);
+const FileBlock = lazy(() =>
+  import('./FileBlock').then((module) => ({ default: module.FileBlock })),
+);
 
 type Context = Pick<ComponentProps<typeof Markdown>, 'runId' | 'sourceId'>;
 const TextBlock = memo(function TextBlock({
@@ -42,6 +55,14 @@ const Block = memo(function Block({ block, runId, sourceId }: Context & { block:
       return <ToolCall block={block} />;
     case 'unsupported':
       return <UnsupportedContent block={block} />;
+    case 'chart':
+      return <ChartBlock block={block} />;
+    case 'mermaid':
+      return <MermaidBlock block={block} />;
+    case 'mindmap':
+      return <MindmapBlock block={block} />;
+    case 'file':
+      return <FileBlock block={block} />;
     case 'table':
       return <DataTable block={block} />;
     case 'diagram':
@@ -60,7 +81,9 @@ function Blocks({ blocks, runId, sourceId }: Context & { blocks: ContentBlock[] 
     <div className="rich-content">
       {blocks.map((block) => (
         <BlockBoundary key={block.id} block={block}>
-          <Block block={block} runId={runId} sourceId={sourceId} />
+          <Suspense fallback={<p role="status">正在加载内容组件…</p>}>
+            <Block block={block} runId={runId} sourceId={sourceId} />
+          </Suspense>
         </BlockBoundary>
       ))}
     </div>

@@ -40,7 +40,7 @@ const result = await build({
         builder.onResolve(
           {
             filter:
-              /(state\/store|api\/client|hooks\/useSourceCitation|components\/(HandoverMaterialViewer|SelectionPreview))$/,
+              /(state\/store|api\/client|hooks\/useSourceCitation|materials\/OriginalMaterialViewer|components\/(HandoverMaterialViewer|SelectionPreview))$/,
           },
           (args) => ({ path: args.path, namespace: 'boundary' }),
         );
@@ -49,10 +49,10 @@ const result = await build({
           contents: path.endsWith('store')
             ? 'export const useWorkspace = selector => selector({projectId:"p"}); useWorkspace.getState = () => ({projectId:"p"});'
             : path.endsWith('client')
-              ? 'export const api = () => {throw new Error("测试禁止网络")};'
+              ? 'export class ApiError extends Error {}; export const api = () => {throw new Error("测试禁止网络")};'
               : path.endsWith('useSourceCitation')
                 ? 'export const useSourceCitation = () => () => false; export const readCitationSource = () => { throw new Error("测试禁止网络"); };'
-                : 'export const HandoverMaterialViewer = () => null; export const SelectionPreview = () => null;',
+                : 'export const OriginalMaterialViewer = () => null; export const HandoverMaterialViewer = () => null; export const SelectionPreview = () => null;',
         }));
       },
     },

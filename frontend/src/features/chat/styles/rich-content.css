@@ -3,6 +3,79 @@
   gap: var(--answer-section-space, 28px);
   min-width: 0;
 }
+.rich-chart,
+.rich-mermaid {
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+.rich-chart figcaption,
+.rich-mermaid figcaption {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.rich-chart figcaption small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 4px;
+}
+.rich-chart-canvas {
+  height: 340px;
+  width: 100%;
+  min-width: 0;
+}
+.rich-mindmap .rich-chart-canvas {
+  height: 420px;
+}
+:is(.rich-chart, .rich-mermaid) > details {
+  border-top: 1px solid var(--border);
+  padding-block: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+:is(.rich-chart, .rich-mermaid) summary {
+  cursor: pointer;
+}
+.rich-mermaid-viewport {
+  overflow: auto;
+  max-height: 560px;
+  padding: 12px;
+  background: var(--surface-subtle);
+  border-radius: 8px;
+}
+.rich-mermaid-viewport img {
+  display: block;
+  min-width: 240px;
+  max-width: none;
+  margin: auto;
+}
+.rich-file {
+  min-width: 0;
+}
+.rich-file > button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: start;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.rich-file small {
+  display: block;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.rich-file [role='alert'] {
+  color: var(--danger-text);
+  font-size: 12px;
+}
 .rich-source-reference {
   min-width: 0;
   max-width: 100%;

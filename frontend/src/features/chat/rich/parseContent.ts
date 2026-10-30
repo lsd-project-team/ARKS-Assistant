@@ -44,7 +44,9 @@ export function parseContent(
       const raw = content.slice(opened.start, end);
       const saved = cache?.get(opened.start);
       const result =
-        saved?.raw === raw ? undefined : parseDocument(content.slice(opened.body, match.index), true);
+        saved?.raw === raw
+          ? undefined
+          : parseDocument(content.slice(opened.body, match.index), true);
       const segment: ContentSegment =
         saved?.raw === raw
           ? saved.segment

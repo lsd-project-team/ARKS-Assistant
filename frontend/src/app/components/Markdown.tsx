@@ -1,5 +1,8 @@
 import {
   Children,
+  isValidElement,
+  lazy,
+  Suspense,
   createContext,
   useContext,
   useState,
@@ -26,9 +29,44 @@ import { DebugIssueReference } from '../../features/chat/components/DebugIssueRe
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
 const Streaming = createContext(false);
+const MermaidBlock = lazy(() =>
+  import('../../features/chat/rich/MermaidBlock')
+    .then((module) => ({ default: module.MermaidBlock }))
+    .catch(() => ({
+      default: ({ block }: { block: { content: string } }) => (
+        <div>
+          <p role="status">流程图组件加载失败，已保留源码。</p>
+          <CodeBlock>
+            <code>{block.content}</code>
+          </CodeBlock>
+        </div>
+      ),
+    })),
+);
 
 function MarkdownPre({ children }: { children?: ReactNode }) {
   const streaming = useContext(Streaming);
+  const code = Children.toArray(children).find((child) => isValidElement(child));
+  if (
+    isValidElement<{ className?: string; children?: ReactNode }>(code) &&
+    code.props.className === 'language-mermaid'
+  ) {
+    const content = Children.toArray(code.props.children).join('');
+    return (
+      <Suspense
+        fallback={
+          <CodeBlock streaming rawContent={content}>
+            {children}
+          </CodeBlock>
+        }
+      >
+        <MermaidBlock
+          block={{ id: 'markdown-mermaid', type: 'mermaid', content }}
+          streaming={streaming}
+        />
+      </Suspense>
+    );
+  }
   return <CodeBlock streaming={streaming}>{children}</CodeBlock>;
 }
 
@@ -172,7 +210,9 @@ export function Markdown({
               // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
               remarkPlugins={[[remarkGfm, { singleTilde: false }], remarkMath]}
               // 只转换数学语法树；不启用 raw HTML，公式中的链接和 HTML 扩展也不受信任。
-              rehypePlugins={[[rehypeKatex, { throwOnError: false, trust: false, maxExpand: 500, maxSize: 20 }]]}
+              rehypePlugins={[
+                [rehypeKatex, { throwOnError: false, trust: false, maxExpand: 500, maxSize: 20 }],
+              ]}
               urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
               components={markdownComponents}
             >
