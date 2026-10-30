@@ -5,7 +5,12 @@ export function chartOptions(block: ChartBlock) {
   validateChart(block);
   const common = {
     animation: false,
-    aria: { enabled: true },
+    aria: {
+      enabled: true,
+      label: {
+        description: `${block.title || '数据图表'}。${block.series.map((series) => `${series.name}：${block.labels.map((label, i) => `${label} ${series.values[i] ?? '缺失'}`).join('，')}`).join('；')}`,
+      },
+    },
     tooltip: { trigger: block.chart_type === 'pie' ? 'item' : 'axis', renderMode: 'richText' },
     legend: { type: 'scroll', bottom: 0 },
   };
@@ -49,7 +54,12 @@ export function mindmapOptions(block: MindmapBlock) {
   });
   return {
     animation: false,
-    aria: { enabled: true },
+    aria: {
+      enabled: true,
+      label: {
+        description: `${block.title || '思维导图'}。${block.nodes.map((node) => `${node.parent_id ? `${block.nodes.find((parent) => parent.id === node.parent_id)?.label} → ` : ''}${node.label}`).join('；')}`,
+      },
+    },
     tooltip: { renderMode: 'richText' },
     series: [
       {

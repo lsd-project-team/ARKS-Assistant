@@ -98,7 +98,10 @@ export function SourceReference({
           onClick={() => void navigate(false)}
         >
           <FileCode2 size={12} aria-hidden="true" />
-          {label}
+          <span className="rich-source-label">
+            <strong>{label}</strong>
+            <small>{source.path}</small>
+          </span>
           {reason && <small>未核实</small>}
         </button>
         <details className="rich-source-info">
@@ -115,6 +118,8 @@ export function SourceReference({
               原始引用：source:{encodeURIComponent(source.path)}#L{source.start_line}-L
               {source.end_line || source.start_line}
             </p>
+            {source.version && <p>原引用版本：{source.version}</p>}
+            {source.source_workspace_id && <p>原引用目录：{source.source_workspace_id}</p>}
             {evidence && (
               <p>
                 来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} · 版本{' '}

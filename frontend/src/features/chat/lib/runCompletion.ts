@@ -3,7 +3,8 @@ import type { ToolEvent } from '../../../shared/types/api.ts';
 export function toolState(tool: ToolEvent) {
   if (tool.execution_status === 'skipped' || tool.result?.startsWith('本轮检索预算已用尽'))
     return 'skipped';
-  if (tool.status === 'error') return 'failed';
+  if (tool.status === 'error' || tool.status === 'failed') return 'failed';
+  if (tool.status === 'success' || tool.status === 'completed') return 'success';
   return tool.result === undefined ? 'pending' : 'success';
 }
 

@@ -81,6 +81,12 @@
   margin-block: var(--answer-space);
   padding-inline-start: 1.6em;
 }
+.chat-pane .markdown ul {
+  list-style-type: disc;
+}
+.chat-pane .markdown ol {
+  list-style-type: decimal;
+}
 .chat-pane .markdown li {
   margin-block: 6px;
 }
