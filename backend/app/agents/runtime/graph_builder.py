@@ -178,7 +178,7 @@ class AgentGraphBuilder:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         prompt += (
-            "\n当前仅提供源码读取与分析，可给出修改建议；"
+            "\n业务源码保持只读，可提供分析与修改建议；"
             "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
         )
         if debug_issues:

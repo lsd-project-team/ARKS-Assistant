@@ -46,6 +46,7 @@ async def verify():
         try:
             Base.metadata.create_all(services.database.engine)
             services.settings.load = lambda: configuration.model_copy(deep=True)
+            services.runs.project_snapshot = lambda: {"name": "合成阀门项目"}
             DebugIssues(HandoverStore(database=services.database)).save(
                 DebugWrite(
                     title="合成阀门试验",
@@ -115,11 +116,18 @@ async def verify():
                         and "没有选到" not in answer
                         and "资料筛选暂未完成" not in answer
                     )
-                    assert "合成阀门" not in answer and "debug-issue:" not in answer
+                    assert "42" not in answer and "debug-issue:" not in answer, {
+                        "question": question,
+                        "answer": answer,
+                    }
                     if "vue" in question:
                         assert "vue" in answer.casefold() and "框架" in answer
                 elif "10月9日" in question:
-                    assert "search_debug_issues" in tool_names
+                    assert "search_debug_issues" in tool_names, {
+                        "question": question,
+                        "tools": tool_names,
+                        "answer": answer,
+                    }
                     assert len(opened) == previous_opened + 1 and len(searches) > previous_searches
                     assert not selection["references"] and "没有选到" in answer
                     assert "42" not in answer and "debug-issue:" not in answer

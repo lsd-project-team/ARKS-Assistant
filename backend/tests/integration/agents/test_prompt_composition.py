@@ -84,7 +84,8 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "没有修改文件、执行命令或审核交付工具" in prompt
     assert ("问题识别与查询路由" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
-    assert ("compatibility" in prompt) is knowledge
+    assert ("与项目相关：" in prompt) is knowledge
+    assert ("与项目无关：" in prompt) is knowledge
     assert "remember" not in tools
     assert ("本轮不使用长期记忆" in prompt) is (not memory)
     assert "长期记忆由后台" in prompt

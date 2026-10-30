@@ -363,9 +363,9 @@ def debug_issue_tools(corpus):
         module: str = "",
         conditions: str = "",
     ) -> str:
-        """Search saved problems, experience, work progress and archive events. Try error codes,
-        module names and synonyms. Open records are unresolved, not verified solutions.
-        Cite the exact Markdown reference returned with each result, including its actual title.
+        """检索本系统已保存的问题与经验，包括历史故障、处理办法、设备试验结果和工作记录。
+        按标题、设备、日期、现象或报警码关键词查找，内容来自本地记录库，不是项目源码。
+        未解决记录不是已验证方案；引用返回的真实 reference，包括实际标题和固定版本。
         """
         report = await asyncio.to_thread(
             corpus.search_report,
@@ -383,11 +383,10 @@ def debug_issue_tools(corpus):
 
     @tool
     async def read_debug_issue(record_id: str, offset: int = 0) -> str:
-        """Read a problem or work record and its original description in fixed-version pages.
-        Follow next_offset for remaining text; a historical fix may not fit current conditions.
-        Cite its exact Markdown reference so the page displays all its original images.
-        Answer only the requested records, without image IDs, filenames or internal field names.
-        Images are displayed by the page, not interpreted by this tool.
+        """按 record_id 读取本系统问题与经验的固定版本原文，包括历史设备试验和处理记录。
+        内容来自记录库，不是项目源码。存在 next_offset 时继续读取余文；历史方案须核对适用条件。
+        使用返回的真实 reference，页面据此显示原图；不输出图片ID、文件名或内部字段名。
+        图片由页面显示，本工具不识别图片内容。
         """
         return json.dumps(
             await asyncio.to_thread(corpus.read, record_id, offset), ensure_ascii=False
