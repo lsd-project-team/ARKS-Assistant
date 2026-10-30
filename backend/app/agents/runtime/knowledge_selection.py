@@ -120,7 +120,10 @@ class KnowledgeRetrieval:
             "kind": "debug_issue",
             "matched": len(rows),
             "selection_status": status,
-            "matches": rows,
+            "matches": [
+                {key: value for key, value in row.items() if key != "resolution_status"}
+                for row in rows
+            ],
             "notice": (
                 "资料筛选暂未完成，未经筛选的候选未提供；这是处理失败，不代表资料库没有相关记录。"
                 if status == "unavailable"
@@ -150,7 +153,11 @@ class KnowledgeRetrieval:
         row = rows[0]
         content = dump_json(row["content"])
         return {
-            **{key: value for key, value in row.items() if key != "content"},
+            **{
+                key: value
+                for key, value in row.items()
+                if key not in {"content", "resolution_status"}
+            },
             "selection_status": status,
             "content": content[offset : offset + 8000],
             "next_offset": offset + 8000 if offset + 8000 < len(content) else None,

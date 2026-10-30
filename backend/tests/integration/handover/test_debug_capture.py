@@ -119,7 +119,8 @@ def test_command_persists_actual_user_and_raw_text_retry_deduplicates_then_qa_ci
             f"/api/p/independent/threads/{run['thread_id']}/runs",
             json={"content": "取片真空报警 E901，之前如何处理的？"},
         ).json()
-        assert terminal(client, later)["status"] == "completed"
+        later_result = terminal(client, later)
+        assert later_result["status"] == "completed", later_result.get("error")
         historical = client.post(f"/api/p/independent/runs/{run['id']}/regenerate").json()
         assert historical["message_id"] != run["message_id"]
         assert terminal(client, historical)["status"] == "completed"

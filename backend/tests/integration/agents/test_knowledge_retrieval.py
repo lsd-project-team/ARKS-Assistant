@@ -86,6 +86,7 @@ async def test_search_filters_records_and_spans_before_returning_tool_context(se
     assert len(selector.requests[0]["records"]) == 2
     assert result["matches"][0]["content"] == {"内容说明": "10月1日试验结果为42。"}
     assert result["matched"] == 1 and result["selection_status"] == "selected"
+    assert "resolution_status" not in json.dumps(result)
     assert all(
         text not in json.dumps(result, ensure_ascii=False)
         for text in ("999", "888", other["title"])
@@ -93,6 +94,7 @@ async def test_search_filters_records_and_spans_before_returning_tool_context(se
     # 后续按编号读取也不能绕过筛选，已筛选同版本不再请求模型。
     page = json.loads(await tools["read_debug_issue"].ainvoke({"record_id": saved["id"]}))
     assert "42" in page["content"] and "999" not in page["content"]
+    assert "resolution_status" not in json.dumps(page)
     rejected = json.loads(await tools["read_debug_issue"].ainvoke({"record_id": other["id"]}))
     assert rejected["content"] == "" and rejected["selection_status"] == "none"
     assert len(selector.requests) == 1

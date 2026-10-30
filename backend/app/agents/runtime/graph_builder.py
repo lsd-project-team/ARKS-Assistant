@@ -10,6 +10,7 @@ from deepagents.middleware.summarization import SummarizationToolMiddleware
 from app.agents.analysis.policy import CONTINUE_QUESTION
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.budget import BudgetedSummarization, ContextBudget
+from app.agents.context.history_selection import ConversationHistorySelection
 from app.agents.context.instructions import GlobalAgentInstructions, instruction_snapshot
 from app.agents.context.task_guidance import TaskGuidance
 from app.agents.context.tokens import estimate_tokens, input_budget
@@ -160,11 +161,7 @@ class AgentGraphBuilder:
             "\n本轮补读源码见 verified_source_context；"
             "同路径异版本的历史选区或工具结果只作历史快照。"
         )
-        prompt += (
-            "\n本轮未接入流程图谱、功能说明和交接资料，不能声称已检索这些来源。"
-            "项目资料和全项目阅读功能已移除，不检索项目文档、旧共享结论或阅读成果。"
-            "相关代码问题请读取本地源码；历史对话中的资料引用不代表本轮已经检索。"
-        )
+        prompt += "\n本轮未接入流程图谱、功能说明和交接资料，不能声称已检索这些来源。"
         if policy:
             prompt += (
                 f"\n本轮分析模式：{policy['mode']}，工具额度 {policy['limit']}，"
@@ -185,7 +182,6 @@ class AgentGraphBuilder:
                 "context_sources",
                 {
                     "memories": included_memories,
-                    "materials": [],
                     "handover_materials": [],
                     "debug_issues": [],
                     "source_options": options.model_dump(),
@@ -201,6 +197,13 @@ class AgentGraphBuilder:
             "\n个人偏好以当前登录账号带入的记忆为准，"
             "不把其他人在共享对话里的偏好当作本账号长期偏好。"
         )
+        history_selection = ConversationHistorySelection(
+            model,
+            requested_work,
+            emit,
+            available,
+            timeout=min(45, settings.model.timeout_seconds),
+        )
         graph = create_deep_agent(
             model=model,
             tools=tools,
@@ -211,6 +214,7 @@ class AgentGraphBuilder:
             middleware=[
                 summary,
                 SummarizationToolMiddleware(summary),
+                *([history_selection] if not inspection else []),
                 GlobalAgentInstructions(instructions),
                 TaskGuidance(
                     requested_work,
@@ -246,7 +250,11 @@ class AgentGraphBuilder:
                 ),
                 retrieval or RetrievalBudget(emit),
                 ContextBudget(
-                    settings.model.context_tokens, settings.model.output_tokens, memory_prompt, emit
+                    settings.model.context_tokens,
+                    settings.model.output_tokens,
+                    memory_prompt,
+                    emit,
+                    history_selection=history_selection if not inspection else None,
                 ),
                 ProviderUsage(emit),
                 FilesystemMiddleware(

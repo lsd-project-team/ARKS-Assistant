@@ -271,6 +271,7 @@ class AgentRunExecutor:
                         "source_verification",
                         "knowledge_verification",
                         "knowledge_selection",
+                        "history_selection",
                         "answer_draft",
                     }:
                         continue
