@@ -16,6 +16,7 @@ from app.bootstrap import create_app
 from app.core.config import AppSettings, ModelSettings
 from app.modules.auth.context import request_identity
 from app.modules.chat.models import Message, Thread
+from app.modules.knowledge.search import catalog
 from app.modules.memory.background import BackgroundMemories
 from app.modules.memory.generated_store import archive_legacy_memories
 from app.modules.memory.generation_protocol import (
@@ -39,6 +40,7 @@ def worker(services, monkeypatch):
         )
     )
     calls = []
+    monkeypatch.setattr(catalog(database).retrieval, "scores", lambda *_: {})
 
     class Model:
         callbacks = []
@@ -56,6 +58,13 @@ def worker(services, monkeypatch):
                             "content": "用户希望回答先说明结果，再说明依据。",
                             "evidence": [{"message_id": row["id"], "quote": row["content"][:24]}],
                         }
+                    ]
+                }
+            elif "你负责比较长期记忆" in messages[0].content:
+                calls.append("reconcile")
+                content = {
+                    "decisions": [
+                        {"pair_id": pair["id"], "relation": "duplicate"} for pair in payload
                     ]
                 }
             else:
@@ -198,7 +207,7 @@ async def test_durable_memory_outlives_candidate_window_and_survives_next_consol
     original_inputs = worker[0].store.inputs
     monkeypatch.setattr(worker[0].store, "inputs", lambda *args: original_inputs(*args)[:1])
     await worker[0].run_once()
-    assert worker[1] == ["extract", "consolidate", "extract", "consolidate"]
+    assert worker[1] == ["extract", "consolidate", "extract", "reconcile", "consolidate"]
     assert set(services[4].list()[0]["source_thread_ids"]) == {old_thread, new_thread}
 
 

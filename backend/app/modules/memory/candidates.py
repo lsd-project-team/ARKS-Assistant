@@ -92,12 +92,15 @@ def snapshot_thread(database, identifier, policy, *, now=None, require_idle=True
                 "messages": messages,
                 "sources": sources,
                 "source_updated_at": thread.updated_at,
+                "message_times": {row.id: row.created_at for row in canonical if row.id in pairs},
             },
             secrets,
         )
         # 标题、置顶等元数据更新不会使已提取的事实失效；正文与归属仍参与指纹。
         fingerprint_input = {
-            key: value for key, value in result.items() if key != "source_updated_at"
+            key: value
+            for key, value in result.items()
+            if key not in {"source_updated_at", "message_times"}
         }
         result["fingerprint"] = sha256(dump_json(fingerprint_input).encode()).hexdigest()
         return result

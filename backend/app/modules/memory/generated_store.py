@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from app.core.config import dump_json
 from app.core.identifiers import now_iso
+from app.modules.memory.conflicts import RELATION_LABELS, annotate_groups
 from app.modules.memory.models import MemoryBundle, MemoryExtraction
 
 
@@ -19,10 +20,25 @@ def collection_id(owner, workspace):
 
 def markdown(document, *, evidence_ids=False):
     sections = []
-    for group in document["groups"]:
+    groups = document["groups"]
+    if "relations" in document:
+        groups = annotate_groups(groups, document["relations"])
+    titles = {fact["id"]: fact["title"] for group in groups for fact in group["memories"]}
+    for group in groups:
         rows = ["## " + group["title"]]
         for fact in group["memories"]:
-            rows.append("- " + fact["content"])
+            state = fact.get("state", "valid")
+            label = "【" + RELATION_LABELS[state] + "】" if state in RELATION_LABELS else ""
+            rows.append("- " + label + fact["content"])
+            if state == "conflicted":
+                rows.append(
+                    "  此处存在未决矛盾，不能任选一方作为确定事实；需核查原始依据或确认适用条件。"
+                )
+            if state == "superseded":
+                rows.append("  仅保留历史依据，不作为当前事实带入回答。")
+            related = [titles[key] for key in fact.get("related_ids", []) if key in titles]
+            if related:
+                rows.append("  关联记录：" + "；".join(related))
             rows.append(
                 "  依据："
                 + "；".join(
@@ -69,6 +85,18 @@ class GeneratedMemoryStore:
                     .limit(256)
                 )
             ]
+
+    def unreconciled_threads(self):
+        with self.database.session() as session:
+            threads = []
+            for row in session.scalars(select(MemoryBundle)):
+                document = json.loads(row.document_json)
+                if document.get("relation_version") == 1:
+                    continue
+                threads.extend(
+                    fact["thread_id"] for group in document["groups"] for fact in group["memories"]
+                )
+            return list(dict.fromkeys(threads))
 
     def publish(self, snapshot, document, *, lease_token=None, expected_revision=None):
         owner, workspace = snapshot["owner_id"], snapshot["workspace_id"]

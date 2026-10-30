@@ -5,6 +5,7 @@ import json
 import logging
 import time
 from contextlib import suppress
+from datetime import UTC, datetime, timedelta
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from sqlalchemy import update
@@ -29,6 +30,7 @@ from app.modules.memory.generation_protocol import (
     validate_facts,
 )
 from app.modules.memory.models import MemoryExtraction
+from app.modules.memory.reconciliation import reconcile
 from app.modules.settings.model_preferences import ModelPreferences
 
 logger = logging.getLogger(__name__)
@@ -77,7 +79,7 @@ class BackgroundMemories:
             secrets=[profile.config.api_key for profile in config.model_profiles],
         )
 
-    def claim(self, snapshot, now):
+    def claim(self, snapshot, now, *, reconcile_existing=False):
         token = new_id()
         with self.services.database.session.begin() as session:
             session.execute(
@@ -101,7 +103,9 @@ class BackgroundMemories:
             if row.lease_until > now:
                 return None
             same = row.fingerprint == snapshot["fingerprint"]
-            if same and (row.state == "completed" or row.retry_after > now):
+            if same and (
+                (row.state == "completed" and not reconcile_existing) or row.retry_after > now
+            ):
                 return None
             raw = row.raw_json if same else ""
             claimed = session.execute(
@@ -230,7 +234,25 @@ class BackgroundMemories:
                 snapshots[identifier] = self.snapshot(identifier, config, require_idle=False)
             current = snapshots[identifier]
             if current and current["fingerprint"] == row["fingerprint"]:
-                facts.extend(row["facts"])
+                roles = {message["id"]: message["role"] for message in current["messages"]}
+                facts.extend(
+                    {
+                        **{
+                            key: value
+                            for key, value in fact.items()
+                            if key not in {"state", "related_ids"}
+                        },
+                        "origin_roles": {
+                            item["message_id"]: roles.get(item["message_id"])
+                            for item in fact["evidence"]
+                        },
+                        "origin_times": {
+                            item["message_id"]: current["message_times"].get(item["message_id"])
+                            for item in fact["evidence"]
+                        },
+                    }
+                    for fact in row["facts"]
+                )
         return list({row["id"]: row for row in facts}.values())
 
     async def process(self, snapshot, config, ledger, claim):
@@ -242,6 +264,7 @@ class BackgroundMemories:
             previous = self.store.bundle(snapshot["owner_id"], snapshot["workspace_id"])
             revision = previous["revision"] if previous else 0
             all_facts = self.current_facts(snapshot, config)
+            relations = await reconcile(self, all_facts, previous, config, ledger)
             groups = []
             for chunk in self.fact_chunks(all_facts, config):
                 response = parse_response(
@@ -255,14 +278,21 @@ class BackgroundMemories:
                     ConsolidationResponse,
                 )
                 groups.extend(grouped_document(response, chunk)["groups"])
-            current = self.snapshot(snapshot["thread_id"], self.services.settings.load())
+            current = self.snapshot(
+                snapshot["thread_id"], self.services.settings.load(), require_idle=False
+            )
             if not current or current["fingerprint"] != snapshot["fingerprint"]:
                 raise ValueError("memory_source_changed")
             if not self.services.settings.load().auto_memory:
                 raise ValueError("memory_generation_disabled")
             with self.services.memories.lock:
+                if self.current_facts(snapshot, config) != all_facts:
+                    raise ValueError("memory_source_changed")
                 self.store.publish(
-                    snapshot, {"groups": groups}, lease_token=token, expected_revision=revision
+                    snapshot,
+                    {"groups": groups, "relations": relations, "relation_version": 1},
+                    lease_token=token,
+                    expected_revision=revision,
                 )
         except asyncio.CancelledError:
             # 来源可能已被删除；清理失败不能吞掉取消，导致服务关闭时后台继续运行。
@@ -304,12 +334,22 @@ class BackgroundMemories:
             identifiers = await asyncio.to_thread(
                 candidate_threads, self.services.database, config.memory_generation
             )
+            repairs = set(await asyncio.to_thread(self.store.unreconciled_threads))
+            identifiers = list(dict.fromkeys([*identifiers, *sorted(repairs)]))
             processed = 0
             for identifier in identifiers:
                 if processed >= config.memory_generation.max_chats_per_pass:
                     break
-                snapshot = await asyncio.to_thread(self.snapshot, identifier, config)
+                snapshot = await asyncio.to_thread(
+                    self.snapshot, identifier, config, require_idle=identifier not in repairs
+                )
                 if not snapshot:
+                    continue
+                if identifier in repairs and datetime.fromisoformat(
+                    snapshot["source_updated_at"]
+                ).replace(tzinfo=UTC) > datetime.now(UTC) - timedelta(
+                    hours=config.memory_generation.idle_hours
+                ):
                     continue
                 config = ModelPreferences(
                     self.services.database, self.services.settings
@@ -319,7 +359,16 @@ class BackgroundMemories:
                 ledger = self.ledger(snapshot["workspace_id"])
                 if not await asyncio.to_thread(self.has_budget, ledger, config):
                     continue
-                claim = await asyncio.to_thread(self.claim, snapshot, time.time())
+                previous = self.store.bundle(snapshot["owner_id"], snapshot["workspace_id"])
+                needs_reconciliation = bool(
+                    previous and previous["document"].get("relation_version") != 1
+                )
+                claim = await asyncio.to_thread(
+                    self.claim,
+                    snapshot,
+                    time.time(),
+                    reconcile_existing=needs_reconciliation,
+                )
                 if claim:
                     processed += 1
                     await self.process(snapshot, config, ledger, claim)

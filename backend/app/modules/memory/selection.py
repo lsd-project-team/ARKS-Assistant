@@ -16,6 +16,9 @@ MEMORY_SELECTION_PROMPT = """你只负责复核长期记忆是否适用于当前
 关键词重合、语义相近或同一文件不足以证明适用。只选能直接帮助回答当前问题的条目。
 核对设备、版本、模块、对象、工况和限制条件；明确不符或无法确定关键条件时不选。
 历史偏好只有适用于本轮且不违反用户当前明确要求时才选；助手历史推测不能当作事实。
+state为conflicted表示整组存在未决矛盾，只能作为待核实线索；不得任选一方当作确定事实。
+组合条目的各方条件、原文和来源作为整体复核，不拆分、删减或自行裁定冲突。
+若多个独立候选在同条件下互相矛盾而尚无冲突标记，相关条目全部不选，不能仅选其中一方。
 源码已变化的历史认识不能当作当前实现或验证结果。没有适用条目时必须全部不选。
 只能返回JSON：{"memory_ids":["候选中的id"]}。最多6个，不重复，不增加其他字段。
 不要生成、改写、补充记忆正文。不得返回候选之外的编号，也不要返回推理过程。"""
@@ -98,7 +101,7 @@ class MemorySelection:
                 {
                     "status": "selected" if rows else "none",
                     "candidate_count": count,
-                    "selected_count": len(rows[0]["memory_ids"]) if rows else 0,
+                    "selected_count": len(rows[0]["unit_ids"]) if rows else 0,
                 },
             )
             return prompt, rows
@@ -132,6 +135,7 @@ class MemorySelection:
                     "kind": fact["kind"],
                     "evidence": fact["evidence"],
                     "sources": rows[0]["sources"],
+                    "state": fact.get("state", "valid"),
                 }
             )
         return records

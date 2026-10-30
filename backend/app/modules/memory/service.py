@@ -7,6 +7,7 @@ from app.agents.context.tokens import text_tokens
 from app.core.config import SettingsStore, dump_json
 from app.modules.knowledge.search import catalog
 from app.modules.memory.candidates import snapshot_thread
+from app.modules.memory.conflicts import annotate_groups, retrieval_units
 from app.modules.memory.generated_store import GeneratedMemoryStore, markdown
 from app.modules.memory.identity import user_memory_owner
 from app.modules.memory.retrieval import grouped_facts, relevant_facts
@@ -46,7 +47,7 @@ class MemoryService:
                     facts.append(fact)
             if facts:
                 groups.append({**group, "memories": facts})
-        return bundle, groups
+        return bundle, annotate_groups(groups, bundle["document"].get("relations", []))
 
     def memory_row(self, bundle, groups):
         document = {"groups": groups}
@@ -72,7 +73,12 @@ class MemoryService:
             "lifecycle": "needs_review" if any(row["stale"] for row in sources) else "valid",
             "updated_at": datetime.fromisoformat(bundle["updated_at"]).timestamp(),
             "source_thread_ids": list(
-                dict.fromkeys(fact["thread_id"] for group in groups for fact in group["memories"])
+                dict.fromkeys(
+                    member["thread_id"]
+                    for group in groups
+                    for fact in group["memories"]
+                    for member in fact.get("members", [fact])
+                )
             ),
         }
 
@@ -86,6 +92,7 @@ class MemoryService:
         bundle, groups = self.current_bundle()
         if not groups:
             return None
+        groups = retrieval_units(groups, bundle["document"].get("relations", []))
         matches = relevant_facts(query, groups, catalog(self.database).retrieval)
         return {
             "bundle": bundle,
@@ -119,7 +126,10 @@ class MemoryService:
                 **snapshot,
                 "partial": len(selected) < candidates["total"],
                 "injected_text": result,
-                "memory_ids": [fact["id"] for _, fact in selected],
+                "memory_ids": [
+                    member["id"] for _, fact in selected for member in fact.get("members", [fact])
+                ],
+                "unit_ids": [fact["id"] for _, fact in selected],
                 "inclusion_reason": (
                     "经模型复核后选中的相关长期记忆"
                     if reviewed
@@ -151,11 +161,11 @@ class MemoryService:
             return "", []
         # 等待模型期间原聊天可能已修改或删除，不能直接使用过期候选。
         valid = {
-            (fact["id"], fact["fingerprint"]) for group in groups for fact in group["memories"]
+            fact["id"]: fact
+            for group in retrieval_units(groups, bundle["document"].get("relations", []))
+            for fact in group["memories"]
         }
-        selected = [
-            indexed[key] for key in memory_ids if (key, indexed[key][1]["fingerprint"]) in valid
-        ]
+        selected = [indexed[key] for key in memory_ids if indexed[key][1] == valid.get(key)]
         selected = [
             match
             for match in selected
