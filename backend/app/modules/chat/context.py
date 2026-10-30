@@ -133,9 +133,11 @@ class ConversationContext:
                     continue
                 if event["kind"] == "knowledge_reference":
                     row = event["payload"]
-                    references[(row["kind"], row["id"], row["version"], row["citation"])] = row
+                    if row["kind"] in {"handover_material", "debug_issue"}:
+                        references[(row["kind"], row["id"], row["version"], row["citation"])] = row
                 if event["kind"] == "knowledge_search":
-                    searches.append(event["payload"])
+                    if event["payload"].get("kind") in {"handover_material", "debug_issue"}:
+                        searches.append(event["payload"])
                 if event["kind"] == "memory_save":
                     memory_saves.append(event["payload"])
                 if event["kind"] == "context_sources":
@@ -177,7 +179,6 @@ class ConversationContext:
             cursor = events[-1]["sequence"]
         # 兼容升级前已经记录的自动带入快照，不把“允许使用”冒充实际来源。
         for field, kind in (
-            ("materials", "material"),
             ("handover_materials", "handover_material"),
             ("debug_issues", "debug_issue"),
         ):
@@ -189,7 +190,6 @@ class ConversationContext:
             "agent_instructions": instructions,
             "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
-            "materials": snapshot.get("materials", []) if snapshot else [],
             "handover_materials": snapshot.get("handover_materials", []) if snapshot else [],
             "debug_issues": [row for row in references.values() if row["kind"] == "debug_issue"],
             "recorded": snapshot is not None,

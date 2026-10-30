@@ -1,7 +1,6 @@
 import type { KnowledgeReference, KnowledgeSearch } from '../../../shared/types/api';
 
 export const knowledgeKindLabels = {
-  material: '项目资料',
   handover_material: '交接资料',
   debug_issue: '调试记录',
 };

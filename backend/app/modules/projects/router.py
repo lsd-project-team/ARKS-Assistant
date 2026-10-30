@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, FastAPI, Query, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.modules.action_timing import router as action_timing
@@ -15,7 +15,7 @@ from app.modules.chat import router as conversations
 from app.modules.knowledge import router as knowledge
 from app.modules.memory import router as memories
 from app.modules.projects.association import repository_name
-from app.modules.projects.materials_router import create_router as materials_router
+from app.modules.projects.export import export_project
 from app.modules.projects.service import Projects
 from app.modules.source_analysis import router as workspace
 from app.modules.source_analysis.collection import source_prefix
@@ -98,7 +98,15 @@ class ProjectPosition(BaseModel):
 
 def create_router(projects: Projects):
     router = APIRouter()
-    router.include_router(materials_router(projects))
+
+    @router.get("/api/projects/{project_id}/export")
+    async def export(project_id: str):
+        payload = await asyncio.to_thread(export_project, projects, project_id)
+        return Response(
+            payload,
+            media_type="application/zip",
+            headers={"Content-Disposition": f'attachment; filename="project-{project_id}.zip"'},
+        )
 
     @router.get("/api/projects")
     async def list_projects(state: str = "active", query: str = ""):

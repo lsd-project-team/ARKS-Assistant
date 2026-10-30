@@ -9,7 +9,6 @@ from sqlalchemy import select
 from app.infrastructure.database.serialization import record_dict
 from app.modules.auth.ownership import thread_filter
 from app.modules.chat.models import Message, Thread
-from app.modules.projects.models import ProjectMaterial, ProjectMaterialRevision
 
 
 def export_project(projects, project_id):
@@ -26,7 +25,7 @@ def export_project(projects, project_id):
         write("project.json", project)
         archive.writestr(
             "README.md",
-            "# 项目归档\n\n包含项目信息、对话（含已归档和回收站）、资料历史版本和项目记忆。"
+            "# 项目归档\n\n包含项目信息、对话（含已归档和回收站）和项目记忆。"
             "源码目录保存为关联信息，实际源码不复制；全局设置和 API 密钥不导出。\n",
         )
         for thread in session.scalars(
@@ -43,20 +42,6 @@ def export_project(projects, project_id):
                 )
             ]
             write(f"conversations/{thread.id}.json", {**record_dict(thread), "messages": messages})
-        for material in session.scalars(
-            select(ProjectMaterial).where(ProjectMaterial.project_id == project_id)
-        ):
-            revisions = [
-                record_dict(row)
-                for row in session.scalars(
-                    select(ProjectMaterialRevision)
-                    .where(ProjectMaterialRevision.material_id == material.id)
-                    .order_by(ProjectMaterialRevision.version)
-                )
-            ]
-            write(
-                f"materials/{material.id}.json", {**record_dict(material), "revisions": revisions}
-            )
         memories = [
             row
             for row in projects.services(project_id).memories.list()

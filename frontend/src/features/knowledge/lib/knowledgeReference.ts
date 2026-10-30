@@ -2,7 +2,7 @@ import type { HandoverRecord } from '../../handover/shared/types.ts';
 import { text } from '../../handover/shared/types.ts';
 
 export function isKnowledgeReference(href: string) {
-  return /^(source|material|debug-issue|handover-source):/.test(href);
+  return /^(source|debug-issue|handover-source):/.test(href);
 }
 
 export function handoverReference(href: string) {

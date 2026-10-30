@@ -6,19 +6,15 @@ import {
   isKnowledgeReference,
 } from '../../src/features/knowledge/lib/knowledgeReference.ts';
 
-test('用户端与管理端都保留四类内部引用，不允许其他协议充当资料引用', () => {
-  for (const href of [
-    'source:Program.cs#L1',
-    'material:p/m/2#L1',
-    'debug-issue:issue/2',
-    'handover-source:source/3#L2',
-  ])
+test('用户端与管理端都保留三类内部引用，不允许其他协议充当资料引用', () => {
+  for (const href of ['source:Program.cs#L1', 'debug-issue:issue/2', 'handover-source:source/3#L2'])
     assert.equal(isKnowledgeReference(href), true);
   for (const href of [
     'javascript:alert(1)',
     'data:text/html,private',
     'https://example.com',
     'xsource:other',
+    'material:p/m/2#L1',
   ])
     assert.equal(isKnowledgeReference(href), false);
 });

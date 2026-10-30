@@ -68,7 +68,7 @@ const references = [
     resolution_status: 'open',
   },
 ];
-const searches = [{ kind: 'material', matched: 0 }];
+const searches = [{ kind: 'debug_issue', matched: 0, degraded: true }];
 const render = (props) => renderToStaticMarkup(createElement(KnowledgeFeedback, props));
 
 test('流式问候有候选和检索未命中时，也不显示本轮参考或检索提示', () => {
@@ -96,7 +96,7 @@ test('上下文保留完整候选与检索提示，并明确区分于回答引�
   assert.match(html, /资料检索记录 · 2 条资料/);
   assert.match(html, /M8 DAF信息收集.docx/);
   assert.match(html, /中转台取片异常/);
-  assert.match(html, /未找到相关可用内容/);
+  assert.match(html, /语义检索暂不可用/);
   assert.match(html, /不表示回答已经引用/);
   assert.doesNotMatch(html, /v2/);
   assert.match(html, /未解决，不能作为已验证方案/);

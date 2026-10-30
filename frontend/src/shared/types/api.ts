@@ -95,21 +95,6 @@ export interface Project {
   knowledge_available?: boolean;
   source_workspace_id?: string | null;
 }
-export interface ProjectMaterial {
-  id: string;
-  project_id: string;
-  title: string;
-  kind: 'document' | 'conclusion';
-  source_name: string;
-  content?: string;
-  version: number;
-  state: 'active' | 'deleted';
-  origin_thread_id?: string | null;
-  origin_message_id?: string | null;
-  created_at: string;
-  updated_at: string;
-  revision_at?: string;
-}
 export interface ProjectList {
   projects: Project[];
   default_project_id: string | null;
@@ -326,7 +311,6 @@ export interface RunContext {
     local: { commit: string | null; dirty: boolean | null };
   }[];
   knowledge_retrieval?: { titles: string[]; injected: boolean }[];
-  materials?: { id: string; title: string; version: number; citation: string }[];
   debug_issues?: { id: string; title: string; version: number; citation: string }[];
   model?: ModelSnapshot;
   budget?: ContextUsage | null;
@@ -347,7 +331,7 @@ export interface RunContext {
 
 export interface KnowledgeReference {
   image_count?: number;
-  kind: 'material' | 'handover_material' | 'debug_issue';
+  kind: 'handover_material' | 'debug_issue';
   id: string;
   title: string;
   version: number;

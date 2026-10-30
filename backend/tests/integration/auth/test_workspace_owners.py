@@ -12,7 +12,7 @@ from app.modules.auth.context import request_identity
 from app.modules.auth.models import Account
 from app.modules.chat.models import Message
 from app.modules.chat.runs import RunManager
-from app.modules.projects.models import Project, ProjectMaterial, ProjectMaterialRevision
+from app.modules.projects.models import Project
 from app.modules.source_analysis.workspace import Workspace
 from tests.helpers.accounts import login_second, sign_in
 from tests.helpers.memories import MemorySeed, seed_memory
@@ -233,9 +233,7 @@ def test_archive_trash_move_and_project_export_keep_ownership(owned):
     assert client.post(thread + "/restore").status_code == 200
 
 
-def test_project_materials_memories_and_original_sources_cannot_cross_accounts(
-    owned, services, tmp_path
-):
+def test_memories_and_original_sources_cannot_cross_accounts(owned, services, tmp_path):
     client, app, _, _, first, _, run = owned
     private_root = tmp_path / "private-source"
     private_root.mkdir()
@@ -255,20 +253,6 @@ def test_project_materials_memories_and_original_sources_cannot_cross_accounts(
         session.get(Message, run["message_id"]).source_workspace_id = private_source.source_id
     source = f"/api/sources/{private_source.source_id}/file?path=Program.cs"
     assert client.get(source).status_code == 200
-    with app.state.auth.database.session.begin() as session:
-        material = ProjectMaterial(
-            project_id=first["id"], title="旧私人资料", content="PRIVATE-MATERIAL"
-        )
-        session.add(material)
-        session.flush()
-        material_id = material.id
-        session.add(
-            ProjectMaterialRevision(
-                material_id=material_id, version=1, title=material.title, content=material.content
-            )
-        )
-    material_url = f"/api/projects/{first['id']}/materials/{material_id}?version=1"
-    assert client.get(material_url).json()["content"] == "PRIVATE-MATERIAL"
     memory = client.put(
         prefix + "/memories",
         json={"scope": "project", "name": "项目.md", "content": "PRIVATE-PROJECT-MEMORY"},
@@ -279,7 +263,6 @@ def test_project_materials_memories_and_original_sources_cannot_cross_accounts(
     assert "PRIVATE-PROJECT-MEMORY" in client.get(prefix + "/memories").text
     login_second(client)
     assert client.get(source).status_code == 404
-    assert client.get(material_url).status_code == 404
     assert client.get(prefix + "/memories/project/项目.md/history").status_code == 404
     assert client.get("/api/memories").status_code == 404
     # 公司交接资料仍共享，与个人项目隔离是两个范围。

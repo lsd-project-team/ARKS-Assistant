@@ -119,7 +119,7 @@ for (const scope of ['independent', 'project-a'])
     });
   });
 
-test('第一次点击等待源码身份返回，不因项目资料尚未加载而误弹窗', async () => {
+test('第一次点击等待源码身份返回，不因项目信息尚未加载而误弹窗', async () => {
   let resolve;
   const pending = new Promise((r) => {
     resolve = r;

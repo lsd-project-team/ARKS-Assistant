@@ -21,7 +21,7 @@
 
 Agent 的入口、图构建、执行器和提示词分别维护。聊天、源码和调试录入工具按职责分开；运行取消、断线事件重放、检查点恢复与模型连接释放继续沿用原协议。
 
-全项目阅读和旧代码修改流程已移除；`source_analysis/reading/` 与 `infrastructure/database/legacy_code_work.py` 保留历史表兼容，不装配运行服务或接口。模型额度记账归 `settings/model_ledger.py`，聊天临时文件边界归 `infrastructure/storage/files.py`。模型适配与工具回填归 `agents/`。原件只读；聊天可检索、分析源码并给出修改建议，临时产物按会话隔离。功能状态见[代码工作清理说明](../features/code-work.md)。
+全项目阅读、项目资料与旧代码修改流程已移除。项目资料与阅读旧表仅在 `migrations/` 中定义，应用不注册相关模型，不再读取旧资料引用或导出其正文；原库与完整备份中的旧数据保留。`infrastructure/database/legacy_code_work.py` 继续兼容旧修改档案，不装配运行服务或接口。模型额度记账归 `settings/model_ledger.py`，聊天临时文件边界归 `infrastructure/storage/files.py`。模型适配与工具回填归 `agents/`。原件只读；聊天可检索、分析源码并给出修改建议，临时产物按会话隔离。功能状态见[代码工作清理说明](../features/code-work.md)。
 
 ## 前端
 

@@ -16,8 +16,7 @@ export function RunContextPanel({
   onSelection: (selection: Selection) => void;
 }) {
   const references = distinctReferences(context.references || []);
-  const referenceCount =
-    references.length || (context.materials?.length || 0) + (context.debug_issues?.length || 0);
+  const referenceCount = references.length || context.debug_issues?.length || 0;
   return (
     <div className="context-panel-content">
       <div className="context-overview" aria-label="本轮资料概况">

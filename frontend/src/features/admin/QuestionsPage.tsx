@@ -230,7 +230,9 @@ function QuestionViewer({ identifier }: { identifier: string }) {
       urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
       components={{
         a: ({ href, children }) =>
-          isKnowledgeReference(href || '') ? (
+          !href ? (
+            <span>{children}</span>
+          ) : isKnowledgeReference(href) ? (
             <button className="source-link" onClick={() => setReference({ href: href!, run })}>
               {children}
             </button>
@@ -402,41 +404,20 @@ function RunDetails({
         .map((event) => (
           <details key={event.id}>
             <summary>带入的资料与记忆</summary>
-            <ContextSources value={event.payload} onReference={onReference} />
+            <ContextSources value={event.payload} />
           </details>
         ))}
     </details>
   );
 }
 
-function ContextSources({
-  value,
-  onReference,
-}: {
-  value: unknown;
-  onReference: (href: string) => void;
-}) {
+function ContextSources({ value }: { value: unknown }) {
   const sources = value as {
-    materials?: { id: string; title: string; version: number; citation?: string }[];
     memories?: { name: string; scope: string; version?: string }[];
   };
   return (
     <div>
-      <p>
-        {!!sources.materials?.length && <>历史项目资料：{sources.materials.length} 份 · </>}
-        长期记忆：{sources.memories?.length || 0} 条
-      </p>
-      {sources.materials?.map((material) => (
-        <p key={material.id}>
-          {material.citation && /^material:/.test(material.citation) ? (
-            <button className="source-link" onClick={() => onReference(material.citation!)}>
-              {material.title} · v{material.version}
-            </button>
-          ) : (
-            `${material.title} · v${material.version}`
-          )}
-        </p>
-      ))}
+      <p>长期记忆：{sources.memories?.length || 0} 条</p>
       {sources.memories?.map((memory) => (
         <p key={`${memory.scope}/${memory.name}`}>
           {memory.name} · {memory.scope === 'project' ? '项目记忆' : '用户偏好'}
@@ -457,7 +438,6 @@ function ReferenceDialog({
   onClose: () => void;
 }) {
   const source = /^source:(.+)#L(\d+)(?:-L?(\d+))?$/.exec(href);
-  const material = /^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/.exec(href);
   const handover = handoverReference(href);
   let sourcePath = source?.[1] || '';
   try {
@@ -490,12 +470,6 @@ function ReferenceDialog({
                 .slice(handover.start - 1, handover.end)
                 .join('\n');
         return { title: row.title, text: content, warning: `引用版本 v${row.version}` };
-      }
-      if (material) {
-        const saved = await adminApi<{ title: string; content: string }>(
-          `/projects/${material[1]}/materials/${material[2]}?version=${material[3]}`,
-        );
-        return { title: saved.title, text: saved.content, warning: '' };
       }
       if (!source || !evidence?.source_workspace_id)
         throw new Error('此历史引用未保存源码目录身份，请查看原始代码选区及来源记录。');

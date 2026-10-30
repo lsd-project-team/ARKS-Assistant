@@ -40,7 +40,7 @@ const result = await build({
         builder.onResolve(
           {
             filter:
-              /(state\/store|api\/client|hooks\/useSourceCitation|components\/(MaterialViewer|HandoverMaterialViewer|SelectionPreview))$/,
+              /(state\/store|api\/client|hooks\/useSourceCitation|components\/(HandoverMaterialViewer|SelectionPreview))$/,
           },
           (args) => ({ path: args.path, namespace: 'boundary' }),
         );
@@ -52,7 +52,7 @@ const result = await build({
               ? 'export const api = () => {throw new Error("测试禁止网络")};'
               : path.endsWith('useSourceCitation')
                 ? 'export const useSourceCitation = () => () => false; export const readCitationSource = () => { throw new Error("测试禁止网络"); };'
-                : 'export const MaterialViewer = () => null; export const HandoverMaterialViewer = () => null; export const SelectionPreview = () => null;',
+                : 'export const HandoverMaterialViewer = () => null; export const SelectionPreview = () => null;',
         }));
       },
     },
@@ -152,4 +152,10 @@ test('无效经验版本不能触发记录查看或变成外部跳转', () => {
     assert.match(html, /引用格式无效/);
     assert.doesNotMatch(html, /aria-haspopup="dialog"|href="debug-issue:/);
   }
+});
+
+test('已删除的项目资料引用只保留文字，不显示读取按钮或可点击链接', () => {
+  const html = render('历史[旧资料](material:project-a/manual/1#L1)正文。');
+  assert.match(html, /历史<span>旧资料<\/span>正文/);
+  assert.doesNotMatch(html, /<button|<a|material:/);
 });

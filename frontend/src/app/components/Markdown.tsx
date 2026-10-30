@@ -11,10 +11,9 @@ import remarkGfm from 'remark-gfm';
 import { useSourceCitation } from '../../features/source_reader/hooks/useSourceCitation';
 import { CodeBlock } from '../../shared/ui/markdown/CodeBlock';
 import { api } from '../api/client';
-import type { RunContext, ProjectMaterial } from '../../shared/types/api';
+import type { RunContext } from '../../shared/types/api';
 import { toast } from '../../shared/utils/toasts';
 import { useWorkspace } from '../state/store';
-import { MaterialViewer } from '../../features/projects/components/MaterialViewer';
 import { HandoverMaterialViewer } from '../../features/handover/materials/components/HandoverMaterialViewer';
 import type { HandoverRecord } from '../../features/handover/shared/types';
 import { isKnowledgeReference } from '../../features/knowledge/lib/knowledgeReference';
@@ -36,7 +35,6 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
   const runId = useContext(CitationRun);
   const sourceId = useContext(CitationSource);
   const projectId = useWorkspace((state) => state.projectId);
-  const [material, setMaterial] = useState<ProjectMaterial>();
   const [handoverMaterial, setHandoverMaterial] = useState<HandoverRecord>();
   const handoverReference = href?.match(/^handover-source:([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
   if (handoverReference)
@@ -83,35 +81,7 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
         {children}
       </DebugIssueReference>
     );
-  const reference = href?.match(/^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
-  if (reference)
-    return (
-      <>
-        <button
-          className="source-link"
-          onClick={async () => {
-            try {
-              const saved = await api<ProjectMaterial>(
-                `/projects/${reference[1]}/materials/${reference[2]}?version=${reference[3]}`,
-              );
-              if (useWorkspace.getState().projectId === projectId) setMaterial(saved);
-            } catch {
-              toast('无法读取这份项目资料的引用版本');
-            }
-          }}
-        >
-          {children}
-        </button>
-        {material && (
-          <MaterialViewer
-            material={material}
-            start={Number(reference[4])}
-            end={Number(reference[5] || reference[4])}
-            onClose={() => setMaterial(undefined)}
-          />
-        )}
-      </>
-    );
+  if (!href) return <span>{children}</span>;
   const source = href?.match(/^source:(.+)#L(\d+)(?:-L?(\d+))?$/);
   if (!source)
     return isKnowledgeReference(href || '') ? (

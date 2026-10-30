@@ -12,7 +12,7 @@ export function queryGroups(path: string): string[] {
   if (/^\/action-timing\/(ledger|projects)(\/|\?|$)/.test(path))
     return ['timing-projects', 'action-ledger'];
   if (/^\/projects(\/|\?|$)/.test(path))
-    return ['projects', 'project', 'project-threads', 'project-materials', 'threads', 'storage'];
+    return ['projects', 'project', 'project-threads', 'threads', 'storage'];
   if (/^\/(threads|runs|queue)(\/|$)/.test(path)) {
     return ['threads', 'thread', 'queue', 'context', 'memories', 'storage'];
   }
