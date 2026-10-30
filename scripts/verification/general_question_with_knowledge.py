@@ -146,7 +146,16 @@ async def verify():
                         "searches": len(searches) - previous_searches,
                     }
                 )
-            print(json.dumps({"passed": True, "checks": checks}, ensure_ascii=False))
+            print(
+                json.dumps(
+                    {
+                        "passed": True,
+                        "routing_prompt": graph_builder.RETRIEVAL_GUIDANCE,
+                        "checks": checks,
+                    },
+                    ensure_ascii=False,
+                )
+            )
         finally:
             SemanticRetrieval.scores = original_scores
             DebugIssueCorpus.__init__ = original_init
