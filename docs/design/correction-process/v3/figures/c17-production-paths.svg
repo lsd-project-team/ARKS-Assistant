@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1025" viewBox="0 0 2400 1025"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central">产品位置与芯片位置分别形成 两条路径在贴装汇合</text>
+<text x="115" y="248" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">产品线</text>
+<rect x="320" y="170" width="580" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="610.0" y="227.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">TU及下层定位</text>
+<text x="610.0" y="295.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">更新本层坐标</text>
+<rect x="1020" y="170" width="580" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1310.0" y="227.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">焊点父链</text>
+<text x="1310.0" y="295.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">局部点转G0</text>
+<rect x="1720" y="170" width="580" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2010.0" y="227.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">产品目标</text>
+<text x="2010.0" y="295.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">硬补偿与焊后补偿</text>
+<polyline points="900,257 1020,257" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1020,257 999.2897166458885,267.0042072845583 999.2897166458885,246.9957927154417" fill="#4d6070"/>
+<polyline points="1600,257 1720,257" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,257 1699.2897166458883,267.0042072845583 1699.2897166458883,246.9957927154417" fill="#4d6070"/>
+<text x="115" y="503" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">芯片线</text>
+<rect x="320" y="425" width="580" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="610.0" y="482.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">供料定位与取片</text>
+<text x="610.0" y="550.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">候选位置和角度</text>
+<rect x="1020" y="425" width="580" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1310.0" y="482.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">取片后纠偏</text>
+<text x="1310.0" y="550.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">上视或中转台</text>
+<rect x="1720" y="425" width="580" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2010.0" y="482.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">芯片结果</text>
+<text x="2010.0" y="550.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">偏移或重取位置</text>
+<polyline points="900,512 1020,512" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1020,512 999.2897166458885,522.0042072845583 999.2897166458885,501.9957927154417" fill="#4d6070"/>
+<polyline points="1600,512 1720,512" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,512 1699.2897166458883,522.0042072845583 1699.2897166458883,501.9957927154417" fill="#4d6070"/>
+<text x="115" y="758" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">贴装</text>
+<rect x="320" y="680" width="580" height="175" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="610.0" y="737.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">产品目标与芯片结果</text>
+<text x="610.0" y="805.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">按所选相机分支使用</text>
+<rect x="1020" y="680" width="580" height="175" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1310.0" y="737.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">区域及参考补偿</text>
+<text x="1310.0" y="805.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">保存G0中间位置</text>
+<rect x="1720" y="680" width="580" height="175" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2010.0" y="737.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">轴目标</text>
+<text x="2010.0" y="805.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">转换后追加实时补偿</text>
+<polyline points="900,767 1020,767" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1020,767 999.2897166458885,777.0042072845583 999.2897166458885,756.9957927154417" fill="#4d6070"/>
+<polyline points="1600,767 1720,767" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,767 1699.2897166458883,777.0042072845583 1699.2897166458883,756.9957927154417" fill="#4d6070"/>
+<polyline points="2300,257 2350,257 2350,642" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="2300,512 2350,512" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polyline points="2350,642 610,642 610,680" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="610,680 599.9957927154417,659.2897166458885 620.0042072845583,659.2897166458885" fill="#4d6070"/></svg>

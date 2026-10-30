@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 2,
+  "status": "delivered",
+  "diagramType": "workflow",
+  "specification": {
+    "path": "postbond-feedback-workflow.archify.json",
+    "sha256": "e40b7c278641afb5d5d8eb3f96c00c429143ccb764b60b9298be4e0a36c8f833",
+    "bytes": 5990
+  },
+  "artifact": {
+    "path": "postbond-feedback-workflow.html",
+    "sha256": "629626d6795145cddfd1c646d28ae8e45e81c32e7e5d89317846e56d470685f8",
+    "bytes": 815355
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  },
+  "browserEvidence": "passed",
+  "browserReceipt": "postbond-feedback-workflow.visual-check.json",
+  "visualReview": {
+    "status": "passed",
+    "scope": "Image review of final 1440x900 light and 2048x1320 dark screenshots: node/card fit, route separation, legend meaning, theme contrast and overall composition. No manual interaction/export test claimed.",
+    "correctionRounds": 2
+  },
+  "sourceEvidence": "postbond-feedback-evidence.json",
+  "relationships": [
+    {
+      "from": "result",
+      "to": "enqueue",
+      "evidenceIds": [
+        "publish"
+      ]
+    },
+    {
+      "from": "enqueue",
+      "to": "cache",
+      "evidenceIds": [
+        "publish",
+        "default-cache"
+      ]
+    },
+    {
+      "from": "cache",
+      "to": "refresh",
+      "evidenceIds": [
+        "publish",
+        "data-subscribe-close",
+        "data-refresh"
+      ]
+    },
+    {
+      "from": "refresh",
+      "to": "display",
+      "evidenceIds": [
+        "data-refresh"
+      ]
+    },
+    {
+      "from": "production",
+      "to": "sample",
+      "evidenceIds": [
+        "production-entry",
+        "production-compensation-use",
+        "aggregate-compensation"
+      ]
+    },
+    {
+      "from": "sample",
+      "to": "coordinate",
+      "evidenceIds": [
+        "sample-compensation",
+        "production-compensation-use"
+      ]
+    },
+    {
+      "from": "cache",
+      "to": "sample",
+      "evidenceIds": [
+        "default-cache",
+        "sample-compensation"
+      ]
+    },
+    {
+      "from": "sample",
+      "to": "caught",
+      "evidenceIds": [
+        "sample-compensation",
+        "bond-work-mode-guard",
+        "bond-exception-boundary"
+      ]
+    },
+    {
+      "from": "caught",
+      "to": "stop",
+      "evidenceIds": [
+        "bond-exception-boundary",
+        "task-node-dispatch",
+        "task-exception-stop"
+      ]
+    },
+    {
+      "from": "caught",
+      "to": "escape",
+      "evidenceIds": [
+        "bond-exception-boundary",
+        "bond-task-entire-worker",
+        "bond-task-start-abort"
+      ]
+    },
+    {
+      "from": "stop",
+      "to": "escape",
+      "evidenceIds": [
+        "task-exception-stop",
+        "stop-side-effects",
+        "bond-task-entire-worker",
+        "bond-task-start-abort"
+      ]
+    }
+  ],
+  "scope": "Source-backed static workflow; no equipment, production UI execution, database or failure injection verified."
+}

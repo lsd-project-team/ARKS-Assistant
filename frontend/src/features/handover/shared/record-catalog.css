@@ -1,0 +1,128 @@
+.record-catalog-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.record-catalog-search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 9px;
+  min-width: 240px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--text-secondary);
+}
+.record-catalog-search input {
+  border: 0;
+  box-shadow: none !important;
+  background: transparent;
+  padding: 9px 0;
+}
+.record-catalog-count {
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.record-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.record-catalog-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 200px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.record-catalog-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-panel);
+}
+.record-catalog-open {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 13px;
+  min-width: 0;
+  width: 100%;
+  padding: 22px;
+  border: 0;
+  border-radius: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+}
+.record-catalog-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+.record-catalog-card-top > svg {
+  flex-shrink: 0;
+}
+.record-catalog-card-top .handover-status {
+  margin-left: auto;
+  border: 0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.record-catalog-open > strong {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.record-catalog-open > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.record-catalog-open > small {
+  margin-top: auto;
+  font-size: 11px;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+.record-catalog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 18px 14px;
+}
+.record-catalog-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 20px;
+  color: var(--text-secondary);
+}
+.record-catalog-empty strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+@container (max-width: 850px) {
+  .record-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}

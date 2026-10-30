@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05T02:15:55.692Z",
+  "status": "original-semantic-source-reader-and-full-browser-passed",
+  "parent": {
+    "file": "docs/archify/original-semantic-graph-test.json",
+    "sha256": "d4801bcee77a85990d1f180aa4d590d80cad5956c89ed1c8d0db68a30778c76e",
+    "totalFrozenBindings": 8635
+  },
+  "otherParents": [
+    {
+      "file": "docs/archify/native-dispense-reader-test.json",
+      "sha256": "9a1d105860e61d5462dcaeb889f91d74ecae4a133f449b7169ead5bc79f8d10c",
+      "totalFrozenBindings": 6535
+    },
+    {
+      "file": "docs/archify/native-dispense-policy-test.json",
+      "sha256": "6f99dd177a1467268b63bdbc7def34d3d6b963fad1834f786d843150f3a98d06",
+      "totalFrozenBindings": 6594
+    },
+    {
+      "file": "docs/archify/native-dispense-controller-test.json",
+      "sha256": "8ee707affa4eb9d7bb1e8c0310d4d0b67871ea42a86b4a1c7b605b4838b02051",
+      "totalFrozenBindings": 6653
+    }
+  ],
+  "parentFrozenBindings": 8635,
+  "newFrozenInputs": 62,
+  "totalFrozenBindings": 8697,
+  "reusedParentInputs": 1464,
+  "modules": 29,
+  "legacyRelationships": 552,
+  "originalTopics": 52,
+  "originalSnapshots": 5257,
+  "newTopics": 2,
+  "newSnapshots": 154,
+  "totalTopics": 54,
+  "totalSnapshots": 5411,
+  "nativeNotices": 654,
+  "inventoryFiles": 1436,
+  "semanticCompileFiles": 1410,
+  "excludedSyntaxFiles": 26,
+  "sourceSymbols": 32112,
+  "totalSymbols": 36917,
+  "declarations": 29764,
+  "staticOperationEdges": 384201,
+  "declaredRelations": 4581,
+  "selectedIlMethods": 159,
+  "exactSourceSignatureBindings": 154,
+  "constructorIlWithoutDeclaration": 4,
+  "compilerClosureIlOnly": 1,
+  "sourceBindingCounts": {
+    "audited-source-range-bound": 5377,
+    "excluded-original-compile-syntax-only": 2,
+    "source-file-not-in-inventory": 32
+  },
+  "ilBindingCounts": {
+    "native-dispense-policy": {
+      "selected": 60,
+      "matched": 58,
+      "compilerGeneratedOnly": 0,
+      "constructorsWithoutSource": 2
+    },
+    "native-dispense-controller": {
+      "selected": 99,
+      "matched": 96,
+      "compilerGeneratedOnly": 1,
+      "constructorsWithoutSource": 2
+    }
+  },
+  "payload": {
+    "file": ".archify-work/semantic-source-reader/semantic-data.json",
+    "sha256": "ba937f177f43693a2f9e1f613822acab7a72c5b4e1d99b3dbdf7e32cf8529965",
+    "bytes": 74473279,
+    "gzipFile": ".archify-work/semantic-source-reader/semantic-data.json.gz",
+    "gzipSha256": "fd2d1e1e86d951a40f14f5915c0001c53d8622e8ecbc848becadc742d8f17a2e",
+    "gzipBytes": 7893476
+  },
+  "artifact": {
+    "file": "docs/archify/module-source-explorer-semantic.html",
+    "sha256": "0c9bbe38d3768fe43bfbc255de40d43710523b30ebfeeaba5ea5ddd52a3819b0"
+  },
+  "browserResult": {
+    "file": ".archify-work/semantic-source-reader/browser-results.json",
+    "sha256": "318c4533d7f09d5b6613962864d7c04b4721a5558134d024ed50c2b3df9f0dc6"
+  },
+  "verificationResults": {
+    "file": ".archify-work/semantic-source-reader/verification-results.json",
+    "sha256": "78a0a7263a8e0f63a0f9a8cdb60ff3b2923881d9a447824f8e41c72d89e60379"
+  },
+  "browserLayouts": [
+    {
+      "width": 1600,
+      "scrollWidth": 1600
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "width": 850,
+      "scrollWidth": 850
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390
+    }
+  ],
+  "browserErrors": [],
+  "sourceTextHashesVerified": 1436,
+  "fullSourceViewsRendered": 1436,
+  "allSnapshotsRendered": 5411,
+  "reciprocalReportRouteVerified": true,
+  "originalReaderModified": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "productionRuntimeExecuted": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "realUIExecuted": false,
+  "deviceExecuted": false,
+  "sqlWritesExecuted": false,
+  "fullBusinessSemanticCoverage": false,
+  "runtimeDynamicDispatchResolved": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "scope": "New standalone offline1436-file source reader,1410Compile semantic graph384201operations/4581declared relations and exact154selected IL-source signature links to two latest reports.26excluded syntax-only,32legacy non-C# snapshots and2excluded snapshots clearly unbound. Old5257JSON snapshots/hash values,52topics29modules552business relationships preserved. Edge file:// actual full text/notice rendering1436/5411/654, all1436 text SHA, reciprocal source/report and direct-call paths, generic deep reload, SDK/implicit/virtual/delegate/lowering boundaries and4widths. Reuses verified parent frozen original source/graph copies separately from new inputs; no production CLR/UI/device/SQL/Build execution or complete business/dynamic inference.",
+  "runtime": {
+    "test": "semantic-source-reader-test.json",
+    "testSha256": "52bb71571c7c8808437105b2ab0dc71d2ad3107d33774c8a0863561e667344ba",
+    "audit": "semantic-source-reader-audit.json",
+    "auditSha256": "ea44a37d7e64098af79f13d77a4a513de98aaab997c9f80d209d4ff40a73bd88",
+    "report": "semantic-source-reader-review.md",
+    "reportSha256": "87788236afa2f8511a7cc0d68976df90169e3a52216ccb76486277394c138e46",
+    "reader": "module-source-explorer-semantic.html",
+    "readerSha256": "0c9bbe38d3768fe43bfbc255de40d43710523b30ebfeeaba5ea5ddd52a3819b0",
+    "evidence": "semantic-source-reader-evidence.json",
+    "evidenceSha256": "a5ecf3cb21eb468fb0aaf34d96b464cffa722da780d6e801809e6004c786cdc2"
+  },
+  "nextRequired": "Continue full29-group business interpretation and dynamic relation evidence, build/toolchain dependencies and original UI/SQL/device production acceptance; static/reader completion does not close full goal."
+}

@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "status": "exact-original-native-recipe-action-selection-and-source-bindings-passed",
+  "command": "node .archify-work/capture-native-recipe-action-selection-bindings.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "0d82d6",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-recipe-action-selection-bindings.log",
+  "logSha256": "61fd360f1c13420cc3fde8b3e7dac600ee5424d8bda0f53fc238d95a5df7cb47",
+  "testSha256": "9ef4343454102fe1d21fb07dc7abe2fdebcdafb0d136c30973fc2f682d81eec3",
+  "freeze": {
+    "observedCompletionChunk": "af3d92",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "stageVerification": {
+    "command": "node --max-old-space-size=4096 .archify-work/verify-native-recipe-action-selection-stage.cjs",
+    "observedCompletionChunk": "10ca5c",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "steps": [
+      {
+        "name": "native-selection",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-recipe-action-selection.cjs",
+        "log": ".archify-work/native-recipe-action-selection/native-selection-verification.log",
+        "logSha256": "32c9deac5ec1c21bc5258a65f4cba5e3636707f9a54e3df010dfa2a6fbc90599",
+        "stderr": ".archify-work/native-recipe-action-selection/native-selection-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "action-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-action-selection-bindings.cjs",
+        "log": ".archify-work/native-recipe-action-selection/action-parent-verification.log",
+        "logSha256": "7b4bc8411a1eced99e29c946fdafa8e1a2ca8b9fa2d1ad91434454a134bdc5f7",
+        "stderr": ".archify-work/native-recipe-action-selection/action-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "algorithm-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-algorithm-selection-bindings.cjs",
+        "log": ".archify-work/native-recipe-action-selection/algorithm-parent-verification.log",
+        "logSha256": "77f24935b570cb6717561fb6ee64b412d26d36cd7ad6b462691d3ad365b037c4",
+        "stderr": ".archify-work/native-recipe-action-selection/algorithm-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "reader-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-dispatch-source-reader-bindings.cjs",
+        "log": ".archify-work/native-recipe-action-selection/reader-parent-verification.log",
+        "logSha256": "b15ee21c5dd410b0d8d4380a6c4bfcb42ae6e809c567fab7b051f88d58d132b7",
+        "stderr": ".archify-work/native-recipe-action-selection/reader-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "virtual-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-provenance-bindings.cjs",
+        "log": ".archify-work/native-recipe-action-selection/virtual-parent-verification.log",
+        "logSha256": "0a46b2d374843671a50f8729d839528e0db6077dc64ceb51043a23355e0f70aa",
+        "stderr": ".archify-work/native-recipe-action-selection/virtual-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      }
+    ]
+  },
+  "compile": {
+    "command": "node .archify-work/compile-native-recipe-action-selection.cjs",
+    "observedCompletionChunk": "15d0f0",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "bound": {
+    "command": "node scripts/run-native-recipe-action-selection.cjs bound",
+    "observedCompletionChunk": "14b079",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "checks": 31655
+  },
+  "replay": {
+    "command": "node scripts/run-native-recipe-action-selection.cjs replay",
+    "observedCompletionChunk": "415106",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "checks": 31655
+  },
+  "il": {
+    "command": "node .archify-work/capture-native-recipe-action-selection-il.cjs",
+    "observedCompletionChunk": "e823cb",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "sourceEvidence": {
+    "command": "node --max-old-space-size=4096 scripts/prepare-native-recipe-action-selection-source.cjs",
+    "observedCompletionChunk": "c0b329",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "candidate": {
+    "directory": ".archify-work/native-recipe-action-selection-candidate-v1/",
+    "prepare": {
+      "observedCompletionChunk": "ce8058",
+      "observedExitCode": 0
+    },
+    "compile": {
+      "observedCompletionChunk": "e9ed80",
+      "observedExitCode": 0
+    },
+    "bound": {
+      "observedCompletionChunk": "cd6904",
+      "observedExitCode": 1,
+      "completedChecks": 4
+    },
+    "archive": {
+      "observedCompletionChunk": "8b947e",
+      "resolvedPathsVerifiedInsideWorkspace": true
+    },
+    "reason": "Harness incorrectly expected CarrierRepository file absent after original repository constructor. Actual SDK ReadGenericList creates zero-byte missing file: observed8f8035. Preserve complete candidate and check absent before constructor, empty file/list after constructor. Production sources and original assemblies unchanged."
+  },
+  "verifierDraft": {
+    "observedCompletionChunk": "190bc7",
+    "observedExitCode": 1,
+    "archive": ".archify-work/native-recipe-action-selection/verifier-draft-v1/",
+    "repairObservedCompletionChunk": "e3e7f9",
+    "limitation": "Verifier assumed raw JSON array. SDK SaveGenericList actually emits typed $type/$values list envelope, confirmed76ad23. Both native processes already passed; verifier corrected to validate original typed format. No production or native output edited."
+  },
+  "newFrozenInputs": 75,
+  "reusedParentInputs": 275,
+  "totalFrozenBindings": 9734,
+  "nodeDoWorkExecuted": true,
+  "onlyInteractiveShortDoWorkExecuted": true,
+  "otherConcreteNodeDoWorkExecuted": false,
+  "productionTaskExecuted": false,
+  "wholeGoalComplete": false
+}

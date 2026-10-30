@@ -1,0 +1,45 @@
+# 原S1点胶步骤提前提交、单步等待与任务关闭查询
+
+两轮独立Framework CLR各85项检查通过，标签、顺序和结果一致。每轮直接点胶节点调用8次、真实Working任务4个，再执行4次点胶节点，合计12次原S1DispenseActionNode.DoWork；原PreDispenseAction的Off/Off短分支6次。4个真实任务中2个RanToCompletion、2个Faulted。步骤提前提交和失败后仍标记完成已复现，物理点胶未执行；16工程、29组、1436文件、13项整体目标未完成。
+
+## 实际配方与步骤提交
+
+真实原Dispenser与EpoxyApplication对象通过公开仓库列表加入并由原Find解析；点胶头预点胶模式/时机均Off，胶型为真实未示教对象，本轮不验收就绪或物理胶型。原普通载具含一基板、一基岛、一焊点，一个步骤指定该原胶型。四层公开信息标志设为已经视觉、测高、身份完成，使原任务跳过12个前置条件并进入第13条真实点胶消息。私有消息只读观察；未替换SDK、路径、单例、动作对象或私有上下文。
+
+原S1DispenseActionNode在OffLineWork下先调用BondPosition.S1FinishedStep，再进行单步等待、预点胶、WaitStart和实际插补准备。S1FinishedStep直接把当前剩余步骤字典值设true。此提交在两个早退出路径之前：退出已经进入的单步等待返回Abort；不启用单步时原Off/Off预点胶返回Success，而已经Stop的WaitStart拒绝，返回Fail。两种路径都未取得后续插补坐标或执行物理点胶。
+
+六个直接用例为Abort/Fail×正常公开刷新回调/null刷新委托/抛异常刷新回调。正常回调下实际结果就是Abort或Fail；所有用例步骤值true、IsS1NeedStep=false，原IsDoWork也false。前12条消息Finished=true，当前第13条仍未完成，公开GetNext仍返回同一当前节点，但其条件已拒绝。这是步骤状态与消息状态分离的实证，不把提前标记当真实业务完成。
+
+## 单步等待不读取Stop
+
+原Signal.WaitSingleStep循环只检查公开IsSingleStepWork字段和真实EventWaitHandle，不读取MachineState。直接及实际Task用例进入此等待后，MachineState=Stop、原节点State=Running、步骤标志已经true；有界等待期间没有WorkStop。公开IsSingleStepWork=false才让已有等待返回false，由原域WaitSingleStep转为节点Abort。本轮释放使用明确公开字段，没有替换Wait或造返回值。
+
+初候选错误假设Stop能释放单步等待，5项通过后原生子进程25秒超时，记录SIGTERM/null exitCode/ETIMEDOUT并确认无Probe进程存活；外层记录器exit1不能算原生成功。完整候选保留，最终用例增加已有等待和公开释放验证，两轮均通过。未据100ms观察推断永久不终止。原Machine.Stop会清IsSingleStepWork的源/IL已绑定；在已经等待期间由原Machine.Stop自身释放该等待仍是下一项，不把本轮直接设字段等同该调用链验收。
+
+## finally中的公开刷新与事件异常
+
+原finally先置节点Stop、调用WorkStop，再直接Invoke UcMainSystem.ReFreshSystem1TuAction，后者没有null守卫。未创建原UI时该公开委托自然为null。null刷新使原Abort/Fail返回被NullReferenceException覆盖；显式抛异常刷新回调覆盖返回并保留同一异常对象。这里的正常刷新回调只计数，是明确的公开测试夹具，不是实际界面刷新。
+
+另两次WorkStop回调异常在State=Stop后跳出，后续刷新回调完全不执行。节点停止、步骤提前提交均保留。没有运行原catch中的消息框，原UI没有构造。
+
+## 实际任务与原Machine.Stop
+
+四个原S1 Start从Working启动，公开WorkStart将MachineState设Stop并提供明确同步等待；两种Abort/Fail×有/无刷新回调。有刷新时原动作返回Abort/Fail，任务执行原离线安全位和Machine.Stop，然后正常方法返回，Task.Status为RanToCompletion。RanToCompletion不等于业务成功：当前消息未完成、步骤却已true，原Task没有调用当前Finish/产品Finish或发传料信号。
+
+两次原Machine.Stop清了IsBondNeedChipSignal；前置Set信号由Set变ReSet。无刷新时原finally抛NullReferenceException，真实Task为Faulted，任务没有取得动作返回值，未执行自己的Machine.Stop，需片信号仍Set。所有Task均保留12条前置消息完成与当前消息未完成，不发送AllowDispenseTransferToBondSignal。单步释放由公开字段执行，故该字段两种Task结果最终都false，不能仅以它判定Stop是否已调用。
+
+## 上层关闭查询
+
+每个真实Task仍处于Running、阻塞在公开回调时调用原Machine.IsAllowTaskClosed。配置IsSystem1Configrated=true时原查询重新汇总16项、包含该实际S1任务并返回false；公开配置切false时列表15项、排除仍活跃的S1任务并返回true。恢复配置后完成运行，原查询对真实RanToCompletion和Faulted都返回true，没有读取Task.Exception、Wait或传播任务故障。
+
+原ChangeUiByState在Stop且界面正处于“设备正在停止”状态时用这个查询重新启用界面；源码与完整IL静态绑定。实际UI方法未运行，这个查询不证明线程已成功完成或故障已被处理。其他任务状态与更上层故障监控仍待核验。
+
+## 来源与冻结
+
+162个完整原声明、82个原文件严格文本/UTF16位置/符号/字节SHA对应，47个完整静态IL方法来自Main与原Machine两个实际程序集，包含S1点胶/预点胶、任务、Machine.Stop/关闭查询、Signal等待、步骤读写与UI委托/状态方法。47不是18次DoWork调用数量。两轮宿主各真实绑定16个保真资源原程序集，32个物理文件SHA核对；162引用编译后才运行。
+
+八步原生/来源/IL与父S1任务、节点条件、配方、动作、算法、阅读器、虚分派冻结核验通过。90新增冻结输入，301旧输入复用不增数，10006+90=10096。原1328及历史报告、阅读器保持。初IL包装器误留父status守卫而失败，实际Cecil过程0/完整原IL保存，修正预期status后核验；独立检查器误把原公开字段当getter调用，实际ldfld确认后更正，初草稿/错误记录完整保留；未编辑原生结果或生产源码。
+
+完整原工程LC/Fody/MSBuild/部署、实际点胶/检测、UI/SQL/VM/设备、运行Retry及S2完整Working继续待验收。下一步执行原Machine.Stop释放已有单步等待的完整链，核对失败步骤在实际重启/返工中的处理、任务关闭查询的其他状态以及上层停止/错误监控；随后继续原配方生命周期与设备、构建验收。整体目标未完成。
+
+只读复验：node --max-old-space-size=4096 scripts/verify-native-s1-step-commit.cjs，node scripts/verify-native-s1-step-commit-bindings.cjs。冻结运行目录禁止覆盖，新实验另建目录。

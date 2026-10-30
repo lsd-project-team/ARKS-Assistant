@@ -1,0 +1,317 @@
+[
+  {
+    "figure": "co_journey",
+    "page": 1,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_journey",
+    "page": 3,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_product_story",
+    "page": 4,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_tray_story",
+    "page": 5,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_pick_angle_story",
+    "page": 6,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_pick_xy_story",
+    "page": 7,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_photo_story",
+    "page": 8,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_measure_story",
+    "page": 9,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_saved_story",
+    "page": 10,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_rotate_story",
+    "page": 11,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_target_story",
+    "page": 12,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_replay_story",
+    "page": 13,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_options_story",
+    "page": 14,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_normal_story",
+    "page": 15,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_mirror_story",
+    "page": 16,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_scene",
+    "page": 17,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_center_story",
+    "page": 18,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_feed_loop",
+    "page": 19,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_nine",
+    "page": 20,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_anchor",
+    "page": 21,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_rigid",
+    "page": 22,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_order",
+    "page": 23,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_thermal",
+    "page": 24,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_postbond",
+    "page": 25,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_realtime",
+    "page": 26,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_layers",
+    "page": 27,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_home",
+    "page": 28,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_teach",
+    "page": 29,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_teach_writes",
+    "page": 30,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_grid",
+    "page": 31,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_table_routes",
+    "page": 32,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_product_retry",
+    "page": 33,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_ipt_records",
+    "page": 34,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_manual",
+    "page": 35,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "co_recap",
+    "page": 36,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  }
+]

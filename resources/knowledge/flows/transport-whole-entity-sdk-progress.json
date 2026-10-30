@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "status": "whole-original-entity-inspection-sdk-preparation-passed",
+  "updatedAt": "2026-10-01",
+  "test": "transport-whole-entity-sdk-test.json",
+  "testSha256": "c3d0c0733dcc26de15719c32675288a897413a107dc5dcaa4771d202da1096a7",
+  "audit": "transport-whole-entity-sdk-audit.json",
+  "auditSha256": "48d3cbb14e34b5b6848d88a6382a29223652870e95a03806c3ac19c65e7b1b02",
+  "report": "transport-whole-entity-sdk-review.md",
+  "reportSha256": "a0e842213f82c43b70a451fab474ac02c9493ccddd8bc77e608dbb935cd0b7f7",
+  "distinctAssertions": 187,
+  "priorAssertionsRetained": 142,
+  "newAssertions": 45,
+  "placements": 374,
+  "sdkCopies": 2,
+  "originalStartupInvocationsPerCopy": 34,
+  "wholeOriginalFiles": 45,
+  "compiledSourceUnits": 46,
+  "referenceInputs": 9,
+  "removedReconstructedDeclarations": 9,
+  "priorSourceFragmentsPreserved": 512,
+  "additionalEntityCapturesPreserved": 8,
+  "changedOriginalSourceFragments": 0,
+  "legacyFormal1328Executed": false,
+  "frozenInputs": 307,
+  "replay": {
+    "command": "node scripts/test-transport-whole-entity-sdk.cjs",
+    "observedSession": 72453,
+    "observedExitCode": 0,
+    "log": {
+      "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/orchestration.log",
+      "sha256": "ff6e7e9dc1eb108795b51b1b693c264dd09a0c7d3f286d4501d18f07ff93a6f2"
+    },
+    "result": {
+      "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/result.json",
+      "sha256": "482d1a4668e87782a7ed76e7a37dec4626b2183861f174f09285cd43a5707376"
+    },
+    "results": [
+      {
+        "tag": "library",
+        "checks": 187,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "artifactIdenticalToInitialBaseline": true,
+        "compile": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/library-compile.log",
+          "sha256": "8f708765da6c50b5b6e3877306f3a9b9061b68f79c03ef7f6cedf01f1872c9ee"
+        },
+        "runtime": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/library-runtime.log",
+          "sha256": "7b81f93dc13867ee215634310ed690905c4444ef683467487def691bba96279c"
+        },
+        "artifact": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/library.dll",
+          "sha256": "c5adf23bd9bd705485dd6738c64f870632ac29d7c3956548430e5b6a3decab6a"
+        },
+        "input": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/library-input.json",
+          "sha256": "eece215d8732cb82bae56b6529117aad4c5543d77df87bd7205eddf1566dc089"
+        }
+      },
+      {
+        "tag": "bin",
+        "checks": 187,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "artifactIdenticalToInitialBaseline": true,
+        "compile": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/bin-compile.log",
+          "sha256": "508435b70cbc31df9420b572f68d508ed2660a5a7e8ce916a9893e67498c8e2f"
+        },
+        "runtime": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/bin-runtime.log",
+          "sha256": "d160887b5f2298fa734153a7c0eb765f895d537e6e8151a6eded2f4b0289bce8"
+        },
+        "artifact": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/bin.dll",
+          "sha256": "57265b96938810badcefcff8b8e250eae57001f75f583790254bd3aa46b45b94"
+        },
+        "input": {
+          "file": ".archify-work/whole-entity-sdk-startup-baseline/replay/bin-input.json",
+          "sha256": "f6b2f02e1a5b35760e44a1f14e16a1605fa7e878e8285fafb64c3311a7b1060e"
+        }
+      }
+    ]
+  },
+  "snapshotDirectory": ".archify-work/whole-entity-sdk-startup-baseline/final-documents/",
+  "baselineArtifactDirectory": ".archify-work/whole-entity-sdk-startup-baseline/",
+  "preparedContext": {
+    "formalTest": "transport-product-declarations-integration-test.json",
+    "formalTestSha256": "8ad5c496714145aa3894982dc82c5ed2a49b1d8c3ad2fed68c450382d536ee00",
+    "priorWholeConfigPreparation": "transport-whole-config-sdk-progress.json",
+    "priorWholeConfigPreparationSha256": "e973a724e5469755955dc46cb2db84157426be0013ba32573d366643f5e66056",
+    "includedInFormal1328Regression": false,
+    "topics": 40,
+    "topicSnapshots": 3817,
+    "readerSha256": "9c8504c878e7f64c95f7ae2398998abc9592c59cebec392cf528b1a83c341300"
+  },
+  "findings": [
+    "Complete original entities/inspection preserve existing142 actual SDK/startup cases, including malformed JSON behaviors.",
+    "Original position detection rounds to three decimals before strict threshold comparison.",
+    "Defect frequency2 skips two cycles and requires the third; reset/init/disabled behavior follows original implementation.",
+    "Both original startup entry points reject incomplete or null backside teaching after actual complete inspection Save/Load."
+  ],
+  "remaining": [
+    "Whole original action controllers and model/injection dependencies.",
+    "Actual PR/camera/calibration/measurement/export execution.",
+    "Original project/Fody/external dependencies/deployment/native UI/equipment acceptance.",
+    "All16 projects/29 groups/1436 C# files/13 requirements."
+  ],
+  "nextTask": {
+    "objective": "接入原 S1/S2 动作控制器的 InjectSteps 与步骤模型，先验证完整实体 Init 的实际剩余步骤注入，再展开动作执行和硬件边界。",
+    "sourceFiles": [
+      "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+      "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs"
+    ]
+  },
+  "wholeGoalComplete": false
+}

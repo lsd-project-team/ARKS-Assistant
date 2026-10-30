@@ -1,0 +1,1052 @@
+<!doctype html><html lang=zh-CN><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>手动试胶 · 源码证据</title><style>body{font:16px/1.65 system-ui;margin:24px auto;padding:0 20px;max-width:1120px;color:#182b43;background:#f5f8fc}a{color:#075da5}article{background:white;padding:20px;margin:16px 0;border:1px solid #d4dce8;border-radius:10px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 Consolas,monospace}summary,p{overflow-wrap:anywhere}nav{display:flex;gap:18px;flex-wrap:wrap}input{box-sizing:border-box;width:100%;padding:12px;font:inherit}h1{font-size:26px}</style><h1>手动试胶 · 节点与关系源码证据</h1><nav><a href=index.html>项目总入口</a><a href=manual-epoxy-trial.html>Archify 流程图</a><a href=manual-epoxy-trial-summary.md>执行步骤与限制</a></nav><p>11 个节点、9 条关系。静态调用证据不等于设备运行验收。点击行号范围展开原文，或打开完整源文件。</p><label>搜索节点、调用或源码 <input id=search placeholder="例如 InterpolationApplication 或 DryCycle"></label><article id=trial-click><h2>点击普通试胶</h2><p>trial-click</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 483–546</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>483:         public void Confirm()
+484:         {
+485:             this.EpoxyApplication.TearOff1Open = this.CkTearOff1On.Checked;
+486: 
+487:             this.EpoxyApplication.TearOff2Open = this.CkTearOff2On.Checked;
+488: 
+489:             this.EpoxyApplication.TearOff1Height = (double)this.SpTearOff1Height.Value;
+490:             this.EpoxyApplication.TearOff1Speed = (double)this.SpTearOff1Speed.Value;
+491:             this.EpoxyApplication.TearOff1Delay = (int)this.SpTearOff1Delay.Value;
+492: 
+493:             this.EpoxyApplication.TearOff2Height = (double)this.SpTearOff2Height.Value;
+494:             this.EpoxyApplication.TearOff2Speed = (double)this.SpTearOff2Speed.Value;
+495:             this.EpoxyApplication.TearOff2Delay = (int)this.SpTearOff2Delay.Value;
+496: 
+497:             this.EpoxyApplication.SecurityHeightForEpoxyApplication =
+498:                 (double)this.SpSecurityHeightForEpoxyApplication.Value;
+499:             this.EpoxyApplication.SlowTravelSpeedBeforeDispensing = (double)this.SpSlowTravel.Value;
+500: 
+501:             this.EpoxyApplication.DispenserLeadTime = (int)this.SpWaitingTime.Value;
+502:             this.EpoxyApplication.IsDispenserLeadTimeOpen = this.ChWaitIsDispense.Checked;
+503:             
+504:             this.EpoxyApplication.SpindleSpeedPercentage = (int)this.SpSpindleSpeed.Value;
+505:             this.EpoxyApplication.OffsetX = (double)this.SpOffSetX.Value;
+506:             this.EpoxyApplication.OffsetY = (double)this.SpOffSetY.Value;
+507:             this.EpoxyApplication.OffsetZ = (double)this.SpOffSetZ.Value;
+508:             this.EpoxyApplication.AdvanceOpenDistanceNew = (double)this.SpAdvance.Value;
+509:             this.EpoxyApplication.PrePlantOffSetZ = (double)this.SpPrePlantOffSetZ.Value;
+510: 
+511:             this.EpoxyApplication.SizeX = (double)this.SpSizeX.Value;
+512:             this.EpoxyApplication.SizeY = (double)this.SpSizeY.Value;
+513:             this.EpoxyApplication.Angle = (double)this.SpAngle.Value;
+514: 
+515:             this.EpoxyApplication.ComponentSizeX = (double)this.SpComponentX.Value;
+516:             this.EpoxyApplication.ComponentSizeY = (double)this.SpComponentY.Value;
+517: 
+518:             this.EpoxyApplication.DispensePressure = (double)this.SpDispensingPressure.Value;
+519: 
+520:             this.EpoxyApplication.Vacuum = (double)this.SpVacuum.Value;
+521: 
+522:             this.EpoxyApplication.EpoxyApplicationStrategy = (EpoxyApplicationTypeEnum)this.LueEpoxyType.EditValue;
+523: 
+524:             this.EpoxyApplication.PrintSlowDownHeight = (double)this.SpPrintSlowDownHeight.Value;
+525:             this.EpoxyApplication.PrintSlowDownSpeed = (double)this.SpPrintSlowDownSpeed.Value;
+526:             this.EpoxyApplication.PrintDelayTime = (int)this.SpPrintDelay.Value;
+527:             this.EpoxyApplication.PrintOffsetZ = (double)this.SpPrintingOffset.Value;
+528:             this.EpoxyApplication.PrintSlowUpHeight = (double)this.SpPrintSlowUpHeight.Value;
+529:             this.EpoxyApplication.PrintSlowUpSpeed = (double)this.SpPrintSlowUpSpeed.Value;
+530:             this.EpoxyApplication.PrintSlowUpDelayTime = (int)this.SpPrintSlowUpDelay.Value;
+531: 
+532:             string printNozzleName = this.CmbNozzleName.SelectedItem?.ToString();
+533: 
+534:             // 判断是否为空
+535:             if (string.IsNullOrEmpty(printNozzleName))
+536:             {
+537:                 this.EpoxyApplication.PrintNozzleName = "Null";
+538:             }
+539:             else
+540:             {
+541:                 this.EpoxyApplication.PrintNozzleName = printNozzleName;
+542:             }
+543: 
+544:             EpoxyApplicationRepository.GetInstance().Save();
+545:             System1Program.GetInstance().Save();
+546:         }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 595–602</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>595:         private void BtTest_Click(object sender, EventArgs e)
+596:         {
+597:             try
+598:             {
+599:                 this.Confirm();
+600:                 bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2
+601:               &amp;&amp; (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+602:                   || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool &amp;&amp; this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));</pre></details></article><article id=trial-gate><h2>设备与载具门控</h2><p>trial-gate</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 604–646</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>604:                 if (isDispenseInsystem2)
+605:                 {
+606:                     #region 条件验证
+607:                     TransportUnit transportUnit =
+608:                     TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+609: 
+610:                     if (this.CmbBondPositon.SelectedItem == null)
+611:                     {
+612:                         AKRSXtraMessageBox.Show("请先选择焊点");
+613:                         return;
+614:                     }
+615: 
+616:                     // 判断点胶头是否准备好
+617:                     if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+618:                     {
+619:                         Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it =&gt; it.Name == this.EpoxyApplication.PrintNozzleName);
+620:                         if (nozzle == null)
+621:                         {
+622:                             AKRSXtraMessageBox.Show("蘸胶吸嘴为空，请重新选择");
+623:                             return;
+624:                         }
+625:                         else if (!nozzle.IsAssistantSucceed)
+626:                         {
+627:                             AKRSXtraMessageBox.Show("蘸胶吸嘴未示教完成，请示教完后重试");
+628:                             return;
+629:                         }
+630:                     }
+631:                     else
+632:                     {
+633:                         // 如果点胶头没有示教完成，退出
+634:                         if (!BondProgram.GetInstance().S2DispenserProgram.IsReady())
+635:                         {
+636:                             return;
+637:                         }
+638:                     }
+639: 
+640:                     if (transportUnit == null)
+641:                     {
+642:                         AKRSXtraMessageBox.Show("系统2载台上没有载具，请重试");
+643:                         return;
+644:                     }
+645: 
+646:                     transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 788–844</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>788:                     #region 条件验证
+789:                     
+790:                     TransportUnit transportUnit =
+791:                     TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit;
+792: 
+793:                     if (this.CmbBondPositon.SelectedItem == null)
+794:                     {
+795:                         AKRSXtraMessageBox.Show("请先选择焊点");
+796:                         return;
+797:                     }
+798: 
+799:                     // 如果点胶头没有示教完成，退出
+800:                     if (!System1Domain.GetInstance().System1Program.DispenserProgram.IsReady())
+801:                     {
+802:                         return;
+803:                     }
+804: 
+805:                     if (transportUnit == null)
+806:                     {
+807:                         AKRSXtraMessageBox.Show("系统1载台上没有载具，请重试");
+808:                         return;
+809:                     }
+810: 
+811:                     transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);
+812: 
+813:                     transportUnit.SetSystem1OffSet();
+814: 
+815:                     #endregion
+816: 
+817:                     #region 按照配置执行定位和测高
+818: 
+819:                     Substrate substrate = transportUnit.Substrates.Find(it =&gt; it.Name == this.CmbSubstrateName.SelectedItem.ToString());
+820: 
+821:                     // 如果是分离的
+822:                     if (transportUnit.TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)
+823:                     {
+824:                         // 如果在点胶前半段
+825:                         if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1)
+826:                         {
+827:                             // 判断当前是否在前半段
+828:                             if (!ProductConfiguration.GetInstance().SubstrateConfig.GetBackSubstrateIndex().Contains(substrate.Index))
+829:                             {
+830:                                 AKRSXtraMessageBox.Show("请先传送载具到点胶2平台", "提示");
+831:                                 return;
+832:                             }
+833:                         }
+834:                         else
+835:                         {
+836:                             // 判断当前是否在前半段
+837:                             if (!ProductConfiguration.GetInstance().SubstrateConfig.GetFrontSubstrateIndex().Contains(substrate.Index))
+838:                             {
+839:                                 AKRSXtraMessageBox.Show("载具在点胶2平台,无法执行.请先将载具移动到点胶1平台", "提示");
+840:                                 return;
+841:                             }
+842: 
+843:                             transportUnit.System1MoveDistance();
+844:                         }</pre></details></article><article id=trial-prepare><h2>逐层定位与测高</h2><p>trial-prepare</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 652–765</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>652:                     #region 按照配置执行定位和测高
+653: 
+654:                     #region substrate
+655: 
+656:                     List&lt;Substrate&gt; substrates = transportUnit.Substrates;
+657:                     Substrate substrate = substrates.Find(it =&gt; it.Name == this.CmbSubstrateName.SelectedItem?.ToString());
+658: 
+659:                     if (substrate == null)
+660:                     {
+661:                         AKRSXtraMessageBox.Show($"未找到:{this.CmbSubstrateName.SelectedItem?.ToString()},请重新选择");
+662:                         return;
+663:                     }
+664: 
+665:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"寻找{substrate?.Name}");
+666: 
+667:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"寻找到{substrate.Name}");
+668: 
+669:                     if (!System2Domain.GetInstance().System2MatterVision(substrate, false))
+670:                     {
+671:                         return;
+672:                     }
+673: 
+674:                     if (System2Domain.GetInstance().MatterHeightMeasurePoints(substrate) != ExcuteResult.Success)
+675:                     {
+676:                         return;
+677:                     }
+678: 
+679:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"基板{substrate.Name}矫正完成");
+680: 
+681:                     #endregion
+682: 
+683:                     #region module
+684: 
+685:                     Module module = substrate.Modules.Find(it =&gt; it.Name == this.CmbModuleName.SelectedItem.ToString());
+686: 
+687:                     if (module == null)
+688:                     {
+689:                         AKRSXtraMessageBox.Show($"未找到:{this.CmbModuleName.SelectedItem.ToString()},请重新选择");
+690:                         return;
+691:                     }
+692: 
+693:                     if (!System2Domain.GetInstance().System2MatterVision(module, false))
+694:                     {
+695:                         return;
+696:                     }
+697: 
+698:                     if (System2Domain.GetInstance().MatterHeightMeasurePoints(module) != ExcuteResult.Success)
+699:                     {
+700:                         return;
+701:                     }
+702: 
+703:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"基岛{module.Name}矫正完成");
+704: 
+705:                     #endregion
+706: 
+707:                     #region bondPosition
+708: 
+709:                     BondPosition bondPosition =
+710:                        module.BondPositions.Find(it =&gt; it.Name == (string)this.CmbBondPositon.SelectedItem);
+711: 
+712:                     if (bondPosition == null)
+713:                     {
+714:                         AKRSXtraMessageBox.Show($"未找到:{this.CmbModuleName.SelectedItem.ToString()},请重新选择");
+715:                         return;
+716:                     }
+717: 
+718:                     if (!System2Domain.GetInstance().System2MatterVision(bondPosition, false))
+719:                     {
+720:                         return;
+721:                     }
+722: 
+723:                     if (System2Domain.GetInstance().MatterHeightMeasurePoints(bondPosition) != ExcuteResult.Success)
+724:                     {
+725:                         return;
+726:                     }
+727: 
+728:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"焊点{bondPosition.Name}矫正完成");
+729:                     #endregion
+730: 
+731:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"对象矫正完成");
+732: 
+733:                     #endregion
+734: 
+735:                     #region 预点胶
+736: 
+737:                     if (this.EpoxyApplication.EpoxyApplicationStrategy != EpoxyApplicationTypeEnum.Printting)
+738:                     {
+739:                         System2Domain.GetInstance().BondActionNodeRepository.S2PreDispenseActionNode.DoWork();
+740:                         System2RunTimeProvider.RecordTime("Bond点胶测试", $"预点胶完成");
+741:                     }
+742: 
+743:                     #endregion
+744: 
+745:                     #region 点胶并查看效果
+746: 
+747:                     AKRSPoint3D point = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));
+748: 
+749:                     point += bondPosition.GetDispensePositionCompensate();
+750: 
+751:                     // 空跑模式不出胶
+752:                     bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;
+753: 
+754:                     double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();
+755: 
+756:                     // 如果是蘸胶头则更换吸嘴
+757:                     if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+758:                     {
+759:                         // 换吸嘴动作
+760:                         bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);
+761:                         if (!ret)
+762:                         {
+763:                             return;
+764:                         }
+765:                     }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 817–899</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>817:                     #region 按照配置执行定位和测高
+818: 
+819:                     Substrate substrate = transportUnit.Substrates.Find(it =&gt; it.Name == this.CmbSubstrateName.SelectedItem.ToString());
+820: 
+821:                     // 如果是分离的
+822:                     if (transportUnit.TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)
+823:                     {
+824:                         // 如果在点胶前半段
+825:                         if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1)
+826:                         {
+827:                             // 判断当前是否在前半段
+828:                             if (!ProductConfiguration.GetInstance().SubstrateConfig.GetBackSubstrateIndex().Contains(substrate.Index))
+829:                             {
+830:                                 AKRSXtraMessageBox.Show("请先传送载具到点胶2平台", "提示");
+831:                                 return;
+832:                             }
+833:                         }
+834:                         else
+835:                         {
+836:                             // 判断当前是否在前半段
+837:                             if (!ProductConfiguration.GetInstance().SubstrateConfig.GetFrontSubstrateIndex().Contains(substrate.Index))
+838:                             {
+839:                                 AKRSXtraMessageBox.Show("载具在点胶2平台,无法执行.请先将载具移动到点胶1平台", "提示");
+840:                                 return;
+841:                             }
+842: 
+843:                             transportUnit.System1MoveDistance();
+844:                         }
+845:                     }
+846: 
+847:                     if (!System1Domain.GetInstance().System1MatterVision(substrate,false))
+848:                     {
+849:                         return;
+850:                     }
+851: 
+852:                     if (System1Domain.GetInstance().MatterHeightMeasurePoints(substrate, true) != ExcuteResult.Success)
+853:                     {
+854:                         return;
+855:                     }
+856: 
+857:                     Module module = substrate.Modules.Find(it =&gt; it.Name == this.CmbModuleName.SelectedItem.ToString());
+858: 
+859:                     if (!System1Domain.GetInstance().System1MatterVision(module, false))
+860:                     {
+861:                         return;
+862:                     }
+863: 
+864:                     if (System1Domain.GetInstance().MatterHeightMeasurePoints(module, true) != ExcuteResult.Success)
+865:                     {
+866:                         return;
+867:                     }
+868: 
+869:                     BondPosition bondPosition =
+870:                         module.BondPositions.Find(it =&gt; it.Name == (string)this.CmbBondPositon.SelectedItem);
+871: 
+872:                     if (!System1Domain.GetInstance().System1MatterVision(bondPosition, false))
+873:                     {
+874:                         return;
+875:                     }
+876: 
+877:                     if (System1Domain.GetInstance().MatterHeightMeasurePoints(bondPosition, true) != ExcuteResult.Success)
+878:                     {
+879:                         return;
+880:                     }
+881: 
+882:                     #endregion
+883: 
+884:                     #region 预点胶
+885: 
+886:                     System1Domain.GetInstance().DispenseActionNodes.PreDispenseAction.DoWork();
+887: 
+888:                     #endregion
+889: 
+890:                     #region 点胶并查看效果
+891: 
+892:                     AKRSPoint3D dispensePoint3D = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));
+893: 
+894:                     dispensePoint3D += bondPosition.GetDispensePositionCompensate() + DispenseDevicePara.GetInstance().DispenseModulePara.DispenseOffset;
+895: 
+896:                     double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();
+897: 
+898:                     // 空跑模式不出胶
+899:                     bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;</pre></details></article><article id=trial-result><h2>插补返回判断</h2><p>trial-result</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 767–772</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>767:                     // 执行点胶
+768:                     if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this
+769:                         .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)
+770:                     {
+771:                         return;
+772:                     }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 901–905</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>901:                     // 执行点胶
+902:                     if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)
+903:                     {
+904:                         return;
+905:                     }</pre></details></article><article id=trial-view><h2>移动观察并显示</h2><p>trial-view</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 774–782</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>774:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"点/画胶胶完成");
+775: 
+776:                     System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();
+777: 
+778:                     System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point);
+779: 
+780:                     UcMainSystem.VmVisionShow();
+781: 
+782:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"Bond点胶完成");</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 907–911</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>907:                     AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(dispensePoint3D);
+908: 
+909:                     System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);
+910: 
+911:                     UcMainSystem.VmVisionShow();</pre></details></article><article id=trial-return><h2>直接返回</h2><p>trial-return</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 768–772</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>768:                     if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this
+769:                         .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)
+770:                     {
+771:                         return;
+772:                     }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 902–905</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>902:                     if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)
+903:                     {
+904:                         return;
+905:                     }</pre></details></article><article id=plate-click><h2>点击板上试胶</h2><p>plate-click</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 483–546</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>483:         public void Confirm()
+484:         {
+485:             this.EpoxyApplication.TearOff1Open = this.CkTearOff1On.Checked;
+486: 
+487:             this.EpoxyApplication.TearOff2Open = this.CkTearOff2On.Checked;
+488: 
+489:             this.EpoxyApplication.TearOff1Height = (double)this.SpTearOff1Height.Value;
+490:             this.EpoxyApplication.TearOff1Speed = (double)this.SpTearOff1Speed.Value;
+491:             this.EpoxyApplication.TearOff1Delay = (int)this.SpTearOff1Delay.Value;
+492: 
+493:             this.EpoxyApplication.TearOff2Height = (double)this.SpTearOff2Height.Value;
+494:             this.EpoxyApplication.TearOff2Speed = (double)this.SpTearOff2Speed.Value;
+495:             this.EpoxyApplication.TearOff2Delay = (int)this.SpTearOff2Delay.Value;
+496: 
+497:             this.EpoxyApplication.SecurityHeightForEpoxyApplication =
+498:                 (double)this.SpSecurityHeightForEpoxyApplication.Value;
+499:             this.EpoxyApplication.SlowTravelSpeedBeforeDispensing = (double)this.SpSlowTravel.Value;
+500: 
+501:             this.EpoxyApplication.DispenserLeadTime = (int)this.SpWaitingTime.Value;
+502:             this.EpoxyApplication.IsDispenserLeadTimeOpen = this.ChWaitIsDispense.Checked;
+503:             
+504:             this.EpoxyApplication.SpindleSpeedPercentage = (int)this.SpSpindleSpeed.Value;
+505:             this.EpoxyApplication.OffsetX = (double)this.SpOffSetX.Value;
+506:             this.EpoxyApplication.OffsetY = (double)this.SpOffSetY.Value;
+507:             this.EpoxyApplication.OffsetZ = (double)this.SpOffSetZ.Value;
+508:             this.EpoxyApplication.AdvanceOpenDistanceNew = (double)this.SpAdvance.Value;
+509:             this.EpoxyApplication.PrePlantOffSetZ = (double)this.SpPrePlantOffSetZ.Value;
+510: 
+511:             this.EpoxyApplication.SizeX = (double)this.SpSizeX.Value;
+512:             this.EpoxyApplication.SizeY = (double)this.SpSizeY.Value;
+513:             this.EpoxyApplication.Angle = (double)this.SpAngle.Value;
+514: 
+515:             this.EpoxyApplication.ComponentSizeX = (double)this.SpComponentX.Value;
+516:             this.EpoxyApplication.ComponentSizeY = (double)this.SpComponentY.Value;
+517: 
+518:             this.EpoxyApplication.DispensePressure = (double)this.SpDispensingPressure.Value;
+519: 
+520:             this.EpoxyApplication.Vacuum = (double)this.SpVacuum.Value;
+521: 
+522:             this.EpoxyApplication.EpoxyApplicationStrategy = (EpoxyApplicationTypeEnum)this.LueEpoxyType.EditValue;
+523: 
+524:             this.EpoxyApplication.PrintSlowDownHeight = (double)this.SpPrintSlowDownHeight.Value;
+525:             this.EpoxyApplication.PrintSlowDownSpeed = (double)this.SpPrintSlowDownSpeed.Value;
+526:             this.EpoxyApplication.PrintDelayTime = (int)this.SpPrintDelay.Value;
+527:             this.EpoxyApplication.PrintOffsetZ = (double)this.SpPrintingOffset.Value;
+528:             this.EpoxyApplication.PrintSlowUpHeight = (double)this.SpPrintSlowUpHeight.Value;
+529:             this.EpoxyApplication.PrintSlowUpSpeed = (double)this.SpPrintSlowUpSpeed.Value;
+530:             this.EpoxyApplication.PrintSlowUpDelayTime = (int)this.SpPrintSlowUpDelay.Value;
+531: 
+532:             string printNozzleName = this.CmbNozzleName.SelectedItem?.ToString();
+533: 
+534:             // 判断是否为空
+535:             if (string.IsNullOrEmpty(printNozzleName))
+536:             {
+537:                 this.EpoxyApplication.PrintNozzleName = "Null";
+538:             }
+539:             else
+540:             {
+541:                 this.EpoxyApplication.PrintNozzleName = printNozzleName;
+542:             }
+543: 
+544:             EpoxyApplicationRepository.GetInstance().Save();
+545:             System1Program.GetInstance().Save();
+546:         }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 968–976</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>968:         private void BtTestInPrePlant_Click(object sender, EventArgs e)
+969:         {
+970:             this.Confirm();
+971: 
+972:             DispenseRunTimeProvider.IsFirstDispense = true;
+973: 
+974:             bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2
+975:                 &amp;&amp; (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense 
+976:                     || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool &amp;&amp; this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));</pre></details></article><article id=plate-gate><h2>胶头与板门控</h2><p>plate-gate</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 974–1016</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>974:             bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2
+975:                 &amp;&amp; (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense 
+976:                     || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool &amp;&amp; this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));
+977: 
+978:             if (isDispenseInsystem2)
+979:             {
+980:                 if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+981:                 {
+982:                     Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it =&gt; it.Name == this.EpoxyApplication.PrintNozzleName);
+983:                     if (nozzle == null)
+984:                     {
+985:                         AKRSXtraMessageBox.Show("蘸胶吸嘴为空，请重新选择");
+986:                         return;
+987:                     }
+988:                     else if (!nozzle.IsAssistantSucceed)
+989:                     {
+990:                         AKRSXtraMessageBox.Show("蘸胶吸嘴未示教完成，请示教完后重试");
+991:                         return;
+992:                     }
+993: 
+994:                     // 换吸嘴动作
+995:                     bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);
+996:                     if (!ret)
+997:                     {
+998:                         return;
+999:                     }
+1000:                 }
+1001:                 else
+1002:                 {
+1003:                     if (BondProgram.GetInstance().S2DispenserProgram.Dispenser == null
+1004:                       || BondProgram.GetInstance().S2DispenserProgram.Dispenser.Name == string.Empty)
+1005:                     {
+1006:                         AKRSXtraMessageBox.Show("请先配置点胶头");
+1007:                         return;
+1008:                     }
+1009:                 }
+1010: 
+1011:                 // 如果预点胶板没有完成示教，退出
+1012:                 if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())
+1013:                 {
+1014:                     AKRSXtraMessageBox.Show("系统2预点胶板未示教完成");
+1015:                     return;
+1016:                 }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1040–1053</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1040:             else
+1041:             {
+1042:                 if (System1Program.GetInstance().DispenserProgram.Dispenser == null
+1043:                     || System1Program.GetInstance().DispenserProgram.Dispenser.Name == string.Empty)
+1044:                 {
+1045:                     AKRSXtraMessageBox.Show("请先配置点胶头");
+1046:                     return;
+1047:                 }
+1048: 
+1049:                 if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())
+1050:                 {
+1051:                     AKRSXtraMessageBox.Show("系统1预点胶板位置未示教完成，请先示教");
+1052:                     return;
+1053:                 }</pre></details></article><article id=plate-point><h2>取得板上位置</h2><p>plate-point</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1018–1025</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1018:                 // 获取位置
+1019:                 AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram
+1020:                     .GetEpoxy();
+1021: 
+1022:                 if (point3D == null)
+1023:                 {
+1024:                     return;
+1025:                 }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1055–1061</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1055:                 AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram
+1056:                     .GetEpoxy();
+1057: 
+1058:                 if (point3D == null)
+1059:                 {
+1060:                     return;
+1061:                 }</pre></details></article><article id=plate-call><h2>执行插补委托</h2><p>plate-call</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1027–1028</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1027:                 // 点/画胶
+1028:                 System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1063–1068</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1063:                 System1Domain.GetInstance().DispenseController.InterpolationApplication(
+1064:                     this.EpoxyApplication,
+1065:                     point3D,
+1066:                     true,
+1067:                     true,
+1068:                     0);</pre></details></article><article id=plate-view><h2>移动并切换相机</h2><p>plate-view</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1030–1038</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1030:                 System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();
+1031: 
+1032:                 point3D.Z += this.EpoxyApplication.PrePlantOffSetZ;
+1033: 
+1034:                 System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point3D);
+1035: 
+1036:                 UcMainSystem.VmVisionShow();
+1037: 
+1038:                 UcMainSystem.ChangeCameraVision(CameraEnum.BondCamera.GetDescription());</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1070–1079</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1070:                 System1Domain.GetInstance().DispenseController.MoveZToSafePos();
+1071: 
+1072:                 AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(point3D);
+1073: 
+1074:                 visionPos.Z += this.EpoxyApplication.PrePlantOffSetZ;
+1075: 
+1076:                 System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);
+1077: 
+1078:                 UcMainSystem.VmVisionShow();
+1079:                 UcMainSystem.ChangeCameraVision(CameraEnum.DispenseCamera.GetDescription());</pre></details></article><article id=ordinary-start><h2>ordinary-start</h2><p>ordinary-start</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 595–646</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>595:         private void BtTest_Click(object sender, EventArgs e)
+596:         {
+597:             try
+598:             {
+599:                 this.Confirm();
+600:                 bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2
+601:               &amp;&amp; (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+602:                   || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool &amp;&amp; this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));
+603: 
+604:                 if (isDispenseInsystem2)
+605:                 {
+606:                     #region 条件验证
+607:                     TransportUnit transportUnit =
+608:                     TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+609: 
+610:                     if (this.CmbBondPositon.SelectedItem == null)
+611:                     {
+612:                         AKRSXtraMessageBox.Show("请先选择焊点");
+613:                         return;
+614:                     }
+615: 
+616:                     // 判断点胶头是否准备好
+617:                     if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+618:                     {
+619:                         Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it =&gt; it.Name == this.EpoxyApplication.PrintNozzleName);
+620:                         if (nozzle == null)
+621:                         {
+622:                             AKRSXtraMessageBox.Show("蘸胶吸嘴为空，请重新选择");
+623:                             return;
+624:                         }
+625:                         else if (!nozzle.IsAssistantSucceed)
+626:                         {
+627:                             AKRSXtraMessageBox.Show("蘸胶吸嘴未示教完成，请示教完后重试");
+628:                             return;
+629:                         }
+630:                     }
+631:                     else
+632:                     {
+633:                         // 如果点胶头没有示教完成，退出
+634:                         if (!BondProgram.GetInstance().S2DispenserProgram.IsReady())
+635:                         {
+636:                             return;
+637:                         }
+638:                     }
+639: 
+640:                     if (transportUnit == null)
+641:                     {
+642:                         AKRSXtraMessageBox.Show("系统2载台上没有载具，请重试");
+643:                         return;
+644:                     }
+645: 
+646:                     transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 788–815</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>788:                     #region 条件验证
+789:                     
+790:                     TransportUnit transportUnit =
+791:                     TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit;
+792: 
+793:                     if (this.CmbBondPositon.SelectedItem == null)
+794:                     {
+795:                         AKRSXtraMessageBox.Show("请先选择焊点");
+796:                         return;
+797:                     }
+798: 
+799:                     // 如果点胶头没有示教完成，退出
+800:                     if (!System1Domain.GetInstance().System1Program.DispenserProgram.IsReady())
+801:                     {
+802:                         return;
+803:                     }
+804: 
+805:                     if (transportUnit == null)
+806:                     {
+807:                         AKRSXtraMessageBox.Show("系统1载台上没有载具，请重试");
+808:                         return;
+809:                     }
+810: 
+811:                     transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);
+812: 
+813:                     transportUnit.SetSystem1OffSet();
+814: 
+815:                     #endregion</pre></details></article><article id=ordinary-ready><h2>ordinary-ready</h2><p>ordinary-ready</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 640–674</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>640:                     if (transportUnit == null)
+641:                     {
+642:                         AKRSXtraMessageBox.Show("系统2载台上没有载具，请重试");
+643:                         return;
+644:                     }
+645: 
+646:                     transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);
+647: 
+648:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"生产产品完成");
+649: 
+650:                     #endregion
+651: 
+652:                     #region 按照配置执行定位和测高
+653: 
+654:                     #region substrate
+655: 
+656:                     List&lt;Substrate&gt; substrates = transportUnit.Substrates;
+657:                     Substrate substrate = substrates.Find(it =&gt; it.Name == this.CmbSubstrateName.SelectedItem?.ToString());
+658: 
+659:                     if (substrate == null)
+660:                     {
+661:                         AKRSXtraMessageBox.Show($"未找到:{this.CmbSubstrateName.SelectedItem?.ToString()},请重新选择");
+662:                         return;
+663:                     }
+664: 
+665:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"寻找{substrate?.Name}");
+666: 
+667:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"寻找到{substrate.Name}");
+668: 
+669:                     if (!System2Domain.GetInstance().System2MatterVision(substrate, false))
+670:                     {
+671:                         return;
+672:                     }
+673: 
+674:                     if (System2Domain.GetInstance().MatterHeightMeasurePoints(substrate) != ExcuteResult.Success)</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 805–852</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>805:                     if (transportUnit == null)
+806:                     {
+807:                         AKRSXtraMessageBox.Show("系统1载台上没有载具，请重试");
+808:                         return;
+809:                     }
+810: 
+811:                     transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);
+812: 
+813:                     transportUnit.SetSystem1OffSet();
+814: 
+815:                     #endregion
+816: 
+817:                     #region 按照配置执行定位和测高
+818: 
+819:                     Substrate substrate = transportUnit.Substrates.Find(it =&gt; it.Name == this.CmbSubstrateName.SelectedItem.ToString());
+820: 
+821:                     // 如果是分离的
+822:                     if (transportUnit.TransportUnitConfig.SubstrateProcessing == SubstrateProcessingEnum.Divide)
+823:                     {
+824:                         // 如果在点胶前半段
+825:                         if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.IsTuInDispense1)
+826:                         {
+827:                             // 判断当前是否在前半段
+828:                             if (!ProductConfiguration.GetInstance().SubstrateConfig.GetBackSubstrateIndex().Contains(substrate.Index))
+829:                             {
+830:                                 AKRSXtraMessageBox.Show("请先传送载具到点胶2平台", "提示");
+831:                                 return;
+832:                             }
+833:                         }
+834:                         else
+835:                         {
+836:                             // 判断当前是否在前半段
+837:                             if (!ProductConfiguration.GetInstance().SubstrateConfig.GetFrontSubstrateIndex().Contains(substrate.Index))
+838:                             {
+839:                                 AKRSXtraMessageBox.Show("载具在点胶2平台,无法执行.请先将载具移动到点胶1平台", "提示");
+840:                                 return;
+841:                             }
+842: 
+843:                             transportUnit.System1MoveDistance();
+844:                         }
+845:                     }
+846: 
+847:                     if (!System1Domain.GetInstance().System1MatterVision(substrate,false))
+848:                     {
+849:                         return;
+850:                     }
+851: 
+852:                     if (System1Domain.GetInstance().MatterHeightMeasurePoints(substrate, true) != ExcuteResult.Success)</pre></details></article><article id=ordinary-positioned><h2>ordinary-positioned</h2><p>ordinary-positioned</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 735–772</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>735:                     #region 预点胶
+736: 
+737:                     if (this.EpoxyApplication.EpoxyApplicationStrategy != EpoxyApplicationTypeEnum.Printting)
+738:                     {
+739:                         System2Domain.GetInstance().BondActionNodeRepository.S2PreDispenseActionNode.DoWork();
+740:                         System2RunTimeProvider.RecordTime("Bond点胶测试", $"预点胶完成");
+741:                     }
+742: 
+743:                     #endregion
+744: 
+745:                     #region 点胶并查看效果
+746: 
+747:                     AKRSPoint3D point = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));
+748: 
+749:                     point += bondPosition.GetDispensePositionCompensate();
+750: 
+751:                     // 空跑模式不出胶
+752:                     bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;
+753: 
+754:                     double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();
+755: 
+756:                     // 如果是蘸胶头则更换吸嘴
+757:                     if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+758:                     {
+759:                         // 换吸嘴动作
+760:                         bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);
+761:                         if (!ret)
+762:                         {
+763:                             return;
+764:                         }
+765:                     }
+766: 
+767:                     // 执行点胶
+768:                     if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this
+769:                         .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)
+770:                     {
+771:                         return;
+772:                     }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 884–905</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>884:                     #region 预点胶
+885: 
+886:                     System1Domain.GetInstance().DispenseActionNodes.PreDispenseAction.DoWork();
+887: 
+888:                     #endregion
+889: 
+890:                     #region 点胶并查看效果
+891: 
+892:                     AKRSPoint3D dispensePoint3D = bondPosition.CoordinateSystem.SelfPosToG0(new AKRSPoint3D(this.EpoxyApplication.OffsetX, this.EpoxyApplication.OffsetY, 0));
+893: 
+894:                     dispensePoint3D += bondPosition.GetDispensePositionCompensate() + DispenseDevicePara.GetInstance().DispenseModulePara.DispenseOffset;
+895: 
+896:                     double angle = bondPosition.CoordinateSystem.DegreeInG0() * 180.0 / Math.PI + bondPosition.GetDispenseRotaryCompensate();
+897: 
+898:                     // 空跑模式不出胶
+899:                     bool isDrip = MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle;
+900: 
+901:                     // 执行点胶
+902:                     if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)
+903:                     {
+904:                         return;
+905:                     }</pre></details></article><article id=ordinary-success><h2>Success</h2><p>ordinary-success</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 768–780</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>768:                     if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this
+769:                         .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)
+770:                     {
+771:                         return;
+772:                     }
+773: 
+774:                     System2RunTimeProvider.RecordTime("Bond点胶测试", $"点/画胶胶完成");
+775: 
+776:                     System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();
+777: 
+778:                     System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point);
+779: 
+780:                     UcMainSystem.VmVisionShow();</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 902–911</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>902:                     if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)
+903:                     {
+904:                         return;
+905:                     }
+906: 
+907:                     AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(dispensePoint3D);
+908: 
+909:                     System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);
+910: 
+911:                     UcMainSystem.VmVisionShow();</pre></details></article><article id=ordinary-fail><h2>非 Success</h2><p>ordinary-fail</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 768–772</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>768:                     if (System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this
+769:                         .EpoxyApplication, point, isDrip, false, false, angle) != ExcuteResult.Success)
+770:                     {
+771:                         return;
+772:                     }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 902–905</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>902:                     if (System1Domain.GetInstance().DispenseController.InterpolationApplication(this.EpoxyApplication, dispensePoint3D, isDrip, false, angle) != ExcuteResult.Success)
+903:                     {
+904:                         return;
+905:                     }</pre></details></article><article id=plate-start><h2>plate-start</h2><p>plate-start</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 968–1016</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>968:         private void BtTestInPrePlant_Click(object sender, EventArgs e)
+969:         {
+970:             this.Confirm();
+971: 
+972:             DispenseRunTimeProvider.IsFirstDispense = true;
+973: 
+974:             bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2
+975:                 &amp;&amp; (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense 
+976:                     || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool &amp;&amp; this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));
+977: 
+978:             if (isDispenseInsystem2)
+979:             {
+980:                 if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+981:                 {
+982:                     Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it =&gt; it.Name == this.EpoxyApplication.PrintNozzleName);
+983:                     if (nozzle == null)
+984:                     {
+985:                         AKRSXtraMessageBox.Show("蘸胶吸嘴为空，请重新选择");
+986:                         return;
+987:                     }
+988:                     else if (!nozzle.IsAssistantSucceed)
+989:                     {
+990:                         AKRSXtraMessageBox.Show("蘸胶吸嘴未示教完成，请示教完后重试");
+991:                         return;
+992:                     }
+993: 
+994:                     // 换吸嘴动作
+995:                     bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);
+996:                     if (!ret)
+997:                     {
+998:                         return;
+999:                     }
+1000:                 }
+1001:                 else
+1002:                 {
+1003:                     if (BondProgram.GetInstance().S2DispenserProgram.Dispenser == null
+1004:                       || BondProgram.GetInstance().S2DispenserProgram.Dispenser.Name == string.Empty)
+1005:                     {
+1006:                         AKRSXtraMessageBox.Show("请先配置点胶头");
+1007:                         return;
+1008:                     }
+1009:                 }
+1010: 
+1011:                 // 如果预点胶板没有完成示教，退出
+1012:                 if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())
+1013:                 {
+1014:                     AKRSXtraMessageBox.Show("系统2预点胶板未示教完成");
+1015:                     return;
+1016:                 }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1040–1053</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1040:             else
+1041:             {
+1042:                 if (System1Program.GetInstance().DispenserProgram.Dispenser == null
+1043:                     || System1Program.GetInstance().DispenserProgram.Dispenser.Name == string.Empty)
+1044:                 {
+1045:                     AKRSXtraMessageBox.Show("请先配置点胶头");
+1046:                     return;
+1047:                 }
+1048: 
+1049:                 if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())
+1050:                 {
+1051:                     AKRSXtraMessageBox.Show("系统1预点胶板位置未示教完成，请先示教");
+1052:                     return;
+1053:                 }</pre></details></article><article id=plate-ready><h2>plate-ready</h2><p>plate-ready</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1011–1025</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1011:                 // 如果预点胶板没有完成示教，退出
+1012:                 if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())
+1013:                 {
+1014:                     AKRSXtraMessageBox.Show("系统2预点胶板未示教完成");
+1015:                     return;
+1016:                 }
+1017: 
+1018:                 // 获取位置
+1019:                 AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram
+1020:                     .GetEpoxy();
+1021: 
+1022:                 if (point3D == null)
+1023:                 {
+1024:                     return;
+1025:                 }</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1049–1061</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1049:                 if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())
+1050:                 {
+1051:                     AKRSXtraMessageBox.Show("系统1预点胶板位置未示教完成，请先示教");
+1052:                     return;
+1053:                 }
+1054: 
+1055:                 AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram
+1056:                     .GetEpoxy();
+1057: 
+1058:                 if (point3D == null)
+1059:                 {
+1060:                     return;
+1061:                 }</pre></details></article><article id=plate-positioned><h2>plate-positioned</h2><p>plate-positioned</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1018–1028</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1018:                 // 获取位置
+1019:                 AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram
+1020:                     .GetEpoxy();
+1021: 
+1022:                 if (point3D == null)
+1023:                 {
+1024:                     return;
+1025:                 }
+1026: 
+1027:                 // 点/画胶
+1028:                 System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1055–1068</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1055:                 AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram
+1056:                     .GetEpoxy();
+1057: 
+1058:                 if (point3D == null)
+1059:                 {
+1060:                     return;
+1061:                 }
+1062: 
+1063:                 System1Domain.GetInstance().DispenseController.InterpolationApplication(
+1064:                     this.EpoxyApplication,
+1065:                     point3D,
+1066:                     true,
+1067:                     true,
+1068:                     0);</pre></details></article><article id=plate-returned><h2>含 Fail 正常返回</h2><p>plate-returned</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1028–1038</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1028:                 System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);
+1029: 
+1030:                 System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();
+1031: 
+1032:                 point3D.Z += this.EpoxyApplication.PrePlantOffSetZ;
+1033: 
+1034:                 System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point3D);
+1035: 
+1036:                 UcMainSystem.VmVisionShow();
+1037: 
+1038:                 UcMainSystem.ChangeCameraVision(CameraEnum.BondCamera.GetDescription());</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 1063–1079</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>1063:                 System1Domain.GetInstance().DispenseController.InterpolationApplication(
+1064:                     this.EpoxyApplication,
+1065:                     point3D,
+1066:                     true,
+1067:                     true,
+1068:                     0);
+1069: 
+1070:                 System1Domain.GetInstance().DispenseController.MoveZToSafePos();
+1071: 
+1072:                 AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(point3D);
+1073: 
+1074:                 visionPos.Z += this.EpoxyApplication.PrePlantOffSetZ;
+1075: 
+1076:                 System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);
+1077: 
+1078:                 UcMainSystem.VmVisionShow();
+1079:                 UcMainSystem.ChangeCameraVision(CameraEnum.DispenseCamera.GetDescription());</pre></details></article><article id=exception-boundary><h2>异常边界：普通入口重抛；板上入口无本地 catch</h2><p>exception-boundary</p><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 916–920</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>916:             catch (Exception exception)
+917:             {
+918:                 AKRSXtraMessageBox.Show("Dispense error \r\n" + exception.StackTrace);
+919:                 LogHelper.Post(Level.Error, $"Dispense error",exception, LogCategory.MainSoftWare, ViewType.InFileAndUI);
+920:                 throw;</pre></details><details><summary>trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs : 968–1081</summary><p><a href=../../trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs>打开源文件</a> · SHA-256 ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b</p><pre>968:         private void BtTestInPrePlant_Click(object sender, EventArgs e)
+969:         {
+970:             this.Confirm();
+971: 
+972:             DispenseRunTimeProvider.IsFirstDispense = true;
+973: 
+974:             bool isDispenseInsystem2 = MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2
+975:                 &amp;&amp; (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense 
+976:                     || (MachineHardwareConfiguration.GetInstance().IsSystem2ConfigPrintingTool &amp;&amp; this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting));
+977: 
+978:             if (isDispenseInsystem2)
+979:             {
+980:                 if (this.EpoxyApplication.EpoxyApplicationStrategy == EpoxyApplicationTypeEnum.Printting)
+981:                 {
+982:                     Nozzle nozzle = System2Domain.GetInstance().BondProgram.NozzleShelfProgram.GetNozzleList().Find(it =&gt; it.Name == this.EpoxyApplication.PrintNozzleName);
+983:                     if (nozzle == null)
+984:                     {
+985:                         AKRSXtraMessageBox.Show("蘸胶吸嘴为空，请重新选择");
+986:                         return;
+987:                     }
+988:                     else if (!nozzle.IsAssistantSucceed)
+989:                     {
+990:                         AKRSXtraMessageBox.Show("蘸胶吸嘴未示教完成，请示教完后重试");
+991:                         return;
+992:                     }
+993: 
+994:                     // 换吸嘴动作
+995:                     bool ret = System2Domain.GetInstance().System2Controller.JudgeAndChangeNozzle(this.EpoxyApplication.PrintNozzleName);
+996:                     if (!ret)
+997:                     {
+998:                         return;
+999:                     }
+1000:                 }
+1001:                 else
+1002:                 {
+1003:                     if (BondProgram.GetInstance().S2DispenserProgram.Dispenser == null
+1004:                       || BondProgram.GetInstance().S2DispenserProgram.Dispenser.Name == string.Empty)
+1005:                     {
+1006:                         AKRSXtraMessageBox.Show("请先配置点胶头");
+1007:                         return;
+1008:                     }
+1009:                 }
+1010: 
+1011:                 // 如果预点胶板没有完成示教，退出
+1012:                 if (!BondProgram.GetInstance().S2PreDispensePlateProgram.IsReady())
+1013:                 {
+1014:                     AKRSXtraMessageBox.Show("系统2预点胶板未示教完成");
+1015:                     return;
+1016:                 }
+1017: 
+1018:                 // 获取位置
+1019:                 AKRSPoint3D point3D = BondProgram.GetInstance().S2PreDispensePlateProgram
+1020:                     .GetEpoxy();
+1021: 
+1022:                 if (point3D == null)
+1023:                 {
+1024:                     return;
+1025:                 }
+1026: 
+1027:                 // 点/画胶
+1028:                 System2Domain.GetInstance().S2DispenseController.InterpolationApplication(this.EpoxyApplication, point3D, true, true, false, 0);
+1029: 
+1030:                 System2Domain.GetInstance().S2DispenseController.CloseDispenseHeightMeasurementCylinder();
+1031: 
+1032:                 point3D.Z += this.EpoxyApplication.PrePlantOffSetZ;
+1033: 
+1034:                 System2Domain.GetInstance().S2DispenseController.VisionMoveToG0Pos(point3D);
+1035: 
+1036:                 UcMainSystem.VmVisionShow();
+1037: 
+1038:                 UcMainSystem.ChangeCameraVision(CameraEnum.BondCamera.GetDescription());
+1039:             }
+1040:             else
+1041:             {
+1042:                 if (System1Program.GetInstance().DispenserProgram.Dispenser == null
+1043:                     || System1Program.GetInstance().DispenserProgram.Dispenser.Name == string.Empty)
+1044:                 {
+1045:                     AKRSXtraMessageBox.Show("请先配置点胶头");
+1046:                     return;
+1047:                 }
+1048: 
+1049:                 if (!System1Domain.GetInstance().System1Program.PreDispensePlateProgram.IsReady())
+1050:                 {
+1051:                     AKRSXtraMessageBox.Show("系统1预点胶板位置未示教完成，请先示教");
+1052:                     return;
+1053:                 }
+1054: 
+1055:                 AKRSPoint3D point3D = System1Domain.GetInstance().System1Program.PreDispensePlateProgram
+1056:                     .GetEpoxy();
+1057: 
+1058:                 if (point3D == null)
+1059:                 {
+1060:                     return;
+1061:                 }
+1062: 
+1063:                 System1Domain.GetInstance().DispenseController.InterpolationApplication(
+1064:                     this.EpoxyApplication,
+1065:                     point3D,
+1066:                     true,
+1067:                     true,
+1068:                     0);
+1069: 
+1070:                 System1Domain.GetInstance().DispenseController.MoveZToSafePos();
+1071: 
+1072:                 AKRSPoint3D visionPos = System1Domain.GetInstance().DispenseController.GetG0VisionPos(point3D);
+1073: 
+1074:                 visionPos.Z += this.EpoxyApplication.PrePlantOffSetZ;
+1075: 
+1076:                 System1Domain.GetInstance().DispenseController.MoveToG0Pos3D(visionPos);
+1077: 
+1078:                 UcMainSystem.VmVisionShow();
+1079:                 UcMainSystem.ChangeCameraVision(CameraEnum.DispenseCamera.GetDescription());
+1080:             }
+1081:         }</pre></details></article><script>document.querySelector("#search").addEventListener("input",e=>{const q=e.target.value.toLowerCase();for(const a of document.querySelectorAll("article"))a.hidden=!a.textContent.toLowerCase().includes(q)});</script></html>

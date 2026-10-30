@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "status": "original-s2-compensation-math-and-modbus-prerequisites-native-preparation-passed",
+  "parent": {
+    "file": "native-s2-shelf-gates-test.json",
+    "sha256": "03a56efede268eb7f93d4a0b910bacce4ee300c450199d3d19af53e28ae5df3f"
+  },
+  "parentFrozenBindings": 5717,
+  "newFrozenInputs": 53,
+  "totalFrozenBindings": 5770,
+  "acceptedProcesses": 2,
+  "checksPerPass": 51,
+  "distinctLabels": 51,
+  "selectedMethods": 31,
+  "originalSources": 14,
+  "originalHardwareFactoryFailuresPerPass": 6,
+  "originalLowerModbusResetCallsPerPass": 2,
+  "uiCallbacksCollectedPerPass": 2,
+  "uiCallbacksExecuted": 0,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "originalLowerModbusMethodsExecuted": true,
+  "originalLowerModbusResetExecuted": true,
+  "offlineConnectTrueWithNullClientsObserved": true,
+  "minutesComponentIntervalObserved": true,
+  "enabledNonFirstScanSkippedObserved": true,
+  "originalFourPointCompensationExecuted": true,
+  "originalPrivateInterpolationBoundToReceiver": true,
+  "individualMagnitudeThresholdObserved": true,
+  "combinedMagnitudeReturnsZeroObserved": true,
+  "publicCompensationDiscardsYZObserved": true,
+  "publicExceptionTypeAndInnerLostObserved": true,
+  "pickupOverLimitWarnOnlyObserved": true,
+  "driftOverLimitWarnThenThrowObserved": true,
+  "publicRealSdkArraysAndTimesFixtureUsed": true,
+  "wholeOriginalProductionTaskExecuted": false,
+  "outerBondHeadResetExecuted": false,
+  "serialIoExecuted": false,
+  "physicalForceZeroExecuted": false,
+  "realVisionExecuted": false,
+  "hardwareActionExecuted": false,
+  "axisMovementExecuted": false,
+  "physicalBondExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "dbLazyCreated": false,
+  "realTimeScanJsonSaved": false,
+  "realTimeScanExcelExported": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "diagnosticV1CompileAndRuntime": {
+      "chunk": "f2ae58",
+      "exitCode": 0,
+      "checks": 50,
+      "supersededReason": "summary hardcoded factory count5; six actual factory failures validated and counted in v2"
+    },
+    "acceptedCompileAndPrimary": {
+      "chunk": "ba029b",
+      "exitCode": 0
+    },
+    "replayCompileAndRuntime": {
+      "chunk": "06d8af",
+      "exitCode": 0
+    },
+    "il": {
+      "chunk": "8e38a7",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 99748,
+      "chunk": "884010",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs",
+      "sha256": "873905192c5f525b5e078cf17b3261691ac4a482c879b9854077040993ad6afa"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2Configuration.cs",
+      "sha256": "41855abc5da74b6950712b936130b3ead4baa26c9766a05c305277393ad9f679"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs",
+      "sha256": "d74c8d97badf37ee7972ab431baa2f74ca87f294b25d6060c5ed33d2d36fa188"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+      "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/FileHelper.cs",
+      "sha256": "56aea0a137d8a3b767f3f5b145f603702cd94e9768988a366bef9490bec548af"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-s2-compensation-prerequisites.cjs",
+      "sha256": "1f53a1ca7352284864c4a4c46fe8d860023788f1bbc8be60431fd6c6e662a9ed",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0000-freeze-native-s2-compensation-prerequisites.cjs"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\Cases.cs",
+      "sha256": "dfabe03bbbbac038ed05d08b453034cf923c40a3d0c4ea36f510544bf787ea24",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\Host.cs",
+      "sha256": "b54925dfb65d3c39b81c523cbe480a1ae12ce4d20950c66874c9b5e0af2050d9",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\Probe.exe",
+      "sha256": "0f814285b4388703cb8d87fd92513ab9442664dd5bf15c60b2ecfcd464ba6944",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\compile-input.json",
+      "sha256": "59aab445310fdeb3c1fbba68c6890593cefcd6e95143ef1276bb547a5de29d83",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\compile.json",
+      "sha256": "93e85b79d83d1f8c8d549c344953463c1d0fa50598030f39e5199bf2fe8bd058",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\diagnostic-v1-Cases.cs",
+      "sha256": "37c19c5733fb5d8e0567c5c40c41d63d10c19ca41a6ebd8164292ce3149af03e",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0006-diagnostic-v1-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\diagnostic-v1-Probe.exe",
+      "sha256": "477b6ed2b6bc281ee3583def29ab0a3d34477805a665a0afcec19a2bf5ea30d7",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0007-diagnostic-v1-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\diagnostic-v1-compile.json",
+      "sha256": "ecd8574c7e7109d5e775ac0bb40fa6bb13fc5fd8a5155b64d37dd09fdfd39ebc",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0008-diagnostic-v1-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\il.json",
+      "sha256": "84194b699ebe04031fa5d168993283e5dcae60f8b3eb2e99dbd63f774bb94611",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0009-il.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0010-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\parent-shelf-verification.log",
+      "sha256": "135c234cd3305ad9af764609900756d266c947463bdf9ee1e55a998ddf4b5477",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0011-parent-shelf-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\preflight.log",
+      "sha256": "8191100c0713856d6ea5a065f653981895f59c35ac4944fb9be8610767908dad",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0012-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-Probe.exe",
+      "sha256": "0f814285b4388703cb8d87fd92513ab9442664dd5bf15c60b2ecfcd464ba6944",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0013-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-accepted-v2\\Probe.exe",
+      "sha256": "0f814285b4388703cb8d87fd92513ab9442664dd5bf15c60b2ecfcd464ba6944",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0014-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-accepted-v2\\case-progress.log",
+      "sha256": "6869627861000b60c5464b7d12a44ecc8c76a7c6d55fd8e437d9c6d635018dba",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0015-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-accepted-v2\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0016-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-accepted-v2\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0017-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-accepted-v2\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0018-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary-accepted-v2\\stdout.json",
+      "sha256": "1a8affe7bbe3901031211e4ee14036e3d0f92db7000a0c6ff403abed07cc876c",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0019-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary\\Probe.exe",
+      "sha256": "477b6ed2b6bc281ee3583def29ab0a3d34477805a665a0afcec19a2bf5ea30d7",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0020-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary\\case-progress.log",
+      "sha256": "ced91628459bf0442095502a3fbead6c9a2222ca56d43f04fdef17701876cb4c",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0021-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0022-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0023-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0024-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\primary\\stdout.json",
+      "sha256": "2c6a505e85e50fedc0c3f87719e0e092d45b9eb3ad60175ba2468a45074816d9",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0025-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-accepted-v2\\Probe.exe",
+      "sha256": "0f814285b4388703cb8d87fd92513ab9442664dd5bf15c60b2ecfcd464ba6944",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0026-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-accepted-v2\\case-progress.log",
+      "sha256": "6869627861000b60c5464b7d12a44ecc8c76a7c6d55fd8e437d9c6d635018dba",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0027-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-accepted-v2\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0028-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-accepted-v2\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0029-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-accepted-v2\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0030-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-accepted-v2\\stdout.json",
+      "sha256": "4deaf469705996640aa63c9b3037b793a4ecbb4b1a32232d7dabeb26aed7a381",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0031-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\replay-compile.json",
+      "sha256": "c5626faa0361dd8df6ba7e3fff7c2de796765a435e3c071c50d4bdaee1550754",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0032-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-compensation-prerequisites\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0033-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-s2-compensation-prerequisites.ps1",
+      "sha256": "bafe7abc5b24e00ca974c544c9b2a206b402c9e6c2ad3f8e63e482375cb1809f",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0034-inspect-native-s2-compensation-prerequisites.ps1"
+    },
+    {
+      "file": "scripts/native-s2-compensation-prerequisites-cases.cs.txt",
+      "sha256": "dfabe03bbbbac038ed05d08b453034cf923c40a3d0c4ea36f510544bf787ea24",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0035-native-s2-compensation-prerequisites-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-s2-compensation-prerequisites.cjs",
+      "sha256": "aabe426619f14318be0992c987eb7af4e32e853c548a6baae30e362896d17392",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0036-prepare-native-s2-compensation-prerequisites.cjs"
+    },
+    {
+      "file": "scripts/run-native-s2-compensation-prerequisites.cjs",
+      "sha256": "6385429db9a3f35247e6cf98a3d5c9482c93a3db94d91a1a081229da7b698418",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0037-run-native-s2-compensation-prerequisites.cjs"
+    },
+    {
+      "file": "scripts/verify-native-s2-compensation-prerequisites.cjs",
+      "sha256": "072b64c73a098489983849970f1a7cf70b4c0d06672b2b207ae3dbbd47814aec",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0038-verify-native-s2-compensation-prerequisites.cjs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs",
+      "sha256": "873905192c5f525b5e078cf17b3261691ac4a482c879b9854077040993ad6afa",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0039-ModbusService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0040-ForceConfig.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0041-BondHeadController.ForceRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+      "sha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0042-System2Controller.Vision.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2Configuration.cs",
+      "sha256": "41855abc5da74b6950712b936130b3ead4baa26c9766a05c305277393ad9f679",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0043-System2Configuration.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0044-System2Domain.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs",
+      "sha256": "d74c8d97badf37ee7972ab431baa2f74ca87f294b25d6060c5ed33d2d36fa188",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0045-BondModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0046-BondTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0047-AKRSMessageBoxExt.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0048-DBService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/FileHelper.cs",
+      "sha256": "56aea0a137d8a3b767f3f5b145f603702cd94e9768988a366bef9490bec548af",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0049-FileHelper.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0050-MainForm.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+      "sha256": "5690797ba01327512671032327f9b1fae76d39ffe18b0b2f49ab8deb2f84bc0f",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0051-RealTimeCorrection.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "sha256": "2aea228139928a0ead4ff32901d984055e1ee8b548a8fa8dbcaa429502f43e1a",
+      "frozenCopy": ".archify-work/native-s2-compensation-prerequisites-baseline/inputs/0052-TpMarkCompensate.cs"
+    }
+  ],
+  "scope": "Original direct S2 compensation gates/math using real SDK arrays/public time fixtures, six natural original hardware-factory failures, warning callbacks collected not executed; direct lower Modbus offline connect true/null clients and resets/reads/disconnect null failures. No outer force reset, serial I/O, actual vision/UI/SQL, whole production Task or private/source substitutions. Correction data fixture not measured calibration; scan null/one-point failure never writes JSON/Excel, empty-first export static only hardcoded D path."
+}

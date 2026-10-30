@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-29T13:53:33.441Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "log": ".archify-work/verify-heating-host.log",
+    "sha256": "1f08fefadf1ca06e99ed455b36f7003bfa2ff3ad80bad5ef6a7f762dd33f8294",
+    "exitCode": 0
+  },
+  "browser": {
+    "log": ".archify-work/verify-heating-host.log",
+    "sha256": "6271b250890782938600736c80ea0d4bc28ee3d5235b7b98be56e643c6e4a56f",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "f1610dc07d8474510eb3b144e3c06f9462afbfec1d5088b906e0dd462a893699",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Registered heating-host checks and current full suite passed; not full product build or native UI/device acceptance."
+}

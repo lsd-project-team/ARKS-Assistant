@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="70" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">S1工位偏移让整份P1的当前位置变化</text>
+<text x="1200" y="965" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">蓝圈是同一个A点  位移方向为示意  单位mm</text>
+<text x="590" y="190" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">配置位置</text>
+<text x="1810" y="190" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">加入S1偏移后</text>
+<polyline points="1200,160 1200,860" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<rect x="100" y="340" width="870" height="300" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="128.0" y="363.0" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="210.13333333333333" cy="421.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="307.66666666666663" cy="421.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="403.3333333333333" y="363.0" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="485.46666666666664" cy="421.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="485.46666666666664" cy="421.24" r="26" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="485.46666666666664" cy="421.24" r="10" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="583.0" cy="421.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="678.6666666666666" y="363.0" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="760.8" cy="421.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="858.3333333333333" cy="421.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="128.0" y="496.5" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="210.13333333333333" cy="554.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="307.66666666666663" cy="554.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="403.3333333333333" y="496.5" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="485.46666666666664" cy="554.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="583.0" cy="554.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="678.6666666666666" y="496.5" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="760.8" cy="554.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="858.3333333333333" cy="554.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1360" y="300" width="870" height="300" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1388.0" y="323.0" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1470.1333333333334" cy="381.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1567.6666666666667" cy="381.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1663.3333333333333" y="323.0" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1745.4666666666667" cy="381.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1745.4666666666667" cy="381.24" r="26" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="1745.4666666666667" cy="381.24" r="10" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="1843.0" cy="381.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1938.6666666666665" y="323.0" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2020.8" cy="381.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2118.333333333333" cy="381.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1388.0" y="456.5" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1470.1333333333334" cy="514.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1567.6666666666667" cy="514.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1663.3333333333333" y="456.5" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1745.4666666666667" cy="514.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1843.0" cy="514.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1938.6666666666665" y="456.5" width="256.6666666666667" height="112.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2020.8" cy="514.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2118.333333333333" cy="514.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="560" y="750" font-family="Microsoft YaHei" font-size="52" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU (100, 200)</text>
+<text x="560" y="846" font-family="Microsoft YaHei" font-size="52" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A (140, 210)</text>
+<text x="1800" y="710" font-family="Microsoft YaHei" font-size="52" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU (102, 199)</text>
+<text x="1800" y="806" font-family="Microsoft YaHei" font-size="52" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A (142, 209)</text>
+<polyline points="1050,480 1310,440" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1310,440 1287.7564064855244,455.3043310067046 1284.1848662298432,432.0893193447773" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1200" y="575" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">+(2, −1)</text></svg>

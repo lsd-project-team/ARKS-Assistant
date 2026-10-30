@@ -1,0 +1,254 @@
+[
+  {
+    "figure": "tu_journey",
+    "page": 1,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_journey",
+    "page": 3,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_product",
+    "page": 4,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_new_record",
+    "page": 5,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_local_chain",
+    "page": 6,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_offset_before_after",
+    "page": 7,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_height_before_after",
+    "page": 8,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_dispense_scene",
+    "page": 9,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_handover_scene",
+    "page": 10,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_refresh_story",
+    "page": 11,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_s2_bridge",
+    "page": 12,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_bond_scene",
+    "page": 13,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_full_replay",
+    "page": 14,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_rotation",
+    "page": 15,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_snake",
+    "page": 16,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_divide_story",
+    "page": 17,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_irregular",
+    "page": 18,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_change_recipe",
+    "page": 19,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_mapping_owners",
+    "page": 20,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_mapping_import",
+    "page": 21,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_search",
+    "page": 22,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_clear",
+    "page": 23,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_helpers",
+    "page": 24,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_refresh_story",
+    "page": 25,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_participation",
+    "page": 26,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_partial_failure",
+    "page": 27,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_persistence",
+    "page": 28,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  },
+  {
+    "figure": "tu_lookup",
+    "page": 29,
+    "pixels": [
+      2400,
+      1040
+    ],
+    "dpi": 356.6
+  }
+]

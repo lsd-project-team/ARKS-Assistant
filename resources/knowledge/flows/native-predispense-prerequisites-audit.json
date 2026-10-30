@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "status": "original-predispense-predicate-plate-and-lower-failure-native-preparation-passed",
+  "command": "node scripts/verify-native-predispense-prerequisites.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "129d7e",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-predispense-prerequisites.log",
+  "logSha256": "38ab6cd5222b857efe8d80a3c5b98fef6e3f336cbb88d0059a375842541de88f",
+  "testSha256": "9c3de9b204729e2afda5c1d695782d547324498b901b8b7f8d27a59121527280",
+  "parentValidation": {
+    "command": "guarded S1 rework → encoding-preserving resources validation pipeline",
+    "observedSession": 85770,
+    "observedCompletionChunk": "0f8521",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-s1-rework-context.cjs",
+        "log": ".archify-work/native-predispense-prerequisites/parent-rework-verification.log",
+        "sha256": "4d6873487bcf9581b4ec400af1675659be6c5cbe0a6140e1dd37804b51f437b4"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-predispense-prerequisites/parent-resources-verification.log",
+        "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3"
+      }
+    ]
+  },
+  "acceptedProcesses": 2,
+  "checksPerPass": 30,
+  "distinctLabels": 30,
+  "selectedMethods": 61,
+  "staticXtraShowOverloads": 45,
+  "originalSources": 18,
+  "newFrozenInputs": 90,
+  "totalFrozenBindings": 5661,
+  "wholeGoalComplete": false
+}

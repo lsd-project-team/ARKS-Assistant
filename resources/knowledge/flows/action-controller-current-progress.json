@@ -1,0 +1,172 @@
+{
+  "schema": "archify-action-controller-current-v1",
+  "status": "current-action-controller-verified",
+  "recordedAt": "2026-10-07T01:36:58.284Z",
+  "verification": {
+    "command": "node scripts/test-action-controller.cjs",
+    "checks": 51,
+    "methods": 17,
+    "sourceFiles": [
+      {
+        "file": "scripts/test-action-controller.ps1",
+        "sha256": "a231feb7ffdae9534175a80be9a70dd642a8bbff7bbc9f9e77d45cc1768cf28a"
+      },
+      {
+        "file": "scripts/test-action-controller.cjs",
+        "sha256": "ecd71ef3f85143e9e874b7401c351cbc3c83d6d4be1dfc0f8dda67dd236d9178"
+      },
+      {
+        "file": "scripts/action-controller-harness.cs.txt",
+        "sha256": "64def2ed6ceb2d84a789600d90ccb8a0ad13ef49257321c186c039a5cb3f3c6c"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ActionNodeMessage.cs",
+        "sha256": "dd202801af33c493c6c7a0df11611020ca84ebd859a222b6bcfbaf7df2c66161"
+      }
+    ],
+    "extractedMethods": [
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+        "signature": "public void InjectSteps(TransportUnit transportUnit)",
+        "start": 859,
+        "end": 882,
+        "fileSha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a",
+        "snippetSha256": "e37c73c5adcba2de321f292daf721a5baa009c2531ddd2c2deaea8b09f123f6e"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+        "signature": "public ActionNode GetNextActionNode()",
+        "start": 776,
+        "end": 789,
+        "fileSha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a",
+        "snippetSha256": "62e0ce4f2437d5da0807f209538602f15589ad016ea4946b8970c8fb282589a7"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+        "signature": "public void FinishCurrentActionNode()",
+        "start": 767,
+        "end": 770,
+        "fileSha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a",
+        "snippetSha256": "088b33038397a822d2517fd2c34104d3270965592bf46de5c726e9b578be34fc"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+        "signature": "public void Finish()",
+        "start": 749,
+        "end": 762,
+        "fileSha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a",
+        "snippetSha256": "bafcadf4fd3afad5596bef5f40e6b4917f71491b3f05f981e691415ff5de2b08"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+        "signature": "public void InjectSteps(TransportUnit transportUnit)",
+        "start": 1410,
+        "end": 1433,
+        "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+        "snippetSha256": "e6c725b58ce3a3425d5f81f45a6d8a9d07d37ab0761c22ba9b41b4e217bb508e"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+        "signature": "public ActionNode GetNextActionNode()",
+        "start": 1042,
+        "end": 1075,
+        "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+        "snippetSha256": "01f5ce83905e85ff73dca5904b9175a12106ec635aa4b47563e13eb690b78a72"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+        "signature": "public void FinishCurrentActionNode()",
+        "start": 1033,
+        "end": 1036,
+        "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+        "snippetSha256": "3fe61d65aa0a6b502f0c659a7deb67d704ae90aa1fcf59df991e0d5b9c2e6c8a"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+        "signature": "public void Finish()",
+        "start": 911,
+        "end": 925,
+        "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+        "snippetSha256": "407da5d2ef9e607524668422cd8764771e20f91ff4e2554a91cde94fc19a0089"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+        "signature": "public ActionNode ChangeNameToActionNode(ActionNodeMessage name)",
+        "start": 1082,
+        "end": 1093,
+        "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+        "snippetSha256": "48e7f4312c694107874732f4f069bf8c9797ab607616c736175324e14c738891"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+        "signature": "public void InitCurrentMessage()",
+        "start": 930,
+        "end": 974,
+        "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+        "snippetSha256": "840fbd3b35fca661ae2f26e7016bfa6f379ec732c4e9c1202ac07d85e8277971"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+        "signature": "public void S1FinishedStep(string stepName)",
+        "start": 168,
+        "end": 171,
+        "fileSha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+        "snippetSha256": "56a26934ba3124eda5037c47c78069e093e36c899960a02c224b3fd379ef1023"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+        "signature": "public void S2FinishedStep(string stepName)",
+        "start": 177,
+        "end": 180,
+        "fileSha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+        "snippetSha256": "c0cc3fd1ddc0d1acf9a1dfcf1c58f883486fb41716057dfff280974cbf532c28"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+        "signature": "public bool IsS1NeedStep(string stepName)",
+        "start": 187,
+        "end": 190,
+        "fileSha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+        "snippetSha256": "fda202099b815a38f477f1eccab38409893144a0c8a2dcb71b4f97e216fdea03"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+        "signature": "public bool IsS2NeedStep(string stepName)",
+        "start": 197,
+        "end": 200,
+        "fileSha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+        "snippetSha256": "8969a8e9f331f29d12e17b269e3023b20db45579615056356c6ab06652af6e7f"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+        "signature": "public TransportUnit(string reason)",
+        "start": 73,
+        "end": 80,
+        "fileSha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c",
+        "snippetSha256": "b4aa66d643a30aba99a0f0ddf4fb616aa6adcf8f1c8e6d136c0dea4882ece040"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+        "signature": "public TransportUnit(CurrentMachineSystemEnum currentMachineSystem)",
+        "start": 86,
+        "end": 101,
+        "fileSha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c",
+        "snippetSha256": "e15a83f6a91a8aa4dcbf358addd42354852c2a1542afcbde7dbcbf82f2317344"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs",
+        "signature": "private void Init()",
+        "start": 107,
+        "end": 125,
+        "fileSha256": "fdd0da8b5baef60eed8021a124f55ac68cb504d6679909078ccd6c8f34eea00c",
+        "snippetSha256": "44f487d1637c8f1fccbccaee6165f08cf2f2ae486b196c975f854e3326817b8d"
+      }
+    ],
+    "testArtifactSha256": "86d6d95663415e5853f3d0a76dde3740f252ee47fcc734d821abcd84240d6be4"
+  },
+  "boundaries": [
+    "The original S1/S2 action controller methods, BondPosition step state and TransportUnit constructors/Init were extracted unchanged and exercised with controlled process, message, product, geometry, repository and dialog components.",
+    "The 51 checks cover InjectSteps, current-node selection, completion/reset behavior, duplicate and missing keys, special-node rejection, current-message traversal, cache preservation, constructor injection order and partial-failure propagation; full controller sorting Init, complete task execution, UI, hardware, persistence and production deployment remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

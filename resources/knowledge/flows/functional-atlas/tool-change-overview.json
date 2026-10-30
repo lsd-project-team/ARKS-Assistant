@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "按工具名称判断与换嘴主链",
+    "locale": "zh-CN",
+    "output": "resources/knowledge/flows/functional-atlas/tool-change-overview.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "a1a4e5f18061568c7c03dd8d0e1e59631e62b9c9",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "name",
+      "type": "backend",
+      "icon": "none",
+      "label": "比较工具名称",
+      "sublabel": "只比较当前名与目标名",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 37,
+          "end_line": 37,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "same",
+      "type": "backend",
+      "icon": "none",
+      "label": "同名直接返回",
+      "sublabel": "true；不重新检测在位",
+      "pos": [
+        20,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 37,
+          "end_line": 37,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "change",
+      "type": "backend",
+      "icon": "none",
+      "label": "进入换嘴控制",
+      "sublabel": "按工具库开关分支",
+      "pos": [
+        254,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 38,
+          "end_line": 38,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "manual",
+      "type": "backend",
+      "icon": "none",
+      "label": "人工确认分支",
+      "sublabel": "确认true；取消false",
+      "pos": [
+        254,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 38,
+          "end_line": 38,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "backend",
+      "icon": "none",
+      "label": "核对头上工具",
+      "sublabel": "冲突或终止→false",
+      "pos": [
+        488,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 39,
+          "end_line": 39,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "put",
+      "type": "backend",
+      "icon": "none",
+      "label": "有嘴先还嘴",
+      "sublabel": "返回false即退出",
+      "pos": [
+        722,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 39,
+          "end_line": 39,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "take",
+      "type": "backend",
+      "icon": "none",
+      "label": "取目标吸嘴",
+      "sublabel": "返回false即退出",
+      "pos": [
+        722,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 39,
+          "end_line": 39,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "type": "backend",
+      "icon": "none",
+      "label": "请求工具架回位",
+      "sublabel": "未用回位结果门控",
+      "pos": [
+        722,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 39,
+          "end_line": 39,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    },
+    {
+      "id": "success",
+      "type": "backend",
+      "icon": "none",
+      "label": "返回true",
+      "sublabel": "可经人工忽略到达",
+      "pos": [
+        488,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-tool-bank-review.md",
+          "line": 39,
+          "end_line": 39,
+          "label": "已提交的工具库源码复核"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "name-same",
+      "from": "name",
+      "to": "same",
+      "label": "同名"
+    },
+    {
+      "id": "name-change",
+      "from": "name",
+      "to": "change",
+      "label": "异名"
+    },
+    {
+      "id": "change-manual",
+      "from": "change",
+      "to": "manual",
+      "label": "停用"
+    },
+    {
+      "id": "change-check",
+      "from": "change",
+      "to": "check",
+      "label": "启用"
+    },
+    {
+      "id": "check-put",
+      "from": "check",
+      "to": "put",
+      "label": "有嘴"
+    },
+    {
+      "id": "check-take",
+      "from": "check",
+      "to": "take",
+      "label": "无嘴"
+    },
+    {
+      "id": "put-take",
+      "from": "put",
+      "to": "take",
+      "label": "true"
+    },
+    {
+      "id": "take-home",
+      "from": "take",
+      "to": "home",
+      "label": "true"
+    },
+    {
+      "id": "home-success",
+      "from": "home",
+      "to": "success"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "返回范围",
+      "items": [
+        "同名判断只比名称；开检测的状态冲突和人工终止可提前返回false。",
+        "取还嘴内部允许部分人工忽略后提交状态，true不单独证明全部物理检测通过。"
+      ]
+    }
+  ]
+}

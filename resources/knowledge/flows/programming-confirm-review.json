@@ -1,0 +1,206 @@
+{
+  "date": "2026-09-28",
+  "scope": "20 directly declared IProgrammingControl primary page classes; Confirm body snapshots only. Delegated saves reviewed separately in markdown. Not full business or runtime acceptance.",
+  "rows": [
+    {
+      "type": "UcTransportSystem",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcTransportSystem.cs",
+      "start": 167,
+      "end": 180,
+      "sha256": "de220dabf4368ee565449a9c3b26005bc9aa1353cfef432fea9ba2240f309171",
+      "code": "        public void Confirm()\r\n        {\r\n            this.transportProgram.LoadingSubSectionProgram.TransportBeltSettingName = ImgCmbInputSystem.EditValue.ToString();\r\n            this.transportProgram.UnloadingSubSectionProgram.TransportBeltSettingName = ImgCmbOutputSystem.EditValue.ToString();\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.TransportBeltSettingName = ImgCmbTransportbelt1.EditValue.ToString();\r\n            this.transportProgram.BondSubSectionProgram.TransportBeltSettingName = ImgCmbTransportbelt2.EditValue.ToString();\r\n            this.transportProgram.WaitingUnloadSubSectionProgram.TransportBeltSettingName = ImgCmbTransportbelt3.EditValue.ToString();\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSettingName = ImgCmbBondinsert1.EditValue.ToString();\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSettingName = ImgCmbBondinsert2.EditValue.ToString();\r\n\r\n            this.transportProgram.Save();\r\n        }\r",
+      "flow": "输送配置名称 → TransportProgram.Save",
+      "boundary": "直接读取 EditValue.ToString；本方法没有空值保护或本地 catch。"
+    },
+    {
+      "type": "UcBondMaxSubSection",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcBondMaxSubSection.cs",
+      "start": 41,
+      "end": 47,
+      "sha256": "7a0757a883dcfabea9aace77333b02d08a13955f492c768c380e0fb32a871e08",
+      "code": "        public void Confirm()\r\n        {\r\n            this.BondSubSectionController.bondSubSectionProgram.Size =\r\n                (BondMaxSubSectionSizeEnum)this.LueBondMaxSubSize.EditValue;\r\n\r\n            TransportProgram.GetInstance().Save();\r\n        }\r",
+      "flow": "尺寸枚举 → TransportProgram.Save",
+      "boundary": "尺寸类型强制转换可能抛出。"
+    },
+    {
+      "type": "UcLoderSetting",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcLoderSetting.cs",
+      "start": 80,
+      "end": 85,
+      "sha256": "2f7d9c082aeaab42aeae34a59ab8710628c2a75bcec1d3eb679d9558646754be",
+      "code": "        public void Confirm()\r\n        {\r\n            TransportProgram.GetInstance().LoaderBinProgram.CurLoaderName = this.CmbCurLoader.Text;\r\n\r\n            TransportProgram.GetInstance().Save();\r\n        }\r",
+      "flow": "上料器名称 → TransportProgram.Save",
+      "boundary": "来自当前组合框 Text。"
+    },
+    {
+      "type": "UcInput",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcInput.cs",
+      "start": 36,
+      "end": 47,
+      "sha256": "a0101691bafbbeed2de1424deecbea0cc74f3fbf1f276922c5acabd9e3ad9817",
+      "code": "        public void Confirm()\r\n        {\r\n            if (this.transportProgram.IsSettingNull())\r\n            {\r\n                return;\r\n            }\r\n\r\n            this.transportProgram.LoadingSubSectionProgram.InOutPutBeltSetting.ForwardVelRate\r\n                = Convert.ToDouble(this.TrackBarForwardVelRate.EditValue) / 100.0;\r\n\r\n            InOutPutBeltSettingRepository.GetInstance().Save();\r\n        }\r",
+      "flow": "配置检查 → 入口带速度 → InOutPutBeltSettingRepository.Save",
+      "boundary": "检查 true 时静默 return；返回语义见下方重点。"
+    },
+    {
+      "type": "UcBeltSystem1",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcBeltSystem1.cs",
+      "start": 106,
+      "end": 148,
+      "sha256": "ff278648016988eae08d60dfc020cc9e3f0c3e8bfdd16ff09f04763b5f1d5556",
+      "code": "        public void Confirm()\r\n        {\r\n            if (this.transportProgram.IsSettingNull())\r\n            {\r\n                return;\r\n            }\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.TransportBeltSetting.ForwardVelRate\r\n                = Convert.ToDouble(this.TrackBarForwardVelRate.EditValue) / 100.0;\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.TransportBeltSetting.BackwardVelRate\r\n                = Convert.ToDouble(TrackBarBackwardVelRate.EditValue) / 100.0;\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.TransportBeltSetting.ClampMode\r\n                = (ClampModeEnum)this.LueClampMode.EditValue;\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.TransportBeltSetting.UnClampMode\r\n                = (UnClampModeEnum)this.LueUnClampMode.EditValue;\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.HardstopLeftDistance\r\n                = Convert.ToDouble(SpDistanceHardstopLeft.EditValue);\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.HardstopRightDistance\r\n                = Convert.ToDouble(SpDistanceHardstopRight.EditValue);\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.BeforeClampingDelay \r\n                = Convert.ToInt32(SpDelayBeforeClamping.EditValue);\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.AfterClampingDelay\r\n                = Convert.ToInt32(SpDelayAfterClamping.EditValue);\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.BeforeUnClampingDelay\r\n                = Convert.ToInt32(this.SpDelayBeforeUnClamping.EditValue);\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.AfterUnClampingDelay\r\n                = Convert.ToInt32(this.SpDelayAfterUnclamping.EditValue);\r\n\r\n            this.transportProgram.DispenseSubSectionProgram.BondinsertSetting.VacuumOption\r\n                = (VacuumOptionEnum)this.LueVacuumOption.EditValue;\r\n\r\n            TransportBeltSettingRepository.GetInstance().Save();\r\n            BondinsertSettingRepository.GetInstance().Save();\r\n        }\r",
+      "flow": "配置检查 → S1 带/插入参数 → 带仓库 Save → 插入仓库 Save",
+      "boundary": "两次 Save 顺序执行；没有本地回滚。"
+    },
+    {
+      "type": "UcBeltSystem2",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcBeltSystem2.cs",
+      "start": 90,
+      "end": 140,
+      "sha256": "6cd17af4715a543c2f59cd08e15a08d03e2b2e74571011d3e833ebcd4f6bafd5",
+      "code": "        public void Confirm()\r\n        {\r\n            if (this.transportProgram.IsSettingNull())\r\n            {\r\n                return;\r\n            }\r\n\r\n            if (this.transportProgram.DispenseSubSectionProgram.TransportBeltSetting == null)\r\n            {\r\n                AKRSXtraMessageBox.Show(\"Save error, Please set InOut PutBelt Setting first\");\r\n                return;\r\n            }\r\n            this.transportProgram.BondSubSectionProgram.TransportBeltSetting.ForwardVelRate\r\n                = Math.Round(Convert.ToDouble(this.TrackBarForwardVelRate1.EditValue) / 100, 2);\r\n\r\n            this.transportProgram.BondSubSectionProgram.TransportBeltSetting.BackwardVelRate\r\n                = Math.Round(Convert.ToDouble(TrackBarBackwardVelRate1.EditValue) / 100, 2);\r\n\r\n            this.transportProgram.WaitingUnloadSubSectionProgram.TransportBeltSetting.ForwardVelRate\r\n                = Math.Round(Convert.ToDouble(this.TrackBarForwardVelRate2.EditValue) / 100, 2);\r\n\r\n            this.transportProgram.WaitingUnloadSubSectionProgram.TransportBeltSetting.BackwardVelRate\r\n                = Math.Round(Convert.ToDouble(this.TrackBarBackwardVelRate2.EditValue) / 100, 2);\r\n\r\n            this.transportProgram.BondSubSectionProgram.TransportBeltSetting.ClampMode\r\n                = (ClampModeEnum)this.LueClampMode.EditValue;\r\n\r\n            this.transportProgram.BondSubSectionProgram.TransportBeltSetting.UnClampMode\r\n                = (UnClampModeEnum)this.LueUnClampMode.EditValue;\r\n\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSetting.HardstopLeftDistance\r\n                = Convert.ToDouble(SpDistanceHardstopLeft.EditValue);\r\n\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSetting.BeforeClampingDelay\r\n                = Convert.ToInt32(SpDelayBeforeClamping.EditValue);\r\n\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSetting.AfterClampingDelay\r\n                = Convert.ToInt32(SpDelayAfterClamping.EditValue);\r\n\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSetting.BeforeUnClampingDelay\r\n                = Convert.ToInt32(this.SpDelayBeforeUnclamping.EditValue);\r\n\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSetting.AfterUnClampingDelay\r\n                = Convert.ToInt32(this.SpDelayAfterUnclamping.EditValue);\r\n\r\n            this.transportProgram.BondSubSectionProgram.BondinsertSetting.VacuumOption\r\n                = (VacuumOptionEnum)this.LueVacuumOption.EditValue;\r\n\r\n            TransportBeltSettingRepository.GetInstance().Save();\r\n            BondinsertSettingRepository.GetInstance().Save();\r\n        }\r",
+      "flow": "配置检查 → 额外 Dispense 带空值检查 → Bond/WaitingUnload 参数 → 两个仓库 Save",
+      "boundary": "额外 guard 检查 Dispense，后续写 Bond/WaitingUnload；不能视为全部目标空值保护。"
+    },
+    {
+      "type": "UcUnloaderSetting",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcUnloaderSetting.cs",
+      "start": 81,
+      "end": 86,
+      "sha256": "dcb0d44a27489fdc1e907d523dcd64edbb2541ad3574896b85c5cc13b9421124",
+      "code": "        public void Confirm()\r\n        {\r\n            TransportProgram.GetInstance().UnLoaderBinProgram.CurUnLoaderName = this.CmbCurUnLoader.Text;\r\n\r\n            TransportProgram.GetInstance().Save();\r\n        }\r",
+      "flow": "下料器名称 → TransportProgram.Save",
+      "boundary": "来自当前组合框 Text。"
+    },
+    {
+      "type": "UcOutput",
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Controls/Setting/UcOutput.cs",
+      "start": 35,
+      "end": 46,
+      "sha256": "d51c5c980825d506956092c7877f7bfdbb951f53fc5fe2b05242210dc3efcbbb",
+      "code": "        public void Confirm()\r\n        {\r\n            if (this.transportProgram.IsSettingNull())\r\n            {\r\n                return;\r\n            }\r\n\r\n            this.transportProgram.UnloadingSubSectionProgram.InOutPutBeltSetting.ForwardVelRate\r\n                = Convert.ToDouble(this.TrackBarForwardVelRate.EditValue) / 100.0;\r\n\r\n            InOutPutBeltSettingRepository.GetInstance().Save();\r\n        }\r",
+      "flow": "配置检查 → 出口带速度 → InOutPutBeltSettingRepository.Save",
+      "boundary": "检查 true 时静默 return。"
+    },
+    {
+      "type": "UcWaferHanding",
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Setting/Waferhandling/UcWaferHanding.cs",
+      "start": 102,
+      "end": 111,
+      "sha256": "eb862cdecca442fd3688ef6a23411c329f5ef23da60b22157a93f5867dc2087a",
+      "code": "        public void Confirm()\r\n        {\r\n            if (CmbWafer.EditValue == null)\r\n            {\r\n               // XtraMessageBox.Show();\r\n            }\r\n            \r\n            WaferSystemDomain.GetInstance().WaferSystemProgram.MagazineProgram.Name = this.CmbWafer.EditValue?.ToString();\r\n            WaferSystemProgram.GetInstance().Save();\r\n        }\r",
+      "flow": "MagazineProgram.Name → WaferSystemProgram.Save",
+      "boundary": "EditValue 为空分支只有注释，随后可赋 null 并调用 Save。"
+    },
+    {
+      "type": "UcMagazineGeometry",
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Setting/Waferhandling/UcMagazineGeometry.cs",
+      "start": 295,
+      "end": 298,
+      "sha256": "9ba8590f6c43285a4022a38a44dea99365eea6d0a9fd710c34bc4989f72a0b1d",
+      "code": "        public void Confirm()\r\n        {\r\n            this.SaveData();\r\n        }\r",
+      "flow": "SaveData → MagazineBoxConfigRepository.Save → 修改几何配置 → 再 Save → MagazineBoxGeoConfigRepository.Save",
+      "boundary": "第一次保存发生在 Push、Direction、Offset 赋值前；不是单次事务。"
+    },
+    {
+      "type": "UcConfiguration1",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcConfiguration1.cs",
+      "start": 38,
+      "end": 40,
+      "sha256": "0025c80ad9b63da3a37d9e55bbbd6228cd9c628ce2387b710433cb45e379f765",
+      "code": "        public void Confirm()\r\n        {\r\n        }\r",
+      "flow": "空 Confirm",
+      "boundary": "本方法无赋值、无 Save；不等于整个界面或 Designer 永远无副作用。"
+    },
+    {
+      "type": "UcNozzleEdit",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Setting/Nozzle/UcNozzleEdit.cs",
+      "start": 95,
+      "end": 98,
+      "sha256": "d7992231d4b4e0e08c408afbcfb65a10aacbc1f106ffbfa8bfad6051ade02fe6",
+      "code": "        public void Confirm()\r\n        {\r\n            this.Save();\r\n        }\r",
+      "flow": "Save → 吸嘴参数 → NozzleRepository.Save",
+      "boundary": "Save 同时从 RgZDeterminationMethod.SelectedIndex 读取 Z 与 XY 方法；是否符合设计待确认。"
+    },
+    {
+      "type": "UcFlipToolEdit",
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Setting/FlipTool/UcFlipToolEdit.cs",
+      "start": 94,
+      "end": 104,
+      "sha256": "ead3c32f91e0f6d8f78e979b73139c3b38ba2aaeae95db6c3c325241512bef71",
+      "code": "        public void Confirm()\r\n        {\r\n            this.flipTool.MeasureHeightNozzle = this.CmbNozzle.Text;\r\n            this.flipTool.BlowProportion = (int)this.SpBlowProportion.Value;\r\n            this.flipTool.BlowDelay = (int)this.SpBlowDelay.Value;\r\n\r\n            this.flipTool.ComponentCheckVal = (int)this.SpVacuumCheckVal.Value;\r\n            this.flipTool.ComponentCheckDelay = (int)this.SpVacuumCheckDelay.Value;\r\n\r\n            FlipToolRepository.GetInstance().Save();\r\n        }\r",
+      "flow": "翻晶工具参数 → FlipToolRepository.Save",
+      "boundary": "本地未捕获转换或保存异常。"
+    },
+    {
+      "type": "UcDispenser",
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/Dispenser/UcDispenser.cs",
+      "start": 182,
+      "end": 240,
+      "sha256": "d247fb3ba3e1b23d01c710ee8c51151b886b0fb8e5f07648632044f2ace0ff73",
+      "code": "        public void Confirm()\r\n        {\r\n            try\r\n            {\r\n                this.Dispenser.DispenserType = (DispenserTypeEnum)this.LueDispenserType.EditValue;\r\n\r\n                this.Dispenser.PreDispense.PreDispensingMode =\r\n                    (PreDispensingModeEnum)this.LuePreDispenseModel.EditValue;\r\n\r\n                this.Dispenser.PreDispense.PreDispensingTiming =\r\n                    (PreDispensingTimingEnum)this.LuePreDispenseTiming.EditValue;\r\n\r\n                this.Dispenser.PreDispense.PreDispensingTimeInterval =\r\n                (int)this.SpPreDispensingTimeIntervalMin.Value * 60000\r\n                + (int)this.SpPreDispensingTimeIntervalS.Value * 1000;\r\n\r\n                this.Dispenser.PreDispense.PreDispensingOffsetX = (double)this.SpPreDispensingOffsetX.Value;\r\n\r\n                this.Dispenser.PreDispense.PreDispensingOffsetY = (double)this.SpPreDispensingOffsetY.Value;\r\n\r\n                this.Dispenser.PreDispense.RepeatPreDispensing = (int)this.SpRepeatPreDispensing.Value;\r\n\r\n                if (this.CbEpoxyApplication.SelectedItem != null)\r\n                {\r\n                    this.Dispenser.PreDispense.EpoxyApplicationName = this.CbEpoxyApplication.SelectedItem.ToString();\r\n                }\r\n\r\n                this.Dispenser.PreDispense.EnableEpoxySqueeze = this.ChkEpoxySqueeze.Checked;\r\n\r\n                this.Dispenser.PreDispense.EpoxySqueezeTime = (int)this.SpEpoxySqueezeTime.Value;\r\n\r\n                this.Dispenser.PreDispense.EpoxySqueezePressure = (int)this.SpEpoxySqueezePressure.Value;\r\n\r\n                this.Dispenser.PreDispense.PreDispenseCheckName = this.CmbEpoxyDefect.SelectedItem?.ToString();\r\n\r\n                this.Dispenser.DispenseTimes.Enable = this.ChkDispenserTimes.Checked;\r\n\r\n                this.Dispenser.DispenseTimes.TotalUseTimes = (int)this.SpDispenseTimes.Value;\r\n\r\n                DispenseDevicePara.GetInstance().DispenserPara.AssistanceOpenDispenseVacuum = (int)this.spinEdit2.Value;\r\n\r\n                if (this.EpoxyMaterial != null)\r\n                {\r\n                    this.EpoxyMaterial.EpoxyMaterialConsumable.Enable = this.ChkEpoxyDueTime.Checked;\r\n\r\n                    this.EpoxyMaterial.EpoxyMaterialConsumable.UseDateTime = (int)this.SpEpoxyDueTime.Value;\r\n                }\r\n                \r\n                // 赋值完成后保存\r\n                DispenserRepository.GetInstance().Save();\r\n\r\n                System1Domain.GetInstance().System1Program.Save();\r\n            }\r\n            catch (Exception e)\r\n            {\r\n                Console.WriteLine(e);\r\n                throw;\r\n            }\r\n        }\r",
+      "flow": "点胶器参数 → DispenserRepository.Save → System1Program.Save",
+      "boundary": "catch 写 Console 后 rethrow；EpoxyMaterial 非空才修改耗材；设备参数也被修改但本方法未调用其 Save。"
+    },
+    {
+      "type": "UcTransportUnitFrame",
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Setting/UcTransportUnitFrame.cs",
+      "start": 49,
+      "end": 56,
+      "sha256": "ed37e7884210cc1fb1be1eb33c8b24c6a1b52eb836a140e5aae4adf3cf18a27f",
+      "code": "        public void Confirm()\r\n        {\r\n            this.ucTransportUnit.Save();\r\n            this.ucSubstrate.Save();\r\n            this.ucModule.Save();\r\n\r\n            ProductConfiguration.GetInstance().Save();\r\n        }\r",
+      "flow": "载具 Save → 基板 Save → 模块 Save → ProductConfiguration.Save",
+      "boundary": "前三个委托修改内存；任意异常中断剩余调用，详见已有提交专项。"
+    },
+    {
+      "type": "UcBondPositionEdit",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Setting/BondPosition/UcBondPositionEdit.cs",
+      "start": 308,
+      "end": 311,
+      "sha256": "18a5a6c0fa2aa108ac2d71728b26572b0087db821118894226ea8c202bbc3973",
+      "code": "        public void Confirm()\r\n        {\r\n            this.Save();\r\n        }\r",
+      "flow": "Save → 焊点参数 → ProductConfiguration.Save",
+      "boundary": "AdjustType.None 将辅助状态设为 ForBidden。"
+    },
+    {
+      "type": "UcComponentEdit",
+      "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controls/Setting/Component/UcComponentEdit.cs",
+      "start": 1045,
+      "end": 1048,
+      "sha256": "f0e4ac0acbbb1b7dc337981abb08dc507fa88bcc4dd8950516975513501d9d87",
+      "code": "        public void Confirm()\r\n        {\r\n            this.SaveAllData();\r\n        }\r",
+      "flow": "SaveAllData → 参数及辅助状态 → ComponentCheck → CarrierConfigRepository.Save",
+      "boundary": "ComponentCheck 为 void；消息后 return 仅退出该检查，调用方仍继续 Save。"
+    },
+    {
+      "type": "UcEpoxyApplication",
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "start": 483,
+      "end": 546,
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "code": "        public void Confirm()\r\n        {\r\n            this.EpoxyApplication.TearOff1Open = this.CkTearOff1On.Checked;\r\n\r\n            this.EpoxyApplication.TearOff2Open = this.CkTearOff2On.Checked;\r\n\r\n            this.EpoxyApplication.TearOff1Height = (double)this.SpTearOff1Height.Value;\r\n            this.EpoxyApplication.TearOff1Speed = (double)this.SpTearOff1Speed.Value;\r\n            this.EpoxyApplication.TearOff1Delay = (int)this.SpTearOff1Delay.Value;\r\n\r\n            this.EpoxyApplication.TearOff2Height = (double)this.SpTearOff2Height.Value;\r\n            this.EpoxyApplication.TearOff2Speed = (double)this.SpTearOff2Speed.Value;\r\n            this.EpoxyApplication.TearOff2Delay = (int)this.SpTearOff2Delay.Value;\r\n\r\n            this.EpoxyApplication.SecurityHeightForEpoxyApplication =\r\n                (double)this.SpSecurityHeightForEpoxyApplication.Value;\r\n            this.EpoxyApplication.SlowTravelSpeedBeforeDispensing = (double)this.SpSlowTravel.Value;\r\n\r\n            this.EpoxyApplication.DispenserLeadTime = (int)this.SpWaitingTime.Value;\r\n            this.EpoxyApplication.IsDispenserLeadTimeOpen = this.ChWaitIsDispense.Checked;\r\n            \r\n            this.EpoxyApplication.SpindleSpeedPercentage = (int)this.SpSpindleSpeed.Value;\r\n            this.EpoxyApplication.OffsetX = (double)this.SpOffSetX.Value;\r\n            this.EpoxyApplication.OffsetY = (double)this.SpOffSetY.Value;\r\n            this.EpoxyApplication.OffsetZ = (double)this.SpOffSetZ.Value;\r\n            this.EpoxyApplication.AdvanceOpenDistanceNew = (double)this.SpAdvance.Value;\r\n            this.EpoxyApplication.PrePlantOffSetZ = (double)this.SpPrePlantOffSetZ.Value;\r\n\r\n            this.EpoxyApplication.SizeX = (double)this.SpSizeX.Value;\r\n            this.EpoxyApplication.SizeY = (double)this.SpSizeY.Value;\r\n            this.EpoxyApplication.Angle = (double)this.SpAngle.Value;\r\n\r\n            this.EpoxyApplication.ComponentSizeX = (double)this.SpComponentX.Value;\r\n            this.EpoxyApplication.ComponentSizeY = (double)this.SpComponentY.Value;\r\n\r\n            this.EpoxyApplication.DispensePressure = (double)this.SpDispensingPressure.Value;\r\n\r\n            this.EpoxyApplication.Vacuum = (double)this.SpVacuum.Value;\r\n\r\n            this.EpoxyApplication.EpoxyApplicationStrategy = (EpoxyApplicationTypeEnum)this.LueEpoxyType.EditValue;\r\n\r\n            this.EpoxyApplication.PrintSlowDownHeight = (double)this.SpPrintSlowDownHeight.Value;\r\n            this.EpoxyApplication.PrintSlowDownSpeed = (double)this.SpPrintSlowDownSpeed.Value;\r\n            this.EpoxyApplication.PrintDelayTime = (int)this.SpPrintDelay.Value;\r\n            this.EpoxyApplication.PrintOffsetZ = (double)this.SpPrintingOffset.Value;\r\n            this.EpoxyApplication.PrintSlowUpHeight = (double)this.SpPrintSlowUpHeight.Value;\r\n            this.EpoxyApplication.PrintSlowUpSpeed = (double)this.SpPrintSlowUpSpeed.Value;\r\n            this.EpoxyApplication.PrintSlowUpDelayTime = (int)this.SpPrintSlowUpDelay.Value;\r\n\r\n            string printNozzleName = this.CmbNozzleName.SelectedItem?.ToString();\r\n\r\n            // 判断是否为空\r\n            if (string.IsNullOrEmpty(printNozzleName))\r\n            {\r\n                this.EpoxyApplication.PrintNozzleName = \"Null\";\r\n            }\r\n            else\r\n            {\r\n                this.EpoxyApplication.PrintNozzleName = printNozzleName;\r\n            }\r\n\r\n            EpoxyApplicationRepository.GetInstance().Save();\r\n            System1Program.GetInstance().Save();\r\n        }\r",
+      "flow": "点胶参数 → EpoxyApplicationRepository.Save → System1Program.Save",
+      "boundary": "吸嘴未选写字符串 Null；本方法明确保存 System1Program，不据此推断所有 S2 路径行为。"
+    },
+    {
+      "type": "UcPostBondEdit",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Setting/PostBond/UcPostBondEdit.cs",
+      "start": 122,
+      "end": 153,
+      "sha256": "bc27998a7929992f74356a4a67cb86d773556bab783e779e5fb5ee0b2f107803",
+      "code": "        public void Confirm()\r\n        {\r\n            this.postBondInspection.PostBondInspectionMode = (PostBondInspectionModeEnum)this.RgMode.SelectedIndex;\r\n            this.postBondInspection.MeasurePointNumber = (MeasurePointNumberEnum)Enum.Parse(typeof(MeasurePointNumberEnum), this.LueMeasurePointNumber.EditValue.ToString());\r\n            this.postBondInspection.ReferencePointNumber = (MeasurePointNumberEnum)Enum.Parse(typeof(MeasurePointNumberEnum), this.LueReference.EditValue.ToString());\r\n            this.postBondInspection.ApplicationSystem = (PostBondApplicationSystemEnum)Enum.Parse(typeof(PostBondApplicationSystemEnum), this.LueApplicationSystem.EditValue.ToString());\r\n\r\n            this.postBondInspection.LimitX = (double)this.SpLimitX.Value;\r\n\r\n            this.postBondInspection.LimitY = (double)this.SpLimitY.Value;\r\n\r\n            this.postBondInspection.LimitAngle = (double)this.SpLimitAngle.Value;\r\n\r\n            this.postBondInspection.TolerantEpoxyMax = (double)this.SpTolerantEpoxyMax.Value;\r\n            this.postBondInspection.TolerantEpoxyMin = (double)this.SpTolerantEpoxyMin.Value;\r\n\r\n            this.postBondInspection.MaxBLTOffset = (double)this.SpMaxBLTOffset.Value;\r\n            this.postBondInspection.MaxSurfaceSlope = (double)this.SpMaxSurfaceSlope.Value;\r\n\r\n            this.postBondInspection.IsPreDispenseCheck = this.ChkPreDispenseCheck.Checked;\r\n\r\n            this.postBondInspection.ReDispenseName = this.CmbReDispenseName.SelectedItem?.ToString();\r\n\r\n            this.postBondInspection.IsDefectFrequencyOpen = this.ChkDefectFrequencyOpen.Checked;\r\n\r\n            this.postBondInspection.DefectFrequency = (int)this.SpFrequency.Value;\r\n\r\n            this.postBondInspection.IsDetectBacksideCrack = this.ChkBackSideCrackDetection.Checked;\r\n            this.ChkIsCycle.Checked = this.postBondInspection.IsCircle;\r\n\r\n            PostBondInspectionRepository.GetInstance().Save();\r\n        }\r",
+      "flow": "检测参数 → PostBondInspectionRepository.Save",
+      "boundary": "Confirm 的 IsCircle 行是模型写回 UI；实际 UI 写模型在 CheckedChanged，不能单凭 Confirm 判断漏存。"
+    },
+    {
+      "type": "UcProcessStep",
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/UcProcessStep.cs",
+      "start": 673,
+      "end": 681,
+      "sha256": "ca49a0b0be97d2ad0dcea9f4ff20a6ceaa75485f7b949b94158af95815f99a2d",
+      "code": "        public void Confirm()\r\n        {\r\n            if (!ProcessDomain.CheckIsReady())\r\n            {\r\n                throw new Exception(\"步骤保存失败\");\r\n            }\r\n\r\n            this.ProcessDomain.Save();\r\n        }\r",
+      "flow": "ProcessDomain.CheckIsReady → 失败 throw / 成功 ProcessDomain.Save",
+      "boundary": "校验失败抛“步骤保存失败”；与静默 return 不同。"
+    }
+  ]
+}

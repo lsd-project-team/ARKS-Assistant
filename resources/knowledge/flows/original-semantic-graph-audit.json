@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "status": "original16-project-semantic-graph-bound-replay-verified",
+  "command": "node scripts/verify-original-semantic-graph-bindings.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "9e2aad",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-original-semantic-graph-bindings.log",
+  "logSha256": "4af96ef5ad3cf47a34165059eeac370f3c35dd1dc638bb88e9a5c505608f086d",
+  "testSha256": "d4801bcee77a85990d1f180aa4d590d80cad5956c89ed1c8d0db68a30778c76e",
+  "freeze": {
+    "initialChunk": "d4273c",
+    "session": 27074,
+    "completionChunk": "1456d1",
+    "exitCode": 0
+  },
+  "stageVerification": {
+    "initialChunk": "275a68",
+    "session": 2867,
+    "completionChunk": "4f2da4",
+    "exitCode": 0,
+    "steps": [
+      {
+        "name": "semantic",
+        "command": "node --max-old-space-size=4096 scripts/verify-original-semantic-graph.cjs",
+        "log": ".archify-work/original-semantic-graph/semantic-verification.log",
+        "stderr": ".archify-work/original-semantic-graph/semantic-verification.stderr",
+        "observedExitCode": 0,
+        "error": null,
+        "signal": null,
+        "logSha256": "1fd5e1e3bc89cf812926cdef4f4218f63baccf7bea146b072015faa8a75aa069",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "fixture",
+        "command": "node --max-old-space-size=4096 scripts/verify-original-semantic-fixture.cjs --check",
+        "log": ".archify-work/original-semantic-graph/fixture-verification.log",
+        "stderr": ".archify-work/original-semantic-graph/fixture-verification.stderr",
+        "observedExitCode": 0,
+        "error": null,
+        "signal": null,
+        "logSha256": "d4401e66ad72ab54310c76daff834b08968c9c9c5f5398c37edbb3b9f2b9c7f7",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "query",
+        "command": "node --max-old-space-size=4096 scripts/verify-original-semantic-query.cjs",
+        "log": ".archify-work/original-semantic-graph/query-verification.log",
+        "stderr": ".archify-work/original-semantic-graph/query-verification.stderr",
+        "observedExitCode": 0,
+        "error": null,
+        "signal": null,
+        "logSha256": "38451807c10255b0ba30786c47209a8617e51e7c5e53ede47d7bffafb7aa839c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "controller-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-dispense-controller.cjs",
+        "log": ".archify-work/original-semantic-graph/controller-parent-verification.log",
+        "stderr": ".archify-work/original-semantic-graph/controller-parent-verification.stderr",
+        "observedExitCode": 0,
+        "error": null,
+        "signal": null,
+        "logSha256": "77c9c6be4ef573204915ad452577f2a7daf8f2fef7a71ba30c41583fad45f364",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "resources-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/original-semantic-graph/resources-parent-verification.log",
+        "stderr": ".archify-work/original-semantic-graph/resources-parent-verification.stderr",
+        "observedExitCode": 0,
+        "error": null,
+        "signal": null,
+        "logSha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "projects": 16,
+  "extractions": 32,
+  "compileFiles": 1410,
+  "excludedSyntaxFiles": 26,
+  "declarations": 29764,
+  "operationEdges": 384201,
+  "declaredRelations": 4581,
+  "totalFrozenBindings": 8635,
+  "productionRuntimeExecuted": false,
+  "wholeGoalComplete": false
+}

@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "status": "virtual-interface-source-candidate-reader-and-full-browser-passed",
+  "command": "node .archify-work/capture-dispatch-source-reader-bindings.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "067a0b",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-dispatch-source-reader-bindings.log",
+  "logSha256": "b15ee21c5dd410b0d8d4380a6c4bfcb42ae6e809c567fab7b051f88d58d132b7",
+  "testSha256": "9bc429e3a62c3948c3f135d6e8c6e6afa69c17e2362231a2a70f4a4a71425a47",
+  "freeze": {
+    "observedCompletionChunk": "f864da",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "stageVerification": {
+    "command": "node --max-old-space-size=4096 .archify-work/verify-dispatch-source-reader-stage.cjs",
+    "initialChunk": "a2805c",
+    "observedSession": 16419,
+    "observedCompletionChunk": "1c4fcc",
+    "observedExitCode": 0,
+    "steps": [
+      {
+        "name": "builder",
+        "command": "node --max-old-space-size=4096 scripts/build-dispatch-source-reader.cjs --check",
+        "log": ".archify-work/dispatch-source-reader/builder-verification.log",
+        "logSha256": "e2395c827da0f23a89d7ca530720a111a4aeabfdea080d383b933c570f973849",
+        "stderr": ".archify-work/dispatch-source-reader/builder-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "source-and-candidates",
+        "command": "node --max-old-space-size=4096 scripts/verify-dispatch-source-reader.cjs",
+        "log": ".archify-work/dispatch-source-reader/source-and-candidates-verification.log",
+        "logSha256": "110fc9cdf2e246bbea73663eba1176832f38f9a6a775bcc8c62088e17696411e",
+        "stderr": ".archify-work/dispatch-source-reader/source-and-candidates-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "virtual-provenance",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-provenance.cjs",
+        "log": ".archify-work/dispatch-source-reader/virtual-provenance-verification.log",
+        "logSha256": "e26000cf144b86ae90ed967fff1501c95c04a1ed2cba18d7dc14191b3a961e32",
+        "stderr": ".archify-work/dispatch-source-reader/virtual-provenance-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "virtual-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-provenance-bindings.cjs",
+        "log": ".archify-work/dispatch-source-reader/virtual-parent-verification.log",
+        "logSha256": "0a46b2d374843671a50f8729d839528e0db6077dc64ceb51043a23355e0f70aa",
+        "stderr": ".archify-work/dispatch-source-reader/virtual-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "lexical-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-lexical-source-reader-bindings.cjs",
+        "log": ".archify-work/dispatch-source-reader/lexical-parent-verification.log",
+        "logSha256": "85e63aace5776834ae04a8c22b5667371f423b54115eece001fefb405a4c3369",
+        "stderr": ".archify-work/dispatch-source-reader/lexical-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      }
+    ]
+  },
+  "browser": {
+    "command": "node --max-old-space-size=4096 scripts/verify-dispatch-source-reader-browser.cjs",
+    "initialChunk": "0228c6",
+    "observedSession": 49349,
+    "observedCompletionChunk": "5b898f",
+    "observedExitCode": 0,
+    "screenshotsViewed": true,
+    "result": {
+      "file": ".archify-work/dispatch-source-reader/browser-results.json",
+      "sha256": "7071c7fb29c65ff1ed694f69ee4dea5f5f6921020513c644f9a145a92ac0f448"
+    },
+    "artifact": {
+      "file": "docs/archify/module-source-explorer-dispatch.html",
+      "sha256": "2ee82b290b046b3bf42e6bbbd885f3baf5b531b7e3d01a9828cdc559dfbfcb82"
+    }
+  },
+  "firstAcceptedBrowser": {
+    "command": "node --max-old-space-size=4096 scripts/verify-dispatch-source-reader-browser.cjs",
+    "initialChunk": "8a2cfa",
+    "observedSession": 18670,
+    "observedCompletionChunk": "606f13",
+    "observedExitCode": 0,
+    "archive": ".archify-work/dispatch-source-reader/accepted-browser-before-edge-pagination-guards/"
+  },
+  "prepare": {
+    "command": "node --max-old-space-size=4096 scripts/prepare-dispatch-source-reader.cjs",
+    "observedSession": null,
+    "observedCompletionChunk": "e7a81d",
+    "observedExitCode": 0
+  },
+  "initialBuild": {
+    "observedCompletionChunk": "e419c2",
+    "observedExitCode": 0,
+    "archive": ".archify-work/dispatch-source-reader/initial-build/",
+    "correction": "Reciprocal pagination hide logic selected a nested last-child button instead of direct more button. Corrected before browser acceptance; initial page and extracted original client preserved."
+  },
+  "finalBuild": {
+    "observedCompletionChunk": "a7cb32",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "newFrozenInputs": 39,
+  "reusedParentInputs": 1855,
+  "totalFrozenBindings": 9513,
+  "readerCandidateIntegrationCompleted": true,
+  "runtimeDispatchResolved": false,
+  "productionRuntimeExecuted": false,
+  "wholeGoalComplete": false
+}

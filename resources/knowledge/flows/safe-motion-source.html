@@ -1,0 +1,770 @@
+<!doctype html><html lang=zh-CN><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>安全移动 · 门控与返回值</title><style>body{font:16px/1.65 system-ui;margin:24px auto;padding:0 20px;max-width:1120px;color:#182b43;background:#f5f8fc}a{color:#075da5}article{background:white;padding:20px;margin:16px 0;border:1px solid #d4dce8;border-radius:10px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 Consolas,monospace}summary,p{overflow-wrap:anywhere}nav{display:flex;gap:18px;flex-wrap:wrap}input{box-sizing:border-box;width:100%;padding:12px;font:inherit}h1{font-size:26px}</style><h1>安全移动 · 门控与返回值</h1><nav><a href=index.html>项目总入口</a><a href=safe-motion-workflow-review.md>完整步骤与失败边界</a><a href=safe-motion-test.json>34项隔离测试</a></nav><p>16段源码：安全高度与软限位 → 外层单步 → 高低分支 → Z单步与驱动结果 → XY等待边界。此处仅核实局部源码和隔离方法，不代表全部示教或设备验收。</p><label>搜索调用、结论或源代码 <input id=source-filter placeholder="例如 Abort / WaitSingleStep / MoveBondXY"></label><article id=safe-xyz><h2>完整安全XYZ编排与返回值消费</h2><p>safe-xyz · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs</a> : 49–180</p><details><summary>展开带行号的源码</summary><p>SHA-256 5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022</p><pre>49:         public void MoveSafeBondXYZ(AKRSPoint3D point3D)
+50:         {
+51:             // 当前位置
+52:             AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+53:             double curLevel = curPos.Z;
+54: 
+55:             #region 旧
+56: 
+57:             //// Z轴零点为安全位置
+58:             //double safeHeight = this.bondModule.BondCoordinateSystem.SelfPosToG0(this.bondDevicePara.BondHeadParam.AxisSafePos).Z;
+59: 
+60: 
+61:             //// 获取当前平台上的TU
+62:             //TransportUnit transportUnit = TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+63: 
+64:             //if (transportUnit != null)
+65:             //{
+66:             //    // 如果固晶区点胶气缸弹下来，则用点胶气缸的高度
+67:             //    if (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+68:             //    &amp;&amp; System2Domain.GetInstance().S2DispenseController.IsDispenseHeightMeasurementOpen()
+69:             //    &amp;&amp; System2Domain.GetInstance().BondProgram.S2DispenserProgram.Dispenser != null)
+70:             //    {
+71:             //        safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+72:             //                     + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight - System2Domain
+73:             //                         .GetInstance().S2DispenseController.DistanceForBondHandAndDispenser.Z;
+74:             //    }
+75:             //    else
+76:             //    {
+77:             //        safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+78:             //                     + ProductConfiguration.GetInstance().TransportUnitConfig
+79:             //                         .SafeHeight + (this.bondModule.BondHead.CurrentNozzle?.MeasureHeightOffset ?? 0);
+80:             //    }
+81: 
+82:             //    safeHeight = this.bondModule.ConvertG0ToMachinePos(
+83:             //        safeHeight);
+84: 
+85:             //    if (safeHeight &gt; this.bondModule.BondHead.AxisZ.AxisSetPara.PLimit
+86:             //        || safeHeight &lt; this.bondModule.BondHead.AxisZ.AxisSetPara.NLimit)
+87:             //    {
+88:             //        throw new Exception("载具安全高度过高，超出轴极限，请重新设置载具的安全高度");
+89:             //    }
+90:             //}
+91:             //else
+92:             //{
+93:             //    safeHeight = this.bondModule.ConvertG0ToMachinePos(
+94:             //        safeHeight);
+95:             //}
+96: 
+97:             //if (Machine.GetInstance().IsWorking() == false)
+98:             //{
+99:             //    // 非工作状态安全高度置为轴安全高度
+100:             //    safeHeight = this.bondDevicePara.BondHeadParam.AxisSafePos.Z;
+101:             //}
+102: 
+103:             //if (MachineHardwareConfiguration.GetInstance().IsStaticWaffleConfigrated)
+104:             //{
+105:             //    AKRSPoint3D avoidPos = this.bondModule.ConvertG0ToMachinePos(
+106:             //        WaferSubDevicePara.GetInstance().WaferTableDevicePara.BondAvoidStaticWafflePos);
+107: 
+108:             //    if (point3D.Y &gt;= avoidPos.Y || curPos.Y &gt;= avoidPos.Y)
+109:             //    {
+110:             //        double nozzleOffset = this.bondModule.BondHead.CurrentNozzle != null
+111:             //                                  ? this.bondModule.BondHead.CurrentNozzle.MeasureHeightOffset
+112:             //                                  : 0;
+113: 
+114:             //        double staticWaffleLevel = avoidPos.Z + nozzleOffset;
+115: 
+116:             //        // 静态华夫盒高度高于安全高度时，安全高度提升到静态华夫盒高度
+117:             //        safeHeight = staticWaffleLevel &gt; safeHeight ? staticWaffleLevel : safeHeight;
+118:             //    }
+119:             //}
+120: 
+121:             #endregion
+122: 
+123:             // 安全高度
+124:             double safeHeight = this.GetBondheadSafeLevel(point3D);
+125: 
+126:             this.bondModule.CheckSoftLimit(point3D);
+127: 
+128:             // 单步工作
+129:             if (!System2Domain.GetInstance().WaitSingleStep())
+130:             {
+131:                 return;
+132:             }
+133: 
+134:             LogHelper.Post(
+135:                 Level.Info,
+136:                 $"系统2-轴准备移动，当前高度：{curLevel}，安全高度：{safeHeight}，目标位置：{point3D}",
+137:                 LogCategory.Bond,
+138:                 ViewType.InFileAndUI);
+139: 
+140:             if (curLevel &gt;= safeHeight &amp;&amp; point3D.Z &gt;= safeHeight)
+141:             {
+142:                 // 当前位置高于安全高度且目标位置位置也高于安全高度,先移动XY，再移动Z轴
+143:                 this.bondModule.MoveBondXY(point3D.X, point3D.Y);
+144: 
+145:                 this.bondHeadController.MoveZAxis(point3D.Z);
+146:             }
+147:             else if (curLevel &gt;= safeHeight &amp;&amp; point3D.Z &lt; safeHeight)
+148:             {
+149:                 // 当前位置比安全位置高，目标位置比安全位置低，先移动XY，再移动Z轴
+150:                 this.bondModule.MoveBondXY(point3D.X, point3D.Y);
+151: 
+152:                 this.bondHeadController.MoveZAxis(point3D.Z);
+153:             }
+154:             else if (curLevel &lt; safeHeight &amp;&amp; point3D.Z &gt;= safeHeight)
+155:             {
+156:                 // 当前位置比安全位置低，目标位置比安全位置高，先移动Z轴，再移动XY，这个地方应该是连续运动
+157:                 this.bondHeadController.MoveZAxis(point3D.Z);
+158: 
+159:                 this.bondModule.MoveBondXY(point3D.X, point3D.Y);
+160:             }
+161:             else if (curLevel &lt; safeHeight &amp;&amp; point3D.Z &lt; safeHeight)
+162:             {
+163:                 // 如果当前位置和目标位置都比安全位置低，Z轴移动到安全位置，移动XY，最后移动Z轴
+164:                 this.bondHeadController.MoveZAxis(safeHeight);
+165:                 this.bondModule.MoveBondXY(point3D.X, point3D.Y);
+166: 
+167:                 this.bondHeadController.MoveZAxis(point3D.Z);
+168:             }
+169:             else
+170:             {
+171:                 // 理论上不会进到这个分支
+172:                 AKRSXtraMessageBox.Show(
+173:                     $"致命错误!设备将退出工作，请联系供应商处理!",
+174:                     "Error",
+175:                     MessageBoxButtons.OK,
+176:                     MessageBoxIcon.Error);
+177: 
+178:                 throw new Exception("安全移动XYZ轴到指定位置出错!");
+179:             }
+180:         }</pre></details></article><article id=safe-height><h2>当前配置安全高度计算</h2><p>safe-height · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs</a> : 337–405</p><details><summary>展开带行号的源码</summary><p>SHA-256 3bf39c978ecbe8a63625fdd656c09004ab4496a6978e2b3187702cd1942acd25</p><pre>337:         public double GetBondheadSafeLevel(AKRSPoint3D targetPos)
+338:         {
+339:             // 获取当前平台上的TU
+340:             TransportUnit transportUnit =
+341:                 TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+342: 
+343:             // 当前位置
+344:             AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+345: 
+346:             // 安全高度转到G0坐标系
+347:             double safeHeight = this.bondModule.BondCoordinateSystem
+348:                 .SelfPosToG0(this.bondDevicePara.BondHeadParam.AxisSafePos).Z;
+349: 
+350:             if (transportUnit != null)
+351:             {
+352:                 // 如果固晶区点胶气缸弹下来，则用点胶气缸的高度
+353:                 if (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+354:                     &amp;&amp; System2Domain.GetInstance().S2DispenseController.IsDispenseHeightMeasurementOpen()
+355:                     &amp;&amp; System2Domain.GetInstance().BondProgram.S2DispenserProgram.Dispenser != null)
+356:                 {
+357:                     safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+358:                                  + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight - System2Domain
+359:                                      .GetInstance().S2DispenseController.DistanceForBondHandAndDispenser.Z;
+360:                 }
+361:                 else
+362:                 {
+363:                     safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+364:                                  + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight
+365:                                  + (this.bondModule.BondHead.CurrentNozzle?.MeasureHeightOffset ?? 0);
+366:                 }
+367: 
+368:                 safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+369:             }
+370:             else
+371:             {
+372:                 safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+373:             }
+374: 
+375:             if (Machine.GetInstance().IsWorking() == false)
+376:             {
+377:                 // 非工作状态安全高度置为轴安全高度
+378:                 safeHeight = this.bondDevicePara.BondHeadParam.AxisSafePos.Z;
+379:             }
+380: 
+381:             if (MachineHardwareConfiguration.GetInstance().IsStaticWaffleConfigrated)
+382:             {
+383:                 AKRSPoint3D avoidPos = this.bondModule.ConvertG0ToMachinePos(
+384:                     WaferSubDevicePara.GetInstance().WaferTableDevicePara.BondAvoidStaticWafflePos);
+385: 
+386:                 if (targetPos.Y &gt;= avoidPos.Y || curPos.Y &gt;= avoidPos.Y)
+387:                 {
+388:                     double nozzleOffset = this.bondModule.BondHead.CurrentNozzle != null
+389:                                               ? this.bondModule.BondHead.CurrentNozzle.MeasureHeightOffset
+390:                                               : 0;
+391: 
+392:                     double staticWaffleLevel = avoidPos.Z + nozzleOffset;
+393: 
+394:                     // 静态华夫盒高度高于安全高度时，安全高度提升到静态华夫盒高度
+395:                     safeHeight = staticWaffleLevel &gt; safeHeight ? staticWaffleLevel : safeHeight;
+396:                 }
+397:             }
+398: 
+399:             if (safeHeight &gt; this.bondModule.BondHead.AxisZ.AxisSetPara.PLimit
+400:                 || safeHeight &lt; this.bondModule.BondHead.AxisZ.AxisSetPara.NLimit)
+401:             {
+402:                 throw new Exception("载具安全高度过高，超出轴极限，请重新设置载具的安全高度");
+403:             }
+404: 
+405:             return safeHeight;</pre></details></article><article id=z-wrapper><h2>Z单步门控及原样返回驱动结果</h2><p>z-wrapper · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.MovementRelated.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.MovementRelated.cs</a> : 219–233</p><details><summary>展开带行号的源码</summary><p>SHA-256 49b0850e94f5d40745b593a59f57d166d12eeb3db1a3059819be7f420bb82904</p><pre>219:         public ExcuteResult MoveZAxis(double pos)
+220:         {
+221:             // 单步工作
+222:             if (!System2Domain.GetInstance().WaitSingleStep())
+223:             {
+224:                 return ExcuteResult.Abort;
+225:             }
+226: 
+227:             this.CheckZAxisSoftLimit(pos);
+228: 
+229:             // 机器速度百分比
+230:             double vel = this.GetAxisZAbsoluteSpeed() * this.machineSoftwareConfiguration.MachineMoveSpeedPercentage;
+231: 
+232:             return this.bondHead.AxisZ.AbsoluteMove(pos, true, vel);
+233:         }</pre></details></article><article id=domain-step><h2>单步模式决定是否等待</h2><p>domain-step · <a href=../../trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs>trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs</a> : 777–788</p><details><summary>展开带行号的源码</summary><p>SHA-256 3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea</p><pre>777:         public bool WaitSingleStep()
+778:         {
+779:             if (MachineStateModel.GetInstance().IsSingleStepWork)
+780:             {
+781:                 if (!SignalPool.GetInstance().System2SingleStepSignal.WaitSingleStep())
+782:                 {
+783:                     return false;
+784:                 }
+785:             }
+786: 
+787:             return true;
+788:         }</pre></details></article><article id=signal-step><h2>信号轮询与退出条件</h2><p>signal-step · <a href=../../trunk/AKRS.Galaxy2.Machine/Models/Signal.cs>trunk/AKRS.Galaxy2.Machine/Models/Signal.cs</a> : 175–196</p><details><summary>展开带行号的源码</summary><p>SHA-256 54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5</p><pre>175:         public bool WaitSingleStep()
+176:         {
+177:             do
+178:             {
+179:                 // 如果不是单步模式，直接退出
+180:                 if (MachineStateModel.GetInstance().IsSingleStepWork == false) 
+181:                 {
+182:                     return false;
+183:                 }
+184: 
+185:                 Thread.Sleep(5);
+186:             }
+187:             while (!this.signalEvent.WaitOne(this.recycleTime));
+188: 
+189:             // 唐鹏添加
+190:             if (this.resetMode == EventResetMode.AutoReset)
+191:             {
+192:                 this.State = SignalStateEnum.ReSet;
+193:             }
+194: 
+195:             return true;
+196:         }</pre></details></article><article id=xy-module><h2>XY下发与外部到位等待</h2><p>xy-module · <a href=../../trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs>trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs</a> : 449–498</p><details><summary>展开带行号的源码</summary><p>SHA-256 d74c8d97badf37ee7972ab431baa2f74ca87f294b25d6060c5ed33d2d36fa188</p><pre>449:         public void MoveBondXY(double posX, double posY)
+450:         {
+451:             if (MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.OffLineWork)
+452:             {
+453:                 return;
+454:             }
+455: 
+456:             if (!this.IsReady())
+457:             {
+458:                 return;
+459:             }
+460: 
+461:             this.CheckSoftLimit(posX, posY);
+462: 
+463:             //MotionService.MoveAxesToTargetPosition(
+464:             //       (this.BondAxisX, true, posX, AccuracyMode.HighAccuracy),
+465:             //       (this.BondAxisY, true, posY, AccuracyMode.HighAccuracy));
+466: 
+467:             double velX = this.BondAxisX.AxisMovePara.AbsoluteMoveSpeed
+468:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+469: 
+470: 
+471:             double velY = this.BondAxisY.AxisMovePara.AbsoluteMoveSpeed
+472:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+473: 
+474:             double accX = this.BondAxisX.AxisMovePara.ACC
+475:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+476:             double accY = this.BondAxisY.AxisMovePara.ACC
+477:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+478: 
+479: 
+480:             double decX = this.BondAxisX.AxisMovePara.DEC
+481:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+482:             double decY = this.BondAxisY.AxisMovePara.DEC
+483:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+484: 
+485:             MovePara moveParaX = new MovePara { Vel = velX, Acc = accX, Dec = decX, Jerk = this.BondAxisY.AxisMovePara.Jerk, TargetPosition = posX };
+486: 
+487:             MovePara moveParaY = new MovePara { Vel = velY, Acc = accY, Dec = decY, Jerk = this.BondAxisY.AxisMovePara.Jerk, TargetPosition = posY };
+488: 
+489:             // 开始运动
+490:             this.BondAxisX.SendAbsoluteMoveCommand(moveParaX);
+491:             this.BondAxisY.SendAbsoluteMoveCommand(moveParaY);
+492:            
+493: 
+494:             // 等轴到位
+495:             MotionService.WaitAxesArrival(
+496:                 (this.BondAxisX, true, posX, AccuracyMode.HighAccuracy),
+497:                 (this.BondAxisY, true, posY, AccuracyMode.HighAccuracy));
+498:         }</pre></details></article><article id=ui-step><h2>单步开关及下一步事件</h2><p>ui-step · <a href=../../trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs>trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs</a> : 982–1016</p><details><summary>展开带行号的源码</summary><p>SHA-256 03ac03cbf6340faa7de0bc345f6bccab605f42575d33f36495e6062cb8618ae2</p><pre>982:         private void BarSwitchSingleStep_CheckedChanged(object sender, ItemClickEventArgs e)
+983:         {
+984:             if (this.BarSwitchSingleStep.Checked)
+985:             {
+986:                 MachineStateModel.GetInstance().IsSingleStepWork = true;
+987:                 this.BarBtNextStep1.Enabled = true;
+988:             }
+989:             else
+990:             {
+991:                 // 单步执行
+992:                 SignalPool.GetInstance().System2SingleStepSignal.Set();
+993:                 MachineStateModel.GetInstance().IsSingleStepWork = false;
+994:                 this.BarBtNextStep1.Enabled = false;
+995:             }
+996:         }
+997: 
+998:         /// &lt;summary&gt;
+999:         /// 单步执行
+1000:         /// &lt;/summary&gt;
+1001:         /// &lt;param name="sender"&gt;事件源&lt;/param&gt;
+1002:         /// &lt;param name="e"&gt;参数封装&lt;/param&gt;
+1003:         private void BarBtNextStep_ItemClick(object sender, ItemClickEventArgs e)
+1004:         {
+1005:             if (MachineStateModel.GetInstance().IsSingleStepWork)
+1006:             {
+1007:                 if (MachineStateModel.GetInstance().CurrentMachineSystem == CurrentMachineSystemEnum.System2)
+1008:                 {
+1009:                     // 单步执行
+1010:                     SignalPool.GetInstance().System2SingleStepSignal.Set();
+1011:                 }
+1012:                 else
+1013:                 {
+1014:                     // 单步执行
+1015:                     SignalPool.GetInstance().System1SingleStepSignal.Set();
+1016:                 }</pre></details></article><article id=stop><h2>普通Stop清除单步标志</h2><p>stop · <a href=../../trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs>trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs</a> : 347–359</p><details><summary>展开带行号的源码</summary><p>SHA-256 b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073</p><pre>347:         public void Stop()
+348:         {
+349:             // 改变设备状态
+350:             Machine.GetInstance().SetState(MachineStateEnum.Stop);
+351: 
+352:             // 清除弹窗
+353:             AKRSMessageBoxExt.ClearMessageBox();
+354: 
+355:             // 状态改为停止
+356:             this.SetStopStateAlarm();
+357: 
+358:             // 退出单步模式
+359:             MachineStateModel.GetInstance().IsSingleStepWork = false;</pre></details></article><article id=safe-xy><h2>二维安全XY：低位抬升后恢复原Z</h2><p>safe-xy · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs</a> : 393–467</p><details><summary>展开带行号的源码</summary><p>SHA-256 5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022</p><pre>393:         public void MoveSafeBondXY(double posX, double posY)
+394:         {
+395:             #region 旧
+396: 
+397:             //// Z轴零点为安全位置
+398:             //double safeHeight = this.bondModule.BondCoordinateSystem.SelfPosToG0(this.bondDevicePara.BondHeadParam.AxisSafePos).Z;
+399: 
+400:             //// 获取当前平台上的TU
+401:             //TransportUnit transportUnit = TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+402: 
+403:             //// 当前位置
+404:             //AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+405:             //double curLevel = curPos.Z;
+406: 
+407:             //if (transportUnit != null)
+408:             //{
+409:             //    safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+410:             //                 + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight
+411:             //                 + (this.bondModule.BondHead.CurrentNozzle?.MeasureHeightOffset ?? 0);
+412:             //}
+413: 
+414:             //safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+415: 
+416:             //if (MachineHardwareConfiguration.GetInstance().IsStaticWaffleConfigrated)
+417:             //{
+418:             //    AKRSPoint3D avoidPos = this.bondModule.ConvertG0ToMachinePos(
+419:             //        WaferSubDevicePara.GetInstance().WaferTableDevicePara.BondAvoidStaticWafflePos);
+420: 
+421:             //    if (posY &gt;= avoidPos.Y || curPos.Y &gt;= avoidPos.Y)
+422:             //    {
+423:             //        double nozzleOffset = this.bondModule.BondHead.CurrentNozzle != null
+424:             //                                  ? this.bondModule.BondHead.CurrentNozzle.MeasureHeightOffset
+425:             //                                  : 0;
+426: 
+427:             //        double staticWaffleLevel = avoidPos.Z + nozzleOffset;
+428: 
+429:             //        // 静态华夫盒高度高于安全高度时，安全高度提升到静态华夫盒高度
+430:             //        safeHeight = staticWaffleLevel &gt; safeHeight ? staticWaffleLevel : safeHeight;
+431:             //    }
+432:             //}
+433: 
+434:             #endregion
+435: 
+436:             // 当前位置
+437:             AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+438:             double curLevel = curPos.Z;
+439: 
+440:             // 安全高度
+441:             double safeHeight = this.GetBondheadSafeLevel(new AKRSPoint2D(posX, posY));
+442: 
+443:             // 限位检查
+444:             this.bondModule.CheckSoftLimit(posX, posY);
+445: 
+446:             // 单步工作
+447:             if (!System2Domain.GetInstance().WaitSingleStep())
+448:             {
+449:                 return;
+450:             }
+451: 
+452:             System2RunTimeProvider.RecordTime($"系统2-轴移动", $"轴准备移动，当前高度：{curLevel}，安全高度：{safeHeight}，目标位置X：{posX},目标位置Y：{posY}");
+453: 
+454:             // 判断位置，如果当前位置高于安全高度可以直接移动
+455:             if (curLevel &gt;= safeHeight)
+456:             {
+457:                 this.bondModule.MoveBondXY(posX, posY);
+458:             }
+459:             else
+460:             {
+461:                 this.bondHeadController.MoveZAxis(safeHeight);
+462: 
+463:                 this.bondModule.MoveBondXY(posX, posY);
+464: 
+465:                 this.bondHeadController.MoveZAxis(curLevel);
+466:             }
+467:         }</pre></details></article><article id=safe-xyzt><h2>四维XYZT：按高度分支安排XYT与Z</h2><p>safe-xyzt · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs</a> : 186–313</p><details><summary>展开带行号的源码</summary><p>SHA-256 5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022</p><pre>186:         public void MoveSafeBondXYZT(AKRSPoint4D point4D)
+187:         {
+188:             // 当前位置
+189:             AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+190:             double curLevel = curPos.Z;
+191: 
+192:             #region 旧
+193: 
+194:             //// Z轴零点为安全位置
+195:             //double safeHeight = this.bondModule.BondCoordinateSystem.SelfPosToG0(this.bondDevicePara.BondHeadParam.AxisSafePos).Z;
+196: 
+197:             //// 获取当前平台上的TU
+198:             //TransportUnit transportUnit = TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+199: 
+200: 
+201: 
+202:             //if (transportUnit != null)
+203:             //{
+204:             //    // 如果固晶区点胶气缸弹下来，则用点胶气缸的高度
+205:             //    if (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+206:             //    &amp;&amp; System2Domain.GetInstance().S2DispenseController.IsDispenseHeightMeasurementOpen())
+207:             //    {
+208:             //        safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+209:             //                     + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight - System2Domain
+210:             //                         .GetInstance().S2DispenseController.DistanceForBondHandAndDispenser.Z;
+211:             //    }
+212:             //    else
+213:             //    {
+214:             //        safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+215:             //                     + ProductConfiguration.GetInstance().TransportUnitConfig
+216:             //                         .SafeHeight + (this.bondModule.BondHead.CurrentNozzle?.MeasureHeightOffset ?? 0);
+217:             //    }
+218: 
+219:             //    safeHeight = this.bondModule.ConvertG0ToMachinePos(
+220:             //        safeHeight);
+221: 
+222:             //    if (safeHeight &gt; this.bondModule.BondHead.AxisZ.AxisSetPara.PLimit
+223:             //        || safeHeight &lt; this.bondModule.BondHead.AxisZ.AxisSetPara.NLimit)
+224:             //    {
+225:             //        throw new Exception("载具安全高度过高，超出轴极限，请重新设置载具的安全高度");
+226:             //    }
+227:             //}
+228:             //else
+229:             //{
+230:             //    safeHeight = this.bondModule.ConvertG0ToMachinePos(
+231:             //        safeHeight);
+232:             //}
+233: 
+234:             //if (Machine.GetInstance().IsWorking() == false)
+235:             //{
+236:             //    // 非工作状态安全高度置为轴安全高度
+237:             //    safeHeight = this.bondDevicePara.BondHeadParam.AxisSafePos.Z;
+238:             //}
+239: 
+240:             //if (MachineHardwareConfiguration.GetInstance().IsStaticWaffleConfigrated)
+241:             //{
+242:             //    AKRSPoint3D avoidPos = this.bondModule.ConvertG0ToMachinePos(
+243:             //        WaferSubDevicePara.GetInstance().WaferTableDevicePara.BondAvoidStaticWafflePos);
+244: 
+245:             //    if (point4D.Y &gt;= avoidPos.Y || curPos.Y &gt;= avoidPos.Y)
+246:             //    {
+247:             //        double nozzleOffset = this.bondModule.BondHead.CurrentNozzle != null
+248:             //                                  ? this.bondModule.BondHead.CurrentNozzle.MeasureHeightOffset
+249:             //                                  : 0;
+250: 
+251:             //        double staticWaffleLevel = avoidPos.Z + nozzleOffset;
+252: 
+253:             //        // 静态华夫盒高度高于安全高度时，安全高度提升到静态华夫盒高度
+254:             //        safeHeight = staticWaffleLevel &gt; safeHeight ? staticWaffleLevel : safeHeight;
+255:             //    }
+256:             //}
+257: 
+258:             #endregion
+259: 
+260:             // 安全高度
+261:             double safeHeight = this.GetBondheadSafeLevel(point4D);
+262: 
+263:             this.bondModule.CheckSoftLimit(point4D);
+264: 
+265:             // 单步工作
+266:             if (!System2Domain.GetInstance().WaitSingleStep())
+267:             {
+268:                 return;
+269:             }
+270: 
+271:             System2RunTimeProvider.RecordTime($"系统2-轴移动", $"轴准备移动，当前高度：{curLevel}，安全高度：{safeHeight}，目标位置：{point4D}");
+272: 
+273:             if (curLevel &gt;= safeHeight &amp;&amp; point4D.Z &gt;= safeHeight)
+274:             {
+275:                 // 当前位置高于安全高度且目标位置位置也高于安全高度,先移动XY，再移动Z轴
+276:                 this.bondModule.MoveBondXYT(point4D.X, point4D.Y, point4D.T);
+277: 
+278:                 this.bondHeadController.MoveZAxis(point4D.Z);
+279:             }
+280:             else if (curLevel &gt;= safeHeight &amp;&amp; point4D.Z &lt; safeHeight)
+281:             {
+282:                 // 当前位置比安全位置高，目标位置比安全位置低，先移动XY，再移动Z轴
+283:                 this.bondModule.MoveBondXYT(point4D.X, point4D.Y, point4D.T);
+284: 
+285:                 this.bondHeadController.MoveZAxis(point4D.Z);
+286:             }
+287:             else if (curLevel &lt; safeHeight &amp;&amp; point4D.Z &gt;= safeHeight)
+288:             {
+289:                 // 当前位置比安全位置低，目标位置比安全位置高，先移动Z轴，再移动XY，这个地方应该是连续运动
+290:                 this.bondHeadController.MoveZAxis(point4D.Z);
+291: 
+292:                 this.bondModule.MoveBondXYT(point4D.X, point4D.Y, point4D.T);
+293:             }
+294:             else if (curLevel &lt; safeHeight &amp;&amp; point4D.Z &lt; safeHeight)
+295:             {
+296:                 // 如果当前位置和目标位置都比安全位置低，Z轴移动到安全位置，移动XY，最后移动Z轴
+297:                 this.bondHeadController.MoveZAxis(safeHeight);
+298:                 this.bondModule.MoveBondXYT(point4D.X, point4D.Y, point4D.T);
+299: 
+300:                 this.bondHeadController.MoveZAxis(point4D.Z);
+301:             }
+302:             else
+303:             {
+304:                 // 理论上不会进到这个分支
+305:                 AKRSXtraMessageBox.Show(
+306:                     $"致命错误!设备将退出工作，请联系供应商处理!",
+307:                     "Error",
+308:                     MessageBoxButtons.OK,
+309:                     MessageBoxIcon.Error);
+310: 
+311:                 throw new Exception("安全移动XYZ轴到指定位置出错!");
+312:             }
+313:         }</pre></details></article><article id=height-2d><h2>二维安全高度：最终值检查Z限位</h2><p>height-2d · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs</a> : 412–483</p><details><summary>展开带行号的源码</summary><p>SHA-256 3bf39c978ecbe8a63625fdd656c09004ab4496a6978e2b3187702cd1942acd25</p><pre>412:         public double GetBondheadSafeLevel(AKRSPoint2D targetPos)
+413:         {
+414:             // 获取当前平台上的TU
+415:             TransportUnit transportUnit =
+416:                 TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+417: 
+418:             // 当前位置
+419:             AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+420: 
+421:             // 安全高度转到G0坐标系
+422:             double safeHeight = this.bondModule.BondCoordinateSystem
+423:                 .SelfPosToG0(this.bondDevicePara.BondHeadParam.AxisSafePos).Z;
+424: 
+425:             if (transportUnit != null)
+426:             {
+427:                 // 如果固晶区点胶气缸弹下来，则用点胶气缸的高度
+428:                 if (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+429:                     &amp;&amp; System2Domain.GetInstance().S2DispenseController.IsDispenseHeightMeasurementOpen()
+430:                     &amp;&amp; System2Domain.GetInstance().BondProgram.S2DispenserProgram.Dispenser != null)
+431:                 {
+432:                     safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+433:                                  + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight - System2Domain
+434:                                      .GetInstance().S2DispenseController.DistanceForBondHandAndDispenser.Z;
+435:                 }
+436:                 else
+437:                 {
+438:                     safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+439:                                  + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight
+440:                                  + (this.bondModule.BondHead.CurrentNozzle?.MeasureHeightOffset ?? 0);
+441:                 }
+442: 
+443:                 safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+444: 
+445:             }
+446:             else
+447:             {
+448:                 safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+449:             }
+450: 
+451:             if (Machine.GetInstance().IsWorking() == false)
+452:             {
+453:                 // 非工作状态安全高度置为轴安全高度
+454:                 safeHeight = this.bondDevicePara.BondHeadParam.AxisSafePos.Z;
+455:             }
+456: 
+457:             if (MachineHardwareConfiguration.GetInstance().IsStaticWaffleConfigrated)
+458:             {
+459:                 AKRSPoint3D avoidPos = this.bondModule.ConvertG0ToMachinePos(
+460:                     WaferSubDevicePara.GetInstance().WaferTableDevicePara.BondAvoidStaticWafflePos);
+461: 
+462:                 if (targetPos.Y &gt;= avoidPos.Y || curPos.Y &gt;= avoidPos.Y)
+463:                 {
+464:                     double nozzleOffset = this.bondModule.BondHead.CurrentNozzle != null
+465:                                               ? this.bondModule.BondHead.CurrentNozzle.MeasureHeightOffset
+466:                                               : 0;
+467: 
+468:                     double staticWaffleLevel = avoidPos.Z + nozzleOffset;
+469: 
+470:                     // 静态华夫盒高度高于安全高度时，安全高度提升到静态华夫盒高度
+471:                     safeHeight = staticWaffleLevel &gt; safeHeight ? staticWaffleLevel : safeHeight;
+472:                 }
+473:             }
+474: 
+475: 
+476:             if (safeHeight &gt; this.bondModule.BondHead.AxisZ.AxisSetPara.PLimit
+477:                 || safeHeight &lt; this.bondModule.BondHead.AxisZ.AxisSetPara.NLimit)
+478:             {
+479:                 throw new Exception("载具安全高度过高，超出轴极限，请重新设置载具的安全高度");
+480:             }
+481: 
+482:             return safeHeight;
+483:         }</pre></details></article><article id=height-4d><h2>四维安全高度：仅TU分支内早期检查</h2><p>height-4d · <a href=../../trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs>trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.cs</a> : 262–331</p><details><summary>展开带行号的源码</summary><p>SHA-256 3bf39c978ecbe8a63625fdd656c09004ab4496a6978e2b3187702cd1942acd25</p><pre>262:         public double GetBondheadSafeLevel(AKRSPoint4D targetPos)
+263:         {
+264:             // 获取当前平台上的TU
+265:             TransportUnit transportUnit =
+266:                 TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+267: 
+268:             // 当前位置
+269:             AKRSPoint3D curPos = this.bondModule.Get3DRealPosition();
+270: 
+271:             // 安全高度转到G0坐标系
+272:             double safeHeight = this.bondModule.BondCoordinateSystem
+273:                 .SelfPosToG0(this.bondDevicePara.BondHeadParam.AxisSafePos).Z;
+274: 
+275:             if (transportUnit != null)
+276:             {
+277:                 // 如果固晶区点胶气缸弹下来，则用点胶气缸的高度
+278:                 if (MachineHardwareConfiguration.GetInstance().IsSystem2Dispense
+279:                     &amp;&amp; System2Domain.GetInstance().S2DispenseController.IsDispenseHeightMeasurementOpen()
+280:                     &amp;&amp; System2Domain.GetInstance().BondProgram.S2DispenserProgram.Dispenser != null)
+281:                 {
+282:                     safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+283:                                  + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight - System2Domain
+284:                                      .GetInstance().S2DispenseController.DistanceForBondHandAndDispenser.Z;
+285:                 }
+286:                 else
+287:                 {
+288:                     safeHeight = transportUnit.CoordinateSystem.SelfPosToG0(new AKRSPoint3D()).Z
+289:                                  + ProductConfiguration.GetInstance().TransportUnitConfig.SafeHeight
+290:                                  + (this.bondModule.BondHead.CurrentNozzle?.MeasureHeightOffset ?? 0);
+291:                 }
+292: 
+293:                 safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+294: 
+295:                 if (safeHeight &gt; this.bondModule.BondHead.AxisZ.AxisSetPara.PLimit
+296:                     || safeHeight &lt; this.bondModule.BondHead.AxisZ.AxisSetPara.NLimit)
+297:                 {
+298:                     throw new Exception("载具安全高度过高，超出轴极限，请重新设置载具的安全高度");
+299:                 }
+300:             }
+301:             else
+302:             {
+303:                 safeHeight = this.bondModule.ConvertG0ToMachinePos(safeHeight);
+304:             }
+305: 
+306:             if (Machine.GetInstance().IsWorking() == false)
+307:             {
+308:                 // 非工作状态安全高度置为轴安全高度
+309:                 safeHeight = this.bondDevicePara.BondHeadParam.AxisSafePos.Z;
+310:             }
+311: 
+312:             if (MachineHardwareConfiguration.GetInstance().IsStaticWaffleConfigrated)
+313:             {
+314:                 AKRSPoint3D avoidPos = this.bondModule.ConvertG0ToMachinePos(
+315:                     WaferSubDevicePara.GetInstance().WaferTableDevicePara.BondAvoidStaticWafflePos);
+316: 
+317:                 if (targetPos.Y &gt;= avoidPos.Y || curPos.Y &gt;= avoidPos.Y)
+318:                 {
+319:                     double nozzleOffset = this.bondModule.BondHead.CurrentNozzle != null
+320:                                               ? this.bondModule.BondHead.CurrentNozzle.MeasureHeightOffset
+321:                                               : 0;
+322: 
+323:                     double staticWaffleLevel = avoidPos.Z + nozzleOffset;
+324: 
+325:                     // 静态华夫盒高度高于安全高度时，安全高度提升到静态华夫盒高度
+326:                     safeHeight = staticWaffleLevel &gt; safeHeight ? staticWaffleLevel : safeHeight;
+327:                 }
+328:             }
+329: 
+330:             return safeHeight;
+331:         }</pre></details></article><article id=xyt-module><h2>XYT下发和等待：合成Z零值检查</h2><p>xyt-module · <a href=../../trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs>trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs</a> : 780–818</p><details><summary>展开带行号的源码</summary><p>SHA-256 d74c8d97badf37ee7972ab431baa2f74ca87f294b25d6060c5ed33d2d36fa188</p><pre>780:         public void MoveBondXYT(double posX, double posY, double posT)
+781:         {
+782:             if (!this.IsReady())
+783:             {
+784:                 return;
+785:             }
+786: 
+787:             this.CheckSoftLimit(new AKRSPoint4D(posX, posY, 0, posT));
+788: 
+789:             if (MachineStateModel.GetInstance().MachineWorkMode == MachineWorkModeEnum.OffLineWork)
+790:             {
+791:                 return;
+792:             }
+793: 
+794:             //MotionService.MoveAxesToTargetPosition(
+795:             //    (this.BondAxisX, true, pos.X, AccuracyMode.HighAccuracy),
+796:             //    (this.BondAxisY, true, pos.Y, AccuracyMode.HighAccuracy),
+797:             //    (this.BondHead.AxisZ, true, pos.Z, AccuracyMode.HighAccuracy));
+798: 
+799:             double velX = this.BondAxisX.AxisMovePara.AbsoluteMoveSpeed
+800:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+801: 
+802:             double velY = this.BondAxisY.AxisMovePara.AbsoluteMoveSpeed
+803:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+804: 
+805:             double velT = this.BondHead.AxisT.AxisMovePara.AbsoluteMoveSpeed
+806:                           * MachineSoftwareConfiguration.GetInstance().MachineMoveSpeedPercentage;
+807: 
+808:             // 开始运动
+809:             this.BondAxisX.SendAbsoluteMoveCommand(posX, velX);
+810:             this.BondAxisY.SendAbsoluteMoveCommand(posY, velY);
+811:             this.BondHead.AxisT.SendAbsoluteMoveCommand(posT, velT);
+812: 
+813:             // 等轴到位
+814:             MotionService.WaitAxesArrival(
+815:                 (this.BondAxisX, true, posX, AccuracyMode.HighAccuracy),
+816:                 (this.BondAxisY, true, posY, AccuracyMode.HighAccuracy),
+817:                 (this.BondHead.AxisT, true, posT, AccuracyMode.HighAccuracy));
+818:         }</pre></details></article><article id=limit-4d><h2>四维限位：仅比较X/Y/Z，未比较T</h2><p>limit-4d · <a href=../../trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs>trunk/AKRS.ZX2200/BondSystem/Modules/BondModule.cs</a> : 909–933</p><details><summary>展开带行号的源码</summary><p>SHA-256 d74c8d97badf37ee7972ab431baa2f74ca87f294b25d6060c5ed33d2d36fa188</p><pre>909:         public bool CheckSoftLimit(AKRSPoint4D point)
+910:         {
+911:             if (point.X &gt; this.BondAxisX.AxisSetPara.PLimit || point.X &lt; this.BondAxisX.AxisSetPara.NLimit)
+912:             {
+913:                 throw new Exception(
+914:                     "系统2：X轴目标位置超出软限位！\r\n"
+915:                     + $"目标位置:{point.X},正限位:{this.BondAxisX.GetSoftLimit().PLimit},负限位:{this.BondAxisX.GetSoftLimit().NLimit}");
+916:             }
+917: 
+918:             if (point.Y &gt; this.BondAxisY.AxisSetPara.PLimit || point.Y &lt; this.BondAxisY.AxisSetPara.NLimit)
+919:             {
+920:                 throw new Exception(
+921:                     "系统2：Y轴目标位置超出软限位！\r\n"
+922:                     + $"目标位置:{point.Y},正限位:{this.BondAxisY.GetSoftLimit().PLimit},负限位:{this.BondAxisY.GetSoftLimit().NLimit}");
+923:             }
+924: 
+925:             if (point.Z &gt; this.BondHead.AxisZ.AxisSetPara.PLimit || point.Z &lt; this.BondHead.AxisZ.AxisSetPara.NLimit)
+926:             {
+927:                 throw new Exception(
+928:                     "系统2：Z轴目标位置超出软限位！\r\n"
+929:                     + $"目标位置:{point.Z},正限位:{this.BondHead.AxisZ.GetSoftLimit().PLimit},负限位:{this.BondHead.AxisZ.GetSoftLimit().NLimit}");
+930:             }
+931: 
+932:             return true;
+933:         }</pre></details></article><article id=repick-call><h2>重取片调用四维安全移动后清除重取标志</h2><p>repick-call · <a href=../../trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs>trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs</a> : 85–98</p><details><summary>展开带行号的源码</summary><p>SHA-256 80d93ff799d106152f1c5e7b4a93c52a46eafcbdd586bea979ec29372558ca3b</p><pre>85:             System2RunTimeProvider.RecordTime("PickAction", $"准备运动到预取片位 X:{prePickPos.X},Y:{prePickPos.Y},Z:{prePickPos.Z}");
+86: 
+87:             ExcuteResult ret = ExcuteResult.Success;
+88: 
+89:             if (System2RunTimeProvider.IsRepickComponent)
+90:             {
+91:                 // 重取用安全的绝对运动
+92:                 this.bondModuleController.MoveSafeBondXYZT(prePickPos);
+93: 
+94:                 System2RunTimeProvider.IsRepickComponent = false;
+95:             }
+96:             else
+97:             {
+98:                 switch (MachineSoftwareConfiguration.GetInstance().AxisMoveMode)</pre></details></article><article id=calib-call><h2>标定遍历调用二维安全移动后独立移动Z</h2><p>calib-call · <a href=../../trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateTask.cs>trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateTask.cs</a> : 345–358</p><details><summary>展开带行号的源码</summary><p>SHA-256 0aece663a65610360197353ef66ab69b3867b68899e2042c411f2516c34902ba</p><pre>345:                 List&lt;AKRSPoint3D&gt; imgPoints = new List&lt;AKRSPoint3D&gt;();
+346:                 List&lt;AKRSPoint3D&gt; realPoints = new List&lt;AKRSPoint3D&gt;();
+347: 
+348:                 // Bond相机遍历点位开始定位并标定
+349:                 for (int i = 0; i &lt; this.bmcCalibPoints.Count; i++)
+350:                 {
+351:                     // 轴移动到位
+352:                     this.bondModuleController.MoveSafeBondXY(this.bmcCalibPoints[i].X, this.bmcCalibPoints[i].Y);
+353:                     this.bondHeadController.MoveAxisZ(this.calibratePara.BMCVisionMachinePos.Z);
+354: 
+355:                     Thread.Sleep(1000);
+356: 
+357:                     // 获取Pr实体
+358:                     PREntity pREntity = (PREntity)VisionEntityRepository.GetInstance().Find(this.calibratePara.BmcPRName);</pre></details></article><script>document.querySelector("#source-filter").addEventListener("input",e=>{const q=e.target.value.toLowerCase();for(const a of document.querySelectorAll("article"))a.hidden=!a.textContent.toLowerCase().includes(q)});</script></html>

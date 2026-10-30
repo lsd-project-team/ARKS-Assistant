@@ -1,0 +1,614 @@
+{
+  "scope": "trunk/AKRS.ZX2200",
+  "review_type": "关键方法语义、分支与后续使用核查；语法扫描与已读业务范围分别记录",
+  "reviewed_ranges": {
+    "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs": [
+      {
+        "start": 335,
+        "end": 357,
+        "claim": "CO01",
+        "token": "NextDie"
+      },
+      {
+        "start": 78,
+        "end": 317,
+        "claim": "CO02",
+        "token": "AnalyseDie"
+      },
+      {
+        "start": 1394,
+        "end": 1473,
+        "claim": "CO02",
+        "token": "ToRequiredAccuracy"
+      },
+      {
+        "start": 693,
+        "end": 702,
+        "claim": "CO02",
+        "token": "MoveToCameraCenterWithThread"
+      },
+      {
+        "start": 1045,
+        "end": 1090,
+        "claim": "CO25",
+        "token": "MoveDieToPickCenter"
+      },
+      {
+        "start": 859,
+        "end": 913,
+        "claim": "CO26",
+        "token": "RefreshMap"
+      }
+    ],
+    "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs": [
+      {
+        "start": 162,
+        "end": 192,
+        "claim": "CO01",
+        "token": "NextDie"
+      },
+      {
+        "start": 64,
+        "end": 386,
+        "claim": "CO26",
+        "token": "Dowork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs": [
+      {
+        "start": 35,
+        "end": 163,
+        "claim": "CO03",
+        "token": "SearchSingle"
+      }
+    ],
+    "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs": [
+      {
+        "start": 294,
+        "end": 386,
+        "claim": "CO03",
+        "token": "AnalyseDies"
+      },
+      {
+        "start": 39,
+        "end": 288,
+        "claim": "CO25",
+        "token": "SearchNine"
+      },
+      {
+        "start": 294,
+        "end": 386,
+        "claim": "CO25",
+        "token": "AnalyseDies"
+      },
+      {
+        "start": 391,
+        "end": 496,
+        "claim": "CO25",
+        "token": "CalculateDiesPosition"
+      }
+    ],
+    "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs": [
+      {
+        "start": 46,
+        "end": 197,
+        "claim": "CO03",
+        "token": "SearchMapping"
+      },
+      {
+        "start": 46,
+        "end": 197,
+        "claim": "CO25",
+        "token": "SearchMapping"
+      },
+      {
+        "start": 453,
+        "end": 491,
+        "claim": "CO26",
+        "token": "GetNextPositionInfoAndForwardTo"
+      },
+      {
+        "start": 510,
+        "end": 521,
+        "claim": "CO26",
+        "token": "RemeberPickedDieInfo"
+      },
+      {
+        "start": 526,
+        "end": 546,
+        "claim": "CO26",
+        "token": "RefreshPickedDieStatus"
+      }
+    ],
+    "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs": [
+      {
+        "start": 48,
+        "end": 145,
+        "claim": "CO03",
+        "token": "SearchDieBox"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Assistant.cs": [
+      {
+        "start": 1457,
+        "end": 1655,
+        "claim": "CO04",
+        "token": "CalculatePickPos"
+      },
+      {
+        "start": 659,
+        "end": 942,
+        "claim": "CO23",
+        "token": "PlacementTest"
+      },
+      {
+        "start": 950,
+        "end": 1235,
+        "claim": "CO23",
+        "token": "UplookVisionAction"
+      },
+      {
+        "start": 950,
+        "end": 1235,
+        "claim": "CO27",
+        "token": "UplookVisionAction"
+      },
+      {
+        "start": 1244,
+        "end": 1373,
+        "claim": "CO27",
+        "token": "UpLookVisionAsissitant"
+      },
+      {
+        "start": 659,
+        "end": 942,
+        "claim": "CO28",
+        "token": "PlacementTest"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs": [
+      {
+        "start": 156,
+        "end": 515,
+        "claim": "CO05",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs": [
+      {
+        "start": 180,
+        "end": 311,
+        "claim": "CO05",
+        "token": "StaticWaffleVision"
+      }
+    ],
+    "trunk/AKRS.ZX2200/SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs": [
+      {
+        "start": 261,
+        "end": 275,
+        "claim": "CO06",
+        "token": "GetPickCompensation"
+      },
+      {
+        "start": 240,
+        "end": 255,
+        "claim": "CO06",
+        "token": "GetTemperatureCompensation"
+      },
+      {
+        "start": 64,
+        "end": 146,
+        "claim": "CO30",
+        "token": "TemperatureCompensation"
+      },
+      {
+        "start": 153,
+        "end": 234,
+        "claim": "CO30",
+        "token": "PickUpCompensationVision"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs": [
+      {
+        "start": 897,
+        "end": 922,
+        "claim": "CO06",
+        "token": "System2TemperatureCompensation"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs": [
+      {
+        "start": 96,
+        "end": 197,
+        "claim": "CO07",
+        "token": "System1MatterVision"
+      },
+      {
+        "start": 96,
+        "end": 197,
+        "claim": "CO13",
+        "token": "System1MatterVision"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs": [
+      {
+        "start": 279,
+        "end": 435,
+        "claim": "CO07",
+        "token": "System2MatterVision"
+      },
+      {
+        "start": 279,
+        "end": 435,
+        "claim": "CO13",
+        "token": "System2MatterVision"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs": [
+      {
+        "start": 85,
+        "end": 85,
+        "claim": "CO08",
+        "token": "S1CarrierVisionActionNode"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BondActionNodeRepository.cs": [
+      {
+        "start": 112,
+        "end": 112,
+        "claim": "CO08",
+        "token": "S2CarrierVisionActionNode"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs": [
+      {
+        "start": 44,
+        "end": 90,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 98,
+        "end": 125,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs": [
+      {
+        "start": 34,
+        "end": 78,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 86,
+        "end": 122,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs": [
+      {
+        "start": 36,
+        "end": 81,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 87,
+        "end": 121,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs": [
+      {
+        "start": 48,
+        "end": 91,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 97,
+        "end": 133,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      },
+      {
+        "start": 48,
+        "end": 91,
+        "claim": "CO10",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs": [
+      {
+        "start": 36,
+        "end": 86,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 92,
+        "end": 124,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs": [
+      {
+        "start": 55,
+        "end": 97,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 103,
+        "end": 140,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs": [
+      {
+        "start": 55,
+        "end": 99,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 105,
+        "end": 136,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs": [
+      {
+        "start": 58,
+        "end": 98,
+        "claim": "CO09",
+        "token": "DoWork"
+      },
+      {
+        "start": 104,
+        "end": 129,
+        "claim": "CO09",
+        "token": "IsDoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs": [
+      {
+        "start": 1440,
+        "end": 1493,
+        "claim": "CO10",
+        "token": "SortRelativeBond"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs": [
+      {
+        "start": 528,
+        "end": 546,
+        "claim": "CO11",
+        "token": "UpdateEntity"
+      },
+      {
+        "start": 595,
+        "end": 625,
+        "claim": "CO11",
+        "token": "GetCentre"
+      },
+      {
+        "start": 528,
+        "end": 546,
+        "claim": "CO12",
+        "token": "UpdateEntity"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Infrastructure/Utils/MathHelper.cs": [
+      {
+        "start": 516,
+        "end": 546,
+        "claim": "CO11",
+        "token": "GetCentre"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcmainSystem.Action.cs": [
+      {
+        "start": 31,
+        "end": 51,
+        "claim": "CO13",
+        "token": "InitAction"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs": [
+      {
+        "start": 131,
+        "end": 514,
+        "claim": "CO14",
+        "token": "DoWork"
+      },
+      {
+        "start": 131,
+        "end": 514,
+        "claim": "CO29",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs": [
+      {
+        "start": 136,
+        "end": 514,
+        "claim": "CO15",
+        "token": "DoWork"
+      },
+      {
+        "start": 136,
+        "end": 514,
+        "claim": "CO16",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs": [
+      {
+        "start": 33,
+        "end": 47,
+        "claim": "CO15",
+        "token": "PrepareBeforeAction"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs": [
+      {
+        "start": 51,
+        "end": 107,
+        "claim": "CO17",
+        "token": "MoveToIPT"
+      },
+      {
+        "start": 423,
+        "end": 445,
+        "claim": "CO17",
+        "token": "MoveToIPTVisionPos"
+      },
+      {
+        "start": 543,
+        "end": 565,
+        "claim": "CO17",
+        "token": "MoveToIPTPickPos"
+      },
+      {
+        "start": 877,
+        "end": 958,
+        "claim": "CO17",
+        "token": "SubstrateCameraCorrectionActionDryRun"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs": [
+      {
+        "start": 498,
+        "end": 630,
+        "claim": "CO18",
+        "token": "CalculateBondPos"
+      },
+      {
+        "start": 498,
+        "end": 630,
+        "claim": "CO28",
+        "token": "CalculateBondPos"
+      },
+      {
+        "start": 498,
+        "end": 630,
+        "claim": "CO29",
+        "token": "CalculateBondPos"
+      }
+    ],
+    "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs": [
+      {
+        "start": 149,
+        "end": 201,
+        "claim": "CO19",
+        "token": "GetCompensatePoint3D"
+      },
+      {
+        "start": 208,
+        "end": 266,
+        "claim": "CO19",
+        "token": "GetCompensatePosByPoint"
+      },
+      {
+        "start": 271,
+        "end": 312,
+        "claim": "CO30",
+        "token": "ScanReferencePoints"
+      },
+      {
+        "start": 317,
+        "end": 338,
+        "claim": "CO30",
+        "token": "FirstScanReferencePoints"
+      }
+    ],
+    "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs": [
+      {
+        "start": 57,
+        "end": 84,
+        "claim": "CO20",
+        "token": "GetPostCompensation"
+      },
+      {
+        "start": 187,
+        "end": 228,
+        "claim": "CO20",
+        "token": "GetPostBondCompensation"
+      },
+      {
+        "start": 90,
+        "end": 180,
+        "claim": "CO21",
+        "token": "NormalizationOffset"
+      },
+      {
+        "start": 235,
+        "end": 252,
+        "claim": "CO21",
+        "token": "GetBpSeparateOffset"
+      },
+      {
+        "start": 90,
+        "end": 180,
+        "claim": "CO30",
+        "token": "NormalizationOffset"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs": [
+      {
+        "start": 337,
+        "end": 367,
+        "claim": "CO21",
+        "token": "NormalizationOffset"
+      }
+    ],
+    "trunk/AKRS.ZX2200/SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs": [
+      {
+        "start": 66,
+        "end": 146,
+        "claim": "CO22",
+        "token": "GetBondCompensate"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmComponentPlacement.cs": [
+      {
+        "start": 433,
+        "end": 501,
+        "claim": "CO23",
+        "token": "PlacementTest"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs": [
+      {
+        "start": 666,
+        "end": 696,
+        "claim": "CO24",
+        "token": "System2MatterVision"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs": [
+      {
+        "start": 1079,
+        "end": 1112,
+        "claim": "CO24",
+        "token": "VisionBaseMatter"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs": [
+      {
+        "start": 137,
+        "end": 167,
+        "claim": "CO24",
+        "token": "System2MatterVision"
+      }
+    ]
+  }
+}

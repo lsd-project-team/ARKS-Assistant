@@ -1,0 +1,27 @@
+{
+  "schema": "archify-vision-defect-retry-current-v1",
+  "status": "current-vision-defect-retry-verified",
+  "recordedAt": "2026-10-08T04:32:15.239Z",
+  "verification": {
+    "command": "node scripts/test-vision-defect-retry.cjs",
+    "checks": 7,
+    "sourceFile": "trunk/AKRS.ZX2200/BondSystem/Controllers/System2Controller.Vision.cs",
+    "sourceSha256": "5bee4e2af7b8d52eb09607caa18a614d68f3801ae56795f93d3355153132dbd0",
+    "testArtifactSha256": "7b90ff56f64d023a216ce783ffe7898cee32b23ea7f376963ab24aa137d18a15",
+    "passedCases": [
+      "PASS first nonnull result stops retries",
+      "PASS null retries with delay then returns next result",
+      "PASS limit is total attempt count",
+      "PASS zero limit makes no recognition call",
+      "PASS negative limit makes no recognition call",
+      "PASS empty nonnull list stops retries",
+      "PASS recognition exception propagates without retry",
+      "TOTAL 7"
+    ]
+  },
+  "boundaries": [
+    "The source retry loop was extracted unchanged except diagnostic logging statements and run with controlled recognition, hardware accessor, context and delay substitutes.",
+    "The seven checks cover first-result stop, null retry, attempt limits, zero/negative limits, empty result stop and exception propagation; camera, lighting, motion, algorithm, PREntity, production Task and device I/O remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

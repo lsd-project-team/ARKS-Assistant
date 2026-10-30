@@ -1,0 +1,690 @@
+{
+  "scope": "trunk/AKRS.ZX2200",
+  "review_type": "旧语义核查保留且验当前哈希；新增范围实际核读；扫描不等于全文件阅读",
+  "reviewed_ranges": {
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/TransportUnit.cs": [
+      {
+        "start": 107,
+        "end": 125,
+        "claim": "TU01",
+        "token": "Init"
+      },
+      {
+        "start": 65,
+        "end": 67,
+        "claim": "TU01",
+        "token": "TransportUnit"
+      },
+      {
+        "start": 285,
+        "end": 343,
+        "claim": "TU02",
+        "token": "InitSubstrateCoordinateSystem"
+      },
+      {
+        "start": 135,
+        "end": 143,
+        "claim": "TU03",
+        "token": "Refresh"
+      },
+      {
+        "start": 135,
+        "end": 143,
+        "claim": "TU05",
+        "token": "Refresh"
+      },
+      {
+        "start": 373,
+        "end": 380,
+        "claim": "TU09",
+        "token": "System1MoveDistance"
+      },
+      {
+        "start": 385,
+        "end": 392,
+        "claim": "TU09",
+        "token": "System1BackMoveDistance"
+      },
+      {
+        "start": 135,
+        "end": 143,
+        "claim": "TU09",
+        "token": "Refresh"
+      },
+      {
+        "start": 217,
+        "end": 237,
+        "claim": "TU16",
+        "token": "GetAllBondPositions"
+      },
+      {
+        "start": 195,
+        "end": 210,
+        "claim": "TU16",
+        "token": "GetBondPosition"
+      },
+      {
+        "start": 526,
+        "end": 550,
+        "claim": "TU32",
+        "review_round": "7.2"
+      },
+      {
+        "start": 73,
+        "end": 101,
+        "claim": "TU33",
+        "review_round": "7.2"
+      },
+      {
+        "start": 649,
+        "end": 680,
+        "claim": "TU34",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OppositeSex.cs": [
+      {
+        "start": 121,
+        "end": 151,
+        "claim": "TU02",
+        "token": "Config"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BaseMatter.cs": [
+      {
+        "start": 111,
+        "end": 140,
+        "claim": "TU03",
+        "token": "GetConfigByType"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/Substrate.cs": [
+      {
+        "start": 182,
+        "end": 209,
+        "claim": "TU04",
+        "token": "Refresh"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/Module.cs": [
+      {
+        "start": 148,
+        "end": 174,
+        "claim": "TU04",
+        "token": "Refresh"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs": [
+      {
+        "start": 930,
+        "end": 974,
+        "claim": "TU04",
+        "token": "InitCurrentMessage"
+      },
+      {
+        "start": 911,
+        "end": 925,
+        "claim": "TU17",
+        "token": "Finish"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs": [
+      {
+        "start": 88,
+        "end": 104,
+        "claim": "TU05",
+        "token": "Refresh"
+      },
+      {
+        "start": 40,
+        "end": 56,
+        "claim": "TU07",
+        "token": "BondPosition"
+      },
+      {
+        "start": 88,
+        "end": 104,
+        "claim": "TU07",
+        "token": "Refresh"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Information/BondPositionInfo.cs": [
+      {
+        "start": 118,
+        "end": 139,
+        "claim": "TU06",
+        "token": "IsFinishedInSystem1"
+      },
+      {
+        "start": 145,
+        "end": 161,
+        "claim": "TU06",
+        "token": "IsFinishedInSystem2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs": [
+      {
+        "start": 131,
+        "end": 514,
+        "claim": "TU07",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs": [
+      {
+        "start": 872,
+        "end": 880,
+        "claim": "TU08",
+        "token": "CreateMatterCoordinate"
+      },
+      {
+        "start": 1800,
+        "end": 1810,
+        "claim": "TU20",
+        "token": "ReadTransportMapping"
+      },
+      {
+        "start": 1953,
+        "end": 2079,
+        "claim": "TU20",
+        "token": "ReadTransportMappingByComponent"
+      },
+      {
+        "start": 1327,
+        "end": 1355,
+        "claim": "TU23",
+        "token": "GetFirstMatrixIndex"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs": [
+      {
+        "start": 63,
+        "end": 183,
+        "claim": "TU10",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs": [
+      {
+        "start": 46,
+        "end": 171,
+        "claim": "TU10",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Controllers/TransportController.cs": [
+      {
+        "start": 1266,
+        "end": 1524,
+        "claim": "TU11",
+        "token": "TransferDispenseToBond"
+      },
+      {
+        "start": 1186,
+        "end": 1259,
+        "claim": "TU23",
+        "token": "TransferDispense1ToDispense2"
+      },
+      {
+        "start": 873,
+        "end": 1179,
+        "claim": "TU24",
+        "token": "TransferLoadBinToDispense"
+      },
+      {
+        "start": 1531,
+        "end": 1810,
+        "claim": "TU24",
+        "token": "TransferBondToWaitingUnload"
+      },
+      {
+        "start": 1816,
+        "end": 2056,
+        "claim": "TU24",
+        "token": "TransferWaitingUnloadToUnloadBelt"
+      },
+      {
+        "start": 2063,
+        "end": 2285,
+        "claim": "TU24",
+        "token": "TransferWaitingUnloadToUnloadBin"
+      },
+      {
+        "start": 159,
+        "end": 328,
+        "claim": "TU25",
+        "review_round": "7.2"
+      },
+      {
+        "start": 140,
+        "end": 224,
+        "claim": "TU27",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs": [
+      {
+        "start": 100,
+        "end": 355,
+        "claim": "TU12",
+        "token": "DoWork"
+      },
+      {
+        "start": 443,
+        "end": 489,
+        "claim": "TU12",
+        "token": "SendAway"
+      },
+      {
+        "start": 181,
+        "end": 209,
+        "claim": "TU33",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Controllers/BondSubSectionController.cs": [
+      {
+        "start": 429,
+        "end": 605,
+        "claim": "TU13",
+        "token": "MapBelt"
+      },
+      {
+        "start": 429,
+        "end": 605,
+        "claim": "TU22",
+        "token": "MapBelt"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Controllers/DispenseSubSectionController.cs": [
+      {
+        "start": 437,
+        "end": 523,
+        "claim": "TU13",
+        "token": "MapBelt"
+      },
+      {
+        "start": 437,
+        "end": 523,
+        "claim": "TU22",
+        "token": "MapBelt"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Controllers/WaitingUnloadSubSectionController.cs": [
+      {
+        "start": 71,
+        "end": 107,
+        "claim": "TU14",
+        "token": "MapBelt"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Controllers/UnloadingSubSectionController.cs": [
+      {
+        "start": 71,
+        "end": 107,
+        "claim": "TU14",
+        "token": "MapBelt"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Models/Programs/BaseSubSectionProgram.cs": [
+      {
+        "start": 62,
+        "end": 65,
+        "claim": "TU15",
+        "token": "UpdateTransportUnit"
+      },
+      {
+        "start": 41,
+        "end": 71,
+        "claim": "TU19",
+        "token": "JsonIgnore"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Tasks/TransportTask.cs": [
+      {
+        "start": 775,
+        "end": 891,
+        "claim": "TU15",
+        "token": "StartDryRun"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs": [
+      {
+        "start": 859,
+        "end": 882,
+        "claim": "TU17",
+        "token": "InjectSteps"
+      },
+      {
+        "start": 168,
+        "end": 184,
+        "claim": "TU23",
+        "token": "Init"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs": [
+      {
+        "start": 620,
+        "end": 630,
+        "claim": "TU18",
+        "token": "TsmEnable_Click"
+      },
+      {
+        "start": 390,
+        "end": 393,
+        "claim": "TU40",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/UcTransportShow.cs": [
+      {
+        "start": 953,
+        "end": 983,
+        "claim": "TU18",
+        "token": "SetMatterEnable"
+      },
+      {
+        "start": 44,
+        "end": 79,
+        "claim": "TU26",
+        "review_round": "7.2"
+      },
+      {
+        "start": 901,
+        "end": 1005,
+        "claim": "TU26",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs": [
+      {
+        "start": 1027,
+        "end": 1057,
+        "claim": "TU18",
+        "token": "UseNewMappingUi"
+      },
+      {
+        "start": 1025,
+        "end": 1050,
+        "claim": "TU27",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Model/TransportUnitStorage.cs": [
+      {
+        "start": 35,
+        "end": 44,
+        "claim": "TU19",
+        "token": "Save"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/FrmTransportUnitMapping.cs": [
+      {
+        "start": 107,
+        "end": 137,
+        "claim": "TU20",
+        "token": "ReadTransportMapping"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs": [
+      {
+        "start": 40,
+        "end": 74,
+        "claim": "TU21",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/IdentityActionNode/S2SubstrateIdentityActionNode.cs": [
+      {
+        "start": 40,
+        "end": 74,
+        "claim": "TU21",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/OtherAction/InteractiveAction.cs": [
+      {
+        "start": 29,
+        "end": 76,
+        "claim": "TU23",
+        "token": "DoWork"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Controls/UcShortcutMenu.cs": [
+      {
+        "start": 228,
+        "end": 263,
+        "claim": "TU25",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportSystem/Controls/Manual/UcTransportSystemManual.cs": [
+      {
+        "start": 57,
+        "end": 71,
+        "claim": "TU25",
+        "review_round": "7.2"
+      },
+      {
+        "start": 138,
+        "end": 154,
+        "claim": "TU25",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs": [
+      {
+        "start": 18,
+        "end": 187,
+        "claim": "TU26",
+        "review_round": "7.2"
+      },
+      {
+        "start": 180,
+        "end": 187,
+        "claim": "TU40",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OtherConfig.cs": [
+      {
+        "start": 95,
+        "end": 149,
+        "claim": "TU26",
+        "review_round": "7.2"
+      },
+      {
+        "start": 95,
+        "end": 150,
+        "claim": "TU40",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.cs": [
+      {
+        "start": 711,
+        "end": 734,
+        "claim": "TU28",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/FrmTransportUnitEdit.cs": [
+      {
+        "start": 55,
+        "end": 87,
+        "claim": "TU28",
+        "review_round": "7.2"
+      },
+      {
+        "start": 114,
+        "end": 212,
+        "claim": "TU28",
+        "review_round": "7.2"
+      },
+      {
+        "start": 286,
+        "end": 293,
+        "claim": "TU28",
+        "review_round": "7.2"
+      },
+      {
+        "start": 179,
+        "end": 212,
+        "claim": "TU29",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.cs": [
+      {
+        "start": 63,
+        "end": 96,
+        "claim": "TU29",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/UcTransportUnitView.cs": [
+      {
+        "start": 339,
+        "end": 371,
+        "claim": "TU29",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OppositeSexConfiguration.cs": [
+      {
+        "start": 236,
+        "end": 279,
+        "claim": "TU30",
+        "review_round": "7.2"
+      },
+      {
+        "start": 64,
+        "end": 108,
+        "claim": "TU30",
+        "review_round": "7.2"
+      },
+      {
+        "start": 215,
+        "end": 229,
+        "claim": "TU38",
+        "review_round": "7.2"
+      },
+      {
+        "start": 300,
+        "end": 312,
+        "claim": "TU39",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs": [
+      {
+        "start": 82,
+        "end": 133,
+        "claim": "TU30",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs": [
+      {
+        "start": 392,
+        "end": 455,
+        "claim": "TU31",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmMoveToBondingPosition.cs": [
+      {
+        "start": 97,
+        "end": 114,
+        "claim": "TU32",
+        "review_round": "7.2"
+      },
+      {
+        "start": 180,
+        "end": 229,
+        "claim": "TU35",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs": [
+      {
+        "start": 640,
+        "end": 646,
+        "claim": "TU32",
+        "review_round": "7.2"
+      },
+      {
+        "start": 805,
+        "end": 813,
+        "claim": "TU32",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs": [
+      {
+        "start": 335,
+        "end": 369,
+        "claim": "TU34",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/BondSystem/Services/System2TUService.cs": [
+      {
+        "start": 21,
+        "end": 159,
+        "claim": "TU35",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Assistant/FrmAdjustDegree.cs": [
+      {
+        "start": 91,
+        "end": 173,
+        "claim": "TU36",
+        "review_round": "7.2"
+      },
+      {
+        "start": 239,
+        "end": 242,
+        "claim": "TU36",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs": [
+      {
+        "start": 63,
+        "end": 153,
+        "claim": "TU37",
+        "review_round": "7.2"
+      },
+      {
+        "start": 159,
+        "end": 274,
+        "claim": "TU37",
+        "review_round": "7.2"
+      },
+      {
+        "start": 687,
+        "end": 728,
+        "claim": "TU37",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs": [
+      {
+        "start": 208,
+        "end": 225,
+        "claim": "TU38",
+        "review_round": "7.2"
+      }
+    ],
+    "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Mapping/MappingDraw.cs": [
+      {
+        "start": 314,
+        "end": 352,
+        "claim": "TU40",
+        "review_round": "7.2"
+      }
+    ]
+  }
+}

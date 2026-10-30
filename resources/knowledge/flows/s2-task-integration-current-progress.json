@@ -1,0 +1,26 @@
+{
+  "schema": "archify-s2-task-integration-current-v1",
+  "status": "current-original-fixture-passed",
+  "recordedAt": "2026-10-07T01:43:01.579Z",
+  "rerun": {
+    "command": "node scripts/test-s2-task-integration.cjs",
+    "status": "passed",
+    "checks": 59,
+    "extractedMethods": 13,
+    "testArtifact": "docs/archify/s2-task-integration-test.json",
+    "testArtifactSha256": "afde260ebb72233ab85557c69ef9cf974d0904a9e8fcf944e8319aa4abeab854"
+  },
+  "audit": {
+    "command": "node scripts/build-s2-task-integration-audit.cjs --check",
+    "status": "passed",
+    "checks": 59,
+    "extractedMethods": 13,
+    "auditArtifact": "docs/archify/s2-task-integration-audit.json"
+  },
+  "scope": "Thirteen original S2 task/node/safety/domain and Machine Stop/state methods plus complete Signal/enum source. Real event handles; task is synchronous. Action service, UI, interpolation, compensation, hardware, storage remain fixtures. Release fixture stops outer loop only after recording release.",
+  "boundaries": [
+    "This current rerun revalidates the existing isolated S2 task fixture against the current source tree; it does not expand its fixtures into production action services, UI, interpolation, compensation, hardware, storage, or Task.Factory scheduling.",
+    "The 59 checks are bounded behavior checks, not exhaustive task-path coverage or production success.",
+    "No production source, project file, SQL, VM, device path, or deployment was modified or invoked."
+  ]
+}

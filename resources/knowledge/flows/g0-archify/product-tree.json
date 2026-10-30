@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "diagram_type": "tree",
+  "meta": {
+    "title": "产品坐标的逐层父链",
+    "locale": "zh-CN",
+    "output": "resources/knowledge/flows/g0-archify/product-tree.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "abadbc51c573732843b579e6c058bc28992298da"
+    }
+  },
+  "layout": {
+    "direction": "down",
+    "nodeW": 180,
+    "nodeMaxW": 220,
+    "gapY": 36
+  },
+  "nodes": [
+    {
+      "id": "product-0",
+      "label": "G0",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "product-1",
+      "label": "输送坐标",
+      "parent": "product-0",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 18,
+          "end_line": 30,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "product-2",
+      "label": "载具坐标",
+      "parent": "product-1",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 48,
+          "end_line": 57,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "product-3",
+      "label": "基板坐标",
+      "parent": "product-2",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 48,
+          "end_line": 57,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "product-4",
+      "label": "模块坐标",
+      "parent": "product-3",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 48,
+          "end_line": 57,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "product-5",
+      "label": "焊点坐标",
+      "parent": "product-4",
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 48,
+          "end_line": 57,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "计算方向",
+      "items": [
+        "父级关系从上向下展开；局部点转换到 G0 时从焊点逐层向上计算。"
+      ]
+    }
+  ]
+}

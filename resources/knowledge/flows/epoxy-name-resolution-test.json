@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "scope": "Unmodified EpoxyApplicationProgram.Find with a controlled repository substitute. Proves list mutation, skip behavior and reference reuse; not actual repository loading, UI refresh execution or disk persistence.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/EpoxyApplicationProgram.cs",
+      "start": 30,
+      "end": 53,
+      "sha256": "6dc47477aef1291bbd6e8072addf2362d4564bd695a34b988caaf31d996b9826",
+      "snippetSha256": "01731f18efb7a9eebd74f6066c75078e087ee537e08a1bb1d3df1567676f761d"
+    }
+  ],
+  "fixture": {
+    "file": "scripts/epoxy-name-resolution-fixture.cs.txt",
+    "sha256": "cc2001443c6be872b74b351d17c58547d6c8e7d036507b93e0988fa33d0709bf"
+  },
+  "checks": [
+    "PASS valid names retain order and repository object identity",
+    "PASS removing missing first name skips next valid name in this result",
+    "PASS next read can return previously skipped valid object",
+    "PASS consecutive missing names leave skipped missing entry",
+    "PASS duplicate names return repeated same object reference",
+    "PASS null names returns empty list",
+    "PASS later repository failure escapes after earlier name removal",
+    "TOTAL 7"
+  ]
+}

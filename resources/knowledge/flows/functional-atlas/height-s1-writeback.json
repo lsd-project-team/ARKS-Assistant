@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "S1 多点有效返回的高度回写路径",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/functional-atlas/height-s1-writeback.html",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "708ac411eb635da6b30c42d3fe32ec6d584a057f",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "points",
+      "type": "backend",
+      "label": "测高开关与点列",
+      "sublabel": "无点或关闭直接返回",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "target",
+      "type": "backend",
+      "label": "逐点转换与移位",
+      "sublabel": "物料局部 → G0",
+      "pos": [
+        220,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "measure",
+      "type": "backend",
+      "label": "调用 S1 共用测高",
+      "sublabel": "HeightSensor 分支",
+      "pos": [
+        220,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "append",
+      "type": "backend",
+      "label": "先将结果加入列表",
+      "sublabel": "G0 高度 → 物料局部 Z",
+      "pos": [
+        20,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "backend",
+      "label": "检查返回与偏差",
+      "sublabel": "失败项在列表中保留",
+      "pos": [
+        20,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "average",
+      "type": "backend",
+      "label": "全点通过后求差",
+      "sublabel": "实测均值 − 配置均值",
+      "pos": [
+        220,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "type": "backend",
+      "label": "写结果并判 NaN",
+      "sublabel": "MeasureHeightResult",
+      "pos": [
+        220,
+        472
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "complete",
+      "type": "backend",
+      "label": "累加 Z 并置完成",
+      "sublabel": "未检出 NaN 时",
+      "pos": [
+        20,
+        472
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 23,
+          "end_line": 23
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "points-target",
+      "from": "points",
+      "to": "target"
+    },
+    {
+      "id": "target-measure",
+      "from": "target",
+      "to": "measure"
+    },
+    {
+      "id": "measure-append",
+      "from": "measure",
+      "to": "append"
+    },
+    {
+      "id": "append-check",
+      "from": "append",
+      "to": "check"
+    },
+    {
+      "id": "check-average",
+      "from": "check",
+      "to": "average"
+    },
+    {
+      "id": "average-result",
+      "from": "average",
+      "to": "result"
+    },
+    {
+      "id": "result-complete",
+      "from": "result",
+      "to": "complete"
+    }
+  ]
+}

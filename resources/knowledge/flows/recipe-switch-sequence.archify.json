@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "ZX2200 · 配方切换调用时序",
+    "subtitle": "加载入口 → 重载；替身检查通过，不代表真实设备验收",
+    "locale": "zh-CN",
+    "viewBox": [
+      1080,
+      610
+    ],
+    "column_fit": "spread",
+    "animation": "none",
+    "quality_profile": "showcase",
+    "legend": {
+      "entries": {
+        "dashed": {
+          "label": "条件 / 异常路径"
+        },
+        "return": {
+          "label": "返回 / 恢复"
+        },
+        "default": {
+          "label": "同步调用"
+        },
+        "emphasis": {
+          "label": "主要调用"
+        }
+      }
+    }
+  },
+  "participants": [
+    {
+      "id": "entry",
+      "type": "frontend",
+      "label": "加载入口",
+      "sublabel": "BarBtLoad_ItemClick"
+    },
+    {
+      "id": "config",
+      "type": "backend",
+      "label": "机器配置",
+      "sublabel": "RecipeID / Save"
+    },
+    {
+      "id": "reload",
+      "type": "backend",
+      "label": "配方重载",
+      "sublabel": "ReLoadRecipe"
+    },
+    {
+      "id": "program",
+      "type": "backend",
+      "label": "六类程序",
+      "sublabel": "InitProgramNodes"
+    },
+    {
+      "id": "vision",
+      "type": "backend",
+      "label": "视觉与 PR",
+      "sublabel": "VmSolution / Alg"
+    },
+    {
+      "id": "background",
+      "type": "backend",
+      "label": "后台刷新",
+      "sublabel": "ActivateSingleTaskExecute"
+    }
+  ],
+  "messages": [
+    {
+      "id": "save",
+      "from": "entry",
+      "to": "config",
+      "y": 170,
+      "label": "OK 且非空：赋 ID → 保存",
+      "variant": "emphasis"
+    },
+    {
+      "id": "same",
+      "from": "config",
+      "to": "entry",
+      "y": 200,
+      "label": "同 ID：保存后跳过重载",
+      "variant": "dashed"
+    },
+    {
+      "id": "invoke",
+      "from": "entry",
+      "to": "reload",
+      "y": 230,
+      "label": "旧配方为空 / ID 不同 → 重载",
+      "variant": "emphasis"
+    },
+    {
+      "id": "init",
+      "from": "reload",
+      "to": "program",
+      "y": 280,
+      "label": "未就绪 → 禁用 UI → 清 dock → 初始化"
+    },
+    {
+      "id": "reset",
+      "from": "program",
+      "to": "reload",
+      "y": 310,
+      "label": "顺序重置路径/实例；非事务",
+      "variant": "return"
+    },
+    {
+      "id": "preerror",
+      "from": "program",
+      "to": "entry",
+      "y": 340,
+      "label": "初始化异常：try 前外抛，未恢复 UI",
+      "variant": "dashed"
+    },
+    {
+      "id": "close",
+      "from": "reload",
+      "to": "vision",
+      "y": 390,
+      "label": "在线：关闭 → 创建；离线跳过视觉",
+      "variant": "emphasis"
+    },
+    {
+      "id": "pr",
+      "from": "reload",
+      "to": "vision",
+      "y": 420,
+      "label": "逐项查找 PR；存在则初始化算法"
+    },
+    {
+      "id": "missing",
+      "from": "vision",
+      "to": "reload",
+      "y": 450,
+      "label": "缺 PR 仅日志；异常则提示、重抛",
+      "variant": "dashed"
+    },
+    {
+      "id": "return",
+      "from": "reload",
+      "to": "entry",
+      "y": 490,
+      "label": "正常置就绪返回；try 内退出均恢复 UI",
+      "variant": "return"
+    },
+    {
+      "id": "finish",
+      "from": "entry",
+      "to": "background",
+      "y": 520,
+      "label": "成功尾部：Dispose → 激活后台刷新"
+    }
+  ]
+}

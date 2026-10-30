@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="90" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">先看配方里的产品</text>
+<text x="1800" y="90" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">再找实际Mark更新本层</text>
+<rect x="530" y="255" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="600" cy="300" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="560,345 600,400 640,345" stroke="#246B99" stroke-width="5" fill="none"/>
+<rect x="1730" y="255" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="1800" cy="300" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="1760,345 1800,400 1840,345" stroke="#246B99" stroke-width="5" fill="none"/>
+<rect x="130" y="520" width="940" height="330" rx="14" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="165.0" y="555.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="248.0" cy="614.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="248.0" y="656.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="358.66666666666663" cy="614.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="358.66666666666663" y="656.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="460.0" y="555.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="543.0" cy="614.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="543.0" y="656.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="543.0" cy="614.8" r="31" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="543.0" cy="614.8" r="13" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="653.6666666666666" cy="614.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="653.6666666666666" y="656.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="755.0" y="555.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="838.0" cy="614.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="838.0" y="656.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="948.6666666666666" cy="614.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="948.6666666666666" y="656.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="165.0" y="695.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="248.0" cy="754.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="248.0" y="796.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="358.66666666666663" cy="754.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="358.66666666666663" y="796.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="460.0" y="695.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="543.0" cy="754.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="543.0" y="796.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="653.6666666666666" cy="754.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="653.6666666666666" y="796.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="755.0" y="695.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="838.0" cy="754.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="838.0" y="796.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="948.6666666666666" cy="754.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="948.6666666666666" y="796.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="1330" y="520" width="940" height="330" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<rect x="1390" y="475" width="940" height="330" rx="14" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="1425.0" y="510.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1508.0" cy="569.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1508.0" y="611.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="1618.6666666666667" cy="569.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1618.6666666666667" y="611.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="1720.0" y="510.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1803.0" cy="569.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1803.0" y="611.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="1803.0" cy="569.8" r="31" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="1803.0" cy="569.8" r="13" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1913.6666666666667" cy="569.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1913.6666666666667" y="611.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="2015.0" y="510.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2098.0" cy="569.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="2098.0" y="611.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="2208.6666666666665" cy="569.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="2208.6666666666665" y="611.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="1425.0" y="650.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1508.0" cy="709.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1508.0" y="751.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="1618.6666666666667" cy="709.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1618.6666666666667" y="751.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="1720.0" y="650.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1803.0" cy="709.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1803.0" y="751.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="1913.6666666666667" cy="709.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1913.6666666666667" y="751.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<rect x="2015.0" y="650.0" width="276.6666666666667" height="115.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2098.0" cy="709.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="2098.0" y="751.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">A</text>
+<circle cx="2208.6666666666665" cy="709.8" r="14" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="2208.6666666666665" y="751.8" font-family="Microsoft YaHei" font-size="32" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">B</text>
+<text x="600" y="980" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">下层焊点按旧位置换算</text>
+<text x="1800" y="980" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">下层焊点跟随新位置换算</text>
+<polyline points="1080,580 1310,580" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1310,580 1285.6879282364778,591.7440694210032 1285.6879282364778,568.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/></svg>

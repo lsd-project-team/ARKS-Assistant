@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="60" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">1 放到中转台</text>
+<rect x="230" y="400" width="740" height="60" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="558" y="170" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="575,265 625,265 615,300 585,300" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="518.3207988162583,276.1425728156066 705.4342718885778,309.1357265723234 681.6792011837417,443.8574271843934 494.56572811142223,410.8642734276766" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="360" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="538.7405991121936" cy="297.10692961170497" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1800" y="60" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">2 相机拍Mark</text>
+<rect x="1430" y="400" width="740" height="60" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1730" y="175" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="1800" cy="220" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="1760,265 1800,320 1840,265" stroke="#246B99" stroke-width="5" fill="none"/>
+<polygon points="1718.3207988162583,276.1425728156066 1905.434271888578,309.1357265723234 1881.6792011837417,443.8574271843934 1694.565728111422,410.8642734276766" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="360" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1738.7405991121936" cy="297.10692961170497" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="600" y="560" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">3 吸嘴对准新中心</text>
+<rect x="230" y="900" width="740" height="60" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="628" y="640" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="645,735 695,735 685,770 655,770" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="518.3207988162583,776.1425728156066 705.4342718885778,809.1357265723234 681.6792011837417,943.8574271843934 494.56572811142223,910.8642734276766" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="860" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="538.7405991121936" cy="797.106929611705" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="840,780 685,780" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="685,780 709.3120717635222,768.2559305789968 709.3120717635222,791.7440694210032" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1800" y="560" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">4 重新取起</text>
+<rect x="1430" y="900" width="740" height="60" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1758" y="630" width="84" height="95" rx="0" fill="#DCE5EB" stroke="#647481" stroke-width="5"/>
+<polygon points="1775,725 1825,725 1815,760 1785,760" fill="#C5D5DF" stroke="#647481" stroke-width="5"/>
+<polygon points="1735.5164201180987,745.796768012321 1883.2375830699298,771.8439946623606 1864.4835798819013,878.203231987679 1716.7624169300702,852.1560053376394" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="812" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1751.637315088574" cy="762.3475760092407" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="2000,850 2000,710" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="2000,710 2011.7440694210031,734.3120717635222 1988.2559305789969,734.3120717635222" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<polyline points="1200,50 1200,1010" stroke="#B7C6CF" stroke-width="3" fill="none"/></svg>

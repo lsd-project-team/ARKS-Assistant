@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-26",
+  "status": "通过",
+  "reviewer": "Codex",
+  "scope": "代理逐页校样，不替代真人试读或设备验证",
+  "render_dpi": 120,
+  "files": {
+    "TransportUnit设计文档.pdf": "2a4c72faffbe79fe6c9942a523a32169892e8d73929499ab34b54b394d42dc21",
+    "TransportUnit设计文档.docx": "cbcfb8bd9f48eacbdf5e49b107ce87f5bc4bfc4c47eaf3a2370adad529c66662",
+    "TransportUnit设计文档.md": "04ef505471d563794aa3fb38f48045b8221fca21580ba1c39b48e998a19bc411"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "pixels_sha256": "08a4239f84285e64106acb5235030b7fcdf2399f1e452ab0286461b8d2a64f8d",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 2,
+      "pixels_sha256": "28dbee17af52ad41f786e31c5a023250e9dfdf9af7c891be7cc420fbcff07155",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 3,
+      "pixels_sha256": "53d2cd271de77e2c233865969d9ebdd8fac9952a47ba01c3c68fdffa9be48ff7",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 4,
+      "pixels_sha256": "2f79e18ded2187af373092507e4782d621be2c83532b2d7f64aaa41820191c65",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 5,
+      "pixels_sha256": "6df15d0da15820b013d4b8a9fd073f319684d87aa5c34706d77f564f7a570eaf",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 6,
+      "pixels_sha256": "e2e7e0e703a7b5beb2eb19f86dd34068e887065f850182fcd37e6e38919a4ee5",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 7,
+      "pixels_sha256": "7aa54594205e7b881a470934c4579549338d74d242168d40ee12394b6d3d7c47",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 8,
+      "pixels_sha256": "88ec3c8ea779d215972cfdd7bcf8bbd6c1c9a1de68835ce97da1e301e6e876a5",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 9,
+      "pixels_sha256": "b388acfbf676743b15e9c45ab426ca1124f593de968c98d9278a3e7326538ac0",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 10,
+      "pixels_sha256": "c86f8a6d449e9658a60be36331bb8406d478be5626ecb54670ba40cf4e8e4c70",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 11,
+      "pixels_sha256": "d39836cd61c0f3d045a50c1541f83357c85bb4282be1fbb9a6154cd80238a038",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 12,
+      "pixels_sha256": "52ebd02bd167156e189e7eeb944c47e1fe256f21974450e020a59dbc7bbc7ed4",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 13,
+      "pixels_sha256": "66b646d31b4e7abc0fef65914a9056b9354f6a4ddb99b940687a61d02d2803d4",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 14,
+      "pixels_sha256": "a10d2f84baab3f393e6c18ba789b9547485b0d35779fcd6e848a982cdd521589",
+      "review": "本版页面直接查看"
+    },
+    {
+      "page": 15,
+      "pixels_sha256": "6a8e98ec48e0ed5e73458ded8b5fb327774b89a7dad903a84182b4bdbf5d2a2e",
+      "review": "本版页面直接查看"
+    }
+  ]
+}

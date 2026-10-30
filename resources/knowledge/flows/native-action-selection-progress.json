@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05T06:33:04.720Z",
+  "status": "exact-original-native-action-selection-and-source-bindings-passed",
+  "parent": {
+    "file": "docs/archify/native-algorithm-selection-test.json",
+    "sha256": "b84048c3d7d4e280034f904f337d347e05dbb89bdc0cc31a44e6805ce57b4a86",
+    "totalFrozenBindings": 9609
+  },
+  "parentFrozenBindings": 9609,
+  "newFrozenInputs": 50,
+  "totalFrozenBindings": 9659,
+  "reusedParentInputs": 260,
+  "checksPerPass": 5655,
+  "passes": 2,
+  "placements": 11310,
+  "sortSchedulesPerPass": 16,
+  "selectedMessagesPerPass": 848,
+  "repeatedSelectionsPerPass": 848,
+  "catalogRegisteredReceivers": 34,
+  "selectedReceiverTypes": 26,
+  "sourceDeclarations": 95,
+  "sourceFiles": 59,
+  "ilMethods": 161,
+  "originalRuntimeAssembliesPerPass": 16,
+  "exactTaskSelectors": 2,
+  "originalSourceRuntimeExecuted": true,
+  "selectorsRuntimeExecuted": true,
+  "currentMessageContextRuntimeExecuted": true,
+  "privateMessageDataWritten": false,
+  "missingNodeReturnsNullObserved": true,
+  "duplicateNameFirstListInstanceObserved": true,
+  "s2ContextRetainsUnmatchedPointersObserved": true,
+  "s2DirectConversionUsesExistingCurrentContextObserved": true,
+  "nodeDoWorkExecuted": false,
+  "nodeIsDoWorkExecuted": false,
+  "specialRepeatWarningBranchExecuted": false,
+  "findModelExecuted": false,
+  "vmInitializationExecuted": false,
+  "productionTaskExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "deviceExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "summary": {
+    "file": ".archify-work/native-action-selection/summary.json",
+    "sha256": "ac033e4b675375d56faac6fdbdcd0683e1daa4e25aadf8e44f7855d5c6b91ea8"
+  },
+  "sourceEvidence": {
+    "file": ".archify-work/native-action-selection/source-evidence.json",
+    "sha256": "858481c6b24e3896adb13eba6a353e16c659345213f22e5f24af11662038afeb"
+  },
+  "il": {
+    "file": ".archify-work/native-action-selection/il.json",
+    "sha256": "0da6bcaa30676b81b51a63a1153b93c7731dd7f71eb435c86403682c81ffe561"
+  },
+  "verificationResults": {
+    "file": ".archify-work/native-action-selection/verification-results.json",
+    "sha256": "2119e93a74421242b131ab3643e393112e7b0e682f9d40e66c45b3590fb2295e"
+  },
+  "scope": "Exact original production-task S1/S2 controller selector/context/public Init/Finish methods executed using real 2x2 transport tree, SDK singletons and34 registered original receiver instances.8 sort combinations each system,53 messages per schedule:848 selections plus848 repeated requests,26 selected receiver types. Reflection reads private properties only; host marks completion with public Finish without executing nodes. Public catalog/name changes are boundary fixtures. Current recipe exercises S1 dispense and S2 inspection messages; pick/bond/flux/correction/interactive and warning repeat branch remain unexecuted. Full original task/IsDoWork/DoWork, UI/SQL/VM/device/MSBuild/Fody/deployment and full29-group business acceptance remain pending.",
+  "runtime": {
+    "test": "native-action-selection-test.json",
+    "testSha256": "93cbf6d66c65ddd5dcaaf7584e87209717475dacaed97503235b502c39742b99",
+    "audit": "native-action-selection-audit.json",
+    "auditSha256": "b81b1221e342880609ae0b38c8fe66b06b663a4994a04b7a1938eb602adb3df7",
+    "report": "native-action-selection-review.md",
+    "reportSha256": "e3745b202898dc94b0b4d07d75596398b1b9dd2beb26b45e0a16fddba2064bf2"
+  },
+  "nextRequired": "Generate remaining exact S1/S2 pick/bond/dip/correction/divide messages from public real carrier repository/configuration; validate selector/context and safe original node branches before production Task waits/Retry/Pause/failure. PR changed-label VM/save-load/editor, SQL/build/UI/devices/full29-group acceptance pending. Current26 receiver types selected; no IsDoWork/DoWork or production Task executed."
+}

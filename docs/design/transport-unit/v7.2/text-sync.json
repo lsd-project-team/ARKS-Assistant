@@ -1,0 +1,15 @@
+{
+  "body_paragraphs": 152,
+  "word_missing": [],
+  "pdf_missing": [],
+  "method": "逐段正文去空白及统一兼容字符；只规范生成器明确转换的数学下标，PDF移除页眉页脚后检索整段",
+  "caption_count": 48,
+  "table_cells": 451,
+  "figure_notes": 24,
+  "missing_captions": [],
+  "missing_word_cells": [],
+  "missing_pdf_cells": [],
+  "geometric_pdf_tables": 24,
+  "missing_cells": [],
+  "missing_figure_notes": []
+}

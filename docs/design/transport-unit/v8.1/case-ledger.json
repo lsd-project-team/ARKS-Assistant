@@ -1,0 +1,120 @@
+{
+  "inputs": {
+    "product": "P1",
+    "runtime": "N1",
+    "address": "基板1／基岛2／A",
+    "chip": "C1",
+    "tu_origin": [
+      100,
+      200
+    ],
+    "substrate": [
+      20,
+      0
+    ],
+    "island": [
+      10,
+      5
+    ],
+    "point": [
+      10,
+      5
+    ],
+    "s1_offset": [
+      2,
+      -1
+    ],
+    "height_delta": 0.12,
+    "product_translation": [
+      0.2,
+      -0.1
+    ],
+    "mark_axis": [
+      200,
+      100
+    ],
+    "mark_to_center": [
+      0.5,
+      0.2
+    ],
+    "pick_nozzle": [
+      0.05,
+      -0.02
+    ],
+    "pick_comp": [
+      0.01,
+      0.03
+    ],
+    "locate_angle": 2,
+    "pick_hard_angle": 5,
+    "nozzle_align": 30,
+    "vision_angle": 0,
+    "uplook_displacement": [
+      0.12,
+      -0.08
+    ],
+    "capture_minus_reference": [
+      0.02,
+      -0.01
+    ],
+    "uplook_center": [
+      0.5,
+      0.2
+    ],
+    "pr_angle": 2,
+    "teach_angle": 1,
+    "bond_angle": 0,
+    "bond_hard_angle": 1
+  },
+  "values": {
+    "initial": [
+      140,
+      210
+    ],
+    "at_s1": [
+      142,
+      209
+    ],
+    "at_s1_height": [
+      142,
+      209,
+      0.12
+    ],
+    "refreshed": [
+      140,
+      210,
+      0
+    ],
+    "localized": [
+      140.2,
+      209.9
+    ],
+    "pick_vector": [
+      0.5066753128500481,
+      0.18242841705256868
+    ],
+    "pick_xy": [
+      199.45332468714994,
+      99.86757158294743
+    ],
+    "pick_t": 33,
+    "photo_t": 30,
+    "saved": [
+      -0.3634143288656523,
+      -0.2812433358126365
+    ],
+    "target_t": 33,
+    "remaining": 3,
+    "addition": [
+      -0.3481971432415423,
+      -0.29987753800896916
+    ],
+    "target_g0": [
+      139.85180285675844,
+      209.60012246199105
+    ]
+  },
+  "display_decimals": 3,
+  "scope": "说明数学，非设备参数或实机动作验证",
+  "assumptions": "其他XY补偿0，轴转换恒等，轴后实时量0，Z另算"
+}

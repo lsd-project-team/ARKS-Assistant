@@ -1,0 +1,252 @@
+{
+  "schema": "archify-wafer-stop-chain-current-v1",
+  "status": "current-wafer-stop-chain-verified",
+  "recordedAt": "2026-10-07T01:11:49.007Z",
+  "verification": {
+    "command": "node scripts/test-wafer-stop-chain.cjs",
+    "checks": 172,
+    "sourceFragments": [
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "kind": "method",
+        "anchor": "private void Dowork()",
+        "startOffset": 2494,
+        "endOffset": 18707,
+        "start": 64,
+        "end": 386,
+        "fileSha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+        "snippetSha256": "0b39378f767b1c37c58799e0d10a804d420f707b478b673124f2aaf49c082aa5"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "kind": "property",
+        "anchor": "private bool IsNeedChange =>",
+        "startOffset": 78337,
+        "endOffset": 78408,
+        "start": 1506,
+        "end": 1506,
+        "fileSha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+        "snippetSha256": "2b7f3b0451f13fd98469d7d348ec6d85abe88ec75650d9ee28999008d677e4ad"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "public bool NextDie()",
+        "startOffset": 14764,
+        "endOffset": 15453,
+        "start": 335,
+        "end": 357,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "50b84486d18560d2966347134fa7c87d75614f91b3e566a6ae82be6389916506"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+        "kind": "method",
+        "anchor": "private bool SearchSingle(bool isOffset = true)",
+        "startOffset": 1113,
+        "endOffset": 8038,
+        "start": 35,
+        "end": 163,
+        "fileSha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919",
+        "snippetSha256": "a3aaa2192207e78f3633a11d840dc561b94343cbef7668f85a19db2ca050f2d8"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+        "kind": "method",
+        "anchor": "private bool SearchNine()",
+        "startOffset": 1157,
+        "endOffset": 12028,
+        "start": 39,
+        "end": 288,
+        "fileSha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+        "snippetSha256": "96fb103b8a847e715d2ad54de39a193c3b0d4588b386ac7d264b00a0bfa616b6"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+        "kind": "method",
+        "anchor": "private bool AnalyseDies()",
+        "startOffset": 12151,
+        "endOffset": 15913,
+        "start": 294,
+        "end": 386,
+        "fileSha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+        "snippetSha256": "0d73cbdc486a207192874829c64660470df1c5302fadf7f758478d34a799abe4"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+        "kind": "method",
+        "anchor": "private bool SearchMapping()",
+        "startOffset": 1352,
+        "endOffset": 9431,
+        "start": 46,
+        "end": 197,
+        "fileSha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+        "snippetSha256": "40a5f4879a92fe7c91e052072c511a4fe7c235566852b9dbf5c4a383c5847a82"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+        "kind": "method",
+        "anchor": "private bool SearchDieBox()",
+        "startOffset": 1808,
+        "endOffset": 6940,
+        "start": 48,
+        "end": 145,
+        "fileSha256": "1afc14108540072e5d4a276cb71148b2481bc043d66da21224b776d224e4066b",
+        "snippetSha256": "f198fb1a3544a7e0eeeea3f992ffc7c5d7acb6aa7eb3169803e79db3b88c4218"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "private void StopSearch(bool isNeedEjectZero = true)",
+        "startOffset": 60610,
+        "endOffset": 61319,
+        "start": 1495,
+        "end": 1510,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "73099dd5b6d77bb7f10470cb1e4c2e65e144e770b2d3591856866ba9e83187b7"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "private void MoveDieToPickCenter()",
+        "startOffset": 43376,
+        "endOffset": 45361,
+        "start": 1045,
+        "end": 1090,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "4078e19d848fa99f2b0357f70ae9b5e78a35bf3f98d9dec0f50301894e29d0f3"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "public bool IsNeedChangeCarrier()",
+        "startOffset": 47656,
+        "endOffset": 48468,
+        "start": 1161,
+        "end": 1188,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "3b4f114cde72ad72a636d54b3a05ed4103e3c04c33b4145d4200745489e7f24d"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "public AKRSPoint3D GetPickOffset1()",
+        "startOffset": 46067,
+        "endOffset": 47273,
+        "start": 1116,
+        "end": 1144,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "3967e2b5fcbc3eaf6e8a4f7c3660cc6de7d6def46bd04dcbb3f2f0065c39f9c0"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+        "kind": "method",
+        "anchor": "private void SetCurrentPosition(AKRSPoint3D dieMarkCenterG0Pos)",
+        "startOffset": 21612,
+        "endOffset": 21935,
+        "start": 467,
+        "end": 472,
+        "fileSha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919",
+        "snippetSha256": "a9c2296af0f3751e432712dacc5c808fa0e0c82c0465344418ab33bfb0705435"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Controllers/WaferTableController.cs",
+        "kind": "method",
+        "anchor": "public void MoveWaferTableToG0PosWithSearch(AKRSPoint3D g0Pos, bool isCheckCollision = true)",
+        "startOffset": 58003,
+        "endOffset": 61837,
+        "start": 1426,
+        "end": 1516,
+        "fileSha256": "2cd81cb347fe3bcfe5e656d402d13cf6e536f3271cd4b6fbb9671db40f27dff5",
+        "snippetSha256": "776fb66fc601e173cb7323f86d212383b42696c9a57548e74c6e9083fc07b252"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/WaferSystemDomain.cs",
+        "kind": "method",
+        "anchor": "public void SingleStep()",
+        "startOffset": 4856,
+        "endOffset": 5257,
+        "start": 141,
+        "end": 151,
+        "fileSha256": "4c585699e813d3b23f2b12ba34ffd91bb3a89d156f449e827e17eb8b8e1a7eef",
+        "snippetSha256": "968211421520e78e61a19f436b1e481f1becc0ea33b42767cde6a9bedee356ff"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "kind": "method",
+        "anchor": "public void Stop()",
+        "startOffset": 11615,
+        "endOffset": 12734,
+        "start": 347,
+        "end": 378,
+        "fileSha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+        "snippetSha256": "37725163b59230b10247de7a667b060086ed9f74ce38cb4fcb4100d1d5384782"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+        "kind": "method",
+        "anchor": "public void SetState(MachineStateEnum machineState)",
+        "startOffset": 1521,
+        "endOffset": 2229,
+        "start": 52,
+        "end": 68,
+        "fileSha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+        "snippetSha256": "60b8f9b34d9bf48d90154467b5fdd4de33d4c9830a69ef39fa22f4d13efa059f"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.cs",
+        "kind": "method",
+        "anchor": "public void SetStopStateAlarm()",
+        "startOffset": 6653,
+        "endOffset": 7087,
+        "start": 183,
+        "end": 195,
+        "fileSha256": "7df9dc7d0c07b6ca488d424f79e5eed166a64b5b857a815e7073f0e13f118968",
+        "snippetSha256": "6788019195f9c121de86d3e3af113457034ed3b61b1c1e6456224706c0cb7d48"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+        "kind": "method",
+        "anchor": "public bool IsStop()",
+        "startOffset": 1000,
+        "endOffset": 1133,
+        "start": 34,
+        "end": 37,
+        "fileSha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+        "snippetSha256": "84fd3d1f2c6e13b12da1440e317699dcf8cf733a22728a065ace7ddcd5f678c6"
+      }
+    ],
+    "signalBindings": [
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "IsBondNeedChipSignal",
+        "line": 147,
+        "initializer": "new Signal(\"Bond需料信号\", 100, EventResetMode.ManualReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "4feeab61d06c4a3bf62e7cf42b202d6b9037f9fd0f3ef38bab8eba42b20009d1"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "IsWaferAllowPickSignal",
+        "line": 142,
+        "initializer": "new Signal(\"晶圆允许取料信号\", 100, EventResetMode.AutoReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "61743e655e7548700f79b9eab02f1d295ab5786dbe3128898b77ce42cc45ed4f"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "System2SingleStepSignal",
+        "line": 60,
+        "initializer": "new Signal(\"系统2单步运行信号\", 100, EventResetMode.AutoReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "7209b0ceab289af41493519888d51077c82caf1ecf5d435acdfdac306b4354bc"
+      }
+    ],
+    "testArtifactSha256": "a82ef3fcf460ab5d1f84e9ec7dabfb6beaba182a7d81fea04f5df47ec277e669"
+  },
+  "boundaries": [
+    "The original wafer Dowork/IsNeedChange chain, signal bindings and composed Stop helpers were extracted unchanged and run with controlled search, motion, dialog, storage and machine-state components.",
+    "The 172 checks cover consumer Stop injection, single-step cancellation, search/vision stop propagation, movement order and post-publication boundaries; original Machine.Stop integration, drivers, UI, persistence and equipment acceptance remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

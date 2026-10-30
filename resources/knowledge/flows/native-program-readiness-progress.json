@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "full-original-program-readiness-native-preparation-passed",
+  "updatedAt": "2026-10-02T01:49:29.177Z",
+  "checks": 58,
+  "originalMainCompileFiles": 1137,
+  "sourceAssembliesBound": 16,
+  "actualJsonRepositories": 3,
+  "newFrozenInputs": 44,
+  "parentFrozenBindings": 3215,
+  "totalFrozenBindings": 3259,
+  "replayIdentical": true,
+  "productionEdits": false,
+  "fixturesInOriginalAssemblies": false,
+  "pathOrSingletonSubstitutes": false,
+  "originalMainUiHardwareExecuted": false,
+  "fullMsbuildBuild": false,
+  "weaving": false,
+  "includedInFormal1328": false,
+  "includedInFreshNative98": false,
+  "includedInCoordinate124": false,
+  "includedInPriorSdk58": false,
+  "includedInWholeAction278": false,
+  "includedInCatalog119": false,
+  "wholeGoalComplete": false,
+  "parent": {
+    "file": "license-weaving-probe-test.json",
+    "sha256": "7efed2632ad3a7e74b077d073ef5657b8468610d2cb217e5f53a766d17ecda46",
+    "progress": "license-weaving-probe-progress.json",
+    "progressSha256": "81673949800bcd5ebbe8e00052680a0d9eedc926d2b5f42ba5bb22d3c9a9fc49",
+    "frozenBindings": 3215
+  },
+  "runtime": {
+    "test": "native-program-readiness-test.json",
+    "testSha256": "c3272d2ce2c811cc5e601b1338dcae34bf3b0fcc3fc878abd6eb79dd68772507",
+    "audit": "native-program-readiness-audit.json",
+    "auditSha256": "04c258fb4a98e80c2ca8a9f3157a4a9921bc0bc8b93a1161c6b322165ab0b5e1",
+    "report": "native-program-readiness-review.md",
+    "reportSha256": "078a825678c03be69fcdf5c1de1c076a9d8b3366b7b5b50a833eb7cc86ee9935"
+  }
+}

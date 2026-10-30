@@ -1,0 +1,18 @@
+{
+  "status": "full-main-pr-source-preparation-bindings-passed",
+  "originalFiles": 1222,
+  "mainCompileItems": 1137,
+  "prCompileItems": 85,
+  "nativeModelChecks": 61,
+  "fixturesInOriginalAssemblies": false,
+  "replaysIdentical": true,
+  "frozenInputs": 1465,
+  "wholeGoalComplete": false,
+  "checkedAt": "2026-10-01T23:49:11.578Z",
+  "test": "full-original-source-build-test.json",
+  "testSha256": "a70628303c9c48c9278b785e7c6b97c44c92360673d956d4b784cd1937246c74",
+  "command": "node scripts/verify-full-original-source-build.cjs",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-full-original-source-build.log",
+  "logSha256": "5fa28b338a56ea80420dac4803df9eb40017b66a31e17c34de9ff04bab67dd32"
+}

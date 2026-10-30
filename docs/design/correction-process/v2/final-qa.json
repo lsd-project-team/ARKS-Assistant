@@ -1,0 +1,252 @@
+{
+  "complete": true,
+  "date": "2026-10-21",
+  "revision": "2.1",
+  "reviewer": "代理编校与视觉核查；无独立读者试读",
+  "pdf_sha256": "343008d56d37e7d3803743e332adbe60b694e3bfdc019d274f0398360c1a4f3a",
+  "baseline_pdf_sha256": "768493444d32f220801d8e6d5b84dffe0c379df0631c589b00edf1670d7de9b1",
+  "body_comparison_rectangle_at_1500px": [
+    0,
+    98,
+    1160,
+    1405
+  ],
+  "unchanged_comparison": "Full page RGB pixels, including headers and footers, identical to previously reviewed final proof",
+  "footer_page_numbers_verified": true,
+  "pages": [
+    {
+      "page": 1,
+      "sha256": "a4ef71d2360064d989cebfcae6d3e4133a2c0fe43747ca5e8f6b82b4d837447d",
+      "method": "final PNG opened and visually reviewed",
+      "proof": "D:/agent_project/code_agent/output/design-publication-v6/correction-process/review-01.png",
+      "checks": [
+        "text and formulas legible",
+        "figures and captions together",
+        "no overlap, clipping or broken table",
+        "header/footer placement correct"
+      ]
+    },
+    {
+      "page": 2,
+      "sha256": "b99f43cec194c6d60886f8f2bddfe8ee9202bccfbb8a53da258a2ba21e3a5ca8",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-02.png",
+        "sha256": "b99f43cec194c6d60886f8f2bddfe8ee9202bccfbb8a53da258a2ba21e3a5ca8"
+      }
+    },
+    {
+      "page": 3,
+      "sha256": "6923c1e0f9646b38100fb157f702a0729a4349298242258e92dc868e8c9e9d17",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-03.png",
+        "sha256": "6923c1e0f9646b38100fb157f702a0729a4349298242258e92dc868e8c9e9d17"
+      }
+    },
+    {
+      "page": 4,
+      "sha256": "9346e03578c66f79b20e0fca31c7c3c5e65b4b19315b5eb8188abc721edcef16",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-04.png",
+        "sha256": "9346e03578c66f79b20e0fca31c7c3c5e65b4b19315b5eb8188abc721edcef16"
+      }
+    },
+    {
+      "page": 5,
+      "sha256": "3418ff6b219402c83ec7b6466f6d69584f18d138705e6a47e4108058f52bc161",
+      "method": "final PNG opened and visually reviewed",
+      "proof": "D:/agent_project/code_agent/output/design-publication-v6/correction-process/review-05.png",
+      "checks": [
+        "text and formulas legible",
+        "figures and captions together",
+        "no overlap, clipping or broken table",
+        "header/footer placement correct"
+      ]
+    },
+    {
+      "page": 6,
+      "sha256": "faa2d524e4e6682fe08df3873c3656ddb36d5a87b2840eb21c47bfb51550dd6c",
+      "method": "final PNG opened and visually reviewed",
+      "proof": "D:/agent_project/code_agent/output/design-publication-v6/correction-process/review-06.png",
+      "checks": [
+        "text and formulas legible",
+        "figures and captions together",
+        "no overlap, clipping or broken table",
+        "header/footer placement correct"
+      ]
+    },
+    {
+      "page": 7,
+      "sha256": "96e6012e0553bebca90308033c4f25d7e8af88d73311a16c4c3e16cf2a11c5c7",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-07.png",
+        "sha256": "96e6012e0553bebca90308033c4f25d7e8af88d73311a16c4c3e16cf2a11c5c7"
+      }
+    },
+    {
+      "page": 8,
+      "sha256": "52527d0cd458242dbbabe84af52ca633bbdfffec8a547911b59ef07bd323115b",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-08.png",
+        "sha256": "52527d0cd458242dbbabe84af52ca633bbdfffec8a547911b59ef07bd323115b"
+      }
+    },
+    {
+      "page": 9,
+      "sha256": "b12b0808e0df0512b4b1cb16027545d1a0297e63dd5ccd8cc7fdcf47b78af204",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-09.png",
+        "sha256": "b12b0808e0df0512b4b1cb16027545d1a0297e63dd5ccd8cc7fdcf47b78af204"
+      }
+    },
+    {
+      "page": 10,
+      "sha256": "51b0a17603fcf80f3741c81936ca65073820834842c6f44dd057fce6d1a16944",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-10.png",
+        "sha256": "51b0a17603fcf80f3741c81936ca65073820834842c6f44dd057fce6d1a16944"
+      }
+    },
+    {
+      "page": 11,
+      "sha256": "b29af94cc4e0dfdef49a7981710ae14cc3b8402c8c34fcddc5e5558e83929feb",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-11.png",
+        "sha256": "b29af94cc4e0dfdef49a7981710ae14cc3b8402c8c34fcddc5e5558e83929feb"
+      }
+    },
+    {
+      "page": 12,
+      "sha256": "1ff65257ac181c3a149b6fdcfd908c7f427ae88dddac0505b03926553fc57d4d",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-12.png",
+        "sha256": "1ff65257ac181c3a149b6fdcfd908c7f427ae88dddac0505b03926553fc57d4d"
+      }
+    },
+    {
+      "page": 13,
+      "sha256": "5707920d8ebeac0b8f3845b897d68699695adb5d50db4643a0277de39fe3f80c",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-13.png",
+        "sha256": "5707920d8ebeac0b8f3845b897d68699695adb5d50db4643a0277de39fe3f80c"
+      }
+    },
+    {
+      "page": 14,
+      "sha256": "08011e07bae0e0d9480d79d1f9d3741311d585ed89db1d611529f8c2e9f98865",
+      "method": "final PNG opened and visually reviewed",
+      "proof": "D:/agent_project/code_agent/output/design-publication-v6/correction-process/review-14.png",
+      "checks": [
+        "text and formulas legible",
+        "figures and captions together",
+        "no overlap, clipping or broken table",
+        "header/footer placement correct"
+      ]
+    },
+    {
+      "page": 15,
+      "sha256": "6278bf92c482946746314f9ace55103a2288d1c7431d06cf9abf56ddfbac9af6",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-15.png",
+        "sha256": "6278bf92c482946746314f9ace55103a2288d1c7431d06cf9abf56ddfbac9af6"
+      }
+    },
+    {
+      "page": 16,
+      "sha256": "62e7a3b31a3bd898b720b4ea4a0179d5f553972d0a52ad7b0e7c09e92424e2f1",
+      "method": "final PNG opened and visually reviewed",
+      "proof": "D:/agent_project/code_agent/output/design-publication-v6/correction-process/review-16.png",
+      "checks": [
+        "text and formulas legible",
+        "figures and captions together",
+        "no overlap, clipping or broken table",
+        "header/footer placement correct"
+      ]
+    },
+    {
+      "page": 17,
+      "sha256": "ead8692ed685291b999a3ee2b1470acdd95a79fd56e236e360dd69bfd180ad13",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-17.png",
+        "sha256": "ead8692ed685291b999a3ee2b1470acdd95a79fd56e236e360dd69bfd180ad13"
+      }
+    },
+    {
+      "page": 18,
+      "sha256": "70e56c3ffaf06776e7161e13327884755512d7eee4983f732f27cce740705862",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-18.png",
+        "sha256": "70e56c3ffaf06776e7161e13327884755512d7eee4983f732f27cce740705862"
+      }
+    },
+    {
+      "page": 19,
+      "sha256": "658ef4ff497a918b17057d386213855ee9748f36b75e69e1c18dc6d5e752470f",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-19.png",
+        "sha256": "658ef4ff497a918b17057d386213855ee9748f36b75e69e1c18dc6d5e752470f"
+      }
+    },
+    {
+      "page": 20,
+      "sha256": "8d24b5df6ef968e96bf1ebae117c65952a77a4a49dbd3ee414f12e694ca0c63b",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-20.png",
+        "sha256": "8d24b5df6ef968e96bf1ebae117c65952a77a4a49dbd3ee414f12e694ca0c63b"
+      }
+    },
+    {
+      "page": 21,
+      "sha256": "cd3f1465833eb36dc3c3f5e2e07e72590d6aaececece358dde6c697bf89e58a8",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-21.png",
+        "sha256": "cd3f1465833eb36dc3c3f5e2e07e72590d6aaececece358dde6c697bf89e58a8"
+      }
+    },
+    {
+      "page": 22,
+      "sha256": "65207fec5ceea386ff9e7df0a800314aa69959a70a3641dfc34586141efde56d",
+      "method": "final PNG opened and visually reviewed",
+      "proof": "D:/agent_project/code_agent/output/design-publication-v6/correction-process/review-22.png",
+      "checks": [
+        "text and formulas legible",
+        "figures and captions together",
+        "no overlap, clipping or broken table",
+        "header/footer placement correct"
+      ]
+    },
+    {
+      "page": 23,
+      "sha256": "e9ac432565716f96f08eb627dab8893f0c9597f722e7af829c47a93d0375126f",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-23.png",
+        "sha256": "e9ac432565716f96f08eb627dab8893f0c9597f722e7af829c47a93d0375126f"
+      }
+    },
+    {
+      "page": 24,
+      "sha256": "3c930e04cd34d23d576dc8524c6300d4bcd474d91d315acb097ccd3f4d8378f1",
+      "method": "full-page pixels identical to reviewed v2.0 final proof",
+      "equivalent_reviewed_proof": {
+        "file": "final-24.png",
+        "sha256": "3c930e04cd34d23d576dc8524c6300d4bcd474d91d315acb097ccd3f4d8378f1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "archify-s2-node-selection-current-v1",
+  "status": "current-s2-node-selection-verified",
+  "recordedAt": "2026-10-08T03:11:54.843Z",
+  "verification": {
+    "command": "node scripts/test-s2-node-selection.cjs",
+    "checks": 9,
+    "source": {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "start": 1042,
+      "end": 1075,
+      "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "11db06ac807d9a3c47841cae22fca6681716ed4aa83cefacab7db29b56dbb705"
+    },
+    "testArtifactSha256": "d5766d1268db73fd88d491e3dfab37d86b6026a9d65bf9035cf59c38cae0fd61",
+    "cases": [
+      "PASS first unfinished selected and initialized",
+      "PASS ordinary unfinished selected again without Finish",
+      "PASS Finish advances to next unfinished",
+      "PASS all finished returns null",
+      "PASS duplicate rejected for UpLookCorrectionActionNode",
+      "PASS duplicate rejected for SubstrateCameraCorrectionActionNode",
+      "PASS unregistered action returns null despite pending message",
+      "PASS null action list throws before explicit guard",
+      "PASS empty work list returns null",
+      "TOTAL 9"
+    ]
+  },
+  "boundaries": [
+    "The current S2 GetNextActionNode, FinishCurrentActionNode and ChangeNameToActionNode source slice was extracted unchanged with minimal message/action containers.",
+    "The nine checks cover unfinished selection, repeated selection, Finish advancement, special-node duplicate rejection, missing registry, null-list boundary and empty work list; actual context mutation, BondTask execution, full domain readiness and device paths remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

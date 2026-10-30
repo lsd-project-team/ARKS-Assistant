@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1160" viewBox="0 0 2400 1160"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#18364b" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">独立示例   基板1内的两行三列蛇形阵列</text>
+<text x="1200" y="150" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">输入数字相同，接口规定的地址含义决定选择哪个对象</text>
+<text x="390" y="220" fill="#18364b" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">TU 查询接口</text>
+<rect x="60" y="300" width="660" height="250" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="390.0" y="362" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">输入</text>
+<text x="390.0" y="437" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">GetModule(1, 4)</text>
+<rect x="870" y="300" width="660" height="250" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="362" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">选择规则</text>
+<text x="1200.0" y="437" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">按 Index = 4 查找</text>
+<rect x="1680" y="300" width="660" height="250" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2010.0" y="362" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">解析结果</text>
+<text x="2010.0" y="437" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">对象 Index = 4</text>
+<text x="2010.0" y="495" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex = 6</text>
+<polyline points="720,405 870,405" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="870,405 849.2897166458885,415.0042072845583 849.2897166458885,394.9957927154417" fill="#315d82"/>
+<polyline points="1530,405 1680,405" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1680,405 1659.2897166458883,415.0042072845583 1659.2897166458883,394.9957927154417" fill="#315d82"/>
+<text x="390" y="640" fill="#18364b" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">控制器当前消息</text>
+<rect x="60" y="720" width="660" height="250" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="390.0" y="782" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">输入</text>
+<text x="390.0" y="857" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">工作基板1 / 工作基岛4</text>
+<rect x="870" y="720" width="660" height="250" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="782" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">选择规则</text>
+<text x="1200.0" y="857" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">按 WorkIndex = 4 解析</text>
+<rect x="1680" y="720" width="660" height="250" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2010.0" y="782" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">解析结果</text>
+<text x="2010.0" y="857" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">对象 Index = 6</text>
+<text x="2010.0" y="915" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">WorkIndex = 4</text>
+<polyline points="720,825 870,825" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="870,825 849.2897166458885,835.0042072845583 849.2897166458885,814.9957927154417" fill="#315d82"/>
+<polyline points="1530,825 1680,825" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1680,825 1659.2897166458883,835.0042072845583 1659.2897166458883,814.9957927154417" fill="#315d82"/>
+<text x="1200" y="1095" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">本图比较两条调用路径   不把工作序号直接当作 TU 查询的 Index</text></svg>

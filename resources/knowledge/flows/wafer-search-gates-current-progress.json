@@ -1,0 +1,134 @@
+{
+  "schema": "archify-wafer-search-gates-current-v1",
+  "status": "current-wafer-search-gates-verified",
+  "recordedAt": "2026-10-07T01:17:54.788Z",
+  "verification": {
+    "command": "node scripts/test-wafer-search-gates.cjs",
+    "checks": 172,
+    "sourceFragments": [
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "kind": "method",
+        "anchor": "private void Dowork()",
+        "startOffset": 2494,
+        "endOffset": 18707,
+        "start": 64,
+        "end": 386,
+        "fileSha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+        "snippetSha256": "0b39378f767b1c37c58799e0d10a804d420f707b478b673124f2aaf49c082aa5"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+        "kind": "property",
+        "anchor": "private bool IsNeedChange =>",
+        "startOffset": 78337,
+        "endOffset": 78408,
+        "start": 1506,
+        "end": 1506,
+        "fileSha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+        "snippetSha256": "2b7f3b0451f13fd98469d7d348ec6d85abe88ec75650d9ee28999008d677e4ad"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "public bool NextDie()",
+        "startOffset": 14764,
+        "endOffset": 15453,
+        "start": 335,
+        "end": 357,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "50b84486d18560d2966347134fa7c87d75614f91b3e566a6ae82be6389916506"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+        "kind": "method",
+        "anchor": "private bool SearchSingle(bool isOffset = true)",
+        "startOffset": 1113,
+        "endOffset": 8038,
+        "start": 35,
+        "end": 163,
+        "fileSha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919",
+        "snippetSha256": "a3aaa2192207e78f3633a11d840dc561b94343cbef7668f85a19db2ca050f2d8"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+        "kind": "method",
+        "anchor": "private bool SearchNine()",
+        "startOffset": 1157,
+        "endOffset": 12028,
+        "start": 39,
+        "end": 288,
+        "fileSha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+        "snippetSha256": "96fb103b8a847e715d2ad54de39a193c3b0d4588b386ac7d264b00a0bfa616b6"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+        "kind": "method",
+        "anchor": "private bool AnalyseDies()",
+        "startOffset": 12151,
+        "endOffset": 15913,
+        "start": 294,
+        "end": 386,
+        "fileSha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+        "snippetSha256": "0d73cbdc486a207192874829c64660470df1c5302fadf7f758478d34a799abe4"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+        "kind": "method",
+        "anchor": "private bool SearchMapping()",
+        "startOffset": 1352,
+        "endOffset": 9431,
+        "start": 46,
+        "end": 197,
+        "fileSha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+        "snippetSha256": "40a5f4879a92fe7c91e052072c511a4fe7c235566852b9dbf5c4a383c5847a82"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+        "kind": "method",
+        "anchor": "private bool SearchDieBox()",
+        "startOffset": 1808,
+        "endOffset": 6940,
+        "start": 48,
+        "end": 145,
+        "fileSha256": "1afc14108540072e5d4a276cb71148b2481bc043d66da21224b776d224e4066b",
+        "snippetSha256": "f198fb1a3544a7e0eeeea3f992ffc7c5d7acb6aa7eb3169803e79db3b88c4218"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+        "kind": "method",
+        "anchor": "private void StopSearch(bool isNeedEjectZero = true)",
+        "startOffset": 60610,
+        "endOffset": 61319,
+        "start": 1495,
+        "end": 1510,
+        "fileSha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+        "snippetSha256": "73099dd5b6d77bb7f10470cb1e4c2e65e144e770b2d3591856866ba9e83187b7"
+      }
+    ],
+    "signalBindings": [
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "IsBondNeedChipSignal",
+        "line": 147,
+        "initializer": "new Signal(\"Bond需料信号\", 100, EventResetMode.ManualReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "4feeab61d06c4a3bf62e7cf42b202d6b9037f9fd0f3ef38bab8eba42b20009d1"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/SignalPool.cs",
+        "name": "IsWaferAllowPickSignal",
+        "line": 142,
+        "initializer": "new Signal(\"晶圆允许取料信号\", 100, EventResetMode.AutoReset, false);\r",
+        "fileSha256": "d676555208275e4f5c919243193fa3c28a18ba5c0223271eb2030d248bb0895a",
+        "snippetSha256": "61743e655e7548700f79b9eab02f1d295ab5786dbe3128898b77ce42cc45ed4f"
+      }
+    ],
+    "testArtifactSha256": "7e4633f24fb3fa266ed442f44659df8edc6ea0d3e237e185083911f4c7b5c61f"
+  },
+  "boundaries": [
+    "The original wafer consumer/search methods, IsNeedChange and signal bindings were extracted unchanged and exercised with controlled search, motion, vision, storage and machine-state components.",
+    "The 172 checks cover search mode routing, offsets, Stop/Pause/single-step gates, failure propagation, carrier-change decisions and publication boundaries; camera SDK, calibration, Machine.Stop, UI, persistence and equipment acceptance remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

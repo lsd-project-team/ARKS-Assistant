@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "status": "native-full-framework-and-sdk-startup-preparation-passed",
+  "test": "transport-full-framework-sdk-test.json",
+  "testSha256": "3697946ed55138ff5225f10fbe2dda98e3a90f518c6ba587a2d954f4b8011bcc",
+  "controlledChecks": 1328,
+  "controlledPriorNamesAndOrderIdentical": true,
+  "controlledFrameworkOnlyReferences": 6,
+  "sdkDistinctChecks": 58,
+  "sdkPlacements": 116,
+  "sdkCopies": 2,
+  "sdkStartupInvocationsPerCopy": 16,
+  "productStartupChecks": 28,
+  "repositoryStartupChecks": 30,
+  "compiledSourceUnitsPerProcess": 6,
+  "sourceFragments": 512,
+  "uniqueSourceFragments": 511,
+  "restoredSourceSerializationAttributes": 6,
+  "frozenInputFiles": 269,
+  "changedOriginalSourceFragments": 0,
+  "includedInFormal1328Regression": false,
+  "scope": "Independent preparation after frozen1328 full regression. Complete controlled1328 runs in native CLR4 with two fixture-only Enum API substitutions and dictionary compatibility; original source fragments unchanged. Two isolated SDK copies each run58 focused original UI-entry/product/repository/startup checks using actual generic Singleton and JSON object/list Save/Load. Original512 captures remain in six compiled units; product/config/inspection class shapes, point aliases, path/recipe/PR/AOP/VM/actions/equipment boundaries remain reconstructed/adapted. SDK mode compiles prior1328 but executes only58; no Fody weaving/original project/deployment/native UI/equipment or whole29-group/13-requirement acceptance."
+}

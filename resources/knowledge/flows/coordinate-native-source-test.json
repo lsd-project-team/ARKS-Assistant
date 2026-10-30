@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 1,
+  "status": "coordinate-native-geometry-passed-vm-runtime-failed",
+  "updatedAt": "2026-10-02T00:34:34.169Z",
+  "wholeOriginalCoordinateCompileItems": 13,
+  "geometryChecks": 124,
+  "vmRuntimeAccepted": false,
+  "productionEdits": false,
+  "fixturesInOriginalAssemblies": false,
+  "parent": {
+    "file": "fresh-project-dependencies-test.json",
+    "sha256": "e38a84e8a263861b9b04d2f2f81ceceb8752c40dc42ff031fa462c18ea7d82b5",
+    "progress": "fresh-project-dependencies-progress.json",
+    "progressSha256": "10f150651f73a34eb51c1cac78173c60c29dda5e2f148de9a23337d4539436d3",
+    "frozenBindings": 2052
+  },
+  "originalAssembly": {
+    "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\fresh-project-dependencies\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+    "sha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53"
+  },
+  "input": {
+    "file": ".archify-work/coordinate-native-source/compile-input.json",
+    "sha256": "c67f6249e705bc850cc207e34146ed3ecdbbd178f4edeaa0947c06d193c658a0"
+  },
+  "artifact": {
+    "file": ".archify-work/coordinate-native-source/Probe.dll",
+    "sha256": "fa6d4cc6753f56da7369293e518f22087158f5bbf647614028e7c8cd287b1ef2"
+  },
+  "compile": {
+    "file": ".archify-work/coordinate-native-source/compile-v2.log",
+    "sha256": "3bb967373a64b4ca5513bcd8d7512d25b062fe60613e6c0762d49e4a94408cd8",
+    "observedExitCode": 0
+  },
+  "geometry": {
+    "file": ".archify-work/coordinate-native-source/geometry-v2.log",
+    "sha256": "8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81",
+    "observedExitCode": 0
+  },
+  "cases": [
+    "native constructor root upper name remains null",
+    "native constructor captures upper reference and name",
+    "native upper-name string does not refresh with parent name",
+    "native single coordinate roundtrip angle=0 point=0,0,0",
+    "native two-point Init angle=0 point=0 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0 point=2,-3,4",
+    "native two-point Init angle=0 point=2 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0 point=-5,7,-9",
+    "native two-point Init angle=0 point=-5 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0 point=1000,-2000,3000",
+    "native two-point Init angle=0 point=1000 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=1.5707963267949 point=0,0,0",
+    "native two-point Init angle=1.5707963267949 point=0 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=1.5707963267949 point=2,-3,4",
+    "native two-point Init angle=1.5707963267949 point=2 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=1.5707963267949 point=-5,7,-9",
+    "native two-point Init angle=1.5707963267949 point=-5 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=1.5707963267949 point=1000,-2000,3000",
+    "native two-point Init angle=1.5707963267949 point=1000 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=3.14159265358979 point=0,0,0",
+    "native two-point Init angle=3.14159265358979 point=0 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=3.14159265358979 point=2,-3,4",
+    "native two-point Init angle=3.14159265358979 point=2 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=3.14159265358979 point=-5,7,-9",
+    "native two-point Init angle=3.14159265358979 point=-5 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=3.14159265358979 point=1000,-2000,3000",
+    "native two-point Init angle=3.14159265358979 point=1000 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-1.5707963267949 point=0,0,0",
+    "native two-point Init angle=-1.5707963267949 point=0 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-1.5707963267949 point=2,-3,4",
+    "native two-point Init angle=-1.5707963267949 point=2 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-1.5707963267949 point=-5,7,-9",
+    "native two-point Init angle=-1.5707963267949 point=-5 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-1.5707963267949 point=1000,-2000,3000",
+    "native two-point Init angle=-1.5707963267949 point=1000 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0.13 point=0,0,0",
+    "native two-point Init angle=0.13 point=0 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0.13 point=2,-3,4",
+    "native two-point Init angle=0.13 point=2 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0.13 point=-5,7,-9",
+    "native two-point Init angle=0.13 point=-5 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=0.13 point=1000,-2000,3000",
+    "native two-point Init angle=0.13 point=1000 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-0.72 point=0,0,0",
+    "native two-point Init angle=-0.72 point=0 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-0.72 point=2,-3,4",
+    "native two-point Init angle=-0.72 point=2 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-0.72 point=-5,7,-9",
+    "native two-point Init angle=-0.72 point=-5 subtracts inputs and clears old samples",
+    "native single coordinate roundtrip angle=-0.72 point=1000,-2000,3000",
+    "native two-point Init angle=-0.72 point=1000 subtracts inputs and clears old samples",
+    "native chained coordinate angle=0,0 composes child then parent and reverses order",
+    "native chained degree angle=0,0 excludes root own transform",
+    "native chained coordinate angle=0,-1.5707963267949 composes child then parent and reverses order",
+    "native chained degree angle=0,-1.5707963267949 excludes root own transform",
+    "native chained coordinate angle=0,-0.31 composes child then parent and reverses order",
+    "native chained degree angle=0,-0.31 excludes root own transform",
+    "native chained coordinate angle=1.5707963267949,0 composes child then parent and reverses order",
+    "native chained degree angle=1.5707963267949,0 excludes root own transform",
+    "native chained coordinate angle=1.5707963267949,-1.5707963267949 composes child then parent and reverses order",
+    "native chained degree angle=1.5707963267949,-1.5707963267949 excludes root own transform",
+    "native chained coordinate angle=1.5707963267949,-0.31 composes child then parent and reverses order",
+    "native chained degree angle=1.5707963267949,-0.31 excludes root own transform",
+    "native chained coordinate angle=0.13,0 composes child then parent and reverses order",
+    "native chained degree angle=0.13,0 excludes root own transform",
+    "native chained coordinate angle=0.13,-1.5707963267949 composes child then parent and reverses order",
+    "native chained degree angle=0.13,-1.5707963267949 excludes root own transform",
+    "native chained coordinate angle=0.13,-0.31 composes child then parent and reverses order",
+    "native chained degree angle=0.13,-0.31 excludes root own transform",
+    "native element Init copies point replaces Distance clears samples and stores radians/module",
+    "native null element Init clears samples before failure but keeps old Distance",
+    "native update axis=X distance=10 inclusive bounds and retained mutable Distance identity",
+    "native update axis=X distance=-10 inclusive bounds and retained mutable Distance identity",
+    "native update axis=X distance=10.01 inclusive bounds and retained mutable Distance identity",
+    "native update axis=X distance=-10.01 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Y distance=10 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Y distance=-10 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Y distance=10.01 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Y distance=-10.01 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Z distance=10 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Z distance=-10 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Z distance=10.01 inclusive bounds and retained mutable Distance identity",
+    "native update axis=Z distance=-10.01 inclusive bounds and retained mutable Distance identity",
+    "native update angle=0.2 inclusive radian bounds",
+    "native update angle=-0.2 inclusive radian bounds",
+    "native update angle=0.201 inclusive radian bounds",
+    "native update angle=-0.201 inclusive radian bounds",
+    "native InitOffSet replaces Distance and accumulates angle",
+    "native obsolete 2D type=General general roundtrip versus zero VM/unknown behavior",
+    "native obsolete 2D type=Vm general roundtrip versus zero VM/unknown behavior",
+    "native obsolete 2D VM inverse constructs original TransformTool without calibration execution",
+    "native obsolete 2D type=99 general roundtrip versus zero VM/unknown behavior",
+    "native unknown 3D coordinate type returns zero points",
+    "native VM 3D inverse explicitly unsupported before tool construction",
+    "native obsolete update axis=X sign=-1 above=False XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=X sign=-1 above=True XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=X sign=1 above=False XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=X sign=1 above=True XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Y sign=-1 above=False XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Y sign=-1 above=True XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Y sign=1 above=False XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Y sign=1 above=True XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Z sign=-1 above=False XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Z sign=-1 above=True XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Z sign=1 above=False XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update axis=Z sign=1 above=True XY5 Z2 inclusive bound and replace identity",
+    "native obsolete update angle=-0.2 fails before Distance replacement",
+    "native obsolete update angle=0.2 fails before Distance replacement",
+    "native obsolete update angle=-0.201 fails before Distance replacement",
+    "native obsolete update angle=0.201 fails before Distance replacement",
+    "native obsolete update null element fails before mutation",
+    "native update NaN angle passes comparisons and commits NaN arithmetic",
+    "native element constructors retain supplied point alias and allocate missing points",
+    "native ElementCoordinate addition uses actual SDK point operator and new output",
+    "native element addition rejects null operand by dereference",
+    "native dependent forward composes only itself supplied position and direct parent",
+    "native dependent forward omits nonidentity ancestor transform",
+    "native dependent inverse returns zero for null and populated lists",
+    "native dependent forward rejects missing direct parent",
+    "native missing parent terminates general traversal as root and omits own transform",
+    "native general traversal dereferences null input point",
+    "native cycle test thread entered original traversal",
+    "native two-node parent cycle does not finish within bounded 100ms observation",
+    "native cycle observation reclaims only its isolated test thread"
+  ],
+  "vm": {
+    "file": ".archify-work/coordinate-native-source/vm-v2.log",
+    "sha256": "cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105",
+    "observedExitCode": 1
+  },
+  "priorVmAttempt": {
+    "file": ".archify-work/coordinate-native-source/vm-v1.log",
+    "sha256": "cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105",
+    "observedExitCode": 1
+  },
+  "metadataUtf8": {
+    "file": ".archify-work/coordinate-native-source/original-metadata-utf8.log",
+    "sha256": "d0be1a3c0c38e2227afdd90939c84884583d226ec88d9c7a7b378c5aae106a32",
+    "observedExitCode": 0
+  },
+  "loadingSmoke": {
+    "file": ".archify-work/coordinate-native-source/loading-v2.log",
+    "sha256": "f31323efd5f371cc8a94d98828bb702e0b0f0602256afc0342f4a5ba3212dc82",
+    "observedExitCode": 0
+  },
+  "sdkFamily": {
+    "file": ".archify-work/coordinate-native-source/sdk-family.json",
+    "sha256": "61edbfb5a93eac0d90c2ecbf1ebeee4bf3fd612e8fc56d97f6f0d41b099b7489"
+  },
+  "failedTestCompile": {
+    "file": ".archify-work/coordinate-native-source/compile-v1.log",
+    "sha256": "7911800d9c4aaebce5a263ed52463313a9bdf1aaac062ce5bc4b526dd6b6d3ee",
+    "observedExitCode": 1,
+    "sourceSnapshot": ".archify-work/coordinate-native-source/compile-stage-1/Probe.cs",
+    "sourceSha256": "a6832f1672d8c7d0fc577cd39b2d23b7850630918925a3cc854b6066b2f357a0",
+    "scope": "Test-only implicit multi-variable declaration error; corrected before successful emission. No original source edits."
+  },
+  "testSetupSnapshotFailure": {
+    "file": ".archify-work/coordinate-native-source/loading-v1-observed-failure.log",
+    "sha256": "624c54975d378084b99cb26aa4be3229b42b9ac7ccb95df05b2bec8e7655f55e",
+    "observedExitCode": 1,
+    "scope": "Copied smoke script ran under a different PSScriptRoot and failed locating its task input. Not evidence of a vendor loading failure. Initial canonical smoke also had a scalar indexing test typo; corrected loading-v2 succeeds."
+  },
+  "frozenInputs": [
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\Probe.cs",
+      "sha256": "8ae16365103d5ee3a09736dd4e599e2873479175998c5f86f4d443defc7bab20",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/8ae16365103d5ee3a09736dd4e599e2873479175998c5f86f4d443defc7bab20.cs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\Probe.dll",
+      "sha256": "fa6d4cc6753f56da7369293e518f22087158f5bbf647614028e7c8cd287b1ef2",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/fa6d4cc6753f56da7369293e518f22087158f5bbf647614028e7c8cd287b1ef2.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\compile-input.json",
+      "sha256": "c67f6249e705bc850cc207e34146ed3ecdbbd178f4edeaa0947c06d193c658a0",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/c67f6249e705bc850cc207e34146ed3ecdbbd178f4edeaa0947c06d193c658a0.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\compile-stage-1\\Probe.cs",
+      "sha256": "a6832f1672d8c7d0fc577cd39b2d23b7850630918925a3cc854b6066b2f357a0",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/a6832f1672d8c7d0fc577cd39b2d23b7850630918925a3cc854b6066b2f357a0.cs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\compile-stage-1\\compile-input.json",
+      "sha256": "c67f6249e705bc850cc207e34146ed3ecdbbd178f4edeaa0947c06d193c658a0",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/c67f6249e705bc850cc207e34146ed3ecdbbd178f4edeaa0947c06d193c658a0.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\compile-v1.log",
+      "sha256": "7911800d9c4aaebce5a263ed52463313a9bdf1aaac062ce5bc4b526dd6b6d3ee",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/7911800d9c4aaebce5a263ed52463313a9bdf1aaac062ce5bc4b526dd6b6d3ee.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\compile-v2.log",
+      "sha256": "3bb967373a64b4ca5513bcd8d7512d25b062fe60613e6c0762d49e4a94408cd8",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/3bb967373a64b4ca5513bcd8d7512d25b062fe60613e6c0762d49e4a94408cd8.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\decode-comparison.json",
+      "sha256": "92bf6197e1aa43fe440082dcb729b6df43725a7037f2973f1e489f954e55a250",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/92bf6197e1aa43fe440082dcb729b6df43725a7037f2973f1e489f954e55a250.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\geometry-v1.log",
+      "sha256": "8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\geometry-v2.log",
+      "sha256": "8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\loading-v1-observed-failure.log",
+      "sha256": "624c54975d378084b99cb26aa4be3229b42b9ac7ccb95df05b2bec8e7655f55e",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/624c54975d378084b99cb26aa4be3229b42b9ac7ccb95df05b2bec8e7655f55e.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\loading-v1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\loading-v1.ps1",
+      "sha256": "8a132409cd34c92d7d8268f3e069459239913293c7383865c1974f1e3ff60711",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/8a132409cd34c92d7d8268f3e069459239913293c7383865c1974f1e3ff60711.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\loading-v2.log",
+      "sha256": "f31323efd5f371cc8a94d98828bb702e0b0f0602256afc0342f4a5ba3212dc82",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/f31323efd5f371cc8a94d98828bb702e0b0f0602256afc0342f4a5ba3212dc82.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\original-metadata-utf8.log",
+      "sha256": "d0be1a3c0c38e2227afdd90939c84884583d226ec88d9c7a7b378c5aae106a32",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/d0be1a3c0c38e2227afdd90939c84884583d226ec88d9c7a7b378c5aae106a32.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\runtime-map.json",
+      "sha256": "4cf8dfbe46ec951bb742e8c6949e74a618c1f6d20462be190d92413d19ecf9a3",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/4cf8dfbe46ec951bb742e8c6949e74a618c1f6d20462be190d92413d19ecf9a3.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\sdk-family.json",
+      "sha256": "61edbfb5a93eac0d90c2ecbf1ebeee4bf3fd612e8fc56d97f6f0d41b099b7489",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/61edbfb5a93eac0d90c2ecbf1ebeee4bf3fd612e8fc56d97f6f0d41b099b7489.json"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\vm-v1.log",
+      "sha256": "cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\coordinate-native-source\\vm-v2.log",
+      "sha256": "cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105.log"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\coordinate-native-cases.cs.txt",
+      "sha256": "8ae16365103d5ee3a09736dd4e599e2873479175998c5f86f4d443defc7bab20",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/8ae16365103d5ee3a09736dd4e599e2873479175998c5f86f4d443defc7bab20.txt"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\inspect-coordinate-runtime-map.ps1",
+      "sha256": "b8938b3bdaa77d8eba6284a6b307448a4470eabee4c6ac37f2190a905e0e5eaa",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/b8938b3bdaa77d8eba6284a6b307448a4470eabee4c6ac37f2190a905e0e5eaa.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\inspect-coordinate-sdk-family.ps1",
+      "sha256": "d1ae48f96371af534d443d5a0c348faa73eedae6d4a2bf70771f9dd62a0d2ff9",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/d1ae48f96371af534d443d5a0c348faa73eedae6d4a2bf70771f9dd62a0d2ff9.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\prepare-coordinate-native-source.cjs",
+      "sha256": "9507a7b7d78684f0c7a899b4cfb02ff36cf175d094e48c30c43e09dfecdb41ab",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/9507a7b7d78684f0c7a899b4cfb02ff36cf175d094e48c30c43e09dfecdb41ab.cjs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\probe-coordinate-native-loading.ps1",
+      "sha256": "44ef88f739f7d9ead21ee1a36d696390102929b8f22870e1eeafd4c28efb3c32",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/44ef88f739f7d9ead21ee1a36d696390102929b8f22870e1eeafd4c28efb3c32.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\test-coordinate-native-source.ps1",
+      "sha256": "763f8b2a581b4171e4fe2cd05762ad42926144d4e1c4603b37e7ddfcc4c29b3c",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/763f8b2a581b4171e4fe2cd05762ad42926144d4e1c4603b37e7ddfcc4c29b3c.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\test-original-metadata-utf8.ps1",
+      "sha256": "7006229748975218f43216fb3b75f505ed0eabd96fee9cf54b781541eee18332",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/7006229748975218f43216fb3b75f505ed0eabd96fee9cf54b781541eee18332.ps1"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\scripts\\verify-coordinate-native-source.cjs",
+      "sha256": "a0034a7058d7ee642111a7f7ceb75c15df6a100a528a4842ab3bcbe8d2a125f5",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/a0034a7058d7ee642111a7f7ceb75c15df6a100a528a4842ab3bcbe8d2a125f5.cjs"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\libs\\HikVision\\VM算子\\MVDVMControlBaseClass.Net.dll",
+      "sha256": "98b745122989a3c9086128f5c697e34ad437d918f8a6eb1edfa1f2fdb136dd4f",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/98b745122989a3c9086128f5c697e34ad437d918f8a6eb1edfa1f2fdb136dd4f.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\AKRS.ZX2200\\libs\\HikVision\\VM算子\\MVD_Algorithm.Net.dll",
+      "sha256": "45478b2cc8ef69c71cffeaf147016234f5b748c249721d3594d04c306e6cc2a7",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/45478b2cc8ef69c71cffeaf147016234f5b748c249721d3594d04c306e6cc2a7.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\InterpolationMovementTest\\bin\\Debug\\MVDNPointCalib.Net.dll",
+      "sha256": "280cf8a2bb5b781670e36c4487fbd0d5fe3c0a53bbd2ca5bd1e200092e3b05bb",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/280cf8a2bb5b781670e36c4487fbd0d5fe3c0a53bbd2ca5bd1e200092e3b05bb.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\InterpolationMovementTest\\bin\\Debug\\MVDVMControlBaseClass.Net.dll",
+      "sha256": "98b745122989a3c9086128f5c697e34ad437d918f8a6eb1edfa1f2fdb136dd4f",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/98b745122989a3c9086128f5c697e34ad437d918f8a6eb1edfa1f2fdb136dd4f.dll"
+    },
+    {
+      "file": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\trunk\\InterpolationMovementTest\\bin\\Debug\\VMControls.BaseInterface.dll",
+      "sha256": "292e9bce6a0f3d848db09be15524faf4a7ec191a5cba73c6ec5b73ab523d41e6",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/292e9bce6a0f3d848db09be15524faf4a7ec191a5cba73c6ec5b73ab523d41e6.dll"
+    },
+    {
+      "file": ".archify-work/coordinate-native-source/replay-compile.log",
+      "sha256": "3bb967373a64b4ca5513bcd8d7512d25b062fe60613e6c0762d49e4a94408cd8",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/3bb967373a64b4ca5513bcd8d7512d25b062fe60613e6c0762d49e4a94408cd8.log"
+    },
+    {
+      "file": ".archify-work/coordinate-native-source/replay-geometry.log",
+      "sha256": "8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81.log"
+    },
+    {
+      "file": ".archify-work/coordinate-native-source/replay-vm.log",
+      "sha256": "cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105.log"
+    },
+    {
+      "file": ".archify-work/coordinate-native-source/replay-original-metadata-utf8.log",
+      "sha256": "d0be1a3c0c38e2227afdd90939c84884583d226ec88d9c7a7b378c5aae106a32",
+      "frozenCopy": ".archify-work/coordinate-native-source-baseline/d0be1a3c0c38e2227afdd90939c84884583d226ec88d9c7a7b378c5aae106a32.log"
+    }
+  ],
+  "scope": "Complete original13-source CoordinateSystems artifact, actual SDK point/operators/TransformTool and native CLR;124 independent geometry/harness checks and bounded100ms cycle observation,5 actual VM/list calibration attempts fail at real external dependencies while source list-state commit is observed. CorrectUTF8 re-reads all162 references in old original-main native input; old missing Unicode file reproduced by default decoding. Public original StaticPara.CoordinateSystemPath set to isolated workspace for VM calibration file attempts; no files emitted. Not full vendor/calibration/UI/axis/camera/hardware acceptance; no production edits or fixture declarations in original assemblies. Existing1410-source/98/1328/278/119 baselines unchanged, whole29 groups/13 requirements incomplete.",
+  "replay": {
+    "compile": {
+      "file": ".archify-work/coordinate-native-source/replay-compile.log",
+      "sha256": "3bb967373a64b4ca5513bcd8d7512d25b062fe60613e6c0762d49e4a94408cd8",
+      "observedExitCode": 0
+    },
+    "geometry": {
+      "file": ".archify-work/coordinate-native-source/replay-geometry.log",
+      "sha256": "8f6dc29a186182c74ea8ccc5791dcb580b5549f755ba30d28d9820442e72bb81",
+      "observedExitCode": 0
+    },
+    "vm": {
+      "file": ".archify-work/coordinate-native-source/replay-vm.log",
+      "sha256": "cb3c8f5d40751ee7ea63179de2c0b78dddefb7f62181739e3984539a98a00105",
+      "observedExitCode": 1
+    },
+    "metadataUtf8": {
+      "file": ".archify-work/coordinate-native-source/replay-original-metadata-utf8.log",
+      "sha256": "d0be1a3c0c38e2227afdd90939c84884583d226ec88d9c7a7b378c5aae106a32",
+      "observedExitCode": 0
+    },
+    "artifactSha256": "fa6d4cc6753f56da7369293e518f22087158f5bbf647614028e7c8cd287b1ef2"
+  }
+}

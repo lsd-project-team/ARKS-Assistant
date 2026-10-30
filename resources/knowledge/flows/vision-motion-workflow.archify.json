@@ -1,0 +1,192 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 视觉、运动与补偿链路",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "l0",
+      "label": "动作准备"
+    },
+    {
+      "id": "l1",
+      "label": "视觉与坐标"
+    },
+    {
+      "id": "l2",
+      "label": "运动与结果"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "action",
+      "lane": "l0",
+      "col": 0,
+      "type": "backend",
+      "label": "动作节点准备",
+      "width": 170
+    },
+    {
+      "id": "select",
+      "lane": "l0",
+      "col": 1,
+      "type": "security",
+      "label": "选择相机 / 模式",
+      "width": 170
+    },
+    {
+      "id": "move",
+      "lane": "l0",
+      "col": 2,
+      "type": "external",
+      "label": "移动到视觉位置",
+      "width": 170
+    },
+    {
+      "id": "pr",
+      "lane": "l1",
+      "col": 3,
+      "type": "external",
+      "label": "PR 模板定位",
+      "width": 170
+    },
+    {
+      "id": "result",
+      "lane": "l1",
+      "col": 4,
+      "type": "security",
+      "label": "定位成功？",
+      "width": 170
+    },
+    {
+      "id": "calc",
+      "lane": "l2",
+      "col": 4,
+      "type": "backend",
+      "label": "计算偏移与角度",
+      "width": 170
+    },
+    {
+      "id": "apply",
+      "lane": "l2",
+      "col": 5,
+      "type": "backend",
+      "label": "应用补偿并执行",
+      "width": 170
+    },
+    {
+      "id": "retry",
+      "lane": "l2",
+      "col": 3,
+      "type": "frontend",
+      "label": "报警重试 / 忽略 / 停止",
+      "width": 170
+    },
+    {
+      "id": "save",
+      "lane": "l1",
+      "col": 2,
+      "type": "database",
+      "label": "异步保存图片 / 结果",
+      "width": 170
+    }
+  ],
+  "edges": [
+    {
+      "id": "action-select",
+      "from": "action",
+      "to": "select",
+      "label": "AccuracyMode / AdjustCamera"
+    },
+    {
+      "id": "select-move",
+      "from": "select",
+      "to": "move"
+    },
+    {
+      "id": "move-pr",
+      "from": "move",
+      "to": "pr",
+      "label": "拍照"
+    },
+    {
+      "id": "pr-result",
+      "from": "pr",
+      "to": "result",
+      "label": "BaseAlgResult"
+    },
+    {
+      "id": "result-calc",
+      "from": "result",
+      "to": "calc",
+      "label": "成功"
+    },
+    {
+      "id": "result-retry",
+      "from": "result",
+      "to": "retry",
+      "label": "失败",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "retry-pr",
+      "from": "retry",
+      "to": "pr",
+      "label": "重试",
+      "role": "return",
+      "variant": "dashed"
+    },
+    {
+      "id": "retry-apply",
+      "from": "retry",
+      "to": "apply",
+      "label": "忽略",
+      "role": "branch"
+    },
+    {
+      "id": "calc-apply",
+      "from": "calc",
+      "to": "apply",
+      "label": "XY / T / Z 偏移"
+    },
+    {
+      "id": "pr-save",
+      "from": "pr",
+      "to": "save",
+      "label": "图片队列",
+      "role": "async",
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "action",
+    "select",
+    "move",
+    "pr",
+    "result",
+    "calc",
+    "apply"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "可证实的编排",
+      "items": [
+        "VisionService 查找 PREntity、调用 DoWork、返回 MatchResult，并在失败时返回 null。",
+        "UpLook / SubstrateCorrection 决定动作是否实际执行，再调用控制器移动。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "算法边界",
+      "items": [
+        "PR 算法和运动控制器由引用 DLL / 硬件服务提供；本仓库只证明调用、结果和补偿应用。",
+        "VisionService 的图片写入 BlockingCollection，由后台线程保存 BMP。"
+      ]
+    }
+  ]
+}

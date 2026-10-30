@@ -1,0 +1,1012 @@
+{
+  "revision": "3.1",
+  "date": "2026-10-21",
+  "page_count": 34,
+  "source_files": 56,
+  "source_baseline_verified": true,
+  "checks": {
+    "native_toc": true,
+    "toc_entries": [
+      {
+        "title": "1 纠偏对象与设计范围",
+        "page": 4
+      },
+      {
+        "title": "1.1 四类流程分别修正什么",
+        "page": 4
+      },
+      {
+        "title": "1.2 模块职责与外部输入",
+        "page": 4
+      },
+      {
+        "title": "2 输入输出与坐标约定",
+        "page": 5
+      },
+      {
+        "title": "2.1 产品配置与芯片配置分别提供参数",
+        "page": 5
+      },
+      {
+        "title": "2.2 位置必须带上参考系",
+        "page": 6
+      },
+      {
+        "title": "2.3 旋转符号与结果有效期",
+        "page": 6
+      },
+      {
+        "title": "3 供料端定位与取片位置修正",
+        "page": 6
+      },
+      {
+        "title": "3.1 先确定芯片在哪里 再决定怎样取起",
+        "page": 6
+      },
+      {
+        "title": "3.2 搜晶方式与重复校正",
+        "page": 8
+      },
+      {
+        "title": "3.3 从识别结果计算取片XYZT",
+        "page": 9
+      },
+      {
+        "title": "3.4 取片漂移与结果交接",
+        "page": 9
+      },
+      {
+        "title": "3.5 候选 跳片与取后更新如何衔接",
+        "page": 10
+      },
+      {
+        "title": "4 产品层级定位设计",
+        "page": 12
+      },
+      {
+        "title": "4.1 进入条件与定位点数",
+        "page": 12
+      },
+      {
+        "title": "4.2 八个层级定位动作的进入条件",
+        "page": 12
+      },
+      {
+        "title": "4.3 定位点如何形成结果",
+        "page": 13
+      },
+      {
+        "title": "4.4 锚点选择与角度计算",
+        "page": 14
+      },
+      {
+        "title": "4.5 坐标如何围绕锚点更新",
+        "page": 15
+      },
+      {
+        "title": "4.6 距离检查与两侧异常路径",
+        "page": 16
+      },
+      {
+        "title": "5 上视芯片纠偏设计",
+        "page": 17
+      },
+      {
+        "title": "5.1 入口条件与四种采集次序",
+        "page": 17
+      },
+      {
+        "title": "5.2 快速模式的偏移与角度",
+        "page": 18
+      },
+      {
+        "title": "5.3 普通模式与镜像分支",
+        "page": 18
+      },
+      {
+        "title": "5.4 温漂调用与动作结束",
+        "page": 19
+      },
+      {
+        "title": "5.5 镜像与非镜像的完整角度追踪",
+        "page": 19
+      },
+      {
+        "title": "6 中转台芯片纠偏设计",
+        "page": 21
+      },
+      {
+        "title": "6.1 放片识别与重新取片",
+        "page": 21
+      },
+      {
+        "title": "6.2 芯片中心与取片位置计算",
+        "page": 21
+      },
+      {
+        "title": "6.3 拍照位 取片位与统计字段",
+        "page": 22
+      },
+      {
+        "title": "6.4 视觉失败与取片检测失败",
+        "page": 23
+      },
+      {
+        "title": "6.5 运动方式怎样影响执行与返回",
+        "page": 23
+      },
+      {
+        "title": "7 纠偏输出在贴装入口中的使用",
+        "page": 24
+      },
+      {
+        "title": "7.1 上视偏移按剩余旋转角使用",
+        "page": 24
+      },
+      {
+        "title": "7.2 中转台记录与实时补偿接口",
+        "page": 25
+      },
+      {
+        "title": "7.3 焊后补偿与区域补偿的生效位置",
+        "page": 25
+      },
+      {
+        "title": "7.4 完整目标与结果记录的边界",
+        "page": 26
+      },
+      {
+        "title": "8 异常处理与状态有效性",
+        "page": 27
+      },
+      {
+        "title": "8.1 采集成功 更新成功与动作返回",
+        "page": 27
+      },
+      {
+        "title": "8.2 人工确认的返回契约",
+        "page": 28
+      },
+      {
+        "title": "8.3 Retry如何回到动作编排",
+        "page": 28
+      },
+      {
+        "title": "8.4 各流程失败后哪些数据已经发生变化",
+        "page": 28
+      },
+      {
+        "title": "8.5 手动上视与生产上视的逐模式差异",
+        "page": 29
+      },
+      {
+        "title": "8.6 手动贴片目标怎样使用纠偏记录",
+        "page": 29
+      },
+      {
+        "title": "9 接口契约与设计核对",
+        "page": 31
+      },
+      {
+        "title": "9.1 主要接口的输入输出",
+        "page": 31
+      },
+      {
+        "title": "9.2 两类读者共用的核对问题",
+        "page": 31
+      },
+      {
+        "title": "附录A 源码依据与阅读定位",
+        "page": 32
+      },
+      {
+        "title": "附录B 术语与图表索引",
+        "page": 33
+      },
+      {
+        "title": "B.1 常用术语",
+        "page": 33
+      },
+      {
+        "title": "B.2 图目录",
+        "page": 34
+      },
+      {
+        "title": "B.3 表目录",
+        "page": 34
+      }
+    ],
+    "bookmarks": [
+      {
+        "title": "1 纠偏对象与设计范围",
+        "page": 4
+      },
+      {
+        "title": "1.1 四类流程分别修正什么",
+        "page": 4
+      },
+      {
+        "title": "1.2 模块职责与外部输入",
+        "page": 4
+      },
+      {
+        "title": "2 输入输出与坐标约定",
+        "page": 5
+      },
+      {
+        "title": "2.1 产品配置与芯片配置分别提供参数",
+        "page": 5
+      },
+      {
+        "title": "2.2 位置必须带上参考系",
+        "page": 6
+      },
+      {
+        "title": "2.3 旋转符号与结果有效期",
+        "page": 6
+      },
+      {
+        "title": "3 供料端定位与取片位置修正",
+        "page": 6
+      },
+      {
+        "title": "3.1 先确定芯片在哪里 再决定怎样取起",
+        "page": 6
+      },
+      {
+        "title": "3.2 搜晶方式与重复校正",
+        "page": 8
+      },
+      {
+        "title": "3.3 从识别结果计算取片XYZT",
+        "page": 9
+      },
+      {
+        "title": "3.4 取片漂移与结果交接",
+        "page": 9
+      },
+      {
+        "title": "3.5 候选 跳片与取后更新如何衔接",
+        "page": 10
+      },
+      {
+        "title": "4 产品层级定位设计",
+        "page": 12
+      },
+      {
+        "title": "4.1 进入条件与定位点数",
+        "page": 12
+      },
+      {
+        "title": "4.2 八个层级定位动作的进入条件",
+        "page": 12
+      },
+      {
+        "title": "4.3 定位点如何形成结果",
+        "page": 13
+      },
+      {
+        "title": "4.4 锚点选择与角度计算",
+        "page": 14
+      },
+      {
+        "title": "4.5 坐标如何围绕锚点更新",
+        "page": 15
+      },
+      {
+        "title": "4.6 距离检查与两侧异常路径",
+        "page": 16
+      },
+      {
+        "title": "5 上视芯片纠偏设计",
+        "page": 17
+      },
+      {
+        "title": "5.1 入口条件与四种采集次序",
+        "page": 17
+      },
+      {
+        "title": "5.2 快速模式的偏移与角度",
+        "page": 18
+      },
+      {
+        "title": "5.3 普通模式与镜像分支",
+        "page": 18
+      },
+      {
+        "title": "5.4 温漂调用与动作结束",
+        "page": 19
+      },
+      {
+        "title": "5.5 镜像与非镜像的完整角度追踪",
+        "page": 19
+      },
+      {
+        "title": "6 中转台芯片纠偏设计",
+        "page": 21
+      },
+      {
+        "title": "6.1 放片识别与重新取片",
+        "page": 21
+      },
+      {
+        "title": "6.2 芯片中心与取片位置计算",
+        "page": 21
+      },
+      {
+        "title": "6.3 拍照位 取片位与统计字段",
+        "page": 22
+      },
+      {
+        "title": "6.4 视觉失败与取片检测失败",
+        "page": 23
+      },
+      {
+        "title": "6.5 运动方式怎样影响执行与返回",
+        "page": 23
+      },
+      {
+        "title": "7 纠偏输出在贴装入口中的使用",
+        "page": 24
+      },
+      {
+        "title": "7.1 上视偏移按剩余旋转角使用",
+        "page": 24
+      },
+      {
+        "title": "7.2 中转台记录与实时补偿接口",
+        "page": 25
+      },
+      {
+        "title": "7.3 焊后补偿与区域补偿的生效位置",
+        "page": 25
+      },
+      {
+        "title": "7.4 完整目标与结果记录的边界",
+        "page": 26
+      },
+      {
+        "title": "8 异常处理与状态有效性",
+        "page": 27
+      },
+      {
+        "title": "8.1 采集成功 更新成功与动作返回",
+        "page": 27
+      },
+      {
+        "title": "8.2 人工确认的返回契约",
+        "page": 28
+      },
+      {
+        "title": "8.3 Retry如何回到动作编排",
+        "page": 28
+      },
+      {
+        "title": "8.4 各流程失败后哪些数据已经发生变化",
+        "page": 28
+      },
+      {
+        "title": "8.5 手动上视与生产上视的逐模式差异",
+        "page": 29
+      },
+      {
+        "title": "8.6 手动贴片目标怎样使用纠偏记录",
+        "page": 29
+      },
+      {
+        "title": "9 接口契约与设计核对",
+        "page": 31
+      },
+      {
+        "title": "9.1 主要接口的输入输出",
+        "page": 31
+      },
+      {
+        "title": "9.2 两类读者共用的核对问题",
+        "page": 31
+      },
+      {
+        "title": "附录A 源码依据与阅读定位",
+        "page": 32
+      },
+      {
+        "title": "附录B 术语与图表索引",
+        "page": 33
+      },
+      {
+        "title": "B.1 常用术语",
+        "page": 33
+      },
+      {
+        "title": "B.2 图目录",
+        "page": 34
+      },
+      {
+        "title": "B.3 表目录",
+        "page": 34
+      }
+    ],
+    "caption_index_page_numbers": [
+      {
+        "title": "图1-1 产品与贴装侧的三种视觉观察对象",
+        "page": 4
+      },
+      {
+        "title": "图2-1 纠偏结果的写入位置及后续使用",
+        "page": 5
+      },
+      {
+        "title": "图3-1 晶圆台与静态华夫盒在取片前观察芯片",
+        "page": 7
+      },
+      {
+        "title": "图3-2 产品线与芯片线在贴装位置计算处汇合",
+        "page": 7
+      },
+      {
+        "title": "图3-3 多次定位如何判定通过与继续校正",
+        "page": 8
+      },
+      {
+        "title": "图3-4 候选缓存 本次识别与取后更新的不同阶段",
+        "page": 11
+      },
+      {
+        "title": "图4-1 产品定位从入口到坐标更新的主要步骤",
+        "page": 12
+      },
+      {
+        "title": "图4-2 S2定位点的拍照目标与识别结果转换",
+        "page": 14
+      },
+      {
+        "title": "图4-3 分轴选点 两点定角与三点拟合圆的不同含义",
+        "page": 15
+      },
+      {
+        "title": "图4-4 一个定位锚点在更新前后的父参考系位置",
+        "page": 16
+      },
+      {
+        "title": "图4-5 两点距离异常时S1与S2的处理差异",
+        "page": 17
+      },
+      {
+        "title": "图5-1 四种上视模式的正常几何采集次序",
+        "page": 18
+      },
+      {
+        "title": "图5-2 普通生产模式镜像与非镜像的角度流水",
+        "page": 20
+      },
+      {
+        "title": "图6-1 中转台纠偏把识别结果用于重新取片",
+        "page": 21
+      },
+      {
+        "title": "图6-2 从示教中心到修正取片位置的计算关系",
+        "page": 22
+      },
+      {
+        "title": "图6-3 取片后检测的Retry与实际重新执行Pick的区别",
+        "page": 23
+      },
+      {
+        "title": "图7-1 上视偏移从保存到贴装使用的角度关系",
+        "page": 24
+      },
+      {
+        "title": "图7-2 实时补偿的实参与形参及追加位置",
+        "page": 25
+      },
+      {
+        "title": "图7-3 各补偿项在G0与轴目标中的生效顺序",
+        "page": 27
+      },
+      {
+        "title": "图8-1 产品定位的写入阶段与可能的失败位置",
+        "page": 27
+      },
+      {
+        "title": "图8-2 手动贴片与生产贴装对同一偏移的不同使用",
+        "page": 30
+      },
+      {
+        "title": "表2-1 四类流程的主要输入与输出",
+        "page": 5
+      },
+      {
+        "title": "表2-2 本册使用的量与单位",
+        "page": 6
+      },
+      {
+        "title": "表3-1 供料定位分支的结果形成",
+        "page": 8
+      },
+      {
+        "title": "表3-2 供料与取片结果的去向",
+        "page": 10
+      },
+      {
+        "title": "表3-3 四类搜索在取后更新中的差异",
+        "page": 11
+      },
+      {
+        "title": "表4-1 S1四个定位入口的完整跳过条件",
+        "page": 13
+      },
+      {
+        "title": "表4-2 S2四个定位入口的完整跳过条件",
+        "page": 13
+      },
+      {
+        "title": "表5-1 普通模式从拍照准备到贴装的角度记录",
+        "page": 20
+      },
+      {
+        "title": "表7-1 补偿输入 记录寿命与生效位置",
+        "page": 26
+      },
+      {
+        "title": "表8-1 失败位置与结果有效性",
+        "page": 28
+      },
+      {
+        "title": "表8-2 手动与生产上视的共同量及不同入口",
+        "page": 29
+      },
+      {
+        "title": "表9-1 定位与纠偏接口的调用契约",
+        "page": 31
+      },
+      {
+        "title": "表9-2 阅读与评审核对问题",
+        "page": 31
+      },
+      {
+        "title": "表B-1 本册常用术语",
+        "page": 33
+      }
+    ],
+    "all_fonts_embedded": {
+      "/BCDEEE+MicrosoftYaHei-Bold": true,
+      "/BCDFEE+MicrosoftYaHei-Bold": true,
+      "/BCDGEE+TimesNewRomanPSMT": true,
+      "/BCDHEE+MicrosoftYaHei": true,
+      "/BCDIEE+MicrosoftYaHei": true,
+      "/BCDJEE+SimSun": true,
+      "/BCDKEE+Arial-BoldMT": true,
+      "/BCDLEE+Cambria": true,
+      "/BCDMEE+TimesNewRomanPSMT": true,
+      "/BCDNEE+CambriaMath": true,
+      "/BCDOEE+Cambria-Bold": true,
+      "/BCDPEE+TimesNewRomanPS-BoldMT": true
+    },
+    "heading_font_faces_in_actual_pdf": [
+      "BCDEEE+MicrosoftYaHei-Bold",
+      "BCDFEE+MicrosoftYaHei-Bold"
+    ],
+    "toc_font_faces_in_actual_pdf": [
+      "BCDEEE+MicrosoftYaHei-Bold",
+      "BCDFEE+MicrosoftYaHei-Bold",
+      "BCDHEE+MicrosoftYaHei",
+      "BCDIEE+MicrosoftYaHei"
+    ],
+    "heading_and_toc_font_fallback_absent": true,
+    "linked_reference_targets_valid": true,
+    "word_native_equations": 12,
+    "native_inline_math_count": 10,
+    "figures_have_alt_text": true,
+    "tables_repeat_header": true,
+    "no_out_of_page_text": true,
+    "image_resolution": [
+      {
+        "file": "figures/c01-correction-scenes.png",
+        "page": 4,
+        "pixels": [
+          1536,
+          1024
+        ],
+        "display_inches": 5.05,
+        "effective_dpi": 304.16
+      },
+      {
+        "file": "figures/c02-data-flow.png",
+        "page": 5,
+        "pixels": [
+          2400,
+          1140
+        ],
+        "display_inches": 6.5497,
+        "effective_dpi": 366.43
+      },
+      {
+        "file": "figures/c16-supply-scenes.png",
+        "page": 7,
+        "pixels": [
+          1942,
+          809
+        ],
+        "display_inches": 6.2996,
+        "effective_dpi": 308.27
+      },
+      {
+        "file": "figures/c17-production-paths.png",
+        "page": 7,
+        "pixels": [
+          2400,
+          1025
+        ],
+        "display_inches": 6.5496,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/c18-feed-loop.png",
+        "page": 8,
+        "pixels": [
+          2400,
+          1420
+        ],
+        "display_inches": 6.5493,
+        "effective_dpi": 366.45
+      },
+      {
+        "file": "figures/c21-candidate-validity.png",
+        "page": 11,
+        "pixels": [
+          2400,
+          1260
+        ],
+        "display_inches": 6.5,
+        "effective_dpi": 369.23
+      },
+      {
+        "file": "figures/c03-product-locate.png",
+        "page": 12,
+        "pixels": [
+          2400,
+          780
+        ],
+        "display_inches": 6.5492,
+        "effective_dpi": 366.46
+      },
+      {
+        "file": "figures/c04-result-conversion.png",
+        "page": 14,
+        "pixels": [
+          2400,
+          1040
+        ],
+        "display_inches": 6.5497,
+        "effective_dpi": 366.43
+      },
+      {
+        "file": "figures/c19-anchor-selection.png",
+        "page": 15,
+        "pixels": [
+          2400,
+          1190
+        ],
+        "display_inches": 6.549,
+        "effective_dpi": 366.47
+      },
+      {
+        "file": "figures/c05-anchor-example.png",
+        "page": 16,
+        "pixels": [
+          2400,
+          1250
+        ],
+        "display_inches": 6.5493,
+        "effective_dpi": 366.45
+      },
+      {
+        "file": "figures/c06-distance-retry.png",
+        "page": 17,
+        "pixels": [
+          2400,
+          1360
+        ],
+        "display_inches": 6.549,
+        "effective_dpi": 366.47
+      },
+      {
+        "file": "figures/c07-uplook-captures.png",
+        "page": 18,
+        "pixels": [
+          2400,
+          1270
+        ],
+        "display_inches": 6.5499,
+        "effective_dpi": 366.42
+      },
+      {
+        "file": "figures/c22-mirror-angle.png",
+        "page": 20,
+        "pixels": [
+          2400,
+          1160
+        ],
+        "display_inches": 6.5,
+        "effective_dpi": 369.23
+      },
+      {
+        "file": "figures/c14-ipt-motion.png",
+        "page": 21,
+        "pixels": [
+          1536,
+          1024
+        ],
+        "display_inches": 5.05,
+        "effective_dpi": 304.16
+      },
+      {
+        "file": "figures/c15-ipt-vectors.png",
+        "page": 22,
+        "pixels": [
+          2400,
+          1170
+        ],
+        "display_inches": 6.5499,
+        "effective_dpi": 366.42
+      },
+      {
+        "file": "figures/c10-ipt-retry.png",
+        "page": 23,
+        "pixels": [
+          2400,
+          1080
+        ],
+        "display_inches": 6.5494,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/c11-uplook-consumer.png",
+        "page": 24,
+        "pixels": [
+          2400,
+          1280
+        ],
+        "display_inches": 6.5494,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/c12-output-contract.png",
+        "page": 25,
+        "pixels": [
+          2400,
+          1440
+        ],
+        "display_inches": 6.5497,
+        "effective_dpi": 366.43
+      },
+      {
+        "file": "figures/c20-compensation-order.png",
+        "page": 27,
+        "pixels": [
+          2400,
+          770
+        ],
+        "display_inches": 6.5497,
+        "effective_dpi": 366.43
+      },
+      {
+        "file": "figures/c13-partial-update.png",
+        "page": 27,
+        "pixels": [
+          2400,
+          1080
+        ],
+        "display_inches": 6.5494,
+        "effective_dpi": 366.44
+      },
+      {
+        "file": "figures/c23-manual-target.png",
+        "page": 30,
+        "pixels": [
+          2400,
+          1070
+        ],
+        "display_inches": 6.5,
+        "effective_dpi": 369.23
+      }
+    ]
+  },
+  "layout": [
+    {
+      "page": 1,
+      "images": 0,
+      "body_bottom": 411.5
+    },
+    {
+      "page": 2,
+      "images": 0,
+      "body_bottom": 728.29
+    },
+    {
+      "page": 3,
+      "images": 0,
+      "body_bottom": 473.23
+    },
+    {
+      "page": 4,
+      "images": 1,
+      "body_bottom": 732.42
+    },
+    {
+      "page": 5,
+      "images": 1,
+      "body_bottom": 726.34
+    },
+    {
+      "page": 6,
+      "images": 0,
+      "body_bottom": 680.47
+    },
+    {
+      "page": 7,
+      "images": 2,
+      "body_bottom": 621.11
+    },
+    {
+      "page": 8,
+      "images": 1,
+      "body_bottom": 715.3
+    },
+    {
+      "page": 9,
+      "images": 0,
+      "body_bottom": 711.54
+    },
+    {
+      "page": 10,
+      "images": 0,
+      "body_bottom": 585.55
+    },
+    {
+      "page": 11,
+      "images": 1,
+      "body_bottom": 729.66
+    },
+    {
+      "page": 12,
+      "images": 1,
+      "body_bottom": 654.19
+    },
+    {
+      "page": 13,
+      "images": 0,
+      "body_bottom": 670.03
+    },
+    {
+      "page": 14,
+      "images": 1,
+      "body_bottom": 671.35
+    },
+    {
+      "page": 15,
+      "images": 1,
+      "body_bottom": 608.66
+    },
+    {
+      "page": 16,
+      "images": 1,
+      "body_bottom": 508.12
+    },
+    {
+      "page": 17,
+      "images": 1,
+      "body_bottom": 599.71
+    },
+    {
+      "page": 18,
+      "images": 1,
+      "body_bottom": 735.54
+    },
+    {
+      "page": 19,
+      "images": 0,
+      "body_bottom": 590.95
+    },
+    {
+      "page": 20,
+      "images": 1,
+      "body_bottom": 703.74
+    },
+    {
+      "page": 21,
+      "images": 1,
+      "body_bottom": 710.34
+    },
+    {
+      "page": 22,
+      "images": 1,
+      "body_bottom": 724.86
+    },
+    {
+      "page": 23,
+      "images": 1,
+      "body_bottom": 731.08
+    },
+    {
+      "page": 24,
+      "images": 1,
+      "body_bottom": 724.02
+    },
+    {
+      "page": 25,
+      "images": 1,
+      "body_bottom": 733.98
+    },
+    {
+      "page": 26,
+      "images": 0,
+      "body_bottom": 704.94
+    },
+    {
+      "page": 27,
+      "images": 2,
+      "body_bottom": 689.75
+    },
+    {
+      "page": 28,
+      "images": 0,
+      "body_bottom": 674.59
+    },
+    {
+      "page": 29,
+      "images": 0,
+      "body_bottom": 712.02
+    },
+    {
+      "page": 30,
+      "images": 1,
+      "body_bottom": 478.6
+    },
+    {
+      "page": 31,
+      "images": 0,
+      "body_bottom": 691.15
+    },
+    {
+      "page": 32,
+      "images": 0,
+      "body_bottom": 570.21
+    },
+    {
+      "page": 33,
+      "images": 0,
+      "body_bottom": 612.19
+    },
+    {
+      "page": 34,
+      "images": 0,
+      "body_bottom": 617.74
+    }
+  ],
+  "review": {
+    "visual_status": "新封面直接查看；正文全部重新渲染并逐页像素一致，保留前次正文直接查看结果。TU页眉字符局部栅格微差已直接核对。",
+    "render_pipeline": "独立隐藏Word实例更新字段并原生导出PDF；恢复原始PNG流；捆绑Poppler渲染。捆绑LibreOffice不可用，已尝试规范渲染入口。PDF/A导出选项不代替第三方合规认证。",
+    "cover_revision": "封面仅保留大标题与内容介绍；最终封面直接查看，正文区域全部页面重渲染后与先前逐页查看的校样像素一致。",
+    "visual_evidence": "final-qa.json",
+    "cover_evidence": "cover-redesign.json"
+  },
+  "limits": [
+    "基于源码静态追踪与独立算例；未运行设备或C#业务流程",
+    "阅读和技术评审用途；说明输入不代表实际配方或设备精度"
+  ],
+  "files": {
+    "纠偏过程设计文档.docx": {
+      "sha256": "86d12f4ef4a3a201a1d83120b30b75e7c0f0eca11a78d8eaa8fceae24a4d5a62",
+      "bytes": 10521343
+    },
+    "纠偏过程设计文档.pdf": {
+      "sha256": "be489c5ee714e1734f7776fb296b63f5b82f4d9b309c83d5c5eaeab495ae0ddf",
+      "bytes": 8266250
+    },
+    "纠偏过程设计文档.md": {
+      "sha256": "98170d8efa552d72f6a59025c9cda010f2414bbecf348bd3d529d0f2fac9d374",
+      "bytes": 58749
+    }
+  }
+}

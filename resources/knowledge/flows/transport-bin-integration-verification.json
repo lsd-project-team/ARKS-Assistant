@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T07:50:26.808Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-transport-bin-integration.log",
+    "sha256": "749623fb8acce555e76651054739ecc07d4e3df735ac8541cb6178d32e64eacc"
+  },
+  "specialized": {
+    "checks": 578,
+    "completeMethods": 111,
+    "properties": 50,
+    "enums": 6,
+    "fields": 13,
+    "signalBindings": 23,
+    "topicSnapshots": 81,
+    "auditSha256": "c0046393d28006e980e68e43ad007733a3ba61fbaec4a43f58323803ea3d8822",
+    "evidenceSha256": "087b5f02b64777a8ab076a9c3d9ce13bba9e141377638bc8b7e196311da89d7e"
+  },
+  "browser": {
+    "log": ".archify-work/browser-transport-bin-integration.log",
+    "sha256": "21be8b6dcbcc58dfae1313021ea1120ed3f9298b680c984d88b6dbf87ba4c31f",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "54c393972d8646ded2f22a41e658f94aacab86a88ae765619cfe452598290235",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 27,
+    "topicSnapshots": 555,
+    "moduleSnapshots": 940
+  },
+  "sdkStaticContract": {
+    "evidence": "transport-bin-sdk-evidence.json",
+    "sha256": "a698fa37def3f687477bfa7bbdf383abc7b68d157ff23d2cb4d8fb6985f0179a",
+    "methods": 6,
+    "assemblies": 2,
+    "selectedDefaults": [
+      false,
+      -1,
+      0
+    ],
+    "scope": "Mono.Cecil metadata and IL only; no SDK/device execution, deployed DLL version or hardware proof"
+  },
+  "fixtureCorrections": {
+    "asynchronousStopObservationLog": ".archify-work/bin-integration-expanded.log",
+    "duplicateFixtureEnumCompileLog": ".archify-work/bin-integration-expanded-v2.log",
+    "passedSpecializedLog": ".archify-work/bin-integration-expanded-v3.log",
+    "scope": "Await actual asynchronous wafer termination and align SDK fixture signature; original methods unchanged"
+  },
+  "continuation": {
+    "nextEvidence": "transport-auto-unloader-next-evidence.json",
+    "nextEvidenceSha256": "31e19c8e7b67ff9e0ac461209ea8425687b1cf2e2808cd53d86d640f76c2c69c",
+    "fragments": 10,
+    "binCaptureSha256": "07fd613eeec712543f39f5495848e9b10c283a64e52286bbeb8fe0582e00bad0",
+    "controllerCaptureSha256": "18d89c6ade30d11abb24e41f0a52995bbb6674c399301c10fb8f5f2757a4afa0",
+    "waitingCaptureSha256": "51f061257c617079288417ff72867857ad385d5dbb5bfbaeaa8147a79404eee4",
+    "next": "Original unload-belt-to-auto-unloader, SMEMA demand/getters and actual ninth producer Task, then other five loading/dispense transfers and program/pool/domain/SDK/native acceptance."
+  },
+  "scope": "Complete original waiting-to-bin, retract/push/layer helpers, module movement/readiness and getters compose with full producer/UI/readiness/real wafer Task/Stop and original Bond/waiting-belt controllers. SDK input/axis/AbsoluteMove, hardware and bin-setting repository, log/dialog/program lifecycle, other six transfers and native UI/build/configuration/DLL/equipment remain fixtures or pending."
+}

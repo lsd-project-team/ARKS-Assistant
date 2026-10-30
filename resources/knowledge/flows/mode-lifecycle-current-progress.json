@@ -1,0 +1,30 @@
+{
+  "schema": "archify-static-audit-current-v1",
+  "audit": "mode-lifecycle",
+  "status": "current-mode-lifecycle-verified",
+  "recordedAt": "2026-10-07T00:14:27.248Z",
+  "verification": {
+    "testCommand": "node scripts/test-mode-lifecycle.cjs",
+    "auditCommand": "node scripts/build-mode-lifecycle-audit.cjs --check",
+    "result": {
+      "status": "passed",
+      "checks": 34,
+      "extractedMethods": 23
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/mode-lifecycle-test.json",
+      "sha256": "6e7ffcf91d7f6c655f080ab657bd5f80e7f32f7d80032bfa4bb452326cdc9d15"
+    },
+    {
+      "path": "docs/archify/mode-lifecycle-audit.json",
+      "sha256": "85e36950ffb0843de632033046c860448214ff1ed9e55731dbf8d27fd546a358"
+    }
+  ],
+  "boundaries": [
+    "Current isolated audit evidence is recorded separately from historical reports.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked.",
+    "The fixtures do not prove a complete online production cycle or physical device behavior."
+  ]
+}

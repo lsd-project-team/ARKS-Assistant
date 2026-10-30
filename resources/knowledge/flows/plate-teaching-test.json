@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "scope": "Original Save/Next/Done with model, Save and UI stubs; not WinForms lifecycle, hardware, actual persistence or full wizard execution",
+  "sourceEdits": "none",
+  "fixturePath": "scripts/plate-teaching-fixture.cs.txt",
+  "fixtureSha256": "b4feab0a50758c655c162bf2dced3929386200f8498e587311e669615599c5e0",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Assistant/FrmDispensePlateAssistant.cs.cs",
+      "start": 264,
+      "end": 276,
+      "sha256": "d86d88a84f9474727541742f7f85251bfcc038b08827cea300aa9141d62069ef",
+      "snippetSha256": "8951d1cfeb01fae7e482f89fa5b0c93f14c485a00570f435b92cd8c165373d7c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Assistant/FrmDispensePlateAssistant.cs.cs",
+      "start": 283,
+      "end": 289,
+      "sha256": "d86d88a84f9474727541742f7f85251bfcc038b08827cea300aa9141d62069ef",
+      "snippetSha256": "836ad1a21d98ad2c26d4c44d707b745e8d1604f8e8de0656a0dfec6e2ecf50b1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Assistant/FrmDispensePlateAssistant.cs.cs",
+      "start": 310,
+      "end": 315,
+      "sha256": "d86d88a84f9474727541742f7f85251bfcc038b08827cea300aa9141d62069ef",
+      "snippetSha256": "3c13d6018a23838a3875c7532957dec6b375c1e1876ad14b1ccf77fdb54677d4"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmS2DispensePlateAssistant.cs.cs",
+      "start": 256,
+      "end": 268,
+      "sha256": "b927aa35151c59dd6662a529d6f72726f4ead6f924047d121f09fe4289747771",
+      "snippetSha256": "0afa6d4179792e9c872a6f1235f8843e47fc089aabc4e3e7a7a672a8fe3a8c6d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmS2DispensePlateAssistant.cs.cs",
+      "start": 275,
+      "end": 281,
+      "sha256": "b927aa35151c59dd6662a529d6f72726f4ead6f924047d121f09fe4289747771",
+      "snippetSha256": "836ad1a21d98ad2c26d4c44d707b745e8d1604f8e8de0656a0dfec6e2ecf50b1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmS2DispensePlateAssistant.cs.cs",
+      "start": 302,
+      "end": 307,
+      "sha256": "b927aa35151c59dd6662a529d6f72726f4ead6f924047d121f09fe4289747771",
+      "snippetSha256": "3c13d6018a23838a3875c7532957dec6b375c1e1876ad14b1ccf77fdb54677d4"
+    }
+  ],
+  "checks": [
+    "PASS S1 writes flag and reference before Save",
+    "PASS S1 failed Save keeps written state",
+    "PASS S1 Save accepts zero dimensions",
+    "PASS S1 Next invokes then advances",
+    "PASS S1 thrown Next skips advancement",
+    "PASS S1 failed refresh retains index",
+    "PASS S1 normal Done closes",
+    "PASS S1 thrown Done skips Close",
+    "PASS S2 writes flag and reference before Save",
+    "PASS S2 failed Save keeps written state",
+    "PASS S2 Save accepts zero dimensions",
+    "PASS S2 Next invokes then advances",
+    "PASS S2 thrown Next skips advancement",
+    "PASS S2 failed refresh retains index",
+    "PASS S2 normal Done closes",
+    "PASS S2 thrown Done skips Close"
+  ]
+}

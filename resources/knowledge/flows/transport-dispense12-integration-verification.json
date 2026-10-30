@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T13:27:03.477Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 73802,
+    "log": ".archify-work/verify-transport-dispense12-integration.log",
+    "sha256": "3d8ab6d07b7fe97119456cfdb4d506e17473f475ffbbb76e631b0f63025c1099"
+  },
+  "specialized": {
+    "checks": 276,
+    "completeMethods": 136,
+    "properties": 65,
+    "enums": 8,
+    "fields": 14,
+    "signalBindings": 23,
+    "sourceFragments": 223,
+    "sources": 106,
+    "topicSnapshots": 124,
+    "auditSha256": "d6d289087061ccc4ac799b71b65c19585a5e8246bc59f53b8d727b5fdca4bf3e",
+    "evidenceSha256": "d86c18c5043ee61cadb023a8580cf6b088a87795fbcb37784ef641053aca50b7"
+  },
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-dispense12-integration.log",
+    "sha256": "e99f5a1a0528573dac094833465913395fac4181de638a34ca553e8ec385bb3c",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "174cdfeafbaa5ae3921edebc59b504ecd293567264dd9397f4e9bb3e451993f9",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 30,
+    "topicSnapshots": 877,
+    "moduleSnapshots": 940
+  },
+  "sdkStaticContract": {
+    "evidence": "transport-dispense-relative-sdk-evidence.json",
+    "sha256": "2eb45aad76ba868b63a8ce88e84aca79fcfcfdc4e7af9f76fd7dbc0318848e34",
+    "methods": 4,
+    "assemblies": 2,
+    "selectedParameters": [
+      "position",
+      "vel",
+      "accuracyMode"
+    ],
+    "defaultAccuracy": "HighAccuracy(0)",
+    "scope": "Mono.Cecil metadata and IL only; no SDK/device execution, deployed DLL version or hardware proof"
+  },
+  "fixtureCorrections": {
+    "passedBaselineLog": ".archify-work/dispense12-integration-baseline.log",
+    "failedExpandedLog": ".archify-work/dispense12-integration-expanded.log",
+    "passedExpandedLog": ".archify-work/dispense12-integration-expanded-v2.log",
+    "scope": "Restore injected null domain controller before cleanup original Stop, which also depends on that field; preserve production fault before cleanup. Improved PowerShell inner-exception diagnostics. Registration helper duplicate local declaration fixed before registration; original production methods unchanged. Unit constructors/Refresh, coordinate SDK, BaseInformation, singleton/domain/program lifecycle and I/O/log/dialog/save remain explicit boundaries."
+  },
+  "continuation": {
+    "nextEvidence": "transport-loading-belt-next-evidence.json",
+    "nextEvidenceSha256": "73a797d5254ae6584c747cd1298bd541917f1d3742caf8498765083bd7de53a0",
+    "fragments": 20,
+    "dispense12CaptureSha256": "451f86a7012cecd444e80d9c99e23a2fa2fd9922418bdf041fd3e404d09013ac",
+    "dispenseBondCaptureSha256": "b5fba40354091cd3e20bf8e04c8e375cd62366f38887026b98824cfa86d71b4c",
+    "controllerCaptureSha256": "1cba5271c24d8eee2c9b7ac43068895ba4fa84d37603bcd7ff72568f53a2b6fe",
+    "waitingCaptureSha256": "dffcbfbb1de9df22adda9d1876b1bad3a053945cf1eeec625c0f8e60d6c9cc10",
+    "next": "Original loading-belt-to-dispense1, loading/dispense sensor/getter/setting/motion/SMEMA, actual loading parent and Unit constructor/Init/Refresh boundary; then other two loading transfers and actual product/program/pool/domain/SDK/native acceptance."
+  },
+  "scope": "Complete original dispense1-to-dispense2, dispense Clamp and synchronous belt, original Unit offset/cast getter/coordinate and base information declarations plus config/information properties compose with full producer/UI/readiness/real wafer Task/Stop and original dispense-to-Bond/downstream chain. GeneralCoordinateSystem/Distance, BaseInformation/constructors, singleton/domain/program lifecycle, SDK motion/I/O/limits, OpenVacuum, repository/log/dialog/save and remaining three loading transfers/native UI/build/configuration/DLL/equipment remain fixtures or pending."
+}

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1400" viewBox="0 0 2400 1400"><rect width="100%" height="100%" fill="white"/>
+<text x="630" y="75" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">调用处的实际参数</text>
+<text x="1810" y="75" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">被调方法的参数名</text>
+<text x="620" y="230" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">① IPTVisionPos</text>
+<polyline points="1110,230 1350,230" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1350,230 1329.2897166458883,240.0042072845583 1329.2897166458883,219.9957927154417" fill="#315d82"/>
+<text x="1810" y="230" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">① iptPickPos</text>
+<text x="620" y="390" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">② IPTPickPos</text>
+<polyline points="1110,390 1350,390" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1350,390 1329.2897166458883,400.0042072845583 1329.2897166458883,379.9957927154417" fill="#315d82"/>
+<text x="1810" y="390" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">② iptVisionPos</text>
+<text x="620" y="550" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">③ 目标 G0 − 头相机差</text>
+<polyline points="1110,550 1350,550" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1350,550 1329.2897166458883,560.0042072845583 1329.2897166458883,539.9957927154417" fill="#315d82"/>
+<text x="1810" y="550" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">③ bondPos</text>
+<text x="620" y="710" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">④ 目标 G0</text>
+<polyline points="1110,710 1350,710" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1350,710 1329.2897166458883,720.0042072845583 1329.2897166458883,699.9957927154417" fill="#315d82"/>
+<text x="1810" y="710" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">④ bondVisonPos</text>
+<text x="1200" y="850" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">方法关闭返回零   成功只返回 X   XY任一超0.5mm时返回零</text>
+<rect x="80" y="1000" width="600" height="210" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="380.0" y="1062" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">记录 G0 中间目标</text>
+<text x="380.0" y="1137" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">RealBondPoint3D</text>
+<rect x="900" y="1000" width="600" height="210" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="1062" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">转为运动轴坐标</text>
+<text x="1200.0" y="1137" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">ConvertG0ToMachinePos</text>
+<rect x="1720" y="1000" width="600" height="210" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="2020.0" y="1062" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">再追加实时补偿</text>
+<text x="2020.0" y="1137" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">轴目标 + point3D</text>
+<polyline points="680,1105 900,1105" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="900,1105 879.2897166458885,1115.0042072845583 879.2897166458885,1094.9957927154417" fill="#315d82"/>
+<polyline points="1500,1105 1720,1105" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1720,1105 1699.2897166458883,1115.0042072845583 1699.2897166458883,1094.9957927154417" fill="#315d82"/>
+<text x="1200" y="1320" fill="#18364b" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">字段记录位置与最终追加位置分开   不根据形参名称交换实参</text></svg>

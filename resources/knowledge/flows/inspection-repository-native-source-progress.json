@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "native-original-source-data-passed-full-product-integration-pending",
+  "preparedContext": {
+    "report": "transport-inspection-repository-integration-review.md",
+    "checks": 1303,
+    "testSha256": "3c5bb8cd4548cc10df497c5178d143f46669c952ebda78fae50c3bb8036c2648",
+    "includedIn1303FullRegression": false
+  },
+  "runtime": {
+    "test": "inspection-repository-native-source-test.json",
+    "testSha256": "739a4cca87b861bd925c8bd74b0d88f291ff3bb9b7ab8a03301016840c3ff04a",
+    "audit": "inspection-repository-native-source-audit.json",
+    "auditSha256": "f4871ce3a7d6caa464d2be98161010f53402c4e06ba910ccdc23d6f31e98f1f4",
+    "command": "node scripts/test-inspection-repository-native-source.cjs",
+    "observedExitCode": 0,
+    "log": ".archify-work/native-inspection-source-baseline-v1.log",
+    "logSha256": "7046edda94fdbf706e0d2c6b3aaf0064a3b369c92ca5272316ca96beab50ba30",
+    "distinctAssertions": 27,
+    "placements": 54,
+    "wholeSourceFiles": 6,
+    "originalInspectionCaptures": 8,
+    "originalSerializationAttributes": 1,
+    "isolatedFrameworkProcesses": 2
+  },
+  "findings": [
+    "Existing bundled Roslyn emits a subset DLL against explicit Framework implementation metadata references, loaded successfully in actual Windows .NET Framework process. Six complete original files and original inspection teaching members/JsonIgnore remain unchanged. This is not the original project build, reference-assembly installation or Fody weaving.",
+    "Original source repository uses actual SDK missing-list creation/empty/null behavior, original first-match duplicate/null list semantics, path caching/Save, failed constructor retry after pre-catch path failure, loaded disabled-item recipe/Filter behavior.",
+    "Native deserialization populates existing constructor state objects. Missing backside and handled invalid backside enum retain Forbidden; with taught PostBond the original aggregate passes. Missing/invalid PostBond retains UnAble and rejects. Explicit null state rejects, unknown numeric state 99 passes, and disabled backside flag does not bypass explicit UnAble.",
+    "Original IsAssistantSucceed and complete AssistantState.ChName are JsonIgnore during actual persistence. Complete Chinese-name dictionary getters execute directly.",
+    "A syntactically valid incompatible Name object triggers handled parsing errors and drops the source record from loaded list, causing configured Find to miss. Earlier expectation of retained empty Name was rejected by actual runtime and corrected.",
+    "Library/bin native runs execute the same 27 assertions twice; 54 placements are not 54 distinct behaviors. Source product initialized declarations, actual generic product Singleton, complete inspection fields, real path/recipe/PR/log integrations, AOP weaving/native app/deployment/UI/equipment remain pending."
+  ],
+  "scope": "Two isolated actual .NET Framework processes execute six complete unmodified source files, eight original inspection teaching members and the original JsonIgnore attribute against actual library/bin JSON SDK. 27 identical assertions per copy, 54 placements not distinct behaviors. Compiler uses existing Roslyn and explicit Framework implementation references; PR/vision/path/recipe/log dependencies and remaining inspection fields are adapters. Fody weaving, complete product/config, original project build/deployment/UI/equipment and all 29-group/13-requirement acceptance pending. Outside current 1303 full-regression source manifest and reader topics.",
+  "next": "Compile original product initialized declarations and correct model enum, then integrate actual SDK singleton/JSON with source product/config defaults. Preserve original code and distinguish compiler subset/Fody/native project/deployment acceptance; all 29 groups and 13 requirements remain incomplete."
+}

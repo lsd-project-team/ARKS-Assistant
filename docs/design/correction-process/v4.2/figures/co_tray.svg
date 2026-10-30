@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="120" y="500" width="1120" height="480" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<rect x="206.66666666666663" y="548.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="236.66666666666663,569.6 376.66666666666663,569.6 376.66666666666663,670.4 236.66666666666663,670.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="306.66666666666663" cy="620.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="254.16666666666663" cy="582.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="580.0" y="548.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="613.6862427585163,564.839818704816 753.3452097948916,574.6057250289937 746.3137572414837,675.160181295184 606.6547902051084,665.3942749710063" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="680.0" cy="620.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="630.2646820688872" cy="578.629864028612" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="953.3333333333335" y="548.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="983.3333333333335,569.6 1123.3333333333335,569.6 1123.3333333333335,670.4 983.3333333333335,670.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1053.3333333333335" cy="620.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1000.8333333333335" cy="582.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="206.66666666666663" y="788.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="236.66666666666663,809.6 376.66666666666663,809.6 376.66666666666663,910.4 236.66666666666663,910.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="306.66666666666663" cy="860.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="254.16666666666663" cy="822.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="580.0" y="788.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="610.0,809.6 750.0,809.6 750.0,910.4 610.0,910.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="680.0" cy="860.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="627.5" cy="822.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="953.3333333333335" y="788.0" width="200" height="144" rx="0" fill="white" stroke="#B7C6CF" stroke-width="3"/>
+<polygon points="983.3333333333335,809.6 1123.3333333333335,809.6 1123.3333333333335,910.4 983.3333333333335,910.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1053.3333333333335" cy="860.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1000.8333333333335" cy="822.2" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="610.0" y="225" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="680.0" cy="270" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="640.0,315 680.0,370 720.0,315" stroke="#246B99" stroke-width="5" fill="none"/>
+<circle cx="680.0" cy="620.0" r="115" fill="white" stroke="#246B99" stroke-width="7"/>
+<polygon points="608.949545812696,560.8998057551601 758.5841533516696,571.3632768167788 751.050454187304,679.1001942448399 601.4158466483304,668.6367231832212" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="680.0" cy="620.0" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="626.712159359522" cy="575.6748543163701" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="680" y="1150" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">这次要取的芯片</text>
+<text x="1810" y="430" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">下视相机</text>
+<text x="1810" y="610" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">从上面拍槽内芯片</text>
+<text x="1810" y="790" font-family="Microsoft YaHei" font-size="58" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">找到位置和方向</text></svg>

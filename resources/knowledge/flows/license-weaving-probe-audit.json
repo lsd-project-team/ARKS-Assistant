@@ -1,0 +1,32 @@
+{
+  "status": "license-weaving-failure-bindings-passed",
+  "actualLicenseTargetAttempts": 5,
+  "licenseObservedExitCodes": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "licensedTypeEntries": 20,
+  "uniqueLicensedTypes": 12,
+  "fodyCompatibilityAttempts": 2,
+  "fodyObservedExitCodes": [
+    1,
+    1
+  ],
+  "newFrozenInputs": 37,
+  "totalFrozenBindings": 3215,
+  "replayOutcomesIdentical": true,
+  "licenseCompilationAccepted": false,
+  "weavingAccepted": false,
+  "wholeGoalComplete": false,
+  "checkedAt": "2026-10-02T01:25:38.459Z",
+  "test": "license-weaving-probe-test.json",
+  "testSha256": "7efed2632ad3a7e74b077d073ef5657b8468610d2cb217e5f53a766d17ecda46",
+  "command": "node scripts/verify-license-weaving-probe.cjs",
+  "observedSession": 96767,
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-license-weaving-probe.log",
+  "logSha256": "62f08ffed093894b27bdc6a291bf2eab787266dc77f5ddba063bda9e03132c90"
+}

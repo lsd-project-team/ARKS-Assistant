@@ -1,0 +1,28 @@
+{
+  "request": "两个封面重新设计，去掉版本时间，只保留大标题和介绍",
+  "cover": {
+    "title": "纠偏过程\n设计文档",
+    "intro": "介绍供料端定位、产品层级定位、上视与中转台纠偏，\n说明计算依据、结果保存、生效时机及失败处理。"
+  },
+  "pdf_sha256": "be489c5ee714e1734f7776fb296b63f5b82f4d9b309c83d5c5eaeab495ae0ddf",
+  "docx_sha256": "86d12f4ef4a3a201a1d83120b30b75e7c0f0eca11a78d8eaa8fceae24a4d5a62",
+  "page_count": 34,
+  "cover_direct_view": {
+    "viewed": true,
+    "page": 1,
+    "pdf_sha256": "be489c5ee714e1734f7776fb296b63f5b82f4d9b309c83d5c5eaeab495ae0ddf",
+    "raster_sha256": "b459c0acdba82cc5be7a672112d24a4216c7a99ab780f094965b55157e4117bd",
+    "result": "直接查看最终1500px封面：大标题与两行自然分行介绍，左对齐统一，无版本日期、读者说明、页眉页码、图形或额外副标题；字形与边界正常。"
+  },
+  "body_comparison": {
+    "pages": 34,
+    "docx_after_cover_xml_identical": true,
+    "all_other_docx_parts_identical": true,
+    "body_pdf_text_identical": true,
+    "body_raster_changed_pages": [],
+    "header_raster_changed_pages": [],
+    "header_check": "TU页眉相同字符的局部微小栅格差异；新页眉直接检查正常，正文区域逐页像素一致。"
+  },
+  "render_pipeline": "规范render_docx缺少LibreOffice；本机独立隐藏Word实例只读打开，不保存或更新正文，原生导出后恢复原始PNG流，Poppler重渲染全部页面。",
+  "version_and_date": "仅从可见封面删除，配套核查记录仍保留版本与日期。"
+}

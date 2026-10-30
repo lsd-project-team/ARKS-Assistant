@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05T02:52:54.459Z",
+  "status": "original16-project-delegate-provenance-and-business-source-connections-passed",
+  "parent": {
+    "file": "docs/archify/semantic-source-reader-test.json",
+    "sha256": "52bb71571c7c8808437105b2ab0dc71d2ad3107d33774c8a0863561e667344ba",
+    "totalFrozenBindings": 8697
+  },
+  "parentFrozenBindings": 8697,
+  "newFrozenInputs": 249,
+  "totalFrozenBindings": 8946,
+  "reusedParentInputs": 1818,
+  "projects": 16,
+  "extractions": 32,
+  "compileFiles": 1410,
+  "inventoryFiles": 1436,
+  "excludedFilesNotAnalyzed": 26,
+  "records": 10967,
+  "delegateInvocations": 546,
+  "receiverSymbols": 75,
+  "receiverSymbolsWithDirectSourceCandidate": 27,
+  "invocationsOnSymbolsWithDirectSourceCandidate": 161,
+  "receiverKinds": {
+    "Property": 454,
+    "Field": 59,
+    "Parameter": 17,
+    "Local": 13,
+    "Event": 3
+  },
+  "anonymousSourceSymbols": 2441,
+  "nonUniqueRoslynAnonymousDocGroups": 351,
+  "anonymousSymbolsInNonUniqueDocGroups": 2194,
+  "sourceOccurrenceRangesChecked": 43199,
+  "metadataFilesHashChecked": 357,
+  "normalizedReplayEqual": 16,
+  "rawReplayEqual": 5,
+  "fixtureAssertions": 25,
+  "businessConnections": 3,
+  "summary": {
+    "file": ".archify-work/delegate-provenance/summary.json",
+    "sha256": "19fdec928cb2f315117fb3b6f2e0e5c9fc4f99aff4c19e62c2eb94108226b819"
+  },
+  "evidence": {
+    "file": ".archify-work/delegate-provenance/evidence.json",
+    "sha256": "ff64b5537d9ea7bd696f90bbb574426809475920d6ccd5265f89233e9707c001"
+  },
+  "verificationResults": {
+    "file": ".archify-work/delegate-provenance/verification-results.json",
+    "sha256": "db963d6b1ca367afda850cebbdfff499e49e1389a5a2b2716b136d0ff8f77a51"
+  },
+  "queryResults": {
+    "file": ".archify-work/delegate-provenance/query-results.json",
+    "sha256": "238ef29a4d5ff19b82851920ae55394ec06384ca5cdedc3eeace6283c22c1368"
+  },
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "productionRuntimeExecuted": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "realUIExecuted": false,
+  "deviceExecuted": false,
+  "sqlWritesExecuted": false,
+  "fullBusinessSemanticCoverage": false,
+  "runtimeDynamicDispatchResolved": false,
+  "oldGraphAnonymousIdentitiesRepaired": false,
+  "oldReaderModified": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "scope": "16 original Compile inputs, two passes32 analysis-only processes. Static delegate creation/write/add/remove/argument/default/return/invoke with actual call receiver/constructed parameter context. All546 old invocation occurrences matched with legacy owner IDs only for comparison;2441 anonymous source identities uniquely keyed by source span, raw Roslyn documentation IDs collide in351 groups2194symbols.75 receiver symbols27direct source candidates cover161call occurrences but no runtime target resolution; reset/removal/controlflow/aliases/lifetimes retained. Three exact source connections: startup exception/thread callbacks, PR image registration/3invocations, static UI field instance PostAction/2Show lambdas/Control.Invoke. Old whole graph/reader anonymous identities still need a new derived repair. No production execution/build/UI/SQL/device or full business completion.",
+  "runtime": {
+    "test": "delegate-provenance-test.json",
+    "testSha256": "5caacbef4d48fbc7cbb7464a1ae0063176b99ae6604e383d8baf6121295149d9",
+    "audit": "delegate-provenance-audit.json",
+    "auditSha256": "559c9cb990b781faf4313ed3b329b78e2966754ef6c84daa468717f15bf8db32",
+    "report": "delegate-provenance-review.md",
+    "reportSha256": "be0bffc3765723cd893cb1ab51595c2b3653f37de3b2f19bdf2112520aa02204"
+  },
+  "nextRequired": "Create new complete semantic graph and reader with unique anonymous method/related parameter ownership; preserve frozen historical artifacts. Continue virtual/interface, flow/instance business interpretation and full build/UI/SQL/device acceptance."
+}

@@ -1,0 +1,33 @@
+{
+  "generator": "Archify 3.2.0",
+  "artifact": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\safe-motion-reading.html",
+    "sha256": "f0e055f26cfd9a9b5f8a50cdcceb813a10287794fa55d23ae208cf5d4417f41d",
+    "bytes": 815828
+  },
+  "specification": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\safe-motion-reading.json",
+    "sha256": "4a61ee89f8cc8c3d0e172560a9eb58d480b9261cdea06d0995dda53e20dc7098",
+    "bytes": 4251
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "source": "Committed source review at pinned revision; original trunk separately fingerprinted.",
+  "manualReview": {
+    "page": "/#topic/motion-safety",
+    "widths": [
+      1280,
+      497
+    ],
+    "readingCopy": true,
+    "nodesSwitched": 27,
+    "nodeHeadingsVerified": 27,
+    "diagramZoomOrPan": false,
+    "scope": "Compact placement retains all seven nodes, six relationships, labels and source bindings; inspected after final production build."
+  }
+}

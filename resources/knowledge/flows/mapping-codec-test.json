@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Extracted complete component-code writer and reader with actual System.IO temp files and synthetic product/configuration objects. Not a production constructor, hardware, coordinate, UI or end-to-end recovery test.",
+  "adaptations": [
+    "Three D drive root literals redirected to a unique temporary directory",
+    "Six interpolated OK/NG strings lowered to equivalent concatenation for system C# compiler",
+    "Product geometry and module failure/completion are controlled stubs; injectors are no-op; finish/disable methods are minimal state stubs; dialogs are captured messages"
+  ],
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+      "start": 1578,
+      "end": 1762,
+      "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+      "snippetSha256": "ed19d2e53fe70629cc13b7c76c586b01b80e4d25f4d7b963d6d4af85b0128a00"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Service/TuService.cs",
+      "start": 1953,
+      "end": 2079,
+      "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+      "snippetSha256": "af21e7c186c6853d1db5df43e4c4a18631c3aa594a4db877a95f7b223b71c400"
+    }
+  ],
+  "transformedWriterSha256": "37b1bed770ffc6b90eddf402ecf4b1b21f9d8c82947ff960186d5656ee25b6be",
+  "checks": [
+    "PASS both arrays count header order",
+    "PASS both arrays X disables positions",
+    "PASS both arrays 1 leaves pending",
+    "PASS both arrays first code copied to all positions",
+    "PASS both arrays header recipe does not switch config",
+    "PASS substrate array count header order",
+    "PASS substrate array X disables positions",
+    "PASS substrate array 1 leaves pending",
+    "PASS substrate array first code copied to all positions",
+    "PASS substrate array header recipe does not switch config",
+    "PASS module array count header order",
+    "PASS module array X disables positions",
+    "PASS module array 1 leaves pending",
+    "PASS module array first code copied to all positions",
+    "PASS module array header recipe does not switch config",
+    "PASS no arrays writes only four header lines",
+    "PASS no arrays restores no progress",
+    "PASS literal code 1 collides with pending sentinel",
+    "PASS literal code X collides with disabled sentinel",
+    "PASS space in code shifts adjacent position",
+    "PASS empty code restored as completed empty value",
+    "PASS file dimensions ignored in favor of current config",
+    "PASS truncated header exception propagates",
+    "PASS missing file returns null",
+    "PASS save failure swallowed with message",
+    "TOTAL 25"
+  ]
+}

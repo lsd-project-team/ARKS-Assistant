@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-input-dispatch-handler-mutations-and-event-boundaries-native-preparation-passed",
+  "command": "node scripts/verify-native-dispense-input.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "6b829f",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-dispense-input.log",
+  "logSha256": "061309c88df499129f8df246a2992302cef667a1e17c70e23882ae9dfd526de5",
+  "testSha256": "fb6c308214ae388145781666a180c3730abda604dba2a35732f9b142157abc5e",
+  "parentValidation": {
+    "command": "guarded original dispense rendering → encoding-preserving resources validation pipeline",
+    "observedSession": 50599,
+    "observedCompletionChunk": "ed86ac",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-dispense-rendering.cjs",
+        "log": ".archify-work/native-dispense-input/parent-rendering-verification.log",
+        "sha256": "45dbbd6b1cc71e5c3c3254c18f6b84e0d5aea51f2cbf1c2844f5c7bef40127e7"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-dispense-input/parent-resources-verification.log",
+        "sha256": "b4f55d80e8bb696722d21257a5878399bf7c198aebeb1e15ea8edc7991090769"
+      }
+    ]
+  },
+  "acceptedProcesses": 2,
+  "checksPerPass": 44,
+  "distinctLabels": 44,
+  "selectedMethods": 84,
+  "formBodiesStaticOnly": 3,
+  "originalSources": 22,
+  "newFrozenInputs": 54,
+  "totalFrozenBindings": 6380,
+  "wholeGoalComplete": false,
+  "diagnostics": {
+    "acceptedCompileAndPrimary": {
+      "chunk": "1cd5c0",
+      "exitCode": 0,
+      "checks": 44
+    },
+    "replayCompileRuntime": {
+      "chunk": "348250",
+      "exitCode": 0,
+      "checks": 44
+    },
+    "finalIl": {
+      "chunk": "d4f042",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 50599,
+      "chunk": "ed86ac",
+      "exitCode": 0
+    }
+  }
+}

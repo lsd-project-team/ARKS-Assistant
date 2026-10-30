@@ -1,0 +1,144 @@
+{
+  "schema": "archify-s2-self-check-audit-v1",
+  "status": "source-confirmed-partial",
+  "recordedAt": "2026-10-06T22:05:58.887Z",
+  "sourceHashes": {
+    "AKRS.ZX2200/BondSystem/Models/System2Domain.cs": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+    "AKRS.ZX2200/DispenseSystem/Services/System2ActionNodesService.cs": "e8ae1371519fae576769fbd7a49221bc08d19978fd68f781aa9d29843498ff53",
+    "AKRS.ZX2200/BondSystem/Models/Programs/BondProgram.cs": "261095632b6703ac2fe26c5c03243562bdf9e24628c4fca6e0328f5544cadae2",
+    "AKRS.ZX2200/BondSystem/Models/Programs/NozzleShelfProgram.cs": "d198315022ce1605ef27bf13f22aa86399a690ff65015b55e6e12a5132166221",
+    "AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37",
+    "AKRS.ZX2200/BondSystem/Models/Parameter/System2Configuration.cs": "41855abc5da74b6950712b936130b3ead4baa26c9766a05c305277393ad9f679",
+    "AKRS.ZX2200/BondSystem/Models/ActionNodes/BondActionNodeRepository.cs": "5d421c598701ab1f7945d4da706f8b0aeaa831eed97cb938e008a92ce8ddc3e4"
+  },
+  "readiness": {
+    "file": "AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+    "methodLine": 594,
+    "gateOrder": [
+      {
+        "token": "this.BondHeadController.OpenBondHeadVaccum();",
+        "line": 597
+      },
+      {
+        "token": "if (!System2Configuration.GetInstance().IsActiveSelfCheck)",
+        "line": 599
+      },
+      {
+        "token": "ret = this.BondProgram.SelfCheck();",
+        "line": 607
+      },
+      {
+        "token": "ret = this.ActionNodesService.SelfCheck();",
+        "line": 614
+      },
+      {
+        "token": "this.BondDevicePara.ULMPara.IsEmpty()",
+        "line": 621
+      },
+      {
+        "token": "this.BondDevicePara.BondHeadParam.IsEmpty()",
+        "line": 634
+      },
+      {
+        "token": "this.BondDevicePara.NozzleShelfParam.IsEmpty()",
+        "line": 646
+      },
+      {
+        "token": "ForceConfig.GetInstance().IsEmpty()",
+        "line": 658
+      },
+      {
+        "token": "System2Configuration.GetInstance().IsActiveDriftCompensate",
+        "line": 676
+      },
+      {
+        "token": "System2Configuration.GetInstance().IsActivePickUpCompensate",
+        "line": 691
+      },
+      {
+        "token": "this.NozzleShelfController.CheckToolBankConfiguration()",
+        "line": 706
+      },
+      {
+        "token": "System2Configuration.GetInstance().IsActiveToolDetection",
+        "line": 711
+      },
+      {
+        "token": "System2RunTimeProvider.IsMaterialOnBondhead",
+        "line": 750
+      },
+      {
+        "token": "this.BondActionNodeRepository.S2PreDispenseActionNode.IsAlarm()",
+        "line": 765
+      }
+    ],
+    "deviceCalls": [
+      "OpenBondHeadVaccum",
+      "NozzleShelfController.CheckToolBankConfiguration",
+      "BondHeadController.IsToolOnBondheadLogic",
+      "BondHeadController.IsToolOnBondheadPhy",
+      "BondModuleController.ThrowAction",
+      "S2PreDispenseActionNode.IsAlarm"
+    ],
+    "conditionalDialogs": [
+      "tool-on-head mismatch uses YesNo",
+      "material-on-head uses OKCancel"
+    ],
+    "conclusion": "CheckIsReady opens bond-head vacuum before the self-check switch, then runs program/process gates, parameter gates, tool-bank sensors, optional tool detection, material handling, and pre-dispense alarm checks in source order."
+  },
+  "actionNodes": {
+    "file": "AKRS.ZX2200/DispenseSystem/Services/System2ActionNodesService.cs",
+    "methodLine": 818,
+    "failureGates": [
+      "no process steps",
+      "missing BondPositionName",
+      "bond position absent from current recipe",
+      "missing ComponentName",
+      "component absent from repository",
+      "empty uplook P1VisionPos",
+      "empty down-look P1VisionPos"
+    ],
+    "messageBoxCount": 7,
+    "conclusion": "The action-node self-check is UI-bound: every listed failure path displays an XtraMessageBox before returning false."
+  },
+  "bondProgram": {
+    "file": "AKRS.ZX2200/BondSystem/Models/Programs/BondProgram.cs",
+    "methodLine": 85,
+    "failureGates": [
+      "NozzleShelfProgram.SelfCheck",
+      "carrier nozzle missing",
+      "four force-control ranges",
+      "uplook/down-look teaching positions",
+      "vacuum-off delay greater than placement delay",
+      "IPT delay gate when IPT is configured"
+    ],
+    "messageBoxCount": 9,
+    "conclusion": "BondProgram.SelfCheck iterates carriers and reports every failed configuration through the UI message-box wrapper."
+  },
+  "nozzleShelf": {
+    "programFile": "AKRS.ZX2200/BondSystem/Models/Programs/NozzleShelfProgram.cs",
+    "programMethodLine": 224,
+    "controllerFile": "AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+    "controllerMethodLine": 73,
+    "programMessageBoxCount": 2,
+    "controllerSensorReads": 7,
+    "controllerMessageBoxCount": 7,
+    "conclusion": "The program check is data-only until it reaches tool-bank configuration; that controller reads seven picker-holder sensors and can enter the alarm UI path."
+  },
+  "configuration": {
+    "file": "AKRS.ZX2200/BondSystem/Models/Parameter/System2Configuration.cs",
+    "selfCheckDefaultLine": 65,
+    "toolDetectionDefaultLine": 30,
+    "conclusion": "Self-check and tool-detection are enabled by default in source, while drift and pickup compensation flags are separate conditional gates."
+  },
+  "runtimeBoundary": {
+    "status": "not-executed",
+    "reason": "The inspected self-check paths display DevExpress/AKRS message boxes and read hardware sensors or invoke bond-head/tool-bank actions; no production UI, SDK, database, VM, hardware, or device execution was attempted.",
+    "existingRelatedEvidence": "docs/archify/original-system2-domain-native-audit.json"
+  },
+  "boundaries": [
+    "This audit is static source evidence with SHA-256 anchors; it does not prove that every branch is reachable from the production start path.",
+    "The existing original-binary System2Domain probe intentionally stopped before the UI-bound SelfCheck path; it does not turn this static audit into runtime acceptance.",
+    "No production source, project file, database, VM, hardware, device, or deployment was modified or invoked."
+  ]
+}

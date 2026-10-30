@@ -1,0 +1,58 @@
+{
+  "revision": "3.2",
+  "review_type": "文档技术及版式自检",
+  "gates": [
+    {
+      "requirement": "三项补入设计文档",
+      "passed": true,
+      "evidence": "第9至11章，PDF31至40页；CN01至CN25"
+    },
+    {
+      "requirement": "再深入检查遗漏",
+      "passed": true,
+      "evidence": "1158个C#文件索引、103个候选逐项归属；补入11.4人工导入编辑清空；55条结论；不把索引当作通读"
+    },
+    {
+      "requirement": "源码限定目录且只读",
+      "passed": true,
+      "evidence": "全量索引哈希再次一致；所有路径断言在trunk/AKRS.ZX2200；业务源码Git差异为空"
+    },
+    {
+      "requirement": "Word与PDF同步",
+      "passed": true,
+      "evidence": "同一正文127段完整匹配；21组原生公式；同尺寸图像更新，两端均使用相同PNG"
+    },
+    {
+      "requirement": "图文表达",
+      "passed": true,
+      "evidence": "27图20表；新增6幅SVG/PNG精确工程图；对象、输入、计算、写回、生效与失败有对应章节和图注"
+    },
+    {
+      "requirement": "PDF与Word版式",
+      "passed": true,
+      "evidence": "46页全页校样；67项目录/书签和47项图表索引逐项对页；字体嵌入、图像>=300dpi"
+    },
+    {
+      "requirement": "新增公式和边界",
+      "passed": true,
+      "evidence": "14项Python复算与18项纯C#数值类检查；既有9组几何公式重新验证"
+    },
+    {
+      "requirement": "阅读效率",
+      "passed": true,
+      "evidence": "研发与调试13个问题在最终PDF可定位；精简依据附录1页、图表索引分别成页"
+    },
+    {
+      "requirement": "保留封面与清理要求",
+      "passed": true,
+      "evidence": "封面只留大标题和介绍；没有制作说明页，哈希/工具/执行情况与入口证据边界外置"
+    },
+    {
+      "requirement": "保留旧版并更新入口",
+      "passed": true,
+      "evidence": "旧v3.1原样保留；新发布v3.2；两册总入口保留TU7.1并切换纠偏3.2"
+    }
+  ],
+  "runtime_boundary": "自动采集窗口的直接打开入口尚不能由限定目录证明；实现已纳入，按辅助流程描述，不声称已接入每轮生产",
+  "publication": "提交与推送由当前仓库和远端Git记录另行验证；此文档不自签Git操作结果"
+}

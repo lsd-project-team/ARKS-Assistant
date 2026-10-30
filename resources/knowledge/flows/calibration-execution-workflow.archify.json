@@ -1,0 +1,205 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 标定执行流程",
+    "subtitle": "源码静态复核 · 点击节点追踪关系；源码依据见配套标定文档 · 未实机验收",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "animation": "none",
+    "viewBox": [
+      1100,
+      550
+    ]
+  },
+  "lanes": [
+    {
+      "id": "start",
+      "label": "入口与邦定准备"
+    },
+    {
+      "id": "optics",
+      "label": "相机与偏移标定"
+    },
+    {
+      "id": "finish",
+      "label": "晶圆、保存及退出"
+    }
+  ],
+  "mainPath": [
+    "entry",
+    "system",
+    "confirm",
+    "bond",
+    "offset",
+    "uplook",
+    "wafer",
+    "save"
+  ],
+  "nodes": [
+    {
+      "id": "entry",
+      "lane": "start",
+      "col": 0,
+      "type": "frontend",
+      "label": "启动与回零",
+      "sublabel": "回零 bool 未检查"
+    },
+    {
+      "id": "system",
+      "lane": "start",
+      "col": 1,
+      "type": "security",
+      "label": "当前系统？",
+      "sublabel": "Task.Run 分流"
+    },
+    {
+      "id": "confirm",
+      "lane": "start",
+      "col": 2,
+      "type": "security",
+      "label": "清洁工具确认",
+      "sublabel": "安全Z、关真空"
+    },
+    {
+      "id": "bond",
+      "lane": "start",
+      "col": 3,
+      "type": "backend",
+      "label": "邦定标定",
+      "sublabel": "测高、30点采样"
+    },
+    {
+      "id": "offset",
+      "lane": "start",
+      "col": 4,
+      "type": "backend",
+      "label": "更换BMC / 偏移",
+      "sublabel": "人工确认后执行"
+    },
+    {
+      "id": "uplook",
+      "lane": "optics",
+      "col": 4,
+      "type": "backend",
+      "label": "上视与同标记",
+      "sublabel": "同标记可跳过"
+    },
+    {
+      "id": "wafer",
+      "lane": "finish",
+      "col": 4,
+      "type": "backend",
+      "label": "晶圆标定",
+      "sublabel": "确认、间距、25点"
+    },
+    {
+      "id": "save",
+      "lane": "finish",
+      "col": 5,
+      "type": "database",
+      "label": "保存并展示",
+      "sublabel": "走到末尾才执行"
+    },
+    {
+      "id": "dispense",
+      "lane": "optics",
+      "col": 1,
+      "type": "backend",
+      "label": "点胶标定",
+      "sublabel": "9点、测高、保存"
+    },
+    {
+      "id": "exit",
+      "lane": "finish",
+      "col": 2,
+      "type": "security",
+      "label": "提前退出",
+      "sublabel": "取消或子任务 false"
+    }
+  ],
+  "edges": [
+    {
+      "id": "entry-system",
+      "from": "entry",
+      "to": "system",
+      "role": "main"
+    },
+    {
+      "id": "system-confirm",
+      "from": "system",
+      "to": "confirm",
+      "label": "其他系统",
+      "role": "main"
+    },
+    {
+      "id": "system-dispense",
+      "from": "system",
+      "to": "dispense",
+      "label": "System1",
+      "role": "branch"
+    },
+    {
+      "id": "confirm-bond",
+      "from": "confirm",
+      "to": "bond",
+      "role": "main"
+    },
+    {
+      "id": "bond-offset",
+      "from": "bond",
+      "to": "offset",
+      "role": "main"
+    },
+    {
+      "id": "offset-uplook",
+      "from": "offset",
+      "to": "uplook",
+      "role": "main"
+    },
+    {
+      "id": "wafer-save",
+      "from": "wafer",
+      "to": "save",
+      "role": "main"
+    },
+    {
+      "id": "confirm-exit",
+      "from": "confirm",
+      "to": "exit",
+      "label": "取消",
+      "role": "error"
+    },
+    {
+      "id": "wafer-exit",
+      "from": "wafer",
+      "to": "exit",
+      "label": "取消 / false",
+      "role": "error"
+    },
+    {
+      "id": "uplook-wafer",
+      "from": "uplook",
+      "to": "wafer",
+      "role": "main"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "源码与范围",
+      "items": [
+        "入口 UcMainSystem.cs:1338；主调度 CalibrateTask.cs:2275。完整行号见标定主流程文档。",
+        "同标记取消只跳过该步；各子任务false退出。错误边仅示代表路径。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "完成不等于验收",
+      "items": [
+        "分阶段保存，无整体回滚；回零和部分居中bool未检查。",
+        "源码顺序已复核；SDK、设备质量及其余标定入口仍待验证。"
+      ]
+    }
+  ]
+}

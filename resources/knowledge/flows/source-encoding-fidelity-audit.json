@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "status": "source-encoding-fidelity-raw-source-and-reader-passed-runtime-migration-pending",
+  "command": "node scripts/verify-source-encoding-fidelity.cjs",
+  "observedSession": 8620,
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-source-encoding-fidelity.log",
+  "logSha256": "c82bc72239e004e7c68c3317f3f1db163a4045cc24b26e3a66afb08320b55d4e",
+  "testSha256": "e0d40f9f800ef4b9da6f25d9e12049adcfa60043e2721e09b34997d17e56f178",
+  "inventoryFiles": 1436,
+  "compileFiles": 1410,
+  "legacyFiles": 7,
+  "projects": 16,
+  "compilations": 48,
+  "actualRoslynAutoDecoderMatchingFiles": 1436,
+  "actualNativeCscProbeCompilations": 4,
+  "methodBodiesCompared": 18286,
+  "changedLdstrInstructions": 59,
+  "readerCorrectedSnippets": 12,
+  "newFrozenInputs": 317,
+  "totalFrozenBindings": 3896,
+  "wholeGoalComplete": false
+}

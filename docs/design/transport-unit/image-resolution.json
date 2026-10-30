@@ -1,0 +1,112 @@
+[
+  {
+    "file": "figures/p01-product-map.png",
+    "page": 5,
+    "pixels": [
+      1536,
+      1024
+    ],
+    "display_inches": 5.05,
+    "effective_dpi": 304.16
+  },
+  {
+    "file": "figures/p02-responsibility.png",
+    "page": 6,
+    "pixels": [
+      2400,
+      1150
+    ],
+    "display_inches": 6.5493,
+    "effective_dpi": 366.45
+  },
+  {
+    "file": "figures/p03-config-instance.png",
+    "page": 8,
+    "pixels": [
+      1536,
+      1024
+    ],
+    "display_inches": 5.05,
+    "effective_dpi": 304.16
+  },
+  {
+    "file": "figures/p04-work-order.png",
+    "page": 9,
+    "pixels": [
+      2400,
+      1080
+    ],
+    "display_inches": 6.5494,
+    "effective_dpi": 366.44
+  },
+  {
+    "file": "figures/p05-coordinate-chain.png",
+    "page": 13,
+    "pixels": [
+      2400,
+      790
+    ],
+    "display_inches": 6.5485,
+    "effective_dpi": 366.5
+  },
+  {
+    "file": "figures/p06-coordinate-geometry.png",
+    "page": 13,
+    "pixels": [
+      2400,
+      1470
+    ],
+    "display_inches": 6.5499,
+    "effective_dpi": 366.42
+  },
+  {
+    "file": "figures/p07-build-sequence.png",
+    "page": 15,
+    "pixels": [
+      2400,
+      1130
+    ],
+    "display_inches": 6.5486,
+    "effective_dpi": 366.49
+  },
+  {
+    "file": "figures/p11-layout-models.png",
+    "page": 16,
+    "pixels": [
+      2400,
+      1110
+    ],
+    "display_inches": 6.5496,
+    "effective_dpi": 366.44
+  },
+  {
+    "file": "figures/p08-lifetimes.png",
+    "page": 17,
+    "pixels": [
+      2400,
+      1230
+    ],
+    "display_inches": 6.5488,
+    "effective_dpi": 366.48
+  },
+  {
+    "file": "figures/p09-handover.png",
+    "page": 18,
+    "pixels": [
+      2400,
+      1290
+    ],
+    "display_inches": 6.549,
+    "effective_dpi": 366.47
+  },
+  {
+    "file": "figures/p10-progress.png",
+    "page": 20,
+    "pixels": [
+      2400,
+      850
+    ],
+    "display_inches": 6.549,
+    "effective_dpi": 366.47
+  }
+]

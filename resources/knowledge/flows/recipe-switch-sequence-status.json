@@ -1,0 +1,123 @@
+{
+  "status": "delivered",
+  "diagramType": "sequence",
+  "specification": {
+    "path": "recipe-switch-sequence.archify.json",
+    "sha256": "0c9802f0b06eccf87e668f724c11416014caaeee1cfb191b822c14135f3c1de5",
+    "bytes": 3460
+  },
+  "artifact": {
+    "path": "recipe-switch-sequence.html",
+    "sha256": "dba5f62a2dd86c6afc1dafb08123159765fea6bc4976d03bcbaeee865f0cf745",
+    "bytes": 806908
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  },
+  "browserReceipt": "recipe-switch-sequence.visual-check.json",
+  "sourceEvidence": "recipe-switch-failure-evidence.json",
+  "visualReview": {
+    "status": "passed",
+    "correctionRounds": 2,
+    "inspected": [
+      "1440x900 light",
+      "2048x1320 dark"
+    ]
+  },
+  "relationships": [
+    {
+      "id": "save",
+      "from": "entry",
+      "to": "config",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "start": 809,
+      "end": 814
+    },
+    {
+      "id": "same",
+      "from": "config",
+      "to": "entry",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "start": 816,
+      "end": 825
+    },
+    {
+      "id": "invoke",
+      "from": "entry",
+      "to": "reload",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "start": 816,
+      "end": 825
+    },
+    {
+      "id": "init",
+      "from": "reload",
+      "to": "program",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 139,
+      "end": 149
+    },
+    {
+      "id": "reset",
+      "from": "program",
+      "to": "reload",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 124,
+      "end": 132
+    },
+    {
+      "id": "preerror",
+      "from": "program",
+      "to": "entry",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 139,
+      "end": 151
+    },
+    {
+      "id": "close",
+      "from": "reload",
+      "to": "vision",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 153,
+      "end": 167
+    },
+    {
+      "id": "pr",
+      "from": "reload",
+      "to": "vision",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 171,
+      "end": 178
+    },
+    {
+      "id": "missing",
+      "from": "vision",
+      "to": "reload",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 175,
+      "end": 195
+    },
+    {
+      "id": "return",
+      "from": "reload",
+      "to": "entry",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "start": 189,
+      "end": 203
+    },
+    {
+      "id": "finish",
+      "from": "entry",
+      "to": "background",
+      "file": "trunk/AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "start": 834,
+      "end": 837
+    }
+  ],
+  "scope": "确认非空选择后的主要调用；返回/异常传播箭头非新增调用。其他入口分支见报告；不代表设备验收。"
+}

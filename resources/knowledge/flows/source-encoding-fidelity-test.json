@@ -1,0 +1,1710 @@
+{
+  "schemaVersion": 1,
+  "status": "source-encoding-fidelity-raw-source-and-reader-passed-runtime-migration-pending",
+  "parent": {
+    "file": "native-vision-image-queue-test.json",
+    "sha256": "bcff8719537043fd9f2338059dd7a2198ca079925c955dd4ee163c7cdbdf5ddb",
+    "progress": "native-vision-image-queue-progress.json",
+    "progressSha256": "a3be2ba16795f6041db797711ae17366ded37e1f592c816856f50adb0282353f"
+  },
+  "parentFrozenBindings": 3579,
+  "newFrozenInputs": 317,
+  "totalFrozenBindings": 3896,
+  "inventoryFiles": 1436,
+  "compileFiles": 1410,
+  "excludedInventoryFiles": 26,
+  "legacyFiles": 7,
+  "legacyCompileFiles": 6,
+  "changedValueTokens": 68,
+  "changedStringLiteralTokens": 41,
+  "changedInterpolatedTextTokens": 27,
+  "projects": 16,
+  "compilations": 48,
+  "sourceProjectMetadataPlacementsPerBoundPass": 130,
+  "methodBodiesCompared": 18286,
+  "changedLdstrInstructions": 59,
+  "changedAssemblies": [
+    "AKRS.Galaxy2.PR"
+  ],
+  "rawSourceDecodingVerified": true,
+  "byteRoundtripFiles": 1436,
+  "actualRoslynAutoDecoderMatchingFiles": 1436,
+  "actualNativeCscProbeCompilations": 4,
+  "actualNativeCscProbeExitCodes": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "systemAnsiCodePage": 936,
+  "replayArtifactHashesMatch": true,
+  "readerCorrectedSnippets": 12,
+  "readerModules": 29,
+  "readerRelationships": 552,
+  "readerTopicCount": 40,
+  "readerBaseSnapshots": 940,
+  "readerTopicSnapshots": 3817,
+  "readerBrowserChecksPassed": true,
+  "originalFrozenReaderModified": false,
+  "originalFrozenCompilerModified": false,
+  "originalFrozenAssembliesModified": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "resourcesMigrated": false,
+  "priorNativeHostsReplayedWithNewAssemblies": false,
+  "originalFullMsbuildBuild": false,
+  "deployedCompilerIdentified": false,
+  "prCameraVmExecuted": false,
+  "sqlWritesExecuted": false,
+  "hardwareActionExecuted": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "initialAuditCompletedChunk": "09a1c6",
+    "correctedAuditCompletedChunk": "b9d585",
+    "buildSession": 44622,
+    "buildCompletedChunk": "4eae3a",
+    "buildObservedExitCode": 0,
+    "actualRoslynDecoderChunk": "3eb0b4",
+    "nativeCscFinalChunk": "c37b2c",
+    "ilSession": 60913,
+    "ilCompletionChunk": "a15e9b",
+    "readerBuildChunk": "112611",
+    "readerBrowserChunk": "5732fa",
+    "preflightChunk": "8dc76b"
+  },
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-source-encoding-fidelity.cjs",
+      "sha256": "71d99cb87d97ac3d874599eb16d4a20d99480b23ac964d6645babecfcb5146e4",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0000-freeze-source-encoding-fidelity.cjs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\audit-v1\\changed-value-tokens.json",
+      "sha256": "1fa6f07e62d1876c006df66c36c0c29c48e4b2c68daa88d414204615c0a37a3b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0001-changed-value-tokens.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\audit-v1\\files.json",
+      "sha256": "98b78f36ccbb2702750128b82611eea45195704f55cad8b6799b493b3db8f5b7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0002-files.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\audit-v1\\summary.json",
+      "sha256": "00507d1b2e820bf812b38488e973ee4aa37c7e5f2c86a26854088e0ca2e8ca79",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0003-summary.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\audit\\changed-value-tokens.json",
+      "sha256": "1fa6f07e62d1876c006df66c36c0c29c48e4b2c68daa88d414204615c0a37a3b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0004-changed-value-tokens.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\audit\\files.json",
+      "sha256": "8969ba630b623b249c1190790261bd5c66f1ead19a27edc422336b0fba194a7b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0005-files.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\audit\\summary.json",
+      "sha256": "3b9fea14bfb0f12d0d8be54c424b18bed7fb7ca2399b45b9c446fd7d61820b64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0006-summary.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "sha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0007-AKRS.Calibration.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Calibration\\compile-input.json",
+      "sha256": "678a630b769b644f9d91d7fb6d1fa91b4f0bdf510e4580b90b2ccc43cae8fda5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0008-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Calibration\\compile.log",
+      "sha256": "409706ba03065934a24c7db2e3cc9e4572e1b0eb51a160ac5fe498838e41a8d2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0009-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Calibration\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0010-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Calibration\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0011-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "sha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0012-AKRS.Galaxy.SoftKey.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy.SoftKey\\compile-input.json",
+      "sha256": "55e696fff341c1856c3c0fea47009fd15e9fed1a156e9cc2633631ca4f247fe4",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0013-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy.SoftKey\\compile.log",
+      "sha256": "44d452df652b8fdf8fee4d98bb5a4df190830c8b677d24b3729c3093900ced4f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0014-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy.SoftKey\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0015-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy.SoftKey\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0016-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "sha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0017-AKRS.Galaxy2.AutoFocusing.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AutoFocusing\\compile-input.json",
+      "sha256": "95c87c874c75b34446e7476cf2c0ee473aae39a524e2a5eb9b08bb72aa31e009",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0018-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AutoFocusing\\compile.log",
+      "sha256": "0d47b602c762bc9f759e7f5d14baa00a083880518aac8c855ec5616f8b3078ea",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0019-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AutoFocusing\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0020-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AutoFocusing\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0021-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0022-AKRS.Galaxy2.AxisCompensate.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AxisCompensate\\compile-input.json",
+      "sha256": "20273f6bbcf197c624c2c367e15e6d84aad5adf12830b4b54dc25beb5c91d6cc",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0023-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AxisCompensate\\compile.log",
+      "sha256": "111e2a8f64eb68a0836c59e5bbecbf0fb8a912d7c0012d9f8f12b8015c754b84",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0024-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AxisCompensate\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0025-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.AxisCompensate\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0026-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "sha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0027-AKRS.Galaxy2.Component.TestDemo.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Component.TestDemo\\compile-input.json",
+      "sha256": "40a04e42cd757e26dffd06866c301cd3540e97a02bd868ab46b6a27fe02a193a",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0028-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Component.TestDemo\\compile.log",
+      "sha256": "babf9e92cd7abe66b94abc3cda2efb2d8087ee35ed1aed8eaecfe781efafac4b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0029-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Component.TestDemo\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0030-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Component.TestDemo\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0031-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0032-AKRS.Galaxy2.CoordinateSystems.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.CoordinateSystems\\compile-input.json",
+      "sha256": "21c7fb69b81ca13dc7545d7427fea36436bb01e46587e3505f0da163dde08842",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0033-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.CoordinateSystems\\compile.log",
+      "sha256": "36091cb8e21fad0c9322e93d7bcbc4c1583e9b422e4c946b0ff89cd272bfcb60",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0034-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.CoordinateSystems\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0035-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.CoordinateSystems\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0036-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "sha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0037-AKRS.Galaxy2.Dispense.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Dispense\\compile-input.json",
+      "sha256": "662b0b889b94bfcdea04027be3ccdc5704bf0282f8408ac69210d4c9d132dbf4",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0038-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Dispense\\compile.log",
+      "sha256": "6a640332bdaa67914f5c2c41049e5523578636779590226dbebcf8d9ae8e45ee",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0039-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Dispense\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0040-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Dispense\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0041-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "sha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0042-AKRS.Galaxy2.LogTest.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.LogTest\\compile-input.json",
+      "sha256": "dc67ea742854b6eaf2830c5f68460e53c60deee5c847760ddb22b425611c9c42",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0043-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.LogTest\\compile.log",
+      "sha256": "1896ea9f730a847cf075737d1625a37b21026daed3a941c0ae9c5148ca9fa2fa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0044-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.LogTest\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0045-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.LogTest\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0046-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0047-AKRS.Galaxy2.MachineSupport.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.MachineSupport\\compile-input.json",
+      "sha256": "25851bf6b94752398ca4fc1ce00731439bcc97bd769908198ca4c6e0aad78126",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0048-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.MachineSupport\\compile.log",
+      "sha256": "2e9000709aea41a32c31fa790006fb6277d33dea2ed2ad7f122b91ffff4f6af7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0049-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.MachineSupport\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0050-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.MachineSupport\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0051-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0052-AKRS.Galaxy2.Machine.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Machine\\compile-input.json",
+      "sha256": "4e7396b1314a4a776d444627dd8be3e70a0f512fd9e1608b855b88086c348eab",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0053-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Machine\\compile.log",
+      "sha256": "79c7e42a21f03ca0c80a7a5a88e19b8052076b34842898b72c0a53d63352ea80",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0054-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Machine\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0055-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.Machine\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0056-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "sha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0057-AKRS.Galaxy2.PR.Test.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR.Test\\compile-input.json",
+      "sha256": "eff8c10c2051f05919fe22583631981ef3c06497da823bbef584f3bad16d229b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0058-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR.Test\\compile.log",
+      "sha256": "8ca9bd9e27a5f582cad82d4fe5cff0a2ca4841932c468200b85ba48845d0793f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0059-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR.Test\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0060-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR.Test\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0061-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "sha256": "cde6d140209bf6107784c71cc94911b58c66f101c40b81beff146ad22d8ab04f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0062-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR\\compile-input.json",
+      "sha256": "983a43a4f621a36e2b21cbe60e0cea5c2f6fee0e2e7dfef9a77f590dc90ae13f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0063-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR\\compile.log",
+      "sha256": "797579cce020e5db32c4839f06d16d84b070dc1c4f3f542b5c9b84fe00ef97d2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0064-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0065-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.PR\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0066-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "sha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0067-AKRS.Galaxy2.TeachTest.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.TeachTest\\compile-input.json",
+      "sha256": "9846c6034ad4457b3c26d5f18bbab97d8602eb5c601e927d15bcdbdb8d2f1de3",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0068-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.TeachTest\\compile.log",
+      "sha256": "5023fb31c5f84f2f329cf779ef11129248c798449c10c5500baaefa13af70f6a",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0069-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.TeachTest\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0070-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.Galaxy2.TeachTest\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0071-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "sha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0072-AKRS.ZX2200.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.ZX2200\\compile-input.json",
+      "sha256": "4912728df1a2cf6fd71a6a6bbdfc4583f9078f304b8b723eb1c57b793f206b69",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0073-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.ZX2200\\compile.log",
+      "sha256": "0e5f58179b8ec51915053d486ed7aef15ef4953c58f93b499f3ccc82a985b968",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0074-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.ZX2200\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0075-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\AKRS.ZX2200\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0076-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\DXApplication1\\DXApplication1.exe",
+      "sha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0077-DXApplication1.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\DXApplication1\\compile-input.json",
+      "sha256": "e53d784e03c63dfd11f970bbb097bd0cfafe02b81aa1dffb3e557ef6ccfa95d5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0078-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\DXApplication1\\compile.log",
+      "sha256": "4c8e52b90a57333152ecc644d6f46bebd86ece535d9da6f7f62e6adbda2900c6",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0079-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\DXApplication1\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0080-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\DXApplication1\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0081-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\WindowsFormsApp1\\WindowsFormsApp1.exe",
+      "sha256": "a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0082-WindowsFormsApp1.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\WindowsFormsApp1\\compile-input.json",
+      "sha256": "1f969817c38436d027f7525a6db4deae41bdf90677031e370711fca5725560e2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0083-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\WindowsFormsApp1\\compile.log",
+      "sha256": "fe88f521da168b8219a51be5e8e54bc4b20050f9e4243643128aa77aec75a581",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0084-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\WindowsFormsApp1\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0085-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bootstrap\\WindowsFormsApp1\\reference-replacements.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0086-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "sha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0087-AKRS.Calibration.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Calibration\\compile-input.json",
+      "sha256": "659d1c3d6b8c1aac4d33910cb5970eec260b9ac038dcd85a32522f1361add872",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0088-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Calibration\\compile.log",
+      "sha256": "932fee200781398de7523a82c3f04bf6e651a2423bbc74134a65d78c762f36f9",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0089-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Calibration\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0090-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Calibration\\reference-replacements.json",
+      "sha256": "317f6498dd6727e6520133139a442f403cf2502cd465ea5ee2895016b4b73716",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0091-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "sha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0092-AKRS.Galaxy.SoftKey.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy.SoftKey\\compile-input.json",
+      "sha256": "1b302ed6e19af36e2db7d272a9de92e11af0805236460dc2bf6070391c869047",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0093-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy.SoftKey\\compile.log",
+      "sha256": "1c4f8ff0934c9133988de35bae274135cb06dbd00e0299e42fb8bd51add340cb",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0094-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy.SoftKey\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0095-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy.SoftKey\\reference-replacements.json",
+      "sha256": "1ddeb115daff503a9d19930bc13bc82fee2505fc721a76a1f4eb9f02f3786561",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0096-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "sha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0097-AKRS.Galaxy2.AutoFocusing.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AutoFocusing\\compile-input.json",
+      "sha256": "9766233a2e413ca5b476d2d6d244c501a896963850c10fcb3c56d85381fb61bc",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0098-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AutoFocusing\\compile.log",
+      "sha256": "0f5d7dc8b2dc9de9d179a1653fa7fbeb7c01406fc8c71a41ac39af13e5927395",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0099-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AutoFocusing\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0100-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AutoFocusing\\reference-replacements.json",
+      "sha256": "86aebb852f33f9d6c4a7c31461c24e80ddf5fb0d0a9b8ba95b7e11abc354c513",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0101-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0102-AKRS.Galaxy2.AxisCompensate.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AxisCompensate\\compile-input.json",
+      "sha256": "a867bde8a409584830a40a05515dc482efb112e4e6a043591d0011169fe62ad2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0103-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AxisCompensate\\compile.log",
+      "sha256": "eeb0dc1e679d55cfd8458ff33fa0b3b845ce0bd1c5893754478abfed90b7e5d7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0104-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AxisCompensate\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0105-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.AxisCompensate\\reference-replacements.json",
+      "sha256": "b54688467cbd8b3a36d90eb4d6e621149f09c948ee02dd84a6246578b30d27ca",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0106-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "sha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0107-AKRS.Galaxy2.Component.TestDemo.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Component.TestDemo\\compile-input.json",
+      "sha256": "c269ff5729d04ac39f649a701df24288672269edd042b7dddeb4a3d210a6813b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0108-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Component.TestDemo\\compile.log",
+      "sha256": "babf9e92cd7abe66b94abc3cda2efb2d8087ee35ed1aed8eaecfe781efafac4b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0109-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Component.TestDemo\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0110-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Component.TestDemo\\reference-replacements.json",
+      "sha256": "06d2245a295f40b5e5541b73e1429c9c31b5a6eaf92fcda416065d10aa5fca49",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0111-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0112-AKRS.Galaxy2.CoordinateSystems.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.CoordinateSystems\\compile-input.json",
+      "sha256": "2c8005b3cd15848b0479d9fc7178ce39ff21f58d22facd66965fc4029c9393cd",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0113-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.CoordinateSystems\\compile.log",
+      "sha256": "36091cb8e21fad0c9322e93d7bcbc4c1583e9b422e4c946b0ff89cd272bfcb60",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0114-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.CoordinateSystems\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0115-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.CoordinateSystems\\reference-replacements.json",
+      "sha256": "cbeb05b57089636598ecbf6834ffccc933fc94ee265cb3b51792cdee3e7b27d2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0116-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "sha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0117-AKRS.Galaxy2.Dispense.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Dispense\\compile-input.json",
+      "sha256": "247f027de17829fda5838a81fd1c68e80265e908d13afb79128b718d084c33ed",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0118-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Dispense\\compile.log",
+      "sha256": "3b737a5fc619e737ffd4df3c32609571d0262c918ddc05db072f082a60ce8cfa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0119-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Dispense\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0120-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Dispense\\reference-replacements.json",
+      "sha256": "174616c0d2a38ee0d2a081f6f2b593975cfd9272ba8e31c2c460f66bb506cbfa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0121-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "sha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0122-AKRS.Galaxy2.LogTest.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.LogTest\\compile-input.json",
+      "sha256": "e0282b997bd883eb3fba3ece1e509213aeae0d09aca76ccc130462c907db27c5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0123-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.LogTest\\compile.log",
+      "sha256": "1896ea9f730a847cf075737d1625a37b21026daed3a941c0ae9c5148ca9fa2fa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0124-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.LogTest\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0125-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.LogTest\\reference-replacements.json",
+      "sha256": "06d2245a295f40b5e5541b73e1429c9c31b5a6eaf92fcda416065d10aa5fca49",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0126-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0127-AKRS.Galaxy2.MachineSupport.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.MachineSupport\\compile-input.json",
+      "sha256": "81fc9f493e649535a6ee51a71238fb81fa189efc796ca7e28ccaf21d69eac1fc",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0128-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.MachineSupport\\compile.log",
+      "sha256": "142c4761c2386be287833ed8483b282709d33d32506409389b42f0359cead1cf",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0129-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.MachineSupport\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0130-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.MachineSupport\\reference-replacements.json",
+      "sha256": "51e854fa765dea51e74d45684e26e84b5d32928c9a7850cc48a773ad64d8e503",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0131-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0132-AKRS.Galaxy2.Machine.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Machine\\compile-input.json",
+      "sha256": "bf1d31cdb590fe6f0fb4f96664a77546721567f1deee591ce8618ef2bfcad562",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0133-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Machine\\compile.log",
+      "sha256": "448591f94afb8ab1c6e45ba2c81cf7f022c73c45df5cd6b367857d2dbcb288cc",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0134-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Machine\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0135-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.Machine\\reference-replacements.json",
+      "sha256": "7433c5181e715265a6e60979a8b6e29bd895d189f14aa512910b0f9ebf234b11",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0136-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "sha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0137-AKRS.Galaxy2.PR.Test.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR.Test\\compile-input.json",
+      "sha256": "c159caf84c58dfc952071c08bc98523ab4baaca0b5bb01ac946ec79d3456aaaa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0138-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR.Test\\compile.log",
+      "sha256": "6abb58e2a9b29cf4596536d5799a4015bece642edb12178ab23bc8b2264e1c33",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0139-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR.Test\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0140-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR.Test\\reference-replacements.json",
+      "sha256": "84b07fb33de7ceda7b85aecb5a4cb14f30bf654bc301923971a51e6ec5da68d2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0141-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "sha256": "cde6d140209bf6107784c71cc94911b58c66f101c40b81beff146ad22d8ab04f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0142-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR\\compile-input.json",
+      "sha256": "9ca54c8dd64fb5f3a1f70af2f642d1a2e5f8491e646ed316a06743207c6ebf2e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0143-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR\\compile.log",
+      "sha256": "ef3ec8bc1968808b436fe01a30a1b9e660297119845a7a54b1ce8de63b216018",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0144-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0145-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.PR\\reference-replacements.json",
+      "sha256": "724df9ea27c719b66b294b56a16135e6f5340386234571feccc22ceb1dce5398",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0146-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "sha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0147-AKRS.Galaxy2.TeachTest.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.TeachTest\\compile-input.json",
+      "sha256": "e9724dcc5835666182c19d70ff69fdc9fa7ef31dd14cda1d8ddbd8d5503e46d9",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0148-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.TeachTest\\compile.log",
+      "sha256": "e409300b258c6eaf42b867d7fcb80a923fe6c2e53930f2a8c988b04a52334745",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0149-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.TeachTest\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0150-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.Galaxy2.TeachTest\\reference-replacements.json",
+      "sha256": "06d2245a295f40b5e5541b73e1429c9c31b5a6eaf92fcda416065d10aa5fca49",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0151-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "sha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0152-AKRS.ZX2200.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.ZX2200\\compile-input.json",
+      "sha256": "fc22e37c5c97bd4acc271d3ca0047d47dd2dc29eeee124b84c4bc22d433a54cc",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0153-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.ZX2200\\compile.log",
+      "sha256": "f12fdc230bd68047f7b864313b150b0cc50efecd27fb57fa04f111ccff0628d0",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0154-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.ZX2200\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0155-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\AKRS.ZX2200\\reference-replacements.json",
+      "sha256": "06d2245a295f40b5e5541b73e1429c9c31b5a6eaf92fcda416065d10aa5fca49",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0156-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\DXApplication1\\DXApplication1.exe",
+      "sha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0157-DXApplication1.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\DXApplication1\\compile-input.json",
+      "sha256": "dd655130f9bc5e91da5f2994c59cef013e2aed6269cf422bf122733dd44e014d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0158-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\DXApplication1\\compile.log",
+      "sha256": "ac318e8c9140af6eecf82cf9de539a4ee787df29c3387b30e14800758163409a",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0159-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\DXApplication1\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0160-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\DXApplication1\\reference-replacements.json",
+      "sha256": "06d2245a295f40b5e5541b73e1429c9c31b5a6eaf92fcda416065d10aa5fca49",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0161-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\WindowsFormsApp1\\WindowsFormsApp1.exe",
+      "sha256": "a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0162-WindowsFormsApp1.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\WindowsFormsApp1\\compile-input.json",
+      "sha256": "d7b3af45668da03819d574ab86b3a25a143cc869af0d728195c0737b23b3df27",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0163-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\WindowsFormsApp1\\compile.log",
+      "sha256": "d87b2cb0c786853685ede3f3b511c19822278a1c592a274792ca1a5b9d8ac757",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0164-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\WindowsFormsApp1\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0165-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\bound\\WindowsFormsApp1\\reference-replacements.json",
+      "sha256": "d1a6a5f101dc45108863fdc33339a78a4c2fbdb7d535ba1e34a5890742b34f75",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0166-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\comparisons.json",
+      "sha256": "6a59bbaf9008b94914437cd84ec6415170b2c3d0d8d4ce21654165fb5c76192e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0167-comparisons.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Calibration\\AKRS.Calibration.dll",
+      "sha256": "ba361e29b9613dacfe91564801aa94f7a1b81f404ccd692cea651fb86766176c",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0168-AKRS.Calibration.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Calibration\\compile-input.json",
+      "sha256": "7c8d6c602fa0fd8822db68192589ac2d577182c769c2c106b22485a64b2f5016",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0169-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Calibration\\compile.log",
+      "sha256": "932fee200781398de7523a82c3f04bf6e651a2423bbc74134a65d78c762f36f9",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0170-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Calibration\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0171-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Calibration\\reference-replacements.json",
+      "sha256": "598faeaae723e3a94b2363d66ae3f5fc746cf8102bc07cba3c79294f0e9cebb0",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0172-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy.SoftKey\\AKRS.Galaxy.SoftKey.exe",
+      "sha256": "ae85702121ffc80d9c07467af29f2c613aac3614f4a6acba6e2189e3b131cb3e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0173-AKRS.Galaxy.SoftKey.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy.SoftKey\\compile-input.json",
+      "sha256": "563322884d2c14ba909f1f1e1a1ecd22a0a559b18b31c48e1e9598df0dd0186d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0174-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy.SoftKey\\compile.log",
+      "sha256": "ae890eda5c623e9d85ae3f629c4f131912c8a10ecafa19b0caed5e29a8436a2c",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0175-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy.SoftKey\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0176-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy.SoftKey\\reference-replacements.json",
+      "sha256": "b0a046b223a5279627cfcd2d36ec7cf33f38d3f834cd509e1aaaf9700d471bbe",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0177-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AutoFocusing\\AKRS.Galaxy2.AutoFocusing.dll",
+      "sha256": "f20e4dc6e061bf9a397aebf6d59ea006103077a29c974078511171f9c09f82b2",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0178-AKRS.Galaxy2.AutoFocusing.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AutoFocusing\\compile-input.json",
+      "sha256": "c0ab84e71b6bc7fd3a5778d1fd4de295ca90be7e992cad5556f0844bc90311e5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0179-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AutoFocusing\\compile.log",
+      "sha256": "0d47b602c762bc9f759e7f5d14baa00a083880518aac8c855ec5616f8b3078ea",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0180-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AutoFocusing\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0181-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AutoFocusing\\reference-replacements.json",
+      "sha256": "a2f827a3b9d7f4da900af22eadb142d5b3085234bcde2ebb3a393386fde03f1f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0182-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AxisCompensate\\AKRS.Galaxy2.AxisCompensate.exe",
+      "sha256": "662604e12dfc1949b39017d2034a915167968e2c53f6fff297233b1707da0f9e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0183-AKRS.Galaxy2.AxisCompensate.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AxisCompensate\\compile-input.json",
+      "sha256": "a0eea92d49d622d0581d13e6acd88a7be7342874b4a2319a465918fa3c6d41e9",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0184-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AxisCompensate\\compile.log",
+      "sha256": "eeb0dc1e679d55cfd8458ff33fa0b3b845ce0bd1c5893754478abfed90b7e5d7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0185-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AxisCompensate\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0186-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.AxisCompensate\\reference-replacements.json",
+      "sha256": "5e4359a8cf8f285a87822875a1c03c75d6525bbf6a54593c93818bb86a805d7b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0187-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Component.TestDemo\\AKRS.Galaxy2.Component.TestDemo.dll",
+      "sha256": "8a7302eae46a91a8ff94aaf4ad342b220cbea28bdcd47b5c0ea7ea1c8147f928",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0188-AKRS.Galaxy2.Component.TestDemo.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Component.TestDemo\\compile-input.json",
+      "sha256": "c434bddd081694dc2efd4c7830b8cb42924d2b3547b6d94340377e9d281d7187",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0189-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Component.TestDemo\\compile.log",
+      "sha256": "84f8ba8cac4f95d3cefe40512e14fa4abf8dd9db33d943c7ab39802a284fb77f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0190-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Component.TestDemo\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0191-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Component.TestDemo\\reference-replacements.json",
+      "sha256": "d70e32e8843e1ab6c962174a633297fdf64eaf202e85f1291c0749b1aaa96b64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0192-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.CoordinateSystems\\AKRS.Galaxy2.CoordinateSystems.dll",
+      "sha256": "6b14f8c53d0570c7e90c9e73cf133e6993d754924c3775aba31e40d0fb117e53",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0193-AKRS.Galaxy2.CoordinateSystems.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.CoordinateSystems\\compile-input.json",
+      "sha256": "3a89a620939f6c438392488bed59fc47b207bb1189cf789ab8f256ff6fbb0a92",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0194-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.CoordinateSystems\\compile.log",
+      "sha256": "f7a3974a2c2959a894994e528a0a518dde4527275a06e361d9d30ea361022780",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0195-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.CoordinateSystems\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0196-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.CoordinateSystems\\reference-replacements.json",
+      "sha256": "b830945d024bdb25a7f68768911306b6ef5899f32be4a20946fcc1b815a216c3",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0197-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Dispense\\AKRS.Galaxy2.Dispense.dll",
+      "sha256": "a313b1fb43f2a989bc6af81c59611bf906ceaba57c409900d6c9272eb8e7b968",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0198-AKRS.Galaxy2.Dispense.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Dispense\\compile-input.json",
+      "sha256": "a1e60ded4aa2acb56bfd7248b8c61588f3d438b44311a1c83d7b83db5739109e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0199-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Dispense\\compile.log",
+      "sha256": "de3f15c79d07de302ff8cfee10894538abfe2d6781775f54aeee919c01ccab29",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0200-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Dispense\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0201-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Dispense\\reference-replacements.json",
+      "sha256": "b8d29a647bc9bfabc9649ff9901ed405c9188a3fdc4faa43c7c5da12bd2c9fb8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0202-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.LogTest\\AKRS.Galaxy2.LogTest.exe",
+      "sha256": "1995b3bfec825cb4943388df43e038af855f35e1286c6a91f0d30bd6aac341b5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0203-AKRS.Galaxy2.LogTest.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.LogTest\\compile-input.json",
+      "sha256": "5721c20dcc2c533f2c75381539b826cd6a422e3a90a1fa7ad838614b997dcaeb",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0204-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.LogTest\\compile.log",
+      "sha256": "1896ea9f730a847cf075737d1625a37b21026daed3a941c0ae9c5148ca9fa2fa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0205-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.LogTest\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0206-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.LogTest\\reference-replacements.json",
+      "sha256": "d70e32e8843e1ab6c962174a633297fdf64eaf202e85f1291c0749b1aaa96b64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0207-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.MachineSupport\\AKRS.Galaxy2.MachineSupport.dll",
+      "sha256": "dbceb18b94195339537b68348229ca80ce5950af8193445b7fd6bfa66e49f19d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0208-AKRS.Galaxy2.MachineSupport.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.MachineSupport\\compile-input.json",
+      "sha256": "ef9ddc3245a119ada03d79478c989f1de93ba4cfbfcfa08bc3e4fb448a9902e0",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0209-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.MachineSupport\\compile.log",
+      "sha256": "2e9000709aea41a32c31fa790006fb6277d33dea2ed2ad7f122b91ffff4f6af7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0210-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.MachineSupport\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0211-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.MachineSupport\\reference-replacements.json",
+      "sha256": "3a947ec783955053dff58463526d99bbf94ba89225e48895ef0842a035be968d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0212-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Machine\\AKRS.Galaxy2.Machine.dll",
+      "sha256": "e9af4daeb683303d11a2e1e13d6d43c3f7345c7763093dd3a6076899daf42ade",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0213-AKRS.Galaxy2.Machine.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Machine\\compile-input.json",
+      "sha256": "f25a1316920cf66d4ebb222bfe5a52ee5b2f9c7679248e53b2d82d2c3c7883d8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0214-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Machine\\compile.log",
+      "sha256": "255f5c2d58d0bc5d95c39d492e9ca4cc76bbc2144957c908aa32710ae3944a37",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0215-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Machine\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0216-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.Machine\\reference-replacements.json",
+      "sha256": "419786052ab2314891c8949419fea32221281fc10d62823aa543dd178f059fc4",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0217-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR.Test\\AKRS.Galaxy2.PR.Test.exe",
+      "sha256": "7021347fb3d8353b965c7fcd6ebceaa65556351e4ce3ce843f1dba3ed6d31eb8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0218-AKRS.Galaxy2.PR.Test.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR.Test\\compile-input.json",
+      "sha256": "f69a0255fbcfacfb6476f34f1ea5db61930aead10c0c2b38854c50023740ad8a",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0219-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR.Test\\compile.log",
+      "sha256": "6abb58e2a9b29cf4596536d5799a4015bece642edb12178ab23bc8b2264e1c33",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0220-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR.Test\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0221-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR.Test\\reference-replacements.json",
+      "sha256": "1bfd6bc266a796e03d6aadca007bac86f042af2c0b266330ff37bf80b7252c69",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0222-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR\\AKRS.Galaxy2.PR.dll",
+      "sha256": "cde6d140209bf6107784c71cc94911b58c66f101c40b81beff146ad22d8ab04f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0223-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR\\compile-input.json",
+      "sha256": "a6f06126ac23b03e37b08e09f103d7e5ab011b34a92cf123b330749c5a5db39e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0224-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR\\compile.log",
+      "sha256": "70aa2094f0b38c4e1fca9fe72545667b1577e3a004dbcbb94745c64afa204cdd",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0225-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0226-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.PR\\reference-replacements.json",
+      "sha256": "055565c57283d57bf05b77f85b801183dfad8e3208814287339cf59175b01926",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0227-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.TeachTest\\AKRS.Galaxy2.TeachTest.dll",
+      "sha256": "c9503e0f137f0c6756a2cc5bd220c85048a1bfe61dcf0c251119a596e53f7e50",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0228-AKRS.Galaxy2.TeachTest.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.TeachTest\\compile-input.json",
+      "sha256": "4d431e5fc13855c17113ce7764517df98a9a777f80b74afc71cff300d7d46a31",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0229-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.TeachTest\\compile.log",
+      "sha256": "f8805c24869f4c378fdaa85de0bea11b06668c852fedd238c82108ea8bd3f6af",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0230-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.TeachTest\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0231-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.Galaxy2.TeachTest\\reference-replacements.json",
+      "sha256": "d70e32e8843e1ab6c962174a633297fdf64eaf202e85f1291c0749b1aaa96b64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0232-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.ZX2200\\AKRS.ZX2200.exe",
+      "sha256": "5c1713bdc36eeddf2fc2d0da1cdadfb61f6ae0c86e14fd378444542581569c99",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0233-AKRS.ZX2200.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.ZX2200\\compile-input.json",
+      "sha256": "692aac58db068761cebc475cac917dbc64764b5730658707a32bc2acacc12f6c",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0234-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.ZX2200\\compile.log",
+      "sha256": "31cdb758459570f373aa094a4b96243dfa5d280b818e4e4405a372e1dccdc1b0",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0235-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.ZX2200\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0236-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\AKRS.ZX2200\\reference-replacements.json",
+      "sha256": "d70e32e8843e1ab6c962174a633297fdf64eaf202e85f1291c0749b1aaa96b64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0237-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\DXApplication1\\DXApplication1.exe",
+      "sha256": "dc7abd410ccc4f9e8bdefb45032c64f526ceef917f4063b738023b36e741e9fb",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0238-DXApplication1.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\DXApplication1\\compile-input.json",
+      "sha256": "7c1c99bfccff6beb7e87afaca8dbb0cdc493fc18f0eeb8a362f1e9282484eb81",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0239-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\DXApplication1\\compile.log",
+      "sha256": "4c8e52b90a57333152ecc644d6f46bebd86ece535d9da6f7f62e6adbda2900c6",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0240-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\DXApplication1\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0241-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\DXApplication1\\reference-replacements.json",
+      "sha256": "d70e32e8843e1ab6c962174a633297fdf64eaf202e85f1291c0749b1aaa96b64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0242-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\WindowsFormsApp1\\WindowsFormsApp1.exe",
+      "sha256": "a91e6e08720f28958aab5ec8f6f6cc02f6e73a6766ec8e0a0c0e489e1697afe8",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0243-WindowsFormsApp1.exe"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\WindowsFormsApp1\\compile-input.json",
+      "sha256": "9e27635bdc22cc3a0e82044b8e9e4ff1d65a332a20f8117162958dbd1d03c002",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0244-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\WindowsFormsApp1\\compile.log",
+      "sha256": "0197e84c49ec51d76c055954bcd92342fc0b7e196e0a2a30be83c34ddbe6d9c7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0245-compile.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\WindowsFormsApp1\\compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0246-compile.stderr"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\replay\\WindowsFormsApp1\\reference-replacements.json",
+      "sha256": "0ee7d0f78ef30016120d73cf44668797d840f9a44a2a4b3320d9d3f6a5b3cd2f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0247-reference-replacements.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\builds\\results.json",
+      "sha256": "fd27de70b5cb3bae55602ef89c80b1c69853b5cfc31fd4b96113d41e1e2cf5b5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0248-results.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\changed-value-tokens.json",
+      "sha256": "1fa6f07e62d1876c006df66c36c0c29c48e4b2c68daa88d414204615c0a37a3b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0249-changed-value-tokens.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-browser-v1-process.json",
+      "sha256": "61eaed59aa6f7b6244143e9ed92c093e0a958a185a3e06e752d66d5d0d21b525",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0250-failed-browser-v1-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-browser-v1.cjs",
+      "sha256": "74c47b4f61c49da25dfaa18509a75a863c799ddccfad324cf49458e82b9657e6",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0251-failed-browser-v1.cjs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-preflight-v1-process.json",
+      "sha256": "3e0ff90f43de09486370d1c004628ef0b56a442af1a2a92ffbf40516e0fa8cf5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0252-failed-preflight-v1-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-preflight-v1.cjs",
+      "sha256": "56117ffab5ca32d080634d2e43746e7b83563c85d8b92c05b3a97b0e966fbd5d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0253-failed-preflight-v1.cjs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-reader-v1-process.json",
+      "sha256": "24da9aacc05a34b79064ce48e18d15345a0e6559399b145b871c38bf729e1c7e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0254-failed-reader-v1-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-reader-v1.cjs",
+      "sha256": "f57c511bf6f0ae9f0f912797b5df7be043438edcdf021ea1f104468d3d5cdb8b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0255-failed-reader-v1.cjs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-reader-v2-process.json",
+      "sha256": "b38cf4a68830449c1089a1ae4be836f82a65543c29ca651ba181c25cc76aeb3b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0256-failed-reader-v2-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\failed-reader-v2.cjs",
+      "sha256": "e1ff06297bbe75fcd61bd73e7495e0a93864e72c3d6e2081179f5e4b89af4a2f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0257-failed-reader-v2.cjs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\files.json",
+      "sha256": "98b78f36ccbb2702750128b82611eea45195704f55cad8b6799b493b3db8f5b7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0258-files.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\il-comparison.json",
+      "sha256": "ec2751e457a934efbc3ed981de0116c6773d5131e66eb9fefe6065622e02e09a",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0259-il-comparison.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\cp936-codepage936.cs",
+      "sha256": "3b90e570d5c3169d3792eb8396f263010477b09a14a37358e08d2bf1d9b775aa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0260-cp936-codepage936.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\cp936-codepage936.dll",
+      "sha256": "e27a8d60e5cceeb989fbb75c100e95eab7fae6a1397b6b0f7ec9851f890e3b21",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0261-cp936-codepage936.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\cp936-codepage936.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0262-cp936-codepage936.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\cp936-default.cs",
+      "sha256": "3b90e570d5c3169d3792eb8396f263010477b09a14a37358e08d2bf1d9b775aa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0263-cp936-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\cp936-default.dll",
+      "sha256": "ccbe8934efa9eb03781cf9ee47bf0eb1f0c4bcc5fa8c3a64edaf577862f35ecf",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0264-cp936-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\cp936-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0265-cp936-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v1-probe.ps1",
+      "sha256": "0c501af854304f19fbdfc7ca2621e1bfb7c7bbc5562d1a3fdebae4bc241c35e5",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0266-failed-v1-probe.ps1"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v1-process.json",
+      "sha256": "1f8f8b2cd2b8b020b6795cd0dce7fe9bf6093f1dc4aa56c53abf7d2b49d8bd94",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0267-failed-v1-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v2\\cp936-default.cs",
+      "sha256": "3b90e570d5c3169d3792eb8396f263010477b09a14a37358e08d2bf1d9b775aa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0268-cp936-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v2\\cp936-default.dll",
+      "sha256": "7d058a6572010358d09c772d3fefb9d584de72e3e810fe713d66d41d641699a3",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0269-cp936-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v2\\cp936-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0270-cp936-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v2\\probe-native-csc-source-encoding.ps1",
+      "sha256": "04e2c249ca5c238f948cd9e91a9be18e4b7b542c325d10cc897234d95eca6f2d",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0271-probe-native-csc-source-encoding.ps1"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v2\\process.json",
+      "sha256": "cb78772700e9b6cc341c0f05d67f2b8ad38f2889e5797fddaa6724a31367060b",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0272-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\cp936-codepage936.cs",
+      "sha256": "3b90e570d5c3169d3792eb8396f263010477b09a14a37358e08d2bf1d9b775aa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0273-cp936-codepage936.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\cp936-codepage936.dll",
+      "sha256": "795e8b069ac01104facca55c32f1f4560cc1fbf9e18722c288f93f6f40aef1a7",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0274-cp936-codepage936.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\cp936-codepage936.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0275-cp936-codepage936.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\cp936-default.cs",
+      "sha256": "3b90e570d5c3169d3792eb8396f263010477b09a14a37358e08d2bf1d9b775aa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0276-cp936-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\cp936-default.dll",
+      "sha256": "9346eee1e9f326cd5f217a85f071af230c38e7f6449b0d6b011298c31661b390",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0277-cp936-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\cp936-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0278-cp936-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\probe-native-csc-source-encoding.ps1",
+      "sha256": "56bc31bc26187eb70b0c2bbbd463d4a3a56ef972588a7fa81b334221b050f247",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0279-probe-native-csc-source-encoding.ps1"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\process.json",
+      "sha256": "aa3db831bfb8c54b4a26fb8e0f4ae64c85da05f56fcc9266eee7d5dd2771e65e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0280-process.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\utf8-bom-default.cs",
+      "sha256": "567543336f99a180627284ad398ec46460a13db6bd14097de0e682cc8de5b8de",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0281-utf8-bom-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\utf8-bom-default.dll",
+      "sha256": "cbc076934db9be6c91911b5b7c29fd2ac3434bdef45b4b97178c0f385b34735f",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0282-utf8-bom-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\utf8-bom-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0283-utf8-bom-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\utf8-no-bom-default.cs",
+      "sha256": "4305938f01a0af5b2fbc613900af7c9b8528152c710a3b97cca52516b596c2d0",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0284-utf8-no-bom-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\utf8-no-bom-default.dll",
+      "sha256": "73f9a7d0bb2e1052e449eafb8f6bd7578bec98be9e4870a2e3bd2d918b53c497",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0285-utf8-no-bom-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\failed-v3\\utf8-no-bom-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0286-utf8-no-bom-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\results.json",
+      "sha256": "c0a67916572ca23a317e88738fbb4eaa959ba2385f273986ee2a966115ce5aad",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0287-results.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\utf8-bom-default.cs",
+      "sha256": "567543336f99a180627284ad398ec46460a13db6bd14097de0e682cc8de5b8de",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0288-utf8-bom-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\utf8-bom-default.dll",
+      "sha256": "d744e5e6b87aa4c4867bc07d2e8258ce5b6efb6124872c5c70a71170e01a47d6",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0289-utf8-bom-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\utf8-bom-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0290-utf8-bom-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\utf8-no-bom-default.cs",
+      "sha256": "4305938f01a0af5b2fbc613900af7c9b8528152c710a3b97cca52516b596c2d0",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0291-utf8-no-bom-default.cs"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\utf8-no-bom-default.dll",
+      "sha256": "0964fd3e4d12c384a08a708d4730e66d5fe35e5912e04461f81095d6b40f24c1",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0292-utf8-no-bom-default.dll"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\native-csc-probe\\utf8-no-bom-default.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0293-utf8-no-bom-default.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\preflight.log",
+      "sha256": "d58b310d7a3903f74dec914a65429da9a9bbfca0ef55276e11bdfa166aeea10c",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0294-preflight.log"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\reader-browser-results.json",
+      "sha256": "546b9a23f089d8385fa285bcafb693fdac4736e9e60562a8317d791b74465f31",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0295-reader-browser-results.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\reader-browser.png",
+      "sha256": "2a9541f3ac2fb0bb9c763642632d5d593d5027470ced05e837777749e7aaa697",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0296-reader-browser.png"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\reader-changes.json",
+      "sha256": "c8cdbe19d12a643dfc6e3e006a986f67f5f0dbb406df55e338ec0aff0e0cba64",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0297-reader-changes.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\reader-extra-files.json",
+      "sha256": "3887cab0ac55d1009cc89b9136e158b49ff6a56b9d3adc0086a37c7e55e99dfd",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0298-reader-extra-files.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\reader-results.json",
+      "sha256": "530be758842bcfce666792d07adffe0b10ad0aaa5c4d372eee72274d73fc8f25",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0299-reader-results.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\roslyn-decoder-results.json",
+      "sha256": "30f3b1244596b7694284f4051107303b91bf873ead31d04170dee6654c75dcae",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0300-roslyn-decoder-results.json"
+    },
+    {
+      "file": ".archify-work\\source-encoding-fidelity\\summary.json",
+      "sha256": "00507d1b2e820bf812b38488e973ee4aa37c7e5f2c86a26854088e0ca2e8ca79",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0301-summary.json"
+    },
+    {
+      "file": "docs/archify/module-source-explorer-encoding-preserving.html",
+      "sha256": "3dde8e3ab8402b747d085613b83510b9bad3555644fdf6c0a6b2483ca10e81a3",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0302-module-source-explorer-encoding-preserving.html"
+    },
+    {
+      "file": "scripts/audit-source-encoding-fidelity.ps1",
+      "sha256": "1d79dd1c6f46f9b247db5e1349b2e622f24dd172714ccfe72965e9394b884984",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0303-audit-source-encoding-fidelity.ps1"
+    },
+    {
+      "file": "scripts/build-encoding-preserving-source-explorer.cjs",
+      "sha256": "c1a901bec5193abb68650873288ce8d7cc1f3389d771f68a62dd11f8c9ffda46",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0304-build-encoding-preserving-source-explorer.cjs"
+    },
+    {
+      "file": "scripts/compile-encoding-preserving-project-source.ps1",
+      "sha256": "e0c46b593309011b781ab53abc31346ac8732fcaccefc8298d9cefe6b7734321",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0305-compile-encoding-preserving-project-source.ps1"
+    },
+    {
+      "file": "scripts/inspect-encoding-preserving-project-il.ps1",
+      "sha256": "7d7f545fa45b70a7c39124ccb0739501cdea03a2c4a7ca156c121c1c00d4fd91",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0306-inspect-encoding-preserving-project-il.ps1"
+    },
+    {
+      "file": "scripts/probe-native-csc-source-encoding.ps1",
+      "sha256": "eff2aee5bfdac645d140c3dacb90b2fdff70fa2a5efbb34985e2c770bc2d461e",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0307-probe-native-csc-source-encoding.ps1"
+    },
+    {
+      "file": "scripts/probe-roslyn-source-decoding.ps1",
+      "sha256": "75db1f8ae4cdc30e5aa3b3fc1ec6945af2d88de2596d1d0dd4d59e9bd1ffd8b3",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0308-probe-roslyn-source-decoding.ps1"
+    },
+    {
+      "file": "scripts/run-encoding-preserving-project-builds.cjs",
+      "sha256": "02991a9d3c4ba2878d7c407cb35dcc0654f90fbd85c72eee1e453a7bff3e12aa",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0309-run-encoding-preserving-project-builds.cjs"
+    },
+    {
+      "file": "scripts/verify-encoding-preserving-source-explorer-browser.cjs",
+      "sha256": "93892027ffed43f80b3921ecae2b0c69d2b6b159287f78d997a75b6e4e7975d1",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0310-verify-encoding-preserving-source-explorer-browser.cjs"
+    },
+    {
+      "file": "scripts/verify-source-encoding-fidelity.cjs",
+      "sha256": "20d0c5e3f32913d74c347b4778843004e2af26bc4f5fc166ac1f3a02fb787958",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0311-verify-source-encoding-fidelity.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR.Test/bin/Debug/AKRS.Galaxy2.PR.dll",
+      "sha256": "cf73472475a7620c73b38a9a0e19b78557c8dcfb5ed3582f0bb5c90fc9392257",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0312-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR/bin/Debug/AKRS.Galaxy2.PR.dll",
+      "sha256": "7f006fd22ede3bca803b03dd586524284a82469e1869848fab72262d329705d3",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0313-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.PR/obj/Debug/AKRS.Galaxy2.PR.dll",
+      "sha256": "06325eaa7d1fbb7a93a46530dd99c30907e7a4872b6a31d2a3a2bb98dbef0524",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0314-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/bin/Debug/AKRS.Galaxy2.PR.dll",
+      "sha256": "06325eaa7d1fbb7a93a46530dd99c30907e7a4872b6a31d2a3a2bb98dbef0524",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0315-AKRS.Galaxy2.PR.dll"
+    },
+    {
+      "file": "trunk/InterpolationMovementTest/bin/Debug/AKRS.Galaxy2.PR.dll",
+      "sha256": "cf73472475a7620c73b38a9a0e19b78557c8dcfb5ed3582f0bb5c90fc9392257",
+      "frozenCopy": ".archify-work/source-encoding-fidelity-baseline/inputs/0316-AKRS.Galaxy2.PR.dll"
+    }
+  ],
+  "limitations": [
+    "Explicit per-file strict policy matches actual local Roslyn stream decoding and native csc probe behavior; original/deployed MSBuild toolchain identity not certified.",
+    "16 raw-source assemblies use existing validated external/runtime metadata; no resources, license/weaving/fullBuild or business/runtime equivalence claimed.",
+    "59 observed ldstr operand changes are checked across18286 method bodies; comparison does not certify every custom attribute, ABI, PDB or resource.",
+    "Old frozen PR/resource assemblies and reader remain lossy; new named path requires resource integration and native-host migration next.",
+    "1436 inventory raw bytes and1410 literalCompile entries remain distinct; excluded26 are audited but not compiled.",
+    "68 token occurrences,59 IL placements and12 reader snapshots measure different things; they are not extra business assertions."
+  ],
+  "earlierFailures": [
+    {
+      "file": ".archify-work/source-encoding-fidelity/native-csc-probe/failed-v1-process.json",
+      "exitCode": 1,
+      "stage": "UTF8 JSON read"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/native-csc-probe/failed-v2/process.json",
+      "exitCode": 1,
+      "stage": "Fixture inspector operator spacing"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/native-csc-probe/failed-v3/process.json",
+      "exitCode": 1,
+      "stage": "Absent optional SDK binary"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/failed-reader-v1-process.json",
+      "exitCode": 1,
+      "stage": "Extra non-CSharp reader files"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/failed-reader-v2-process.json",
+      "exitCode": 1,
+      "stage": "Windows path casing"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/failed-browser-v1-process.json",
+      "exitCode": 1,
+      "stage": "Fixture changed panel without route hash"
+    },
+    {
+      "file": ".archify-work/source-encoding-fidelity/failed-preflight-v1-process.json",
+      "exitCode": 1,
+      "stage": "Unfrozen validator syntax"
+    }
+  ],
+  "initialAuditSummaryClarification": "Initial audit-v1 raw bytes/decode/tokens were valid, but ordered-dictionary Group-Object yielded an empty policy key and singleton compileAssemblies serialized as strings. Corrected audit separately retained; all file raw/text hashes and68 value changes unchanged.",
+  "scope": "Separately named raw-byte encoding-preserving compiler/audit/rebuild/replay and reader/browser repair. All prior source/assembly/compiler/reader/1328 evidence frozen unchanged. Local stream-decoder rule verified, not full build/deployment or business runtime acceptance."
+}

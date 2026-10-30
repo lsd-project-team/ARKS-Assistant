@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "闭环标定的驱动分派与保存",
+    "locale": "zh-CN",
+    "output": "resources/knowledge/flows/functional-atlas/force-calibration-overview.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "3b9b305cd688af0d35fe03456fc778428f85ab14",
+      "link_mode": "local-only"
+    },
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "力控处理"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "entry",
+      "type": "backend",
+      "icon": "none",
+      "label": "界面启动标定",
+      "sublabel": "先保存并检查参数表",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 17,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "dispatch",
+      "type": "backend",
+      "icon": "none",
+      "label": "按驱动分派",
+      "sublabel": "检查焊头 Z 轴驱动",
+      "pos": [
+        232,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 19,
+          "end_line": 21
+        }
+      ]
+    },
+    {
+      "id": "gt-prepare",
+      "type": "backend",
+      "icon": "none",
+      "label": "非ETEL准备",
+      "sublabel": "连接、就位、角度初值",
+      "pos": [
+        444,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 22,
+          "end_line": 30
+        }
+      ]
+    },
+    {
+      "id": "etel-prepare",
+      "type": "backend",
+      "icon": "none",
+      "label": "ETEL准备",
+      "sublabel": "连接、就位、清选中表",
+      "pos": [
+        232,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 22,
+          "end_line": 23
+        }
+      ]
+    },
+    {
+      "id": "gt-samples",
+      "type": "backend",
+      "icon": "none",
+      "label": "固高角度采样",
+      "sublabel": "按所选大小力遍历",
+      "pos": [
+        656,
+        40
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 27,
+          "end_line": 33
+        }
+      ]
+    },
+    {
+      "id": "etel-samples",
+      "type": "backend",
+      "icon": "none",
+      "label": "ETEL 大力采样",
+      "sublabel": "单角结果未加入表",
+      "pos": [
+        232,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 37,
+          "end_line": 39
+        }
+      ]
+    },
+    {
+      "id": "gt-finally",
+      "type": "backend",
+      "icon": "none",
+      "label": "固高 finally",
+      "sublabel": "停止/异常仍写局部表",
+      "pos": [
+        656,
+        184
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 28,
+          "end_line": 28
+        }
+      ]
+    },
+    {
+      "id": "etel-finally",
+      "type": "backend",
+      "icon": "none",
+      "label": "ETEL finally",
+      "sublabel": "停止/异常仍调用Save",
+      "pos": [
+        444,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 37,
+          "end_line": 39
+        }
+      ]
+    },
+    {
+      "id": "save",
+      "type": "backend",
+      "icon": "none",
+      "label": "共用保存",
+      "sublabel": "存在提前返回或异常",
+      "pos": [
+        656,
+        328
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 40,
+          "end_line": 42
+        }
+      ]
+    },
+    {
+      "id": "safe",
+      "type": "backend",
+      "icon": "none",
+      "label": "Z 回安全位",
+      "sublabel": "仅在 Save 返回后",
+      "pos": [
+        656,
+        472
+      ],
+      "size": [
+        176,
+        76
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-force-control-review.md",
+          "line": 28,
+          "end_line": 39
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "entry-to-dispatch",
+      "from": "entry",
+      "to": "dispatch"
+    },
+    {
+      "id": "dispatch-to-gt-prepare",
+      "from": "dispatch",
+      "to": "gt-prepare"
+    },
+    {
+      "id": "dispatch-to-etel-prepare",
+      "from": "dispatch",
+      "to": "etel-prepare"
+    },
+    {
+      "id": "gt-prepare-to-gt-samples",
+      "from": "gt-prepare",
+      "to": "gt-samples"
+    },
+    {
+      "id": "etel-prepare-to-etel-samples",
+      "from": "etel-prepare",
+      "to": "etel-samples"
+    },
+    {
+      "id": "gt-samples-to-gt-finally",
+      "from": "gt-samples",
+      "to": "gt-finally"
+    },
+    {
+      "id": "etel-samples-to-etel-finally",
+      "from": "etel-samples",
+      "to": "etel-finally"
+    },
+    {
+      "id": "gt-finally-to-save",
+      "from": "gt-finally",
+      "to": "save"
+    },
+    {
+      "id": "etel-finally-to-save",
+      "from": "etel-finally",
+      "to": "save"
+    },
+    {
+      "id": "save-to-safe",
+      "from": "save",
+      "to": "safe"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "读取边界",
+      "items": [
+        "停止、异常和空表可能改变保存结果；正常返回不是整批标定完整的证明。",
+        "保存可提前返回或异常；Save 抛错时后面的回安全位不执行。"
+      ]
+    }
+  ]
+}

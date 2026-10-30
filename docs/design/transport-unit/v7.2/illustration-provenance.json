@@ -1,0 +1,219 @@
+{
+  "revision": "7.1",
+  "tool": "内置 image_gen",
+  "model_version": "内置工具未提供后端模型版本选择或可验证的型号信息；未将输出宣称为指定的 image2.5 模型",
+  "palette": {
+    "ink": "#18364B",
+    "line": "#A8BAC7",
+    "substrate": "#EEF5F0",
+    "island": "#EDF3F8",
+    "target": "#C58737"
+  },
+  "generated": [
+    {
+      "file": "figures/p01-product-map.png",
+      "kind": "AI-generated illustration refined in two edit passes",
+      "prompt": "Use case: scientific-educational. Asset: a publication-ready plate in a serious Chinese software engineering design monograph. Landscape 3:2 at high resolution, pure white background. Precise flat editorial vector-like drawing with no gradients, no shadows, no paper texture, no decorative icons, no machines. Consistent typography resembling Microsoft YaHei, medium weight Chinese labels, generous perfectly even spacing, straight aligned borders of uniform 1.5pt visual weight, square or very subtly rounded corners. Restrained colors: dark navy #18364B text, pale sage #EEF5F0 substrate regions, pale blue #EDF3F8 island regions, warm ochre #D68B32 target circles, soft gray #A8BAC7 outlines. Avoid oversized bold headings, avoid cards/dashboards, avoid English subtitles, do not add any text except the exact requested labels. Leave 6% white safe margin all around. Count correctness and alignment essential. Primary request: REDESIGN the attached logical product diagram in this refined uniform style. Keep exactly one outer Transport Unit boundary, exactly TWO equal substrate regions in one row, each containing exactly THREE equal rectangular islands in one row; each island contains exactly TWO equal circles A and B aligned in a row. Make all six island boxes identical sizes, all twelve targets equal diameter. Exact labels: outer boundary 'Transport Unit'; two region headings '基板 1' and '基板 2'; island headings inside EACH substrate '基岛 1', '基岛 2', '基岛 3'; targets 'A' and 'B'. Highlight A of substrate1 island2 using one subtle thin navy selection ring. Below the main structure place one centered enlarged detail of the selected island, connected by a clean thin straight leader from selected A; detail has '基岛 2', targets A and B, selected A ring. Place a small centered label below the detail exactly '基板 1 / 基岛 2 / 焊点 A'. Keep the main structure in the upper half and enlarged detail in lower third, balanced white gutters. No other footnote or words. The shapes are abstract logical containment, not hardware. Do not omit an island or target.",
+      "first_output": "exec-e3a9f6e9-8657-4b0e-9338-8dfa02d00dc6.png",
+      "edit_prompt": "Edit only the visual finish of this logical product diagram. Preserve every label verbatim, exactly two substrates, exactly three islands per substrate, exactly two A/B targets per island, and the one enlarged detail with selected A. Preserve the strict horizontal and vertical alignment and leader endpoints. Replace ALL gradient fills with completely uniform flat solid fills: outer region #F5F7F9, substrate regions #EEF5F0, island regions #EDF3F8, target circles #C58737. Use dark text #18364B, outline #A8BAC7 with selection ring #315D82. Pure white background. Remove all texture and shaded modeling. Reduce the large Transport Unit heading modestly to fit the typographic hierarchy; keep all other label sizes consistent. Crisp book-quality orthographic diagram. Do not add or remove any objects, labels, symbols or text. No gradients anywhere.",
+      "source_output": "exec-31943f65-a778-4345-a7b9-26d7e22b0ea7.png",
+      "review": "两块基板各含三岛，每岛A/B；只圈选基板1的基岛2之A点，放大详情地址一致；检查边界、标签、配色与对齐",
+      "source_output_absolute": "C:/Users/w/.codex/generated_images/01a1531f-e138-7a22-a483-92de6e23c696/exec-31943f65-a778-4345-a7b9-26d7e22b0ea7.png"
+    },
+    {
+      "file": "figures/p03-config-instance.png",
+      "kind": "AI-generated illustration refined in two edit passes",
+      "prompt": "Use case: scientific-educational. Asset: a publication-ready plate in a serious Chinese software engineering design monograph. Landscape 3:2 at high resolution, pure white background. Precise flat editorial vector-like drawing with no gradients, no shadows, no paper texture, no decorative icons, no machines. Consistent typography resembling Microsoft YaHei, medium weight Chinese labels, generous perfectly even spacing, straight aligned borders of uniform 1.5pt visual weight, square or very subtly rounded corners. Restrained colors: dark navy #18364B text, pale sage #EEF5F0 substrate regions, pale blue #EDF3F8 island regions, warm ochre #D68B32 target circles, soft gray #A8BAC7 outlines. Avoid oversized bold headings, avoid cards/dashboards, avoid English subtitles, do not add any text except the exact requested labels. Leave 6% white safe margin all around. Count correctness and alignment essential. Primary request: REDESIGN the attached configuration-sharing diagram. Show one configuration definition on the left and three independent runtime objects on the right. Exactly ONE simple pale-blue rectangular configuration sheet centered vertically on left, heading '焊点 A 配置', with one ochre crosshair A. Exactly THREE equal rows on right, with equal vertical spacing. Each row has an equal-size pale-blue rectangular island region followed by a separate equal-size neutral record rectangle. Region labels respectively '基岛 1 的 A', '基岛 2 的 A', '基岛 3 的 A', one small crosshair A in each. Record labels respectively '运行信息 1', '运行信息 2', '运行信息 3'. First and third records show one simple entirely hollow gray circle; second record shows one simple muted green check. One clean orthogonal branched connector leaves the configuration sheet and points to all three island regions; label on its horizontal stem exactly '读取同一配置'. A thin short dotted connector connects each island region to its own record. No progress percentage, no cloud shapes, no additional bottom slogan. The three island regions, records, row headings, symbols and connectors must be exactly aligned on a strict grid. Large empty gutters prevent labels touching arrows.",
+      "first_output": "exec-61851eba-fc17-461b-a08d-0c64b68b5479.png",
+      "edit_prompt": "Edit only the color and surface finish of this configuration sharing diagram. Preserve all existing words verbatim, one configuration rectangle, exactly three equal island rectangles and exactly three equal record rectangles, the one-to-three branched connector and three dashed row connectors. Preserve hollow-circle/check/hollow-circle meanings. Replace ALL gradients with perfectly flat uniform fills: configuration and island rectangles #EDF3F8, records #F5F7F9, crosshair targets #C58737, green check #44765B, text #18364B, fine rectangle outlines #A8BAC7, connectors #315D82. Pure white background, no paper texture or shadows. Keep the three row headings, boxes and connector heights exactly aligned, equal row gaps, same corner geometry and stroke weights. Do not add slogans or labels.",
+      "source_output": "exec-d11c0e1f-e7ab-49e8-9858-3129bc916ef1.png",
+      "review": "一份配置、三个等行距运行对象、三份独立记录；空心圆/完成勾/空心圆，不表示百分比；检查各行矩形与连接线的对齐",
+      "source_output_absolute": "C:/Users/w/.codex/generated_images/01a1531f-e138-7a22-a483-92de6e23c696/exec-d11c0e1f-e7ab-49e8-9858-3129bc916ef1.png"
+    }
+  ],
+  "engineering": "保留第7.1版18图；本轮新增6幅精确工程图，逐图核对对象归属、条件和写入次序。未重绘既有概念生图。",
+  "assets_sha256": {
+    "figures/p01-product-map.png": "085c71215a2ed14349a1d95cc6794e932b1042402b1b4aafa997c070ab7f4757",
+    "figures/p02-responsibility.png": "a61aa1c1f6ee4f9404f438c5c89ff08849103c8f8ff7404118c42f339467e389",
+    "figures/p02-responsibility.svg": "66b63f31c288222966362126f4258c6c237ea2cb15a6fd6db0b01ccf727add40",
+    "figures/p03-config-instance.png": "973a1b5e2834b091e7f1caeff83a9149a68374177e040d986406ce5a37c6733d",
+    "figures/p04-work-order.png": "47a67aab64c1084e874cb85ca46a40ef5efd934b1c5175ce924e45ddcbef39aa",
+    "figures/p04-work-order.svg": "e502044dea93f4fc8a3e9f07e07cfb8bc0bc5d0aad13eb15343b0748ad72398a",
+    "figures/p05-coordinate-chain.png": "642f018c104d2e0a339a9ee30de9816c5cf891977aed53e845ae75ea29746d6b",
+    "figures/p05-coordinate-chain.svg": "4c171173e7a78e9eff2fe0321aca6bebf64fe5d6ddee1926e767c55f6faf9404",
+    "figures/p06-coordinate-geometry.png": "6f365580fd30e001f608f4451289b328d8aca7ec85eaa1db482047c5bac273b2",
+    "figures/p06-coordinate-geometry.svg": "976488e225b31f40a2da11c84bf2ae9ef4326dcb4db14821c75ab7cb8443112c",
+    "figures/p07-build-sequence.png": "8ffd01e387a19acc9bc27c151b1c5181a0f37781b4cbda36fbf4f559c2fe8edb",
+    "figures/p07-build-sequence.svg": "95286f9582c3b2b294b4525b3ae7955622029f42461731d785730f89aa8617d8",
+    "figures/p09-handover.png": "62d16862adbc7d8edcf42222ef9223e6918edede3844baaacec938c4718d025b",
+    "figures/p09-handover.svg": "56dff5ad9c418f2ee82c299568ffead37151ec228067062274944ef985b71ad6",
+    "figures/p10-progress.png": "4048bdc1133fe21614b4872bb329d153354ed7fea7a862ab82a3040d28502248",
+    "figures/p10-progress.svg": "45705295b371186209f6c109b74437a4cb4209952fa5c11cdc68125086ef2e2f",
+    "figures/p11-layout-models.png": "e2cd1606fc002f940fe8a86a4503b58aa934f03f374d3c6af63e63075100eb4e",
+    "figures/p11-layout-models.svg": "32bcd82ab3a5a8193e36c7df54cc40af5d2d093431e164b16dd30637465de46d",
+    "figures/p12-data-ownership.png": "65f77264e55dfef0e723f1e70c7c640647226182958e6c8d363b2878cc3ef7ce",
+    "figures/p12-data-ownership.svg": "6d5e610960a40fb41f526dadb284f4145d9b7155f740cc678cc7921a740bf14a",
+    "figures/p13-entry-conditions.png": "7e2c01c15a21a29704e5d31d8e5372601416ecc46cb7c5a5d824e4c8a1527844",
+    "figures/p13-entry-conditions.svg": "17e122b89ea19fac91e88d462adc30cf582d7a1cea9395b9a31db53504010d78",
+    "figures/p14-handover-interruption.png": "035cdde6a3f0c755cfc542a2197fc40dade59eb747e4e9438ac4467bde678c39",
+    "figures/p14-handover-interruption.svg": "26159e871ba8d1fa65a7e273ec0f7cf85500ec9121ad2e6438d76b3c7a150c97",
+    "figures/p15-address-resolution.png": "4fb32d8d6e818db8dc51c84ab3cf92ceb163b5efa034e41f5a3f56ad81f53d0f",
+    "figures/p15-address-resolution.svg": "927a0acd4f314dd5a5281e4500fdc955eeece08caa6eb4e97adcb4a28db0aa76",
+    "figures/p16-product-continuity.png": "a9270789ff09a79d2b3cb969b15503a32562d399aefce458c19ecf1450a51015",
+    "figures/p16-product-continuity.svg": "b845f024b2108622fc1f882d194729d8bd87e2f6678a2c4cee359663b3739036",
+    "figures/p18-mapping-import.png": "e8c5a8a58f10a17dc6e7da00ddcbab5bbab50b8ad3ea3538f8b70557de9cd0c3",
+    "figures/p18-mapping-import.svg": "3feedeb4cd3b236c7a7be9d8288f704775071e2fcd53b9f02b9d7b274198b09f",
+    "figures/p19-divide-lifecycle.png": "1a505e0f28902aa2068e8231808a95faa988031ec68a8857633791e23ab65a67",
+    "figures/p19-divide-lifecycle.svg": "9dd7c93b8e8d2744275294642c4759a1b1d503e5bbf546de433c1c5599eccbf3",
+    "figures/p20-irregular-address.png": "30ef55e30864bf80e12d32053df60519e3a0f50d8e8ab56b1df1efe17ed72527",
+    "figures/p20-irregular-address.svg": "2c6ea69789bf97eac714c83b1f91a87424adbc5b2aca1db9f184dbbc2d4c8a5b",
+    "figures/p21-clear-scope.png": "a88ae5e9019441208a0bf274a095c4ec4088177a45ab7b91e712eb01eceb2aa3",
+    "figures/p21-clear-scope.svg": "b20cdd97502a50d1753cebbd6d7d6f4b2c850b73f64474365b80f5ce66e7a950",
+    "figures/p22-mapping-ownership.png": "73514df162eddc631412668db3a716f053c8c3ed312f475f2bc0ac8ff37422cd",
+    "figures/p22-mapping-ownership.svg": "3d6578ebc007a4ad36df748a484a41040ce410e78ebc3eb964c839ab08cef09f",
+    "figures/p23-teach-writes.png": "56deea7ff2634f87cee56728fe12c6853411d665c85e0d88e11c3f2a26f4a2c3",
+    "figures/p23-teach-writes.svg": "92ba7735eb66f1b4d359f671bc37572044df31b6afd873490f5ee93cdfa10b74",
+    "figures/p24-irregular-edit.png": "6e107514fa0b1b9e1f8412cf728a306028d0d6ba2b96b2b869da8150d7bdaf6c",
+    "figures/p24-irregular-edit.svg": "5b69a6cfcd5fb49cbd13ba5ebb7ceefa92228bce6ddb445725af13292548beb8",
+    "figures/p25-compensate-lifecycle.png": "3607ca8f594a3465ba5c5c0903f39986dff20e5f8d9620f8c7f2ad5ae7ffb52d",
+    "figures/p25-compensate-lifecycle.svg": "28fcfa0dbcd0a4fd47ffd7f70b986109a4997b2a96429f34c3d7fb434020cc1b",
+    "figures/p26-node-reference.png": "8b8732a9bff53e845d08c1e38b4eccd40ff747066f8ae2f114241f7833899f8d",
+    "figures/p26-node-reference.svg": "69ccd0e13594d54e136a1d30d55ad26327204cdb43d9d848a8022bc8b4ac65e6"
+  },
+  "final_assets": [
+    {
+      "file": "figures/p01-product-map.png",
+      "sha256": "085c71215a2ed14349a1d95cc6794e932b1042402b1b4aafa997c070ab7f4757"
+    },
+    {
+      "file": "figures/p02-responsibility.png",
+      "sha256": "a61aa1c1f6ee4f9404f438c5c89ff08849103c8f8ff7404118c42f339467e389"
+    },
+    {
+      "file": "figures/p03-config-instance.png",
+      "sha256": "973a1b5e2834b091e7f1caeff83a9149a68374177e040d986406ce5a37c6733d"
+    },
+    {
+      "file": "figures/p04-work-order.png",
+      "sha256": "47a67aab64c1084e874cb85ca46a40ef5efd934b1c5175ce924e45ddcbef39aa"
+    },
+    {
+      "file": "figures/p05-coordinate-chain.png",
+      "sha256": "642f018c104d2e0a339a9ee30de9816c5cf891977aed53e845ae75ea29746d6b"
+    },
+    {
+      "file": "figures/p06-coordinate-geometry.png",
+      "sha256": "6f365580fd30e001f608f4451289b328d8aca7ec85eaa1db482047c5bac273b2"
+    },
+    {
+      "file": "figures/p07-build-sequence.png",
+      "sha256": "8ffd01e387a19acc9bc27c151b1c5181a0f37781b4cbda36fbf4f559c2fe8edb"
+    },
+    {
+      "file": "figures/p09-handover.png",
+      "sha256": "62d16862adbc7d8edcf42222ef9223e6918edede3844baaacec938c4718d025b"
+    },
+    {
+      "file": "figures/p10-progress.png",
+      "sha256": "4048bdc1133fe21614b4872bb329d153354ed7fea7a862ab82a3040d28502248"
+    },
+    {
+      "file": "figures/p11-layout-models.png",
+      "sha256": "e2cd1606fc002f940fe8a86a4503b58aa934f03f374d3c6af63e63075100eb4e"
+    },
+    {
+      "file": "figures/p12-data-ownership.png",
+      "sha256": "65f77264e55dfef0e723f1e70c7c640647226182958e6c8d363b2878cc3ef7ce"
+    },
+    {
+      "file": "figures/p13-entry-conditions.png",
+      "sha256": "7e2c01c15a21a29704e5d31d8e5372601416ecc46cb7c5a5d824e4c8a1527844"
+    },
+    {
+      "file": "figures/p14-handover-interruption.png",
+      "sha256": "035cdde6a3f0c755cfc542a2197fc40dade59eb747e4e9438ac4467bde678c39"
+    },
+    {
+      "file": "figures/p15-address-resolution.png",
+      "sha256": "4fb32d8d6e818db8dc51c84ab3cf92ceb163b5efa034e41f5a3f56ad81f53d0f"
+    },
+    {
+      "file": "figures/p16-product-continuity.png",
+      "sha256": "a9270789ff09a79d2b3cb969b15503a32562d399aefce458c19ecf1450a51015"
+    },
+    {
+      "file": "figures/p18-mapping-import.png",
+      "sha256": "e8c5a8a58f10a17dc6e7da00ddcbab5bbab50b8ad3ea3538f8b70557de9cd0c3"
+    },
+    {
+      "file": "figures/p19-divide-lifecycle.png",
+      "sha256": "1a505e0f28902aa2068e8231808a95faa988031ec68a8857633791e23ab65a67"
+    },
+    {
+      "file": "figures/p20-irregular-address.png",
+      "sha256": "30ef55e30864bf80e12d32053df60519e3a0f50d8e8ab56b1df1efe17ed72527"
+    },
+    {
+      "file": "figures/p21-clear-scope.png",
+      "sha256": "a88ae5e9019441208a0bf274a095c4ec4088177a45ab7b91e712eb01eceb2aa3"
+    },
+    {
+      "file": "figures/p22-mapping-ownership.png",
+      "sha256": "73514df162eddc631412668db3a716f053c8c3ed312f475f2bc0ac8ff37422cd"
+    },
+    {
+      "file": "figures/p23-teach-writes.png",
+      "sha256": "56deea7ff2634f87cee56728fe12c6853411d665c85e0d88e11c3f2a26f4a2c3"
+    },
+    {
+      "file": "figures/p24-irregular-edit.png",
+      "sha256": "6e107514fa0b1b9e1f8412cf728a306028d0d6ba2b96b2b869da8150d7bdaf6c"
+    },
+    {
+      "file": "figures/p25-compensate-lifecycle.png",
+      "sha256": "3607ca8f594a3465ba5c5c0903f39986dff20e5f8d9620f8c7f2ad5ae7ffb52d"
+    },
+    {
+      "file": "figures/p26-node-reference.png",
+      "sha256": "8b8732a9bff53e845d08c1e38b4eccd40ff747066f8ae2f114241f7833899f8d"
+    }
+  ],
+  "engineering_additions": [
+    {
+      "png": "figures/p21-clear-scope.png",
+      "svg": "figures/p21-clear-scope.svg",
+      "sha256_png": "a88ae5e9019441208a0bf274a095c4ec4088177a45ab7b91e712eb01eceb2aa3",
+      "sha256_svg": "b20cdd97502a50d1753cebbd6d7d6f4b2c850b73f64474365b80f5ce66e7a950"
+    },
+    {
+      "png": "figures/p22-mapping-ownership.png",
+      "svg": "figures/p22-mapping-ownership.svg",
+      "sha256_png": "73514df162eddc631412668db3a716f053c8c3ed312f475f2bc0ac8ff37422cd",
+      "sha256_svg": "3d6578ebc007a4ad36df748a484a41040ce410e78ebc3eb964c839ab08cef09f"
+    },
+    {
+      "png": "figures/p23-teach-writes.png",
+      "svg": "figures/p23-teach-writes.svg",
+      "sha256_png": "56deea7ff2634f87cee56728fe12c6853411d665c85e0d88e11c3f2a26f4a2c3",
+      "sha256_svg": "92ba7735eb66f1b4d359f671bc37572044df31b6afd873490f5ee93cdfa10b74"
+    },
+    {
+      "png": "figures/p24-irregular-edit.png",
+      "svg": "figures/p24-irregular-edit.svg",
+      "sha256_png": "6e107514fa0b1b9e1f8412cf728a306028d0d6ba2b96b2b869da8150d7bdaf6c",
+      "sha256_svg": "5b69a6cfcd5fb49cbd13ba5ebb7ceefa92228bce6ddb445725af13292548beb8"
+    },
+    {
+      "png": "figures/p25-compensate-lifecycle.png",
+      "svg": "figures/p25-compensate-lifecycle.svg",
+      "sha256_png": "3607ca8f594a3465ba5c5c0903f39986dff20e5f8d9620f8c7f2ad5ae7ffb52d",
+      "sha256_svg": "28fcfa0dbcd0a4fd47ffd7f70b986109a4997b2a96429f34c3d7fb434020cc1b"
+    },
+    {
+      "png": "figures/p26-node-reference.png",
+      "svg": "figures/p26-node-reference.svg",
+      "sha256_png": "8b8732a9bff53e845d08c1e38b4eccd40ff747066f8ae2f114241f7833899f8d",
+      "sha256_svg": "69ccd0e13594d54e136a1d30d55ad26327204cdb43d9d848a8022bc8b4ac65e6"
+    }
+  ]
+}

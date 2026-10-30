@@ -1,0 +1,29 @@
+# 原整机任务关闭判断与S1真实任务结局核验
+
+两轮各310项通过，共620项。16个未改动原资源程序集与实际SDK全部实际加载并核对源路径及哈希。249个声明/141个源文件严格解码并绑定原字节及UTF16位置，126个原IL方法来自3个程序集。十五项新旧绑定核验通过。76新增冻结输入，383父输入复用，10685+76=10761。整体目标未完成。
+
+## 完整原关闭判断与公开任务夹具
+
+实际执行原Machine.IsAllowTaskClosed，选取16个任务字段/属性：S1、Wafer、Bond、SlideFlux、Flip、9个输送段及Loader/Unloader。只有S1受IsSystem1Configrated控制，关闭该标志时选取15个；SlideFlux和Flip即使硬件标志为false也被选入。全null时返回true。
+
+256行矩阵是8种真实CLR状态×16个公开任务持有者×2个S1配置标志。状态来自普通真实Task、TaskCompletionSource、一个明确的HeldScheduler调度夹具、受事件阻塞的Running任务、附加子任务尚未完成的父任务：Created、WaitingForActivation、WaitingToRun、Running、WaitingForChildrenToComplete、RanToCompletion、Canceled、Faulted。通过原公开任务字段或setter赋值，没有写私有状态、替换单例、节点或SDK。此矩阵证明原判断对实际CLR状态的行为，不代表原现场生产任务自然产生了全部8种状态。
+
+原关闭判断仅在Status==Running时false。Created、WaitingForActivation、WaitingToRun、WaitingForChildrenToComplete虽未完成，仍返回true；Completed、Canceled、Faulted也true。S1配置关闭时，Running S1同样被忽略。原IL只检查一次Task.Status、常量Running=3，不检查IsCompleted/IsFaulted/IsCanceled；原Task字段加载顺序与实际矩阵一致。
+
+公开transferLoadBeltToBondTask在8种状态都被忽略，源码标为弃用，原字段加载没有它。每次查询都把WorkTasks替换为一个新List，从域持有者重新收集：外部公开塞入的Running任务列表会被丢弃；上次列表仍保留旧任务引用，新查询反映公开持有者的当前值。这是实际列表重建结果，未声称查询具有原子快照或并发安全性。
+
+## 原S1 Start与实际任务结局
+
+将8种公开夹具任务依次作为原DispenseWorkTask.DispenseTask，实际调用原Start。仅Running保留同一任务，其余7种都替换为新原生产Task，其中4种旧任务尚未完成。新任务使用原TaskScheduler.Default/LongRunning，机器为Stop、原过程步骤为空，实际原DoWork完成初始化后不进入Working循环，7个任务均RanToCompletion。旧夹具仍保留原状态，随后通过夹具公开事件、完成源及调度器释放。取消状态来自CLR夹具，不是原生产Task取消机制的证明。
+
+另外启动1个实际原S1 Working生产Task。公开原载具/产品/一步无操作配置生成真实计划，原S1CarrierMeasureHeight节点WorkStart回调通过事件保持Running。实际Machine关闭查询false；关闭S1配置后，查询true且列表里没有该实际活任务。恢复配置后，原Start保留同一实际Running任务。原AbortThread只调用Task.Dispose，实际抛InvalidOperationException且原任务仍Running，关闭查询仍false。
+
+释放公开事件后，WorkStart抛同一个InvalidOperationException，实际原Task故障，并保留MachineState.Working。原关闭查询此时true，列表中仍包含这个Faulted原Task。每轮原S1启动8个：7完成、1故障。节点DoWork仅尝试1次，在原WorkStart回调抛出前未通过该边界，未完成测高动作正文或业务步骤；本轮节点成功正文类型数为0。生产Task本轮8个，不把矩阵普通CLR任务计入原生产任务数量。
+
+## 边界与证据
+
+真实机器仍为空硬件、OffLineWork。未执行私有Prepare/CleanFile/整Machine.Start、真实S2/晶圆/输送/Flip/Slide生产循环、回零/硬件SelfCheck、PR/VM、真实UI/SQL/设备、Retry、完整MSBuild/LC/Fody或部署。公开夹具明确保留；原生产C#/csproj未修改。关闭查询接受一个任务状态不证明该任务成功完成，也不证明整机可安全再次启动。
+
+编译9e0e0f、两轮c8f515/7033ec、核心5194c5、阶段cb72d4、冻结96859e、绑定b36345均同步exit0；没有编译、原生或独立验证失败候选。
+
+下一步连接其他域真实任务与整机关闭查询，优先复核原S2 Start/DoWork启动前初始化及故障退出，再推进完整任务/视觉/设备/构建验收。16工程、29组、1436文件及13项任务保持原范围，整体目标未完成。

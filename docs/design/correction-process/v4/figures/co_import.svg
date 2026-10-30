@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="70" font-family="Microsoft YaHei" font-size="54" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">同一组独立说明输入  两种平滑不会得到同一张表</text>
+<text x="473.3333333333333" y="210" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">原始一行</text>
+<text x="473.3333333333333" y="360" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">0  0.01  1  0.03  0.04</text>
+<text x="473.3333333333333" y="456" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">单位mm</text>
+<text x="1200.0" y="210" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">人工导入均值</text>
+<text x="1200.0" y="360" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">0  0.336667  0.216</text>
+<text x="1200.0" y="456" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">0.356667  0.04</text>
+<text x="1926.6666666666665" y="210" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">自动路径中位数</text>
+<text x="1926.6666666666665" y="360" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">0.01  0.02  0.03</text>
+<text x="1926.6666666666665" y="456" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">0.035  0.04</text>
+<text x="1200" y="940" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">只说明算法差异  不是可直接发布的设备参数</text></svg>

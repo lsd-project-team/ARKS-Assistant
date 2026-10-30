@@ -1,0 +1,50 @@
+{
+  "schema": "archify-transport-whole-config-sdk-current-v1",
+  "status": "current-transport-whole-config-sdk-frozen-input-verified",
+  "recordedAt": "2026-10-07T00:44:24.832Z",
+  "verification": {
+    "command": "node scripts/run-transport-whole-config-sdk-frozen-input.cjs",
+    "frozenInputSha256": "4c1de1c0dea3881806b414bfe81a2244ec2280f7fe4a7124115f201dae5395c5",
+    "restoredCurrentInputSha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642",
+    "result": {
+      "status": "passed",
+      "results": [
+        {
+          "tag": "library",
+          "checks": 142,
+          "artifactIdentical": true
+        },
+        {
+          "tag": "bin",
+          "checks": 142,
+          "artifactIdentical": true
+        }
+      ],
+      "directory": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\whole-config-sdk-replay-OZxSox",
+      "scope": "Independent whole-source SDK startup preparation after frozen formal1328 and earlier controlled1328/focusedSDK58. Both actual SDK copies execute142 identical focused checks,284 placements and28 original startup invocations per copy.37 complete unchanged original files compile with source startup/entity/task composition, original product inherits real SDK Singleton/GetInstance/Save directly, original repositories call SDK JSON directly, actual SDK point types replace adapters.48 reconstructed declarations removed; all512 prior captures preserved verbatim plus8 entity members. Entity/inspection remainder, PR/path/recipe/calibration/device/export boundaries remain reconstructed/adapted; no Fody weaving, original project/deployment/native UI/equipment or all29-group/13-requirement acceptance. Prior1328/SDK58 methods remain compiled but only this142 suite executes."
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/transport-whole-config-sdk-test.json",
+      "sha256": "8537b14b5dd1b6364f64745a2de0dfd3a114aeda2e04ea5e23f10607581534da"
+    },
+    {
+      "path": "docs/archify/transport-whole-config-sdk-audit.json",
+      "sha256": "79555c47c68d7d61dbbe95e346121836d8814b5e13828bdc08ed267ab37ce22b"
+    },
+    {
+      "path": "docs/archify/transport-whole-config-sdk-progress.json",
+      "sha256": "536c4baa9189d3e4bf8d28bccddb3826fa824dae717128fccdd7f911b9de3778"
+    },
+    {
+      "path": "docs/archify/bond-config-native-source-test.json",
+      "sha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642"
+    }
+  ],
+  "boundaries": [
+    "The compatibility replay temporarily used the preserved historical bond-config input and restored the current input in finally.",
+    "The 142-check SDK run is separate from the current 56-check bond-config evidence and the frozen formal 1328 regression.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

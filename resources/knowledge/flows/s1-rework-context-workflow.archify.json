@@ -1,0 +1,273 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 S1 胶检选择映射与 ReDispense 重做边界",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "input",
+      "label": "异常输入与选择"
+    },
+    {
+      "id": "consumer",
+      "label": "生产胶检的 Retry 消费"
+    },
+    {
+      "id": "reset",
+      "label": "步骤与消息重置"
+    },
+    {
+      "id": "match",
+      "label": "非空消息列表的匹配条件"
+    },
+    {
+      "id": "return",
+      "label": "返回生产线程"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "check",
+      "lane": "input",
+      "col": 0,
+      "type": "security",
+      "label": "胶检异常",
+      "sublabel": "数量、面积或位置偏差",
+      "width": 180
+    },
+    {
+      "id": "select",
+      "lane": "input",
+      "col": 1,
+      "type": "external",
+      "label": "报警窗口选择",
+      "sublabel": "主界面同步调用",
+      "width": 180
+    },
+    {
+      "id": "map",
+      "lane": "input",
+      "col": 2,
+      "type": "backend",
+      "label": "选择转为返回码",
+      "sublabel": "继续 / 禁用 / 终止 / 重做",
+      "width": 180
+    },
+    {
+      "id": "defect",
+      "lane": "consumer",
+      "col": 0,
+      "type": "backend",
+      "label": "生产胶检消费",
+      "sublabel": "此图展开 Retry 分支",
+      "width": 180
+    },
+    {
+      "id": "hardware",
+      "lane": "consumer",
+      "col": 1,
+      "type": "backend",
+      "label": "Retry 分支",
+      "sublabel": "调用 ReDispense",
+      "width": 180
+    },
+    {
+      "id": "schedule",
+      "lane": "consumer",
+      "col": 2,
+      "type": "backend",
+      "label": "返工准备",
+      "sublabel": "当前焊点及两种动作",
+      "width": 180
+    },
+    {
+      "id": "redispense",
+      "lane": "reset",
+      "col": 0,
+      "type": "backend",
+      "label": "焊点步骤置 false",
+      "sublabel": "遍历 S1RemainingSteps",
+      "width": 180
+    },
+    {
+      "id": "keys",
+      "lane": "reset",
+      "col": 1,
+      "type": "security",
+      "label": "消息队列非空？",
+      "sublabel": "空列表跳过消息重置",
+      "width": 180
+    },
+    {
+      "id": "enumFault",
+      "lane": "reset",
+      "col": 2,
+      "type": "backend",
+      "label": "依次处理两动作",
+      "sublabel": "点胶 → 检测",
+      "width": 180
+    },
+    {
+      "id": "directRework",
+      "lane": "match",
+      "col": 1,
+      "type": "security",
+      "label": "精确匹配并重置",
+      "sublabel": "找到：Finished=false",
+      "width": 180
+    },
+    {
+      "id": "sortFault",
+      "lane": "match",
+      "col": 3,
+      "type": "external",
+      "label": "匹配缺失异常",
+      "sublabel": "ActionNode Sort Error",
+      "width": 180
+    },
+    {
+      "id": "finish",
+      "lane": "return",
+      "col": 2,
+      "type": "backend",
+      "label": "交回生产任务",
+      "sublabel": "Retry 或异常传播",
+      "width": 180
+    }
+  ],
+  "edges": [
+    {
+      "id": "check-select",
+      "from": "check",
+      "to": "select",
+      "label": "报警",
+      "role": "main"
+    },
+    {
+      "id": "select-map",
+      "from": "select",
+      "to": "map",
+      "label": "DialogResult",
+      "role": "main"
+    },
+    {
+      "id": "map-defect",
+      "from": "map",
+      "to": "defect",
+      "label": "返回码",
+      "role": "main"
+    },
+    {
+      "id": "defect-hardware",
+      "from": "defect",
+      "to": "hardware",
+      "label": "Retry",
+      "role": "branch"
+    },
+    {
+      "id": "hardware-schedule",
+      "from": "hardware",
+      "to": "schedule",
+      "label": "进入返工",
+      "role": "main"
+    },
+    {
+      "id": "schedule-redispense",
+      "from": "schedule",
+      "to": "redispense",
+      "label": "先改步骤字典",
+      "role": "main"
+    },
+    {
+      "id": "redispense-keys",
+      "from": "redispense",
+      "to": "keys",
+      "label": "随后",
+      "role": "main"
+    },
+    {
+      "id": "keys-enumFault",
+      "from": "keys",
+      "to": "enumFault",
+      "label": "非空",
+      "role": "main"
+    },
+    {
+      "id": "enumFault-direct",
+      "from": "enumFault",
+      "to": "directRework",
+      "label": "每个动作查找",
+      "role": "main"
+    },
+    {
+      "id": "keys-finish",
+      "from": "keys",
+      "to": "finish",
+      "label": "空列表",
+      "role": "branch"
+    },
+    {
+      "id": "direct-finish",
+      "from": "directRework",
+      "to": "finish",
+      "label": "均匹配",
+      "role": "return"
+    },
+    {
+      "id": "direct-sort",
+      "from": "directRework",
+      "to": "sortFault",
+      "label": "缺匹配",
+      "role": "error"
+    },
+    {
+      "id": "sort-finish",
+      "from": "sortFault",
+      "to": "finish",
+      "label": "Exception",
+      "role": "error"
+    }
+  ],
+  "mainPath": [
+    "check",
+    "select",
+    "map",
+    "defect",
+    "hardware",
+    "schedule",
+    "redispense",
+    "keys",
+    "enumFault",
+    "directRework",
+    "finish"
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "返工准备不是补胶完成",
+      "items": [
+        "ReDispense 先逐键把当前焊点 S1RemainingSteps 写 false，再调用 SetActionNodeReWork，按点胶、检测顺序处理消息。源码没有在这里回滚已完成的字典或消息修改。",
+        "WorkMessages 非空时，每个动作查找同动作名、基板、基岛和当前步骤名的第一条消息；重复循环仍查同一条件。空列表跳过查找，不抛缺配对异常，也不重置消息。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "失败与重试出口",
+      "items": [
+        "非空消息列表中，任一动作找不到匹配消息时抛 ActionNode Sort Error；此前的步骤或消息修改可能保留，不会在该方法中自动回滚。",
+        "准备返回后，生产检测返回 Retry；线程不完成当前消息，而是下轮从队首选择未完成项。准备抛出时由检测节点 try/catch 转成 Exception，finally 回调仍可能继续抛出。"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "当前源码依据",
+      "items": [
+        "S1DispenseDefectActionNode.ReDispense / EpoxyApplicationDefect、S1ActionNodeController.SetActionNodeReWork 和 DispenseWorkTask 的返回处理。",
+        "报警选择的四种返回码与实际质量分开阅读；完整补胶、相机算法和硬件闭环仍需继续沿源码复核。"
+      ]
+    }
+  ]
+}

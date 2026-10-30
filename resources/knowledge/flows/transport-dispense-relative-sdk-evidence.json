@@ -1,0 +1,1406 @@
+{
+  "schemaVersion": 1,
+  "scope": "Mono.Cecil metadata and IL only; no SDK/device execution, deployed DLL version or hardware proof",
+  "assemblies": [
+    {
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.LogicHardware.dll",
+      "sha256": "5d88c570a5823b35cd347f008357a6dd3b6a81b3b079dd93a7bab2f20b04b250"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Drive.dll",
+      "sha256": "110c57d1dc48f94ee6c32ef223f48e78bc03ef3ad4aeb9986c76306f0d41ae79"
+    }
+  ],
+  "methods": [
+    {
+      "type": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "name": "RelativeMove",
+      "fullName": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "token": "[Method:0x01d4]",
+      "parameters": [
+        {
+          "name": "movePara",
+          "type": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "accuracyMode",
+          "type": "AKRS.Galaxy2.Drive.Common.AccuracyMode",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ],
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "ldc.i4.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "newarr",
+          "operand": "System.Object"
+        },
+        {
+          "offset": "IL_0006",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000b",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000c",
+          "opcode": "ldc.i4.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000d",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000e",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0014",
+          "opcode": "newobj",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::.ctor()"
+        },
+        {
+          "offset": "IL_0019",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001a",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001b",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001c",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Arguments(System.Object[])"
+        },
+        {
+          "offset": "IL_0021",
+          "opcode": "ldsfld",
+          "operand": "System.Reflection.MethodBase OnMethodBoundaryAspectCompile.MethodInfos::_methodInfo_FABC3EC243E0C30550645A58D92FE67DBAFF75EE0A9CFCCD008FEA110163D22A"
+        },
+        {
+          "offset": "IL_0026",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0027",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0028",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0029",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Method(System.Reflection.MethodBase)"
+        },
+        {
+          "offset": "IL_002e",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002f",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0030",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0031",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0032",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Instance(System.Object)"
+        },
+        {
+          "offset": "IL_0037",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0038",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_003d",
+          "opcode": "newobj",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::.ctor(System.Object)"
+        },
+        {
+          "offset": "IL_0042",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0044",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0046",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0047",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnEntry(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)"
+        },
+        {
+          "offset": "IL_004c",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004d",
+          "opcode": "call",
+          "operand": "MethodBoundaryAspect.Fody.Attributes.FlowBehavior MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_FlowBehavior()"
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "stloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0054",
+          "opcode": "ldloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0056",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0057",
+          "opcode": "bne.un.s",
+          "operand": "IL_0069"
+        },
+        {
+          "offset": "IL_0059",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_005a",
+          "opcode": "call",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_ReturnValue()"
+        },
+        {
+          "offset": "IL_005f",
+          "opcode": "unbox.any",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_0064",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0066",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "ret",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0069",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006a",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006b",
+          "opcode": "stloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "ldloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_006f",
+          "opcode": "ldarg.s",
+          "operand": "movePara"
+        },
+        {
+          "offset": "IL_0071",
+          "opcode": "ldarg.s",
+          "operand": "accuracyMode"
+        },
+        {
+          "offset": "IL_0073",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::$_executor_RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)"
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_007a",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007b",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_007d",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_0082",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_ReturnValue(System.Object)"
+        },
+        {
+          "offset": "IL_0087",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0089",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_008a",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnExit(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)"
+        },
+        {
+          "offset": "IL_008f",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0090",
+          "opcode": "call",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_ReturnValue()"
+        },
+        {
+          "offset": "IL_0095",
+          "opcode": "unbox.any",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_009a",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_009c",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_009e",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ]
+    },
+    {
+      "type": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "name": "RelativeMove",
+      "fullName": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::RelativeMove(System.Double,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "token": "[Method:0x01d5]",
+      "parameters": [
+        {
+          "name": "position",
+          "type": "System.Double",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "vel",
+          "type": "System.Double",
+          "optional": true,
+          "hasConstant": true,
+          "constant": -1
+        },
+        {
+          "name": "accuracyMode",
+          "type": "AKRS.Galaxy2.Drive.Common.AccuracyMode",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ],
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "newarr",
+          "operand": "System.Object"
+        },
+        {
+          "offset": "IL_0006",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_000f",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0010",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0011",
+          "opcode": "ldc.i4.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0012",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "box",
+          "operand": "System.Double"
+        },
+        {
+          "offset": "IL_0018",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0019",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001a",
+          "opcode": "ldc.i4.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001b",
+          "opcode": "ldarg.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001c",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Drive.Common.AccuracyMode"
+        },
+        {
+          "offset": "IL_0021",
+          "opcode": "stelem.ref",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0022",
+          "opcode": "newobj",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::.ctor()"
+        },
+        {
+          "offset": "IL_0027",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0028",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0029",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002a",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Arguments(System.Object[])"
+        },
+        {
+          "offset": "IL_002f",
+          "opcode": "ldsfld",
+          "operand": "System.Reflection.MethodBase OnMethodBoundaryAspectCompile.MethodInfos::_methodInfo_ADCDC7BAC01CCA6F763A7D5EF7A76546B55786EAFC0F1C6049C211132F1FCB8D"
+        },
+        {
+          "offset": "IL_0034",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0035",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0036",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0037",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Method(System.Reflection.MethodBase)"
+        },
+        {
+          "offset": "IL_003c",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003d",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003e",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003f",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0040",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_Instance(System.Object)"
+        },
+        {
+          "offset": "IL_0045",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0046",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_004b",
+          "opcode": "newobj",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::.ctor(System.Object)"
+        },
+        {
+          "offset": "IL_0050",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0054",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0055",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnEntry(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)"
+        },
+        {
+          "offset": "IL_005a",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_005b",
+          "opcode": "call",
+          "operand": "MethodBoundaryAspect.Fody.Attributes.FlowBehavior MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_FlowBehavior()"
+        },
+        {
+          "offset": "IL_0060",
+          "opcode": "stloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0062",
+          "opcode": "ldloc.s",
+          "operand": "V_6"
+        },
+        {
+          "offset": "IL_0064",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0065",
+          "opcode": "bne.un.s",
+          "operand": "IL_0077"
+        },
+        {
+          "offset": "IL_0067",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "call",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_ReturnValue()"
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "unbox.any",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_0072",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0074",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0076",
+          "opcode": "ret",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0077",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0079",
+          "opcode": "stloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_007b",
+          "opcode": "ldloc.s",
+          "operand": "V_7"
+        },
+        {
+          "offset": "IL_007d",
+          "opcode": "ldarg.s",
+          "operand": "position"
+        },
+        {
+          "offset": "IL_007f",
+          "opcode": "ldarg.s",
+          "operand": "vel"
+        },
+        {
+          "offset": "IL_0081",
+          "opcode": "ldarg.s",
+          "operand": "accuracyMode"
+        },
+        {
+          "offset": "IL_0083",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::$_executor_RelativeMove(System.Double,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)"
+        },
+        {
+          "offset": "IL_0088",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_008a",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_008b",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_008d",
+          "opcode": "box",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_0092",
+          "opcode": "call",
+          "operand": "System.Void MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::set_ReturnValue(System.Object)"
+        },
+        {
+          "offset": "IL_0097",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0099",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_009a",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.LogicHardware.Aops.JudgeInitAspect::OnExit(MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs)"
+        },
+        {
+          "offset": "IL_009f",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_00a0",
+          "opcode": "call",
+          "operand": "System.Object MethodBoundaryAspect.Fody.Attributes.MethodExecutionArgs::get_ReturnValue()"
+        },
+        {
+          "offset": "IL_00a5",
+          "opcode": "unbox.any",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult"
+        },
+        {
+          "offset": "IL_00aa",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_00ac",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_00ae",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ]
+    },
+    {
+      "type": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "name": "$_executor_RelativeMove",
+      "fullName": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::$_executor_RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "token": "[Method:0x0210]",
+      "parameters": [
+        {
+          "name": "movePara",
+          "type": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "accuracyMode",
+          "type": "AKRS.Galaxy2.Drive.Common.AccuracyMode",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ],
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0002",
+          "opcode": "ldfld",
+          "operand": "System.Object AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::SynSymbolize"
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000b",
+          "opcode": "ldloca.s",
+          "operand": "V_1"
+        },
+        {
+          "offset": "IL_000d",
+          "opcode": "call",
+          "operand": "System.Void System.Threading.Monitor::Enter(System.Object,System.Boolean&)"
+        },
+        {
+          "offset": "IL_0012",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0014",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0015",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0016",
+          "opcode": "callvirt",
+          "operand": "System.Double AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara::get_Vel()"
+        },
+        {
+          "offset": "IL_001b",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001c",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisMovePara()"
+        },
+        {
+          "offset": "IL_0021",
+          "opcode": "callvirt",
+          "operand": "System.Double AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara::get_MaxSpeedLimit()"
+        },
+        {
+          "offset": "IL_0026",
+          "opcode": "call",
+          "operand": "System.Double System.Math::Min(System.Double,System.Double)"
+        },
+        {
+          "offset": "IL_002b",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara::set_Vel(System.Double)"
+        },
+        {
+          "offset": "IL_0030",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0031",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0032",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0033",
+          "opcode": "callvirt",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::SendRelativeMoveCommand(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara)"
+        },
+        {
+          "offset": "IL_0038",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0039",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003a",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003b",
+          "opcode": "ldc.r8",
+          "operand": "0"
+        },
+        {
+          "offset": "IL_0044",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0045",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::WaitForArrival(System.Boolean,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)"
+        },
+        {
+          "offset": "IL_004a",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004b",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004c",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_004d",
+          "opcode": "bne.un.s",
+          "operand": "IL_0055"
+        },
+        {
+          "offset": "IL_004f",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0050",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0051",
+          "opcode": "ceq",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0053",
+          "opcode": "br.s",
+          "operand": "IL_0056"
+        },
+        {
+          "offset": "IL_0055",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0056",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0058",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_005a",
+          "opcode": "brfalse.s",
+          "operand": "IL_0062"
+        },
+        {
+          "offset": "IL_005c",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_005d",
+          "opcode": "ldc.i4.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_005e",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0060",
+          "opcode": "leave.s",
+          "operand": "IL_0072"
+        },
+        {
+          "offset": "IL_0062",
+          "opcode": "ldc.i4.7",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0063",
+          "opcode": "stloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0065",
+          "opcode": "leave.s",
+          "operand": "IL_0072"
+        },
+        {
+          "offset": "IL_0067",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "brfalse.s",
+          "operand": "IL_0071"
+        },
+        {
+          "offset": "IL_006a",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006b",
+          "opcode": "call",
+          "operand": "System.Void System.Threading.Monitor::Exit(System.Object)"
+        },
+        {
+          "offset": "IL_0070",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0071",
+          "opcode": "endfinally",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0072",
+          "opcode": "ldloc.s",
+          "operand": "V_5"
+        },
+        {
+          "offset": "IL_0074",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ]
+    },
+    {
+      "type": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis",
+      "name": "$_executor_RelativeMove",
+      "fullName": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::$_executor_RelativeMove(System.Double,System.Double,AKRS.Galaxy2.Drive.Common.AccuracyMode)",
+      "token": "[Method:0x0211]",
+      "parameters": [
+        {
+          "name": "position",
+          "type": "System.Double",
+          "optional": false,
+          "hasConstant": false,
+          "constant": null
+        },
+        {
+          "name": "vel",
+          "type": "System.Double",
+          "optional": true,
+          "hasConstant": true,
+          "constant": -1
+        },
+        {
+          "name": "accuracyMode",
+          "type": "AKRS.Galaxy2.Drive.Common.AccuracyMode",
+          "optional": true,
+          "hasConstant": true,
+          "constant": 0
+        }
+      ],
+      "instructions": [
+        {
+          "offset": "IL_0000",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0001",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0002",
+          "opcode": "ldfld",
+          "operand": "System.Object AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::SynSymbolize"
+        },
+        {
+          "offset": "IL_0007",
+          "opcode": "stloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0008",
+          "opcode": "ldc.i4.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0009",
+          "opcode": "stloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000a",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_000b",
+          "opcode": "ldloca.s",
+          "operand": "V_1"
+        },
+        {
+          "offset": "IL_000d",
+          "opcode": "call",
+          "operand": "System.Void System.Threading.Monitor::Enter(System.Object,System.Boolean&)"
+        },
+        {
+          "offset": "IL_0012",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0013",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0014",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0015",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisMovePara()"
+        },
+        {
+          "offset": "IL_001a",
+          "opcode": "ldarg.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_001b",
+          "opcode": "callvirt",
+          "operand": "AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara::GetMovePara(System.Double)"
+        },
+        {
+          "offset": "IL_0020",
+          "opcode": "stloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0021",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0022",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0023",
+          "opcode": "ldc.r8",
+          "operand": "-1"
+        },
+        {
+          "offset": "IL_002c",
+          "opcode": "sub",
+          "operand": ""
+        },
+        {
+          "offset": "IL_002d",
+          "opcode": "call",
+          "operand": "System.Double System.Math::Abs(System.Double)"
+        },
+        {
+          "offset": "IL_0032",
+          "opcode": "ldc.r8",
+          "operand": "0.0001"
+        },
+        {
+          "offset": "IL_003b",
+          "opcode": "blt.s",
+          "operand": "IL_0040"
+        },
+        {
+          "offset": "IL_003d",
+          "opcode": "ldarg.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_003e",
+          "opcode": "br.s",
+          "operand": "IL_004b"
+        },
+        {
+          "offset": "IL_0040",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0041",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisMovePara()"
+        },
+        {
+          "offset": "IL_0046",
+          "opcode": "callvirt",
+          "operand": "System.Double AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara::get_AbsoluteMoveSpeed()"
+        },
+        {
+          "offset": "IL_004b",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara::set_Vel(System.Double)"
+        },
+        {
+          "offset": "IL_0050",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0051",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0052",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0053",
+          "opcode": "callvirt",
+          "operand": "System.Double AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara::get_Vel()"
+        },
+        {
+          "offset": "IL_0058",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0059",
+          "opcode": "call",
+          "operand": "AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::get_AxisMovePara()"
+        },
+        {
+          "offset": "IL_005e",
+          "opcode": "callvirt",
+          "operand": "System.Double AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Parameters.AxisMovePara::get_MaxSpeedLimit()"
+        },
+        {
+          "offset": "IL_0063",
+          "opcode": "call",
+          "operand": "System.Double System.Math::Min(System.Double,System.Double)"
+        },
+        {
+          "offset": "IL_0068",
+          "opcode": "callvirt",
+          "operand": "System.Void AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara::set_Vel(System.Double)"
+        },
+        {
+          "offset": "IL_006d",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006e",
+          "opcode": "ldarg.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_006f",
+          "opcode": "ldloc.2",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0070",
+          "opcode": "ldarg.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0071",
+          "opcode": "callvirt",
+          "operand": "AKRS.Galaxy2.Infrastructure.Enums.ExcuteResult AKRS.Galaxy2.LogicHardware.Hardwares.MotionControllers.Axis::RelativeMove(AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.MovePara,AKRS.Galaxy2.Drive.Common.AccuracyMode)"
+        },
+        {
+          "offset": "IL_0076",
+          "opcode": "stloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0077",
+          "opcode": "ldloc.3",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0078",
+          "opcode": "stloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_007a",
+          "opcode": "leave.s",
+          "operand": "IL_0087"
+        },
+        {
+          "offset": "IL_007c",
+          "opcode": "ldloc.1",
+          "operand": ""
+        },
+        {
+          "offset": "IL_007d",
+          "opcode": "brfalse.s",
+          "operand": "IL_0086"
+        },
+        {
+          "offset": "IL_007f",
+          "opcode": "ldloc.0",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0080",
+          "opcode": "call",
+          "operand": "System.Void System.Threading.Monitor::Exit(System.Object)"
+        },
+        {
+          "offset": "IL_0085",
+          "opcode": "nop",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0086",
+          "opcode": "endfinally",
+          "operand": ""
+        },
+        {
+          "offset": "IL_0087",
+          "opcode": "ldloc.s",
+          "operand": "V_4"
+        },
+        {
+          "offset": "IL_0089",
+          "opcode": "ret",
+          "operand": ""
+        }
+      ]
+    }
+  ],
+  "accuracyModes": [
+    {
+      "name": "None",
+      "value": -1
+    },
+    {
+      "name": "HighAccuracy",
+      "value": 0
+    },
+    {
+      "name": "HighSpeed",
+      "value": 1
+    }
+  ],
+  "movingField": {
+    "fullName": "System.Boolean AKRS.Galaxy2.Drive.MotionControllerDrive.MotionPara.AxisState::Moving",
+    "type": "System.Boolean",
+    "token": "[Field:0x01a1]"
+  },
+  "sourceCallResolution": "RelativeMove(double,double) selects RelativeMove(double position,double vel=-1,AccuracyMode accuracyMode=HighAccuracy(0)). Source base wrapper supplies position and calculated velocity, omits accuracy and ignores returned result."
+}

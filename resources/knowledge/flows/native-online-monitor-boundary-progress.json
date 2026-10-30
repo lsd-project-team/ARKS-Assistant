@@ -1,0 +1,30 @@
+{
+  "status": "original-online-monitor-boundary-native-passed",
+  "checks": 17,
+  "configuredSafeDoorError": "System.NullReferenceException",
+  "configuredMissingLaserError": null,
+  "configuredHeaterError": "System.NullReferenceException",
+  "sourceAssembliesBound": 16,
+  "normalWorkMode": true,
+  "emptyHardwareRepository": true,
+  "directOriginalMethods": [
+    "Machine.StartCheckSafeDoorTask",
+    "Machine.LaserEncoderCheck",
+    "Machine.StartLaserEncoderCheckTask",
+    "Machine.AutoLogOut",
+    "Machine.BackgroundTemperatureAlarm"
+  ],
+  "backgroundThreadStarted": false,
+  "statisticsThreadStarted": false,
+  "dbLazyCreated": false,
+  "hardwareActionExecuted": false,
+  "sqlWritesExecuted": false,
+  "uiDispatchExecuted": false,
+  "productionTaskExecuted": false,
+  "replayIdentical": true,
+  "wholeGoalComplete": false,
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-06T19:45:28.151Z",
+  "audit": "native-online-monitor-boundary-audit.json",
+  "review": "native-online-monitor-boundary-review.md"
+}

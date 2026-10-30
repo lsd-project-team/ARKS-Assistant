@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="70" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">回看P1的一轮 位置和进度分别跟踪</text>
+<text x="1200" y="965" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">固晶中的产品定位和芯片补偿 继续见纠偏册</text>
+<text x="320" y="220" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">建立N1</text>
+<rect x="70" y="340" width="500" height="200" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="98.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="140.66666666666669" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="191.33333333333331" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="250.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="292.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="292.6666666666667" cy="395.24" r="26" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="292.6666666666667" cy="395.24" r="10" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="343.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="402.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="444.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="495.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="98.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="140.66666666666669" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="191.33333333333331" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="250.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="292.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="343.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="402.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="444.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="495.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="320" y="650" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">(140,210)</text>
+<text x="320" y="746" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">点胶 未完成</text>
+<text x="320" y="842" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">固晶 未完成</text>
+<polyline points="585,430 625,430" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="625,430 600.6879282364778,441.7440694210032 600.6879282364778,418.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="900" y="220" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">A点点胶后</text>
+<rect x="650" y="340" width="500" height="200" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="678.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="720.6666666666666" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="771.3333333333334" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="830.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="872.6666666666666" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="872.6666666666666" cy="395.24" r="26" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="872.6666666666666" cy="395.24" r="10" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="923.3333333333334" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="982.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1024.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1075.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="678.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="720.6666666666666" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="771.3333333333334" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="830.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="872.6666666666666" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="923.3333333333334" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="982.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1024.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1075.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="900" y="650" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">(142,209,0.12)</text>
+<text x="900" y="746" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">点胶 完成</text>
+<text x="900" y="842" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">固晶 未完成</text>
+<polyline points="1165,430 1205,430" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1205,430 1180.6879282364778,441.7440694210032 1180.6879282364778,418.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="1480" y="220" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">交接刷新后</text>
+<rect x="1230" y="340" width="500" height="200" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1258.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1300.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1351.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1410.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1452.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1452.6666666666667" cy="395.24" r="26" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="1452.6666666666667" cy="395.24" r="10" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="1503.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1562.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1604.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1655.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1258.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1300.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1351.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1410.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1452.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1503.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1562.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1604.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1655.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="1480" y="650" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">(140,210,0)</text>
+<text x="1480" y="746" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">点胶 完成</text>
+<text x="1480" y="842" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">固晶 未完成</text>
+<polyline points="1745,430 1785,430" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1785,430 1760.6879282364778,441.7440694210032 1760.6879282364778,418.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="2060" y="220" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">A点固晶后</text>
+<rect x="1810" y="340" width="500" height="200" rx="12" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<rect x="1838.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1880.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1931.3333333333333" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1990.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2032.6666666666667" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2032.6666666666667" cy="395.24" r="26" fill="white" stroke="#246B99" stroke-width="6"/>
+<circle cx="2032.6666666666667" cy="395.24" r="10" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="2083.3333333333335" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="2142.0" y="363.0" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2184.6666666666665" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2235.3333333333335" cy="395.24" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1838.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="1880.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="1931.3333333333333" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="1990.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2032.6666666666667" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2083.3333333333335" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<rect x="2142.0" y="446.5" width="133.33333333333334" height="62.0" rx="0" fill="white" stroke="#287054" stroke-width="3"/>
+<circle cx="2184.6666666666665" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<circle cx="2235.3333333333335" cy="478.74" r="9" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="2060" y="650" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">见纠偏目标</text>
+<text x="2060" y="746" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">点胶 完成</text>
+<text x="2060" y="842" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">固晶 完成</text></svg>

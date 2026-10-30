@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Extracted RefreshControl, BtnAdd_Click and BtnDelete_Click. Two interpolated messages lowered for C#5; other method statements unchanged. Explicit scenario enum values, UI dialogs, program properties and Save counters are stubs. No production serialization, hardware, actual UI or repository side effects executed.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcAddEpoxyApplication.cs",
+      "start": 48,
+      "end": 71,
+      "sha256": "6767c413878baee18631744366f593f589127eb3554e0a87444703a53e8fcbe8",
+      "snippetSha256": "6beb47f4bcefa7a8071e2fdcfd62c9304401121c92120b3687603ebfd0848014"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcAddEpoxyApplication.cs",
+      "start": 78,
+      "end": 103,
+      "sha256": "6767c413878baee18631744366f593f589127eb3554e0a87444703a53e8fcbe8",
+      "snippetSha256": "2efbe1a82580bf82052344173c4be21c802c8ca17b3f710c6299e295856ce80d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/UcAddEpoxyApplication.cs",
+      "start": 110,
+      "end": 145,
+      "sha256": "6767c413878baee18631744366f593f589127eb3554e0a87444703a53e8fcbe8",
+      "snippetSha256": "5cfb911cf45040a57c71c6697354ccd8a9447660f40c758d1e624e9783625326"
+    }
+  ],
+  "checks": [
+    "PASS refresh invokes S1 save",
+    "PASS S2 flag and selection redirect refresh save",
+    "PASS S2 selection without hardware flag still saves S1",
+    "PASS accepted add saves mutation then refresh saves again",
+    "PASS cancelled add still invokes refresh save",
+    "PASS accepted delete saves removal then refresh saves again",
+    "PASS declined delete retains name but refresh saves",
+    "PASS missing selection returns before refresh and save",
+    "PASS refresh save exception escapes and skips later UI work",
+    "TOTAL 9"
+  ]
+}

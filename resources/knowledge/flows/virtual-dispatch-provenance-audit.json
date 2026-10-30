@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "status": "original16-project-virtual-interface-source-provenance-passed",
+  "command": "node .archify-work/capture-virtual-dispatch-provenance-bindings.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "88e0d8",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-virtual-dispatch-provenance-bindings.log",
+  "logSha256": "0a46b2d374843671a50f8729d839528e0db6077dc64ceb51043a23355e0f70aa",
+  "testSha256": "f26b525105d824ed91de10a5130eaa9accb7b8ce7652f5f1cc61082168e7842a",
+  "freeze": {
+    "observedCompletionChunk": "964942",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "stageVerification": {
+    "command": "node --max-old-space-size=4096 .archify-work/verify-virtual-dispatch-provenance-stage.cjs",
+    "initialChunk": "f97f38",
+    "observedSession": 6094,
+    "observedCompletionChunk": "6ca643",
+    "observedExitCode": 0,
+    "steps": [
+      {
+        "name": "provenance",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-provenance.cjs",
+        "log": ".archify-work/virtual-dispatch-provenance/provenance-verification.log",
+        "logSha256": "e26000cf144b86ae90ed967fff1501c95c04a1ed2cba18d7dc14191b3a961e32",
+        "stderr": ".archify-work/virtual-dispatch-provenance/provenance-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "fixture",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-fixture.cjs --check",
+        "log": ".archify-work/virtual-dispatch-provenance/fixture-verification.log",
+        "logSha256": "5216c644bd89cbc20c92d750d0d7ca7a34733f5ec8f0e627bc40fdb04d0da26d",
+        "stderr": ".archify-work/virtual-dispatch-provenance/fixture-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "business-connections",
+        "command": "node --max-old-space-size=4096 scripts/prepare-virtual-dispatch-evidence.cjs --check",
+        "log": ".archify-work/virtual-dispatch-provenance/business-connections-verification.log",
+        "logSha256": "816b4141a033f492aa43879d57645c1251c1d8f58f83682df171ee6266a602dd",
+        "stderr": ".archify-work/virtual-dispatch-provenance/business-connections-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "lexical-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-lexical-source-reader-bindings.cjs",
+        "log": ".archify-work/virtual-dispatch-provenance/lexical-parent-verification.log",
+        "logSha256": "85e63aace5776834ae04a8c22b5667371f423b54115eece001fefb405a4c3369",
+        "stderr": ".archify-work/virtual-dispatch-provenance/lexical-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "delegate-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-delegate-provenance-bindings.cjs",
+        "log": ".archify-work/virtual-dispatch-provenance/delegate-parent-verification.log",
+        "logSha256": "fc249bffa14e737a77d2ed0b12f22367fcf1c2749d19e928fe2f8e3b308fd1dd",
+        "stderr": ".archify-work/virtual-dispatch-provenance/delegate-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      }
+    ]
+  },
+  "extraction": {
+    "command": "node scripts/run-virtual-dispatch-provenance.cjs",
+    "initialChunk": "a7b54a",
+    "observedSession": 84854,
+    "observedCompletionChunk": "08c80e",
+    "observedExitCode": 0,
+    "runs": 32,
+    "normalizedReplayEqual": 16,
+    "rawReplayEqual": 4
+  },
+  "fixture": {
+    "observedCompletionChunk": "129263",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "assertions": 24
+  },
+  "businessConnections": {
+    "command": "node scripts/prepare-virtual-dispatch-evidence.cjs",
+    "observedCompletionChunk": "f2ade7",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "connections": 4
+  },
+  "preservedCandidates": [
+    {
+      "directory": ".archify-work/virtual-dispatch-provenance-candidate-v1/",
+      "fixture": {
+        "observedCompletionChunk": "2b4f29",
+        "observedExitCode": 0,
+        "assertions": 17
+      },
+      "extraction": {
+        "initialChunk": "3ca748",
+        "observedSession": 25313,
+        "observedCompletionChunk": "8dc1e0",
+        "observedExitCode": 0,
+        "runs": 32,
+        "normalizedReplayEqual": 16,
+        "rawReplayEqual": 5
+      },
+      "archive": {
+        "observedCompletionChunk": "2f62eb",
+        "resolvedPathsVerifiedInsideWorkspace": true
+      },
+      "limitation": "Included compiler-generated types from repository metadata and used converted receiver types. Preserved successful graphs, logs, scripts; not accepted as source-declared receiver candidate scope."
+    },
+    {
+      "directory": ".archify-work/virtual-dispatch-provenance-candidate-v2/",
+      "fixture": {
+        "observedCompletionChunk": "8471e3",
+        "observedExitCode": 0,
+        "assertions": 19
+      },
+      "extraction": {
+        "initialChunk": "d29976",
+        "observedSession": 35444,
+        "observedCompletionChunk": "2f110c",
+        "observedExitCode": 0,
+        "runs": 32,
+        "normalizedReplayEqual": 16,
+        "rawReplayEqual": 5
+      },
+      "archive": {
+        "observedCompletionChunk": "4d4ce5",
+        "resolvedPathsVerifiedInsideWorkspace": true
+      },
+      "limitation": "Source-declared types and preconversion bounds corrected, but variant interface projections were missing and receiver text was only a candidate-set representative. Preserved all successful artifacts and exact scripts."
+    }
+  ],
+  "newFrozenInputs": 362,
+  "reusedParentInputs": 1847,
+  "totalFrozenBindings": 9474,
+  "runtimeDispatchResolved": false,
+  "productionRuntimeExecuted": false,
+  "wholeGoalComplete": false
+}

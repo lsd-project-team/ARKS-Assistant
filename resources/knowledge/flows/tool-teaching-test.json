@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "scope": "Original circle completion delegate and outer button with UI, fit, persistence and hardware stubs; not WinForms lifecycle or actual geometry algorithm validation",
+  "sourceAdaptations": [
+    "C#5 out variable declaration lifted without changing order",
+    "Constant interpolated string changed to constant string"
+  ],
+  "fixturePath": "scripts/tool-teaching-fixture.cs.txt",
+  "fixtureSha256": "4ec6cebb69a02e91c32ba539acfe9153e37b3c0068206c0c60cc2ea6dec38355",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmToolGeometryTeach.cs",
+      "start": 218,
+      "end": 265,
+      "sha256": "a82c2f1d711fb689e3b3981054cd861c1672db6b31e53b360bd743e3c0da67e8",
+      "snippetSha256": "250a81f5c6689a1b44bc5fba31367aa97137efb8fc7a6d840d08f4c377ca7209"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Assistant/FrmToolGeometryTeach.cs",
+      "start": 378,
+      "end": 385,
+      "sha256": "a82c2f1d711fb689e3b3981054cd861c1672db6b31e53b360bd743e3c0da67e8",
+      "snippetSha256": "9e7bfa05cb9b7026e2f5fa7562f85949777826ea7c6989730464428c07e90fd7"
+    }
+  ],
+  "checks": [
+    "PASS success saves geometry then assistant state",
+    "PASS fit failure Cancel is overwritten by outer OK and Able",
+    "PASS fit failure retry resets index but outer handler completes",
+    "PASS offline early return still marks Able",
+    "PASS inner save failure is caught and outer save executes",
+    "PASS outer save exception prevents final OK but leaves in-memory Able"
+  ]
+}

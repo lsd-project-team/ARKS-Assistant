@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T01:49:05.513Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-wafer-mark-center.log",
+    "sha256": "09dd0ba8060f6dfd9fde5eb33395c979853e51cf5aa0de1407728064698df1d5"
+  },
+  "specialized": {
+    "checks": 76,
+    "completeMethods": 55,
+    "properties": 8,
+    "enums": 1,
+    "signalBindings": 3,
+    "auditSha256": "c038695cfb11d6adde2955e358a81f90df56f2540b675f6d68f2777cec8d359c",
+    "evidenceSha256": "6bcbe8e6efd474d3afa4ccfe232d1f7728f652c6588147b984a188137781ec67"
+  },
+  "browser": {
+    "log": ".archify-work/browser-wafer-mark-center.log",
+    "sha256": "1218d3900cf380b4ba3db705b70b178df9ebc711f56d7d43fd5ec54f92bb923e",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "3a6eb201ac038899817c285badb2599c0fa2b139fe6ebddf7b4e010baccd48e4",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Original mark-center, search-end direction setter/property and enum added to blob overloads and wafer controller/Block coordinate properties integrated with original acquisition, accuracy, consumer and Stop. Image algorithm, bitmap, calibration and actual axis/I-O are fixtures; no image-processing or equipment acceptance."
+}

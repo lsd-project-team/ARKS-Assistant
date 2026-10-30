@@ -1,0 +1,423 @@
+/* 外观差异由根节点的语义颜色及主题规则控制，包含 Portal 浮层。 */
+:root {
+  --success-text: #357153;
+  --warning-text: #986022;
+  --warning-surface: color-mix(in srgb, var(--warning-text) 9%, var(--panel));
+  --danger-surface: color-mix(in srgb, var(--danger-text) 9%, var(--panel));
+}
+
+/* 白色保持柔和的中性灰阶；颜色和表面不沿用到其他外观。 */
+:root[data-appearance='white'] {
+  --text: #242424;
+  --text-secondary: #545451;
+  --muted: #646461;
+  --text-muted: #646461;
+  --text-faint: #6e6e6a;
+  --border: #e7e7e3;
+  --border-strong: #c9c9c4;
+  --panel: #fcfcfb;
+  --surface: #fcfcfb;
+  --surface-warm: #fcfcfb;
+  --surface-subtle: #f6f6f4;
+  --surface-muted: #f1f1ef;
+  --surface-hover: #e9e9e6;
+  --canvas: #fcfcfb;
+  --navigation-background: #f4f4f2;
+  --reading-background: #fcfcfb;
+  --reading-hero: #f6f6f4;
+  --composer-background: #f2f2f0;
+  --shadow-panel: none;
+  --shadow-raised: 0 6px 24px #24242014;
+  --selection-background: #e7e7e3;
+  --selection-hover: #deded9;
+  --selection-border: #d0d0c9;
+}
+
+/* 字体、字重与字号使用统一层级，切换外观时保持同样的阅读密度。 */
+:root[data-appearance] body {
+  font-weight: 400;
+}
+
+:root[data-appearance] .workspace-brand strong {
+  font-weight: 600;
+}
+
+:root[data-appearance] .workspace-sections > button {
+  font-weight: 400;
+}
+
+:root[data-appearance] .workspace-sections > button.active {
+  font-weight: 500;
+}
+
+:root[data-appearance='white'] .sidebar-views {
+  background: transparent;
+}
+
+:root[data-appearance] .sidebar-views button {
+  font-size: 13px;
+}
+
+:root[data-appearance='white'] .sidebar-views button.selected {
+  background: var(--panel);
+  box-shadow: none;
+}
+
+:root[data-appearance] .project-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 列表使用常规字重，选中标题沿用独立的强调规则。 */
+:root[data-appearance] .app-navigation .sidebar .thread-select {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+:root[data-appearance] .sidebar-footer {
+  font-size: 12px;
+}
+
+:root[data-appearance] .chat-heading strong {
+  font-weight: 600;
+}
+
+:root[data-appearance] .chat-welcome h2 {
+  font-size: clamp(22px, 4cqw, 24px);
+  font-weight: 600;
+}
+
+:root[data-appearance] .chat-welcome p {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+:root[data-appearance='white'] .welcome-mark {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 18px;
+}
+
+:root[data-appearance] .welcome-suggestions button {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+:root[data-appearance='white'] .welcome-suggestions button {
+  border-radius: 8px;
+  background: transparent;
+}
+
+:root[data-appearance='white'] .welcome-suggestions button:hover {
+  background: var(--surface-subtle);
+}
+
+:root[data-appearance='white'] .button {
+  box-shadow: var(--surface-stroke);
+}
+
+:root[data-appearance='white'] .button.primary,
+:root[data-appearance='white'] .send-button {
+  box-shadow: none;
+}
+
+/* 输入区用填色融入页面，焦点只强调轮廓，避免再叠加发光和浮起的阴影。 */
+:root[data-appearance='white'] .composer-area {
+  background: transparent;
+}
+
+:root[data-appearance='white'] .composer {
+  border-color: transparent;
+  border-radius: 18px;
+  background: var(--composer-background);
+  box-shadow: none;
+}
+
+:root[data-appearance='white'] .composer:focus-within {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+:root[data-appearance] .composer textarea {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+:root[data-appearance='white'] .composer textarea {
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-appearance='white'] .composer textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+:root[data-appearance='white'] .composer-context {
+  border-top-color: transparent;
+}
+
+:root[data-appearance] .markdown {
+  font-weight: 400;
+}
+
+:root[data-appearance='dark'] {
+  --source-background: #111;
+  --source-selection: #264f78;
+  --selection-background: #303030;
+  --selection-hover: #383838;
+  --selection-border: #484848;
+  --success-text: #91c99c;
+  --warning-text: #e4bb80;
+  --danger-text: #f0a6a1;
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+  --surface-shadow: var(--shadow-panel);
+  --surface-stroke: inset 0 0 0 1px var(--border);
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) ::selection {
+  background: var(--source-selection);
+  color: var(--text);
+}
+
+/* 普通控件、编辑区域和浮层各用对应表面，避免组件散落固定颜色。 */
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(input, select, textarea) {
+  background-color: var(--control-background, var(--surface-muted));
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .ui-select-trigger {
+  background: var(--control-background, var(--surface-muted));
+  border-color: var(--border-strong);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .ui-select-trigger:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .ui-select-trigger:focus-visible,
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .ui-select-trigger[data-state='open'] {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(input[type='checkbox'], input[type='radio']) {
+  accent-color: var(--accent);
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .button {
+  background: var(--surface-subtle);
+  box-shadow: var(--surface-stroke);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .button.primary {
+  background: var(--primary-background, var(--text));
+  border-color: var(--primary-background, var(--text));
+  color: var(--primary-foreground, var(--panel));
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .button.primary:hover:not(:disabled) {
+  background: var(--primary-hover, #f9f9f9);
+  color: var(--primary-foreground, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button {
+  background: var(--primary-background, var(--text));
+  color: var(--primary-foreground, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button:disabled {
+  background: var(--surface-hover);
+  color: var(--text-faint);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button:hover:not(:disabled),
+:root:is([data-appearance='classic'], [data-appearance='dark']) .send-button:active:not(:disabled) {
+  background: var(--primary-hover, var(--text-secondary));
+  color: var(--primary-foreground, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .icon-button {
+  background: transparent;
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .icon-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .composer {
+  background: var(--composer-background, var(--surface-muted));
+  box-shadow:
+    inset 0 0 0 1px var(--border-strong),
+    var(--shadow-panel);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .composer:focus-within {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    var(--shadow-panel);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .composer textarea,
+:root:is([data-appearance='classic'], [data-appearance='dark']) .model-picker select {
+  background: transparent;
+  box-shadow: none;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .model-picker option {
+  background: var(--surface-subtle);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .modal-overlay,
+:root:is([data-appearance='classic'], [data-appearance='dark']) .conversation-search-overlay {
+  background: var(--overlay-background, #0009);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(
+    .modal-content,
+    .ui-select-content,
+    .handover-multi-content,
+    .thread-menu,
+    .composer-commands,
+    .toast
+  ) {
+  background: var(--surface);
+  box-shadow: var(--surface-stroke), var(--shadow-raised);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(.modal-heading, .modal-footer) {
+  background: var(--surface);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.source-search, .selection-chip, .quote-answer) {
+  background: var(--surface-subtle);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .unread-dot {
+  background: var(--text-secondary);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .message-search-hit {
+  outline-color: var(--accent);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .message.user .context-citation {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .run-recovery {
+  border-color: var(--border);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) mark {
+  background: var(--selection-background);
+  color: var(--text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .markdown-preview a {
+  color: var(--reading-accent);
+}
+
+/* 原有状态提示仍表达成功、待核对与失败，亮度适配深色表面。 */
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(
+    .error-text,
+    .run-feedback,
+    .settings-validation,
+    .field-error,
+    .thread-rename small,
+    .thread-menu .danger,
+    .toast.error > svg,
+    .button.danger
+  ) {
+  color: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) :is(.error-text, .run-feedback) {
+  background: var(--danger-surface);
+  border-color: color-mix(in srgb, var(--danger-text) 24%, var(--panel));
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.run-feedback.notice, .selection-stale, .unsaved-notice) {
+  background: var(--warning-surface);
+  color: var(--warning-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.success-text, .capability-results .passed small) {
+  color: var(--success-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .capability-results .failed small {
+  color: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .tiny-dot {
+  background: var(--success-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .offline .tiny-dot {
+  background: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .sidebar-footer.checking .tiny-dot {
+  background: var(--muted);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .danger-button {
+  background: #913737;
+  border-color: #913737;
+  color: #fff;
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .danger-button:hover:not(:disabled) {
+  background: #ac4242;
+  color: #fff;
+}
+
+/* 阅读区的局部变量继承公共状态色，交接卡片用次级表面形成层次。 */
+:root:is([data-appearance='classic'], [data-appearance='dark']) .knowledge-workspace {
+  --blue: var(--accent);
+  --amber: var(--warning-text);
+  --red: var(--danger-text);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  .knowledge-workspace
+  .original-diagram
+  iframe {
+  background: var(--reading-background);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark'])
+  :is(.handover-workbench, .handover-modal) {
+  --panel: var(--surface);
+}
+
+:root:is([data-appearance='classic'], [data-appearance='dark']) .handover-tabs button.active {
+  border-color: var(--text);
+}

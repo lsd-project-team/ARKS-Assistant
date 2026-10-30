@@ -1,0 +1,250 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 焊后反馈与补偿失败路径",
+    "subtitle": "源码调用关系｜界面刷新与后续生产独立触发｜未验证设备实际动作",
+    "locale": "zh-CN",
+    "animation": "none",
+    "quality_profile": "showcase",
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "界面反馈"
+        },
+        "backend": {
+          "label": "补偿计算"
+        },
+        "database": {
+          "label": "内存缓存"
+        },
+        "messagebus": {
+          "label": "保存队列"
+        },
+        "security": {
+          "label": "异常处理"
+        },
+        "external": {
+          "label": "独立触发"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "result",
+      "label": "结果发布与界面反馈"
+    },
+    {
+      "id": "production",
+      "label": "后续生产：独立触发"
+    },
+    {
+      "id": "failure",
+      "label": "失败处理与二次异常",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "result",
+    "enqueue",
+    "cache",
+    "refresh",
+    "display"
+  ],
+  "nodes": [
+    {
+      "id": "result",
+      "lane": "result",
+      "col": 0,
+      "type": "external",
+      "label": "焊后结果",
+      "sublabel": "AddDefectResult"
+    },
+    {
+      "id": "enqueue",
+      "lane": "result",
+      "col": 1,
+      "type": "messagebus",
+      "label": "数据库入队",
+      "sublabel": "不等于落库成功"
+    },
+    {
+      "id": "cache",
+      "lane": "result",
+      "col": 2,
+      "type": "database",
+      "label": "默认回调更新缓存",
+      "sublabel": "检测名 → 最新样本",
+      "width": 150
+    },
+    {
+      "id": "refresh",
+      "lane": "result",
+      "col": 3,
+      "type": "frontend",
+      "label": "安排界面刷新",
+      "sublabel": "Task → Invoke"
+    },
+    {
+      "id": "display",
+      "lane": "result",
+      "col": 4,
+      "type": "frontend",
+      "label": "显示当前选中数据",
+      "sublabel": "读取共享列表",
+      "width": 150
+    },
+    {
+      "id": "production",
+      "lane": "production",
+      "col": 2,
+      "type": "external",
+      "label": "后续贴装坐标计算",
+      "sublabel": "正常工作路径",
+      "width": 150
+    },
+    {
+      "id": "sample",
+      "lane": "production",
+      "col": 3,
+      "type": "backend",
+      "label": "启用补偿后取样",
+      "sublabel": "缺样本返回默认点"
+    },
+    {
+      "id": "coordinate",
+      "lane": "production",
+      "col": 4,
+      "type": "backend",
+      "label": "补偿加入目标坐标",
+      "sublabel": "计算结果非实际到位",
+      "width": 150
+    },
+    {
+      "id": "caught",
+      "lane": "failure",
+      "col": 3,
+      "type": "security",
+      "label": "节点捕获异常",
+      "sublabel": "日志 / 弹窗 / finally",
+      "width": 150
+    },
+    {
+      "id": "stop",
+      "lane": "failure",
+      "col": 4,
+      "type": "security",
+      "label": "停止与安全位请求",
+      "sublabel": "任务返回，不走重试",
+      "width": 150
+    },
+    {
+      "id": "escape",
+      "lane": "failure",
+      "col": 5,
+      "type": "security",
+      "label": "异常逸出任务方法",
+      "sublabel": "外层无兜底捕获",
+      "width": 150
+    }
+  ],
+  "edges": [
+    {
+      "from": "result",
+      "to": "enqueue",
+      "role": "main"
+    },
+    {
+      "from": "enqueue",
+      "to": "cache",
+      "label": "入队返回后",
+      "role": "main"
+    },
+    {
+      "from": "cache",
+      "to": "refresh",
+      "label": "已订阅窗口",
+      "role": "async"
+    },
+    {
+      "from": "refresh",
+      "to": "display",
+      "role": "main"
+    },
+    {
+      "from": "production",
+      "to": "sample",
+      "role": "main"
+    },
+    {
+      "from": "sample",
+      "to": "coordinate",
+      "label": "返回数值",
+      "role": "main"
+    },
+    {
+      "from": "cache",
+      "to": "sample",
+      "label": "共享数据依赖",
+      "role": "branch"
+    },
+    {
+      "from": "sample",
+      "to": "caught",
+      "label": "筛选后为空等异常",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "from": "caught",
+      "to": "stop",
+      "label": "返回 Exception",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "from": "caught",
+      "to": "escape",
+      "label": "错误处理再抛异常",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "from": "stop",
+      "to": "escape",
+      "label": "停止处理抛异常",
+      "role": "error",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "入口与数据",
+      "items": [
+        "新菜单 → FrmPostBondData；Load 订阅、关闭退订。旧曲线窗口绑定未确认。",
+        "StatisticsDomain.cs:407–422；DefectCompensate.cs:29–84；UcMainSystem.cs:1964–1967。",
+        "窗口清空操作清整个缓存，不删除数据库或撤回已排队记录。"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "取样与模式",
+      "items": [
+        "BondActionNode.cs:125–150：离线/空跑先返回，不走此计算调用。",
+        "DefectCompensate.cs:187–228：模式和开关决定取样；X/Y 各筛选绝对值 <50。",
+        "缺名/数量不足返回默认点，筛选为空抛异常。数值进入 Provider.cs:521–527。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "失败与验收边界",
+      "items": [
+        "BondActionNode.cs:366–376 → BondTask.cs:260–275：正常错误处理返回 Exception 后停止并请求回位。",
+        "日志、弹窗、WorkStop 或停止过程再抛异常可能跳过后续清理；BondTask.cs:100–384 无外围捕获。",
+        "完整定位：postbond-feedback-source-review.md；31段原文：postbond-feedback-evidence.json。未运行设备或WinForms。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+[project]
+name = "trunk-agent"
+version = "0.1.0"
+description = "面向 trunk 源码的本地 Deep Agents 工作区"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn>=0.34",
+  "sqlalchemy>=2.0",
+  "alembic>=1.15",
+  "deepagents>=0.7.23,<0.8",
+  "langchain-openai>=1.0",
+  "langchain-anthropic>=1.0",
+  "anthropic>=1.13,<2",
+  "langgraph-checkpoint-sqlite>=2.0",
+  "mcp>=2.3,<3",
+  "tree-sitter>=0.25",
+  "tree-sitter-c-sharp>=0.23",
+  "httpx>=0.28",
+  "httpx2>=2.13,<3",
+  "fastembed>=0.9.0",
+  "pypdf>=6,<7",
+  "argon2-cffi>=23.1,<26",
+  "openpyxl>=3.1,<4",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3", "pytest-asyncio>=1.0", "ruff>=0.11"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = ["authentication: explicitly controls login state without the business admin fixture"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

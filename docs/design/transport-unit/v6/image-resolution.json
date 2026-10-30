@@ -1,0 +1,152 @@
+[
+  {
+    "file": "figures/p01-product-map.png",
+    "page": 5,
+    "pixels": [
+      1536,
+      1024
+    ],
+    "display_inches": 5.05,
+    "effective_dpi": 304.16
+  },
+  {
+    "file": "figures/p02-responsibility.png",
+    "page": 7,
+    "pixels": [
+      2400,
+      1150
+    ],
+    "display_inches": 6.5493,
+    "effective_dpi": 366.45
+  },
+  {
+    "file": "figures/p03-config-instance.png",
+    "page": 9,
+    "pixels": [
+      1536,
+      1024
+    ],
+    "display_inches": 5.05,
+    "effective_dpi": 304.16
+  },
+  {
+    "file": "figures/p04-work-order.png",
+    "page": 10,
+    "pixels": [
+      2400,
+      1080
+    ],
+    "display_inches": 6.5494,
+    "effective_dpi": 366.44
+  },
+  {
+    "file": "figures/p12-data-ownership.png",
+    "page": 10,
+    "pixels": [
+      2400,
+      920
+    ],
+    "display_inches": 6.5489,
+    "effective_dpi": 366.47
+  },
+  {
+    "file": "figures/p05-coordinate-chain.png",
+    "page": 14,
+    "pixels": [
+      2400,
+      650
+    ],
+    "display_inches": 6.5488,
+    "effective_dpi": 366.48
+  },
+  {
+    "file": "figures/p06-coordinate-geometry.png",
+    "page": 14,
+    "pixels": [
+      2400,
+      1470
+    ],
+    "display_inches": 6.5499,
+    "effective_dpi": 366.42
+  },
+  {
+    "file": "figures/p07-build-sequence.png",
+    "page": 16,
+    "pixels": [
+      2400,
+      1000
+    ],
+    "display_inches": 6.55,
+    "effective_dpi": 366.41
+  },
+  {
+    "file": "figures/p11-layout-models.png",
+    "page": 17,
+    "pixels": [
+      2400,
+      1110
+    ],
+    "display_inches": 6.5496,
+    "effective_dpi": 366.44
+  },
+  {
+    "file": "figures/p16-product-continuity.png",
+    "page": 18,
+    "pixels": [
+      2400,
+      1240
+    ],
+    "display_inches": 6.5497,
+    "effective_dpi": 366.43
+  },
+  {
+    "file": "figures/p09-handover.png",
+    "page": 20,
+    "pixels": [
+      2400,
+      1290
+    ],
+    "display_inches": 6.549,
+    "effective_dpi": 366.47
+  },
+  {
+    "file": "figures/p10-progress.png",
+    "page": 21,
+    "pixels": [
+      2400,
+      850
+    ],
+    "display_inches": 6.549,
+    "effective_dpi": 366.47
+  },
+  {
+    "file": "figures/p13-entry-conditions.png",
+    "page": 22,
+    "pixels": [
+      2400,
+      1350
+    ],
+    "display_inches": 6.5494,
+    "effective_dpi": 366.44
+  },
+  {
+    "file": "figures/p15-address-resolution.png",
+    "page": 24,
+    "pixels": [
+      2400,
+      1160
+    ],
+    "display_inches": 6.5489,
+    "effective_dpi": 366.47
+  },
+  {
+    "file": "figures/p14-handover-interruption.png",
+    "page": 27,
+    "pixels": [
+      2400,
+      1290
+    ],
+    "display_inches": 6.549,
+    "effective_dpi": 366.47
+  }
+]

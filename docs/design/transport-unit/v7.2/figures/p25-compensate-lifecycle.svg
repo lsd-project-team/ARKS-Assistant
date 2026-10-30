@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1350" viewBox="0 0 2400 1350"><rect width="100%" height="100%" fill="white"/>
+<rect x="70" y="60" width="1010" height="190" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="575.0" y="121.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">补偿模式取得来料</text>
+<text x="575.0" y="189.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">创建字符串参数 Ntest</text>
+<rect x="70" y="380" width="1010" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="575.0" y="470.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">向 Ntest 注入S2步骤</text>
+<polyline points="575,250 575,380" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="575,380 564.9957927154417,359.28971664588846 585.0042072845583,359.28971664588846" fill="#4d6070"/>
+<rect x="70" y="720" width="1010" height="210" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="575.0" y="791.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">Enable 且配置输送</text>
+<text x="575.0" y="859.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">IsProduct仍为false</text>
+<polyline points="575,560 575,720" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="575,720 564.9957927154417,699.2897166458885 585.0042072845583,699.2897166458885" fill="#4d6070"/>
+<rect x="70" y="1080" width="1010" height="200" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="575.0" y="1146.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">再创建 System2 参数 Ns2</text>
+<text x="575.0" y="1214.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">置 IsProduct = true</text>
+<polyline points="575,930 575,1080" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="575,1080 564.9957927154417,1059.2897166458883 585.0042072845583,1059.2897166458883" fill="#4d6070"/>
+<rect x="1370" y="650" width="960" height="230" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1850.0" y="697.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">Enable但未配置输送</text>
+<text x="1850.0" y="765.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">继续使用 Ntest</text>
+<text x="1850.0" y="833.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">不自动加S2构造偏移</text>
+<polyline points="1080,465 1200,465 1200,765 1370,765" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1370,765 1349.2897166458883,775.0042072845583 1349.2897166458883,754.9957927154417" fill="#4d6070"/>
+<rect x="1370" y="1040" width="960" height="230" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1850.0" y="1121.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">Enable = false</text>
+<text x="1850.0" y="1189.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">不进入后续生产创建分支</text>
+<polyline points="1200,765 1200,1155 1370,1155" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1370,1155 1349.2897166458883,1165.0042072845583 1349.2897166458883,1144.9957927154417" fill="#4d6070"/>
+<text x="1845" y="150" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central">Ntest 与 Ns2 是两份对象</text>
+<text x="1845" y="255" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">新Info不复制旧产品记录</text>
+<text x="1845" y="360" fill="#162e43" font-family="Microsoft YaHei" font-size="47" font-weight="400" text-anchor="middle" dominant-baseline="central">每次新建均重新建立步骤</text></svg>

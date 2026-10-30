@@ -1,0 +1,23 @@
+.message.assistant .message-bubble > div > .markdown,
+.message.assistant > .markdown {
+  font-size: 15px;
+  line-height: 1.8;
+  letter-spacing: normal;
+}
+
+.debug-source-images {
+  margin-top: 24px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.debug-source-images + .debug-source-images {
+  margin-top: 28px;
+}
+.debug-source-images .debug-original-images {
+  gap: 20px;
+}
+.debug-source-images .debug-original-images img {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}

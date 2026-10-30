@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1290" viewBox="0 0 2400 1290"><rect width="100%" height="100%" fill="white"/>
+<rect x="80" y="80" width="600" height="210" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="380.0" y="142" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">机械移送流程结束</text>
+<text x="380.0" y="217" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">准备交接产品引用</text>
+<rect x="900" y="80" width="600" height="210" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="142" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">目标接收源引用</text>
+<text x="1200.0" y="217" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">源 = N1  目标 = N1</text>
+<rect x="1720" y="80" width="600" height="210" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="2020.0" y="142" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">目标执行 Refresh</text>
+<text x="2020.0" y="217" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">重建坐标与清阶段标记</text>
+<polyline points="680,185 900,185" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="900,185 879.2897166458885,195.0042072845583 879.2897166458885,174.9957927154417" fill="#315d82"/>
+<polyline points="1500,185 1720,185" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1720,185 1699.2897166458883,195.0042072845583 1699.2897166458883,174.9957927154417" fill="#315d82"/>
+<polyline points="1880,290 1880,360 620,360 620,515" fill="none" stroke="#c58737" stroke-width="4"/>
+<polygon points="620,515 609.9957927154417,494.28971664588846 630.0042072845583,494.28971664588846" fill="#c58737"/>
+<text x="1040" y="420" fill="#c58737" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">刷新中抛出异常</text>
+<polyline points="2160,290 2160,425 1840,425 1840,515" fill="none" stroke="#44765b" stroke-width="4"/>
+<polygon points="1840,515 1829.9957927154417,494.28971664588846 1850.0042072845583,494.28971664588846" fill="#44765b"/>
+<text x="2050" y="480" fill="#44765b" font-family="Microsoft YaHei" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="central">刷新成功</text>
+<rect x="80" y="515" width="1080" height="200" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="620.0" y="577" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">异常出口</text>
+<text x="620.0" y="652" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">控制器捕获异常并返回 Exception</text>
+<rect x="1300" y="515" width="1080" height="200" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1840.0" y="577" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">继续成功出口</text>
+<text x="1840.0" y="652" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">清空源引用  更新状态  保存</text>
+<polyline points="620,715 620,785" fill="none" stroke="#c58737" stroke-width="4"/>
+<polygon points="620,785 609.9957927154417,764.2897166458885 630.0042072845583,764.2897166458885" fill="#c58737"/>
+<polyline points="1840,715 1840,785" fill="none" stroke="#44765b" stroke-width="4"/>
+<polygon points="1840,785 1829.9957927154417,764.2897166458885 1850.0042072845583,764.2897166458885" fill="#44765b"/>
+<rect x="80" y="785" width="1080" height="310" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="620.0" y="847" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">此时不能据引用判断交接完成</text>
+<text x="620.0" y="922" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">源 = N1   目标 = N1</text>
+<text x="620.0" y="980" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">坐标可能已经部分重建</text>
+<text x="620.0" y="1038" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">后续状态更新与保存未执行</text>
+<rect x="1300" y="785" width="1080" height="310" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="1840.0" y="847" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">形成正常交接的成功状态</text>
+<text x="1840.0" y="922" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">源 = null   目标 = N1</text>
+<text x="1840.0" y="980" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">源无料 / 目标有料  两侧 Ready</text>
+<text x="1840.0" y="1038" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">Success 后输送任务再发完成信号</text>
+<text x="1200" y="1190" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="43" font-weight="400" text-anchor="middle" dominant-baseline="central">故障示例只跟踪 Refresh 抛异常这一位置   其他机械报警按实际分支处理</text></svg>

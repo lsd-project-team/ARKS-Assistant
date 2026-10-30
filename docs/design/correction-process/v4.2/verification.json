@@ -1,0 +1,105 @@
+{
+  "book": "纠偏过程设计文档",
+  "revision": "4.2",
+  "pages": 16,
+  "topics": 14,
+  "paragraphs_checked": 61,
+  "image_placements": 15,
+  "unique_figures": 14,
+  "source_files_unchanged": 80,
+  "fonts": {
+    "/BCDEEE+MicrosoftYaHei": true,
+    "/BCDFEE+MicrosoftYaHei": true,
+    "/BCDGEE+MicrosoftYaHei-Bold": true,
+    "/BCDHEE+MicrosoftYaHei-Bold": true,
+    "/BCDIEE+MS-Gothic": true
+  },
+  "removed_words_checked": [
+    "第一部分",
+    "第二部分",
+    "第三部分",
+    "跟着产品完成一轮",
+    "下一页",
+    "G0",
+    "N1",
+    "D_A",
+    "T_A",
+    "WorkIndex",
+    "ComponentOffSet",
+    "本册将",
+    "阅读主线"
+  ],
+  "layout_bounds": [
+    {
+      "page": 1,
+      "images": 1
+    },
+    {
+      "page": 2,
+      "images": 0
+    },
+    {
+      "page": 3,
+      "images": 1
+    },
+    {
+      "page": 4,
+      "images": 1
+    },
+    {
+      "page": 5,
+      "images": 1
+    },
+    {
+      "page": 6,
+      "images": 1
+    },
+    {
+      "page": 7,
+      "images": 1
+    },
+    {
+      "page": 8,
+      "images": 1
+    },
+    {
+      "page": 9,
+      "images": 1
+    },
+    {
+      "page": 10,
+      "images": 1
+    },
+    {
+      "page": 11,
+      "images": 1
+    },
+    {
+      "page": 12,
+      "images": 1
+    },
+    {
+      "page": 13,
+      "images": 1
+    },
+    {
+      "page": 14,
+      "images": 1
+    },
+    {
+      "page": 15,
+      "images": 1
+    },
+    {
+      "page": 16,
+      "images": 1
+    }
+  ],
+  "renderer": "本轮实际尝试render_docx；缺soffice.exe时用独立隐藏Word原生导出和Poppler逐页渲染",
+  "visual_review": "本版全部页面已直接查看，最终哈希见visual-review.json",
+  "files": {
+    "纠偏过程设计文档.pdf": "cac67543e5760a6de59b923066b2c7e5c8be3244f132916286565a60d91ed789",
+    "纠偏过程设计文档.docx": "a7c33206982198fcd15564eb274d1c166fc07b57a6e4d7ec270f2261259453c3",
+    "纠偏过程设计文档.md": "bcf32c9a9a6e59f20b7ff793e9985c0d9910f31f5173964175e3facc7286a6ad"
+  }
+}

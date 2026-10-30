@@ -1,0 +1,25 @@
+{
+  "revision": "1.0",
+  "tool": "built-in image_gen",
+  "backend_version": "not exposed by tool",
+  "file": "figures/c01-correction-scenes.png",
+  "prompt": "为中文设备软件设计文档制作一张出版用的三场景概念插图，横向3:2画幅，纯白背景。风格是精致、克制的工程说明插画，统一细线、平整边界、整齐留白和正交对齐，轻微立体感，不用照片、不用写实工厂背景、不用装饰。配色限定深蓝灰#18364B、浅蓝#EDF3F8、浅绿#EEF5F0和少量哑光赭黄#C58737。三个等宽面板从左到右排列，面板之间留足空隙。每个面板只有一个准确中文标题和两个短标签。左面板标题“产品定位”：上方朝下的相机观察下方水平基板上的两个小定位标记，基板上有规则小基岛，两个标记用赭黄圆环轻轻突出；短标签仅“相机”“产品定位点”。中面板标题“上视纠偏”：上方吸嘴竖直向下，吸嘴尖端吸持一片小芯片，下方上视相机镜头竖直朝上观察芯片底面；短标签仅“吸嘴与芯片”“上视相机”。右面板标题“中转台纠偏”：水平中转台上放置一片稍有角度的芯片，上方朝下相机观察它，旁边一根清晰分离的吸嘴示意稍后重新取片；短标签仅“中转台芯片”“下视相机”。严格保持相机朝向正确，中间相机必须朝上；不要画成下方朝下镜头。三个场景共用相同尺度的文字、线宽与构图，标题同一基线，主图同一视觉高度；标签清晰且互不覆盖。不要添加设备型号、尺寸数值、公式、流程箭头、额外说明或水印。整体像正式技术手册中用于区分三个纠偏对象和观察方式的场景图，清晰、专业、易读。",
+  "scope": "三类纠偏对象与观察方向的概念示意，不作为ZX2200设备照片或机械尺寸依据",
+  "engineering": "12幅工程图采用统一网格、颜色、字号和箭头语义，保存SVG及PNG；坐标视窗保持X/Y等比例，时序与异常跳转对应实际源码。",
+  "assets_sha256": {
+    "c01-correction-scenes.png": "792b1f4c04675a81b8080d94cd8f74e2e59fbae46af6705cb196756678c6020d",
+    "c02-data-flow.png": "7caccab9cb253c9b7f75e7b3c9489be9af754a4a40e11d1f250ee5f5552e0d3a",
+    "c03-product-locate.png": "12fba2bcfed3189b63868d3c38e13ca87aa90736086e586f4430b0ee5ef8ac1f",
+    "c04-result-conversion.png": "75b5cee5a7ab92cc3906fabe28367bbd7aa0ec49c4605e19f7c6f074789b632a",
+    "c05-anchor-example.png": "20a869c0c08e768fb57fe6ac78136508cfd86a0c7623eea63f66d99df6532f87",
+    "c06-distance-retry.png": "17c578838e9cc372116e2fbdcc2a5467a05638dd563860f7603a0ec2d3343dfa",
+    "c07-uplook-captures.png": "645016dff9342136e5f425926d56b4e5214c92de905d1e4b0df80c5ff2e6888f",
+    "c08-ipt-cycle.png": "cbbdf78a2952fdb1639850859aff63b2e452d86956ecf296a1b72a107be5d626",
+    "c09-ipt-geometry.png": "b31591fbe545e4cb227656e8013f42ffc858e59dcb1f0ea5377b52376a178ee1",
+    "c10-ipt-retry.png": "6c496f2038c1266870063910bc16006d7446b3d6cd256314f06ecba4df582224",
+    "c11-uplook-consumer.png": "844357589d86484727818787a9394c868d9add71488f8a48f85ee379a8d3e4e9",
+    "c12-output-contract.png": "0b2e06e74d9c27beb07240ffe617e9d551cf0bf9da1bef9b4923dea3b4c66989",
+    "c13-partial-update.png": "22f3a1ab9016c704ab7fc30983f307c523624e467631be612e377e3330f87408"
+  },
+  "source_output_absolute": "C:/Users/w/.codex/generated_images/01a1531f-e138-7a22-a483-92de6e23c696/exec-3fe2ce96-819b-46e9-a8b6-cc54dbced43e.png"
+}

@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-27",
+  "generator": {
+    "name": "Archify",
+    "version": "3.2.0",
+    "release": "https://github.com/tt-a1i/archify/releases/tag/v3.2.0",
+    "archiveSha256": "70e210265c59f24dcbdf2a502ff671104b5454e7ee7d3554aecd86bad32384f5"
+  },
+  "artifact": {
+    "path": "startup.html",
+    "sha256": "ee01d81ba6e3d7e8e1c02e1b4e92148885348772b23b81e658457d2e2c956e69",
+    "bytes": 1601052
+  },
+  "inputs": [
+    {
+      "path": "candidate.archify.md",
+      "sha256": "9aaa6d7df7ee24bf4262c87a54bc7723583970d896753c9f66adf376927c68b3"
+    },
+    {
+      "path": "boot.workflow.json",
+      "sha256": "64560f459f3b420ffa53f2662f785bdbf626c371571e99c8593be3fb0db026e6"
+    },
+    {
+      "path": "home.workflow.json",
+      "sha256": "afe4e25b694d82818411181bf26dadbdf39c1d2ffb97044a3eb3d12c35b70a9f"
+    },
+    {
+      "path": "production.workflow.json",
+      "sha256": "cd6856fa24b2ca6cda02e7f0125bf054b32e73e318d8622dddd6575c633d9a77"
+    },
+    {
+      "path": "source-snapshot.md",
+      "sha256": "ab7b90736ea985505ec8a7dc750882e385b5c1885bf15c69eaa8f619b7ccc65a"
+    }
+  ],
+  "sourceSnapshotRevision": "07ad3c75e9ce100f274807f88e23bf11f2e4367d",
+  "sourceRangeCount": 12,
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "browser": {
+    "viewportPolicy": "explainer-desktop-v1",
+    "viewports": [
+      {
+        "width": 1280,
+        "height": 900,
+        "requestedTheme": "light",
+        "resolvedTheme": "light",
+        "ok": true
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "requestedTheme": "light",
+        "resolvedTheme": "light",
+        "ok": true
+      },
+      {
+        "width": 1280,
+        "height": 900,
+        "requestedTheme": "dark",
+        "resolvedTheme": "dark",
+        "ok": true
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "requestedTheme": "dark",
+        "resolvedTheme": "dark",
+        "ok": true
+      }
+    ],
+    "containment": "pass",
+    "readability": "pass",
+    "references": "pass",
+    "interactions": "pass",
+    "noJavaScript": "pass",
+    "print": "pass"
+  },
+  "manualReview": {
+    "surface": "Codex in-app browser",
+    "inspected": [
+      "boot-flow",
+      "home-flow",
+      "production-flow"
+    ],
+    "interactions": [
+      "打开完整交互图",
+      "节点详情显示固定版本源码链接",
+      "逐步阅读的下一步与节点高亮"
+    ]
+  },
+  "projectChecks": {
+    "command": "node --experimental-strip-types frontend/scripts/knowledge/check-knowledge.mjs",
+    "status": "pass",
+    "catalogEntries": 65,
+    "resourceLinks": 65,
+    "sourceFiles": 72,
+    "sourceRanges": 540
+  },
+  "scope": "独立阅读样例；外层源码控制流；不作为设备运行验收。"
+}

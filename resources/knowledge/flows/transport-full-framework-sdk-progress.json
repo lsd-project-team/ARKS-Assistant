@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "status": "native-full-framework-and-sdk-startup-preparation-passed",
+  "updatedAt": "2026-10-01",
+  "parentFormal": {
+    "test": "transport-product-declarations-integration-test.json",
+    "testSha256": "8ad5c496714145aa3894982dc82c5ed2a49b1d8c3ad2fed68c450382d536ee00",
+    "fullRegression": "transport-product-declarations-integration-verification.json",
+    "checks": 1328,
+    "includedInThatFrozenFullRegression": false
+  },
+  "test": "transport-full-framework-sdk-test.json",
+  "testSha256": "3697946ed55138ff5225f10fbe2dda98e3a90f518c6ba587a2d954f4b8011bcc",
+  "audit": "transport-full-framework-sdk-audit.json",
+  "auditSha256": "8959378a9e9fa8956b975e8bd15016585facb93f28cb6e1c69c10ff278436d63",
+  "report": "transport-full-framework-sdk-review.md",
+  "reportSha256": "bf46d925e3c5a71ec5eed26a2c663cb65d80ff272c2dd3ebd4899a316f677855",
+  "controlledNativeFramework": {
+    "checks": 1328,
+    "priorNamesAndOrderIdentical": true,
+    "observedSession": 67765,
+    "observedExitCode": 0,
+    "log": ".archify-work/full-framework-sdk-preparation-baseline/controlled/runtime.log",
+    "logSha256": "4a1ced3411387f4ac5ee326bb6f614c34d4a01e7e34ea6da8744208e411d9182"
+  },
+  "sdkStartup": {
+    "distinctChecks": 58,
+    "placements": 116,
+    "SDKCopies": 2,
+    "originalStartupInvocationsPerCopy": 16,
+    "allOriginal1328ExecutedInSdkMode": false,
+    "runtimes": [
+      {
+        "tag": "library",
+        "sdk": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+        "sdkSha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb",
+        "observedExitCode": 0,
+        "log": ".archify-work/full-framework-sdk-preparation-baseline/library/runtime.log",
+        "logSha256": "82dbebc26261dcc492cc5dcc93a60210cbeca70c22af45c8e88f3487b548178a"
+      },
+      {
+        "tag": "bin",
+        "sdk": "trunk/AKRS.ZX2200/bin/Debug/AKRS.Galaxy2.Infrastructure.dll",
+        "sdkSha256": "6de275d6180dc27f1fc3d04ce27a422c435ce95bbad662f8754cea0417bd5eca",
+        "observedExitCode": 0,
+        "log": ".archify-work/full-framework-sdk-preparation-baseline/bin/runtime.log",
+        "logSha256": "1ccd17b39a33712795f1332dd15fc276c2ddb4a320eb868a62b626b107c1ae51"
+      }
+    ]
+  },
+  "sourceFragments": 512,
+  "uniqueSourceFragments": 511,
+  "changedOriginalSourceFragments": 0,
+  "frozenInputs": 269,
+  "reader": {
+    "topics": 40,
+    "topicSnapshots": 3817,
+    "newTopicAdded": false,
+    "sha256": "9c8504c878e7f64c95f7ae2398998abc9592c59cebec392cf528b1a83c341300"
+  },
+  "snapshotDirectory": ".archify-work/full-framework-sdk-preparation-baseline/final-documents/",
+  "scope": "Independent preparation after frozen1328 full regression. Complete controlled1328 runs in native CLR4 with two fixture-only Enum API substitutions and dictionary compatibility; original source fragments unchanged. Two isolated SDK copies each run58 focused original UI-entry/product/repository/startup checks using actual generic Singleton and JSON object/list Save/Load. Original512 captures remain in six compiled units; product/config/inspection class shapes, point aliases, path/recipe/PR/AOP/VM/actions/equipment boundaries remain reconstructed/adapted. SDK mode compiles prior1328 but executes only58; no Fody weaving/original project/deployment/native UI/equipment or whole29-group/13-requirement acceptance.",
+  "nextChecks": [
+    "Migrate complete original configuration/bond declarations and all serialization attributes into actual SDK startup composition, preserving prior frozen inputs.",
+    "Expand actual SDK startup coverage beyond focused58; retain explicit distinction from controlled1328 and native whole-file56 data suites.",
+    "Continue type identity, Fody/AOP/PR/VM/actions/external dependencies and original project/deployed DLL/config/native UI/equipment acceptance.",
+    "Finish all16 projects/29 groups/1436 C# files/13 requirements; all29 groups remain partial."
+  ],
+  "wholeGoalComplete": false,
+  "replay": {
+    "command": "node scripts/test-transport-full-framework-sdk.cjs",
+    "observedSession": 14659,
+    "observedExitCode": 0,
+    "log": {
+      "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/orchestration.log",
+      "sha256": "fd94454bc08d4aedf1a56c601627f28b302c50e580ec31abef035fc2b1e59630"
+    },
+    "result": {
+      "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/result.json",
+      "sha256": "ed46eb00887523085909caa61a31d02efe4aab9288def8c8eab0571d86c385f5"
+    },
+    "results": [
+      {
+        "mode": "controlled",
+        "checks": 1328,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "compile": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/controlled-compile.log",
+          "sha256": "ef2d6f86d2f6774509e71292386d111d111dd5d160dbc3eea53a3bc173156ef9"
+        },
+        "runtime": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/controlled-runtime.log",
+          "sha256": "4a1ced3411387f4ac5ee326bb6f614c34d4a01e7e34ea6da8744208e411d9182"
+        },
+        "artifact": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/controlled.dll",
+          "sha256": "412cc85c1dec717d44fe5bbfee13b74719f1fe9ad02b0f7c06d5b5ca146e0f5e"
+        },
+        "artifactIdenticalToInitialBaseline": true
+      },
+      {
+        "mode": "library",
+        "checks": 58,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "compile": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/library-compile.log",
+          "sha256": "2e731caf7e16c5dd6d7ec769939a3a898c6b2e77d96d27a45465fcf551f5d80f"
+        },
+        "runtime": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/library-runtime.log",
+          "sha256": "82dbebc26261dcc492cc5dcc93a60210cbeca70c22af45c8e88f3487b548178a"
+        },
+        "artifact": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/library.dll",
+          "sha256": "6831ce953b943f6fbec801f5d237fda17d549054dffab84ca98e88b1fdfa1630"
+        },
+        "artifactIdenticalToInitialBaseline": true
+      },
+      {
+        "mode": "bin",
+        "checks": 58,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "compile": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/bin-compile.log",
+          "sha256": "8c7f8528eb36f99db7d0382e714f1a4015ed9ab286bc8fcdcb38e5cee9c71073"
+        },
+        "runtime": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/bin-runtime.log",
+          "sha256": "1ccd17b39a33712795f1332dd15fc276c2ddb4a320eb868a62b626b107c1ae51"
+        },
+        "artifact": {
+          "file": ".archify-work/full-framework-sdk-preparation-baseline/replay/bin.dll",
+          "sha256": "cff8281bcb15a27c634e8185089df699f7dc50118c1a362b6708d577423cad39"
+        },
+        "artifactIdenticalToInitialBaseline": true
+      }
+    ]
+  },
+  "baselineArtifactDirectory": ".archify-work/full-framework-sdk-preparation-baseline/"
+}

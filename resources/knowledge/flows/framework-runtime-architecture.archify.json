@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ZX2200 框架运行时与控制语义",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1380,
+      760
+    ]
+  },
+  "components": [
+    {
+      "id": "ui",
+      "type": "frontend",
+      "label": "主窗体 / 操作员",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        190,
+        80
+      ]
+    },
+    {
+      "id": "machine",
+      "type": "backend",
+      "label": "Machine 状态",
+      "pos": [
+        290,
+        300
+      ],
+      "size": [
+        190,
+        80
+      ]
+    },
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "RuntimeProvider",
+      "pos": [
+        290,
+        120
+      ],
+      "size": [
+        190,
+        80
+      ]
+    },
+    {
+      "id": "signal",
+      "type": "messagebus",
+      "label": "Signal / SignalPool",
+      "pos": [
+        560,
+        300
+      ],
+      "size": [
+        190,
+        80
+      ]
+    },
+    {
+      "id": "workers",
+      "type": "backend",
+      "label": "生产工作线程",
+      "pos": [
+        830,
+        300
+      ],
+      "size": [
+        190,
+        80
+      ]
+    },
+    {
+      "id": "config",
+      "type": "database",
+      "label": "MachineConfig + Recipe JSON",
+      "pos": [
+        560,
+        540
+      ],
+      "size": [
+        210,
+        80
+      ]
+    },
+    {
+      "id": "hardware",
+      "type": "external",
+      "label": "轴 / IO / 相机驱动",
+      "pos": [
+        830,
+        540
+      ],
+      "size": [
+        210,
+        80
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ui-machine",
+      "from": "ui",
+      "to": "machine",
+      "label": ""
+    },
+    {
+      "id": "machine-signal",
+      "from": "machine",
+      "to": "signal",
+      "label": "复位 / 放行"
+    },
+    {
+      "id": "signal-workers",
+      "from": "signal",
+      "to": "workers",
+      "label": "Wait / Set"
+    },
+    {
+      "id": "config-machine",
+      "from": "config",
+      "to": "machine",
+      "label": "RecipeID / 配置"
+    },
+    {
+      "id": "workers-hardware",
+      "from": "workers",
+      "to": "hardware",
+      "label": "动作调用",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "runtime-machine",
+      "from": "runtime",
+      "to": "machine",
+      "label": "ThreadFlag / 状态",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 34
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "可证实语义",
+      "items": [
+        "Signal.Wait 先处理 Stop/Pause，再等待 EventWaitHandle；AutoReset 消费后回到 ReSet。",
+        "WaitSingleStep 只在 IsSingleStepWork 为 true 时等待。",
+        "WaitSingleStep 仅在单步模式开启时消费信号；该语义保留在源码说明中。"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "边界与限制",
+      "items": [
+        "RuntimeProvider.ThreadFlag 是全局 volatile 退出标志；各线程是否检查它取决于线程实现。",
+        "MachineService.cs 当前为空类，不能推断它提供额外调度能力。"
+      ]
+    }
+  ]
+}

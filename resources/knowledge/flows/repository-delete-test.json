@@ -1,0 +1,50 @@
+{
+  "status": "passed",
+  "checks": 20,
+  "cases": [
+    "basic load without repository throws",
+    "basic rejects null and empty paths",
+    "basic load lists ep without decoding images",
+    "basic selected delete leaves snapshot",
+    "basic background lock leaves ep deleted and stale list",
+    "basic delete all leaves snapshots and orphan images",
+    "basic locked ep aborts all before clearing list",
+    "extended missing snapshot hides template and successful copy leaves temp",
+    "extended Exit sets OK and cleans temp files",
+    "extended selected delete leaves snapshot",
+    "extended selected background lock aborts after ep delete before UI removal",
+    "list-backed image stub preserves remaining stale numeric index",
+    "list-backed stale image index throws after second file pair deleted",
+    "extended delete all clears UI before locked ep failure",
+    "extended all swallows background delete failure and deletes snapshot",
+    "extended all leaves files with no ep counterpart",
+    "extended all swallows snapshot delete failure",
+    "temporary cleanup catches individual lock and continues",
+    "closed retries temporary cleanup",
+    "missing repository cleanup enumeration throws after OK assigned"
+  ],
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.cs",
+      "sha256": "d755b2c07b525e2a6077f010ccda40bcb21b6dace69b39c6a43f8ba9967b1931"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.cs",
+      "sha256": "85e01f9114b83fa22083dd215986b515d6eaa00f773c21d114b79f822e9df137"
+    },
+    {
+      "file": "scripts/repository-delete-harness.cs",
+      "sha256": "595444cd2f54bf3c51cc0422f5ba9f6a48d14734431e3dabfd48c2710538b18c"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PatternFile.cs",
+      "sha256": "f2a6dab6e9b75eb70aacfeaa7075f70c6110a03730d03972c6982ff35cf8b335"
+    },
+    {
+      "file": "scripts/test-repository-delete.ps1",
+      "sha256": "cb884d42d731a2a599d657c823b158a0253a63e93d406b11ab80a08200475bbc"
+    }
+  ],
+  "helperSource": "public const string PATTERN_FILE_EXTENSION = \".ep\";\r\n\r\n        public static string ConstructFileNameByPatternName(string strPatternName)\r\n        {\r\n            return strPatternName + PATTERN_FILE_EXTENSION;\r\n        }",
+  "scope": "Two complete unchanged original dialog classes and exact PatternFile naming helper. Real isolated temporary file operations and Windows file locks; list/control/form/image stubs. Bitmap reads bytes only; no decoding, native ImageList reindexing, real dialog lifecycle, production files or complete product build."
+}

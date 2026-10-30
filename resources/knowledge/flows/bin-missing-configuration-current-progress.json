@@ -1,0 +1,30 @@
+{
+  "schema": "archify-static-audit-current-v1",
+  "audit": "bin-missing-configuration",
+  "status": "current-bin-missing-configuration-verified",
+  "recordedAt": "2026-10-07T00:25:28.143Z",
+  "verification": {
+    "testCommand": "node scripts/test-bin-missing-configuration.cjs",
+    "auditCommand": "node scripts/build-bin-missing-configuration-evidence.cjs --check",
+    "result": {
+      "status": "passed",
+      "checks": 28,
+      "sourceFragments": 4
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/bin-missing-configuration-test.json",
+      "sha256": "b45ff7d406f34191694cfcb0fa9202486ce41af5144928209b8264566ffbe8ca"
+    },
+    {
+      "path": "docs/archify/bin-missing-configuration-audit.json",
+      "sha256": "e499c1179776809f02b3c79f636b92593e2f2e598cee1b89c568aaf3a3201b05"
+    }
+  ],
+  "boundaries": [
+    "Current isolated audit evidence is recorded separately from historical reports.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked.",
+    "The fixtures do not prove a complete online production cycle or physical device behavior."
+  ]
+}

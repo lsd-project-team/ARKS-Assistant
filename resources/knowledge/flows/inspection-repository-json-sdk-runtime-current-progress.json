@@ -1,0 +1,83 @@
+{
+  "schema": "archify-inspection-repository-json-sdk-runtime-current-v1",
+  "status": "current-inspection-repository-json-sdk-runtime-verified",
+  "recordedAt": "2026-10-07T11:50:44.659Z",
+  "verification": {
+    "command": "node scripts/test-inspection-repository-json-sdk-runtime.cjs",
+    "checks": 52,
+    "distinctAssertions": 26,
+    "checkPlacements": 52,
+    "isolatedProcesses": 2,
+    "sourceFiles": [
+      {
+        "file": "scripts/test-inspection-repository-json-sdk-runtime.cjs",
+        "sha256": "443d18a951a866400d856b4308b65a10affa3af099c887010dbfebfb1032cd79"
+      },
+      {
+        "file": "scripts/test-inspection-repository-json-sdk-runtime.ps1",
+        "sha256": "2c9381e519f8c5c76f47043541a82f80d7e394b60ed2341d7474cb95735af366"
+      },
+      {
+        "file": "scripts/inspection-repository-json-sdk-runtime-harness.cs.txt",
+        "sha256": "28923f95901859cf5e5785a977e400bfbe275d2d83c94cb32f618271788e7e70"
+      },
+      {
+        "file": "docs/archify/inspection-repository-json-sdk-evidence.json",
+        "sha256": "ba168a923d7484915a4a968732b664fd2e41f63a1ed78a60e1895f0f0b6ad247"
+      },
+      {
+        "file": "scripts/build-inspection-repository-json-sdk.cjs",
+        "sha256": "71397cd61b269898da6cce0bde29d27b99078e32dc349ba6019136bbea113691"
+      },
+      {
+        "file": "scripts/extract-inspection-repository-json-sdk.ps1",
+        "sha256": "c5abb8468a6be0a3792018ad060b3e1e3ff9c7789544110d8f0b7bea117c276f"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+        "sha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/bin/Debug/AKRS.Galaxy2.Infrastructure.dll",
+        "sha256": "6de275d6180dc27f1fc3d04ce27a422c435ce95bbad662f8754cea0417bd5eca"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/libs/Newtonsoft.Json.dll",
+        "sha256": "b624949df8b0e3a6153fdfb730a7c6f4990b6592ee0d922e1788433d276610f3"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/bin/Debug/Newtonsoft.Json.dll",
+        "sha256": "b624949df8b0e3a6153fdfb730a7c6f4990b6592ee0d922e1788433d276610f3"
+      },
+      {
+        "file": "trunk/packages/Fody.6.0.5/netclassictask/Mono.Cecil.dll",
+        "sha256": "d882d6746eb8029b23d39af0865a0543294e324c539ea72155f4a0e18418cd11"
+      }
+    ],
+    "results": [
+      {
+        "assembly": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+        "runtime": "4.0.30319.42000",
+        "checks": 26,
+        "log": ".archify-work/inspection-json-sdk-native-library-last-runtime.log",
+        "logSha256": "04514c9f1c2e80c78ec457e941c18c9558b116cf3c1fead554a59edcb56815d4",
+        "assemblySha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb"
+      },
+      {
+        "assembly": "trunk/AKRS.ZX2200/bin/Debug/AKRS.Galaxy2.Infrastructure.dll",
+        "runtime": "4.0.30319.42000",
+        "checks": 26,
+        "log": ".archify-work/inspection-json-sdk-native-bin-last-runtime.log",
+        "logSha256": "2c0a55d6a024bc23c2a85ac71422722d03d9db56c690c2e765799e0c09546605",
+        "assemblySha256": "6de275d6180dc27f1fc3d04ce27a422c435ce95bbad662f8754cea0417bd5eca"
+      }
+    ],
+    "testArtifactSha256": "932a8c0b2ebefee5fb1a1c31ada5baaa2f0cfde6744a31f4ffd3aa34460c02ab",
+    "auditArtifactSha256": "63f4c53ff4ccbdc44a33ddb8e637efffbb8a1769e08093a01512b5bcbfe94a37"
+  },
+  "boundaries": [
+    "The repository JSON helper and generic Singleton SDK methods executed in two isolated Windows .NET Framework processes against separate library/bin DLL copies with synthetic records and guarded temporary workspace files.",
+    "The 52 placements represent 26 identical assertions per DLL copy: typed JSON save/read, missing-file behavior, handled serialization errors, pre-catch path failures and Singleton cache/load/concurrency. Product/configuration/PR/native app/deployed UI/equipment acceptance remains pending.",
+    "No production configuration, SQL, device path, native application or deployment was modified or invoked."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "original-enabled-s1-segment-interaction-native-preparation-passed",
+  "command": "node scripts/verify-native-s1-segment-interaction.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "0e462a",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-s1-segment-interaction.log",
+  "logSha256": "fbcb89a8387ea5e89bea01f1d2ac336781c52daaae96a14ac286e691b63e386b",
+  "testSha256": "141b480dfd527d3d32e2892e81d17fe06e95c34f5bcdb9928556299ace87cb9f",
+  "parentValidation": {
+    "command": "guarded input → working → encoding-preserving resources validator pipeline",
+    "observedSession": 76893,
+    "observedCompletionChunk": "105ee1",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-task-input-gates.cjs",
+        "log": ".archify-work/native-s1-segment-interaction/parent-input-verification.log",
+        "sha256": "3e20683fa857b262ad2fc87037905f3c8fd7f127c5df5fa90affc3c5d8a7862a"
+      },
+      {
+        "command": "node scripts/verify-native-s1-working-pause.cjs",
+        "log": ".archify-work/native-s1-segment-interaction/parent-working-verification.log",
+        "sha256": "186a526e47febe58da5ac518da62a5d70f39fd221ef7b32910a0f06ec975cbda"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-s1-segment-interaction/parent-resources-verification.log",
+        "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3"
+      }
+    ]
+  },
+  "processes": 12,
+  "assertionExecutionsPerPass": 121,
+  "distinctLabels": 42,
+  "selectedMethods": 24,
+  "originalSources": 14,
+  "newFrozenInputs": 111,
+  "totalFrozenBindings": 5383,
+  "wholeGoalComplete": false
+}

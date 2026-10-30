@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "status": "original-vdproj-read-only-inventory",
+  "command": "node scripts/verify-native-setup-vdproj.cjs",
+  "observedCompletionChunk": "824ea2",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-setup-vdproj-bindings.log",
+  "logSha256": "734c82c7e9a6c79c64dafe1f1e4debf35e44251b56871d2dc4ee1eb02e62eb25",
+  "testSha256": "f9bcaff34ebb2635dff7f07824a97b9ced8b25afb7c63f9940203c95b563630c",
+  "sourceSha256": "1321ae9eae15008d5edf591a8d941075c82c4e291050ac812be2002d57e1cb07",
+  "records": 465,
+  "missing": 72,
+  "wholeGoalComplete": false
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "archify-s2-reset-normal-audit-v1",
+  "status": "source-confirmed-partial",
+  "recordedAt": "2026-10-06T22:05:58.955Z",
+  "sourceHashes": {
+    "AKRS.ZX2200/BondSystem/Tasks/BondTask.cs": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+    "AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563",
+    "AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs": "873905192c5f525b5e078cf17b3261691ac4a482c879b9854077040993ad6afa",
+    "AKRS.ZX2200/BondSystem/Models/Parameter/System2Configuration.cs": "41855abc5da74b6950712b936130b3ead4baa26c9766a05c305277393ad9f679",
+    "AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1"
+  },
+  "bondTask": {
+    "file": "AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+    "methodLine": 100,
+    "resetCallLine": 114,
+    "nextComponentLine": 116,
+    "resetReturnConsumed": false,
+    "sequence": [
+      "System2RunTimeProvider.ResetInformation",
+      "Signal.WaitStart",
+      "MoveShelfToHome",
+      "MoveToSafePos",
+      "ResetBondhead",
+      "GetFirstComponent",
+      "optional ChangeNozzle",
+      "GetIncomingSignal"
+    ],
+    "conclusion": "BondTask invokes ResetBondhead before component/input gates and ignores its bool return; an Abort/default false result is not a source-level early return at this call site."
+  },
+  "resetBondhead": {
+    "file": "AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+    "methodLine": 883,
+    "branchLines": {
+      "modbusMode": 888,
+      "modbusCall": 891,
+      "ioHigh": 895,
+      "ioDelay": 898,
+      "ioLow": 899,
+      "retry": 921,
+      "ignore": 927,
+      "abort": 930,
+      "stop": 932
+    },
+    "returnMapping": {
+      "success": "true",
+      "retry": "recursive ResetBondhead result is discarded, then true",
+      "ignore": "true",
+      "abort": "Stop then false",
+      "default": "false"
+    },
+    "recursion": {
+      "boundedBySource": false,
+      "recursiveCallLine": 923
+    },
+    "conclusion": "The reset helper maps Retry to unbounded recursion and treats Ignore as true; Abort/default returns false after Stop."
+  },
+  "modbusReset": {
+    "file": "AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs",
+    "methodLine": 236,
+    "registerAddress": 94,
+    "attempts": 2,
+    "secondAttemptInsideCatch": true,
+    "conclusion": "The Modbus helper writes register 94 once, catches, waits 50 ms, and retries once; a second failure escapes the helper."
+  },
+  "runtimeBoundary": {
+    "status": "not-executed",
+    "existingFaultEvidence": "docs/archify/native-s2-reset-propagation-audit.json",
+    "reason": "Normal success requires real ForceConfig, Modbus/IO output, or a controlled production hardware abstraction; no such action was executed."
+  },
+  "boundaries": [
+    "This audit is static source evidence; it does not prove the reset helper returns true or false for a real device.",
+    "Existing S2 reset propagation evidence covers null hardware/UI fault paths and Stop exit, not a successful reset or normal production cycle.",
+    "No production source, project file, SQL, VM, hardware, device, or deployment was modified or invoked."
+  ]
+}

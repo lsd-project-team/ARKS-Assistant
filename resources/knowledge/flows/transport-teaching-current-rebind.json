@@ -1,0 +1,17 @@
+{
+  "schema": "archify-transport-teaching-current-rebind-v1",
+  "status": "current-transport-teaching-integration-rebound",
+  "recordedAt": "2026-10-07T11:19:43.804Z",
+  "sourceArtifact": ".archify-work/transport-teaching-current-rebind/transport-teaching-integration-test.json",
+  "sourceArtifactSha256": "6fc80de51b9e2a175e037bf5dfea6cdfdb93904da7c6a7da2cb109732370e1c3",
+  "checks": 1144,
+  "sourceFragments": 449,
+  "signalBindings": 23,
+  "oldHistoricalTestSha256": "5e77571030b98059eaf60d3fcad6dff6eb1be4fbed6d2c8a44df769566fee995",
+  "oldHarnessSha256": "02aebc2f0b4af99a26b951f51bb5f2e37e556f8b1fb7f405cd63040aafdaf131",
+  "currentHarnessSha256": "9da5544beee7205d4463a45f29f75cef69022f7c49e0e997fa34c67c525da7aa",
+  "harnessHashChanged": true,
+  "historicalSnapshotPreserved": true,
+  "scope": "当前源码与当前 loading-belt harness 重新执行 1,144 项传输教学集成；历史正式测试 JSON 在执行前后字节不变。真实 SDK、原生 UI、生产调度、SQL、VM、设备、构建和部署仍未验收。",
+  "wholeGoalComplete": false
+}

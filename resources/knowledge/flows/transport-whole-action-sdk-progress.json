@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "status": "whole-original-action-controller-sdk-preparation-passed",
+  "updatedAt": "2026-10-01",
+  "test": "transport-whole-action-sdk-test.json",
+  "testSha256": "693758d68fe576a09df54d048722cd71815f601357a3d5305768fb28ce77cde2",
+  "audit": "transport-whole-action-sdk-audit.json",
+  "auditSha256": "d4364cf5e89ed1d8e47b40d8feeb2fd787397ac5ffa028feb5bdaddfe462a9db",
+  "report": "transport-whole-action-sdk-review.md",
+  "reportSha256": "970d6c22a9b10dcc36e8f8e444b743cbd8dfed2c43e99bf08c5e6c3d9f646ec6",
+  "distinctAssertions": 278,
+  "priorAssertionsRetained": 187,
+  "newAssertions": 91,
+  "placements": 556,
+  "sdkCopies": 2,
+  "originalStartupInvocationsPerCopy": 40,
+  "wholeOriginalFiles": 54,
+  "compiledSourceUnits": 55,
+  "referenceInputs": 9,
+  "removedReconstructedDeclarations": 3,
+  "priorSourceFragmentsPreserved": 512,
+  "additionalEntityCapturesPreserved": 8,
+  "changedOriginalSourceFragments": 0,
+  "legacyFormal1328Executed": false,
+  "frozenInputs": 331,
+  "replay": {
+    "command": "node scripts/test-transport-whole-action-sdk.cjs",
+    "observedSession": 96667,
+    "observedExitCode": 0,
+    "log": {
+      "file": ".archify-work/whole-action-sdk-startup-baseline/replay/orchestration.log",
+      "sha256": "b43f165ec2dfa77684cfe537071e942f1c12427259cfb95d194e32f2b1f565fd"
+    },
+    "result": {
+      "file": ".archify-work/whole-action-sdk-startup-baseline/replay/result.json",
+      "sha256": "647069cf62848af552ca1ac091824ea7162f1a3874c776c623c018a755bcd957"
+    },
+    "results": [
+      {
+        "tag": "library",
+        "checks": 278,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "artifactIdenticalToInitialBaseline": true,
+        "compile": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/library-compile.log",
+          "sha256": "0bc3384f6b151599426606f59b902318be7130850c28e475e2ecb94b721b019b"
+        },
+        "runtime": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/library-runtime.log",
+          "sha256": "e58751b36d6d450f81ced61bd4fed0c1127baef9fac449e3743eee69a09f158d"
+        },
+        "artifact": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/library.dll",
+          "sha256": "e84d694a946129fba37755d0dfd17c0ee509a37ee64042a05187185054743380"
+        },
+        "input": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/library-input.json",
+          "sha256": "76f1277400ce3dbdd4752d159b89b67982504f85ba9159d2e6f7867f180239ad"
+        }
+      },
+      {
+        "tag": "bin",
+        "checks": 278,
+        "compileExitCode": 0,
+        "runtimeExitCode": 0,
+        "artifactIdenticalToInitialBaseline": true,
+        "compile": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/bin-compile.log",
+          "sha256": "17a62eefe517577aba93de0ffedfba158cae28d2112853476a26c461dc6722cb"
+        },
+        "runtime": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/bin-runtime.log",
+          "sha256": "dd8608539f4c25249c974d56df4457534354a580b5e8f6b10b0aa41f8f114409"
+        },
+        "artifact": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/bin.dll",
+          "sha256": "a25ff579e9e76e7e5116458a0c07f3b75d8ef44b4cc0b3062c3a3fd0c540e74b"
+        },
+        "input": {
+          "file": ".archify-work/whole-action-sdk-startup-baseline/replay/bin-input.json",
+          "sha256": "5c0f961ef272bc01e640df8ca895bbdc2b1fa876ee303ccac0f50c333f50092f"
+        }
+      }
+    ]
+  },
+  "snapshotDirectory": ".archify-work/whole-action-sdk-startup-baseline/final-documents/",
+  "baselineArtifactDirectory": ".archify-work/whole-action-sdk-startup-baseline/",
+  "preparedContext": {
+    "formalTest": "transport-product-declarations-integration-test.json",
+    "formalTestSha256": "8ad5c496714145aa3894982dc82c5ed2a49b1d8c3ad2fed68c450382d536ee00",
+    "priorWholeEntityPreparation": "transport-whole-entity-sdk-progress.json",
+    "priorWholeEntityPreparationSha256": "a4cabf1c883a2e234ddcc86afdbb7f3f8c1203d9342ffeaef3a24ba7e25bce4a",
+    "includedInFormal1328Regression": false,
+    "topics": 40,
+    "topicSnapshots": 3817,
+    "readerSha256": "9c8504c878e7f64c95f7ae2398998abc9592c59cebec392cf528b1a83c341300"
+  },
+  "findings": [
+    "Actual complete process/controllers preserve existing187 cases and add91, including16 order matrices and40 source startup invocations.",
+    "Original injection filters disabled steps; original process readiness still validates disabled records and blocks invalid Index.",
+    "Original readiness accepts null step name/null component token and empty S2 plan; complete S2 SelfCheck rejects empty. Other domain readiness linkage remains controlled.",
+    "Original auto-generation changes memory without process Save.",
+    "Deterministic target delete lock causes actual SDK Save failure, preserves original data, cleans random temp file and recovers after unlock.",
+    "Two earlier unplanned File.Replace failures are preserved; their exact failed DLL and unique cause are not established."
+  ],
+  "priorObservedSaveFailures": [
+    {
+      "observedSession": 69979,
+      "observedExitCode": 1,
+      "log": {
+        "file": ".archify-work/whole-action-sdk-startup-baseline/observed-runtime-library-final.log",
+        "sha256": "66e930247bf156dd74eb3ae754a47f8026d8b9b2fd6653c7b07e16642356959a"
+      },
+      "scope": "Earlier274-check derivative code, runtime stopped by File.Replace save error. Its exact failed DLL was not frozen; observation preserved, cause unresolved. Final278-check baseline and deterministic lock cases are separate evidence."
+    },
+    {
+      "observedSession": 16461,
+      "observedExitCode": 1,
+      "log": {
+        "file": ".archify-work/whole-action-sdk-startup-baseline/observed-runtime-library-final-2.log",
+        "sha256": "66e930247bf156dd74eb3ae754a47f8026d8b9b2fd6653c7b07e16642356959a"
+      },
+      "scope": "Earlier274-check derivative code, runtime stopped by File.Replace save error. Its exact failed DLL was not frozen; observation preserved, cause unresolved. Final278-check baseline and deterministic lock cases are separate evidence."
+    }
+  ],
+  "remaining": [
+    "Whole original action catalogs and actual nodes; full domain/SelfCheck startup linkage; relative bond/rework and I/O reliability.",
+    "Actual PR/camera/calibration/measurement/export execution.",
+    "Original project/Fody/external dependencies/deployment/native UI/equipment acceptance.",
+    "All16 projects/29 groups/1436 C# files/13 requirements."
+  ],
+  "nextTask": {
+    "objective": "接入完整原动作目录和实际节点，展开完整域/SelfCheck启动校验、相对贴片/重做与硬件边界，继续核实意外文件替换失败。",
+    "sourceFiles": [
+      "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseActionNodes.cs",
+      "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BondActionNodeRepository.cs"
+    ]
+  },
+  "wholeGoalComplete": false
+}

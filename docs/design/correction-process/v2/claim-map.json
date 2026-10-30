@@ -1,0 +1,583 @@
+{
+  "revision": "2.1",
+  "claims": [
+    {
+      "id": "P01",
+      "claim": "产品定位的点数决定采集和结束位置；UpdateEntity(NormalVisionType)内部按当前LocateConfig计算，不能把传入的P1/P2/P3/P4标记当作独立计算快照。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 528,
+          "end_line": 608
+        },
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 295,
+          "end_line": 432
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "claim": "位置锚点的X与Y分别按各点UseX/UseY及AdjustType求算术均值；某轴全部关闭时返回0，不保持该轴旧值。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 617,
+          "end_line": 681
+        },
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 721,
+          "end_line": 785
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "claim": "角度按启用结果的Angle求普通算术均值，再从度转弧度；P4的参与条件实际读取LocateUseConfig3.UseAngle。不能在图或公式中擅自改成第4点开关或圆周均值。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 827,
+          "end_line": 864
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "claim": "默认更新角为负视觉角度减父链全局角；两点定角分支实际使用Atan(newAngle-oldAngle)再减父链角，没有直接使用角度差或归一化函数。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 565,
+          "end_line": 590
+        },
+        {
+          "source_id": "GENERAL_COORDINATE",
+          "start_line": 107,
+          "end_line": 132
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "claim": "三点拟合圆模式在3点与4点模式下均只取P1至P3；GetCentre以PointF运算，精确共线分支返回P1、P2中点，不产生拟合失败异常。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 592,
+          "end_line": 604
+        },
+        {
+          "source_id": "MATH_HELPER",
+          "start_line": 516,
+          "end_line": 567
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "claim": "普通坐标更新先计算父参考系中的新旧锚点差，再平移并绕新锚点旋转原点；XYZ任一分量绝对值大于10或更新角绝对值大于0.2rad会先抛异常。边界值等于10或0.2不被这些比较拒绝。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "BASE_COORDINATE",
+          "start_line": 204,
+          "end_line": 237
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "claim": "UpdateEntity在几何校验之前清P1至P4的Bitmap，坐标更新完成后才置IsVisioned=true；SaveInfo保存识别结果、局部/G0位置及拍照位置，并置成功/更新标记。更新失败不表示所有记录均未改变。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "TU_SERVICE",
+          "start_line": 553,
+          "end_line": 608
+        },
+        {
+          "source_id": "VISION_RESULT",
+          "start_line": 60,
+          "end_line": 69
+        }
+      ]
+    },
+    {
+      "id": "P08",
+      "claim": "S2产品定位逐点采集成功后才在相应点数出口更新；距离检查只放在TwoPoints分支。Abort停止；Retry重新采P1、P2后重新检查；None直接停用并返回true，不进入UpdateEntity。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 295,
+          "end_line": 432
+        },
+        {
+          "source_id": "VISION_SERVICE",
+          "start_line": 257,
+          "end_line": 315
+        }
+      ]
+    },
+    {
+      "id": "P09",
+      "claim": "S1两点距离检查的Retry跳过自动拍照并进入报警对点分支并从P1开始，再次到达检查处时因visionAlarm已为true而跳过该检查；None停用后继续UpdateEntity。S1和S2不能合并画成同一条异常路径。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 96,
+          "end_line": 197
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 205,
+          "end_line": 243
+        },
+        {
+          "source_id": "VISION_SERVICE",
+          "start_line": 299,
+          "end_line": 314
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 315,
+          "end_line": 325
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "claim": "S2基板定位DoWork调用System2ObjectVision后未使用其bool结果，随后返回Success；动作成功、识别结果存在、IsVisioned和工序完成需要分开解释。离线分支仅置IsVisioned。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "S2_SUBSTRATE_ACTION",
+          "start_line": 58,
+          "end_line": 98
+        },
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 267,
+          "end_line": 285
+        }
+      ]
+    },
+    {
+      "id": "P11",
+      "claim": "S2拍照目标从对象局部转G0后减HeadToCameraOffset；识别点经相机标定和拍照位置转换，再加HeadToCameraOffset、转回对象局部并SaveInfo。S1使用独立的相机/测高参考差转换，不套用S2偏移公式。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 444,
+          "end_line": 465
+        },
+        {
+          "source_id": "DOMAIN_S2",
+          "start_line": 574,
+          "end_line": 584
+        },
+        {
+          "source_id": "BOND_VISION_CONTROLLER",
+          "start_line": 652,
+          "end_line": 662
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 229,
+          "end_line": 243
+        },
+        {
+          "source_id": "DOMAIN_S1",
+          "start_line": 345,
+          "end_line": 356
+        },
+        {
+          "source_id": "DISPENSE_CONTROLLER",
+          "start_line": 262,
+          "end_line": 277
+        },
+        {
+          "source_id": "DISPENSE_CONTROLLER",
+          "start_line": 791,
+          "end_line": 802
+        }
+      ]
+    },
+    {
+      "id": "U01",
+      "claim": "上视DoWork在AccuracyMode为Off、选用BondCamera或离线模式时提前成功返回；DryCycle走独立动作。IsDoWork另外检查焊点参与范围和本工序字典。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 131,
+          "end_line": 162
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 520,
+          "end_line": 538
+        }
+      ]
+    },
+    {
+      "id": "U02",
+      "claim": "正常成功路径中，上视单点快速模式采1次，单点普通模式先采角度、旋转后再采位置；双点快速模式采P1/P2两次，双点普通模式在旋转前后各采P1/P2，共4次。不含重取、二维码或其他附加拍照。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 207,
+          "end_line": 430
+        }
+      ]
+    },
+    {
+      "id": "U03",
+      "claim": "快速上视的偏移为标定后的识别位移，减去按负角度差旋转后的示教中心距离，再加本次轴位置减玻璃上视参考；双点对两次位移和两次轴位置分别求均值。ComponentAngleOffSet保存单点识别角或双点均角，单位为度。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 228,
+          "end_line": 249
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 341,
+          "end_line": 366
+        },
+        {
+          "source_id": "UPLOOK_MODULE",
+          "start_line": 69,
+          "end_line": 75
+        }
+      ]
+    },
+    {
+      "id": "U04",
+      "claim": "普通上视先按识别角、焊点全局角与硬补偿旋转T轴，再用旋转后识别位置计算ComponentOffSet；ComponentAngleOffSet写为负的焊点全局角加硬补偿之和。镜像时实际旋转的bpAngle另取180减硬补偿，算例只采用非镜像。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 255,
+          "end_line": 292
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 368,
+          "end_line": 429
+        }
+      ]
+    },
+    {
+      "id": "U05",
+      "claim": "正常识别结果在GetMatchResultByConfig中被原地改写：关闭X用1224，关闭Y用1024，关闭角度用0；不能把UseX/UseY关闭解释为物理位移直接置零。上视和中转台人工OK出口直接返回人工match，绕过后方这一步。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "RUN_TIME",
+          "start_line": 415,
+          "end_line": 432
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 1591,
+          "end_line": 1608
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 594,
+          "end_line": 596
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 697,
+          "end_line": 701
+        }
+      ]
+    },
+    {
+      "id": "U06",
+      "claim": "上视识别失败的自动跳过或人工重取，会执行抛料、拒收计数、按浸胶模式选择重置动作消息并返回Retry；BondTask收到Retry继续循环，不标记当前消息完成。人工OK和Abort有独立出口。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 1410,
+          "end_line": 1592
+        },
+        {
+          "source_id": "ACTION_CONTROLLER",
+          "start_line": 1099,
+          "end_line": 1115
+        },
+        {
+          "source_id": "BOND_TASK",
+          "start_line": 232,
+          "end_line": 319
+        }
+      ]
+    },
+    {
+      "id": "U07",
+      "claim": "上视几何结果先保存，再调用温漂包装方法。包装方法对底层TemperatureCompensation的bool结果未使用且始终返回true；底层识别失败会停机并返回false，但不能据包装返回值判定温漂成功。获取漂移量超限时抛异常，由上视外层返回Exception；写过几何字段不等于整个动作成功。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 485,
+          "end_line": 501
+        },
+        {
+          "source_id": "BOND_VISION_CONTROLLER",
+          "start_line": 897,
+          "end_line": 924
+        },
+        {
+          "source_id": "TEMPERATURE_MODEL",
+          "start_line": 64,
+          "end_line": 145
+        },
+        {
+          "source_id": "TEMPERATURE_MODEL",
+          "start_line": 240,
+          "end_line": 255
+        }
+      ]
+    },
+    {
+      "id": "I01",
+      "claim": "中转台流程先准备当前焊点、吸嘴与速度；AccuracyMode为Off或选上视相机则提前返回。正常路径依次放片、拍照、计算修正取片位、移动并重新取片。该DoWork没有与上视相同的离线提前返回分支。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_PROVIDER",
+          "start_line": 33,
+          "end_line": 47
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 136,
+          "end_line": 270
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 375,
+          "end_line": 418
+        }
+      ]
+    },
+    {
+      "id": "I02",
+      "claim": "中转台单点的旋转角为负识别角减示教下视角；双点使用识别角均值。芯片中心由示教中心绕示教Mark或Mark中点旋转，再加本次识别点或识别中点的位移得到；取片G0位置再加头相机差、减按新取片角求得的吸嘴偏心。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 276,
+          "end_line": 360
+        },
+        {
+          "source_id": "NOZZLE_CONTROLLER",
+          "start_line": 970,
+          "end_line": 992
+        }
+      ]
+    },
+    {
+      "id": "I03",
+      "claim": "P1拍照位先从G0转轴坐标再减头相机差，P2使用另一条G0移动路径；IPTPickPos由最终取片轴位置转换回G0保存。后续配图必须标出每个量的参考系，不能用一组相同名称掩盖两种位置。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 244,
+          "end_line": 251
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 313,
+          "end_line": 325
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 375,
+          "end_line": 389
+        }
+      ]
+    },
+    {
+      "id": "I04",
+      "claim": "中转台记录的SubstrateCameraCompensate用于结果统计；当前CalculateBondPos没有直接把它作为取片位置叠加。双点统计表达式在P2处重新换算P1结果，未复用前面缓存的realPoint3D1；必须分别看待几何中心计算与该统计字段。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 313,
+          "end_line": 366
+        },
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 498,
+          "end_line": 629
+        },
+        {
+          "source_id": "AFTER_BOND_CHECK",
+          "start_line": 564,
+          "end_line": 586
+        }
+      ]
+    },
+    {
+      "id": "I05",
+      "claim": "中转台视觉失败的Ignore出口会回原放片位取回、抛料并重置相关动作返回Retry，不等于按失败识别点继续贴装。重新取片后的真空检测中，Retry跳到RePick标签，该标签位于Pick调用之后；不能仅按按钮“重取”二字把它画成再次执行Pick。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 546,
+          "end_line": 683
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 409,
+          "end_line": 483
+        }
+      ]
+    },
+    {
+      "id": "C01",
+      "claim": "贴装的T目标为当前T加ComponentAngleOffSet、焊点全局角及硬补偿；上视分支按尚需旋转角旋转ComponentOffSet后取XY叠加。产品局部硬补偿先经父链变到G0。此处只是纠偏输出的使用入口，不扩展为独立TU连接设计。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 498,
+          "end_line": 576
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "claim": "中转台相机分支先减新T角下的吸嘴偏心，再调用实时补偿；调用顺序实际为IPTVisionPos、IPTPickPos，而被调方法首二参数名为iptPickPos、iptVisionPos。保留实际位置顺序，不能仅按参数名改写。该方法关闭时返回零，成功只返回X，超过0.5的XY阈值时返回零。返回值在G0目标转轴坐标之后追加；RealBondPoint3D记录发生在这次追加之前。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 550,
+          "end_line": 568
+        },
+        {
+          "source_id": "REAL_TIME_CORRECTION",
+          "start_line": 149,
+          "end_line": 201
+        },
+        {
+          "source_id": "BOND_PROVIDER",
+          "start_line": 588,
+          "end_line": 593
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "claim": "同一芯片工序的编排可以同时包含上视与中转台动作名，各动作内部根据相机配置选择实际执行；动作名单出现某名称不等于它必然拍照。重做仅把匹配地址和工序的动作消息Finished改false。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "ACTION_CONTROLLER",
+          "start_line": 715,
+          "end_line": 853
+        },
+        {
+          "source_id": "ACTION_CONTROLLER",
+          "start_line": 1099,
+          "end_line": 1139
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "claim": "芯片定位输入来自芯片载具配置的AdjustConfig；它与产品层级定位的LocateConfig分别定义。前者有两组PR与中心距离/角度等数据，后者有1至4点及分轴选择等数据；不共用一张无坐标含义的“定位参数表”。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "ADJUST_CONFIG",
+          "start_line": 33,
+          "end_line": 135
+        },
+        {
+          "source_id": "CHIP_CONFIG",
+          "start_line": 472,
+          "end_line": 505
+        },
+        {
+          "source_id": "LOCATE_CONFIG",
+          "start_line": 22,
+          "end_line": 196
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "claim": "普通匹配算法的报警OK会在界面中再次运行PR，成功后复制CenterX、CenterY和Angle返回；上视及中转台的人工OK调用出口绕过后续GetMatchResultByConfig。不能把OK当作未经识别的任意位置输入。",
+      "basis": "当前源码静态核查",
+      "evidence": [
+        {
+          "source_id": "VISION_ALARM_FORM",
+          "start_line": 339,
+          "end_line": 395
+        },
+        {
+          "source_id": "UPLOOK_ACTION",
+          "start_line": 1591,
+          "end_line": 1608
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 594,
+          "end_line": 701
+        }
+      ]
+    },
+    {
+      "id": "F01",
+      "claim": "中转台式5-2的E(α)封装吸嘴校准角度约定：实际GetNozzleOffset调用角度为新取片轴角α减nozzle.AlignAngle，而非直接传α；AlignAngle为吸嘴校准角度。",
+      "basis": "2026-10-21源码复核",
+      "evidence": [
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 280,
+          "end_line": 303
+        },
+        {
+          "source_id": "IPT_ACTION",
+          "start_line": 350,
+          "end_line": 358
+        },
+        {
+          "source_id": "NOZZLE_CONTROLLER",
+          "start_line": 970,
+          "end_line": 979
+        },
+        {
+          "source_id": "NOZZLE_CONFIG",
+          "start_line": 77,
+          "end_line": 81
+        }
+      ]
+    }
+  ]
+}

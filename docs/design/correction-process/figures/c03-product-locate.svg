@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="780" viewBox="0 0 2400 780"><rect width="100%" height="100%" fill="white"/>
+<rect x="60.0" y="180" width="388.0" height="270" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="254.0" y="242" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">进入条件</text>
+<text x="254.0" y="317" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">对象参与</text>
+<text x="254.0" y="375" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">定位已启用</text>
+<polyline points="448.0,315 533.0,315" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="533.0,315 512.2897166458885,325.0042072845583 512.2897166458885,304.9957927154417" fill="#315d82"/>
+<rect x="533.0" y="180" width="388.0" height="270" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="727.0" y="242" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">逐点采集</text>
+<text x="727.0" y="317" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">P1 → 配置点数</text>
+<text x="727.0" y="375" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">失败按本侧处理</text>
+<polyline points="921.0,315 1006.0,315" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1006.0,315 985.2897166458885,325.0042072845583 985.2897166458885,304.9957927154417" fill="#315d82"/>
+<rect x="1006.0" y="180" width="388.0" height="270" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="242" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">保存结果</text>
+<text x="1200.0" y="317" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">局部与 G0</text>
+<text x="1200.0" y="375" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本次拍照位</text>
+<polyline points="1394.0,315 1479.0,315" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1479.0,315 1458.2897166458883,325.0042072845583 1458.2897166458883,304.9957927154417" fill="#315d82"/>
+<rect x="1479.0" y="180" width="388.0" height="270" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1673.0" y="242" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">计算与更新</text>
+<text x="1673.0" y="317" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">按配置选结果</text>
+<text x="1673.0" y="375" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">校验并更新坐标</text>
+<polyline points="1867.0,315 1952.0,315" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1952.0,315 1931.2897166458883,325.0042072845583 1931.2897166458883,304.9957927154417" fill="#315d82"/>
+<rect x="1952.0" y="180" width="388.0" height="270" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="2146.0" y="242" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">定位标记</text>
+<text x="2146.0" y="317" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">IsVisioned</text>
+<text x="2146.0" y="375" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">更新后设 true</text>
+<text x="1200" y="90" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">正常定位数据路径</text>
+<text x="1200" y="560" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">定位关闭时直接置定位标记   Mapping停用分支可提前返回</text>
+<text x="1200" y="665" fill="#18364b" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">点数决定采集范围   各轴开关决定参加计算的结果</text></svg>

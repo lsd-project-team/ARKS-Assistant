@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "checkedAt": "2026-09-30T19:31:09.344Z",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 79273,
+    "log": ".archify-work/verify-transport-unit-services-integration.log",
+    "sha256": "5fb9fb8f2b9c068c1d4437f813bb9c2503f4b7365f37bba2f17866596b136316",
+    "snapshotDirectory": ".archify-work/unit-services-full-regression/",
+    "frozenBindings": {
+      "testSha256": "2cb333553d48e9737277941782d33976e74b812c1b89074358f1f173f560e7a2",
+      "auditSha256": "e964bcaf12ef92da9b5ae6d9fb3bf10e68c9e86f09403a00bcad0e0208967e24",
+      "evidenceSha256": "9e25fdebfe27c578c6b66cc277275779f16c854ed7e9a40a8b46a521901402ee",
+      "reportSha256": "458ff24ca8bc6b437dcd15c14d86b555cb9d5a1b7144bd730fcf498bb7ceb0e7",
+      "readerSha256": "477b03c89dd3ed635557ffb016086d9b8d896d642d2f08b77a38f1fea2fb3e8f"
+    }
+  },
+  "specialized": {
+    "checks": 1011,
+    "sourceFragments": 391,
+    "uniqueSourceFragments": 390,
+    "sharedFragmentPlacements": 1,
+    "completeMethods": 213,
+    "properties": 140,
+    "enums": 14,
+    "fields": 22,
+    "structs": 2,
+    "signalBindings": 23,
+    "topicSnapshots": 291,
+    "sourceFileCounts": {
+      "declaredDependencyFiles": 149,
+      "fragmentOnlyFiles": 38,
+      "uniqueFiles": 187
+    },
+    "compiledContinuationCaptures": 19
+  },
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-unit-services-final-documentation.log",
+    "sha256": "b6efe980c42e74f7f8da035ecb9a065f134c68283dd3d684ebc207de9e388097",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "8a63262f0427be91ee99d470dca3341ea5fce50c3b24f4b210d602aec96fb2b3",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 35,
+    "topicSnapshots": 1969,
+    "moduleSnapshots": 940
+  },
+  "documentation": {
+    "exitCode": 0,
+    "log": ".archify-work/verify-unit-services-documentation.log",
+    "sha256": "d96c3ba9180d2208c06ef226969569f8291c3bb6897374559031d14c54a198b4"
+  },
+  "sdkStaticContracts": {
+    "evidence": "transport-unit-services-sdk-evidence.json",
+    "sha256": "8c483ba98aab58a5341d6e958b6f20d0ddefddb6560c61697bc4d1faf7835f34",
+    "assemblies": 2,
+    "metadataMethods": 6,
+    "scope": "Mono.Cecil metadata only; coordinate obj/Debug is not deployment proof; native SDK not executed."
+  },
+  "continuation": {
+    "evidence": "transport-unit-lifecycle-next-evidence.json",
+    "sha256": "31b0e1996afb048a7c43f83cad471311774e08f27ade29eb66281bf3db613f4f",
+    "pendingCaptures": 14,
+    "next": [
+      "Replace coordinate interface adapters with original constructor/Init/transform/offset and matrix arithmetic dependencies; preserve original source and verify local/parent transforms and partial assignment.",
+      "Replace OppositeSex.Config repository lookup, typed product/config declaration and actual singleton reset/load/save lifecycle; verify configuration replacement, missing matches and source readiness checks.",
+      "Continue original program initialization, action injection and info/aggregate state, then original build/deployed configuration/DLL/native UI/equipment acceptance."
+    ],
+    "preparation": {
+      "progress": "coordinate-product-lifecycle-preparation-progress.json",
+      "sha256": "72b34c4fb8925046ef78c56589995510a6e840c59cb19b99ca5e3c8316d9a063",
+      "coordinateChecks": 113,
+      "productChecks": 29,
+      "preparedMembers": 14,
+      "scope": "Standalone probes passed; 14 still pending integration into entity/startup/transfer composition and excluded from this 1011-check full regression."
+    }
+  },
+  "scope": "Original recursive Substrate/Module/BondPosition constructors/Refresh, TuService row-column/index/coordinate creation/state masking, BaseMatter config/type delegation, original ClearInformation, actual five-child TransportModule.Init/WaitAll and original TransportProgram.RefreshTransportUnit compose with original startup carrier/map/Bond and dispense search/vacuum/time helpers, original load-bin transfer/rod/inlet/config wrappers, real ten-second child Task/timer, original auto-loader-to-loading and front sensor/getter with real Stopwatch timeout, actual first parent, original loading-to-dispense controller, loading/dispense hardware getters, setting/SMEMA wrappers, constructors/Init/Refresh, coordinate/substrate creation and refresh, tree vision/height clearing, offset methods and config/information declarations compose with full producer/UI/readiness/real wafer Task/Stop and existing downstream controllers. Original five module fields are extracted with fixture type aliases. Coordinate SDK, base/config/info/aggregate entity declarations, OppositeSex.Config/product/coordinate adapters, action injection, configuration/repository/SDK/log/dialog/Save/pool/product/domain lifecycle, actual log sink and native UI/build/configuration/DLL/equipment remain fixtures or pending. Counts describe whole compiled composition, with 1011 executed service/entity/lifecycle assertions; prior 1355 carrier assertions remain a separate suite.",
+  "browserAtFullRegression": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-unit-services-integration.log",
+    "sha256": "3d593c9e5ea7a383ca905515573910d08cf9398785dcc9db1550cbb36587a61d",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "477b03c89dd3ed635557ffb016086d9b8d896d642d2f08b77a38f1fea2fb3e8f",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 35,
+    "topicSnapshots": 1969,
+    "moduleSnapshots": 940
+  },
+  "postRegressionDocumentationUpdate": {
+    "checkedAt": "2026-09-30T19:34:16.505Z",
+    "scope": "Only module summary discloses 391 extraction records/390 unique fragments, task-list closure and prepared-probe links; 149 runtime inputs and test/audit/evidence/report remain identical to full regression.",
+    "command": "node .archify-work/verify-unit-services-docs.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-unit-services-final-documentation.log",
+    "sha256": "d96c3ba9180d2208c06ef226969569f8291c3bb6897374559031d14c54a198b4",
+    "readerSha256": "8a63262f0427be91ee99d470dca3341ea5fce50c3b24f4b210d602aec96fb2b3",
+    "browserExitCode": 0
+  },
+  "supersededBy": {
+    "report": "transport-coordinate-product-integration-review.md",
+    "verification": "transport-coordinate-product-integration-verification.json",
+    "status": "passed",
+    "compiledContinuationCaptures": 14,
+    "scope": "Historical 1011 regression/browser and 149-input scope preserved; newer 1031 coordinate/product composition has an independent passing receipt."
+  }
+}

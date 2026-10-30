@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "standalone-coordinate-product-prepared-full-composition-pending",
+  "priorFullComposition": {
+    "progress": "transport-unit-services-integration-progress.json",
+    "checks": 1011,
+    "scope": "113 and 29 standalone counts are not part of the current 1011 full regression and must not be added as coverage."
+  },
+  "coordinate": {
+    "checks": 113,
+    "test": "coordinate-lifecycle-test.json",
+    "testSha256": "fb667311738f3fb5e181c17a4761089f467de5488004745f4b5dc0de76a77213",
+    "audit": "coordinate-lifecycle-audit.json",
+    "auditSha256": "010ef002876222dc7be688cd8c152b9aa93b9f6d9f5eb4b402db92a6a10f3da7",
+    "command": "node scripts/test-coordinate-lifecycle.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/coordinate-lifecycle-expanded-v1.log",
+    "logSha256": "b46640e0a1cb47923ffa098f7addd7d67c7258bae5ed22896bb459ae7c42ef68",
+    "originalUnmodifiedFiles": 3,
+    "scope": "Original coordinate source files compiled unmodified; VM calibration, point SDK operators and JSON/UI namespaces are explicit adapters. Standalone probe, not yet integrated into 1011 service/entity composition or native SDK/device proof."
+  },
+  "product": {
+    "checks": 29,
+    "test": "product-opposite-lifecycle-test.json",
+    "testSha256": "c56d2a7df1164b125026b6a17b23ab94ff08fd71b1c76bdb8c138c5871692adf",
+    "audit": "product-opposite-lifecycle-audit.json",
+    "auditSha256": "f4e9fb67264db895484d3ab2df7fe40671cfbd55a6fca9082b1746267032418b",
+    "command": "node scripts/test-product-opposite-lifecycle.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/product-opposite-lifecycle-baseline-v1.log",
+    "logSha256": "21fc4bdf1c4af86ac528f3e437e3f2a09dd6b3245db8c5ad0bc4e8e9bcbe257f",
+    "methods": 6,
+    "properties": 1,
+    "scope": "Original product readiness/type lookup/reset, transport program reset and opposite config lookup/create/add/Save bodies; singleton loading/storage, config declarations, paths and dialog are adapters. Standalone preparation, not yet part of the 1011 entity composition or native persistence proof."
+  },
+  "preparedMembers": 14,
+  "fragments": [
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "anchor": "public GeneralCoordinateSystem(string name, CoordinateSystemTypeEnum coordinateSystemType, BaseCoordinateSystem upperCoordinateSystem)",
+      "kind": "method",
+      "snippetSha256": "1e02756f554a656ad631f6cf694a271220cb0eebe2d2256b075a8e015eb3c074",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "anchor": "public AKRSPoint3D SelfPosToG0(AKRSPoint3D point3D)",
+      "kind": "method",
+      "snippetSha256": "3288528923ab4486b12f5c782783e9e7d48cdbc2f3b32ae2d7cada1bae56329a",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/GeneralCoordinateSystem.cs",
+      "anchor": "public AKRSPoint3D G0PosToSelf(AKRSPoint3D point3D)",
+      "kind": "method",
+      "snippetSha256": "797d9a948f4f0ee5565fd7e457784db12f2e8af83b9a6f4fa4643fb49702999f",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+      "anchor": "public void Init(AKRSPoint3D upperPoint3D, AKRSPoint3D ownPoint3D, double degree = 0, CalibModuleEnum moduleEnum = CalibModuleEnum.AxisAndCameraIsTogether)",
+      "kind": "method",
+      "snippetSha256": "5a371496e00334bb57632bd01f1f9ca08bd9f1f58df690eb3d3917614d3a6e6e",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+      "anchor": "public void Init(ElementCoordinate elementCoordinate, CalibModuleEnum moduleEnum = CalibModuleEnum.AxisAndCameraIsTogether)",
+      "kind": "method",
+      "snippetSha256": "19cd7e8a41c0643765b0930408cfca17439524379f10d44c4ff0305a66d323b3",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+      "anchor": "public void Init(List<AKRSPoint3D> upperPoint3D, List<AKRSPoint3D> ownPoint3D, CalibModuleEnum moduleEnum = CalibModuleEnum.AxisAndCameraIsTogether)",
+      "kind": "method",
+      "snippetSha256": "94709f64813b9d6eeaa252c8d773a4553239a579954e6773fb1584252dccd99a",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.CoordinateSystems/CoordinateSystems/BaseCoordinateSystem.cs",
+      "anchor": "public void InitOffSet(AKRSPoint3D point3D, double degree)",
+      "kind": "method",
+      "snippetSha256": "c4328770476b6d873aa7e925d46bccd3638d92a25fab5ae592ff18ef86a53721",
+      "standaloneProbe": "coordinate-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OppositeSex.cs",
+      "anchor": "public OppositeSexConfig Config =>",
+      "kind": "property",
+      "snippetSha256": "dde5a0092c8bfb83f59446a0a5bd38b0ee4346bb07619d498ee4ac6318767ceb",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Config/OppositeSex.cs",
+      "anchor": "private OppositeSexConfig GetConfig()",
+      "kind": "method",
+      "snippetSha256": "b990726242c25b03bac086804bdc943cc2fbeb568e435e1eb667d68053127721",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public void InitProductConfiguration()",
+      "kind": "method",
+      "snippetSha256": "72e3c88f5089762bb57d2338df212cf592bbb13b679e24eebbbe6a71209ba853",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public void ClearProductConfigurationInstance()",
+      "kind": "method",
+      "snippetSha256": "9585a4c07b47cbd487c3914e3eb1daa1285fdaf8d23a4a351d4308c93005dd66",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public bool IsTransportUnitReady()",
+      "kind": "method",
+      "snippetSha256": "2d5664281095d369201806f3f41c33c143448b0c60e537cf13c1b440057de85f",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public BaseConfig GetConfigByType(EntityTypeEnum type,string name = null)",
+      "kind": "method",
+      "snippetSha256": "7cd0aa6373b6978620500b64209032f2530ed3ef6e32e59ab1e0cf0b60846fc0",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProgram.cs",
+      "anchor": "public void InitTransportSystemProgram()",
+      "kind": "method",
+      "snippetSha256": "1f73aded1359715fff9f7a366048104bce71823557922bfe619226a33cf14fb0",
+      "standaloneProbe": "product-opposite-lifecycle-test.json",
+      "classification": "compiled-original-in-standalone-controlled-probe",
+      "fullComposition": "integration-pending"
+    }
+  ],
+  "next": [
+    "Join original coordinate methods and product/opposite/program lifecycle bodies to recursive entity/offset/Refresh/actual UI startup and downstream transfers, preserving exact source bodies.",
+    "Keep real singleton loading/persistence/SDK/VM/point operators and configuration replacement boundaries explicit; continue actions/info aggregation and native build/deployed configuration/DLL/UI/device acceptance."
+  ],
+  "scope": "Standalone source compilation and controlled probes; whole engineering goal remains incomplete."
+}

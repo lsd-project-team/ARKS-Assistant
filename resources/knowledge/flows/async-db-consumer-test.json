@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Extracted original Insert and SaveEntityToDb. C#5 lowering: using declaration to block, interpolation to string.Format, pattern variables to checks/casts. SqlSugar, logger, singleton and entities are controlled stubs; BlockingCollection is real. CompleteAdding is fixture-only termination, not production behavior. No database, production models, concurrent threads, monitor restart, UI or hardware tested.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "start": 84,
+      "end": 97,
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "snippetSha256": "ed6f58b9f8d524adaf566ce7c7f23828b41266e427dac988ad1fcc8d80f83041",
+      "code": "    public static void Insert<T>(T entity) where T : class, new()\n    {\n        try\n        {\n            using SqlSugarClient db = Instance.db.CopyNew();\n            db.Insertable(entity).ExecuteCommand();\n        }\n        catch (Exception ex)\n        {\n            LogHelper.Post(Level.Info,\n                    $\"{System.DateTime.Now.ToString(\"MM-dd HH:mm:ss.f\")}:数据库写入出现异常 + 类型{typeof(T)} + {ex.Message}\"\n                    , LogCategory.Global, ViewType.InFileAndUI);\n        }\n    }"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsService.cs",
+      "start": 110,
+      "end": 141,
+      "sha256": "b327f38b5596f4f61d63d85a98d8e5dc3637cf1876764a52c2dddd4db783a094",
+      "snippetSha256": "2d08b122c690d38861b53ec4de6dd76371322717c01d957dc9e6e197a73e31a6",
+      "code": "        public static void SaveEntityToDb()\n        {\n            while (true)\n            {\n                var item = DbEntityBlockingCollection.Take();\n\n                if (item is OperateLogEntity operateLogEntity)\n                {\n                    DBService.Insert(operateLogEntity);\n                }\n                else if (item is DefectStatisticsEntity defectStatisticsEntity)\n                {\n                    DBService.Insert(defectStatisticsEntity);\n                }\n                else if (item is ParameterChangeLogEntity parameterChangeLogEntity)\n                {\n                    Type type = parameterChangeLogEntity.GetType();\n\n                    var attribute = type.GetCustomAttribute<SugarTable>();\n\n                    if (attribute != null)\n                    {\n                        DBService.Insert(parameterChangeLogEntity);\n                    }\n                }\n                else if (item is BondPositionLogEntity bondPositionLogEntity)\n                {\n                    DBService.Insert(bondPositionLogEntity);\n                }\n            }\n        }\n"
+    }
+  ],
+  "checks": [
+    "PASS successful Insert disposes copied client",
+    "PASS command failure is logged and swallowed",
+    "PASS CopyNew failure is caught before insert",
+    "PASS Dispose failure is caught",
+    "PASS logger failure escapes Insert",
+    "PASS four handled types preserve order and generic targets",
+    "PASS temperature object skipped without Insert or warning and next item consumed",
+    "PASS parameter without SugarTable skipped",
+    "PASS failed insert not retried and next item consumed",
+    "PASS client failures consume items without retry",
+    "PASS logger exception escapes consumer before next item",
+    "TOTAL 11"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "archify-transport-whole-action-sdk-current-rebind-v1",
+  "status": "current-whole-action-sdk-rebound",
+  "historicalProgress": "transport-whole-action-sdk-progress.json",
+  "historicalProgressSha256": "e76933b16895daeb38e7a4a82c73227e768417e30bc131b15c9dc82edb436148",
+  "historicalFormalInputSha256": "8ad5c496714145aa3894982dc82c5ed2a49b1d8c3ad2fed68c450382d536ee00",
+  "currentFormalInput": "docs/archify/transport-product-declarations-integration-test.json",
+  "currentFormalInputSha256": "f48660dd0539bf11298fae3f125565ac73d1f06f27aee60341c791a874794c7b",
+  "driftCount": 3,
+  "drifts": [
+    {
+      "file": "docs/archify/transport-product-declarations-integration-test.json",
+      "historicalSha256": "8ad5c496714145aa3894982dc82c5ed2a49b1d8c3ad2fed68c450382d536ee00",
+      "currentSha256": "f48660dd0539bf11298fae3f125565ac73d1f06f27aee60341c791a874794c7b"
+    },
+    {
+      "file": "docs/archify/transport-product-declarations-integration-audit.json",
+      "historicalSha256": "f58b02f71574e00e79da9e00743f7b9e65ce3801a0bd0aaa266ab7ad490bfebc",
+      "currentSha256": "cbb5e16078c25671e420425a8bee70cd5ffe6367e0067b70c7fad7a4c0ad2f2c"
+    },
+    {
+      "file": "docs/archify/bond-config-native-source-test.json",
+      "historicalSha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642",
+      "currentSha256": "01c01b380b6f5025da63f0af23d509cf32b1b9841c7ea2e45516c16dec0e2c52"
+    }
+  ],
+  "checksPerSdkCopy": 278,
+  "sdkCopies": 2,
+  "placements": 556,
+  "wholeOriginalFiles": 54,
+  "compiledSourceUnits": 55,
+  "sourceFragments": 512,
+  "replayExitCodes": [
+    {
+      "tag": "library",
+      "compile": 0,
+      "runtime": 0
+    },
+    {
+      "tag": "bin",
+      "compile": 0,
+      "runtime": 0
+    }
+  ],
+  "historicalSnapshotPreserved": true,
+  "includedInFormal1328Regression": false,
+  "wholeGoalComplete": false
+}

@@ -1,0 +1,134 @@
+{
+  "revision": "7",
+  "tool": "内置 image_gen",
+  "model_version": "内置工具未提供后端模型版本选择或可验证的型号信息；未将输出宣称为指定的 image2.5 模型",
+  "palette": {
+    "ink": "#18364B",
+    "line": "#A8BAC7",
+    "substrate": "#EEF5F0",
+    "island": "#EDF3F8",
+    "target": "#C58737"
+  },
+  "generated": [
+    {
+      "file": "figures/p01-product-map.png",
+      "kind": "AI-generated illustration refined in two edit passes",
+      "prompt": "Use case: scientific-educational. Asset: a publication-ready plate in a serious Chinese software engineering design monograph. Landscape 3:2 at high resolution, pure white background. Precise flat editorial vector-like drawing with no gradients, no shadows, no paper texture, no decorative icons, no machines. Consistent typography resembling Microsoft YaHei, medium weight Chinese labels, generous perfectly even spacing, straight aligned borders of uniform 1.5pt visual weight, square or very subtly rounded corners. Restrained colors: dark navy #18364B text, pale sage #EEF5F0 substrate regions, pale blue #EDF3F8 island regions, warm ochre #D68B32 target circles, soft gray #A8BAC7 outlines. Avoid oversized bold headings, avoid cards/dashboards, avoid English subtitles, do not add any text except the exact requested labels. Leave 6% white safe margin all around. Count correctness and alignment essential. Primary request: REDESIGN the attached logical product diagram in this refined uniform style. Keep exactly one outer Transport Unit boundary, exactly TWO equal substrate regions in one row, each containing exactly THREE equal rectangular islands in one row; each island contains exactly TWO equal circles A and B aligned in a row. Make all six island boxes identical sizes, all twelve targets equal diameter. Exact labels: outer boundary 'Transport Unit'; two region headings '基板 1' and '基板 2'; island headings inside EACH substrate '基岛 1', '基岛 2', '基岛 3'; targets 'A' and 'B'. Highlight A of substrate1 island2 using one subtle thin navy selection ring. Below the main structure place one centered enlarged detail of the selected island, connected by a clean thin straight leader from selected A; detail has '基岛 2', targets A and B, selected A ring. Place a small centered label below the detail exactly '基板 1 / 基岛 2 / 焊点 A'. Keep the main structure in the upper half and enlarged detail in lower third, balanced white gutters. No other footnote or words. The shapes are abstract logical containment, not hardware. Do not omit an island or target.",
+      "first_output": "exec-e3a9f6e9-8657-4b0e-9338-8dfa02d00dc6.png",
+      "edit_prompt": "Edit only the visual finish of this logical product diagram. Preserve every label verbatim, exactly two substrates, exactly three islands per substrate, exactly two A/B targets per island, and the one enlarged detail with selected A. Preserve the strict horizontal and vertical alignment and leader endpoints. Replace ALL gradient fills with completely uniform flat solid fills: outer region #F5F7F9, substrate regions #EEF5F0, island regions #EDF3F8, target circles #C58737. Use dark text #18364B, outline #A8BAC7 with selection ring #315D82. Pure white background. Remove all texture and shaded modeling. Reduce the large Transport Unit heading modestly to fit the typographic hierarchy; keep all other label sizes consistent. Crisp book-quality orthographic diagram. Do not add or remove any objects, labels, symbols or text. No gradients anywhere.",
+      "source_output": "exec-31943f65-a778-4345-a7b9-26d7e22b0ea7.png",
+      "review": "两块基板各含三岛，每岛A/B；只圈选基板1的基岛2之A点，放大详情地址一致；检查边界、标签、配色与对齐",
+      "source_output_absolute": "C:/Users/w/.codex/generated_images/01a1531f-e138-7a22-a483-92de6e23c696/exec-31943f65-a778-4345-a7b9-26d7e22b0ea7.png"
+    },
+    {
+      "file": "figures/p03-config-instance.png",
+      "kind": "AI-generated illustration refined in two edit passes",
+      "prompt": "Use case: scientific-educational. Asset: a publication-ready plate in a serious Chinese software engineering design monograph. Landscape 3:2 at high resolution, pure white background. Precise flat editorial vector-like drawing with no gradients, no shadows, no paper texture, no decorative icons, no machines. Consistent typography resembling Microsoft YaHei, medium weight Chinese labels, generous perfectly even spacing, straight aligned borders of uniform 1.5pt visual weight, square or very subtly rounded corners. Restrained colors: dark navy #18364B text, pale sage #EEF5F0 substrate regions, pale blue #EDF3F8 island regions, warm ochre #D68B32 target circles, soft gray #A8BAC7 outlines. Avoid oversized bold headings, avoid cards/dashboards, avoid English subtitles, do not add any text except the exact requested labels. Leave 6% white safe margin all around. Count correctness and alignment essential. Primary request: REDESIGN the attached configuration-sharing diagram. Show one configuration definition on the left and three independent runtime objects on the right. Exactly ONE simple pale-blue rectangular configuration sheet centered vertically on left, heading '焊点 A 配置', with one ochre crosshair A. Exactly THREE equal rows on right, with equal vertical spacing. Each row has an equal-size pale-blue rectangular island region followed by a separate equal-size neutral record rectangle. Region labels respectively '基岛 1 的 A', '基岛 2 的 A', '基岛 3 的 A', one small crosshair A in each. Record labels respectively '运行信息 1', '运行信息 2', '运行信息 3'. First and third records show one simple entirely hollow gray circle; second record shows one simple muted green check. One clean orthogonal branched connector leaves the configuration sheet and points to all three island regions; label on its horizontal stem exactly '读取同一配置'. A thin short dotted connector connects each island region to its own record. No progress percentage, no cloud shapes, no additional bottom slogan. The three island regions, records, row headings, symbols and connectors must be exactly aligned on a strict grid. Large empty gutters prevent labels touching arrows.",
+      "first_output": "exec-61851eba-fc17-461b-a08d-0c64b68b5479.png",
+      "edit_prompt": "Edit only the color and surface finish of this configuration sharing diagram. Preserve all existing words verbatim, one configuration rectangle, exactly three equal island rectangles and exactly three equal record rectangles, the one-to-three branched connector and three dashed row connectors. Preserve hollow-circle/check/hollow-circle meanings. Replace ALL gradients with perfectly flat uniform fills: configuration and island rectangles #EDF3F8, records #F5F7F9, crosshair targets #C58737, green check #44765B, text #18364B, fine rectangle outlines #A8BAC7, connectors #315D82. Pure white background, no paper texture or shadows. Keep the three row headings, boxes and connector heights exactly aligned, equal row gaps, same corner geometry and stroke weights. Do not add slogans or labels.",
+      "source_output": "exec-d11c0e1f-e7ab-49e8-9858-3129bc916ef1.png",
+      "review": "一份配置、三个等行距运行对象、三份独立记录；空心圆/完成勾/空心圆，不表示百分比；检查各行矩形与连接线的对齐",
+      "source_output_absolute": "C:/Users/w/.codex/generated_images/01a1531f-e138-7a22-a483-92de6e23c696/exec-d11c0e1f-e7ab-49e8-9858-3129bc916ef1.png"
+    }
+  ],
+  "engineering": "概念和物理场景使用内置生图；坐标、时序、接口与算法图保存精确SVG/PNG。图注说明参考系、比例或示意条件。",
+  "assets_sha256": {
+    "p01-product-map.png": "085c71215a2ed14349a1d95cc6794e932b1042402b1b4aafa997c070ab7f4757",
+    "p02-responsibility.png": "a61aa1c1f6ee4f9404f438c5c89ff08849103c8f8ff7404118c42f339467e389",
+    "p03-config-instance.png": "973a1b5e2834b091e7f1caeff83a9149a68374177e040d986406ce5a37c6733d",
+    "p04-work-order.png": "47a67aab64c1084e874cb85ca46a40ef5efd934b1c5175ce924e45ddcbef39aa",
+    "p05-coordinate-chain.png": "642f018c104d2e0a339a9ee30de9816c5cf891977aed53e845ae75ea29746d6b",
+    "p06-coordinate-geometry.png": "6f365580fd30e001f608f4451289b328d8aca7ec85eaa1db482047c5bac273b2",
+    "p07-build-sequence.png": "8ffd01e387a19acc9bc27c151b1c5181a0f37781b4cbda36fbf4f559c2fe8edb",
+    "p08-lifetimes.png": "a82c4d606b9db95ae7dca22ec794b57038130bd2ac4f1a10575ce4886dc2c73b",
+    "p09-handover.png": "62d16862adbc7d8edcf42222ef9223e6918edede3844baaacec938c4718d025b",
+    "p10-progress.png": "4048bdc1133fe21614b4872bb329d153354ed7fea7a862ab82a3040d28502248",
+    "p11-layout-models.png": "e2cd1606fc002f940fe8a86a4503b58aa934f03f374d3c6af63e63075100eb4e",
+    "p12-data-ownership.png": "65f77264e55dfef0e723f1e70c7c640647226182958e6c8d363b2878cc3ef7ce",
+    "p13-entry-conditions.png": "7e2c01c15a21a29704e5d31d8e5372601416ecc46cb7c5a5d824e4c8a1527844",
+    "p14-handover-interruption.png": "035cdde6a3f0c755cfc542a2197fc40dade59eb747e4e9438ac4467bde678c39",
+    "p15-address-resolution.png": "4fb32d8d6e818db8dc51c84ab3cf92ceb163b5efa034e41f5a3f56ad81f53d0f"
+  },
+  "final_assets": [
+    {
+      "file": "figures/p01-product-map.png",
+      "sha256": "085c71215a2ed14349a1d95cc6794e932b1042402b1b4aafa997c070ab7f4757",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p01-product-map.png"
+    },
+    {
+      "file": "figures/p02-responsibility.png",
+      "sha256": "a61aa1c1f6ee4f9404f438c5c89ff08849103c8f8ff7404118c42f339467e389",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p02-responsibility.png"
+    },
+    {
+      "file": "figures/p03-config-instance.png",
+      "sha256": "973a1b5e2834b091e7f1caeff83a9149a68374177e040d986406ce5a37c6733d",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p03-config-instance.png"
+    },
+    {
+      "file": "figures/p04-work-order.png",
+      "sha256": "47a67aab64c1084e874cb85ca46a40ef5efd934b1c5175ce924e45ddcbef39aa",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p04-work-order.png"
+    },
+    {
+      "file": "figures/p12-data-ownership.png",
+      "sha256": "65f77264e55dfef0e723f1e70c7c640647226182958e6c8d363b2878cc3ef7ce",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p12-data-ownership.png"
+    },
+    {
+      "file": "figures/p05-coordinate-chain.png",
+      "sha256": "642f018c104d2e0a339a9ee30de9816c5cf891977aed53e845ae75ea29746d6b",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p05-coordinate-chain.png"
+    },
+    {
+      "file": "figures/p06-coordinate-geometry.png",
+      "sha256": "6f365580fd30e001f608f4451289b328d8aca7ec85eaa1db482047c5bac273b2",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p06-coordinate-geometry.png"
+    },
+    {
+      "file": "figures/p07-build-sequence.png",
+      "sha256": "8ffd01e387a19acc9bc27c151b1c5181a0f37781b4cbda36fbf4f559c2fe8edb",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p07-build-sequence.png"
+    },
+    {
+      "file": "figures/p11-layout-models.png",
+      "sha256": "e2cd1606fc002f940fe8a86a4503b58aa934f03f374d3c6af63e63075100eb4e",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p11-layout-models.png"
+    },
+    {
+      "file": "figures/p16-product-continuity.png",
+      "sha256": "a9270789ff09a79d2b3cb969b15503a32562d399aefce458c19ecf1450a51015",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p16-product-continuity.png"
+    },
+    {
+      "file": "figures/p09-handover.png",
+      "sha256": "62d16862adbc7d8edcf42222ef9223e6918edede3844baaacec938c4718d025b",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p09-handover.png"
+    },
+    {
+      "file": "figures/p10-progress.png",
+      "sha256": "4048bdc1133fe21614b4872bb329d153354ed7fea7a862ab82a3040d28502248",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p10-progress.png"
+    },
+    {
+      "file": "figures/p13-entry-conditions.png",
+      "sha256": "7e2c01c15a21a29704e5d31d8e5372601416ecc46cb7c5a5d824e4c8a1527844",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p13-entry-conditions.png"
+    },
+    {
+      "file": "figures/p15-address-resolution.png",
+      "sha256": "4fb32d8d6e818db8dc51c84ab3cf92ceb163b5efa034e41f5a3f56ad81f53d0f",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p15-address-resolution.png"
+    },
+    {
+      "file": "figures/p14-handover-interruption.png",
+      "sha256": "035cdde6a3f0c755cfc542a2197fc40dade59eb747e4e9438ac4467bde678c39",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p14-handover-interruption.png"
+    },
+    {
+      "file": "figures/p18-mapping-import.png",
+      "sha256": "e8c5a8a58f10a17dc6e7da00ddcbab5bbab50b8ad3ea3538f8b70557de9cd0c3",
+      "absolute_path": "D:/agent_project/code_agent/docs/design/transport-unit/v7/figures/p18-mapping-import.png"
+    }
+  ]
+}

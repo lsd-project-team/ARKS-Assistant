@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "blocks": [
+    { "id": "intro", "type": "text", "content": "## 模块分析\n\n摘要 **结论**。" },
+    {
+      "id": "overview",
+      "type": "overview_grid",
+      "title": "功能入口",
+      "items": [
+        {
+          "id": "engine",
+          "title": "执行引擎",
+          "description": "检查任务并执行。",
+          "icon": "workflow",
+          "source": { "path": "Program.cs", "start_line": 2, "end_line": 2 }
+        }
+      ]
+    },
+    {
+      "id": "flow",
+      "type": "step_flow",
+      "title": "执行流程",
+      "steps": [
+        {
+          "id": "check",
+          "title": "检查条件",
+          "description": "确认前置条件。",
+          "details": "失败时返回，不继续执行。",
+          "sources": [{ "path": "Program.cs", "start_line": 2, "end_line": 2 }]
+        },
+        { "id": "run", "title": "启动任务", "description": "按当前配置执行。" }
+      ]
+    },
+    {
+      "id": "sources",
+      "type": "source_reference",
+      "sources": [{ "path": "Program.cs", "start_line": 2 }]
+    },
+    {
+      "id": "code",
+      "type": "code",
+      "language": "csharp",
+      "filename": "Program.cs",
+      "start_line": 2,
+      "content": "static void Main() {}",
+      "source": { "path": "Program.cs", "start_line": 2 }
+    },
+    {
+      "id": "table",
+      "type": "table",
+      "title": "状态对照",
+      "columns": [
+        { "id": "state", "label": "状态" },
+        { "id": "count", "label": "数量", "align": "right" }
+      ],
+      "rows": [
+        { "id": "idle", "cells": ["空闲", 0] },
+        { "id": "unknown", "cells": ["未知", null] }
+      ]
+    },
+    {
+      "id": "graph",
+      "type": "diagram",
+      "title": "调用关系",
+      "nodes": [
+        { "id": "entry", "label": "入口" },
+        { "id": "worker", "label": "工作方法", "description": "执行任务" }
+      ],
+      "edges": [{ "from": "entry", "to": "worker", "label": "调用" }]
+    },
+    {
+      "id": "details",
+      "type": "collapsible",
+      "title": "补充说明",
+      "blocks": [{ "id": "nested", "type": "text", "content": "这里保留细节。" }]
+    }
+  ]
+}

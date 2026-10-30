@@ -1,0 +1,30 @@
+.modal-content.debug-issue-reference {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(840px, calc(100dvh - 32px));
+}
+
+.debug-issue-reference .modal-heading {
+  flex-shrink: 0;
+}
+
+.debug-issue-reference-body {
+  padding: 0 24px 24px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.debug-issue-reference-meta {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.debug-issue-reference-body > .debug-issue-detail-fields > div:first-child {
+  border-top: 0;
+}
+
+@media (max-width: 600px) {
+  .debug-issue-reference-body {
+    padding: 0 16px 16px;
+  }
+}

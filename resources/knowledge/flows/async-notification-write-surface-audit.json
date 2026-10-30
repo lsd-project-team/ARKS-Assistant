@@ -1,0 +1,786 @@
+{
+  "schema": "archify-async-notification-write-surface-v1",
+  "recordedAt": "2026-10-07T08:26:59.571Z",
+  "scope": "All C# files under BondSystem/Models/ActionNodes. Lexical enumeration of signal/name/helper write surfaces and nearby Task.Run/Task.Factory.StartNew lines; no claim of semantic containment, runtime ordering, or external DLL behavior.",
+  "sourceFiles": 37,
+  "manifestSha256": "91be5bba66e1dfc6660dca493b0d2be9c86e73b6775cefafb0f2fee9005b351a",
+  "sinkPatterns": [
+    {
+      "id": "wafer-name",
+      "family": "wafer",
+      "pattern": "SetCurrentNeedChipName\\s*\\("
+    },
+    {
+      "id": "wafer-signal",
+      "family": "wafer",
+      "pattern": "IsBondNeedChipSignal\\.Set\\s*\\("
+    },
+    {
+      "id": "wafer-helper",
+      "family": "wafer",
+      "pattern": "SendSignalToWaferTable\\s*\\("
+    },
+    {
+      "id": "flip-helper",
+      "family": "flip",
+      "pattern": "SendSignalToFlipTable\\s*\\("
+    },
+    {
+      "id": "slide-finish",
+      "family": "slide-fluxer",
+      "pattern": "BondDipFluxFinishSignal\\.Set\\s*\\("
+    },
+    {
+      "id": "slide-allow",
+      "family": "slide-fluxer",
+      "pattern": "AllowSlideOutSignal\\.Set\\s*\\("
+    }
+  ],
+  "counts": {
+    "records": 54,
+    "byFamily": {
+      "slide-fluxer": 11,
+      "wafer": 41,
+      "flip": 2
+    }
+  },
+  "records": [
+    {
+      "sink": "slide-allow",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "line": 675,
+      "text": "SignalPool.GetInstance().AllowSlideOutSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 665,
+        "text": "private void SendSignalToSlideFluxer()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "line": 680,
+      "text": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 665,
+        "text": "private void SendSignalToSlideFluxer()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-allow",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "line": 683,
+      "text": "SignalPool.GetInstance().AllowSlideOutSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 665,
+        "text": "private void SendSignalToSlideFluxer()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+      "line": 273,
+      "text": "//SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 105,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+      "line": 885,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 788,
+        "text": "private ExcuteResult PickActionDryRun()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 870,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 15
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+      "line": 888,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 788,
+        "text": "private ExcuteResult PickActionDryRun()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 870,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 18
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 72,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 55,
+        "text": "private void PrepareBeforePickAction()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 75,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 55,
+        "text": "private void PrepareBeforePickAction()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 98,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 55,
+        "text": "private void PrepareBeforePickAction()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 101,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 55,
+        "text": "private void PrepareBeforePickAction()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 252,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 146,
+        "text": "private void JudgeAndCleanNozzle()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 255,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 146,
+        "text": "private void JudgeAndCleanNozzle()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 287,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 146,
+        "text": "private void JudgeAndCleanNozzle()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 290,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 146,
+        "text": "private void JudgeAndCleanNozzle()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "flip-helper",
+      "family": "flip",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 571,
+      "text": "private void SendSignalToFlipTable()",
+      "enclosingMethodApprox": {
+        "line": 571,
+        "text": "private void SendSignalToFlipTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-helper",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 633,
+      "text": "private void SendSignalToWaferTable()",
+      "enclosingMethodApprox": {
+        "line": 633,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 643,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 633,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 646,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 633,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 661,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(nextComponentName);",
+      "enclosingMethodApprox": {
+        "line": 633,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "line": 664,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 633,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "line": 426,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 156,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "line": 429,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 156,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "line": 442,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 156,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "line": 445,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 156,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-helper",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "line": 486,
+      "text": "this.SendSignalToWaferTable();",
+      "enclosingMethodApprox": {
+        "line": 156,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 479,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 7
+    },
+    {
+      "sink": "flip-helper",
+      "family": "flip",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "line": 497,
+      "text": "this.SendSignalToFlipTable();",
+      "enclosingMethodApprox": {
+        "line": 156,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 492,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 5
+    },
+    {
+      "sink": "wafer-helper",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.MoveHelper.cs",
+      "line": 954,
+      "text": "this.SendSignalToWaferTable();",
+      "enclosingMethodApprox": {
+        "line": 877,
+        "text": "private ExcuteResult SubstrateCameraCorrectionActionDryRun()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 949,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 5
+    },
+    {
+      "sink": "wafer-helper",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "line": 52,
+      "text": "private void SendSignalToWaferTable()",
+      "enclosingMethodApprox": {
+        "line": 52,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "line": 62,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(this.nextComponentName);",
+      "enclosingMethodApprox": {
+        "line": 52,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "line": 65,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 52,
+        "text": "private void SendSignalToWaferTable()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "line": 467,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(this.component.Name);",
+      "enclosingMethodApprox": {
+        "line": 136,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "line": 470,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 136,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-helper",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "line": 495,
+      "text": "this.SendSignalToWaferTable();",
+      "enclosingMethodApprox": {
+        "line": 136,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 490,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 5
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "line": 658,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(this.component.Name);",
+      "enclosingMethodApprox": {
+        "line": 520,
+        "text": "public override bool IsDoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "line": 661,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 520,
+        "text": "public override bool IsDoWork()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 469,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(nextComponentName);",
+      "enclosingMethodApprox": {
+        "line": 131,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 454,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 15
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 472,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 131,
+        "text": "public override ExcuteResult DoWork()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 454,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 18
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 717,
+      "text": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 619,
+        "text": "private ExcuteResult MoveToUplookPos(BaseCarrierConfig componet, AKRSPoint4D upLookPos)"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1436,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1439,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1522,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1525,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1550,
+      "text": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1555,
+      "text": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-allow",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1558,
+      "text": "SignalPool.GetInstance().AllowSlideOutSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1678,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1681,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1764,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(component.Name);",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1767,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1792,
+      "text": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-finish",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1797,
+      "text": "SignalPool.GetInstance().BondDipFluxFinishSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "slide-allow",
+      "family": "slide-fluxer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 1800,
+      "text": "SignalPool.GetInstance().AllowSlideOutSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1353,
+        "text": "private void CloseLight()"
+      },
+      "nearbyAsyncLaunch": null,
+      "asyncDistance": null
+    },
+    {
+      "sink": "wafer-name",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 2026,
+      "text": "WaferSystemDomain.GetInstance().WaferSubSystemTask.SetCurrentNeedChipName(nextComponentName);",
+      "enclosingMethodApprox": {
+        "line": 1979,
+        "text": "private ExcuteResult UplookActionDryRun()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 2011,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 15
+    },
+    {
+      "sink": "wafer-signal",
+      "family": "wafer",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "line": 2029,
+      "text": "SignalPool.GetInstance().IsBondNeedChipSignal.Set();",
+      "enclosingMethodApprox": {
+        "line": 1979,
+        "text": "private ExcuteResult UplookActionDryRun()"
+      },
+      "nearbyAsyncLaunch": {
+        "line": 2011,
+        "text": "Task.Run("
+      },
+      "asyncDistance": 18
+    }
+  ],
+  "boundaries": [
+    "A helper declaration and its call are both recorded when they match the lexical sink pattern; callers must distinguish them by text and method context.",
+    "nearbyAsyncLaunch is proximity evidence only; it does not prove the sink is inside that delegate or that the returned Task is observed.",
+    "This audit does not execute production tasks, UI, motion, vision, wafer, slide-fluxer, SQL or device I/O."
+  ]
+}

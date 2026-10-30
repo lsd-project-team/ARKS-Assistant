@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Exact extracted seven IsDoWork methods and two dictionary lookup methods; synthetic containers/services/config enums only. No DoWork, production constructors, hardware, vendor DLLs, startup or codec execution.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Module/Matter/BondPosition.cs",
+      "start": 187,
+      "end": 200,
+      "sha256": "bfb7654a6f43f0bb291e2aa4eda0e8fa931fa1b098d50a06d95d1407f5c54454",
+      "snippetSha256": "8a06e7ef4d730567cb468dac3f5d3a8118c5ca3be092d245485cbfa6a6bfd5ff"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "start": 521,
+      "end": 540,
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318",
+      "snippetSha256": "4bb36103225ff11c3bb6469e81c0dda1f3471bd584289fa71d7e7c221b82c525"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "start": 383,
+      "end": 408,
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf",
+      "snippetSha256": "e49259ba5266326c66a49e12d287e80728c5a6d7224968c532688e79ed6127f3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "start": 520,
+      "end": 539,
+      "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+      "snippetSha256": "4bb36103225ff11c3bb6469e81c0dda1f3471bd584289fa71d7e7c221b82c525"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "start": 520,
+      "end": 539,
+      "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+      "snippetSha256": "4bb36103225ff11c3bb6469e81c0dda1f3471bd584289fa71d7e7c221b82c525"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/DipFluxActionNode.cs",
+      "start": 296,
+      "end": 322,
+      "sha256": "b8e26d65d77adbcfdc19ceebceb61d4ee8cbad48eedcd0b2048333ff75bf3758",
+      "snippetSha256": "37cb43f5e1926dce9be294525f4536ff336c6e64d5b6dd13e35033d23c714a8b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs",
+      "start": 354,
+      "end": 373,
+      "sha256": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b",
+      "snippetSha256": "2c947b7836e28fe2bd7f1d77691c7c11d43dc48eb59d0eeb4ba93842b669d25f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseActionNode.cs",
+      "start": 177,
+      "end": 203,
+      "sha256": "9927daeb74059aa3c13c140dd8a86a6b72d29d98ac70299ba4c4b653d33e0b41",
+      "snippetSha256": "3d6ecc4fa3bd3ac749acf761876449b8aeaa3fdc3512fac54ad524f33fd0ff7c"
+    }
+  ],
+  "checks": [
+    "PASS Pick pending step executes",
+    "PASS Bond pending step executes",
+    "PASS Up pending step executes",
+    "PASS Down pending step executes",
+    "PASS Dip pending step executes",
+    "PASS After pending step executes",
+    "PASS S1 pending step executes",
+    "PASS Pick completed step skips",
+    "PASS Bond completed step skips",
+    "PASS Up completed step skips",
+    "PASS Down completed step skips",
+    "PASS Dip completed step skips",
+    "PASS After completed step skips",
+    "PASS S1 completed step skips",
+    "PASS Pick disabled bypasses missing key",
+    "PASS Bond disabled bypasses missing key",
+    "PASS Up disabled bypasses missing key",
+    "PASS Down disabled bypasses missing key",
+    "PASS Dip disabled bypasses missing key",
+    "PASS After disabled bypasses missing key",
+    "PASS S1 disabled bypasses missing key",
+    "PASS Pick enabled missing key throws",
+    "PASS Bond enabled missing key throws",
+    "PASS Up enabled missing key throws",
+    "PASS Down enabled missing key throws",
+    "PASS Dip enabled missing key throws",
+    "PASS After enabled missing key throws",
+    "PASS S1 enabled missing key throws",
+    "PASS Bond rejects non Process entity",
+    "PASS Pick gate does not check EntityState",
+    "TOTAL 30"
+  ]
+}

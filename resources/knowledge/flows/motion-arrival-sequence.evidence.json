@@ -1,0 +1,15 @@
+{
+  "scope": "Every message in the Archify sequence bound to source lines or the hashed compiled assembly IL. DLL evidence is not original C# source or device acceptance.",
+  "messages": [
+    {"id":"issue-axis","anchors":[{"sourceLine":490,"contains":"SendAbsoluteMoveCommand"},{"sourceLine":491,"contains":"SendAbsoluteMoveCommand"},{"sourceLine":811,"contains":"SendAbsoluteMoveCommand"}]},
+    {"id":"wait-array","anchors":[{"sourceLine":495,"contains":"WaitAxesArrival"},{"sourceLine":814,"contains":"WaitAxesArrival"}]},
+    {"id":"wait-one","anchors":[{"method":"waitAxesArrival","offset":"IL_0030","contains":"Axis::WaitForArrival"}]},
+    {"id":"init-entry","anchors":[{"method":"axisWaitForArrival","offset":"IL_0055","contains":"OnEntry"},{"method":"judgeInitOnEntry","offset":"IL_0059","contains":"get_IsInit"}]},
+    {"id":"wait-real","anchors":[{"method":"axisExecutorWaitForArrival","offset":"IL_003b","contains":"WaitInRealPosition"}]},
+    {"id":"vendor-wait","anchors":[{"driver":"ACSAxis::WaitInRealPosition","offset":"IL_0010","contains":"WaitMotionEnd"},{"driver":"ETELAxis::WaitInRealPosition","offset":"IL_000c","contains":"waitWindow"}]},
+    {"id":"driver-result","anchors":[{"method":"axisExecutorWaitForArrival","offset":"IL_0056","contains":"Math::Abs"},{"method":"axisExecutorWaitForArrival","offset":"IL_005b","contains":"2"}]},
+    {"id":"axis-result","anchors":[{"method":"waitAxesArrival","offset":"IL_0039","contains":"ldc.i4.3"},{"method":"waitAxesArrival","offset":"IL_0067","contains":"throw"}]},
+    {"id":"next-axis","anchors":[{"method":"waitAxesArrival","offset":"IL_0071","contains":"List`1<System.Exception>::Add"},{"method":"waitAxesArrival","offset":"IL_0083","contains":"blt.s"}]},
+    {"id":"complete-or-aggregate","anchors":[{"method":"waitAxesArrival","offset":"IL_0093","contains":"AggregateException"},{"method":"waitAxesArrival","offset":"IL_00b0","contains":"throw"},{"method":"waitAxesArrival","offset":"IL_00b1","contains":"ret"}]}
+  ]
+}

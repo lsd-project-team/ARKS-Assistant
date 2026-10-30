@@ -1,23 +1,20 @@
-# 本地保留数据与业务源码。
+trunk/
 /data/
-/trunk/
-/其他模块/
-
-# 本机工具、依赖、构建与临时产物。
-/output/
-/.tools/
+output/
 .venv/
-node_modules/
-__pycache__/
-.pytest_cache/
-.ruff_cache/
-dist/
-build/
-coverage/
+.tools/
+backend/tools/**/bin/
+backend/tools/**/obj/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/node_modules/
+frontend/dist/
+frontend/dist-*/
+# 本地历史参考仓库不作为嵌套 Git 仓库提交。
+其他模块/
 *.log
 *.tsbuildinfo
-
-# 本机配置与密钥。
 .env
 .env.*
 !.env.example

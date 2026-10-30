@@ -1,0 +1,59 @@
+{
+  "date": "2026-09-28",
+  "scope": "Exact asset basenames throughout trunk including bin/obj, excluding symlinks and .git; known project SDK HintPath existence only. No execution/version compatibility test.",
+  "project": "trunk/AKRS.Calibration/AKRS.Calibration.csproj",
+  "projectSha256": "ff05cd7f830c8d51b5cd24015346063cb39c01b45654a6bcaf4c42a499cd160f",
+  "requiredAssetMatches": {
+    "上下相机映射对位_V4.3.0.sol": [],
+    "晶圆台标定转换.prc": [],
+    "邦头标定转换.prc": [],
+    "上视标定转换.prc": [],
+    "点胶标定转换.prc": []
+  },
+  "sdk": [
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/GlobalVariableModuleCs.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VM.AppData.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VM.Controls.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VM.Core.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VM.ModuleControl.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VM.PlatformSDKCS.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VMControls.BaseInterface.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VMControls.Interface.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VMControls.RenderInterface.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/HikVision/VMControls.Winform.Release.dll",
+      "exists": true
+    },
+    {
+      "path": "trunk/AKRS.ZX2200/libs/halcondotnet.dll",
+      "exists": true
+    }
+  ]
+}

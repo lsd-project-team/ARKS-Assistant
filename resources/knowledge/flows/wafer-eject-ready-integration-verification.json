@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-29T16:34:07.123Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-wafer-eject-ready.log",
+    "sha256": "44a48dabbcf8e9643f6ec6f795d388d8e0309ccbeefb149d06ca6e9d50c73434"
+  },
+  "browser": {
+    "log": ".archify-work/browser-wafer-eject-ready.log",
+    "sha256": "5235643e311fd9fee76349e9ebbc3686cbf701969c58eca2a82de3012968eae5",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "e01c4276b0c9ac868703cf01b4a3ad5effcbe3c4085b8a25787bc5d2e32c1b7f",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Original wafer consumer/search/action/Stop with original eject-ready check, ready move, both Z move overloads, carrier getter and Z position property. Axis SDK, coordinate calibration, bank/table collision guards, vision, UI and I/O remain fixtures; no equipment acceptance."
+}

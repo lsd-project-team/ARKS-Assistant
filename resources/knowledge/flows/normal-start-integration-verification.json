@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T02:42:46.641Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-normal-start-integration.log",
+    "sha256": "1cddb30a1327136a87f258cd533804e90c3aa28c53e1fa1d5833845fa730754a"
+  },
+  "specialized": {
+    "checks": 175,
+    "completeMethods": 67,
+    "properties": 19,
+    "enums": 2,
+    "fields": 3,
+    "signalBindings": 3,
+    "auditSha256": "3330c1f62b06f69e056190ab837d696f2fe5e3f4974b873c47c27d44a9ebd3d1",
+    "evidenceSha256": "d2957f0f67aaa5f7ac272202b52675fbc6f1bb6a65166973166e0eab2b88f089"
+  },
+  "browser": {
+    "log": ".archify-work/browser-normal-start-integration.log",
+    "sha256": "1a89176d3256b927c68b59c2c1d7142011d940163d8eb7976c2245872b2fef54",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "f7235bca54750fd91d6627c0762aa4b21e351517949a0706738538fd01982108",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Original complete Machine.Start, PrepareMachineReadyToStart, TransportDomain.StartTask and IsWorking integrated with original wafer Start, search initialization, search/consumer and Stop. Readiness helpers, safe-position calls, file cleanup, other task producers and transport producers remain controlled recording fixtures; original carrier range expressions, configuration replacement, complete search/map/nine initialization and wafer task Start integrated with original position/search/consumer/Stop. Configuration classes, UI dispatcher and map controls, thread naming, point arithmetic, calibration, vision, driver and persistence dependencies remain controlled fixtures; no native UI, actual SDK or equipment acceptance."
+}

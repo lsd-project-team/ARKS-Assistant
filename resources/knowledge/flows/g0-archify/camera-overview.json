@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "相机像素怎样成为 G0 点 · 阅读图",
+    "locale": "zh-CN",
+    "output": "resources/knowledge/flows/g0-archify/camera-overview.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "abadbc51c573732843b579e6c058bc28992298da"
+    },
+    "legend": {
+      "entries": {
+        "external": {
+          "label": "调用者输入"
+        },
+        "backend": {
+          "label": "坐标计算"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "id": "pixels",
+      "type": "external",
+      "icon": "none",
+      "label": "相机像素点",
+      "sublabel": "CenterX / CenterY",
+      "pos": [
+        24,
+        40
+      ],
+      "size": [
+        184,
+        76
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 147,
+          "end_line": 156,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "shot",
+      "type": "external",
+      "icon": "none",
+      "label": "拍照时上层位置",
+      "sublabel": "与这次图像配套",
+      "pos": [
+        504,
+        196
+      ],
+      "size": [
+        184,
+        76
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 147,
+          "end_line": 156,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "calibrate",
+      "type": "backend",
+      "icon": "none",
+      "label": "相机标定变换",
+      "sublabel": "本层 Forward",
+      "pos": [
+        264,
+        40
+      ],
+      "size": [
+        184,
+        76
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 160,
+          "end_line": 169,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "sum",
+      "type": "backend",
+      "icon": "none",
+      "label": "叠加拍照位置",
+      "sublabel": "得到父坐标中的点",
+      "pos": [
+        504,
+        40
+      ],
+      "size": [
+        184,
+        76
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 147,
+          "end_line": 151,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "parent-forward",
+      "type": "backend",
+      "icon": "none",
+      "label": "直接父级变换",
+      "sublabel": "只调用一层 Forward",
+      "pos": [
+        744,
+        40
+      ],
+      "size": [
+        184,
+        76
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 187,
+          "end_line": 196,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "type": "backend",
+      "icon": "none",
+      "label": "G0 目标点",
+      "sublabel": "既定父级配置下",
+      "pos": [
+        744,
+        196
+      ],
+      "size": [
+        184,
+        76
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/features/knowledge/reviews/g0Basics.ts",
+          "line": 187,
+          "end_line": 196,
+          "label": "已提交的源码复核说明"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "pixel-calibrate",
+      "from": "pixels",
+      "to": "calibrate"
+    },
+    {
+      "id": "calibrate-sum",
+      "from": "calibrate",
+      "to": "sum"
+    },
+    {
+      "id": "shot-sum",
+      "from": "shot",
+      "to": "sum"
+    },
+    {
+      "id": "sum-parent",
+      "from": "sum",
+      "to": "parent-forward"
+    },
+    {
+      "id": "parent-result",
+      "from": "parent-forward",
+      "to": "result"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "转换范围",
+      "items": [
+        "只调用直接父级的一层变换；在既定父级配置下得到 G0 点。"
+      ]
+    }
+  ]
+}

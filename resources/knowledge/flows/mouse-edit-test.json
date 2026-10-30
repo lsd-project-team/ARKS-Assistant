@@ -1,0 +1,132 @@
+{
+  "status": "passed",
+  "checks": 27,
+  "cases": [
+    "first click selects and up does not insert",
+    "second click inserts off-segment using defaults",
+    "snapped point differs from event mouse coordinates",
+    "insert SetMode skips base reset",
+    "Shift disables enabled snap",
+    "Shift plus Control does not enable default-disabled snap",
+    "right click cancels selection",
+    "insert uses cached curve",
+    "insert callback failure after mutation and reset before invalidate",
+    "erase up miss retains candidate",
+    "later outside down and inside up deletes stale candidate",
+    "different up endpoint retains candidate",
+    "erase callback failure leaves deletion and stale index",
+    "repeated up after failure deletes shifted endpoint",
+    "erase SetMode calls base reset",
+    "exact left outer edge fails to start scale",
+    "right button starts scale",
+    "move without pressed button scales using global ratio",
+    "right up ends scale",
+    "Shift scales both axes",
+    "translated same drag changes scale ratio",
+    "InvalidOperation stops holding",
+    "other exception escapes keeping holding",
+    "retry uses failed event previous position",
+    "missing curve release fails before holding reset",
+    "zero previous coordinate passes infinite factor to control",
+    "Shift plus Control does not enable proportional scaling"
+  ],
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Curve.cs",
+      "sha256": "74496920c0c0eb56859d34175ccf1b41149cf12da12b0af11bb96c094e3db9c4"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Utility.cs",
+      "sha256": "ac7e04d63488b95101cfb55d9dd5e64a2068857fda392f9df0946bf8b040aac7"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Point2D.cs",
+      "sha256": "d7a61de58fa876768c7629bf345df13e96d1d9277a39854b5a88a637ac69f491"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Endpoint.cs",
+      "sha256": "9e2eeb018edc8f105159bc4f9768d594875aa271cebd30b8bd7b112561edab7b"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointUnit.cs",
+      "sha256": "0eac9026e89d5c3043e48493e0f5112dbb96e4200c32f117b49ac35c7acc60f3"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointSetting.cs",
+      "sha256": "f916969e89df6c9dfb1f1767d26445bd032cd908213b0b4cb2165cf68f72c1ad"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointFlags.cs",
+      "sha256": "5f3176108a14a0733075079db905f223ff37682dbf6922b9831f91afc7238720"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEPointData.cs",
+      "sha256": "35e2139336b5c93da463b0d10f2e4f3605059c7055a0d3fe29ff4e01db76d783"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PaintingToolSet.cs",
+      "sha256": "10bfcfca01d2b9e3cd04026076b1ce8e09dc9945df41a01edee4b1d50203a579"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Vector.cs",
+      "sha256": "46a0ba12a0e3dd2ac82b80306ba0acc7c9e5ff3dd770fc3aadef235b5cf6ac54"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/PointAndRectangleRelation.cs",
+      "sha256": "dca647da7b67ac1c651423dbd842139e16f80d25add0ae53326e2b35aa5e69ed"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/ActionHandler.cs",
+      "sha256": "482c32d1637430467dcac77c21a79f9880569e3bc176df3506b99f0cc9b2ecb0"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Circle.cs",
+      "sha256": "c7c7be437fc8e8f63a052a6847788426a3e3f31c95ee75ea69ab2f921057ccf6"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/InsertPointHandler.cs",
+      "sha256": "42231a4858c73d65a442bfae83d1982ed3565c883239f2fa095a2b776c1b8899"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/ErasePointHandler.cs",
+      "sha256": "b38ca69ae54b252bb292ad5aee730383c69321c90212b4aafca0ae0f99236a17"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/AffineTransformCurveHandler.cs",
+      "sha256": "dd48a6e0fda9dca2d35cb8c70fcb0e1e17b42c1ce99227cc5970799beeb2bcd3"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/ScaleCurveHandler.cs",
+      "sha256": "2c7c704906a348e68ad2382b783dc0df5aca5b982c6644532b904d7110fd83cc"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/EndpointEventArgs.cs",
+      "sha256": "1a77ccecb40d7ecaadb57157e171c1e2aa535eb75127df10d4e7331dec6ed7e1"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/EndpointInsertedEventArgs.cs",
+      "sha256": "f5044cc1342a90134097ecaf439620f1d940899c63b6744abb7eee1330a636c9"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/EndpointDeletedEventArgs.cs",
+      "sha256": "cc002e5989df604c525a1d4168e578fc45d83cf40551077221d3bca57ee8858f"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/ScaleChangedEventArgs.cs",
+      "sha256": "03677851d56f59230801a89e972f572b1e550f8316deee2460a3b53256845987"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EventArgs/LogicalCoordinateSystemOriginChangedEventArgs.cs",
+      "sha256": "6545464b9700a5d5151c378fb51d8de7b6cd94e4e8410e1d1edcfc9796417670"
+    },
+    {
+      "file": "scripts/mouse-edit-harness.cs",
+      "sha256": "d775ca851e3cba97b19912f3614787bf367b00afefc4b27831789981eba040a6"
+    },
+    {
+      "file": "scripts/test-mouse-edit.ps1",
+      "sha256": "b2db0d85774af2df94caca68d54f632e2a128af396f4f587866bee36cf873dfd"
+    }
+  ],
+  "scope": "22 unchanged original source files including three complete mouse handlers and base classes, real Curve and System.Drawing matrix; control/event-dispatch/Forms stubs with identity coordinate conversion. Direct event sequences and injected callback failures, not actual UI reachability or original Framework product acceptance."
+}

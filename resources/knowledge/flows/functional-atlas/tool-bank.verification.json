@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "tool": "Archify",
+  "toolVersion": "3.2.0",
+  "repository": {
+    "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+    "revision": "a1a4e5f18061568c7c03dd8d0e1e59631e62b9c9",
+    "link_mode": "local-only"
+  },
+  "sourceReview": "docs/development/zx2200-tool-bank-review.md",
+  "evidenceSource": "Pinned references use the committed source review. Original trunk hashes and exact ranges are bound in frontend/scripts/knowledge/source-evidence.json.",
+  "diagrams": [
+    {
+      "id": "tool-change-overview",
+      "type": "architecture",
+      "specification": {
+        "path": "tool-change-overview.json",
+        "sha256": "da40b3cefd0664c8c7c646cb1c1938443b687255193c2b0a7420e271ea118a70"
+      },
+      "artifact": {
+        "path": "tool-change-overview.html",
+        "sha256": "d6ced45d4afdb494c3b6dd9ddb5c689d6aba378753bddef36e0a299da0d9ddeb"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "receipt": "output/functional-atlas/tool-bank/tool-change-overview/review-1/tool-change-overview.finalize.json"
+    },
+    {
+      "id": "tool-change-reading",
+      "type": "architecture",
+      "specification": {
+        "path": "tool-change-reading.json",
+        "sha256": "8dc83635f4a7d28a2a20879c8df5d3de3691fba24c6f467dd521ff01158f5c27"
+      },
+      "artifact": {
+        "path": "tool-change-reading.html",
+        "sha256": "fd9865c5fd35b55dd22d527960c8cd6886460bf2d45027328b330f5f722c557a"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "receipt": "output/functional-atlas/tool-bank/tool-change-reading/review-1/tool-change-reading.finalize.json"
+    }
+  ],
+  "readingReview": {
+    "status": "pass",
+    "scope": "现有阅读页中的无脚本SVG副本；保留全部9节点和9条关系，普通页面滚动，无图内缩放/拖动。",
+    "desktop": {
+      "height": 474,
+      "nodes": 9,
+      "pageOverflow": false,
+      "projectedPrimaryFont": 18,
+      "source": "functional-atlas/tool-change-overview.html",
+      "width": 938
+    },
+    "narrow": {
+      "hostIframeWidth": 497,
+      "method": "同源检查页实际截图目视，未单独采集内部iframe运行时尺寸"
+    },
+    "screenshots": [
+      "output/functional-atlas/tool-bank/change-wide.png",
+      "output/functional-atlas/tool-bank/change-narrow.png",
+      "output/functional-atlas/tool-bank/status-wide.png",
+      "output/functional-atlas/tool-bank/status-narrow.png",
+      "output/functional-atlas/tool-bank/persistence-wide.png",
+      "output/functional-atlas/tool-bank/persistence-narrow-top.png"
+    ]
+  },
+  "embeddedTopicReview": {
+    "topic": "tool-bank",
+    "catalog": "tool-bank-process",
+    "flowCount": 11,
+    "nodeCount": 47,
+    "checkedNodes": 47,
+    "nodeCheckFile": "output/functional-atlas/tool-bank/node-checks.json",
+    "catalogCheckFile": "output/functional-atlas/tool-bank/catalog-entry.ax.txt",
+    "statusTableRows": 4,
+    "persistenceTableRows": 6,
+    "finalShortLabelsRechecked": true
+  }
+}

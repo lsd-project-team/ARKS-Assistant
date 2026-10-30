@@ -1,0 +1,33 @@
+{
+  "generator": "Archify 3.2.0",
+  "artifact": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\lightness-calibration.html",
+    "sha256": "7afb12ac4c962fb44959836d203cbafcf119af566b3cf5f8b27b4ca2e545c3c2",
+    "bytes": 814806
+  },
+  "specification": {
+    "path": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\lightness-calibration.json",
+    "sha256": "900f2867b4ef02e1da33e42055e9ce751a4ef713505bfa0b0bfa7db2b80eafd8",
+    "bytes": 3863
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "source": "Committed review at pinned revision; exact cited lines are unchanged by the appended hardware-refresh review. Source ranges separately fingerprinted against read-only trunk.",
+  "manualReview": {
+    "page": "/#topic/lightness",
+    "widths": [
+      1280,
+      497
+    ],
+    "readingCopy": true,
+    "nodesSwitched": 28,
+    "nodeHeadingsVerified": 28,
+    "diagramZoomOrPan": false,
+    "scope": "All seven acquisition nodes inspected, including Done starting background work and all pairs returning before Save. Five-row hardware table also inspected at 497px."
+  }
+}

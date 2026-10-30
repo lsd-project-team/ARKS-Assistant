@@ -1,0 +1,570 @@
+{
+  "status": "passed",
+  "checks": 63,
+  "cases": [
+    "actual loaded nonpositive batch passes original process and environment gates 0/0/0",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts 0/0/0",
+    "actual loaded nonpositive batch passes original process and environment gates 0/0/1",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts 0/0/1",
+    "actual loaded nonpositive batch passes original process and environment gates 0/1/0",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts 0/1/0",
+    "actual loaded nonpositive batch passes original process and environment gates 0/1/1",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts 0/1/1",
+    "actual loaded nonpositive batch passes original process and environment gates -3/0/0",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts -3/0/0",
+    "actual loaded nonpositive batch passes original process and environment gates -3/0/1",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts -3/0/1",
+    "actual loaded nonpositive batch passes original process and environment gates -3/1/0",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts -3/1/0",
+    "actual loaded nonpositive batch passes original process and environment gates -3/1/1",
+    "original Start reaches guarded nonpositive helper after Working and three earlier task starts -3/1/1",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 0/0",
+    "successful startup invokes remaining tasks then both vacuum checks 0/0",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 0/1",
+    "successful startup invokes remaining tasks then both vacuum checks 0/1",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 1/0",
+    "successful startup invokes remaining tasks then both vacuum checks 1/0",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 1/1",
+    "successful startup invokes remaining tasks then both vacuum checks 1/1",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 2/0",
+    "successful startup invokes remaining tasks then both vacuum checks 2/0",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 2/1",
+    "successful startup invokes remaining tasks then both vacuum checks 2/1",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 3/0",
+    "successful startup invokes remaining tasks then both vacuum checks 3/0",
+    "real loaded positive batch executes original sorting with four dispense and four inspection nodes 3/1",
+    "successful startup invokes remaining tasks then both vacuum checks 3/1",
+    "batch disabled replaces zero with geometry count 0/0",
+    "batch disabled replaces zero with geometry count 0/1",
+    "batch disabled replaces zero with geometry count 1/0",
+    "batch disabled replaces zero with geometry count 1/1",
+    "module or bond position priority does not call batch helper 2/0",
+    "module or bond position priority does not call batch helper 2/1",
+    "module or bond position priority does not call batch helper 3/0",
+    "module or bond position priority does not call batch helper 3/1",
+    "compensation mode still reaches sorting after Working but skips transport wafer and S1 starts",
+    "upstream false gate prevents state and tasks Tasks.Closed",
+    "upstream false gate prevents state and tasks Machine.Initialized",
+    "upstream false gate prevents state and tasks Wafer.Ready",
+    "upstream false gate prevents state and tasks BondProgram.Ready",
+    "upstream false gate prevents state and tasks ToolBank.Ready",
+    "upstream false gate prevents state and tasks S1.Ready",
+    "upstream false gate prevents state and tasks Product.Ready",
+    "upstream false gate prevents state and tasks Bp.Ready",
+    "upstream false gate prevents state and tasks pre-dispense",
+    "not reset stops after cleanup and signal reset before logging",
+    "open safe door stops before safe movement and tasks",
+    "already working prevents duplicate start after initialization checks",
+    "safe move exception propagates before environment checks and task starts",
+    "wafer start exception leaves Working and earlier transport invocation without later starts",
+    "bond start exception follows completed sorting and skips later actions",
+    "first vacuum check exception occurs after starts and skips second check",
+    "empty process differs between original CheckIsReady and IsEnableToWork",
+    "active S2 self check rejects empty steps after head vacuum invocation",
+    "disabling S2 self check lets empty process start bond task with empty queue",
+    "unknown loaded sort mode passes gates and starts bond with empty queue",
+    "invalid process index is rejected at final process gate",
+    "S1 readiness still called when S1 hardware flag suppresses motion and task"
+  ],
+  "boundaryTraces": {
+    "0/0/0": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:0"
+    ],
+    "0/0/1": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:0"
+    ],
+    "0/1/0": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:0"
+    ],
+    "0/1/1": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:0"
+    ],
+    "-3/0/0": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:-3"
+    ],
+    "-3/0/1": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:-3"
+    ],
+    "-3/1/0": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:-3"
+    ],
+    "-3/1/1": [
+      "Files.Clean",
+      "Signals.Reset",
+      "Log.Ready",
+      "Tasks.Closed",
+      "Defects.Reset",
+      "Machine.Initialized",
+      "Machine.IsWorking",
+      "S1.Safe",
+      "S2.Safe",
+      "Wafer.Ready",
+      "Head.Vacuum",
+      "BondProgram.Ready",
+      "ToolBank.Ready",
+      "S1.Ready",
+      "Product.Ready",
+      "Bp.Ready",
+      "State.Working",
+      "Transport.Start",
+      "Wafer.Start",
+      "S1.Start",
+      "batch:2:-3"
+    ]
+  },
+  "sources": [
+    {
+      "file": "scripts/test-startup-config.cjs",
+      "sha256": "82a1a0c18553347a3673d52c6452dfe246c2a65ff9a4ffdc77d24446c6f78787"
+    },
+    {
+      "file": "scripts/test-startup-config.ps1",
+      "sha256": "3e16052942e1e753b96ffbdda4044f40c1c2942bdac5085958eb5c64c1fd51da"
+    },
+    {
+      "file": "scripts/run-startup-config-framework.ps1",
+      "sha256": "f76d6d3ac84575ca3b62141f781e8004fba92118a222991e6efdc28f3346e19f"
+    },
+    {
+      "file": "scripts/startup-config-harness.cs.txt",
+      "sha256": "fc774ddc6986355e7d7ba7d0ce266ca644c5489cae2bcfee468c970bf4a9c361"
+    },
+    {
+      "file": "scripts/action-sort-source.cjs",
+      "sha256": "4d846f0df2955244556edee9574078369bce21c6000f46dbba77974be3309db9"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/SystemProcess.cs",
+      "sha256": "2ed449868ac80179dde495fdaa18994b47d0b31928ebe3c6a39f6c8ad02b41ec"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Models/CommonModels/ActionNodeMessage.cs",
+      "sha256": "dd202801af33c493c6c7a0df11611020ca84ebd859a222b6bcfbaf7df2c66161"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/libs/Newtonsoft.Json.dll",
+      "sha256": "b624949df8b0e3a6153fdfb730a7c6f4990b6592ee0d922e1788433d276610f3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Base.dll",
+      "sha256": "a4b8b8696d3a3f9f00b78de847a7319a9f2dc12ddcab7084269151b4148591a7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll",
+      "sha256": "f75452133ba809255061210eafc861b576c0fe8b553a983575934fe3d19892eb"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed",
+      "file": "trunk/AKRS.ZX2200/libs/Newtonsoft.Json.dll"
+    },
+    {
+      "name": "AKRS.Base, Version=1.1.7.0, Culture=neutral, PublicKeyToken=null",
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Base.dll"
+    },
+    {
+      "name": "AKRS.Galaxy2.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "file": "trunk/AKRS.ZX2200/libs/AKRS.Galaxy2.Infrastructure.dll"
+    }
+  ],
+  "binaryMethods": [
+    {
+      "type": "AKRS.Galaxy2.Infrastructure.CommonModel.Singleton`1",
+      "method": "T GetInstance()",
+      "ilBytes": 96,
+      "ilSha256": "72705860c2afdc75358b841c80e53d34e3eb59bbabda62aa18f5dce7b496311d",
+      "assembly": "AKRS.Galaxy2.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "type": "AKRS.Galaxy2.Infrastructure.CommonModel.Singleton`1",
+      "method": "Void Load()",
+      "ilBytes": 73,
+      "ilSha256": "33c6290c165805f1afac260b5a344208fa5674c33176991480dd430f1fcdec4a",
+      "assembly": "AKRS.Galaxy2.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "type": "AKRS.Galaxy2.Infrastructure.CommonModel.Singleton`1",
+      "method": "Void Save()",
+      "ilBytes": 50,
+      "ilSha256": "e6fba0d462803b58ea24f2f21704477ec68518e8a227ea8745730251b2f83e0c",
+      "assembly": "AKRS.Galaxy2.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    }
+  ],
+  "runtime": "4.0.30319.42000",
+  "scope": "Actual Singleton and project JSON DLLs, original process gates, Machine preparation/environment/start, S2 readiness and sorting methods. Hardware, task bodies and business dependencies are fixtures. Instrumented batch helper delegates safe inputs to original code and stops nonpositive batches before the nonterminating loop. No device or actual concurrent tasks.",
+  "extractedMembers": [
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "signature": "public enum WorkProcessEnum",
+      "start": 379,
+      "end": 404,
+      "fileSha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "a678df1ed8601b336eca75e295bbfc5d322201398f704317786260a6f6ffbffb"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "signature": "public enum WorkProcessModuleEnum",
+      "start": 409,
+      "end": 422,
+      "fileSha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "700b8f39de75a84396212e66a71f2aa0f8153275cc7dc49896913f0db596d618"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "signature": "static ProcessDomain()",
+      "start": 29,
+      "end": 32,
+      "fileSha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "5be3eec214ed25aabc0e6205db3620b73e97aba26c191e811d098b58bbbd5f56"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "signature": "public void InitProcessProgram()",
+      "start": 37,
+      "end": 41,
+      "fileSha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "dfa465fbdfe70b1f6203a88f87884c2816d518ad56df2fb23cd6d0c7baa73612"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "signature": "public bool CheckIsReady()",
+      "start": 179,
+      "end": 252,
+      "fileSha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "676e090383d973ac0bacfdb7a43fd5797059a53df39cd143e05cb376d7cd9454"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/ProcessDomain.cs",
+      "signature": "public bool IsEnableToWork(string useName)",
+      "start": 58,
+      "end": 173,
+      "fileSha256": "2a2c355b81ccf73232435d0fb3fd323d041a0933b90090c2de069b15cf0182f4",
+      "snippetSha256": "6101c61a340cdcec3a438fade115cae48b1aea2734021b56ea01cfe5c1914529"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "signature": "public bool CheckOperatingEnvironment()",
+      "start": 89,
+      "end": 128,
+      "fileSha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+      "snippetSha256": "23c8c452788d43a67379f76fc2b74d99d83b2faf463c3c2316ce0e61af334e76"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "signature": "private bool PrepareMachineReadyToStart()",
+      "start": 185,
+      "end": 256,
+      "fileSha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+      "snippetSha256": "99b047c5661627a5ee1c5c930e020587b2f4de19f54a416e56d46fed978d5999"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "signature": "public void Start()",
+      "start": 261,
+      "end": 309,
+      "fileSha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+      "snippetSha256": "176cc95979f4cde7f44fd37caee560985b79441c15d245bbe417f52482d421ec"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "public bool SelfCheck()",
+      "start": 1359,
+      "end": 1404,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "07dadc17f63735144b2c52e5e9ba81458577b1c2c7e2bf493ad90ed2d959dc9f"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "signature": "public bool CheckIsReady()",
+      "start": 594,
+      "end": 771,
+      "fileSha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "snippetSha256": "9f9c9c160bd2e1e07109cb50f53146320f1e51d583ea0f76e07b94ff0cf5262d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "public void Init()",
+      "start": 155,
+      "end": 175,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "101e7ceb91755c24dc9e14df1db3004e47553be8a1281df30302dd087a6997e6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private int GetSubstrateCount()",
+      "start": 134,
+      "end": 139,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "c7cb6bd5aa24eec4a4b6f2fd3c3bbbab499eb0e09b8d0f40b369a75e0cb66e81"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private int GetModuleCount()",
+      "start": 145,
+      "end": 150,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "a540f7d104fb769e0e481019a4876a040571c1990974e8bfa1b87010bc5323c6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortActionNodeByModule(WorkProcessEnum workProcess, WorkProcessModuleEnum workProcessModule)",
+      "start": 182,
+      "end": 234,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "bf33ca78b7b4e98fa012fd46dc073ce125176c9b51209f105199dc3c00b900df"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private List<ActionNodeMessage> GetActionNodeMessageByProcess(SingleProcessStep singleProcess, int substrateIndex, int moduleIndex)",
+      "start": 715,
+      "end": 875,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "1320e3418de0c79a87a13b3b0181bae03ca792f125c31d5dc1ddcecb17f80b55"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private List<SingleProcessStep> GetWorkBondPosition()",
+      "start": 881,
+      "end": 885,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "57a037a75d587a9fa30203dc991100a492fe418d22633839c8bdf03cda7017b2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "public void RemoveOtherStep()",
+      "start": 1498,
+      "end": 1548,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "bae9f09a90e402224c13f10f414e1baf156f3c7cf7a2d016dde6f6ef2fee8564"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortTransportFirsAndStepFirst()",
+      "start": 241,
+      "end": 313,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "42b0070404343dac630d52ad46f583a9edafb3017bff2adc355b15446c4e112e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortTransportFirsAndPositionFirst()",
+      "start": 318,
+      "end": 390,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "34455d1564be24c707a9fae00412e487a8c841bee87e29a31f63742bdfe90ae7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortSubstrateFirsAndStepFirst()",
+      "start": 395,
+      "end": 458,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "e7db656e8fdcc825cdfe936f969d709920cd8ded6e6bdd8e8832784fb04a6e39"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortSubstrateFirsAndPositionFirst()",
+      "start": 463,
+      "end": 520,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "67502f0e4fd5d09346611bbf6c211de5dfa2ec3b1d98330de95cc45970305527"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortModuleFirsAndStepFirst()",
+      "start": 525,
+      "end": 568,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "7b9b95ad9d6017522c64ee6ef5c9e0461dbfc284e9e9c889bacbe107a05b4184"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortModuleFirsAndPositionFirst()",
+      "start": 573,
+      "end": 611,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "e788fa9846303a2879cee445a910cc807978c892262a5e0f75aac3e293719e79"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortBondPositionFirsAndStepFirst()",
+      "start": 616,
+      "end": 659,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "bfec4bdcacb4d4989f6e361395da429b683094f983abe469731c0c2e3c2c48b3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void SortBondPositionFirsAndPositionFirst()",
+      "start": 664,
+      "end": 704,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "c4ae9a35c65568efec335816e6ee341e6babb0df78fea5784bf409c1fa8a822e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "private void RemoveDisableActionNode()",
+      "start": 1554,
+      "end": 1628,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "7c8a81cdcba0fed3e7b5571c089ed5b4eb2efee955f72176b5581108f07ec35b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S2ActionNodeController.cs",
+      "signature": "public void SortRelativeBond()",
+      "start": 1440,
+      "end": 1493,
+      "fileSha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "snippetSha256": "367756d9418b8a144b3062ddc57482feacdd3be142c2e9613b100e5d7f128077"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/MathHelper.cs",
+      "signature": "public static List<List<int>> GetCycleList(int totalNumber, int cycleNumber)",
+      "start": 575,
+      "end": 595,
+      "fileSha256": "3464a656b445ac169a721e9b2dd27a129daa1b03c7a2c926483369ef116dea7c",
+      "snippetSha256": "3cd3e6f01ce70b9563fc765b6675ccd5761487f22860e2f85ab5f19a1a3f0d88"
+    }
+  ]
+}

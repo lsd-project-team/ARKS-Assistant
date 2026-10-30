@@ -1,0 +1,212 @@
+/* 拖动即时预览；宽度边界由分隔条计算，收起动画独立裁切内容。 */
+.app-shell.legacy-visual:not(.sidebar-collapsed),
+.app-shell.legacy-visual.sidebar-collapsed {
+  --navigation-target-width: var(--navigation-width, 252px);
+  grid-template-columns:
+    var(--drag-navigation-width, var(--motion-navigation-width, var(--navigation-target-width)))
+    minmax(0, 1fr);
+}
+.app-shell.legacy-visual.sidebar-collapsed {
+  --navigation-target-width: 68px;
+}
+.app-shell .app-navigation .nav-copy {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-navigation[data-compact='false'] .workspace-brand {
+  padding-right: 36px;
+}
+.app-navigation .workspace-brand .nav-copy {
+  flex: 1;
+}
+.app-navigation .workspace-brand strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-navigation .sidebar-views button {
+  min-width: 0;
+  white-space: nowrap;
+}
+.app-navigation .navigation-tools > button {
+  min-width: 0;
+}
+/* 过渡期间保留展开内容的排版宽度，外层逐渐裁切，避免逐帧重新换行。 */
+.app-shell[data-layout-moving] .app-navigation[data-compact='false'] > :not(.navigation-divider) {
+  min-width: 188px;
+}
+.app-shell[data-resizing] .app-navigation,
+.app-shell[data-resizing] .workspace-brand {
+  transition: none;
+}
+.composer-tools {
+  flex: 1;
+}
+.composer-tools .model-picker {
+  max-width: 100%;
+  flex: 0 1 auto;
+}
+.composer-tools > .attach-file,
+.composer-send-actions {
+  flex-shrink: 0;
+}
+.app-shell .app-navigation {
+  transition: padding 220ms ease-out;
+}
+.app-shell .workspace-brand {
+  transition: padding 220ms ease-out;
+}
+.app-shell .nav-copy,
+.app-shell .navigation-conversations {
+  transition: opacity 140ms ease-out;
+}
+.app-shell.sidebar-collapsed .nav-copy,
+.app-shell.sidebar-collapsed .navigation-conversations {
+  opacity: 0;
+  pointer-events: none;
+}
+.app-shell[data-layout-moving].sidebar-collapsed .app-navigation {
+  padding: 24px 10px 16px;
+}
+.app-shell[data-layout-moving].sidebar-collapsed .workspace-brand {
+  padding: 0;
+}
+.app-shell[data-resizing='navigation'] .navigation-divider::after {
+  background: var(--text-secondary);
+}
+.app-shell[data-explorer-open='false'] .file-explorer {
+  width: 0;
+  max-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.app-shell[data-explorer-open='false'] .source-workspace > .file-divider,
+.source-closed .workspace-main > .pane-divider {
+  width: 0;
+  pointer-events: none;
+}
+.app-shell[data-layout-moving] .file-explorer,
+.app-shell[data-resizing='files'] .file-explorer {
+  width: var(--drag-file-width, var(--motion-file-width));
+  max-width: none;
+  min-width: 0;
+  overflow: hidden;
+}
+/* 临近收起时裁切工具栏，避免文字挤成多行造成高度跳变。 */
+.app-shell[data-layout-moving] .file-explorer > :not(.search-box),
+.app-shell[data-resizing='files'] .file-explorer > :not(.search-box) {
+  min-width: 160px;
+}
+.app-shell[data-layout-moving] .file-explorer > .search-box,
+.app-shell[data-resizing='files'] .file-explorer > .search-box {
+  min-width: 140px;
+}
+.app-shell[data-layout-moving] .chat-pane,
+.app-shell[data-resizing='chat'] .chat-pane {
+  flex: 0 0 auto;
+  width: var(--drag-chat-width, var(--motion-chat-width, var(--chat-width)));
+}
+.app-shell[data-layout-moving] .source-workspace,
+.app-shell[data-resizing='chat'] .source-workspace {
+  flex: 1;
+}
+.app-shell[data-resizing='files'].code-closed .source-workspace {
+  flex: 0 0 var(--drag-file-width);
+}
+@media (min-width: 801px) {
+  .app-shell[data-layout-moving] .code-pane {
+    min-width: 320px;
+  }
+  .app-shell.source-closed .source-workspace {
+    flex: 0 0 0;
+  }
+  .app-shell[data-layout-moving].source-closed .source-workspace {
+    flex: 1;
+  }
+  .app-shell[data-layout-moving] .chat-scroll {
+    padding-inline: 0;
+    scrollbar-gutter: stable both-edges;
+  }
+  .app-shell[data-layout-moving] .chat-content {
+    width: var(--motion-content-width);
+    max-width: var(--chat-reading-width);
+    min-width: 0;
+    margin-inline: 0;
+    margin-left: var(--motion-content-offset);
+  }
+  .app-shell[data-layout-moving] .composer-area,
+  .app-shell[data-layout-moving] .branch-origin {
+    width: var(--motion-composer-width);
+    max-width: var(--chat-reading-width);
+    min-width: 0;
+    margin-inline: 0;
+    margin-left: var(--motion-composer-offset);
+    padding-inline: var(--motion-composer-inset);
+    align-self: flex-start;
+  }
+}
+/* 桌面并排时把文件栏下限纳入源码区预算，不能互相挤占阅读空间。 */
+@media (min-width: 1101px) {
+  .app-shell[data-explorer-open='true']:not(.code-closed) .workspace-main {
+    --workspace-min-width: 481px;
+  }
+}
+@media (max-width: 1100px) {
+  .app-shell.legacy-visual:not(.sidebar-collapsed),
+  .app-shell.legacy-visual.sidebar-collapsed {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+  .app-shell.legacy-visual .app-navigation {
+    position: fixed;
+    inset: 0 auto 0 0;
+    height: 100dvh;
+    z-index: 50;
+    width: var(
+      --drag-navigation-width,
+      var(--motion-navigation-width, var(--navigation-target-width))
+    );
+  }
+  .app-shell[data-layout-moving] .source-workspace > .file-divider,
+  .app-shell[data-resizing='files'] .source-workspace > .file-divider {
+    right: var(--drag-file-width, var(--motion-file-width));
+  }
+  .app-shell[data-layout-moving] .source-workspace .code-heading,
+  .app-shell[data-resizing='files'] .source-workspace .code-heading {
+    padding-right: var(--drag-file-width, var(--motion-file-width));
+  }
+  .app-shell[data-layout-moving] .source-workspace .file-toolbar,
+  .app-shell[data-resizing='files'] .source-workspace .file-toolbar {
+    padding-right: calc(8px + var(--drag-file-width, var(--motion-file-width)));
+  }
+}
+@media (max-width: 800px) {
+  .app-shell[data-layout-moving] .source-workspace .file-toolbar {
+    padding-right: calc(5px + var(--motion-file-width));
+  }
+}
+/* 中等窗口保留展开导航的真实宽度，项目页和聊天不会被侧栏遮挡。 */
+@media (min-width: 801px) and (max-width: 1100px) {
+  .app-shell.legacy-visual:not(.sidebar-collapsed),
+  .app-shell.legacy-visual.sidebar-collapsed {
+    grid-template-columns:
+      var(--drag-navigation-width, var(--motion-navigation-width, var(--navigation-target-width)))
+      minmax(0, 1fr);
+  }
+  .app-shell.legacy-visual .app-navigation {
+    position: relative;
+    inset: auto;
+    width: auto;
+    box-shadow: none;
+  }
+}
+@media (max-width: 700px) {
+  .app-shell.legacy-visual:not(.sidebar-collapsed),
+  .app-shell.legacy-visual.sidebar-collapsed {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+  .app-shell.legacy-visual.sidebar-collapsed {
+    --navigation-target-width: 56px;
+  }
+}

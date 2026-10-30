@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "9658e5b4-bb4c-4f0b-a56f-6cad107d1c50",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\g0-archify\\camera-reading.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\g0-archify\\camera-reading.html",
+  "specification": {
+    "sha256": "ba615c8b3c34ab7cf6eb6d7f53ae061d9bd759f8335c5b3cbf4aec8a456046fc",
+    "bytes": 4180
+  },
+  "artifact": {
+    "sha256": "64bb14e52d264a092ac59949be57831c70507f45347e4b98d328304d854baa86",
+    "bytes": 813441
+  }
+}

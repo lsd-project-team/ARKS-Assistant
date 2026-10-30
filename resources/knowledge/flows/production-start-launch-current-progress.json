@@ -1,0 +1,60 @@
+{
+  "schema": "archify-static-audit-current-v1",
+  "audit": "production-start-launch",
+  "status": "current-production-start-launch-verified",
+  "recordedAt": "2026-10-07T00:16:36.663Z",
+  "verification": {
+    "testCommand": "node scripts/test-production-start-launch.cjs",
+    "auditCommand": "node scripts/build-production-start-launch-evidence.cjs --check",
+    "result": {
+      "status": "passed",
+      "checks": [
+        "PASS config 0 compensation 0",
+        "PASS config 1 compensation 0",
+        "PASS config 2 compensation 0",
+        "PASS config 3 compensation 0",
+        "PASS config 4 compensation 0",
+        "PASS config 5 compensation 0",
+        "PASS config 6 compensation 0",
+        "PASS config 7 compensation 0",
+        "PASS config 0 compensation 1",
+        "PASS config 1 compensation 1",
+        "PASS config 2 compensation 1",
+        "PASS config 3 compensation 1",
+        "PASS config 4 compensation 1",
+        "PASS config 5 compensation 1",
+        "PASS config 6 compensation 1",
+        "PASS config 7 compensation 1",
+        "PASS prepare false returns",
+        "PASS prepare exception propagates",
+        "PASS failure at working",
+        "PASS failure at transport",
+        "PASS failure at wafer",
+        "PASS failure at dispense",
+        "PASS failure at init",
+        "PASS failure at bond",
+        "PASS failure at slide",
+        "PASS failure at flip",
+        "PASS failure at vacuum",
+        "PASS failure at static",
+        "PASS false task returns ignored",
+        "PASS transport stop normal return continues"
+      ]
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/production-start-launch-evidence.json",
+      "sha256": "f0e4b6c2219cb288d8318c1595249fbd403521eda2e67d11bbac126f20dd5c8c"
+    },
+    {
+      "path": "docs/archify/production-start-launch-review.md",
+      "sha256": "74464f9b04db9e6702870a934cf0de097043aa2eee6d6147f8c0018954f7da1f"
+    }
+  ],
+  "boundaries": [
+    "Current isolated audit evidence is recorded separately from historical reports.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked.",
+    "The fixtures do not prove a complete online production cycle or physical device behavior."
+  ]
+}

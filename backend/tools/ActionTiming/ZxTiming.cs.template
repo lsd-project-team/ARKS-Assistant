@@ -1,0 +1,147 @@
+// 仅由副本生成工具注入到ZX2200工程，原动作/调度保持原调用契约。
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using Arks.ActionTiming;
+using AKRS.Galaxy2.Machine.Enums;
+using AKRS.Galaxy2.Machine.Models;
+using AKRS.Galaxy2.MachineSupport.Config;
+using AKRS.ZX2200.BondSystem.Models;
+using AKRS.ZX2200.BondSystem.Models.Programs;
+using AKRS.ZX2200.DispenseSystem.Models;
+using AKRS.ZX2200.TransportSystem.Models;
+using Newtonsoft.Json;
+
+namespace Arks.ActionTiming
+{
+    internal static class ZxTiming
+    {
+        private static Collector collector;
+        private static readonly ConditionalWeakTable<object, ProductIdentity> products = new ConditionalWeakTable<object, ProductIdentity>();
+        private sealed class ProductIdentity { internal string Id = Guid.NewGuid().ToString("N"); }
+        private static readonly Dictionary<string, string> codes = new Dictionary<string, string>
+        {
+            { "S1DispenseCorrectionActionNode", "s1.bond_position_vision" },
+            { "S1DispenseActionNode", "s1.dispense" },
+            { "PickActionNode", "s2.pick" },
+            { "UpLookCorrectionActionNode", "s2.uplook" },
+            { "BondActionNode", "s2.bond" }
+        };
+
+        internal static void Start()
+        {
+            // 显式设置输出目录且使用原空跑模式才启用；不会启动/替代任何设备动作。
+            string output = Environment.GetEnvironmentVariable("ARKS_TIMING_OUTPUT");
+            if (string.IsNullOrWhiteSpace(output) || MachineStateModel.GetInstance().MachineWorkMode != MachineWorkModeEnum.DryCycle) return;
+            try
+            {
+                Stop();
+                var manifest = new RunManifest
+                {
+                    source_revision = "__SOURCE_REVISION__",
+                    recipe_name = MachineConfigContext.GetInstance().CurrentRecipe?.RecipeName ?? "",
+                    recipe_fingerprint = Hash(JsonConvert.SerializeObject(System1Program.GetInstance())
+                        + JsonConvert.SerializeObject(BondProgram.GetInstance()))
+                };
+                collector = new Collector(output, manifest, value => JsonConvert.SerializeObject(value));
+            }
+            catch (Exception error) { Trace.TraceError("ARKS采集未启动：" + error); }
+        }
+
+        internal static void Stop()
+        {
+            Collector previous = Interlocked.Exchange(ref collector, null);
+            if (previous != null) previous.StopAsync();
+        }
+
+        internal static T Invoke<T>(string name, string station, Func<T> action)
+        {
+            Collector run = collector;
+            string code;
+            if (run == null || !codes.TryGetValue(name, out code)) return action();
+            Dictionary<string, string> context = Capture(station);
+            return run.Invoke(code, station, LogicalId(code, context), context, action);
+        }
+
+        internal static bool ShouldRun(string name, string station, Func<bool> condition)
+        {
+            bool result = condition();
+            Collector run = collector;
+            string code;
+            if (!result && run != null && codes.TryGetValue(name, out code))
+            {
+                var context = Capture(station);
+                run.Skip(code, station, LogicalId(code, context), context);
+            }
+            return result;
+        }
+
+        internal static T Stage<T>(string name, string category, Func<T> action)
+        {
+            Collector run = collector;
+            return run == null ? action() : run.Stage(name, category, action);
+        }
+
+        internal static void Stage(string name, string category, Action action)
+        {
+            Collector run = collector;
+            if (run == null) action(); else run.Stage(name, category, action);
+        }
+
+        internal static void Branch(string branch)
+        {
+            Collector run = collector;
+            if (run != null) run.Branch(branch);
+        }
+
+        private static Dictionary<string, string> Capture(string station)
+        {
+            var context = new Dictionary<string, string>();
+            try
+            {
+                var tu = station == "S1"
+                    ? TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit
+                    : TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit;
+                if (tu != null)
+                {
+                    context["tu"] = tu.Name ?? "";
+                    context["product_instance"] = products.GetValue(tu, item => new ProductIdentity()).Id;
+                }
+                var bp = station == "S1" ? System1Domain.GetInstance().ActionNodeController.CurrentBondPosition
+                    : System2Domain.GetInstance().ActionNodesService.GetCurrentBondPosition();
+                if (bp != null)
+                {
+                    context["bond_position"] = bp.Name ?? "";
+                    context["substrate"] = bp.SubstrateNum.ToString();
+                    context["module"] = bp.ModuleNum.ToString();
+                }
+                context["process_step"] = station == "S1"
+                    ? System1Domain.GetInstance().ActionNodeController.SingleProcessStepName ?? ""
+                    : System2Domain.GetInstance().ActionNodesService.GetCurrentProcessStepName() ?? "";
+            }
+            catch (Exception error) { context["capture_error"] = error.GetType().Name; }
+            return context;
+        }
+
+        private static string LogicalId(string code, Dictionary<string, string> context)
+        {
+            string key = code;
+            foreach (string field in new[] { "product_instance", "substrate", "module", "bond_position", "process_step" })
+            {
+                string value;
+                key += "|" + (context.TryGetValue(field, out value) ? value : "");
+            }
+            return Hash(key);
+        }
+
+        private static string Hash(string value)
+        {
+            using (var sha = SHA256.Create())
+                return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(value))).Replace("-", "").ToLowerInvariant();
+        }
+    }
+}

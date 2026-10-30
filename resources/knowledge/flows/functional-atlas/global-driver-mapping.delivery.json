@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "da06b15d-8259-426c-a279-fca77350e06d",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\global-driver-mapping.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\global-driver-mapping.html",
+  "specification": {
+    "sha256": "4af64cb504c40ef6b3f338a5cd9866c1b732be22d4517c40bc89eb8520c4ab60",
+    "bytes": 3391
+  },
+  "artifact": {
+    "sha256": "db0ebba018dd097f2fa1d7291ac9d8cd3bdebb54fb53e80c6d9deefde36a5be9",
+    "bytes": 812986
+  }
+}

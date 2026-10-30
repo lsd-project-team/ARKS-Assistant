@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "2058e697-839e-4aa0-8457-592d74abbc2c",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\tool-change-reading.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\functional-atlas\\tool-change-reading.html",
+  "specification": {
+    "sha256": "8dc83635f4a7d28a2a20879c8df5d3de3691fba24c6f467dd521ff01158f5c27",
+    "bytes": 6037
+  },
+  "artifact": {
+    "sha256": "fd9865c5fd35b55dd22d527960c8cd6886460bf2d45027328b330f5f722c557a",
+    "bytes": 820705
+  }
+}

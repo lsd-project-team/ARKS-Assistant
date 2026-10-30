@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "tool": "Archify",
+  "toolVersion": "3.2.0",
+  "repository": {
+    "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+    "revision": "7be0bc371f3116991ceb0f74ff3e8c2757960171",
+    "link_mode": "local-only"
+  },
+  "sourceReview": "docs/development/zx2200-manual-maintenance-review.md",
+  "evidenceSource": "Pinned references use the committed source review. Original source hashes and exact ranges are bound in frontend/scripts/knowledge/source-evidence.json.",
+  "diagrams": [
+    {
+      "id": "nozzle-clean-overview",
+      "type": "architecture",
+      "specification": {
+        "path": "nozzle-clean-overview.json",
+        "sha256": "1381b999ad367deea80d7167b78cb42e2bb11842c937a9a299be498383d698df"
+      },
+      "artifact": {
+        "path": "nozzle-clean-overview.html",
+        "sha256": "f3826e8179821ccc11ab1bcc42ebbb330fc5c144b7494627dbf166142006b6f5"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "receipt": "output/functional-atlas/manual-maintenance/nozzle-clean-overview/review-1/nozzle-clean-overview.finalize.json"
+    },
+    {
+      "id": "nozzle-clean-reading",
+      "type": "architecture",
+      "specification": {
+        "path": "nozzle-clean-reading.json",
+        "sha256": "f0eaa5e25bb86312dd009339c2317dd6c63fbd895cf7a3e2b7aa73bfd782b365"
+      },
+      "artifact": {
+        "path": "nozzle-clean-reading.html",
+        "sha256": "4699806e4af63d2c7d5657bc1c1fe135f6af122dc9a0d4a0e9a401c3db3a73e5"
+      },
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "diagnostics": [],
+      "receipt": "output/functional-atlas/manual-maintenance/nozzle-clean-reading/review-1/nozzle-clean-reading.finalize.json"
+    }
+  ],
+  "readingReview": {
+    "status": "pass",
+    "scope": "实际阅读页无脚本SVG副本；桌面与497px同源页目视8节点及全部分支，只作普通页面滚动，无图内缩放或拖动。",
+    "desktop": {
+      "height": 474,
+      "nodes": 8,
+      "pageOverflow": false,
+      "projectedPrimaryFont": 18,
+      "source": "functional-atlas/nozzle-clean-overview.html",
+      "width": 938
+    },
+    "narrow": {
+      "hostIframeWidth": 497,
+      "method": "截图目视检查，未另行采集内部iframe运行时尺寸"
+    },
+    "screenshots": [
+      "output/functional-atlas/manual-maintenance/clean-wide.png",
+      "output/functional-atlas/manual-maintenance/clean-narrow.png",
+      "output/functional-atlas/manual-maintenance/entries-wide.png",
+      "output/functional-atlas/manual-maintenance/entries-narrow.png",
+      "output/functional-atlas/manual-maintenance/saves-wide.png",
+      "output/functional-atlas/manual-maintenance/saves-narrow-top.png",
+      "output/functional-atlas/manual-maintenance/saves-narrow-bottom.png"
+    ]
+  },
+  "embeddedTopicReview": {
+    "topic": "manual-maintenance",
+    "catalog": "manual-maintenance-process",
+    "flowCount": 9,
+    "nodeCount": 33,
+    "checkedNodes": 33,
+    "nodeCheckFile": "output/functional-atlas/manual-maintenance/node-checks.json",
+    "catalogCheckFile": "output/functional-atlas/manual-maintenance/catalog-entry.ax.txt",
+    "entryTableRows": 6,
+    "saveTableRows": 8,
+    "finalShortLabelsRechecked": true
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-01",
+  "status": "native-product-config-data-passed-startup-composition-pending",
+  "preparedContext": {
+    "report": "transport-inspection-repository-integration-review.md",
+    "checks": 1303,
+    "testSha256": "3c5bb8cd4548cc10df497c5178d143f46669c952ebda78fae50c3bb8036c2648",
+    "verification": "transport-inspection-repository-integration-verification.json",
+    "includedIn1303FullRegression": false,
+    "readerTopicCountsUnchanged": {
+      "topics": 39,
+      "topicSnapshots": 3405
+    }
+  },
+  "runtime": {
+    "test": "product-config-native-source-test.json",
+    "testSha256": "857d8f8e5fd93675f18c140751143a8fef5a41fd1387708fda2cab068c20fced",
+    "audit": "product-config-native-source-audit.json",
+    "auditSha256": "c77ce5457fdf580f138f44416676d383e89326d3aef51f9330c9578b8c932127",
+    "report": "product-config-native-source-review.md",
+    "reportSha256": "0fc58498818a622d8930d1d04c7d568d22614c46558b7ac211c0802ac2cd44d5",
+    "command": "node scripts/test-product-config-native-source.cjs",
+    "observedExitCode": 0,
+    "log": ".archify-work/native-product-config-baseline-v5.log",
+    "logSha256": "76d5a7ebf87449dd8b4cb8af5ce443e69c20a17e94e4067ba7eec8850c971c9a",
+    "distinctAssertions": 36,
+    "placements": 72,
+    "wholeSourceFiles": 22,
+    "compiledProductContinuationCaptures": 8,
+    "originalInspectionCaptures": 8,
+    "originalSerializationAttributes": 1,
+    "isolatedFrameworkProcesses": 2,
+    "snapshotDirectory": ".archify-work/native-product-preparation-baseline/"
+  },
+  "findings": [
+    "Whole source ProductConfiguration seven initialized declarations and actual TuEnum edit enum execute against native SDK Singleton. Same-named BaseDsSetting enum remains distinct. Original target-typed new syntax is unchanged.",
+    "Original config defaults, TU teaching16, empty opposite-sex root, product readiness/Reset/Init/Clear/Save and native typed JSON reload execute.",
+    "Invalid TU enum strings preserve constructor UnAble/Forbidden defaults; explicit null state/top-level config makes original readiness throw; unknown numeric99 passes.",
+    "Invalid SafeHeight string early in TU JSON preserves5 but interrupts subsequent member reads, leaving TUPosition UnAble and rejecting. Moving same member to end preserves already-read Able and passes. Original product EditState error alone preserves NewCreate and taught TU passes.",
+    "Original opposite-sex config inspection getters execute through source repository and actual typed JSON; invalid backside enum retains Forbidden/pass, invalid PostBond retains UnAble/reject.",
+    "36 identical checks execute in each actual SDK copy:72 placements, no increase to1303 composition or39/3405reader. Fody/weaving and external adapters/full startup/entity/native project/deployment/UI/equipment remain pending."
+  ],
+  "scope": "22 complete unchanged source files, eight original inspection teaching members/JsonIgnore, actual SDK Singleton/JSON/AKRSPoint3D, actual source ElementCoordinate, native Framework runtime. Identical assertions per library/bin DLL copy are placements, not distinct behaviors. Eight pending product continuation declarations now compiled inside whole source ProductConfiguration/TuEnum. Path/recipe/PR/UI/log/attribute actions, SingleBondPositionConfig class remainder, TuService snake mapping and matter entities remain adapters; Fody weaving, source full startup/entity composition, original project build/deployment/native UI/equipment and all 29 groups/13 requirements pending. Independent preparation outside frozen1303 regression/reader topics.",
+  "next": "Migrate source product declarations/correct enum/defaults into complete startup/entity composition, then continue original SingleBondPositionConfig/inspection fields and Fody/AOP/external dependencies/project/deployment/native UI/equipment. All29 groups/13 requirements remain incomplete."
+}

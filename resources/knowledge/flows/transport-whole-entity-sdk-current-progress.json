@@ -1,0 +1,50 @@
+{
+  "schema": "archify-transport-whole-entity-sdk-current-v1",
+  "status": "current-transport-whole-entity-sdk-frozen-input-verified",
+  "recordedAt": "2026-10-07T00:47:14.636Z",
+  "verification": {
+    "command": "node scripts/run-transport-whole-entity-sdk-frozen-input.cjs",
+    "frozenInputSha256": "4c1de1c0dea3881806b414bfe81a2244ec2280f7fe4a7124115f201dae5395c5",
+    "restoredCurrentInputSha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642",
+    "result": {
+      "status": "passed",
+      "results": [
+        {
+          "tag": "library",
+          "checks": 187,
+          "artifactIdentical": true
+        },
+        {
+          "tag": "bin",
+          "checks": 187,
+          "artifactIdentical": true
+        }
+      ],
+      "scope": "45 complete unchanged original source files including all five entities, complete PostBondInspection and AdjustConfig/BondEnum. Actual native Framework/SDK Save Load and focused187 checks; existing142 retained. Prior512 source captures and eight added entity captures preserved. Legacy1328 remains compiled with derivative-only fixture compatibility changes and is not executed here. Equipment, PR, calibration, recipe, export and action injection boundaries remain controlled. No Fody/project/deployment/native UI/equipment acceptance.",
+      "directory": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\whole-entity-sdk-replay-0UZhXj"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/transport-whole-entity-sdk-test.json",
+      "sha256": "c4eebdc7c3e9fcecb8a81217b2b7efa8811192a239519ec8d53727703b6fbc66"
+    },
+    {
+      "path": "docs/archify/transport-whole-entity-sdk-audit.json",
+      "sha256": "865f904ed40adcb72447ae3efd1b62f9c0b0a058f01ba10ecfcf91442ee24cf1"
+    },
+    {
+      "path": "docs/archify/transport-whole-entity-sdk-progress.json",
+      "sha256": "375c633c7fe8058e3c32cd6d7afda716dce4a5bcbc43fa04710b358923eae2bd"
+    },
+    {
+      "path": "docs/archify/bond-config-native-source-test.json",
+      "sha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642"
+    }
+  ],
+  "boundaries": [
+    "The compatibility replay temporarily used the preserved historical bond-config input and restored the current input in finally.",
+    "The 187-check entity/inspection SDK run is separate from current 56-check bond preparation and formal 1328 regression.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "archify-main-entry-gating-audit-v1",
+  "status": "source-confirmed-partial",
+  "recordedAt": "2026-10-06T21:49:49.622Z",
+  "sourceHashes": {
+    "AKRS.ZX2200/Program.cs": "612f00e342d8b9af5bdd6708fdf5b2ca91e9de9495f729f912ff9d2bc0c33c32",
+    "AKRS.ZX2200/Main/Controls/MainForm.cs": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39",
+    "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs": "03ac03cbf6340faa7de0bc345f6bccab605f42575d33f36495e6062cb8618ae2",
+    "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.UIState.cs": "fb98c32b496826c959af2824baeefaea54a910ddcc0a6e6e56d73c2f0f8bd971",
+    "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs": "db4a0051b926beeda4b85fe2905acbf2e630a3bedf47545c3347e1134b19dfe9",
+    "AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Sustain.cs": "5385795e853bd2b65af0472190b280824405c41dfe6e1981323f374f988e0851"
+  },
+  "program": {
+    "file": "AKRS.ZX2200/Program.cs",
+    "staThreadLine": 63,
+    "mutexLine": 68,
+    "createNewLine": 70,
+    "initPrLine": 177,
+    "hardwareInitLine": 180,
+    "applicationRunLine": 256,
+    "conclusion": "Main runs on STA, gates duplicate processes with a named mutex, and enters Application.Run only on the createNew branch. InitPR returns a Task and is called without await/Wait/Result before hardware initialization."
+  },
+  "mainFormLoad": {
+    "file": "AKRS.ZX2200/Main/Controls/MainForm.cs",
+    "line": 232,
+    "gateLine": 234,
+    "disabledControl": "UcMainSystemTile",
+    "conclusion": "When axes are not reset and the mode is not offline, the main system tile is disabled and Load returns before DataLoad, pressure connections, lighting, and the background thread start."
+  },
+  "productEdit": {
+    "file": "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+    "line": 368,
+    "gates": [
+      "working state",
+      "DryCycle mode",
+      "missing ProductConfiguration or RecipeName"
+    ],
+    "runningEditEnabledLine": 65,
+    "pauseEditEnabledLine": 286,
+    "stopEditEnabledLine": 181,
+    "conclusion": "The click handler rechecks working, DryCycle, and recipe prerequisites; UI state methods disable editing while running or paused and enable it in stop state."
+  },
+  "startModes": {
+    "normal": {
+      "file": "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "line": 699,
+      "behavior": "CloseAllDockPanel runs before Machine.Start."
+    },
+    "production": {
+      "file": "AKRS.ZX2200/Main/Controls/Ucmain/MainControls/UcMainSystem.Production.cs",
+      "line": 68,
+      "behavior": "Only the dock panel containing ucGuidMove is looked up and closed before Machine.Start; the method does not call CloseAllDockPanel."
+    }
+  },
+  "boundaries": [
+    "This audit reads current trunk source and records hashes/line anchors; it does not launch Program.Main, MainForm, Machine.Start, hardware, VM, or a device.",
+    "The source-confirmed async boundary does not establish that PR initialization has completed before any later consumer uses it.",
+    "The UI checks are source evidence for two start handlers and three state methods, not a complete permission or event-race proof."
+  ]
+}

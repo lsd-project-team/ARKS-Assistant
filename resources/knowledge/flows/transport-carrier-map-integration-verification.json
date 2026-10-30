@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T18:16:24.611Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 19228,
+    "log": ".archify-work/verify-transport-carrier-map-integration.log",
+    "sha256": "8a1d1680c700b677aa8ea395481013f5ab8c67c8edcfcdc944cd7a5419237440",
+    "frozenBindings": {
+      "testSha256": "db9ebc98d80e8ecc54a3fc19fa959e2ed3af8ce19ba3689e92a30b6a97ac225d",
+      "auditSha256": "49e5d98da90bb4bfea12df8dccfc19bba12f630592a1cdc9c5ca92cca1ad54af",
+      "evidenceSha256": "26ff305bee21715a7f9f151b6e95d8d1b499e523f3078ffe858ee011d74aa82d",
+      "reportSha256": "d8544ae32874d61adbc51c7beb51f2087575ac45de1d2927b8bd78e7e236c17e",
+      "readerSha256": "d917b78d2ae0a52c2536f244ac7bc971868ecec8c1535e31b1db658c13f03f42"
+    },
+    "snapshotDirectory": ".archify-work/carrier-map-full-regression/"
+  },
+  "specialized": {
+    "checks": 1355,
+    "completeMethods": 191,
+    "properties": 122,
+    "enums": 11,
+    "fields": 17,
+    "signalBindings": 23,
+    "sourceFragments": 341,
+    "sourceFileCounts": {
+      "declaredDependencyFiles": 140,
+      "fragmentOnlyFiles": 29,
+      "uniqueFiles": 169
+    },
+    "topicSnapshots": 242,
+    "auditSha256": "9a2a9405f13682bfea1646d7c9460bc0681666eaa24150b907a0d3cb6279951b",
+    "evidenceSha256": "b9ab9322d60a1f89945711c4b7a7b98f8a6f3098359c616b9ae29720b96fad4f"
+  },
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-carrier-map-final-documentation.log",
+    "sha256": "171547a75193bf88838622d2430407ef5284ebb7eacbcd18cc2952f665b6bf8a",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "e30b11934a3a4d76cdb331208fadd5f3754d77deff68af5375f812cbd0f39d02",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 34,
+    "topicSnapshots": 1678,
+    "moduleSnapshots": 940
+  },
+  "sdkStaticContracts": {
+    "evidence": "transport-carrier-map-log-sdk-evidence.json",
+    "sha256": "01236f1a12347a05e6f659584ee0b44a6b11a8e3ba3c118a637fc24132d943c7",
+    "command": "node scripts/build-transport-carrier-map-log-sdk.cjs --check",
+    "exitCode": 0,
+    "includedInThisFullRegression": true,
+    "methods": 2,
+    "assemblies": 1,
+    "scope": "Mono.Cecil metadata only; no logging SDK execution, deployed DLL or native UI proof"
+  },
+  "realTaskTimeScope": {
+    "clock": "Original Stopwatch, Task.Run, Task.Factory-related existing boundaries, Task.Wait, Thread.Sleep and source busy loops remain unmodified. TransportModule.Init remains a fixture in this increment.",
+    "vacuum": "Real -1/0/25/1000ms conditions; every vacuum poll counted while only first 16 trace entries retained. Fault/hook still called for every observation.",
+    "state": "Original direct mapping Task continues search and constructor/state commit after Machine.Stop or Pause at controlled SDK observation boundary; cleanup joins Tasks and is not device stopping proof."
+  },
+  "fixtureCorrections": {
+    "historicalProgress": "transport-carrier-map-integration-progress.json",
+    "scope": "Historical 226/1178/1292 snapshots are preserved. New command/config/nested-catch checks bring final count to 1355. Failed runs are retained and not treated as success. Corrected initial true dispense marker, feedback queues, constructor No branch and original stop arguments; verified original UI catch performs Machine.Stop."
+  },
+  "continuation": {
+    "carrierCapture": "transport-carrier-map-next-evidence.json",
+    "carrierCaptureSha256": "490373500a6f94840bb31331dc344eefbca39a284479ee284f3e11b47fe485e1",
+    "compiledCaptures": 22,
+    "nextEvidence": "transport-unit-services-next-evidence.json",
+    "nextEvidenceSha256": "167a25a3d133dc0b6b9a25de5d0f2a4bf4f99cf6f2a1dd513a805c1cf34ddeb7",
+    "pendingCaptures": 19,
+    "next": [
+      "Integrate original TuService row-column/index/coordinate creation and ModifyMatter with typed configuration/child objects; verify arrangement, parent/offset, partial assignment, state masking and nested clear/save exceptions.",
+      "Integrate recursive regular/opposite-sex Substrate/Module/BondPosition constructors and Refresh; verify configuration selection, identity/replacement, coordinates, cached process/vision/height state and actions.",
+      "Continue actual program/module/product/pool/domain/SDK lifecycle and original build/deployed configuration/DLL/native UI/equipment acceptance."
+    ]
+  },
+  "scope": "Original startup carrier/map/Bond and dispense search/vacuum/time helpers, original load-bin transfer/rod/inlet/config wrappers, real ten-second child Task/timer, original auto-loader-to-loading and front sensor/getter with real Stopwatch timeout, actual first parent, original loading-to-dispense controller, loading/dispense hardware getters, setting/SMEMA wrappers, constructors/Init/Refresh, coordinate/substrate creation and refresh, tree vision/height clearing, offset methods and config/information declarations compose with full producer/UI/readiness/real wafer Task/Stop and existing downstream controllers. Typed coordinate/child entities, TuService/row-column/action injection, configuration/repository/SDK/log/dialog/save/program/domain lifecycle, actual log sink and native UI/build/configuration/DLL/equipment remain fixtures or pending.",
+  "browserAtFullRegression": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-carrier-map-integration.log",
+    "sha256": "45b7ddb4e8cfbe79feedb2b62b53239da9d7fc16872379bfb24a89a85cc3b3db",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "d917b78d2ae0a52c2536f244ac7bc971868ecec8c1535e31b1db658c13f03f42",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 34,
+    "topicSnapshots": 1678,
+    "moduleSnapshots": 940
+  },
+  "postRegressionDocumentationUpdate": {
+    "checkedAt": "2026-09-30T18:27:21.141Z",
+    "scope": "Report closure text and derived audit/evidence/module-review/reader bindings only; all 140 runtime dependency hashes and 1355-check test artifact remain identical to full regression.",
+    "command": "node .archify-work/verify-carrier-map-docs.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-carrier-map-final-documentation.log",
+    "logSha256": "4b624dd9f765a33e72f3d3fae8be111c751d567a22573eac1e8d951712ce743e",
+    "reportSha256": "13a951ea2249d7fcb6176ad57d0dbe2fbcbc1cc7b1026c2d0238a9bef64ba39c",
+    "auditSha256": "9a2a9405f13682bfea1646d7c9460bc0681666eaa24150b907a0d3cb6279951b",
+    "evidenceSha256": "b9ab9322d60a1f89945711c4b7a7b98f8a6f3098359c616b9ae29720b96fad4f",
+    "readerSha256": "e30b11934a3a4d76cdb331208fadd5f3754d77deff68af5375f812cbd0f39d02",
+    "browserExitCode": 0,
+    "snapshotDirectory": ".archify-work/carrier-map-post-documentation/"
+  },
+  "supersededBy": {
+    "report": "transport-unit-services-integration-review.md",
+    "verification": "transport-unit-services-integration-verification.json",
+    "status": "passed",
+    "scope": "Historical carrier1355 full-regression/browser scope preserved; newer entity/service1011 has an independent passing receipt."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "archify-transport-carrier-map-log-sdk-current-v1",
+  "status": "current-transport-carrier-map-log-sdk-static-verified",
+  "recordedAt": "2026-10-07T04:19:56.380Z",
+  "verification": {
+    "command": "node scripts/build-transport-carrier-map-log-sdk.cjs --check",
+    "checks": 2,
+    "methods": 2,
+    "enums": 2,
+    "assemblies": 1,
+    "evidenceFile": "docs/archify/transport-carrier-map-log-sdk-evidence.json",
+    "evidenceArtifactSha256": "01236f1a12347a05e6f659584ee0b44a6b11a8e3ba3c118a637fc24132d943c7",
+    "bindings": [
+      {
+        "file": "scripts/extract-transport-carrier-map-log-sdk.ps1",
+        "sha256": "d36f32047bb0d685096e433251ccfae88557d323ddc8bcc07774dd076561c5dc"
+      },
+      {
+        "file": "scripts/transport-carrier-map-integration-compose.cjs",
+        "sha256": "921dcd832ae5cfdfda7a9d51967eec16ed8e972570703332a6e3673952fca699"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/TransportSystem/Models/TransportProvider.cs",
+        "sha256": "5224990bf6ab6a74168c9e40ae16681c3f3b3a2e41113f23a24b6635f220efca"
+      }
+    ]
+  },
+  "boundaries": [
+    "Mono.Cecil metadata and IL evidence confirms the two logging methods, Transport category value 7 and InFileAndUI value 3, including the explicit RecordTime call signature.",
+    "This is static metadata only: the logging SDK sink, loaded/deployed DLL version, native UI and real logging execution remain unverified.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

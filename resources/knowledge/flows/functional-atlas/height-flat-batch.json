@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "平面度单批次的结果链",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "resources/knowledge/flows/functional-atlas/height-flat-batch.html",
+    "repository": {
+      "url": "https://github.com/lsd-project-team/ARKS-Assistant.git",
+      "revision": "708ac411eb635da6b30c42d3fe32ec6d584a057f",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "configuration",
+      "type": "backend",
+      "label": "选择平面度配置",
+      "sublabel": "所教 XY 与预测 Z",
+      "pos": [
+        20,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 35,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "batch",
+      "type": "backend",
+      "label": "清空本批并取次数",
+      "sublabel": "Retry 会清空重跑",
+      "pos": [
+        220,
+        40
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 35,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "measure",
+      "type": "backend",
+      "label": "按点列逐轮测量",
+      "sublabel": "S1 / S2 各自分派",
+      "pos": [
+        220,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 35,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "nonempty",
+      "type": "backend",
+      "label": "仅检查列表非空",
+      "sublabel": "未核对点数齐全",
+      "pos": [
+        20,
+        184
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 35,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "range",
+      "type": "backend",
+      "label": "计算本轮极差",
+      "sublabel": "非空列表 Max − Min",
+      "pos": [
+        20,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 35,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "window",
+      "type": "backend",
+      "label": "结果窗与导出",
+      "sublabel": "可重测，也可导出",
+      "pos": [
+        220,
+        328
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "docs/development/zx2200-height-measurement-review.md",
+          "line": 65,
+          "end_line": 65
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "configuration-batch",
+      "from": "configuration",
+      "to": "batch"
+    },
+    {
+      "id": "batch-measure",
+      "from": "batch",
+      "to": "measure"
+    },
+    {
+      "id": "measure-nonempty",
+      "from": "measure",
+      "to": "nonempty"
+    },
+    {
+      "id": "nonempty-range",
+      "from": "nonempty",
+      "to": "range"
+    },
+    {
+      "id": "range-window",
+      "from": "range",
+      "to": "window"
+    }
+  ]
+}

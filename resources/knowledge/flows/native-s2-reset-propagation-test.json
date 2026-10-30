@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "status": "original-whole-s2-task-reset-and-dispatch-fault-native-preparation-passed",
+  "parent": {
+    "file": "native-s2-compensation-prerequisites-test.json",
+    "sha256": "6cf4957b96ea2a49bb65ff3337ee1885f2b931435cfe4d51b9c52d732bcf7878"
+  },
+  "parentFrozenBindings": 5770,
+  "newFrozenInputs": 44,
+  "totalFrozenBindings": 5814,
+  "acceptedProcesses": 2,
+  "checksPerPass": 70,
+  "distinctLabels": 70,
+  "selectedMethods": 18,
+  "originalSources": 14,
+  "originalTasksPerPass": 8,
+  "originalTaskFaultsPerPass": 4,
+  "originalTaskNormalStopsPerPass": 4,
+  "originalStartCallsPerPass": 12,
+  "originalOuterResetFailuresPerPass": 4,
+  "originalModbusResetFailuresPerPass": 2,
+  "originalIoResetFailuresPerPass": 2,
+  "uiCallbacksCollectedPerPass": 4,
+  "uiCallbacksExecuted": 0,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "wholeOriginalProductionTaskExecuted": true,
+  "successfulProductionCycleExecuted": false,
+  "originalSingleStepFalsePropagatesToResetObserved": true,
+  "originalResetExecutedAfterStopObserved": true,
+  "originalRunningTaskRetainedByRepeatedStartObserved": true,
+  "originalEmptyAbortThreadNoEffectObserved": true,
+  "originalFaultedTaskReplacedUnderStopObserved": true,
+  "originalOuterBondHeadResetExecuted": true,
+  "originalModbusAndIoFailureBranchesExecuted": true,
+  "samePublicUiDispatchExceptionPropagated": true,
+  "originalInputRetainedOnResetFailureObserved": true,
+  "originalRuntimeResetCommittedObserved": true,
+  "publicUiDispatcherFaultFixtureUsed": true,
+  "publicUiActionsNeverInvoked": true,
+  "serialIoExecuted": false,
+  "physicalForceZeroExecuted": false,
+  "realVisionExecuted": false,
+  "hardwareActionExecuted": false,
+  "axisMovementExecuted": false,
+  "physicalBondExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "dbLazyCreated": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "compileAndPrimary": {
+      "chunk": "a0e33a",
+      "exitCode": 0
+    },
+    "replayCompileAndRuntime": {
+      "chunk": "6333ba",
+      "exitCode": 0
+    },
+    "il": {
+      "chunk": "2eb8a1",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 47448,
+      "chunk": "c578de",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "sha256": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs",
+      "sha256": "5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/BondHead.cs",
+      "sha256": "0383b7df762ef8cb9e29fc87b45df2690a346768c0bc8b9beee36df4e9f67ad2"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs",
+      "sha256": "873905192c5f525b5e078cf17b3261691ac4a482c879b9854077040993ad6afa"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-s2-reset-propagation.cjs",
+      "sha256": "bf044306960910720d8b8e91a8e31fe383cc9de397a5daec651821b12a03f006",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0000-freeze-native-s2-reset-propagation.cjs"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\Cases.cs",
+      "sha256": "d2559945384b8cf5e8a5d60c6738edd5e0c0fd38ea6df1753840d9f4eb6bd7e7",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\Host.cs",
+      "sha256": "dd0fc1409f6cb5bb5a187d613b088334622a586b8015bc896f39be67101738f9",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\Probe.exe",
+      "sha256": "2ea916e1eeae4f8e85dc69c31feb6c2a44b5d012442272e753d61b64b5949a37",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\compile-input.json",
+      "sha256": "d4f59e834ac3aa372a23cdbf21f128bc299263128bdbb6079ef2be12d22e7c3f",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\compile.json",
+      "sha256": "bd6f0c868d588e366f56228e6ce3fd37286da915487a3e86e09f3481d9b03dcc",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\il.json",
+      "sha256": "a9abfe03b84809f8012889354cca81d4223e6dfaae1fc86e1f4ad6b1c7e86818",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0006-il.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\parent-compensation-verification.log",
+      "sha256": "b30d20a746a1b4e222b7154d9797ebd7fe3a0343d32ebb486b94eb061f0ea4a8",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0007-parent-compensation-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0008-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\preflight.log",
+      "sha256": "7fea50a8d5e33e2eebd12a912b6ffca41a54f6cb2d9f5fad2e2d5b22b5c22772",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0009-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary-Probe.exe",
+      "sha256": "2ea916e1eeae4f8e85dc69c31feb6c2a44b5d012442272e753d61b64b5949a37",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0010-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary\\Probe.exe",
+      "sha256": "2ea916e1eeae4f8e85dc69c31feb6c2a44b5d012442272e753d61b64b5949a37",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0011-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary\\case-progress.log",
+      "sha256": "e44bd8c7ea1ffa3eb42a7d9ddbcdaed25cdf655d404fcfcd53eb3d179beb73f0",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0012-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0013-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0014-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0015-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\primary\\stdout.json",
+      "sha256": "f0ddb51daaa56844df218d561b3c3bd2b20f36cf917db0415c33889a69de452c",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0016-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay-compile.json",
+      "sha256": "527c8fce13990cb0233871cd320f1a07e424e85f5c73f4b264cc58d7b5aff70d",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0017-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay\\Probe.exe",
+      "sha256": "2ea916e1eeae4f8e85dc69c31feb6c2a44b5d012442272e753d61b64b5949a37",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0018-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay\\case-progress.log",
+      "sha256": "e44bd8c7ea1ffa3eb42a7d9ddbcdaed25cdf655d404fcfcd53eb3d179beb73f0",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0019-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0020-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0021-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0022-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\replay\\stdout.json",
+      "sha256": "9e89e84605ff989cfbf449b62fb1839525fdbcbbab46d2fe512fbafdc9b742c4",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0023-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s2-reset-propagation\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0024-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-s2-reset-propagation.ps1",
+      "sha256": "42337123b1fd39ce97610ca4e9dbcb7f1469c7fac26d9afcd9063f1870c91640",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0025-inspect-native-s2-reset-propagation.ps1"
+    },
+    {
+      "file": "scripts/native-s2-reset-propagation-cases.cs.txt",
+      "sha256": "d2559945384b8cf5e8a5d60c6738edd5e0c0fd38ea6df1753840d9f4eb6bd7e7",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0026-native-s2-reset-propagation-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-s2-reset-propagation.cjs",
+      "sha256": "e7add67eeb37af09957e00b3a4f74831b38abffe7a08f457015eaf4c7430d424",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0027-prepare-native-s2-reset-propagation.cjs"
+    },
+    {
+      "file": "scripts/run-native-s2-reset-propagation.cjs",
+      "sha256": "d1dd5a6d820c6c2cae5de9fb102ed719cb47b4c8c757f8dc7865c47c1c32e34c",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0028-run-native-s2-reset-propagation.cjs"
+    },
+    {
+      "file": "scripts/verify-native-s2-reset-propagation.cjs",
+      "sha256": "bc0620e86164a706e9076d142d4d2d90d93c5e944103b2bee6b702c86ccb42c0",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0029-verify-native-s2-reset-propagation.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0030-Signal.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Modbus/ModbusService.cs",
+      "sha256": "873905192c5f525b5e078cf17b3261691ac4a482c879b9854077040993ad6afa",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0031-ModbusService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/BondForce/Models/DevicePara/ForceConfig.cs",
+      "sha256": "d0c021b3f5a1fb0a7eb20b95aaf14123cfcb1935abb485cbb94595204ae924cd",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0032-ForceConfig.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.ForceRelated.cs",
+      "sha256": "c7d51e8bd9aad0d3d325396e66d47db95b19096df3775e95d01be5e9c91ea563",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0033-BondHeadController.ForceRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondModuleController.MovementRelated.cs",
+      "sha256": "5c2211a9e7c75390790b1034aeca733f54f01c5d8aeda3bd02a7c8fd13c33022",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0034-BondModuleController.MovementRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/NozzleShelfController.cs",
+      "sha256": "281ddfbacc57ff82e7302453f0f46288c6462811ab4a4a83a966234921988f37",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0035-NozzleShelfController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Parameter/System2RunTimeProvider.cs",
+      "sha256": "60e140ce9b819994a51bf5dbd9b029c00575204518b97e179c4ef489f03158a1",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0036-System2RunTimeProvider.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0037-System2Domain.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/BondHead.cs",
+      "sha256": "0383b7df762ef8cb9e29fc87b45df2690a346768c0bc8b9beee36df4e9f67ad2",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0038-BondHead.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Modules/NozzleShelfModule.cs",
+      "sha256": "20f42f5aca9129a3c6a1f0f56444b0b08513383a01594e0e4a768e613649c4ad",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0039-NozzleShelfModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0040-BondTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSMessageBoxExt.cs",
+      "sha256": "80bf7ff587c8efabfdc651c354d8d93d0fc6e19ec5a6c623df7545f5c706731c",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0041-AKRSMessageBoxExt.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0042-DBService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39",
+      "frozenCopy": ".archify-work/native-s2-reset-propagation-baseline/inputs/0043-MainForm.cs"
+    }
+  ],
+  "scope": "Actual original S2 whole Start/DoWork LongRunning Task waits at first single-step; original Stop or public mode disable makes shelf Abort ignored and real outer reset runs, including after Stop. Four modes Modbus/IO with Enable true/false naturally missing client/output caught, original Alarm public UI callback explicitly throws same fixture exception before DB insert, whole Task Faulted input retained/no outgoing, DB Lazy uncreated. Original repeated Start retains Running, empty AbortThread no-op, four new stopped replacement tasks normal complete. No successful production cycle, physical reset/serial/axes/UI/SQL, source/private or hardware substitutes."
+}

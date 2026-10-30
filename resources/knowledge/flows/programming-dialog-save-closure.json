@@ -1,0 +1,222 @@
+{
+  "schema": "archify-programming-dialog-save-closure-v1",
+  "recordedAt": "2026-10-07T08:51:09.423Z",
+  "scope": "Static closure of modal programming-page dialogs and the generic repository form. It records dialog output properties, direct Save calls, generic repository mutations, and parent save ownership; it does not execute DevExpress UI, external Singleton persistence or production files.",
+  "counts": {
+    "files": 5,
+    "directSaveCalls": 5,
+    "dialogResultAssignments": 9,
+    "repositoryMutations": 5
+  },
+  "records": [
+    {
+      "id": "transport-add-object",
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/FrmAddObject.cs",
+      "role": "modal-add",
+      "outputs": [
+        "OppositeSexConfig"
+      ],
+      "parentSave": "FrmTransportUnitEdit.BtAdd_Click",
+      "sourceSha256": "6ff259e5d633c82c559e564a07752cf6b427267ef11413e895a8fe0e0e4f82b3",
+      "lines": 226,
+      "saveCalls": [],
+      "dialogAssignments": [
+        {
+          "line": 133,
+          "code": "this.DialogResult = DialogResult.OK;",
+          "method": "private void BtSure_Click(object sender, EventArgs e)"
+        },
+        {
+          "line": 143,
+          "code": "this.DialogResult = DialogResult.Cancel;",
+          "method": "private void BtCancel_Click(object sender, EventArgs e)"
+        }
+      ],
+      "outputDeclarations": [
+        {
+          "line": 44,
+          "code": "public OppositeSex OppositeSexConfig { get; set; }"
+        }
+      ],
+      "repositoryCalls": []
+    },
+    {
+      "id": "transport-object-copy",
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/TransportUnitEdit/FrmObjectCopy.cs",
+      "role": "modal-copy",
+      "outputs": [
+        "NewOppositeSexConfigs"
+      ],
+      "parentSave": "FrmTransportUnitEdit.BtCopy_Click",
+      "sourceSha256": "a08e2a687fd096663e4e736d4a6903c252ef9cdf0abd18531571daf722ebfe8c",
+      "lines": 98,
+      "saveCalls": [],
+      "dialogAssignments": [
+        {
+          "line": 55,
+          "code": "this.DialogResult = DialogResult.Cancel;",
+          "method": "private void BtCancel_Click(object sender, EventArgs e)"
+        },
+        {
+          "line": 95,
+          "code": "this.DialogResult = DialogResult.OK;",
+          "method": "private void BtSure_Click(object sender, EventArgs e)"
+        }
+      ],
+      "outputDeclarations": [
+        {
+          "line": 46,
+          "code": "public List<OppositeSex> NewOppositeSexConfigs { get; set; } = new ();"
+        }
+      ],
+      "repositoryCalls": []
+    },
+    {
+      "id": "epoxy-create",
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controls/Setting/EpoxyApplication/FrmNewCreateEpoxyApplication.cs",
+      "role": "modal-create-and-save",
+      "outputs": [
+        "NewEpoxyApplication"
+      ],
+      "parentSave": "UcAddEpoxyApplication.BtnAdd_Click",
+      "sourceSha256": "93afa6f0a9162c2b8e37bb300992d2e79c7d2503a248e63e57dcb03251ef2529",
+      "lines": 106,
+      "saveCalls": [
+        {
+          "line": 91,
+          "code": "EpoxyApplicationRepository.GetInstance().Save();",
+          "method": "private void BtnGenerate_Click(object sender, EventArgs e)"
+        }
+      ],
+      "dialogAssignments": [
+        {
+          "line": 93,
+          "code": "this.DialogResult = DialogResult.OK;",
+          "method": "private void BtnGenerate_Click(object sender, EventArgs e)"
+        },
+        {
+          "line": 103,
+          "code": "this.DialogResult = DialogResult.Cancel;",
+          "method": "private void BtCancel_Click(object sender, EventArgs e)"
+        }
+      ],
+      "outputDeclarations": [
+        {
+          "line": 26,
+          "code": "public EpoxyApplication NewEpoxyApplication { get; set; }"
+        }
+      ],
+      "repositoryCalls": []
+    },
+    {
+      "id": "postbond-create",
+      "file": "trunk/AKRS.ZX2200/BondSystem/Controls/Setting/PostBond/FrmNewCreatePostBond.cs",
+      "role": "modal-create-and-save",
+      "outputs": [
+        "NewPostBondInspection"
+      ],
+      "parentSave": "UcAddPostBond.BtnAdd_Click",
+      "sourceSha256": "80529cd8f036642a87aefb0983ee75fc7c0d325679dc72ea36fa3e01796166ef",
+      "lines": 155,
+      "saveCalls": [
+        {
+          "line": 106,
+          "code": "PostBondInspectionRepository.GetInstance().Save();",
+          "method": "private void BtnGenerate_Click(object sender, EventArgs e)"
+        },
+        {
+          "line": 107,
+          "code": "BondProgram.GetInstance().Save();",
+          "method": "private void BtnGenerate_Click(object sender, EventArgs e)"
+        }
+      ],
+      "dialogAssignments": [
+        {
+          "line": 109,
+          "code": "this.DialogResult = DialogResult.OK;",
+          "method": "private void BtnGenerate_Click(object sender, EventArgs e)"
+        },
+        {
+          "line": 119,
+          "code": "this.DialogResult = DialogResult.Cancel;",
+          "method": "private void BtCancel_Click(object sender, EventArgs e)"
+        }
+      ],
+      "outputDeclarations": [
+        {
+          "line": 39,
+          "code": "public PostBondInspection NewPostBondInspection { get; set; }"
+        }
+      ],
+      "repositoryCalls": []
+    },
+    {
+      "id": "generic-repository",
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/FrmRepository.cs",
+      "role": "generic-repository",
+      "outputs": [
+        "DsSetting"
+      ],
+      "parentSave": "UcAddEpoxyApplication.BtEpoxyApplicationRepository_Click / UcAddPostBond.BtPostBondInspectionRepository_Click",
+      "sourceSha256": "d569e1c83ac85a272b80b40a5c812a7628ae02771030a8b110edcc4f7936d162",
+      "lines": 325,
+      "saveCalls": [
+        {
+          "line": 223,
+          "code": "this.baseSettingRepository.Save();",
+          "method": "private void BarBtSave_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)"
+        },
+        {
+          "line": 299,
+          "code": "this.baseSettingRepository.Save();",
+          "method": "private void FrmRepository_FormClosed(object sender, FormClosedEventArgs e)"
+        }
+      ],
+      "dialogAssignments": [
+        {
+          "line": 264,
+          "code": "// this.DialogResult = DialogResult.OK;",
+          "method": "private void GvRepository_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)"
+        }
+      ],
+      "outputDeclarations": [
+        {
+          "line": 24,
+          "code": "public BaseDsSetting DsSetting { get; set; }"
+        }
+      ],
+      "repositoryCalls": [
+        {
+          "line": 95,
+          "code": "List<T> tList = this.baseSettingRepository.Filter(name, isIncludeAll);",
+          "method": "private void RefreshData()"
+        },
+        {
+          "line": 166,
+          "code": "this.baseSettingRepository.Add(newT);",
+          "method": "private void BarBtCreateNew_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)"
+        },
+        {
+          "line": 204,
+          "code": "this.baseSettingRepository.Remove(t);",
+          "method": "private void BarBtDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)"
+        },
+        {
+          "line": 223,
+          "code": "this.baseSettingRepository.Save();",
+          "method": "private void BarBtSave_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)"
+        },
+        {
+          "line": 299,
+          "code": "this.baseSettingRepository.Save();",
+          "method": "private void FrmRepository_FormClosed(object sender, FormClosedEventArgs e)"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "A parent page may save after a modal returns; this audit records the named parent owner without asserting that the external Save succeeded.",
+    "FrmRepository FormClosed and explicit Save both call the repository Save; row double-click/extract invoke the supplied action delegate and do not themselves call the parent program Save.",
+    "No UI event, modal result, JSON file, external SDK, SQL, device or deployment was executed."
+  ]
+}

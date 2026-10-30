@@ -1,0 +1,76 @@
+{
+  "status": "passed",
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.cs",
+      "sha256": "d755b2c07b525e2a6077f010ccda40bcb21b6dace69b39c6a43f8ba9967b1931"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.cs",
+      "sha256": "85e01f9114b83fa22083dd215986b515d6eaa00f773c21d114b79f822e9df137"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.Designer.cs",
+      "sha256": "b8e133f09bd5fd1ff09da2ac44dc91d839f7b4df6be12467543d56fcd67d2a27"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.Designer.cs",
+      "sha256": "7c3710c5f2bc6847988a1846e42824ab972ab38f07f11dd5fc09946b93a0c877"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PatternFile.cs",
+      "sha256": "f2a6dab6e9b75eb70aacfeaa7075f70c6110a03730d03972c6982ff35cf8b335"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternForm.cs",
+      "sha256": "7a961d0f1f6ce3637bf70d4f121b43e938be582cd5f6af46a492af2700d5fb3a"
+    }
+  ],
+  "bindings": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.Designer.cs",
+      "line": 64,
+      "text": "this.buttonXExit.Click += new System.EventHandler(this.buttonXExit_Click);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.Designer.cs",
+      "line": 76,
+      "text": "this.buttonXDeleteSelectedItems.Click += new System.EventHandler(this.buttonXDeleteSelectedItems_Click);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.Designer.cs",
+      "line": 108,
+      "text": "this.buttonXDeleteAllItems.Click += new System.EventHandler(this.buttonXDeleteAllItems_Click);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryDialogBox.Designer.cs",
+      "line": 127,
+      "text": "this.Load += new System.EventHandler(this.ManageRepositoryDialogBox_Load);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.Designer.cs",
+      "line": 57,
+      "text": "this.buttonXExit.Click += new System.EventHandler(this.buttonXExit_Click);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.Designer.cs",
+      "line": 69,
+      "text": "this.buttonXDeleteSelectedItems.Click += new System.EventHandler(this.buttonXDeleteSelectedItems_Click);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.Designer.cs",
+      "line": 91,
+      "text": "this.buttonXDeleteAllItems.Click += new System.EventHandler(this.buttonXDeleteAllItems_Click);"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/DialogBoxes/ManageRepositoryExDialogBox.Designer.cs",
+      "line": 154,
+      "text": "this.Load += new System.EventHandler(this.ManageRepositoryDialogBox_Load);"
+    }
+  ],
+  "checks": 20,
+  "receiptSha256": "fa2db69f5a32aca3510ae1f82a0729fdfd1afab52b81eabf0eb7989fc1bcbb28",
+  "report": "docs/archify/dispense-repository-delete-review.md",
+  "reportSha256": "35b64cb8dcd7b317473847d5d307c2092c58d088ef51380eeabd03ba2dc4cae3",
+  "scope": "Source and report binding; runtime evidence is limited to the receipt scope, not native UI or product acceptance."
+}

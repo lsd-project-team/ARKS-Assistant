@@ -1,0 +1,248 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 焊头到相机偏移标定",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "animation": "none",
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "界面入口"
+        },
+        "backend": {
+          "label": "标定动作"
+        },
+        "database": {
+          "label": "坐标文件"
+        },
+        "security": {
+          "label": "判定与异常"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "ui",
+      "label": "人工触发与结果展示"
+    },
+    {
+      "id": "task",
+      "label": "后台标定方法"
+    },
+    {
+      "id": "failure",
+      "label": "异常与未完成路径",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "start",
+    "prepare",
+    "rotate",
+    "gate",
+    "save",
+    "finish",
+    "display"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "lane": "ui",
+      "col": 0,
+      "type": "frontend",
+      "label": "工具准备确认",
+      "sublabel": "仅OK启动Task",
+      "width": 150
+    },
+    {
+      "id": "cancel",
+      "lane": "ui",
+      "col": 1,
+      "type": "frontend",
+      "label": "取消启动",
+      "sublabel": "不创建本次Task",
+      "width": 150
+    },
+    {
+      "id": "display",
+      "lane": "ui",
+      "col": 5,
+      "type": "frontend",
+      "label": "显示偏移结果",
+      "sublabel": "不检查内层bool",
+      "width": 150
+    },
+    {
+      "id": "prepare",
+      "lane": "task",
+      "col": 1,
+      "type": "backend",
+      "label": "取放与视觉定位",
+      "sublabel": "BMC参数 / 自动对焦",
+      "width": 150
+    },
+    {
+      "id": "rotate",
+      "lane": "task",
+      "col": 2,
+      "type": "backend",
+      "label": "旋转中心修正",
+      "sublabel": "每轮两次 × 两角度",
+      "width": 150
+    },
+    {
+      "id": "gate",
+      "lane": "task",
+      "col": 3,
+      "type": "security",
+      "label": "误差或轮次判断",
+      "sublabel": "最多三轮修正",
+      "width": 150
+    },
+    {
+      "id": "save",
+      "lane": "task",
+      "col": 4,
+      "type": "database",
+      "label": "保存坐标系",
+      "sublabel": "先保存，再做复核",
+      "width": 150
+    },
+    {
+      "id": "finish",
+      "lane": "task",
+      "col": 5,
+      "type": "backend",
+      "label": "单轮复核并取标",
+      "sublabel": "正常返回true",
+      "width": 150
+    },
+    {
+      "id": "caught",
+      "lane": "failure",
+      "col": 3,
+      "type": "security",
+      "label": "内层捕获异常",
+      "sublabel": "日志与提示",
+      "width": 150
+    },
+    {
+      "id": "failed",
+      "lane": "failure",
+      "col": 4,
+      "type": "security",
+      "label": "返回false",
+      "sublabel": "无统一回滚",
+      "width": 150
+    },
+    {
+      "id": "escape",
+      "lane": "failure",
+      "col": 5,
+      "type": "security",
+      "label": "异常逸出",
+      "sublabel": "处理过程再次抛错",
+      "width": 150
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "prepare",
+      "role": "main"
+    },
+    {
+      "from": "start",
+      "to": "cancel",
+      "role": "branch",
+      "label": "取消"
+    },
+    {
+      "from": "prepare",
+      "to": "rotate",
+      "role": "main"
+    },
+    {
+      "from": "rotate",
+      "to": "gate",
+      "role": "main"
+    },
+    {
+      "from": "gate",
+      "to": "rotate",
+      "role": "return",
+      "label": "超差且可重做"
+    },
+    {
+      "from": "gate",
+      "to": "save",
+      "role": "main",
+      "label": "达标或轮次用尽"
+    },
+    {
+      "from": "save",
+      "to": "finish",
+      "role": "main"
+    },
+    {
+      "from": "finish",
+      "to": "display",
+      "role": "main",
+      "label": "true"
+    },
+    {
+      "from": "prepare",
+      "to": "caught",
+      "role": "error",
+      "label": "内层步骤抛异常"
+    },
+    {
+      "from": "caught",
+      "to": "failed",
+      "role": "branch",
+      "label": "处理正常返回"
+    },
+    {
+      "from": "caught",
+      "to": "escape",
+      "role": "error",
+      "label": "再次异常"
+    },
+    {
+      "from": "failed",
+      "to": "display",
+      "role": "branch",
+      "label": "false仍展示",
+      "toSide": "right"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "触发与证据",
+      "items": [
+        "FrmStartup.cs:98–110 → CalibrateTask.cs:1817–2270。",
+        "不是每片生产必经步骤；取消不启动任务。"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "重复与保存",
+      "items": [
+        "旋转最多三轮；后段偏移检查当前只执行一轮。",
+        "坐标保存早于最后复核；结果取消不执行本地回滚。"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "失败与溯源",
+      "items": [
+        "异常边覆盖内层整个方法；false不阻止外层结果显示。",
+        "详见 bond-camera-calibration-review.md；未做设备验收。"
+      ]
+    }
+  ]
+}

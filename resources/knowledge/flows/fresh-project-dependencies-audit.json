@@ -1,0 +1,22 @@
+{
+  "status": "fresh-project-reference-bindings-passed",
+  "projects": 16,
+  "originalCompileFiles": 1410,
+  "sourceProjectReferencePlacements": 130,
+  "changedReferencePaths": 115,
+  "identicalToPriorArtifacts": 15,
+  "nativeChecks": 98,
+  "mainChecks": 61,
+  "axisChecks": 37,
+  "frozenInputs": 103,
+  "replaysIdentical": true,
+  "fullMsbuildBuild": false,
+  "wholeGoalComplete": false,
+  "checkedAt": "2026-10-02T00:13:24.828Z",
+  "test": "fresh-project-dependencies-test.json",
+  "testSha256": "e38a84e8a263861b9b04d2f2f81ceceb8752c40dc42ff031fa462c18ea7d82b5",
+  "command": "node scripts/verify-fresh-project-dependencies.cjs",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-fresh-project-dependencies.log",
+  "logSha256": "b8dc0fb5596974b2c2541eedb0d121030aaf2ff42c89ae205a46fe08838fd986"
+}

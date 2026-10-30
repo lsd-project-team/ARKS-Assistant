@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1300" viewBox="0 0 2400 1300"><rect width="100%" height="100%" fill="white"/>
+<text x="610" y="75" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">窗口传入对象的上级参考系</text>
+<polyline points="154,850 1126,850" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1126,850 1105.2897166458883,860.0042072845583 1105.2897166458883,839.9957927154417" fill="#4d6070"/>
+<polyline points="190,958 190,274" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="190,274 200.0042072845583,294.71028335411154 179.9957927154417,294.71028335411154" fill="#4d6070"/>
+<text x="1130" y="850" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">X</text>
+<text x="190" y="225" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">Y</text>
+<polyline points="190,850 190,862" fill="none" stroke="#4d6070" stroke-width="3"/>
+<text x="190" y="905" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">0</text>
+<polyline points="550,850 550,862" fill="none" stroke="#4d6070" stroke-width="3"/>
+<text x="550" y="905" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">10</text>
+<polyline points="910,850 910,862" fill="none" stroke="#4d6070" stroke-width="3"/>
+<text x="910" y="905" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">20</text>
+<polyline points="190,850 910,814" fill="none" stroke="#245b87" stroke-width="7"/>
+<circle cx="190" cy="850" r="14" fill="#245b87"/>
+<circle cx="910" cy="814" r="14" fill="#b65f17"/>
+<polyline points="910,814 910,850" fill="none" stroke="#4d6070" stroke-width="4" stroke-dasharray="12 12"/>
+<text x="370" y="970" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">P1 (0,0)</text>
+<text x="865" y="680" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">P2 (20,1)</text>
+<polyline points="910,814 885,730" fill="none" stroke="#b65f17" stroke-width="3"/>
+<text x="600" y="420" fill="#162e43" font-family="Microsoft YaHei" font-size="57" font-weight="700" text-anchor="middle" dominant-baseline="central">θ = atan(1/20)</text>
+<text x="600" y="515" fill="#162e43" font-family="Microsoft YaHei" font-size="49" font-weight="400" text-anchor="middle" dominant-baseline="central">约 2.862° = 0.04996 rad</text>
+<text x="600" y="1110" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">X、Y同比例；位置单位 mm</text>
+<rect x="1310" y="190" width="1000" height="200" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1810.0" y="256.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">先检查 X 跨度</text>
+<text x="1810.0" y="324.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">|x1 − x2| ≥ 1 mm</text>
+<rect x="1310" y="535" width="1000" height="200" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1810.0" y="601.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">再检查角度</text>
+<text x="1810.0" y="669.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">|θ × 180/π| ≤ 5°</text>
+<rect x="1310" y="880" width="1000" height="200" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1810.0" y="946.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">在线通过后</text>
+<text x="1810.0" y="1014.0" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">Degree 写 θ，返回 OK</text>
+<polyline points="1810,390 1810,535" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1810,535 1799.9957927154417,514.2897166458885 1820.0042072845583,514.2897166458885" fill="#4d6070"/>
+<polyline points="1810,735 1810,880" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1810,880 1799.9957927154417,859.2897166458885 1820.0042072845583,859.2897166458885" fill="#4d6070"/>
+<text x="1200" y="1235" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">窗口改传入对象；调用方还可能把结果复制到其他对象</text></svg>

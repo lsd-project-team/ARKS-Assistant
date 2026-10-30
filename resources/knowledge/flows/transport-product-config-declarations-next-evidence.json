@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "status": "product-declarations-native-data-pending",
+  "capturedAt": "2026-10-01",
+  "completedContext": {
+    "report": "transport-inspection-repository-integration-review.md",
+    "checks": 1303,
+    "testSha256": "a477b535767e7f09800a834cc91142c1337c0f3353b523a4db48b53fc4b34280",
+    "compiledPriorContinuationCaptures": 19,
+    "additionalBaseDsCaptures": 10
+  },
+  "fragments": [
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public TransportUnitConfig TransportUnitConfig { get; set; }",
+      "kind": "property",
+      "startOffset": 1066,
+      "endOffset": 1214,
+      "start": 35,
+      "end": 36,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "b3d7729f95d031b083891e1f08bdd9fbe6b3378f50ef053fca8aeaf1a1c87f0b",
+      "source": "public TransportUnitConfig TransportUnitConfig { get; set; } =\r\n            new TransportUnitConfig() { EntityType = EntityTypeEnum.TransportUnit };",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public SubstrateConfig SubstrateConfig { get; set; }",
+      "kind": "property",
+      "startOffset": 1294,
+      "endOffset": 1413,
+      "start": 41,
+      "end": 41,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "c7ebf41f7a44ffbbd27c74d7df600b13b1b30b8e8055a58c7b9242e3d15690e2",
+      "source": "public SubstrateConfig SubstrateConfig { get; set; } = new SubstrateConfig() { EntityType = EntityTypeEnum.Substrate };",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public ModuleConfig ModuleConfig { get; set; }",
+      "kind": "property",
+      "startOffset": 1493,
+      "endOffset": 1600,
+      "start": 46,
+      "end": 46,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "605f6bc460c8d476fafef4b24d42f37ab9b5062e2061dcbb90e67010489da59a",
+      "source": "public ModuleConfig ModuleConfig { get; set; } = new ModuleConfig() { EntityType = EntityTypeEnum.Module };",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public BondPositionConfig BondPositionConfig { get; set; }",
+      "kind": "property",
+      "startOffset": 1680,
+      "endOffset": 1766,
+      "start": 51,
+      "end": 51,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "05fb1cb0efdd7c49b9713cd494e9bb027960128d0f407c60f49a8727783db59c",
+      "source": "public BondPositionConfig BondPositionConfig { get; set; } = new BondPositionConfig();",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public OtherConfig OtherConfig { get; set; }",
+      "kind": "property",
+      "startOffset": 1846,
+      "endOffset": 1911,
+      "start": 56,
+      "end": 56,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "1dd429834d5e3f7235b8415a8ed4af55dd55f65faa1e10177a62d5798344414c",
+      "source": "public OtherConfig OtherConfig { get; set; } = new OtherConfig();",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public EditStateEnum EditState { get; set; }",
+      "kind": "property",
+      "startOffset": 1988,
+      "endOffset": 2059,
+      "start": 61,
+      "end": 61,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "44e93422619035d5c8a9a8db1eac08e6a36282972aee24a9ea7746607c1679af",
+      "source": "public EditStateEnum EditState { get; set; } = EditStateEnum.NewCreate;",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/ProductConfiguration.cs",
+      "anchor": "public OppositeSexConfiguration OppositeSexConfiguration { get; set; }",
+      "kind": "property",
+      "startOffset": 2138,
+      "endOffset": 2242,
+      "start": 66,
+      "end": 66,
+      "fileSha256": "b51086bf360cd740da35e128d580d162b74d29334d57b057980f6efd4134eb47",
+      "snippetSha256": "a0b5b1383233230c901649f4a9b624720623b1e154df098c2d1e2afe171595f3",
+      "source": "public OppositeSexConfiguration OppositeSexConfiguration { get; set; } = new OppositeSexConfiguration();",
+      "execution": "runtime-pending-product-config-native-data"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Model/TuEnum.cs",
+      "anchor": "public enum EditStateEnum",
+      "kind": "enum",
+      "startOffset": 2281,
+      "endOffset": 2687,
+      "start": 116,
+      "end": 137,
+      "fileSha256": "c43ddaf54945f2579e2ec415ffa2447f6e94ec54b3239b74c3c3ee3d77ef2e76",
+      "snippetSha256": "6085f701e317548712cc4f5c1aa05b5c94c2dd7e8f6e0da800148ce9ee62c5a3",
+      "source": "public enum EditStateEnum\r\n    {\r\n        /// <summary>\r\n        /// 新建\r\n        /// </summary>\r\n        NewCreate = 0,\r\n\r\n        /// <summary>\r\n        /// 未完成\r\n        /// </summary>\r\n        NotYetFinished = 1,\r\n\r\n        /// <summary>\r\n        /// 外部修改\r\n        /// </summary>\r\n        ChangedOutside = 2,\r\n\r\n        /// <summary>\r\n        /// 完成\r\n        /// </summary>\r\n        Completely = 3\r\n    }",
+      "execution": "runtime-pending-product-config-native-data"
+    }
+  ],
+  "nextChecks": [
+    "Compile original seven initialized ProductConfiguration declarations and actual TransportUnitSystem.Model.EditStateEnum; preserve type identity distinct from same-named BaseDsSetting enum. Confirm fresh config types, EntityType, default empty lists/roots and source teaching defaults, then migrate synthetic product fields in full startup/entity composition.",
+    "Combine original repository and source model defaults with actual selected JSON helper/generic Singleton SDK in an isolated .NET Framework data composition. Use explicit Framework references and existing Roslyn if needed; preserve unmodified source instead of downgrading modern syntax. Validate partial member-error/default state, missing list versus missing object and native singleton cache/publication/Save behavior.",
+    "Continue actual AOP/PR/VM/action/SDK, native build, deployed configuration/DLL/native UI/equipment and all 29 groups/13 requirements."
+  ],
+  "scope": "Eight exact source captures only outside current 1303 composition. Product declarations and generic singleton/JSON currently remain adapters in full startup composition. Separate SDK data probe executes 26 synthetic assertions per DLL copy; it does not prove original product configuration, application deployment or native UI/equipment acceptance."
+}

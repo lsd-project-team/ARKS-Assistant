@@ -1,0 +1,94 @@
+{
+  "schema": "archify-remaining-node-early-boundary-audit-v1",
+  "status": "source-confirmed-boundary",
+  "recordedAt": "2026-10-06T23:30:10.735Z",
+  "checks": [
+    {
+      "label": "s1-offline-block-marks-step",
+      "ok": true,
+      "detail": "line=106"
+    },
+    {
+      "label": "s1-offline-block-has-no-return",
+      "ok": true,
+      "detail": "execution continues after the offline state update"
+    },
+    {
+      "label": "s1-vision-call-follows-offline-block",
+      "ok": true,
+      "detail": "offline branch still reaches the vision call path"
+    },
+    {
+      "label": "s2-context-is-read-before-offline-gate",
+      "ok": true,
+      "detail": "offline line=142"
+    },
+    {
+      "label": "s2-offline-block-marks-step",
+      "ok": true,
+      "detail": "offline branch completes current S2 step"
+    },
+    {
+      "label": "s2-finally-refreshes-ui",
+      "ok": true,
+      "detail": "offline DoWork still enters the UI refresh finally"
+    }
+  ],
+  "sources": {
+    "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseDefectActionNode.cs": "faf46a3a0976bd9c7a67addddd6e28a80649fdadc45fb1969a1de827d29b1ef4",
+    "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/BPActionNode/AfterBondCheckActionNode.cs": "a5062fc7a683cae347fe1a3f38e6488549003a012166ff0ea13ef476228bd12b"
+  },
+  "boundary": {
+    "s1": "Offline marks S1FinishedStep but has no early return; it continues into PostBondInspection and DispenseVisionController.",
+    "s2": "Offline gate follows current context and IsNeedDefect preparation, then marks S2FinishedStep; finally refreshes the System2 UI.",
+    "probe": {
+      "status": "failed-unserializable-runtime-exception",
+      "process": {
+        "exitCode": 3762504530,
+        "signal": null,
+        "error": null
+      },
+      "stdoutBytes": 0,
+      "stderr": "由于 Exception.ToString() 失败，因此无法打印异常字符串。",
+      "compile": {
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null,
+        "result": {
+          "status": "passed",
+          "assemblyName": "ArchifyNativeNodeDoWorkBranches",
+          "compiler": "Bundled Roslyn",
+          "compilerAssembly": "Microsoft.CodeAnalysis.CSharp, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+          "sourceInputs": 2,
+          "referenceInputs": 162,
+          "outputKind": "ConsoleApplication",
+          "platform": "X64",
+          "defines": [
+            "DEBUG",
+            "TRACE"
+          ],
+          "allowUnsafe": false,
+          "languageVersion": "CSharp14",
+          "diagnostics": [
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(17,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(14,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(8,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(16,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(12,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(11,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(6,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(7,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(10,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(15,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(9,1): hidden CS8019: Unnecessary using directive.",
+            "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\native-node-do-work-branches\\Host.cs(13,1): hidden CS8019: Unnecessary using directive."
+          ],
+          "scope": "Selected original identity-node, S1 measure-height, S1 carrier vision, S2 vision, S1 relative-bond dispense-correction, S2 uplook-correction, and S2 pre-dispense disabled-hardware offline DoWork branches on the public full tree/step fixture; no private writes, production Task, UI, SQL, VM, or device."
+        }
+      }
+    }
+  },
+  "scope": "This audit rules out these candidates from the selected non-device DoWork-success fixture; it does not claim the production branches are defective in every configuration.",
+  "productionSourceEdited": false,
+  "productionProjectEdited": false
+}

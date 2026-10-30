@@ -1,0 +1,1205 @@
+{
+  "scope": "D:\\agent_project\\code_agent\\trunk\\AKRS.ZX2200",
+  "project_sha256": "50509da43e7a02d8f59a04ce017ca65b56aa9b8e5116d603a3fbe076e1b2d3a5",
+  "method": "工程显式Compile项与文本调用入口交叉发现；人工核对关键链路，非Roslyn绑定或整机运行",
+  "compiled_cs_files": 1137,
+  "files_with_matching_entries": 52,
+  "files": [
+    {
+      "file": "BondSystem/Controllers/System2Controller.Assistant.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 248,
+          "text": "AKRSPoint4D curPickPos = this.CalculatePickPos(component, componentAngle, matchResult);"
+        },
+        {
+          "line": 497,
+          "text": "AKRSPoint4D curPickPos = this.CalculatePickPos(component, componentAngle, null);"
+        },
+        {
+          "line": 681,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(substrate))"
+        },
+        {
+          "line": 688,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(module))"
+        },
+        {
+          "line": 696,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(bondPosition))"
+        },
+        {
+          "line": 762,
+          "text": "(ExcuteResult excuteResult, AKRSPoint4D offset) res = this.UplookVisionAction("
+        },
+        {
+          "line": 832,
+          "text": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 950,
+          "text": "public (ExcuteResult, AKRSPoint4D) UplookVisionAction(BondPosition bondPosition, BaseCarrierConfig component)"
+        },
+        {
+          "line": 1035,
+          "text": "bondPosition.BondPositionInfo.ComponentAngleOffSet = result1.matchResult.Angle;"
+        },
+        {
+          "line": 1036,
+          "text": "bondPosition.BondPositionInfo.ComponentOffSet = currentComponentOffset;"
+        },
+        {
+          "line": 1078,
+          "text": "bondPosition.BondPositionInfo.ComponentOffSet ="
+        },
+        {
+          "line": 1084,
+          "text": "bondPosition.BondPositionInfo.ComponentAngleOffSet ="
+        },
+        {
+          "line": 1156,
+          "text": "bondPosition.BondPositionInfo.ComponentAngleOffSet = (result1.matchResult.Angle + result2.matchResult.Angle) / 2.0;"
+        },
+        {
+          "line": 1157,
+          "text": "bondPosition.BondPositionInfo.ComponentOffSet = currentComponentOffset;"
+        },
+        {
+          "line": 1207,
+          "text": "bondPosition.BondPositionInfo.ComponentOffSet ="
+        },
+        {
+          "line": 1214,
+          "text": "bondPosition.BondPositionInfo.ComponentAngleOffSet ="
+        },
+        {
+          "line": 1457,
+          "text": "public AKRSPoint4D CalculatePickPos(BaseCarrierConfig component, double componentAngle, MatchResult matchResult)"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmMoveToBondingPosition.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 99,
+          "text": "this.transportUnit = new TransportUnit(MachineStateModel.GetInstance().CurrentMachineSystem);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Manual/FrmLearnIPT.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 127,
+          "text": "BondDevicePara.GetInstance().IPTDevicePara.IPTVisionPos = posInG0;"
+        },
+        {
+          "line": 141,
+          "text": "BondDevicePara.GetInstance().IPTDevicePara.RightIPTVisionPos = posInG0;"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Controls/Setting/BondPosition/UcBondPositionEdit.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 87,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null)"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 76,
+          "text": "System2Domain.GetInstance().System2ObjectVision(bondPosition);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 60,
+          "text": "System2Domain.GetInstance().System2ObjectVision(transportUnit);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 72,
+          "text": "System2Domain.GetInstance().System2ObjectVision(module);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 71,
+          "text": "System2Domain.GetInstance().System2ObjectVision(substrate);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 150,
+          "text": "AKRSPoint4D bondPos = this.CalculateBondPos();"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 410,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 498,
+          "text": "private AKRSPoint4D CalculateBondPos()"
+        },
+        {
+          "line": 521,
+          "text": "AKRSPoint3D defectCompensation = DefectCompensate.GetPostBondCompensation(this.bondPosition.Name);"
+        },
+        {
+          "line": 524,
+          "text": "AKRSPoint3D singleBpCompensation = DefectCompensate.GetBpSeparateOffset(this.bondPosition);"
+        },
+        {
+          "line": 561,
+          "text": "point3D = RealTimeCorrection.GetInstance().GetCompensatePoint3D("
+        },
+        {
+          "line": 579,
+          "text": "realBondPositionInG0 -= TransportUnitCompensate.GetInstance().GetBondCompensate("
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 186,
+          "text": "if (!TpMarkCompensate.PickUpCompensationVision(true))"
+        },
+        {
+          "line": 266,
+          "text": "AKRSPoint4D curPickPos = this.system2Controller.CalculatePickPos(component, componentAngle, matchResult);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 423,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 490,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null)"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 248,
+          "text": "this.bondPosition.BondPositionInfo.IPTVisionPos = this.bondModuleController.ConvertMachineToG0Pos(p1RealVisionPos);"
+        },
+        {
+          "line": 304,
+          "text": "bondPosition.BondPositionInfo.ComponentAngleOffSet = result1.matchResult.Angle;"
+        },
+        {
+          "line": 359,
+          "text": "bondPosition.BondPositionInfo.ComponentAngleOffSet ="
+        },
+        {
+          "line": 380,
+          "text": "this.bondPosition.BondPositionInfo.IPTPickPos = this.bondModuleController.ConvertMachineToG0Pos(machinePickPos);"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 248,
+          "text": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet = result1.matchResult.Angle;"
+        },
+        {
+          "line": 249,
+          "text": "this.bondPosition.BondPositionInfo.ComponentOffSet = currentComponentOffset;"
+        },
+        {
+          "line": 285,
+          "text": "this.bondPosition.BondPositionInfo.ComponentOffSet ="
+        },
+        {
+          "line": 291,
+          "text": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet ="
+        },
+        {
+          "line": 365,
+          "text": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet = (result1.matchResult.Angle + result2.matchResult.Angle) / 2.0;"
+        },
+        {
+          "line": 366,
+          "text": "this.bondPosition.BondPositionInfo.ComponentOffSet = currentComponentOffset;"
+        },
+        {
+          "line": 421,
+          "text": "this.bondPosition.BondPositionInfo.ComponentOffSet ="
+        },
+        {
+          "line": 428,
+          "text": "this.bondPosition.BondPositionInfo.ComponentAngleOffSet ="
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Models/System2Domain.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 267,
+          "text": "public bool System2ObjectVision(BaseMatter baseEntity, bool byMapping = true)"
+        },
+        {
+          "line": 269,
+          "text": "return this.System2MatterVision(baseEntity, byMapping);"
+        },
+        {
+          "line": 279,
+          "text": "public bool System2MatterVision(BaseMatter baseEntity, bool byMapping = true)"
+        }
+      ]
+    },
+    {
+      "file": "BondSystem/Tasks/BondTask.cs",
+      "compiled": true,
+      "topic": "S2定位、芯片纠偏、取片或手动辅助",
+      "matches": [
+        {
+          "line": 162,
+          "text": "if (!TpMarkCompensate.PickUpCompensationVision(true))"
+        },
+        {
+          "line": 189,
+          "text": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\");"
+        },
+        {
+          "line": 203,
+          "text": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 204,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 404,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 476,
+          "text": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit = null;"
+        }
+      ]
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmGlobalCalibration.cs",
+      "compiled": true,
+      "topic": "标定输入；本轮不展开标定操作",
+      "matches": [
+        {
+          "line": 1444,
+          "text": "AKRSPoint3D compensate = this.BondCompensate.GetBondCompensate(point3D.X, point3D.Y);"
+        },
+        {
+          "line": 1553,
+          "text": "AKRSPoint3D compensate = this.BondCompensate.GetBondCompensate(point2D.X, point2D.Y);"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 646,
+          "text": "transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 669,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(substrate, false))"
+        },
+        {
+          "line": 693,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(module, false))"
+        },
+        {
+          "line": 718,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(bondPosition, false))"
+        },
+        {
+          "line": 811,
+          "text": "transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1);"
+        },
+        {
+          "line": 847,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(substrate,false))"
+        },
+        {
+          "line": 859,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(module, false))"
+        },
+        {
+          "line": 872,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(bondPosition, false))"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 73,
+          "text": "System1Domain.GetInstance().System1MatterVision(this.BondPosition);"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 64,
+          "text": "System1Domain.GetInstance().System1MatterVision(TransportUnit);"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 53,
+          "text": "System1Domain.GetInstance().System1MatterVision(module);"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 51,
+          "text": "System1Domain.GetInstance().System1MatterVision(substrate);"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Models/System1Domain.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 96,
+          "text": "public bool System1MatterVision(BaseMatter baseEntity, bool byMapping = true)"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Services/System2ActionNodesService.cs",
+      "compiled": false,
+      "topic": "未编入当前工程；不据此描述生产行为",
+      "matches": [
+        {
+          "line": 144,
+          "text": "TransportUnit transportUnit = new TransportUnit();"
+        }
+      ]
+    },
+    {
+      "file": "DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "compiled": true,
+      "topic": "S1产品定位及产品动作",
+      "matches": [
+        {
+          "line": 97,
+          "text": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 98,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System1);"
+        }
+      ]
+    },
+    {
+      "file": "Experiment/TestFunction/FrmTest.cs",
+      "compiled": true,
+      "topic": "实验入口；与生产行为区分",
+      "matches": [
+        {
+          "line": 525,
+          "text": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\");"
+        },
+        {
+          "line": 624,
+          "text": "TransportUnit transportUnit = TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\");"
+        }
+      ]
+    },
+    {
+      "file": "Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.Assistance.cs",
+      "compiled": true,
+      "topic": "配置与辅助入口；核查记录列明，不扩展为独立纠偏类型",
+      "matches": [
+        {
+          "line": 65,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 161,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 221,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 281,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 330,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 360,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 402,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 446,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 501,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 557,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 589,
+          "text": "if (this.TransportUnit == null)"
+        },
+        {
+          "line": 668,
+          "text": "if (System2Domain.GetInstance().TransportUnit == null)"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.cs",
+      "compiled": true,
+      "topic": "动作编排、启动或界面入口",
+      "matches": [
+        {
+          "line": 1493,
+          "text": "TransportUnit transportUnit = new TransportUnit(\"测试\");"
+        }
+      ]
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "compiled": true,
+      "topic": "动作编排、启动或界面入口",
+      "matches": [
+        {
+          "line": 137,
+          "text": "System2Domain.System2MatterVision(transportUnit);"
+        },
+        {
+          "line": 144,
+          "text": "System2Domain.System2ObjectVision(transportUnit);"
+        },
+        {
+          "line": 154,
+          "text": "System2Domain.System2ObjectVision(substrate);"
+        },
+        {
+          "line": 166,
+          "text": "System2Domain.System2ObjectVision(module);"
+        },
+        {
+          "line": 178,
+          "text": "System2Domain.System2ObjectVision(bondPosition);"
+        },
+        {
+          "line": 202,
+          "text": "System1Domain.GetInstance().System1MatterVision(transportUnit);"
+        },
+        {
+          "line": 233,
+          "text": "System1Domain.GetInstance().System1MatterVision(substrate);"
+        },
+        {
+          "line": 245,
+          "text": "System1Domain.GetInstance().System1MatterVision(module);"
+        },
+        {
+          "line": 262,
+          "text": "System1Domain.GetInstance().System1MatterVision(bondPosition);"
+        }
+      ]
+    },
+    {
+      "file": "SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+      "compiled": true,
+      "topic": "相关运行补偿",
+      "matches": [
+        {
+          "line": 187,
+          "text": "public static AKRSPoint3D GetPostBondCompensation(string bpName)"
+        },
+        {
+          "line": 235,
+          "text": "public static AKRSPoint3D GetBpSeparateOffset(BondPosition bondPosition)"
+        }
+      ]
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/BondCompensate.cs",
+      "compiled": true,
+      "topic": "相关运行补偿",
+      "matches": [
+        {
+          "line": 74,
+          "text": "public AKRSPoint3D GetBondCompensate(double x, double y)"
+        }
+      ]
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/RealTimeCorrection.cs",
+      "compiled": true,
+      "topic": "相关运行补偿",
+      "matches": [
+        {
+          "line": 149,
+          "text": "public AKRSPoint3D GetCompensatePoint3D(AKRSPoint3D iptPickPos, AKRSPoint3D iptVisionPos, AKRSPoint3D bondPos, AKRSPoint3D bondVisonPos)"
+        }
+      ]
+    },
+    {
+      "file": "SupportFeature/Compensate/MotionAreaCompensate/TransportUnitCompensate.cs",
+      "compiled": true,
+      "topic": "相关运行补偿",
+      "matches": [
+        {
+          "line": 66,
+          "text": "public AKRSPoint3D GetBondCompensate(double x, double y)"
+        }
+      ]
+    },
+    {
+      "file": "SupportFeature/Compensate/TemperatureCompensate/TpMarkCompensate.cs",
+      "compiled": true,
+      "topic": "相关运行补偿",
+      "matches": [
+        {
+          "line": 153,
+          "text": "public static bool PickUpCompensationVision(bool firstTu)"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/BondSubSectionController.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 447,
+          "text": "if (this.bondSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 461,
+          "text": "this.bondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 462,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 499,
+          "text": "this.bondSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 506,
+          "text": "this.bondSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 527,
+          "text": "if (this.bondSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 541,
+          "text": "this.bondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 542,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 578,
+          "text": "this.bondSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 597,
+          "text": "this.bondSubSectionProgram.TransportUnit = null;"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/DispenseSubSectionController.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 453,
+          "text": "if (this.dispenseSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 467,
+          "text": "this.dispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 468,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System1);"
+        },
+        {
+          "line": 510,
+          "text": "this.dispenseSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 517,
+          "text": "this.dispenseSubSectionProgram.TransportUnit = null;"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 210,
+          "text": "this.transportProgram.LoadingSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 211,
+          "text": "this.transportProgram.DispenseSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 212,
+          "text": "this.transportProgram.BondSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 213,
+          "text": "this.transportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 214,
+          "text": "this.transportProgram.UnloadingSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 267,
+          "text": "this.transportProgram.DispenseSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 317,
+          "text": "this.transportProgram.BondSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 527,
+          "text": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 648,
+          "text": "if (this.TransportProgram.LoadingSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 650,
+          "text": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 656,
+          "text": "if (this.TransportProgram.LoadingSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 826,
+          "text": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 834,
+          "text": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 1126,
+          "text": "if (this.TransportProgram.DispenseSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 1128,
+          "text": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 1134,
+          "text": "if (this.TransportProgram.DispenseSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 1146,
+          "text": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 1478,
+          "text": "this.TransportProgram.BondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 1481,
+          "text": "if (this.TransportProgram.BondSubSectionProgram.TransportUnit == null && isManual)"
+        },
+        {
+          "line": 1483,
+          "text": "this.TransportProgram.BondSubSectionProgram.TransportUnit = new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 1488,
+          "text": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 1494,
+          "text": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 1764,
+          "text": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 1772,
+          "text": "this.TransportProgram.BondSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 2011,
+          "text": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 2016,
+          "text": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 2246,
+          "text": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null;"
+        },
+        {
+          "line": 2419,
+          "text": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit = null;"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/UnloadingSubSectionController.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 94,
+          "text": "if (this.unloadingSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 103,
+          "text": "this.unloadingSubSectionProgram.TransportUnit = null;"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Controllers/WaitingUnloadSubSectionController.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 94,
+          "text": "if (this.waitingUnloadSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 103,
+          "text": "this.waitingUnloadSubSectionProgram.TransportUnit = null;"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Models/Programs/BaseSubSectionProgram.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 64,
+          "text": "this.TransportUnit = new TransportUnit(\"示教\");"
+        }
+      ]
+    },
+    {
+      "file": "TransportSystem/Tasks/TransportTask.cs",
+      "compiled": true,
+      "topic": "TU区段、交接、物料搜索及人工补料",
+      "matches": [
+        {
+          "line": 786,
+          "text": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 787,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System1);"
+        },
+        {
+          "line": 795,
+          "text": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 796,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 831,
+          "text": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 832,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System1);"
+        },
+        {
+          "line": 876,
+          "text": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 877,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System2);"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+      "compiled": true,
+      "topic": "TU模型、配置、Mapping及示教定位",
+      "matches": [
+        {
+          "line": 396,
+          "text": "return new TransportUnit(\"示教\");"
+        },
+        {
+          "line": 401,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 420,
+          "text": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 421,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System2);"
+        },
+        {
+          "line": 428,
+          "text": "if (TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit == null)"
+        },
+        {
+          "line": 447,
+          "text": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit ="
+        },
+        {
+          "line": 448,
+          "text": "new TransportUnit(CurrentMachineSystemEnum.System1);"
+        },
+        {
+          "line": 666,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(transportUnit, false))"
+        },
+        {
+          "line": 671,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(substrate, false))"
+        },
+        {
+          "line": 680,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(transportUnit, false))"
+        },
+        {
+          "line": 687,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(substrate, false))"
+        },
+        {
+          "line": 692,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(module, false))"
+        },
+        {
+          "line": 701,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(transportUnit, false))"
+        },
+        {
+          "line": 708,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(substrate, false))"
+        },
+        {
+          "line": 715,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(module, false))"
+        },
+        {
+          "line": 720,
+          "text": "if (!System2Domain.GetInstance().System2MatterVision(bondPosition, false))"
+        },
+        {
+          "line": 742,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(transportUnit, false))"
+        },
+        {
+          "line": 747,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(substrate, false))"
+        },
+        {
+          "line": 756,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(transportUnit, false))"
+        },
+        {
+          "line": 763,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(substrate, false))"
+        },
+        {
+          "line": 768,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(module, false))"
+        },
+        {
+          "line": 777,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(transportUnit, false))"
+        },
+        {
+          "line": 784,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(substrate, false))"
+        },
+        {
+          "line": 791,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(module, false))"
+        },
+        {
+          "line": 796,
+          "text": "if (!System1Domain.GetInstance().System1MatterVision(bondPosition, false))"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTransportUnitMapping.cs",
+      "compiled": true,
+      "topic": "TU模型、配置、Mapping及示教定位",
+      "matches": [
+        {
+          "line": 114,
+          "text": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = transportNew;"
+        },
+        {
+          "line": 210,
+          "text": "this.baseSubSectionProgram.TransportUnit = transportUnit;"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "compiled": true,
+      "topic": "TU模型、配置、Mapping及示教定位",
+      "matches": [
+        {
+          "line": 31,
+          "text": "this.transportUnit = new TransportUnit(\"Mapping图\");"
+        },
+        {
+          "line": 628,
+          "text": "this.transportUnit = new TransportUnit(\"Mapping图\");"
+        },
+        {
+          "line": 647,
+          "text": "this.transportUnit = new TransportUnit(\"Mapping图\");"
+        },
+        {
+          "line": 669,
+          "text": "this.transportUnit = new TransportUnit(\"Mapping图\");"
+        },
+        {
+          "line": 686,
+          "text": "this.transportUnit = new TransportUnit(\"Mapping图\");"
+        },
+        {
+          "line": 701,
+          "text": "this.transportUnit = new TransportUnit(\"Mapping图\");"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "compiled": true,
+      "topic": "TU模型、配置、Mapping及示教定位",
+      "matches": [
+        {
+          "line": 26,
+          "text": "private TransportUnit TransportUnit = new TransportUnit(\"mapping\");"
+        },
+        {
+          "line": 115,
+          "text": "this.TransportUnit = new TransportUnit(\"mapping\");"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "compiled": true,
+      "topic": "TU模型、配置、Mapping及示教定位",
+      "matches": [
+        {
+          "line": 396,
+          "text": "System2Domain.GetInstance().System2ObjectVision(baseMatter, false);"
+        },
+        {
+          "line": 1110,
+          "text": "System2Domain.GetInstance().System2ObjectVision(baseMatter, false);"
+        }
+      ]
+    },
+    {
+      "file": "TransportUnitSystem/Service/TuService.cs",
+      "compiled": true,
+      "topic": "TU模型、配置、Mapping及示教定位",
+      "matches": [
+        {
+          "line": 1837,
+          "text": "TransportUnit transportUnit = new TransportUnit(\"Mapping反序列化\");"
+        },
+        {
+          "line": 1967,
+          "text": "TransportUnit transportUnit = new TransportUnit(\"Mapping反序列化\");"
+        }
+      ]
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+      "compiled": true,
+      "topic": "供料定位、校正和取片结果",
+      "matches": [
+        {
+          "line": 196,
+          "text": "(bool isSucceed, MatchResult matchResult) resultTimesLocation = this.ToRequiredAccuracy();"
+        },
+        {
+          "line": 1045,
+          "text": "private void MoveDieToPickCenter()"
+        },
+        {
+          "line": 1394,
+          "text": "private (bool isSucceed, MatchResult matchResult) ToRequiredAccuracy()"
+        }
+      ]
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+      "compiled": true,
+      "topic": "供料定位、校正和取片结果",
+      "matches": [
+        {
+          "line": 142,
+          "text": "this.MoveDieToPickCenter();"
+        }
+      ]
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+      "compiled": true,
+      "topic": "供料定位、校正和取片结果",
+      "matches": [
+        {
+          "line": 122,
+          "text": "this.MoveDieToPickCenter();"
+        }
+      ]
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+      "compiled": true,
+      "topic": "供料定位、校正和取片结果",
+      "matches": [
+        {
+          "line": 309,
+          "text": "this.MoveDieToPickCenter();"
+        },
+        {
+          "line": 328,
+          "text": "this.MoveDieToPickCenter();"
+        }
+      ]
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+      "compiled": true,
+      "topic": "供料定位、校正和取片结果",
+      "matches": [
+        {
+          "line": 158,
+          "text": "this.MoveDieToPickCenter();"
+        }
+      ]
+    }
+  ]
+}

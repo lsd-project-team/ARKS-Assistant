@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1260" viewBox="0 0 2400 1260"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">候选存在 允许取料 已取走分属不同阶段</text>
+<text x="145" y="320" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">Nine</text>
+<rect x="340" y="230" width="620" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="650.0" y="290.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">缓存或新识别</text>
+<text x="650.0" y="358.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">选取候选</text>
+<rect x="1030" y="230" width="620" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1340.0" y="290.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">移到Mark中心</text>
+<text x="1340.0" y="358.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">再运行PR刷新邻片</text>
+<rect x="1720" y="230" width="620" height="180" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2030.0" y="290.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">移动取料位</text>
+<text x="2030.0" y="358.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本次搜索成功</text>
+<polyline points="960,320 1030,320" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1030,320 1009.2897166458885,330.0042072845583 1009.2897166458885,309.9957927154417" fill="#4d6070"/>
+<polyline points="1650,320 1720,320" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,320 1699.2897166458883,330.0042072845583 1699.2897166458883,309.9957927154417" fill="#4d6070"/>
+<text x="145" y="780" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">WaferMap</text>
+<rect x="340" y="690" width="620" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="650.0" y="750.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Map提供候选</text>
+<text x="650.0" y="818.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本目录外的寻路接口</text>
+<rect x="1030" y="690" width="620" height="180" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1340.0" y="750.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">标准单点定位</text>
+<text x="1340.0" y="818.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">跳板 / isSkip则继续选取</text>
+<rect x="1720" y="690" width="620" height="180" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2030.0" y="750.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">有效候选</text>
+<text x="2030.0" y="818.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本次搜索成功</text>
+<polyline points="960,780 1030,780" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1030,780 1009.2897166458885,790.0042072845583 1009.2897166458885,769.9957927154417" fill="#4d6070"/>
+<polyline points="1650,780 1720,780" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1720,780 1699.2897166458883,790.0042072845583 1699.2897166458883,769.9957927154417" fill="#4d6070"/>
+<polyline points="1310,870 1310,950 600,950 600,870" fill="none" stroke="#b65f17" stroke-width="4"/>
+<polygon points="600,870 610.0042072845583,890.7102833541115 589.9957927154417,890.7102833541115" fill="#b65f17"/>
+<text x="680" y="1000" fill="#b65f17" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">跳过当前候选 重走选择</text>
+<text x="1200" y="1130" fill="#162e43" font-family="Microsoft YaHei" font-size="43" font-weight="700" text-anchor="middle" dominant-baseline="central">成功后由供料任务发允许取料信号  取后RefreshMap另行记忆与更新</text></svg>

@@ -1,0 +1,50 @@
+{
+  "schema": "archify-transport-whole-action-sdk-current-v1",
+  "status": "current-transport-whole-action-sdk-frozen-input-verified",
+  "recordedAt": "2026-10-07T00:51:23.654Z",
+  "verification": {
+    "command": "node scripts/run-transport-whole-action-sdk-frozen-input.cjs",
+    "frozenInputSha256": "4c1de1c0dea3881806b414bfe81a2244ec2280f7fe4a7124115f201dae5395c5",
+    "restoredCurrentInputSha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642",
+    "result": {
+      "status": "passed",
+      "results": [
+        {
+          "tag": "library",
+          "checks": 278,
+          "artifactIdentical": true
+        },
+        {
+          "tag": "bin",
+          "checks": 278,
+          "artifactIdentical": true
+        }
+      ],
+      "scope": "54 complete unchanged original source files including S1/S2 action controllers, ProcessDomain/SingleProcessStep/SystemProcess/ProductDomain and ActionNode/Information/Message. Actual native Framework/SDK product, repository and process Save Load; focused278 checks including prior187 unchanged and91 new. Prior512+8 captures preserved.40 original startup invocations per SDK. Controller injection and eight order strategies per controller run original source; deterministic SDK replace-lock failure/data preservation/temp cleanup/recovery checked. Catalogs/actions/PR/hardware remain controlled. Original ProcessDomain CheckIsReady used by captured startup; other domain readiness remains controlled, including actual full System2Domain/SelfCheck linkage. Legacy1328 compiled only; no Fody/project/deployment/native UI/equipment acceptance.",
+      "directory": "C:\\Users\\akrs\\Documents\\ChatGPT\\archify\\.archify-work\\whole-action-sdk-replay-ilclNJ"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/archify/transport-whole-action-sdk-test.json",
+      "sha256": "b6167343e5bf7246d9ad254728e46c4c577f8dc573c3805557315250460c075d"
+    },
+    {
+      "path": "docs/archify/transport-whole-action-sdk-audit.json",
+      "sha256": "854b6bd908fde9aee9b0df9bbff2250dc00a17b7c4cfee5d9165ae4c025d0490"
+    },
+    {
+      "path": "docs/archify/transport-whole-action-sdk-progress.json",
+      "sha256": "1d7a7c3ca1251dac45894714ac99852a6eef8dfd26b3eb73035cb9a35f31ed04"
+    },
+    {
+      "path": "docs/archify/bond-config-native-source-test.json",
+      "sha256": "d649cfa6ff7d910cfb673e25000da174e3caf151419fd872c39758988db79642"
+    }
+  ],
+  "boundaries": [
+    "The compatibility replay temporarily used the preserved historical bond-config input and restored the current input in finally.",
+    "The 278-check action SDK run is separate from current 56-check bond preparation, 187-check entity/inspection replay and formal 1328 regression.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

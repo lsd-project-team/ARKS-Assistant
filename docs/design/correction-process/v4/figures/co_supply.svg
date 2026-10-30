@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="90" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">晶圆：先找候选并定位</text>
+<circle cx="600" cy="610" r="230" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<polygon points="442.5,473.0 517.5,473.0 517.5,527.0 442.5,527.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="480" cy="500" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="451.875" cy="479.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="562.5,473.0 637.5,473.0 637.5,527.0 562.5,527.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="500" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="571.875" cy="479.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="682.5,473.0 757.5,473.0 757.5,527.0 682.5,527.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="720" cy="500" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="691.875" cy="479.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="442.5,583.0 517.5,583.0 517.5,637.0 442.5,637.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="480" cy="610" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="451.875" cy="589.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="562.5,583.0 637.5,583.0 637.5,637.0 562.5,637.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="610" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="571.875" cy="589.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="682.5,583.0 757.5,583.0 757.5,637.0 682.5,637.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="720" cy="610" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="691.875" cy="589.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="442.5,693.0 517.5,693.0 517.5,747.0 442.5,747.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="480" cy="720" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="451.875" cy="699.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="562.5,693.0 637.5,693.0 637.5,747.0 562.5,747.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="600" cy="720" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="571.875" cy="699.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="682.5,693.0 757.5,693.0 757.5,747.0 682.5,747.0" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="720" cy="720" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="691.875" cy="699.75" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="530" y="225" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="600" cy="270" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="560,315 600,370 640,315" stroke="#246B99" stroke-width="5" fill="none"/>
+<polyline points="150,930 1050,930" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<text x="1800" y="90" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">静态华夫盒：焊头相机识别</text>
+<rect x="1410" y="480" width="780" height="380" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="5"/>
+<polygon points="1482.5,543.6 1597.5,543.6 1597.5,626.4 1482.5,626.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="585" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1496.875" cy="553.95" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="1482.5,703.6 1597.5,703.6 1597.5,786.4 1482.5,786.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="745" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1496.875" cy="713.95" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="1742.5,543.6 1857.5,543.6 1857.5,626.4 1742.5,626.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="585" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1756.875" cy="553.95" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="1742.5,703.6 1857.5,703.6 1857.5,786.4 1742.5,786.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1800" cy="745" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1756.875" cy="713.95" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="2002.5,543.6 2117.5,543.6 2117.5,626.4 2002.5,626.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="2060" cy="585" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="2016.875" cy="553.95" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polygon points="2002.5,703.6 2117.5,703.6 2117.5,786.4 2002.5,786.4" fill="#FFF1E4" stroke="#B75D21" stroke-width="5"/>
+<circle cx="2060" cy="745" r="9" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="2016.875" cy="713.95" r="8" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1730" y="235" width="140" height="90" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<circle cx="1800" cy="280" r="29" fill="white" stroke="#246B99" stroke-width="5"/>
+<polyline points="1760,325 1800,380 1840,325" stroke="#246B99" stroke-width="5" fill="none"/>
+<polyline points="1350,930 2250,930" stroke="#B7C6CF" stroke-width="3" fill="none"/></svg>

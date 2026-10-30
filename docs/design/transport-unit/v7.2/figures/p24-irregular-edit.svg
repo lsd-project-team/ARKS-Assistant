@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1120" viewBox="0 0 2400 1120"><rect width="100%" height="100%" fill="white"/>
+<rect x="80" y="80" width="660" height="210" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="410.0" y="151.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">配置节点编辑</text>
+<text x="410.0" y="219.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">新增／删除／复制</text>
+<rect x="880" y="80" width="660" height="210" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1210.0" y="151.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">编辑控件 Init</text>
+<text x="1210.0" y="219.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">重排ID并刷新视图</text>
+<rect x="1680" y="80" width="640" height="210" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="2000.0" y="151.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">配方保存</text>
+<text x="2000.0" y="219.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">节点树与公共配置</text>
+<polyline points="740,185 880,185" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="880,185 859.2897166458885,195.0042072845583 859.2897166458885,174.9957927154417" fill="#4d6070"/>
+<polyline points="1540,185 1680,185" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1680,185 1659.2897166458883,195.0042072845583 1659.2897166458883,174.9957927154417" fill="#4d6070"/>
+<rect x="80" y="640" width="940" height="220" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="550.0" y="716.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">旧运行TU</text>
+<text x="550.0" y="784.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">保留既有后代与关联节点</text>
+<rect x="1380" y="640" width="940" height="220" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1850.0" y="716.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">下一次新建TU</text>
+<text x="1850.0" y="784.0" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">沿当前 DownConfigs 展开</text>
+<polyline points="2000,290 2000,640" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="2000,640 1989.9957927154417,619.2897166458885 2010.0042072845583,619.2897166458885" fill="#4d6070"/>
+<text x="470" y="455" fill="#162e43" font-family="Microsoft YaHei" font-size="48" font-weight="700" text-anchor="middle" dominant-baseline="central">编辑界面重画</text>
+<text x="470" y="530" fill="#b65f17" font-family="Microsoft YaHei" font-size="48" font-weight="400" text-anchor="middle" dominant-baseline="central">不自动改写旧运行树</text>
+<text x="1200" y="1000" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">配置节点 ID、运行 Index 与节点对象引用承担不同职责</text></svg>

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "cdfa9df7-043a-4070-8df6-0d6fcc016f93",
+  "status": "current",
+  "command": "deliver",
+  "type": "tree",
+  "input": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\g0-archify\\device-tree.json",
+  "output": "D:\\agent_project\\code_agent\\resources\\knowledge\\flows\\g0-archify\\device-tree.html",
+  "specification": {
+    "sha256": "41125b4eae4ec8335fd5fee66d06bdce7dd787e48d00c404bbfe0ae4dc656944",
+    "bytes": 3931
+  },
+  "artifact": {
+    "sha256": "a2b1c13ad99e306ec337715e955acc2a03b83621fefe6862388b64e964fdc541",
+    "bytes": 822266
+  }
+}

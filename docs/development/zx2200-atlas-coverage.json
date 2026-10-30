@@ -1,0 +1,3101 @@
+{
+  "plan": "docs/architecture/zx2200-functional-atlas-plan.md",
+  "scope": "全部 45 个专题与 241 条阅读要求；pending 表示尚未按条完成当前复核，不表示现有页面完全没有相关内容。",
+  "topics": [
+    {
+      "id": "01",
+      "title": "整机架构与启动",
+      "group": "基础功能",
+      "requirements": [
+        {
+          "id": "01.01",
+          "text": "主程序与各 Domain、Controller、Module 的职责关系。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "01.02",
+          "text": "单实例、磁盘、数据迁移提示与软件授权检查。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "01.03",
+          "text": "PR、硬件、参数加载及主窗体启动。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "01.04",
+          "text": "在线、离线与 DryCycle 运行模式入口。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "title": "硬件配置与设备自检",
+      "group": "基础功能",
+      "requirements": [
+        {
+          "id": "02.01",
+          "text": "硬件名称与设备模块配置对应。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "02.02",
+          "text": "按配置检查轴、相机、气缸和传感器。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "02.03",
+          "text": "整机自检项目、结果汇总与失败返回。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "02.04",
+          "text": "回零执行、回零标记与初始化就绪判断。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "title": "G0 与设备坐标系统",
+      "group": "基础功能",
+      "requirements": [
+        {
+          "id": "03.01",
+          "text": "G0、普通坐标与从属坐标的关系。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-relations",
+              "steps": [
+                "reference",
+                "objects"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.02",
+          "text": "坐标 JSON 加载、父级绑定、创建、查找、刷新和保存。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-registry",
+              "steps": [
+                "load",
+                "create",
+                "storage",
+                "refresh",
+                "lookup"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.03",
+          "text": "本地坐标逐级转换为 G0。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-general",
+              "steps": [
+                "forward"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.04",
+          "text": "G0 逆序转换为本地坐标。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-general",
+              "steps": [
+                "inverse"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.05",
+          "text": "像素坐标结合拍照时轴位置转换为 G0。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-camera",
+              "steps": [
+                "inputs",
+                "parent"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.06",
+          "text": "平移、旋转、Z 偏移与角度累积。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-general",
+              "steps": [
+                "units",
+                "example"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.07",
+          "text": "General、VM 和其他标定类型的转换分支。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-camera",
+              "steps": [
+                "modes"
+              ]
+            },
+            {
+              "topic": "g0",
+              "flow": "g0-limits",
+              "steps": [
+                "capability"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.08",
+          "text": "标定文件和转换工具的载入与缓存。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-camera",
+              "steps": [
+                "calibration"
+              ]
+            },
+            {
+              "topic": "g0",
+              "flow": "g0-calibration",
+              "steps": [
+                "samples",
+                "effect"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.09",
+          "text": "父级缺失、首次创建 G0、删除接口和未实现逆变换的边界。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-registry",
+              "steps": [
+                "create",
+                "lookup"
+              ]
+            },
+            {
+              "topic": "g0",
+              "flow": "g0-limits",
+              "steps": [
+                "chain",
+                "capability"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03.10",
+          "text": "点胶、焊头、晶圆模块消费 G0 的入口。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "g0",
+              "flow": "g0-production",
+              "steps": [
+                "s1",
+                "s2",
+                "wafer",
+                "axes"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "title": "产品层级与产品坐标",
+      "group": "基础功能",
+      "requirements": [
+        {
+          "id": "04.01",
+          "text": "载具、基板、模块、焊点的对象和坐标继承关系。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-hierarchy",
+              "steps": [
+                "chain",
+                "construct",
+                "inherit",
+                "refresh"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "04.02",
+          "text": "矩阵、蛇形顺序、异形结构的实例展开。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-expansion",
+              "steps": [
+                "single",
+                "matrix",
+                "order",
+                "irregular"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "04.03",
+          "text": "定位点使用规则及新旧位置、角度计算。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-locate",
+              "steps": [
+                "components",
+                "match-angle",
+                "two-point",
+                "circle"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "04.04",
+          "text": "定位结果更新父子坐标与后续目标点。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-update",
+              "steps": [
+                "overview",
+                "limits",
+                "write",
+                "consume"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "04.05",
+          "text": "S1、S2 偏移和焊点位置、旋转补偿的来源。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "product-coordinates",
+              "flow": "product-offsets",
+              "steps": [
+                "stations",
+                "divide",
+                "bond"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "05",
+      "title": "视觉模板与公共视觉流程",
+      "group": "基础功能",
+      "requirements": [
+        {
+          "id": "05.01",
+          "text": "配方视觉名称收集、方案载入与初始化结果。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-templates",
+              "steps": [
+                "names",
+                "load",
+                "algorithm",
+                "ready"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "05.02",
+          "text": "相机、曝光、灯光设置与图像采集。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-acquisition",
+              "steps": [
+                "overview",
+                "hardware",
+                "capture",
+                "modes"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "05.03",
+          "text": "定位与缺陷检测结果分流、距离校验。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-results",
+              "steps": [
+                "match",
+                "defect",
+                "backside",
+                "distance",
+                "distance-branches"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "05.04",
+          "text": "载具、基板、模块、焊点的视觉调用关系。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-objects",
+              "steps": [
+                "entries",
+                "gates",
+                "returns",
+                "save"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "05.05",
+          "text": "身份识别与墨点节点的门控、状态写入和实际实现边界。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-identity",
+              "steps": [
+                "identity",
+                "placeholder",
+                "nine"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "05.06",
+          "text": "视觉失败的报警对话、重试、跳过与修改模板。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "public-vision",
+              "flow": "pv-alarm",
+              "steps": [
+                "dialog",
+                "ok",
+                "buttons",
+                "edit"
+              ]
+            },
+            {
+              "topic": "public-vision",
+              "flow": "pv-acquisition",
+              "steps": [
+                "modes"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "43",
+      "title": "参数仓库与示教系统",
+      "group": "基础功能",
+      "requirements": [
+        {
+          "id": "43.01",
+          "text": "设备参数、配方参数、数据集和仓库的归属。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "43.02",
+          "text": "参数反射、分组树、搜索与编辑器选择。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "43.03",
+          "text": "参数修改事件、单位、保存与取消。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "43.04",
+          "text": "示教步骤状态、前进后退、跳过和完成。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "43.05",
+          "text": "共享数据集筛选、添加、删除与配方关联。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "43.06",
+          "text": "参数迁移提示和设备信息重置。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "06",
+      "title": "相机与机械坐标标定",
+      "group": "标定与运动",
+      "requirements": [
+        {
+          "id": "06.01",
+          "text": "系统自动标定各子任务的调度顺序。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-dispatch",
+              "steps": [
+                "overview",
+                "confirm",
+                "optional",
+                "finish"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "06.02",
+          "text": "点胶与 Bond 相机采点、比例和坐标建立。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-cameras",
+              "steps": [
+                "grid",
+                "dispense",
+                "bond",
+                "transforms"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-single",
+              "steps": [
+                "cameras"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "06.03",
+          "text": "上视相机坐标及机械拍照位置标定。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-uplook",
+              "steps": [
+                "sampling",
+                "rotation",
+                "position"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-single",
+              "steps": [
+                "uplook"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "06.04",
+          "text": "晶圆相机、晶圆台与 N 点标定。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-wafer",
+              "steps": [
+                "distance",
+                "sampling",
+                "general"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "06.05",
+          "text": "焊头到相机偏移和旋转中心标定。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-offset",
+              "steps": [
+                "prepare",
+                "rotate",
+                "base",
+                "review"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-single",
+              "steps": [
+                "offset"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "06.06",
+          "text": "标定成功、参数更新、文件保存与最后复核的先后顺序。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-persistence",
+              "steps": [
+                "order",
+                "files",
+                "window"
+              ]
+            },
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-offset",
+              "steps": [
+                "review"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "06.07",
+          "text": "自动对焦、对中和目标像素移动的公共调用。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "camera-calibration",
+              "flow": "cc-common",
+              "steps": [
+                "center",
+                "pixel",
+                "focus",
+                "search"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "07",
+      "title": "吸嘴顶针与三点一线校准",
+      "group": "标定与运动",
+      "requirements": [
+        {
+          "id": "07.01",
+          "text": "吸嘴中心与高度示教、自动校准。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-center",
+              "steps": [
+                "two-positions",
+                "search",
+                "states"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-height",
+              "steps": [
+                "prepare",
+                "methods",
+                "service",
+                "completion"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-nozzle",
+              "steps": [
+                "prepare",
+                "first",
+                "second",
+                "write"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "07.02",
+          "text": "单顶针及全部顶针配置校准。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-ejection",
+              "steps": [
+                "prepare",
+                "wafer",
+                "bond",
+                "teach",
+                "teach-result"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-batch",
+              "steps": [
+                "list",
+                "loop",
+                "state"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "07.03",
+          "text": "取片偏移校准与准备门控。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-pick",
+              "steps": [
+                "selection",
+                "ready",
+                "source",
+                "single",
+                "double",
+                "write"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "07.04",
+          "text": "系统 2 三点一线校准的组合顺序。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-entry",
+              "steps": [
+                "overview",
+                "combined"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "07.05",
+          "text": "校准取消、工具更换与结果保存。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-results",
+              "steps": [
+                "persistence",
+                "tools",
+                "cancel"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-nozzle",
+              "steps": [
+                "prepare"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-pick",
+              "steps": [
+                "selection",
+                "write"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "08",
+      "title": "全局标定与扫描采集",
+      "group": "标定与运动",
+      "requirements": [
+        {
+          "id": "08.01",
+          "text": "扫描范围、预定义点及补偿区域建立。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-points",
+              "steps": [
+                "overview",
+                "manual",
+                "automatic",
+                "generate",
+                "measured-fit",
+                "completion"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-regions",
+              "steps": [
+                "create",
+                "cell"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "08.02",
+          "text": "X、Y 比例与二维平台采集。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-scale",
+              "steps": [
+                "modes",
+                "x",
+                "y",
+                "assistant"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-mapping",
+              "steps": [
+                "init",
+                "preliminary",
+                "mapping",
+                "record",
+                "test"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "08.03",
+          "text": "普通扫描、温漂采集、带补偿扫描及暂停停止。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-scan",
+              "steps": [
+                "start",
+                "ordinary",
+                "drift",
+                "compensated",
+                "simulation",
+                "prediction"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-completion",
+              "steps": [
+                "control",
+                "old-stop"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "08.04",
+          "text": "点序与区域排序、扫描清单导入导出。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-list",
+              "steps": [
+                "sort",
+                "edit",
+                "import",
+                "export"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-regions",
+              "steps": [
+                "priority",
+                "refresh"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "08.05",
+          "text": "标定数据生成、ETEL 或固高补偿开关及下载。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-driver",
+              "steps": [
+                "overview",
+                "etel",
+                "gugao",
+                "boundaries"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-completion",
+              "steps": [
+                "persistence"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "08.06",
+          "text": "Bond 偏移标定、校验与 BC 偏移关系计算。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "global-calibration",
+              "flow": "gc-bond",
+              "steps": [
+                "legacy",
+                "calibrate",
+                "validate",
+                "model",
+                "completion"
+              ]
+            },
+            {
+              "topic": "global-calibration",
+              "flow": "gc-bc",
+              "steps": [
+                "sample",
+                "row",
+                "linear",
+                "diagnostic"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "09",
+      "title": "光源控制与亮度标定",
+      "group": "标定与运动",
+      "requirements": [
+        {
+          "id": "09.01",
+          "text": "各相机红绿蓝环光、点光的硬件对应。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-hardware",
+              "steps": [
+                "overview",
+                "mode",
+                "shared",
+                "panel",
+                "z-camera"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "09.02",
+          "text": "灯光亮度手动调整与同步。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-manual",
+              "steps": [
+                "percent",
+                "color",
+                "sync",
+                "template",
+                "hardware-refresh",
+                "close"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "09.03",
+          "text": "点胶和 Bond 亮度映射采集、补全与保存。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-acquisition",
+              "steps": [
+                "overview",
+                "positions",
+                "prepare",
+                "samples",
+                "search",
+                "gray",
+                "completion"
+              ]
+            },
+            {
+              "topic": "lightness",
+              "flow": "lc-mapping",
+              "steps": [
+                "forward",
+                "reverse",
+                "empty",
+                "roundtrip",
+                "cache"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "09.04",
+          "text": "正反向亮度映射在视觉流程中的应用。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "lightness",
+              "flow": "lc-application",
+              "steps": [
+                "overview",
+                "production",
+                "lists",
+                "output",
+                "alarm"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "title": "安全运动与连续轨迹",
+      "group": "标定与运动",
+      "requirements": [
+        {
+          "id": "10.01",
+          "text": "机械目标与 G0 目标的转换及软限位检查。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-targets",
+              "steps": [
+                "convert",
+                "overloads",
+                "limits",
+                "commands"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "10.02",
+          "text": "二维、三维、四维安全位与高度动作顺序。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-height",
+              "steps": [
+                "product",
+                "regions",
+                "checks"
+              ]
+            },
+            {
+              "topic": "motion-safety",
+              "flow": "sm-order",
+              "steps": [
+                "overview",
+                "table",
+                "return"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "10.03",
+          "text": "取片、固晶、上视、IPT 和换嘴区域间的运动。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-regions",
+              "steps": [
+                "pick",
+                "bond",
+                "uplook",
+                "ipt",
+                "maintenance"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "10.04",
+          "text": "碰撞圆、运动区域及路径交点计算。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-geometry",
+              "steps": [
+                "circle",
+                "wafer",
+                "intersection",
+                "tools"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "10.05",
+          "text": "插补组、连续轨迹与驱动分支选择。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-interpolation",
+              "steps": [
+                "groups",
+                "production",
+                "gugao",
+                "pick-helper"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "10.06",
+          "text": "发指令、等待到位、异常和停止的不同完成边界。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "motion-safety",
+              "flow": "sm-completion",
+              "steps": [
+                "wait",
+                "tasks",
+                "failures",
+                "stop"
+              ]
+            },
+            {
+              "topic": "motion-safety",
+              "flow": "sm-order",
+              "steps": [
+                "return"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "title": "配方与配置生命周期",
+      "group": "生产组织",
+      "requirements": [
+        {
+          "id": "11.01",
+          "text": "程式创建、复制、加载、编辑与删除的主程序入口。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "11.02",
+          "text": "当前配方身份、共享数据集和仓库对象的绑定。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "11.03",
+          "text": "集中保存、切换与重载时的对象更新。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "11.04",
+          "text": "运行任务上下文与新配方的重新绑定关系。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "11.05",
+          "text": "示教完成状态、步骤重置、跳过与生产可用性检查。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "title": "工艺步骤与 S1 S2 调度",
+      "group": "生产组织",
+      "requirements": [
+        {
+          "id": "12.01",
+          "text": "工艺编辑、自动生成与生产准备检查。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "12.02",
+          "text": "八种排序配置与动作消息的展开。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "12.03",
+          "text": "视觉、测高、识别、点胶和固晶节点的映射与互斥。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "12.04",
+          "text": "相对贴片排序、禁用步骤过滤及步骤注入。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "12.05",
+          "text": "消息完成、焊点步骤完成和载具放行的关系。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "12.06",
+          "text": "单步、循环次数、仅点胶或仅固晶模式的门控。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "title": "物料地图与加工状态",
+      "group": "生产组织",
+      "requirements": [
+        {
+          "id": "13.01",
+          "text": "载具、基板、模块、焊点的启用、禁用及仅加工状态。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "13.02",
+          "text": "S1 S2 步骤完成和剩余步骤的传播。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "13.03",
+          "text": "地图读取、保存及芯片映射恢复。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "13.04",
+          "text": "人工框选、状态修改与重新加工入口。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "13.05",
+          "text": "载具标识、加工数据导出与当前物料清理。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "title": "轨道输送与工位交接",
+      "group": "生产流程",
+      "requirements": [
+        {
+          "id": "14.01",
+          "text": "输送启动、段内物料映射与清空轨道。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "14.02",
+          "text": "自动上料机或皮带进入 S1。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "14.03",
+          "text": "S1 段间移动与 S1 到 S2 交接。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "14.04",
+          "text": "S2 到等待区、出料皮带及自动收板。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "14.05",
+          "text": "夹紧、阻挡、升降、真空与到位检测。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "14.06",
+          "text": "普通生产和 DryRun 的分支、握手与超时恢复。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "title": "上下料仓与换层",
+      "group": "生产流程",
+      "requirements": [
+        {
+          "id": "15.01",
+          "text": "料仓几何、层高和推料位置示教。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "15.02",
+          "text": "A B 仓选择、当前层初始化与换仓。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "15.03",
+          "text": "上料仓推板到 S1 的许可和状态推进。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "15.04",
+          "text": "等待区向下料仓收板与层号推进。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "15.05",
+          "text": "空仓、满仓、推杆安全及人工指定层操作。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "title": "芯片载具与料片配置",
+      "group": "供晶与取片",
+      "requirements": [
+        {
+          "id": "16.01",
+          "text": "芯片类型、Wafer Waffle 载体和几何参数配置。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "16.02",
+          "text": "料盒层、适配器、槽位和静态 Waffle 的对应。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "16.03",
+          "text": "载体上料、槽扫描、槽状态与供料选择。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "16.04",
+          "text": "芯片尺寸、步距、边界、墨点和搜索信息示教。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "16.05",
+          "text": "当前需求芯片与当前料片切换、选择一致性。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "title": "机械换片与扩晶",
+      "group": "供晶与取片",
+      "requirements": [
+        {
+          "id": "17.01",
+          "text": "手动换片、自动换片及重试入口。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "17.02",
+          "text": "料盒、夹爪、重夹持位置及晶圆台的安全运动许可。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "17.03",
+          "text": "料片从槽位取出、放回及在台检测。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "17.04",
+          "text": "扩晶升降、压紧、真空与热风动作。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "17.05",
+          "text": "换片后的地图初始化、后处理与供晶放行。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "18",
+      "title": "搜晶与 WaferMap",
+      "group": "供晶与取片",
+      "requirements": [
+        {
+          "id": "18.01",
+          "text": "Single 搜索边界、方向、换行与跳步。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "18.02",
+          "text": "Nine 邻点缓存、备用点及空白计数。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "18.03",
+          "text": "WaferMap 参考点、预取、寻路与地图推进。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "18.04",
+          "text": "Box 和静态 Waffle 槽位蛇形选择。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "18.05",
+          "text": "墨点、视觉失败、换料标记和停止出口。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "18.06",
+          "text": "芯片视觉中心、取片补偿及实际取片后的地图提交。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "19",
+      "title": "顶针动作与顶针库",
+      "group": "供晶与取片",
+      "requirements": [
+        {
+          "id": "19.01",
+          "text": "顶针配置、工作槽及寿命计数。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "19.02",
+          "text": "顶针、顶针台和晶圆相机高度关系。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "19.03",
+          "text": "就绪、顶起、安全返回与同步 Z 运动。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "19.04",
+          "text": "顶针更换、归还、锁紧、真空及吹气。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "19.05",
+          "text": "顶针架 T 轴、碰撞与安全位置检查。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "20",
+      "title": "翻转供晶",
+      "group": "供晶与取片",
+      "requirements": [
+        {
+          "id": "20.01",
+          "text": "翻转工具几何与翻转到晶圆位置示教。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "20.02",
+          "text": "从晶圆台取晶、翻转与转交焊头。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "20.03",
+          "text": "真空检测、漏晶重测、重取及下一颗处理。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "20.04",
+          "text": "吹气、抛料、安全返回及 DryRun 分支。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "20.05",
+          "text": "翻转任务与焊头的需求和可取料信号。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "title": "取晶动作与漏晶恢复",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "21.01",
+          "text": "晶圆台、翻转台、静态 Waffle 三种取晶入口。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "21.02",
+          "text": "取晶位置、角度、温漂偏移及运动参数形成。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "21.03",
+          "text": "慢下、接触、吸真空、顶针配合和慢上。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "21.04",
+          "text": "漏晶判断、重新检测、重取、抛料、跳过与停止。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "21.05",
+          "text": "可用计数、后台通知、供晶信号和步骤提交顺序。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "22",
+      "title": "上视校正与芯片检测",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "22.01",
+          "text": "按来源选择上视位置和安全运动。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "22.02",
+          "text": "单点、双点或代码视觉校正分支。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "22.03",
+          "text": "识别角度、旋转中心和贴片偏移的组合。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "22.04",
+          "text": "尺寸、背崩、胶印等检测与结果消费。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "22.05",
+          "text": "温漂补偿调用、失败重试和校正状态写入。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "23",
+      "title": "IPT 中转台与下视校正",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "23.01",
+          "text": "中转台位置、真空、吹气及旋转示教。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "23.02",
+          "text": "取晶后移动到 IPT 并放置芯片。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "23.03",
+          "text": "下视拍照、位置计算与再次取晶。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "23.04",
+          "text": "放置与取片前的焊头清零及力控。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "23.05",
+          "text": "IPT 供料通知、DryRun 与失败返回。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "24",
+      "title": "固晶动作与留晶处理",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "24.01",
+          "text": "焊点 G0 目标、上视修正及各类补偿汇合。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "24.02",
+          "text": "预贴片、安全跳转、旋转和下降运动。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "24.03",
+          "text": "距离模式或力控模式的放片、吹气与抬升。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "24.04",
+          "text": "固晶后持晶检查、留晶重做与停止。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "24.05",
+          "text": "次数记录、力曲线、焊点提交和后台动作顺序。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "25",
+      "title": "S1 点胶与胶量返工",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "25.01",
+          "text": "S1 来料、动作循环、分段交互与任务退出。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "25.02",
+          "text": "预点胶触发、排胶、试胶板索引及胶板用尽处理。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "25.03",
+          "text": "胶型点位、缩放旋转、点胶偏移和高度生成。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "25.04",
+          "text": "单点、线段与不同驱动的插补出胶。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "25.05",
+          "text": "胶压、电磁阀与打印工具控制。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "25.06",
+          "text": "胶量检查、确认、重新点胶、步骤提交与放行。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "title": "S2 点胶与打印工具",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "26.01",
+          "text": "S2 点胶与固晶工艺的调用关系。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "26.02",
+          "text": "随焊头移动的点胶、视觉与测高位置转换。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "26.03",
+          "text": "S2 预点胶、试胶板索引与重试。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "26.04",
+          "text": "S2 插补出胶、胶压和测高气缸控制。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "26.05",
+          "text": "打印工具连续运动、停止及手动操作。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "27",
+      "title": "蘸胶与刮胶盘",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "27.01",
+          "text": "胶盘工作位置、蘸胶高度与参数示教。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "27.02",
+          "text": "刮胶盘伸出、归位、刮胶与后台任务握手。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "27.03",
+          "text": "取晶后移动、蘸胶与后续上视固晶的衔接。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "27.04",
+          "text": "蘸胶后的胶印检查和返回结果消费。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "27.05",
+          "text": "手动自动刮胶与 DryRun 边界。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "28",
+      "title": "焊后检测与 BLT",
+      "group": "加工动作",
+      "requirements": [
+        {
+          "id": "28.01",
+          "text": "检测频率和配方开关的门控。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "28.02",
+          "text": "胶量、焊后位置、背崩等不同检测路径。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "28.03",
+          "text": "BLT 测量、阈值与人工选择。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "28.04",
+          "text": "检测失败、重新点胶、拾回与重做。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "28.05",
+          "text": "检测结果缓存、统计记录与补偿输入。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "29",
+      "title": "测高与测量工具",
+      "group": "标定与检测",
+      "requirements": [
+        {
+          "id": "29.01",
+          "text": "S1 探针气缸测高与结果回写。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-s1",
+              "steps": [
+                "mode",
+                "cylinder",
+                "probe",
+                "laser",
+                "return"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-product",
+              "steps": [
+                "s1",
+                "outcome",
+                "s1-gates"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "29.02",
+          "text": "S2 激光、力控测高及在途测高。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-s2",
+              "steps": [
+                "laser",
+                "sensor",
+                "retry",
+                "pressure",
+                "cylinder",
+                "batch"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-product",
+              "steps": [
+                "s2",
+                "outcome",
+                "s2-gates"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "29.03",
+          "text": "载具、基板、模块、焊点多点测高与平面插值。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-product",
+              "steps": [
+                "overview",
+                "s1",
+                "s2",
+                "outcome",
+                "s1-gates",
+                "s2-gates",
+                "plane"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-teaching",
+              "steps": [
+                "objects",
+                "points",
+                "helper",
+                "save"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "29.04",
+          "text": "固晶水平、S1 S2 平面度的示教、测量与复测。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-bond-level",
+              "steps": [
+                "teach",
+                "four",
+                "values",
+                "repeat"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-flatness",
+              "steps": [
+                "overview",
+                "teach",
+                "height",
+                "s1",
+                "s2",
+                "options"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "29.05",
+          "text": "距离、焊头标准量块及多高度测量工具。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-multiple",
+              "steps": [
+                "teach",
+                "run",
+                "relative",
+                "stop",
+                "export"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-tools",
+              "steps": [
+                "distance",
+                "threshold",
+                "standard-entry",
+                "standard"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-entry",
+              "steps": [
+                "tools",
+                "touchdown"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "29.06",
+          "text": "测量结果展示、范围统计和导出。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "height-measurement",
+              "flow": "mh-results",
+              "steps": [
+                "persistence",
+                "range",
+                "bond",
+                "flat-export",
+                "data-window"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-multiple",
+              "steps": [
+                "relative",
+                "export"
+              ]
+            },
+            {
+              "topic": "height-measurement",
+              "flow": "mh-tools",
+              "steps": [
+                "distance"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "30",
+      "title": "力控标定与反馈",
+      "group": "标定与检测",
+      "requirements": [
+        {
+          "id": "30.01",
+          "text": "压力计和焊头 Modbus 连接、清零与采集。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-entry",
+              "steps": [
+                "connection",
+                "registers",
+                "configuration",
+                "channels"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "30.02",
+          "text": "闭环与音圈电机的不同标定入口。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-start",
+              "steps": [
+                "overview",
+                "tool",
+                "parameters",
+                "prepare",
+                "voice",
+                "stop"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "30.03",
+          "text": "ETEL 固高、大小力区间及角度对应标定。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-gt",
+              "steps": [
+                "angles",
+                "initial",
+                "initial-state",
+                "input",
+                "sample",
+                "finish"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-etel",
+              "steps": [
+                "inputs",
+                "sample",
+                "single",
+                "finish"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-results",
+              "steps": [
+                "limits",
+                "failure"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "30.04",
+          "text": "输入力、实际力、增量和初始值转换。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-conversion",
+              "steps": [
+                "overview",
+                "selection",
+                "forward",
+                "invalid",
+                "reverse",
+                "pid"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-entry",
+              "steps": [
+                "overview",
+                "channels"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "30.05",
+          "text": "取放力控设定、复位和焊头清零。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-motion",
+              "steps": [
+                "set",
+                "gt-input",
+                "gt-config",
+                "wait",
+                "reset",
+                "zero",
+                "auto-zero"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-production",
+              "steps": [
+                "parameters",
+                "motion",
+                "baseline",
+                "last",
+                "summary",
+                "process"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "30.06",
+          "text": "力 LVDT 实时曲线、检测结果与导出。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "force-control",
+              "flow": "fc-curves",
+              "steps": [
+                "platform",
+                "force",
+                "cache",
+                "lvdt",
+                "operations",
+                "files"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-inspection",
+              "steps": [
+                "repeat",
+                "stop",
+                "export",
+                "combined",
+                "stability",
+                "other"
+              ]
+            },
+            {
+              "topic": "force-control",
+              "flow": "fc-results",
+              "steps": [
+                "persistence"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "31",
+      "title": "工具库与吸嘴更换",
+      "group": "维护功能",
+      "requirements": [
+        {
+          "id": "31.01",
+          "text": "吸嘴、工具槽、TouchDown BMC 工具及当前工具的对应。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-identity",
+              "steps": [
+                "overview",
+                "definition",
+                "slots",
+                "current",
+                "special"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-library",
+              "steps": [
+                "assignment"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "31.02",
+          "text": "工具几何、高度、对中与工具库位置示教。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-teaching",
+              "steps": [
+                "entry",
+                "first",
+                "endpoints",
+                "count",
+                "done",
+                "old"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-geometry",
+              "steps": [
+                "entry",
+                "rectangle",
+                "round",
+                "finish"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-center",
+              "steps": [
+                "two-positions",
+                "search",
+                "states"
+              ]
+            },
+            {
+              "topic": "tool-calibration",
+              "flow": "tc-height",
+              "steps": [
+                "prepare",
+                "methods",
+                "service",
+                "completion"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "31.03",
+          "text": "取嘴、还嘴、自动判断换嘴及参数更新。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-change",
+              "steps": [
+                "overview",
+                "same",
+                "conflict",
+                "callers"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-take",
+              "steps": [
+                "manual",
+                "availability",
+                "movement",
+                "retry",
+                "finish"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-return",
+              "steps": [
+                "manual",
+                "prepare",
+                "release",
+                "commit"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-library",
+              "steps": [
+                "assignment",
+                "save"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-results",
+              "steps": [
+                "persistence"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "31.04",
+          "text": "工具在位、工具库回零、真空与安全高度检查。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-checks",
+              "steps": [
+                "physical",
+                "configuration",
+                "home",
+                "safety"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-take",
+              "steps": [
+                "availability",
+                "movement",
+                "retry"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-return",
+              "steps": [
+                "prepare",
+                "release"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "31.05",
+          "text": "工具重复动作测试与人工操作入口。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "tool-bank",
+              "flow": "nb-manual",
+              "steps": [
+                "entry",
+                "refresh",
+                "change",
+                "cancel"
+              ]
+            },
+            {
+              "topic": "tool-bank",
+              "flow": "nb-test",
+              "steps": [
+                "entry",
+                "wait",
+                "stop",
+                "legacy",
+                "independent"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "32",
+      "title": "清嘴排胶与手动维护",
+      "group": "维护功能",
+      "requirements": [
+        {
+          "id": "32.01",
+          "text": "清嘴触发、清嘴区域索引与清洁动作。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-trigger",
+              "steps": [
+                "overview",
+                "interval",
+                "parameters"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-area",
+              "steps": [
+                "grid",
+                "index",
+                "limit",
+                "reserve"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-clean",
+              "steps": [
+                "prepare",
+                "press",
+                "blow"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "32.02",
+          "text": "吹气盒、抛料位置和持晶清理。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-throw",
+              "steps": [
+                "action",
+                "memory",
+                "head",
+                "teach",
+                "output"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "32.03",
+          "text": "S1 手动试胶、板上试胶与换胶入口。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-manual",
+              "steps": [
+                "overview",
+                "output",
+                "gates"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-pre",
+              "steps": [
+                "gates",
+                "work",
+                "board",
+                "reset",
+                "reserve"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-change",
+              "steps": [
+                "entry",
+                "positions",
+                "measure",
+                "offset",
+                "cancel"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "32.04",
+          "text": "工具和设备参数示教的准备、取消与保存。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-teaching",
+              "steps": [
+                "clean",
+                "plate-height",
+                "plate-save",
+                "distance"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-change",
+              "steps": [
+                "entry",
+                "positions",
+                "measure",
+                "offset",
+                "cancel"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-results",
+              "steps": [
+                "persistence"
+              ]
+            },
+            {
+              "topic": "manual-maintenance",
+              "flow": "mn-throw",
+              "steps": [
+                "teach",
+                "output"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "37",
+      "title": "耗材寿命与提醒",
+      "group": "维护功能",
+      "requirements": [
+        {
+          "id": "37.01",
+          "text": "胶水、吸嘴、翻转工具、顶针耗材汇集。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-sources",
+              "steps": [
+                "overview",
+                "time-owners",
+                "frequency-owners",
+                "unwired"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "37.02",
+          "text": "次数寿命与时间寿命的计算。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-count",
+              "steps": [
+                "formula",
+                "example",
+                "nozzle",
+                "eject"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-time",
+              "steps": [
+                "formula",
+                "clock",
+                "legacy"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "37.03",
+          "text": "后台扫描、到期和提前提醒门控。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-scan",
+              "steps": [
+                "overview",
+                "caller",
+                "cooldown"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-reset",
+              "steps": [
+                "stop"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "37.04",
+          "text": "寿命参数编辑、清零与更换后复位。",
+          "status": "reviewed",
+          "bindings": [
+            {
+              "topic": "consumables",
+              "flow": "life-ui",
+              "steps": [
+                "entry",
+                "cards",
+                "frequency",
+                "time"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-reset",
+              "steps": [
+                "overview",
+                "assistant",
+                "stop"
+              ]
+            },
+            {
+              "topic": "consumables",
+              "flow": "life-save",
+              "steps": [
+                "window",
+                "dispenser",
+                "global"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "38",
+      "title": "手动点动与状态面板",
+      "group": "维护功能",
+      "requirements": [
+        {
+          "id": "38.01",
+          "text": "方向盘和摇杆的轴绑定、速度模式与停止。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "38.02",
+          "text": "模块相机切换、曝光、增益及实时图像。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "38.03",
+          "text": "真空、吹气、气缸和料仓的手动控制。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "38.04",
+          "text": "轨道物料、槽位、顶针和力 LVDT 实时状态。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "38.05",
+          "text": "快捷键扫描、上一颗点胶或贴片查看及人工位置偏移。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "33",
+      "title": "焊后反馈与产品补偿",
+      "group": "补偿与温控",
+      "requirements": [
+        {
+          "id": "33.01",
+          "text": "焊后样本进入缓存的路径和筛选门槛。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "33.02",
+          "text": "按检测名称取样、比例换算与补偿计算。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "33.03",
+          "text": "按载具归一化和按焊点独立偏移。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "33.04",
+          "text": "Bond 与载具补偿数据的读入和人工清除。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "33.05",
+          "text": "自动采集多轮、过滤、计算及保存的窗体实现。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "34",
+      "title": "运动区域与实时位置补偿",
+      "group": "补偿与温控",
+      "requirements": [
+        {
+          "id": "34.01",
+          "text": "全局标定数据在加工目标处的查表和插值。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "34.02",
+          "text": "多区域双线性插值、区域选择与边界。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "34.03",
+          "text": "标定尺基准点示教、首轮扫描和周期扫描。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "34.04",
+          "text": "实时基准点偏差作用到目标位置。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "34.05",
+          "text": "软件偏移、驱动二维补偿和工具偏移的调用顺序。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "35",
+      "title": "温漂与取片位置补偿",
+      "group": "补偿与温控",
+      "requirements": [
+        {
+          "id": "35.01",
+          "text": "温漂 Mark、取片 Mark 的示教和校准。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "35.02",
+          "text": "首载具与周期补偿的触发门控。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "35.03",
+          "text": "上视温漂偏移计算与阈值处理。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "35.04",
+          "text": "取片偏移计算和取晶位置应用。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "35.05",
+          "text": "温度曲线、补偿记录及预测功能的当前边界。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "36",
+      "title": "加热预热与温度监控",
+      "group": "补偿与温控",
+      "requirements": [
+        {
+          "id": "36.01",
+          "text": "工位加热开启、设定温度与关闭。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "36.02",
+          "text": "报警温度、补偿值、温度斜率及预热时长保存。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "36.03",
+          "text": "温度到达、预热计时和生产启动门控。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "36.04",
+          "text": "后台超温检测、停机与提示。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "36.05",
+          "text": "轴温度与热电偶曲线、采集和保存。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "36.06",
+          "text": "风冷 PID 计算框架及当前输入输出边界。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "39",
+      "title": "报警互锁与运行监控",
+      "group": "运行与数据",
+      "requirements": [
+        {
+          "id": "39.01",
+          "text": "报警等级、状态灯、弹窗与操作结果回传。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "39.02",
+          "text": "安全门检查及继续生产门控。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "39.03",
+          "text": "供气、负压和工位真空监测。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "39.04",
+          "text": "激光编码器预热、状态检测与运动就绪。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "39.05",
+          "text": "报警历史查询、强制解除与清理。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "40",
+      "title": "暂停停止与物料恢复",
+      "group": "运行与数据",
+      "requirements": [
+        {
+          "id": "40.01",
+          "text": "工作、暂停、停止与单步状态迁移。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "40.02",
+          "text": "Pause Continue 对任务、信号与安全门的处理。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "40.03",
+          "text": "Stop 与急停入口的实际调用差异。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "40.04",
+          "text": "线程存活、任务退出许可及再次启动。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "40.05",
+          "text": "物料地图恢复、重做和已完成步骤保留。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "40.06",
+          "text": "异常后的软件清理与实际机械状态边界。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "41",
+      "title": "后台任务与保存退出",
+      "group": "运行与数据",
+      "requirements": [
+        {
+          "id": "41.01",
+          "text": "主窗体与整机后台任务创建和退出条件。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "41.02",
+          "text": "图像保存队列、消费者和实际写文件。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "41.03",
+          "text": "统计记录队列与数据库写入。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "41.04",
+          "text": "参数、仓库、地图和生产信息保存。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "41.05",
+          "text": "磁盘容量、定期文件清理及日志保留。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "41.06",
+          "text": "退出确认、任务结束许可与软件关闭。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "42",
+      "title": "生产统计与日志查询",
+      "group": "运行与数据",
+      "requirements": [
+        {
+          "id": "42.01",
+          "text": "点胶固晶计数、节拍和生产用时记录。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "42.02",
+          "text": "产能、良率、缺陷与报警时长统计。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "42.03",
+          "text": "焊点日志、操作日志、参数修改日志。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "42.04",
+          "text": "力 LVDT、测高及补偿记录展示。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "42.05",
+          "text": "时间范围查询、数据导入导出和人工清零。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "44",
+      "title": "用户权限与界面配置",
+      "group": "管理功能",
+      "requirements": [
+        {
+          "id": "44.01",
+          "text": "登录身份、角色和可操作功能的对应。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "44.02",
+          "text": "工作状态、硬件配置决定菜单显示和启用。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "44.03",
+          "text": "实验入口解锁与锁屏入口。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "44.04",
+          "text": "多语言缓存、控件翻译和语言切换。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "44.05",
+          "text": "版本说明、软件信息与授权到期提示。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    },
+    {
+      "id": "45",
+      "title": "精度实验与设备诊断",
+      "group": "实验诊断",
+      "requirements": [
+        {
+          "id": "45.01",
+          "text": "静态视觉、像素比例、回差和重复定位实验。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "45.02",
+          "text": "旋转中心、温漂、Bond 上视关系与 CMK 实验。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "45.03",
+          "text": "取片、放片、角度校正和模拟贴片实验。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "45.04",
+          "text": "力控、测高、焊头稳定性与振动实验。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "45.05",
+          "text": "整机功能检查、换嘴换针换片耐久测试。",
+          "status": "pending",
+          "bindings": []
+        },
+        {
+          "id": "45.06",
+          "text": "实验参数、停止条件、结果统计和数据导出。",
+          "status": "pending",
+          "bindings": []
+        }
+      ]
+    }
+  ]
+}

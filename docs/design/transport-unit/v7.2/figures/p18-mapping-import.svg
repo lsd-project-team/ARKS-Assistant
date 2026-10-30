@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1110" viewBox="0 0 2400 1110"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="56" font-weight="700" text-anchor="middle" dominant-baseline="central">载入Mapping时 产品树从当前配方重新建立</text>
+<rect x="100" y="180" width="870" height="200" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="535.0" y="250.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">当前配方</text>
+<text x="535.0" y="318.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">层级、坐标与工序定义</text>
+<rect x="1430" y="180" width="870" height="200" fill="#fff0df" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1865.0" y="250.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">Mapping文件</text>
+<text x="1865.0" y="318.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">身份字段和结果标记</text>
+<rect x="750" y="570" width="900" height="205" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1200.0" y="642.5" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">新建TU</text>
+<text x="1200.0" y="710.5" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">注入步骤后映射部分记录</text>
+<polyline points="535,380 535,470 1000,470 1000,570" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1000,570 989.9957927154417,549.2897166458885 1010.0042072845583,549.2897166458885" fill="#4d6070"/>
+<polyline points="1865,380 1865,470 1400,470 1400,570" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1400,570 1389.9957927154417,549.2897166458885 1410.0042072845583,549.2897166458885" fill="#4d6070"/>
+<rect x="750" y="890" width="900" height="170" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1200.0" y="945.0" fill="#162e43" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">界面替换区段TU</text>
+<text x="1200.0" y="1013.0" fill="#4d6070" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">当前对象变为载入后的新树</text>
+<polyline points="1200,775 1200,890" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1200,890 1189.9957927154417,869.2897166458885 1210.0042072845583,869.2897166458885" fill="#4d6070"/></svg>

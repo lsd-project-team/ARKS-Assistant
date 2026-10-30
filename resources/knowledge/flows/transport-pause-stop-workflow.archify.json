@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ZX2200 固晶输送暂停、Stop 与状态提交",
+    "locale": "zh-CN",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "entry", "label": "输送方法" },
+    { "id": "signal", "label": "等待与状态" },
+    { "id": "transport", "label": "动作与保存" },
+    { "id": "outcome", "label": "返回结果" }
+  ],
+  "nodes": [
+    { "id": "start", "lane": "entry", "col": 0, "type": "backend", "label": "Bond→WaitingUnload", "sublabel": "TransferBondToWaitingUnload", "width": 145 },
+    { "id": "wait", "lane": "signal", "col": 1, "type": "security", "label": "Signal.Wait", "sublabel": "等待放行事件", "width": 145 },
+    { "id": "pause", "lane": "signal", "col": 2, "type": "security", "label": "Pause / Working", "sublabel": "Wait 内状态变化", "width": 145 },
+    { "id": "act", "lane": "transport", "col": 3, "type": "external", "label": "气缸与皮带动作", "sublabel": "Pause 后仍可执行", "width": 145 },
+    { "id": "save", "lane": "transport", "col": 4, "type": "backend", "label": "转移材料并 Save", "sublabel": "Stop 后也可能提交", "width": 145 },
+    { "id": "abort", "lane": "outcome", "col": 2, "type": "security", "label": "Stop → Abort", "sublabel": "Wait 返回 false", "width": 145 },
+    { "id": "late", "lane": "signal", "col": 3, "type": "security", "label": "Wait 返回后才 Stop", "sublabel": "后续无二次门控", "width": 145 },
+    { "id": "cleanup", "lane": "outcome", "col": 3, "type": "security", "label": "UnClamp → Machine.Stop", "sublabel": "void 不向父方法传失败", "width": 145 },
+    { "id": "success", "lane": "outcome", "col": 4, "type": "backend", "label": "父方法继续返回", "sublabel": "可能仍是 Success", "width": 145 }
+  ],
+  "edges": [
+    { "id": "start-wait", "from": "start", "to": "wait", "label": "进入", "role": "main" },
+    { "id": "wait-pause", "from": "wait", "to": "pause", "label": "事件已接收", "role": "main" },
+    { "id": "pause-act", "from": "pause", "to": "act", "label": "恢复或 Pause 内继续", "role": "main" },
+    { "id": "act-save", "from": "act", "to": "save", "label": "动作完成", "role": "main" },
+    { "id": "save-success", "from": "save", "to": "success", "label": "返回 Success", "role": "main" },
+    { "id": "wait-abort", "from": "wait", "to": "abort", "label": "Stop 保持", "role": "error" },
+    { "id": "wait-late", "from": "wait", "to": "late", "label": "Wait 已返回", "role": "branch" },
+    { "id": "late-act", "from": "late", "to": "act", "label": "仍执行动作", "role": "error" },
+    { "id": "abort-cleanup", "from": "abort", "to": "cleanup", "label": "夹爪 Abort", "role": "return" },
+    { "id": "cleanup-success", "from": "cleanup", "to": "success", "label": "父方法未感知失败", "role": "return" }
+  ],
+  "mainPath": ["start", "wait", "pause", "act", "save", "success"],
+  "cards": [
+    { "dot": "amber", "title": "状态提交边界", "items": ["Wait 已成功返回后才变为 Pause 或 Stop，方法没有再次检查状态，仍可执行气缸、皮带、材料转移和 Save。", "UnClamp 的 Abort 调用 Machine.Stop 后以 void 返回，父方法仍可能继续轴接口、转移材料并保存。"] },
+    { "dot": "cyan", "title": "证据范围", "items": ["transport-pause-review.md 与 transport-unclamp-stop-review.md。", "传感器、轴、I/O、保存、报警、配置、外层任务和设备均为限定替身。"] }
+  ]
+}

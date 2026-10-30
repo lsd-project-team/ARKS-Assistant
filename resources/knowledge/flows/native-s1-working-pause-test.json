@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "status": "original-enabled-s1-working-pause-native-preparation-passed",
+  "parent": {
+    "file": "encoding-preserving-resources-test.json",
+    "sha256": "e57ae6dc5f871f40f0c9b6ff70c9d959009a398604114033b91b9f75a47ef8c1"
+  },
+  "parentFrozenBindings": 5113,
+  "newFrozenInputs": 87,
+  "totalFrozenBindings": 5200,
+  "processes": 8,
+  "passes": 2,
+  "checksByMode": {
+    "pause-continue": 20,
+    "pause-stop": 20,
+    "callback-start": 15,
+    "callback-stop": 15
+  },
+  "assertionExecutionsPerPass": 70,
+  "distinctLabels": 29,
+  "selectedOriginalMethods": 29,
+  "runtime": "4.0.30319.42000",
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "pauseStopAdmitsNextIdentityObserved": true,
+  "callbackFaultLeavesWorkingObserved": true,
+  "publicCallbacksUsedForSynchronization": true,
+  "publicCallbacksUsedForFaultInjection": true,
+  "visionAndOtherHeightCompletionPremarked": true,
+  "heightActionUsesDisabledConfiguration": true,
+  "originalEnabledTaskExecuted": true,
+  "realMachinePauseContinueStop": true,
+  "onlineDispenseExecuted": false,
+  "s2WorkingExecuted": false,
+  "sqlWritesExecuted": false,
+  "hardwareActionExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "automaticWeavingExecuted": false,
+  "productionStartupExecuted": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "failedPreparation": {
+      "chunk": "16ce34",
+      "exitCode": 1
+    },
+    "failedCompile1": {
+      "chunk": "97fc92",
+      "exitCode": 1
+    },
+    "failedCompile2": {
+      "chunk": "e4fc12",
+      "exitCode": 1
+    },
+    "compile": {
+      "chunk": "974423",
+      "exitCode": 0
+    },
+    "replayCompile": {
+      "chunk": "4ec266",
+      "exitCode": 0
+    },
+    "primaryRuntime": {
+      "chunk": "ec36b9",
+      "exitCode": 0
+    },
+    "replayRuntime": {
+      "chunk": "55b5dd",
+      "exitCode": 0
+    },
+    "il": {
+      "chunk": "14c3aa",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+      "sha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "sha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "sha256": "2f28e39648d034261ae5d57be4cb9e1908f4bec971d80d00120e9a3af6baa4ca"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1CarrierMeasureHeightActionNode.cs",
+      "sha256": "30ff1eaa3df972c29e923bca0123ea84b062abadc58c36a974ac5b81be5709bf"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1TransportIdentityActionNode.cs",
+      "sha256": "03af1c1a5d34fb255d8e7e1ecb60333694fb4da98bbb23fc8f39f70aa43ceaff"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs",
+      "sha256": "7e760c785adbd5652a9ad30a6281846ce9e2ccb22ad6a3e083db0a7130fdd301"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1ModuleIdentityActionNode.cs",
+      "sha256": "357fa63d12206636d8609555047b954dfff8b100a3b504f348fff108ff6a3024"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1BondPositionIdentityActionNode.cs",
+      "sha256": "46b3bac3e58d3aa39926264d25e2934b3495f4db56f99413e112c25a4133871f"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-s1-working-pause.cjs",
+      "sha256": "129ac0b2feed281b541fd344daed9db01e648bdc71e624952e9b5f071fffe225",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0000-freeze-native-s1-working-pause.cjs"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\Cases.cs",
+      "sha256": "ac88878267ff514795b51d055be27ac783470d97720743d3f94ceecd426eeec2",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\Host.cs",
+      "sha256": "b7ea513906932a29a3fac918e2caef176dd72dca96f5e235b3540f7bc881a315",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\compile-input.json",
+      "sha256": "6bea45b2089e611634d2a8f160d14e7c130873681e98ff876280abe73f6e5dfc",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\compile-v1.json",
+      "sha256": "043edcae08c9bfdbdebc36a70e0cf9d8e4235899c712160bec7b7f98ea532f32",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0005-compile-v1.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\compile-v2.json",
+      "sha256": "266e1f06bea974b0bce21f0eb9e4ab8ce866de860f7b64c357f5b16c57521d9a",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0006-compile-v2.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\compile-v3.json",
+      "sha256": "3abfee0bd997d32c4fca424053205b129742784a19271bdc6802888a6e2246e6",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0007-compile-v3.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\failed-compile-v1-Cases.cs",
+      "sha256": "c62c9644330b81136a1766a2e386daf955d748dc1e64cea60291f006d3050ee6",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0008-failed-compile-v1-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\failed-compile-v1-canonical.cs.txt",
+      "sha256": "c62c9644330b81136a1766a2e386daf955d748dc1e64cea60291f006d3050ee6",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0009-failed-compile-v1-canonical.cs.txt"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\failed-compile-v2-Cases.cs",
+      "sha256": "c9a96b66e10c80870e92f6a2099e0c6ecb5c87340164f54363cb18475220ec48",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0010-failed-compile-v2-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\failed-preparation-v1-observation.json",
+      "sha256": "fb50ed73ae1a2a44247ede3ae0b1b82ea5cf79f807a37222885e02cffb846ee7",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0011-failed-preparation-v1-observation.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\failed-preparation-v1.cjs",
+      "sha256": "66c77440c3a9ee21b44af32e40fcae93438a3e60907f228ab92fb5afe4627ab7",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0012-failed-preparation-v1.cjs"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\il.json",
+      "sha256": "99914099d34cab7ffa9d55858d5d513ba87cc89e9f9928dd1cf277af8df527fd",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0013-il.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\parent-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0014-parent-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\preflight.log",
+      "sha256": "279e1e9f7eb3de2eb89a2c1e977b068200008aa2ee89df99a685721920c603e7",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0015-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary-Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0016-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary-results.json",
+      "sha256": "00b25a89058770f1de8d493c6e969d653d52afcb1249b6f30b90d2367d48636d",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0017-primary-results.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-start\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0018-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-start\\case-progress.log",
+      "sha256": "5df3c45ed7aad384d9612e2a21f290a1856cf201a0e12e72aba97c14c30467f9",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0019-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-start\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0020-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-start\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0021-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-start\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0022-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-start\\stdout.json",
+      "sha256": "29247cb483f9c295370f90499547dc443cd1ef561390162d77c20341a98a3f4f",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0023-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-stop\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0024-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-stop\\case-progress.log",
+      "sha256": "310f605c6ea08388db6bfc605f93fb1206df57545f91d815ae81c63a6165305d",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0025-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-stop\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0026-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-stop\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0027-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-stop\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0028-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\callback-stop\\stdout.json",
+      "sha256": "5931fd1e7cb21b7a883d1bfed16be1e53ee73965b8ab33d7d807b622747e8881",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0029-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-continue\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0030-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-continue\\case-progress.log",
+      "sha256": "ba3e36d088160faa532f878ffe5c9253c80a8fa79b90783aacabb10ad511b6aa",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0031-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-continue\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0032-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-continue\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0033-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-continue\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0034-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-continue\\stdout.json",
+      "sha256": "54c9456b8e3e030a24338bd548abde79952e027b0816583977c308d122d5577c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0035-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-stop\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0036-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-stop\\case-progress.log",
+      "sha256": "3d6786d8b60941607c0d629d515753109eb8f818948e89293ce25259b73e5c56",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0037-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-stop\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0038-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-stop\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0039-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-stop\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0040-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\primary\\pause-stop\\stdout.json",
+      "sha256": "34604374240b0c255fe04121a1fc09dd7919404ace47db986e75d77234a47b9b",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0041-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay-compile.json",
+      "sha256": "36f7b72a079b10c27af5077e5c7ea51262f689cf204915ada89a6429be57cd1f",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0042-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay-results.json",
+      "sha256": "f16d2e1cab05fc84150d72f755e127d5432bdb03231d3206d8c37df300aeb56c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0043-replay-results.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-start\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0044-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-start\\case-progress.log",
+      "sha256": "5df3c45ed7aad384d9612e2a21f290a1856cf201a0e12e72aba97c14c30467f9",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0045-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-start\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0046-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-start\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0047-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-start\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0048-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-start\\stdout.json",
+      "sha256": "8f12ddb2369322d00440ae2432ba011bfae7004cbf865218d314782ef752ab02",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0049-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-stop\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0050-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-stop\\case-progress.log",
+      "sha256": "310f605c6ea08388db6bfc605f93fb1206df57545f91d815ae81c63a6165305d",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0051-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-stop\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0052-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-stop\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0053-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-stop\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0054-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\callback-stop\\stdout.json",
+      "sha256": "590858088ca07d3f909de8f04385aa43b1f746af039b31f758b381dae8c4fa29",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0055-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-continue\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0056-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-continue\\case-progress.log",
+      "sha256": "ba3e36d088160faa532f878ffe5c9253c80a8fa79b90783aacabb10ad511b6aa",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0057-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-continue\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0058-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-continue\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0059-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-continue\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0060-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-continue\\stdout.json",
+      "sha256": "ac8c0f7709995773389322e7c1518f3301c87022f09ed347c8c82bd5550d451b",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0061-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-stop\\Probe.exe",
+      "sha256": "2f05fca213f42703381b639ec1bbaf0273ec085aeb6c74929ad1013b854e691e",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0062-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-stop\\case-progress.log",
+      "sha256": "3d6786d8b60941607c0d629d515753109eb8f818948e89293ce25259b73e5c56",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0063-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-stop\\process.json",
+      "sha256": "afa3158441b1317eab53acce8587dd1e427d66668c87a7f08b36f633163a7f6c",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0064-process.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-stop\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0065-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-stop\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0066-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\replay\\pause-stop\\stdout.json",
+      "sha256": "60f8a7c300248e39ba470cdc1100eb6758b54c5a2724e326cdb6c073ba16d92a",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0067-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-s1-working-pause\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0068-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-s1-working-pause.ps1",
+      "sha256": "c2529df74c9c9738cbfd68324d9684d2367da69f01df5b3ef74c781a2b9de61d",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0069-inspect-native-s1-working-pause.ps1"
+    },
+    {
+      "file": "scripts/native-s1-working-pause-cases.cs.txt",
+      "sha256": "ac88878267ff514795b51d055be27ac783470d97720743d3f94ceecd426eeec2",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0070-native-s1-working-pause-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-s1-working-pause-inspection.cjs",
+      "sha256": "e0f683a4bad95b87e1f32675ae40d671195d70e8ed6cb46c729ea257d5b05098",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0071-prepare-native-s1-working-pause-inspection.cjs"
+    },
+    {
+      "file": "scripts/prepare-native-s1-working-pause.cjs",
+      "sha256": "2c8dbac3cd88060c204ee7cdedcc4c0a2c583b1595affe3caa43e341fa7da807",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0072-prepare-native-s1-working-pause.cjs"
+    },
+    {
+      "file": "scripts/run-native-s1-working-pause.cjs",
+      "sha256": "bd48fe43f26483a00486061ff5b8f651c38c4aba5543c1af35c622388334ba03",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0073-run-native-s1-working-pause.cjs"
+    },
+    {
+      "file": "scripts/verify-native-s1-working-pause.cjs",
+      "sha256": "7bd5aebd245c566162db767082c1e8cc1e3b538b563b9b34e2ac32cf69b322cc",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0074-verify-native-s1-working-pause.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+      "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0075-Signal.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0076-DispenseController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/HeightMeasurementActionNode/S1CarrierMeasureHeightActionNode.cs",
+      "sha256": "30ff1eaa3df972c29e923bca0123ea84b062abadc58c36a974ac5b81be5709bf",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0077-S1CarrierMeasureHeightActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1BondPositionIdentityActionNode.cs",
+      "sha256": "46b3bac3e58d3aa39926264d25e2934b3495f4db56f99413e112c25a4133871f",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0078-S1BondPositionIdentityActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1ModuleIdentityActionNode.cs",
+      "sha256": "357fa63d12206636d8609555047b954dfff8b100a3b504f348fff108ff6a3024",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0079-S1ModuleIdentityActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1SubstrateIdentityActionNode.cs",
+      "sha256": "7e760c785adbd5652a9ad30a6281846ce9e2ccb22ad6a3e083db0a7130fdd301",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0080-S1SubstrateIdentityActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispenseAction/IdentityActionNode/S1TransportIdentityActionNode.cs",
+      "sha256": "03af1c1a5d34fb255d8e7e1ecb60333694fb4da98bbb23fc8f39f70aa43ceaff",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0081-S1TransportIdentityActionNode.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0082-DispenseWorkTask.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+      "sha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0083-Machine.Operate.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+      "sha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0084-Machine.StateRelated.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/Process/S1ActionNodeController.cs",
+      "sha256": "b2c9271bd56d1f7de9e48b146a72bc62019e3b659a10685e7df9d17deeb75d7a",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0085-S1ActionNodeController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Statistics/StatisticsDomain.cs",
+      "sha256": "2f28e39648d034261ae5d57be4cb9e1908f4bec971d80d00120e9a3af6baa4ca",
+      "frozenCopy": ".archify-work/native-s1-working-pause-baseline/inputs/0086-StatisticsDomain.cs"
+    }
+  ],
+  "scope": "Unchanged whole enabled S1 Working/OffLineWork Task and real Pause/Continue/Stop. Actual public SDK stage tree, configuration, premarked vision/other height flags and callbacks provide bounded synchronization/fault injection. No action replacements/private writes. Four identity actions and carrier height disabled-config return exercised, not online hardware, S2 or whole production lifecycle. Continued schedule may start another cycle before observer Stop; no exactly-one-cycle claim."
+}

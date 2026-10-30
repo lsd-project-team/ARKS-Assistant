@@ -1,0 +1,381 @@
+import type { SourceGuide } from '../sourceGuides';
+import { choices, step } from './builders.ts';
+
+export const globalCalibrationGuide: SourceGuide = {
+  id: 'global-calibration-source-review',
+  topic: 'global-calibration',
+  diagrams: ['global-calibration-process'],
+  title: '建议阅读顺序',
+  flows: [
+    choices(
+      'gc-points',
+      '扫描点与范围',
+      '先区分预期轴点、实测 Mark 点和补偿区域；新版区域与旧版驱动表分别建立。',
+      ['gc-entries', 'gc-ex-generate', 'gc-ex-scan-fit', 'gc-region-map'],
+      [
+        step(
+          'overview',
+          '新版数据怎样形成补偿',
+          '主页面分别打开旧全局标定、新点列扫描、Bond 补偿和 BC 关系窗口。图先串起新版的配对点、拟合、扫描、区域与带补偿复测；旧版映射下载在后面的独立环节阅读。',
+          ['gc-entries', 'gc-bc-entry', 'gc-ex-generate', 'gc-region-map'],
+        ),
+        step(
+          'manual',
+          '手动建立 World 与轴位置对应',
+          '手动点要求标定片坐标为行列间距的整数倍，确认后记录当前机械 XY；模拟时使用起点值。同一 World 点可确认替换，添加和替换先改点列，不在该按钮中立即保存域。',
+          ['gc-ex-manual'],
+        ),
+        step(
+          'automatic',
+          '自动预定义点的实际循环',
+          '自动方法执行 4×4 循环并按行换方向。每行移动 Y 后未同步 currentPos，后续 X 指令仍使用旧 Y，WorldX 也仍按列号递增。',
+          ['gc-ex-auto-points'],
+        ),
+        step(
+          'generate',
+          '三对点拟合后扩展四象限',
+          '至少三对 World/Axis 点才生成，用伪逆拟合仿射矩阵并填充四象限。当前行距和列距都从行间距控件读取，任一象限的行或列数为零会被拒绝；已有 World 点按容差跳过。',
+          ['gc-ex-generate', 'gc-ex-quadrant', 'gc-fit'],
+        ),
+        step(
+          'measured-fit',
+          '扫描后用实测点重新生成',
+          '扫描后生成改用 World/ScanAxis 拟合，再重算所有预期 Axis。两种生成都会写矩阵文件并保存新点列；矩阵文件写入调用在点列替换之前，此处没有创建固定输出目录。',
+          ['gc-ex-scan-fit', 'gc-ex-generate', 'gc-fit'],
+        ),
+        step(
+          'completion',
+          '完成标志只是零值门控',
+          'World、预期 Axis 和实测 ScanAxis 分别保存并保留八位小数。完成标志只看 ScanAxis 标量中的零值少于三个；空表或仍有一个未测点也可能通过，建立区域另要求至少四个点。',
+          ['gc-data-values', 'gc-ex-state', 'gc-region-map'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-scan',
+      '扫描与温漂',
+      '普通、带补偿和模拟使用不同的数据写回与收尾路径。',
+      ['gc-ex-start', 'gc-ex-scan', 'gc-ex-comp-scan', 'gc-ex-simulation'],
+      [
+        step(
+          'start',
+          '按启动项选择两种扫描',
+          '选择启动项后建立暂停事件和取消源，普通扫描与带补偿扫描分别执行。真实路径先到起点 XYZ；每点在移动前等待暂停事件，再检查取消，finally 恢复相关控件。',
+          ['gc-ex-start', 'gc-ex-scan', 'gc-ex-comp-scan'],
+        ),
+        step(
+          'ordinary',
+          '预期轴点成为实测 Mark 点',
+          '普通真实扫描按 Axis 目标移动，等待设定延时后定位；成功结果经像素转 G0 再转机械坐标写 ScanAxis，同时记录指令、编码器、像素和 Mark。定位调用失败会抛出，当前点及后续点不按成功完成。',
+          ['gc-ex-scan', 'gc-ex-position'],
+        ),
+        step(
+          'drift',
+          '首点和周期温漂采集',
+          '启用后先采首点，再按点数或时间间隔采温漂 Mark；拍摄后恢复标定 PR 硬件并安全返回。位置参数虽名含 UpLook，辅助没有指定相机类型，调用的是默认 Bond 相机共同视觉。',
+          ['gc-ex-drift', 'gc-ex-scan', 'tc-common-vision'],
+        ),
+        step(
+          'compensated',
+          '区域插值加到目标 XY',
+          '带补偿真实扫描先按预期 Axis 求区域插值，再把插值加到目标 XY；拍摄后的 ScanAxis 仍是实际 Mark 机械坐标。此路径消费软件区域，不在扫描方法中下载 ETEL 或固高映射表。',
+          ['gc-ex-comp-scan', 'gc-regions'],
+        ),
+        step(
+          'simulation',
+          '模拟结果与真实采样分开',
+          '普通模拟把每轴约 ±0.002 的随机差写入 ScanAxis 并保存；带补偿模拟只记录目标、补偿和已有或估算 Mark，没有相同写回。生成模拟点列另从十六个 World/Axis 对应点开始扩展。',
+          ['gc-ex-simulation', 'gc-ex-comp-simulation', 'gc-ex-sim-points'],
+        ),
+        step(
+          'prediction',
+          '预测复选框的当前状态',
+          '普通扫描可把预测值记入日志，没有直接把它加到运动目标。模型创建代码当前注释，空预测器返回零；取消勾选仍直接 Dispose，因此不能只凭勾选认定模型已加载或生效。',
+          ['gc-ex-predictor', 'gc-ex-scan'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-regions',
+      '区域补偿',
+      '区域保存预期轴位置与实测差值，使用时按优先级选首个命中区域。',
+      ['gc-ex-region-actions', 'gc-region-map', 'gc-regions'],
+      [
+        step(
+          'create',
+          '扫描门控后建立区域',
+          '先检查粗略完成标志，输入名称与优先级，名称唯一后构造区域。构造至少四点，按 WorldY 六位精度分行、WorldX 排列；键是预期 Axis，补偿值是 ScanAxis−Axis。',
+          ['gc-ex-region-actions', 'gc-region-name', 'gc-region-map'],
+        ),
+        step(
+          'cell',
+          '相邻四角决定是否命中',
+          '查找相邻两行、两列围成的四角单元，再按实现中的角点顺序计算。找不到单元不命中；退化分母会抛异常。',
+          ['gc-region-cell'],
+        ),
+        step(
+          'priority',
+          '最高优先级的首个区域',
+          '区域按 Priority 降序排列；使用时返回第一个包含目标点的区域插值，未命中给零。多个重叠区域不会全部累加，单独调整优先级后需要对应排序与保存入口。',
+          ['gc-regions', 'gc-ex-region-actions'],
+        ),
+        step(
+          'refresh',
+          '复测不自动重建区域',
+          '新增、删除和排序首先更新区域列表与界面。带补偿复测会更新 ScanAxis，但没有在每点重新构造区域；新的测量结果、已经建立的区域对象和域保存分别变化。',
+          ['gc-ex-region-actions', 'gc-region-map', 'gc-ex-comp-scan', 'gc-ex-save'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-list',
+      '点序与文件',
+      '点列编辑、域保存和导入导出是分开的动作。',
+      ['gc-data-sort', 'gc-ex-list-edit', 'gc-ex-import', 'gc-ex-export'],
+      [
+        step(
+          'sort',
+          '按 World 行建立蛇形顺序',
+          '先按 WorldY、WorldX 升序，再反转奇数行，形成逐行折返。排序按钮替换内存点列并刷新显示；它不是重新采样，也不在这个处理体立即保存域。',
+          ['gc-data-sort', 'gc-ex-sort'],
+        ),
+        step(
+          'edit',
+          '增删清空有各自确认',
+          '手动点可以确认覆盖；删除所选点和清空列表分别确认后修改集合。点列修改与扫描完成标志的零值判定分开，列表存在或编辑完成不代表该点已经测得。',
+          ['gc-ex-manual', 'gc-ex-list-edit', 'gc-ex-state'],
+        ),
+        step(
+          'import',
+          '导入先保存旧状态',
+          'JSON 读成非空列表后，代码先保存当前域，再清空并装入导入数据，随后刷新界面。这里没有导入后立即再保存，因此不能把文件读取成功等同于新列表已经保存进域配置。',
+          ['gc-ex-import'],
+        ),
+        step(
+          'export',
+          '列表 JSON 与格式化日志',
+          '导出把当前扫描列表交给 JSON 保存助手，另创建格式化日志输出。两者是两个输出调用，格式化路径也另行拼接；不把它写成已经同时成功生成的单一文件。',
+          ['gc-ex-export'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-scale',
+      '旧版单轴与模式',
+      '旧模式按实际索引分派，X/Y 单轴沿各自方向采集并累加误差。',
+      ['gc-old-modes', 'gc-old-scale-x', 'gc-old-scale-y'],
+      [
+        step(
+          'modes',
+          '八种模式按索引执行',
+          '旧窗体分采集、二维、单轴 X/Y、特定精度测试、Bond 标定和两种交替模式。索引 3 的界面文字仍写单轴 X，实际调用 ScaleY；启动先保存设置，再在前任务结束后新建任务。',
+          ['gc-old-modes', 'gc-old-mode-labels'],
+        ),
+        step(
+          'x',
+          'X 方向首轮建立后续累加',
+          '关闭 X 线性补偿并回零，按列移动。相机模式由像素偏差乘设定比例，轴模式对中后取目标减指令位置；首轮收集、后续累加，每轮写文件并下载，首轮后开启补偿。',
+          ['gc-old-scale-x', 'gc-old-linear-switch'],
+        ),
+        step(
+          'y',
+          'Y 方向使用行数与行间距',
+          'Y 方法沿行方向重复相同结构，累计 Y 差值并下载到 Y 轴。失败或停止会直接退出该方法，没有统一还原进入前的开关状态；单轴文本的步长固定为 3.0e-3。',
+          ['gc-old-scale-y', 'gc-old-linear-switch', 'gc-etel-linear'],
+        ),
+        step(
+          'assistant',
+          '旧辅助窗不作为已确认入口',
+          '二维平台旧示教窗当前直接引用检索只定位到声明。它还保留步索引双重递增、行数用末行 Y 减起点 X、行列数都写 rows 的实现。',
+          ['gc-old-assistant'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-mapping',
+      '旧版二维采集',
+      '初始化、初步修正、逐格累计与验证分别执行。',
+      ['gc-old-init', 'gc-old-preliminary', 'gc-old-mapping', 'gc-old-record'],
+      [
+        step(
+          'init',
+          '关闭补偿并建立初始表',
+          '初始化关闭二维补偿并回零 XY，到起点对中后更新起点并保存。两张映射列表按网格大小各填 0.0001，结果列表清空；中心定位失败会提前返回，初始化调用者未接收独立的成功值。',
+          ['gc-old-init', 'gc-old-switch', 'gc-old-center'],
+        ),
+        step(
+          'preliminary',
+          '首行和首列各做两轮',
+          '初步 X 做两轮首行测量并复制到其他行；初步 Y 做两轮首列并复制到其他列，每轮都进入数据生成与开关流程。某格定位失败会抛出，不统一继续到完整二维采样。',
+          ['gc-old-preliminary', 'gc-old-save-data'],
+        ),
+        step(
+          'mapping',
+          '整网格逐格累计',
+          '二维采集逐行逐列移动、延时和定位，将像素差按 SpinX/SpinY 与方向系数累计到映射列表。ETEL 方向系数为 -1，其他默认 1；定位失败记录 999、加零继续，每轮完成后保存数据。',
+          ['gc-old-mapping', 'gc-old-direction'],
+        ),
+        step(
+          'record',
+          '验证采集保留失败哨兵',
+          'RecordData 只记录像素、目标及编码器等，不按同样方式更新映射。失败写入中心像素和异常哨兵；每轮导出并清结果，提前停止直接退出，不能把所有行都当作有效精度数据。',
+          ['gc-old-record'],
+        ),
+        step(
+          'test',
+          '特定精度测试范围有限',
+          '另一个测试按 ColumnCount−30 次、Y 偏移 5、X 再移动 50 的特定序列采集，失败抛异常，最后导出。',
+          ['gc-old-test'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-driver',
+      '驱动生成与开关',
+      '按 X 轴驱动类型分派；写文件、下发、回零与激活分别判断。',
+      ['gc-old-save-data', 'gc-etel-file', 'gc-gt-data', 'gc-old-switch'],
+      [
+        step(
+          'overview',
+          '两条驱动补偿链',
+          'ETEL 用映射文本和驱动下载，固高用缩放后的整数网格。两者都进入专属关闭、回零和开启步骤；这条驱动链与新版带补偿扫描中的软件区域不是同一实现。',
+          ['gc-old-save-data', 'gc-old-switch', 'gc-etel-activation', 'gc-gt-open'],
+        ),
+        step(
+          'etel',
+          'ETEL 文件下载后再激活',
+          '二维文本使用起点、行列间距和网格尺寸，偏差写四位小数。SaveData 首次下载后进入 OpenStage，关闭、回零，再下载并激活；下载捕获 DsaException 只弹框，后续没有接收失败 bool 门控。',
+          [
+            'gc-etel-file',
+            'gc-etel-download',
+            'gc-etel-activation',
+            'gc-old-save-data',
+            'gc-old-switch',
+          ],
+        ),
+        step(
+          'gugao',
+          '固高整数表与边缘扩展',
+          '累计误差乘 10000 转整数表并保存域；OpenStage 只在 GTAxis 类型时进入固高开启。参数间距先转 int 再乘脉冲比例，AutoScale 将行列各加 20 并复制边缘值；上层未接收开启 bool，其他非 ETEL 类型也不能只凭生成表就推定已启用。',
+          ['gc-gt-data', 'gc-gt-open', 'gc-gt-expand', 'gc-old-switch'],
+        ),
+        step(
+          'boundaries',
+          '范围检查与调用成功分开',
+          '固高关闭累加的 API 返回码非零会抛出，开启返回 bool。旧域的软件插值把整数除 10000 并限制补偿绝对值不超过 1，但范围检查后仍访问相邻 index+1；不能仅凭外边界判断就确认邻格合法。',
+          ['gc-gt-close', 'gc-gt-open', 'gc-old-interpolation'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-bond',
+      'Bond 偏移标定',
+      '旧相机补偿、独立取放标定与它们的取值接口分别阅读。',
+      ['gc-old-bond', 'gc-bond-zero', 'gc-bond-calibrate'],
+      [
+        step(
+          'legacy',
+          '旧数组能采集但取值给零',
+          '旧入口逐格采样并累加两张 Bond 偏移表，每轮导出和保存。当前 GetBondCompensate 开头直接返回零，后面的插值不可达；采集了数组不代表该取值接口已经对目标施加补偿。',
+          ['gc-old-bond', 'gc-old-bond-save', 'gc-bond-zero'],
+        ),
+        step(
+          'calibrate',
+          '独立取放任务持续标定',
+          '独立窗口先反复放置、视觉、取回，直到每轴误差小于 0.002，再初始化偏移表。之后逐格加已有偏移放置、测量、取回，并减去本次偏差；每轮导出后继续，没有固定完成轮数。',
+          ['gc-bond-calibrate'],
+        ),
+        step(
+          'validate',
+          '验证使用已有表但不更新',
+          '验证方法按已有偏移表移动、测量和取回，并导出记录，没有在同一位置更新表。实际视觉入口使用硬编码“测试”，不读取此配置的 PR 名称。',
+          ['gc-bond-validate', 'gc-bond-actions'],
+        ),
+        step(
+          'model',
+          '名为平面插值的实际取值',
+          '独立模型未建表给零，建表后调用 PlaneInterpolate；当前工具只返回所属单元的 q1，越界返回输入 XY。',
+          ['gc-bond-model', 'gc-plane-helper'],
+        ),
+        step(
+          'completion',
+          '保存与停止不贯穿全部阶段',
+          '独立标定圈主要写对象和 Excel，域配置另由保存按钮写入；初始收敛圈没有 stop 检查，主圈才逐点检查。Pick/Bond 还会执行力控、真空和吹气，不是单纯的相机采集。',
+          ['gc-bond-settings', 'gc-bond-calibrate', 'gc-bond-actions'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-bc',
+      'BC 偏移关系',
+      '采样表与查询计算分开，按当前行选择和线性规则解释返回。',
+      ['gc-bc-sample', 'gc-bc-query'],
+      [
+        step(
+          'sample',
+          '定位偏差按行和 X 位置保存',
+          '用固定环形模板对中，按行后退、每点前移 56，取 Bond 相机一层转换的像素偏差写入 ΔX/ΔY，再退 54 对中。内层异常只退出当前行，外层仍可能保存部分结果并提示完成。',
+          ['gc-bc-sample', 'gc-bc-camera'],
+        ),
+        step(
+          'row',
+          '先选近 Y 行再处理 X',
+          '实际 GetΔXY 属于 BCOffsetRelationCalibration。只有 Y 前后行都存在，才选较近的一行进行 X 计算；否则返回零，并没有在两行之间对 Y 做插值。',
+          ['gc-bc-query'],
+        ),
+        step(
+          'linear',
+          'X 内插与边界返回不同',
+          '在选中行里沿 X 线性计算，低于首点时用前两点外推，高于最后点则给零。实现用 Capacity 而非 Count 门控，只检查正方向大于 1，且未单独保护相同 X；这些都保留为实际返回边界。',
+          ['gc-bc-query'],
+        ),
+        step(
+          'diagnostic',
+          '另一个校验任务保留异常实现',
+          '视觉验证任务内层递增 i 而不是 j，结果表的 X/Y 位置还写入同一列，在 X 点数为正时，内层计数不会按 j 推进。当前主工程直接 GetΔXY 调用在本窗口的查询和验证，没有据此推定生产动作普遍接入。',
+          ['gc-bc-diagnostic'],
+        ),
+      ],
+    ),
+    choices(
+      'gc-completion',
+      '暂停停止与保存',
+      '停止请求、任务退出、对象更新和保存调用不是同一件事。',
+      ['gc-ex-control', 'gc-ex-close', 'gc-old-stop'],
+      [
+        step(
+          'persistence',
+          '不同路径的收尾对照',
+          '普通扫描、带补偿扫描、导入与区域编辑的保存时点不同，下表集中对照。真实扫描 finally 刷新日志，不统一回滚当前已经写入的 ScanAxis。',
+          [
+            'gc-ex-scan',
+            'gc-ex-comp-scan',
+            'gc-ex-simulation',
+            'gc-ex-comp-simulation',
+            'gc-ex-import',
+            'gc-ex-region-actions',
+            'gc-ex-save',
+          ],
+        ),
+        step(
+          'control',
+          '暂停放行与循环重启',
+          '暂停只控制下一点前的事件等待；停止先放行再取消，没有逐轴停止当前动作。循环勾选通过完成事件在 500ms 后再启动，停止没有取消订阅，完成事件前也未按取消状态分支。',
+          ['gc-ex-control', 'gc-ex-stop', 'gc-ex-cycle', 'gc-ex-start'],
+        ),
+        step(
+          'old-stop',
+          '关闭和旧停止的实际范围',
+          '新版运行时拒绝关闭，编辑态关闭可选保存。旧停止只设 isStop 并在部分路径另保存轴配置，旧窗运行时也拒绝关闭；两版都没有在这些按钮处理里统一停止并等待所有轴与任务。',
+          ['gc-ex-close', 'gc-old-stop', 'gc-old-close'],
+        ),
+      ],
+    ),
+  ],
+  boundaries: [
+    {
+      text: '覆盖两代扫描、点列与区域、单轴/二维驱动表、Bond 与 BC 关系。原件保持只读；未执行回零、补偿下载、取放或精度验收。图中主链与接口状态按当前源码呈现，SDK 反馈及现场配置仍在其实际边界。',
+      refs: ['gc-old-switch', 'gc-ex-scan', 'gc-bond-zero', 'gc-bc-query'],
+    },
+  ],
+};

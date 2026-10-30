@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Original GetPostCompensation method compiled unchanged with real LINQ. Point, inspection and statistics entity classes are controlled stubs; inspection field types checked against source. Fixture dictionary mutations model missing/replenished samples, not execution of the production callback or UI clear handler. No UI validation, configuration acceptance, concurrency, outer exception recovery, actual devices or database tested.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/SupportFeature/Compensate/DefectCompensate/DefectCompensate.cs",
+      "start": 57,
+      "end": 84,
+      "sha256": "2d2cd8a753b0493c16dc5f759ae4264025e6b9b30fb4007fe40be47504466372",
+      "snippetSha256": "22aa6da54d055e9c0cb384eed13923af246c72ac65ecef82f19469678c805c10",
+      "code": "        public static AKRSPoint3D GetPostCompensation(PostBondInspection postBondInspection)\n        {\n            // 判断焊后是否存在这个检测\n            if (!DefectDataS.ContainsKey(postBondInspection.Name))\n            {\n                return new AKRSPoint3D();\n            }\n\n            List<DefectStatisticsEntity> list = new List<DefectStatisticsEntity>(DefectDataS[postBondInspection.Name]);\n\n            // 如果焊后数量不足则不补偿\n            if (list.Count < postBondInspection.BondPostCompensationNumber)\n            {\n                return new AKRSPoint3D();\n            }\n\n            list = list.Take((int)postBondInspection.BondPostCompensationNumber).ToList();\n\n            double x = list.FindAll(it => Math.Abs(it.OffsetX) < 50).Average(it => it.OffsetX) / 1000.0\n                               * postBondInspection.BondPostCompensationRation\n                               / 100.0;\n\n            double y = list.FindAll(it => Math.Abs(it.OffsetY) < 50).Average(it => it.OffsetY) / 1000.0\n                       * postBondInspection.BondPostCompensationRation\n                       / 100.0;\n\n            return new AKRSPoint3D(x, y, 0);\n        }"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/BondSystem/Models/Repositories/PostBondInspection/PostBondInspection.cs",
+      "start": 227,
+      "end": 238,
+      "sha256": "76c2db26a07c5391135b88475c74068a73360d36acfdb6556169d89fcf10d321",
+      "snippetSha256": "ae6c94b352a88f8a680b00cf93aee1a3b3f48e12adc3a8295446752871dbf661",
+      "code": "\n        /// <summary>\n        /// 焊后补偿数量\n        /// </summary>\n        [TreeProgramListArgs(\"焊后补偿参考次数\", \"焊后补偿\", true)]\n        public double BondPostCompensationNumber { get; set; } = 10;\n\n        /// <summary>\n        /// 补偿百分比\n        /// </summary>\n        [TreeProgramListArgs(\"焊后补偿百分比\", \"焊后补偿\", true)]\n        public int BondPostCompensationRation { get; set; } = 50;"
+    }
+  ],
+  "checks": [
+    "PASS missing key returns default point",
+    "PASS insufficient count returns default point",
+    "PASS first N samples determine mean and scaling",
+    "PASS calculation preserves original list and order",
+    "PASS X and Y accept independent sample subsets",
+    "PASS exact positive and negative 50 are excluded",
+    "PASS empty filtered X throws InvalidOperationException",
+    "PASS empty filtered Y throws InvalidOperationException",
+    "PASS zero requested count with existing key throws",
+    "PASS negative requested count with existing key throws",
+    "PASS fractional requested count compares before truncation",
+    "PASS fractional requested count takes truncated integer after count guard",
+    "PASS zero ratio does not bypass empty Average",
+    "PASS negative ratio is applied without local clamp",
+    "PASS nonfinite samples fail strict filter and leave empty set",
+    "PASS dictionary clear returns subsequent lookup to missing-key path",
+    "PASS one new sample after clear remains insufficient",
+    "PASS replenished sample count resumes numeric compensation",
+    "TOTAL 18"
+  ]
+}

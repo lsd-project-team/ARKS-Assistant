@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "status": "exact-original-native-action-selection-and-source-bindings-passed",
+  "command": "node .archify-work/capture-native-action-selection-bindings.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "7be6fe",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-action-selection-bindings.log",
+  "logSha256": "7b4bc8411a1eced99e29c946fdafa8e1a2ca8b9fa2d1ad91434454a134bdc5f7",
+  "testSha256": "93cbf6d66c65ddd5dcaaf7584e87209717475dacaed97503235b502c39742b99",
+  "freeze": {
+    "observedCompletionChunk": "d94739",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "stageVerification": {
+    "command": "node --max-old-space-size=4096 .archify-work/verify-native-action-selection-stage.cjs",
+    "observedCompletionChunk": "91f3aa",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "steps": [
+      {
+        "name": "native-selection",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-action-selection.cjs",
+        "log": ".archify-work/native-action-selection/native-selection-verification.log",
+        "logSha256": "a44d6845bfdaacdf7187a179de6c08dd1b484fc0022ab8dc80e708d3d1357d83",
+        "stderr": ".archify-work/native-action-selection/native-selection-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "algorithm-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-native-algorithm-selection-bindings.cjs",
+        "log": ".archify-work/native-action-selection/algorithm-parent-verification.log",
+        "logSha256": "77f24935b570cb6717561fb6ee64b412d26d36cd7ad6b462691d3ad365b037c4",
+        "stderr": ".archify-work/native-action-selection/algorithm-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "reader-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-dispatch-source-reader-bindings.cjs",
+        "log": ".archify-work/native-action-selection/reader-parent-verification.log",
+        "logSha256": "b15ee21c5dd410b0d8d4380a6c4bfcb42ae6e809c567fab7b051f88d58d132b7",
+        "stderr": ".archify-work/native-action-selection/reader-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "name": "virtual-parent",
+        "command": "node --max-old-space-size=4096 scripts/verify-virtual-dispatch-provenance-bindings.cjs",
+        "log": ".archify-work/native-action-selection/virtual-parent-verification.log",
+        "logSha256": "0a46b2d374843671a50f8729d839528e0db6077dc64ceb51043a23355e0f70aa",
+        "stderr": ".archify-work/native-action-selection/virtual-parent-verification.stderr",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "observedExitCode": 0,
+        "signal": null,
+        "error": null
+      }
+    ]
+  },
+  "compile": {
+    "command": "node .archify-work/compile-native-action-selection.cjs",
+    "observedCompletionChunk": "5ccab8",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "bound": {
+    "command": "node scripts/run-native-action-selection.cjs bound",
+    "observedCompletionChunk": "31a001",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "checks": 5655
+  },
+  "replay": {
+    "command": "node scripts/run-native-action-selection.cjs replay",
+    "observedCompletionChunk": "c7c478",
+    "observedSession": null,
+    "observedExitCode": 0,
+    "checks": 5655
+  },
+  "il": {
+    "command": "node .archify-work/capture-native-action-selection-il.cjs",
+    "observedCompletionChunk": "baa2fd",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "sourceEvidence": {
+    "command": "node --max-old-space-size=4096 scripts/prepare-native-action-selection-source.cjs",
+    "observedCompletionChunk": "705434",
+    "observedSession": null,
+    "observedExitCode": 0
+  },
+  "newFrozenInputs": 50,
+  "reusedParentInputs": 260,
+  "totalFrozenBindings": 9659,
+  "selectorsRuntimeExecuted": true,
+  "privateMessageDataWritten": false,
+  "nodeDoWorkExecuted": false,
+  "productionTaskExecuted": false,
+  "wholeGoalComplete": false
+}

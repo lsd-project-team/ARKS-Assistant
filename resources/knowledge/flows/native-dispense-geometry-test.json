@@ -1,0 +1,508 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-editor-geometry-data-and-template-native-preparation-passed",
+  "parent": {
+    "file": "native-runtime-reader-test.json",
+    "sha256": "7c861004f7c14f94ddb0ad5b18bd9211620f9a122f1a8ef88379bdb4c9ecfd8b"
+  },
+  "parentFrozenBindings": 6043,
+  "newFrozenInputs": 68,
+  "totalFrozenBindings": 6111,
+  "acceptedProcesses": 2,
+  "checksPerPass": 50,
+  "distinctLabels": 50,
+  "selectedMethods": 61,
+  "uiCallersStaticOnly": 7,
+  "originalSources": 15,
+  "actualPatternXmlFilesPerPass": 2,
+  "actualPatternBitmapFilesPerPass": 1,
+  "originalInternalUtilityDelegates": 5,
+  "publicEndpointFactoryFaultsPerPass": 1,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "originalGdiMatrixTransformsExecuted": true,
+  "originalPointAndUtilityGeometryExecuted": true,
+  "originalDegenerateDistanceNaNObserved": true,
+  "originalUnsignedInclinationObserved": true,
+  "originalCurveInteriorRemoveNoOpObserved": true,
+  "originalCurveScreenCachesResetObserved": true,
+  "originalScaleNaNPrecommitFailureObserved": true,
+  "originalCallbackPartialEndpointCommitObserved": true,
+  "originalNormalUiRebuildCallStaticObserved": true,
+  "originalEpeDataNullBitmapRejectedObserved": true,
+  "originalEpeDataNonFiniteDimensionsAcceptedObserved": true,
+  "originalPointArrayCopiesObserved": true,
+  "originalBitmapAliasedObserved": true,
+  "originalMatrixGetterLiveArrayObserved": true,
+  "originalMatrixShortSetterPartialCommitObserved": true,
+  "originalTemplateSXmlSaveReadExecuted": true,
+  "originalTemplateHeightMeasurementLossObserved": true,
+  "originalTemplateBitmapBeforeXmlPartialSaveObserved": true,
+  "originalTemplateMissingBitmapReadNullObserved": true,
+  "originalTempBitmapLockedCleanupSwallowObserved": true,
+  "originalCallerDisposeThenCleanupObserved": true,
+  "originalTemplateFilesReplayShaMatched": true,
+  "failedCompileAttemptsPreserved": 1,
+  "failedNativeStartupAttemptsPreserved": 1,
+  "failedZeroCompileEmitNeverExecuted": true,
+  "acceptedUtilityBindingAfterResolver": true,
+  "uniqueFailedStartupAssemblyCauseProven": false,
+  "actualEditorUIExecuted": false,
+  "productionMotionExecuted": false,
+  "hardwareActionExecuted": false,
+  "realVisionExecuted": false,
+  "realUIExecuted": false,
+  "sqlWritesExecuted": false,
+  "dbLazyCreated": false,
+  "wholeOriginalProductionTaskExecuted": false,
+  "successfulProductionCycleExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "observations": {
+    "failedCompile": {
+      "chunk": "367d4b",
+      "compilerStatus": "failed",
+      "wrapperExitCode": 0,
+      "clrExecuted": false,
+      "cause": "Missing PathConfig namespace and inaccessible internal Utility; zero emit preserved, guarded skip."
+    },
+    "failedNativeStartup": {
+      "chunk": "295d55",
+      "wrapperExitCode": 1,
+      "actualNativeExitCode": 3762504530,
+      "caseProgressCreated": false,
+      "cause": "Typed original Utility delegate static fields present before loader setup; fatal stderr Exception.ToString failed, unique missing assembly not identified."
+    },
+    "acceptedCompileAndPrimary": {
+      "chunk": "44dd58",
+      "exitCode": 0,
+      "checks": 50
+    },
+    "replayCompileRuntime": {
+      "chunk": "3f546b",
+      "exitCode": 0,
+      "checks": 50
+    },
+    "finalIl": {
+      "chunk": "b8c78b",
+      "exitCode": 0
+    },
+    "parentValidation": {
+      "session": 45975,
+      "chunk": "4bf8c9",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Point2D.cs",
+      "sha256": "d7a61de58fa876768c7629bf345df13e96d1d9277a39854b5a88a637ac69f491"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Utility.cs",
+      "sha256": "ac7e04d63488b95101cfb55d9dd5e64a2068857fda392f9df0946bf8b040aac7"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Curve.cs",
+      "sha256": "74496920c0c0eb56859d34175ccf1b41149cf12da12b0af11bb96c094e3db9c4"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Endpoint.cs",
+      "sha256": "9e2eeb018edc8f105159bc4f9768d594875aa271cebd30b8bd7b112561edab7b"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointUnit.cs",
+      "sha256": "0eac9026e89d5c3043e48493e0f5112dbb96e4200c32f117b49ac35c7acc60f3"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointSetting.cs",
+      "sha256": "f916969e89df6c9dfb1f1767d26445bd032cd908213b0b4cb2165cf68f72c1ad"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointFlags.cs",
+      "sha256": "5f3176108a14a0733075079db905f223ff37682dbf6922b9831f91afc7238720"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEPointData.cs",
+      "sha256": "35e2139336b5c93da463b0d10f2e4f3605059c7055a0d3fe29ff4e01db76d783"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEData.cs",
+      "sha256": "fabe1158c192fd7a29627c856d0c3c0e1027a382034116faf2d465993369d890"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/BackgroundImageInfo.cs",
+      "sha256": "891358ec066e23ce5e2fab4eaf17f7dd1597654c45f08379739dca54567fb84c"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PatternFile.cs",
+      "sha256": "f2a6dab6e9b75eb70aacfeaa7075f70c6110a03730d03972c6982ff35cf8b335"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternControl.cs",
+      "sha256": "7bcd3ebb353fefa72bd4425b73465f61b390ddd638a80eb3704bff98cca02705"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/TranslateCurveHandler.cs",
+      "sha256": "41151cac68861e1195495524bec327afa2224a49ba83f3417e51379199d4a628"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/RotateCurveHandler.cs",
+      "sha256": "c17eca1ffc1aa8f87a43b455021ac1b0afcaf646b25d070f196524e64a533a69"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/ScaleCurveHandler.cs",
+      "sha256": "2c7c704906a348e68ad2382b783dc0df5aca5b982c6644532b904d7110fd83cc"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-dispense-geometry.cjs",
+      "sha256": "a1a8e3100ca0c9154cea44f58b53640d7c5023e23ca1f5252901674763ce97e3",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0000-freeze-native-dispense-geometry.cjs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\Cases.cs",
+      "sha256": "b65870855a344ad2c7bcb767d1ecd9c478828b4e0475df8ea4a433d77cf183d2",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\Host.cs",
+      "sha256": "b6a45e3fa8872ca6ac542c2cdc0b135be9288b68ad254b539284e3d64aadb1be",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\Probe.exe",
+      "sha256": "42795705fe9a66d99a7186a7bf897fbdcf2beae42a7a35dbceb12ce862c6c176",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\compile-input.json",
+      "sha256": "d88be3c215712ed6f04808e89a3075c50c328bfcbda970db8464d85f722e1798",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\compile.json",
+      "sha256": "b063c0924d633e602e681f3ef0eb640fe6160accf58ef1e87c4f892c6f90cb2b",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-compile-v1\\Cases.cs",
+      "sha256": "1edd7d03e172271d0d653a2d6bac5001be74c41db572d9a996c88a22c13c2392",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0006-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-compile-v1\\Host.cs",
+      "sha256": "b6a45e3fa8872ca6ac542c2cdc0b135be9288b68ad254b539284e3d64aadb1be",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0007-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-compile-v1\\Probe.exe",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0008-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-compile-v1\\compile-input.json",
+      "sha256": "d88be3c215712ed6f04808e89a3075c50c328bfcbda970db8464d85f722e1798",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0009-compile-input.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-compile-v1\\compile.json",
+      "sha256": "5812736c297cd49c56d1eabdcbaf68778825ae12af926b4ef3422f13d3d87da3",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0010-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-native-v1\\Cases.cs",
+      "sha256": "70e4685810c8509b7f170fdb852541235f9f50d5f64aa454e3d1b9546c575906",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0011-Cases.cs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-native-v1\\Host.cs",
+      "sha256": "b6a45e3fa8872ca6ac542c2cdc0b135be9288b68ad254b539284e3d64aadb1be",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0012-Host.cs"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-native-v1\\Probe.exe",
+      "sha256": "011917938a16549e3a714ef5262a272eece60b104b6810a158e63f648256975c",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0013-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\failed-native-v1\\compile.json",
+      "sha256": "b4e3b8406fa036eb97915207a12a68a2a96417b12f0d021758715bbba8a75b89",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0014-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\il.json",
+      "sha256": "1e91d8619d9a13d08739fb33e69029658d7ee5212268ed4f751c67b8a5534993",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0015-il.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\parent-reader-verification.log",
+      "sha256": "0d416034a7cf464cad33d7d7e3aa9400c8eb9fa5253c085813d265642b36fa3f",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0016-parent-reader-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0017-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\preflight.log",
+      "sha256": "976e6df12e91232c00d058edae88f01aa201650949c404ad867f370ff8d3e178",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0018-preflight.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-Probe.exe",
+      "sha256": "42795705fe9a66d99a7186a7bf897fbdcf2beae42a7a35dbceb12ce862c6c176",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0019-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-run.log",
+      "sha256": "1d567cd4a25d074987d362636f096c2a6a7e57a2ef4942a670db4c856ac0d364",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0020-primary-run.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2-run.log",
+      "sha256": "742b5f7f883b396703989d15de818348be1ff1f45081a7a47cb264b4300964d7",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0021-primary-v2-run.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\Probe.exe",
+      "sha256": "42795705fe9a66d99a7186a7bf897fbdcf2beae42a7a35dbceb12ce862c6c176",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0022-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\case-progress.log",
+      "sha256": "084c6a6a0c24226653b0a5d059154e6509f35cf7b7f22437ac141aae4990e360",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0023-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\pattern-fixture\\no-background.ep",
+      "sha256": "e31c3ed9a836d4036312fd75111cb230b73217e21cdfee9bcd58515bc130407e",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0024-no-background.ep"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\pattern-fixture\\sample.bmp",
+      "sha256": "c06e39613921753284e9e58751d27ed4fefc4c1e56712ff11bc46cd40d752269",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0025-sample.bmp"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\pattern-fixture\\sample.ep",
+      "sha256": "e31c3ed9a836d4036312fd75111cb230b73217e21cdfee9bcd58515bc130407e",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0026-sample.ep"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0027-process.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0028-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0029-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary-v2\\stdout.json",
+      "sha256": "1d7c016675f451021356a3a755f9d251bd8f3edeaa6266c1795a7db58e29e1e5",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0030-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary\\Probe.exe",
+      "sha256": "011917938a16549e3a714ef5262a272eece60b104b6810a158e63f648256975c",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0031-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary\\process.json",
+      "sha256": "db13b6f21ce523ac3390a1c50670f09fab927b0f99e38692dc6004f5ac9544b0",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0032-process.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary\\runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0033-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary\\stderr.log",
+      "sha256": "3d9f5c9ec297847fa5af26f1c39ace8ad4cdcb6ba1f910fe37c723f949f33911",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0034-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\primary\\stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0035-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay-compile.json",
+      "sha256": "49a51378b25ea720658966588c45761b8afeb4f0dc363e3b1977a604fbb5d304",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0036-replay-compile.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay-run.log",
+      "sha256": "e9c5a588fc766c2aeda7e517bededad57a67902dc8512dc2fcb8d169cfb5a08c",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0037-replay-run.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\Probe.exe",
+      "sha256": "42795705fe9a66d99a7186a7bf897fbdcf2beae42a7a35dbceb12ce862c6c176",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0038-Probe.exe"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\case-progress.log",
+      "sha256": "084c6a6a0c24226653b0a5d059154e6509f35cf7b7f22437ac141aae4990e360",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0039-case-progress.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\pattern-fixture\\no-background.ep",
+      "sha256": "e31c3ed9a836d4036312fd75111cb230b73217e21cdfee9bcd58515bc130407e",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0040-no-background.ep"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\pattern-fixture\\sample.bmp",
+      "sha256": "c06e39613921753284e9e58751d27ed4fefc4c1e56712ff11bc46cd40d752269",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0041-sample.bmp"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\pattern-fixture\\sample.ep",
+      "sha256": "e31c3ed9a836d4036312fd75111cb230b73217e21cdfee9bcd58515bc130407e",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0042-sample.ep"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0043-process.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0044-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0045-stderr.log"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\replay\\stdout.json",
+      "sha256": "d7d012994e8fcd300551495c940cc2f1204f461ff9ed554302076fa1ef3ef08e",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0046-stdout.json"
+    },
+    {
+      "file": ".archify-work\\native-dispense-geometry\\runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0047-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-dispense-geometry.ps1",
+      "sha256": "e5372c9e71544ed82c69a610b398fd5d14a98ce400ea269efeb8c4a1cd9e6fc0",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0048-inspect-native-dispense-geometry.ps1"
+    },
+    {
+      "file": "scripts/native-dispense-geometry-cases.cs.txt",
+      "sha256": "b65870855a344ad2c7bcb767d1ecd9c478828b4e0475df8ea4a433d77cf183d2",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0049-native-dispense-geometry-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-dispense-geometry.cjs",
+      "sha256": "cbad206c3921d577fb03f7b92fcfb6a8ed72d6ce2503fa1822765072edd45941",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0050-prepare-native-dispense-geometry.cjs"
+    },
+    {
+      "file": "scripts/run-native-dispense-geometry.cjs",
+      "sha256": "86201e890a2af40591416d5525b17b8c5d23d3d4e99da95f04f9acc55743ad20",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0051-run-native-dispense-geometry.cjs"
+    },
+    {
+      "file": "scripts/verify-native-dispense-geometry.cjs",
+      "sha256": "ecd504a76e99035885e5363493a3be9a8f4b7f5a38f6791c6deadb8eb015df0a",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0052-verify-native-dispense-geometry.cjs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/RotateCurveHandler.cs",
+      "sha256": "c17eca1ffc1aa8f87a43b455021ac1b0afcaf646b25d070f196524e64a533a69",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0053-RotateCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/ScaleCurveHandler.cs",
+      "sha256": "2c7c704906a348e68ad2382b783dc0df5aca5b982c6644532b904d7110fd83cc",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0054-ScaleCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/ActionHandlers/Curve/TransformCurve/TranslateCurveHandler.cs",
+      "sha256": "41151cac68861e1195495524bec327afa2224a49ba83f3417e51379199d4a628",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0055-TranslateCurveHandler.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/BackgroundImageInfo.cs",
+      "sha256": "891358ec066e23ce5e2fab4eaf17f7dd1597654c45f08379739dca54567fb84c",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0056-BackgroundImageInfo.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Curve.cs",
+      "sha256": "74496920c0c0eb56859d34175ccf1b41149cf12da12b0af11bb96c094e3db9c4",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0057-Curve.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEData.cs",
+      "sha256": "fabe1158c192fd7a29627c856d0c3c0e1027a382034116faf2d465993369d890",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0058-EPEData.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EPEPointData.cs",
+      "sha256": "35e2139336b5c93da463b0d10f2e4f3605059c7055a0d3fe29ff4e01db76d783",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0059-EPEPointData.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Endpoint.cs",
+      "sha256": "9e2eeb018edc8f105159bc4f9768d594875aa271cebd30b8bd7b112561edab7b",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0060-Endpoint.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointFlags.cs",
+      "sha256": "5f3176108a14a0733075079db905f223ff37682dbf6922b9831f91afc7238720",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0061-EndpointFlags.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointSetting.cs",
+      "sha256": "f916969e89df6c9dfb1f1767d26445bd032cd908213b0b4cb2165cf68f72c1ad",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0062-EndpointSetting.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EndpointUnit.cs",
+      "sha256": "0eac9026e89d5c3043e48493e0f5112dbb96e4200c32f117b49ac35c7acc60f3",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0063-EndpointUnit.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/EpoxyPatternControl.cs",
+      "sha256": "7bcd3ebb353fefa72bd4425b73465f61b390ddd638a80eb3704bff98cca02705",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0064-EpoxyPatternControl.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/PatternFile.cs",
+      "sha256": "f2a6dab6e9b75eb70aacfeaa7075f70c6110a03730d03972c6982ff35cf8b335",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0065-PatternFile.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Point2D.cs",
+      "sha256": "d7a61de58fa876768c7629bf345df13e96d1d9277a39854b5a88a637ac69f491",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0066-Point2D.cs"
+    },
+    {
+      "file": "trunk/AKRS.Galaxy2.Dispense/Utility.cs",
+      "sha256": "ac7e04d63488b95101cfb55d9dd5e64a2068857fda392f9df0946bf8b040aac7",
+      "frozenCopy": ".archify-work/native-dispense-geometry-baseline/inputs/0067-Utility.cs"
+    }
+  ],
+  "scope": "Actual original Curve/Point2D/Utility original internal static delegate bodies, GDI anchored transforms, screen cache zero/reset and original public factory partial fault, data copied arrays/structs and Bitmap shared/matrix live and partial setter. Actual PatternFile uses vendor SXml isolated XML/BMP Save/Read: fractional values roundtrip, HeightMeasurement omitted, exclusive XML failure occurs after Bitmap committed, missing BMP Read returnsnull, loaded Bitmap locks temp cleanup until caller Dispose. Same emitted probe/replay results and XML/BMP SHA. Seven UI control/handler bodies static IL only including normal UpdateAllCurves→UpdateAllEndpoints prevents equating low-level cache reset to observed UI breakage. No actual editor/mouse UI, production motion/device/SQL/whole Task, private/source/SDK replacements."
+}

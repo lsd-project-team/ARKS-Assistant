@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-controller-coordinate-prerequisites-interpolation-failures-and-hardware-gates-native-preparation-passed",
+  "parent": {
+    "file": "native-dispense-policy-test.json",
+    "sha256": "6f99dd177a1467268b63bdbc7def34d3d6b963fad1834f786d843150f3a98d06"
+  },
+  "parentFrozenBindings": 6594,
+  "newFrozenInputs": 59,
+  "totalFrozenBindings": 6653,
+  "acceptedProcesses": 2,
+  "checksPerPass": 40,
+  "distinctLabels": 40,
+  "selectedMethods": 99,
+  "selectedAssemblies": 1,
+  "controllerSelectedMethods": 27,
+  "moduleSelectedMethods": 19,
+  "xtraOverloadsStaticCaptured": 45,
+  "pressureClosureStaticCaptured": 1,
+  "originalSources": 24,
+  "controllerInterpolationCallsPerPass": 10,
+  "controllerFailReturnsPerPass": 9,
+  "controllerUiFaultThrowsPerPass": 1,
+  "uiCallbacksCollectedPerPass": 10,
+  "uiCallbacksExecutedPerPass": 0,
+  "hardwareDeclarationConfigurations": 4,
+  "compileReferences": 162,
+  "sourceCompileReferences": 10,
+  "runtimeMapEntries": 172,
+  "sourceAssembliesPerProcess": 16,
+  "runtime": "4.0.30319.42000",
+  "originalDomainControllerExecuted": true,
+  "originalCoordinateConversionsExecuted": true,
+  "originalUnparentedCoordinateOwnTransformOmittedObserved": true,
+  "originalParentedCoordinateRoundtripExecuted": true,
+  "originalFirstDuplicateNamedCoordinateSelectedObserved": true,
+  "originalCalibrationNeedleAndSensorOffsetExecuted": true,
+  "originalDirectCoordinateIgnoresDispenserReadinessObserved": true,
+  "originalActualControllerInterpolationEarlyFailuresExecuted": true,
+  "originalEmptyPatternStillFinalZAttemptObserved": true,
+  "originalEmptyCurveBeforePressureTaskFailureObserved": true,
+  "originalPrintingBeforeFirstPointFailureObserved": true,
+  "originalCatchUiFaultReplacesFailObserved": true,
+  "originalOfflineRandomGetG0Observed": true,
+  "originalOfflineSafeMovesSkipDependenciesObserved": true,
+  "originalDryCycleDoesNotSkipAxesObserved": true,
+  "originalLaserSafeMovesSkipCylinderObserved": true,
+  "originalPressureDisabledLinkReturnsObserved": true,
+  "originalPressureMissingControlWrappedObserved": true,
+  "originalValveAndPrintAxisFailuresObserved": true,
+  "originalHardwareNameBranchesAndDuplicateCameraObserved": true,
+  "originalPrintAxisDeclarationOmittedObserved": true,
+  "pressureTasksCreatedInThisProbe": false,
+  "pressureClosureExecutedInThisProbe": false,
+  "pressureClampValuesMeasuredAtHardware": false,
+  "actualCoordinateCalibrationExecuted": false,
+  "hardwareActionExecuted": false,
+  "productionMotionExecuted": false,
+  "realVisionExecuted": false,
+  "realUIExecuted": false,
+  "visibleWindowShown": false,
+  "showDialogExecuted": false,
+  "osInputSent": false,
+  "sqlWritesExecuted": false,
+  "dbLazyCreated": false,
+  "wholeOriginalProductionTaskExecuted": false,
+  "successfulProductionCycleExecuted": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "newPrivateStateWrites": false,
+  "originalFullMsbuildBuild": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "failedAttemptsInThisPhase": 0,
+  "observations": {
+    "acceptedCompileAndPrimary": {
+      "session": 42509,
+      "chunk": "28f610",
+      "exitCode": 0,
+      "checks": 40,
+      "initialCallChunk": "5fbeaf"
+    },
+    "acceptedReplayCompileRuntimeAndInitialIl": {
+      "session": 71471,
+      "chunk": "ed4f1d",
+      "exitCode": 0,
+      "checks": 40,
+      "initialCallChunk": "d269bc",
+      "initialIlMethods": 98
+    },
+    "finalIlWithPressureClosure": {
+      "chunk": "97db57",
+      "exitCode": 0,
+      "selectedMethods": 99,
+      "cause": "Added readonly compiler pressure closure body; old98method IL and inspector retained, closure not executed."
+    },
+    "parentValidation": {
+      "session": 68050,
+      "chunk": "e108ac",
+      "exitCode": 0
+    },
+    "acceptedPreflight": {
+      "chunk": "811859",
+      "exitCode": 0
+    }
+  },
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/DispenseModule.cs",
+      "sha256": "ff5b68be21e0ba15364e604ec0f70ab2a39647aa2257a5b0aebe0df7a87b51c1"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseMeasureHeightController.cs",
+      "sha256": "36adb9650521da7a1418b68aa09491252f75d05758548fc8374667594a22c451"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/MeasureHeightModule.cs",
+      "sha256": "0cd2fff6e67172e02093da3441af1dab8cb4b51e639229f02978417f9b077766"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/VisionModule.cs",
+      "sha256": "9d217923f4ad245c3751baea64c5a300385d81896b5d97a69061a4c471d2ae68"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Program.cs",
+      "sha256": "9fe64aac4c568f4acf1c38ee416346c51f62c04c5f8bf4ad2e4fa241ba986ee7"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/DispenseDevicePara.cs",
+      "sha256": "3ef728107812e4951a7404713c9073497b4fe7e83640ddf611c5d9bcb4cf43ee"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/DispenseModulePara.cs",
+      "sha256": "a9ceb5633959550ae803f3b963be4ec56927b86e216def91d4bd8d3dfa263529"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/PreDispensePlatePara.cs",
+      "sha256": "6aed34e5385cd1662741a381265f3d882aa3bbc0c56e7a895ebcca472579d410"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/DispenserProgram.cs",
+      "sha256": "d31d3b70e94842d211fd40a7f9d456043beda12f124673da9fe34e68c2ae5414"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/DispenserRepository.cs",
+      "sha256": "5a04707571c492d43057e695fcab07e4892a14587866e230b498e7fd09cbccb6"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateRunPara.cs",
+      "sha256": "6de30a1616d81261702c4159f78c7e643ce584e5756bc16fda7a588d17835699"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/MachineHardwareConfiguration.cs",
+      "sha256": "a875936c21af8b6b7c5c15d1f2d6fafe66827a209e609ec3ad349cbde7a9b628"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/DispenseRunTimeProvider.cs",
+      "sha256": "105e1dd97059728f5f5beeb24d0a59ca173c341e35d7b5404827aeb42addd2be"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Services/DispenserMoveHelper.cs",
+      "sha256": "265981cd1e4ef2987860def252b439124e02c04b795a85e2700b7443938a25d5"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/ObjectHelper.cs",
+      "sha256": "921dab2a9abd77984ca1d2b2a70c50fa142de022b90567943dbda9bb713df49b"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Pattern/EpoxyApplication.cs",
+      "sha256": "521085379fd47662ed25f7f7ae3372e22d8d58330b9ba6a9391fa5c39abce0ad"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/EpoxyApplicationLocation.cs",
+      "sha256": "9374c16d315f7ee0f17613178ae9add6ad43da6fb95cdf22b89ad56c80cd7660"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8"
+    }
+  ],
+  "frozenInputs": [
+    {
+      "file": ".archify-work/freeze-native-dispense-controller.cjs",
+      "sha256": "5c71d1ad0ebac3aa7a4a3e0c23dc070592b6cc2812f614b52e8291ad40d5b900",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0000-freeze-native-dispense-controller.cjs"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/Cases.cs",
+      "sha256": "ed66aa97005b3232f62ad7873bea481a1e91bae6e2b5428a0f9328ece93886c4",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0001-Cases.cs"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/Host.cs",
+      "sha256": "4b81fad4557a359b6b86a7d1a61b89ffe6a849b9272a0cb2a0876d71c540f721",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0002-Host.cs"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/Probe.exe",
+      "sha256": "8be3d5a5ddf917f0c58f31945df8ddc04362462eb28b3f1fe76035ecb7006d51",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0003-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/compile-input.json",
+      "sha256": "065d403c7a7645acd29e08073e20cc4caee9305f268c28d3d9f840565956312e",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0004-compile-input.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/compile.json",
+      "sha256": "645bae6b5655db6c73a2592b53edca6a69c31f6b5f1c48b50bb67bea7c52ba41",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0005-compile.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/il.json",
+      "sha256": "9c35a77c7be11832fe51f94db1e8f643c254fc7995fae70f654620d5d3f212ed",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0006-il.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/initial-il-without-pressure-closure.json",
+      "sha256": "1c769a695dfab526b9503cf81dd67b4590fcaedeea9833c2d814a80eb48b4413",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0007-initial-il-without-pressure-closure.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/initial-inspector-without-pressure-closure.ps1",
+      "sha256": "71cf8b53edf88ea347ff0d825056ab702bef202a1be48adfa73f83d0b7a2c0c9",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0008-initial-inspector-without-pressure-closure.ps1"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/parent-policy-verification.log",
+      "sha256": "939ee2aca022e968f364e9e814e26676ccfc2a2d904dace1159997b8129ffdc0",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0009-parent-policy-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/parent-resources-verification.log",
+      "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0010-parent-resources-verification.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/preflight.log",
+      "sha256": "c0d1384c7b9be6bde6c60984f2752ba17d6564e3c5347dafdd831ffd3793df42",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0011-preflight.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-Probe.exe",
+      "sha256": "8be3d5a5ddf917f0c58f31945df8ddc04362462eb28b3f1fe76035ecb7006d51",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0012-primary-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/Probe.exe",
+      "sha256": "8be3d5a5ddf917f0c58f31945df8ddc04362462eb28b3f1fe76035ecb7006d51",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0013-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/Settings/DeviceParams/DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0014-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/case-progress.log",
+      "sha256": "41ec5fd1034a725445b84e9f6b79ba4a0350b0f51250420ae0415e20f465262d",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0015-case-progress.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0016-process.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/runtime-map.tsv",
+      "sha256": "0b6256299f4cb61566cb9b41ab01f3904ff32a7cc13b3a3a2e68e058abadbbd0",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0017-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0018-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/primary-v2/stdout.json",
+      "sha256": "d3db0d97c77049025605b91b33513d902e10919b08b49832bfc4cbd9ad1f5e61",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0019-stdout.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay-compile-input.json",
+      "sha256": "99477101b6a7e94b46695005681451776601b6934705e98f4618a6af008dcbb0",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0020-replay-compile-input.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay-compile.json",
+      "sha256": "7ca794dadaf051e82d28338c25a66c87daee57fd8854cd89a3f134cb242b67c1",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0021-replay-compile.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/Probe.exe",
+      "sha256": "8be3d5a5ddf917f0c58f31945df8ddc04362462eb28b3f1fe76035ecb7006d51",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0022-Probe.exe"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/Settings/DeviceParams/DispenserRepository.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0023-DispenserRepository.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/case-progress.log",
+      "sha256": "41ec5fd1034a725445b84e9f6b79ba4a0350b0f51250420ae0415e20f465262d",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0024-case-progress.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/process.json",
+      "sha256": "07818db839063759e30a47b4d4da8f02386c8d4ed547f5408f3e127a77f95ad6",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0025-process.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/runtime-map.tsv",
+      "sha256": "08ef1d5c14a52dddebe1d4ea2bc6687dfe6f7acbf7303986300e6ce32e7ea4f2",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0026-runtime-map.tsv"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0027-stderr.log"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/replay/stdout.json",
+      "sha256": "ce125a56f90ebe961d93c3c483c2d185abc91999a9d6c4b86ebafad29cf2d3b7",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0028-stdout.json"
+    },
+    {
+      "file": ".archify-work/native-dispense-controller/runtime-map.json",
+      "sha256": "fc3dc345e04d0400f3b84cf4dc520f463aa7314e3667cca2ad6c748cd797f08a",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0029-runtime-map.json"
+    },
+    {
+      "file": "scripts/inspect-native-dispense-controller.ps1",
+      "sha256": "39d105146b59a4adefc1dc8819ed4d207b75a25562c57fac749428b32a0899a9",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0030-inspect-native-dispense-controller.ps1"
+    },
+    {
+      "file": "scripts/native-dispense-controller-cases.cs.txt",
+      "sha256": "ed66aa97005b3232f62ad7873bea481a1e91bae6e2b5428a0f9328ece93886c4",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0031-native-dispense-controller-cases.cs.txt"
+    },
+    {
+      "file": "scripts/prepare-native-dispense-controller.cjs",
+      "sha256": "301e460ca1f12e0bca68ebf7926fa7a64090b7a0fecada9ed029995f70146b2b",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0032-prepare-native-dispense-controller.cjs"
+    },
+    {
+      "file": "scripts/run-native-dispense-controller.cjs",
+      "sha256": "59a2e39f22c7d6adcd0b9537da4f09b85e7270e16e96d80c977f39ba33cac51b",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0033-run-native-dispense-controller.cjs"
+    },
+    {
+      "file": "scripts/verify-native-dispense-controller.cjs",
+      "sha256": "b36776e68becf000846fd56310eced38c3b12bb10b1218e11c0fb156696d9eee",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0034-verify-native-dispense-controller.cjs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/CalibSystem/Models/CalibrateRunPara.cs",
+      "sha256": "6de30a1616d81261702c4159f78c7e643ce584e5756bc16fda7a588d17835699",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0035-CalibrateRunPara.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs",
+      "sha256": "47ab9d4035976be222713be226570999a53f7a3f5fed35ff1855dc4ce3bf3bc8",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0036-DispenseController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Controllers/DispenseMeasureHeightController.cs",
+      "sha256": "36adb9650521da7a1418b68aa09491252f75d05758548fc8374667594a22c451",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0037-DispenseMeasureHeightController.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/DispenseDevicePara.cs",
+      "sha256": "3ef728107812e4951a7404713c9073497b4fe7e83640ddf611c5d9bcb4cf43ee",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0038-DispenseDevicePara.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/DispenseModulePara.cs",
+      "sha256": "a9ceb5633959550ae803f3b963be4ec56927b86e216def91d4bd8d3dfa263529",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0039-DispenseModulePara.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DeviceParams/PreDispensePlatePara.cs",
+      "sha256": "6aed34e5385cd1662741a381265f3d882aa3bbc0c56e7a895ebcca472579d410",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0040-PreDispensePlatePara.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/DispenseRunTimeProvider.cs",
+      "sha256": "105e1dd97059728f5f5beeb24d0a59ca173c341e35d7b5404827aeb42addd2be",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0041-DispenseRunTimeProvider.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/EpoxyApplicationLocation.cs",
+      "sha256": "9374c16d315f7ee0f17613178ae9add6ad43da6fb95cdf22b89ad56c80cd7660",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0042-EpoxyApplicationLocation.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0043-DispenseEnum.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Programs/DispenserProgram.cs",
+      "sha256": "d31d3b70e94842d211fd40a7f9d456043beda12f124673da9fe34e68c2ae5414",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0044-DispenserProgram.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/Dispenser.cs",
+      "sha256": "99983451d8b5d5fb5e3f827d6cd889a931a8975284d8943eee3d7e5129bd9b57",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0045-Dispenser.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Dispenser/DispenserRepository.cs",
+      "sha256": "5a04707571c492d43057e695fcab07e4892a14587866e230b498e7fd09cbccb6",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0046-DispenserRepository.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Repositories/Pattern/EpoxyApplication.cs",
+      "sha256": "521085379fd47662ed25f7f7ae3372e22d8d58330b9ba6a9391fa5c39abce0ad",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0047-EpoxyApplication.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Domain.cs",
+      "sha256": "cd8a0152c310b282535bf8e694734b92a07d034f129605481d6b2f3dbe6bc24a",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0048-System1Domain.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/System1Program.cs",
+      "sha256": "9fe64aac4c568f4acf1c38ee416346c51f62c04c5f8bf4ad2e4fa241ba986ee7",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0049-System1Program.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/DispenseModule.cs",
+      "sha256": "ff5b68be21e0ba15364e604ec0f70ab2a39647aa2257a5b0aebe0df7a87b51c1",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0050-DispenseModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/MeasureHeightModule.cs",
+      "sha256": "0cd2fff6e67172e02093da3441af1dab8cb4b51e639229f02978417f9b077766",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0051-MeasureHeightModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Modules/VisionModule.cs",
+      "sha256": "9d217923f4ad245c3751baea64c5a300385d81896b5d97a69061a4c471d2ae68",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0052-VisionModule.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Services/DispenserMoveHelper.cs",
+      "sha256": "265981cd1e4ef2987860def252b439124e02c04b795a85e2700b7443938a25d5",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0053-DispenserMoveHelper.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Currency/AKRSXtraMessageBox.cs",
+      "sha256": "a5a05bc7a8819318fc99d4b383a0f209efab1b3ac9c304d96b74382516ce245e",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0054-AKRSXtraMessageBox.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Service/DBService.cs",
+      "sha256": "276b6c62d7ca8a1143c49747460ca2fb5263dadc90102a900b3ff0b23aaf3f4c",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0055-DBService.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/ObjectHelper.cs",
+      "sha256": "921dab2a9abd77984ca1d2b2a70c50fa142de022b90567943dbda9bb713df49b",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0056-ObjectHelper.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Controls/MainForm.cs",
+      "sha256": "be7edb0cd880cd8258d038ff1278ed89b977aaa8d08a11bc62921b1cc1cd4d39",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0057-MainForm.cs"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/MachineHardwareConfiguration.cs",
+      "sha256": "a875936c21af8b6b7c5c15d1f2d6fafe66827a209e609ec3ad349cbde7a9b628",
+      "frozenCopy": ".archify-work/native-dispense-controller-baseline/inputs/0058-MachineHardwareConfiguration.cs"
+    }
+  ],
+  "scope": "Two fresh native CLR STA hosts40distinct checks each execute actual System1Domain DispenseController and modules, real SDK named GeneralCoordinateSystem fixtures and public calibration/selected real repository dispenser/device settings. Unparented own transform omitted, parented90degree8/21/33 roundtrip, first duplicate lookup, camera/inverse and needle/sensor offsets, direct method bypasses dispenser readiness. Each10actual InterpolationApplication calls:9Fail and1same-instance public UI warning dispatcher exception; staged missing coordinate/calibration/selected dispenser, empty model final absent Z, null clone/list/point, empty curve index before pressure Task and configured PrintEpoxy missing platter before first point;10actual warning Actions collected/unexecuted. Offline GetG0Pos random integer bounds and safe moves skip hardware; DryCycle axes fail; laser skips cylinder then missingZ; pressure disabledlink returns with nonfinite data, linked missingcontrol catch dropsinner. Valve/print/group/position actual missing hardware paths and4hardware declaration branches12/15/16/19names duplicatecamera and configured print axis omission.99original IL1assembly including45Xtra overloads and1pressure closure static only; real pressure Task/vendor group/axis IO branches not executed, no pressure clamp at hardware measured.16source assemblies physically bound/replay and Probe/labels/result/Chinese UI texts match. No private/source/project/SDK/controller/axis substitution, shownUI/OSinput/SQL/motion/fullproductionTask/fullBuild/deploy/calibration or successful physical cycle."
+}

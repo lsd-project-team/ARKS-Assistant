@@ -1,0 +1,205 @@
+.material-file-tools {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.material-upload-summary {
+  margin: 16px 0 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.material-upload-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+.material-upload-list > li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+}
+.material-upload-list > li + li {
+  border-top: 1px solid var(--border);
+}
+.material-upload-list > li > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.material-upload-list strong,
+.material-upload-list span {
+  display: block;
+  font-size: 13px;
+}
+.material-upload-list strong {
+  font-weight: 500;
+}
+.material-upload-list span {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.dashboard-panel-materials {
+  container-type: inline-size;
+}
+.material-file-tools > span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.material-file-search {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--text-secondary);
+}
+.material-file-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  box-shadow: none !important;
+  background: transparent;
+}
+.material-file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.material-file-list > li + li {
+  border-top: 1px solid var(--border);
+}
+.material-file {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) minmax(80px, 120px) 150px;
+  width: 100%;
+  gap: 14px;
+  align-items: center;
+  padding: 20px;
+  border: 0;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+}
+.material-file:hover {
+  background: var(--panel-secondary);
+}
+.material-file > svg {
+  color: var(--text-secondary);
+}
+.material-file > strong {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 500;
+}
+.material-file > span,
+.material-file > time {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+.material-file-empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 70px 16px;
+  color: var(--text-secondary);
+}
+.material-file-empty p {
+  margin: 0;
+  font-size: 14px;
+}
+.handover-modal.material-original-dialog {
+  width: min(1100px, 96vw);
+}
+.material-original-dialog .handover-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.material-original-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.material-original-frame {
+  width: 100%;
+  height: min(64vh, 760px);
+  min-height: 240px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+}
+.material-original-fallback {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 60px 16px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.material-original-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+}
+.material-pdf-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 0 12px;
+  font-size: 13px;
+}
+.material-pdf-scroll {
+  max-height: min(60vh, calc(100dvh - 310px));
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #e8e8e8;
+}
+.material-pdf-page {
+  width: 100%;
+  min-height: 100px;
+}
+.material-pdf-page canvas {
+  display: block;
+  max-width: 100%;
+  background: white;
+}
+@container (max-width: 650px) {
+  .material-file {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 8px 12px;
+    padding: 16px;
+  }
+  .material-file > strong {
+    grid-column: 2;
+  }
+  .material-file > .material-uploader {
+    grid-column: 2;
+  }
+  .material-file > time {
+    grid-column: 2;
+  }
+}

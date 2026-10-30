@@ -1,0 +1,23 @@
+# 原Loader/Unloader入口、重置与保存复核
+
+两轮各773项，共1546项检查通过；来源台账11165+216=11381，438个父输入复用。300个声明、188份原源文件、260个原IL方法、4个IL程序集；实际16个原资源源码程序集在两个Framework隔离进程加载。生产C#/csproj未改，29组仍partial、13项清单保留，整体目标未完成。
+
+每轮90个原Start创建且捕获的上下料仓Task，82完成、8故障。另2个公开字段的通用Running任务夹具单独记录；没有把它们算入90。2个原任务在缺失传感器异常后暂时停在公开弹窗分派夹具，亦属于90；这是故障回调阻塞，不是正常业务等待成功。无S1/S2任务和节点DoWork。
+
+140条Start矩阵为2任务类型×5工作模式×7状态×2Enable。Enable=false或DryCycle直接返回，无任务；其余56条创建Task.Run并保持原状态。原循环只接受严格Working，Stop/Pause/Operate/Teaching/Preparing/999均立即完成，Unloader循环内的Pause检查不能证明从Pause启动会等待。Working的8条首先读BinA传感器，实际SDK硬件为空而NRE；原catch的公开Xtra继续体被跳过，因此Task完成、Machine仍Working、四个握手信号均未设置。此完成是捕获异常退出，不是上/下料业务成功。
+
+另16个Stop原任务证明终结任务可再次Start生成新引用。BinB的8个Working原任务同样在传感器处异常、catch后完成；8个额外原任务由公开Xtra分派抛共享标记而Faulted，状态仍Working，原关闭查询允许故障任务。每轮26次Xtra分派，真实UI继续体没有执行。
+
+2个原故障任务停在公开回调夹具期间仍Running；Pause再次Start保持同一引用及Pause，原Machine.Stop在OffLineWork与料仓配置下提交Stop，但不能结束夹具中的阻塞，关闭查询仍拒绝。公开释放后任务完成。另2个通用Running持有任务覆盖全部模式/状态/Enable保护门，均保持引用，不创建原任务；Enable=false和IsTransportConfigured=false也不使原关闭查询忽略这两个仓任务。原Stop产生2个实际状态日志实体，无SQL消费线程。
+
+30次实际位置getter中，仅OffLineWork直接返回1；其他模式缺轴NRE。当前料盒感应即使离线也无绕过，原传感器读取早于任何正常移动。5模式模块检查均缺轴：Loader的移动返回Exception；Unloader推杆返回Abort，Y/Z方法提前void返回；IsReady在离线判断之前。没有注入任何SDK硬件、轴或控制器替身，没有物理动作。
+
+42组double LayerNum×整数层号证明原判断为num>LayerNum或num<=0：NaN与正无穷允许所有正整数，2.5允许1/2拒绝3，非正层号拒绝。每组BinA/B/999证实空仓/满仓要求准确BinB，未知仓枚举不满足该条件。实际两个类型仓库Add/Save/Load后程式getter读到新实例与2.5层数；两份仓库JSON只在原CreateTime各一值上随进程时间变化，验证仅规范化这两个日期比较其余完整JSON，原字节分别冻结；没有声称这两文件哈希跨进程相同。
+
+四种原重置分别为Loader/Unloader的ResetCurPlaceLayer和完整ResetLoader/ResetUnloader。实际独占文件锁下，原SDK SaveGenericObject在File.Replace失败后包装普通System.Exception，文本“文件保存失败”；不是IOException。原层号先设1，完整重置还先设BinA，保存失败后内存保持新值、磁盘字节保持旧哈希。解锁再次重置实际保存成功，原InitTransportSystemProgram与GetInstance重载新对象，名称及另一仓的状态保持。最终程式JSON跨进程哈希一致，4个重置前后SHA均分别匹配两轮结果。
+
+接受编译a9e35e、bound293aa7、replayae8fa1、源/IL d38204、核心d78bb5均exit0，无live session。最终19项阶段校验初始492340/session68861，write_stdin终结6b8343 exit0。冻结8cc811、绑定7d1e2e均exit0。
+
+失败证据保留：2份真实CLR候选locked-save-v1/locked-save-observer-v2各756项后因错判IOException退出1（878746/71c471），第二份日志及SDK IL确认实际包装异常；准备PowerShell解析667f22未执行，9b9018/3f21aa守卫拒绝复用现存目录，未执行新CLR。初编译d0e213的范围标签继承旧模板，运行前已修正为Loader范围并重编译；旧编译资料保留。初核心040e30和19项初阶段915117/session20541→4a4303通过；增强真实文件校验后，875eee及7d4375因动态CreateTime失败，草稿和阶段日志均保留，最终仅两日期语义比较及原字节冻结校验通过。仓库.codegraph不存在，ddfe0f确认。
+
+完整上下料物理循环、生产配方、SQL、真实UI、PR/VM/设备、Machine.Start/Prepare/CleanFile、完整MSBuild/LC/Fody/部署及29组业务验收仍未完成。本阶段下一步是原输送料仓握手和程式就绪门：在不替换真实硬件条件下核验当前配置、上/下料任务衔接与可执行非设备分支，再推进完整业务。整体目标未完成。

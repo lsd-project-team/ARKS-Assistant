@@ -1,0 +1,196 @@
+{
+  "schema": "archify-s2-door-pause-current-v1",
+  "status": "current-s2-door-pause-verified",
+  "recordedAt": "2026-10-08T03:11:58.363Z",
+  "verification": {
+    "command": "node scripts/test-s2-door-pause.cjs",
+    "checks": 37,
+    "methods": 17,
+    "sourceFiles": [
+      {
+        "file": "scripts/test-s2-door-pause.ps1",
+        "sha256": "88a1754b870990157c1ff3bba4cd7f19abcfde49cd65bf9142a987fc2d996a05"
+      },
+      {
+        "file": "scripts/test-s2-door-pause.cjs",
+        "sha256": "3484fb25ae7dceecb46651b2c468aad5b0e49d67425e568bde99ffe873c138c3"
+      },
+      {
+        "file": "scripts/s2-door-pause-compose.cjs",
+        "sha256": "2bded55ec77e0a98d6a151bc8fe8d1693e3d9e88960a3fb7eb5a4bbb9541db80"
+      },
+      {
+        "file": "scripts/s2-door-pause-harness.cs.txt",
+        "sha256": "9ab61891792543effacf94a78425cdd5ebe53660726e8cc8a8c7e1d728243bd3"
+      },
+      {
+        "file": "scripts/s2-task-integration-harness.cs.txt",
+        "sha256": "14e6d1ef8e66c7335e22771044d36580dacef1ca30afac03e96aea2d141ce7cd"
+      },
+      {
+        "file": "scripts/machine-stop-signal-harness.cs.txt",
+        "sha256": "ad8c2d0a93c00a1cba95b19871b8c8292f4c86a41d3fb0078d06d19f84dabd1b"
+      },
+      {
+        "file": "scripts/s1-task-integration-harness.cs.txt",
+        "sha256": "c215f6981efa8ee03a828e20dd9ceb632e1602a2e44c59a2894cbc4c04cfcee9"
+      },
+      {
+        "file": "scripts/dispense-node-harness.cs.txt",
+        "sha256": "893bbf4cf227b8d13098f70027f6e0fb3ff157c8ff2fb752e00e8bd6c44d10e6"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Models/Signal.cs",
+        "sha256": "54a49c30b9fbecacde6fb5b19918ce7a78b744c508a5f702f2fa5349165990a5"
+      },
+      {
+        "file": "trunk/AKRS.Galaxy2.Machine/Enums/MachineEnum.cs",
+        "sha256": "02493827037579944b7c4218890a3ba9eb95c16f5ce3d64e61eeb94547f89e0b"
+      }
+    ],
+    "extractedMethods": [
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "signature": "public void Stop()",
+        "start": 347,
+        "end": 378,
+        "fileSha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+        "snippetSha256": "37725163b59230b10247de7a667b060086ed9f74ce38cb4fcb4100d1d5384782"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+        "signature": "public void SetState(MachineStateEnum machineState)",
+        "start": 52,
+        "end": 68,
+        "fileSha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+        "snippetSha256": "60b8f9b34d9bf48d90154467b5fdd4de33d4c9830a69ef39fa22f4d13efa059f"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+        "signature": "public bool IsStop()",
+        "start": 34,
+        "end": 37,
+        "fileSha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+        "snippetSha256": "84fd3d1f2c6e13b12da1440e317699dcf8cf733a22728a065ace7ddcd5f678c6"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+        "signature": "public bool IsPause()",
+        "start": 43,
+        "end": 46,
+        "fileSha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+        "snippetSha256": "e57bc4c81bff31e2eb25f4b27ffeca4da0c31d552617bedb5b544dce4e17314e"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.cs",
+        "signature": "public void SetStopStateAlarm()",
+        "start": 183,
+        "end": 195,
+        "fileSha256": "7df9dc7d0c07b6ca488d424f79e5eed166a64b5b857a815e7073f0e13f118968",
+        "snippetSha256": "6788019195f9c121de86d3e3af113457034ed3b61b1c1e6456224706c0cb7d48"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/DispenseAction/S2DispenseActionNode.cs",
+        "signature": "public override ExcuteResult DoWork()",
+        "start": 49,
+        "end": 188,
+        "fileSha256": "c1144d0309ca13b8b0288e2726c899252c704a0f855b0b096834c61f900dff6a",
+        "snippetSha256": "607ec79060615aec0e39831dcf3c66732cc801088e516cb9f525b7d4447cab40"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/ActionNodes/DispenseAction/S2DispenseActionNode.cs",
+        "signature": "public override bool IsDoWork()",
+        "start": 194,
+        "end": 218,
+        "fileSha256": "c1144d0309ca13b8b0288e2726c899252c704a0f855b0b096834c61f900dff6a",
+        "snippetSha256": "b858f698ac8d71ea5713897445ff4b93a9be91527b6fc58444923b84daf73c59"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Controllers/BondHeadController.MovementRelated.cs",
+        "signature": "public void MoveBondZToSafePos()",
+        "start": 28,
+        "end": 66,
+        "fileSha256": "49b0850e94f5d40745b593a59f57d166d12eeb3db1a3059819be7f420bb82904",
+        "snippetSha256": "03edd6cbaff4f3684ef5544bb9a4d1b62f9adb934b5b270be080f9797ac956cf"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Models/System2Domain.cs",
+        "signature": "public bool WaitSingleStep()",
+        "start": 777,
+        "end": 788,
+        "fileSha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+        "snippetSha256": "5a79d8b30dfc8cfbd488504ab8c7cd7fbb14b421e470148e0b668a03f0cd832f"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+        "signature": "public void DoWork()",
+        "start": 100,
+        "end": 355,
+        "fileSha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+        "snippetSha256": "9fda87a9ea44f9264a948d94791547d791ae668e586665e18b1846d537f3253c"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+        "signature": "private bool GetIncomingSignal()",
+        "start": 390,
+        "end": 438,
+        "fileSha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+        "snippetSha256": "369df527de24a15b0099a3d9326b2e6c5ee970772147255a1ced01b78ae33ebe"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+        "signature": "private void SendAway()",
+        "start": 443,
+        "end": 489,
+        "fileSha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+        "snippetSha256": "9e615acc28870b46721577437bc564bdcb7d852d960a978593b72c0aa841974d"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/BondSystem/Tasks/BondTask.cs",
+        "signature": "private void CloseDispenseCylinder(ActionNode actionNode)",
+        "start": 495,
+        "end": 501,
+        "fileSha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+        "snippetSha256": "2f2ef63b263538306c31886ddd0b1bec2590927eacd223abd7f4e79245eebe02"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Sustain.cs",
+        "signature": "private bool IsSafeDoorClosed()",
+        "start": 75,
+        "end": 82,
+        "fileSha256": "5385795e853bd2b65af0472190b280824405c41dfe6e1981323f374f988e0851",
+        "snippetSha256": "96651f5a2aaa8d944fc4c777920c4d81499c42f5e34073bfec78e2c70d297eea"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Sustain.cs",
+        "signature": "public void StartCheckSafeDoorTask()",
+        "start": 276,
+        "end": 305,
+        "fileSha256": "5385795e853bd2b65af0472190b280824405c41dfe6e1981323f374f988e0851",
+        "snippetSha256": "443bfd4818ea01feea2d09c40de1772b09232aabc42db6f5288c663180871cb9"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.Operate.cs",
+        "signature": "public void Pause()",
+        "start": 314,
+        "end": 318,
+        "fileSha256": "b45967948d4f5a85c4a2bafceaa0cb01a7cf3e95040cf690fad81df5c187c073",
+        "snippetSha256": "2ea9bef2081e14101896d0cb9987936f52ba9c5d15ca08fc0cda72bb81e10982"
+      },
+      {
+        "file": "trunk/AKRS.ZX2200/Main/Machine/MachineSupport/Machine.StateRelated.cs",
+        "signature": "public bool IsWorking()",
+        "start": 25,
+        "end": 28,
+        "fileSha256": "18b4b031554e919d0b3f5d8e27678d33012050f81b2823777bdb454c65362f17",
+        "snippetSha256": "a0698a8ec03690882868d1112935b7d77263082dcdaa4fbf1156163c4583effe"
+      }
+    ],
+    "testArtifactSha256": "c7f3d1ced1a8c96823236b5a435d164d4f8b1424a6a4228058ec4aacb51c6dcb"
+  },
+  "boundaries": [
+    "The original S2 task, node, safety/domain and Machine Stop/state methods were extracted unchanged and exercised on a controlled real Thread with real event handles and explicit action/UI/interpolation/compensation/hardware/storage substitutes.",
+    "The 37 checks cover door Pause entry/resume, outer and inner gates, single-step, incoming-event waits, release signaling, full Stop suppression, node failure advancement and post-Stop interpolation commit; complete original DoWork dependencies, hardware, storage, UI and production deployment remain outside the fixture.",
+    "No production source, project file, SQL, VM, device path or deployment was modified or invoked."
+  ]
+}

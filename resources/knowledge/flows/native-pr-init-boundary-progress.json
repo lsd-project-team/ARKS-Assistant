@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-06T09:10:21.674Z",
+  "status": "exact-original-native-pr-init-boundary-with-sdk-initializer-failure-and-source-bindings-passed",
+  "parent": {
+    "file": "docs/archify/native-mainform-context-test.json",
+    "sha256": "d2141019801161702c70067e403ca609f3a17df1f9837a51cb96390c1e9e7ff4",
+    "totalFrozenBindings": 14205
+  },
+  "parentFrozenBindings": 14205,
+  "newFrozenInputs": 241,
+  "totalFrozenBindings": 14446,
+  "reusedParentInputs": 496,
+  "checksPerPass": 31,
+  "passes": 2,
+  "placements": 62,
+  "originalTasksPerPass": 3,
+  "originalCompletedTasksPerPass": 0,
+  "originalFaultedTasksPerPass": 3,
+  "actualMainFormConstructorsPerPass": 1,
+  "actualMainFormLoadEventsPerPass": 1,
+  "actualGenericPrWarningsPerPass": 3,
+  "actualManagedVmSdkInitializerAttempted": true,
+  "rawHarnessNativeAttemptFlagRequiresScopeClarification": true,
+  "originalCloseSolutionBodyReached": false,
+  "actualNativeVmApiReached": false,
+  "successfulVmInitialization": false,
+  "actualAlgorithmInitReached": false,
+  "originalPrFlagNotResetOnFailure": true,
+  "publicPriorPrInitSuccessFixture": true,
+  "originalProgramMainExecuted": false,
+  "programMainDiscardsPrTaskFromOriginalIl": true,
+  "originalMachineMonitorLoopIterationsPerPass": 0,
+  "actualHardwareCountPerPass": 0,
+  "originalUiThreadExceptionsPerPass": 0,
+  "actualSqlConsumerExecuted": false,
+  "actualImageConsumerExecuted": false,
+  "productionExitLifecycleExecuted": false,
+  "sourceDeclarations": 357,
+  "sourceFiles": 239,
+  "ilMethods": 230,
+  "ilAssemblies": 8,
+  "postRuntimeSupplementalLambdaMethods": 1,
+  "sdkReadonlyAssemblies": 3,
+  "sdkReadonlyMethods": 5,
+  "sdkPInvokes": 221,
+  "originalRuntimeAssembliesPerPass": 16,
+  "actualSdkAssembliesPerPass": 8,
+  "actualScreenshotsPerPass": 3,
+  "actualSettingsFilesPerPass": 28,
+  "actualParseableJsonFilesComparedPerPass": 10,
+  "actualZeroByteRepositoryFilesPerPass": 17,
+  "actualWaferBackupFilesPerPass": 1,
+  "byteIdenticalParsedJsonFilesPerPass": 8,
+  "explicitConstructorDatePaths": 5,
+  "privateWrites": false,
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "fullMachineStartExecuted": false,
+  "privatePrepareExecuted": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "summary": {
+    "file": ".archify-work/native-pr-init-boundary/summary.json",
+    "sha256": "f2571e96477e431d84d1e9a4d0b8aa6e73fa4512bedf35c669ee7b9a27f17dbf"
+  },
+  "sourceEvidence": {
+    "file": ".archify-work/native-pr-init-boundary/source-evidence.json",
+    "sha256": "1d986e57cc9448c49b2dbbaaa80e343e393f21080a5c0e84bd83524f97e60836"
+  },
+  "il": {
+    "file": ".archify-work/native-pr-init-boundary/il.json",
+    "sha256": "17aa1fb4c0b4c4d987504b56fa7154521c7c480abf43c1978a54e49d9fe65478"
+  },
+  "verificationResults": {
+    "file": ".archify-work/native-pr-init-boundary/verification-results.json",
+    "sha256": "7724ceeddf18ed9bb116e4b06338120ff5d4663b8e740463825e113df6a16a17"
+  },
+  "scope": "Two passes of3real original InitPR Tasks each, allFaulted with VmSolution type initialization FileNotFoundException at C:\\ModulePathGenerate.txt; original native warning through MainForm.Invoke, priorfalse/false/true retained. Managed VM SDK initializer attempted; raw harness actualNativeVmInitializationAttempted=true is imprecise and does NOT mean native API reached. Failure precedes CloseSolution body, CreatSolInstance, PR names, algorithm init and success setter. Program.Main IL discards Task, but Program.Main not executed. Source357/239 and IL230/8 plus SDK5/3 captured before accepted hosts; nestedlambda1 captured read-only after hosts, separately labelled. PublicThreadFlag=false bounds monitor, no SQL/image consumers, no hardware/native success/fullBuild; publicDispose skips production exit. Six native PNGs inspected. Settings unchanged within PR calls. Overall16projects29groups1436files13requirements incomplete.",
+  "runtime": {
+    "test": "native-pr-init-boundary-test.json",
+    "testSha256": "ee3b85d275b32dd23e697f8d657964db9b3a1c0fb86161db91d94735a3950b6e",
+    "audit": "native-pr-init-boundary-audit.json",
+    "auditSha256": "1b58ec15274f01115284121dad175bb6e43c19a1c114c2b957c8f0acc5ec067c",
+    "report": "native-pr-init-boundary-review.md",
+    "reportSha256": "559df3f1eee1fb0e7cdd93e2ea0acbb8c90c5371ae66637e7177c9370255e3cd"
+  },
+  "nextRequired": "Continue composite MainForm rendering and original close/save chain; complete successful original VM initialization and real monitoring/image/SQL/device and full MSBuild/LC/Fody/deployment and29group acceptance.",
+  "registrationInputBindingExtension": {
+    "priorTest": {
+      "file": ".archify-work/native-pr-init-boundary-registration-initial-test.json",
+      "sha256": "69fa9c13a569f5d522fd832c787c1fc90383627860de48b4d9431c52abb62ee6",
+      "newFrozenInputs": 234,
+      "totalFrozenBindings": 14439
+    },
+    "addedInputs": 7,
+    "reason": "Initial progress verifier inherited incorrect older parent count; preserved frozen original, created corrected final verifier and final documentation/closure runners. Failed documentation session52534 initial4000d4 terminalafb4db exit1 retained. No existing frozen input or source/runtime bytes changed, no host rerun."
+  },
+  "finalProgressVerifier": "scripts/verify-native-pr-init-boundary-progress-final.cjs"
+}

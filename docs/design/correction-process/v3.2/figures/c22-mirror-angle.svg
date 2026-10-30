@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1160" viewBox="0 0 2400 1160"><rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">普通上视先完成实际旋转 后续目标使用新的当前T</text>
+<text x="900" y="190" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">非镜像</text>
+<text x="1820" y="190" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">镜像</text>
+<text x="270" y="310" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="700" text-anchor="middle" dominant-baseline="central">普通拍照准备</text>
+<text x="900" y="310" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">29°</text>
+<text x="1820" y="310" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">29°</text>
+<polyline points="900,348 900,408" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="900,408 889.9957927154417,387.28971664588846 910.0042072845583,387.28971664588846" fill="#4d6070"/>
+<polyline points="1820,348 1820,408" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1820,408 1809.9957927154417,387.28971664588846 1830.0042072845583,387.28971664588846" fill="#4d6070"/>
+<text x="270" y="455" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="700" text-anchor="middle" dominant-baseline="central">首次识别后相对转动</text>
+<text x="900" y="455" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">2+5+1 = 8°</text>
+<text x="1820" y="455" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">2+5+180−1 = 186°</text>
+<polyline points="900,493 900,553" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="900,553 889.9957927154417,532.2897166458885 910.0042072845583,532.2897166458885" fill="#4d6070"/>
+<polyline points="1820,493 1820,553" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1820,553 1809.9957927154417,532.2897166458885 1830.0042072845583,532.2897166458885" fill="#4d6070"/>
+<text x="270" y="600" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="700" text-anchor="middle" dominant-baseline="central">旋转后当前T</text>
+<text x="900" y="600" fill="#245b87" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">37°</text>
+<text x="1820" y="600" fill="#245b87" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">215°</text>
+<polyline points="900,638 900,698" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="900,698 889.9957927154417,677.2897166458885 910.0042072845583,677.2897166458885" fill="#4d6070"/>
+<polyline points="1820,638 1820,698" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1820,698 1809.9957927154417,677.2897166458885 1830.0042072845583,677.2897166458885" fill="#4d6070"/>
+<text x="270" y="745" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="700" text-anchor="middle" dominant-baseline="central">保存角度</text>
+<text x="900" y="745" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">−(5+1) = −6°</text>
+<text x="1820" y="745" fill="#162e43" font-family="Microsoft YaHei" font-size="46" font-weight="400" text-anchor="middle" dominant-baseline="central">−(5+1) = −6°</text>
+<polyline points="900,783 900,843" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="900,843 889.9957927154417,822.2897166458885 910.0042072845583,822.2897166458885" fill="#4d6070"/>
+<polyline points="1820,783 1820,843" fill="none" stroke="#4d6070" stroke-width="4"/>
+<polygon points="1820,843 1809.9957927154417,822.2897166458885 1830.0042072845583,822.2897166458885" fill="#4d6070"/>
+<text x="270" y="890" fill="#162e43" font-family="Microsoft YaHei" font-size="40" font-weight="700" text-anchor="middle" dominant-baseline="central">贴装目标T</text>
+<text x="900" y="890" fill="#245b87" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">37−6+5+1 = 37°</text>
+<text x="1820" y="890" fill="#245b87" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central">215−6+5+1 = 215°</text>
+<text x="1200" y="1100" fill="#4d6070" font-family="Microsoft YaHei" font-size="41" font-weight="400" text-anchor="middle" dominant-baseline="central">说明输入 PR=3°  Align=20°  b=5°  h=1°  a=2°  不自行折算轴角范围</text></svg>

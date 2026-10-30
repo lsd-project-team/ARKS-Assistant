@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "status": "original-build-outcomes-verified-full-build-not-accepted",
+  "command": "node .archify-work/capture-native-msbuild-build-verification.cjs",
+  "commandSha256": "0befbff2470711f93bb87f303ddff3e68159c16be0c7eaae7d41c6ca0115b734",
+  "observedCompletionChunk": "026178",
+  "observedSession": null,
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-msbuild-build.log",
+  "logSha256": "185f2bce52e49cfa6ab63ed4eeefd1ec180e742fa1cbbea8841534d7f82e2a75",
+  "testSha256": "5e924ba6ecd846a92da0159adc5262f6f0213c78a38135a9b84e40d549c0d61a",
+  "reportSha256": "a9be1c533ae5439c96846605cd9a56561c257404b24b15a8eaa819b4d27551cf",
+  "receipts": {
+    "codegraph": {
+      "observedCompletionChunk": "d20737",
+      "exists": false
+    },
+    "sourceCopy": {
+      "observedInitialChunk": "0b88a4",
+      "observedSession": 44528,
+      "observedCompletionChunk": "7aaafd",
+      "observedExitCode": 0
+    },
+    "preprocess": {
+      "observedInitialChunk": "92e3f0",
+      "observedSession": 34092,
+      "observedCompletionChunk": "cce9b4",
+      "observedExitCode": 0,
+      "processExitCodes": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ]
+    },
+    "accepted": [
+      {
+        "mode": "bound-isolated",
+        "observedInitialChunk": "65bb6d",
+        "observedSession": 23626,
+        "observedCompletionChunk": "046a8f",
+        "observedExitCode": 0
+      },
+      {
+        "mode": "replay-isolated",
+        "observedInitialChunk": "c11171",
+        "observedSession": 22291,
+        "observedCompletionChunk": "98b6b9",
+        "observedExitCode": 0
+      }
+    ],
+    "sharedTempCandidates": [
+      {
+        "mode": "bound",
+        "observedInitialChunk": "5dc098",
+        "observedSession": 70490,
+        "observedCompletionChunk": "f83645",
+        "observedExitCode": 0
+      },
+      {
+        "mode": "replay",
+        "observedInitialChunk": "5ef465",
+        "observedSession": 10712,
+        "observedCompletionChunk": "2c01d9",
+        "observedExitCode": 0
+      }
+    ],
+    "preprocessRecorderDrafts": [
+      {
+        "observedCompletionChunk": "41274c",
+        "observedExitCode": 1,
+        "script": ".archify-work/native-msbuild-build/runner-preprocess-draft.cjs.txt",
+        "scope": "Premature assertion on first preprocessing exit1 despite complete output XML; raw files and direct shell exit0 retained. Cause not established."
+      },
+      {
+        "observedCompletionChunk": "4399b0",
+        "observedExitCode": 1,
+        "script": ".archify-work/native-msbuild-build/runner-preprocess-logged-draft.cjs.txt",
+        "scope": "Premature success assertion at project02; native diagnostic log reports MSB4132. Accepted recorder captures all outcomes."
+      }
+    ],
+    "summarizer": {
+      "observedCompletionChunk": "bfa28d",
+      "observedExitCode": 0
+    },
+    "metadata": {
+      "observedCompletionChunk": "aa4a2f",
+      "observedExitCode": 0
+    },
+    "environment": {
+      "observedCompletionChunk": "b8bce5",
+      "observedExitCode": 0
+    },
+    "scope": "Outer recorder exit0 means receipts persisted, not all native builds passed. Exact native exits live in each phase results.json."
+  },
+  "acceptedBuildInvocations": 40,
+  "sharedTempCandidateBuildInvocations": 40,
+  "successfulProjectBuildsPerPass": 1,
+  "successfulSolutionBuildsPerPass": 0,
+  "frozenEvidenceInputs": 614,
+  "sourceInputsUnchanged": 3023,
+  "sourceLedgerUnchanged": 19106,
+  "formalRuntimeChecksUnchanged": 1328,
+  "originalProgramBindings": {
+    "command": "node scripts/verify-native-program-main-entry-bindings.cjs",
+    "observedCompletionChunk": "43e9da",
+    "observedExitCode": 0
+  },
+  "wholeGoalComplete": false
+}

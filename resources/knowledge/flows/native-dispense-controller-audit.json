@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "original-dispense-controller-coordinate-prerequisites-interpolation-failures-and-hardware-gates-native-preparation-passed",
+  "command": "node scripts/verify-native-dispense-controller.cjs",
+  "observedSession": null,
+  "observedCompletionChunk": "5bef8d",
+  "observedExitCode": 0,
+  "log": ".archify-work/verify-native-dispense-controller.log",
+  "logSha256": "ed35b24bca00413bedde087af6c716a246c78877be36a7f9a277d398185a3c02",
+  "testSha256": "8ee707affa4eb9d7bb1e8c0310d4d0b67871ea42a86b4a1c7b605b4838b02051",
+  "parentValidation": {
+    "command": "guarded native dispense policy → encoding preserving resources binding verification",
+    "observedSession": 68050,
+    "observedCompletionChunk": "e108ac",
+    "observedExitCode": 0,
+    "logs": [
+      {
+        "command": "node scripts/verify-native-dispense-policy.cjs",
+        "log": ".archify-work/native-dispense-controller/parent-policy-verification.log",
+        "sha256": "939ee2aca022e968f364e9e814e26676ccfc2a2d904dace1159997b8129ffdc0"
+      },
+      {
+        "command": "node scripts/verify-encoding-preserving-resources.cjs",
+        "log": ".archify-work/native-dispense-controller/parent-resources-verification.log",
+        "sha256": "05a0e8c5760dd3f2e3f4f0bc171e86055fd87a5082c1c3768382f4456536faf3"
+      }
+    ]
+  },
+  "acceptedProcesses": 2,
+  "checksPerPass": 40,
+  "selectedMethods": 99,
+  "controllerInterpolationCallsPerPass": 10,
+  "controllerFailReturnsPerPass": 9,
+  "controllerUiFaultThrowsPerPass": 1,
+  "originalSources": 24,
+  "sourceAssembliesPerProcess": 16,
+  "newFrozenInputs": 59,
+  "totalFrozenBindings": 6653,
+  "wholeGoalComplete": false
+}

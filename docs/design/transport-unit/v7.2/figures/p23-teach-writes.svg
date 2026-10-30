@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1290" viewBox="0 0 2400 1290"><rect width="100%" height="100%" fill="white"/>
+<text x="315" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">示教层级</text>
+<text x="1080" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">窗口先改运行坐标</text>
+<text x="1940" y="65" fill="#162e43" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central">调用方继续写入</text>
+<rect x="70" y="180" width="490" height="140" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="315.0" y="250.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">TU</text>
+<rect x="725" y="180" width="710" height="140" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1080.0" y="250.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">TU</text>
+<rect x="1600" y="180" width="730" height="140" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1965.0" y="250.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">TU配置角</text>
+<polyline points="560,250 725,250" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="725,250 704.2897166458885,260.0042072845583 704.2897166458885,239.9957927154417" fill="#4d6070"/>
+<polyline points="1435,250 1600,250" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1600,250 1579.2897166458883,260.0042072845583 1579.2897166458883,239.9957927154417" fill="#4d6070"/>
+<rect x="70" y="390" width="490" height="140" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="315.0" y="460.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">基板</text>
+<rect x="725" y="390" width="710" height="140" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1080.0" y="460.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">TU</text>
+<rect x="1600" y="390" width="730" height="140" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1965.0" y="460.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">所选基板角／全板配置角</text>
+<polyline points="560,460 725,460" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="725,460 704.2897166458885,470.0042072845583 704.2897166458885,449.9957927154417" fill="#4d6070"/>
+<polyline points="1435,460 1600,460" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1600,460 1579.2897166458883,470.0042072845583 1579.2897166458883,449.9957927154417" fill="#4d6070"/>
+<rect x="70" y="600" width="490" height="140" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="315.0" y="670.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">基岛</text>
+<rect x="725" y="600" width="710" height="140" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1080.0" y="670.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">所选基板</text>
+<rect x="1600" y="600" width="730" height="140" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1965.0" y="670.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">所选基岛角／全岛配置角</text>
+<polyline points="560,670 725,670" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="725,670 704.2897166458885,680.0042072845583 704.2897166458885,659.9957927154417" fill="#4d6070"/>
+<polyline points="1435,670 1600,670" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1600,670 1579.2897166458883,680.0042072845583 1579.2897166458883,659.9957927154417" fill="#4d6070"/>
+<rect x="70" y="810" width="490" height="140" fill="#edf0f3" stroke="#a5b5c1" stroke-width="3"/>
+<text x="315.0" y="880.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">焊点</text>
+<rect x="725" y="810" width="710" height="140" fill="#eaf1f9" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1080.0" y="880.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">所选基岛</text>
+<rect x="1600" y="810" width="730" height="140" fill="#eaf4ed" stroke="#a5b5c1" stroke-width="3"/>
+<text x="1965.0" y="880.0" fill="#162e43" font-family="Microsoft YaHei" font-size="51" font-weight="700" text-anchor="middle" dominant-baseline="central">单焊点配置角</text>
+<polyline points="560,880 725,880" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="725,880 704.2897166458885,890.0042072845583 704.2897166458885,869.9957927154417" fill="#4d6070"/>
+<polyline points="1435,880 1600,880" fill="none" stroke="#4d6070" stroke-width="5"/>
+<polygon points="1600,880 1579.2897166458883,890.0042072845583 1579.2897166458883,869.9957927154417" fill="#4d6070"/>
+<text x="1200" y="1080" fill="#162e43" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">在线通过后，窗口 Save 先于调用方后续复制</text>
+<text x="1200" y="1190" fill="#b65f17" font-family="Microsoft YaHei" font-size="49" font-weight="400" text-anchor="middle" dominant-baseline="central">后续PR取消不提供跨对象与配置的统一回滚</text></svg>

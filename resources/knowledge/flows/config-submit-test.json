@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "scope": "Extracted Frame.Confirm, BtStart_Click and BtSave_Click. Null-conditional interface invocation lowered to explicit null check for C#5. Child Save, singleton, Start and message box are controlled stubs. No actual config mutation, file writes, UI or teaching/device execution.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/TransportUnitSystem/Controls/Setting/UcTransportUnitFrame.cs",
+      "start": 49,
+      "end": 56,
+      "sha256": "ed37e7884210cc1fb1be1eb33c8b24c6a1b52eb836a140e5aae4adf3cf18a27f",
+      "snippetSha256": "b2813570710af58e10ff3ce2ab28212b17f53a530656ca1c4cdd30154b2cf149"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.cs",
+      "start": 869,
+      "end": 874,
+      "sha256": "3e14fd24088ab297bbf9b9eea876130709393478b956567fb944f88b1116bf26",
+      "snippetSha256": "5454c0ce7c0642f0a669fe7f510436bf879f5f8cdfb6cbd5c95bc12d1f43fdc3"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Controls/Feature/EditProgram/UcEditProductProgram/UcEditProductProgramming.cs",
+      "start": 1066,
+      "end": 1078,
+      "sha256": "3e14fd24088ab297bbf9b9eea876130709393478b956567fb944f88b1116bf26",
+      "snippetSha256": "5579d0ac8d6466f16af28b4e77f2f1684a3ba184267d87fd2462faa455612cd9"
+    }
+  ],
+  "checks": [
+    "PASS frame confirms all children before persistence",
+    "PASS child failure preserves earlier effects and skips remainder",
+    "PASS persistence failure follows all child effects",
+    "PASS teaching start follows confirm and persistence",
+    "PASS confirm exception escapes start click before Start",
+    "PASS save click catches failure without rollback",
+    "PASS non-programming control can show saved without Confirm",
+    "PASS null control skips Confirm and enters Start",
+    "TOTAL 8"
+  ]
+}

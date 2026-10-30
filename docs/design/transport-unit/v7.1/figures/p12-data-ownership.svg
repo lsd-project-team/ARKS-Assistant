@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="920" viewBox="0 0 2400 920"><rect width="100%" height="100%" fill="white"/>
+<rect x="760" y="40" width="880" height="190" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="1200.0" y="102" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">当前配方的 A 点配置</text>
+<text x="1200.0" y="177" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">常规模式按名称动态读取</text>
+<polyline points="1200,230 1200,280 590,280 590,345" fill="none" stroke="#5a6e7f" stroke-width="4" stroke-dasharray="12 12"/>
+<polygon points="590,345 579.9957927154417,324.28971664588846 600.0042072845583,324.28971664588846" fill="#5a6e7f"/>
+<polyline points="1200,280 1810,280 1810,345" fill="none" stroke="#5a6e7f" stroke-width="4" stroke-dasharray="12 12"/>
+<polygon points="1810,345 1799.9957927154417,324.28971664588846 1820.0042072845583,324.28971664588846" fill="#5a6e7f"/>
+<rect x="60" y="345" width="1060" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="590.0" y="407" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">基板1 / 基岛2 / A</text>
+<text x="590.0" y="482" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">独立的 BondPosition 运行对象</text>
+<polyline points="590,535 590,585 310,585 310,650" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="310,650 299.9957927154417,629.2897166458885 320.0042072845583,629.2897166458885" fill="#315d82"/>
+<polyline points="590,585 870,585 870,650" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="870,650 859.9957927154417,629.2897166458885 880.0042072845583,629.2897166458885" fill="#315d82"/>
+<rect x="60" y="650" width="500" height="250" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="310.0" y="712" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">坐标对象</text>
+<text x="310.0" y="787" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本层位姿</text>
+<text x="310.0" y="845" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">连接各自父坐标</text>
+<rect x="620" y="650" width="500" height="250" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="870.0" y="712" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">运行信息 Info</text>
+<text x="870.0" y="787" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">S1 工序 D_A</text>
+<text x="870.0" y="845" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">完成值 = true</text>
+<rect x="1280" y="345" width="1060" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1810.0" y="407" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">基板1 / 基岛3 / A</text>
+<text x="1810.0" y="482" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">独立的 BondPosition 运行对象</text>
+<polyline points="1810,535 1810,585 1530,585 1530,650" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1530,650 1519.9957927154417,629.2897166458885 1540.0042072845583,629.2897166458885" fill="#315d82"/>
+<polyline points="1810,585 2090,585 2090,650" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="2090,650 2079.995792715442,629.2897166458885 2100.004207284558,629.2897166458885" fill="#315d82"/>
+<rect x="1280" y="650" width="500" height="250" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1530.0" y="712" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">坐标对象</text>
+<text x="1530.0" y="787" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">本层位姿</text>
+<text x="1530.0" y="845" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">连接各自父坐标</text>
+<rect x="1840" y="650" width="500" height="250" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="2090.0" y="712" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">运行信息 Info</text>
+<text x="2090.0" y="787" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">S1 工序 D_A</text>
+<text x="2090.0" y="845" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">完成值 = false</text></svg>

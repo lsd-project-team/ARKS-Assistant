@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-30T09:20:05.659Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "observedSession": 32746,
+    "log": ".archify-work/verify-transport-dispense-bond-integration.log",
+    "sha256": "a1091dfc3c1f7d1ad05c6c5763c6b86f537821013a87313f26c2858463f10566"
+  },
+  "specialized": {
+    "checks": 184,
+    "completeMethods": 132,
+    "properties": 57,
+    "enums": 8,
+    "fields": 13,
+    "signalBindings": 23,
+    "sourceFragments": 210,
+    "sources": 96,
+    "topicSnapshots": 111,
+    "auditSha256": "4fa5da918fedb072816300183287c719be317d5df2ce8cdf50568203efdad66d",
+    "evidenceSha256": "03aed6926d384e57407dbe32ad4e6ad588b3eb67e1efe6b36ccc07a62baf6fd6"
+  },
+  "browser": {
+    "exitCode": 0,
+    "log": ".archify-work/browser-transport-dispense-bond-integration.log",
+    "sha256": "edd601d205199f68faff0dfc9dacdbb6a4a719594924c94924ae7e9230a658d1",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "72a98bf14f849b2eccce2a06cb0e9a569e5cca79f4ef80c85c85a80cb6150dce",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": [],
+    "topics": 29,
+    "topicSnapshots": 753,
+    "moduleSnapshots": 940
+  },
+  "sdkStaticContract": {
+    "evidence": "transport-dispense-relative-sdk-evidence.json",
+    "sha256": "2eb45aad76ba868b63a8ce88e84aca79fcfcfdc4e7af9f76fd7dbc0318848e34",
+    "methods": 4,
+    "assemblies": 2,
+    "selectedParameters": [
+      "position",
+      "vel",
+      "accuracyMode"
+    ],
+    "defaultAccuracy": "HighAccuracy(0)",
+    "scope": "Mono.Cecil metadata and IL only; no SDK/device execution, deployed DLL version or hardware proof"
+  },
+  "fixtureCorrections": {
+    "failedCompileLog": ".archify-work/dispense-bond-integration-baseline-v2.log",
+    "passedBaselineLog": ".archify-work/dispense-bond-integration-baseline-v3.log",
+    "passedExpandedLog": ".archify-work/dispense-bond-integration-expanded.log",
+    "scope": "Merged fixture ProductConfiguration declarations and added virtual base synchronous-belt method to compile original override. Matched SDK three-parameter RelativeMove default accuracy. Original production sources and method bodies unchanged; Unit constructor/OpenVacuum/config/repository/SDK/UI/dialog/save remain explicit boundaries."
+  },
+  "continuation": {
+    "nextEvidence": "transport-dispense12-next-evidence.json",
+    "nextEvidenceSha256": "562dd61399c16c24414feea80f8f821bc96ba2a7b70e89c5ce9d5794181963b4",
+    "fragments": 11,
+    "dispenseCaptureSha256": "c91a70d73855f1dadce06a46fa604f64caeedf9286cfd63644fa0056b7ea3fad",
+    "controllerCaptureSha256": "f8fa39e1d76a3e2326959ee0ed7290c830563f387913c3c9db3584c91d43b219",
+    "waitingCaptureSha256": "12b940268db8b36900f8f6a997109ae3ff2134578089db82e60b8ec371255013",
+    "next": "Original dispense1-to-dispense2, dispense Clamp/synchronous belt and Unit coordinate/pre-dispense flag, then other three loading transfers and program/pool/domain/SDK/native acceptance."
+  },
+  "scope": "Complete original dispense-to-Bond, child Task.Run/WaitAll, dispense cylinder/unclamp/outlet/belt and Bond clamp/block/synchronous belt wrappers and declarations compose with full producer/UI/readiness/real wafer Task/Stop and original downstream controllers. SDK I/O/limit/input/state/motion/stop, product config, unit constructor, OpenVacuum, repository/log/dialog/program lifecycle, other four transfers and native UI/build/configuration/DLL/equipment remain fixtures or pending."
+}

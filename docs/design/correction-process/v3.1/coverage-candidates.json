@@ -1,0 +1,2139 @@
+{
+  "scope": "trunk/AKRS.ZX2200",
+  "method": "全目录语法树调用及赋值发现，并从已注册动作、任务及UI事件反向核对；语法名称不等于精确类型绑定",
+  "files": [
+    {
+      "file": "BondSystem/Controllers/System2Controller.Assistant.cs",
+      "compiled": true,
+      "sha256": "056829bed94ddb84ba00c67fc7f83dc8d51d48ba9aaa437a454c0a06d1abc9cd",
+      "methods": [
+        {
+          "class": "System2Controller",
+          "method": "PickupFromWaferTable",
+          "start": 69,
+          "end": 373,
+          "calls": [
+            {
+              "line": 202,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 248,
+              "callee": "CalculatePickPos",
+              "expression": "this.CalculatePickPos"
+            },
+            {
+              "line": 347,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 367,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "System2Controller",
+          "method": "PickupFromFlipTable",
+          "start": 410,
+          "end": 569,
+          "calls": [
+            {
+              "line": 497,
+              "callee": "CalculatePickPos",
+              "expression": "this.CalculatePickPos"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "System2Controller",
+          "method": "PlacementTest",
+          "start": 659,
+          "end": 942,
+          "calls": [
+            {
+              "line": 681,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 688,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 696,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 762,
+              "callee": "UplookVisionAction",
+              "expression": "this.UplookVisionAction"
+            }
+          ],
+          "writes": [
+            {
+              "line": 832,
+              "target": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit =\r\n                TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit"
+            }
+          ]
+        },
+        {
+          "class": "System2Controller",
+          "method": "UpLookVisionAsissitant",
+          "start": 1244,
+          "end": 1373,
+          "calls": [
+            {
+              "line": 1317,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "手动辅助与公共计算"
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmRelativeBondTeach.cs",
+      "compiled": true,
+      "sha256": "4310f772c8933a198e113b05b6b447cd0319c76b8f025456b5d6bb767b3b04c2",
+      "methods": [
+        {
+          "class": "FrmRelativeBondTeach",
+          "method": "Save",
+          "start": 185,
+          "end": 194,
+          "calls": [
+            {
+              "line": 193,
+              "callee": "UpdateTransportUnit",
+              "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.UpdateTransportUnit"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "BondSystem/Controls/Assistant/FrmTeachBondingPosition.cs",
+      "compiled": true,
+      "sha256": "648513c8bdafc52ede771f53c9ad40ab4a5b6242db88c85e46ae1a96e21230f4",
+      "methods": [
+        {
+          "class": "FrmTeachBondingPosition",
+          "method": "Save",
+          "start": 390,
+          "end": 396,
+          "calls": [
+            {
+              "line": 395,
+              "callee": "UpdateTransportUnit",
+              "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.UpdateTransportUnit"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/BondPositionVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "b881dfd2360e51aaca2ed2ca26828b4b28fe312b70e19168a9d432fd46119aaf",
+      "methods": [
+        {
+          "class": "BondPositionVisionActionNode",
+          "method": "DoWork",
+          "start": 58,
+          "end": 98,
+          "calls": [
+            {
+              "line": 76,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.GetInstance().System2ObjectVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2CarrierVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "c26a814b5492210abc4e78345a99448d67e601378f4e8c8facae91747d22996b",
+      "methods": [
+        {
+          "class": "S2CarrierVisionActionNode",
+          "method": "DoWork",
+          "start": 36,
+          "end": 86,
+          "calls": [
+            {
+              "line": 60,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.GetInstance().System2ObjectVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2ModuleVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "fbe942a1faaae0d5c38e41809234a2a449e7b0f4c3d2670cb48935ecd9e3f431",
+      "methods": [
+        {
+          "class": "S2ModuleVisionActionNode",
+          "method": "DoWork",
+          "start": 55,
+          "end": 99,
+          "calls": [
+            {
+              "line": 72,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.GetInstance().System2ObjectVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/AdjustActionNode/S2SubstrateVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "151b1809643ae46445e251aa44c82af9a45f8cf9037ba37fa1316f033d632ed2",
+      "methods": [
+        {
+          "class": "S2SubstrateVisionActionNode",
+          "method": "DoWork",
+          "start": 55,
+          "end": 97,
+          "calls": [
+            {
+              "line": 71,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.GetInstance().System2ObjectVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.cs",
+      "compiled": true,
+      "sha256": "741522d22d94c0bbed9e958b3b3db5b2fde39298edcc4c0bd0b31ae67d094dcf",
+      "methods": [
+        {
+          "class": "BondActionNode",
+          "method": "DoWork",
+          "start": 118,
+          "end": 377,
+          "calls": [
+            {
+              "line": 150,
+              "callee": "CalculateBondPos",
+              "expression": "this.CalculateBondPos"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/BondActionNode.Provider.cs",
+      "compiled": true,
+      "sha256": "6b76e0b2ff2bf16ea1e79103f81a4c476f99b319733d9d71f11d9744939c0ba9",
+      "methods": [
+        {
+          "class": "BondActionNode",
+          "method": "CalculateBondPos",
+          "start": 498,
+          "end": 630,
+          "calls": [
+            {
+              "line": 521,
+              "callee": "GetPostBondCompensation",
+              "expression": "DefectCompensate.GetPostBondCompensation"
+            },
+            {
+              "line": 524,
+              "callee": "GetBpSeparateOffset",
+              "expression": "DefectCompensate.GetBpSeparateOffset"
+            },
+            {
+              "line": 561,
+              "callee": "GetCompensatePoint3D",
+              "expression": "RealTimeCorrection.GetInstance().GetCompensatePoint3D"
+            },
+            {
+              "line": 579,
+              "callee": "GetBondCompensate",
+              "expression": "TransportUnitCompensate.GetInstance().GetBondCompensate"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.cs",
+      "compiled": true,
+      "sha256": "afd409e15ab5caa74987ac632d016edebf07db20baef3b8909a2820c736dd318",
+      "methods": [
+        {
+          "class": "PickActionNode",
+          "method": "DoWork",
+          "start": 156,
+          "end": 515,
+          "calls": [
+            {
+              "line": 186,
+              "callee": "PickUpCompensationVision",
+              "expression": "TpMarkCompensate.PickUpCompensationVision"
+            },
+            {
+              "line": 192,
+              "callee": "GetPickCompensation",
+              "expression": "TpMarkCompensate.GetPickCompensation"
+            },
+            {
+              "line": 266,
+              "callee": "CalculatePickPos",
+              "expression": "this.system2Controller.CalculatePickPos"
+            },
+            {
+              "line": 423,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 439,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.MoveHelper.cs",
+      "compiled": true,
+      "sha256": "80d93ff799d106152f1c5e7b4a93c52a46eafcbdd586bea979ec29372558ca3b",
+      "methods": [
+        {
+          "class": "PickActionNode",
+          "method": "PickActionDryRun",
+          "start": 788,
+          "end": 958,
+          "calls": [
+            {
+              "line": 882,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/PickActionNode.Provider.cs",
+      "compiled": true,
+      "sha256": "7907bbbb2e06f9d0b54dac33c334f700c50f0a79df6f35c99a80ca64e93a7f33",
+      "methods": [
+        {
+          "class": "PickActionNode",
+          "method": "PrepareBeforePickAction",
+          "start": 55,
+          "end": 114,
+          "calls": [
+            {
+              "line": 95,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "PickActionNode",
+          "method": "StaticWaffleVision",
+          "start": 180,
+          "end": 311,
+          "calls": [
+            {
+              "line": 249,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 284,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "PickActionNode",
+          "method": "SendSignalToWaferTable",
+          "start": 633,
+          "end": 672,
+          "calls": [
+            {
+              "line": 639,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 657,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.cs",
+      "compiled": true,
+      "sha256": "c98a420da1bcde5e2e1d517b4675e585a863baa3c06d9908ed512cc0ae747a8c",
+      "methods": [
+        {
+          "class": "SubstrateCameraCorrectionActionNode",
+          "method": "DoWork",
+          "start": 136,
+          "end": 514,
+          "calls": [
+            {
+              "line": 464,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "SubstrateCameraCorrectionActionNode",
+          "method": "DownLookVision",
+          "start": 546,
+          "end": 702,
+          "calls": [
+            {
+              "line": 655,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产"
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/SubstrateCameraCorrectionActionNode.Provider.cs",
+      "compiled": true,
+      "sha256": "73bbe54ab96120045e09f69c80c6382d795894c914298c97a99a3d508e4d8414",
+      "methods": [
+        {
+          "class": "SubstrateCameraCorrectionActionNode",
+          "method": "SendSignalToWaferTable",
+          "start": 52,
+          "end": 75,
+          "calls": [
+            {
+              "line": 59,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "BondSystem/Models/ActionNodes/BPActionNode/UpLookCorrectionActionNode.cs",
+      "compiled": true,
+      "sha256": "ce5a5a109aa16f1f91b2490f05349ce6e557bf7f7dcfa1e0994f2eed38ad6de6",
+      "methods": [
+        {
+          "class": "UpLookCorrectionActionNode",
+          "method": "DoWork",
+          "start": 131,
+          "end": 514,
+          "calls": [
+            {
+              "line": 466,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 485,
+              "callee": "System2TemperatureCompensation",
+              "expression": "this.system2Controller.System2TemperatureCompensation"
+            },
+            {
+              "line": 491,
+              "callee": "GetTemperatureCompensation",
+              "expression": "TpMarkCompensate.GetTemperatureCompensation"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "UpLookCorrectionActionNode",
+          "method": "UpLookVision",
+          "start": 1375,
+          "end": 1609,
+          "calls": [
+            {
+              "line": 1433,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 1519,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "UpLookCorrectionActionNode",
+          "method": "UpLookVisionByCode",
+          "start": 1617,
+          "end": 1843,
+          "calls": [
+            {
+              "line": 1675,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            },
+            {
+              "line": 1761,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "UpLookCorrectionActionNode",
+          "method": "UplookActionDryRun",
+          "start": 1979,
+          "end": 2042,
+          "calls": [
+            {
+              "line": 2023,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产"
+    },
+    {
+      "file": "BondSystem/Models/System2Domain.cs",
+      "compiled": true,
+      "sha256": "3901304466c8a5f697e5182acfed0c3da2727ce8acd74e4d518be4a075edfeea",
+      "methods": [
+        {
+          "class": "System2Domain",
+          "method": "System2ObjectVision",
+          "start": 267,
+          "end": 270,
+          "calls": [
+            {
+              "line": 269,
+              "callee": "System2MatterVision",
+              "expression": "this.System2MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "公共领域"
+    },
+    {
+      "file": "BondSystem/Tasks/BondTask.cs",
+      "compiled": true,
+      "sha256": "a1d55a0adf9c0fadf10ccf04c0568b5eda953278431fb0b04d47899d4effa41d",
+      "methods": [
+        {
+          "class": "BondTask",
+          "method": "DoWork",
+          "start": 100,
+          "end": 355,
+          "calls": [
+            {
+              "line": 162,
+              "callee": "PickUpCompensationVision",
+              "expression": "TpMarkCompensate.PickUpCompensationVision"
+            },
+            {
+              "line": 168,
+              "callee": "System2TemperatureCompensation",
+              "expression": "this.system2Controller.System2TemperatureCompensation"
+            }
+          ],
+          "writes": [
+            {
+              "line": 189,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\")"
+            },
+            {
+              "line": 203,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit =\r\n                            new TransportUnit(CurrentMachineSystemEnum.System2)"
+            }
+          ]
+        },
+        {
+          "class": "BondTask",
+          "method": "GetIncomingSignal",
+          "start": 390,
+          "end": 438,
+          "calls": [
+            {
+              "line": 414,
+              "callee": "MapBelt",
+              "expression": "TransportDomain.GetInstance().TransportController.BondSubSectionController.MapBelt"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "BondTask",
+          "method": "SendAway",
+          "start": 443,
+          "end": 489,
+          "calls": [
+            {
+              "line": 471,
+              "callee": "SaveMappingToLocal",
+              "expression": "TuService.SaveMappingToLocal"
+            }
+          ],
+          "writes": [
+            {
+              "line": 476,
+              "target": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "生产调度"
+    },
+    {
+      "file": "CalibSystem/GlobalCalibration/FrmGlobalCalibration.cs",
+      "compiled": true,
+      "sha256": "2ded207de028e2cb6e7b8112b9d963529bb05c0f283c8025de7fc76ab2f0a895",
+      "methods": [
+        {
+          "class": "FrmGlobalCalibration",
+          "method": "BondCompensateCalibration",
+          "start": 1404,
+          "end": 1507,
+          "calls": [
+            {
+              "line": 1444,
+              "callee": "GetBondCompensate",
+              "expression": "this.BondCompensate.GetBondCompensate"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "FrmGlobalCalibration",
+          "method": "BondCompensateRecordData",
+          "start": 1527,
+          "end": 1604,
+          "calls": [
+            {
+              "line": 1553,
+              "callee": "GetBondCompensate",
+              "expression": "this.BondCompensate.GetBondCompensate"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "标定输入"
+    },
+    {
+      "file": "DispenseSystem/Controls/Setting/EpoxyApplication/UcEpoxyApplication.cs",
+      "compiled": true,
+      "sha256": "ea762fee9fbd5ca2a61bd957445d8eed0b1d4523ac4018f350cf9f3a8e37f47b",
+      "methods": [
+        {
+          "class": "UcEpoxyApplication",
+          "method": "BtTest_Click",
+          "start": 595,
+          "end": 922,
+          "calls": [
+            {
+              "line": 669,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 693,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 718,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 843,
+              "callee": "System1MoveDistance",
+              "expression": "transportUnit.System1MoveDistance"
+            },
+            {
+              "line": 847,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 859,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 872,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": [
+            {
+              "line": 646,
+              "target": "transportUnit",
+              "expression": "transportUnit = new TransportUnit(CurrentMachineSystemEnum.System2)"
+            },
+            {
+              "line": 811,
+              "target": "transportUnit",
+              "expression": "transportUnit = new TransportUnit(CurrentMachineSystemEnum.System1)"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "点胶示教"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseBPAction/S1DispenseCorrectionActionNode.cs",
+      "compiled": true,
+      "sha256": "098cc45dd4fc757864b2b23107d2cc3189110fe012b9dba05963b3ff303acbb7",
+      "methods": [
+        {
+          "class": "S1DispenseCorrectionActionNode",
+          "method": "DoWork",
+          "start": 48,
+          "end": 91,
+          "calls": [
+            {
+              "line": 73,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1CarrierVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "c3f0c97946b6d83324209a167a3d0f77756ba93595999a2b732cbea9c4daa367",
+      "methods": [
+        {
+          "class": "S1CarrierVisionActionNode",
+          "method": "DoWork",
+          "start": 44,
+          "end": 90,
+          "calls": [
+            {
+              "line": 64,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1ModuleVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "0b93b50df40d6858da8214fa19858271eff5d711a14a93217942e8e6569ecd2a",
+      "methods": [
+        {
+          "class": "S1ModuleVisionActionNode",
+          "method": "DoWork",
+          "start": 36,
+          "end": 81,
+          "calls": [
+            {
+              "line": 53,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "DispenseSystem/Models/DispenseAction/DispenseUpAction/S1SubstrateVisionActionNode.cs",
+      "compiled": true,
+      "sha256": "33a8e5078fc86c1d1c214919d3f339ba2f4b6599f5be50767a9ca8669432816a",
+      "methods": [
+        {
+          "class": "S1SubstrateVisionActionNode",
+          "method": "DoWork",
+          "start": 34,
+          "end": 78,
+          "calls": [
+            {
+              "line": 51,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "生产定位动作"
+    },
+    {
+      "file": "DispenseSystem/Tasks/DispenseWorkTask.cs",
+      "compiled": true,
+      "sha256": "aea0d8c30e1c2505e5e8bbf48fb54ca344146fe4fb404b26d43e05052b3c6789",
+      "methods": [
+        {
+          "class": "DispenseWorkTask",
+          "method": "DoWork",
+          "start": 63,
+          "end": 183,
+          "calls": [],
+          "writes": [
+            {
+              "line": 97,
+              "target": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit =\r\n                            new TransportUnit(CurrentMachineSystemEnum.System1)"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "生产调度"
+    },
+    {
+      "file": "Experiment/Test/FrmMachineFunctionTest.cs",
+      "compiled": true,
+      "sha256": "321e5d271a5389bc0d49f7fb43887d6c68760fb8a4891ad8b879dfabb800c4c7",
+      "methods": [
+        {
+          "class": "FrmMachineFunctionTest",
+          "method": "BtnCaliPickOffset_Click",
+          "start": 1645,
+          "end": 1761,
+          "calls": [
+            {
+              "line": 1711,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "Experiment/TestFunction/FrmTest.cs",
+      "compiled": true,
+      "sha256": "3028d4e3c94a2d635cbbd9074635b437994491dfcdfeb14cd730042bd1a1d1a1",
+      "methods": [
+        {
+          "class": "FrmTest",
+          "method": "simpleButton10_Click",
+          "start": 465,
+          "end": 528,
+          "calls": [],
+          "writes": [
+            {
+              "line": 525,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\")"
+            }
+          ]
+        },
+        {
+          "class": "FrmTest",
+          "method": "simpleButton14_Click",
+          "start": 622,
+          "end": 636,
+          "calls": [],
+          "writes": [
+            {
+              "line": 624,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = new TransportUnit(\"测试\")"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "实验入口"
+    },
+    {
+      "file": "Main/Controls/Ucmain/MainControls/UcMainSystem.ShortcutKeys.cs",
+      "compiled": true,
+      "sha256": "f1779ebecc01ec731a0e46a66f6e6ec850e2fca156682e0e89c507c0d07fa5eb",
+      "methods": [
+        {
+          "class": "UcMainSystem",
+          "method": "VisionScan",
+          "start": 126,
+          "end": 276,
+          "calls": [
+            {
+              "line": 137,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.System2MatterVision"
+            },
+            {
+              "line": 144,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.System2ObjectVision"
+            },
+            {
+              "line": 154,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.System2ObjectVision"
+            },
+            {
+              "line": 166,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.System2ObjectVision"
+            },
+            {
+              "line": 178,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.System2ObjectVision"
+            },
+            {
+              "line": 202,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 218,
+              "callee": "System1MoveDistance",
+              "expression": "transportUnit.System1MoveDistance"
+            },
+            {
+              "line": 233,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 245,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 262,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "快捷辅助"
+    },
+    {
+      "file": "Main/Controls/UcShortcutMenu.cs",
+      "compiled": true,
+      "sha256": "6f3c75bd75a550ccb681767725817cbb8a12e3d6c27f062172c9e3b98b849db6",
+      "methods": [
+        {
+          "class": "UcShortcutMenu",
+          "method": "BtSearchBelt1Sys1_Click",
+          "start": 270,
+          "end": 278,
+          "calls": [
+            {
+              "line": 277,
+              "callee": "MapBelt",
+              "expression": "transportController.DispenseSubSectionController.MapBelt"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "UcShortcutMenu",
+          "method": "BtSearchBelt2Sys2_Click",
+          "start": 285,
+          "end": 294,
+          "calls": [
+            {
+              "line": 293,
+              "callee": "MapBelt",
+              "expression": "this.transportController.BondSubSectionController.MapBelt"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "Main/Machine/Process/S2ActionNodeController.cs",
+      "compiled": true,
+      "sha256": "0ce8f7f63e36aebaab54c834d2a7017ff36b5c5c59c2d6f3a94bd22228a9d9d1",
+      "methods": [
+        {
+          "class": "S2ActionNodeController",
+          "method": "Init",
+          "start": 155,
+          "end": 175,
+          "calls": [
+            {
+              "line": 174,
+              "callee": "SortRelativeBond",
+              "expression": "this.SortRelativeBond"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "TransportSystem/Controllers/BondSubSectionController.cs",
+      "compiled": true,
+      "sha256": "d2211e2ca723ae3cd05c5e5f541a31c5c338b90a5bcfa156fba9d9882b5eb3e9",
+      "methods": [
+        {
+          "class": "BondSubSectionController",
+          "method": "MapBelt",
+          "start": 429,
+          "end": 605,
+          "calls": [
+            {
+              "line": 476,
+              "callee": "Refresh",
+              "expression": "this.bondSubSectionProgram.TransportUnit.Refresh"
+            }
+          ],
+          "writes": [
+            {
+              "line": 461,
+              "target": "this.bondSubSectionProgram.TransportUnit",
+              "expression": "this.bondSubSectionProgram.TransportUnit =\r\n                                    new TransportUnit(CurrentMachineSystemEnum.System2)"
+            },
+            {
+              "line": 499,
+              "target": "this.bondSubSectionProgram.TransportUnit",
+              "expression": "this.bondSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 506,
+              "target": "this.bondSubSectionProgram.TransportUnit",
+              "expression": "this.bondSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 541,
+              "target": "this.bondSubSectionProgram.TransportUnit",
+              "expression": "this.bondSubSectionProgram.TransportUnit =\r\n                                    new TransportUnit(CurrentMachineSystemEnum.System2)"
+            },
+            {
+              "line": 578,
+              "target": "this.bondSubSectionProgram.TransportUnit",
+              "expression": "this.bondSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 597,
+              "target": "this.bondSubSectionProgram.TransportUnit",
+              "expression": "this.bondSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "物料搜索"
+    },
+    {
+      "file": "TransportSystem/Controllers/DispenseSubSectionController.cs",
+      "compiled": true,
+      "sha256": "47816b9d687d21a5272f6cf9250ebe29d2689398ac43e9dba6965991ecc02328",
+      "methods": [
+        {
+          "class": "DispenseSubSectionController",
+          "method": "MapBelt",
+          "start": 437,
+          "end": 523,
+          "calls": [
+            {
+              "line": 482,
+              "callee": "Refresh",
+              "expression": "this.dispenseSubSectionProgram.TransportUnit.Refresh"
+            },
+            {
+              "line": 504,
+              "callee": "System1BackMoveDistance",
+              "expression": "this.dispenseSubSectionProgram.TransportUnit.System1BackMoveDistance"
+            }
+          ],
+          "writes": [
+            {
+              "line": 467,
+              "target": "this.dispenseSubSectionProgram.TransportUnit",
+              "expression": "this.dispenseSubSectionProgram.TransportUnit =\r\n                                new TransportUnit(CurrentMachineSystemEnum.System1)"
+            },
+            {
+              "line": 510,
+              "target": "this.dispenseSubSectionProgram.TransportUnit",
+              "expression": "this.dispenseSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 517,
+              "target": "this.dispenseSubSectionProgram.TransportUnit",
+              "expression": "this.dispenseSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "物料搜索"
+    },
+    {
+      "file": "TransportSystem/Controllers/TransportController.cs",
+      "compiled": true,
+      "sha256": "d180b07735e4952f5f9aafafe3eb1b385f621e8d1b4686c6b2aa35534ba11086",
+      "methods": [
+        {
+          "class": "TransportController",
+          "method": "MapMaterial",
+          "start": 132,
+          "end": 145,
+          "calls": [
+            {
+              "line": 135,
+              "callee": "MapBelt",
+              "expression": "this.BondSubSectionController.MapBelt"
+            },
+            {
+              "line": 138,
+              "callee": "MapBelt",
+              "expression": "this.DispenseSubSectionController.MapBelt"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "TransportController",
+          "method": "InitializeTS",
+          "start": 159,
+          "end": 224,
+          "calls": [],
+          "writes": [
+            {
+              "line": 210,
+              "target": "this.transportProgram.LoadingSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.LoadingSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 211,
+              "target": "this.transportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.DispenseSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 212,
+              "target": "this.transportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.BondSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 213,
+              "target": "this.transportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 214,
+              "target": "this.transportProgram.UnloadingSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.UnloadingSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "InitializeTSInDispense",
+          "start": 229,
+          "end": 277,
+          "calls": [],
+          "writes": [
+            {
+              "line": 267,
+              "target": "this.transportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.DispenseSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "InitializeTSInBond",
+          "start": 282,
+          "end": 328,
+          "calls": [],
+          "writes": [
+            {
+              "line": 317,
+              "target": "this.transportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "this.transportProgram.BondSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferAutoLoaderToLoading",
+          "start": 439,
+          "end": 550,
+          "calls": [],
+          "writes": [
+            {
+              "line": 527,
+              "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = new TransportUnit(CurrentMachineSystemEnum.System2)"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferLoadBeltToDispense",
+          "start": 558,
+          "end": 865,
+          "calls": [
+            {
+              "line": 829,
+              "callee": "Refresh",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit.Refresh"
+            }
+          ],
+          "writes": [
+            {
+              "line": 650,
+              "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit =\r\n                                new TransportUnitSystem.Module.Matter.TransportUnit(\"上料载具对象生成\")"
+            },
+            {
+              "line": 826,
+              "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit =\r\n                        this.TransportProgram.LoadingSubSectionProgram.TransportUnit"
+            },
+            {
+              "line": 834,
+              "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferLoadBinToDispense",
+          "start": 873,
+          "end": 1179,
+          "calls": [
+            {
+              "line": 1141,
+              "callee": "Refresh",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit.Refresh"
+            }
+          ],
+          "writes": [
+            {
+              "line": 1128,
+              "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit =\r\n                            new TransportUnitSystem.Module.Matter.TransportUnit(CurrentMachineSystemEnum.System1)"
+            },
+            {
+              "line": 1146,
+              "target": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.LoadingSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferDispense1ToDispense2",
+          "start": 1186,
+          "end": 1259,
+          "calls": [
+            {
+              "line": 1253,
+              "callee": "System1MoveDistance",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit.System1MoveDistance"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferDispenseToBond",
+          "start": 1266,
+          "end": 1524,
+          "calls": [
+            {
+              "line": 1486,
+              "callee": "Refresh",
+              "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit.Refresh"
+            }
+          ],
+          "writes": [
+            {
+              "line": 1478,
+              "target": "this.TransportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit =\r\n                    this.TransportProgram.DispenseSubSectionProgram.TransportUnit"
+            },
+            {
+              "line": 1483,
+              "target": "this.TransportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit = new TransportUnit(CurrentMachineSystemEnum.System2)"
+            },
+            {
+              "line": 1488,
+              "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit = null"
+            },
+            {
+              "line": 1494,
+              "target": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.DispenseSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferBondToWaitingUnload",
+          "start": 1531,
+          "end": 1810,
+          "calls": [],
+          "writes": [
+            {
+              "line": 1764,
+              "target": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit =\r\n                    this.TransportProgram.BondSubSectionProgram.TransportUnit"
+            },
+            {
+              "line": 1772,
+              "target": "this.TransportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.BondSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferWaitingUnloadToUnloadBelt",
+          "start": 1816,
+          "end": 2056,
+          "calls": [
+            {
+              "line": 2014,
+              "callee": "Refresh",
+              "expression": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit.Refresh"
+            }
+          ],
+          "writes": [
+            {
+              "line": 2011,
+              "target": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit =\r\n                        this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit"
+            },
+            {
+              "line": 2016,
+              "target": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferWaitingUnloadToUnloadBin",
+          "start": 2063,
+          "end": 2285,
+          "calls": [],
+          "writes": [
+            {
+              "line": 2246,
+              "target": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.WaitingUnloadSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        },
+        {
+          "class": "TransportController",
+          "method": "TransferUnloadBeltToAutoUnloader",
+          "start": 2292,
+          "end": 2448,
+          "calls": [],
+          "writes": [
+            {
+              "line": 2419,
+              "target": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit",
+              "expression": "this.TransportProgram.UnloadingSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "生产与手动交接"
+    },
+    {
+      "file": "TransportSystem/Controllers/UnloadingSubSectionController.cs",
+      "compiled": true,
+      "sha256": "df6051b539bd10b9d397060f18bfb474c4771bf08106bf4b9966b49ad534b76f",
+      "methods": [
+        {
+          "class": "UnloadingSubSectionController",
+          "method": "MapBelt",
+          "start": 71,
+          "end": 107,
+          "calls": [],
+          "writes": [
+            {
+              "line": 103,
+              "target": "this.unloadingSubSectionProgram.TransportUnit",
+              "expression": "this.unloadingSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "物料搜索"
+    },
+    {
+      "file": "TransportSystem/Controllers/WaitingUnloadSubSectionController.cs",
+      "compiled": true,
+      "sha256": "875f89ed33857b7ee8f575eb9f3440bf298ea55a221109a49f4470806877f9e3",
+      "methods": [
+        {
+          "class": "WaitingUnloadSubSectionController",
+          "method": "MapBelt",
+          "start": 71,
+          "end": 107,
+          "calls": [],
+          "writes": [
+            {
+              "line": 103,
+              "target": "this.waitingUnloadSubSectionProgram.TransportUnit",
+              "expression": "this.waitingUnloadSubSectionProgram.TransportUnit = null"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "物料搜索"
+    },
+    {
+      "file": "TransportSystem/Controls/Manual/UcTransportSystemManual.cs",
+      "compiled": true,
+      "sha256": "f8b58e0f97e06ba45627779b4cfe3ca3532a1735a43cfdeed2008c07ec21d1a4",
+      "methods": [
+        {
+          "class": "UcTransportSystemManual",
+          "method": "BtSearchBelt1Sys1_Click",
+          "start": 121,
+          "end": 124,
+          "calls": [
+            {
+              "line": 123,
+              "callee": "MapBelt",
+              "expression": "transportController.DispenseSubSectionController.MapBelt"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "UcTransportSystemManual",
+          "method": "BtnSearchBelt2Sys2_Click",
+          "start": 131,
+          "end": 134,
+          "calls": [
+            {
+              "line": 133,
+              "callee": "MapBelt",
+              "expression": "transportController.BondSubSectionController.MapBelt"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "TransportSystem/Models/Programs/BaseSubSectionProgram.cs",
+      "compiled": true,
+      "sha256": "66821242156235eaa2f9bd81608bbbf43599d122d7f8cc8c60beb13f215d6f06",
+      "methods": [
+        {
+          "class": "BaseSubSectionProgram",
+          "method": "UpdateTransportUnit",
+          "start": 62,
+          "end": 65,
+          "calls": [],
+          "writes": [
+            {
+              "line": 64,
+              "target": "this.TransportUnit",
+              "expression": "this.TransportUnit = new TransportUnit(\"示教\")"
+            }
+          ]
+        },
+        {
+          "class": "BaseSubSectionProgram",
+          "method": "RefreshTransportUnit",
+          "start": 71,
+          "end": 74,
+          "calls": [
+            {
+              "line": 73,
+              "callee": "Refresh",
+              "expression": "this.TransportUnit.Refresh"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "区段与示教"
+    },
+    {
+      "file": "TransportSystem/Models/TransportDomain.cs",
+      "compiled": true,
+      "sha256": "daf2c09966a3874673df23590d8d058d6fc6f81d1f4fe7e02e9bd0c2991b338e",
+      "methods": [
+        {
+          "class": "TransportDomain",
+          "method": "StartTask",
+          "start": 84,
+          "end": 141,
+          "calls": [
+            {
+              "line": 117,
+              "callee": "RefreshTransportUnit",
+              "expression": "TransportProgram.RefreshTransportUnit"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "TransportSystem/Models/TransportProgram.cs",
+      "compiled": true,
+      "sha256": "2570d606437950d28b3c0f63c3033b0c603aa1ecdda2d637315d6cc093db92ba",
+      "methods": [
+        {
+          "class": "TransportProgram",
+          "method": "RefreshTransportUnit",
+          "start": 90,
+          "end": 106,
+          "calls": [
+            {
+              "line": 94,
+              "callee": "Refresh",
+              "expression": "this.DispenseSubSectionProgram.TransportUnit.Refresh"
+            },
+            {
+              "line": 99,
+              "callee": "Refresh",
+              "expression": "this.BondSubSectionProgram.TransportUnit.Refresh"
+            },
+            {
+              "line": 104,
+              "callee": "Refresh",
+              "expression": "this.WaitingUnloadSubSectionProgram.TransportUnit.Refresh"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "TransportSystem/Tasks/TransportTask.cs",
+      "compiled": true,
+      "sha256": "b9a0b273ecc335c68f5cd58585d35a62dfe9d8a9bc31753a06a677f96b7f1234",
+      "methods": [
+        {
+          "class": "TransportTask",
+          "method": "StartDryRun",
+          "start": 775,
+          "end": 891,
+          "calls": [],
+          "writes": [
+            {
+              "line": 786,
+              "target": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit =\r\n                    new TransportUnit(CurrentMachineSystemEnum.System1)"
+            },
+            {
+              "line": 795,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit =\r\n              new TransportUnit(CurrentMachineSystemEnum.System2)"
+            },
+            {
+              "line": 831,
+              "target": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().DispenseSubSectionProgram.TransportUnit =\r\n                       new TransportUnit(CurrentMachineSystemEnum.System1)"
+            },
+            {
+              "line": 876,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit =\r\n                    new TransportUnit(CurrentMachineSystemEnum.System2)"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "生产与空跑"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Assistant/TUAssistantHelper.cs",
+      "compiled": true,
+      "sha256": "893f55643943826da075fb8564e9da08d76c771b70803da75611daf372ea37f3",
+      "methods": [
+        {
+          "class": "TUAssistantHelper",
+          "method": "JudgeTuExist",
+          "start": 392,
+          "end": 455,
+          "calls": [],
+          "writes": [
+            {
+              "line": 420,
+              "target": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit",
+              "expression": "TransportDomain.GetInstance().TransportProgram.BondSubSectionProgram.TransportUnit =\r\n                        new TransportUnit(CurrentMachineSystemEnum.System2)"
+            },
+            {
+              "line": 447,
+              "target": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit",
+              "expression": "TransportDomain.GetInstance().TransportProgram.DispenseSubSectionProgram.TransportUnit =\r\n                        new TransportUnit(CurrentMachineSystemEnum.System1)"
+            }
+          ]
+        },
+        {
+          "class": "TUAssistantHelper",
+          "method": "System2VisionByPos",
+          "start": 658,
+          "end": 727,
+          "calls": [
+            {
+              "line": 666,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 671,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 680,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 687,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 692,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 701,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 708,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 715,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            },
+            {
+              "line": 720,
+              "callee": "System2MatterVision",
+              "expression": "System2Domain.GetInstance().System2MatterVision"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "TUAssistantHelper",
+          "method": "System1VisionByPos",
+          "start": 734,
+          "end": 803,
+          "calls": [
+            {
+              "line": 742,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 747,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 756,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 763,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 768,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 777,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 784,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 791,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            },
+            {
+              "line": 796,
+              "callee": "System1MatterVision",
+              "expression": "System1Domain.GetInstance().System1MatterVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "示教辅助"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTransportUnitMapping.cs",
+      "compiled": true,
+      "sha256": "5e016ba9358defbf11b81d94300a13810253849065d602d56baf2f01d11fb8df",
+      "methods": [
+        {
+          "class": "FrmTransportUnitMapping",
+          "method": "BtImportMapping_Click",
+          "start": 88,
+          "end": 125,
+          "calls": [
+            {
+              "line": 107,
+              "callee": "ReadTransportMapping",
+              "expression": "TuService.ReadTransportMapping"
+            }
+          ],
+          "writes": [
+            {
+              "line": 114,
+              "target": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit",
+              "expression": "TransportProgram.GetInstance().BondSubSectionProgram.TransportUnit = transportNew"
+            }
+          ]
+        },
+        {
+          "class": "FrmTransportUnitMapping",
+          "method": "BtSaveMapping_Click",
+          "start": 175,
+          "end": 179,
+          "calls": [
+            {
+              "line": 177,
+              "callee": "SaveMappingToLocal",
+              "expression": "TuService.SaveMappingToLocal"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "FrmTransportUnitMapping",
+          "method": "BtInputID_Click",
+          "start": 186,
+          "end": 214,
+          "calls": [
+            {
+              "line": 202,
+              "callee": "ReadTransportMapping",
+              "expression": "TuService.ReadTransportMapping"
+            }
+          ],
+          "writes": [
+            {
+              "line": 210,
+              "target": "this.baseSubSectionProgram.TransportUnit",
+              "expression": "this.baseSubSectionProgram.TransportUnit = transportUnit"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "手动导入"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMapping.cs",
+      "compiled": true,
+      "sha256": "4b0a5406c29c7be4f56a85c168d5cb2da73d56ef57f415b2c8d7d994a624b36a",
+      "methods": [
+        {
+          "class": "FrmTuMapping",
+          "method": "FrmTuMapping",
+          "start": 27,
+          "end": 45,
+          "calls": [
+            {
+              "line": 44,
+              "callee": "Refresh",
+              "expression": "this.transportUnit.Refresh"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "手动界面"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/Mapping/FrmTuMappingNew.cs",
+      "compiled": true,
+      "sha256": "6a5eed2d555b68062e0a439056feb22240fdf7a744336ae95dc329a8e5a535bb",
+      "methods": [
+        {
+          "class": "FrmTuMappingNew",
+          "method": "BtClearAll_Click",
+          "start": 112,
+          "end": 118,
+          "calls": [],
+          "writes": [
+            {
+              "line": 115,
+              "target": "this.TransportUnit",
+              "expression": "this.TransportUnit = new TransportUnit(\"mapping\")"
+            }
+          ]
+        }
+      ],
+      "prior_disposition": "手动界面"
+    },
+    {
+      "file": "TransportUnitSystem/Controls/TransportUnitEdit/UcObjectFunctionEdit.cs",
+      "compiled": true,
+      "sha256": "78462da4520e4c1133c1add685e999e5d9c07dc30c38337401c7fb077ed6b00a",
+      "methods": [
+        {
+          "class": "UcObjectFunctionEdit",
+          "method": "BtAssistantMeasureHeight_Click",
+          "start": 387,
+          "end": 427,
+          "calls": [
+            {
+              "line": 396,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.GetInstance().System2ObjectVision"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "UcObjectFunctionEdit",
+          "method": "VisionBaseMatter",
+          "start": 1079,
+          "end": 1112,
+          "calls": [
+            {
+              "line": 1110,
+              "callee": "System2ObjectVision",
+              "expression": "System2Domain.GetInstance().System2ObjectVision"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "示教辅助"
+    },
+    {
+      "file": "TransportUnitSystem/Service/TuService.cs",
+      "compiled": true,
+      "sha256": "ff32f1cd9cc04d4e11dc85864e64280e0af7807c74bae10f2e930fd1370436d5",
+      "methods": [
+        {
+          "class": "TuService",
+          "method": "ReadTransportMapping",
+          "start": 1800,
+          "end": 1810,
+          "calls": [
+            {
+              "line": 1809,
+              "callee": "ReadTransportMapping",
+              "expression": "ReadTransportMapping"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "TuService",
+          "method": "ReadTransportMapping",
+          "start": 1817,
+          "end": 1946,
+          "calls": [
+            {
+              "line": 1824,
+              "callee": "ReadTransportMappingByComponent",
+              "expression": "ReadTransportMappingByComponent"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "公共计算与导入"
+    },
+    {
+      "file": "WaferSubSystem/Controllers/WaferSubController.cs",
+      "compiled": true,
+      "sha256": "888eda4628482a3daa3ebdaf5e0095c7aff235276c09e60507938940ef3b45b3",
+      "methods": [
+        {
+          "class": "WaferSubController",
+          "method": "FlipFromWaferTable",
+          "start": 509,
+          "end": 605,
+          "calls": [
+            {
+              "line": 600,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.cs",
+      "compiled": true,
+      "sha256": "24ed975dcc40ae52bf5dddf74909fef3f3a7ee260004bfcf1425a18faa7f81f2",
+      "methods": [
+        {
+          "class": "Block",
+          "method": "AnalyseDie",
+          "start": 78,
+          "end": 317,
+          "calls": [
+            {
+              "line": 196,
+              "callee": "ToRequiredAccuracy",
+              "expression": "this.ToRequiredAccuracy"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "供料生产"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchDieBox.cs",
+      "compiled": true,
+      "sha256": "1afc14108540072e5d4a276cb71148b2481bc043d66da21224b776d224e4066b",
+      "methods": [
+        {
+          "class": "Block",
+          "method": "SearchDieBox",
+          "start": 48,
+          "end": 145,
+          "calls": [
+            {
+              "line": 142,
+              "callee": "MoveDieToPickCenter",
+              "expression": "this.MoveDieToPickCenter"
+            }
+          ],
+          "writes": []
+        },
+        {
+          "class": "Block",
+          "method": "RefreshWafflePickedDieStatus",
+          "start": 202,
+          "end": 209,
+          "calls": [
+            {
+              "line": 208,
+              "callee": "RefreshMap",
+              "expression": "this.FrmWaffleMap.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "供料生产"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchMapping.cs",
+      "compiled": true,
+      "sha256": "78fb821dfe7b6cca8c8cb199e61ca5fccf1f5dc22f03cd078fbd79a754196895",
+      "methods": [
+        {
+          "class": "Block",
+          "method": "SearchMapping",
+          "start": 46,
+          "end": 197,
+          "calls": [
+            {
+              "line": 122,
+              "callee": "MoveDieToPickCenter",
+              "expression": "this.MoveDieToPickCenter"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "供料生产"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchNine.cs",
+      "compiled": true,
+      "sha256": "0e4fd037490106827b4f9a25777c54c0f20241d527dd713fbdba61e4f7c4ec77",
+      "methods": [
+        {
+          "class": "Block",
+          "method": "AnalyseDies",
+          "start": 294,
+          "end": 386,
+          "calls": [
+            {
+              "line": 309,
+              "callee": "MoveDieToPickCenter",
+              "expression": "this.MoveDieToPickCenter"
+            },
+            {
+              "line": 328,
+              "callee": "MoveDieToPickCenter",
+              "expression": "this.MoveDieToPickCenter"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "供料生产"
+    },
+    {
+      "file": "WaferSubSystem/Models/Entities/SearchChip/Block.SearchSingle.cs",
+      "compiled": true,
+      "sha256": "45603ff5a30c5698edd44a775ac62796fdee742650b06ab552f1fb96d7c2e919",
+      "methods": [
+        {
+          "class": "Block",
+          "method": "SearchSingle",
+          "start": 35,
+          "end": 163,
+          "calls": [
+            {
+              "line": 158,
+              "callee": "MoveDieToPickCenter",
+              "expression": "this.MoveDieToPickCenter"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": "供料生产"
+    },
+    {
+      "file": "WaferSubSystem/Tasks/FlipTask.cs",
+      "compiled": true,
+      "sha256": "40ecc8b86316619109de02bfa1c62d246c36d0d1b578ba761e1eecbc4fada8c0",
+      "methods": [
+        {
+          "class": "FlipTask",
+          "method": "DoWork",
+          "start": 57,
+          "end": 254,
+          "calls": [
+            {
+              "line": 137,
+              "callee": "RefreshMap",
+              "expression": "WaferSystemDomain.GetInstance().Block.RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    },
+    {
+      "file": "WaferSubSystem/Tasks/WaferSubSystemTask.cs",
+      "compiled": true,
+      "sha256": "96434f843f3bbd610d44350e7f45e5ddae3ec2239206aa5284253123140a152b",
+      "methods": [
+        {
+          "class": "WaferSubSystemTask",
+          "method": "Dowork",
+          "start": 64,
+          "end": 386,
+          "calls": [
+            {
+              "line": 333,
+              "callee": "RefreshMap",
+              "expression": "Block.GetInstance().RefreshMap"
+            }
+          ],
+          "writes": []
+        }
+      ],
+      "prior_disposition": null
+    }
+  ]
+}

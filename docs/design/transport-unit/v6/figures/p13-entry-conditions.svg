@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1350" viewBox="0 0 2400 1350"><rect width="100%" height="100%" fill="white"/>
+<text x="590" y="65" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">S1 点胶入口</text>
+<text x="590" y="145" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">本图限点胶已启用</text>
+<text x="1810" y="65" fill="#18364b" font-family="Microsoft YaHei" font-size="52" font-weight="700" text-anchor="middle" dominant-baseline="central">S2 固晶入口</text>
+<text x="1810" y="145" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">本图限固晶已启用的常规路径</text>
+<rect x="270" y="230" width="640" height="190" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="590.0" y="292" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">进入产品处理</text>
+<text x="590.0" y="367" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">已有当前 TU</text>
+<rect x="1490" y="230" width="640" height="190" fill="#f5f7f9" stroke="#a8bac7" stroke-width="3"/>
+<text x="1810.0" y="292" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">先注入 S2 工序</text>
+<text x="1810.0" y="367" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">此步在重建判断之前</text>
+<polyline points="590,420 590,490" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="590,490 579.9957927154417,469.28971664588846 600.0042072845583,469.28971664588846" fill="#315d82"/>
+<polyline points="1810,420 1810,490" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1810,490 1799.9957927154417,469.28971664588846 1820.0042072845583,469.28971664588846" fill="#315d82"/>
+<polygon points="590.0,490 940,630.0 590.0,770 240,630.0" fill="#faf1e4" stroke="#c58737" stroke-width="3"/>
+<text x="590.0" y="600.0" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="700" text-anchor="middle" dominant-baseline="central">IsProduct</text>
+<text x="590.0" y="660.0" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="700" text-anchor="middle" dominant-baseline="central">为 false</text>
+<polygon points="1810.0,490 2160,630.0 1810.0,770 1460,630.0" fill="#faf1e4" stroke="#c58737" stroke-width="3"/>
+<text x="1810.0" y="600.0" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="700" text-anchor="middle" dominant-baseline="central">IsProduct 为 false</text>
+<text x="1810.0" y="660.0" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="700" text-anchor="middle" dominant-baseline="central">且输送已配置</text>
+<polyline points="240,630 220,630 220,815 280,815 280,860" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="280,860 269.9957927154417,839.2897166458885 290.0042072845583,839.2897166458885" fill="#315d82"/>
+<polyline points="940,630 960,630 960,815 900,815 900,860" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="900,860 889.9957927154417,839.2897166458885 910.0042072845583,839.2897166458885" fill="#315d82"/>
+<text x="280" y="790" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">否</text>
+<text x="900" y="790" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">是</text>
+<rect x="80" y="860" width="400" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="280.0" y="922" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">保留原 TU</text>
+<text x="280.0" y="997" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">保留运行记录</text>
+<rect x="700" y="860" width="400" height="190" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="900.0" y="922" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">创建新 TU</text>
+<text x="900.0" y="997" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">IsProduct = true</text>
+<polyline points="280,1050 280,1080 590,1080" fill="none" stroke="#315d82" stroke-width="4"/>
+<polyline points="900,1050 900,1080 590,1080" fill="none" stroke="#315d82" stroke-width="4"/>
+<polyline points="590,1080 590,1130" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="590,1130 579.9957927154417,1109.2897166458883 600.0042072845583,1109.2897166458883" fill="#315d82"/>
+<polyline points="1460,630 1440,630 1440,815 1500,815 1500,860" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1500,860 1489.9957927154417,839.2897166458885 1510.0042072845583,839.2897166458885" fill="#315d82"/>
+<polyline points="2160,630 2180,630 2180,815 2120,815 2120,860" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="2120,860 2109.995792715442,839.2897166458885 2130.004207284558,839.2897166458885" fill="#315d82"/>
+<text x="1500" y="790" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">否</text>
+<text x="2120" y="790" fill="#18364b" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central">是</text>
+<rect x="1300" y="860" width="400" height="190" fill="#edf3f8" stroke="#a8bac7" stroke-width="3"/>
+<text x="1500.0" y="922" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">保留原 TU</text>
+<text x="1500.0" y="997" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">保留运行记录</text>
+<rect x="1920" y="860" width="400" height="190" fill="#faf1e4" stroke="#a8bac7" stroke-width="3"/>
+<text x="2120.0" y="922" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">创建新 TU</text>
+<text x="2120.0" y="997" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">IsProduct = true</text>
+<polyline points="1500,1050 1500,1080 1810,1080" fill="none" stroke="#315d82" stroke-width="4"/>
+<polyline points="2120,1050 2120,1080 1810,1080" fill="none" stroke="#315d82" stroke-width="4"/>
+<polyline points="1810,1080 1810,1130" fill="none" stroke="#315d82" stroke-width="4"/>
+<polygon points="1810,1130 1799.9957927154417,1109.2897166458883 1820.0042072845583,1109.2897166458883" fill="#315d82"/>
+<rect x="270" y="1130" width="640" height="190" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="590.0" y="1192" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">注入 S1 工序</text>
+<text x="590.0" y="1267" fill="#5a6e7f" font-family="Microsoft YaHei" font-size="44" font-weight="400" text-anchor="middle" dominant-baseline="central">再进入动作循环</text>
+<rect x="1490" y="1130" width="640" height="175" fill="#eef5f0" stroke="#a8bac7" stroke-width="3"/>
+<text x="1810.0" y="1217.5" fill="#18364b" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central">进入动作循环</text></svg>

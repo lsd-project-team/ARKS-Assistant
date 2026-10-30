@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1000" y="80" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">整线清空</text>
+<text x="1540" y="80" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">只清点胶</text>
+<text x="2080" y="80" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">只清固晶</text>
+<text x="320" y="245" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">上料</text>
+<circle cx="1000" cy="245" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="245" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<circle cx="2080" cy="245" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<polyline points="140,315 2300,315" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<text x="320" y="395" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">点胶</text>
+<circle cx="1000" cy="395" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="395" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<circle cx="2080" cy="395" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<polyline points="140,465 2300,465" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<text x="320" y="545" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">固晶</text>
+<circle cx="1000" cy="545" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="545" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<circle cx="2080" cy="545" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<polyline points="140,615 2300,615" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<text x="320" y="695" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">待下料</text>
+<circle cx="1000" cy="695" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="695" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<circle cx="2080" cy="695" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<polyline points="140,765 2300,765" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<text x="320" y="845" font-family="Microsoft YaHei" font-size="53" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">下料</text>
+<circle cx="1000" cy="845" r="26" fill="#B75D21" stroke="#B75D21" stroke-width="5"/>
+<circle cx="1540" cy="845" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<circle cx="2080" cy="845" r="26" fill="white" stroke="#B7C6CF" stroke-width="5"/>
+<polyline points="140,915 2300,915" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<text x="1200" y="1000" font-family="Microsoft YaHei" font-size="49" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#B75D21">清引用并置无料  不统一重置全部信号和消息</text></svg>

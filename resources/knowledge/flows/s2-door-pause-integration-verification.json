@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-29T14:35:13.102Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-s2-door-pause.log",
+    "sha256": "8a4acd4a2b24226b2509cde7cd09d3e969c7aa7c6856017f1ee1c1d128574969"
+  },
+  "browser": {
+    "log": ".archify-work/browser-s2-door-pause.log",
+    "sha256": "96360df06d9f0d82ad207b1b5e1ebe0091e0bc5063b3beb14330bd26b3427234",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "abbb846fe4533789121f470198f866a3306808942c969a7acba43a17fa2f5853",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Seventeen original methods, 37 controlled checks, registered suite and browser checks. Full original S2 task methods and Signal source in controlled threads; not full product concurrency, sensor I/O or device acceptance."
+}

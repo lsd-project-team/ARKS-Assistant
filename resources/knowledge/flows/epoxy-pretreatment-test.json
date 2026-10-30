@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "scope": "Unmodified EpoxyPretreatment, ObjectHelper.Clone and EpoxyApplicationLocation class/enum plus real strategy enum. Serializable minimal EpoxyApplication root and AKRSPoint3D substitute; extra nonserializable field is a fixture-only fault injection. Tests cover numeric transforms and local memory serialization in .NET Framework, not the full production class graph, Fody weaving, actual recipes, controller execution or hardware.",
+  "sources": [
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Services/DispenserMoveHelper.cs",
+      "start": 327,
+      "end": 446,
+      "sha256": "265981cd1e4ef2987860def252b439124e02c04b795a85e2700b7443938a25d5",
+      "snippetSha256": "fe9e2765301e135617e152c8ec1f9c9cdfa11ede7cbe2a36384c89b0b00bdfec"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/Infrastructure/Utils/ObjectHelper.cs",
+      "start": 109,
+      "end": 119,
+      "sha256": "921dab2a9abd77984ca1d2b2a70c50fa142de022b90567943dbda9bb713df49b",
+      "snippetSha256": "5ea397eeaaa20611cd926eda212bed0cc8818a74920726c621c3f9461466e3ac"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/DispensePara/EpoxyApplicationLocation.cs",
+      "start": 14,
+      "end": 107,
+      "sha256": "9374c16d315f7ee0f17613178ae9add6ad43da6fb95cdf22b89ad56c80cd7660",
+      "snippetSha256": "54ddb6e17b9d460ecb1763acecc4a6e815b222b3ba952b8bbeabdb9e319a716c"
+    },
+    {
+      "file": "trunk/AKRS.ZX2200/DispenseSystem/Models/Enums/DispenseEnum.cs",
+      "start": 162,
+      "end": 181,
+      "sha256": "7152500f5cd1043afe998c603b91520f8ed5d98a99aa48595ce7c869ed34cbf8",
+      "snippetSha256": "db936aa65c0aa5bb163a4d5a2c582834055a291b7b98397044723cb79b4ea41a"
+    }
+  ],
+  "fixture": {
+    "file": "scripts/epoxy-pretreatment-fixture.cs.txt",
+    "sha256": "4b99cd96699db75ca608e8791e043c7259b9dffedc764d183e9a7487d114f39c"
+  },
+  "checks": [
+    "PASS normalization rotation and XYZ translation",
+    "PASS fixture graph is deep copied and original points unchanged",
+    "PASS nonpositive motion values default before percentage scaling",
+    "PASS zero percentage produces zero motion values",
+    "PASS negative percentage remains negative after defaults",
+    "PASS single-dot strategy moves first point but keeps second",
+    "PASS zero X extent becomes NaN then resets before translation",
+    "PASS single point normalizes to target XY with additive Z",
+    "PASS empty pattern list returns empty copied pattern",
+    "PASS null pattern segment propagates exception",
+    "PASS empty first segment leaves zero extrema bias for later positive points",
+    "PASS nonfinite size can remain nonfinite after rotation",
+    "PASS null root propagates clone failure",
+    "PASS nonserializable fixture descendant propagates clone failure",
+    "TOTAL 14"
+  ]
+}

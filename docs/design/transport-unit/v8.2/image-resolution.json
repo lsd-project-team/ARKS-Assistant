@@ -1,0 +1,128 @@
+[
+  {
+    "figure": "tu_route",
+    "page": 1,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_route",
+    "page": 3,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_record",
+    "page": 4,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_address",
+    "page": 5,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_arrive",
+    "page": 6,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_locate",
+    "page": 7,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_height",
+    "page": 8,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_glue",
+    "page": 9,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_transfer",
+    "page": 10,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_refresh",
+    "page": 11,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_bond",
+    "page": 12,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_out",
+    "page": 13,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_reset",
+    "page": 14,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  },
+  {
+    "figure": "tu_done",
+    "page": 15,
+    "pixels": [
+      2400,
+      1360
+    ],
+    "dpi": 356.5
+  }
+]

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1360" viewBox="0 0 2400 1360">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600" y="110" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">示教时的板面</text>
+<text x="1800" y="110" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">这次板面高了一点</text>
+<polyline points="1200,190 1200,1220" stroke="#B7C6CF" stroke-width="3" fill="none"/>
+<polyline points="160,720 1040,720" stroke="#B7C6CF" stroke-width="4" fill="none" stroke-dasharray="16 14"/>
+<rect x="180" y="720" width="840" height="80" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<circle cx="600" cy="720" r="25" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="470" y="280" width="260" height="140" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<text x="600" y="350" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">测高</text>
+<polyline points="600,440 600,655" stroke="#246B99" stroke-width="5" fill="none" stroke-dasharray="16 14"/>
+<polygon points="600,655 588.2559305789968,630.6879282364778 611.7440694210032,630.6879282364778" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="1360,720 2240,720" stroke="#B7C6CF" stroke-width="4" fill="none" stroke-dasharray="16 14"/>
+<rect x="1380" y="590" width="840" height="80" rx="0" fill="#EAF4EE" stroke="#287054" stroke-width="6"/>
+<circle cx="1800" cy="590" r="25" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<rect x="1670" y="280" width="260" height="140" rx="12" fill="#EDF4F8" stroke="#246B99" stroke-width="5"/>
+<text x="1800" y="350" font-family="Microsoft YaHei" font-size="55" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">测高</text>
+<polyline points="1800,440 1800,525" stroke="#246B99" stroke-width="5" fill="none" stroke-dasharray="16 14"/>
+<polygon points="1800,525 1788.2559305789969,500.6879282364777 1811.7440694210031,500.6879282364777" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<polyline points="2260,720 2260,590" stroke="#B75D21" stroke-width="7" fill="none"/>
+<polygon points="2260,590 2271.744069421003,614.3120717635222 2248.255930578997,614.3120717635222" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="600" y="1050" font-family="Microsoft YaHei" font-size="62" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">原来的高度</text>
+<text x="1800" y="1050" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">高度差记到这块基板</text></svg>

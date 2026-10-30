@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1040" viewBox="0 0 2400 1040">
+<rect width="100%" height="100%" fill="white"/>
+<text x="1200" y="65" font-family="Microsoft YaHei" font-size="58" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#172B3A">先转方向 再加TU原点</text>
+<polyline points="130,780 1030,780" stroke="#647481" stroke-width="7" fill="none"/>
+<polygon points="1030,780 1005.6879282364778,791.7440694210032 1005.6879282364778,768.2559305789968" fill="#647481" stroke="#647481" stroke-width="4"/>
+<polyline points="130,780 130,220" stroke="#647481" stroke-width="7" fill="none"/>
+<polygon points="130,220 141.74406942100322,244.31207176352228 118.25593057899678,244.31207176352228" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="1015" y="838" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">X</text>
+<text x="85" y="245" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">Y</text>
+<polyline points="210.0,700.0 950.0,515.0" stroke="#246B99" stroke-width="6" fill="none"/>
+<polygon points="950.0,515.0 929.2621811331169,532.2899643910664 923.5654706981306,509.50312265112166" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="210.0" cy="700.0" r="17" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<circle cx="950.0" cy="515.0" r="17" fill="#246B99" stroke="#246B99" stroke-width="4"/>
+<text x="345.0" y="655.0" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#246B99">TU原点</text>
+<text x="850.0" y="445.0" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#246B99">A (40, 10)</text>
+<text x="620" y="925" font-family="Microsoft YaHei" font-size="50" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">TU局部坐标 单位mm</text>
+<polyline points="1380,780 2230,780" stroke="#647481" stroke-width="7" fill="none"/>
+<polygon points="2230,780 2205.6879282364775,791.7440694210032 2205.6879282364775,768.2559305789968" fill="#647481" stroke="#647481" stroke-width="4"/>
+<polyline points="1380,780 1380,220" stroke="#647481" stroke-width="7" fill="none"/>
+<polygon points="1380,220 1391.7440694210031,244.31207176352228 1368.2559305789969,244.31207176352228" fill="#647481" stroke="#647481" stroke-width="4"/>
+<text x="2215" y="838" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">X</text>
+<text x="1335" y="245" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#647481">Y</text>
+<polyline points="1560.0,700.0 1460.0,300.0" stroke="#B75D21" stroke-width="6" fill="none"/>
+<polygon points="1460.0,300.0 1477.2899643910664,320.7378188668831 1454.5031226511217,326.43452930186936" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<circle cx="1560.0" cy="700.0" r="17" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1600.0" y="655.0" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#B75D21">TU (100, 200)</text>
+<circle cx="1460.0" cy="300.0" r="17" fill="#B75D21" stroke="#B75D21" stroke-width="4"/>
+<text x="1500.0" y="255.0" font-family="Microsoft YaHei" font-size="42" font-weight="400" text-anchor="start" dominant-baseline="central" fill="#B75D21">A (90, 240)</text>
+<text x="1800" y="925" font-family="Microsoft YaHei" font-size="50" font-weight="400" text-anchor="middle" dominant-baseline="central" fill="#172B3A">G0坐标 单位mm</text>
+<text x="1200" y="460" font-family="Microsoft YaHei" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">转90°</text>
+<polyline points="1080,550 1300,550" stroke="#246B99" stroke-width="7" fill="none"/>
+<polygon points="1300,550 1275.6879282364778,561.7440694210032 1275.6879282364778,538.2559305789968" fill="#246B99" stroke="#246B99" stroke-width="4"/></svg>

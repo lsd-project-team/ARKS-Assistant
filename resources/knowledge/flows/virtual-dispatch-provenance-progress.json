@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05T03:45:35.238Z",
+  "status": "original16-project-virtual-interface-source-provenance-passed",
+  "parent": {
+    "file": "docs/archify/lexical-source-reader-test.json",
+    "sha256": "9d81a2dfc7952114c794d40d23e89595fb4aec385002899ba47a9c1ef484417c",
+    "totalFrozenBindings": 9112
+  },
+  "parentFrozenBindings": 9112,
+  "newFrozenInputs": 362,
+  "totalFrozenBindings": 9474,
+  "reusedParentInputs": 1847,
+  "projects": 16,
+  "runs": 32,
+  "compileFiles": 1410,
+  "declaredSourceTypeCatalog": 1179,
+  "virtualSites": 17518,
+  "declaredTargets": 295,
+  "candidateSets": 675,
+  "candidateRows": 3257,
+  "sitesWithKnownRepositoryTypeCandidate": 710,
+  "sitesWithIndexedSourceMethodCandidate": 455,
+  "unindexedRepositoryMethodCandidateRows": 0,
+  "metadataFilesHashChecked": 357,
+  "sourceFilesWithSites": 810,
+  "normalizedReplayEqual": 16,
+  "rawReplayEqual": 4,
+  "inventoryFiles": 1436,
+  "fixtureAssertions": 24,
+  "businessConnectionsCount": 4,
+  "businessSourceFiles": 92,
+  "summary": {
+    "file": ".archify-work/virtual-dispatch-provenance/summary.json",
+    "sha256": "04d10fa6d2246cf64828a68150ff435e960f39c2c1d97d4aaa18ac14818cbd0e"
+  },
+  "businessConnections": {
+    "file": ".archify-work/virtual-dispatch-provenance/business-connections.json",
+    "sha256": "54e5289608019c979a647b0c51e061f02c75627a93a8eccaa8e82035d4ea8c4c"
+  },
+  "verificationResults": {
+    "file": ".archify-work/virtual-dispatch-provenance/verification-results.json",
+    "sha256": "b1b97b85a207a0db50bc41feca3362e72e9af9865e515a2098459d21ecafa602"
+  },
+  "sourceCandidateScope": "Source-declared concrete types visible in each original compilation and exact repository metadata references. Reverse-dependency source implementations not guaranteed visible; SDK/external/plugin/generated types excluded from source-declared catalog.",
+  "productionSourceEdited": false,
+  "productionProjectEdited": false,
+  "productionRuntimeExecuted": false,
+  "fullOriginalMsbuildBuildExecuted": false,
+  "realUIExecuted": false,
+  "deviceExecuted": false,
+  "sqlWritesExecuted": false,
+  "fullBusinessSemanticCoverage": false,
+  "runtimeDispatchResolved": false,
+  "completeRepositoryImplementationSet": false,
+  "completeRuntimeTypeSet": false,
+  "readerCandidateIntegrationCompleted": false,
+  "oldReaderModified": false,
+  "oldGraphModified": false,
+  "includedInFormal1328": false,
+  "wholeGoalComplete": false,
+  "scope": "Fresh original16-project1410Compile32 static analyses retain exact17518 old virtual/interface call positions and lexical owners.675 per-target/constructed signature/static receiver sets,3257 source-declared type/method/projection candidates,710 sites with known repository type and455 with indexed source method;1179 declared type catalog excludes compiler-generated metadata.24 synthetic guards include new slots/nearest overrides, interfaces/boxing/user conversion, open/invariant/multiple closed/variant generics and actual per-site preconversion receiver expressions.16 normalized complete graphs equal,4raw. Four business queries include full candidate declarations at exact source ranges; these are static candidates, not runtime receiver/configuration/lifetime/order/call proof. Original compilation forward-reference visibility omits possible reverse-dependent/external/SDK/plugin types. CLI/evidence only; reader integration, full business/runtime/build/device goal incomplete.",
+  "runtime": {
+    "test": "virtual-dispatch-provenance-test.json",
+    "testSha256": "f26b525105d824ed91de10a5130eaa9accb7b8ce7652f5f1cc61082168e7842a",
+    "audit": "virtual-dispatch-provenance-audit.json",
+    "auditSha256": "fb9a89be34fbf66c094f322cb550f3fe09d393007c5bda3f0f86aed0fef84aae",
+    "report": "virtual-dispatch-provenance-review.md",
+    "reportSha256": "a0f994f1feea12f048a05f11f702769c4ab9666898a563965a74bb3b40d80522"
+  },
+  "nextRequired": "Integrate static virtual/interface candidates into a new derived source reader; continue per-config receiver/instance registration/delegate flow and full29-group business interpretation, lowering/reflection/weaving and original build/UI/SQL/device acceptance. Source candidates do not resolve runtime dispatch."
+}

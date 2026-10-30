@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-29T15:01:26.957Z",
+  "status": "passed",
+  "fullRegression": {
+    "command": "node scripts/verify-all.cjs",
+    "exitCode": 0,
+    "log": ".archify-work/verify-axis-return-transfer.log",
+    "sha256": "08df64eb92273c2e662dee1ddf73bf32a946cec498425c5c001b1fca5848336f"
+  },
+  "browser": {
+    "log": ".archify-work/browser-axis-return-transfer.log",
+    "sha256": "3d3cbf17f9e2ea1f54f07cdcb0738a9f49de5f67bbafdcd55b3230d195afe210",
+    "artifact": "docs/archify/module-source-explorer.html",
+    "artifactSha256": "c89748ab4d0278489721ef4defecf7872e8a30454a8f10580048202ae6addbb0",
+    "layouts": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      {
+        "width": 850,
+        "scrollWidth": 850
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "browserErrors": []
+  },
+  "scope": "Nine original methods with 84 controlled runtime assertions; separately 12 metadata checks over six binary methods. Axis return and exception fixtures, not actual Axis DLL or drive execution. Full regression and browser checks do not establish physical equipment acceptance."
+}
