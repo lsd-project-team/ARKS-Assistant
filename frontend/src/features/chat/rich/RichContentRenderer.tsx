@@ -5,11 +5,9 @@ import { CollapsibleSection, DataTable, OverviewGrid, StepFlow } from './Content
 import { FlowDiagram } from './FlowDiagram';
 import { createContentParser } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
-import { remarkRecordAnswer } from '../lib/recordAnswerPresentation';
 import { SourceReference } from './SourceReference';
 import { BlockBoundary } from './BlockBoundary';
 
-const answerPlugins = [remarkRecordAnswer];
 type Context = Pick<ComponentProps<typeof Markdown>, 'runId' | 'sourceId'>;
 const TextBlock = memo(function TextBlock({
   content,
@@ -17,15 +15,7 @@ const TextBlock = memo(function TextBlock({
   sourceId,
   streaming,
 }: Context & { content: string; streaming?: boolean }) {
-  return (
-    <Markdown
-      content={content}
-      runId={runId}
-      sourceId={sourceId}
-      remarkPlugins={answerPlugins}
-      streaming={streaming}
-    />
-  );
+  return <Markdown content={content} runId={runId} sourceId={sourceId} streaming={streaming} />;
 });
 
 const Block = memo(function Block({ block, runId, sourceId }: Context & { block: ContentBlock }) {

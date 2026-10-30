@@ -106,6 +106,29 @@ test('旧 Markdown 的表格、嵌套列表、任务项、波浪参数和代码�
     assert.ok(html.includes(text), text);
   assert.doesNotMatch(html, /<del>/);
 });
+
+test('AI 自主选择的长段落、强调、来源段落和展示文字均保留', () => {
+  const paragraph = 'Main方法体为空，没有后续动作。'.repeat(30);
+  const html = render(
+    `**${paragraph}**\n\n来源：[**试验记录** · v4](debug-issue:trial/4)\n\n本次试验的原图如下：\n\n（3张原图随上述引用直接展示）`,
+  );
+  assert.ok(html.includes(`<strong>${paragraph}</strong>`));
+  assert.match(html, /来源：<button[^>]*><strong>试验记录<\/strong> · v4<\/button>/);
+  assert.match(html, /<p>本次试验的原图如下：<\/p>/);
+  assert.match(html, /<p>（3张原图随上述引用直接展示）<\/p>/);
+  assert.equal((html.match(/<p>/g) || []).length, 4);
+});
+
+test('结构化正文沿用 AI 的段落与来源位置，不额外整理', () => {
+  const content = '结果为−4～2μm。\n\n来源：[记录 · v2](debug-issue:trial/2)';
+  const html = render(
+    '```rich-content\n' +
+      JSON.stringify({ version: 1, blocks: [{ id: 'body', type: 'text', content }] }) +
+      '\n```',
+  );
+  assert.match(html, /<p>结果为−4～2μm。<\/p>\s*<p>来源：<button/);
+  assert.match(html, /记录 · v2<\/button>/);
+});
 test('结构化 text 复用安全 Markdown，任意 HTML、脚本链接不能执行', () => {
   const html = render(
     '```rich-content\n' +
@@ -140,10 +163,10 @@ test('格式损坏的业务引用不能降为任意外部协议链接', () => {
   assert.doesNotMatch(html, /href="source:/);
 });
 
-test('经验引用只显示记录标题，使用当前页弹窗按钮并隐藏记录修订', () => {
+test('经验引用保留 AI 选择的标签和修订文字，使用当前页弹窗按钮', () => {
   const html = render('处理结果。 [取片经验 · v2](debug-issue:pickup/2)');
-  assert.match(html, /<button[^>]*aria-haspopup="dialog"[^>]*>取片经验<\/button>/);
-  assert.doesNotMatch(html, /· v2|handover\/issues|href="debug-issue:|参考资料/);
+  assert.match(html, /<button[^>]*aria-haspopup="dialog"[^>]*>取片经验 · v2<\/button>/);
+  assert.doesNotMatch(html, /handover\/issues|href="debug-issue:|参考资料/);
 });
 
 test('无效经验版本不能触发记录查看或变成外部跳转', () => {

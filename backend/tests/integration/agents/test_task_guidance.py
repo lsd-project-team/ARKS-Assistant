@@ -42,7 +42,8 @@ async def test_source_rules_reach_real_graph_after_unclassified_question_selects
     assert "【源码核查】" not in prompts[0]
     assert prompts[1].count("【源码核查】") == 1
     assert "本地源码优先于 DeepWiki" in prompts[1]
-    assert "回答展示协议" not in prompts[1]
+    assert "可选回答展示协议" in prompts[1]
+    assert "默认用step_flow" not in prompts[1]
 
     # 下一轮普通问题使用独立规则实例，不沿用前一轮的源码工具状态。
     prompts.clear()

@@ -45,24 +45,22 @@ class SequenceReviewModel(DeterministicModel):
         return ChatResult(generations=[ChatGeneration(message=answer)])
 
 
-async def test_long_flow_is_composed_before_source_fact_check_and_final_text_is_displayed(
+async def test_long_flow_keeps_model_format_through_source_fact_check_and_display(
     services, monkeypatch
 ):
     paths, _, workspace, repository, memory, settings = services
     read = workspace.read("Program.cs")
     reference = "[依据](source:Program.cs#L1-L3)"
-    short = "启动流程：读取入口后再分析调用关系，设备动作仍需核对。" + reference
+    original = "流程背景。" * 350 + reference
     checked = []
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
-            if "你只负责把流程草稿" in messages[0].text:
-                text = short
-            elif "独立的源码结论复核器" in messages[0].text:
+            if "独立的源码结论复核器" in messages[0].text:
                 checked.append(json.loads(messages[-1].text)["answer"])
                 text = json.dumps({"verdict": "passed", "issues": []})
             else:
-                text = "流程背景。" * 350 + reference
+                text = original
             return ChatResult(generations=[ChatGeneration(message=AIMessage(content=text))])
 
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
@@ -83,10 +81,10 @@ async def test_long_flow_is_composed_before_source_fact_check_and_final_text_is_
     events = []
     answer = await runtime.execute(run, lambda *e: events.append(e))
     repository.finish(run["id"], answer)
-    assert answer == short and checked == [short]
-    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == short
+    assert answer == original and checked == [original]
+    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == original
     assert not any(kind == "token" for kind, _ in events)
-    assert any(kind == "answer_replace" and row["text"] == short for kind, row in events)
+    assert any(kind == "answer_replace" and row["text"] == original for kind, row in events)
     runtime.semantic.close()
 
 

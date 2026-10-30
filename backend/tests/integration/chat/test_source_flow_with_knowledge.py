@@ -53,7 +53,7 @@ def seed_unrelated_records(database):
         )
 
 
-@pytest.mark.parametrize("presentation", ["markdown", "rich", "composed"])
+@pytest.mark.parametrize("presentation", ["markdown", "rich", "long-rich"])
 @pytest.mark.parametrize("use_knowledge", [True, False])
 @pytest.mark.parametrize("verdict", ["passed", "unknown"])
 async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repairs(
@@ -67,7 +67,8 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
     compact = flow("Main 方法体为空，没有后续动作。")
     if presentation == "markdown":
         compact = "1. Main 方法体为空，没有后续动作。[源码](source:Program.cs#L2-L2)"
-    draft = flow("尚待整理的冗长流程说明。" * 200) if presentation == "composed" else compact
+    if presentation == "long-rich":
+        compact = flow("Main 方法体为空，没有后续动作。" * 200)
     phases = []
 
     class Model(DeterministicModel):
@@ -79,10 +80,6 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
             if "你只负责筛选资料" in messages[0].text:
                 phases.append("knowledge_selection")
                 result = AIMessage(content='{"selections":[]}')
-            elif "draft" in payload and "question" in payload:
-                assert payload["draft"] == draft
-                phases.append("compose")
-                result = AIMessage(content=compact)
             elif "answer" in payload and "source" in payload:
                 assert "Main 方法体为空" in payload["answer"]
                 phases.append("review")
@@ -91,7 +88,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
                 isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
             ):
                 phases.append("answer")
-                result = AIMessage(content=draft)
+                result = AIMessage(content=compact)
             else:
                 phases.append("read")
                 result = AIMessage(
@@ -130,12 +127,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
         context = repository.run_event(run["id"], "context_sources")
         assert context["debug_issues"] == []
         assert not any(event["kind"] == "knowledge_search" for event in events)
-        assert phases == [
-            "read",
-            "answer",
-            *(["compose"] if presentation == "composed" else []),
-            "review",
-        ]
+        assert phases == ["read", "answer", "review"]
         assert repository.run_event(run["id"], "source_review")["verdict"] == verdict
         validation = repository.run_event(run["id"], "answer_validation")
         assert validation["passed"] and all(row["valid"] for row in validation["citations"])

@@ -18,7 +18,6 @@ import { HandoverMaterialViewer } from '../../features/handover/materials/compon
 import type { HandoverRecord } from '../../features/handover/shared/types';
 import { isKnowledgeReference } from '../../features/knowledge/lib/knowledgeReference';
 import { citationEndLine } from '../../features/source_reader/lib/citationRange';
-import { remarkDebugCitationLabels } from '../../features/chat/lib/recordAnswerPresentation';
 import { DebugIssueReference } from '../../features/chat/components/DebugIssueReference';
 
 const CitationRun = createContext<string | undefined>(undefined);
@@ -146,14 +145,12 @@ export function Markdown({
   content,
   runId,
   sourceId,
-  remarkPlugins = [],
   streaming = false,
 }: {
   content: string;
   runId?: string;
   sourceId?: string;
   streaming?: boolean;
-  remarkPlugins?: NonNullable<ComponentProps<typeof ReactMarkdown>['remarkPlugins']>;
 }) {
   return (
     <CitationRun.Provider value={runId}>
@@ -162,11 +159,7 @@ export function Markdown({
           <div className="markdown">
             <ReactMarkdown
               // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
-              remarkPlugins={[
-                [remarkGfm, { singleTilde: false }],
-                ...remarkPlugins,
-                remarkDebugCitationLabels,
-              ]}
+              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
               urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
               components={markdownComponents}
             >

@@ -33,20 +33,15 @@ async def test_general_questions_keep_source_and_device_display_rules_out(questi
     )
 
 
-@pytest.mark.parametrize(
-    ("question", "flow"),
-    [("Program.cs 的入口是什么", False), ("设备标定流程", True)],
-)
-async def test_source_rules_apply_before_first_model_call_and_flow_rules_only_for_flow(
-    question, flow
-):
+@pytest.mark.parametrize("question", ["Program.cs 的入口是什么", "设备标定流程"])
+async def test_source_rules_do_not_force_a_flow_layout(question):
     current = await effective_request(TaskGuidance(question, {"read_source"}))
     prompt = current.system_message.text
     assert prompt.count("【源码核查】") == 1
     assert "[文件名:行号](source:相对路径#L行号)" in prompt
     assert "本地源码优先于 DeepWiki" in prompt
     assert "发起调用不等于硬件完成" in prompt
-    assert ("回答展示协议" in prompt) is flow
+    assert "默认用step_flow" not in prompt
     assert "先规划候选项并调用 plan_source_checks" not in prompt
 
 

@@ -372,9 +372,11 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
         assert answer == corrected
         assert phases == ["answer", "selection", "answer", "verification", "verification"]
         context = str([row.content for messages in answer_inputs for row in messages])
-        assert "42" in context and "888" not in context and "999" not in context
+        # 随机 UUID 也可能包含 888/999；检查事实原句，避免把合法记录编号误判为泄漏。
+        assert "本次结果42" in context
+        assert "无关结果888" not in context and "其他时段为999" not in context
         assert "不该进入回答的候选" not in context
-        assert all("888" not in str(payload) for payload in checks)
+        assert all("无关结果888" not in str(payload) for payload in checks)
         assert "999" in str(checks[0]["record_context"])
         assert not any('"selections"' in row["text"] for kind, row in events if kind == "token")
         assert [row["id"] for kind, row in events if kind == "knowledge_reference"] == [saved["id"]]

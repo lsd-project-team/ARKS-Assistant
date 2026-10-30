@@ -9,7 +9,7 @@ MAX_DOCUMENT_BYTES = 262144
 FENCE = re.compile(r"(?m)^[ ]{0,3}(`{3,}|~{3,})([^\r\n]*)\r?$")
 
 
-def rich_documents(content):
+def rich_documents(content, *, include_incomplete=False):
     opened, count = None, 0
     for match in FENCE.finditer(content):
         marker, info = match[1], match[2].strip()
@@ -30,6 +30,8 @@ def rich_documents(content):
             yield start, match.end(), document
             count += 1
         opened = None
+    if include_incomplete and opened is not None and opened[3]:
+        yield opened[1], len(content), None
 
 
 def source_text(source):
@@ -197,17 +199,10 @@ def replace_answer_claims(content, replacements):
 
 
 RICH_CONTENT_GUIDANCE = """
-回答展示协议（只影响排版，事实核查和检索规则不变）：
-简单问答、原文提取、含调试记录/资料引用的回答继续用普通 Markdown。
-明确询问源码支持的操作流程时，默认用step_flow组织主线；多入口可先用overview_grid，实际对比才用table。
-用户明确要纯Markdown时遵从。其他普通解释不强制使用组件。
-区分示教、自动执行与单项任务的入口和条件，开头一两句说明本题主流程，不同时展开多条完整向导、自动流程和底层算法。
-步骤只写目的、必要条件和结果；补充实现放入collapsible或步骤details，默认收起。
-关键前置条件、失败/取消分支、停止与保存必须在主流程就近可见，不能因折叠丢失。
-不为了卡片凑固定入口或固定步骤数；较长向导可单独折叠，但主线须说明其适用位置和必要条件。
-每步用简短说明和直接支持该步的源码引用；未知动作在对应步骤限定，同一结论只说一次。
-证据足以解释主线即可回答，不为罗列细节追遍驱动或输出未读方法清单。
-在普通 Markdown 之间使用 rich-content 围栏，内部为 JSON：
+可选回答展示协议（只定义支持的格式，事实核查和检索规则不变）：
+由你根据问题和用户要求选择普通 Markdown 或以下结构化组件，不强制卡片、步骤、折叠或固定篇幅。
+用户要求纯 Markdown、原文或保留格式时遵从，不转换为结构化组件。
+选择结构化组件时，在普通 Markdown 之间使用 rich-content 围栏，内部为 JSON：
 {"version":1,"blocks":[...]}。每个块有唯一英文数字/短横线 id 和白名单 type。
 需要卡片时，围栏语言必须逐字写成 rich-content，不能写 json；json 围栏只显示示例代码。
 格式示例（占位文字必须替换为本题已核实的内容）：

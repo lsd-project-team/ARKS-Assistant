@@ -1,7 +1,6 @@
 """Agent 运行职责拆分，依赖通过运行实例显式传入。"""
 
 import asyncio
-import re
 
 from langchain_core.messages import AIMessage, HumanMessage, RemoveMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
@@ -11,7 +10,6 @@ from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.retrieval_context import retrieval_context
 from app.agents.context.tokens import current_budget, input_budget
 from app.agents.runtime.answer_completion import termination
-from app.agents.runtime.answer_presentation import format_answer
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
 from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
@@ -30,12 +28,14 @@ class AgentRunExecutor:
         runtime = self.runtime
         original_emit, observed = emit, {}
         knowledge_references = []
-        hold_flow_answer, publishing_final = False, False
+        hold_source_answer, publishing_final = False, False
         hold_knowledge_answer = False
 
         def emit(kind, payload):
-            nonlocal hold_knowledge_answer
+            nonlocal hold_knowledge_answer, hold_source_answer
             observed[kind] = payload
+            if kind == "source_evidence":
+                hold_source_answer = True
             if kind == "knowledge_reference":
                 knowledge_references.append(payload)
                 hold_knowledge_answer = (
@@ -47,10 +47,10 @@ class AgentRunExecutor:
             }:
                 # 空筛选及筛选失败同样要等最后的事实边界处理，不能先流出补造的历史结果。
                 hold_knowledge_answer = True
-            # 续写中间稿同样会发 answer_replace；只挡 token 会提前露出未整理、未复核正文。
+            # 续写中间稿同样会发 answer_replace；证据核对完成前不发布中间结论。
             if (
                 kind == "answer_replace"
-                and (hold_flow_answer or hold_knowledge_answer)
+                and (hold_source_answer or hold_knowledge_answer)
                 and not publishing_final
             ):
                 return
@@ -75,9 +75,7 @@ class AgentRunExecutor:
                 ),
             )
             evidence.user_request = message["content"]
-            hold_flow_answer = bool(
-                evidence.required and re.search(r"流程|步骤|怎么走|启动前检查", message["content"])
-            )
+            hold_source_answer = evidence.required
             policy = run["analysis_policy"]
             previous = (
                 previous_run_event(runtime.repository, run, "analysis_progress")
@@ -274,7 +272,6 @@ class AgentRunExecutor:
                         "knowledge_verification",
                         "knowledge_selection",
                         "history_selection",
-                        "answer_draft",
                     }:
                         continue
                     if metadata.get("lc_source") == "summarization":
@@ -292,7 +289,7 @@ class AgentRunExecutor:
                             generating = True
                         text += part
                         # 已筛选的经验仍可能被草稿误述，事实核查完成后统一显示最终稿。
-                        if not hold_flow_answer and not hold_knowledge_answer:
+                        if not hold_source_answer and not hold_knowledge_answer:
                             emit("token", {"text": part})
                 else:
                     if any(
@@ -362,10 +359,8 @@ class AgentRunExecutor:
             )
             emit("context", current)
             formatted = canonical_knowledge_citations(answer, knowledge_references)
-            if output["output"] == "complete":
-                formatted = format_answer(formatted, message["content"], emit)
             if (
-                hold_flow_answer
+                hold_source_answer
                 or hold_knowledge_answer
                 or formatted != text
                 or any(row.get("kind") == "debug_issue" for row in knowledge_references)

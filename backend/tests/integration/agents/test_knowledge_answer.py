@@ -107,7 +107,7 @@ def test_review_context_rejects_unknown_or_wrong_version_references(services):
     assert "compatibility" in records[0]
 
 
-async def test_final_presentation_is_not_overwritten_by_graph_checkpoint(services, monkeypatch):
+async def test_model_format_is_preserved_in_final_answer_and_history(services, monkeypatch):
     from langchain_core.messages import AIMessage
     from langchain_core.outputs import ChatGeneration, ChatResult
 
@@ -126,7 +126,7 @@ async def test_final_presentation_is_not_overwritten_by_graph_checkpoint(service
     events = []
     answer = await runtime.execute(run, lambda *e: events.append(e))
     repository.finish(run["id"], answer)
-    assert answer == original.replace("**", "")
+    assert answer == original
     assert repository.thread(run["thread_id"])["messages"][-1]["content"] == answer
     displayed = [row["text"] for kind, row in events if kind == "answer_replace"]
     assert displayed[-1] == answer

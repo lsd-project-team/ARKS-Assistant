@@ -17,7 +17,7 @@ from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
 from app.agents.prompts.system import SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
-from app.agents.runtime.answer_draft import FlowAnswerDraft
+from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
@@ -28,6 +28,7 @@ from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
+from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.chat.schemas import SourceOptions
 from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
 from app.modules.memory.selection import MemorySelection
@@ -156,6 +157,7 @@ class AgentGraphBuilder:
         )
         prompt = (
             SYSTEM_PROMPT
+            + RICH_CONTENT_GUIDANCE
             + project_prompt()
             + f"\nDeepWiki 仓库：{settings.deepwiki_repo or '未配置'}\n"
         )
@@ -227,6 +229,7 @@ class AgentGraphBuilder:
                     evidence,
                     deep=bool(policy and policy["mode"] == "deep"),
                 ),
+                AnswerFormatValidation(emit),
                 *(
                     [SourceEvidenceGuard(evidence, None if inspection else model)]
                     if evidence is not None
@@ -242,14 +245,6 @@ class AgentGraphBuilder:
                     resolve=debug_issues.resolve_references if debug_issues else None,
                     preselected=debug_issues.selected if debug_issues else None,
                     context=retrieval_context,
-                ),
-                FlowAnswerDraft(
-                    None if inspection else model,
-                    question_text or "",
-                    evidence,
-                    emit,
-                    available,
-                    instructions=instructions,
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations

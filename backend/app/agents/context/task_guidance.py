@@ -1,13 +1,10 @@
 """按本轮任务和实际源码工具调用追加规则，不增加模型分类请求。"""
 
-import re
-
 from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.messages import SystemMessage
 
 from app.agents.analysis.policy import REPORT_GUIDANCE
 from app.agents.prompts.system import SOURCE_GUIDANCE
-from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.source_analysis.evidence import requires_source_evidence
 
 
@@ -16,7 +13,6 @@ class TaskGuidance(AgentMiddleware):
         self.source_tools = frozenset(source_tools)
         self.evidence, self.deep = evidence, deep
         self.source_active = deep or requires_source_evidence(question)
-        self.flow = bool(re.search(r"流程|步骤|怎么走|启动前检查", question))
 
     async def awrap_tool_call(self, request, handler):
         call = request.tool_call
@@ -38,8 +34,6 @@ class TaskGuidance(AgentMiddleware):
         sections = [SOURCE_GUIDANCE]
         if self.deep:
             sections.append(REPORT_GUIDANCE)
-        if self.flow:
-            sections.append(RICH_CONTENT_GUIDANCE)
         # 请求级追加，不把专项规则写入聊天历史；每轮运行独立，不污染后续普通问答。
         system = request.system_message
         content = list(system.content_blocks) if system else []
