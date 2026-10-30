@@ -58,6 +58,7 @@ class AgentGraphBuilder:
         progress=None,
         retrieval=None,
         policy=None,
+        retrieval_context=None,
     ):
         runtime = self.runtime
         # 筛选后的工具结果和最终核查共用本轮资料范围。
@@ -116,6 +117,7 @@ class AgentGraphBuilder:
                 emit,
                 available,
                 timeout=min(30, settings.model.timeout_seconds),
+                context=retrieval_context,
             )
             if options.use_knowledge
             else None
@@ -133,7 +135,9 @@ class AgentGraphBuilder:
         budget = min(int(settings.model.context_tokens * 0.75), int(available * 0.9))
         memory_prompt, included_memories = (
             await MemorySelection(runtime.memories, model, settings.model, emit).prepare(
-                memory_query or requested_work, max_tokens=min(8000, available // 6)
+                memory_query or requested_work,
+                max_tokens=min(8000, available // 6),
+                context=retrieval_context,
             )
             if options.use_memory and not inspection
             else ("", [])
@@ -181,6 +185,7 @@ class AgentGraphBuilder:
             emit(
                 "context_sources",
                 {
+                    "tracking_version": 1,
                     "memories": included_memories,
                     "handover_materials": [],
                     "debug_issues": [],
@@ -236,6 +241,7 @@ class AgentGraphBuilder:
                     source_required=bool(evidence and evidence.required),
                     resolve=debug_issues.resolve_references if debug_issues else None,
                     preselected=debug_issues.selected if debug_issues else None,
+                    context=retrieval_context,
                 ),
                 FlowAnswerDraft(
                     None if inspection else model,

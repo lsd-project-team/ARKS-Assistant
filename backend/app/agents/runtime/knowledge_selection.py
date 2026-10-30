@@ -1,6 +1,7 @@
 """经验资料先独立筛选，只有程序取回的选定原文进入回答上下文。"""
 
 import asyncio
+from time import monotonic
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -17,12 +18,17 @@ from app.modules.knowledge.feedback import references
 
 
 class KnowledgeSelection:
-    def __init__(self, model, question, emit, input_limit):
+    def __init__(self, model, question, emit, input_limit, *, context=None):
         self.question, self.emit = question, emit
+        self.context = context or {}
         self.calls = ReviewCalls(model, emit, input_limit)
 
     def payload(self, records):
-        return {"question": self.question, "records": selection_input(records)}
+        return {
+            "question": self.question,
+            "context": self.context,
+            "records": selection_input(records),
+        }
 
     def batches(self, records):
         batches, current = [], []
@@ -62,9 +68,9 @@ class KnowledgeSelection:
 class KnowledgeRetrieval:
     """每轮共用固定快照、筛选缓存和已公开范围，检索及按编号读取均经过此边界。"""
 
-    def __init__(self, lookup, model, question, emit, input_limit, *, timeout=30):
+    def __init__(self, lookup, model, question, emit, input_limit, *, timeout=30, context=None):
         self.lookup, self.emit, self.timeout = lookup, emit, timeout
-        self.selector = KnowledgeSelection(model, question, emit, input_limit)
+        self.selector = KnowledgeSelection(model, question, emit, input_limit, context=context)
         self._choices, self._contexts, self._scopes = {}, {}, {}
         self._scope = "general"
         self._lock = asyncio.Lock()
@@ -79,8 +85,25 @@ class KnowledgeRetrieval:
     async def _select(self, records):
         # 并行工具不能重复筛选同版本，也不能公开尚未通过整次筛选的部分结果。
         async with self._lock:
+            started = monotonic()
+
+            def report(status, *, cached=False):
+                self.emit(
+                    "knowledge_filter",
+                    {
+                        "status": status,
+                        "candidate_count": len(
+                            set(self._choices) | {row["reference"] for row in records}
+                        ),
+                        "selected_count": len(self._contexts),
+                        "cached": cached,
+                        "duration_ms": round((monotonic() - started) * 1000),
+                    },
+                )
+
             if not records:
                 self._scope = "records"
+                report("none")
                 return [], "none"
             fresh = [row for row in records if row["reference"] not in self._choices]
             if fresh:
@@ -93,6 +116,7 @@ class KnowledgeRetrieval:
                         "knowledge_stage_error", {"stage": "knowledge_selection", "code": code}
                     )
                     self._scope = "unavailable"
+                    report("unavailable")
                     return [], "unavailable"
                 allowed = {row["reference"]: row for row in chosen}
                 for row in fresh:
@@ -112,6 +136,7 @@ class KnowledgeRetrieval:
                 if any(self._scopes[row["reference"]] == "records" for row in records)
                 else "general"
             )
+            report("selected" if chosen else "none", cached=not fresh)
             return chosen, "selected" if chosen else "none"
 
     @staticmethod

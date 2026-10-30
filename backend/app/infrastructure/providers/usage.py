@@ -31,6 +31,18 @@ def reported_usage(message):
     return result
 
 
+def failed_usage(purpose, started):
+    return {
+        "purpose": purpose,
+        "status": "failed",
+        "reported": False,
+        "input_tokens": None,
+        "output_tokens": None,
+        "total_tokens": None,
+        "duration_ms": round((monotonic() - started) * 1000),
+    }
+
+
 class ProviderUsage(AgentMiddleware):
     def __init__(self, emit):
         self.emit = emit
@@ -40,7 +52,11 @@ class ProviderUsage(AgentMiddleware):
         started = monotonic()
         self.request_number += 1
         number = self.request_number
-        response = await handler(request)
+        try:
+            response = await handler(request)
+        except Exception:
+            self.emit("provider_usage", failed_usage("answer", started))
+            raise
         message = next((item for item in response.result if isinstance(item, AIMessage)), None)
         if message:
             self.emit(
@@ -84,4 +100,6 @@ class SummaryUsage(BaseCallbackHandler):
             )
 
     def on_llm_error(self, _error, *, run_id, **_kwargs):
-        self.started.pop(run_id, None)
+        started = self.started.pop(run_id, None)
+        if started is not None:
+            self.emit("provider_usage", failed_usage("summary", started))

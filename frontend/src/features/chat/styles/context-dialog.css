@@ -37,6 +37,48 @@
   display: grid;
   gap: 18px;
 }
+.run-trace-rows {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+  font-size: 13px;
+}
+.saved-trace .run-trace {
+  padding: 12px 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.run-trace h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.run-trace pre {
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.run-trace-rows > div {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+}
+.run-trace-rows dt {
+  color: var(--text-secondary);
+}
+.run-trace-rows dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.run-trace-rows small {
+  display: block;
+  color: var(--text-muted);
+}
+.run-trace-tools {
+  padding-left: 20px;
+  font-size: 13px;
+}
 .context-overview {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

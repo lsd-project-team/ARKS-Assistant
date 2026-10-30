@@ -289,6 +289,7 @@ export interface ConversationContext extends ContextUsage {
   message_count: number;
 }
 export interface RunContext {
+  trace?: RunTrace;
   agent_instructions?: { content: string; version: string; updated_at: string | null } | null;
   references?: KnowledgeReference[];
   searches?: KnowledgeSearch[];
@@ -327,6 +328,38 @@ export interface RunContext {
     citations: { target: string; valid: boolean; reason?: string }[];
     scope: string;
   } | null;
+}
+
+export interface SelectionTrace {
+  status: string;
+  candidate_count?: number;
+  selected_count?: number;
+  recent_messages?: number;
+  selected_messages?: number;
+  before_tokens?: number;
+  after_tokens?: number;
+  duration_ms?: number | null;
+  passes: number;
+  cache_hits: number;
+}
+
+export interface RunTrace {
+  memory_private?: boolean;
+  recorded: boolean;
+  status: string;
+  elapsed_ms: number | null;
+  queue_ms?: number | null;
+  model_calls: number;
+  filters: Partial<Record<'memory' | 'history' | 'knowledge', SelectionTrace>>;
+  checks: Record<string, { verdict?: string; passed?: boolean; reason?: string }>;
+  requests: {
+    purpose: string;
+    calls: number;
+    timed_calls: number;
+    duration_ms: number;
+    failed_calls: number;
+  }[];
+  tools: { id: string; name: string; status?: string; duration_ms?: number | null }[];
 }
 
 export interface KnowledgeReference {

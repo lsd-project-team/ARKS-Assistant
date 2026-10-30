@@ -139,6 +139,43 @@ async def test_empty_search_and_valid_empty_selection_are_not_processing_failure
     assert not any(kind == "knowledge_reference" for kind, _ in events)
 
 
+async def test_followup_selection_uses_context_and_final_check_receives_same_context(
+    services, issues
+):
+    from app.agents.context.retrieval_context import retrieval_context
+    from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
+
+    saved = issues.save(
+        DebugWrite(title="设备B V3报警", payload={"problem": "设备B V3结果42。"}), {}
+    )
+    context = retrieval_context([{"role": "user", "content": "纠正：现在问设备B V3。"}])
+    selector = Selector()
+    selected, _ = retrieval(services, selector, question="它当时怎么解决的？", context=context)
+    await selected.read(saved["id"])
+    assert selector.requests[0]["context"] == context
+    assert selector.requests[0]["question"] == "它当时怎么解决的？"
+
+    class Reviewer:
+        async def ainvoke(self, messages, **kwargs):
+            payload = json.loads(messages[-1].text)
+            assert payload["context"] == context and "设备B V3" in str(payload["context"])
+            return AIMessage(content='{"verdict":"passed","answer":""}')
+
+    guard = KnowledgeAnswerGuard(
+        Reviewer(),
+        "它当时怎么解决的？",
+        selected.review_records,
+        lambda *_: None,
+        16000,
+        preselected=selected.selected,
+        context=context,
+    )
+    assert (
+        await guard.verify("结果42。", selected.selected()[1], selected.review_records())
+        == "结果42。"
+    )
+
+
 async def test_parallel_search_and_read_share_one_selection_and_frozen_version(services, issues):
     saved = issues.save(
         DebugWrite(

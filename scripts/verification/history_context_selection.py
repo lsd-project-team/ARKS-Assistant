@@ -14,12 +14,12 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
 
-from app.agents.runtime import graph_builder  # noqa: E402
-from app.bootstrap import create_services  # noqa: E402
-from app.core.config import Paths, SettingsStore  # noqa: E402
-from app.infrastructure.database.registry import Base  # noqa: E402
-from app.modules.auth.context import request_identity  # noqa: E402
-from app.modules.chat.context import ConversationContext  # noqa: E402
+from app.agents.runtime import graph_builder
+from app.bootstrap import create_services
+from app.core.config import Paths, SettingsStore
+from app.infrastructure.database.registry import Base
+from app.modules.auth.context import request_identity
+from app.modules.chat.context import ConversationContext
 
 
 async def verify():
@@ -27,7 +27,8 @@ async def verify():
         SettingsStore(Paths())
         .load()
         .model_copy(
-            update={"auto_memory": False, "mcp_servers": [], "deepwiki_repo": ""}, deep=True
+            update={"auto_memory": False, "mcp_servers": [], "deepwiki_repo": ""},
+            deep=True,
         )
     )
     options = {"use_memory": False, "use_knowledge": False, "use_deepwiki": False}
@@ -39,15 +40,21 @@ async def verify():
         Base.metadata.create_all(services.database.engine)
         services.settings.load = lambda: configuration.model_copy(deep=True)
         original_create = graph_builder.create_model
-        identity = request_identity.set({"user": {"id": "synthetic-account", "role": "admin"}})
+        identity = request_identity.set(
+            {"user": {"id": "synthetic-account", "role": "admin"}}
+        )
         calls, contexts = [], []
 
         class Capture(BaseCallbackHandler):
-            def on_chat_model_start(self, _serialized, messages, *, metadata=None, **_kwargs):
+            def on_chat_model_start(
+                self, _serialized, messages, *, metadata=None, **_kwargs
+            ):
                 purpose = (metadata or {}).get("lc_source", "answer")
                 calls.append(purpose)
                 if purpose == "answer":
-                    contexts.append("\n".join(row.text for batch in messages for row in batch))
+                    contexts.append(
+                        "\n".join(row.text for batch in messages for row in batch)
+                    )
 
         def model(*args, **kwargs):
             value = original_create(*args, **kwargs)
@@ -110,24 +117,63 @@ async def verify():
                     "任务状态：方案A说明已完成，影响尚未核查。",
                 ),
                 ("方案A在这段聊天里指什么？", "方案A指合成消息路由的说明方案。"),
-                *[(f"继续讨论方案A，第{n}轮。", "我们仍在讨论方案A，保持只读。") for n in range(5)],
+                *[
+                    (f"继续讨论方案A，第{n}轮。", "我们仍在讨论方案A，保持只读。")
+                    for n in range(5)
+                ],
             ]
             for question, response in past:
-                run = services.repository.create_run(thread["id"], question, [], options)
+                run = services.repository.create_run(
+                    thread["id"], question, [], options
+                )
                 services.repository.finish(run["id"], response)
             original = services.repository.thread(thread["id"])["messages"]
             answer, phases = await ask(
                 thread["id"],
                 "只核对我们这段聊天：现在讨论哪个方案，还有什么没有完成？请直接回答，不查项目资料。",
-                forbidden=("HISTORY_NOISE_777",),
+                forbidden=("HISTORY_NOISE_777", "聊聊星座"),
                 required=("只读", "影响尚未核查", "方案A"),
             )
-            assert "history_selection" in phases and "方案A" in answer and "影响" in answer
-            assert services.repository.thread(thread["id"])["messages"][: len(original)] == original
+            assert (
+                "history_selection" in phases and "方案A" in answer and "影响" in answer
+            )
+            assert (
+                services.repository.thread(thread["id"])["messages"][: len(original)]
+                == original
+            )
+
+            cancelled_thread = services.repository.create_thread("合成已取消目标")
+            cancelled = [
+                ("请继续未完成的目标X。", "目标X还没处理。"),
+                ("取消目标X，后面不要再继续。", "已取消目标X。"),
+                ("聊聊水果USER_NOISE_999，普通闲聊。", "普通水果话题。"),
+                *[
+                    (
+                        f"现在只讨论方案C，第{n}轮。",
+                        "方案C只是概念讨论，没有新增执行任务。",
+                    )
+                    for n in range(5)
+                ],
+            ]
+            for question, response in cancelled:
+                saved = services.repository.create_run(
+                    cancelled_thread["id"], question, [], options
+                )
+                services.repository.finish(saved["id"], response)
+            answer, phases = await ask(
+                cancelled_thread["id"],
+                "只根据聊天回答：目标X现在是什么状态？不要执行任何任务。",
+                forbidden=("USER_NOISE_999",),
+                required=("取消目标X",),
+            )
+            assert "取消" in answer and "history_selection" in phases
 
             summary_thread = services.repository.create_thread("合成摘要")
             raw = services.repository.create_run(
-                summary_thread["id"], "只读、默认中文，方案B的依赖还没核查。", [], options
+                summary_thread["id"],
+                "只读、默认中文，方案B的依赖还没核查。",
+                [],
+                options,
             )
             services.repository.finish(raw["id"], "方案B说明已做，依赖尚未核查。")
             messages = services.repository.thread(summary_thread["id"])["messages"]
@@ -148,13 +194,19 @@ async def verify():
                 await graph.aupdate_state(
                     {
                         "configurable": {
-                            "thread_id": services.runtime.checkpoint_id(summary_thread["id"])
+                            "thread_id": services.runtime.checkpoint_id(
+                                summary_thread["id"]
+                            )
                         }
                     },
                     {
                         "messages": [
-                            HumanMessage(content=messages[0]["content"], id=messages[0]["id"]),
-                            AIMessage(content=messages[1]["content"], id=messages[1]["id"]),
+                            HumanMessage(
+                                content=messages[0]["content"], id=messages[0]["id"]
+                            ),
+                            AIMessage(
+                                content=messages[1]["content"], id=messages[1]["id"]
+                            ),
                         ],
                         "_summarization_event": {
                             "cutoff_index": 2,
@@ -170,8 +222,12 @@ async def verify():
                 forbidden=("HISTORY_NOISE_888",),
                 required=("只读", "尚未完成", "不能声称已验证"),
             )
-            assert "history_selection" in phases and "方案B" in answer and "依赖" in answer
-            restored = await ConversationContext(services.runtime).read(summary_thread["id"])
+            assert (
+                "history_selection" in phases and "方案B" in answer and "依赖" in answer
+            )
+            restored = await ConversationContext(services.runtime).read(
+                summary_thread["id"]
+            )
             assert "HISTORY_NOISE_888" in restored["summary"]
             checks[-1]["original_summary_preserved"] = True
             print(json.dumps({"passed": True, "checks": checks}, ensure_ascii=False))

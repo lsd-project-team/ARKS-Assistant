@@ -1,4 +1,4 @@
-"""历史的请求级投影：保留用户消息和近期轮次，候选始终按完整工具链分组。"""
+"""历史的请求级投影：旧用户要求可独立保留，选中答复须带上原问题。"""
 
 import re
 from dataclasses import dataclass, field
@@ -56,14 +56,16 @@ class HistoryPlan:
         ]
         cutoff = user_indices[-recent_turns] if len(user_indices) > recent_turns else 0
         group = []
-        request_index = None
+        request = None
+        request_id = None
 
         def flush():
             if group:
                 identifier = self.add(
                     "dialogue",
                     {
-                        "request_index": request_index,
+                        "request_id": request_id,
+                        "request": request,
                         "messages": [message_data(row) for row in group],
                     },
                 )
@@ -80,11 +82,15 @@ class HistoryPlan:
                 flush()
                 self.slots.append((None, [message]))
                 self.recent.append(message_data(message))
-            elif isinstance(message, HumanMessage) or message.type == "system":
+            elif message.type == "system":
                 flush()
                 self.slots.append((None, [message]))
                 self.protected.append(message_data(message))
-                request_index = len(self.protected) - 1
+            elif isinstance(message, HumanMessage):
+                flush()
+                request = message_data(message)
+                request_id = self.add("user", {"content": message.text})
+                self.slots.append((request_id, [message]))
             else:
                 group.append(message)
         flush()
@@ -123,7 +129,16 @@ class HistoryPlan:
         self.protected.append({"role": "summary", "content": protected})
         return view
 
+    def selected_ids(self, selected):
+        # 回复一旦选中就自动带回原问题；单独保留持续约束不必附带无关旧答复。
+        return set(selected) | {
+            row["request_id"]
+            for row in self.candidates
+            if row["id"] in selected and row.get("request_id") is not None
+        }
+
     def render(self, selected):
+        selected = self.selected_ids(selected)
         result = []
         for identifier, value in self.slots:
             if isinstance(value, SummaryView):

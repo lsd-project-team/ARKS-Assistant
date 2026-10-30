@@ -8,6 +8,7 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.analysis.progress import AnalysisProgress
 from app.agents.analysis.retrieval_budget import RetrievalBudget
+from app.agents.context.retrieval_context import retrieval_context
 from app.agents.context.tokens import current_budget, input_budget
 from app.agents.runtime.answer_completion import termination
 from app.agents.runtime.answer_presentation import format_answer
@@ -160,6 +161,12 @@ class AgentRunExecutor:
                 + "\n"
                 + "\n".join(selection["path"] for selection in message["selections"])
             )
+            before = (
+                regeneration_context["before_message_id"] if regeneration_context else message["id"]
+            )
+            prior = await asyncio.to_thread(
+                runtime.repository.branches.context, run["thread_id"], before=before
+            )
             graph = await runtime.graph(
                 run["thread_id"],
                 saver,
@@ -173,6 +180,7 @@ class AgentRunExecutor:
                 progress=progress,
                 retrieval=retrieval,
                 policy=policy,
+                retrieval_context=retrieval_context(prior, message["selections"]),
             )
             checkpoint_id = (
                 f"{run['thread_id']}:project:{regeneration_context['generation']}"
@@ -191,12 +199,6 @@ class AgentRunExecutor:
                 await saver.adelete_thread(checkpoint_id)
                 state = await graph.aget_state(config)
             if not state.values.get("messages"):
-                before = (
-                    regeneration_context["before_message_id"]
-                    if regeneration_context
-                    else message["id"]
-                )
-                prior = runtime.repository.branches.context(run["thread_id"], before=before)
                 if prior:
                     seeds = [
                         runtime.current_input(row)

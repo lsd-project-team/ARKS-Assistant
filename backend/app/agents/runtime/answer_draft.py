@@ -22,7 +22,7 @@ from app.agents.runtime.flow_layout import (
 )
 from app.agents.runtime.privacy import redact_messages
 from app.core.config import dump_json
-from app.infrastructure.providers.usage import reported_usage
+from app.infrastructure.providers.usage import failed_usage, reported_usage
 from app.modules.chat.rich_presentation import (
     RICH_CONTENT_GUIDANCE,
     project_rich_content,
@@ -128,6 +128,7 @@ class FlowAnswerDraft(AgentMiddleware):
                     self.emit("answer_draft", {"changed": True, "scope": "待事实核查的流程短稿"})
                     return response
             except Exception:
+                self.emit("provider_usage", failed_usage("answer_draft", started))
                 code = "provider_error"
                 break
             self.emit(

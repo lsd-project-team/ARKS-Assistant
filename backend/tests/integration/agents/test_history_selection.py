@@ -55,7 +55,18 @@ class Selector:
         return AIMessage(
             content=result
             if isinstance(result, str)
-            else json.dumps(result or {"carry_ids": [], "relevant_ids": []})
+            else json.dumps(
+                result
+                if result is not None
+                else {
+                    "carry_ids": [
+                        row["id"]
+                        for row in self.requests[-1]["candidates"]
+                        if row["kind"] == "user"
+                    ],
+                    "relevant_ids": [],
+                }
+            )
         )
 
 
@@ -118,7 +129,7 @@ async def test_older_answers_are_filtered_but_all_user_requirements_and_recent_s
     assert messages == request.messages and len(messages) == 16
     assert "最新要求" in received[0].system_message.text
     assert "用户要求7" in str(selector.requests[0]["recent"])
-    assert "用户要求0" in str(selector.requests[0]["requirements"])
+    assert "用户要求0" in str(selector.requests[0]["candidates"])
     assert events[-1][1]["after_tokens"] < events[-1][1]["before_tokens"]
     # 同一轮工具调用增加近期消息，不重复筛选旧历史。
     calls = []
@@ -194,7 +205,7 @@ async def test_completed_or_cancelled_goal_status_can_be_carried_for_an_unrelate
     _, _, received, _ = await project(messages, Selector(choose))
     plan = HistoryPlan(messages)
     candidate = next(row for row in plan.candidates if "旧目标已完成" in str(row))
-    assert plan.protected[candidate["request_index"]]["content"] == messages[0].text
+    assert candidate["request"]["content"] == messages[0].text
     assert "旧目标已完成" in str(received[0].messages) and "OLD_FACT_1" not in str(
         received[0].messages
     )
@@ -238,8 +249,12 @@ async def test_input_budget_and_timeout_fail_explicitly_but_cancellation_propaga
 async def test_a_valid_item_in_both_categories_is_included_only_once():
     selector = Selector(
         lambda payload: {
-            "carry_ids": [payload["candidates"][0]["id"]],
-            "relevant_ids": [payload["candidates"][0]["id"]],
+            "carry_ids": [
+                next(row["id"] for row in payload["candidates"] if row["kind"] == "dialogue")
+            ],
+            "relevant_ids": [
+                next(row["id"] for row in payload["candidates"] if row["kind"] == "dialogue")
+            ],
         }
     )
     _, _, received, _ = await project(history(), selector)
@@ -341,7 +356,18 @@ async def test_real_agent_keeps_archives_and_recall_after_filtering_older_answer
         def _generate(self, messages, *args, **kwargs):
             if "你只负责选择回答需要的较早对话" in messages[0].text:
                 selections.append(json.loads(messages[-1].text))
-                answer = AIMessage(content='{"carry_ids":[],"relevant_ids":[]}')
+                answer = AIMessage(
+                    content=json.dumps(
+                        {
+                            "carry_ids": [
+                                row["id"]
+                                for row in selections[-1]["candidates"]
+                                if row["kind"] == "user"
+                            ],
+                            "relevant_ids": [],
+                        }
+                    )
+                )
             else:
                 primary.append(messages)
                 answer = AIMessage(content="近期方案继续核对，保持只读。")

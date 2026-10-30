@@ -5,6 +5,7 @@ import { ContextBudgetDetails } from './ContextBudgetDetails';
 import { KnowledgeFeedback } from './RunKnowledgeSummary';
 import { RunEvidenceDetails } from './RunEvidenceDetails';
 import { DebugIssueReference } from './DebugIssueReference';
+import { RunTraceSummary } from './RunTraceSummary';
 
 export function RunContextPanel({
   context,
@@ -31,6 +32,7 @@ export function RunContextPanel({
           </div>
         ))}
       </div>
+      <RunTraceSummary context={context} onOpen={onOpen} />
       <KnowledgeFeedback
         mode="context"
         references={context.references}
