@@ -53,13 +53,17 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
                         }
                     )
                 )
-            elif via_tool and not any(isinstance(row, ToolMessage) for row in messages):
+            elif not any(isinstance(row, ToolMessage) for row in messages):
                 answer = AIMessage(
                     content="",
                     tool_calls=[
                         {
-                            "name": "read_debug_issue",
-                            "args": {"record_id": saved["id"]},
+                            "name": "read_debug_issue" if via_tool else "search_debug_issues",
+                            "args": (
+                                {"record_id": saved["id"]}
+                                if via_tool
+                                else {"query": "蓝膜刺穿经验"}
+                            ),
                             "id": "read",
                         }
                     ],

@@ -1,5 +1,7 @@
 """经验事实核查：筛选独立执行，终审不处理排版或重复抄录证据。"""
 
+import asyncio
+
 from langchain.agents.middleware.types import AgentMiddleware
 
 from app.agents.runtime.answer_completion import final_message
@@ -50,10 +52,13 @@ def factual_result(result):
 
 
 class KnowledgeAnswerGuard(AgentMiddleware):
-    def __init__(self, model, question, sources, emit, input_limit, *, source_required=False):
+    def __init__(
+        self, model, question, sources, emit, input_limit, *, source_required=False, resolve=None
+    ):
         self.model, self.question, self.sources, self.emit = model, question, sources, emit
         self.calls = ReviewCalls(model, emit, input_limit)
         self.source_required = source_required
+        self.resolve = resolve
 
     def unavailable(self, stage, code):
         self.emit("knowledge_stage_error", {"stage": stage, "code": code})
@@ -124,6 +129,13 @@ class KnowledgeAnswerGuard(AgentMiddleware):
         ):
             return response
         records = self.sources()
+        if not records and self.resolve and (references := knowledge_references(answer.text)):
+            records = await asyncio.to_thread(self.resolve, references)
+            if not records:
+                self.unavailable("knowledge_reference", "reference_unavailable")
+                answer.content = scoped_fallback([])
+                self.emit("answer_replace", {"text": answer.content})
+                return response
         if not records:
             return response
         if source_only_answer(

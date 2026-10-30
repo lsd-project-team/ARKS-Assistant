@@ -42,6 +42,7 @@ async def call(
     *,
     question="总结试验",
     source_required=False,
+    resolve=None,
 ):
     events = []
     guard = KnowledgeAnswerGuard(
@@ -51,6 +52,7 @@ async def call(
         lambda *e: events.append(e),
         limit,
         source_required=source_required,
+        resolve=resolve,
     )
 
     async def handler(_request):
@@ -181,6 +183,20 @@ async def test_general_scope_does_not_bypass_review_when_answer_uses_experience(
         question="介绍Vue框架",
     )
     assert "没有选到" in answer and REF not in project_rich_content(answer)
+
+
+async def test_reference_without_current_record_cannot_escape_review_as_no_sources():
+    reviewer, checked = Reviewer(), []
+
+    def missing(references):
+        checked.append(references)
+        return []
+
+    answer, events = await call(reviewer, records=[], resolve=missing)
+    assert checked == [{"debug-issue:case/1"}]
+    assert "资料筛选暂未完成" in answer and REF not in answer and "216" not in answer
+    assert reviewer.requests == []
+    assert any(row.get("code") == "reference_unavailable" for _, row in events)
 
 
 async def test_fact_provider_failure_keeps_only_preselected_time_fragment_and_error_code():

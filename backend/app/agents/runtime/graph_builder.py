@@ -13,10 +13,8 @@ from app.agents.context.budget import BudgetedSummarization, ContextBudget
 from app.agents.context.instructions import GlobalAgentInstructions, instruction_snapshot
 from app.agents.context.task_guidance import TaskGuidance
 from app.agents.context.tokens import estimate_tokens, input_budget
-from app.agents.prompts.system import (
-    DEBUG_ISSUE_GUIDANCE,
-    SYSTEM_PROMPT,
-)
+from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
+from app.agents.prompts.system import SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_draft import FlowAnswerDraft
 from app.agents.runtime.artifacts import thread_artifacts
@@ -29,7 +27,7 @@ from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
 from app.modules.chat.schemas import SourceOptions
-from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
+from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
 from app.modules.projects.context import project_prompt
 from app.modules.source_analysis.backend import SourceBackend
 from app.modules.source_analysis.evidence import (
@@ -112,13 +110,12 @@ class AgentGraphBuilder:
         if evidence is not None:
             evidence.user_request = requested_work
         tools += conversation_tools(runtime.repository, thread_id)
-        # 知识资料仅接入问题与经验；项目资料和全项目阅读已移除。
+        # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
         debug_issues = (
-            await asyncio.to_thread(
-                DebugIssueCorpus,
+            DebugIssueLookup(
                 runtime.repository.database,
                 emit,
-                question_text if question_text is not None else memory_query or "",
+                requested_work,
             )
             if options.use_knowledge
             else None
@@ -183,16 +180,8 @@ class AgentGraphBuilder:
             "\n当前仅提供源码读取与分析，可给出修改建议；"
             "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
         )
-        debug_prompt, included_debug_issues = (
-            await asyncio.to_thread(
-                debug_issues.prompt, memory_query or "", min(2500, available // 8)
-            )
-            if debug_issues
-            else ("", [])
-        )
-        prompt += debug_prompt
         if debug_issues:
-            prompt += "\n" + DEBUG_ISSUE_GUIDANCE
+            prompt += "\n" + RETRIEVAL_GUIDANCE
         if not inspection:
             emit(
                 "context_sources",
@@ -200,7 +189,7 @@ class AgentGraphBuilder:
                     "memories": included_memories,
                     "materials": [],
                     "handover_materials": [],
-                    "debug_issues": included_debug_issues,
+                    "debug_issues": [],
                     "source_options": options.model_dump(),
                 },
             )
@@ -243,6 +232,7 @@ class AgentGraphBuilder:
                     emit,
                     available,
                     source_required=bool(evidence and evidence.required),
+                    resolve=debug_issues.resolve_references if debug_issues else None,
                 ),
                 FlowAnswerDraft(
                     None if inspection else model,

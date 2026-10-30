@@ -128,7 +128,8 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
             assert answer.startswith(compact)
         events = repository.events(run["id"])
         context = repository.run_event(run["id"], "context_sources")
-        assert len(context["debug_issues"]) == (3 if use_knowledge else 0)
+        assert context["debug_issues"] == []
+        assert not any(event["kind"] == "knowledge_search" for event in events)
         assert phases == [
             "read",
             "answer",
@@ -221,7 +222,10 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
         assert calls.count("review") == (2 if defect == "claim" else 1)
         assert repository.run_event(run["id"], "answer_validation")["passed"]
         assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
-        assert len(repository.run_event(run["id"], "context_sources")["debug_issues"]) == 3
+        assert repository.run_event(run["id"], "context_sources")["debug_issues"] == []
+        assert not any(
+            event["kind"] == "knowledge_search" for event in repository.events(run["id"])
+        )
     finally:
         runtime.semantic.close()
 

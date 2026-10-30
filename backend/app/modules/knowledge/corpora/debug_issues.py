@@ -350,45 +350,49 @@ class DebugIssueCorpus:
         )
 
     def tools(self):
-        @tool
-        async def search_debug_issues(
-            query: str,
-            limit: int = 6,
-            device: str = "",
-            software_version: str = "",
-            module: str = "",
-            conditions: str = "",
-        ) -> str:
-            """Search saved problems, experience, work progress and archive events. Try error codes,
-            module names and synonyms. Open records are unresolved, not verified solutions.
-            Cite the exact Markdown reference returned with each result, including its actual title.
-            """
-            report = await asyncio.to_thread(
-                self.search_report,
-                query,
-                limit,
-                device=device,
-                software_version=software_version,
-                module=module,
-                conditions=conditions,
-            )
-            report["matches"] = [
-                {**item, "payload": readable_payload(item["payload"])} for item in report["matches"]
-            ]
-            return json.dumps(report, ensure_ascii=False)
+        return debug_issue_tools(self)
 
-        @tool
-        async def read_debug_issue(record_id: str, offset: int = 0) -> str:
-            """Read a problem or work record and its original description in fixed-version pages.
-            Follow next_offset for remaining text; a historical fix may not fit current conditions.
-            Cite its exact Markdown reference so the page displays all its original images.
-            Answer only the requested records, without image IDs, filenames or internal field names.
-            Images are displayed by the page, not interpreted by this tool.
-            """
-            return json.dumps(
-                await asyncio.to_thread(self.read, record_id, offset), ensure_ascii=False
-            )
 
-        from app.agents.tools.guards import safe_source_tools
+def debug_issue_tools(corpus):
+    @tool
+    async def search_debug_issues(
+        query: str,
+        limit: int = 6,
+        device: str = "",
+        software_version: str = "",
+        module: str = "",
+        conditions: str = "",
+    ) -> str:
+        """Search saved problems, experience, work progress and archive events. Try error codes,
+        module names and synonyms. Open records are unresolved, not verified solutions.
+        Cite the exact Markdown reference returned with each result, including its actual title.
+        """
+        report = await asyncio.to_thread(
+            corpus.search_report,
+            query,
+            limit,
+            device=device,
+            software_version=software_version,
+            module=module,
+            conditions=conditions,
+        )
+        report["matches"] = [
+            {**item, "payload": readable_payload(item["payload"])} for item in report["matches"]
+        ]
+        return json.dumps(report, ensure_ascii=False)
 
-        return safe_source_tools([search_debug_issues, read_debug_issue], "问题与经验工具")
+    @tool
+    async def read_debug_issue(record_id: str, offset: int = 0) -> str:
+        """Read a problem or work record and its original description in fixed-version pages.
+        Follow next_offset for remaining text; a historical fix may not fit current conditions.
+        Cite its exact Markdown reference so the page displays all its original images.
+        Answer only the requested records, without image IDs, filenames or internal field names.
+        Images are displayed by the page, not interpreted by this tool.
+        """
+        return json.dumps(
+            await asyncio.to_thread(corpus.read, record_id, offset), ensure_ascii=False
+        )
+
+    from app.agents.tools.guards import safe_source_tools
+
+    return safe_source_tools([search_debug_issues, read_debug_issue], "问题与经验工具")

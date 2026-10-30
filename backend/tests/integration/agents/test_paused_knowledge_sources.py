@@ -1,6 +1,8 @@
 """暂停的资料不能进入新问答；其他来源和原始记录仍可使用。"""
 
 import pytest
+from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.outputs import ChatGeneration, ChatResult
 from langchain_core.tools import tool
 
 from app.agents.runtime.engine import AgentRuntime
@@ -80,6 +82,27 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
 
         def _generate(self, messages, *args, **kwargs):
             prompts.extend(message.text for message in messages)
+            if (
+                use_knowledge
+                and "问题识别与查询路由" in messages[0].text
+                and not any(isinstance(row, ToolMessage) for row in messages)
+            ):
+                return ChatResult(
+                    generations=[
+                        ChatGeneration(
+                            message=AIMessage(
+                                content="",
+                                tool_calls=[
+                                    {
+                                        "id": "lookup",
+                                        "name": "search_debug_issues",
+                                        "args": {"query": "取片不稳定"},
+                                    }
+                                ],
+                            )
+                        )
+                    ]
+                )
             return super()._generate(messages, *args, **kwargs)
 
     monkeypatch.setattr(

@@ -5,7 +5,7 @@ import time
 
 import pytest
 from fastapi.testclient import TestClient
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
 from app.agents.tools.debug_capture import ExtractedIssue, command_text, grounded
@@ -63,10 +63,25 @@ class HistoricalAnswer(DeterministicModel):
         prompt = str(messages[0].content)
         if "你只负责筛选资料" in prompt or "你负责核查历史经验回答" in prompt:
             return super()._generate(messages, stop, run_manager, **kwargs)
-        assert "debug_issue_records" in prompt and "更换密封圈" in prompt
-        assert '"处理状态": "记录人反馈已解决"' in prompt
-        assert "resolution_status" not in prompt
-        source = prompt.split('"citation": "debug-issue:')[1].split('"')[0]
+        assert "debug_issue_records" not in prompt
+        returned = [
+            row
+            for row in messages
+            if isinstance(row, ToolMessage) and row.name == "search_debug_issues"
+        ]
+        if not returned:
+            request = AIMessage(
+                content="",
+                tool_calls=[
+                    {"id": "lookup", "name": "search_debug_issues", "args": {"query": "E901 真空"}}
+                ],
+            )
+            return ChatResult(generations=[ChatGeneration(message=request)])
+        result = returned[-1].text
+        assert "更换密封圈" in result
+        assert '"处理状态": "记录人反馈已解决"' in result
+        assert "resolution_status" not in result
+        source = json.loads(result)["matches"][0]["citation"].removeprefix("debug-issue:")
         answer = f"历史 E901 记录中，更换密封圈后连续取片20次正常。[调试记录](debug-issue:{source})"
         return ChatResult(generations=[ChatGeneration(message=AIMessage(content=answer))])
 

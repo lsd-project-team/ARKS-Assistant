@@ -191,7 +191,7 @@ class ConversationContext:
             "memories": snapshot["memories"] if snapshot else [],
             "materials": snapshot.get("materials", []) if snapshot else [],
             "handover_materials": snapshot.get("handover_materials", []) if snapshot else [],
-            "debug_issues": snapshot.get("debug_issues", []) if snapshot else [],
+            "debug_issues": [row for row in references.values() if row["kind"] == "debug_issue"],
             "recorded": snapshot is not None,
             "selections": message["selections"],
             "tools": [{**tool, **tool_ends.get(tool["id"], {})} for tool in tools],

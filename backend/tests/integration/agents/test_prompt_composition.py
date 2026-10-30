@@ -33,7 +33,7 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
             auto_memory=automatic,
         )
     )
-    # 调试库为空时本来就不装配工具；预置可用记录才能检验开关，而非空库分支。
+    # 有记录也只装配可选工具，问候不应因此触发自动检索或注入记录。
     DebugIssues(HandoverStore(database=database)).save(
         DebugWrite(title="测试调试经验", payload={"problem": "测试条件下的现象与处理记录"}), {}
     )
@@ -82,7 +82,7 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "edit_change_file" not in tools and "verify_code_change" not in tools
     assert "update_code_change_requirements" not in prompt
     assert "没有修改文件、执行命令或审核交付工具" in prompt
-    assert ("调试经验检索：" in prompt) is knowledge
+    assert ("问题识别与查询路由" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
     assert ("compatibility" in prompt) is knowledge
     assert "remember" not in tools
