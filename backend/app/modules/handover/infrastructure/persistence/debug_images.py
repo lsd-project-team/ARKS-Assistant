@@ -3,6 +3,7 @@
 import json
 
 from app.core.identifiers import now_iso
+from app.modules.handover.domain.debug_knowledge import debug_metadata, knowledge_payload
 from app.modules.handover.domain.records import assert_version
 from app.modules.handover.domain.schemas import validate_payload
 from app.modules.handover.infrastructure.persistence.models import HandoverDebugImage
@@ -15,8 +16,8 @@ class DebugImageStorage:
             assert_version(row.version, version)
             if row.kind != "debug_issue" or row.state == "archived":
                 raise ValueError("只能为未归档的问题与经验记录添加原图")
-            payload = json.loads(row.payload_json)
-            images = payload.setdefault("images", [])
+            payload = knowledge_payload(json.loads(row.payload_json))
+            images = payload["metadata"].setdefault("images", [])
             if len(images) >= 100:
                 raise ValueError("每条记录最多保存 100 处原图")
             reference = {key: metadata[key] for key in ("id", "name", "recorded_at")}
@@ -47,7 +48,7 @@ class DebugImageStorage:
     def debug_image(self, identifier, version, index):
         with self.database.session() as session:
             row = self._revision(session, identifier, version)
-            images = row["payload"].get("images", [])
+            images = debug_metadata(row["payload"]).get("images", [])
             if row["kind"] != "debug_issue" or index < 0 or index >= len(images):
                 raise FileNotFoundError("该记录版本中没有这张原图")
             image = session.get(HandoverDebugImage, (identifier, images[index]["id"]))

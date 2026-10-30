@@ -9,6 +9,7 @@ import {
   debugRecordType,
   debugStatus,
   debugVisiblePayload,
+  debugMetadataFields,
 } from '../../handover/debug_issues/debugIssues';
 import { DebugIssueImages } from '../../handover/debug_issues/DebugIssueImages';
 import '../../handover/debug_issues/debug-issues.css';
@@ -37,6 +38,19 @@ export function DebugIssueReferenceContent({ row }: { row: HandoverRecord }) {
           </div>
         )}
       </dl>
+      <details className="debug-issue-additional">
+        <summary>记录信息</summary>
+        <dl className="debug-issue-detail-fields">
+          {debugMetadataFields
+            .filter(({ key }) => text(payload[key]))
+            .map(({ key, label }) => (
+              <div key={key}>
+                <dt>{label}</dt>
+                <dd>{text(payload[key])}</dd>
+              </div>
+            ))}
+        </dl>
+      </details>
       <DebugIssueImages row={row} />
       {text(payload.original_text) && (
         <details className="debug-issue-original">

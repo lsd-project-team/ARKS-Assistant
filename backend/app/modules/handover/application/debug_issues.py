@@ -2,6 +2,7 @@
 
 from app.modules.handover.application.commands import Write
 from app.modules.handover.application.ports import RecordRepository
+from app.modules.handover.domain.debug_knowledge import debug_metadata
 from app.modules.handover.domain.images import image_metadata
 from app.modules.handover.domain.schemas import DebugIssue
 
@@ -25,7 +26,10 @@ class DebugIssues:
                 raise ValueError("不是调试问题记录")
             if previous["state"] == "archived":
                 raise ValueError("请先恢复归档记录")
-            payload = {**previous["payload"], **payload}
+            payload["metadata"] = {
+                **debug_metadata(previous["payload"]),
+                **body.payload.metadata.model_dump(exclude_unset=True),
+            }
             return self.store.update(
                 identifier,
                 Write(
@@ -37,8 +41,10 @@ class DebugIssues:
                     reason="更新调试问题与处理结果",
                 ),
             )
-        payload.update(
-            origin="human", reported_by=actor_name(actor), original_text=payload["problem"]
+        payload["metadata"].update(
+            origin="human",
+            reported_by=actor_name(actor),
+            original_text=body.payload._input_text,
         )
         return self.store.create("debug_issue", body.title, payload, actor_name(actor))
 
@@ -51,7 +57,7 @@ class DebugIssues:
             (
                 row
                 for row in self.rows(True)
-                if row["payload"].get("source_message_id") == message_id
+                if debug_metadata(row["payload"]).get("source_message_id") == message_id
             ),
             None,
         )

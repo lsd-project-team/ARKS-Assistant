@@ -2,6 +2,8 @@
 
 
 def linked_ids(payload):
+    if isinstance(payload.get("metadata"), dict):
+        payload = {**payload["metadata"], **payload}
     result = {item["record_id"] for item in payload.get("evidence", [])}
     result.update(item["record_id"] for item in payload.get("records", []))
     for key in ("task_id", "baseline_id", "source_id", "package_id", "supersedes"):
@@ -13,6 +15,8 @@ def linked_ids(payload):
 
 
 def validate_links(kind, payload, records, revision):
+    if kind == "debug_issue" and isinstance(payload.get("metadata"), dict):
+        payload = {**payload["metadata"], **payload}
     for identifier in linked_ids(payload):
         if identifier not in records or records[identifier]["state"] == "archived":
             raise ValueError("引用必须属于当前项目且未归档")

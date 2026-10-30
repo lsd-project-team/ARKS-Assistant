@@ -75,7 +75,7 @@ async def test_search_filters_records_and_spans_before_returning_tool_context(se
         return {
             "scope": "records",
             "selections": [
-                {"id": selected["id"], "parts": [{"field": "内容说明", "start": 1, "end": 1}]}
+                {"id": selected["id"], "parts": [{"field": "问题", "start": 1, "end": 1}]}
             ],
         }
 
@@ -84,7 +84,7 @@ async def test_search_filters_records_and_spans_before_returning_tool_context(se
     tools = {tool.name: tool for tool in selected.tools()}
     result = json.loads(await tools["search_debug_issues"].ainvoke({"query": "试验"}))
     assert len(selector.requests[0]["records"]) == 2
-    assert result["matches"][0]["content"] == {"内容说明": "10月1日试验结果为42。"}
+    assert result["matches"][0]["content"] == {"问题": "10月1日试验结果为42。"}
     assert result["matched"] == 1 and result["selection_status"] == "selected"
     assert "resolution_status" not in json.dumps(result)
     assert all(
@@ -322,7 +322,7 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
                             "selections": [
                                 {
                                     "id": row["id"],
-                                    "parts": [{"field": "内容说明", "start": 1, "end": 1}],
+                                    "parts": [{"field": "问题", "start": 1, "end": 1}],
                                 }
                             ],
                         }

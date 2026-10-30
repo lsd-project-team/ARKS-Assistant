@@ -162,6 +162,7 @@ FIELDS = {
     "recorded_by": "原记录人",
     "recorded_at": "原记录时间",
     "problem": "记录内容",
+    "metadata": "记录信息",
     "investigation": "排查过程",
     "cause": "原因",
     "solution": "解决办法",

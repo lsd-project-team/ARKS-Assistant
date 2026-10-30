@@ -28,9 +28,10 @@ async def test_general_questions_keep_source_and_device_display_rules_out(questi
     assert "【源码核查】" not in current.system_message.text
     assert "回答展示协议" not in current.system_message.text
     assert (
-        "当前项目实现、设备具体流程、操作或前置条件必须先读取当前源码"
+        "当前软件实现、代码流程或参数计算必须读取当前源码"
         in current.system_message.text
     )
+    assert "问题与经验已覆盖的工艺处理建议可按该经验回答" in current.system_message.text
 
 
 @pytest.mark.parametrize("question", ["Program.cs 的入口是什么", "设备标定流程"])

@@ -44,13 +44,13 @@ def test_original_images_keep_bytes_duplicate_positions_and_fixed_versions(servi
     with TestClient(create_app(services[0])) as client:
         sign_in(client, "user")
         row = client.post("/api/handover/debug-issues", json=BODY).json()
-        assert row["payload"]["original_text"] == BODY["payload"]["problem"]
+        assert row["payload"]["metadata"]["original_text"] == BODY["payload"]["problem"]
         for data in (PNG, PNG, GIF):
             response = upload(client, row, data, recorded_at="2026年7月27日16:09")
             assert response.status_code == 201, response.text
             row = response.json()
         assert row["version"] == 4
-        images = row["payload"]["images"]
+        images = row["payload"]["metadata"]["images"]
         assert len(images) == 3
         assert images[0] == images[1]
         assert images[0]["id"] != images[2]["id"]
@@ -76,8 +76,8 @@ def test_original_images_keep_bytes_duplicate_positions_and_fixed_versions(servi
             json={**BODY, "version": 4, "payload": {"problem": "adv-3 新的文字记录"}},
         )
         assert changed.status_code == 200, changed.text
-        assert changed.json()["payload"]["images"] == images
-        assert changed.json()["payload"]["original_text"] == BODY["payload"]["problem"]
+        assert changed.json()["payload"]["metadata"]["images"] == images
+        assert changed.json()["payload"]["metadata"]["original_text"] == BODY["payload"]["problem"]
         assert old.search("adv-3")[0]["version"] == 4
         assert DebugIssueCorpus(services[1]).search("adv-3")[0]["version"] == 5
         assert client.get(image_url(row, 0)).content == PNG
@@ -134,20 +134,27 @@ async def test_read_tool_keeps_complete_business_text_without_image_or_source_in
             offset = page["next_offset"]
         assert len(chunks) > 1
         content = json.loads("".join(chunks))
-        assert content["内容说明"] == problem
-        assert content["录入原文"] == problem
-        assert content["处理状态"] == "未解决"
-        assert content["记录类别"] == "问题处理"
+        assert content["问题"] == problem.strip()
+        assert "录入原文" not in content
+        assert set(content) == {"问题", "答案"}
+        original_corpus = DebugIssueCorpus(services[1], context_query="请逐字读取原文")
+        original_chunks = []
+        offset = 0
+        while offset is not None:
+            page = original_corpus.read(row["id"], offset)
+            original_chunks.append(page["content"])
+            offset = page["next_offset"]
+        assert json.loads("".join(original_chunks))["录入原文"] == problem
         assert (
             not {"images", "origin", "evidence", "reported_by", "source_thread_id"} & content.keys()
         )
         assert "internal-only.png" not in "".join(chunks)
-        assert row["payload"]["images"][0]["id"] not in "".join(chunks)
+        assert row["payload"]["metadata"]["images"][0]["id"] not in "".join(chunks)
         assert "resolution_status" not in "".join(chunks)
         search_tool = next(tool for tool in corpus.tools() if tool.name == "search_debug_issues")
         searched = json.loads(await search_tool.ainvoke({"query": "adv-3 试验"}))
-        assert searched["matches"][0]["payload"]["处理状态"] == "未解决"
-        assert searched["matches"][0]["payload"]["记录类别"] == "问题处理"
+        assert searched["matches"][0]["metadata"]["处理状态"] == "未解决"
+        assert searched["matches"][0]["metadata"]["记录类别"] == "问题处理"
         prompt, _ = corpus.prompt("adv-3 试验", 3000)
         assert "resolution_status" not in prompt and "record_type" not in prompt
         assert prompt.index("</debug_issue_records>") < prompt.index("只展示对应记录")
@@ -188,7 +195,7 @@ def test_invalid_image_upload_does_not_change_record_or_store_bytes(services, da
         row = client.post("/api/handover/debug-issues", json=BODY).json()
         assert upload(client, row, data, filename=filename).status_code == 409
         current = client.get(f"/api/handover/records/{row['id']}").json()
-        assert current["version"] == 1 and current["payload"]["images"] == []
+        assert current["version"] == 1 and current["payload"]["metadata"]["images"] == []
         with services[1].session() as session:
             assert session.scalar(select(func.count()).select_from(HandoverDebugImage)) == 0
 

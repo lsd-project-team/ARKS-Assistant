@@ -1,7 +1,7 @@
 import type { Event, HandoverRecord, Overview } from '../shared/types';
 import { refs } from '../shared/types.ts';
 import { taskStage } from '../tasks/taskProgress.ts';
-import { debugRecordType, debugRecordTypes } from '../debug_issues/debugIssues.ts';
+import { debugRecordType, debugRecordTypes, debugStatus } from '../debug_issues/debugIssues.ts';
 import {
   materialFiles,
   materialFileType,
@@ -127,9 +127,7 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
   const tasks = records.filter((row) => row.kind === 'task');
   const issues = selectIssues(records, 'all');
   const problems = issues.filter((row) => debugRecordType(row.payload).value === 'problem');
-  const issueResolved = problems.filter(
-    (row) => row.payload.resolution_status === 'resolved',
-  ).length;
+  const issueResolved = problems.filter((row) => debugStatus(row.payload) === '已解决').length;
   const issueTypes: ChartDatum[] = debugRecordTypes.map(({ value, label }) => ({
     id: value,
     label,

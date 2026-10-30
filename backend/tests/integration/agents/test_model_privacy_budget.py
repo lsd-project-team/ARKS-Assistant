@@ -216,7 +216,7 @@ async def test_debug_capture_masks_provider_preserves_raw_record_and_only_budget
     answer = await capture_command(runtime, run, lambda *_: None, owned)
     assert "已保存" in answer and owned == [model]
     (row,) = DebugIssues(HandoverStore(database=database)).rows()
-    assert row["payload"]["original_text"] == original
+    assert row["payload"]["metadata"]["original_text"] == original
     assert "debug-capture-dummy" not in model.seen[0][1].content
     assert runtime.model_ledger.tokens()["actual_tokens"] == (120 if project else 0)
 

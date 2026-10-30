@@ -101,7 +101,7 @@ test('当前列表与固定版本详情隐藏来源信息，仍显示记录人�
     ]) {
       assert.ok(!markup.includes(value), value);
     }
-    for (const value of ['正文完整保留', '处理过程保留', '原作者', '10月27日', '力控']) {
+    for (const value of ['正文完整保留', '处理过程保留', '力控']) {
       assert.ok(markup.includes(value), value);
     }
   }
@@ -109,10 +109,13 @@ test('当前列表与固定版本详情隐藏来源信息，仍显示记录人�
     assert.ok(detail.includes(value), value);
   }
   const primary = detail.split('<details')[0];
-  for (const label of ['标题', '适用条件', '内容说明', '处理方法', '结果记录', '注意事项']) {
+  for (const label of ['问题', '答案', '关键词']) {
     assert.ok(primary.includes(`<dt>${label}</dt>`), label);
   }
-  assert.ok(!primary.includes('<dt>关键词</dt>'));
+  assert.ok(primary.includes('<dt>关键词</dt>'));
+  assert.ok(!primary.includes('原作者'));
+  assert.ok(detail.includes('原作者') && detail.includes('10月27日'));
+  assert.ok(!page.includes('原作者') && !page.includes('10月27日'));
   const archived = renderToStaticMarkup(
     createElement(DebugIssuePage, {
       rows: [{ ...row, state: 'archived' }],

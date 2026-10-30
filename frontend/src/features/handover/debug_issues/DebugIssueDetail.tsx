@@ -3,7 +3,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { HandoverModal } from '../shared/HandoverModal';
 import {
-  debugIssueFields,
+  debugMetadataFields,
   debugKnowledgeFields,
   debugKnowledgePayload,
   debugRecordType,
@@ -35,12 +35,7 @@ export function DebugIssueDetail({
   const { session } = useAuth();
   const payload = debugVisiblePayload(row.payload);
   const knowledge = debugKnowledgePayload(payload);
-  const auxiliaryFields = debugIssueFields.filter(
-    ({ key }) =>
-      !debugKnowledgeFields.some((field) => field.key === key) &&
-      key !== 'investigation' &&
-      key !== 'cause',
-  );
+  const auxiliaryFields = debugMetadataFields;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
   async function archive() {
@@ -64,7 +59,7 @@ export function DebugIssueDetail({
   return (
     <HandoverModal
       title={row.title}
-      description={version ? '查看本次引用的记录内容' : '回看事项原文、处理经过与结果'}
+      description={version ? '查看本次引用的问答内容' : '查看问题、答案和关键词'}
       onClose={onClose}
       className="handover-detail debug-issue-detail"
     >
@@ -72,12 +67,9 @@ export function DebugIssueDetail({
       <div className="handover-actions handover-detail-toolbar">
         <span>{debugRecordType(row.payload).label}</span>
         <span
-          className={`debug-status ${row.payload.resolution_status === 'recorded' ? 'recorded' : row.payload.resolution_status === 'resolved' ? 'resolved' : ''}`}
+          className={`debug-status ${payload.resolution_status === 'recorded' ? 'recorded' : payload.resolution_status === 'resolved' ? 'resolved' : ''}`}
         >
           {debugStatus(row.payload)}
-        </span>
-        <span className="handover-muted">
-          录入人：{text(row.payload.reported_by) || '未记录姓名'}
         </span>
         {!version && row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
         {version && <Button onClick={() => onOpen(row.id)}>查看最新记录</Button>}
@@ -88,20 +80,28 @@ export function DebugIssueDetail({
         )}
       </div>
       <dl className="debug-issue-detail-fields">
-        <div>
-          <dt>标题</dt>
-          <dd>{row.title}</dd>
-        </div>
         {debugKnowledgeFields.map(({ key, label }) => (
           <div key={key}>
             <dt>{label}</dt>
             <dd>{text(knowledge[key]) || '—'}</dd>
           </div>
         ))}
+        <div>
+          <dt>关键词</dt>
+          <dd>{ids(payload.keywords).join('、') || '—'}</dd>
+        </div>
       </dl>
       <details className="debug-issue-additional">
-        <summary>辅助信息</summary>
+        <summary>记录信息</summary>
         <dl className="debug-issue-detail-fields">
+          <div>
+            <dt>录入人</dt>
+            <dd>{text(payload.reported_by) || '—'}</dd>
+          </div>
+          <div>
+            <dt>录入时间</dt>
+            <dd>{row.created_at}</dd>
+          </div>
           {auxiliaryFields
             .filter(({ key }) => text(payload[key]))
             .map(({ key, label }) => (
@@ -110,12 +110,6 @@ export function DebugIssueDetail({
                 <dd>{text(payload[key])}</dd>
               </div>
             ))}
-          {!!ids(payload.keywords).length && (
-            <div>
-              <dt>关键词</dt>
-              <dd>{ids(payload.keywords).join('、')}</dd>
-            </div>
-          )}
         </dl>
       </details>
       {!version && row.state !== 'archived' && (

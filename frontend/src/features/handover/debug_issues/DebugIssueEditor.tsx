@@ -6,17 +6,14 @@ import { HandoverSelect } from '../shared/Controls';
 import { useHandoverDraft } from '../shared/drafts';
 import {
   debugEditablePayload,
-  debugIssueFields,
+  debugMetadataFields,
+  debugMetadata,
   debugKnowledgeFields,
   debugRecordTypes,
 } from './debugIssues';
-import { ids, text, type HandoverRecord } from '../shared/types';
+import { ids, text, type HandoverRecord, type Payload } from '../shared/types';
 import type { Client } from '../shared/client';
 import { DebugIssueFields } from './DebugIssueFields';
-
-const additionalFields = debugIssueFields.filter(
-  ({ key }) => !debugKnowledgeFields.some((field) => field.key === key),
-);
 
 export function DebugIssueEditor({
   client,
@@ -38,17 +35,32 @@ export function DebugIssueEditor({
     },
   });
   const { draft, setDraft } = state;
+  const content = debugEditablePayload(draft.payload);
+  const metadata = debugMetadata(content);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>();
   const [latest, setLatest] = useState<HandoverRecord>();
   function update(key: string, value: string) {
-    setDraft({ ...draft, payload: { ...draft.payload, [key]: value } });
+    setDraft({
+      ...draft,
+      payload: { ...content, keywords_text: draft.payload.keywords_text, [key]: value },
+    });
+  }
+  function updateMetadata(key: string, value: string) {
+    setDraft({
+      ...draft,
+      payload: {
+        ...content,
+        keywords_text: draft.payload.keywords_text,
+        metadata: { ...metadata, [key]: value },
+      },
+    });
   }
   async function save() {
     setBusy(true);
     setError(undefined);
     try {
-      const payload = {
+      const payload: Payload = {
         ...debugEditablePayload(draft.payload),
         keywords: text(draft.payload.keywords_text)
           .split(/[，,；;\n]+/)
@@ -57,7 +69,11 @@ export function DebugIssueEditor({
       };
       const result = await client.send<HandoverRecord>(
         row ? `/debug-issues/${row.id}` : '/debug-issues',
-        { title: draft.title.trim(), payload, version: draft.version },
+        {
+          title: row?.title || text(payload.question).slice(0, 200),
+          payload,
+          version: draft.version,
+        },
         row ? 'PATCH' : 'POST',
       );
       state.clear();
@@ -71,7 +87,7 @@ export function DebugIssueEditor({
   return (
     <HandoverModal
       title={row ? '编辑记录' : '添加记录'}
-      description="按统一六项整理，未记录的信息可留空。"
+      description="填写问题、答案和关键词。答案用完整句子表达，保留必要条件和参数。"
       onClose={onClose}
       onSubmit={(event) => {
         event.preventDefault();
@@ -120,31 +136,27 @@ export function DebugIssueEditor({
           )}
         </div>
       )}
+      <DebugIssueFields fields={debugKnowledgeFields} payload={content} onChange={update} />
       <label className="debug-issue-field">
-        <span>
-          标题 <b>*</b>
-        </span>
+        <span>关键词</span>
         <input
-          required
-          maxLength={200}
-          value={draft.title}
-          onChange={(event) => setDraft({ ...draft, title: event.target.value })}
-          placeholder="用一句话描述事项"
+          value={text(draft.payload.keywords_text)}
+          onChange={(event) => update('keywords_text', event.target.value)}
+          placeholder="用逗号分隔，如：取片、真空、报警码"
         />
       </label>
-      <DebugIssueFields fields={debugKnowledgeFields} payload={draft.payload} onChange={update} />
       <details className="debug-issue-additional">
-        <summary>辅助信息（选填）</summary>
+        <summary>记录信息（选填）</summary>
         <label className="debug-issue-field">
           <span>记录类型</span>
           <HandoverSelect
-            value={text(draft.payload.record_type)}
+            value={text(metadata.record_type)}
             onValueChange={(record_type) =>
               setDraft({
                 ...draft,
                 payload: {
                   ...draft.payload,
-                  ...debugEditablePayload({ ...draft.payload, record_type }),
+                  ...debugEditablePayload({ ...content, metadata: { ...metadata, record_type } }),
                 },
               })
             }
@@ -152,12 +164,12 @@ export function DebugIssueEditor({
             options={[...debugRecordTypes]}
           />
         </label>
-        {draft.payload.record_type === 'problem' && (
+        {metadata.record_type === 'problem' && (
           <label className="debug-issue-field">
             <span>处理状态</span>
             <HandoverSelect
-              value={text(draft.payload.resolution_status)}
-              onValueChange={(value) => update('resolution_status', value)}
+              value={text(metadata.resolution_status)}
+              onValueChange={(value) => updateMetadata('resolution_status', value)}
               label="处理状态"
               options={[
                 { value: 'open', label: '未解决' },
@@ -169,15 +181,11 @@ export function DebugIssueEditor({
         <p className="handover-muted">
           录入账号和时间由系统记录；代录历史资料时，可填写原记录人和原记录时间。
         </p>
-        <DebugIssueFields fields={additionalFields} payload={draft.payload} onChange={update} />
-        <label className="debug-issue-field">
-          <span>关键词</span>
-          <input
-            value={text(draft.payload.keywords_text)}
-            onChange={(event) => update('keywords_text', event.target.value)}
-            placeholder="用逗号分隔，如：取片、真空、报警码"
-          />
-        </label>
+        <DebugIssueFields
+          fields={debugMetadataFields}
+          payload={metadata}
+          onChange={updateMetadata}
+        />
       </details>
     </HandoverModal>
   );

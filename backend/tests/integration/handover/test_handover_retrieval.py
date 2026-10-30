@@ -161,7 +161,7 @@ def test_debug_synonyms_versions_devices_conditions_and_unresolved(services):
         DebugWrite(title="真空报警 E901", payload={"problem": "E901 负压不足"}), {}
     )
     assert (
-        DebugIssueCorpus(services[1]).search("E901 怎么办")[0]["payload"]["resolution_status"]
+        DebugIssueCorpus(services[1]).search("E901 怎么办")[0]["metadata"]["resolution_status"]
         == "open"
     )
     assert DebugIssueCorpus(services[1]).search("E902 怎么办") == []

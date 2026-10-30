@@ -35,6 +35,11 @@ def expanded_terms(text):
 
 def searchable_text(row):
     payload = row.get("payload", {})
+    if row.get("kind") == "debug_issue":
+        from app.modules.knowledge.documents import knowledge_document
+
+        document = knowledge_document(row)
+        return row["title"], document.page_content
     content = row.get("content") or "\n".join(
         str(value) if not isinstance(value, list) else " ".join(map(str, value))
         for key, value in payload.items()

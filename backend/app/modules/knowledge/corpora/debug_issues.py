@@ -2,27 +2,21 @@
 
 import asyncio
 import json
+import re
 
 from langchain_core.tools import tool
 
 from app.agents.context.tokens import fit_text
-from app.modules.handover.domain.debug_knowledge import knowledge_sections
+from app.modules.handover.domain.debug_knowledge import debug_metadata, knowledge_payload
 from app.modules.handover.infrastructure.persistence.models import HandoverRecord
 from app.modules.knowledge.debug_matching import compatibility, explicit_filters, heating
 from app.modules.knowledge.feedback import references
 from app.modules.knowledge.search import catalog
 
 SEARCH_FIELDS = {
-    "problem": 5,
-    "module": 4,
+    "question": 5,
+    "answer": 2,
     "keywords": 6,
-    "cause": 3,
-    "solution": 2,
-    "conditions": 2,
-    "environment": 1,
-    "software_version": 2,
-    "investigation": 1,
-    "device": 3,
 }
 READ_FIELDS = {
     "problem": "内容说明",
@@ -88,38 +82,32 @@ def reference(row):
     return f"[{title}]({citation(row)})"
 
 
-def readable_payload(payload):
-    """模型读取业务表述，状态枚举及附件索引仍只保存在内部快照中。"""
-    values = {
-        **payload,
-        "resolution_status": STATUS_LABELS.get(payload.get("resolution_status"), "未说明"),
-        "record_type": TYPE_LABELS.get(payload.get("record_type"), "未说明"),
+def readable_payload(payload, query=""):
+    """默认只给问答正文；明确查询原文、记录人或日期时才展开对应metadata。"""
+    document = knowledge_payload(payload)
+    content = {
+        "问题": document["question"],
+        "答案": document["answer"],
+        "关键词": "、".join(document["keywords"]),
     }
-    auxiliary = {
-        label: values[key]
-        for key, label in READ_FIELDS.items()
-        if key
-        not in {
-            "conditions",
-            "problem",
-            "investigation",
-            "cause",
-            "solution",
-            "verification",
-            "notes",
-        }
-        and values.get(key)
-    }
-    # 标题在外层记录及引用中；正文统一为其余五项，原文和检索辅助字段仍保留。
-    return {
-        **{key: value for key, value in knowledge_sections(payload).items() if value},
-        **auxiliary,
-    }
+    metadata = document["metadata"]
+    if re.search(r"原文|逐字|原始描述", query):
+        content["录入原文"] = metadata.get("original_text", "")
+    if re.search(r"谁|记录人|作者|时间|日期|何时|哪天|什么时候|\d+月|\d{4}[-/]", query):
+        content.update(
+            {
+                label: metadata[key]
+                for key, label in READ_FIELDS.items()
+                if key in {"recorded_by", "recorded_at", "occurred_on"} and metadata.get(key)
+            }
+        )
+    return {key: value for key, value in content.items() if value}
 
 
 class DebugIssueCorpus:
     def __init__(self, database, emit=None, context_query=""):
         self.emit = emit or (lambda *_: None)
+        self.context_query = context_query
         self.context_filters = explicit_filters(context_query) if context_query else {}
         self.index = catalog(database).snapshot(
             "handover:debug",
@@ -145,13 +133,15 @@ class DebugIssueCorpus:
                     {
                         **{key: row[key] for key in ("id", "title", "version")},
                         "citation": citation(row),
-                        "image_count": len(row["payload"].get("images", [])),
-                        "resolution_status": row["payload"].get("resolution_status", "open"),
+                        "image_count": len(debug_metadata(row["payload"]).get("images", [])),
+                        "resolution_status": debug_metadata(row["payload"]).get(
+                            "resolution_status", "open"
+                        ),
                         "reference": reference(row),
                         "compatibility": compatibility(
                             row, self.context_filters or explicit_filters("")
                         ),
-                        "content": readable_payload(row["payload"]),
+                        "content": readable_payload(row["payload"], self.context_query),
                     }
                 )
         return result
@@ -172,6 +162,7 @@ class DebugIssueCorpus:
         def applicable(row):
             match = compatibility(row, filters)
             if match["status"] == "mismatch":
+                metadata = debug_metadata(row["payload"])
                 excluded.append(
                     {
                         "id": row["id"],
@@ -179,11 +170,9 @@ class DebugIssueCorpus:
                         "version": row["version"],
                         "citation": citation(row),
                         "compatibility": match,
-                        "device": row["payload"].get(
-                            "device", row["payload"].get("environment", "")
-                        )[:300],
-                        "software_version": row["payload"].get("software_version", "")[:300],
-                        "conditions": row["payload"].get("conditions", "")[:300],
+                        "device": metadata.get("device", metadata.get("environment", ""))[:300],
+                        "software_version": metadata.get("software_version", "")[:300],
+                        "conditions": metadata.get("conditions", "")[:300],
                     }
                 )
                 return False
@@ -193,33 +182,41 @@ class DebugIssueCorpus:
         for score, identifier, _ in self.index.search(query, min(10, limit), applicable):
             row = self.items[identifier]
             document = row
+            payload = knowledge_payload(row["payload"])
+            metadata = payload["metadata"]
             result.append(
                 {
                     "id": row["id"],
                     "title": document["title"],
                     "version": row["version"],
                     "citation": citation(row),
-                    "image_count": len(document["payload"].get("images", [])),
+                    "image_count": len(metadata.get("images", [])),
                     "reference": reference(row),
                     "score": score,
                     "compatibility": compatibility(row, filters),
                     "payload": {
                         key: value[:1200] if isinstance(value, str) else value
+                        for key in SEARCH_FIELDS
+                        for value in [payload.get(key, "")]
+                    },
+                    "metadata": {
+                        key: metadata[key]
                         for key in (
-                            *SEARCH_FIELDS,
-                            "verification",
-                            "resolution_status",
-                            "reported_by",
                             "record_type",
+                            "resolution_status",
+                            "device",
+                            "software_version",
+                            "module",
+                            "conditions",
                             "occurred_on",
                             "recorded_by",
                             "recorded_at",
                         )
-                        for value in [document["payload"].get(key, "")]
+                        if metadata.get(key)
                     },
                     "truncated_fields": [
                         key
-                        for key, value in document["payload"].items()
+                        for key, value in payload.items()
                         if isinstance(value, str) and len(value) > 1200
                     ],
                 }
@@ -260,14 +257,16 @@ class DebugIssueCorpus:
                 "version": row["version"],
                 "citation": citation(row),
                 "compatibility": compatibility(row, self.context_filters or explicit_filters("")),
-                "resolution_status": row["payload"].get("resolution_status", "open"),
-                "image_count": len(row["payload"].get("images", [])),
+                "resolution_status": debug_metadata(row["payload"]).get(
+                    "resolution_status", "open"
+                ),
+                "image_count": len(debug_metadata(row["payload"]).get("images", [])),
             },
         )
         # 模型只读取业务文字。图片哈希、存储文件名和来源关联由页面读取固定版本，
         # 不进入回答上下文，避免把附件内部信息当成用户要求的“全部原图”。
         content = json.dumps(
-            readable_payload(document["payload"]),
+            readable_payload(document["payload"], self.context_query),
             ensure_ascii=False,
             indent=2,
         )
@@ -277,7 +276,7 @@ class DebugIssueCorpus:
             "version": row["version"],
             "citation": citation(row),
             "reference": reference(row),
-            "image_count": len(document["payload"].get("images", [])),
+            "image_count": len(debug_metadata(document["payload"]).get("images", [])),
             "display_hint": ANSWER_GUIDANCE,
             "compatibility": compatibility(row, self.context_filters or explicit_filters("")),
             "content": content[offset : offset + 8000],
@@ -288,14 +287,23 @@ class DebugIssueCorpus:
         blocks, sources = [], []
         report = self.search_report(query, 4, track=False)
         for item in report["matches"]:
+            projected = knowledge_payload(self.items[item["id"]]["payload"])
             preview = {
-                **item,
+                **{key: value for key, value in item.items() if key != "metadata"},
                 "payload": readable_payload(
                     {
-                        key: value[:800] if isinstance(value, str) else value
-                        for key, value in item["payload"].items()
-                    }
+                        **projected,
+                        "question": projected["question"][:800],
+                        "answer": projected["answer"][:800],
+                    },
+                    query,
                 ),
+                "metadata": {
+                    "处理状态": STATUS_LABELS.get(
+                        item["metadata"].get("resolution_status"), "未说明"
+                    ),
+                    "记录类别": TYPE_LABELS.get(item["metadata"].get("record_type"), "未说明"),
+                },
             }
             block = json.dumps(preview, ensure_ascii=False)
             if fit_text("\n".join([*blocks, block]), budget) != "\n".join([*blocks, block]):
@@ -308,7 +316,7 @@ class DebugIssueCorpus:
                         for key in ("id", "title", "version", "citation", "compatibility")
                     },
                     "payload": {
-                        "resolution_status": item["payload"].get("resolution_status", "open")
+                        "resolution_status": item["metadata"].get("resolution_status", "open")
                     },
                     "image_count": item["image_count"],
                 }
@@ -379,7 +387,19 @@ def debug_issue_tools(corpus, *, search=None, read=None):
             conditions=conditions,
         )
         report["matches"] = [
-            {**item, "payload": readable_payload(item["payload"])} for item in report["matches"]
+            {
+                **{key: value for key, value in item.items() if key != "metadata"},
+                "payload": readable_payload(
+                    {**item["payload"], "metadata": item["metadata"]}, query
+                ),
+                "metadata": {
+                    "处理状态": STATUS_LABELS.get(
+                        item["metadata"].get("resolution_status"), "未说明"
+                    ),
+                    "记录类别": TYPE_LABELS.get(item["metadata"].get("record_type"), "未说明"),
+                },
+            }
+            for item in report["matches"]
         ]
         return json.dumps(report, ensure_ascii=False)
 

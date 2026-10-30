@@ -39,10 +39,11 @@ def test_six_sections_project_legacy_facts_without_mutating_original():
     assert sections["结果记录"] == "连续20次正常"
     assert sections["注意事项"] == "只对应本次工况。"
     content = readable_payload(payload)
-    assert content["内容说明"] == sections["内容说明"]
-    assert content["录入原文"] == payload["original_text"]
-    assert content["处理状态"] == "记录人反馈已解决"
-    assert "来源编号" not in content["注意事项"]
+    assert content["问题"] == payload["problem"]
+    assert all(value in content["答案"] for value in ("密封圈破损", "更换密封圈", "连续20次正常"))
+    assert set(content) == {"问题", "答案", "关键词"}
+    assert readable_payload(payload, "逐字原文")["录入原文"] == payload["original_text"]
+    assert "来源编号" not in content["答案"]
     assert payload == before
 
 
@@ -69,12 +70,18 @@ def test_moved_facts_are_not_duplicated_and_new_fields_can_be_selected_with_fixe
         "notes": "原因判断：原记录认为密封圈破损。",
     }
     content = readable_payload(payload)
-    assert content["内容说明"] == payload["problem"]
+    assert content["问题"] == payload["problem"]
     rows = [{"reference": "[经验](debug-issue:fixed-id/3)", "content": content}]
     numbered = selection_input(rows)
-    assert numbered[0]["content"]["内容说明"][0]["text"] == payload["problem"]
+    assert numbered[0]["content"]["问题"][0]["text"] == payload["problem"]
+    number = next(
+        part["number"]
+        for part in numbered[0]["content"]["答案"]
+        if part["text"] == "已检查真空管路。"
+    )
     selected = selected_records(
-        {"selections": [{"id": 1, "parts": [{"field": "处理方法", "start": 1, "end": 1}]}]}, rows
+        {"selections": [{"id": 1, "parts": [{"field": "答案", "start": number, "end": number}]}]},
+        rows,
     )
     assert selected[0]["reference"] == rows[0]["reference"]
-    assert selected[0]["content"] == {"处理方法": "已检查真空管路。"}
+    assert selected[0]["content"] == {"答案": "已检查真空管路。"}

@@ -37,7 +37,9 @@ def heating(text):
 
 
 def compatibility(row, filters):
-    payload = row["payload"]
+    from app.modules.handover.domain.debug_knowledge import debug_metadata
+
+    payload = {**row["payload"], **debug_metadata(row["payload"])}
     requested_codes = filters.get("alarm_codes", set())
     record_text = row["title"] + " " + " ".join(map(str, payload.values()))
     if requested_codes and not requested_codes.intersection(alarm_codes(record_text)):

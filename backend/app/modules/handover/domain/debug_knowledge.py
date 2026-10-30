@@ -1,4 +1,4 @@
-"""六项业务内容投影；旧修订的排查与原因也必须能完整读取。"""
+"""三项问答正文与metadata分离；旧修订的业务事实仍完整投影。"""
 
 import re
 
@@ -57,4 +57,37 @@ def knowledge_sections(payload):
         "处理方法": payload.get("solution", ""),
         "结果记录": payload.get("verification", ""),
         "注意事项": notes,
+    }
+
+
+def debug_metadata(payload):
+    """旧版本仍可读取；新正文与追溯信息分开，不就地改写历史快照。"""
+    if isinstance(payload.get("metadata"), dict):
+        return dict(payload["metadata"])
+    return {
+        key: value
+        for key, value in payload.items()
+        if key not in {"keywords", "problem", "solution"}
+    }
+
+
+def knowledge_payload(payload):
+    if "question" in payload or "answer" in payload:
+        return {
+            "question": payload.get("question", ""),
+            "answer": payload.get("answer", ""),
+            "keywords": payload.get("keywords", []),
+            "metadata": debug_metadata(payload),
+        }
+    sections = knowledge_sections(payload)
+    sentences = []
+    for value in sections.values():
+        for part in value.split("\n\n"):
+            if part.strip():
+                sentences.append(part.strip().rstrip("。；; ") + "。")
+    return {
+        "question": payload.get("problem", ""),
+        "answer": _join(sentences),
+        "keywords": payload.get("keywords", []),
+        "metadata": debug_metadata(payload),
     }

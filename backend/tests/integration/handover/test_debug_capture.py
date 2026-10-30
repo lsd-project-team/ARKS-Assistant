@@ -79,7 +79,7 @@ class HistoricalAnswer(DeterministicModel):
             return ChatResult(generations=[ChatGeneration(message=request)])
         result = returned[-1].text
         assert "更换密封圈" in result
-        assert '"处理状态": "记录人反馈已解决"' in result
+        assert '"答案"' in result
         assert "resolution_status" not in result
         source = json.loads(result)["matches"][0]["citation"].removeprefix("debug-issue:")
         answer = f"历史 E901 记录中，更换密封圈后连续取片20次正常。[调试记录](debug-issue:{source})"
@@ -105,10 +105,10 @@ def test_command_persists_actual_user_and_raw_text_retry_deduplicates_then_qa_ci
         assert done["status"] == "completed", done
         issues = DebugIssues(HandoverStore(database=client.app.state.auth.database))
         (row,) = issues.rows()
-        assert row["payload"]["original_text"] == ORIGINAL
-        assert row["payload"]["reported_by"] == user["display_name"]
-        assert row["payload"]["source_message_id"] == run["message_id"]
-        assert row["payload"]["source_thread_id"] == run["thread_id"]
+        assert row["payload"]["metadata"]["original_text"] == ORIGINAL
+        assert row["payload"]["metadata"]["reported_by"] == user["display_name"]
+        assert row["payload"]["metadata"]["source_message_id"] == run["message_id"]
+        assert row["payload"]["metadata"]["source_thread_id"] == run["thread_id"]
         thread = client.get(f"/api/p/independent/threads/{run['thread_id']}").json()
         assert f"debug-issue:{row['id']}/1" in thread["messages"][-1]["content"]
         again = client.post(f"/api/p/independent/runs/{run['id']}/regenerate").json()

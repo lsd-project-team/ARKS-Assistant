@@ -5,6 +5,7 @@ import re
 import zipfile
 from xml.sax.saxutils import escape
 
+from app.modules.handover.domain.debug_knowledge import knowledge_payload
 from app.modules.handover.domain.labels import FIELDS, KINDS, STATES, VALUES
 
 from .word_styles import CONTENT_TYPES, DOCUMENT_RELS, ROOT_RELS, STYLES
@@ -50,6 +51,11 @@ def word_document(title, introduction, sections):
 
 def record_paragraphs(record, lookup):
     payload = record["payload"]
+    metadata = None
+    if record["kind"] == "debug_issue":
+        document = knowledge_payload(payload)
+        metadata = document.pop("metadata")
+        payload = document
     output = [
         f"记录 {record['id']}  版本 {record['version']}  {STATES[record['state']]}  "
         f"{VALUES.get(payload.get('origin', ''), '')}"
@@ -75,7 +81,25 @@ def record_paragraphs(record, lookup):
             if isinstance(value, str)
             else value
         )
-        output.append(f"{FIELDS[key]}：{display or '未填写'}")
+        label = (
+            {"question": "问题", "answer": "答案"}.get(key, FIELDS[key])
+            if record["kind"] == "debug_issue"
+            else FIELDS[key]
+        )
+        output.append(f"{label}：{display or '未填写'}")
+    if metadata:
+        output.append("记录信息")
+        for key in (
+            "recorded_by",
+            "recorded_at",
+            "occurred_on",
+            "reported_by",
+            "record_type",
+            "resolution_status",
+        ):
+            if metadata.get(key):
+                value = metadata[key]
+                output.append(f"{FIELDS[key]}：{VALUES.get(value, value)}")
     for index, step in enumerate(payload.get("steps", []), 1):
         output.append(
             f"步骤 {index}：{step['action']}\n前提：{step['prerequisite']}\n输出：{step['output']}"

@@ -23,10 +23,10 @@ def test_manual_issue_save_update_revision_and_user_permissions(services):
         created = client.post("/api/handover/debug-issues", json=issue_body())
         assert created.status_code == 201, created.text
         row = created.json()
-        assert row["payload"]["reported_by"] == user["display_name"]
-        assert row["payload"]["origin"] == "human"
-        assert row["payload"]["resolution_status"] == "open"
-        assert row["payload"]["cause"] == ""
+        assert row["payload"]["metadata"]["reported_by"] == user["display_name"]
+        assert row["payload"]["metadata"]["origin"] == "human"
+        assert row["payload"]["metadata"]["resolution_status"] == "open"
+        assert row["payload"]["metadata"]["cause"] == ""
         path = f"/api/handover/debug-issues/{row['id']}"
         change = {**issue_body(solution="更换密封圈", resolution_status="resolved"), "version": 1}
         result = client.patch(path, json=change)
@@ -34,14 +34,14 @@ def test_manual_issue_save_update_revision_and_user_permissions(services):
         assert result.json()["version"] == 2
         assert client.patch(path, json=change).status_code == 409
         old = client.get(f"/api/handover/records/{row['id']}?version=1").json()
-        assert old["payload"]["solution"] == "" and old["version"] == 1
+        assert "更换密封圈" not in old["payload"]["answer"] and old["version"] == 1
         assert "confirmation" not in old
         assert client.get(f"/api/handover/records/{row['id']}/history").status_code == 403
         assert client.get("/api/handover/events").status_code == 403
         # 未经管理员复核也可检索；处理状态与交接复核状态分离。
         matches = DebugIssueCorpus(client.app.state.auth.database).search("E901 真空")
         assert matches[0]["version"] == 2
-        assert matches[0]["payload"]["solution"] == "更换密封圈"
+        assert "更换密封圈" in matches[0]["payload"]["answer"]
 
 
 @pytest.mark.parametrize(
@@ -81,13 +81,14 @@ def test_ai_origin_survives_edit_and_archived_records_leave_new_search(services)
         {"display_name": "同事"},
         row["id"],
     )
-    assert updated["payload"]["original_text"] == original
-    assert updated["payload"]["reported_by"] == "李少达"
-    assert updated["payload"]["source_project_id"] == "source-project"
-    assert updated["payload"]["source_message_id"] == "message"
-    assert updated["payload"]["origin"] == "ai"
+    assert updated["payload"]["metadata"]["original_text"] == original
+    assert updated["payload"]["metadata"]["reported_by"] == "李少达"
+    assert updated["payload"]["metadata"]["source_project_id"] == "source-project"
+    assert updated["payload"]["metadata"]["source_message_id"] == "message"
+    assert updated["payload"]["metadata"]["origin"] == "ai"
     assert before.search("E901")[0]["version"] == 1
     assert DebugIssueCorpus(services[1]).search("E901")[0]["version"] == 2
+    before.context_query = "逐字读取原文"
     pages = [before.read(row["id"])]
     while pages[-1]["next_offset"] is not None:
         pages.append(before.read(row["id"], pages[-1]["next_offset"]))
@@ -136,16 +137,18 @@ def test_work_record_preserves_original_author_dates_and_searches_without_unreso
         assert response.status_code == 201, response.text
         row = response.json()
         for key, expected in body["payload"].items():
-            assert row["payload"][key] == expected
-        assert row["payload"]["reported_by"] == user["display_name"]
-        assert row["payload"]["resolution_status"] == "recorded"
-        assert row["payload"]["cause"] == row["payload"]["solution"] == ""
+            assert (
+                row["payload"]["question"] if key == "problem" else row["payload"]["metadata"][key]
+            ) == expected
+        assert row["payload"]["metadata"]["reported_by"] == user["display_name"]
+        assert row["payload"]["metadata"]["resolution_status"] == "recorded"
+        assert row["payload"]["metadata"]["cause"] == ""
         corpus = DebugIssueCorpus(client.app.state.auth.database)
         (match,) = corpus.search("时序计算资料归档")
         assert match["id"] == row["id"]
-        assert match["payload"]["record_type"] == record_type
-        assert match["payload"]["recorded_by"] == "贺强"
-        assert match["payload"]["recorded_at"] == "8月24日 10:14"
+        assert match["metadata"]["record_type"] == record_type
+        assert match["metadata"]["recorded_by"] == "贺强"
+        assert match["metadata"]["recorded_at"] == "8月24日 10:14"
         prompt, _ = corpus.prompt("时序计算资料归档", 3000)
         assert '"处理状态": "已记录"' in prompt
         assert '"记录类别": ' in prompt
@@ -156,8 +159,8 @@ def test_work_record_preserves_original_author_dates_and_searches_without_unreso
             json={**body, "version": 1},
         )
         assert updated.status_code == 200, updated.text
-        assert updated.json()["payload"]["recorded_by"] == "贺强"
-        assert updated.json()["payload"]["reported_by"] == user["display_name"]
+        assert updated.json()["payload"]["metadata"]["recorded_by"] == "贺强"
+        assert updated.json()["payload"]["metadata"]["reported_by"] == user["display_name"]
 
 
 @pytest.mark.parametrize("changes", [{"record_type": "unknown"}, {"resolution_status": "recorded"}])
@@ -208,18 +211,23 @@ def test_compact_editor_roundtrip_keeps_supplementary_facts_and_fixed_ai_referen
         assert response.status_code == 200, response.text
         updated = response.json()
         for key, expected in payload.items():
-            if key != "problem":
+            if key == "keywords":
                 assert updated["payload"][key] == expected
-        assert updated["payload"]["original_text"] == payload["problem"]
-        assert updated["payload"]["reported_by"] == user["display_name"]
+            elif key == "solution":
+                assert expected in updated["payload"]["answer"]
+            elif key != "problem":
+                assert updated["payload"]["metadata"][key] == expected
+        assert updated["payload"]["metadata"]["original_text"] == payload["problem"]
+        assert updated["payload"]["metadata"]["reported_by"] == user["display_name"]
         assert updated["version"] == 2
         current = DebugIssueCorpus(services[1])
         matches = current.search("ZX2200 HS V2.1.0 S1 加热 E901")
         assert matches[0]["id"] == row["id"] and matches[0]["version"] == 2
         assert before.search("E901")[0]["version"] == 1
         old = client.get(f"/api/handover/records/{row['id']}?version=1").json()
-        assert old["payload"]["problem"] == payload["problem"]
+        assert old["payload"]["question"] == payload["problem"]
         prompt, sources = current.prompt("E901 真空报警", 6000)
         assert sources[0]["citation"] == f"debug-issue:{row['id']}/2"
-        for value in ("加热时取片", "密封圈破损", "更换密封圈", "连续取片20次正常", "原作者"):
+        for value in ("加热时取片", "密封圈破损", "更换密封圈", "连续取片20次正常"):
             assert value in prompt
+        assert "原作者" not in prompt

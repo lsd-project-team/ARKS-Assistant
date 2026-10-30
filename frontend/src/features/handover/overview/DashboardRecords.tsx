@@ -11,7 +11,7 @@ import { localTime } from '../shared/format';
 import { Status } from '../shared/RecordCard';
 import { text, type Definitions, type Event, type HandoverRecord } from '../shared/types';
 import { eventActionLabels } from './overviewData';
-import { debugRecordType, debugStatus } from '../debug_issues/debugIssues';
+import { debugRecordType, debugStatus, debugMetadata } from '../debug_issues/debugIssues';
 import { materialName } from '../materials/materialRecords';
 
 export function compactTime(value: string) {
@@ -127,13 +127,13 @@ export function DashboardRecordList({
             <span>
               {row.kind === 'debug_issue' ? (
                 <>
-                  {text(row.payload.recorded_by) ||
-                    text(row.payload.reported_by) ||
+                  {text(debugMetadata(row.payload).recorded_by) ||
+                    text(debugMetadata(row.payload).reported_by) ||
                     debugRecordType(row.payload).label}
                   <i>·</i>
                   <span>
-                    {text(row.payload.recorded_at) ||
-                      text(row.payload.occurred_on) ||
+                    {text(debugMetadata(row.payload).recorded_at) ||
+                      text(debugMetadata(row.payload).occurred_on) ||
                       compactTime(row.updated_at)}
                   </span>
                 </>
@@ -153,7 +153,8 @@ export function DashboardRecordList({
           {row.kind === 'debug_issue' ? (
             <span
               className={
-                'dashboard-issue-status ' + (text(row.payload.resolution_status) || 'open')
+                'dashboard-issue-status ' +
+                (text(debugMetadata(row.payload).resolution_status) || 'open')
               }
               data-record-type={debugRecordType(row.payload).value}
             >
