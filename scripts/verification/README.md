@@ -1,5 +1,7 @@
 # 验证脚本
 
+`source_answer_quality.py --live --output output/source-answer/<新文件>.json` 使用当前供应商，在临时C#源码及数据库中验证方法解释、调用流程、问题定位与修改建议、逐字原文。只读正式配置至内存，支持`--cases explain flow fix verbatim`选择场景；不覆盖既有输出，不写正式账号或聊天。自动检查引用、模型事实复核、格式、历史一致性及原文，阅读质量仍须人工核对，见[本轮源码回答验收](../../docs/verification/source-answer-organization-20261030.md)。
+
 `rich_content_roundtrip.py --live` 使用当前真实供应商，在临时账号、源码、数据库及附件上验证新增富内容块的生成、现有 HTTP/SSE、重连重放、多轮历史及前端引擎渲染；只读正式配置至内存，不复制密钥或业务历史。需要前后端依赖，明确消耗模型额度，结果只写入 `output/`。见[本轮验收](../../docs/verification/rich-content-roundtrip-20261030.md)。
 
 `arks_rich_content.py --live --settings-data <正式配置所在目录> --output output/arks-rich-content/live.json` 使用截图蓝膜案例的问答副本，在独立临时账号与数据库上验证两轮真实经验图文、事实修订、引用、HTTP/SSE重放、历史及前端图形。仅将配置读入内存，不读取正式会话、不向正式知识库写入样例；无历史原图也必须生成有依据的示意图。需要前后端依赖，消耗当前供应商额度，见[专项验收](../../docs/verification/arks-rich-content-20261030.md)。

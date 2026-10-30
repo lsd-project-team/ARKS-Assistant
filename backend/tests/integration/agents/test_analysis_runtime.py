@@ -3,6 +3,7 @@ import json
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
+from app.agents.context.task_guidance import SOURCE_ANSWER_NOTE_ID
 from app.agents.runtime.engine import AgentRuntime
 from app.modules.chat.context import ConversationContext
 from app.modules.chat.runs import RunManager
@@ -101,6 +102,7 @@ class BudgetSequenceModel(DeterministicModel):
 
 class BatchVisibleModel(DeterministicModel):
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+        messages = [row for row in messages if row.id != SOURCE_ANSWER_NOTE_ID]
         if isinstance(messages[-1], ToolMessage):
             result = json.loads(messages[-1].text)
             assert len(messages[-1].text) > 16000, "覆盖旧的 4000 token 转存阈值"
@@ -165,6 +167,7 @@ async def test_partial_run_keeps_pending_target_and_continue_reuses_evidence(ser
 
     class ContinueModel(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+            messages = [row for row in messages if row.id != SOURCE_ANSWER_NOTE_ID]
             if "独立的源码结论复核器" in messages[0].text:
                 answer = AIMessage(content='{"verdict":"passed","issues":[]}')
             elif isinstance(messages[-1], ToolMessage):

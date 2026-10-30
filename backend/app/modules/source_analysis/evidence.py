@@ -9,6 +9,7 @@ from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.messages import AIMessage, HumanMessage
 
 from app.agents.context.tokens import fit_text
+from app.agents.prompts.source_answer import SOURCE_REPAIR_GUIDANCE
 from app.core.config import dump_json
 from app.modules.chat.rich_presentation import (
     project_rich_content,
@@ -350,7 +351,7 @@ class SourceEvidenceGuard(AgentMiddleware):
                 + dump_json(report)
                 + "\n请先用 read_source 补齐证据，再返回完整回答。"
                 "源码引用使用 source:路径#L行号，可用 #L开始-L结束。"
-                "不能核实的结论请明确说明；推断要标为推断。"
+                "不能核实的结论请明确说明；推断要标为推断。" + SOURCE_REPAIR_GUIDANCE
             )
             response = await handler(
                 request.override(messages=[*request.messages, answer, correction])
@@ -389,6 +390,7 @@ class SourceEvidenceGuard(AgentMiddleware):
                     content="本轮源码结论复核发现具体问题："
                     + dump_json(review)
                     + "\n请补读必要源码，修正条件、顺序与概括，返回完整回答。不要隐去未知依赖。"
+                    + SOURCE_REPAIR_GUIDANCE
                 )
                 response = await handler(
                     request.override(messages=[*request.messages, answer, correction])
