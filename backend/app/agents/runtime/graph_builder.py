@@ -7,10 +7,11 @@ from deepagents.backends import CompositeBackend, FilesystemBackend
 from deepagents.middleware.filesystem import FilesystemMiddleware
 from deepagents.middleware.summarization import SummarizationToolMiddleware
 
-from app.agents.analysis.policy import CONTINUE_QUESTION, REPORT_GUIDANCE
+from app.agents.analysis.policy import CONTINUE_QUESTION
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.budget import BudgetedSummarization, ContextBudget
 from app.agents.context.instructions import GlobalAgentInstructions, instruction_snapshot
+from app.agents.context.task_guidance import TaskGuidance
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.system import (
     DEBUG_ISSUE_GUIDANCE,
@@ -27,7 +28,6 @@ from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
-from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.chat.schemas import SourceOptions
 from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
 from app.modules.projects.context import project_prompt
@@ -101,6 +101,7 @@ class AgentGraphBuilder:
         )
         tools = source_tools(runtime.workspace, evidence, progress)
         tools += runtime.semantic.tools()
+        source_tool_names = {tool.name for tool in tools}
         requested_work = question_text if question_text is not None else memory_query or ""
         if (
             policy
@@ -169,8 +170,6 @@ class AgentGraphBuilder:
             "项目资料和全项目阅读功能已移除，不检索项目文档、旧共享结论或阅读成果。"
             "相关代码问题请读取本地源码；历史对话中的资料引用不代表本轮已经检索。"
         )
-        prompt += "\n" + REPORT_GUIDANCE
-        prompt += "\n" + RICH_CONTENT_GUIDANCE
         if policy:
             prompt += (
                 f"\n本轮分析模式：{policy['mode']}，工具额度 {policy['limit']}，"
@@ -226,6 +225,12 @@ class AgentGraphBuilder:
                 summary,
                 SummarizationToolMiddleware(summary),
                 GlobalAgentInstructions(instructions),
+                TaskGuidance(
+                    requested_work,
+                    source_tool_names,
+                    evidence,
+                    deep=bool(policy and policy["mode"] == "deep"),
+                ),
                 *(
                     [SourceEvidenceGuard(evidence, None if inspection else model)]
                     if evidence is not None

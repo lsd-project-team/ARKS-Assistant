@@ -73,8 +73,9 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "同路径异版本" in prompt
     assert "本轮未接入流程图谱、功能说明和交接资料" in prompt
     assert prompt.count("【回答方式】") == 1
-    assert prompt.count("回答展示协议") == 1
-    assert "[文件名:行号](source:相对路径#L行号)" in prompt
+    assert "回答展示协议" not in prompt
+    assert "【源码核查】" not in prompt
+    assert "当前项目实现、设备具体流程、操作或前置条件必须先读取当前源码" in prompt
 
     assert "项目工具要求：" not in prompt
     assert "create_code_change" not in tools

@@ -201,10 +201,12 @@ RICH_CONTENT_GUIDANCE = """
 简单问答、原文提取、含调试记录/资料引用的回答继续用普通 Markdown。
 明确询问源码支持的操作流程时，默认用step_flow组织主线；多入口可先用overview_grid，实际对比才用table。
 用户明确要纯Markdown时遵从。其他普通解释不强制使用组件。
-开头一两句直接说明主流程和适用入口，不同时展开多条完整向导、自动流程和底层算法。
+区分示教、自动执行与单项任务的入口和条件，开头一两句说明本题主流程，不同时展开多条完整向导、自动流程和底层算法。
 步骤只写目的、必要条件和结果；补充实现放入collapsible或步骤details，默认收起。
 关键前置条件、失败/取消分支、停止与保存必须在主流程就近可见，不能因折叠丢失。
 不为了卡片凑固定入口或固定步骤数；较长向导可单独折叠，但主线须说明其适用位置和必要条件。
+每步用简短说明和直接支持该步的源码引用；未知动作在对应步骤限定，同一结论只说一次。
+证据足以解释主线即可回答，不为罗列细节追遍驱动或输出未读方法清单。
 在普通 Markdown 之间使用 rich-content 围栏，内部为 JSON：
 {"version":1,"blocks":[...]}。每个块有唯一英文数字/短横线 id 和白名单 type。
 需要卡片时，围栏语言必须逐字写成 rich-content，不能写 json；json 围栏只显示示例代码。
@@ -215,7 +217,6 @@ RICH_CONTENT_GUIDANCE = """
 overview_grid: title?、items:[{id,title,description,icon?,source?}]。
 icon 只能为 code/layers/settings/workflow。
 step_flow: title?、description?、steps:[{id,title,description,details?,sources?:[源码引用]}]。
-保留关键前置条件、异常、停止与保存。
 source_reference: sources:[源码引用]。
 code: content、language?、filename?、start_line?、source?。
 table: title?、columns:[{id,label,align?:left/right/center}]、rows:[{id,cells:[字符串/数字/null]}]。
