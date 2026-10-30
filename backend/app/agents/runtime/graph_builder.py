@@ -15,7 +15,7 @@ from app.agents.context.instructions import GlobalAgentInstructions, instruction
 from app.agents.context.task_guidance import TaskGuidance
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
-from app.agents.prompts.system import SYSTEM_PROMPT
+from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
@@ -204,6 +204,8 @@ class AgentGraphBuilder:
             "\n个人偏好以当前登录账号带入的记忆为准，"
             "不把其他人在共享对话里的偏好当作本账号长期偏好。"
         )
+        # 展示协议说明组件语法；在其后明确组织要求，由同一次生成直接形成可读答案。
+        prompt += "\n" + ANSWER_ORGANIZATION_GUIDANCE
         history_selection = ConversationHistorySelection(
             model,
             requested_work,
