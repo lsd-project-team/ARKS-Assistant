@@ -1,7 +1,0 @@
-{
-  "changed": [
-    "c28-grid-calculation",
-    "c29-import-smoothing"
-  ],
-  "method": "替换同尺寸嵌入PNG；document.xml及其余XML原样保留，PDF同尺寸图像流同步替换"
-}

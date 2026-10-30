@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="360" viewBox="0 0 2400 360">
-<rect width="100%" height="100%" fill="white"/>
-<text x="345.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">PR：视觉识别任务</text>
-<polyline points="630.0,85 630.0,255" stroke="#B7C6CF" stroke-width="3" fill="none"/>
-<text x="915.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">Mark：识别特征</text>
-<polyline points="1200.0,85 1200.0,255" stroke="#B7C6CF" stroke-width="3" fill="none"/>
-<text x="1485.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">T：旋转轴角</text>
-<polyline points="1770.0,85 1770.0,255" stroke="#B7C6CF" stroke-width="3" fill="none"/>
-<text x="2055.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">G0：全局参考</text></svg>

@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="360" viewBox="0 0 2400 360">
-<rect width="100%" height="100%" fill="white"/>
-<text x="440.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">刷新：仍是N1</text>
-<polyline points="820.0,85 820.0,255" stroke="#B7C6CF" stroke-width="3" fill="none"/>
-<text x="1200.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">新建：得到新记录</text>
-<polyline points="1580.0,85 1580.0,255" stroke="#B7C6CF" stroke-width="3" fill="none"/>
-<text x="1960.0" y="170" font-family="Microsoft YaHei" font-size="46" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#246B99">清空：区段入口为空</text></svg>

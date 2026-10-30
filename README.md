@@ -1,107 +1,13 @@
-<p align="center">
-  <img src="frontend/public/brand/arks-assistant-icon.png" width="88" alt="ARKS 智能助手图标" />
-</p>
+# ARKS Assistant
 
-<h1 align="center">ARKS 智能助手</h1>
+项目已于 2026-10-30 清理旧实现，重新开始开发。当前仓库仅保留基础说明和协作约定，尚无可运行的应用。
 
-<p align="center">
-  <strong>面向源码阅读、问题排查与调试经验复用的 AI 工作区</strong>
-</p>
+旧前后端、测试、启动和部署脚本、应用资源、历史文档及项目专用规范已移除。后续功能与技术方案按新需求确定。
 
-<p align="center">Windows 本机运行 · 浏览器访问 · 自选模型服务</p>
+本机 `data/` 中的正式数据和 `trunk/` 中的业务源码继续保留，并由 Git 忽略；`trunk/` 保持只读。
 
-<p align="center">
-  <a href="#快速开始">快速开始</a> ·
-  <a href="docs/features/user-guide.md">使用指南</a> ·
-  <a href="docs/development/local-development.md">开发指南</a> ·
-  <a href="https://github.com/lsd-project-team/ARKS-Assistant/issues">问题反馈</a>
-</p>
+旧实现可在 Git 历史中查看，重启前最后一个提交为 `2ea326e`。
 
-ARKS 将源码和问题与经验放在同一个工作区。你可以一边阅读代码，一边让助手分析实现、梳理调用关系、提出修改建议，再把排查过程和处理办法保存下来，供后续检索和交接。
+旧本机依赖、构建和临时产物移至项目外的本地归档目录，不参与新项目开发。
 
-## 核心功能
-
-- **结合源码分析问题**：搜索文件与符号，选中代码直接提问；C# 项目支持基于 Roslyn 的调用关系分析。
-- **按需查询资料**：先根据问题和前文选择回答路径，问候、框架介绍等普通问题直接回答，需要历史经验时再检索，见[问题识别与查询路由](docs/features/query-routing.md)。
-- **查看回答依据**：从回答跳转到源码位置或资料的固定版本，核对分析所依据的原文。
-- **查看功能与流程**：按功能专题阅读说明、流程图和相关源码，也可从页面内的“全部图谱”直接查找。
-- **复用调试经验**：通过页面或 `/记录问题` 保存现场描述、排查过程与处理结果，后续按设备、版本和工况检索。
-- **按项目组织工作**：集中管理对话、源码目录、资料和回答指令；个人项目与对话按账号隔离。
-- **持续进行长对话**：支持历史搜索、跨会话记忆、上下文压缩，以及中断后的继续运行。
-- **持续阅读与尝试实现**：按快照阅读项目并维护成果，在隔离副本中修改、检查差异、运行已配置测试并导出补丁。
-- **整理资料与交接**：在交接工作台维护共享资料、任务进度和调试问题，生成交接包并保留版本历史。
-- **管理动作耗时**：按分类维护动作、耗时和备注，支持添加、编辑、Excel/CSV预览导入与全部/筛选导出。数据可后期补充，旧源码模拟已移除，见[动作耗时台账说明](docs/features/action-timing.md)。
-
-> 原源码工作区保持只读。“查看项目”入口与项目首页已移除，通过侧栏管理项目和对话。旧隔离修改、需求约定、预设命令验证和审核交付流程已完整移除；聊天保留源码读取、分析和代码建议。历史档案保留备份兼容，具体边界见[代码工作清理说明](docs/features/code-work.md)。
-
-## 快速开始
-
-### 1. 准备环境
-
-使用 Windows 和 PowerShell，并安装 **Git、Node.js 22.12+、uv**。后端要求 Python 3.12 或 3.13，依赖由 uv 管理。
-
-### 2. 安装并启动
-
-```powershell
-git clone https://github.com/lsd-project-team/ARKS-Assistant.git
-cd ARKS-Assistant
-.\Setup.ps1
-.\Start.ps1
-```
-
-`Setup.ps1` 安装依赖、准备本地检索模型与 C# 分析器，并构建前端；首次运行需要联网下载相关依赖。
-
-启动后浏览器会打开 **[http://127.0.0.1:8765](http://127.0.0.1:8765/)**。以后可直接双击 `Start.cmd`；停止服务运行 `.\Stop.ps1`。
-
-### 3. 登录并连接模型
-
-1. 在本机 `data/auth.initial-accounts.json` 查看首次生成的 `admin`、`user` 账号密码。
-2. 使用 `admin` 登录，在“系统配置”中填写模型服务地址、模型名称和 API 密钥。支持 **OpenAI Chat Completions** 与 **Anthropic Messages** 协议。
-3. 通过右上角账号菜单退出，使用普通用户账号进入日常工作区。管理员负责系统配置、账号和数据维护。
-
-安装、端口或启动遇到问题，参见[本地运行与开发](docs/development/local-development.md)。
-
-## 开始使用
-
-1. **打开项目**：选择已有项目，或新建项目并关联源码目录；暂时不需要项目时，也可以直接开始独立对话。
-2. **围绕代码提问**：在右侧文件树打开文件，选中代码并点击“将选区加入对话”，描述要分析的问题。
-3. **保留有用经验**：在交接工作台登记调试问题，或在对话中输入 `/记录问题`，保存原始描述与处理过程。
-
-你可以这样提问：
-
-> 这个方法由哪些入口调用？请结合当前源码说明执行过程，并标出关键位置。
->
-> 历史调试记录里有没有相同报警？请核对设备、版本和发生条件是否一致。
-
-文件阅读、资料导入、知识来源、记忆和常用快捷键，详见[使用指南](docs/features/user-guide.md)。
-
-## 数据与模型服务
-
-应用默认仅监听本机地址，对话、资料、记忆和设置保存在 `data/`。模型问答与 DeepWiki 查询会访问配置的服务；发送给外部模型的内容取决于本轮使用的源码、资料和上下文。
-
-API 密钥保存在本机 `data/settings.private.json`，Git 和应用导出的备份均排除该文件。备份与恢复操作见[本地备份与恢复](docs/development/backup-and-restore.md)。
-
-## 文档导航
-
-| 想了解什么                   | 从这里开始                                                                                                                       |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| 日常操作、知识问答与调试记录 | [使用指南](docs/features/user-guide.md)                                                                                          |
-| 安装选项、启动排查与开发检查 | [本地运行与开发](docs/development/local-development.md)                                                                          |
-| 项目、源码目录与资料管理     | [项目功能](docs/features/projects.md)                                                                                            |
-| 已移除的代码修改流程       | [清理状态与历史档案](docs/features/code-work.md)                                                                                  |
-| 账号角色与数据访问范围       | [账号与访问控制](docs/features/accounts-and-handover-access.md) · [项目与对话隔离](docs/features/account-workspace-isolation.md) |
-| 本地数据备份与停服恢复       | [备份与恢复](docs/development/backup-and-restore.md)                                                                             |
-| 公司 Linux 部署与迁移边界    | [Linux 部署](docs/development/linux-deployment.md)                                                                               |
-| 代码结构与模块依赖           | [工程结构](docs/architecture/overview.md)                                                                                        |
-
-## 参与开发
-
-项目采用 **React + TypeScript + Vite** 前端、**Python + FastAPI** 后端，基于 **Deep Agents** 编排问答与工具调用，使用 **SQLite** 持久化业务数据。
-
-应用代码位于 `frontend/` 和 `backend/`，知识资源位于 `resources/knowledge/`。详细目录和依赖方向见[工程结构](docs/architecture/overview.md)；`trunk/` 为被分析的只读业务源码，`data/` 为本机运行数据。
-
-开始修改前请阅读[项目协作说明](agent.md)、[开发规范](skills/project-development/SKILL.md)、[项目结构规范](skills/project-structure/SKILL.md)和[测试规范](skills/project-testing/SKILL.md)。开发命令见[开发指南](docs/development/local-development.md#开发与检查)，历史重构与验收记录见[重构清单](docs/architecture/refactoring.md)。
-
-长期记忆采用后台闲置聊天提取、整理和后续带入，使用说明见[后台长期记忆](docs/features/background-memory.md)。
-
-每个账号可在“设置 → 全局 agent.md”编辑自己的全局指令，适用于所有项目和独立对话；保存后下一次问答生效，见[全局指令说明](docs/features/global-agent-instructions.md)。
+协作约定见 [agent.md](agent.md)，版本管理要求见 [AGENTS.md](AGENTS.md)。

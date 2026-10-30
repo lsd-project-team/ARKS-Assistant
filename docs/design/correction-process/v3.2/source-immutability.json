@@ -1,7 +1,0 @@
-{
-  "scope": "trunk/AKRS.ZX2200",
-  "csharp_files_rechecked": 1158,
-  "all_hashes_unchanged": true,
-  "project_sha256": "50509da43e7a02d8f59a04ce017ca65b56aa9b8e5116d603a3fbe076e1b2d3a5",
-  "note": "C#哈希由本轮索引逐个重新读取；其他已引用文件另在source-baseline核对"
-}
