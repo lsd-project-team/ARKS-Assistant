@@ -1,5 +1,7 @@
 # 验证脚本
 
+`rich_content_roundtrip.py --live` 使用当前真实供应商，在临时账号、源码、数据库及附件上验证新增富内容块的生成、现有 HTTP/SSE、重连重放、多轮历史及前端引擎渲染；只读正式配置至内存，不复制密钥或业务历史。需要前后端依赖，明确消耗模型额度，结果只写入 `output/`。见[本轮验收](../../docs/verification/rich-content-roundtrip-20261030.md)。
+
 默认回归分别在 `backend/` 运行 `uv run pytest -q`，在 `frontend/` 运行 `npm test` 和 `npm run build`。这些测试使用隔离数据目录与测试模型。
 
 真实供应商类脚本需要显式执行并消耗 API 额度，不属于默认测试，也不会由启动脚本自动运行。下表区分历史入口、独立配置质量套件和不调用供应商的离线验收。

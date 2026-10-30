@@ -124,3 +124,16 @@ test('完整文档中的不可信文本只作为文字，未完整 JSON 没有�
   assert.equal(parseContent(content.slice(0, -3), true)[0].type, 'pending');
   assert.equal(parseContent(content.slice(0, -3), false)[0].type, 'fallback');
 });
+
+test('新增块共享契约与后端一致，历史重载保持类型、缺失数值和工具元数据', async () => {
+  const raw = await readFile(
+    new URL('./fixtures/rich-content-extended.json', import.meta.url),
+    'utf8',
+  );
+  const original = JSON.parse(raw);
+  const parsed = parseDocument(raw);
+  assert.deepEqual(parsed.document, original);
+  assert.deepEqual(parseContent(fence(original))[0].document, original);
+  assert.deepEqual(parsed.document.blocks[1].series[0].values, [0, 7, null]);
+  assert.equal(parsed.document.blocks[5].tool.id, 'read-entry');
+});

@@ -4,6 +4,7 @@ import re
 from urllib.parse import quote
 
 from app.modules.chat.rich_content import RichDocument
+from app.modules.chat.rich_projection import visual_block_text
 
 MAX_DOCUMENT_BYTES = 262144
 FENCE = re.compile(r"(?m)^[ ]{0,3}(`{3,}|~{3,})([^\r\n]*)\r?$")
@@ -69,8 +70,11 @@ def block_text(block):
     data = block.model_dump(exclude_none=True, by_alias=True)
     kind = data["type"]
     title = f"### {data['title']}\n\n" if data.get("title") else ""
-    if kind == "text":
+    if kind in {"text", "markdown"}:
         return data["content"]
+    visual = visual_block_text(block)
+    if visual is not None:
+        return visual
     if kind == "overview_grid":
         return title + "\n".join(
             f"- **{item.title}**：{item.description}"
@@ -221,8 +225,30 @@ nodes:[{id,label,description?}]、edges:[{from,to,label?}]。
 只列已核实的连接。
 collapsible: title、default_open?:布尔、blocks:[子块]；只折叠补充说明，关键结论保持可见。
 text: content（Markdown）。
+markdown: content，与 text 等价，兼容旧会话；普通段落仍可直接用 Markdown。
+chart: title?、chart_type:bar/line/pie、labels:[字符串]、
+series:[{id,name,values:[有限数字/null]}]。每个系列数值个数与 labels 一致。
+最多500标签/12系列；pie只能一个系列，数值非负；null表示真实缺失，不补零，不能全部缺失。
+mermaid: title?、content（Mermaid语法）；也支持普通 mermaid 代码围栏。
+禁止 frontmatter、%%配置、click、style、classDef、HTML和外链。
+mindmap: title?、nodes:[{id,label,parent_id?}]；最多60节点，唯一根节点省略parent_id。
+不能有环或缺失父节点。
+file: record_id、name、version?；version是正整数JSON数字，不能加引号或写成字符串。
+只能引用本轮实际拿到的资料ID、文件名与版本，不接受路径或URL。
+tool_call: tool:{id,name,arguments?,result?,status?:running/pending/success/error,
+execution_status?:skipped,skip_reason?,cached?:布尔}。
+工具参数与结果必须来自本轮真实工具返回，不推测调用ID、执行状态或成功结果；
+前端已展示真实工具事件，通常无需在正文重复生成tool_call。没有实际工具/文件依据时不用相应块。
+选择展示方式：数值比较或趋势且具备真实数值时优先chart，流程关系用mermaid，树状归纳用mindmap；
+需要核对原始值用table，简单解释用Markdown。用户明确要求的受支持格式优先，不把所有回答变成卡片。
+图表只能采用用户明确提供或实际工具返回的数据，不编造业务数据；缺数据时先说明缺项，不补示例数据。
+流程和导图中的项目事实仍需已有源码/资料依据；来源用独立source_reference块或正文引用保留。
 源码引用为 {path,start_line,end_line?,version?,source_workspace_id?}。
+源码start_line/end_line是正整数；源码version是读取返回的字符串哈希，与file的数字修订号不同。
 只能用本轮实际读取的路径、版本和范围，不能伪造。
-未知可选字段省略，不写 null。不生成 HTML、事件、路由或未知字段。不强制所有回答 JSON 化。
+未知可选字段省略，不写 null（表格单元格、图表缺失值和原始工具参数除外）。
+不生成 HTML、JSX、JavaScript、任意ECharts option/formatter、事件、路由或未知字段。
+代码块内的代码建议仍可正常展示，不执行模型输出。不强制所有回答 JSON 化。
 完整关闭围栏；文字字段≤20000字符，文档≤128块/256KiB，嵌套≤4层。
+输出前自行核对JSON字段类型与白名单，不混用源码版本字符串和文件修订数字。
 """

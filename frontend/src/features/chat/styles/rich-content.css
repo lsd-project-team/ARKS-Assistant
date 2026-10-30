@@ -48,9 +48,13 @@
 }
 .rich-mermaid-viewport img {
   display: block;
-  min-width: 240px;
+  width: auto;
+  height: auto;
   max-width: none;
   margin: auto;
+}
+.chat-pane .markdown .rich-mermaid-viewport img {
+  max-width: none;
 }
 .rich-file {
   min-width: 0;

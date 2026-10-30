@@ -1,14 +1,17 @@
 """可选展示协议，与既有文本消息共存。"""
 
-from typing import Annotated, Literal
+import re
+from typing import Annotated, ClassVar, Literal
 
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    JsonValue,
     StrictFloat,
     StrictInt,
     StringConstraints,
+    model_serializer,
     model_validator,
 )
 
@@ -21,11 +24,14 @@ Line = Annotated[int, Field(strict=True, ge=1, le=10000000)]
 
 class ContentModel(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, allow_inf_nan=False)
+    nullable_fields: ClassVar[frozenset[str]] = frozenset()
 
     @model_validator(mode="before")
     @classmethod
     def no_explicit_null(cls, value):
-        if isinstance(value, dict) and any(item is None for item in value.values()):
+        if isinstance(value, dict) and any(
+            item is None and name not in cls.nullable_fields for name, item in value.items()
+        ):
             raise ValueError("未知可选字段应省略，不能使用 null")
         return value
 
@@ -54,7 +60,7 @@ class BlockBase(ContentModel):
 
 
 class TextBlock(BlockBase):
-    type: Literal["text"]
+    type: Literal["text", "markdown"]
     content: Text
 
 
@@ -150,6 +156,116 @@ class CollapsibleBlock(BlockBase):
     blocks: Annotated[list["ContentBlock"], Field(max_length=128)]
 
 
+class ChartSeries(ContentModel):
+    id: Identifier
+    name: Title
+    values: Annotated[list[StrictInt | StrictFloat | None], Field(min_length=1, max_length=500)]
+
+
+class ChartBlock(BlockBase):
+    type: Literal["chart"]
+    title: Title | None = None
+    chart_type: Literal["bar", "line", "pie"]
+    labels: Annotated[list[Title], Field(min_length=1, max_length=500)]
+    series: Annotated[list[ChartSeries], Field(min_length=1, max_length=12)]
+
+    @model_validator(mode="after")
+    def valid_data(self):
+        unique(self.series)
+        if self.chart_type == "pie" and len(self.series) != 1:
+            raise ValueError("饼图仅支持一个数据系列")
+        numbers = []
+        for series in self.series:
+            if len(series.values) != len(self.labels):
+                raise ValueError("图表标签与数值数量不一致")
+            numbers.extend(value for value in series.values if value is not None)
+        if not numbers:
+            raise ValueError("图表没有有效数值")
+        if self.chart_type == "pie" and any(value < 0 for value in numbers):
+            raise ValueError("饼图不能使用负值")
+        return self
+
+
+class MermaidBlock(BlockBase):
+    type: Literal["mermaid"]
+    title: Title | None = None
+    content: Text
+
+    @model_validator(mode="after")
+    def safe_diagram(self):
+        # 与前端一致：模型只能提供图形语法，不能覆盖应用配置、样式或交互行为。
+        if not self.content.strip():
+            raise ValueError("流程图内容为空")
+        if self.content.lstrip().startswith("---") or re.search(
+            r"%%\s*\{|^\s*(?:click|style|classDef)\s", self.content, re.I | re.M
+        ):
+            raise ValueError("流程图包含不支持的配置、样式或交互指令")
+        return self
+
+
+class MindmapNode(ContentModel):
+    id: Identifier
+    label: Title
+    parent_id: Identifier | None = None
+
+
+class MindmapBlock(BlockBase):
+    type: Literal["mindmap"]
+    title: Title | None = None
+    nodes: Annotated[list[MindmapNode], Field(min_length=1, max_length=60)]
+
+    @model_validator(mode="after")
+    def valid_tree(self):
+        unique(self.nodes)
+        if sum(node.parent_id is None for node in self.nodes) != 1:
+            raise ValueError("思维导图需要唯一根节点")
+        by_id = {node.id: node for node in self.nodes}
+        for node in self.nodes:
+            seen = set()
+            while node is not None:
+                if node.id in seen:
+                    raise ValueError("思维导图存在循环")
+                seen.add(node.id)
+                if node.parent_id is None:
+                    break
+                if node.parent_id not in by_id:
+                    raise ValueError("思维导图父节点不存在")
+                node = by_id[node.parent_id]
+        return self
+
+
+class FileBlock(BlockBase):
+    type: Literal["file"]
+    record_id: Identifier
+    name: Annotated[str, StringConstraints(strict=True, max_length=1024)]
+    version: Line | None = None
+
+
+class ToolDisplayEvent(ContentModel):
+    # 参数是原始 JSON，允许 null；其余可选元数据继续沿用省略而非 null 的约定。
+    nullable_fields = frozenset({"arguments"})
+    id: Identifier
+    name: Annotated[str, StringConstraints(strict=True, max_length=200)]
+    arguments: JsonValue = Field(default_factory=dict)
+    result: Annotated[str, StringConstraints(strict=True, max_length=60000)] | None = None
+    status: Literal["running", "pending", "success", "error"] | None = None
+    execution_status: Literal["skipped"] | None = None
+    skip_reason: Title | None = None
+    cached: bool | None = None
+
+    @model_serializer(mode="wrap")
+    def preserve_null_arguments(self, handler):
+        result = handler(self)
+        if "arguments" in self.model_fields_set and self.arguments is None:
+            result["arguments"] = None
+        return result
+
+
+class ToolCallBlock(BlockBase):
+    type: Literal["tool_call"]
+    tool: ToolDisplayEvent
+
+
 ContentBlock = Annotated[
     TextBlock
     | OverviewBlock
@@ -158,7 +274,12 @@ ContentBlock = Annotated[
     | CodeBlock
     | TableBlock
     | DiagramBlock
-    | CollapsibleBlock,
+    | CollapsibleBlock
+    | ChartBlock
+    | MermaidBlock
+    | MindmapBlock
+    | FileBlock
+    | ToolCallBlock,
     Field(discriminator="type"),
 ]
 CollapsibleBlock.model_rebuild()

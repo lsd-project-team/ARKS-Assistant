@@ -6,7 +6,7 @@
 
 历史 `Message.content`、`Run.answer` 和 SSE 累积文本都是字符串。已保存消息通过 `MessageBubble → AnswerMarkdown → RichContentRenderer` 展示，运行中回复同样复用 `AnswerMarkdown`。`useConversation` 恢复原始消息，`useRunStream` 接收 `token / answer_replace / done`，`createAnswerBuffer` 按 32ms 合并更新，事件序号负责重连去重。
 
-本次扩展既有 Renderer、校验器和代码块，复用 React Markdown、GFM、`@pierre/diffs` 提供的 Shiki 4.5、`SourceReference` 的证据校验/源码定位、`ToolActivity` 的工具事件、`OriginalMaterialViewer` 的预览下载、现有主题及 820px 阅读宽度。没有修改后端、SSE、消息存储、Agent 提示词或正式数据，没有引入另一套聊天运行时。
+前端阶段扩展既有 Renderer、校验器和代码块，复用 React Markdown、GFM、`@pierre/diffs` 提供的 Shiki 4.5、`SourceReference` 的证据校验/源码定位、`ToolActivity` 的工具事件、`OriginalMaterialViewer` 的预览下载、现有主题及 820px 阅读宽度。随后同步后端块白名单、模型展示提示和事实核查投影；SSE、消息存储、API 和正式数据不变，没有引入另一套聊天运行时。
 
 参考了 [assistant-ui](https://www.assistant-ui.com/) 的组件组合、[Streamdown](https://streamdown.ai/) 的流式阅读与代码操作，以及用户提供的 [Lingxi AiRichContent](https://jxdoub.github.io/lingxi-ui/components/ai-rich-content.html)。思维导图评估了 [React Flow](https://reactflow.dev/learn/tutorials/mind-map-app-with-react-flow)：当前只读展示不需要节点编辑器，采用已新增 ECharts 的树布局，支持拖动、缩放、点击折叠和文字层级替代，不增加 React Flow 依赖。
 
@@ -84,7 +84,7 @@
 
 ## 边界与人工验收
 
-- 本次前端功能已实现；没有扩展后端既有八类块白名单或模型提示词。新增类型若通过原消息文本传来，前端可以展示，但后端格式检查可能仍记录 `invalid_or_incomplete_rich_content`，检查器保留原文。模型是否自主输出新增结构不作保证；后续若需要改变生成策略或后端格式检查，需要另行明确后端范围。
+- 后端已同步全部六类新增块，模型收到相同字段及使用条件；图表、导图、Markdown 正文进入原有核查投影。源码卡片仍需已读证据，工具和文件只能引用实际返回数据。文件修订号必须为 JSON 整数，源码版本仍为字符串；非法格式继续保留原文并降级，不做隐式类型转换。真实模型三轮 API/SSE 与前端渲染已通过，见[后端同步与端到端验收](../verification/rich-content-roundtrip-20261030.md)。模型生成具有不确定性，单次验收不表示所有问法都能产生正确结构。
 - 文件能力限已有交接资料；附件接口只提供当前文件，指定旧版本而当前版本不符时明确拒绝预览，不冒充历史附件。任意本机路径和外部下载 URL 不受支持。
-- 尚未做正式账号下的真实模型长回答/真实资料下载端到端验收；浏览器权限下的剪贴板、生产 CSP、实际移动设备和跨浏览器兼容性仍需人工核对。Mermaid 12 对现代浏览器有要求，加载/绘制失败会保留源码。
-- 本轮未运行后端测试或设备验证，因为没有后端或设备逻辑变更；没有采集覆盖率。浏览器验收未改正式登录、数据库或源码，也未重启已有后端服务。
+- 真实供应商通过临时账号、资料和源码完成端到端验收；正式业务长回答、生产 CSP、浏览器剪贴板权限、实际移动设备和跨浏览器兼容性仍需人工核对。Mermaid 12 对现代浏览器有要求，加载/绘制失败会保留源码。
+- 前端阶段未运行后端测试；后端同步阶段已执行相关后端回归。没有采集覆盖率或进行设备验证；未改正式登录、数据库或源码，也未重启已有后端服务。

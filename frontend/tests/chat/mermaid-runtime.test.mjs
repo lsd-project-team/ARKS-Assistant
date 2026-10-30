@@ -43,4 +43,15 @@ test('SVG 清理移除事件、脚本、外链及 HTML，配置覆盖在渲染�
   );
 });
 
+test('SVG 图片使用 viewBox 的固有尺寸，窄竖图不会按正文宽度放大', () => {
+  const svg = sanitizeDiagram(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:168px" viewBox="4 4 168 240"><text>步骤</text></svg>',
+  );
+  const root = svg.match(/^<svg[^>]*>/)[0];
+  assert.match(root, /width="168"/);
+  assert.match(root, /height="240"/);
+  assert.doesNotMatch(root, /100%|max-width/);
+  assert.match(svg, /步骤/);
+});
+
 test.after(() => dom.window.close());
