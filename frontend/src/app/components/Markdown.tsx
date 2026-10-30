@@ -8,6 +8,9 @@ import {
 } from 'react';
 import ReactMarkdown, { defaultUrlTransform, type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import { useSourceCitation } from '../../features/source_reader/hooks/useSourceCitation';
 import { CodeBlock } from '../../shared/ui/markdown/CodeBlock';
 import { api } from '../api/client';
@@ -139,7 +142,15 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
 }
 
 // 渲染组件保持同一身份，页面更新和源码跳转才不会重建代码块、丢失展开与换行状态。
-const markdownComponents: Components = { pre: MarkdownPre, a: MarkdownLink };
+const markdownComponents: Components = {
+  pre: MarkdownPre,
+  a: MarkdownLink,
+  table: ({ children }) => (
+    <div className="markdown-table-scroll" role="region" aria-label="表格，可横向滚动" tabIndex={0}>
+      <table>{children}</table>
+    </div>
+  ),
+};
 
 export function Markdown({
   content,
@@ -159,7 +170,9 @@ export function Markdown({
           <div className="markdown">
             <ReactMarkdown
               // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
-              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+              remarkPlugins={[[remarkGfm, { singleTilde: false }], remarkMath]}
+              // 只转换数学语法树；不启用 raw HTML，公式中的链接和 HTML 扩展也不受信任。
+              rehypePlugins={[[rehypeKatex, { throwOnError: false, trust: false, maxExpand: 500, maxSize: 20 }]]}
               urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
               components={markdownComponents}
             >

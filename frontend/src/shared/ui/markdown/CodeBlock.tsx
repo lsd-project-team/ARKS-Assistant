@@ -21,11 +21,13 @@ export function CodeBlock({
   children,
   filename,
   startLine,
+  rawContent,
   streaming = false,
 }: {
   children: ReactNode;
   filename?: string;
   startLine?: number;
+  rawContent?: string;
   streaming?: boolean;
 }) {
   const [wrap, setWrap] = useState(false);
@@ -34,7 +36,8 @@ export function CodeBlock({
   const language = isValidElement<{ className?: string }>(element)
     ? element.props.className?.replace(/^language-/, '')
     : undefined;
-  const content = codeText(children).replace(/\n$/, '');
+  // 结构化代码必须逐字复制；Markdown 围栏的文本同样保留换行，不 trim 原文。
+  const content = rawContent ?? codeText(children);
   const long = content.split('\n').length > 18;
   async function copy() {
     try {
@@ -51,6 +54,7 @@ export function CodeBlock({
       <div className="answer-code-toolbar">
         <span className="answer-code-name" title={filename}>
           {filename || language || '代码'}
+          {filename && language && <small className="answer-code-language">{language}</small>}
         </span>
         <div>
           <button

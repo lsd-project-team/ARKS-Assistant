@@ -65,7 +65,7 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module.exports,
 );
 const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
-const render = (content, evidence = []) => {
+const render = (content, evidence = [], streaming = false) => {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   client.setQueryData(['source-evidence', 'p', 'r'], { source_evidence: evidence });
   try {
@@ -73,7 +73,7 @@ const render = (content, evidence = []) => {
       createElement(
         QueryClientProvider,
         { client },
-        createElement(module.exports.AnswerMarkdown, { content, runId: 'r' }),
+        createElement(module.exports.AnswerMarkdown, { content, runId: 'r', streaming }),
       ),
     );
   } finally {
@@ -181,4 +181,34 @@ test('已删除的项目资料引用只保留文字，不显示读取按钮或�
   const html = render('历史[旧资料](material:project-a/manual/1#L1)正文。');
   assert.match(html, /历史<span>旧资料<\/span>正文/);
   assert.doesNotMatch(html, /<button|<a|material:/);
+});
+
+test('KaTeX 同时解析行内和独立公式，坏公式保留可读原文', () => {
+  const html = render('行内 $E=mc^2$。\n\n$$\n\\frac{1}{2} + x\n$$');
+  assert.match(html, /class="katex"/);
+  assert.match(html, /katex-display/);
+  assert.match(html, /<math/);
+  const invalid = render('$\\frac{broken$');
+  assert.match(invalid, /katex-error/);
+  assert.match(invalid, /frac/);
+  const unsafe = render('$\\href{javascript:alert(1)}{危险}$');
+  assert.doesNotMatch(unsafe, /href="javascript:|<script/);
+});
+
+test('未闭合的流式代码块保留长行、空白和文本，结束后不修改内容', () => {
+  const code = '  const value = "中英文";\n' + 'x'.repeat(8000) + '\n\n';
+  const partial = render('```typescript\n' + code, [], true);
+  assert.ok(partial.includes('x'.repeat(8000)));
+  assert.match(partial, /typescript/);
+  assert.match(partial, /复制代码/);
+  const completed = render('```typescript\n' + code + '```');
+  assert.ok(completed.includes('x'.repeat(8000)));
+});
+
+test('Markdown 表格使用独立滚动容器且保留转义竖线及单元格对齐', () => {
+  const html = render('| 中文 | Value |\n|---|---:|\n| A\\|B | 0 |');
+  assert.match(html, /class="markdown-table-scroll"/);
+  assert.match(html, /<thead>/);
+  assert.match(html, /A\|B/);
+  assert.match(html, /text-align:right/);
 });
