@@ -76,6 +76,9 @@ def test_run_sources_events_and_trace_hide_another_accounts_private_memory(servi
         repository.event(
             run["id"], "memory_save", {"name": "PRIVATE-NAME", "scope": "user", "status": "saved"}
         )
+        repository.event(
+            run["id"], "memory_selection", {"status": "PRIVATE-SELECTION", "candidate_count": 1}
+        )
         repository.finish(run["id"], "公开的回答")
         assert "PRIVATE-MEMORY" in client.get(f"{prefix}/runs/{run['id']}/context").text
         sign_in(client, "admin")

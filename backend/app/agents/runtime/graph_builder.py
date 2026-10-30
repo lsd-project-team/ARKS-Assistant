@@ -28,6 +28,7 @@ from app.infrastructure.providers.models import StateInspectionModel, create_mod
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
 from app.modules.chat.schemas import SourceOptions
 from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
+from app.modules.memory.selection import MemorySelection
 from app.modules.projects.context import project_prompt
 from app.modules.source_analysis.backend import SourceBackend
 from app.modules.source_analysis.evidence import (
@@ -133,10 +134,10 @@ class AgentGraphBuilder:
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         budget = min(int(settings.model.context_tokens * 0.75), int(available * 0.9))
         memory_prompt, included_memories = (
-            await asyncio.to_thread(
-                runtime.memories.prompt_snapshot, memory_query, max_tokens=min(8000, available // 6)
+            await MemorySelection(runtime.memories, model, settings.model, emit).prepare(
+                memory_query or requested_work, max_tokens=min(8000, available // 6)
             )
-            if options.use_memory
+            if options.use_memory and not inspection
             else ("", [])
         )
         summary = BudgetedSummarization(

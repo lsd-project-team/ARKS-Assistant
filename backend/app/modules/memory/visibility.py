@@ -32,6 +32,8 @@ def visible_run_event(event, actor_id):
         }
     if not owner or actor_id == owner:
         return event
+    if kind == "memory_selection":
+        return None
     if kind == "memory_save" and payload.get("scope") == "user":
         return None
     if kind in {"tool_start", "tool_end"} and payload.get("name") == "remember":

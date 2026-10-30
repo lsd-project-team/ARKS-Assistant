@@ -19,7 +19,10 @@ class DeterministicModel(BaseChatModel):
 
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         summary_request = "Context Extraction" in str(messages[0].content)
-        if "你只负责筛选资料" in messages[0].text:
+        if "你只负责复核长期记忆" in messages[0].text:
+            records = json.loads(messages[-1].text)["candidates"]
+            content = json.dumps({"memory_ids": [row["id"] for row in records]})
+        elif "你只负责筛选资料" in messages[0].text:
             records = json.loads(messages[-1].text)["records"]
             content = json.dumps({"selections": fixture_selections(records)})
         elif "你负责核查历史经验回答" in messages[0].text:

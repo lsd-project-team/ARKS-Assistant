@@ -10,12 +10,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
 
+from app.agents.runtime.model_budget import ProjectModelBudget  # noqa: E402
 from app.bootstrap import create_services  # noqa: E402
 from app.core.config import Paths, SettingsStore  # noqa: E402
 from app.infrastructure.database.registry import Base  # noqa: E402
+from app.infrastructure.providers.models import close_models, create_model  # noqa: E402
 from app.modules.chat.models import Thread  # noqa: E402
 from app.modules.memory.background import BackgroundMemories  # noqa: E402
 from app.modules.memory.models import MemoryExtraction  # noqa: E402
+from app.modules.memory.selection import MemorySelection  # noqa: E402
 
 
 async def verify():
@@ -54,7 +57,20 @@ async def verify():
                     raise RuntimeError(
                         "真实记忆生成未通过：" + (job.error_code if job else "未调度")
                     )
-            prompt, included = services.memories.prompt_snapshot("回答偏好")
+            model = create_model(configuration.model)
+            model.callbacks = [
+                ProjectModelBudget(
+                    services.runtime.model_ledger,
+                    configuration.model.context_tokens,
+                    output_tokens=configuration.model.output_tokens,
+                )
+            ]
+            try:
+                prompt, included = await MemorySelection(
+                    services.memories, model, configuration.model, lambda *_: None
+                ).prepare("回答偏好")
+            finally:
+                await close_models([model])
             if not included or "中文" not in prompt or "依据" not in prompt:
                 raise RuntimeError("真实生成结果未保留测试偏好")
             before = job.attempts
