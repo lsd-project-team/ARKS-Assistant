@@ -33,11 +33,7 @@ def register(router: APIRouter, ctx: HandoverHTTPContext):
             "fields": FIELDS,
             "states": STATES,
             "values": VALUES,
-            "schemas": {
-                kind: model.model_json_schema()
-                for kind, model in PAYLOADS.items()
-                if kind not in {"job", "candidate"}
-            },
+            "schemas": {kind: model.model_json_schema() for kind, model in PAYLOADS.items()},
         }
 
     @router.get("")

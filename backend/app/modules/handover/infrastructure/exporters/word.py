@@ -113,7 +113,6 @@ def render_word(package, records):
         "training",
         "baseline",
         "source",
-        "interview",
         "task",
         "decision",
         "constraint",

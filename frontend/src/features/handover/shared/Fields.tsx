@@ -59,7 +59,7 @@ export function Fields({
                 );
                 const multiline = !shortFields.has(key) && !property.enum && !relation;
                 return (
-                  <label key={key} className={key === 'transcript' ? 'handover-field-wide' : ''}>
+                  <label key={key}>
                     <span>{label}</span>
                     {relation && property.type === 'array' ? (
                       <HandoverMultiSelect
@@ -105,7 +105,7 @@ export function Fields({
                     ) : multiline ? (
                       <textarea
                         aria-label={label}
-                        rows={key === 'transcript' ? 9 : 3}
+                        rows={3}
                         maxLength={property.maxLength || 100000}
                         value={text(value[key])}
                         onChange={(event) => set(key, event.target.value)}
@@ -221,9 +221,7 @@ export function EvidenceFields({
   records: HandoverRecord[];
 }) {
   const evidence = refs(value);
-  const available = records.filter(
-    (row) => !['job', 'candidate', 'package'].includes(row.kind) && row.state !== 'archived',
-  );
+  const available = records.filter((row) => row.kind !== 'package' && row.state !== 'archived');
   const set = (index: number, changes: Partial<Evidence>) =>
     onChange(
       evidence.map((item, position) => (position === index ? { ...item, ...changes } : item)),

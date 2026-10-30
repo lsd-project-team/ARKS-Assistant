@@ -106,23 +106,22 @@ def test_global_history_optimistic_version_and_dialog_project_archive(client):
     row = create(
         client,
         first,
-        "interview",
-        "交接访谈",
-        author="工程师",
-        date="2026-10-12",
-        transcript="报警恢复尚未设备验证",
+        "issue",
+        "交接问题",
+        owner="工程师",
+        question="报警恢复尚未设备验证",
     )
     assert client.get(url(second) + f"/records/{row['id']}").json()["scope_id"] == "global"
     confirmed = action(client, first, row).json()
-    edited = update(client, first, confirmed, correction="先离线验证").json()
+    edited = update(client, first, confirmed, answer="先离线验证").json()
     assert edited["state"] == "needs_review"
     old = client.get(url(first) + f"/records/{row['id']}?version={confirmed['version']}").json()
-    assert old["state"] == "confirmed" and old["payload"]["correction"] == ""
+    assert old["state"] == "confirmed" and old["payload"]["answer"] == ""
     assert old["confirmation"]["actor"] == "设备负责人"
-    assert update(client, first, confirmed, correction="过期编辑").status_code == 409
+    assert update(client, first, confirmed, answer="过期编辑").status_code == 409
     assert action(client, first, confirmed).status_code == 409
     client.patch(f"/api/projects/{first}", json={"state": "archived"})
-    assert update(client, first, edited, correction="对话项目归档后仍可编辑").status_code == 200
+    assert update(client, first, edited, answer="对话项目归档后仍可编辑").status_code == 200
     assert client.get(url(first)).status_code == 200
     assert client.get(url(first) + "/events").json()[0]["actor"] == "更正人"
 

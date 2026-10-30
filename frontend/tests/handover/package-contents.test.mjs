@@ -6,19 +6,19 @@ import {
   packageDescription,
 } from '../../src/features/handover/packages/packageContents.ts';
 
-test('历史访谈归入资料，包内分类保留打包时版本，更新和归档不替换固定引用', () => {
+test('包内分类保留打包时版本，更新和归档不替换固定引用', () => {
   const payload = {
     records: [
       { record_id: 'task', version: 2 },
       { record_id: 'source', version: 1 },
-      { record_id: 'interview', version: 3 },
+      { record_id: 'second-source', version: 3 },
       { record_id: 'decision', version: 2 },
     ],
   };
   const records = [
     { id: 'source', kind: 'source', title: '资料', version: 9, state: 'archived' },
     { id: 'task', kind: 'task', title: '工作', version: 6 },
-    { id: 'interview', kind: 'interview', title: '访谈', version: 5 },
+    { id: 'second-source', kind: 'source', title: '另一份资料', version: 5 },
     { id: 'decision', kind: 'decision', title: '决策', version: 3 },
   ];
   const original = structuredClone({ payload, records });
@@ -31,7 +31,7 @@ test('历史访谈归入资料，包内分类保留打包时版本，更新和�
     groups.flatMap((group) => group.items.map((item) => [item.record_id, item.version])),
     [
       ['source', 1],
-      ['interview', 3],
+      ['second-source', 3],
       ['task', 2],
       ['decision', 2],
     ],

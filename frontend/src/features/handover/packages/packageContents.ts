@@ -29,9 +29,9 @@ export function packageGroups(payload: HandoverRecord['payload'], records: Hando
       ...category,
       items: items.filter((item) => {
         const kind = byId.get(item.record_id)?.kind;
-        if (category.id === 'source') return kind === 'source' || kind === 'interview';
+        if (category.id === 'source') return kind === 'source';
         return category.id === 'other'
-          ? !['source', 'interview', 'task'].includes(kind || '')
+          ? !['source', 'task'].includes(kind || '')
           : kind === category.id;
       }),
     }))

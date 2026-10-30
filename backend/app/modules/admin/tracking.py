@@ -17,6 +17,7 @@ from app.modules.admin.models import (
     UsageVisit,
 )
 from app.modules.chat.models import Message, Thread
+from app.modules.handover.domain.schemas import PAYLOADS
 from app.modules.handover.infrastructure.persistence.models import HandoverRecord
 from app.modules.memory.models import MemoryRecord
 from app.modules.projects.models import Project
@@ -167,7 +168,7 @@ class UsageTracking:
                     .where(Thread.state != "deleted")
                 )
                 or 0,
-                "交接记录": count(HandoverRecord, HandoverRecord.kind.not_in(["job", "candidate"])),
+                "交接记录": count(HandoverRecord, HandoverRecord.kind.in_(PAYLOADS)),
             }
             daily = {}
 

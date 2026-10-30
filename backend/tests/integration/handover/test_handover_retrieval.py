@@ -1,8 +1,10 @@
 """交接资料接入、改写命中、条件排除、固定版本与缓存的行为验收。"""
 
+import hashlib
+
 from sqlalchemy import event
 
-from app.modules.handover.application.commands import Action, DebugWrite, Write
+from app.modules.handover.application.commands import Action, DebugWrite
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.knowledge.corpora.debug_issues import DebugIssueCorpus
@@ -13,29 +15,27 @@ from app.modules.knowledge.search import catalog
 def source(
     store, title="恢复生产", content="机器停止后重新启动生产，需要先恢复运行条件。", **payload
 ):
-    return store.create("source", title, {"content": content, **payload}, "测试")
+    return store.create(
+        "source",
+        title,
+        {
+            "content": content,
+            "filename": title + ".txt",
+            "sha256": hashlib.sha256(content.encode()).hexdigest(),
+            **payload,
+        },
+        "测试",
+    )
 
 
 def test_handover_documents_fixed_versions_archive_supersede_and_partial(services):
     store = HandoverStore(database=services[1])
-    row = store.create(
-        "interview",
-        "恢复生产",
-        {"transcript": "机器停止后重新启动生产，需要先恢复运行条件。"},
-        "测试",
-    )
+    row = source(store)
     old = HandoverMaterialCorpus(services[1])
     match = old.search("停机以后怎样重新生产")[0]
     assert match["citation"] == f"handover-source:{row['id']}/1#L1-L1"
-    changed = store.update(
-        row["id"],
-        Write(
-            kind="interview",
-            title="新版本",
-            payload={"transcript": "先确认联锁，再恢复运行。"},
-            actor="测试",
-            version=1,
-        ),
+    changed = store.action(
+        row["id"], "confirm", Action(version=1, actor="测试", opinion="复核固定资料")
     )
     assert old.excerpt(row["id"])["version"] == 1
     assert "机器停止" in old.excerpt(row["id"])["content"]
@@ -92,12 +92,7 @@ async def test_runtime_excludes_paused_handover_sources_and_preserves_records(
 
 def test_incremental_cache_avoids_reloading_body_and_n_plus_one_queries(services, monkeypatch):
     store = HandoverStore(database=services[1])
-    first = store.create(
-        "interview",
-        "恢复生产",
-        {"transcript": "机器停止后重新启动生产，需要先恢复运行条件。"},
-        "测试",
-    )
+    first = source(store)
     second = source(store, "其他资料", "按钮字体大小")
     index = catalog(services[1])
     monkeypatch.setattr(index.retrieval, "scores", lambda *_: {})
@@ -118,16 +113,7 @@ def test_incremental_cache_avoids_reloading_body_and_n_plus_one_queries(services
         event.remove(services[1].engine, "before_cursor_execute", observed)
     assert index.loaded_documents - before == 2
     assert len(statements) == 1 and "payload_json" not in statements[0]
-    store.update(
-        first["id"],
-        Write(
-            kind="interview",
-            title="恢复生产",
-            payload={"transcript": "更新了恢复规程。"},
-            actor="测试",
-            version=1,
-        ),
-    )
+    store.action(first["id"], "confirm", Action(version=1, actor="测试", opinion="复核固定资料"))
     latest = HandoverMaterialCorpus(services[1])
     assert index.loaded_documents - before == 3
     assert latest.excerpt(first["id"])["version"] == 2

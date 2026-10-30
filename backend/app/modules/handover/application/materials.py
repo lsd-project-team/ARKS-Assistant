@@ -42,12 +42,10 @@ def original_file(store: RecordRepository, identifier: str):
     except FileNotFoundError:
         row = store.get(identifier)
         payload = row["payload"]
-        content = (
-            payload.get("content", "") if row["kind"] == "source" else payload.get("transcript", "")
-        )
-        if row["kind"] not in {"source", "interview"} or not content:
+        content = payload.get("content", "")
+        if row["kind"] != "source" or not content:
             raise FileNotFoundError("原始附件不存在") from None
-        # 仅兼容旧的纯文本记录；不解析新文件，也不改写或覆盖历史正文。
+        # 纯文本资料可按已保存正文下载，不解析新文件或改写原文。
         filename = re.sub(r'[\\/:*?"<>|\r\n]', "_", row["title"]) + ".txt"
         return {"content": content.encode("utf-8"), "name": filename, "media_type": "text/plain"}
 

@@ -13,7 +13,7 @@ def package_references(store, record_ids):
         key = row["id"], row["version"]
         if key in seen:
             continue
-        if row["state"] == "archived" or row["kind"] in {"job", "candidate", "package"}:
+        if row["state"] == "archived" or row["kind"] == "package":
             raise ValueError("交接包来源有归档或非业务记录，请先复核选择范围")
         seen.add(key)
         if len(seen) > 1000:

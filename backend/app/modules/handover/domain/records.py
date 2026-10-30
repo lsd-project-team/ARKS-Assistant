@@ -31,15 +31,13 @@ class Record:
         return cls(row["id"], row["kind"], row["version"], row["state"], row["payload"])
 
     def review(self, action, records) -> ReviewOutcome:
-        if self.kind == "job":
-            raise ValueError("请使用运行的取消或重试操作")
         if action == "confirm":
             return self._confirm(records)
         if action == "reject":
             if self.kind == "package":
                 raise ValueError("交接包仅使用未确认和已确认状态")
-            if self.kind in {"task", "candidate"}:
-                raise ValueError("工作项和 AI 候选请使用各自的处理入口")
+            if self.kind == "task":
+                raise ValueError("工作项请使用各自的处理入口")
             if self.state not in {"draft", "needs_review"}:
                 raise ValueError("仅待确认或待重新复核的内容可以拒绝")
             return ReviewOutcome("rejected", {})
@@ -61,6 +59,8 @@ class Record:
             raise ValueError(errors[self.state])
         # supersedes 是历史链路，旧资料被拒绝不阻止补充后的新资料审核。
         current_links = linked_ids({**self.payload, "supersedes": ""})
+        if current_links - records.keys():
+            raise ValueError("关联记录不可用，请重新核对来源")
         if any(records[key]["state"] == "rejected" for key in current_links):
             raise ValueError("关联内容已被拒绝，请复核来源后再确认")
         confirmation_gate(

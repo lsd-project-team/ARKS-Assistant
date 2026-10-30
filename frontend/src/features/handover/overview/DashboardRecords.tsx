@@ -4,7 +4,6 @@ import {
   ChevronRight,
   CircleDot,
   FileText,
-  MessageSquare,
   NotebookPen,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -115,9 +114,7 @@ export function DashboardRecordList({
           aria-label={'查看记录：' + row.title}
         >
           <span className="dashboard-record-icon">
-            {row.kind === 'interview' ? (
-              <MessageSquare size={15} />
-            ) : row.kind === 'task' ? (
+            {row.kind === 'task' ? (
               <CircleDot size={15} />
             ) : row.kind === 'debug_issue' ? (
               <NotebookPen size={15} />

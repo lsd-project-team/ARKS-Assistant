@@ -132,11 +132,6 @@ export function RecordEditor({
               setDraft({
                 ...draft,
                 version: incoming.version,
-                // 访谈表单不再编辑引用，冲突重试保留服务器最新的关联，避免隐藏字段覆盖。
-                payload:
-                  kind === 'interview'
-                    ? { ...draft.payload, evidence: incoming.payload.evidence }
-                    : draft.payload,
               });
               setIncoming(undefined);
               setError(undefined);
@@ -191,14 +186,11 @@ export function RecordEditor({
             onChange={(steps) => setPayload({ ...draft.payload, steps })}
           />
         )}
-        {/* 访谈原文自身就是来源；隐藏手工证据输入，保存时仍保留已有引用。 */}
-        {kind !== 'interview' && (
-          <EvidenceFields
-            value={draft.payload.evidence}
-            onChange={(evidence) => setPayload({ ...draft.payload, evidence })}
-            records={records.filter((item) => item.id !== row?.id)}
-          />
-        )}
+        <EvidenceFields
+          value={draft.payload.evidence}
+          onChange={(evidence) => setPayload({ ...draft.payload, evidence })}
+          records={records.filter((item) => item.id !== row?.id)}
+        />
       </fieldset>
     </HandoverModal>
   );

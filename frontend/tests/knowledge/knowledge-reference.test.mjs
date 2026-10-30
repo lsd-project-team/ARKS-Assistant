@@ -45,16 +45,10 @@ test('历史交接引用保留记录、版本和行号，拒绝不完整或越�
     assert.equal(handoverReference(href), undefined);
 });
 
-test('普通资料保留原文与行号，旧访谈资料按既有正文结构读取', () => {
+test('资料正文保留原文与行号，缺少正文时不构造内容', () => {
   assert.equal(
     handoverDocumentText({ kind: 'source', payload: { content: '第一行\n第二行' } }),
     '第一行\n第二行',
   );
-  assert.equal(
-    handoverDocumentText({
-      kind: 'interview',
-      payload: { topic: '调试记录', transcript: '现场描述' },
-    }),
-    '主题：调试记录\n访谈原文：现场描述',
-  );
+  assert.equal(handoverDocumentText({ kind: 'source', payload: {} }), '');
 });

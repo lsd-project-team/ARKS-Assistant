@@ -1,7 +1,5 @@
 export type Kind =
   | 'source'
-  | 'interview'
-  | 'candidate'
   | 'task'
   | 'decision'
   | 'constraint'
@@ -13,8 +11,7 @@ export type Kind =
   | 'framework'
   | 'training'
   | 'receipt'
-  | 'package'
-  | 'job';
+  | 'package';
 export type Payload = Record<string, unknown>;
 export interface Evidence {
   record_id: string;

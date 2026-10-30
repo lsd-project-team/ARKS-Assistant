@@ -115,12 +115,9 @@ export function packageRecordCount(record: HandoverRecord) {
 }
 
 export function overviewSummary(overview: Overview, events?: Event[]) {
-  const records = overview.records.filter(
-    (row) => row.state !== 'archived' && row.kind !== 'job' && row.kind !== 'candidate',
-  );
+  const records = overview.records.filter((row) => row.state !== 'archived');
   const sources = records.filter((row) => row.kind === 'source');
-  const interviews = records.filter((row) => row.kind === 'interview');
-  const materials = selectMaterials([...sources, ...interviews], 'all');
+  const materials = selectMaterials(sources, 'all');
   const materialTypes: ChartDatum[] = materialFileTypes.map(({ id, label }) => ({
     id,
     label,
@@ -172,11 +169,9 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
   }
   return {
     sources,
-    interviews,
     materials,
     materialTypes,
     latestSource: newestRecords(sources)[0],
-    latestInterview: newestRecords(interviews)[0],
     tasks,
     issues,
     issueTypes,
@@ -204,7 +199,7 @@ export function overviewSummary(overview: Overview, events?: Event[]) {
     eventBars,
     recentEvents: [...(events || [])].sort((a, b) => b.id - a.id).slice(0, 2),
     reviewCount: records.filter(
-      (row) => !['task', 'source', 'interview'].includes(row.kind) && row.state === 'needs_review',
+      (row) => !['task', 'source'].includes(row.kind) && row.state === 'needs_review',
     ).length,
   };
 }

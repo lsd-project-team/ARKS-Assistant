@@ -2,8 +2,6 @@
 
 KINDS = {
     "source": "资料",
-    "interview": "原作者访谈",
-    "candidate": "AI 候选",
     "task": "未完成工作",
     "decision": "设计决策",
     "constraint": "设备与安全约束",
@@ -16,7 +14,6 @@ KINDS = {
     "training": "功能讲解与培训",
     "receipt": "接收与复述记录",
     "package": "交接包",
-    "job": "AI 作业",
 }
 STATES = {
     "draft": "待确认",
@@ -89,13 +86,7 @@ FIELDS = {
     "parse_status": "解析状态",
     "parse_notes": "解析范围",
     "content": "资料正文",
-    "author": "原作者",
-    "interviewer": "访谈人",
     "date": "日期",
-    "topic": "访谈主题",
-    "questions": "访谈问题",
-    "transcript": "访谈原文",
-    "correction": "作者更正",
     "category": "类别",
     "work_status": "工作状态",
     "evidence_status": "证据状态",

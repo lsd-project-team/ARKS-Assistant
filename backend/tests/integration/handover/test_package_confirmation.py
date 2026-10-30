@@ -20,10 +20,10 @@ def create_package(client):
     source = client.post(
         "/api/handover/records",
         json={
-            "kind": "interview",
+            "kind": "issue",
             "title": "原始处理经验",
             "actor": "整理人",
-            "payload": {"transcript": "保留打包时的经验"},
+            "payload": {"question": "保留打包时的经验"},
         },
     )
     assert source.status_code == 201, source.text
@@ -71,7 +71,7 @@ def test_download_requires_confirmation_and_old_links_cannot_bypass_invalidation
             "title": source["title"],
             "version": source["version"],
             "actor": "整理人",
-            "payload": {**source["payload"], "transcript": "来源内容已更新"},
+            "payload": {**source["payload"], "question": "来源内容已更新"},
         },
     )
     assert updated.status_code == 200, updated.text

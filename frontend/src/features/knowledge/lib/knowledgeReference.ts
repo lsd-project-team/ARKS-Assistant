@@ -19,16 +19,5 @@ export function handoverReference(href: string) {
 }
 
 export function handoverDocumentText(row: HandoverRecord) {
-  if (row.kind !== 'interview') return text(row.payload.content);
-  return (
-    [
-      ['topic', '主题'],
-      ['questions', '问题'],
-      ['transcript', '访谈原文'],
-      ['correction', '补充更正'],
-    ] as const
-  )
-    .filter(([key]) => text(row.payload[key]))
-    .map(([key, label]) => `${label}：${text(row.payload[key])}`)
-    .join('\n');
+  return text(row.payload.content);
 }

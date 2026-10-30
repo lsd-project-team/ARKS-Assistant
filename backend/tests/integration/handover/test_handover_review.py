@@ -80,22 +80,20 @@ def test_rejected_source_invalidates_confirmed_dependents_and_prevents_confirmat
     response = client.post(
         "/api/handover/records",
         json={
-            "kind": "interview",
-            "title": "引用原文的访谈",
+            "kind": "issue",
+            "title": "引用原文的说明",
             "actor": "整理人",
             "payload": {
-                "author": "原作者",
-                "date": "2026-10-14",
-                "transcript": "保留访谈原文。",
+                "question": "保留说明原文。",
                 "evidence": [{"record_id": raw["id"], "version": 1}],
             },
         },
     )
     assert response.status_code == 201, response.text
-    interview = response.json()
-    assert review(client, interview, "confirm").status_code == 200
+    note = response.json()
+    assert review(client, note, "confirm").status_code == 200
     assert review(client, raw).status_code == 200
-    current = client.get(f"/api/handover/records/{interview['id']}").json()
+    current = client.get(f"/api/handover/records/{note['id']}").json()
     assert current["state"] == "needs_review" and current["version"] == 3
     denied = review(client, current, "confirm")
     assert denied.status_code == 409 and "关联内容已被拒绝" in denied.text
@@ -107,28 +105,28 @@ def test_edit_after_rejection_can_be_reviewed_without_changing_rejected_version(
     created = client.post(
         "/api/handover/records",
         json={
-            "kind": "interview",
-            "title": "待补充的访谈",
+            "kind": "issue",
+            "title": "待补充的说明",
             "actor": "整理人",
-            "payload": {"author": "原作者", "date": "2026-10-14", "transcript": "原访谈"},
+            "payload": {"question": "原说明"},
         },
     ).json()
     rejected = review(client, created).json()
     updated = client.patch(
         f"/api/handover/records/{created['id']}",
         json={
-            "kind": "interview",
+            "kind": "issue",
             "title": created["title"],
             "actor": "整理人",
             "version": rejected["version"],
-            "payload": {**created["payload"], "transcript": "补充实际工况的访谈"},
+            "payload": {**created["payload"], "question": "补充实际工况的说明"},
         },
     )
     assert updated.status_code == 200
     assert updated.json()["state"] == "draft"
     assert review(client, updated.json(), "confirm").status_code == 200
     old = client.get(f"/api/handover/records/{created['id']}?version=2").json()
-    assert old["state"] == "rejected" and old["payload"]["transcript"] == "原访谈"
+    assert old["state"] == "rejected" and old["payload"]["question"] == "原说明"
 
 
 @pytest.mark.parametrize("terminal", ["confirm", "archive"])
@@ -141,22 +139,20 @@ def test_rejection_cannot_overwrite_completed_or_archived_state(client, terminal
 
 def test_confirmation_refuses_stale_evidence_without_writing_result(client):
     raw = source(client)
-    interview = client.post(
+    note = client.post(
         "/api/handover/records",
         json={
-            "kind": "interview",
-            "title": "来源已经更新的访谈",
+            "kind": "issue",
+            "title": "来源已经更新的说明",
             "actor": "整理人",
             "payload": {
-                "author": "原作者",
-                "date": "2026-10-14",
-                "transcript": "原访谈",
+                "question": "原说明",
                 "evidence": [{"record_id": raw["id"], "version": 1}],
             },
         },
     ).json()
     assert review(client, raw, "confirm").status_code == 200
-    result = review(client, interview, "confirm")
+    result = review(client, note, "confirm")
     assert result.status_code == 409 and "来源有新版本" in result.text
-    current = client.get(f"/api/handover/records/{interview['id']}").json()
+    current = client.get(f"/api/handover/records/{note['id']}").json()
     assert current["state"] == "draft" and current["version"] == 1

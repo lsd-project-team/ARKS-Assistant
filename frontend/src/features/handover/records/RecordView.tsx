@@ -10,7 +10,7 @@ import { RecordReview } from '../reviews/RecordReview';
 import { HandoverModal } from '../shared/HandoverModal';
 import { Status } from '../shared/RecordCard';
 import type { Client } from '../shared/client';
-import type { Definitions, HandoverRecord, Kind, Payload } from '../shared/types';
+import type { Definitions, HandoverRecord } from '../shared/types';
 import { text } from '../shared/types';
 import { TaskDetail } from '../tasks/TaskDetail';
 import { taskLegacyPayload } from '../tasks/taskProgress';
@@ -61,7 +61,7 @@ export function RecordView({
   const history = useQuery({
     queryKey: ['handover-history', scopeId, identifier],
     queryFn: () => client.get<RecordRevision[]>(`/records/${identifier}/history`),
-    enabled: canReview && !!query.data && !['source', 'interview'].includes(query.data.kind),
+    enabled: canReview && !!query.data && query.data.kind !== 'source',
   });
   const [action, setAction] = useState<'' | 'archive' | 'restore'>('');
   const [opinion, setOpinion] = useState('');
@@ -103,7 +103,7 @@ export function RecordView({
       setBusy(false);
     }
   }
-  if (row && ['source', 'interview'].includes(row.kind)) {
+  if (row?.kind === 'source') {
     return <OriginalMaterialViewer row={row} client={client} onClose={onClose} />;
   }
   if (row && row.kind !== 'package' && reviewOnly && canReview) {
@@ -135,15 +135,7 @@ export function RecordView({
         }}
         renderContent={(displayed) => (
           <RecordContent
-            row={
-              displayed.kind === 'candidate'
-                ? {
-                    ...displayed,
-                    kind: text(displayed.payload.target_kind) as Kind,
-                    payload: displayed.payload.proposed as Payload,
-                  }
-                : displayed
-            }
+            row={displayed}
             records={records}
             definitions={definitions}
             onOpen={onOpen}
@@ -251,32 +243,12 @@ export function RecordView({
             </span>
             {!version &&
               !readOnly &&
-              !['source', 'package', 'job', 'candidate'].includes(row.kind) &&
+              !['source', 'package'].includes(row.kind) &&
               row.state !== 'archived' && <Button onClick={() => onEdit(row)}>编辑</Button>}
             {onDiscuss && <Button onClick={() => onDiscuss(row)}>在对话中讨论</Button>}
           </div>
-          {row.kind === 'candidate' ? (
-            <>
-              <p className="handover-notice">
-                AI 候选 · {definitions.kinds[text(row.payload.target_kind) as Kind]}
-                <br />
-                {text(row.payload.reason)}
-              </p>
-              <RecordContent
-                row={{
-                  ...row,
-                  kind: text(row.payload.target_kind) as Kind,
-                  payload: row.payload.proposed as Payload,
-                }}
-                records={records}
-                definitions={definitions}
-                onOpen={onOpen}
-              />
-            </>
-          ) : (
-            <RecordContent row={row} records={records} definitions={definitions} onOpen={onOpen} />
-          )}
-          {!readOnly && !version && !['job', 'candidate'].includes(row.kind) && (
+          <RecordContent row={row} records={records} definitions={definitions} onOpen={onOpen} />
+          {!readOnly && !version && (
             <div className="handover-actions handover-form-section">
               <Button
                 disabled={busy}

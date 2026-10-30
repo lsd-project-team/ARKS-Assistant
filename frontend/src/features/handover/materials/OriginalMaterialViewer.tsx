@@ -21,9 +21,7 @@ export function OriginalMaterialViewer({
   const [error, setError] = useState<unknown>();
   const name = materialName(row);
   const original = `/sources/${encodeURIComponent(row.id)}/original`;
-  const legacyText =
-    !row.original_file &&
-    text(row.kind === 'interview' ? row.payload.transcript : row.payload.content);
+  const savedText = !row.original_file && text(row.payload.content);
   return (
     <HandoverModal
       title={name}
@@ -61,10 +59,10 @@ export function OriginalMaterialViewer({
             src={`/api/handover${original}?inline=true`}
           />
         )
-      ) : legacyText ? (
+      ) : savedText ? (
         <>
           <p className="muted">这条历史资料没有附件，以下为原有文本。</p>
-          <pre className="material-original-text">{legacyText}</pre>
+          <pre className="material-original-text">{savedText}</pre>
         </>
       ) : (
         <div className="material-original-fallback">

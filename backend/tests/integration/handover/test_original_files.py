@@ -151,15 +151,15 @@ def test_existing_text_and_fixed_references_remain_available_without_new_extract
     store = HandoverStore(client.app.state.projects)
     content = "旧文本\r\n  保留空白  \n"
     old = import_text(store, "历史文件", content, {}, "原整理人")
-    interview = store.create("interview", "历史访谈", {"transcript": content}, "原访谈整理人")
-    for row in [old, interview]:
+    saved_text = store.create("source", "文本资料", {"content": content}, "资料整理人")
+    for row in [old, saved_text]:
         before = store.get(row["id"], 1)
         original = client.get(f"/api/handover/sources/{row['id']}/original?inline=true")
         assert original.status_code == 200 and original.content == content.encode()
         assert original.headers["content-type"].startswith("text/plain")
         assert store.get(row["id"], 1) == before
     assert store.get(old["id"])["created_by"] == "原整理人"
-    assert store.get(interview["id"])["original_file"] is None
+    assert store.get(saved_text["id"])["original_file"] is None
     assert client.get("/api/handover/sources/missing/original?inline=true").status_code == 404
 
 

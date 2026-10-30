@@ -57,7 +57,7 @@ code_agent/
 ```text
 backend/app/modules/handover/
 ├─ domain/                  # 业务内容、状态、版本与约束
-├─ application/             # 记录、资料、调试、候选和交接包用例
+├─ application/             # 记录、资料、调试和交接包用例
 │  ├─ commands.py           # 用例输入
 │  └─ ports.py              # 仓储、解析器、导出器和生成器接口
 ├─ infrastructure/
@@ -65,7 +65,7 @@ backend/app/modules/handover/
 │  ├─ parsers/              # Word、PDF、ZIP 等解析
 │  ├─ exporters/            # Word、ZIP 等导出
 │  └─ ai.py                 # 模型连接、输出适配与释放
-└─ interfaces/http/         # 概览、记录、资料、调试、候选、交接包、复核接口
+└─ interfaces/http/         # 概览、记录、资料、调试、交接包、复核接口
 ```
 
 - `domain` 不导入 FastAPI、SQLAlchemy、模型 SDK、HTTP 接口或启动装配。

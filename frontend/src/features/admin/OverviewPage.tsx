@@ -59,9 +59,7 @@ export function OverviewPage() {
   ]
     .sort((a, b) => b.created_at.localeCompare(a.created_at))
     .slice(0, 6);
-  const formal = rows.filter(
-    (row) => !['task', 'candidate', 'job'].includes(row.kind) && row.state !== 'archived',
-  );
+  const formal = rows.filter((row) => row.kind !== 'task' && row.state !== 'archived');
   const tasks = rows.filter((row) => row.kind === 'task' && row.state !== 'archived');
   const stats = data && [
     {

@@ -18,19 +18,17 @@ function record(id, kind, payload = {}, state = 'draft') {
   };
 }
 
-test('资料搜索组合名称和提供人，历史访谈可检索且不混入问题或交接包', () => {
+test('资料搜索组合名称和提供人，原文可检索且不混入问题或交接包', () => {
   const rows = [
     record('ZX2200 手册', 'source', { provider: '贺强', content: '镜头切换' }),
-    record('现场访谈', 'interview', { author: '贺强', transcript: 'ZX2200 镜头偏移' }),
+    record('现场笔记', 'source', { provider: '贺强', content: 'ZX2200 镜头偏移' }),
     record('ZX2200 交付', 'package', { recipient: '贺强' }),
     record('ZX2200 镜头', 'debug_issue', { recorded_by: '贺强' }),
   ];
   const original = structuredClone(rows);
   assert.deepEqual(
-    filterCatalogRecords(rows, ['source', 'interview'], '  zx2200   贺强\n镜头 ', '').map(
-      (row) => row.id,
-    ),
-    ['ZX2200 手册', '现场访谈'],
+    filterCatalogRecords(rows, ['source'], '  zx2200   贺强\n镜头 ', '').map((row) => row.id),
+    ['ZX2200 手册', '现场笔记'],
   );
   assert.deepEqual(filterCatalogRecords(rows, ['source'], '不存在', ''), []);
   assert.deepEqual(rows, original);
@@ -72,7 +70,7 @@ test('原文件按名称与实际上传人搜索，不搜索隐藏正文；按�
     created_at: '2026-10-17T08:00:00Z',
     created_by: '上传乙',
   };
-  const legacy = record('旧访谈', 'interview', { transcript: '旧正文' });
+  const legacy = record('文本资料', 'source', { content: '旧正文' });
   const rows = [
     older,
     newer,
@@ -90,7 +88,7 @@ test('原文件按名称与实际上传人搜索，不搜索隐藏正文；按�
   assert.deepEqual(materialFiles(rows, '原作者'), []);
   assert.deepEqual(
     materialFiles(rows).map((row) => row.id),
-    ['新文件', '旧标题', '旧访谈'],
+    ['新文件', '旧标题', '文本资料'],
   );
   assert.deepEqual(rows, original);
 });

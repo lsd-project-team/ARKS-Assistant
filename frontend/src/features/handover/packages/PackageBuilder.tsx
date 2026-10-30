@@ -27,8 +27,7 @@ export function PackageBuilder({
   const user = useAuth().session?.user;
   const actor = user?.display_name || user?.username || '';
   const eligible = records.filter(
-    (row) =>
-      !['package', 'receipt', 'candidate', 'job'].includes(row.kind) && row.state !== 'archived',
+    (row) => !['package', 'receipt'].includes(row.kind) && row.state !== 'archived',
   );
   const { draft, setDraft, clear, warning } = useHandoverDraft(scopeId, 'package', {
     title: '设备软件交接包',

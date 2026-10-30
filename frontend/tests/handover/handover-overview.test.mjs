@@ -37,7 +37,7 @@ test('资料图表按原文件名统计，分类合计与有效资料列表一�
     record('记录.docx', 'source'),
     record('统计表.XLSX', 'source'),
     record('图片.JPEG', 'source'),
-    record('历史文本', 'interview', 'rejected', { transcript: '历史正文' }),
+    record('历史文本', 'source', 'rejected', { content: '历史正文' }),
     record('未知格式.pdf.exe', 'source'),
     record('已归档.pdf', 'source', 'archived'),
     record('任务.pdf', 'task'),
@@ -66,7 +66,7 @@ test('资料图表筛选与列表同一口径，按上传时间排列，未知�
   const rows = [
     { ...record('先上传.pdf', 'source'), updated_at: '2026-10-20T08:00:00Z' },
     { ...record('后上传.PDF', 'source'), created_at: '2026-10-14T08:00:00Z' },
-    record('旧资料', 'interview', 'draft', { filename: '旧文件.doc' }),
+    record('旧资料', 'source', 'draft', { filename: '旧文件.doc' }),
     record('已归档.pdf', 'source', 'archived'),
     record('问题.pdf', 'debug_issue'),
   ];
@@ -89,17 +89,14 @@ test('资料图表筛选与列表同一口径，按上传时间排列，未知�
 test('资料只计有效文件和历史文本，不进入待审核统计', () => {
   const rows = [
     record('source', 'source', 'confirmed'),
-    record('interview', 'interview', 'confirmed'),
+    record('source', 'source', 'confirmed'),
     record('draft', 'source'),
-    record('review', 'interview', 'needs_review'),
+    record('review', 'source', 'needs_review'),
     record('archive', 'source', 'archived'),
-    record('candidate', 'candidate', 'needs_review'),
-    record('job', 'job', 'needs_review'),
   ];
   const result = overviewSummary(overview(rows));
   assert.equal(result.materials.length, 4);
-  assert.equal(result.sources.length, 2);
-  assert.equal(result.interviews.length, 2);
+  assert.equal(result.sources.length, 4);
   assert.equal(result.reviewCount, 0);
 });
 
