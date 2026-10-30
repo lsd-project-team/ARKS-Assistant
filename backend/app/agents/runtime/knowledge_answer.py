@@ -5,10 +5,11 @@ from langchain.agents.middleware.types import AgentMiddleware
 from app.agents.runtime.answer_completion import final_message
 from app.agents.runtime.knowledge_scope import (
     SELECTION_GUIDANCE,
+    knowledge_references,
     scope_problems,
     scoped_fallback,
-    selected_records,
     selection_input,
+    selection_result,
     source_only_answer,
 )
 from app.agents.runtime.review_protocol import ReviewCalls, ReviewUnavailable
@@ -68,14 +69,17 @@ class KnowledgeAnswerGuard(AgentMiddleware):
 
     async def select(self, records):
         self.emit("stage", {"stage": "checking_sources", "detail": "选择符合本题的资料片段"})
-        selected = await self.calls.ask(
+        scope, selected = await self.calls.ask(
             SELECTION_GUIDANCE,
             {"question": self.question, "records": selection_input(records)},
             "knowledge_selection",
-            lambda result: selected_records(result, records),
+            lambda result: selection_result(result, records),
         )
-        self.emit("knowledge_selection", {"references": [row["reference"] for row in selected]})
-        return selected
+        self.emit(
+            "knowledge_selection",
+            {"scope": scope, "references": [row["reference"] for row in selected]},
+        )
+        return scope, selected
 
     async def verify(self, candidate, records, record_context):
         for attempt in range(2):
@@ -133,7 +137,14 @@ class KnowledgeAnswerGuard(AgentMiddleware):
             return response
         original, selected, stage = answer.text, None, "knowledge_selection"
         try:
-            selected = await self.select(records)
+            scope, selected = await self.select(records)
+            if scope == "general" and not knowledge_references(original):
+                # 候选不等于回答依据；普通问答的空筛选不能被替换成“资料不足”。
+                self.emit(
+                    "knowledge_answer_review",
+                    {"verdict": "skipped", "reason": "本题不依赖历史记录", "references": []},
+                )
+                return response
             if not selected and not citation_matches(project_rich_content(original)):
                 candidate = (
                     "本轮返回的资料中，没有选到符合所问设备、时段或事项的内容，"

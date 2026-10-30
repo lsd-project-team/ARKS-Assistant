@@ -140,6 +140,49 @@ async def test_valid_empty_selection_does_not_publish_candidate_or_claim_catalog
     )
 
 
+@pytest.mark.parametrize(
+    "question,original",
+    [
+        ("你好", "你好！有什么可以帮你？"),
+        (
+            "给我介绍一下vue框架",
+            "Vue 是用于构建用户界面的 JavaScript 框架，支持组件化和响应式更新。",
+        ),
+        ("解释一下HTTP和WebSocket的区别", "HTTP 常用于请求与响应，WebSocket 支持双向持续通信。"),
+        ("把这句话翻译成英文：早上好", "Good morning."),
+    ],
+)
+async def test_general_question_is_not_replaced_when_unrelated_records_select_nothing(
+    question, original
+):
+    reviewer = Reviewer(selection={"scope": "general", "selections": []})
+    answer, events = await call(reviewer, original, question=question)
+    assert answer == original
+    assert [purpose for purpose, _ in reviewer.requests] == ["knowledge_selection"]
+    assert "answer" not in reviewer.requests[0][1]
+    assert not any(kind == "answer_replace" for kind, _ in events)
+    assert events[-1][1]["verdict"] == "skipped"
+
+
+@pytest.mark.parametrize("rich", [False, True])
+async def test_general_scope_does_not_bypass_review_when_answer_uses_experience(rich):
+    original = "通用介绍中夹带未经核查的记录。" + REF
+    if rich:
+        original = (
+            "```rich-content\n"
+            + json.dumps(
+                {"version": 1, "blocks": [{"id": "t", "type": "text", "content": original}]}
+            )
+            + "\n```"
+        )
+    answer, _ = await call(
+        Reviewer(selection={"scope": "general", "selections": []}),
+        original,
+        question="介绍Vue框架",
+    )
+    assert "没有选到" in answer and REF not in project_rich_content(answer)
+
+
 async def test_fact_provider_failure_keeps_only_preselected_time_fragment_and_error_code():
     target = "7月25日，23.2℃，精度-4~2μm。"
     records = [

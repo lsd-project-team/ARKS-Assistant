@@ -6,6 +6,7 @@ from app.agents.runtime.knowledge_scope import (
     scoped_fallback,
     selected_records,
     selection_input,
+    selection_result,
 )
 
 BEFORE, TARGET, AFTER = "7月23日，3μm。", "7月25日，23.2℃，精度-4~2μm。", "7月27日，900μm。"
@@ -77,3 +78,23 @@ def test_selection_redacts_secrets_without_modifying_original():
     assert "do-not-leak" not in str(projected)
     assert "do-not-leak" not in scoped_fallback(selected_records(choice(1, 2), rows))
     assert "do-not-leak" in rows[0]["content"]["正文"]
+
+
+@pytest.mark.parametrize("result", [{"selections": []}, {"scope": "records", "selections": []}])
+def test_record_query_with_no_matches_stays_in_records_scope(result):
+    assert selection_result(result, ROWS) == ("records", [])
+
+
+def test_general_question_scope_is_distinct_from_empty_record_selection():
+    assert selection_result({"scope": "general", "selections": []}, ROWS) == ("general", [])
+
+
+@pytest.mark.parametrize("scope", [None, True, [], "unrecognized"])
+def test_invalid_question_scope_is_rejected(scope):
+    with pytest.raises(ValueError):
+        selection_result({"scope": scope, "selections": []}, ROWS)
+
+
+def test_general_scope_cannot_select_and_publish_historical_facts():
+    with pytest.raises(ValueError, match="general question"):
+        selection_result({**choice(), "scope": "general"}, ROWS)
