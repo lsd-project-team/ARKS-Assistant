@@ -2,6 +2,8 @@
 
 `rich_content_roundtrip.py --live` 使用当前真实供应商，在临时账号、源码、数据库及附件上验证新增富内容块的生成、现有 HTTP/SSE、重连重放、多轮历史及前端引擎渲染；只读正式配置至内存，不复制密钥或业务历史。需要前后端依赖，明确消耗模型额度，结果只写入 `output/`。见[本轮验收](../../docs/verification/rich-content-roundtrip-20261030.md)。
 
+`arks_rich_content.py --live --settings-data <正式配置所在目录> --output output/arks-rich-content/live.json` 使用截图蓝膜案例的问答副本，在独立临时账号与数据库上验证两轮真实经验图文、事实修订、引用、HTTP/SSE重放、历史及前端图形。仅将配置读入内存，不读取正式会话、不向正式知识库写入样例；无历史原图也必须生成有依据的示意图。需要前后端依赖，消耗当前供应商额度，见[专项验收](../../docs/verification/arks-rich-content-20261030.md)。
+
 默认回归分别在 `backend/` 运行 `uv run pytest -q`，在 `frontend/` 运行 `npm test` 和 `npm run build`。这些测试使用隔离数据目录与测试模型。
 
 真实供应商类脚本需要显式执行并消耗 API 额度，不属于默认测试，也不会由启动脚本自动运行。下表区分历史入口、独立配置质量套件和不调用供应商的离线验收。

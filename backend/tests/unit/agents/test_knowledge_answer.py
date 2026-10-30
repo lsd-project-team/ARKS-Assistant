@@ -400,3 +400,65 @@ async def test_source_verbatim_request_is_not_misclassified_as_historical_materi
     original = "代码原文待补齐引用。"
     answer, _ = await call(reviewer, original, source_required=True, question=question)
     assert answer == original and reviewer.requests == []
+
+
+@pytest.mark.parametrize(
+    "block",
+    [
+        {
+            "id": "flow",
+            "type": "mermaid",
+            "content": "flowchart TD\n A[组合调整] --> B[216颗无刺穿]",
+        },
+        {
+            "id": "map",
+            "type": "mindmap",
+            "nodes": [
+                {"id": "root", "label": "本次试验"},
+                {"id": "result", "label": "216颗", "parent_id": "root"},
+            ],
+        },
+        {
+            "id": "chart",
+            "type": "chart",
+            "chart_type": "bar",
+            "labels": ["本次取放颗数"],
+            "series": [{"id": "count", "name": "数量", "values": [216]}],
+        },
+    ],
+)
+async def test_no_original_images_does_not_remove_verified_visuals_or_their_ids(block):
+    records = [{**RECORDS[0], "image_count": 0}]
+    original = (
+        "本次记录216颗无刺穿，不代表长期验证。"
+        + REF
+        + "\n\n```rich-content\n"
+        + json.dumps({"version": 1, "blocks": [block]})
+        + "\n```"
+    )
+    reviewer = Reviewer()
+    answer, events = await call(reviewer, original, records, question="用图文并茂说明本次试验")
+    assert answer == original
+    assert reviewer.requests[-1][1]["record_context"][0]["image_count"] == 0
+    assert reviewer.requests[-1][1]["answer"] == original
+    assert reviewer.requests[-1][1]["answer_text"] == project_rich_content(original)
+    assert "216" in reviewer.requests[-1][1]["answer_text"]
+    assert not any(kind == "answer_replace" for kind, _ in events)
+    assert events[-1][1]["verdict"] == "passed"
+
+
+async def test_visuals_do_not_bypass_unresolved_fact_fallback():
+    original = (
+        '```rich-content\n{"version":1,"blocks":[{"id":"bad","type":"mermaid",'
+        '"content":"flowchart TD\\n A[075顶针] --> B[保证长期根治]"}]}\n```\n' + REF
+    )
+    answer, events = await call(
+        Reviewer({"verdict": "revised", "answer": original}),
+        original,
+        question="用流程图展示经验",
+    )
+    assert "保证长期根治" not in answer and "216颗无刺穿" in answer
+    assert any(
+        kind == "knowledge_stage_error" and row["code"] == "unresolved_facts"
+        for kind, row in events
+    )

@@ -2,6 +2,8 @@
 
 更新：2026-10-30。
 
+同日补充 ARKS 经验回答：经验工具不再限制为文字和原图；无原图时可从已选资料归纳明确标注的示意图。事实核查读取原始组件协议和可读投影，检查图内标签、连线、表格与说明，并在修订时保留无争议图形。实际参数、适用条件、未知单位、固定版本引用、原图关联和失败时的原文降级继续保留。见[蓝膜案例专项验收](../verification/arks-rich-content-20261030.md)。
+
 ## 项目分析与集成范围
 
 历史 `Message.content`、`Run.answer` 和 SSE 累积文本都是字符串。已保存消息通过 `MessageBubble → AnswerMarkdown → RichContentRenderer` 展示，运行中回复同样复用 `AnswerMarkdown`。`useConversation` 恢复原始消息，`useRunStream` 接收 `token / answer_replace / done`，`createAnswerBuffer` 按 32ms 合并更新，事件序号负责重连去重。

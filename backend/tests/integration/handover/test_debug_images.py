@@ -127,7 +127,10 @@ async def test_read_tool_keeps_complete_business_text_without_image_or_source_in
             page = json.loads(await read_tool.ainvoke({"record_id": row["id"], "offset": offset}))
             assert page["version"] == 4 and page["image_count"] == 3
             assert page["reference"] == (f"[7月23—24日｜adv-3 试验](debug-issue:{row['id']}/4)")
-            assert "只展示AI回复的文字和回答实际引用记录的全部原图" in page["display_hint"]
+            assert "页面还会展示回答实际引用记录的全部原图" in page["display_hint"]
+            assert "保留重复图片的位置" in page["display_hint"]
+            assert "没有历史原图也可以生成有依据的示意图" in page["display_hint"]
+            assert "不能冒充原图、实物照片或设备验证" in page["display_hint"]
             assert "只展示对应记录" in page["display_hint"]
             assert "不要声称无法展示原图" in page["display_hint"]
             chunks.append(page["content"])

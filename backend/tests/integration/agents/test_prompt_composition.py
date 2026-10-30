@@ -76,7 +76,11 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "可选回答展示协议" in prompt
     assert "默认用step_flow" not in prompt
     assert "【源码核查】" not in prompt
-    assert "当前项目实现、设备具体流程、操作或前置条件必须先读取当前源码" in prompt
+    assert "当前软件实现、代码流程或参数计算必须读取当前源码" in prompt
+    assert "问题与经验已覆盖的工艺处理建议可按该经验回答" in prompt
+    assert "不把经验问答自动扩成源码排查" in prompt
+    assert "用户要求图文并茂或示意图时" in prompt
+    assert "不能声称是原图、实物照片或已执行的验证" in prompt
 
     assert "项目工具要求：" not in prompt
     assert "create_code_change" not in tools

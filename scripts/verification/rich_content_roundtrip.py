@@ -32,13 +32,16 @@ def sse_events(response):
             }
 
 
-def assert_roundtrip(client, root, question, expected, thread_id=None, sink=None):
+def assert_roundtrip(
+    client, root, question, expected, thread_id=None, sink=None, *, source_options=None
+):
     endpoint = f"{root}/threads/{thread_id}/runs" if thread_id else f"{root}/threads/start"
     response = client.post(
         endpoint,
         json={
             "content": question,
-            "source_options": {"use_memory": False, "use_knowledge": False, "use_deepwiki": False},
+            "source_options": source_options
+            or {"use_memory": False, "use_knowledge": False, "use_deepwiki": False},
         },
     )
     response.raise_for_status()
