@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { JSDOM } from 'jsdom';
 
 const require = createRequire(import.meta.url);
 const result = await build({
@@ -137,6 +138,48 @@ test('结构化正文保留段落，来源集中于末尾', () => {
   assert.match(html, /<p>结果为−4～2μm。<\/p>/);
   assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('结果为−4～2μm。'));
   assert.match(html, /记录 · v2<\/button>/);
+});
+
+test('实际回答默认只显示按文件归组的行号链接，完整路径藏在详情且来源位于附图之后', () => {
+  const pointer = {
+    path: 'Long/Directory/Engine.cs',
+    start_line: 12,
+    end_line: 24,
+    version: 'v1',
+    source_workspace_id: 's',
+  };
+  const content =
+    '流程说明。\n\n```rich-content\n' +
+    JSON.stringify({
+      version: 1,
+      blocks: [{ id: 'src', type: 'source_reference', sources: [pointer] }],
+    }) +
+    '\n```\n\n来源：[同一个范围](source:Long/Directory/Engine.cs#L12-L24) ' +
+    '[后续范围](source:Long/Directory/Engine.cs#L30-L32)\n\n最后说明。';
+  const html = render(
+    content,
+    [{ ...pointer, start_line: 1, end_line: 100, current_status: 'match' }],
+    false,
+    createElement('img', { src: 'original.png', alt: '原图' }),
+  );
+  const dom = new JSDOM(html);
+  try {
+    const { document } = dom.window;
+    assert.equal(document.querySelectorAll('.answer-code-file').length, 1);
+    assert.equal(document.querySelector('.answer-code-filename').textContent, 'Engine.cs');
+    assert.deepEqual(
+      [...document.querySelectorAll('.answer-code-link')].map((item) => item.textContent),
+      ['12–24', '30–32'],
+    );
+    assert.equal(document.querySelectorAll('.rich-source-reference,.source-link').length, 0);
+    const detail = document.querySelector('.answer-code-details');
+    assert.equal(detail.open, false);
+    assert.equal(detail.querySelector('.answer-code-path').textContent, pointer.path);
+    assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('original.png'));
+    assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('最后说明。'));
+  } finally {
+    dom.window.close();
+  }
 });
 
 for (const mode of ['live', 'history']) {

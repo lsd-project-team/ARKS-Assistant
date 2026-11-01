@@ -31,6 +31,20 @@ test('行内链接保留文字含义，真实引用去重，引用式链接与�
   assert.match(body[0].content, /\[普通外链\]\(https:\/\/example.com\)/);
 });
 
+test('正文的纯代码定位标签及空括号移至最后，业务文字与代码样例保留', () => {
+  const content =
+    '必须等待（[Engine.cs:12–24](source:Dir/Engine.cs#L12-L24)）。\n\n' +
+    '再检查 ([Engine.cs:30](source:Dir/Engine.cs#L30))。\n\n' +
+    '[取片入口](source:Dir/Engine.cs#L40)负责取片。\n\n' +
+    '`[Engine.cs:12](source:Dir/Engine.cs#L12)`';
+  const { body, sources } = split(content);
+  assert.match(body[0].content, /必须等待。/);
+  assert.match(body[0].content, /再检查 。/);
+  assert.match(body[0].content, /取片入口负责取片。/);
+  assert.match(body[0].content, /`\[Engine.cs:12\]\(source:Dir\/Engine.cs#L12\)`/);
+  assert.equal(sources.length, 3);
+});
+
 test('来源段中的外链会移至最后，代码和链接样例不当成真实来源', () => {
   const sample = `\`\`\`md\n来源：${citation}\n\`\`\`\n\n\`${citation}\`\n\n来源：[资料](https://example.com/doc)`;
   const { body, sources } = split(sample);

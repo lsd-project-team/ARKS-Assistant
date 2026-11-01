@@ -93,7 +93,7 @@ async function mounted(verify) {
   }
 }
 
-test('点击源码卡片传递原路径、行范围、版本和目录；流式追加不重建已确认块', async () => {
+test('点击紧凑源码链接传递原路径、行范围、版本和目录；流式追加不重建已确认块', async () => {
   environment.jumps = [];
   await mounted(async ({ render, client }) => {
     const source = {
@@ -116,7 +116,7 @@ test('点击源码卡片传递原路径、行范围、版本和目录；流式�
       },
     ]);
     await render(createElement(AnswerMarkdown, { content, runId: 'r', streaming: true }));
-    const button = document.querySelector('.rich-source-link');
+    const button = document.querySelector('.answer-code-link');
     assert.equal(button.disabled, false);
     await act(async () => button.click());
     assert.deepEqual(environment.jumps, [[source.path, 12, 24, 'v1', 'library']]);
@@ -133,11 +133,54 @@ test('点击源码卡片传递原路径、行范围、版本和目录；流式�
     assert.equal(document.querySelector('.tool-call-card'), tool);
     assert.equal(tool.open, true);
     assert.equal(document.querySelector('.code-expand').getAttribute('aria-expanded'), 'true');
-    assert.equal(document.querySelector('.rich-source-link'), button);
+    assert.equal(document.querySelector('.answer-code-link'), button);
     await render(
       createElement(AnswerMarkdown, { content: JSON.parse(JSON.stringify(content)), runId: 'r' }),
     );
-    assert.match(document.body.textContent, /源.cs:12–24/);
+    assert.equal(button.getAttribute('aria-label'), '打开源码 源.cs:12–24');
+  });
+});
+
+test('Markdown和结构化代码引用合为同一文件，使用相同定位逻辑且路径只在详情中', async () => {
+  environment.jumps = [];
+  await mounted(async ({ render, client }) => {
+    const source = {
+      path: 'Dir/Engine.cs',
+      start_line: 12,
+      end_line: 24,
+      version: 'v1',
+      source_workspace_id: 's',
+    };
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [{ ...source, start_line: 1, end_line: 100, current_status: 'match' }],
+    });
+    const content =
+      fence([{ id: 'src', type: 'source_reference', sources: [source] }]) +
+      '\n\n来源：[另一个范围](source:Dir/Engine.cs#L30-L32)';
+    await render(createElement(AnswerMarkdown, { content, runId: 'r' }));
+    assert.equal(document.querySelectorAll('.answer-code-file').length, 1);
+    assert.equal(
+      document.querySelectorAll('.rich-source-reference,.rich-source-link,.source-link').length,
+      0,
+    );
+    const links = [...document.querySelectorAll('.answer-code-link')];
+    assert.deepEqual(
+      links.map((item) => item.textContent),
+      ['12–24', '30–32'],
+    );
+    for (const link of links) await act(async () => link.click());
+    assert.deepEqual(environment.jumps, [
+      ['Dir/Engine.cs', 12, 24, 'v1', 's'],
+      ['Dir/Engine.cs', 30, 32, 'v1', 's'],
+    ]);
+    const detail = document.querySelector('.answer-code-details');
+    assert.equal(detail.open, false);
+    assert.ok(detail.querySelector('.answer-code-path').textContent.includes('Dir/Engine.cs'));
+    assert.doesNotMatch(
+      document.querySelector('.answer-code-file-heading').querySelector('.answer-code-filename')
+        .textContent,
+      /Dir\//,
+    );
   });
 });
 

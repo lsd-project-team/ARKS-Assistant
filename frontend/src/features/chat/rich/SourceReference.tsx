@@ -9,15 +9,18 @@ import { readCitationSource, useSourceCitation } from '../../source_reader/hooks
 import { SelectionPreview } from '../components/SelectionPreview';
 import { resolveSourceEvidence } from './sourceEvidence';
 import type { SourcePointer } from './types';
+import { codeRange } from './codeSources';
 
 export function SourceReference({
   source,
   runId,
   sourceId,
+  compact = false,
 }: {
   source: SourcePointer;
   runId?: string;
   sourceId?: string;
+  compact?: boolean;
 }) {
   const projectId = useWorkspace((state) => state.projectId);
   const cache = useQueryClient();
@@ -41,7 +44,7 @@ export function SourceReference({
       : context.error
         ? '无法读取本轮引用依据，可重试核对'
         : resolved.reason;
-  const label = `${source.path.split('/').at(-1)}:${source.start_line}${source.end_line && source.end_line !== source.start_line ? `–${source.end_line}` : ''}`;
+  const label = `${source.path.split(/[\\/]/).at(-1)}:${codeRange(source)}`;
   async function navigate(previewOnly: boolean) {
     if (reason || !evidence) return;
     setOpening(true);
@@ -87,78 +90,86 @@ export function SourceReference({
     }
   }
   return (
-    <div className="rich-source-reference">
-      <div className="rich-source-controls">
+    <div className={compact ? 'answer-code-citation' : 'rich-source-reference'}>
+      <div className={compact ? 'answer-code-citation-controls' : 'rich-source-controls'}>
         <button
-          className="rich-source-link"
+          className={compact ? 'answer-code-link' : 'rich-source-link'}
           type="button"
           disabled={!!reason || opening}
-          title={reason || `${source.path} · 打开源码`}
+          title={reason || `${compact ? label : source.path} · 打开源码`}
           aria-label={`打开源码 ${label}`}
           onClick={() => void navigate(false)}
         >
-          <FileCode2 size={12} aria-hidden="true" />
-          <span className="rich-source-label">
-            <strong>{label}</strong>
-            <small>{source.path}</small>
-          </span>
-          {reason && <small>未核实</small>}
+          {compact ? (
+            codeRange(source)
+          ) : (
+            <>
+              <FileCode2 size={12} aria-hidden="true" />
+              <span className="rich-source-label">
+                <strong>{label}</strong>
+                <small>{source.path}</small>
+              </span>
+              {reason && <small>未核实</small>}
+            </>
+          )}
         </button>
-        <details className="rich-source-info">
-          <summary aria-label={`查看引用详情 ${label}`} title="引用详情">
-            <Info size={13} aria-hidden="true" />
-            <span className="rich-sr-only">引用详情</span>
-          </summary>
-          <div className="rich-source-panel">
-            <p className="rich-source-path">{source.path}</p>
-            <p>
-              行号 {source.start_line}–{source.end_line || source.start_line}
-            </p>
-            <p>
-              原始引用：source:{encodeURIComponent(source.path)}#L{source.start_line}-L
-              {source.end_line || source.start_line}
-            </p>
-            {source.version && <p>原引用版本：{source.version}</p>}
-            {source.source_workspace_id && <p>原引用目录：{source.source_workspace_id}</p>}
-            {evidence && (
+        {!compact && (
+          <details className="rich-source-info">
+            <summary aria-label={`查看引用详情 ${label}`} title="引用详情">
+              <Info size={13} aria-hidden="true" />
+              <span className="rich-sr-only">引用详情</span>
+            </summary>
+            <div className="rich-source-panel">
+              <p className="rich-source-path">{source.path}</p>
               <p>
-                来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} · 版本{' '}
-                {evidence.version}
+                行号 {source.start_line}–{source.end_line || source.start_line}
               </p>
-            )}
-            {reason && <p role="status">{reason}</p>}
-            <div className="rich-source-actions">
-              <button
-                type="button"
-                disabled={!!reason || opening}
-                onClick={() => void navigate(true)}
-              >
-                预览源码
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  void navigator.clipboard
-                    .writeText(source.path)
-                    .then(() => toast('源码路径已复制'))
-                    .catch(() => setError('复制路径失败，请手动选择完整路径。'))
-                }
-              >
-                <Copy size={12} aria-hidden="true" />
-                复制路径
-              </button>
-              {runId && (
+              <p>
+                原始引用：source:{encodeURIComponent(source.path)}#L{source.start_line}-L
+                {source.end_line || source.start_line}
+              </p>
+              {source.version && <p>原引用版本：{source.version}</p>}
+              {source.source_workspace_id && <p>原引用目录：{source.source_workspace_id}</p>}
+              {evidence && (
+                <p>
+                  来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} · 版本{' '}
+                  {evidence.version}
+                </p>
+              )}
+              {reason && <p role="status">{reason}</p>}
+              <div className="rich-source-actions">
                 <button
                   type="button"
-                  disabled={context.isFetching}
-                  onClick={() => void context.refetch()}
+                  disabled={!!reason || opening}
+                  onClick={() => void navigate(true)}
                 >
-                  重新核对
+                  预览源码
                 </button>
-              )}
+                <button
+                  type="button"
+                  onClick={() =>
+                    void navigator.clipboard
+                      .writeText(source.path)
+                      .then(() => toast('源码路径已复制'))
+                      .catch(() => setError('复制路径失败，请手动选择完整路径。'))
+                  }
+                >
+                  <Copy size={12} aria-hidden="true" />
+                  复制路径
+                </button>
+                {runId && (
+                  <button
+                    type="button"
+                    disabled={context.isFetching}
+                    onClick={() => void context.refetch()}
+                  >
+                    重新核对
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        </details>
+          </details>
+        )}
       </div>
       {error && (
         <p className="rich-source-error" role="alert">

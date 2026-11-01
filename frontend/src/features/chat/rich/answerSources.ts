@@ -28,6 +28,20 @@ function text(node: Node): string {
   return node.value ?? node.alt ?? node.children?.map(text).join('') ?? '';
 }
 
+function isCodeLocator(node: Node, url: string) {
+  const target = url.match(/^source:(.+)#L(\d+)(?:-L?\d+)?$/);
+  const label = text(node)
+    .trim()
+    .match(/^(.+?):L?(\d+)(?:\s*[-–—]\s*L?\d+)?$/);
+  if (!target || !label || target[2] !== label[2]) return false;
+  try {
+    const path = decodeURIComponent(target[1]);
+    return label[1] === path || label[1] === path.split(/[\\/]/).at(-1);
+  } catch {
+    return false;
+  }
+}
+
 // 只改展示投影。按语法树处理链接，代码、图片、坏协议及持久化消息原文均不改写。
 function separateMarkdown(content: string, add: (source: AnswerSource) => void) {
   const root = fromMarkdown(content) as Node;
@@ -105,11 +119,26 @@ function separateMarkdown(content: string, add: (source: AnswerSource) => void) 
     ) {
       // 保留来源段落里的非链接说明；不在正文留下一个空的“来源：”。
       if (labeled && remainder) {
-        const raw = content
-          .slice(...range)
-          .replace(/^#{1,6}\s*/, '')
-          .replace(sourceLabel, '');
-        add({ type: 'text', markdown: raw, urls: links.map((link) => link.url) });
+        let raw = content.slice(...range);
+        const codeLinks = links.filter((link) => link.url.startsWith('source:'));
+        for (const link of [...codeLinks].reverse()) {
+          const location = bounds(link.node);
+          if (location)
+            raw = raw.slice(0, location[0] - range[0]) + raw.slice(location[1] - range[0]);
+        }
+        for (const { node: link, url } of codeLinks)
+          add({
+            type: 'link',
+            url,
+            markdown: `[${footerLabel(link)}](<${url.replaceAll('>', '%3E').replaceAll('<', '%3C')}>)`,
+          });
+        raw = raw.replace(/^#{1,6}\s*/, '').replace(sourceLabel, '');
+        if (raw.trim())
+          add({
+            type: 'text',
+            markdown: raw,
+            urls: links.filter((link) => !link.url.startsWith('source:')).map((link) => link.url),
+          });
       } else {
         links.forEach(({ node: link, url }) =>
           add({
@@ -130,7 +159,17 @@ function separateMarkdown(content: string, add: (source: AnswerSource) => void) 
         url,
         markdown: `[${footerLabel(node)}](<${url.replaceAll('>', '%3E').replaceAll('<', '%3C')}>)`,
       });
-      edits.push({ start: range[0], end: range[1], replacement: label });
+      if (isCodeLocator(node, url)) {
+        // 纯文件/行号标签只在页尾展示；业务含义的链接文字仍留在原句中。
+        let [start, end] = range;
+        const before = content.slice(0, start).match(/([（(])[ \t]*$/);
+        const after = content.slice(end).match(/^[ \t]*([）)])/);
+        if (before && after && (before[1] === '（' ? after[1] === '）' : after[1] === ')')) {
+          start -= before[0].length;
+          end += after[0].length;
+        }
+        edits.push({ start, end, replacement: '' });
+      } else edits.push({ start: range[0], end: range[1], replacement: label });
       return;
     }
     node.children?.forEach(scan);
