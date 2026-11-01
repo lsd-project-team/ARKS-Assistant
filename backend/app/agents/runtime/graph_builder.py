@@ -30,6 +30,7 @@ from app.infrastructure.providers.models import StateInspectionModel, create_mod
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
 from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.chat.schemas import SourceOptions
+from app.modules.knowledge.corpora.debug_issues import ANSWER_GUIDANCE
 from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
 from app.modules.memory.selection import MemorySelection
 from app.modules.projects.context import project_prompt
@@ -182,7 +183,8 @@ class AgentGraphBuilder:
             "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
         )
         if debug_issues:
-            prompt += "\n" + RETRIEVAL_GUIDANCE
+            # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。
+            prompt += "\n" + RETRIEVAL_GUIDANCE + "\n" + ANSWER_GUIDANCE
         if not inspection:
             emit(
                 "context_sources",

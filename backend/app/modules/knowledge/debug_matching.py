@@ -81,7 +81,6 @@ def compatibility(row, filters):
         "status": "needs_confirmation" if missing else "matched",
         "matched": matched,
         "missing": missing,
-        "reason": "需核对设备、版本、模块及工况，历史相似记录不代表当前已验证"
-        if missing
-        else "明确字段匹配，仍需现场验证",
+        # 缺项与匹配状态供内部判断，不生成可被照搬到答案末尾的泛化提醒。
+        "reason": "",
     }

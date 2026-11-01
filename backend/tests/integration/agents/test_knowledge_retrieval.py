@@ -86,6 +86,7 @@ async def test_search_filters_records_and_spans_before_returning_tool_context(se
     assert len(selector.requests[0]["records"]) == 2
     assert result["matches"][0]["content"] == {"问题": "10月1日试验结果为42。"}
     assert result["matched"] == 1 and result["selection_status"] == "selected"
+    assert "display_hint" not in result
     assert "resolution_status" not in json.dumps(result)
     assert all(
         text not in json.dumps(result, ensure_ascii=False)
@@ -94,6 +95,7 @@ async def test_search_filters_records_and_spans_before_returning_tool_context(se
     # 后续按编号读取也不能绕过筛选，已筛选同版本不再请求模型。
     page = json.loads(await tools["read_debug_issue"].ainvoke({"record_id": saved["id"]}))
     assert "42" in page["content"] and "999" not in page["content"]
+    assert "display_hint" not in page
     assert "resolution_status" not in json.dumps(page)
     rejected = json.loads(await tools["read_debug_issue"].ainvoke({"record_id": other["id"]}))
     assert rejected["content"] == "" and rejected["selection_status"] == "none"
@@ -376,6 +378,12 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
         assert "本次结果42" in context
         assert "无关结果888" not in context and "其他时段为999" not in context
         assert "不该进入回答的候选" not in context
+        # 主回答每次请求只接收一份经验规则；工具消息不再反复拷贝同一套提示。
+        for messages in answer_inputs:
+            assert "".join(row.text for row in messages).count("【经验资料专用规则】") == 1
+            assert all(
+                "display_hint" not in row.text for row in messages if isinstance(row, ToolMessage)
+            )
         assert all("无关结果888" not in str(payload) for payload in checks)
         assert "999" in str(checks[0]["record_context"])
         assert not any('"selections"' in row["text"] for kind, row in events if kind == "token")

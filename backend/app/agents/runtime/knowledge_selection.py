@@ -13,7 +13,7 @@ from app.agents.runtime.knowledge_scope import (
 )
 from app.agents.runtime.review_protocol import ReviewCalls, ReviewUnavailable
 from app.core.config import dump_json
-from app.modules.knowledge.corpora.debug_issues import ANSWER_GUIDANCE, debug_issue_tools
+from app.modules.knowledge.corpora.debug_issues import debug_issue_tools
 from app.modules.knowledge.feedback import references
 
 
@@ -154,7 +154,6 @@ class KnowledgeRetrieval:
                 if status == "unavailable"
                 else "仅返回本题选定的原文片段；未选中不代表资料库没有其他历史记录。"
             ),
-            **({"display_hint": ANSWER_GUIDANCE} if rows else {}),
         }
 
     async def search_report(self, query, limit=6, **conditions):
@@ -186,7 +185,6 @@ class KnowledgeRetrieval:
             "selection_status": status,
             "content": content[offset : offset + 8000],
             "next_offset": offset + 8000 if offset + 8000 < len(content) else None,
-            "display_hint": ANSWER_GUIDANCE,
         }
 
     async def resolve_references(self, requested):
