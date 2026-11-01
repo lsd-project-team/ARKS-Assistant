@@ -172,13 +172,21 @@ test('实际回答只显示按文件归组的引用标签，无详情且来源�
     );
     assert.deepEqual(
       [...document.querySelectorAll('.answer-code-link')].map((item) => item.textContent),
-      ['Engine.cs:12–24', 'Engine.cs:30–32'],
+      ['12–24', '30–32'],
     );
     assert.equal(document.querySelectorAll('.rich-source-reference,details').length, 0);
-    assert.equal(document.querySelectorAll('.answer-code-link[aria-haspopup="dialog"]').length, 2);
+    assert.equal(document.querySelectorAll('.answer-code-link[aria-haspopup="dialog"]').length, 0);
+    assert.equal(
+      document.querySelector('.answer-code-file').textContent.split('Engine.cs').length - 1,
+      1,
+    );
     assert.doesNotMatch(document.body.textContent, /Long\/Directory|详情/);
-    assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('original.png'));
-    assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('最后说明。'));
+    assert.ok(
+      html.indexOf('class="answer-sources answer-sources-code"') > html.indexOf('original.png'),
+    );
+    assert.ok(
+      html.indexOf('class="answer-sources answer-sources-code"') > html.indexOf('最后说明。'),
+    );
   } finally {
     dom.window.close();
   }

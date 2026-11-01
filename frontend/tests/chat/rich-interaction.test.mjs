@@ -11,7 +11,14 @@ const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'http://loc
 globalThis.window = dom.window;
 globalThis.document = dom.window.document;
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
-const environment = { jumps: [], reads: [], sourceVersion: 'v1', files: [], row: undefined };
+const environment = {
+  jumps: [],
+  reads: [],
+  sourceVersion: 'v1',
+  opened: true,
+  files: [],
+  row: undefined,
+};
 const compiled = await build({
   stdin: {
     contents:
@@ -58,7 +65,7 @@ const compiled = await build({
               : path.endsWith('api/client')
                 ? 'export class ApiError extends Error {}; export const api = () => {throw Error("禁止网络");};'
                 : path.endsWith('useSourceCitation')
-                  ? 'export const useSourceCitation = () => async (...args) => { environment.jumps.push(args); return true; }; export const readCitationSource = async (cache, project, path, origin) => { environment.reads.push([project, path, origin]); return {source:{version:environment.sourceVersion,line_count:100,content:Array.from({length:100},(_,i)=>`line ${i+1}`).join("\\n")}}; };'
+                  ? 'export const useSourceCitation = () => async (...args) => { environment.jumps.push(args); return environment.opened; }; export const readCitationSource = async (cache, project, path, origin) => { environment.reads.push([project, path, origin]); return {source:{version:environment.sourceVersion,line_count:100,content:Array.from({length:100},(_,i)=>`line ${i+1}`).join("\\n")}}; };'
                   : path.endsWith('OriginalMaterialViewer')
                     ? 'import { createElement } from "react"; export const OriginalMaterialViewer = ({row}) => createElement("div", {"data-viewer": row.id}, row.title);'
                     : path.endsWith('CodeSyntax')
@@ -93,7 +100,7 @@ async function mounted(verify) {
   }
 }
 
-test('点击引用标签核对版本并弹出准确源码；流式追加不重建已确认块', async () => {
+test('点击引用行号按原路径、范围、版本和目录打开右侧源码；流式块不重建', async () => {
   environment.jumps = [];
   environment.reads = [];
   await mounted(async ({ render, client }) => {
@@ -120,19 +127,8 @@ test('点击引用标签核对版本并弹出准确源码；流式追加不重�
     const button = document.querySelector('.answer-code-link');
     assert.equal(button.disabled, false);
     await act(async () => button.click());
-    assert.deepEqual(environment.jumps, []);
-    assert.deepEqual(environment.reads, [['p', source.path, 'library']]);
-    const selection = JSON.parse(document.querySelector('[role="dialog"]').dataset.selection);
-    assert.equal(selection.path, source.path);
-    assert.equal(selection.version, 'v1');
-    assert.equal(selection.source_workspace_id, 'library');
-    assert.equal(selection.start_line, 12);
-    assert.equal(selection.end_line, 24);
-    assert.equal(
-      selection.content,
-      Array.from({ length: 13 }, (_, i) => `line ${i + 12}`).join('\n'),
-    );
-    await act(async () => document.querySelector('[role="dialog"] button').click());
+    assert.deepEqual(environment.jumps, [[source.path, 12, 24, 'v1', 'library']]);
+    assert.deepEqual(environment.reads, []);
     assert.equal(document.querySelector('[role="dialog"]'), null);
     await act(async () => document.querySelector('.code-expand').click());
     const tool = document.querySelector('.tool-call-card');
@@ -155,7 +151,7 @@ test('点击引用标签核对版本并弹出准确源码；流式追加不重�
   });
 });
 
-test('Markdown和结构化代码引用按文件归组为标签，点击使用相同弹窗且无详情', async () => {
+test('同一文件合成一个标签且文件名只出现一次，各行号共用右侧定位逻辑', async () => {
   environment.jumps = [];
   environment.reads = [];
   await mounted(async ({ render, client }) => {
@@ -181,33 +177,33 @@ test('Markdown和结构化代码引用按文件归组为标签，点击使用相
     const links = [...document.querySelectorAll('.answer-code-link')];
     assert.deepEqual(
       links.map((item) => item.textContent),
-      ['Engine.cs:12–24', 'Engine.cs:30–32'],
+      ['12–24', '30–32'],
     );
     for (const [index, link] of links.entries()) {
-      assert.equal(link.getAttribute('aria-haspopup'), 'dialog');
-      assert.ok(link.classList.contains('source-link'));
+      assert.equal(link.getAttribute('aria-haspopup'), null);
       await act(async () => link.click());
-      const selection = JSON.parse(document.querySelector('[role="dialog"]').dataset.selection);
-      assert.deepEqual(
-        [
-          selection.path,
-          selection.start_line,
-          selection.end_line,
-          selection.version,
-          selection.source_workspace_id,
-        ],
-        ['Dir/Engine.cs', index ? 30 : 12, index ? 32 : 24, 'v1', 's'],
-      );
-      await act(async () => document.querySelector('[role="dialog"] button').click());
+      assert.deepEqual(environment.jumps[index], [
+        'Dir/Engine.cs',
+        index ? 30 : 12,
+        index ? 32 : 24,
+        'v1',
+        's',
+      ]);
+      assert.equal(document.querySelector('[role="dialog"]'), null);
     }
-    assert.deepEqual(environment.jumps, []);
-    assert.equal(environment.reads.length, 2);
+    assert.equal(environment.jumps.length, 2);
+    assert.equal(environment.reads.length, 0);
+    assert.equal(document.querySelectorAll('.answer-code-filename').length, 1);
+    assert.equal(
+      document.querySelector('.answer-code-file').textContent.split('Engine.cs').length - 1,
+      1,
+    );
     assert.doesNotMatch(document.body.textContent, /Dir\//);
   });
 });
 
-test('弹窗读取时源码已变化，不显示错误版本的引用片段', async () => {
-  environment.sourceVersion = 'v2';
+test('右侧源码定位失败时提示错误，不回退为源码弹窗', async () => {
+  environment.opened = false;
   try {
     await mounted(async ({ render, client }) => {
       const source = { path: 'Dir/Engine.cs', start_line: 12, end_line: 24, version: 'v1' };
@@ -222,10 +218,10 @@ test('弹窗读取时源码已变化，不显示错误版本的引用片段', as
       );
       await act(async () => document.querySelector('.answer-code-link').click());
       assert.equal(document.querySelector('[role="dialog"]'), null);
-      assert.match(document.querySelector('[role="alert"]').textContent, /源码已变化/);
+      assert.match(document.querySelector('[role="alert"]').textContent, /未能定位原引用/);
     });
   } finally {
-    environment.sourceVersion = 'v1';
+    environment.opened = true;
   }
 });
 

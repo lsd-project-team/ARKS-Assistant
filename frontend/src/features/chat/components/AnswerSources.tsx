@@ -35,7 +35,10 @@ export function AnswerSources({
   );
   if (!sources.length) return null;
   return (
-    <section className="answer-sources" aria-label="来源">
+    <section
+      className={`answer-sources${groups.length ? ' answer-sources-code' : ''}`}
+      aria-label="来源"
+    >
       <span className="answer-sources-label">来源：</span>
       <div className="answer-sources-list">
         {others.map(

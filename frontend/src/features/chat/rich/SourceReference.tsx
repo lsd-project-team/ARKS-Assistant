@@ -45,6 +45,8 @@ export function SourceReference({
         ? '无法读取本轮引用依据，可重试核对'
         : resolved.reason;
   const label = `${source.path.split(/[\\/]/).at(-1)}:${codeRange(source)}`;
+  const Frame = compact ? 'span' : 'div';
+  const ErrorTag = compact ? 'span' : 'p';
   async function navigate(previewOnly: boolean) {
     if (reason || !evidence) return;
     setOpening(true);
@@ -90,19 +92,18 @@ export function SourceReference({
     }
   }
   return (
-    <div className={compact ? 'answer-code-citation' : 'rich-source-reference'}>
-      <div className={compact ? 'answer-code-citation-controls' : 'rich-source-controls'}>
+    <Frame className={compact ? 'answer-code-citation' : 'rich-source-reference'}>
+      <Frame className={compact ? 'answer-code-citation-controls' : 'rich-source-controls'}>
         <button
-          className={compact ? 'answer-code-link source-link' : 'rich-source-link'}
+          className={compact ? 'answer-code-link' : 'rich-source-link'}
           type="button"
           disabled={!!reason || opening}
           title={reason || `${compact ? label : source.path} · 打开源码`}
           aria-label={`打开源码 ${label}`}
-          aria-haspopup={compact ? 'dialog' : undefined}
-          onClick={() => void navigate(compact)}
+          onClick={() => void navigate(false)}
         >
           {compact ? (
-            label
+            codeRange(source)
           ) : (
             <>
               <FileCode2 size={12} aria-hidden="true" />
@@ -171,11 +172,11 @@ export function SourceReference({
             </div>
           </details>
         )}
-      </div>
+      </Frame>
       {error && (
-        <p className="rich-source-error" role="alert">
+        <ErrorTag className="rich-source-error" role="alert">
           {error}
-        </p>
+        </ErrorTag>
       )}
       {preview && (
         <SelectionPreview
@@ -185,6 +186,6 @@ export function SourceReference({
           onClose={() => setPreview(undefined)}
         />
       )}
-    </div>
+    </Frame>
   );
 }
