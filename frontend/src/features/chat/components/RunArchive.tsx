@@ -3,6 +3,8 @@ import { AnswerMarkdown } from './AnswerMarkdown';
 import { RunActivity } from './RunActivity';
 import { RunFeedback } from './RunFeedback';
 import { persistedFeedback } from '../lib/runFeedback';
+import { RunKnowledgeSummary } from './RunKnowledgeSummary';
+import { useWorkspace } from '../../../app/state/store';
 
 export function RunArchive({
   runs,
@@ -13,6 +15,7 @@ export function RunArchive({
   onSettings: (tab: 'model' | 'mcp') => void;
   onContext: (runId: string) => void;
 }) {
+  const projectId = useWorkspace((state) => state.projectId);
   return runs.map((run) => (
     <details className="past-run" key={run.id}>
       <summary>
@@ -25,7 +28,15 @@ export function RunArchive({
           onContext={() => onContext(run.id)}
         />
       )}
-      {run.answer && <AnswerMarkdown content={run.answer} runId={run.id} />}
+      {run.answer && (
+        <AnswerMarkdown
+          content={run.answer}
+          runId={run.id}
+          afterContent={
+            <RunKnowledgeSummary answer={run.answer} runId={run.id} projectId={projectId} />
+          }
+        />
+      )}
       <button onClick={() => onContext(run.id)}>查看当时的上下文</button>
     </details>
   ));

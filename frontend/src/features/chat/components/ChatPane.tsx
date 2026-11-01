@@ -35,7 +35,7 @@ import { MessageArchive } from './MessageArchive';
 import { RunArchive } from './RunArchive';
 import { ModelPicker } from '../../settings/components/ModelPicker';
 import { ChatWelcome } from './ChatWelcome';
-import { KnowledgeFeedback } from './RunKnowledgeSummary';
+import { KnowledgeFeedback, RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { groupReplies } from '../lib/replyHistory';
@@ -429,28 +429,31 @@ export function ChatPane({
                 <RunActivity run={active} stage={stream.stage} detail={stream.detail} busy={busy} />
               </div>
               <ToolActivity tools={stream.tools} />
-              {stream.answer ? (
-                <AnswerMarkdown
-                  content={stream.answer}
-                  runId={active.id}
-                  streaming={!stream.finished}
-                />
-              ) : (
-                <span className="muted">
-                  正在思考<span className="typing-dots">…</span>
-                </span>
-              )}
-              {stream.feedback && (
-                <RunFeedback
-                  feedback={stream.feedback}
-                  onSettings={onSettings}
-                  onContext={() => setContext({ runId: active.id })}
-                />
-              )}
-              <KnowledgeFeedback
-                answer={stream.answer}
-                references={stream.references}
-                saves={stream.memorySaves}
+              <AnswerMarkdown
+                content={stream.answer}
+                runId={active.id}
+                streaming={!stream.finished}
+                afterContent={
+                  <>
+                    {!stream.answer && (
+                      <span className="muted">
+                        正在思考<span className="typing-dots">…</span>
+                      </span>
+                    )}
+                    {stream.feedback && (
+                      <RunFeedback
+                        feedback={stream.feedback}
+                        onSettings={onSettings}
+                        onContext={() => setContext({ runId: active.id })}
+                      />
+                    )}
+                    <KnowledgeFeedback
+                      answer={stream.answer}
+                      references={stream.references}
+                      saves={stream.memorySaves}
+                    />
+                  </>
+                }
               />
             </div>
           )}
@@ -466,7 +469,19 @@ export function ChatPane({
                   onContext={() => setContext({ runId: latest.id })}
                 />
               )}
-              {latest.answer && <AnswerMarkdown content={latest.answer} runId={latest.id} />}
+              {latest.answer && (
+                <AnswerMarkdown
+                  content={latest.answer}
+                  runId={latest.id}
+                  afterContent={
+                    <RunKnowledgeSummary
+                      answer={latest.answer}
+                      runId={latest.id}
+                      projectId={useWorkspace.getState().projectId}
+                    />
+                  }
+                />
+              )}
               <Button
                 onClick={() => resume.mutate(latest.id)}
                 disabled={archivedProject || resume.isPending}

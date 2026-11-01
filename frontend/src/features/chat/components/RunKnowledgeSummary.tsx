@@ -33,9 +33,8 @@ export function KnowledgeFeedback({
   const sources =
     mode === 'context' ? distinctReferences(references) : answerReferences(answer, references);
   const notices = mode === 'context' ? searchNotices(searches, sources) : [];
-  // 问题与经验的标题已在回答正文中可点击，不再在底部重复列出。
-  const listedSources =
-    mode === 'answer' ? sources.filter((row) => row.kind !== 'debug_issue') : sources;
+  // 回答来源由 AnswerMarkdown 在全部正文和原图之后统一展示，此处只保留原图和反馈。
+  const listedSources = mode === 'context' ? sources : [];
   // 检索候选不等于回答依据；原图必须跟随回答实际引用的固定版本。
   const originals = mode === 'answer' ? originalDebugReferences(sources) : [];
   if (!listedSources.length && !notices.length && !saves.length && !originals.length) return null;

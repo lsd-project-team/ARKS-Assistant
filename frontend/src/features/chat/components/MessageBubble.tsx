@@ -36,7 +36,6 @@ export function MessageBubble({
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<unknown>();
   const project = useCurrentProject();
-  const Content = message.role === 'assistant' ? AnswerMarkdown : Markdown;
   async function copy() {
     try {
       await navigator.clipboard.writeText(
@@ -100,20 +99,30 @@ export function MessageBubble({
         ))}
         {run && <RunTrace runId={run.id} />}
         <div>
-          <Content
-            content={message.content}
-            runId={run?.id}
-            sourceId={message.source_workspace_id || undefined}
-          />
+          {message.role === 'assistant' ? (
+            <AnswerMarkdown
+              content={message.content}
+              runId={run?.id}
+              sourceId={message.source_workspace_id || undefined}
+              afterContent={
+                run?.status === 'completed' && (
+                  <RunKnowledgeSummary
+                    runId={run.id}
+                    answer={message.content}
+                    projectId={project.data?.id || useWorkspace.getState().projectId}
+                    recent={recent}
+                  />
+                )
+              }
+            />
+          ) : (
+            <Markdown
+              content={message.content}
+              runId={run?.id}
+              sourceId={message.source_workspace_id || undefined}
+            />
+          )}
         </div>
-        {message.role === 'assistant' && run?.status === 'completed' && (
-          <RunKnowledgeSummary
-            runId={run.id}
-            answer={message.content}
-            projectId={project.data?.id || useWorkspace.getState().projectId}
-            recent={recent}
-          />
-        )}
       </div>
       <div className={`answer-actions ${message.role === 'user' ? 'question-actions' : ''}`}>
         {message.role === 'assistant' && (

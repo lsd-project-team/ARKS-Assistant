@@ -9,11 +9,12 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 const require = createRequire(import.meta.url);
 const result = await build({
-  entryPoints: [
-    fileURLToPath(
-      new URL('../../src/features/chat/components/AnswerMarkdown.tsx', import.meta.url),
-    ),
-  ],
+  stdin: {
+    contents:
+      "export * from './src/features/chat/components/AnswerMarkdown.tsx'; export * from './src/features/chat/components/RunKnowledgeSummary.tsx';",
+    resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
+    loader: 'tsx',
+  },
   bundle: true,
   write: false,
   format: 'cjs',
@@ -65,15 +66,21 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module.exports,
 );
 const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
-const render = (content, evidence = [], streaming = false) => {
+const render = (content, evidence = [], streaming = false, afterContent, seed) => {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   client.setQueryData(['source-evidence', 'p', 'r'], { source_evidence: evidence });
+  seed?.(client);
   try {
     return renderToStaticMarkup(
       createElement(
         QueryClientProvider,
         { client },
-        createElement(module.exports.AnswerMarkdown, { content, runId: 'r', streaming }),
+        createElement(module.exports.AnswerMarkdown, {
+          content,
+          runId: 'r',
+          streaming,
+          afterContent,
+        }),
       ),
     );
   } finally {
@@ -107,28 +114,76 @@ test('旧 Markdown 的表格、嵌套列表、任务项、波浪参数和代码�
   assert.doesNotMatch(html, /<del>/);
 });
 
-test('AI 自主选择的长段落、强调、来源段落和展示文字均保留', () => {
+test('保留长段落和展示文字，来源无论原位置如何都归至最后', () => {
   const paragraph = 'Main方法体为空，没有后续动作。'.repeat(30);
   const html = render(
     `**${paragraph}**\n\n来源：[**试验记录** · v4](debug-issue:trial/4)\n\n本次试验的原图如下：\n\n（3张原图随上述引用直接展示）`,
   );
   assert.ok(html.includes(`<strong>${paragraph}</strong>`));
-  assert.match(html, /来源：<button[^>]*><strong>试验记录<\/strong> · v4<\/button>/);
+  assert.match(html, /<button[^>]*><strong>试验记录<\/strong> · v4<\/button>/);
+  assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('（3张原图随上述引用直接展示）'));
   assert.match(html, /<p>本次试验的原图如下：<\/p>/);
   assert.match(html, /<p>（3张原图随上述引用直接展示）<\/p>/);
   assert.equal((html.match(/<p>/g) || []).length, 4);
 });
 
-test('结构化正文沿用 AI 的段落与来源位置，不额外整理', () => {
+test('结构化正文保留段落，来源集中于末尾', () => {
   const content = '结果为−4～2μm。\n\n来源：[记录 · v2](debug-issue:trial/2)';
   const html = render(
     '```rich-content\n' +
       JSON.stringify({ version: 1, blocks: [{ id: 'body', type: 'text', content }] }) +
       '\n```',
   );
-  assert.match(html, /<p>结果为−4～2μm。<\/p>\s*<p>来源：<button/);
+  assert.match(html, /<p>结果为−4～2μm。<\/p>/);
+  assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('结果为−4～2μm。'));
   assert.match(html, /记录 · v2<\/button>/);
 });
+
+for (const mode of ['live', 'history']) {
+  test(`${mode}真实原图组件加载后，来源仍在全部原图、警告和图文正文之后`, () => {
+    const content =
+      '热机约30分钟。\n\n来源：[热机记录](debug-issue:trial/4)\n\n![示意图](https://example.com/diagram.png)\n\n必要说明。';
+    const references = [
+      {
+        kind: 'debug_issue',
+        id: 'trial',
+        title: '热机记录',
+        version: 4,
+        citation: 'debug-issue:trial/4',
+        image_count: 2,
+      },
+    ];
+    const after =
+      mode === 'live'
+        ? createElement(module.exports.KnowledgeFeedback, { answer: content, references })
+        : createElement(module.exports.RunKnowledgeSummary, {
+            answer: content,
+            runId: 'r',
+            projectId: 'p',
+          });
+    const html = render(content, [], mode === 'live', after, (client) => {
+      client.setQueryData(['run-knowledge', 'p', 'r'], { references, memory_saves: [] });
+      client.setQueryData(['debug-source', 'trial', 4], {
+        id: 'trial',
+        version: 4,
+        kind: 'debug_issue',
+        title: '热机记录',
+        payload: {
+          images: [
+            { id: 'image-a', name: 'a.png' },
+            { id: 'image-b', name: 'b.png' },
+          ],
+        },
+      });
+    });
+    assert.equal((html.match(/<img /g) || []).length, 3);
+    assert.equal((html.match(/class="answer-sources"/g) || []).length, 1);
+    assert.ok(html.indexOf('class="answer-sources"') > html.lastIndexOf('<img '));
+    assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('必要说明。'));
+    assert.equal((html.match(/>来源：/g) || []).length, 1);
+    assert.match(html, /aria-haspopup="dialog">热机记录<\/button>/);
+  });
+}
 test('结构化 text 复用安全 Markdown，任意 HTML、脚本链接不能执行', () => {
   const html = render(
     '```rich-content\n' +

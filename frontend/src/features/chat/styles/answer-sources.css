@@ -1,0 +1,22 @@
+.answer-sources {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 13px;
+}
+.answer-sources-label {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.answer-sources-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+  min-width: 0;
+}
+.answer-sources-list > .markdown > p {
+  margin: 0;
+}

@@ -1,5 +1,6 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import type { KnowledgeReference } from '../../../shared/types/api';
+import { answerSourceLinks } from '../../chat/rich/answerSources.ts';
 
 type MarkdownNode = {
   type: string;
@@ -68,6 +69,12 @@ export function answerKnowledgeCitations(answer: string): KnowledgeCitation[] {
     const parsed = url && parseCitation(url);
     if (parsed) citations.push(parsed);
   });
+  // 图文块里的真实引用也决定原图加载；协议JSON中的普通字符串不当作引用。
+  for (const url of answerSourceLinks(answer)) {
+    const parsed = parseCitation(url);
+    if (parsed && !citations.some((item) => item.citation === parsed.citation))
+      citations.push(parsed);
+  }
   return citations;
 }
 

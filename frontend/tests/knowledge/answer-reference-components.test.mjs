@@ -136,14 +136,10 @@ test('历史无引用回答不显示原来的“参考资料与记忆”占位�
   assert.doesNotMatch(html, /本轮参考|参考资料与记忆|M8 DAF|中转台取片异常/);
 });
 
-test('历史引用回答使用本条回复的内容筛选缓存记录，切换版本不会串用引用', () => {
+test('历史原图反馈不再追加旧参考列表，来源由统一页尾组件负责', () => {
   const context = { references, searches };
   const first = renderHistory('[原文](handover-source:daf/1#L5)', context);
-  assert.match(first, /<details><summary>参考资料<\/summary>/);
-  assert.doesNotMatch(first, /本轮参考/);
-  assert.match(first, /M8 DAF信息收集.docx/);
-  assert.match(first, /handover-source:daf\/1#L5/);
-  assert.doesNotMatch(first, /中转台取片异常/);
+  assert.equal(first, '<div class="run-knowledge-summary"></div>');
   const second = renderHistory('[记录](debug-issue:pickup/2)', context);
   assert.equal(second, '<div class="run-knowledge-summary"></div>');
 });

@@ -3,7 +3,7 @@ import { Markdown } from '../../../app/components/Markdown';
 import { CodeBlock } from '../../../shared/ui/markdown/CodeBlock';
 import { CollapsibleSection, DataTable, OverviewGrid, StepFlow } from './ContentBlocks';
 import { FlowDiagram } from './FlowDiagram';
-import { createContentParser } from './parseContent';
+import { createContentParser, type ContentSegment } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
 import { SourceReference } from './SourceReference';
 import { BlockBoundary } from './BlockBoundary';
@@ -98,6 +98,22 @@ export function RichContentRenderer({
 }: Context & { content: string; streaming?: boolean }) {
   const parse = useMemo(createContentParser, []);
   const segments = useMemo(() => parse(content, streaming), [content, streaming, parse]);
+  return (
+    <RichContentSegments
+      segments={segments}
+      runId={runId}
+      sourceId={sourceId}
+      streaming={streaming}
+    />
+  );
+}
+
+export function RichContentSegments({
+  segments,
+  runId,
+  sourceId,
+  streaming = false,
+}: Context & { segments: ContentSegment[]; streaming?: boolean }) {
   return (
     <div className="rich-content">
       {segments.map((segment, index) => {
