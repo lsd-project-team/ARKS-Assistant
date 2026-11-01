@@ -14,7 +14,7 @@ import { AnswerMarkdown } from './AnswerMarkdown';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useChatScroll } from '../hooks/useChatScroll';
 import { MessageBubble } from './MessageBubble';
-import { ToolActivity } from './ToolActivity';
+import { RunTraceDetails } from './RunTrace';
 import { ContextDialog } from './ContextDialog';
 import { ChatComposer } from './ChatComposer';
 import { ComposerContext } from './ComposerContext';
@@ -428,7 +428,7 @@ export function ChatPane({
                 ARKS软件智能助手{' '}
                 <RunActivity run={active} stage={stream.stage} detail={stream.detail} busy={busy} />
               </div>
-              <ToolActivity tools={stream.tools} />
+              <RunTraceDetails key={active.id} tools={stream.tools} />
               <AnswerMarkdown
                 content={stream.answer}
                 runId={active.id}
