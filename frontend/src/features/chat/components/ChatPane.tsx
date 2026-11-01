@@ -435,11 +435,6 @@ export function ChatPane({
                 streaming={!stream.finished}
                 afterContent={
                   <>
-                    {!stream.answer && (
-                      <span className="muted">
-                        正在思考<span className="typing-dots">…</span>
-                      </span>
-                    )}
                     {stream.feedback && (
                       <RunFeedback
                         feedback={stream.feedback}
