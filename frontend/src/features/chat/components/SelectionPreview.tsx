@@ -11,11 +11,13 @@ export function SelectionPreview({
   onClose,
   onRemove,
   description = '发送时保存的源码快照',
+  title = '代码选区',
 }: {
   selection: Selection;
   onClose: () => void;
   onRemove?: () => void;
   description?: string;
+  title?: string;
 }) {
   const api = useProjectApi();
   const locate = useSourceCitation();
@@ -37,7 +39,7 @@ export function SelectionPreview({
     <Modal
       open
       onClose={onClose}
-      title="代码选区"
+      title={title}
       description={description}
       className="selection-preview-dialog"
     >

@@ -93,15 +93,16 @@ export function SourceReference({
     <div className={compact ? 'answer-code-citation' : 'rich-source-reference'}>
       <div className={compact ? 'answer-code-citation-controls' : 'rich-source-controls'}>
         <button
-          className={compact ? 'answer-code-link' : 'rich-source-link'}
+          className={compact ? 'answer-code-link source-link' : 'rich-source-link'}
           type="button"
           disabled={!!reason || opening}
           title={reason || `${compact ? label : source.path} · 打开源码`}
           aria-label={`打开源码 ${label}`}
-          onClick={() => void navigate(false)}
+          aria-haspopup={compact ? 'dialog' : undefined}
+          onClick={() => void navigate(compact)}
         >
           {compact ? (
-            codeRange(source)
+            label
           ) : (
             <>
               <FileCode2 size={12} aria-hidden="true" />
@@ -179,6 +180,7 @@ export function SourceReference({
       {preview && (
         <SelectionPreview
           selection={preview}
+          title={`引用源码 · ${label}`}
           description="本轮核对版本的源码片段"
           onClose={() => setPreview(undefined)}
         />

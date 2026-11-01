@@ -140,7 +140,7 @@ test('结构化正文保留段落，来源集中于末尾', () => {
   assert.match(html, /记录 · v2<\/button>/);
 });
 
-test('实际回答默认只显示按文件归组的行号链接，完整路径藏在详情且来源位于附图之后', () => {
+test('实际回答只显示按文件归组的引用标签，无详情且来源位于附图之后', () => {
   const pointer = {
     path: 'Long/Directory/Engine.cs',
     start_line: 12,
@@ -166,15 +166,17 @@ test('实际回答默认只显示按文件归组的行号链接，完整路径�
   try {
     const { document } = dom.window;
     assert.equal(document.querySelectorAll('.answer-code-file').length, 1);
-    assert.equal(document.querySelector('.answer-code-filename').textContent, 'Engine.cs');
+    assert.equal(
+      document.querySelector('.answer-code-file').getAttribute('aria-label'),
+      'Engine.cs',
+    );
     assert.deepEqual(
       [...document.querySelectorAll('.answer-code-link')].map((item) => item.textContent),
-      ['12–24', '30–32'],
+      ['Engine.cs:12–24', 'Engine.cs:30–32'],
     );
-    assert.equal(document.querySelectorAll('.rich-source-reference,.source-link').length, 0);
-    const detail = document.querySelector('.answer-code-details');
-    assert.equal(detail.open, false);
-    assert.equal(detail.querySelector('.answer-code-path').textContent, pointer.path);
+    assert.equal(document.querySelectorAll('.rich-source-reference,details').length, 0);
+    assert.equal(document.querySelectorAll('.answer-code-link[aria-haspopup="dialog"]').length, 2);
+    assert.doesNotMatch(document.body.textContent, /Long\/Directory|详情/);
     assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('original.png'));
     assert.ok(html.indexOf('class="answer-sources"') > html.indexOf('最后说明。'));
   } finally {

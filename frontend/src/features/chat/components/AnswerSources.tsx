@@ -44,14 +44,11 @@ export function AnswerSources({
               <Markdown key={index} content={source.markdown} runId={runId} sourceId={sourceId} />
             ),
         )}
-        {groups.length > 0 && (
-          <CodeSources groups={groups} runId={runId} sourceId={sourceId} context={context.data} />
-        )}
+        {groups.length > 0 && <CodeSources groups={groups} runId={runId} sourceId={sourceId} />}
         {invalid.map((source, index) => (
-          <details className="answer-code-details" key={index}>
-            <summary>{source.label || '代码引用'}（引用格式无效）</summary>
-            <p className="answer-code-path">{source.url}</p>
-          </details>
+          <span className="answer-code-invalid" key={index} title={source.url}>
+            {source.label || '代码引用'}（引用格式无效）
+          </span>
         ))}
       </div>
     </section>
