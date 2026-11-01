@@ -11,6 +11,44 @@ type Node = {
   children?: Node[];
   position?: { start: { offset?: number }; end: { offset?: number } };
 };
+type ContentEdit = { start: number; end: number; replacement: string };
+
+function cleanCitationLists(content: string, root: Node, removed: Set<Node>, edits: ContentEdit[]) {
+  function clean(node: Node): boolean {
+    if (removed.has(node)) return true;
+    const children = node.children || [];
+    const empty = children.map(clean);
+    // 只清理由本次引用迁移造成的空容器，原有空项、正文、图片及代码继续保留。
+    if (
+      ['listItem', 'list', 'blockquote'].includes(node.type) &&
+      children.length > 0 &&
+      empty.every(Boolean)
+    ) {
+      const range = bounds(node);
+      if (range) {
+        const lineStart = content.lastIndexOf('\n', range[0] - 1) + 1;
+        const start = /^[ \t]*$/.test(content.slice(lineStart, range[0])) ? lineStart : range[0];
+        const newline = content.slice(range[1]).match(/^[ \t]*\r?\n/);
+        edits.push({
+          start,
+          end: range[1] + (newline?.[0].length || 0),
+          replacement: '',
+        });
+      }
+      return true;
+    }
+    return false;
+  }
+  clean(root);
+  const retained: ContentEdit[] = [];
+  for (const edit of edits.sort((a, b) => a.start - b.start || b.end - a.end)) {
+    // 整项删除覆盖内部链接删除，避免重复应用重叠范围而误删相邻正文。
+    const previous = retained.at(-1);
+    if (previous && previous.end >= edit.end) continue;
+    retained.push(edit);
+  }
+  return retained;
+}
 export type AnswerSource =
   | { type: 'link'; url: string; markdown: string }
   | { type: 'text'; markdown: string; urls?: string[] }
@@ -55,7 +93,8 @@ function separateMarkdown(content: string, add: (source: AnswerSource) => void) 
     if (node.type === 'definition' && node.identifier && node.url)
       definitions.set(node.identifier, definitions.get(node.identifier) ?? node.url);
   });
-  const edits: { start: number; end: number; replacement: string }[] = [];
+  const edits: ContentEdit[] = [];
+  const removed = new Set<Node>();
   const headings: typeof edits = [];
   const urlOf = (node: Node) =>
     node.type === 'link'
@@ -94,6 +133,7 @@ function separateMarkdown(content: string, add: (source: AnswerSource) => void) 
       sourceHeading.test(plain.trim())
     ) {
       headings.push({ start: range[0], end: range[1], replacement: '' });
+      removed.add(node);
       return;
     }
     const labeled =
@@ -149,6 +189,7 @@ function separateMarkdown(content: string, add: (source: AnswerSource) => void) 
         );
       }
       edits.push({ start: range[0], end: range[1], replacement: '' });
+      removed.add(node);
       return;
     }
     const url = urlOf(node);
@@ -175,8 +216,9 @@ function separateMarkdown(content: string, add: (source: AnswerSource) => void) 
     node.children?.forEach(scan);
   }
   scan(root);
-  if (edits.length) edits.push(...headings);
-  for (const edit of edits.sort((a, b) => b.start - a.start))
+  if (!edits.length) return content;
+  edits.push(...headings);
+  for (const edit of cleanCitationLists(content, root, removed, edits).reverse())
     content = content.slice(0, edit.start) + edit.replacement + content.slice(edit.end);
   return content;
 }

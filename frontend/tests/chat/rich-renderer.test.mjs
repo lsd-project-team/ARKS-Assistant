@@ -128,6 +128,27 @@ test('保留长段落和展示文字，来源无论原位置如何都归至最�
   assert.equal((html.match(/<p>/g) || []).length, 4);
 });
 
+test('纯来源列表移走后实际渲染没有空圆点，正文列表与来源按钮保留', () => {
+  const content =
+    '- 正常准备。\n- 正常取片。\n\n来源：\n' +
+    Array.from({ length: 5 }, (_, i) => `- [File${i}.cs:2](source:Dir/File${i}.cs#L2)`).join('\n') +
+    '\n\n最后说明。';
+  const dom = new JSDOM(render(content));
+  try {
+    const { document } = dom.window;
+    assert.deepEqual(
+      [...document.querySelectorAll('li')].map((el) => el.textContent),
+      ['正常准备。', '正常取片。'],
+    );
+    assert.equal(document.querySelectorAll('ul,ol').length, 1);
+    assert.equal(document.querySelectorAll('.answer-code-file').length, 5);
+    assert.equal(document.querySelectorAll('.answer-code-link').length, 5);
+    assert.ok(document.body.textContent.includes('最后说明。'));
+  } finally {
+    dom.window.close();
+  }
+});
+
 test('结构化正文保留段落，来源集中于末尾', () => {
   const content = '结果为−4～2μm。\n\n来源：[记录 · v2](debug-issue:trial/2)';
   const html = render(

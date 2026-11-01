@@ -6,10 +6,82 @@ import {
   answerSourceLinks,
 } from '../../src/features/chat/rich/answerSources.ts';
 import { answerKnowledgeCitations } from '../../src/features/knowledge/lib/answerReferences.ts';
+import { fromMarkdown } from 'mdast-util-from-markdown';
 
 const citation = '[试验记录](debug-issue:trial/4)';
 const split = (content, streaming = false) =>
   separateAnswerSources(parseContent(content, streaming));
+
+for (const ordered of [false, true]) {
+  test(`${ordered ? '有序' : '无序'}纯引用列表迁移后没有空项，相邻正文完整保留`, () => {
+    const items = Array.from(
+      { length: 5 },
+      (_, i) =>
+        `${ordered ? `${i + 1}.` : '-'} [File${i}.cs:12-24](source:Dir/File${i}.cs#L12-L24)`,
+    ).join('\n');
+    const { body, sources } = split(`前文。\n\n来源：\n${items}\n\n后文。`);
+    assert.equal(sources.length, 5);
+    assert.deepEqual(
+      fromMarkdown(body[0].content).children.map((node) => node.type),
+      ['paragraph', 'paragraph'],
+    );
+    assert.match(body[0].content, /前文。/);
+    assert.match(body[0].content, /后文。/);
+  });
+}
+
+test('正文与引用混排时仅移走纯引用项，保留正文及行内链接含义', () => {
+  const content = `- 正常准备。\n- ${citation}\n- 参考${citation}继续处理。\n- 结束。`;
+  const { body, sources } = split(content);
+  assert.equal(sources.length, 1);
+  const list = fromMarkdown(body[0].content).children[0];
+  assert.equal(list.children.length, 3);
+  assert.equal(list.spread, false);
+  assert.match(body[0].content, /- 正常准备。\n\n?- 参考试验记录继续处理。\n- 结束。/);
+});
+
+test('CRLF来源列表清理不会把正常正文列表拆开或改成松散列表', () => {
+  const content = `- 第一步\r\n- ${citation}\r\n- 第二步\r\n\r\n后续正文。`;
+  const { body, sources } = split(content);
+  assert.equal(sources.length, 1);
+  assert.equal(body[0].content, '- 第一步\r\n- 第二步\r\n\r\n后续正文。');
+  assert.equal(fromMarkdown(body[0].content).children[0].spread, false);
+});
+
+test('嵌套引用列表和空引用父项一并清理，父项正文与后续列表不丢失', () => {
+  const content = `- 保留父项\n  - ${citation}\n  - 来源：\n    - [File.cs:2](source:Dir/File.cs#L2)\n- 下一步。\n\n后文。`;
+  const { body, sources } = split(content);
+  const nodes = fromMarkdown(body[0].content).children;
+  assert.equal(sources.length, 2);
+  assert.equal(nodes[0].children.length, 2);
+  assert.equal(nodes[0].children[0].children.length, 1);
+  assert.match(body[0].content, /保留父项/);
+  assert.match(body[0].content, /下一步。/);
+  assert.match(body[0].content, /后文。/);
+});
+
+test('不清理原有空项，保留任务、图片、代码和普通外链列表', () => {
+  const content = `-\n- [x] 已完成\n- ![图](https://example.com/a.png)\n- \`示例\`\n- [官网](https://example.com)\n- ${citation}`;
+  const { body, sources } = split(content);
+  assert.equal(sources.length, 1);
+  const list = fromMarkdown(body[0].content).children[0];
+  assert.equal(list.children.length, 5);
+  assert.equal(list.children[0].children.length, 0);
+  for (const value of ['[x] 已完成', '![图]', '`示例`', '[官网](https://example.com)'])
+    assert.ok(body[0].content.includes(value));
+});
+
+test('正文项附带独立引用段落以及引用式链接，不留下空嵌套容器', () => {
+  const content =
+    '- 保留正文。\n\n  [File.cs:2][code]\n\n- > [经验](debug-issue:trial/4)\n\n尾段。\n\n[code]: source:Dir/File.cs#L2';
+  const { body, sources } = split(content);
+  const nodes = fromMarkdown(body[0].content).children;
+  assert.equal(sources.length, 2);
+  assert.equal(nodes[0].children.length, 1);
+  assert.equal(nodes[0].children[0].children.length, 1);
+  assert.match(body[0].content, /保留正文。/);
+  assert.match(body[0].content, /尾段。/);
+});
 
 test('来源段移出正文，后续图片、说明、警告和表格保留原顺序', () => {
   const content = `结论。\n\n来源：${citation}\n\n![示意](https://example.com/a.png)\n\n后续说明。\n\n| A | B |\n|---|---|\n| 1 | 2 |\n\n源码核对提示：仍需核对。`;
