@@ -29,6 +29,11 @@
   line-height: 2.3;
 }
 .answer-sources-code .answer-sources-label {
+  display: inline-block;
+  vertical-align: top;
+  padding: 2px 0;
+  border-block: 1px solid transparent;
+  font: 12px/1.8 var(--font-ui);
   margin-right: 6px;
 }
 .answer-sources-code .answer-sources-list,
@@ -41,7 +46,7 @@
 .answer-code-file {
   display: inline-block;
   max-width: calc(100% - 55px);
-  vertical-align: text-top;
+  vertical-align: top;
   padding: 2px 5px;
   margin-right: 6px;
   border: 1px solid var(--border);
@@ -55,6 +60,15 @@
 }
 .answer-code-citation {
   display: inline;
+}
+.answer-code-citation-controls {
+  display: inline-block;
+  white-space: nowrap;
+}
+.answer-code-citation + .answer-code-citation .answer-code-citation-controls::before {
+  content: '│';
+  margin: 0 3px;
+  color: var(--muted);
 }
 .answer-code-link {
   border: 0;
