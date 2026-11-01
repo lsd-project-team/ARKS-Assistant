@@ -121,10 +121,11 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
             elif any(
                 isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
             ):
+                assert "【源码核查】" in messages[0].text
                 result = AIMessage(content=answer)
             else:
-                # 入口解释只追加源码规则；流程布局规则仅用于明确的流程问法。
-                assert "【源码核查】" in messages[0].text
+                # 首次由模型选择来源；读源码后才追加专项核查规则。
+                assert "【源码核查】" not in messages[0].text
                 assert "默认用step_flow" not in messages[0].text
                 result = AIMessage(
                     content="",

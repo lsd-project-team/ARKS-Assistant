@@ -248,6 +248,7 @@ class AgentGraphBuilder:
                     resolve=debug_issues.resolve_references if debug_issues else None,
                     preselected=debug_issues.selected if debug_issues else None,
                     context=retrieval_context,
+                    source_evidence=evidence,
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations

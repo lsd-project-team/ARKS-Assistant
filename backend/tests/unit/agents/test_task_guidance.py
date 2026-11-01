@@ -22,7 +22,10 @@ async def effective_request(middleware, request=None):
     return await middleware.awrap_model_call(request, handler)
 
 
-@pytest.mark.parametrize("question", ["你好", "介绍 Vue", "蓝膜刺穿处理经验", "周末活动流程"])
+@pytest.mark.parametrize(
+    "question",
+    ["你好", "介绍 Vue", "蓝膜刺穿处理经验", "周末活动流程", "顶针刺穿怎么处理", "学习方法有哪些"],
+)
 async def test_general_questions_keep_source_and_device_display_rules_out(question):
     current = await effective_request(TaskGuidance(question, {"read_source"}))
     assert "【源码核查】" not in current.system_message.text
@@ -33,7 +36,9 @@ async def test_general_questions_keep_source_and_device_display_rules_out(questi
 
 @pytest.mark.parametrize("question", ["Program.cs 的入口是什么", "设备标定流程"])
 async def test_source_rules_do_not_force_a_flow_layout(question):
-    current = await effective_request(TaskGuidance(question, {"read_source"}))
+    current = await effective_request(
+        TaskGuidance(question, {"read_source"}, SimpleNamespace(required=True, reads=[]))
+    )
     prompt = current.system_message.text
     assert prompt.count("【源码核查】") == 1
     assert "[文件名:行号](source:相对路径#L行号)" in prompt
@@ -44,12 +49,14 @@ async def test_source_rules_do_not_force_a_flow_layout(question):
 
 
 @pytest.mark.parametrize("required,reads", [(True, []), (False, [{"path": "Program.cs"}])])
-async def test_selections_and_restored_reads_keep_rules_for_short_followups(required, reads):
+async def test_selections_keep_rules_but_unused_restored_reads_do_not_activate_source(
+    required, reads
+):
     middleware = TaskGuidance(
         "继续", {"read_source"}, SimpleNamespace(required=required, reads=reads)
     )
     current = await effective_request(middleware)
-    assert "【源码核查】" in current.system_message.text
+    assert ("【源码核查】" in current.system_message.text) is required
 
 
 @pytest.mark.parametrize(
@@ -108,7 +115,9 @@ async def test_source_reminder_is_request_only_and_deduplicated_after_tool_resul
         ToolMessage(content="实际源码及行号", tool_call_id="read"),
     ]
     request = ModelRequest(model=DeterministicModel(), messages=original)
-    middleware = TaskGuidance("解释 Program.cs", {"read_source"})
+    middleware = TaskGuidance(
+        "解释 Program.cs", {"read_source"}, SimpleNamespace(required=True, reads=[])
+    )
     first = await effective_request(middleware, request)
     second = await effective_request(middleware, first)
     assert first.messages == second.messages

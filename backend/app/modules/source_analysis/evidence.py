@@ -1,6 +1,7 @@
 """本轮源码依据：版本、覆盖范围与引用校验，不能把引用有效当成语义正确。"""
 
 import asyncio
+import hashlib
 import json
 import re
 from urllib.parse import unquote
@@ -25,17 +26,6 @@ CODE_LITERAL = re.compile(
     r"(?ms)^[ \t]*(?P<fence>`{3,}|~{3,})[^\n]*\n.*?^[ \t]*(?P=fence)[ \t]*$|`+[^`\n]*`+"
 )
 LOCATION = re.compile(r"(.+)#L(\d+)(?:[-–](?:L)?(\d+))?$")
-CODE_QUESTION = re.compile(r"源码|函数|方法|调用链|实现逻辑|分支|入口|异常处理|[\w./-]+\.cs\b")
-DEVICE_SUBJECT = re.compile(r"设备|标定|校准|固晶|点胶|晶圆|吸嘴|顶针|取片|贴片|回零|焊头")
-DEVICE_SOURCE_INTENT = re.compile(r"流程|步骤|顺序|条件|原理|逻辑|怎么|如何|为什么|为何|操作")
-
-
-def requires_source_evidence(question):
-    # 自然语言询问设备流程也需源码；仅检索历史处理经验不因出现设备名就强制源码核查。
-    return bool(
-        CODE_QUESTION.search(question)
-        or (DEVICE_SUBJECT.search(question) and DEVICE_SOURCE_INTENT.search(question))
-    )
 
 
 def citation_matches(text):
@@ -128,6 +118,7 @@ def enclosing_excerpt(workspace, path, line, max_lines=160):
 class SourceEvidence:
     def __init__(self, workspace, emit, *, required=False):
         self.workspace, self.emit, self.required = workspace, emit, required
+        self.mandatory = False
         self.reads = []
         self.audit_input_limit = 16000
         self.user_request = ""
@@ -241,7 +232,8 @@ class SourceEvidence:
             + "\n</verified_source_context>"
         )
 
-    def check(self, text):
+    def check(self, text, *, require_source=None):
+        required = self.required if require_source is None else require_source
         pointers = list(source_pointers(text))
         text = project_rich_content(text)
         citations = []
@@ -287,10 +279,10 @@ class SourceEvidence:
                 ):
                     entry.update(valid=False, reason="结构化引用声明的源码目录与本轮证据不一致")
         reasons = [row["reason"] for row in citations if not row["valid"]]
-        if self.required and not self.reads:
+        if required and not self.reads:
             reasons.append("本轮缺少已核对的本地源码")
         if (
-            self.required
+            required
             and not citations
             and not (self.reads and all(row["end_line"] == 0 for row in self.reads))
         ):
@@ -308,6 +300,18 @@ class SourceEvidenceGuard(AgentMiddleware):
     def __init__(self, evidence, audit_model=None):
         self.evidence, self.repairs = evidence, 0
         self.audit_model, self.audits, self.semantic_repairs = audit_model, 0, 0
+
+    def check_answer(self, answer):
+        # 只认可本轮经验核查器对当前正文的确认，防止旧稿标记或伪引用绕过源码校验。
+        verified = answer.additional_kwargs.get("verified_knowledge_answer")
+        knowledge_only = (
+            not self.evidence.mandatory
+            and verified == hashlib.sha256(answer.text.encode()).hexdigest()
+            and not citation_matches(project_rich_content(answer.text))
+        )
+        return self.evidence.check(
+            answer.text, require_source=self.evidence.required and not knowledge_only
+        )
 
     def ready_for_review(self, answer):
         if answer is None or answer.tool_calls:
@@ -342,7 +346,7 @@ class SourceEvidenceGuard(AgentMiddleware):
         )
         if not self.ready_for_review(answer):
             return response
-        report = await asyncio.to_thread(self.evidence.check, answer.text)
+        report = await asyncio.to_thread(self.check_answer, answer)
         while not report["passed"] and self.repairs < 2:
             self.repairs += 1
             self.evidence.emit("stage", {"stage": "checking_sources"})
@@ -361,7 +365,7 @@ class SourceEvidenceGuard(AgentMiddleware):
             )
             if not self.ready_for_review(answer):
                 return response
-            report = await asyncio.to_thread(self.evidence.check, answer.text)
+            report = await asyncio.to_thread(self.check_answer, answer)
         self.evidence.emit(
             "answer_validation", {**report, "scope": "引用与源码覆盖，不代表结论语义验证"}
         )

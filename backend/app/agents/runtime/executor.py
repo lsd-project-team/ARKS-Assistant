@@ -13,11 +13,9 @@ from app.agents.runtime.answer_completion import termination
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
 from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
+from app.modules.chat.rich_presentation import source_pointers
 from app.modules.knowledge.citations import canonical_knowledge_citations
-from app.modules.source_analysis.evidence import (
-    SourceEvidence,
-    requires_source_evidence,
-)
+from app.modules.source_analysis.evidence import SourceEvidence
 
 
 class AgentRunExecutor:
@@ -35,6 +33,8 @@ class AgentRunExecutor:
             nonlocal hold_knowledge_answer, hold_source_answer
             observed[kind] = payload
             if kind == "source_evidence":
+                hold_source_answer = True
+            if kind == "stage" and payload.get("stage") == "reading_source":
                 hold_source_answer = True
             if kind == "knowledge_reference":
                 knowledge_references.append(payload)
@@ -68,12 +68,9 @@ class AgentRunExecutor:
             evidence = SourceEvidence(
                 runtime.workspace,
                 emit,
-                required=bool(
-                    message["selections"]
-                    or requires_source_evidence(message["content"])
-                    or run["analysis_policy"]["mode"] == "deep"
-                ),
+                required=bool(message["selections"] or run["analysis_policy"]["mode"] == "deep"),
             )
+            evidence.mandatory = evidence.required
             evidence.user_request = message["content"]
             hold_source_answer = evidence.required
             policy = run["analysis_policy"]
@@ -85,6 +82,7 @@ class AgentRunExecutor:
             progress = AnalysisProgress(evidence, emit, previous)
             # 继续普通模式的源码核查也沿用来源复核要求，不能因问题只写“继续”而跳过。
             evidence.required = evidence.required or bool(previous and previous.get("checks"))
+            evidence.mandatory = evidence.required
             retrieval = RetrievalBudget(
                 emit, policy["limit"], policy["reserve"], evidence, progress
             )
@@ -101,6 +99,11 @@ class AgentRunExecutor:
                 if previous_run in visited_runs:
                     break
                 visited_runs.add(previous_run)
+                linked = runtime.repository.run(previous_run)
+                # 重新生成确实使用过源码的回答仍须核对；旧运行仅查询过源码不构成强制理由。
+                if any(source_pointers(linked.get("answer") or "")):
+                    evidence.required = True
+                    hold_source_answer = True
                 cursor = 0
                 while True:
                     events = runtime.repository.events(previous_run, cursor)
@@ -126,7 +129,6 @@ class AgentRunExecutor:
                     if len(events) < 500:
                         break
                     cursor = events[-1]["sequence"]
-                linked = runtime.repository.run(previous_run)
                 previous_run = linked.get("resumed_from") or linked.get("regenerated_from")
             verified_context = await evidence.prepare(
                 message["selections"], max_tokens=min(4000, max(0, available // 5))

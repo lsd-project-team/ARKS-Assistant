@@ -124,6 +124,48 @@ async def test_guard_keeps_answer_without_appended_source_warning(
         assert "源码回答缺少可定位的引用" in validation["reasons"]
 
 
+@pytest.mark.parametrize(
+    ("mandatory", "changed", "passed"),
+    [(False, False, True), (True, False, False), (False, True, False)],
+)
+async def test_only_current_verified_experience_can_waive_optional_source_requirement(
+    services, mandatory, changed, passed
+):
+    from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
+
+    workspace = services[2]
+    events, requests = [], []
+    ledger = SourceEvidence(workspace, lambda *row: events.append(row), required=True)
+    ledger.mandatory = mandatory
+    reference = "[处理经验](debug-issue:trial/1)"
+    records = [{"reference": reference, "content": {"答案": "组合调整后216颗无刺穿。"}}]
+    knowledge = KnowledgeAnswerGuard(
+        DeterministicModel(),
+        "蓝膜怎么处理？",
+        lambda: records,
+        lambda *_: None,
+        16000,
+        preselected=lambda: ("records", records),
+    )
+
+    async def draft(_request):
+        return ModelResponse(result=[AIMessage(content="组合调整后216颗无刺穿。" + reference)])
+
+    async def handler(request):
+        requests.append(request)
+        response = await knowledge.awrap_model_call(request, draft)
+        if changed:
+            response.result[0].content += "正文已被其他步骤修改。"
+        return response
+
+    request = ModelRequest(
+        model=DeterministicModel(), messages=[HumanMessage(content="蓝膜怎么处理？")]
+    )
+    await SourceEvidenceGuard(ledger).awrap_model_call(request, handler)
+    assert len(requests) == (1 if passed else 3)
+    assert [row for kind, row in events if kind == "answer_validation"][-1]["passed"] is passed
+
+
 class EvidenceRepairModel(DeterministicModel):
     def _generate(self, messages, stop=None, run_manager=None, **kwargs):
         if any(

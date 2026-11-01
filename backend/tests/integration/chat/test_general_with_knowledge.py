@@ -25,6 +25,8 @@ from tests.helpers.models import DeterministicModel
         ("给我介绍一下vue框架", "Vue 是用于构建用户界面的框架。"),
         ("解释HTTP和WebSocket的区别", "HTTP 常用于请求与响应，WebSocket 支持双向持续通信。"),
         ("翻译成英文：早上好", "Good morning."),
+        ("有哪些高效学习方法？", "可以先明确目标，再分段练习。"),
+        ("吸嘴这个词英语怎么说？", "通常可以说 nozzle。"),
     ],
 )
 @pytest.mark.parametrize("with_history", [False, True])

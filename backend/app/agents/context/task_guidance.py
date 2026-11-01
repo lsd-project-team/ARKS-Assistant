@@ -6,7 +6,6 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from app.agents.analysis.policy import REPORT_GUIDANCE
 from app.agents.prompts.source_answer import SOURCE_ANSWER_GUIDANCE, SOURCE_ANSWER_REMINDER
 from app.agents.prompts.system import SOURCE_GUIDANCE
-from app.modules.source_analysis.evidence import requires_source_evidence
 
 SOURCE_ANSWER_NOTE_ID = "source-answer-organization"
 
@@ -15,7 +14,8 @@ class TaskGuidance(AgentMiddleware):
     def __init__(self, question, source_tools, evidence=None, *, deep=False):
         self.source_tools = frozenset(source_tools)
         self.evidence, self.deep = evidence, deep
-        self.source_active = deep or requires_source_evidence(question)
+        # 普通问法由模型选择来源；明确选区、深度分析及实际源码调用才激活专项规则。
+        self.source_active = deep or bool(evidence and evidence.required)
 
     async def awrap_tool_call(self, request, handler):
         call = request.tool_call
@@ -26,12 +26,22 @@ class TaskGuidance(AgentMiddleware):
         # 即使首次问法未命中源码意图，选用源码工具后也在下一次模型请求前补齐规则。
         if call["name"] in self.source_tools or workspace_read:
             self.source_active = True
+            if self.evidence is not None and (
+                call["name"]
+                in {
+                    "read_source",
+                    "read_source_context",
+                    "read_source_batch",
+                    "plan_source_checks",
+                    "search_source",
+                }
+                or (workspace_read and call["name"] == "read_file")
+            ):
+                self.evidence.required = True
         return await handler(request)
 
     async def awrap_model_call(self, request, handler):
-        needs_source = self.source_active or bool(
-            self.evidence and (self.evidence.required or self.evidence.reads)
-        )
+        needs_source = self.source_active or bool(self.evidence and self.evidence.required)
         if not needs_source:
             return await handler(request)
         sections = [SOURCE_GUIDANCE]

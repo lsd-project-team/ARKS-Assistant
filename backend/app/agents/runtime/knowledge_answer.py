@@ -1,6 +1,7 @@
 """经验事实核查：筛选独立执行，终审不处理排版或重复抄录证据。"""
 
 import asyncio
+import hashlib
 from inspect import iscoroutinefunction
 
 from langchain.agents.middleware.types import AgentMiddleware
@@ -27,6 +28,7 @@ context仅为理解追问的近期背景，当前明确要求和最新纠正优�
 records只是选中的片段，可能漏选事实；record_context是这些选中记录的完整正文，用于核查遗漏。
 不能因片段没有某项数据就说原记录没有：须看record_context，补足本题同设备同阶段的遗漏。
 上下文仅供核对，不允许加入其他时段、其他设备或另选记录；终审沿用同一批记录。
+source_context若存在，是本轮实际读取且按当前版本整理的源码资料和引用检查结果，属于独立于经验records的合法依据；不能因源码内容未出现在经验记录中就删掉源码结论或引用。
 只检查：所问问题是否答到，设备/时间/阶段/数值/单位/条件/结果/引用是否正确，判断归属是否清楚，以及下述泛化或重复提醒。
 用户问解决办法时，可以只列有依据的处理措施、必要工况、参数及引用，不要求复述原因、排查过程或试验结果。
 省略与本题处理无关的历史背景、对照分析或验证细节不算事实遗漏；影响方案适用性的条件和不确定性仍须保留。
@@ -58,7 +60,8 @@ compatibility的missing和needs_confirmation是内部匹配信息，不要求在
 参数尝试列表不证明实际试验先后顺序；局部尝试无效不能排除所有调参可能。
 历史查询只回答所问内容和引用，不追加适用条件缺项清单或延伸引导。
 只要原文或只答结果时不追加引导；不引入选定范围外的阶段或引用来扩展建议。
-source:源码部分由其他核查器负责，不擅自修改。仅发现具体事实错误、遗漏问题答案、范围越界或上述泛化与重复提醒才修订。
+经验结论对照records和record_context；源码部分对照source_context，不要求经验记录证明软件实现，不将软件配置反推为经验试验结论。源码路径、行号和版本由程序另行核查；修订经验部分时保留无争议的源码部分及其引用。
+仅发现具体事实错误、遗漏问题答案、范围越界或上述泛化与重复提醒才修订。
 只返回JSON：{"verdict":"passed或revised","reason":"具体事实理由","answer":""}。
 passed时answer为空；revised时给修正后的完整回答，使用records真实引用，不添加其他字段。
 answer字段可以包含Markdown和下述白名单展示协议，外层仍只返回核查JSON对象；代码围栏必须放在answer字符串内。
@@ -91,6 +94,7 @@ class KnowledgeAnswerGuard(AgentMiddleware):
         resolve=None,
         preselected=None,
         context=None,
+        source_evidence=None,
     ):
         self.model, self.question, self.sources, self.emit = model, question, sources, emit
         self.calls = ReviewCalls(model, emit, input_limit)
@@ -98,6 +102,7 @@ class KnowledgeAnswerGuard(AgentMiddleware):
         self.resolve = resolve
         self.preselected = preselected
         self.context = context or {}
+        self.source_evidence = source_evidence
 
     def unavailable(self, stage, code):
         self.emit("knowledge_stage_error", {"stage": stage, "code": code})
@@ -140,6 +145,17 @@ class KnowledgeAnswerGuard(AgentMiddleware):
             self.emit("stage", {"stage": "checking_sources", "detail": "核查经验回答的事实"})
             # 原协议用于保留组件和ID；可读投影避免图内标签、表格或转义文字漏过核查。
             projected = project_rich_content(candidate)
+            source_context = {}
+            if self.source_evidence is not None and citation_matches(projected):
+                from app.modules.source_analysis.review_context import source_review_context
+
+                try:
+                    source_context = await asyncio.to_thread(
+                        source_review_context, self.source_evidence, projected
+                    )
+                except (OSError, ValueError):
+                    # 源码范围超限或变化仍由源码校验处理，不把经验复核变成运行异常。
+                    source_context = {"source": [], "source_omissions": [{"reason": "unavailable"}]}
             result = await self.calls.ask(
                 REVIEW,
                 {
@@ -149,6 +165,7 @@ class KnowledgeAnswerGuard(AgentMiddleware):
                     **({"answer_text": projected} if projected != candidate else {}),
                     "records": records,
                     "record_context": record_context,
+                    **({"source_context": source_context} if source_context else {}),
                     "scope_issue": scope_problems(self.question, candidate, records),
                     "final_check": attempt > 0,
                 },
@@ -176,6 +193,7 @@ class KnowledgeAnswerGuard(AgentMiddleware):
         answer = final_message(response)
         if self.model is None or answer is None or answer.tool_calls:
             return response
+        answer.additional_kwargs.pop("verified_knowledge_answer", None)
         if (
             answer.additional_kwargs.get("answer_completion", {}).get("output", "complete")
             != "complete"
@@ -224,6 +242,15 @@ class KnowledgeAnswerGuard(AgentMiddleware):
                 references = {row["reference"] for row in selected}
                 context = [row for row in records if row["reference"] in references]
                 candidate = await self.verify(original, selected, context)
+                if (
+                    selected
+                    and knowledge_references(candidate)
+                    and not citation_matches(project_rich_content(original))
+                    and not citation_matches(project_rich_content(candidate))
+                ):
+                    answer.additional_kwargs["verified_knowledge_answer"] = hashlib.sha256(
+                        candidate.encode()
+                    ).hexdigest()
             self.emit(
                 "knowledge_answer_review",
                 {
