@@ -303,7 +303,7 @@ class SourceEvidence:
 
 
 class SourceEvidenceGuard(AgentMiddleware):
-    """最终回答最多补核对两次；仍未验证的链接降为文字并明确提示。"""
+    """最终回答最多补核对两次；失效引用降为文字，核对结果保留在事件中。"""
 
     def __init__(self, evidence, audit_model=None):
         self.evidence, self.repairs = evidence, 0
@@ -447,11 +447,7 @@ class SourceEvidenceGuard(AgentMiddleware):
                 )
         if not report["passed"]:
             invalid = {row["target"] for row in report["citations"] if not row["valid"]}
-            content = disable_invalid_citations(answer.text, invalid)
-            content += (
-                "\n\n源码核对提示：" + "；".join(report["reasons"]) + "。上述相关结论仍需核对。"
-            )
-            answer.content = content
+            answer.content = disable_invalid_citations(answer.text, invalid)
         return response
 
 

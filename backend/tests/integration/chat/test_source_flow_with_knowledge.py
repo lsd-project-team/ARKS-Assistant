@@ -284,7 +284,7 @@ async def test_exhausted_source_repairs_keep_flow_and_disable_only_unverified_li
         assert (
             documents[0].blocks[0].steps[0].description == "Main 方法体为空；其余流程本轮尚未核实。"
         )
-        assert "引用未核对" in answer and "源码核对提示" in answer
+        assert "引用未核对" in answer and "源码核对提示" not in answer
         assert len(answers) == 3
         # 同一路径/行号有伪造版本时全部停用，避免为冲突来源背书。
         pointers = list(source_pointers(answer))

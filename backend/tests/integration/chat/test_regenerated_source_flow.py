@@ -150,7 +150,7 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
                 assert calls["regenerated"] == (1 if mode == "cited" else 2)
                 assert calls["reviews"] == 0
             else:
-                assert "源码核对提示" in result
+                assert "源码核对提示" not in result
                 assert calls["regenerated"] == 3 and calls["reviews"] == 0
             evidence = [
                 row["payload"]

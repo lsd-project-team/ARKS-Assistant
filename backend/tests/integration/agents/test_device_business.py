@@ -74,10 +74,13 @@ async def test_main_project_priority_reaches_model_with_optional_sources_disable
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     options = {"use_knowledge": False, "use_memory": False, "use_deepwiki": False}
     run = repository.create_run(None, "我想做设备标定，给我输出一下标定流程", [], options)
-    answer = await runtime.execute(run, lambda *_args: None)
+    events = []
+    answer = await runtime.execute(run, lambda kind, payload: events.append((kind, payload)))
     prompt = "\n".join(system_prompts)
     assert "优先在 AKRS.ZX2200/ 中检索" in prompt
     assert "再根据已读取的调用关系" in prompt
     assert "用户明确指定的文件或附带选区应先核对" in prompt
     assert "其他项目不能套用这个目录" in prompt
-    assert "源码核对提示" in answer
+    assert "源码核对提示" not in answer
+    validation = [payload for kind, payload in events if kind == "answer_validation"][-1]
+    assert not validation["passed"]

@@ -3,6 +3,7 @@
 import json
 import os
 
+import pytest
 from langchain.agents.middleware.types import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
@@ -84,8 +85,43 @@ async def test_guard_repairs_and_marks_unverified_links(services):
     response = await guard.awrap_model_call(request, handler)
     assert len(requests) == 3 and "read_source" in requests[-1].messages[-1].text
     assert "source:Program.cs#L999" not in response.result[0].text
-    assert "引用未核对" in response.result[0].text and "源码核对提示" in response.result[0].text
+    assert response.result[0].text == "结论 坏引用（引用未核对）"
     assert events[-1][0] == "answer_validation" and not events[-1][1]["passed"]
+
+
+@pytest.mark.parametrize(
+    ("required", "read_source", "draft", "passed"),
+    [
+        (False, False, "方案参考[经验](debug-issue:trial/1)。", True),
+        (True, False, "方案参考[经验](debug-issue:trial/1)。", False),
+        (True, True, "方案参考[经验](debug-issue:trial/1)。", False),
+        (True, True, "入口是[Main](source:Program.cs#L2)。", True),
+    ],
+)
+async def test_guard_keeps_answer_without_appended_source_warning(
+    services, required, read_source, draft, passed
+):
+    _, _, workspace, *_ = services
+    events, requests = [], []
+    ledger = SourceEvidence(workspace, lambda *event: events.append(event), required=required)
+    if read_source:
+        ledger.record(source_excerpt(workspace, "Program.cs", 2, 2))
+
+    async def handler(request):
+        requests.append(request)
+        return ModelResponse(result=[AIMessage(content=draft)])
+
+    request = ModelRequest(
+        model=DeterministicModel(), messages=[HumanMessage(content="取片如何处理")]
+    )
+    response = await SourceEvidenceGuard(ledger).awrap_model_call(request, handler)
+    # 即使本轮读过源码但最终仅引用经验，也不把核对报告追加进正文。
+    assert response.result[0].text == draft
+    assert len(requests) == (1 if passed else 3)
+    validation = [payload for kind, payload in events if kind == "answer_validation"][-1]
+    assert validation["passed"] is passed
+    if not passed:
+        assert "源码回答缺少可定位的引用" in validation["reasons"]
 
 
 class EvidenceRepairModel(DeterministicModel):
