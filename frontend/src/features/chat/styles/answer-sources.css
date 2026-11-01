@@ -31,7 +31,7 @@
 .answer-sources-code .answer-sources-label {
   display: inline-block;
   vertical-align: top;
-  padding: 2px 0;
+  padding: 5px 0;
   border-block: 1px solid transparent;
   font: 12px/1.8 var(--font-ui);
   margin-right: 6px;
@@ -47,10 +47,10 @@
   display: inline-block;
   max-width: calc(100% - 55px);
   vertical-align: top;
-  padding: 2px 5px;
+  padding: 3px 6px;
   margin-right: 6px;
   border: 1px solid var(--border);
-  border-radius: 5px;
+  border-radius: 7px;
   background: var(--surface-subtle);
   color: var(--text-secondary);
   font: 12px/1.8 var(--font-ui);
@@ -65,26 +65,24 @@
   display: inline-block;
   white-space: nowrap;
 }
-.answer-code-citation + .answer-code-citation .answer-code-citation-controls::before {
-  content: '│';
-  margin: 0 3px;
-  color: var(--muted);
-}
 .answer-code-link {
   border: 0;
-  padding: 0 2px;
+  border-radius: 5px;
+  padding: 2px 6px;
+  margin-block: 1px;
   margin-left: 4px;
-  background: transparent;
+  background: var(--surface-hover);
   color: inherit;
   font: 12px/1.6 var(--font-ui);
   white-space: nowrap;
   cursor: pointer;
 }
 .answer-code-link:hover:not(:disabled) {
+  background: var(--selection-hover, var(--surface-muted));
   color: var(--accent);
-  text-decoration: underline;
 }
 .answer-code-link:disabled {
+  opacity: 0.65;
   color: var(--muted);
   cursor: help;
 }
