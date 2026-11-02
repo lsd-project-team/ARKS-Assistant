@@ -18,6 +18,7 @@ from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
 from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
+from app.agents.runtime.answer_review import AnswerReviewNote
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
@@ -233,6 +234,7 @@ class AgentGraphBuilder:
                     evidence,
                     deep=bool(policy and policy["mode"] == "deep"),
                 ),
+                AnswerReviewNote(emit),
                 AnswerFormatValidation(emit),
                 *(
                     # 按用户要求不再调用源码结论复核模型，保留确定性的路径/行号/版本校验。

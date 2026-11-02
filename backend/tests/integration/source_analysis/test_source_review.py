@@ -156,7 +156,8 @@ async def test_unknown_mechanism_is_visible_in_final_reply(services):
     result = await guard.awrap_model_call(
         ModelRequest(model=DeterministicModel(), messages=[]), handler
     )
-    assert "结论复核提示" in result.result[0].text and "参数机制未核实" in result.result[0].text
+    assert result.result[0].text == "调用点在[这里](source:Program.cs#L2)。"
+    assert "source_review_note" not in result.result[0].additional_kwargs
 
 
 def test_unsupported_mechanism_is_removed_but_its_verified_citation_remains():

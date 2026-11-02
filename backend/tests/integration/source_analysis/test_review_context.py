@@ -144,12 +144,11 @@ async def test_source_changed_during_review_cannot_keep_a_passed_review_or_stale
 
     reviews = [row for kind, row in events if kind == "source_review"]
     assert reviews[-1]["verdict"] == "unknown"
-    assert (
-        "已变化" in response.result[0].text
-        and "source:Program.cs#L2" not in response.result[0].text
-    )
-    assert "引用未核对" in response.result[0].text
+    assert "source_review_note" in response.result[0].additional_kwargs
+    assert not [r for k, r in events if k == "answer_validation"][-1]["passed"]
     if rich:
         document = next(doc for _, _, doc in rich_documents(response.result[0].text))
         assert document.blocks[0].type == "step_flow"
-        assert not list(source_pointers(response.result[0].text))
+        assert len(list(source_pointers(response.result[0].text))) == 1
+    else:
+        assert response.result[0].text == "入口见[原件](source:Program.cs#L2)。"

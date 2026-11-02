@@ -143,15 +143,21 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
             )
             assert calls["selection"] == 0
             validation = repository.run_event(saved["id"], "answer_validation")
-            verified = mode in {"cited", "missing_first"}
+            verified = mode == "cited"
             assert validation["passed"] is verified
             if verified:
                 assert result == answer()
-                assert calls["regenerated"] == (1 if mode == "cited" else 2)
+                assert calls["regenerated"] == 1
                 assert calls["reviews"] == 0
             else:
                 assert "源码核对提示" not in result
-                assert calls["regenerated"] == 3 and calls["reviews"] == 0
+                assert calls["regenerated"] == 1 and calls["reviews"] == 0
+                draft = answer(citation=mode not in {"missing_first", "missing_all"})
+                assert result.startswith(draft)
+                if mode in {"missing_first", "missing_all"}:
+                    assert result == draft
+                else:
+                    assert "Program.cs" in result[len(draft) :]
             evidence = [
                 row["payload"]
                 for row in repository.events(saved["id"])

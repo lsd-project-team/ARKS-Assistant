@@ -128,6 +128,30 @@ test('保留长段落和展示文字，来源无论原位置如何都归至最�
   assert.equal((html.match(/<p>/g) || []).length, 4);
 });
 
+test('只读复核补句保留原答，普通和富内容的来源始终在补句之后', () => {
+  const body = '原答：顶针高度280～300μm。';
+  const note = '资料未注明该高度的单位，原答中的μm没有依据。';
+  const footer = '来源：[处理经验](debug-issue:trial/1)';
+  const rich =
+    '```rich-content\n' +
+    JSON.stringify({ version: 1, blocks: [{ id: 'original', type: 'markdown', content: body }] }) +
+    '\n```';
+  for (const content of [
+    `${body}\n\n${note}\n\n${footer}`,
+    `${body}\n\n${footer}\n\n${note}`,
+    `${rich}\n\n${footer}\n\n${note}`,
+  ]) {
+    const document = new JSDOM(render(content)).window.document;
+    assert.ok(document.body.textContent.includes(body));
+    assert.equal(document.body.textContent.split(note).length - 1, 1);
+    const paragraph = [...document.querySelectorAll('p')].find((row) => row.textContent === note);
+    const sources = document.querySelector('.answer-sources');
+    assert.ok(paragraph && sources);
+    assert.ok(paragraph.compareDocumentPosition(sources) & 4);
+    assert.ok(sources.textContent.includes('处理经验'));
+  }
+});
+
 test('纯来源列表移走后实际渲染没有空圆点，正文列表与来源按钮保留', () => {
   const content =
     '- 正常准备。\n- 正常取片。\n\n来源：\n' +

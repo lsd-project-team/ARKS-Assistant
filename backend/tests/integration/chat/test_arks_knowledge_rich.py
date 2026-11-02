@@ -68,7 +68,7 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
             if "你负责核查历史经验回答" in prompt:
                 # 供应商边界替身只判定明确的单位错误，筛选和保存仍走真实实现。
                 assert "记录没有原图或image_count=0" in prompt
-                assert "mermaid:" in prompt and "外层仍只返回核查JSON对象" in prompt
+                assert "不改写answer" in prompt and "不返回answer" in prompt
                 payload = json.loads(messages[-1].text)
                 state["checks"].append(payload)
                 assert payload["record_context"][0]["image_count"] == 0
@@ -83,9 +83,11 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
                 result = AIMessage(
                     content=json.dumps(
                         {
-                            "verdict": "revised" if bad else "passed",
-                            "reason": "高度单位无依据" if bad else "参数及示意有据",
-                            "answer": document(state["reference"]) if bad else "",
+                            "verdict": "issues" if bad else "passed",
+                            "note": "资料未注明顶针高度280～300的单位，原答中的μm没有依据。"
+                            if bad
+                            else "",
+                            "answer": "不得采用的修订内容",
                         }
                     )
                 )
@@ -138,21 +140,23 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
         rows = events(client.get(project_api(client, f"/runs/{run['id']}/events")))
         assert rows[-1]["kind"] == "done" and rows[-1]["payload"]["status"] == "completed"
         answer = rows[-1]["payload"]["answer"]
-        assert answer == document(state["reference"])
-        assert "μm" not in answer and state["reference"] in answer
+        original = document(state["reference"], wrong_unit=True)
+        note = "资料未注明顶针高度280～300的单位，原答中的μm没有依据。"
+        assert answer == original + "\n\n" + note
+        assert "不得采用的修订内容" not in answer
+        assert "280～300μm" in answer and state["reference"] in answer
         blocks = [block for _, _, doc in rich_documents(answer) for block in doc.blocks]
         assert [(block.id, block.type) for block in blocks] == [
             ("solution", "mermaid"),
             ("parameters", "table"),
             ("result", "markdown"),
         ]
-        assert len(state["checks"]) == 2 and state["checks"][-1]["final_check"]
-        assert state["checks"][0]["records"] == state["checks"][1]["records"]
+        assert len(state["checks"]) == 1 and "final_check" not in state["checks"][0]
         assert (
             next(row["payload"] for row in rows if row["kind"] == "knowledge_answer_review")[
                 "verdict"
             ]
-            == "revised"
+            == "issues"
         )
         assert next(row["payload"] for row in rows if row["kind"] == "answer_format_validation")[
             "passed"

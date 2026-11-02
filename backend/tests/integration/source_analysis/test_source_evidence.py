@@ -83,9 +83,10 @@ async def test_guard_repairs_and_marks_unverified_links(services):
 
     request = ModelRequest(model=DeterministicModel(), messages=[HumanMessage(content="解释源码")])
     response = await guard.awrap_model_call(request, handler)
-    assert len(requests) == 3 and "read_source" in requests[-1].messages[-1].text
-    assert "source:Program.cs#L999" not in response.result[0].text
-    assert response.result[0].text == "结论 坏引用（引用未核对）"
+    assert len(requests) == 1
+    assert "source:Program.cs#L999" in response.result[0].text
+    assert response.result[0].text == "结论 [坏引用](source:Program.cs#L999)"
+    assert "999" in response.result[0].additional_kwargs["source_review_note"]
     assert events[-1][0] == "answer_validation" and not events[-1][1]["passed"]
 
 
@@ -117,7 +118,7 @@ async def test_guard_keeps_answer_without_appended_source_warning(
     response = await SourceEvidenceGuard(ledger).awrap_model_call(request, handler)
     # 即使本轮读过源码但最终仅引用经验，也不把核对报告追加进正文。
     assert response.result[0].text == draft
-    assert len(requests) == (1 if passed else 3)
+    assert len(requests) == 1
     validation = [payload for kind, payload in events if kind == "answer_validation"][-1]
     assert validation["passed"] is passed
     if not passed:
@@ -162,7 +163,7 @@ async def test_only_current_verified_experience_can_waive_optional_source_requir
         model=DeterministicModel(), messages=[HumanMessage(content="蓝膜怎么处理？")]
     )
     await SourceEvidenceGuard(ledger).awrap_model_call(request, handler)
-    assert len(requests) == (1 if passed else 3)
+    assert len(requests) == 1
     assert [row for kind, row in events if kind == "answer_validation"][-1]["passed"] is passed
 
 
@@ -203,14 +204,15 @@ async def test_real_graph_repair_tool_loop_and_usage_are_persisted(services, mon
     answer = await runtime.execute(
         run, lambda kind, payload: repository.event(run["id"], kind, payload)
     )
-    assert "#L2)" in answer and "#L999" not in answer
+    assert answer.startswith("入口 [Program.cs:999](source:Program.cs#L999)")
+    assert "行号范围不存在" in answer
     events = repository.events(run["id"], 0)
     validation = [event["payload"] for event in events if event["kind"] == "answer_validation"]
-    assert validation[-1]["passed"]
-    assert any(event["kind"] == "source_evidence" for event in events)
+    assert not validation[-1]["passed"]
+    assert not any(event["kind"] in {"source_evidence", "tool_start"} for event in events)
     usage = [event["payload"] for event in events if event["kind"] == "provider_usage"]
     answer_usage = [row for row in usage if row["purpose"] == "answer"]
-    assert len(answer_usage) == 3 and all(
+    assert len(answer_usage) == 1 and all(
         row["reported"] and row["input_tokens"] == 100 for row in answer_usage
     )
 

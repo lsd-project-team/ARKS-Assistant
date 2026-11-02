@@ -125,9 +125,9 @@ def scope_problems(question, answer, records):
     }
     issues = []
     if used - allowed:
-        issues.append("删除未选定记录或版本的内容和引用，仅回答本题范围。")
+        issues.append("回答包含未选定记录或版本的引用。")
     if records and re.search(r"原图|图片|记录文字|来源|引用", question) and allowed - used:
-        issues.append("用户要求原文或原图，请引用每条选定记录的真实reference，不能遗漏。")
+        issues.append("用户要求的选定资料引用有遗漏。")
     return "".join(issues)
 
 

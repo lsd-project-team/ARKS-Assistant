@@ -7,10 +7,9 @@ import re
 from urllib.parse import unquote
 
 from langchain.agents.middleware.types import AgentMiddleware
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage
 
 from app.agents.context.tokens import fit_text
-from app.agents.prompts.source_answer import SOURCE_REPAIR_GUIDANCE
 from app.core.config import dump_json
 from app.modules.chat.rich_presentation import (
     project_rich_content,
@@ -295,163 +294,88 @@ class SourceEvidence:
 
 
 class SourceEvidenceGuard(AgentMiddleware):
-    """最终回答最多补核对两次；失效引用降为文字，核对结果保留在事件中。"""
+    """只读检查源码引用；具体问题交给末尾说明，不触发改稿或额外工具调用。"""
 
     def __init__(self, evidence, audit_model=None):
-        self.evidence, self.repairs = evidence, 0
-        self.audit_model, self.audits, self.semantic_repairs = audit_model, 0, 0
+        self.evidence, self.audit_model = evidence, audit_model
 
     def check_answer(self, answer):
-        # 只认可本轮经验核查器对当前正文的确认，防止旧稿标记或伪引用绕过源码校验。
-        verified = answer.additional_kwargs.get("verified_knowledge_answer")
+        reviewed = answer.additional_kwargs.get("reviewed_knowledge_answer")
         knowledge_only = (
             not self.evidence.mandatory
-            and verified == hashlib.sha256(answer.text.encode()).hexdigest()
+            and reviewed == hashlib.sha256(answer.text.encode()).hexdigest()
             and not citation_matches(project_rich_content(answer.text))
         )
         return self.evidence.check(
             answer.text, require_source=self.evidence.required and not knowledge_only
         )
 
-    def ready_for_review(self, answer):
-        if answer is None or answer.tool_calls:
-            return False
-        if (
-            answer.additional_kwargs.get("answer_completion", {}).get("output", "complete")
-            == "complete"
-        ):
-            return True
-        self.evidence.emit(
-            "answer_validation",
-            {
-                "passed": False,
-                "citations": [],
-                "reasons": ["回答尚未完整，未进行完整结论复核"],
-                "scope": "输出完整度",
-            },
-        )
-        return False
-
-    def mark_unknown(self, answer, review):
-        content = mark_unknown_conclusions(answer.text, review)
-        report = self.evidence.check(content)
-        invalid = {row["target"] for row in report["citations"] if not row["valid"]}
-        answer.content = disable_invalid_citations(content, invalid)
-        self.evidence.emit("answer_validation", report)
+    @staticmethod
+    def citation_note(report):
+        for row in report["citations"]:
+            if row["valid"]:
+                continue
+            label = row.get("path") or row.get("label") or row.get("target", "源码引用")
+            label = str(label).rsplit("/", 1)[-1][-64:]
+            label = re.sub(r"[\[\]<>`\r\n]", "", label)
+            line = f":{row['start_line']}" if row.get("start_line") else ""
+            reason = row.get("reason", "")
+            if reason not in {
+                "行号范围不存在",
+                "本轮未读取该范围或读取后文件发生变化",
+                "结构化引用声明的版本与本轮证据不一致",
+                "结构化引用声明的源码目录与本轮证据不一致",
+            }:
+                reason = "引用未能定位到本轮有效源码"
+            return f"{label}{line}：{reason}。"
+        return ""
 
     async def awrap_model_call(self, request, handler):
         response = await handler(request)
         answer = next(
-            (item for item in reversed(response.result) if isinstance(item, AIMessage)), None
+            (row for row in reversed(response.result) if isinstance(row, AIMessage)), None
         )
-        if not self.ready_for_review(answer):
+        if answer is None or answer.tool_calls:
+            return response
+        answer.additional_kwargs.pop("source_review_note", None)
+        if (
+            answer.additional_kwargs.get("answer_completion", {}).get("output", "complete")
+            != "complete"
+        ):
+            self.evidence.emit(
+                "answer_validation",
+                {
+                    "passed": False,
+                    "citations": [],
+                    "reasons": ["回答尚未完整，未进行完整结论复核"],
+                    "scope": "输出完整度",
+                },
+            )
             return response
         report = await asyncio.to_thread(self.check_answer, answer)
-        while not report["passed"] and self.repairs < 2:
-            self.repairs += 1
-            self.evidence.emit("stage", {"stage": "checking_sources"})
-            correction = HumanMessage(
-                content="系统引用核对结果（不是新用户问题）："
-                + dump_json(report)
-                + "\n请先用 read_source 补齐证据，再返回完整回答。"
-                "源码引用使用 source:路径#L行号，可用 #L开始-L结束。"
-                "不能核实的结论请明确说明；推断要标为推断。" + SOURCE_REPAIR_GUIDANCE
-            )
-            response = await handler(
-                request.override(messages=[*request.messages, answer, correction])
-            )
-            answer = next(
-                (item for item in reversed(response.result) if isinstance(item, AIMessage)), None
-            )
-            if not self.ready_for_review(answer):
-                return response
-            report = await asyncio.to_thread(self.check_answer, answer)
         self.evidence.emit(
-            "answer_validation", {**report, "scope": "引用与源码覆盖，不代表结论语义验证"}
+            "answer_validation", {**report, "scope": "只读引用检查，不改写原答或补查"}
         )
-        if (
-            report["passed"]
-            and self.evidence.required
-            and self.audit_model is not None
-            and self.audits < 2
-        ):
+        note = self.citation_note(report)
+        if note:
+            answer.additional_kwargs["source_review_note"] = note
+        if report["passed"] and self.evidence.required and self.audit_model is not None:
             from app.modules.source_analysis.review import review_answer
 
-            self.audits += 1
-            self.evidence.emit("stage", {"stage": "checking_sources"})
             try:
                 review = await review_answer(self.audit_model, self.evidence, answer.text)
             except Exception:
                 review = {"verdict": "unknown", "issues": [], "reason": "结论复核暂不可用"}
             self.evidence.emit("source_review", review)
-            if review["verdict"] == "unknown":
-                self.mark_unknown(answer, review)
-                return response
-            if review["verdict"] == "needs_correction" and self.semantic_repairs < 1:
-                self.semantic_repairs += 1
-                self.evidence.emit("stage", {"stage": "checking_sources"})
-                correction = HumanMessage(
-                    content="本轮源码结论复核发现具体问题："
-                    + dump_json(review)
-                    + "\n请补读必要源码，修正条件、顺序与概括，返回完整回答。不要隐去未知依赖。"
-                    + SOURCE_REPAIR_GUIDANCE
-                )
-                response = await handler(
-                    request.override(messages=[*request.messages, answer, correction])
-                )
-                answer = next(
-                    (item for item in reversed(response.result) if isinstance(item, AIMessage)),
-                    None,
-                )
-                if self.ready_for_review(answer):
-                    final_check = await asyncio.to_thread(self.evidence.check, answer.text)
-                    self.evidence.emit(
-                        "answer_validation", {**final_check, "scope": "引用与源码覆盖"}
-                    )
-                    if not final_check["passed"]:
-                        answer.content = (
-                            disable_invalid_citations(
-                                answer.text,
-                                {
-                                    row["target"]
-                                    for row in final_check["citations"]
-                                    if not row["valid"]
-                                },
-                            )
-                            + "\n\n部分修正引用仍需核对。"
-                        )
-                    elif self.audits < 2:
-                        self.audits += 1
-                        self.evidence.emit("stage", {"stage": "checking_sources"})
-                        try:
-                            final_review = await review_answer(
-                                self.audit_model, self.evidence, answer.text
-                            )
-                        except Exception:
-                            final_review = {
-                                "verdict": "unknown",
-                                "issues": [],
-                                "reason": "修正后结论仍需人工核对",
-                            }
-                        self.evidence.emit("source_review", final_review)
-                        if final_review["verdict"] == "unknown":
-                            self.mark_unknown(answer, final_review)
-                        if final_review["verdict"] == "needs_correction":
-                            answer.content = (
-                                answer.text
-                                + "\n\n结论复核提示："
-                                + "；".join(item["reason"] for item in final_review["issues"])
-                            )
-                return response
-            if review["verdict"] == "needs_correction":
-                answer.content = (
-                    answer.text
-                    + "\n\n结论复核提示："
-                    + "；".join(item["reason"] for item in review["issues"])
-                )
-        if not report["passed"]:
-            invalid = {row["target"] for row in report["citations"] if not row["valid"]}
-            answer.content = disable_invalid_citations(answer.text, invalid)
+            if review["verdict"] == "needs_correction" and review.get("issues"):
+                answer.additional_kwargs["source_review_note"] = review["issues"][0]["reason"][:150]
+            # 审查期间文件可能变化，仍记录真实版本问题，但不改原文或重新调用模型。
+            checked = await asyncio.to_thread(self.check_answer, answer)
+            if checked != report:
+                self.evidence.emit("answer_validation", checked)
+                changed_note = self.citation_note(checked)
+                if changed_note:
+                    answer.additional_kwargs["source_review_note"] = changed_note
         return response
 
 

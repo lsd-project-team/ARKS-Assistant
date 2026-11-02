@@ -147,7 +147,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
 
 
 @pytest.mark.parametrize("defect", ["path", "version", "workspace", "claim"])
-async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowledge(
+async def test_source_guard_reports_invalid_reference_without_rewriting_or_unrelated_knowledge(
     services, monkeypatch, defect
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -207,11 +207,15 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
         answer = await runtime.execute(
             run, lambda kind, payload: repository.event(run["id"], kind, payload)
         )
-        # 引用校验不再承诺语义纠错；只修路径、版本和工作区，主模型负责正文事实。
-        assert answer == (broken if defect == "claim" else corrected)
-        assert calls.count("answer") == (1 if defect == "claim" else 2)
+        # 引用校验只报告路径、版本或目录问题，不修改正文；未启用语义复核。
+        assert answer.startswith(broken)
+        if defect == "claim":
+            assert answer == broken
+        else:
+            assert answer != broken and answer[len(broken) :].count("。") == 1
+        assert calls.count("answer") == 1
         assert calls.count("review") == 0
-        assert repository.run_event(run["id"], "answer_validation")["passed"]
+        assert repository.run_event(run["id"], "answer_validation")["passed"] is (defect == "claim")
         assert repository.run_event(run["id"], "source_review") is None
         assert repository.run_event(run["id"], "context_sources")["debug_issues"] == []
         assert not any(
@@ -223,7 +227,7 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
 
 @pytest.mark.parametrize("with_history", [False, True])
 @pytest.mark.parametrize("defect", ["range", "version", "workspace"])
-async def test_exhausted_source_repairs_keep_flow_and_disable_only_unverified_links(
+async def test_source_issue_keeps_entire_flow_and_reports_only_one_note(
     services, monkeypatch, with_history, defect
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -284,12 +288,12 @@ async def test_exhausted_source_repairs_keep_flow_and_disable_only_unverified_li
         assert (
             documents[0].blocks[0].steps[0].description == "Main 方法体为空；其余流程本轮尚未核实。"
         )
-        assert "引用未核对" in answer and "源码核对提示" not in answer
-        assert len(answers) == 3
-        # 同一路径/行号有伪造版本时全部停用，避免为冲突来源背书。
+        assert answer.startswith(draft) and "源码核对提示" not in answer
+        assert answer[len(draft) :].strip().count("。") == 1
+        assert len(answers) == 1
+        # 原来的引用字段也保留；具体失败状态仍完整记录在运行详情。
         pointers = list(source_pointers(answer))
-        assert len(pointers) == (1 if defect == "range" else 0)
-        assert not pointers or pointers[0].start_line == 2
+        assert len(pointers) == 2 and pointers[0].start_line == 2
         validation = repository.run_event(run["id"], "answer_validation")
         assert not validation["passed"] and any(not row["valid"] for row in validation["citations"])
         events = repository.events(run["id"])

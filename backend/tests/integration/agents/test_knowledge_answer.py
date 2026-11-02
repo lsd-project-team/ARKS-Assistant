@@ -28,10 +28,9 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     issues.save(DebugWrite(title="通信故障X778", payload={"problem": "不应发送的其他记录"}), {})
     reviewed = []
     reference = f"[蓝膜刺穿经验](debug-issue:{saved['id']}/1)"
-    revision = (
-        "本次组合调整后216颗无刺穿。\n\n### 如何复用\n先核对发生条件。"
-        "\n\n### 适用范围\n记录不足以证明长期根治。" + reference
-    )
+    original = "任何工况都能根治。" + reference
+    note = "216颗的历史组合结果不能证明任何工况都能根治。"
+    expected = original + "\n\n" + note
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
@@ -43,13 +42,12 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
             elif "你负责核查历史经验回答" in messages[0].text:
                 payload = json.loads(messages[-1].text)
                 reviewed.append(payload)
-                passed = payload["answer"] == revision
                 answer = AIMessage(
                     content=json.dumps(
                         {
-                            "verdict": "passed" if passed else "revised",
-                            "reason": "保留试验边界",
-                            "answer": "" if passed else revision,
+                            "verdict": "issues",
+                            "note": note,
+                            "answer": "不能采用的修订正文",
                         }
                     )
                 )
@@ -82,16 +80,17 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     events = []
     answer = await runtime.execute(run, lambda *event: events.append(event))
     repository.finish(run["id"], answer)
-    assert answer == revision
-    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == revision
-    assert len(reviewed) == 2
+    assert answer == expected
+    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == expected
+    assert len(reviewed) == 1
     assert all(
         [row["reference"] for row in payload["records"]] == [reference] for payload in reviewed
     )
     assert "不应发送的其他记录" not in str(reviewed)
     assert not any('"verdict"' in payload["text"] for kind, payload in events if kind == "token")
-    assert not any("任何工况" in payload["text"] for kind, payload in events if kind == "token")
-    assert any(kind == "answer_replace" and row["text"] == revision for kind, row in events)
+    assert not any(kind == "token" for kind, _ in events)
+    assert answer.startswith(original) and "不能采用的修订正文" not in answer
+    assert any(kind == "answer_replace" and row["text"] == expected for kind, row in events)
     assert (
         issues.store.get(saved["id"])["payload"]["metadata"]["original_text"]
         == "组合调整后216颗无刺穿。"

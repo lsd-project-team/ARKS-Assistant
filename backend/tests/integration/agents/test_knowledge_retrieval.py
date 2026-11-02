@@ -172,10 +172,10 @@ async def test_followup_selection_uses_context_and_final_check_receives_same_con
         preselected=selected.selected,
         context=context,
     )
-    assert (
-        await guard.verify("结果42。", selected.selected()[1], selected.review_records())
-        == "结果42。"
-    )
+    assert await guard.review("结果42。", selected.selected()[1], selected.review_records()) == {
+        "verdict": "passed",
+        "note": "",
+    }
 
 
 async def test_parallel_search_and_read_share_one_selection_and_frozen_version(services, issues):
@@ -308,7 +308,9 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
     )
     issues.save(DebugWrite(title="不该进入回答的候选", payload={"problem": "无关结果888。"}), {})
     reference = f"[阀门试验](debug-issue:{saved['id']}/1)"
-    corrected = "本次结果为42。" + reference
+    original = "本次结果43。" + reference
+    note = "记录中的本次结果为42，并非43。"
+    expected = original + "\n\n" + note
     phases, answer_inputs, checks = [], [], []
 
     class Model(DeterministicModel):
@@ -336,9 +338,9 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
                 answer = AIMessage(
                     content=json.dumps(
                         {
-                            "verdict": "passed" if checks[-1]["answer"] == corrected else "revised",
-                            "reason": "数值应为42",
-                            "answer": "" if checks[-1]["answer"] == corrected else corrected,
+                            "verdict": "issues",
+                            "note": note,
+                            "answer": "不可采用的修订",
                         }
                     )
                 )
@@ -371,8 +373,9 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
     events = []
     try:
         answer = await runtime.execute(run, lambda *row: events.append(row))
-        assert answer == corrected
-        assert phases == ["answer", "selection", "answer", "verification", "verification"]
+        assert answer == expected
+        assert checks[0]["answer"] == original and "不可采用的修订" not in answer
+        assert phases == ["answer", "selection", "answer", "verification"]
         context = str([row.content for messages in answer_inputs for row in messages])
         # 随机 UUID 也可能包含 888/999；检查事实原句，避免把合法记录编号误判为泄漏。
         assert "本次结果42" in context
@@ -393,7 +396,7 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
 
 
 @pytest.mark.parametrize("scope", ["records", "general", "unavailable"])
-async def test_empty_preselection_preserves_general_answer_but_blocks_invented_history(
+async def test_empty_preselection_preserves_original_and_reports_only_known_support_gap(
     services, issues, monkeypatch, scope
 ):
     paths, _, workspace, repository, memories, settings = services
@@ -435,14 +438,13 @@ async def test_empty_preselection_preserves_general_answer_but_blocks_invented_h
     events = []
     try:
         answer = await runtime.execute(run, lambda *row: events.append(row))
-        assert "42" not in answer
-        assert not any(
-            "42" in row["text"] for kind, row in events if kind in {"token", "answer_replace"}
-        )
         if scope == "records":
-            assert "没有选到" in answer and "处理失败" not in answer
+            assert answer == "试验结果42。\n\n本轮没有选到能支撑该历史答案的经验记录。"
         elif scope == "unavailable":
-            assert "资料筛选暂未完成" in answer and "不代表资料库没有" in answer
+            assert answer == "试验结果42。"
+            assert any(
+                k == "knowledge_answer_review" and p["verdict"] == "unknown" for k, p in events
+            )
         else:
             assert answer == "普通说明。"
     finally:
