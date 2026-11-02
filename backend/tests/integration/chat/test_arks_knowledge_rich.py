@@ -142,7 +142,7 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
         answer = rows[-1]["payload"]["answer"]
         original = document(state["reference"], wrong_unit=True)
         note = "资料未注明顶针高度280～300的单位，原答中的μm没有依据。"
-        assert answer == original + "\n\n注意：" + note
+        assert answer == original + "\n\n**注意**：" + note
         assert "不得采用的修订内容" not in answer
         assert "280～300μm" in answer and state["reference"] in answer
         blocks = [block for _, _, doc in rich_documents(answer) for block in doc.blocks]

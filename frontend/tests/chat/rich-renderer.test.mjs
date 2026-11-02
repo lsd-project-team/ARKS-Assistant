@@ -130,7 +130,8 @@ test('保留长段落和展示文字，来源无论原位置如何都归至最�
 
 test('只读复核补句保留原答，普通和富内容的来源始终在补句之后', () => {
   const body = '原答：顶针高度280～300μm。';
-  const note = '注意：资料未注明该高度的单位，原答中的μm没有依据。';
+  const note = '**注意**：资料未注明该高度的单位，原答中的μm没有依据。';
+  const text = note.replaceAll('**', '');
   const footer = '来源：[处理经验](debug-issue:trial/1)';
   const rich =
     '```rich-content\n' +
@@ -143,10 +144,14 @@ test('只读复核补句保留原答，普通和富内容的来源始终在补�
   ]) {
     const document = new JSDOM(render(content)).window.document;
     assert.ok(document.body.textContent.includes(body));
-    assert.equal(document.body.textContent.split(note).length - 1, 1);
-    const paragraph = [...document.querySelectorAll('p')].find((row) => row.textContent === note);
+    assert.equal(document.body.textContent.split(text).length - 1, 1);
+    const paragraph = [...document.querySelectorAll('p')].find((row) => row.textContent === text);
     const sources = document.querySelector('.answer-sources');
     assert.ok(paragraph && sources);
+    assert.deepEqual(
+      [...paragraph.querySelectorAll('strong')].map((row) => row.textContent),
+      ['注意'],
+    );
     assert.ok(paragraph.compareDocumentPosition(sources) & 4);
     assert.ok(sources.textContent.includes('处理经验'));
   }
