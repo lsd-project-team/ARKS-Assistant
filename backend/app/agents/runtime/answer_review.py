@@ -77,10 +77,10 @@ class AnswerReviewNote(AgentMiddleware):
         original = answer.text
         if note:
             try:
-                note = short_review_note(note)
+                note = "注意：" + re.sub(r"^(?:注意\s*[：:]\s*)+", "", short_review_note(note))
             except ValueError:
                 return response
-            if note not in answer.text:
+            if note.removeprefix("注意：") not in answer.text:
                 answer.content = append_review_note(answer.text, note)
         if self.emit:
             final = answer.text

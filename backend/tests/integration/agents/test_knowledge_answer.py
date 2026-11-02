@@ -30,7 +30,7 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     reference = f"[蓝膜刺穿经验](debug-issue:{saved['id']}/1)"
     original = "任何工况都能根治。" + reference
     note = "216颗的历史组合结果不能证明任何工况都能根治。"
-    expected = original + "\n\n" + note
+    expected = original + "\n\n注意：" + note
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):

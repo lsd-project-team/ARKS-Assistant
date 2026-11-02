@@ -310,7 +310,7 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
     reference = f"[阀门试验](debug-issue:{saved['id']}/1)"
     original = "本次结果43。" + reference
     note = "记录中的本次结果为42，并非43。"
-    expected = original + "\n\n" + note
+    expected = original + "\n\n注意：" + note
     phases, answer_inputs, checks = [], [], []
 
     class Model(DeterministicModel):
@@ -439,7 +439,7 @@ async def test_empty_preselection_preserves_original_and_reports_only_known_supp
     try:
         answer = await runtime.execute(run, lambda *row: events.append(row))
         if scope == "records":
-            assert answer == "试验结果42。\n\n本轮没有选到能支撑该历史答案的经验记录。"
+            assert answer == "试验结果42。\n\n注意：本轮没有选到能支撑该历史答案的经验记录。"
         elif scope == "unavailable":
             assert answer == "试验结果42。"
             assert any(

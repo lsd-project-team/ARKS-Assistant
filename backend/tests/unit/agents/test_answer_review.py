@@ -82,8 +82,40 @@ async def test_only_one_note_is_added_and_second_render_cannot_duplicate_it(know
     response = await middleware.awrap_model_call(request, handler)
     expected = knowledge or source
     assert response.result[0].text == (
-        append_review_note(original, expected) if expected else original
+        append_review_note(original, "注意：" + expected) if expected else original
     )
     first = message.text
     await middleware.awrap_model_call(request, handler)
     assert message.text == first
+
+
+@pytest.mark.parametrize("prefix", ["", "注意：", "注意: ", "注意：注意："])
+async def test_notice_prefix_is_added_once_and_preserves_the_original_footer(prefix):
+    original = "原答。\n\n来源：" + REF
+    message = AIMessage(
+        content=original, additional_kwargs={"knowledge_review_note": prefix + NOTE}
+    )
+
+    async def handler(_request):
+        return ModelResponse(result=[message])
+
+    middleware = AnswerReviewNote()
+    request = ModelRequest(model=DeterministicModel(), messages=[])
+    await middleware.awrap_model_call(request, handler)
+    expected = "原答。\n\n注意：" + NOTE + "\n\n来源：" + REF
+    assert message.text == expected
+    await middleware.awrap_model_call(request, handler)
+    assert message.text == expected
+
+
+async def test_existing_condition_in_original_answer_is_not_repeated_with_notice_prefix():
+    original = "原答。" + NOTE + "\n\n来源：" + REF
+    message = AIMessage(content=original, additional_kwargs={"knowledge_review_note": NOTE})
+
+    async def handler(_request):
+        return ModelResponse(result=[message])
+
+    await AnswerReviewNote().awrap_model_call(
+        ModelRequest(model=DeterministicModel(), messages=[]), handler
+    )
+    assert message.text == original

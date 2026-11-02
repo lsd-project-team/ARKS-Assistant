@@ -91,7 +91,7 @@ async def test_fact_issue_adds_one_note_without_rewriting_or_second_check():
     note = "216颗的记录结果不能证明长期量产稳定。"
     reviewer = Reviewer({"verdict": "issues", "note": note, "answer": "不能采用的修订全文"})
     answer, events = await call(reviewer, original)
-    assert answer == original + "\n\n" + note
+    assert answer == original + "\n\n注意：" + note
     assert "不能采用的修订全文" not in answer
     facts = [
         payload for purpose, payload in reviewer.requests if purpose == "knowledge_verification"
@@ -139,7 +139,7 @@ async def test_empty_selection_adds_support_gap_without_rewriting_original():
     original = "本次记录216颗无刺穿。" + REF
     reviewer = Reviewer(selection={"selections": []})
     answer, events = await call(reviewer)
-    assert answer == original + "\n\n本轮没有选到能支撑该历史答案的经验记录。"
+    assert answer == original + "\n\n注意：本轮没有选到能支撑该历史答案的经验记录。"
     assert all(purpose != "knowledge_verification" for purpose, _ in reviewer.requests)
     assert events[-1][1]["verdict"] == "issues"
 
@@ -182,7 +182,7 @@ async def test_general_scope_does_not_hide_unsupported_experience_or_rewrite_it(
     answer, _ = await call(
         Reviewer(selection={"scope": "general", "selections": []}), original, question="介绍Vue框架"
     )
-    assert answer == original + "\n\n本轮没有选到能支撑该历史答案的经验记录。"
+    assert answer == original + "\n\n注意：本轮没有选到能支撑该历史答案的经验记录。"
     assert REF in project_rich_content(answer)
 
 
@@ -196,7 +196,7 @@ async def test_missing_reference_adds_one_note_without_changing_original():
     original = "本次记录216颗无刺穿。" + REF
     answer, events = await call(reviewer, records=[], resolve=missing)
     assert checked == [{"debug-issue:case/1"}]
-    assert answer == original + "\n\n回答中的经验引用未在本轮可用记录中找到。"
+    assert answer == original + "\n\n注意：回答中的经验引用未在本轮可用记录中找到。"
     assert reviewer.requests == [] and events[-1][1]["verdict"] == "issues"
 
 
@@ -231,7 +231,7 @@ async def test_full_record_supports_specific_note_without_reintroducing_other_re
     )
     original = "原记录没有提供精度。" + REF
     answer, _ = await call(reviewer, original, records)
-    assert answer == original + "\n\n" + note
+    assert answer == original + "\n\n注意：" + note
     facts = [p for purpose, p in reviewer.requests if purpose == "knowledge_verification"]
     assert len(facts) == 1
     assert "-4~2" not in str(facts[0]["records"])
@@ -243,7 +243,7 @@ async def test_review_never_uses_returned_replacement_or_retries_to_rewrite():
     note = "该记录只有216颗样本。"
     reviewer = Reviewer({"verdict": "issues", "note": note, "answer": "未经确认的新结论"})
     answer, events = await call(reviewer)
-    assert answer == original + "\n\n" + note and "未经确认的新结论" not in answer
+    assert answer == original + "\n\n注意：" + note and "未经确认的新结论" not in answer
     assert sum(p == "knowledge_verification" for p, _ in reviewer.requests) == 1
     assert not any(k == "answer_replace" for k, _ in events)
 
@@ -251,7 +251,7 @@ async def test_review_never_uses_returned_replacement_or_retries_to_rewrite():
 async def test_foreign_reference_is_reported_even_when_model_says_passed():
     original = "无关900μm。[其他](debug-issue:other/1)"
     answer, events = await call(Reviewer(), original)
-    assert answer == original + "\n\n回答中的经验引用与本轮选定记录或版本不一致。"
+    assert answer == original + "\n\n注意：回答中的经验引用与本轮选定记录或版本不一致。"
     assert events[-1][1]["verdict"] == "issues"
 
 
@@ -326,7 +326,7 @@ async def test_code_examples_do_not_hide_support_gap_or_get_rewritten(fake_sourc
     original = "候选记录。\n\n" + fake_source
     reviewer = Reviewer(selection={"selections": []})
     answer, _ = await call(reviewer, original)
-    assert answer == original + "\n\n本轮没有选到能支撑该历史答案的经验记录。"
+    assert answer == original + "\n\n注意：本轮没有选到能支撑该历史答案的经验记录。"
     assert [purpose for purpose, _ in reviewer.requests] == ["knowledge_selection"]
 
 
@@ -350,7 +350,7 @@ async def test_unselected_reference_in_rich_text_is_reported_without_removing_bl
     original = RICH_SOURCE + "\n```rich-content\n" + json.dumps(document) + "\n```"
     reviewer = Reviewer(selection={"selections": []})
     answer, _ = await call(reviewer, original)
-    assert answer == original + "\n\n本轮没有选到能支撑该历史答案的经验记录。"
+    assert answer == original + "\n\n注意：本轮没有选到能支撑该历史答案的经验记录。"
     assert REF in project_rich_content(answer)
     assert [p for p, _ in reviewer.requests] == ["knowledge_selection"]
 
@@ -452,6 +452,6 @@ async def test_visual_issue_adds_note_without_rewriting_graph():
     note = "216颗样本不能证明保证长期根治。"
     reviewer = Reviewer({"verdict": "issues", "note": note, "answer": "不应采用的图形修订"})
     answer, _ = await call(reviewer, original, question="用流程图展示经验")
-    assert answer == original + "\n\n" + note
+    assert answer == original + "\n\n注意：" + note
     assert "保证长期根治" in answer and "不应采用的图形修订" not in answer
     assert sum(p == "knowledge_verification" for p, _ in reviewer.requests) == 1
