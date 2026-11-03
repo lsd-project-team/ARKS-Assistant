@@ -123,7 +123,7 @@ export function ChatComposer({
           setSelected(0);
           setDismissed(false);
         }}
-        placeholder="询问代码，或输入 / 使用命令…"
+        placeholder="描述你的问题，或输入 / 使用命令…"
         aria-label="对话输入"
         aria-controls={menuOpen ? listId : undefined}
         aria-expanded={menuOpen}
