@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import type { ReactNode } from 'react';
-import { ArrowDown, ChevronRight } from 'lucide-react';
-import { guideForPage } from './sourceGuides';
-import type { SourceClaim, SourceFlow } from './sourceGuides';
+import { useMemo, useState, type ReactNode } from 'react';
+import { guideForPage, type SourceGuide, type SourceStep } from './sourceGuides';
+import { ReaderTabs } from './reader/ReaderTabs';
+import { ReaderFrame, DiagramNodeDetail, type DiagramNode } from './reader/ReaderFrame';
+import { DiagramViewport } from './reader/DiagramViewport';
+import { flowDocument } from './reader/flowDocument';
 import './source-guides.css';
 
 export type StepVisual = (flow: string, step: string) => ReactNode;
@@ -15,95 +16,184 @@ export function SourceGuidePanel({
   renderVisual?: StepVisual;
 }) {
   const guide = guideForPage(page);
-  // 专题保留整体入口；局部图默认展示对应环节，避免胶检页先打开配方排序。
   const [selected, setSelected] = useState(guide?.initialFlows?.[page] ?? guide?.flows[0]?.id);
-  if (!guide) return null;
-  const flow = guide.flows.find((item) => item.id === selected) ?? guide.flows[0];
+  const [stepId, setStepId] = useState<string>();
+  const flow = guide?.flows.find((item) => item.id === selected) ?? guide?.flows[0];
+  const step = flow?.steps.find((item) => item.id === stepId) ?? flow?.steps[0];
+  const map = useMemo(() => (flow ? flowDocument(flow) : ''), [flow]);
+  if (!guide || !flow || !step) return null;
+  const visual = renderVisual?.(flow.id, step.id);
+  const chooseFlow = (id: string) => {
+    setSelected(id);
+    setStepId(undefined);
+  };
   return (
-    <section className="section source-guide" aria-label={guide.title}>
-      <div className="section-heading">
-        <div>
-          <h2>{guide.title}</h2>
-          <p>选择环节，阅读对应的条件、调用和返回分支。</p>
-        </div>
-      </div>
-      <div className="source-guide-tabs" role="group" aria-label="选择阅读环节">
-        {guide.flows.map((item) => (
-          <button
-            key={item.id}
-            aria-pressed={item.id === flow.id}
-            aria-controls={`source-flow-${item.id}`}
-            id={`source-tab-${item.id}`}
-            onClick={() => setSelected(item.id)}
-          >
-            {item.title}
-          </button>
-        ))}
-      </div>
-      <SourceFlowPanel key={flow.id} flow={flow} renderVisual={renderVisual} />
-      <details className="source-guide-boundary">
-        <summary>说明范围</summary>
-        {guide.boundaries.map((claim, index) => (
-          <SourceClaimText key={index} claim={claim} />
-        ))}
-      </details>
+    <section className="section" aria-label={guide.title}>
+      <ReaderTabs
+        document={
+          <SourceGuideDocument
+            key={flow.id}
+            guide={guide}
+            renderVisual={renderVisual}
+            initialFlow={flow.id}
+            initialStep={step.id}
+          />
+        }
+        graph={(openDocument) => (
+          <>
+            <div className="reader-flows" role="group" aria-label="选择阅读环节">
+              {guide.flows.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={flow.id === item.id}
+                  onClick={() => chooseFlow(item.id)}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+            <label className="reader-step-picker">
+              阅读节点
+              <select
+                aria-label="选择阅读节点"
+                value={step.id}
+                onChange={(event) => setStepId(event.target.value)}
+              >
+                {flow.steps.map((item, i) => (
+                  <option key={item.id} value={item.id}>
+                    {i + 1}. {item.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <ReaderFrame
+              key={`${flow.id}-${visual ? step.id : 'map'}`}
+              title={flow.title}
+              onDocument={openDocument}
+              selectedId={visual ? undefined : step.id}
+              onSelect={visual ? undefined : (id) => setStepId(id)}
+              detail={(node, select) => (
+                <GuideStepDetail
+                  step={step}
+                  index={flow.steps.indexOf(step)}
+                  node={visual ? node : undefined}
+                  select={select}
+                />
+              )}
+            >
+              {visual || <DiagramViewport title={flow.title} source={map} />}
+            </ReaderFrame>
+          </>
+        )}
+      />
     </section>
   );
 }
 
-function SourceFlowPanel({ flow, renderVisual }: { flow: SourceFlow; renderVisual?: StepVisual }) {
-  const [selected, setSelected] = useState(flow.steps[0].id);
-  const step = flow.steps.find((item) => item.id === selected) ?? flow.steps[0];
+function GuideStepDetail({
+  step,
+  index,
+  node,
+  select,
+}: {
+  step: SourceStep;
+  index: number;
+  node?: DiagramNode;
+  select: (id: string) => void;
+}) {
   return (
-    <div
-      className="card panel source-flow-panel"
-      role="region"
-      id={`source-flow-${flow.id}`}
-      aria-labelledby={`source-tab-${flow.id}`}
-    >
-      <SourceClaimText claim={flow} />
-      <div className="source-flow-layout">
-        <ol
-          className="source-flow-nodes"
-          aria-label={`${flow.title}${flow.sequential === false ? '阅读分支' : '流程节点'}`}
-        >
-          {flow.steps.map((item, index) => (
-            <li key={item.id}>
-              <button
-                className={item.id === step.id ? 'selected' : ''}
-                aria-pressed={item.id === step.id}
-                onClick={() => setSelected(item.id)}
-              >
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <b>{item.title}</b>
-                <ChevronRight size={14} />
-              </button>
-              {flow.sequential !== false && index < flow.steps.length - 1 && (
-                <ArrowDown className="source-flow-arrow" size={16} aria-hidden="true" />
-              )}
-            </li>
-          ))}
-        </ol>
-        <article className="source-step-detail" aria-live="polite">
-          <h3>{step.title}</h3>
-          <SourceClaimText claim={step} />
-          {renderVisual?.(flow.id, step.id)}
-          {step.outcomes.map((branch, index) => (
-            <section className="source-flow-outcome" key={index}>
-              <h4>{branch.label}</h4>
-              <SourceClaimText claim={branch} />
-            </section>
-          ))}
-        </article>
-      </div>
-    </div>
+    <>
+      {node ? (
+        <DiagramNodeDetail node={node} select={select} />
+      ) : (
+        <>
+          <span className="reader-kicker">阅读节点 {String(index + 1).padStart(2, '0')}</span>
+          <h2>{step.title}</h2>
+        </>
+      )}
+      <section>
+        <h3>{node ? `阅读环节 · ${step.title}` : '作用与执行条件'}</h3>
+        <p>{step.text}</p>
+      </section>
+      {step.outcomes.map((outcome, i) => (
+        <section key={i}>
+          <h3>{outcome.label}</h3>
+          <p>{outcome.text}</p>
+        </section>
+      ))}
+    </>
   );
 }
 
-function SourceClaimText({ claim }: { claim: SourceClaim }) {
+export function SourceGuideDocument({
+  guide,
+  renderVisual,
+  initialFlow,
+  initialStep,
+}: {
+  guide: SourceGuide;
+  renderVisual?: StepVisual;
+  initialFlow?: string;
+  initialStep?: string;
+}) {
+  const [choice, setChoice] = useState(initialFlow ?? guide.flows[0].id);
+  const flow = guide.flows.find((item) => item.id === choice) ?? guide.flows[0];
   return (
-    <div className="source-claim">
-      <p>{claim.text}</p>
+    <div className="reader-document-layout">
+      <nav className="reader-chapters" aria-label="详细说明章节">
+        {guide.flows.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            aria-current={choice === item.id ? 'page' : undefined}
+            onClick={() => setChoice(item.id)}
+          >
+            {item.title}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => setChoice('boundaries')}
+          aria-current={choice === 'boundaries' ? 'page' : undefined}
+        >
+          说明范围
+        </button>
+      </nav>
+      <article className="reader-chapter">
+        {choice === 'boundaries' ? (
+          <>
+            <h2>说明范围</h2>
+            {guide.boundaries.map((claim, i) => (
+              <p key={i}>{claim.text}</p>
+            ))}
+          </>
+        ) : (
+          <>
+            <h2>{flow.title}</h2>
+            <p>{flow.text}</p>
+            {flow.steps.map((step, index) => (
+              <section
+                key={step.id}
+                id={`reader-step-${flow.id}-${step.id}`}
+                data-current-step={step.id === initialStep}
+              >
+                <h3>
+                  {index + 1}. {step.title}
+                </h3>
+                <p>{step.text}</p>
+                {renderVisual?.(flow.id, step.id)}
+                {step.outcomes.map((branch, i) => (
+                  <section key={i}>
+                    <h4>{branch.label}</h4>
+                    <p>{branch.text}</p>
+                  </section>
+                ))}
+              </section>
+            ))}
+          </>
+        )}
+      </article>
     </div>
   );
 }

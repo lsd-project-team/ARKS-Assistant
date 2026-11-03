@@ -55,8 +55,8 @@ test('46张导入图都有独立图解、详细说明与专题返回入口', () 
   for (const entry of manuals) {
     const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
     assert.ok(html.includes(entry.title), entry.id);
-    assert.match(html, /<iframe[^>]+manuals\//);
-    assert.match(html, /交互图解/);
+    assert.match(html, /data-diagram-source="[^"]*manuals\//);
+    assert.match(html, /图谱阅读/);
     assert.match(html, /详细说明/);
     assert.match(html, /返回业务专题/);
   }
@@ -81,9 +81,13 @@ test('全部专题保留流程内容，不再显示源码模块、依据、路�
 
 test('生产流程保留原图、节点说明和协作条件，移除节点依据', () => {
   for (const graph of archifyData.graphs) {
-    const html = render(DiagramDetail, { id: graph.slug, theme: 'light' });
-    assert.match(html, /<iframe/);
-    assert.match(html, /深入阅读节点与模块协作/);
+    const html = render(DiagramDetail, {
+      id: graph.slug,
+      theme: 'light',
+      focusedSignal: graph.nodes[0].signals[0] || 'unknown',
+    });
+    assert.match(html, /data-diagram-source=/);
+    assert.match(html, /节点与模块协作/);
     assert.ok(html.includes(graph.nodes[0].label));
     assert.doesNotMatch(
       html,
@@ -140,7 +144,7 @@ test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱�
     archifyData.flowchartCatalog.entries.length,
   );
   const startup = render(DiagramDetail, { id: 'startup-workflow', theme: 'light' });
-  assert.match(startup, /<iframe/);
+  assert.match(startup, /data-diagram-source=/);
   assert.doesNotMatch(startup, /g0-reader/);
 });
 
@@ -411,4 +415,28 @@ test('耗材专题与目录共用扫描图，汇集和复位分表并链接更�
   assert.match(reset, /保留报警时间与IsAlarmed/);
   for (const link of ['tool-bank', 'manual-maintenance'])
     assert.ok(topic.includes('href="#topic/' + link + '"'), link);
+});
+
+// 枚举整个公开目录，防止只统一示例而遗漏旧架构图、时序图或内嵌专题。
+test('全部121张公开图谱都进入同一图文同屏框架，且只显示一套工具栏', () => {
+  const entries = archifyData.flowchartCatalog.entries.filter(
+    (entry) => entry.type !== 'supplemental',
+  );
+  assert.equal(entries.length, 121);
+  for (const entry of entries) {
+    const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
+    assert.equal((html.match(/data-reader-layout="graph-and-text"/g) ?? []).length, 1, entry.id);
+    assert.equal((html.match(/aria-label="图谱工具"/g) ?? []).length, 1, entry.id);
+    for (const control of [
+      '图谱阅读',
+      '详细说明',
+      '查找图中节点',
+      '适应画布',
+      '全屏阅读',
+      '导出 SVG',
+      '节点说明',
+    ])
+      assert.ok(html.includes(control), entry.id + ': ' + control);
+    assert.doesNotMatch(html, /使用图内缩放|交互图解|业务介绍/, entry.id);
+  }
 });
