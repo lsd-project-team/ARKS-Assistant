@@ -98,13 +98,7 @@
   margin-bottom: 18px;
 }
 
-:root[data-appearance] .welcome-suggestions button {
-  font-size: 14px;
-  font-weight: 400;
-}
-
 :root[data-appearance='white'] .welcome-suggestions button {
-  border-radius: 8px;
   background: transparent;
 }
 

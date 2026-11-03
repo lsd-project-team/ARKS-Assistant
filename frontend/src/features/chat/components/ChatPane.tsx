@@ -76,6 +76,7 @@ export function ChatPane({
     index: number;
   }>();
   const composerInput = useRef<HTMLTextAreaElement>(null);
+  const focusWelcomeQuestion = useRef(false);
   const mobile = useWorkspace((state) => state.mobile);
   const cache = useQueryClient();
   const conversation = useConversation(threadId);
@@ -110,6 +111,18 @@ export function ChatPane({
   useEffect(() => {
     if (selections.length) composerInput.current?.focus();
   }, [selections.length]);
+  useEffect(() => {
+    if (!focusWelcomeQuestion.current) return;
+    focusWelcomeQuestion.current = false;
+    const input = composerInput.current;
+    if (!input) return;
+    input.focus();
+    // 等受控输入框显示新草稿后，再选中模板中需要用户补充的部分。
+    const placeholder = /【[^】]+】/.exec(draft);
+    if (placeholder) {
+      input.setSelectionRange(placeholder.index, placeholder.index + placeholder[0].length);
+    }
+  }, [draft]);
   const send = useMutation({
     mutationFn: async ({
       key,
@@ -341,9 +354,15 @@ export function ChatPane({
           {threadId && conversation.isPending && <p className="muted">正在读取对话…</p>}
           {showWelcome && (
             <ChatWelcome
+              hasSelection={selections.length > 0}
+              disabled={archivedProject || send.isPending}
               onQuestion={(question) => {
+                if (draft.trim()) {
+                  composerInput.current?.focus();
+                  return;
+                }
+                focusWelcomeQuestion.current = true;
                 setDraft(question);
-                composerInput.current?.focus();
               }}
             />
           )}
