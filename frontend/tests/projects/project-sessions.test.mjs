@@ -17,6 +17,64 @@ function reset() {
   useWorkspace.setState(useWorkspace.getInitialState(), true);
 }
 
+test('删除当前项目后独立继续原对话，保留对话草稿并清理旧源码状态', () => {
+  reset();
+  const api = () => useWorkspace.getState();
+  api().initializeProject('A');
+  api().selectThread('chat-a');
+  api().setDraft('原对话草稿');
+  api().openFile('A.cs', 12);
+  api().setProjectExpanded('A', true);
+  useWorkspace.setState({ sourceBindings: { A: 'source-A' } });
+  api().removeProject('A', 'independent');
+  assert.equal(api().projectId, 'independent');
+  assert.equal(api().threadId, 'chat-a');
+  assert.equal(draftFor(api()).content, '原对话草稿');
+  assert.equal(api().activePath, '');
+  assert.equal(api().threadEntries['chat-a'], 'recent');
+  for (const field of ['projectSessions', 'sourceBindings', 'expandedProjects'])
+    assert.equal(api()[field].A, undefined);
+});
+
+test('删除其他项目合并新草稿时不覆盖当前项目及原独立草稿和选区', () => {
+  reset();
+  const api = () => useWorkspace.getState();
+  api().initializeProject('independent');
+  api().setDraft('独立草稿');
+  api().addSelection({ path: 'independent.cs' });
+  api().switchProject('A');
+  api().setDraft('项目草稿');
+  api().addSelection({ path: 'A.cs' });
+  api().switchProject('B');
+  api().selectThread('chat-b');
+  api().setDraft('B 的草稿');
+  api().removeProject('A', 'trash');
+  assert.equal(api().projectId, 'B');
+  assert.equal(api().threadId, 'chat-b');
+  assert.equal(draftFor(api()).content, 'B 的草稿');
+  assert.equal(api().drafts['new:A'], undefined);
+  assert.equal(api().drafts['new:independent'].content, '独立草稿\n\n项目草稿');
+  assert.deepEqual(
+    api().drafts['new:independent'].selections.map((row) => row.path),
+    ['independent.cs', 'A.cs'],
+  );
+});
+
+test('当前项目对话移入回收站后离开旧对话，新草稿和可恢复的对话草稿均保留', () => {
+  reset();
+  const api = () => useWorkspace.getState();
+  api().initializeProject('A');
+  api().setDraft('新对话草稿');
+  api().selectThread('chat-a');
+  api().setDraft('原对话未发送内容');
+  api().removeProject('A', 'trash');
+  assert.equal(api().projectId, 'independent');
+  assert.equal(api().threadId, '');
+  assert.equal(api().sidebarView, 'deleted');
+  assert.equal(draftFor(api()).content, '新对话草稿');
+  assert.equal(api().drafts['chat-a'].content, '原对话未发送内容');
+});
+
 const creationProjects = {
   default_project_id: 'A',
   projects: [

@@ -156,3 +156,37 @@
   color: var(--text-muted);
   user-select: none;
 }
+.project-delete-options {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 0;
+  border: 0;
+}
+.project-delete-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.project-delete-option input {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+.project-delete-option > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.project-delete-option strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.project-delete-option small {
+  color: var(--text-muted);
+  line-height: 1.6;
+}

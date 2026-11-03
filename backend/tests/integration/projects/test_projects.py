@@ -189,6 +189,35 @@ def test_removed_default_project_does_not_break_restart(services):
         assert client.get(f"/api/projects/{project['id']}").status_code == 404
 
 
+@pytest.mark.parametrize("disposition", ["independent", "trash"])
+def test_remove_project_preserves_messages_citations_and_source_files(services, disposition):
+    paths = services[0]
+    with TestClient(create_app(paths)) as client:
+        project = create_project(client, "删除流程", str(paths.workspace))
+        repository = client.app.state.projects.services(project["id"]).repository
+        run = repository.create_run(None, "保留原问题", [{"path": "Program.cs"}])
+        repository.finish(run["id"], "保留原回答")
+        thread_id = run["thread_id"]
+        original = repository.thread(thread_id)
+        source = (paths.workspace / "Program.cs").read_bytes()
+        old_deleted = repository.create_thread("原回收站对话")
+        repository.catalog.change(old_deleted["id"], "deleted")
+        response = client.delete(f"/api/projects/{project['id']}?disposition={disposition}")
+        assert response.status_code == 200 and response.json()["thread_count"] == 2
+        assert client.get(f"/api/projects/{project['id']}").status_code == 404
+        assert (paths.workspace / "Program.cs").read_bytes() == source
+        current = client.app.state.projects.services("independent").repository
+        saved = current.catalog.get(thread_id, include_deleted=True)
+        assert saved["project_id"] is None and saved["workspace_id"] == "independent"
+        assert saved["state"] == ("deleted" if disposition == "trash" else "active")
+        assert current.catalog.get(old_deleted["id"], include_deleted=True)["state"] == "deleted"
+        if disposition == "trash":
+            assert client.post(f"/api/p/independent/threads/{thread_id}/restore").status_code == 200
+        reloaded = current.thread(thread_id)
+        assert reloaded["messages"] == original["messages"]
+        assert reloaded["runs"] == original["runs"]
+
+
 def test_source_change_restarts_context_and_preserves_original_citations(services, tmp_path):
     paths = services[0]
     other = tmp_path / "different"

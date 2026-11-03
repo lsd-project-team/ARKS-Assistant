@@ -5,10 +5,12 @@ import { usePopupPosition } from '../../../shared/hooks/usePopupPosition';
 import { api, jsonBody } from '../../../app/api/client';
 import { toast } from '../../../shared/utils/toasts';
 import type { Project } from '../../../shared/types/api';
+import { ProjectDeleteDialog } from './ProjectDeleteDialog';
 
 export function ProjectMenu({ project, onEdit }: { project: Project; onEdit: () => void }) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const popup = useRef<HTMLDivElement>(null);
   const position = usePopupPosition(open, popup, trigger);
@@ -113,9 +115,20 @@ export function ProjectMenu({ project, onEdit }: { project: Project; onEdit: () 
             >
               向下移动
             </button>
+            <button
+              role="menuitem"
+              className="danger"
+              onClick={() => {
+                close();
+                setDeleting(true);
+              }}
+            >
+              删除项目
+            </button>
           </div>,
           document.body,
         )}
+      {deleting && <ProjectDeleteDialog project={project} onClose={() => setDeleting(false)} />}
     </>
   );
 }
