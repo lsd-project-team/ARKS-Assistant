@@ -3,6 +3,7 @@ import { CodeBlock } from '../../../shared/ui/markdown/CodeBlock';
 import { useAppearance } from '../../settings/lib/appearance';
 import type { MermaidBlock as MermaidData } from './types';
 import { renderMermaid } from './mermaidRender';
+import { MermaidViewport } from './MermaidViewport';
 
 export function MermaidBlock({
   block,
@@ -43,13 +44,11 @@ export function MermaidBlock({
     <figure className="rich-mermaid">
       {block.title && <figcaption>{block.title}</figcaption>}
       {current?.svg && !streaming ? (
-        <div className="rich-mermaid-viewport" tabIndex={0}>
-          {/* 库生成并清理后的 SVG 在图片上下文显示，不插入模型 HTML 或绑定图内事件。 */}
-          <img
-            src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(current.svg)}`}
-            alt={block.title || 'Mermaid 流程图'}
-          />
-        </div>
+        <MermaidViewport
+          key={block.content}
+          svg={current.svg}
+          title={block.title || 'Mermaid 流程图'}
+        />
       ) : (
         <p role="status">
           {streaming ? '流程图正在接收，完成后绘制…' : current?.error || '正在绘制流程图…'}

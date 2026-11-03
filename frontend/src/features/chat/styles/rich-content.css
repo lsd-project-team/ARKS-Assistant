@@ -39,6 +39,43 @@
 :is(.rich-chart, .rich-mermaid) summary {
   cursor: pointer;
 }
+.rich-mermaid-tools,
+.rich-mermaid-tools > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rich-mermaid-tools {
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.rich-mermaid-tools button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.rich-mermaid-tools button:hover {
+  background: var(--surface-subtle);
+}
+.rich-mermaid-tools button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.rich-mermaid-tools output {
+  min-width: 42px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
 .rich-mermaid-viewport {
   overflow: auto;
   max-height: 560px;
