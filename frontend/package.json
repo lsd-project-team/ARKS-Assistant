@@ -7,9 +7,11 @@
     "test": "node scripts/test.mjs",
     "knowledge:sync": "node --experimental-strip-types scripts/knowledge/sync-knowledge.mjs",
     "knowledge:check": "node --experimental-strip-types scripts/knowledge/check-knowledge.mjs",
+    "knowledge:manual-index": "node scripts/knowledge/import-manuals.mjs",
+    "knowledge:manual-check": "node --experimental-strip-types scripts/knowledge/check-manuals.mjs",
     "knowledge:source-check": "node --experimental-strip-types scripts/knowledge/check-source-guides.mjs",
     "dev": "vite --host 127.0.0.1",
-    "build": "npm run knowledge:source-check && npm run knowledge:agent-index && tsc -b && vite build",
+    "build": "npm run knowledge:source-check && npm run knowledge:manual-check && npm run knowledge:agent-index && tsc -b && vite build",
     "knowledge:agent-index": "node --experimental-strip-types scripts/knowledge/build-agent-knowledge.mjs",
     "preview": "vite preview --host 127.0.0.1"
   },

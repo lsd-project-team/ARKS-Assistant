@@ -1,6 +1,7 @@
 import type { ArchifyData } from '../types';
 import { coordinateCatalogEntry } from './coordinateTopic.ts';
 import { functionalCatalogEntries } from './functionalTopics.ts';
+import { manualCatalogEntries, manualRecords } from './manualCatalog.ts';
 
 export const archifyData: ArchifyData = {
   graphs: [
@@ -10107,10 +10108,11 @@ export const archifyData: ArchifyData = {
     generatedOn: '2026-10-27',
     scope: '独立图谱、补充图页与应用内功能阅读；视觉证据指 *.visual-check.html 自动化产物。',
     counts: {
-      total: 66 + functionalCatalogEntries.length,
+      total: 66 + functionalCatalogEntries.length + manualCatalogEntries.length,
       inlineReaders: 1 + functionalCatalogEntries.length,
       archifySpecs: 62,
-      deliveredHtml: 65,
+      deliveredHtml: 65 + manualCatalogEntries.length,
+      manualDocuments: 42,
       visualEvidence: 27,
       htmlMissing: 0,
       supplementalHtmlOnly: 3,
@@ -10124,8 +10126,10 @@ export const archifyData: ArchifyData = {
       architecture: '05 架构图',
       supplemental: '06 HTML 补充页',
       reader: '07 功能阅读',
+      manuals: '08 模块图解与详细说明',
     },
     entries: [
+      ...manualCatalogEntries,
       coordinateCatalogEntry,
       ...functionalCatalogEntries,
       {
@@ -12587,6 +12591,7 @@ export const archifyData: ArchifyData = {
     'config-production-gates': [],
   },
   diagramRecords: {
+    ...manualRecords,
     'consumables-process': { htmlAvailable: false, reviewDocuments: [], visualAvailable: false },
     'force-control-process': { htmlAvailable: false, reviewDocuments: [], visualAvailable: false },
     'tool-bank-process': { htmlAvailable: false, reviewDocuments: [], visualAvailable: false },

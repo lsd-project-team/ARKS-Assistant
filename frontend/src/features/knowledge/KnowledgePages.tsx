@@ -14,6 +14,8 @@ import { CoordinateReader } from './coordinates/CoordinateReader';
 import { AtlasReader } from './atlas/AtlasReader';
 import { functionalTopics } from './data/functionalTopics';
 import { OriginalDiagram } from './OriginalDiagram';
+import { manualById } from './data/manualCatalog';
+import { ManualCards, ManualReader } from './manuals/ManualReader';
 const catalog = archifyData.flowchartCatalog.entries;
 const publicCatalog = catalog.filter((entry) => !isSupportingEntry(entry));
 export const diagramRoute = (id: string): Route =>
@@ -78,7 +80,7 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
             </div>
             <div className="graph-grid">
               {entries
-                .filter((entry) => !isSupportingEntry(entry))
+                .filter((entry) => !isSupportingEntry(entry) && !manualById(entry.id))
                 .map((entry) => (
                   <CatalogCard
                     key={entry.id}
@@ -95,6 +97,7 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
           </details>
         </>
       )}
+      <ManualCards topic={id} navigate={navigate} />
     </>
   );
 }
@@ -106,11 +109,12 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
   const [level, setLevel] = useState('all');
   const entries = publicCatalog.filter(
     (entry) =>
-      `${displayDiagramTitle(entry.id, entry.title)} ${entry.title} ${entry.id} ${diagramReadings[entry.id]?.summary} ${topicForDiagram(entry.id)?.title}`
+      `${displayDiagramTitle(entry.id, entry.title)} ${entry.title} ${entry.id} ${diagramReadings[entry.id]?.summary} ${topicForDiagram(entry.id)?.title} ${manualById(entry.id)?.searchText ?? ''}`
         .toLowerCase()
         .includes(query.toLowerCase()) &&
       (type === 'all' || entry.type === type) &&
-      (topic === 'all' || topicForDiagram(entry.id)?.id === topic) &&
+      (topic === 'all' ||
+        presentationTopics.find((item) => item.id === topic)?.diagrams.includes(entry.id)) &&
       (level === 'all' || (level === 'main' ? Boolean(entry.chapter) : !entry.chapter)),
   );
   const main = entries.filter((entry) => entry.chapter);
@@ -232,7 +236,9 @@ function CatalogCard({ entry, onOpen }: { entry: FlowchartCatalogEntry; onOpen: 
             />
           )}
         </span>
-        <span className="pill">{entry.chapter ? '生产主流程' : entry.typeLabel}</span>
+        <span className="pill">
+          {manualById(entry.id) ? '模块详解' : entry.chapter ? '生产主流程' : entry.typeLabel}
+        </span>
       </div>
       <h3>{displayDiagramTitle(entry.id, entry.title)}</h3>
       <p className="diagram-question">{diagramReadings[entry.id]?.summary}</p>
@@ -250,11 +256,13 @@ function CatalogCard({ entry, onOpen }: { entry: FlowchartCatalogEntry; onOpen: 
 export function DiagramDetail({
   id,
   focusedSignal,
+  section,
   navigate,
   theme,
 }: {
   id: string;
   focusedSignal?: string;
+  section?: string;
   navigate: (route: Route) => void;
   theme: 'dark' | 'light';
 }) {
@@ -274,6 +282,8 @@ export function DiagramDetail({
   };
   if (!entry || isSupportingEntry(entry))
     return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
+  if (manualById(id))
+    return <ManualReader id={id} section={section} navigate={navigate} theme={theme} />;
   if (entry.inlineTopic) return <TopicDetail id={entry.inlineTopic} navigate={navigate} />;
   const reading = diagramReadings[id];
   const title = displayDiagramTitle(id, entry.title);

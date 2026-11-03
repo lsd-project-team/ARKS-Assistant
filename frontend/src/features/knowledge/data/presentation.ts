@@ -1,5 +1,6 @@
 import { coordinateTopic } from './coordinateTopic.ts';
 import { functionalTopics } from './functionalTopics.ts';
+import { manualsForTopic } from './manualCatalog.ts';
 
 export interface PresentationTopic {
   id: string;
@@ -12,7 +13,7 @@ export interface PresentationTopic {
 }
 
 // Reader-facing summaries of the existing diagrams; these describe source behavior.
-export const presentationTopics: PresentationTopic[] = [
+const existingTopics: PresentationTopic[] = [
   coordinateTopic,
   ...functionalTopics,
   {
@@ -241,6 +242,11 @@ export const presentationTopics: PresentationTopic[] = [
     ],
   },
 ];
+
+export const presentationTopics: PresentationTopic[] = existingTopics.map((topic) => ({
+  ...topic,
+  diagrams: [...topic.diagrams, ...manualsForTopic(topic.id).map((entry) => entry.id)],
+}));
 
 export const topicForDiagram = (id: string) =>
   presentationTopics.find((topic) => topic.diagrams.includes(id));

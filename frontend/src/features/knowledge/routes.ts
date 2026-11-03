@@ -7,7 +7,8 @@ export type Route =
   | ChatRoute
   | { kind: 'overview' | 'graphs' | 'modules' }
   | { kind: 'graph'; slug: string; signal?: string }
-  | { kind: 'catalog' | 'topic'; id: string };
+  | { kind: 'catalog'; id: string; section?: string }
+  | { kind: 'topic'; id: string };
 
 export function routeFromHash(hash = window.location.hash): Route {
   const [value, query] = hash.replace(/^#/, '').split('?');
@@ -15,13 +16,17 @@ export function routeFromHash(hash = window.location.hash): Route {
   if (value === 'graphs' || value === 'modules' || value === 'overview') return { kind: value };
   const [kind, id] = value.split('/');
   if (kind === 'graph' && id) return { kind, slug: id, signal: params.get('signal') ?? undefined };
-  if (['topic', 'catalog'].includes(kind) && id) return { kind, id } as Route;
+  if (kind === 'catalog' && id)
+    return { kind, id, ...(params.has('section') ? { section: params.get('section')! } : {}) };
+  if (kind === 'topic' && id) return { kind, id };
   // 历史源码链接回到功能目录，避免继续打开已删除的快照阅读页。
   if (['source-module', 'source-method', 'source-file', 'source-import'].includes(kind))
     return { kind: 'modules' };
   return { kind: 'chat' };
 }
 export function routeHash(route: Route): string {
+  if (route.kind === 'catalog' && route.section !== undefined)
+    return `catalog/${route.id}?section=${encodeURIComponent(route.section)}`;
   if (route.kind === 'graph')
     return `graph/${route.slug}${route.signal ? `?signal=${encodeURIComponent(route.signal)}` : ''}`;
   if ('id' in route) return `${route.kind}/${route.id}`;

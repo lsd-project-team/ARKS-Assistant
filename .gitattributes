@@ -19,3 +19,5 @@ resources/knowledge/flows/startup-v3-sample/** -text
 # Archify 交付与候选指纹需要在检出后保持一致。
 resources/knowledge/flows/g0-archify/** -text
 resources/knowledge/flows/functional-atlas/** -text
+# 导入说明及图解统一使用 LF，使跨平台检出后的资源摘要保持一致。
+resources/knowledge/flows/manuals/** text eol=lf whitespace=-blank-at-eol,-blank-at-eof

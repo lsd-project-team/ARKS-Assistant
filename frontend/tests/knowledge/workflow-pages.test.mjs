@@ -7,6 +7,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { presentationTopics } from '../../src/features/knowledge/data/presentation.ts';
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
+import { manuals } from '../../src/features/knowledge/data/manualCatalog.ts';
 
 const result = await build({
   stdin: {
@@ -49,6 +50,17 @@ const { TopicDetail, DiagramDetail, GraphAtlas, coordinateVisual, functionalVisu
   module.exports;
 const render = (component, props) =>
   renderToStaticMarkup(createElement(component, { navigate() {}, ...props }));
+
+test('46张导入图都有独立图解、详细说明与专题返回入口', () => {
+  for (const entry of manuals) {
+    const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
+    assert.ok(html.includes(entry.title), entry.id);
+    assert.match(html, /<iframe[^>]+manuals\//);
+    assert.match(html, /交互图解/);
+    assert.match(html, /详细说明/);
+    assert.match(html, /返回业务专题/);
+  }
+});
 
 test('全部专题保留流程内容，不再显示源码模块、依据、路径和快照选区', () => {
   for (const topic of presentationTopics) {

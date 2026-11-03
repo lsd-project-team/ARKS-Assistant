@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>导读 · ZX2200 图谱</title>
+<style>
+  :root{--bg:#f6f5f1;--card:#fff;--ink:#1c1f23;--muted:#6b6f76;--line:#e2e0d9;--accent:#0f766e}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 "Segoe UI","Microsoft YaHei",system-ui,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:44px 24px 90px}
+  h1{font-size:28px;margin:0 0 6px}
+  .lead{color:var(--muted);margin:0 0 8px}
+  .rule{height:3px;width:64px;background:var(--accent);margin:18px 0 26px}
+  .quick{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 34px}
+  .quick a{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-decoration:none;color:var(--ink);font-size:14px}
+  .quick a:hover{border-color:var(--accent);color:var(--accent)}
+  .route{margin:0 0 26px}
+  .route h2{font-size:17px;margin:0 0 8px;display:flex;align-items:baseline;gap:10px}
+  .route h2 span{font-size:12px;color:var(--muted);font-weight:400}
+  .route ol{margin:0;padding-left:20px}
+  .route li{margin:0 0 8px}
+  .route a{color:var(--accent);text-decoration:none;font-weight:600;font-size:14px}
+  .route a:hover{text-decoration:underline}
+  .route em{font-style:normal;font-size:11px;color:var(--muted);margin-left:8px;border:1px solid var(--line);border-radius:99px;padding:1px 7px}
+  .route p{margin:0;font-size:12px;color:var(--muted)}
+  h3{font-size:16px;margin:34px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .card{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:inherit}
+  .card:hover{border-color:var(--accent)}
+  .card b{display:block;font-size:14px}
+  .card span{font-size:11px;color:var(--muted)}
+  .card p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+  .term{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .term b{flex:0 0 190px;color:var(--ink)}
+  .term span{color:var(--muted)}
+  footer{margin-top:36px;font-size:12px;color:var(--muted)}
+</style><style id="arks-manual-reader">html[data-reader="true"] #atlas-nav,html[data-reader="true"] .header,html[data-reader="true"] .cards{display:none!important}</style><script>if(new URLSearchParams(location.search).get("reader")==="1")document.documentElement.setAttribute("data-reader","true");</script></head><body><div class="wrap">
+  <h1>ZX2200 图谱 · 导读</h1>
+  <p class="lead">46 张交互图。别按编号从头翻——挑一条路线，或者直接搜。</p>
+  <div class="rule"></div>
+  <div class="quick">
+    <a href="index.html">☰ 全部图</a>
+    <a href="search.html">🔍 搜节点 / 关键词</a>
+    <a href="90-整机生产循环.html">▶ 先看整机跑一轮</a>
+  </div>
+
+  <section class="route">
+    <h2>1. 新人 1 小时<span>先建立整机印象，再进一个子系统</span></h2>
+    <ol>
+    <li><a href="00-%E9%A1%B9%E7%9B%AE%E6%80%BB%E8%A7%88.html">运行时架构</a><em>architecture</em><p>四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。</p></li>
+    <li><a href="02-%E6%9C%BA%E5%99%A8%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%B5%81%E7%A8%8B%E8%B0%83%E5%BA%A6.html">机器模型：把制程翻译成动作序列</a><em>architecture</em><p>门面 → 制程 → 步骤 → 排序器 → 线程；停机靠信号门。</p></li>
+    <li><a href="05-%E5%8A%A8%E4%BD%9C%E8%8A%82%E7%82%B9%E6%A1%86%E6%9E%B6.html">动作节点：37 个子类，线程只管推游标</a><em>architecture</em><p>排序器展开消息、线程调 DoWork、节点驱动控制器。</p></li>
+    <li><a href="32-%E5%9B%BA%E6%99%B6%E7%B3%BB%E7%BB%9F%E5%85%A8%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%E5%9B%BE%EF%BC%88%E4%B8%8A%EF%BC%89%C2%B7%20%E6%A8%A1%E5%9E%8B%E3%80%81%E5%8A%A8%E4%BD%9C%E8%8A%82%E7%82%B9%E4%B8%8E%E8%B0%83%E5%BA%A6.html">固晶（上）：23 个动作节点怎么被推着走</a><em>architecture</em><p>按钮 → 线程 → 节点 → 子控制器 → 硬件，排序不在本模块。</p></li>
+    <li><a href="90-%E6%95%B4%E6%9C%BA%E7%94%9F%E4%BA%A7%E5%BE%AA%E7%8E%AF.html">整机跑一轮：从送板到贴装的握手</a><em>sequence</em><p>流道→点胶→晶圆→固晶→视觉，四系统靠信号握手。</p></li>
+    </ol>
+  </section>
+
+  <section class="route">
+    <h2>2. 排障<span>从报警倒推，最后落到代码索引</span></h2>
+    <ol>
+    <li><a href="91-%E6%8A%A5%E8%AD%A6%E4%B8%8E%E5%81%9C%E6%9C%BA.html">报警与停止：来源、分级与退出条件</a><em>architecture</em><p>区分报警来源、分级处理与停止请求，沿实际分支理解任务退出。</p></li>
+    <li><a href="38-%E4%B8%BB%E6%A1%86%E6%9E%B6%E5%85%A8%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%E5%9B%BE.html">主框架：一条外壳、一台状态机、一条回流总线</a><em>architecture</em><p>UcMainSystem 是 9 个 .cs 拼成的类；39 个按钮同一道门禁。</p></li>
+    <li><a href="37-%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E5%85%A8%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%E5%9B%BE.html">基础设施：全项目都在用的那 5 个类型</a><em>architecture</em><p>UI 工具箱 + 路径表 + 数据访问层，以及与 Main 的依赖环。</p></li>
+    <li><a href="30-%E4%BB%A3%E7%A0%81%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95.html">代码文件索引：一张表，两个世界</a><em>architecture</em><p>按磁盘生成；幽灵文件假阳性；旧副本改了没用。</p></li>
+    </ol>
+  </section>
+
+  <section class="route">
+    <h2>3. 改流程<span>节点 → 调度 → 子系统 → 标定闭环</span></h2>
+    <ol>
+    <li><a href="05-%E5%8A%A8%E4%BD%9C%E8%8A%82%E7%82%B9%E6%A1%86%E6%9E%B6.html">动作节点：37 个子类，线程只管推游标</a><em>architecture</em><p>排序器展开消息、线程调 DoWork、节点驱动控制器。</p></li>
+    <li><a href="07-%E5%9B%BA%E6%99%B6%E7%B3%BB%E7%BB%9F%E8%B0%83%E5%BA%A6%E4%B8%8E%E4%BB%BB%E5%8A%A1.html">固晶调度：游标在别人手里</a><em>architecture</em><p>排序器在 Main；控制器 → 模组 → 平台 DLL。</p></li>
+    <li><a href="33-%E5%9B%BA%E6%99%B6%E7%B3%BB%E7%BB%9F%E5%85%A8%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%E5%9B%BE%EF%BC%88%E4%B8%8B%EF%BC%89%C2%B7%20%E7%95%8C%E9%9D%A2%E4%B8%8E%E6%8C%89%E9%92%AE%E6%B5%81%E7%A8%8B.html">固晶（下）：界面层怎么把点击变成动作</a><em>architecture</em><p>入口集中在 Main；全层只有一条落盘通道；主循环没有 try/catch。</p></li>
+    <li><a href="43-%E6%96%99%E5%8D%95%E5%85%83%E7%B3%BB%E7%BB%9F%E6%8C%89%E9%92%AE%E4%B8%8E%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E8%AF%A6%E8%A7%A3.html">料单元界面：243 个处理器，两套单例</a><em>architecture</em><p>四种按钮来源；ProductConfiguration 与 ProductDomain 是两个文件。</p></li>
+    <li><a href="13-%E6%95%B4%E6%9C%BA%E6%A0%87%E5%AE%9A.html">整机标定：三类产物，三套互不相通的机制</a><em>architecture</em><p>补偿表真身在固件；JSON 只是副本。</p></li>
+    </ol>
+  </section>
+
+  <h3>五张必看</h3>
+  <div class="cards"><a class="card" href="00-%E9%A1%B9%E7%9B%AE%E6%80%BB%E8%A7%88.html"><b>运行时架构</b><span>architecture</span><p>四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。</p></a>
+    <a class="card" href="32-%E5%9B%BA%E6%99%B6%E7%B3%BB%E7%BB%9F%E5%85%A8%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%E5%9B%BE%EF%BC%88%E4%B8%8A%EF%BC%89%C2%B7%20%E6%A8%A1%E5%9E%8B%E3%80%81%E5%8A%A8%E4%BD%9C%E8%8A%82%E7%82%B9%E4%B8%8E%E8%B0%83%E5%BA%A6.html"><b>固晶（上）：23 个动作节点怎么被推着走</b><span>architecture</span><p>按钮 → 线程 → 节点 → 子控制器 → 硬件，排序不在本模块。</p></a>
+    <a class="card" href="37-%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E5%85%A8%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%E5%9B%BE.html"><b>基础设施：全项目都在用的那 5 个类型</b><span>architecture</span><p>UI 工具箱 + 路径表 + 数据访问层，以及与 Main 的依赖环。</p></a>
+    <a class="card" href="90-%E6%95%B4%E6%9C%BA%E7%94%9F%E4%BA%A7%E5%BE%AA%E7%8E%AF.html"><b>整机跑一轮：从送板到贴装的握手</b><span>sequence</span><p>流道→点胶→晶圆→固晶→视觉，四系统靠信号握手。</p></a>
+    <a class="card" href="91-%E6%8A%A5%E8%AD%A6%E4%B8%8E%E5%81%9C%E6%9C%BA.html"><b>报警与停止：来源、分级与退出条件</b><span>architecture</span><p>区分报警来源、分级处理与停止请求，沿实际分支理解任务退出。</p></a></div>
+
+  <h3>十个词</h3>
+  <div class="term"><b>ActionNode</b><span>动作节点。只回答两件事：该不该做我（IsDoWork）、做了成不成功（DoWork）</span></div>
+  <div class="term"><b>BondTask</b><span>固晶工作线程。本身不做工艺，只推游标、调节点、翻译结果</span></div>
+  <div class="term"><b>SignalPool</b><span>跨线程信号池。23 个具名信号，决定流道段序与取片握手</span></div>
+  <div class="term"><b>WaitStart()</b><span>线程的闸门。Stop 返回 false 退出，Pause 在里面 20 ms 空转</span></div>
+  <div class="term"><b>MachineState</b><span>全局状态枚举。停机、暂停、急停都只是改它</span></div>
+  <div class="term"><b>HardwareRepositoryService</b><span>取硬件的唯一入口，用中文字符串名字换对象</span></div>
+  <div class="term"><b>IProgrammingControl</b><span>落盘契约，只有 Confirm()。没实现它的设置页存不下去</span></div>
+  <div class="term"><b>幽灵文件</b><span>磁盘上有、但不参与编译的 .cs。grep 到也不算数</span></div>
+  <div class="term"><b>配方 / 程式</b><span>Recipe 是参数集合，Program 是一套流程步骤，两者分开存</span></div>
+  <div class="term"><b>单例（Singleton）</b><span>全项目大量使用，跨模块共享状态，改它要小心牵连</span></div>
+
+  <footer>
+    图是摘要。图上标注的 §编号 指向内部源文档的对应章节，供核对用；本包只含图，不含源文档。<br>
+    每张图顶部都有导航条：<b>☰ 导读</b> 回这里，← → 翻上下一张。
+  </footer>
+</div></body></html>

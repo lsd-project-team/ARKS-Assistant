@@ -11,11 +11,13 @@ export function OriginalDiagram({
   title,
   onNode,
   theme,
+  reader = false,
 }: {
   path: string;
   title: string;
   onNode?: (id: string) => void;
   theme: 'dark' | 'light';
+  reader?: boolean;
 }) {
   const [document, setDocument] = useState<Document | null>(null);
   const [initialTheme] = useState(theme);
@@ -23,7 +25,7 @@ export function OriginalDiagram({
     .find((entry) => entry.html === path)
     ?.htmlSha256?.slice(0, 16);
   const diagramURL = (color: string) =>
-    `${resourceHref(path)}?theme=${color}${revision ? `&review=${revision}` : ''}`;
+    `${resourceHref(path)}?theme=${color}${reader ? '&reader=1' : ''}${revision ? `&review=${revision}` : ''}`;
   const appearance = useAppearance((state) => state.mode);
   useEffect(() => {
     // 图谱预设控制节点样式，页面外观单独控制工具栏和阅读底色。
@@ -34,6 +36,7 @@ export function OriginalDiagram({
     const style = document.createElement('style');
     // iframe 有独立的字体上下文；同样引用本地字体，避免原图退回粗重的系统字形。
     style.textContent = `${diagramLatinFont}\n${diagramChineseFont}\n${diagramChrome}`;
+    if (reader) style.textContent += '\n#atlas-nav,.header,.cards{display:none!important}';
     document.head.appendChild(style);
     const guide = document.getElementById('btn-diagram-guide');
     // 原图只比较按钮本身，图标点击会被误判为外部点击；保留按钮原有处理，再阻止冒泡。
@@ -43,7 +46,7 @@ export function OriginalDiagram({
       style.remove();
       guide?.removeEventListener('click', keepGuideOpen);
     };
-  }, [document]);
+  }, [document, reader]);
   useEffect(() => {
     if (!document || document.documentElement.dataset.theme === theme) return;
     const toggle = document.getElementById('btn-theme');

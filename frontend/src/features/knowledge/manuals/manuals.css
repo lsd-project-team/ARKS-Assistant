@@ -1,0 +1,209 @@
+.manual-tabs,
+.manual-related-docs,
+.manual-diagram-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.manual-tabs button,
+.manual-related-docs button,
+.manual-diagram-controls button {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+.manual-tabs [aria-pressed='true'],
+.manual-related-docs [aria-pressed='true'] {
+  background: var(--panel-soft);
+  border-color: var(--muted);
+  font-weight: 600;
+}
+.manual-detail-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.manual-document-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  margin-top: 20px;
+}
+.manual-chapters {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: calc(100dvh - 110px);
+  overflow: auto;
+  padding: 4px;
+}
+.manual-chapters label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.manual-chapters input {
+  min-width: 0;
+  width: 100%;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+}
+.manual-chapters button {
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 12px;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+}
+.manual-chapters button:hover,
+.manual-chapters [aria-current='page'] {
+  background: var(--panel-soft);
+}
+.manual-chapters [aria-current='page'] {
+  font-weight: 600;
+  box-shadow: inset 3px 0 var(--ink);
+}
+.manual-chapter-main {
+  min-width: 0;
+}
+.manual-markdown {
+  font-size: 14px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+  scroll-margin-top: 20px;
+}
+.manual-markdown h1 {
+  font-size: 25px;
+}
+.manual-markdown h2 {
+  font-size: 21px;
+}
+.manual-markdown h3 {
+  font-size: 17px;
+}
+.manual-markdown h1,
+.manual-markdown h2,
+.manual-markdown h3,
+.manual-markdown h4 {
+  line-height: 1.5;
+  scroll-margin-top: 20px;
+}
+.manual-markdown a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.manual-markdown blockquote {
+  margin: 18px 0;
+  padding: 4px 18px;
+  border-left: 3px solid var(--line);
+  color: var(--muted);
+}
+.manual-markdown pre {
+  max-width: 100%;
+  overflow: auto;
+}
+.manual-markdown code {
+  white-space: pre-wrap;
+}
+.manual-markdown pre code {
+  white-space: pre;
+}
+.manual-table-scroll {
+  overflow: auto;
+  max-width: 100%;
+  margin: 20px 0;
+}
+.manual-markdown table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 13px;
+}
+.manual-markdown th,
+.manual-markdown td {
+  border: 1px solid var(--line);
+  padding: 9px 12px;
+  vertical-align: top;
+  text-align: left;
+}
+.manual-markdown th {
+  background: var(--panel-soft);
+}
+.manual-markdown hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 28px 0;
+}
+.manual-mermaid {
+  margin: 20px 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--panel);
+}
+.manual-diagram-controls {
+  margin: 0 0 8px;
+  justify-content: flex-end;
+}
+.manual-diagram-controls button {
+  padding: 4px 9px;
+}
+.manual-diagram-viewport {
+  overflow: auto;
+  max-width: 100%;
+  max-height: 750px;
+  min-height: 80px;
+}
+.manual-diagram-viewport img {
+  display: block;
+  height: auto;
+  margin: 0 auto;
+}
+.manual-mermaid summary {
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.manual-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding: 20px 0;
+  margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .manual-document-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .manual-chapters {
+    position: static;
+    max-height: 260px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .manual-chapters button {
+    flex-shrink: 0;
+  }
+  .manual-markdown h1 {
+    font-size: 22px;
+  }
+}
