@@ -5,7 +5,9 @@ import json
 import os
 import re
 import shutil
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from unittest.mock import patch
 from urllib.parse import urljoin
 
 import pytest
@@ -13,11 +15,33 @@ from fastapi.testclient import TestClient
 
 from app import bootstrap
 from app.core.config import PROJECT_ROOT
+from app.modules.auth import static_assets
 from app.modules.auth.service import COOKIE_NAME
 from app.modules.auth.static_assets import StaticAssets
 from tests.helpers.accounts import sign_in
 
 pytestmark = pytest.mark.authentication
+
+
+def stage_frontend_release(frontend):
+    """与正式发布顺序一致：先资产和清单，首页由调用方最后替换。"""
+    files = {
+        "index.html": b'<script src="/assets/login-v2.js"></script>',
+        "assets/login-v2.js": b"console.log('public login v2')",
+    }
+    (frontend / "assets/login-v2.js").write_bytes(files["assets/login-v2.js"])
+    pending = frontend / "public-assets.pending.json"
+    pending.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "files": {name: hashlib.sha256(value).hexdigest() for name, value in files.items()},
+            }
+        ),
+        encoding="utf-8",
+    )
+    pending.replace(frontend / "public-assets.json")
+    return files
 
 
 @pytest.fixture
@@ -135,6 +159,139 @@ def test_missing_manifest_keeps_api_available_and_static_files_closed(services, 
         assert client.get("/api/health").json()["ok"] is True
         assert client.get("/").status_code == 401
         assert client.get("/assets/login.js").status_code == 401
+
+
+@pytest.mark.parametrize("username", ["admin", "user"])
+def test_frontend_release_reloads_public_assets_without_replacing_session(
+    services, frontend, username
+):
+    with TestClient(bootstrap.create_app(services[0])) as client:
+        session = sign_in(client, username).json()
+        cookie = client.cookies[COOKIE_NAME]
+        files = stage_frontend_release(frontend)
+        (frontend / "index.html").write_bytes(files["index.html"])
+
+        for method in ("GET", "HEAD"):
+            response = client.request(method, "/assets/login-v2.js", headers={"Cookie": ""})
+            assert response.status_code == 200
+            assert response.headers["cache-control"].startswith("public,")
+            if method == "GET":
+                assert response.content == files["assets/login-v2.js"]
+        assert client.get("/", headers={"Cookie": ""}).content == files["index.html"]
+        for path in ("/assets/login.js", "/assets/workspace.js", "/assets/old-unsafe.js"):
+            assert client.get(path, headers={"Cookie": ""}).status_code == 401
+        assert client.get("/api/auth/session").json() == session
+        assert client.cookies[COOKIE_NAME] == cookie
+        assert client.get("/assets/workspace.js").content == b"PRIVATE_BUSINESS_CODE_FIXTURE"
+        created = client.post("/api/projects", json={"name": "更新后仍能工作"})
+        assert created.status_code == 201
+        assert created.json()["name"] == "更新后仍能工作"
+
+
+def test_staged_release_waits_for_matching_index_then_recovers_immediately(frontend, monkeypatch):
+    monkeypatch.setattr(static_assets, "monotonic", lambda: 0)
+    assets = StaticAssets(frontend)
+    files = stage_frontend_release(frontend)
+    for path in ("/", "/assets/login.js", "/assets/login-v2.js"):
+        assert not assets.allows(path)
+
+    # 尚未到失败重试时间，最后替换首页也应立即识别完整发布。
+    (frontend / "index.html").write_bytes(files["index.html"])
+    assert assets.allows("/")
+    assert assets.allows("/index.html")
+    assert assets.allows("/assets/login-v2.js")
+    assert not assets.allows("/assets/login.js")
+    assert not assets.allows("/assets/workspace.js")
+
+
+@pytest.mark.parametrize("fault", ["json", "digest"])
+def test_invalid_live_manifest_closes_public_access_but_preserves_session(
+    services, frontend, fault
+):
+    with TestClient(bootstrap.create_app(services[0])) as client:
+        session = sign_in(client, "user").json()
+        cookie = client.cookies[COOKIE_NAME]
+        files = stage_frontend_release(frontend)
+        (frontend / "index.html").write_bytes(files["index.html"])
+        manifest = frontend / "public-assets.json"
+        valid_manifest = manifest.read_bytes()
+        if fault == "json":
+            manifest.write_bytes(b"broken-json")
+        else:
+            (frontend / "assets/login-v2.js").write_bytes(b"damaged-bundle")
+        for path in ("/", "/assets/login.js", "/assets/login-v2.js"):
+            response = client.get(path, headers={"Cookie": ""})
+            assert response.status_code == 401
+            assert response.headers["cache-control"] == "no-store"
+        assert client.get("/api/auth/session").json() == session
+        assert client.get("/assets/workspace.js").content == b"PRIVATE_BUSINESS_CODE_FIXTURE"
+        assert client.cookies[COOKIE_NAME] == cookie
+
+        (frontend / "assets/login-v2.js").write_bytes(files["assets/login-v2.js"])
+        manifest.write_bytes(valid_manifest)
+        assert (
+            client.get("/assets/login-v2.js", headers={"Cookie": ""}).content
+            == files["assets/login-v2.js"]
+        )
+
+
+def test_removing_then_restoring_manifest_does_not_retain_old_public_access(frontend):
+    assets = StaticAssets(frontend)
+    manifest = frontend / "public-assets.json"
+    original = manifest.read_bytes()
+    manifest.unlink()
+    assert not assets.allows("/")
+    assert not assets.allows("/assets/login.js")
+    manifest.write_bytes(original)
+    assert assets.allows("/")
+    assert assets.allows("/assets/login.js")
+
+
+def test_failed_release_retries_after_asset_repair_without_manifest_change(frontend, monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr(static_assets, "monotonic", lambda: clock[0])
+    assets = StaticAssets(frontend)
+    files = stage_frontend_release(frontend)
+    (frontend / "index.html").write_bytes(files["index.html"])
+    asset = frontend / "assets/login-v2.js"
+    asset.write_bytes(b"incomplete-copy")
+    assert not assets.allows("/assets/login-v2.js")
+    asset.write_bytes(files["assets/login-v2.js"])
+    clock[0] = 0.5
+    assert not assets.allows("/assets/login-v2.js")
+    clock[0] = 1.0
+    assert assets.allows("/assets/login-v2.js")
+
+
+def test_concurrent_requests_validate_one_release_once_and_reuse_it(frontend):
+    assets = StaticAssets(frontend)
+    files = stage_frontend_release(frontend)
+    (frontend / "index.html").write_bytes(files["index.html"])
+    with patch.object(assets, "load", wraps=assets.load) as load:
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            allowed = list(pool.map(assets.allows, ["/assets/login-v2.js"] * 16))
+        assert allowed == [True] * 16
+        assert not assets.allows("/assets/login.js")
+        assert not assets.allows("/assets/workspace.js")
+        load.assert_called_once_with()
+
+
+def test_index_changed_during_validation_does_not_publish_a_mixed_release(frontend):
+    assets = StaticAssets(frontend)
+    files = stage_frontend_release(frontend)
+    index = frontend / "index.html"
+    index.write_bytes(files["index.html"])
+    original_load = assets.load
+
+    def changed_during_load():
+        public = original_load()
+        index.write_bytes(b"incomplete-next-release")
+        return public
+
+    with patch.object(assets, "load", changed_during_load):
+        assert not assets.allows("/assets/login-v2.js")
+    index.write_bytes(files["index.html"])
+    assert assets.allows("/assets/login-v2.js")
 
 
 def test_public_asset_errors_are_not_cached_as_immutable_files(services, frontend):

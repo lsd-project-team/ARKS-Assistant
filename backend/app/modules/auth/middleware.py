@@ -26,7 +26,12 @@ def install_authentication(app, auth, usage=None, *, deployment=None, frontend=N
         if rejection:
             return JSONResponse({"detail": rejection}, status_code=403)
         is_api = path.startswith("/api/") or path == "/api"
-        if not is_api and request.method in {"GET", "HEAD"} and assets and assets.allows(path):
+        if (
+            not is_api
+            and request.method in {"GET", "HEAD"}
+            and assets
+            and await asyncio.to_thread(assets.allows, path)
+        ):
             response = await call_next(request)
             response.headers["Cache-Control"] = (
                 assets.cache_control(path)
