@@ -3,10 +3,10 @@ import { api } from '../../../app/api/client';
 import { useWorkspace } from '../../../app/state/store';
 import type { Project, ProjectList } from '../../../shared/types/api';
 
-export function useProjects(state = 'active') {
+export function useProjects() {
   return useQuery({
-    queryKey: ['projects', state],
-    queryFn: () => api<ProjectList>(`/projects?state=${state}`),
+    queryKey: ['projects'],
+    queryFn: () => api<ProjectList>('/projects'),
     refetchInterval: 10000,
   });
 }

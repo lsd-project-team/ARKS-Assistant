@@ -158,7 +158,7 @@ class Repository:
             )
         ):
             thread.title = title_from_question(content, selections)
-        thread.state, thread.updated_at = "active", now_iso()
+        thread.updated_at = now_iso()
         message = Message(
             thread_id=thread_id,
             role="user",

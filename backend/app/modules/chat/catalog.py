@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from sqlalchemy import and_, delete, exists, func, or_, select
+from sqlalchemy import delete, exists, func, or_, select
 
 from app.core.identifiers import now_iso
 from app.infrastructure.database.serialization import record_dict
@@ -61,9 +61,8 @@ class ConversationCatalog:
         *,
         workspace_ids=None,
         chronological=False,
-        archived_workspace_ids=None,
     ) -> list[dict]:
-        if state not in {"active", "archived", "deleted"}:
+        if state not in {"active", "deleted"}:
             raise ValueError("无效的会话列表类型")
         query = query.strip()[:300]
         workspace = (
@@ -72,11 +71,6 @@ class ConversationCatalog:
             else Thread.workspace_id.in_(workspace_ids)
         )
         status = Thread.state == state
-        if state == "archived" and archived_workspace_ids:
-            status = or_(
-                status,
-                and_(Thread.state == "active", Thread.workspace_id.in_(archived_workspace_ids)),
-            )
         predicate = [workspace, status, thread_filter()]
         if query:
             predicate.append(
@@ -156,7 +150,7 @@ class ConversationCatalog:
             return results
 
     def change(self, thread_id: str, state: str) -> dict:
-        if state not in {"active", "archived", "deleted"}:
+        if state not in {"active", "deleted"}:
             raise ValueError("无效的会话状态")
         with self.database.session.begin() as session:
             row = self.row(session, thread_id, include_deleted=True)

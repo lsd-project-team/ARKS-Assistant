@@ -36,7 +36,7 @@ class AccountProjects:
             if existing:
                 return
             identifier = uuid.uuid5(uuid.NAMESPACE_URL, f"arks:account-project:{user['id']}").hex
-            # 用户主动归档或移除后不在每次登录时重建；独立对话仍能读取公司源码。
+            # 用户主动移除后不在每次登录时重建；独立对话仍能读取公司源码。
             if session.get(Project, identifier):
                 return
             session.add(

@@ -20,7 +20,7 @@ export async function searchConversations(request: SearchRequest, options: Searc
     offset: String(offset),
   });
   if (view !== 'active') {
-    // 归档项目与归档会话在数据库中统一筛选分页，回收站始终只返回已删除会话。
+    // 回收站始终只返回已删除会话，按当前项目筛选时不混入其他范围。
     parameters.set('view', view);
     if (!all) parameters.set('project_id', projectId || 'independent');
     const rows = await request<Thread[]>(
@@ -30,21 +30,16 @@ export async function searchConversations(request: SearchRequest, options: Searc
     );
     return { rows, hasMore: rows.length === conversationSearchPageSize };
   }
-  const states = filter ? ['active', 'archived'] : ['active'];
-  const pages = await Promise.all(
-    states.map((state) =>
-      request<Thread[]>(
-        `${all ? '/projects/search-threads' : '/threads'}?${parameters}&state=${state}`,
-        { signal },
-        projectId,
-      ),
-    ),
+  const rows = await request<Thread[]>(
+    `${all ? '/projects/search-threads' : '/threads'}?${parameters}&state=active`,
+    { signal },
+    projectId,
   );
   return {
-    rows: pages.flat(),
-    hasMore: pages.some((page) => page.length === conversationSearchPageSize),
+    rows,
+    hasMore: rows.length === conversationSearchPageSize,
   };
 }
 
 export const conversationSearchTitle = (view: SidebarView) =>
-  view === 'archived' ? '搜索已归档对话' : view === 'deleted' ? '搜索已删除对话' : '搜索对话';
+  view === 'deleted' ? '搜索已删除对话' : '搜索对话';

@@ -32,13 +32,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
   });
   const projects = useQuery({
     queryKey: ['admin-projects'],
-    queryFn: async () => {
-      const [active, archived] = await Promise.all([
-        adminApi<ProjectList>('/projects'),
-        adminApi<ProjectList>('/projects?state=archived'),
-      ]);
-      return { ...active, projects: [...active.projects, ...archived.projects] };
-    },
+    queryFn: () => adminApi<ProjectList>('/projects'),
   });
   const parameters = new URLSearchParams({
     query: settled,
@@ -159,9 +153,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
                     <a className="admin-title-link" href={`#admin/questions/${row.id}`}>
                       {row.title}
                     </a>
-                    {row.state !== 'active' && (
-                      <small>{row.state === 'deleted' ? '已移入回收站' : '已归档'}</small>
-                    )}
+                    {row.state === 'deleted' && <small>已移入回收站</small>}
                   </td>
                   <td>{row.users.join('、')}</td>
                   <td>{row.project_name}</td>

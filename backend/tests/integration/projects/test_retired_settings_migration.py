@@ -65,6 +65,8 @@ def test_upgrade_removes_settings_and_snapshots_preserving_business_data(service
                 if table == "projects":
                     row.pop("description")
                     row.pop("instructions")
+                    if row["state"] == "archived":
+                        row["state"] = "active"
                 if table == "runs":
                     row["project_snapshot_json"] = json.dumps(kept_snapshot, ensure_ascii=False)
             assert list(connection.execute(text(f'SELECT * FROM "{table}"')).mappings()) == expected

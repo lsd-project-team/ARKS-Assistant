@@ -37,6 +37,8 @@ export const useWorkspace = create<WorkspaceState>()(
             : [];
         return {
           ...state,
+          // 旧版保存的归档视图和未知值回到最近，原草稿与阅读位置继续恢复。
+          sidebarView: state.sidebarView === 'deleted' ? 'deleted' : 'active',
           history,
           historyIndex: Math.max(
             -1,

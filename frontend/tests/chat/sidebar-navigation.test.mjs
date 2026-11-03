@@ -23,7 +23,7 @@ test('打开较早的对话后，预览保留当前选择且不增加默认行�
   );
 });
 
-test('归档项目合并分页时保留置顶顺序、按时间排序并消除重复行', () => {
+test('项目对话合并分页时保留置顶顺序、按时间排序并消除重复行', () => {
   const rows = [
     { id: 'older', updated_at: '2026-10-10', pinned_order: null },
     { id: 'pin-two', updated_at: '2026-10-09', pinned_order: 2 },

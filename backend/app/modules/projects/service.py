@@ -72,7 +72,7 @@ class Projects:
         self.database = base.database
         self.default_id = base.workspace.id
         self.lock = RLock()
-        # 移动、归档、切换目录与创建运行使用同一编辑锁，防止检查空闲后的竞态。
+        # 移动、切换目录与创建运行使用同一编辑锁，防止检查空闲后的竞态。
         self.edit_lock = base.runs.edit_lock
         self.contexts = {}
         self.retired = []
@@ -140,8 +140,6 @@ class Projects:
                 **self.account_defaults.source(),
             }
         project = self.get(project_id)
-        if project["state"] != "active":
-            raise ValueError("请先恢复项目，再创建或继续对话")
         return {
             key: project[key]
             for key in (
@@ -154,7 +152,7 @@ class Projects:
         }
 
     def list(self, state="active", query=""):
-        if state not in {"active", "archived"}:
+        if state != "active":
             raise ValueError("无效的项目列表类型")
         with self.database.session() as session:
             count = (
@@ -304,7 +302,7 @@ class Projects:
                 "source_folders_json" in changes
                 and changes["source_folders_json"] != row.source_folders_json
             )
-            if root_changed or changes.get("state") == "archived":
+            if root_changed:
                 self.ensure_idle(session, project_id)
             pinned = changes.pop("pinned", None)
             if pinned is not None:
@@ -471,24 +469,17 @@ class Projects:
         limit=50,
         offset=0,
         *,
-        project_state=None,
         view=None,
         project_id=None,
     ):
         # 在数据库中统一排序分页，避免每个项目取前 200 条后丢失更早的命中。
-        projects = (
-            self.list(project_state)
-            if project_state
-            else self.list("active") + self.list("archived")
-        )
+        projects = self.list()
         names = {row["id"]: row["name"] for row in projects}
-        workspace_ids = [*names, *([INDEPENDENT] if project_state != "archived" else [])]
+        workspace_ids = [*names, INDEPENDENT]
         if project_id is not None:
             if project_id != INDEPENDENT:
                 self.get(project_id)
             workspace_ids = [project_id] if project_id in workspace_ids else []
-        # 归档视图包含归档会话及归档项目下仍为 active 的会话，删除会话始终排除。
-        archived_ids = [row["id"] for row in projects if row["state"] == "archived"]
         rows = self.base.repository.catalog.list(
             view or state,
             query,
@@ -496,14 +487,11 @@ class Projects:
             offset,
             workspace_ids=workspace_ids,
             chronological=True,
-            archived_workspace_ids=archived_ids if view == "archived" else None,
         )
-        states = {row["id"]: row["state"] for row in projects}
         return [
             dict(
                 row,
                 project_name=names.get(row["project_id"], "独立对话"),
-                project_state=states.get(row["project_id"]),
             )
             for row in rows
         ]

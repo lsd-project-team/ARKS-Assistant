@@ -16,20 +16,18 @@ import { ProjectEditor } from './ProjectEditor';
 import { ErrorText } from '../../../shared/ui/ui';
 import { ProjectMenu } from './ProjectMenu';
 
-type ThreadRenderer = (thread: Thread, readOnly?: boolean) => ReactNode;
+type ThreadRenderer = (thread: Thread) => ReactNode;
 
 export function ProjectNavigation({
-  view,
   onNavigate,
   renderThread,
   selectedThread,
 }: {
-  view: 'active' | 'archived';
   onNavigate: () => void;
   renderThread: ThreadRenderer;
   selectedThread?: Thread;
 }) {
-  const projects = useProjects(view);
+  const projects = useProjects();
   const currentId = useWorkspace((state) => state.projectId);
   const [all, setAll] = useState(false);
   const [editor, setEditor] = useState<Project>();
@@ -39,18 +37,13 @@ export function ProjectNavigation({
     ? rows
     : rows.filter((project, index) => index < 5 || project.id === currentId);
   return (
-    <section
-      className="project-navigation"
-      aria-label={view === 'archived' ? '已归档项目' : '项目'}
-    >
+    <section className="project-navigation" aria-label="项目">
       <ErrorText error={projects.error} />
       {projects.isPending && <p className="muted sidebar-empty">正在读取项目…</p>}
-      {!projects.isPending && !rows.length && (
-        <p className="muted sidebar-empty">{view === 'archived' ? '暂无归档项目' : '暂无项目'}</p>
-      )}
+      {!projects.isPending && !rows.length && <p className="muted sidebar-empty">暂无项目</p>}
       {visible.map((project) => (
         <ProjectGroup
-          key={`${view}:${project.id}`}
+          key={project.id}
           project={project}
           onNavigate={onNavigate}
           onEdit={() => setEditor(project)}
@@ -96,31 +89,21 @@ function ProjectGroup({
   const [all, setAll] = useState(false);
   const limit = all ? 50 : projectThreadPreview + 1;
   const threads = useInfiniteQuery({
-    queryKey: ['project-threads', project.id, project.state, limit],
+    queryKey: ['project-threads', project.id, limit],
     initialPageParam: 0,
     queryFn: async ({ pageParam, signal }) => {
-      const states = project.state === 'archived' ? ['active', 'archived'] : ['active'];
-      const pages = await Promise.all(
-        states.map((state) =>
-          api<Thread[]>(
-            `/threads?state=${state}&limit=${limit}&offset=${pageParam}`,
-            { signal },
-            project.id,
-          ),
-        ),
-      );
-      return { rows: pages.flat(), hasMore: pages.some((page) => page.length === limit) };
+      return api<Thread[]>(`/threads?limit=${limit}&offset=${pageParam}`, { signal }, project.id);
     },
-    getNextPageParam: (page, _pages, previous) => (page.hasMore ? previous + limit : undefined),
+    getNextPageParam: (page, _pages, previous) =>
+      page.length === limit ? previous + limit : undefined,
     enabled: expanded,
     refetchInterval: 5000,
   });
-  const rows = projectThreadOrder(threads.data?.pages.flatMap((page) => page.rows) || []);
+  const rows = projectThreadOrder(threads.data?.pages.flat() || []);
   const matchingSelected =
     selectedThread &&
     threadProject(selectedThread) === project.id &&
-    (selectedThread.state === 'active' ||
-      (project.state === 'archived' && selectedThread.state === 'archived'))
+    selectedThread.state === 'active'
       ? selectedThread
       : undefined;
   const visible = visibleThreads(rows, matchingSelected, all ? undefined : projectThreadPreview);
@@ -142,18 +125,16 @@ function ProjectGroup({
           <span>{project.name}</span>
           {project.pinned_order !== null && <Pin size={10} />}
         </button>
-        {project.state === 'active' && (
-          <button
-            className="project-hover-action"
-            aria-label={`新建对话：${project.name}`}
-            title="在此项目中新建对话"
-            onClick={() => {
-              if (startConversation(project.id)) onNavigate();
-            }}
-          >
-            <Plus size={14} />
-          </button>
-        )}
+        <button
+          className="project-hover-action"
+          aria-label={`新建对话：${project.name}`}
+          title="在此项目中新建对话"
+          onClick={() => {
+            if (startConversation(project.id)) onNavigate();
+          }}
+        >
+          <Plus size={14} />
+        </button>
         <ProjectMenu project={project} onEdit={onEdit} />
       </div>
       {expanded && (
@@ -164,7 +145,7 @@ function ProjectGroup({
         >
           <ErrorText error={threads.error} />
           {threads.isPending && <span className="muted project-no-chats">正在读取…</span>}
-          {visible.map((thread) => renderThread(thread, project.state === 'archived'))}
+          {visible.map((thread) => renderThread(thread))}
           {threads.isSuccess && !rows.length && (
             <span className="muted project-no-chats">暂无对话</span>
           )}

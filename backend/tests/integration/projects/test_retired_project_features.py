@@ -117,7 +117,7 @@ def test_retired_routes_cannot_read_or_change_preserved_history(services, method
         assert history_snapshot(database) == before
 
 
-def test_archive_and_backup_work_without_runtime_models_or_material_exports(services):
+def test_export_and_backup_work_without_runtime_models_or_material_exports(services):
     assert not set(HISTORICAL_TABLES) & Base.metadata.tables.keys()
     with TestClient(create_app(services[0])) as client:
         saved = project(client, "旧历史仍保留")
@@ -137,7 +137,7 @@ def test_archive_and_backup_work_without_runtime_models_or_material_exports(serv
             assert json.loads(archive.read("memories.json")) == []
         assert (
             client.patch(f"/api/projects/{saved['id']}", json={"state": "archived"}).status_code
-            == 200
+            == 422
         )
         assert history_snapshot(database) == before
 

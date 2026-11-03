@@ -17,7 +17,7 @@ const projects = {
   projects: [
     { id: 'A', state: 'active' },
     { id: 'B', state: 'active' },
-    { id: 'archived', state: 'archived' },
+    { id: 'deleted', state: 'deleted' },
   ],
 };
 const environment = {
@@ -150,13 +150,13 @@ test('项目列表尚未返回时，公共入口也能创建独立对话', () =>
   assert.deepEqual(environment.notices, []);
 });
 
-test('项目内新建仍固定指定项目，归档或已删除项目不能回退到其他项目', () => {
+test('项目内新建仍固定指定项目，已删除或不存在的项目不能回退到其他项目', () => {
   reset();
   useWorkspace.getState().initializeProject('B');
   const start = useNewConversation();
   assert.equal(start('A'), true);
   assert.equal(useWorkspace.getState().projectId, 'A');
-  assert.equal(start('archived'), false);
+  assert.equal(start('deleted'), false);
   assert.equal(start('removed'), false);
   assert.equal(useWorkspace.getState().projectId, 'A');
   assert.equal(environment.notices.length, 2);

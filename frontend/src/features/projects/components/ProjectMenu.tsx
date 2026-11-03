@@ -113,14 +113,6 @@ export function ProjectMenu({ project, onEdit }: { project: Project; onEdit: () 
             >
               向下移动
             </button>
-            <button
-              role="menuitem"
-              onClick={() =>
-                void change('', { state: project.state === 'archived' ? 'active' : 'archived' })
-              }
-            >
-              {project.state === 'archived' ? '恢复项目' : '归档项目'}
-            </button>
           </div>,
           document.body,
         )}

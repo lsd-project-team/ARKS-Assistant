@@ -187,9 +187,8 @@ def test_queue_is_atomic_ordered_versioned_and_survives_repository_reload(servic
     assert reloaded.queue.dispatch(thread["id"]) is None
     reloaded.queue.cancel(second["id"])
     assert not reloaded.queue.list(thread["id"])["items"]
-    repository.catalog.change(thread["id"], "archived")
     assert reloaded.queue.list(thread["id"])["paused"]
-    reloaded.queue.add(thread["id"], "归档后继续提问", [])
+    reloaded.queue.add(thread["id"], "暂停后继续提问", [])
     assert repository.catalog.get(thread["id"])["state"] == "active"
     assert reloaded.queue.dispatch(thread["id"]) is None
     reloaded.queue.cancel(reloaded.queue.list(thread["id"])["items"][0]["id"])

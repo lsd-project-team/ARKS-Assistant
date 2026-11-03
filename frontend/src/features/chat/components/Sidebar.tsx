@@ -12,7 +12,6 @@ import {
   type ThreadEntry,
 } from '../lib/sidebarNavigation';
 import { useSidebarActions } from '../hooks/useSidebarActions';
-import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { useNewConversation } from '../hooks/useNewConversation';
 import type { Thread } from '../../../shared/types/api';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
@@ -39,27 +38,14 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
     if (view === 'deleted' && locatedThread)
       list.current?.querySelector('.thread-row.active')?.scrollIntoView({ block: 'nearest' });
   }, [locatedThread, view]);
-  const project = useCurrentProject();
-  const previousProject = useRef({ id: projectId, state: project.data?.state });
-  useEffect(() => {
-    if (!project.data) return;
-    const previous = previousProject.current;
-    if (project.data.state === 'archived') setSidebarView('archived');
-    else if (previous.id === projectId && previous.state === 'archived') setSidebarView('active');
-    previousProject.current = { id: projectId, state: project.data.state };
-    // 项目归档、恢复后跟随它的新位置；用户随后仍可手动切换三个列表。
-  }, [project.data?.state, projectId, setSidebarView]);
   const selected = useQuery({
     queryKey: ['thread', threadId, 'navigation'],
     queryFn: () => api<Thread>(`/threads/${threadId}?limit=1`, undefined, projectId),
     enabled: !!threadId,
     retry: false,
   });
-  const selectedThread =
-    threadId && selected.data
-      ? { ...selected.data, project_state: project.data?.state || null }
-      : undefined;
-  const renderThread = (row: Thread, readOnly = false, entry: ThreadEntry = 'project') => (
+  const selectedThread = threadId ? selected.data : undefined;
+  const renderThread = (row: Thread, entry: ThreadEntry = 'project') => (
     <ThreadItem
       key={row.id}
       row={row}
@@ -70,7 +56,6 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
       }
       filter=""
       busy={actions.pending === row.id}
-      readOnly={readOnly}
       onSelect={() => {
         onNavigate();
         useWorkspace.getState().switchProject(threadProject(row));
@@ -90,7 +75,6 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
         {(
           [
             { id: 'active', label: '最近' },
-            { id: 'archived', label: '已归档' },
             { id: 'deleted', label: '回收站' },
           ] as const
         ).map((item) => (
@@ -105,9 +89,7 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
         ))}
       </div>
       <div className="sidebar-heading">
-        <strong>
-          {view === 'deleted' ? '已删除对话' : view === 'archived' ? '已归档项目' : '项目'}
-        </strong>
+        <strong>{view === 'deleted' ? '已删除对话' : '项目'}</strong>
         <div>
           {view === 'active' && (
             <button aria-label="新建项目" title="新建项目" onClick={() => setCreatingProject(true)}>
@@ -122,13 +104,7 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
                 setLocatedThread(row);
                 return;
               }
-              setSidebarView(
-                row.state === 'archived' ||
-                  row.project_state === 'archived' ||
-                  (threadProject(row) === projectId && project.data?.state === 'archived')
-                  ? 'archived'
-                  : 'active',
-              );
+              setSidebarView('active');
               onNavigate();
             }}
           />
@@ -139,7 +115,6 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
         {view !== 'deleted' && (
           <ProjectNavigation
             key={`projects:${view}`}
-            view={view}
             onNavigate={onNavigate}
             renderThread={renderThread}
             selectedThread={selectedThread}
@@ -204,7 +179,7 @@ function RecentThreads({
   onNavigate,
 }: {
   view: SidebarView;
-  renderThread: (row: Thread, readOnly?: boolean, entry?: ThreadEntry) => ReactNode;
+  renderThread: (row: Thread, entry?: ThreadEntry) => ReactNode;
   selectedThread?: Thread;
   onNavigate: () => void;
 }) {
@@ -213,34 +188,27 @@ function RecentThreads({
   const threads = useInfiniteQuery({
     queryKey: ['threads', 'navigation', view],
     initialPageParam: 0,
-    // 最近只显示正常项目；已归档项目集中在归档页，回收站仍包含所有项目。
     queryFn: ({ pageParam, signal }) =>
-      api<Thread[]>(
-        `/projects/search-threads?state=${view}&limit=50&offset=${pageParam}${view === 'active' ? '&project_state=active' : ''}`,
-        { signal },
-      ),
+      api<Thread[]>(`/projects/search-threads?state=${view}&limit=50&offset=${pageParam}`, {
+        signal,
+      }),
     getNextPageParam: (page, _pages, previous) => (page.length === 50 ? previous + 50 : undefined),
     refetchInterval: 5000,
   });
   const rows = threads.data?.pages.flat() || [];
   const visible = visibleThreads(
     rows,
-    selectedThread?.state === view &&
-      !(view === 'active' && selectedThread.project_state === 'archived')
-      ? selectedThread
-      : undefined,
+    selectedThread?.state === view ? selectedThread : undefined,
     all ? undefined : recentThreadPreview,
   );
   return (
     <section
       className="sidebar-thread-section"
-      aria-label={
-        view === 'active' ? '最近对话' : view === 'archived' ? '已归档对话' : '已删除对话'
-      }
+      aria-label={view === 'active' ? '最近对话' : '已删除对话'}
     >
       {view !== 'deleted' && (
         <div className="sidebar-section-title">
-          <span>{view === 'active' ? '最近对话' : '已归档对话'}</span>
+          <span>最近对话</span>
           {view === 'active' && (
             <button
               className="project-hover-action"
@@ -257,10 +225,8 @@ function RecentThreads({
       )}
       <ErrorText error={threads.error} />
       {threads.isPending && <p className="muted sidebar-empty">正在读取对话…</p>}
-      {visible.map((row) =>
-        renderThread(row, row.project_state === 'archived' && row.state !== 'deleted', 'recent'),
-      )}
-      {!threads.isPending && !rows.length && view !== 'archived' && (
+      {visible.map((row) => renderThread(row, 'recent'))}
+      {!threads.isPending && !rows.length && (
         <p className="muted sidebar-empty">{view === 'deleted' ? '回收站为空' : '无聊天'}</p>
       )}
       {!all && rows.length > recentThreadPreview && (

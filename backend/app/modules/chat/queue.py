@@ -33,8 +33,7 @@ class ConversationQueue:
     def add(self, thread_id, content, selections, source_options=None):
         self.repository.creation_guard()
         with self.repository.lock, self.repository.database.session.begin() as session:
-            thread = self.repository.catalog.row(session, thread_id)
-            thread.state = "active"
+            self.repository.catalog.row(session, thread_id)
             if source_options is None:
                 source_options = self.repository.source_preferences.read(session)["source_options"]
             count = session.scalar(

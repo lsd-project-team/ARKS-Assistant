@@ -21,7 +21,6 @@ export function ChatComposer({
   model,
   modelControl,
   context,
-  readOnly = false,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
@@ -41,7 +40,6 @@ export function ChatComposer({
   model: string;
   modelControl?: ReactNode;
   context: ReactNode;
-  readOnly?: boolean;
 }) {
   const listId = useId();
   useLayoutEffect(() => {
@@ -59,7 +57,7 @@ export function ChatComposer({
   const available = (command: ComposerCommand) =>
     command === '记录问题' || (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
-  const canSubmit = !sending && !readOnly && (command ? available(command) : !!draft.trim());
+  const canSubmit = !sending && (command ? available(command) : !!draft.trim());
   function submit() {
     if (!canSubmit) return;
     if (command) {
@@ -119,13 +117,13 @@ export function ChatComposer({
       <textarea
         ref={inputRef}
         value={draft}
-        disabled={sending || readOnly}
+        disabled={sending}
         onChange={(event) => {
           onChange(event.target.value);
           setSelected(0);
           setDismissed(false);
         }}
-        placeholder={readOnly ? '项目已归档，恢复后可以继续对话' : '询问代码，或输入 / 使用命令…'}
+        placeholder="询问代码，或输入 / 使用命令…"
         aria-label="对话输入"
         aria-controls={menuOpen ? listId : undefined}
         aria-expanded={menuOpen}
@@ -154,7 +152,7 @@ export function ChatComposer({
             className="attach-file"
             aria-label={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
             title={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
-            disabled={!onUploadFiles || sending || readOnly}
+            disabled={!onUploadFiles || sending}
             onClick={onUploadFiles}
           >
             <Plus size={18} />

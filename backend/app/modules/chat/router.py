@@ -1,5 +1,7 @@
 """会话和运行 API；SSE 连接仅订阅持久化事件。"""
 
+from typing import Literal
+
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import Response, StreamingResponse
 
@@ -31,7 +33,7 @@ def create_router(services: AppServices) -> APIRouter:
 
     @router.get("/api/threads")
     async def threads(
-        state: str = "active",
+        state: Literal["active", "deleted"] = "active",
         query: str = "",
         limit: int = Query(default=100, ge=1, le=200),
         offset: int = Query(default=0, ge=0),
@@ -74,8 +76,6 @@ def create_router(services: AppServices) -> APIRouter:
         async with runs.edit_lock:
             if body.title is not None:
                 repository.rename(thread_id, body.title)
-            if body.state is not None:
-                repository.catalog.change(thread_id, body.state)
             if body.pinned is not None:
                 repository.catalog.pin(thread_id, body.pinned)
         return repository.catalog.get(thread_id)

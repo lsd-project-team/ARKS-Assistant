@@ -29,7 +29,12 @@ def test_global_records_survive_dialog_project_changes_and_new_writes(services):
         before = client.get("/api/handover").json()
         assert row["scope_id"] == "global" and row["source_project_id"] is None
         for project_id in (first, second):
-            client.patch(f"/api/projects/{project_id}", json={"state": "archived"})
+            assert (
+                client.patch(
+                    f"/api/projects/{project_id}", json={"name": f"新名称-{project_id}"}
+                ).status_code
+                == 200
+            )
             assert client.get("/api/handover").json() == before
         changed = client.patch(
             f"/api/handover/records/{row['id']}",

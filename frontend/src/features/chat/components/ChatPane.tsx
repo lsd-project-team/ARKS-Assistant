@@ -67,7 +67,6 @@ export function ChatPane({
   const api = <T,>(path: string, options?: RequestInit, id = projectId) =>
     request<T>(path, options, id);
   const project = useCurrentProject();
-  const archivedProject = project.data?.state === 'archived';
   const { content: draft, selections } = conversationDraft;
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
@@ -355,7 +354,7 @@ export function ChatPane({
           {showWelcome && (
             <ChatWelcome
               hasSelection={selections.length > 0}
-              disabled={archivedProject || send.isPending}
+              disabled={send.isPending}
               onQuestion={(question) => {
                 if (draft.trim()) {
                   composerInput.current?.focus();
@@ -380,7 +379,7 @@ export function ChatPane({
                     <ReplyVersions
                       versions={versions}
                       selectedMessage={messageJump.id}
-                      canRegenerate={!archivedProject && !busy && !regenerate.isPending}
+                      canRegenerate={!busy && !regenerate.isPending}
                       onRegenerate={(id) => regenerate.mutate(id)}
                     />
                   </MessageArchive>
@@ -393,12 +392,10 @@ export function ChatPane({
               <MessageBubble
                 message={message}
                 run={run}
-                canRegenerate={
-                  !archivedProject && !busy && !regenerate.isPending && run?.status === 'completed'
-                }
+                canRegenerate={!busy && !regenerate.isPending && run?.status === 'completed'}
                 onRegenerate={(id) => regenerate.mutate(id)}
                 onEdit={
-                  !archivedProject && !busy && conversation.data?.editable_message_id === message.id
+                  !busy && conversation.data?.editable_message_id === message.id
                     ? (content) =>
                         editQuestion.mutateAsync({
                           id: message.thread_id || threadId,
@@ -496,10 +493,7 @@ export function ChatPane({
                   }
                 />
               )}
-              <Button
-                onClick={() => resume.mutate(latest.id)}
-                disabled={archivedProject || resume.isPending}
-              >
+              <Button onClick={() => resume.mutate(latest.id)} disabled={resume.isPending}>
                 <RotateCcw size={13} />
                 {latest.status === 'failed' ? '重试运行' : '继续回复'}
               </Button>
@@ -522,11 +516,6 @@ export function ChatPane({
         </div>
       </div>
       <div className="composer-area">
-        {archivedProject && (
-          <div className="project-readonly-notice">
-            此项目已归档，历史内容可以查看。可在侧栏项目菜单中恢复后继续对话。
-          </div>
-        )}
         <QuestionQueuePanel key={`queue:${threadId}`} queue={queue} threadId={threadId} />
         {scroll.showLatest && (
           <button className="back-to-latest" onClick={scroll.toLatest}>
@@ -557,7 +546,6 @@ export function ChatPane({
           </div>
         )}
         <ChatComposer
-          readOnly={archivedProject}
           key={`composer:${threadId}`}
           inputRef={composerInput}
           draft={draft}
@@ -571,7 +559,7 @@ export function ChatPane({
           queueing={!!queue.query.data?.items.length}
           stopping={cancel.isPending}
           canContext={canContext}
-          canCompact={!archivedProject && canCompact}
+          canCompact={canCompact}
           compactDisabledReason={!messages.length ? '请先发送一条消息' : '请等待当前运行完成'}
           model={
             modelPreference.data?.model_profiles.find(

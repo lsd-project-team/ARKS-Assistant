@@ -85,7 +85,7 @@ test('旧公共浏览器状态只迁移服务端确认的本人项目和对话�
   assert.equal(other.state.paths, undefined);
   assert.deepEqual(Object.keys(other.state.drafts), ['chat-b']);
   await prepareLegacyWorkspace('migrate-first', async (path) =>
-    path === '/api/projects' || path === '/api/projects?state=archived'
+    path === '/api/projects'
       ? {
           projects: [
             { id: 'project-a', owner_id: 'migrate-first' },

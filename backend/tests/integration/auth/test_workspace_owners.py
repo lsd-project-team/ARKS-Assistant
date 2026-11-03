@@ -203,7 +203,7 @@ def test_independent_chats_memories_preferences_and_queue_are_private(owned):
     assert branch.status_code == 201 and branch.json()["owner_id"] == second_user["id"]
 
 
-def test_archive_trash_move_and_project_export_keep_ownership(owned):
+def test_trash_move_and_project_export_keep_ownership(owned):
     client, app, first_user, _, first, second, run = owned
     sign_in(client, "user")
     prefix = f"/api/p/{first['id']}"
@@ -211,9 +211,12 @@ def test_archive_trash_move_and_project_export_keep_ownership(owned):
         client.patch(
             prefix + f"/threads/{run['thread_id']}", json={"state": "archived"}
         ).status_code
-        == 200
+        == 422
     )
-    assert len(client.get("/api/projects/search-threads?view=archived").json()) == 1
+    assert client.get("/api/projects/search-threads?view=archived").status_code == 422
+    assert run["thread_id"] in [
+        row["id"] for row in client.get("/api/projects/search-threads").json()
+    ]
     exported = client.get(f"/api/projects/{first['id']}/export")
     assert exported.status_code == 200
     with ZipFile(io.BytesIO(exported.content)) as archive:

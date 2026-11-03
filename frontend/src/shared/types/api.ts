@@ -63,14 +63,13 @@ export interface Run {
 }
 export interface Thread {
   owner_id?: string | null;
-  project_state?: 'active' | 'archived' | null;
   project_name?: string;
   project_id?: string | null;
   id: string;
   title: string;
   created_at?: string;
   updated_at: string;
-  state?: 'active' | 'archived' | 'deleted';
+  state?: 'active' | 'deleted';
   pinned_order?: number | null;
   has_unread?: boolean;
   latest_status?: string | null;
@@ -87,7 +86,7 @@ export interface Project {
   id: string;
   name: string;
   source_root: string | null;
-  state: 'active' | 'archived';
+  state: 'active';
   pinned_order: number | null;
   created_at: string;
   updated_at: string;

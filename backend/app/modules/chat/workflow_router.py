@@ -78,9 +78,6 @@ def create_router(services: AppServices):
         if action not in {"pause", "continue"}:
             raise ValueError("队列操作必须是 pause 或 continue")
         async with manager.edit_lock:
-            thread = repository.catalog.get(thread_id)
-            if action == "continue" and thread["state"] == "archived":
-                repository.catalog.change(thread_id, "active")
             repository.queue.pause(thread_id, action == "pause")
             run = repository.queue.dispatch(thread_id)
             if run:

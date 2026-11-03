@@ -61,11 +61,10 @@ class ProjectUpdate(BaseModel):
     source_root: str | None = Field(default=None, max_length=1024)
     deepwiki_repo: str | None = Field(default=None, max_length=200)
     auto_associate: bool = False
-    state: Literal["active", "archived"] | None = None
     pinned: bool | None = None
     source_folders: list[SourceFolder] = Field(default_factory=list, max_length=8)
 
-    @field_validator("name", "deepwiki_repo", "state", "pinned")
+    @field_validator("name", "deepwiki_repo", "pinned")
     @classmethod
     def non_null(cls, value):
         if value is None:
@@ -109,7 +108,7 @@ def create_router(projects: Projects):
         )
 
     @router.get("/api/projects")
-    async def list_projects(state: str = "active", query: str = ""):
+    async def list_projects(state: Literal["active"] = "active", query: str = ""):
         rows = projects.list(state, query)
         available = {row["id"] for row in rows}
         default = (
@@ -142,11 +141,10 @@ def create_router(projects: Projects):
     @router.get("/api/projects/search-threads")
     async def search(
         query: str = "",
-        state: str = "active",
+        state: Literal["active", "deleted"] = "active",
         limit: int = Query(50, ge=1, le=200),
         offset: int = Query(0, ge=0),
-        project_state: Literal["active", "archived"] | None = None,
-        view: Literal["archived", "deleted"] | None = None,
+        view: Literal["deleted"] | None = None,
         project_id: str | None = None,
     ):
         return projects.search(
@@ -154,7 +152,6 @@ def create_router(projects: Projects):
             state,
             limit,
             offset,
-            project_state=project_state,
             view=view,
             project_id=project_id,
         )

@@ -13,8 +13,8 @@ const defaults = {
   signal: new AbortController().signal,
 };
 
-test('归档和回收站的空搜索、关键词及后续页始终使用各自范围', async () => {
-  for (const view of ['archived', 'deleted']) {
+test('回收站的空搜索、关键词及后续页始终使用已删除范围', async () => {
+  for (const view of ['deleted']) {
     for (const filter of ['', '相同关键词']) {
       const calls = [];
       const request = async (path, options, projectId) => {
@@ -34,8 +34,8 @@ test('归档和回收站的空搜索、关键词及后续页始终使用各自�
   }
 });
 
-test('当前项目筛选只能缩小归档或回收站范围，空结果不再请求其他状态', async () => {
-  for (const view of ['archived', 'deleted']) {
+test('当前项目筛选只能缩小回收站范围，空结果不再请求其他状态', async () => {
+  for (const view of ['deleted']) {
     const urls = [];
     const request = async (path) => {
       urls.push(new URL(path, 'http://local.test'));
@@ -49,7 +49,7 @@ test('当前项目筛选只能缩小归档或回收站范围，空结果不再�
   }
 });
 
-test('最近页保留原搜索行为，归档和删除查询不会混入最近查询', async () => {
+test('最近页的空搜索和关键词均只查询正常对话', async () => {
   for (const filter of ['', '关键词']) {
     const calls = [];
     const result = await searchConversations(
@@ -62,7 +62,7 @@ test('最近页保留原搜索行为，归档和删除查询不会混入最近�
     );
     assert.deepEqual(
       result.rows.map((row) => row.id),
-      filter ? ['active', 'archived'] : ['active'],
+      ['active'],
     );
     assert.ok(calls.every((url) => url.pathname === '/threads' && !url.searchParams.has('view')));
     assert.equal(result.hasMore, false);

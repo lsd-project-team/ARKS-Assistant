@@ -14,7 +14,7 @@ from app.modules.chat.runs import RunManager
 from tests.helpers.api_paths import project_api
 
 
-def test_archive_trash_restore_pin_and_unread(services):
+def test_trash_restore_pin_and_unread(services):
     repository = services[3]
     first = repository.create_thread("新对话")
     second = repository.create_thread("另一个对话")
@@ -30,8 +30,10 @@ def test_archive_trash_restore_pin_and_unread(services):
     assert [row["id"] for row in repository.threads()] == [first["id"], second["id"]]
     with pytest.raises(ValueError):
         repository.catalog.reorder([first["id"]])
-    repository.catalog.change(first["id"], "archived")
-    assert [row["id"] for row in repository.threads("archived")] == [first["id"]]
+    with pytest.raises(ValueError, match="无效"):
+        repository.catalog.change(first["id"], "archived")
+    with pytest.raises(ValueError, match="无效"):
+        repository.threads("archived")
     repository.catalog.change(first["id"], "deleted")
     with pytest.raises(FileNotFoundError):
         repository.create_run(first["id"], "不能继续已删除会话", [])
@@ -133,9 +135,10 @@ def test_management_api_and_workspace_scope(services):
             client.patch(
                 project_api(client, f"/threads/{identifier}"), json={"state": "archived"}
             ).status_code
-            == 200
+            == 422
         )
-        assert len(client.get(project_api(client, "/threads?state=archived")).json()) == 1
+        assert client.get(project_api(client, "/threads?state=archived")).status_code == 422
+        assert client.get(project_api(client, f"/threads/{identifier}")).json()["state"] == "active"
         assert client.delete(project_api(client, f"/threads/{identifier}")).status_code == 200
         assert client.get(project_api(client, f"/threads/{identifier}")).status_code == 404
         assert client.post(project_api(client, f"/threads/{identifier}/restore")).status_code == 200

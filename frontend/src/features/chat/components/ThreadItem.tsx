@@ -7,11 +7,10 @@ import { Highlight } from '../../../shared/ui/markdown/Highlight';
 import { usePopupPosition } from '../../../shared/hooks/usePopupPosition';
 
 export type ThreadAction =
-  'rename' | 'pin' | 'archive' | 'restore' | 'delete' | 'purge' | 'export' | 'up' | 'down' | 'move';
+  'rename' | 'pin' | 'restore' | 'delete' | 'purge' | 'export' | 'up' | 'down' | 'move';
 const labels: Record<ThreadAction, string> = {
   rename: '重命名',
   pin: '置顶',
-  archive: '归档',
   restore: '恢复到最近对话',
   delete: '移入回收站',
   purge: '彻底删除',
@@ -26,7 +25,6 @@ export function ThreadItem({
   selected,
   filter,
   busy,
-  readOnly = false,
   onSelect,
   onAction,
   onRename,
@@ -35,7 +33,6 @@ export function ThreadItem({
   selected: boolean;
   filter: string;
   busy: boolean;
-  readOnly?: boolean;
   onSelect: () => void;
   onAction: (action: ThreadAction) => void;
   onRename: (title: string) => Promise<unknown>;
@@ -112,19 +109,14 @@ export function ThreadItem({
   const actions: ThreadAction[] =
     row.state === 'deleted'
       ? ['restore', 'purge']
-      : readOnly
-        ? ['export']
-        : row.state === 'archived'
-          ? ['restore', 'rename', 'move', 'export', 'delete']
-          : [
-              'rename',
-              'pin',
-              ...(pinned ? (['up', 'down'] as ThreadAction[]) : []),
-              'archive',
-              'move',
-              'export',
-              'delete',
-            ];
+      : [
+          'rename',
+          'pin',
+          ...(pinned ? (['up', 'down'] as ThreadAction[]) : []),
+          'move',
+          'export',
+          'delete',
+        ];
   return (
     <div
       className={`thread-row ${selected ? 'active' : ''} ${editing ? 'editing' : ''}`}

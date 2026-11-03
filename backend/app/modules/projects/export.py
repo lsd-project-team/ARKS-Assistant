@@ -1,4 +1,4 @@
-"""导出项目归档；只包含此项目的业务数据，不包含密钥、全局设置或源码副本。"""
+"""导出项目；只包含此项目的业务数据，不包含密钥、全局设置或源码副本。"""
 
 import io
 import json
@@ -25,7 +25,7 @@ def export_project(projects, project_id):
         write("project.json", project)
         archive.writestr(
             "README.md",
-            "# 项目归档\n\n包含项目信息、对话（含已归档和回收站）和项目记忆。"
+            "# 项目导出\n\n包含项目信息、对话（含回收站）和项目记忆。"
             "源码目录保存为关联信息，实际源码不复制；全局设置和 API 密钥不导出。\n",
         )
         for thread in session.scalars(
