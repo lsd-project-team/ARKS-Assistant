@@ -1,4 +1,12 @@
 const labels: Record<string, string> = {
+  prepare_code_workspace: '创建独立代码副本',
+  find_work_files: '查找副本文件',
+  read_work_file: '读取代码副本',
+  search_work_files: '搜索代码副本',
+  edit_work_file: '修改代码副本',
+  write_work_file: '保存代码副本',
+  inspect_work_changes: '检查代码修改',
+  verify_code_workspace: '编译与仿真验证',
   read_source: '读取源码',
   read_source_context: '读取方法上下文',
   read_source_batch: '批量读取源码',

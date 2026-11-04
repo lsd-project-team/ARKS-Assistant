@@ -501,4 +501,5 @@ class Projects:
             id(item): item for item in [self.base, *self.contexts.values(), *self.retired]
         }.values():
             await services.runs.shutdown()
+            await services.runtime.code_work.shutdown()
             services.runtime.semantic.close()

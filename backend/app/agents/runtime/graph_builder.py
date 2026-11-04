@@ -25,6 +25,7 @@ from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.runtime.privacy import redact
+from app.agents.tools.code_work import CODE_WORK_GUIDANCE, code_work_tools
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
@@ -109,6 +110,12 @@ class AgentGraphBuilder:
             requested_work += "\n此前已授权的请求：" + policy["question"]
         if evidence is not None:
             evidence.user_request = requested_work
+        code_mode = (
+            requested_work.lstrip().startswith("/修改代码")
+            or await asyncio.to_thread(runtime.code_work.exists, thread_id)
+        )
+        if code_mode:
+            tools += code_work_tools(runtime.code_work, thread_id, emit)
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -180,8 +187,12 @@ class AgentGraphBuilder:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         prompt += (
-            "\n业务源码保持只读，可提供分析与修改建议；"
-            "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
+            CODE_WORK_GUIDANCE
+            if code_mode
+            else (
+                "\n业务源码保持只读，可提供分析与修改建议；"
+                "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
+            )
         )
         if debug_issues:
             # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。

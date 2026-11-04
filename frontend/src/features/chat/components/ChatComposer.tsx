@@ -1,5 +1,5 @@
 import { useId, useLayoutEffect, useState, type ReactNode, type RefObject } from 'react';
-import { ArrowUp, ListPlus, Plus, Square, Zap } from 'lucide-react';
+import { ArrowUp, FileCode2, ListPlus, Plus, Square, Zap } from 'lucide-react';
 import { exactCommand, matchingCommands, type ComposerCommand } from '../lib/composerCommands';
 import { Button } from '../../../shared/ui/ui';
 
@@ -11,6 +11,7 @@ export function ChatComposer({
   onCommand,
   onStop,
   onUploadFiles,
+  onCodeWork,
   sending,
   busy,
   queueing = false,
@@ -30,6 +31,7 @@ export function ChatComposer({
   onStop: () => void;
   /** 文件上传预留回调，未接入时保持入口禁用。 */
   onUploadFiles?: () => void;
+  onCodeWork?: () => void;
   sending: boolean;
   busy: boolean;
   queueing?: boolean;
@@ -55,7 +57,9 @@ export function ChatComposer({
   const menuOpen = !dismissed && matches.length > 0;
   const selectedCommand = matches[Math.min(selected, matches.length - 1)];
   const available = (command: ComposerCommand) =>
-    command === '记录问题' || (command === 'context' ? canContext : canCompact);
+    command === '记录问题' ||
+    command === '修改代码' ||
+    (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
   const canSubmit = !sending && (command ? available(command) : !!draft.trim());
   function submit() {
@@ -162,6 +166,17 @@ export function ChatComposer({
               <Zap size={12} fill="currentColor" />
               <span>{model}</span>
             </span>
+          )}
+          {onCodeWork && (
+            <button
+              type="button"
+              className="attach-file"
+              onClick={onCodeWork}
+              title="代码修改"
+              aria-label="代码修改"
+            >
+              <FileCode2 size={17} />
+            </button>
           )}
         </div>
         <div className="composer-send-actions">

@@ -1,0 +1,186 @@
+.code-work-dialog {
+  width: min(1180px, calc(100vw - 32px));
+  max-width: 1180px;
+  max-height: 90vh;
+}
+.code-work-body {
+  min-height: 180px;
+  overflow: auto;
+  padding: 16px 20px;
+}
+.code-work-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 30px;
+}
+.code-work-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.code-work-toolbar > span {
+  margin-right: auto;
+}
+.code-work-source {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+.code-environment {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+.code-environment summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+.code-environment form {
+  display: grid;
+  gap: 10px;
+  padding-block: 8px;
+}
+.code-environment label {
+  display: grid;
+  gap: 5px;
+}
+.code-environment input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: inherit;
+}
+.code-work-changes {
+  display: grid;
+  grid-template-columns: minmax(160px, 25%) minmax(0, 1fr);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.code-work-changes nav {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: auto;
+  max-height: 55vh;
+}
+.code-work-changes nav button {
+  text-align: left;
+  overflow-wrap: anywhere;
+  padding: 10px;
+  font-size: 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.code-work-changes nav button.selected {
+  background: var(--surface-hover);
+}
+.code-work-changes nav small {
+  display: block;
+  opacity: 0.65;
+}
+.code-work-diff {
+  min-width: 0;
+}
+.code-work-file-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+}
+.code-work-diff pre,
+.code-verification pre {
+  font-size: 12px;
+  line-height: 1.65;
+  padding: 12px;
+  margin: 0;
+  max-height: 50vh;
+  overflow: auto;
+  tab-size: 4;
+}
+.code-work-diff pre > span {
+  display: inline;
+}
+.diff-add {
+  color: #18783a;
+  background: #22c55e12;
+}
+.diff-remove {
+  color: #bd3838;
+  background: #ef444412;
+}
+.diff-context {
+  color: #3076bd;
+}
+.code-verification {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.code-verification > span {
+  font-size: 12px;
+  margin-left: 12px;
+  opacity: 0.65;
+}
+.code-verification[data-status='passed'] > strong {
+  color: #18783a;
+}
+.code-verification[data-status='failed'] > strong {
+  color: #bd3838;
+}
+.code-verification details {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.code-verification summary {
+  cursor: pointer;
+}
+.code-revert-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+}
+.code-work-scope {
+  font-size: 12px;
+}
+:root[data-appearance='dark'] .code-work-dialog .diff-add,
+:root[data-appearance='dark'] .code-verification[data-status='passed'] > strong {
+  color: #76d397;
+}
+:root[data-appearance='dark'] .code-work-dialog .diff-remove,
+:root[data-appearance='dark'] .code-verification[data-status='failed'] > strong {
+  color: #f58c8c;
+}
+:root[data-appearance='dark'] .code-work-dialog .diff-context {
+  color: #83baf5;
+}
+@media (max-width: 650px) {
+  .code-work-changes {
+    grid-template-columns: 1fr;
+  }
+  .code-work-changes nav {
+    max-height: 140px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-work-body {
+    padding: 12px;
+  }
+}

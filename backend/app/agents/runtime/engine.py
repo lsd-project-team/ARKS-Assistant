@@ -15,6 +15,7 @@ from app.infrastructure.mcp.client import ToolCatalog, adapt_tool
 from app.infrastructure.providers.models import close_models
 from app.modules.chat.regeneration import previous_run_event
 from app.modules.chat.repository import Repository
+from app.modules.code_work.service import CodeWork
 from app.modules.knowledge.source_guides import ProjectKnowledge
 from app.modules.memory.service import MemoryService
 from app.modules.settings.model_ledger import ModelLedger
@@ -37,6 +38,7 @@ class AgentRuntime:
     ):
         self.paths, self.settings, self.workspace = paths, settings, workspace
         self.repository, self.memories = repository, memories
+        self.code_work = CodeWork(paths, repository)
         self.mcp_cache = ToolCatalog(paths.data / "mcp-tools")
         self.knowledge = ProjectKnowledge(workspace)
         self.semantic = CSharpAnalysis(workspace)

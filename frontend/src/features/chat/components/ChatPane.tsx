@@ -40,6 +40,7 @@ import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
+import { CodeWorkDialog } from '../code_work/CodeWorkDialog';
 
 export function ChatPane({
   onUploadFiles,
@@ -70,6 +71,7 @@ export function ChatPane({
   const { content: draft, selections } = conversationDraft;
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
+  const [codeWorkOpen, setCodeWorkOpen] = useState(false);
   const [selectionPreview, setSelectionPreview] = useState<{
     selection: Selection;
     index: number;
@@ -267,6 +269,11 @@ export function ChatPane({
             ? '压缩未完成，可在对话中重试或继续'
             : '';
   function executeCommand(command: ComposerCommand) {
+    if (command === '修改代码') {
+      setDraft('/修改代码 ');
+      setCodeWorkOpen(true);
+      return;
+    }
     if (command === '记录问题') {
       setDraft('/记录问题 ');
       composerInput.current?.focus();
@@ -554,6 +561,7 @@ export function ChatPane({
           onCommand={executeCommand}
           onStop={() => active && cancel.mutate(active.id)}
           onUploadFiles={onUploadFiles}
+          onCodeWork={() => setCodeWorkOpen(true)}
           sending={send.isPending}
           busy={busy}
           queueing={!!queue.query.data?.items.length}
@@ -592,6 +600,19 @@ export function ChatPane({
         threadId={threadId}
         runId={context?.runId}
         onClose={() => setContext(undefined)}
+      />
+      <CodeWorkDialog
+        key={`code-work:${projectId}:${threadId}`}
+        open={codeWorkOpen}
+        threadId={threadId}
+        projectId={projectId}
+        busy={busy}
+        onClose={() => setCodeWorkOpen(false)}
+        onRequest={() => {
+          setCodeWorkOpen(false);
+          setDraft(draft.startsWith('/修改代码') ? draft : `/修改代码 ${draft}`);
+          composerInput.current?.focus();
+        }}
       />
       {selectionPreview && (
         <SelectionPreview
