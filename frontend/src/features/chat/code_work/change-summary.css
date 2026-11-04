@@ -117,6 +117,21 @@
   margin-block: 12px;
   font-size: 12px;
 }
+.code-change-scope {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.code-change-scope button {
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+.code-change-scope button[aria-pressed='true'] {
+  background: var(--surface-hover);
+  color: var(--text);
+}
 :root[data-appearance='dark'] .code-change-add {
   color: #76d397;
 }

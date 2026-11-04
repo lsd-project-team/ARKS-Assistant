@@ -12,6 +12,7 @@ from threading import Event, RLock
 
 from app.core.identifiers import now_iso
 from app.infrastructure.storage.files import digest, safe_path
+from app.modules.code_work import history
 from app.modules.code_work.changes import change_summary, file_difference
 from app.modules.code_work.environment import CodeEnvironment
 from app.modules.code_work.files import (
@@ -25,6 +26,7 @@ from app.modules.code_work.files import (
     save_json,
     snapshot,
 )
+from app.modules.code_work.review import reverse_hunk
 from app.modules.source_analysis.workspace import Workspace, decode_source
 
 _lock = RLock()
@@ -62,6 +64,9 @@ class CodeWork:
         return folder
 
     def _load(self, folder):
+        from app.modules.code_work.transactions import recover
+
+        recovery = recover(folder)
         path = safe_path(folder, "state.json")
         state = read_json(path)
         job = state.get("verification")
@@ -69,6 +74,8 @@ class CodeWork:
             # 重启后不能凭旧 PID 宣称仍在运行，也不能终止可能已复用的进程号。
             job.update(status="interrupted", error="服务重启，验证未完成，请重新验证")
             save_json(path, state)
+        if recovery:
+            state["_recovery"] = recovery
         return state
 
     def _state(self, thread_id):
@@ -100,6 +107,14 @@ class CodeWork:
                 current = digest(
                     str(sorted(code_manifest(folder / "source").items())).encode()
                 ) == job.get("code_version")
+                from app.modules.code_work.checks import validation_version
+
+                current = current and (
+                    job.get("validation_version") == validation_version(state)
+                    or not job.get("validation_version")
+                    and not state.get("requirements")
+                    and not state.get("desktop_flow")
+                )
             return {
                 "exists": True,
                 "configured": configured,
@@ -108,20 +123,41 @@ class CodeWork:
                 "verification": state.get("verification"),
                 "verification_current": current,
                 "prepared": self._prepared(folder),
+                "source_path": state.get("source_path") or self.environment.load().source_root,
+                "source_pinned": bool(state.get("source_path")),
+                "workspace_path": str(folder / "source"),
+                "history": history.timeline(state),
+                "applied": [
+                    {key: value for key, value in item.items() if key != "verification"}
+                    for item in state.get("applied", [])
+                ],
+                "requirements": state.get("requirements", []),
+                "desktop_flow": state.get("desktop_flow", False),
+                "merge_plan_id": state.get("merge_plan_id", "")
+                if state.get("merge_plan_revision") == state["revision"]
+                else "",
+                "merge_paths": state.get("merge_paths", [])
+                if state.get("merge_plan_revision") == state["revision"]
+                else [],
+                "verification_history": state.get("verification_history", []),
+                "recovery": state.get("_recovery", []),
                 "scope": (
                     "本机 Simulation 仿真；覆盖示例动作及流程，"
                     "不代表视觉、力控、标定或真实设备验收。"
                 ),
             }
 
-    def summary(self, thread_id):
+    def summary(self, thread_id, run_id=""):
         with _lock:
             folder = self.folder(thread_id)
             if not folder.is_dir():
                 return {"exists": False, "revision": 0, "files": [], "additions": 0, "deletions": 0}
-            return change_summary(folder, self._load(folder))
+            state = self._load(folder)
+            return (
+                history.summary(folder, state, run_id) if run_id else change_summary(folder, state)
+            )
 
-    def create(self, thread_id):
+    def create(self, thread_id, *, desktop_flow=True):
         with _lock:
             target = self.folder(thread_id)
             if target.exists():
@@ -158,10 +194,12 @@ class CodeWork:
                     "revision": 0,
                     "created_at": now_iso(),
                     "source_version": digest(json.dumps(manifest, sort_keys=True).encode()),
+                    "source_path": str(source.resolve()),
                     "baseline": manifest,
                     "locked": locked,
                     "changes": {},
                     "verification": None,
+                    "desktop_flow": desktop_flow,
                 }
                 save_json(staging / "state.json", state)
                 save_json(staging / "inputs.json", input_manifest(work))
@@ -180,6 +218,7 @@ class CodeWork:
 
     def _hydrate(self, folder):
         state = self._load(folder)
+        self._ensure_idle(state["thread_id"], state)
         previous = folder / "source.previous"
         if previous.exists():
             if not (folder / "source").exists():
@@ -219,6 +258,9 @@ class CodeWork:
             except OSError:
                 previous.rename(folder / "source")
                 raise
+            state["source_path"] = str(source.resolve())
+            state["verification"] = None
+            save_json(folder / "state.json", state)
             atomic_bytes(folder / "ready", b"1")
             if previous.resolve().parent == folder.resolve():
                 shutil.rmtree(previous)
@@ -256,11 +298,10 @@ class CodeWork:
             folder, _ = self._state(thread_id)
             return {"files": Workspace(folder / "source").find_files(query)}
 
-    def write(self, thread_id, path, content, version, *, old_text=None):
+    def write(self, thread_id, path, content, version, *, old_text=None, run_id="", action="edit"):
         with _lock:
             folder, state = self._state(thread_id)
-            if state.get("verification") and state["verification"]["status"] in ACTIVE:
-                raise ValueError("正在验证此版本，请等待或停止验证后再修改")
+            self._ensure_idle(thread_id, state)
             file = editable_path(folder / "source", path)
             relative = file.relative_to(folder / "source").as_posix()
             data = file.read_bytes() if file.is_file() else b""
@@ -290,6 +331,15 @@ class CodeWork:
                 state["changes"][relative] = {"kind": kind, "version": digest(updated)}
             state["revision"] += 1
             try:
+                history.record(
+                    folder,
+                    state,
+                    relative,
+                    data if existed else None,
+                    updated,
+                    run_id=run_id,
+                    action=action,
+                )
                 save_json(folder / "state.json", state)
             except OSError:
                 if existed:
@@ -304,11 +354,13 @@ class CodeWork:
                 "revision": state["revision"],
             }
 
-    def diff(self, thread_id, path):
+    def diff(self, thread_id, path, run_id=""):
         with _lock:
             folder, state = self._state(thread_id)
             file = editable_path(folder / "source", path)
             relative = file.relative_to(folder / "source").as_posix()
+            if run_id:
+                return history.turn_diff(folder, state, run_id, relative)
             if relative not in state["changes"]:
                 raise FileNotFoundError("此文件没有修改")
             return file_difference(folder, relative)
@@ -316,8 +368,7 @@ class CodeWork:
     def revert(self, thread_id, path, version):
         with _lock:
             folder, state = self._state(thread_id)
-            if state.get("verification") and state["verification"]["status"] in ACTIVE:
-                raise ValueError("请先停止验证")
+            self._ensure_idle(thread_id, state)
             file = editable_path(folder / "source", path)
             relative = file.relative_to(folder / "source").as_posix()
             if relative not in state["changes"] or digest(file.read_bytes()) != version:
@@ -331,11 +382,204 @@ class CodeWork:
             del state["changes"][relative]
             state["revision"] += 1
             try:
+                history.record(
+                    folder,
+                    state,
+                    relative,
+                    previous,
+                    baseline.read_bytes() if baseline.is_file() else None,
+                    action="revert",
+                )
                 save_json(folder / "state.json", state)
             except OSError:
                 atomic_bytes(file, previous)
                 raise
             return self.status(thread_id)
+
+    def revert_hunk(self, thread_id, path, version, hunk_id):
+        with _lock:
+            folder, state = self._state(thread_id)
+            current = self.diff(thread_id, path)
+            if current["version"] != version:
+                raise ValueError("文件版本已变化，请刷新差异后重试")
+            restored = reverse_hunk(current["before"], current["after"], hunk_id)
+            if not restored and state["changes"][path]["kind"] == "added":
+                return self.revert(thread_id, path, version)
+            self.write(thread_id, path, restored, version, action="revert_hunk")
+            return self.status(thread_id)
+
+    def open_directory(self, thread_id, location):
+        import os
+
+        with _lock:
+            folder, state = self._state(thread_id)
+            path = (
+                folder / "source"
+                if location == "workspace"
+                else Path(state.get("source_path") or self.environment.load().source_root)
+            )
+            if location not in {"workspace", "source"} or not path.is_dir():
+                raise ValueError("工程目录不可用")
+            if os.name != "nt":
+                raise ValueError("打开本机工程目录需要 Windows 桌面")
+            os.startfile(str(path.resolve()))
+            return {"opened": True}
+
+    def merge_preview(self, thread_id, selected=None, resolutions=None):
+        from app.modules.code_work.merging import MergeWork
+
+        with _lock:
+            return MergeWork(self).preview(thread_id, selected, resolutions)
+
+    def merge_status(self, thread_id, plan_id):
+        from app.modules.code_work.merging import MergeWork
+
+        with _lock:
+            return MergeWork(self).public(thread_id, plan_id)
+
+    def merge_diff(self, thread_id, plan_id, path):
+        from app.modules.code_work.merging import MergeWork
+
+        with _lock:
+            return MergeWork(self).diff(thread_id, plan_id, path)
+
+    async def merge_verify(self, thread_id, plan_id):
+        from app.modules.code_work.merging import MergeWork
+
+        with _lock:
+            return await MergeWork(self).verify(thread_id, plan_id)
+
+    def merge_apply(self, thread_id, plan_id, actor):
+        from app.modules.code_work.merging import MergeWork
+
+        with _lock:
+            return MergeWork(self).apply(thread_id, plan_id, actor)
+
+    def merge_rollback(self, thread_id, plan_id, actor):
+        from app.modules.code_work.merging import MergeWork
+
+        with _lock:
+            return MergeWork(self).rollback(thread_id, plan_id, actor)
+
+    def set_requirement(self, thread_id, body, *, run_id=""):
+        from app.modules.code_work.checks import RequirementWrite
+
+        body = RequirementWrite.model_validate(body)
+        with _lock:
+            folder, state = self._state(thread_id)
+            self._ensure_idle(thread_id, state)
+            if run_id and state.get("verification_attempts", {}).get(run_id, 0):
+                raise ValueError(
+                    "本轮重验期间验收用例已固定；请修复业务代码，测试本身有误时在新请求中修订"
+                )
+            cases = state.setdefault("requirements", [])
+            previous = next((item for item in cases if item["id"] == body.id), None)
+            if body.id and not previous or previous and previous["version"] != body.version:
+                raise ValueError("需求测试已更新，请刷新后重试")
+            if not previous and len(cases) >= 30:
+                raise ValueError("每个副本最多保存30个需求测试")
+            value = body.model_dump(exclude={"version"})
+            value.update(id=body.id or uuid.uuid4().hex, run_id=run_id, updated_at=now_iso())
+            value["version"] = digest(json.dumps(value, sort_keys=True).encode())
+            state["requirements"] = [item for item in cases if item["id"] != value["id"]] + [value]
+            state["revision"] += 1
+            save_json(folder / "state.json", state)
+            return self.status(thread_id)
+
+    def recovery_diff(self, thread_id, recovery_id, path):
+        from app.modules.code_work import recovery
+
+        with _lock:
+            folder, _ = self._state(thread_id)
+            return recovery.diff(folder, recovery_id, path)
+
+    def recovery_resolve(self, thread_id, recovery_id, confirm_target, versions, actor):
+        from app.modules.code_work import recovery
+
+        with _lock:
+            folder, _ = self._state(thread_id)
+            if thread_id in self.tasks or "merge:" + thread_id in self.tasks:
+                raise ValueError("请先停止当前验证")
+            recovery.resolve(folder, recovery_id, confirm_target, versions, actor)
+            return self.status(thread_id)
+
+    def delete_requirement(self, thread_id, case_id, version):
+        with _lock:
+            folder, state = self._state(thread_id)
+            self._ensure_idle(thread_id, state)
+            case = next(
+                (item for item in state.get("requirements", []) if item["id"] == case_id), None
+            )
+            if not case or case["version"] != version:
+                raise ValueError("需求测试已更新，请刷新后重试")
+            state["requirements"] = [
+                item for item in state["requirements"] if item["id"] != case_id
+            ]
+            state["revision"] += 1
+            save_json(folder / "state.json", state)
+            return self.status(thread_id)
+
+    def set_desktop_flow(self, thread_id, enabled, revision, *, run_id=""):
+        with _lock:
+            folder, state = self._state(thread_id)
+            self._ensure_idle(thread_id, state)
+            if run_id and state.get("verification_attempts", {}).get(run_id, 0):
+                raise ValueError("本轮首次验证后界面验证范围已固定，不能通过关闭失败检查完成重验")
+            if state["revision"] != revision:
+                raise ValueError("副本版本已变化，请刷新后重试")
+            state["desktop_flow"] = enabled
+            state["revision"] += 1
+            save_json(folder / "state.json", state)
+            return self.status(thread_id)
+
+    def _ensure_idle(self, thread_id, state):
+        if state.get("_recovery"):
+            raise ValueError("合并恢复发现后续人工修改，请先在面板核对并确认保留当前原工程内容")
+        if (
+            thread_id in self.tasks
+            or "merge:" + thread_id in self.tasks
+            or (state.get("verification") or {}).get("status") in ACTIVE
+        ):
+            raise ValueError("当前正在验证，请等待或停止后修改")
+
+    def report(self, thread_id, job_id, name, plan_id=""):
+        import re
+
+        with _lock:
+            folder, state = self._state(thread_id)
+            if plan_id:
+                from app.modules.code_work.merging import MergeWork
+
+                _, _, folder, _ = MergeWork(self).load(thread_id, plan_id)
+                state = read_json(folder / "state.json")
+            if not re.fullmatch(r"[a-f0-9]{32}", job_id) or not re.fullmatch(
+                r"(verification\.json|code-work-(requirements|desktop)\.json|code-work-ui-\d{2}\.png)",
+                name,
+            ):
+                raise ValueError("验证证据标识无效")
+            path = safe_path(folder, f"reports/{job_id}/{name}")
+            reference = next(
+                (item for item in state.get("verification_history", []) if item["id"] == job_id),
+                None,
+            )
+            if not reference:
+                raise FileNotFoundError("验证记录不存在")
+            report_file = safe_path(folder, f"reports/{job_id}/verification.json")
+            data = report_file.read_bytes()
+            if reference.get("report_version") and digest(data) != reference["report_version"]:
+                raise ValueError("验证报告被外部修改，请核对证据")
+            if name == "verification.json":
+                return data
+            saved = json.loads(data)
+            artifact = next(
+                (item for item in saved.get("artifacts", []) if item["name"] == name), None
+            )
+            if not artifact:
+                raise FileNotFoundError("验证证据不存在")
+            data = path.read_bytes()
+            if digest(data) != artifact["version"]:
+                raise ValueError("验证证据被外部修改，请核对")
+            return data
 
     def export(self, thread_id, revision=None):
         with _lock:
@@ -358,14 +602,27 @@ class CodeWork:
                 )
             return buffer.getvalue()
 
-    async def verify(self, thread_id):
+    async def verify(self, thread_id, *, run_id=""):
         from app.modules.code_work.runner import verify_workspace
 
         await asyncio.to_thread(self.create, thread_id)
         with _lock:
             folder, state = self._state(thread_id)
-            if thread_id in self.tasks:
-                raise ValueError("本对话已有验证正在执行")
+            self._ensure_idle(thread_id, state)
+            if run_id:
+                attempts = state.setdefault("verification_attempts", {})
+                if attempts.get(run_id, 0) >= 3:
+                    raise ValueError("本轮已达到3次验证上限，请报告剩余错误并等待新请求")
+                previous = state.get("verification") or {}
+                if previous.get("run_id") == run_id and previous["status"] == "cancelled":
+                    raise ValueError("本轮验证已被停止，请等待用户明确重新发起")
+                if history.turn_changes(state, run_id) and not any(
+                    item["enabled"] for item in state.get("requirements", [])
+                ):
+                    raise ValueError(
+                        "请先用set_work_requirement定义本次需求的实际C#断言测试，再验证"
+                    )
+                attempts[run_id] = attempts.get(run_id, 0) + 1
             self.environment.compiler()
             job = {
                 "id": uuid.uuid4().hex,
@@ -374,6 +631,8 @@ class CodeWork:
                 "started_at": now_iso(),
                 "steps": [],
                 "error": "",
+                "run_id": run_id,
+                "attempt": state.get("verification_attempts", {}).get(run_id, 1),
             }
             state["verification"] = job
             save_json(folder / "state.json", state)
@@ -396,8 +655,9 @@ class CodeWork:
 
     def cancel(self, thread_id):
         self._state(thread_id)
-        if stop := self.stops.get(thread_id):
-            stop.set()
+        for key in (thread_id, "merge:" + thread_id):
+            if stop := self.stops.get(key):
+                stop.set()
         return self.status(thread_id)
 
     async def shutdown(self):
@@ -408,9 +668,10 @@ class CodeWork:
 
     async def purge(self, thread_id):
         folder = self.folder(thread_id, include_deleted=True)
-        if task := self.tasks.get(thread_id):
-            self.stops[thread_id].set()
-            await asyncio.shield(task)
+        for key in (thread_id, "merge:" + thread_id):
+            if task := self.tasks.get(key):
+                self.stops[key].set()
+                await asyncio.shield(task)
         with _lock:
             if folder.exists() and folder.resolve().parent == (self.paths.scratch / "cw").resolve():
                 shutil.rmtree(folder)

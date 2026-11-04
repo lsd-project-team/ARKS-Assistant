@@ -143,6 +143,37 @@ test('撤销后刷新隐藏零修改卡片，避免保留过期统计', async ()
   });
 });
 
+test('本轮快照与累计修改分别读取，合入后仍可切回本轮历史', async () => {
+  await mounted(async ({ render }) => {
+    boundary.api = async (url, options, project) => {
+      boundary.calls.push({ url, project });
+      return url.includes('run_id=')
+        ? { exists: true, revision: 2, files: [files[0]], additions: 1, deletions: 0 }
+        : { exists: true, revision: 4, files: [], additions: 0, deletions: 0 };
+    };
+    await render({ runId: 'actual-run', refreshKey: 'after-merge' });
+    await until(() =>
+      document.querySelector('.code-change-subtitle')?.textContent.includes('本轮修改'),
+    );
+    assert.equal(document.querySelectorAll('.code-change-files li').length, 1);
+    await click(
+      Array.from(document.querySelectorAll('.code-change-scope button')).find(
+        (node) => node.textContent === '全部待合入',
+      ),
+    );
+    assert.match(document.body.textContent, /暂无待合入修改/);
+    assert.ok(document.querySelector('.code-change-scope'));
+    await click(
+      Array.from(document.querySelectorAll('.code-change-scope button')).find(
+        (node) => node.textContent === '本轮修改',
+      ),
+    );
+    await click(document.querySelector('.code-change-files button'));
+    assert.equal(boundary.opened.at(-1), files[0].path);
+    assert.ok(boundary.calls.some((call) => call.url.endsWith('summary?run_id=actual-run')));
+  });
+});
+
 test('切换项目与对话不会显示上一份副本，完成新一轮后重新请求摘要', async () => {
   await mounted(async ({ render }) => {
     let resolve;

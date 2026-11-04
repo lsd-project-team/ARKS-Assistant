@@ -74,6 +74,7 @@ export function ChatPane({
   const [context, setContext] = useState<{ runId?: string }>();
   const [codeWorkOpen, setCodeWorkOpen] = useState(false);
   const [codeWorkFile, setCodeWorkFile] = useState('');
+  const [codeWorkRun, setCodeWorkRun] = useState('');
   const [selectionPreview, setSelectionPreview] = useState<{
     selection: Selection;
     index: number;
@@ -259,19 +260,24 @@ export function ChatPane({
           .filter((message) => message.role === 'assistant' && message.context_active !== false)
           .at(-1)?.id
       : undefined;
-  const codeChangeSummary = threadId && (
-    <CodeChangeSummary
-      key={`code-summary:${projectId}:${threadId}`}
-      threadId={threadId}
-      projectId={projectId}
-      busy={busy}
-      refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
-      onOpen={(path = '') => {
-        setCodeWorkFile(path);
-        setCodeWorkOpen(true);
-      }}
-    />
-  );
+  const renderCodeSummary = (runId: string, showCumulative: boolean) =>
+    threadId && (
+      <CodeChangeSummary
+        key={`code-summary:${projectId}:${threadId}:${runId}`}
+        threadId={threadId}
+        projectId={projectId}
+        busy={busy && active?.id === runId}
+        runId={runId}
+        showCumulative={showCumulative}
+        refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
+        onOpen={(path = '', snapshotRun = '') => {
+          setCodeWorkFile(path);
+          setCodeWorkRun(snapshotRun);
+          setCodeWorkOpen(true);
+        }}
+      />
+    );
+  const codeChangeSummary = renderCodeSummary(active?.id || latest?.id || '', true);
   const canContext = !!threadId;
   const canCompact =
     canContext && messages.length > 0 && !busy && !send.isPending && !compact.isPending;
@@ -294,6 +300,7 @@ export function ChatPane({
     if (command === '修改代码') {
       setDraft('/修改代码 ');
       setCodeWorkFile('');
+      setCodeWorkRun('');
       setCodeWorkOpen(true);
       return;
     }
@@ -411,10 +418,11 @@ export function ChatPane({
                       selectedMessage={messageJump.id}
                       canRegenerate={!busy && !regenerate.isPending}
                       onRegenerate={(id) => regenerate.mutate(id)}
-                      afterAnswer={
-                        versions.some((version) => version.message.id === summaryMessageId)
-                          ? codeChangeSummary
-                          : undefined
+                      renderAfterAnswer={(versionRun) =>
+                        renderCodeSummary(
+                          versionRun.id,
+                          versionRun.response_message_id === summaryMessageId,
+                        )
                       }
                     />
                   </MessageArchive>
@@ -443,7 +451,9 @@ export function ChatPane({
                     : undefined
                 }
                 recent={run?.id === latest?.id}
-                afterAnswer={message.id === summaryMessageId ? codeChangeSummary : undefined}
+                afterAnswer={
+                  run ? renderCodeSummary(run.id, message.id === summaryMessageId) : undefined
+                }
               />
             );
             return (
@@ -594,6 +604,7 @@ export function ChatPane({
           onUploadFiles={onUploadFiles}
           onCodeWork={() => {
             setCodeWorkFile('');
+            setCodeWorkRun('');
             setCodeWorkOpen(true);
           }}
           sending={send.isPending}
@@ -642,10 +653,19 @@ export function ChatPane({
         projectId={projectId}
         busy={busy}
         initialPath={codeWorkFile}
+        initialRunId={codeWorkRun}
         onClose={() => setCodeWorkOpen(false)}
-        onRequest={() => {
+        onRequest={(request) => {
           setCodeWorkOpen(false);
-          setDraft(draft.startsWith('/修改代码') ? draft : `/修改代码 ${draft}`);
+          setDraft(
+            request
+              ? draft.trim()
+                ? `${draft}\n\n${request}`
+                : request
+              : draft.startsWith('/修改代码')
+                ? draft
+                : `/修改代码 ${draft}`,
+          );
           composerInput.current?.focus();
         }}
       />

@@ -9,12 +9,14 @@ export function ReplyVersions({
   canRegenerate,
   onRegenerate,
   afterAnswer,
+  renderAfterAnswer,
 }: {
   versions: { message: Message; run: Run }[];
   selectedMessage: string;
   canRegenerate: boolean;
   onRegenerate: (id: string) => void;
   afterAnswer?: ReactNode;
+  renderAfterAnswer?: (run: Run) => ReactNode;
 }) {
   const [chosen, setChosen] = useState('');
   const wanted = chosen || selectedMessage;
@@ -46,7 +48,13 @@ export function ReplyVersions({
       <MessageBubble
         message={current.message}
         run={current.run}
-        afterAnswer={index === versions.length - 1 ? afterAnswer : undefined}
+        afterAnswer={
+          renderAfterAnswer
+            ? renderAfterAnswer(current.run)
+            : index === versions.length - 1
+              ? afterAnswer
+              : undefined
+        }
         canRegenerate={canRegenerate && current.run.status === 'completed'}
         onRegenerate={(id) => {
           setChosen('');

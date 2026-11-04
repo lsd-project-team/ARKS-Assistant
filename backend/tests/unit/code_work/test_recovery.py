@@ -1,13 +1,15 @@
 """副本依赖路径、备份重建和落盘失败的回归。"""
 
 import io
+import shutil
 from zipfile import ZipFile
 
 import pytest
 
 from app.infrastructure.storage.backup import create_backup
 from app.infrastructure.storage.files import digest
-from app.modules.code_work.files import PROJECT, copy_project_outputs, read_json
+from app.modules.code_work.environment import EnvironmentWrite
+from app.modules.code_work.files import PROJECT, copy_project_outputs, read_json, save_json
 from tests.helpers.code_work import FILE, make_work
 
 
@@ -93,6 +95,52 @@ def test_restored_copy_rejects_different_source_without_losing_edits(services, t
     assert (folder / "source" / FILE).read_bytes() == b"class Edited {}"
     assert service.status(thread)["prepared"] is False
     assert not list(folder.glob("hydrating-*"))
+
+
+def test_backup_keeps_immutable_history_reports_and_merge_recovery_but_excludes_builds(
+    services, tmp_path
+):
+    work, thread, _ = make_work(services, tmp_path)
+    work.write(thread, FILE, "class Edited {}", work.read(thread, FILE)["version"], run_id="run-a")
+    folder = work.folder(thread)
+    report = folder / "reports/job/verification.json"
+    report.parent.mkdir(parents=True)
+    report.write_text('{"status":"failed"}', encoding="utf-8")
+    merge = folder / "merges/0123456789"
+    merge.mkdir(parents=True)
+    save_json(merge / "transaction.json", {"status": "recovered"})
+    save_json(merge / "plan.json", {"id": "plan"})
+    candidate = merge / "source"
+    candidate.mkdir()
+    (candidate / "private.cs").write_text("exclude candidate source", encoding="utf-8")
+    with ZipFile(create_backup(work.paths)) as archive:
+        prefix = f"scratch/cw/{folder.name}/"
+        assert archive.read(prefix + "reports/job/verification.json") == report.read_bytes()
+        assert prefix + "merges/0123456789/transaction.json" in archive.namelist()
+        assert prefix + "merges/0123456789/plan.json" in archive.namelist()
+        assert prefix + "merges/0123456789/source/private.cs" not in archive.namelist()
+        assert any(name.startswith(prefix + "history/blobs/") for name in archive.namelist())
+    assert work.diff(thread, FILE, "run-a")["after"] == "class Edited {}"
+
+
+def test_verified_identical_source_relocation_updates_pinned_path_and_clears_old_result(
+    services, tmp_path
+):
+    work, thread, original = make_work(services, tmp_path)
+    relocated = tmp_path / "relocated"
+    shutil.copytree(original.parent, relocated)
+    folder = work.folder(thread)
+    state = read_json(folder / "state.json")
+    state["verification"] = {"id": "old", "status": "passed", "revision": state["revision"]}
+    save_json(folder / "state.json", state)
+    (folder / "ready").unlink()
+    work.environment.save(
+        EnvironmentWrite(source_root=str(relocated), version=work.environment.version())
+    )
+    work.create(thread)
+    status = work.status(thread)
+    assert status["source_path"] == str(relocated.resolve())
+    assert status["verification"] is None and not status["verification_current"]
 
 
 @pytest.mark.parametrize("action", ["write", "revert"])

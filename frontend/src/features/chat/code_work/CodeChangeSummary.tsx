@@ -23,21 +23,39 @@ export function CodeChangeSummary({
   busy,
   refreshKey,
   onOpen,
+  runId = '',
+  showCumulative = true,
 }: {
   threadId: string;
   projectId: string;
   busy: boolean;
   refreshKey: string;
-  onOpen: (path?: string) => void;
+  onOpen: (path?: string, runId?: string) => void;
+  runId?: string;
+  showCumulative?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [scope, setScope] = useState<'turn' | 'all'>('turn');
   const filesId = useId();
-  const query = useQuery({
+  const cumulative = useQuery({
     queryKey: ['code-work', projectId, threadId, 'summary', refreshKey],
     queryFn: () => api<WorkSummary>(`/threads/${threadId}/code-work/summary`, undefined, projectId),
-    enabled: !!threadId,
+    enabled: !!threadId && showCumulative,
     refetchInterval: busy ? 1500 : false,
   });
+  const turn = useQuery({
+    queryKey: ['code-work', projectId, threadId, 'summary', runId, refreshKey],
+    queryFn: () =>
+      api<WorkSummary>(
+        `/threads/${threadId}/code-work/summary?run_id=${encodeURIComponent(runId)}`,
+        undefined,
+        projectId,
+      ),
+    enabled: !!threadId && !!runId,
+    refetchInterval: busy ? 1500 : false,
+  });
+  const useTurn = !!runId && scope === 'turn' && (!!turn.data?.files.length || !showCumulative);
+  const query = useTurn ? turn : cumulative;
   if (query.error)
     return (
       <div className="code-change-error">
@@ -46,7 +64,8 @@ export function CodeChangeSummary({
       </div>
     );
   const summary = query.data;
-  if (!summary?.files.length) return null;
+  if (!summary || (!summary.files.length && !(runId && showCumulative && turn.data?.files.length)))
+    return null;
   const visible = expanded ? summary.files : summary.files.slice(0, 3);
   return (
     <section className="code-change-summary" aria-label="代码修改摘要">
@@ -55,13 +74,27 @@ export function CodeChangeSummary({
           <FileDiff size={19} aria-hidden="true" />
         </span>
         <div className="code-change-title">
-          <strong>已修改 {number.format(summary.files.length)} 个文件</strong>
+          <strong>
+            {summary.files.length
+              ? `已修改 ${number.format(summary.files.length)} 个文件`
+              : '暂无待合入修改'}
+          </strong>
           <span className="code-change-subtitle">
-            当前副本 <LineCounts {...summary} />
+            {useTurn ? '本轮修改' : '全部待合入'} <LineCounts {...summary} />
           </span>
         </div>
-        <Button onClick={() => onOpen()}>查看变更</Button>
+        <Button onClick={() => onOpen(undefined, useTurn ? runId : '')}>查看变更</Button>
       </div>
+      {runId && showCumulative && !!turn.data?.files.length && (
+        <div className="code-change-scope" role="group" aria-label="修改摘要范围">
+          <button type="button" aria-pressed={useTurn} onClick={() => setScope('turn')}>
+            本轮修改
+          </button>
+          <button type="button" aria-pressed={!useTurn} onClick={() => setScope('all')}>
+            全部待合入
+          </button>
+        </div>
+      )}
       <ul id={filesId} className="code-change-files">
         {visible.map((file) => (
           <li key={file.path}>
@@ -69,7 +102,7 @@ export function CodeChangeSummary({
               type="button"
               title={file.path}
               aria-label={`查看文件差异：${file.path}`}
-              onClick={() => onOpen(file.path)}
+              onClick={() => onOpen(file.path, useTurn ? runId : '')}
             >
               <span className="code-change-path">
                 <span className="code-change-directory">

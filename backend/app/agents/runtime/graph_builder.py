@@ -20,6 +20,7 @@ from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.answer_review import AnswerReviewNote
 from app.agents.runtime.artifacts import thread_artifacts
+from app.agents.runtime.code_work_repair import CodeWorkRepair
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
@@ -63,6 +64,7 @@ class AgentGraphBuilder:
         retrieval=None,
         policy=None,
         retrieval_context=None,
+        run_id="",
     ):
         runtime = self.runtime
         # 筛选后的工具结果和最终核查共用本轮资料范围。
@@ -110,12 +112,11 @@ class AgentGraphBuilder:
             requested_work += "\n此前已授权的请求：" + policy["question"]
         if evidence is not None:
             evidence.user_request = requested_work
-        code_mode = (
-            requested_work.lstrip().startswith("/修改代码")
-            or await asyncio.to_thread(runtime.code_work.exists, thread_id)
+        code_mode = requested_work.lstrip().startswith("/修改代码") or await asyncio.to_thread(
+            runtime.code_work.exists, thread_id
         )
         if code_mode:
-            tools += code_work_tools(runtime.code_work, thread_id, emit)
+            tools += code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -247,6 +248,11 @@ class AgentGraphBuilder:
                 ),
                 AnswerReviewNote(emit),
                 AnswerFormatValidation(emit),
+                *(
+                    [CodeWorkRepair(runtime.code_work, thread_id, run_id, emit)]
+                    if code_mode and run_id and not inspection
+                    else []
+                ),
                 *(
                     # 按用户要求不再调用源码结论复核模型，保留确定性的路径/行号/版本校验。
                     [SourceEvidenceGuard(evidence)] if evidence is not None else []

@@ -29,5 +29,5 @@ def make_work(services, tmp_path):
         EnvironmentWrite(source_root=str(source), version=service.environment.version())
     )
     thread = repository.create_thread("代码修改")
-    service.create(thread["id"])
+    service.create(thread["id"], desktop_flow=False)
     return service, thread["id"], app

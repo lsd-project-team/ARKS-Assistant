@@ -41,7 +41,14 @@ def create_backup(paths: Paths) -> Path:
                         # DLL、原工程资源和验证输出恢复后按同版本来源重新准备。
                         area = relative[2]
                         if not (
-                            area in {"state.json", "inputs.json", "baseline"}
+                            area in {"state.json", "inputs.json", "baseline", "history", "reports"}
+                            or area == "merges"
+                            and len(relative) == 5
+                            and file.name in {"plan.json", "transaction.json", "state.json"}
+                            or area == "merges"
+                            and len(relative) == 7
+                            and relative[4] == "reports"
+                            and file.suffix in {".png", ".json"}
                             or area == "source"
                             and file.suffix.lower() == ".cs"
                         ):

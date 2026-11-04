@@ -67,7 +67,7 @@ export interface RecordedRun {
   evidence: { id: number; kind: string; payload: unknown }[];
 }
 export interface QuestionDetail {
-  thread: { id: string; title: string; state: string };
+  thread: { id: string; title: string; state: string; project_id?: string | null };
   project_name: string;
   messages: RecordedMessage[];
   runs: RecordedRun[];

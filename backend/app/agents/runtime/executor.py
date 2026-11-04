@@ -174,6 +174,7 @@ class AgentRunExecutor:
                 owned_models,
                 memory_query=memory_query,
                 question_text=message["content"],
+                run_id=run["id"],
                 evidence=evidence,
                 source_options=message.get("source_options"),
                 verified_context=verified_context,
