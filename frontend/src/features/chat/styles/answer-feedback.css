@@ -1,0 +1,23 @@
+.answer-feedback-dialog {
+  width: min(520px, calc(100vw - 32px));
+}
+
+.answer-feedback-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.answer-feedback-fields textarea {
+  width: 100%;
+  min-height: 140px;
+  max-height: 40vh;
+  resize: vertical;
+}
+
+.answer-feedback-fields > label:not(:first-child) {
+  margin-top: 8px;
+}
+
+.answer-feedback-count {
+  text-align: right;
+}

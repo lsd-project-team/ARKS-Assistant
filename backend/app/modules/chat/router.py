@@ -8,6 +8,7 @@ from fastapi.responses import Response, StreamingResponse
 from app.core.config import dump_json
 from app.core.container import AppServices
 from app.modules.chat.context import ConversationContext
+from app.modules.chat.feedback import FeedbackCreate, submit_feedback
 from app.modules.chat.lifecycle import ConversationLifecycle
 from app.modules.chat.schemas import (
     PinMove,
@@ -30,6 +31,10 @@ def create_router(services: AppServices) -> APIRouter:
     runs = services.runs
     context = ConversationContext(services.runtime)
     lifecycle = ConversationLifecycle(services)
+
+    @router.post("/api/threads/{thread_id}/messages/{message_id}/feedback", status_code=201)
+    def feedback(thread_id: str, message_id: str, body: FeedbackCreate):
+        return submit_feedback(repository, thread_id, message_id, body)
 
     @router.get("/api/threads")
     async def threads(

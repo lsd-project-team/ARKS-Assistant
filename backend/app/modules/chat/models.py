@@ -82,6 +82,26 @@ class RunEvent(Base):
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
 
+class AnswerFeedback(Base):
+    __tablename__ = "answer_feedback"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    thread_id: Mapped[str] = mapped_column(ForeignKey("threads.id", ondelete="CASCADE"), index=True)
+    message_id: Mapped[str] = mapped_column(
+        ForeignKey("messages.id", ondelete="CASCADE"), index=True
+    )
+    question_id: Mapped[str | None] = mapped_column(
+        ForeignKey("messages.id", ondelete="CASCADE"), nullable=True
+    )
+    run_id: Mapped[str | None] = mapped_column(
+        ForeignKey("runs.id", ondelete="CASCADE"), nullable=True
+    )
+    actor_id: Mapped[str] = mapped_column(String(36))
+    actor_json: Mapped[str] = mapped_column(Text)
+    category: Mapped[str] = mapped_column(String(40), default="")
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
 class QueuedQuestion(Base):
     __tablename__ = "queued_questions"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)

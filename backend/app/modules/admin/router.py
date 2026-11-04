@@ -77,8 +77,11 @@ def create_router(auth, usage):
         before: datetime | None = None,
         limit: int = Query(30, ge=1, le=100),
         offset: int = Query(0, ge=0),
+        has_feedback: bool = False,
     ):
-        return questions.list(query, user_id, project_id, status, after, before, limit, offset)
+        return questions.list(
+            query, user_id, project_id, status, after, before, limit, offset, has_feedback
+        )
 
     @router.get("/questions/{identifier}")
     def question_detail(

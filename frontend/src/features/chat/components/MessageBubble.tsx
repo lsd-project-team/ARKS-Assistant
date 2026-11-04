@@ -14,6 +14,7 @@ import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { InlineQuestionEditor } from './InlineQuestionEditor';
 import { contentToMarkdown } from '../rich/contentToMarkdown';
+import { FeedbackDialog, type FeedbackTarget } from './FeedbackDialog';
 
 export function MessageBubble({
   message,
@@ -35,6 +36,7 @@ export function MessageBubble({
   const [preview, setPreview] = useState<Selection>();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<unknown>();
+  const [feedbackTarget, setFeedbackTarget] = useState<FeedbackTarget>();
   const project = useCurrentProject();
   async function copy() {
     try {
@@ -160,7 +162,14 @@ export function MessageBubble({
             type="button"
             aria-label="反馈回复"
             title="反馈回复"
-            onClick={() => toast('反馈功能暂未开放')}
+            disabled={!message.thread_id && !run?.thread_id}
+            onClick={() =>
+              setFeedbackTarget({
+                messageId: message.id,
+                threadId: message.thread_id || run!.thread_id,
+                projectId: useWorkspace.getState().projectId,
+              })
+            }
           >
             <MessageSquare size={14} />
             <span>反馈</span>
@@ -179,6 +188,9 @@ export function MessageBubble({
         )}
       </div>
       <ErrorText error={error} />
+      {feedbackTarget && (
+        <FeedbackDialog target={feedbackTarget} onClose={() => setFeedbackTarget(undefined)} />
+      )}
       {preview && <SelectionPreview selection={preview} onClose={() => setPreview(undefined)} />}
     </div>
   );

@@ -16,6 +16,7 @@ import {
 } from '../knowledge/lib/knowledgeReference';
 import { debugIssueFields } from '../handover/debug_issues/debugIssues';
 import { text as fieldText, type HandoverRecord } from '../handover/shared/types';
+import { AnswerFeedbackList } from './AnswerFeedbackList';
 
 export function QuestionsPage({ identifier }: { identifier?: string }) {
   const [text, setText] = useState('');
@@ -25,6 +26,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
   const [after, setAfter] = useState('');
   const [before, setBefore] = useState('');
   const [offset, setOffset] = useState(0);
+  const [hasFeedback, setHasFeedback] = useState(false);
   const settled = useDebouncedValue(text);
   const users = useQuery({
     queryKey: ['admin-accounts'],
@@ -40,6 +42,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
     project_id: project,
     status,
     offset: String(offset),
+    has_feedback: String(hasFeedback),
   });
   if (after) parameters.set('after', new Date(`${after}T00:00:00`).toISOString());
   if (before) parameters.set('before', new Date(`${before}T23:59:59.999`).toISOString());
@@ -64,6 +67,17 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
       </header>
       <section className="admin-panel">
         <div className="admin-filter-grid">
+          <label className="admin-feedback-filter">
+            <input
+              type="checkbox"
+              checked={hasFeedback}
+              onChange={(event) => {
+                setHasFeedback(event.target.checked);
+                setOffset(0);
+              }}
+            />
+            仅看有反馈
+          </label>
           <label className="admin-search">
             <Search size={16} />
             <input
@@ -141,6 +155,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
                 <th>用户</th>
                 <th>所属项目</th>
                 <th>提问数</th>
+                <th>反馈数</th>
                 <th>最近状态</th>
                 <th>更新时间</th>
                 <th />
@@ -158,6 +173,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
                   <td>{row.users.join('、')}</td>
                   <td>{row.project_name}</td>
                   <td>{row.questions}</td>
+                  <td>{row.feedback_count || 0}</td>
                   <td>
                     <span
                       className={`admin-badge ${row.status === 'completed' ? 'success' : row.status === 'failed' ? 'danger' : ''}`}
@@ -216,6 +232,7 @@ function QuestionViewer({ identifier }: { identifier: string }) {
       detail.data?.pages.flatMap((page) => page.runs).map((run) => [run.id, run]),
     ).values(),
   ];
+  const feedback = detail.data?.pages.flatMap((page) => page.feedback || []) || [];
   const markdown = (content: string, run?: RecordedRun) => (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -278,6 +295,7 @@ function QuestionViewer({ identifier }: { identifier: string }) {
               <p className="admin-collection-note">来自对话分支的原始消息</p>
             )}
             <div className="admin-markdown">{markdown(message.content, run)}</div>
+            <AnswerFeedbackList items={feedback.filter((item) => item.message_id === message.id)} />
             {message.selections.map((selection, index) => (
               <details className="admin-evidence" key={index}>
                 <summary>

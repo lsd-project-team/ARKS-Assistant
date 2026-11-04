@@ -779,3 +779,31 @@
     margin-left: 3px;
   }
 }
+.admin-filter-grid > .admin-feedback-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-feedback-filter input {
+  width: auto;
+}
+
+.admin-answer-feedback {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-feedback-item {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--surface-hover);
+}
+
+.admin-feedback-item p {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

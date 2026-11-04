@@ -28,6 +28,7 @@ export interface QuestionSummary {
   project_id: string | null;
   users: string[];
   questions: number;
+  feedback_count: number;
   updated_at: string;
   status: string;
 }
@@ -70,7 +71,17 @@ export interface QuestionDetail {
   project_name: string;
   messages: RecordedMessage[];
   runs: RecordedRun[];
+  feedback: RecordedFeedback[];
   total: number;
   offset: number;
   limit: number;
+}
+
+export interface RecordedFeedback {
+  id: string;
+  message_id: string;
+  category: string;
+  content: string;
+  created_at: string;
+  actor: { display_name?: string; username?: string };
 }
