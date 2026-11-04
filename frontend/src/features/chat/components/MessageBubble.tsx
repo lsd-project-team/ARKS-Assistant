@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Copy, Check, RotateCcw, FileCode2, Pencil, MessageSquare } from 'lucide-react';
 import { useWorkspace } from '../../../app/state/store';
 import type { Message, Run } from '../../../shared/types/api';
@@ -23,6 +23,7 @@ export function MessageBubble({
   onRegenerate,
   onEdit,
   recent = false,
+  afterAnswer,
 }: {
   message: Message;
   run?: Run;
@@ -30,6 +31,7 @@ export function MessageBubble({
   onRegenerate: (id: string) => void;
   onEdit?: (content: string) => Promise<unknown>;
   recent?: boolean;
+  afterAnswer?: ReactNode;
 }) {
   const editButton = useRef<HTMLButtonElement>(null);
   const [editing, setEditing] = useState(false);
@@ -125,6 +127,7 @@ export function MessageBubble({
             />
           )}
         </div>
+        {message.role === 'assistant' && afterAnswer}
       </div>
       <div className={`answer-actions ${message.role === 'user' ? 'question-actions' : ''}`}>
         {message.role === 'assistant' && (

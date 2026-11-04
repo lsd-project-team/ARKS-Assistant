@@ -252,6 +252,26 @@ export function ChatPane({
   const runs = conversation.data?.runs || [];
   const { replyRuns, versionGroups } = groupReplies(messages, runs);
   const interrupted = latest && ['failed', 'cancelled', 'interrupted'].includes(latest.status);
+  // 当前累计修改只跟随最新回答，避免重复挂到历史回复或旧版本上。
+  const summaryMessageId =
+    !active && !interrupted
+      ? messages
+          .filter((message) => message.role === 'assistant' && message.context_active !== false)
+          .at(-1)?.id
+      : undefined;
+  const codeChangeSummary = threadId && (
+    <CodeChangeSummary
+      key={`code-summary:${projectId}:${threadId}`}
+      threadId={threadId}
+      projectId={projectId}
+      busy={busy}
+      refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
+      onOpen={(path = '') => {
+        setCodeWorkFile(path);
+        setCodeWorkOpen(true);
+      }}
+    />
+  );
   const canContext = !!threadId;
   const canCompact =
     canContext && messages.length > 0 && !busy && !send.isPending && !compact.isPending;
@@ -391,6 +411,11 @@ export function ChatPane({
                       selectedMessage={messageJump.id}
                       canRegenerate={!busy && !regenerate.isPending}
                       onRegenerate={(id) => regenerate.mutate(id)}
+                      afterAnswer={
+                        versions.some((version) => version.message.id === summaryMessageId)
+                          ? codeChangeSummary
+                          : undefined
+                      }
                     />
                   </MessageArchive>
                 </div>
@@ -418,6 +443,7 @@ export function ChatPane({
                     : undefined
                 }
                 recent={run?.id === latest?.id}
+                afterAnswer={message.id === summaryMessageId ? codeChangeSummary : undefined}
               />
             );
             return (
@@ -476,6 +502,7 @@ export function ChatPane({
                   </>
                 }
               />
+              {codeChangeSummary}
             </div>
           )}
           {interrupted && (
@@ -503,24 +530,12 @@ export function ChatPane({
                   }
                 />
               )}
+              {!active && codeChangeSummary}
               <Button onClick={() => resume.mutate(latest.id)} disabled={resume.isPending}>
                 <RotateCcw size={13} />
                 {latest.status === 'failed' ? '重试运行' : '继续回复'}
               </Button>
             </div>
-          )}
-          {threadId && (
-            <CodeChangeSummary
-              key={`code-summary:${projectId}:${threadId}`}
-              threadId={threadId}
-              projectId={projectId}
-              busy={busy}
-              refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
-              onOpen={(path = '') => {
-                setCodeWorkFile(path);
-                setCodeWorkOpen(true);
-              }}
-            />
           )}
           <ErrorText
             error={
