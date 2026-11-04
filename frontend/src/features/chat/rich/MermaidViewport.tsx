@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Minus, Plus, RotateCcw } from 'lucide-react';
+import { useDiagramPan } from './useDiagramPan';
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 4;
@@ -11,22 +12,27 @@ export function MermaidViewport({ svg, title }: { svg: string; title: string }) 
   const anchor = useRef<{ x: number; y: number; clientX: number; clientY: number }>(undefined);
   const [zoom, setZoom] = useState(1);
   const [size, setSize] = useState<{ width: number; height: number }>();
+  const { dragging, cancelPan } = useDiagramPan(viewport, !!size);
 
-  const changeZoom = useCallback((value: number, clientX: number, clientY: number) => {
-    const rect = image.current?.getBoundingClientRect();
-    if (!rect?.width || !rect.height) return;
-    const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
-    if (next === targetZoom.current) return;
-    // 记录图片上的相对位置，缩放提交后让鼠标继续指向原来的图内位置。
-    anchor.current = {
-      x: (clientX - rect.left) / rect.width,
-      y: (clientY - rect.top) / rect.height,
-      clientX,
-      clientY,
-    };
-    targetZoom.current = next;
-    setZoom(next);
-  }, []);
+  const changeZoom = useCallback(
+    (value: number, clientX: number, clientY: number) => {
+      const rect = image.current?.getBoundingClientRect();
+      if (!rect?.width || !rect.height) return;
+      const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
+      if (next === targetZoom.current) return;
+      cancelPan();
+      // 记录图片上的相对位置，缩放提交后让鼠标继续指向原来的图内位置。
+      anchor.current = {
+        x: (clientX - rect.left) / rect.width,
+        y: (clientY - rect.top) / rect.height,
+        clientX,
+        clientY,
+      };
+      targetZoom.current = next;
+      setZoom(next);
+    },
+    [cancelPan],
+  );
 
   useEffect(() => {
     const element = viewport.current;
@@ -70,7 +76,7 @@ export function MermaidViewport({ svg, title }: { svg: string; title: string }) 
   return (
     <>
       <div className="rich-mermaid-tools">
-        <span>Ctrl + 滚轮缩放</span>
+        <span>Ctrl + 滚轮缩放 · 按住左键拖动</span>
         <div>
           <button
             type="button"
@@ -94,6 +100,7 @@ export function MermaidViewport({ svg, title }: { svg: string; title: string }) 
             aria-label="重置流程图缩放"
             title="恢复 100%"
             onClick={() => {
+              cancelPan();
               anchor.current = undefined;
               targetZoom.current = 1;
               setZoom(1);
@@ -108,11 +115,11 @@ export function MermaidViewport({ svg, title }: { svg: string; title: string }) 
         </div>
       </div>
       <div
-        className="rich-mermaid-viewport"
+        className={`rich-mermaid-viewport${dragging ? ' is-dragging' : ''}`}
         ref={viewport}
         tabIndex={0}
         role="region"
-        aria-label={`${title}，按住 Ctrl 并滚动滚轮缩放`}
+        aria-label={`${title}，按住 Ctrl 并滚动滚轮缩放，按住鼠标左键拖动查看`}
       >
         {/* 清理后的 SVG 保持在图片上下文中，缩放只改变图片的布局尺寸。 */}
         <img

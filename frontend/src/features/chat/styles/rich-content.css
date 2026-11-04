@@ -82,6 +82,11 @@
   padding: 12px;
   background: var(--surface-subtle);
   border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+}
+.rich-mermaid-viewport.is-dragging {
+  cursor: grabbing;
 }
 .rich-mermaid-viewport img {
   display: block;
