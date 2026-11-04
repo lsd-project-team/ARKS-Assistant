@@ -3,8 +3,6 @@ import type { ReactNode } from 'react';
 import { archifyData } from './data/archifyData';
 import { presentationTopics, topicForDiagram, displayDiagramTitle } from './data/presentation';
 import { diagramReadings, isSupportingEntry } from './data/diagramReading';
-import { TopicReading } from './PresentationViews';
-import { TopicCoordination } from './CooperationNotes';
 import type { FlowchartCatalogEntry } from './types';
 import type { Route } from './routes';
 import { UiIcon } from './UiIcon';
@@ -90,11 +88,6 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
                 ))}
             </div>
           </section>
-          <details className="section card panel reading-disclosure">
-            <summary>展开专题概览与协作条件</summary>
-            <TopicReading topic={topic} />
-            <TopicCoordination diagrams={topic.diagrams} />
-          </details>
         </>
       )}
       <ManualCards topic={id} navigate={navigate} />
@@ -237,7 +230,7 @@ function CatalogCard({ entry, onOpen }: { entry: FlowchartCatalogEntry; onOpen: 
           )}
         </span>
         <span className="pill">
-          {manualById(entry.id) ? '模块详解' : entry.chapter ? '生产主流程' : entry.typeLabel}
+          {manualById(entry.id) ? '模块图解' : entry.chapter ? '生产主流程' : entry.typeLabel}
         </span>
       </div>
       <h3>{displayDiagramTitle(entry.id, entry.title)}</h3>
@@ -245,7 +238,7 @@ function CatalogCard({ entry, onOpen }: { entry: FlowchartCatalogEntry; onOpen: 
       <div className="card-topic">{topicForDiagram(entry.id)?.title}</div>
       <div className="card-actions">
         <button className="graph-read-button" onClick={onOpen}>
-          阅读原图与说明
+          查看图谱
           <UiIcon name="arrow" />
         </button>
       </div>

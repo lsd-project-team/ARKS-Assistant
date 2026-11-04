@@ -51,13 +51,19 @@ const { TopicDetail, DiagramDetail, GraphAtlas, coordinateVisual, functionalVisu
 const render = (component, props) =>
   renderToStaticMarkup(createElement(component, { navigate() {}, ...props }));
 
-test('46张导入图都有独立图解、详细说明与专题返回入口', () => {
+test('46张导入图保留图解与专题返回，旧章节链接不再打开详细说明', () => {
   for (const entry of manuals) {
     const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
     assert.ok(html.includes(entry.title), entry.id);
     assert.match(html, /data-diagram-source="[^"]*manuals\//);
-    assert.match(html, /图谱阅读/);
-    assert.match(html, /详细说明/);
+    assert.doesNotMatch(html, /详细说明|reader-document|role="tab/);
+    const legacy = render(DiagramDetail, {
+      id: entry.id,
+      section: entry.detailAnchor,
+      theme: 'light',
+    });
+    assert.match(legacy, /data-diagram-source=/);
+    assert.doesNotMatch(legacy, /详细说明|reader-document|role="tab/);
     assert.match(html, /返回业务专题/);
   }
 });
@@ -74,7 +80,10 @@ test('全部专题保留流程内容，不再显示源码模块、依据、路�
   }
   assert.ok(
     Object.keys(result.metafile.inputs).every(
-      (path) => !/source-evidence\.json|EngineeringViews|engineeringData/.test(path),
+      (path) =>
+        !/source-evidence\.json|EngineeringViews|engineeringData|ManualDocument|ManualMermaid|ReaderTabs/.test(
+          path,
+        ),
     ),
   );
 });
@@ -87,8 +96,8 @@ test('生产流程保留原图、节点说明和协作条件，移除节点依�
       focusedSignal: graph.nodes[0].signals[0] || 'unknown',
     });
     assert.match(html, /data-diagram-source=/);
-    assert.match(html, /节点与模块协作/);
-    assert.ok(html.includes(graph.nodes[0].label));
+    assert.match(html, /节点说明/);
+    assert.doesNotMatch(html, /reader-document|role="tab/);
     assert.doesNotMatch(
       html,
       /源码依据|查看依据|查看协作依据|evidence-item|source-file|source-method|<pre/,
@@ -418,18 +427,17 @@ test('耗材专题与目录共用扫描图，汇集和复位分表并链接更�
 });
 
 // 枚举整个公开目录，防止只统一示例而遗漏旧架构图、时序图或内嵌专题。
-test('全部121张公开图谱都进入同一图文同屏框架，且只显示一套工具栏', () => {
+test('全部121张公开图谱采用整宽画布，无详细说明页签或文档入口', () => {
   const entries = archifyData.flowchartCatalog.entries.filter(
     (entry) => entry.type !== 'supplemental',
   );
   assert.equal(entries.length, 121);
   for (const entry of entries) {
     const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
-    assert.equal((html.match(/data-reader-layout="graph-and-text"/g) ?? []).length, 1, entry.id);
+    assert.equal((html.match(/data-reader-layout="diagram"/g) ?? []).length, 1, entry.id);
     assert.equal((html.match(/aria-label="图谱工具"/g) ?? []).length, 1, entry.id);
     for (const control of [
-      '图谱阅读',
-      '详细说明',
+      '清晰阅读',
       '查找图中节点',
       '适应画布',
       '全屏阅读',
@@ -437,6 +445,10 @@ test('全部121张公开图谱都进入同一图文同屏框架，且只显示�
       '节点说明',
     ])
       assert.ok(html.includes(control), entry.id + ': ' + control);
-    assert.doesNotMatch(html, /使用图内缩放|交互图解|业务介绍/, entry.id);
+    assert.doesNotMatch(
+      html,
+      /使用图内缩放|交互图解|业务介绍|详细说明|role="tab|reader-document/,
+      entry.id,
+    );
   }
 });

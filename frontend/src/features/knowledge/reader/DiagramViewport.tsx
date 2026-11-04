@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useReaderCanvas } from './ReaderFrame';
 import { diagramDocument } from './diagramDocument';
+import { fitCamera, boundCamera, zoomCamera, cameraViewBox, diagramHeight } from './diagramCamera';
+import { clarifyNodeText } from './diagramText';
 import { useAppearance } from '../../settings/lib/appearance';
 import diagramChrome from '../diagramChrome.css?inline';
 import latinFont from '@fontsource-variable/geist/index.css?inline';
@@ -18,6 +20,8 @@ export function DiagramViewport({
   source?: string;
   title: string;
 }) {
+  const container = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(440);
   const bridge = useReaderCanvas();
   const bridgeRef = useRef(bridge);
   bridgeRef.current = bridge;
@@ -62,33 +66,46 @@ export function DiagramViewport({
   }, [path, revision, source, appearance, retry]);
 
   useEffect(() => {
+    if (!page || !container.current) return;
+    const element = container.current;
+    const measure = () => {
+      if (element.clientWidth > 0) setHeight(diagramHeight(page.bounds, element.clientWidth));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [page]);
+
+  useEffect(() => {
     if (!page || !loaded) return;
     const svg = loaded.querySelector<SVGSVGElement>('body > svg');
     const win = loaded.defaultView;
     if (!svg || !win) return;
-    const [x, y, width, height] = page.bounds;
-    const camera = { x: x + width / 2, y: y + height / 2, scale: 1 };
+    let bounds = page.bounds;
+    const viewport = () => {
+      const rect = svg.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    };
+    const camera = fitCamera(bounds, viewport());
     let autoFit = true;
-    let initialized = false;
+    let active = true;
     let drag: { x: number; y: number; cx: number; cy: number; moved: boolean } | undefined;
     let dragged = false;
     const paint = () => {
-      const w = win.innerWidth / camera.scale,
-        h = win.innerHeight / camera.scale;
-      svg.setAttribute('viewBox', `${camera.x - w / 2} ${camera.y - h / 2} ${w} ${h}`);
+      Object.assign(camera, boundCamera(camera, bounds, viewport()));
+      svg.setAttribute('viewBox', cameraViewBox(camera, viewport()).join(' '));
       bridgeRef.current?.setScale(camera.scale);
     };
     const fit = () => {
-      if (!win.innerWidth || !win.innerHeight) return;
-      const fitted = Math.min((win.innerWidth - 24) / width, (win.innerHeight - 24) / height);
-      camera.scale = Math.min(1, fitted);
-      camera.x = x + width / 2;
-      camera.y = y + height / 2;
+      const size = viewport();
+      if (!size.width || !size.height) return;
+      Object.assign(camera, fitCamera(bounds, size));
       paint();
     };
-    const zoom = (factor: number) => {
+    const zoom = (factor: number, anchor?: { x: number; y: number }) => {
       autoFit = false;
-      camera.scale = Math.min(4, Math.max(0.1, camera.scale * factor));
+      Object.assign(camera, zoomCamera(camera, bounds, viewport(), factor, anchor));
       paint();
     };
     const selectNode = (id: string, move: boolean) => {
@@ -96,13 +113,51 @@ export function DiagramViewport({
         const selected = element.dataset.nodeId === id;
         element.setAttribute('aria-pressed', String(selected));
         if (!selected || !move) continue;
-        const bounds = element.getBoundingClientRect();
-        // 用屏幕坐标计算相机偏移，同时适配树图中的 translate 和缩放组。
-        camera.x += (bounds.left + bounds.width / 2 - win.innerWidth / 2) / camera.scale;
-        camera.y += (bounds.top + bounds.height / 2 - win.innerHeight / 2) / camera.scale;
+        const box = element.getBoundingClientRect();
+        const size = viewport();
+        // 全图状态只高亮，不移动相机；放大后只补足越出视口的部分。
+        const shift = (start: number, end: number, pixels: number) =>
+          end - start > pixels - 32
+            ? (start + end - pixels) / 2
+            : start < 16
+              ? start - 16
+              : end > pixels - 16
+                ? end - pixels + 16
+                : 0;
+        const next = boundCamera(
+          {
+            ...camera,
+            x: camera.x + shift(box.left, box.right, size.width) / camera.scale,
+            y: camera.y + shift(box.top, box.bottom, size.height) / camera.scale,
+          },
+          bounds,
+          size,
+        );
+        if (next.x === camera.x && next.y === camera.y) continue;
         autoFit = false;
+        Object.assign(camera, next);
         paint();
       }
+    };
+    const layout = () => {
+      if (!active) return;
+      // 百分比装饰层依赖 viewBox；每次测量从原始坐标系开始，避免它随缩放反复变大。
+      svg.setAttribute('viewBox', page.bounds.join(' '));
+      clarifyNodeText(svg);
+      const box = svg.getBBox();
+      const [x, y, width, height] = page.bounds;
+      const left = Math.min(x, box.x),
+        top = Math.min(y, box.y);
+      bounds = [
+        left,
+        top,
+        Math.max(x + width, box.x + box.width) - left,
+        Math.max(y + height, box.y + box.height) - top,
+      ];
+      if (container.current?.clientWidth)
+        setHeight(diagramHeight(bounds, container.current.clientWidth));
+      if (autoFit) fit();
+      else paint();
     };
     focusNode.current = selectNode;
     const pick = (event: Event) => {
@@ -137,20 +192,21 @@ export function DiagramViewport({
       paint();
     };
     const up = () => {
-      dragged = Boolean(drag?.moved);
+      if (!drag) return;
+      dragged = drag.moved;
       drag = undefined;
     };
     const wheel = (event: WheelEvent) => {
       if (!event.ctrlKey && !event.metaKey) return;
       event.preventDefault();
-      zoom(event.deltaY < 0 ? 1.1 : 1 / 1.1);
+      zoom(event.deltaY < 0 ? 1.1 : 1 / 1.1, { x: event.clientX, y: event.clientY });
     };
     const exportSvg = () => {
       const clone = svg.cloneNode(true) as SVGSVGElement;
       clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      clone.setAttribute('viewBox', page.bounds.join(' '));
-      clone.setAttribute('width', String(width));
-      clone.setAttribute('height', String(height));
+      clone.setAttribute('viewBox', bounds.join(' '));
+      clone.setAttribute('width', String(bounds[2]));
+      clone.setAttribute('height', String(bounds[3]));
       clone.dataset.theme = appearance === 'dark' ? 'dark' : 'light';
       clone.dataset.appearance = appearance;
       const style = loaded.createElementNS('http://www.w3.org/2000/svg', 'style');
@@ -175,17 +231,33 @@ export function DiagramViewport({
         fit();
       },
       zoom,
+      readable: () => {
+        const sizes = [
+          ...svg.querySelectorAll<SVGTextElement>(
+            '[data-node-id] text.t-primary,[data-node-id] text.tree-label,[data-node-id] text[data-detail="context"],[data-node-id] text.tree-sublabel',
+          ),
+        ]
+          .map((text) => parseFloat(win.getComputedStyle(text).fontSize))
+          .filter((size) => size > 0);
+        const target = Math.max(
+          fitCamera(bounds, viewport()).scale,
+          14 / (sizes.length ? Math.min(...sizes) : 14),
+        );
+        zoom(target / camera.scale);
+        const id = bridgeRef.current?.selected;
+        if (id) selectNode(id, true);
+      },
       export: exportSvg,
     });
     const resize = new ResizeObserver(() => {
-      if (!win.innerWidth || !win.innerHeight) return;
-      if (!initialized) {
-        initialized = true;
-        fit();
-      } else if (autoFit) fit();
+      const size = viewport();
+      if (!size.width || !size.height) return;
+      if (autoFit) fit();
       else paint();
     });
     resize.observe(loaded.documentElement);
+    layout();
+    void loaded.fonts.ready.then(layout);
     selectNode(bridgeRef.current?.selected ?? page.nodes[0]?.id, false);
     svg.addEventListener('click', pick);
     svg.addEventListener('keydown', keyboard);
@@ -193,8 +265,11 @@ export function DiagramViewport({
     svg.addEventListener('pointermove', move);
     svg.addEventListener('pointerup', up);
     svg.addEventListener('pointercancel', up);
+    svg.addEventListener('lostpointercapture', up);
+    win.addEventListener('blur', up);
     svg.addEventListener('wheel', wheel, { passive: false });
     return () => {
+      active = false;
       resize.disconnect();
       focusNode.current = () => {};
       svg.removeEventListener('click', pick);
@@ -203,6 +278,8 @@ export function DiagramViewport({
       svg.removeEventListener('pointermove', move);
       svg.removeEventListener('pointerup', up);
       svg.removeEventListener('pointercancel', up);
+      svg.removeEventListener('lostpointercapture', up);
+      win.removeEventListener('blur', up);
       svg.removeEventListener('wheel', wheel);
     };
   }, [page, loaded, appearance, title]);
@@ -218,7 +295,12 @@ export function DiagramViewport({
     lastSelected.current = selected;
   }, [selected, loaded]);
   return (
-    <div className="reader-viewport" data-diagram-source={path}>
+    <div
+      ref={container}
+      className="reader-viewport"
+      data-diagram-source={path}
+      style={{ '--diagram-height': `${height}px` } as CSSProperties}
+    >
       {page ? (
         <iframe
           title={`${title} 流程图`}

@@ -21,8 +21,7 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const bundle = await build({
   stdin: {
-    contents:
-      "export * from './src/features/knowledge/reader/ReaderFrame.tsx';export * from './src/features/knowledge/reader/ReaderTabs.tsx';",
+    contents: "export * from './src/features/knowledge/reader/ReaderFrame.tsx';",
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -40,7 +39,7 @@ new Function('require', 'module', 'exports', bundle.outputFiles[0].text)(
   module,
   module.exports,
 );
-const { ReaderFrame, ReaderTabs, useReaderCanvas } = module.exports;
+const { ReaderFrame, useReaderCanvas } = module.exports;
 
 test('统一适配器覆盖全部独立交付及坐标、标定图，保留原节点、连线与尺寸', async () => {
   const paths = new Set([
@@ -158,6 +157,7 @@ test('工具栏操作实际画布接口，搜索后选择节点并能关闭说�
   await act(async () =>
     root.render(createElement(ReaderFrame, { title: '验收' }, createElement(Canvas))),
   );
+  assert.equal(target.querySelector('.reader-detail').hidden, true);
   const click = async (selector) => act(async () => target.querySelector(selector).click());
   await click('.reader-tools > button');
   await click('[aria-label="放大图谱"]');
@@ -175,38 +175,9 @@ test('工具栏操作实际画布接口，搜索后选择节点并能关闭说�
   await click('.reader-search-results button');
   assert.equal(target.querySelector('[data-selected]').dataset.selected, 'b');
   assert.equal(target.querySelector('.reader-detail h2').textContent, '任务调度');
+  assert.equal(target.querySelector('.reader-detail').hidden, false);
   await click('[aria-controls][aria-pressed]');
   assert.equal(target.querySelector('.reader-detail').hidden, true);
-  await act(async () => root.unmount());
-  target.remove();
-});
-
-test('切换详细说明延迟加载正文，返回图谱保留原挂载与节点上下文', async () => {
-  const target = document.createElement('div');
-  document.body.append(target);
-  const root = createRoot(target);
-  let mounted = 0;
-  function Graph() {
-    useEffect(() => {
-      mounted++;
-    }, []);
-    return createElement('span', {}, '原画布');
-  }
-  await act(async () =>
-    root.render(
-      createElement(ReaderTabs, {
-        graph: () => createElement(Graph),
-        document: createElement('p', {}, '详细正文'),
-      }),
-    ),
-  );
-  assert.equal(target.textContent.includes('详细正文'), false);
-  await act(async () => target.querySelectorAll('[role="tab"]')[1].click());
-  assert.equal(target.querySelectorAll('[role="tabpanel"]')[0].hidden, true);
-  assert.match(target.textContent, /详细正文/);
-  await act(async () => target.querySelectorAll('[role="tab"]')[0].click());
-  assert.equal(mounted, 1);
-  assert.equal(target.querySelectorAll('[role="tabpanel"]')[0].hidden, false);
   await act(async () => root.unmount());
   target.remove();
 });

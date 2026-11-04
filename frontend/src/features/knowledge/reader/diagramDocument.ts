@@ -11,7 +11,7 @@ export function diagramDocument(source: string, theme: 'light' | 'dark', chrome:
     .getAttribute('viewBox')!
     .trim()
     .split(/[\s,]+/)
-    .map(Number);
+    .map(Number) as [number, number, number, number];
   if (bounds.length !== 4 || !bounds.every(Number.isFinite) || bounds[2] <= 0 || bounds[3] <= 0)
     throw new Error('图谱尺寸无效');
   svg.querySelectorAll('script, foreignObject, iframe, a').forEach((element) => {

@@ -21,6 +21,7 @@ export interface DiagramNode {
 export interface CanvasCommands {
   fit: () => void;
   zoom: (factor: number) => void;
+  readable?: () => void;
   export: () => void;
 }
 interface CanvasBridge {
@@ -36,25 +37,25 @@ export function ReaderFrame({
   title,
   children,
   detail,
-  onDocument,
   onSelect,
   selectedId,
+  initialSelectedId,
 }: {
   title: string;
   children: ReactNode;
   detail?: (node: DiagramNode | undefined, select: (id: string) => void) => ReactNode;
-  onDocument?: () => void;
   onSelect?: (id: string) => void;
   selectedId?: string;
+  initialSelectedId?: string;
 }) {
   const frame = useRef<HTMLElement>(null);
   const commands = useRef<CanvasCommands | undefined>(undefined);
   const [nodes, setNodes] = useState<DiagramNode[]>([]);
-  const [selected, setSelected] = useState<string>();
+  const [selected, setSelected] = useState<string | undefined>(initialSelectedId);
   const [query, setQuery] = useState('');
   const [scale, setScale] = useState(1);
   const [ready, setReady] = useState(false);
-  const [showDetail, setShowDetail] = useState(true);
+  const [showDetail, setShowDetail] = useState(false);
   const [message, setMessage] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   useEffect(() => {
@@ -90,7 +91,7 @@ export function ReaderFrame({
       if (document.fullscreenElement === frame.current) await document.exitFullscreen();
       else await frame.current?.requestFullscreen();
     } catch {
-      setMessage('浏览器未允许全屏，可收起说明区扩大画布。');
+      setMessage('浏览器未允许全屏，可使用全图与清晰阅读切换缩放。');
     }
   };
   return (
@@ -111,6 +112,9 @@ export function ReaderFrame({
             <Scan size={15} />
             适应画布
           </button>
+          <button type="button" disabled={!ready} onClick={() => commands.current?.readable?.()}>
+            清晰阅读
+          </button>
           <div className="reader-zoom" role="group" aria-label="缩放">
             <button
               type="button"
@@ -122,9 +126,9 @@ export function ReaderFrame({
             </button>
             <button
               type="button"
-              aria-label="以原始大小阅读"
+              aria-label="恢复全图缩放"
               disabled={!ready}
-              onClick={() => commands.current?.zoom(1 / scale)}
+              onClick={() => commands.current?.fit()}
             >
               <span aria-label="当前缩放">{Math.round(scale * 100)}%</span>
             </button>
@@ -151,7 +155,7 @@ export function ReaderFrame({
             onClick={() => setShowDetail(!showDetail)}
           >
             <PanelRight size={15} />
-            说明
+            节点信息
           </button>
           <button type="button" disabled={!ready} onClick={() => commands.current?.export()}>
             <Download size={15} />
@@ -191,25 +195,21 @@ export function ReaderFrame({
             aria-live="polite"
           >
             {detail ? detail(node, select) : <DiagramNodeDetail node={node} select={select} />}
-            {onDocument && (
-              <button
-                type="button"
-                className="text-button reader-document-link"
-                onClick={onDocument}
-              >
-                阅读详细说明 →
-              </button>
-            )}
           </aside>
         </div>
       </CanvasContext.Provider>
       <div className="reader-footnote">
         <span>
           {ready
-            ? '拖动画布移动 · Ctrl + 滚轮缩放 · 点击节点查看说明'
+            ? '拖动画布移动 · Ctrl + 滚轮缩放 · 清晰阅读可放大文字'
             : '按所选环节阅读图表与条件说明'}
         </span>
         {nodes.length > 0 && <span>{nodes.length} 个节点</span>}
+        {node && (
+          <span className="reader-current-node" aria-live="polite">
+            当前节点：{node.label}
+          </span>
+        )}
         {message && <span role="status">{message}</span>}
       </div>
     </section>

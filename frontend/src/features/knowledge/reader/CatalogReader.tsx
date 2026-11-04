@@ -1,14 +1,10 @@
-import { useState } from 'react';
 import { archifyData } from '../data/archifyData';
 import { diagramReadings } from '../data/diagramReading';
 import { displayDiagramTitle, topicForDiagram } from '../data/presentation';
-import { guideForPage } from '../sourceGuides';
-import { SourceGuideDocument } from '../SourceGuidePanel';
-import { ModuleCoordination, NodeSignalNotes } from '../CooperationNotes';
+import { NodeSignalNotes } from '../CooperationNotes';
 import type { FlowchartCatalogEntry, FlowGraph } from '../types';
 import type { Route } from '../routes';
 import { OriginalDiagram } from '../OriginalDiagram';
-import { ReaderTabs } from './ReaderTabs';
 import { ReaderFrame, DiagramNodeDetail, type DiagramNode } from './ReaderFrame';
 import { ReaderPageHeader } from './ReaderPageHeader';
 
@@ -28,9 +24,9 @@ export function CatalogReader({
   const reading = diagramReadings[id];
   const graph = archifyData.graphs.find((graph) => graph.slug === id);
   const topic = topicForDiagram(id);
-  const guide = guideForPage(id);
-  const notes = archifyData.diagramNotes[id] ?? [];
-  const [documentOpen, setDocumentOpen] = useState(Boolean(focusedSignal));
+  const initialNode = graph?.nodes.find(
+    (node) => focusedSignal && node.signals.includes(focusedSignal),
+  );
   return (
     <>
       <ReaderPageHeader
@@ -46,70 +42,19 @@ export function CatalogReader({
           )
         }
       />
-      <ReaderTabs
-        documentOpen={documentOpen}
-        onDocumentChange={setDocumentOpen}
-        graph={(openDocument) => (
-          <ReaderFrame
-            title={title}
-            onDocument={openDocument}
-            detail={(node, select) => (
-              <CatalogNodeDetail node={node} select={select} graph={graph} />
-            )}
-          >
-            {entry.html ? (
-              <OriginalDiagram path={entry.html} title={title} theme={theme} />
-            ) : (
-              <div className="reader-loading">原图尚未生成</div>
-            )}
-          </ReaderFrame>
-        )}
-        document={
-          <div className="reader-document">
-            <section>
-              <h2>业务用途</h2>
-              <p>{reading.summary}</p>
-            </section>
-            <section>
-              <h2>执行条件</h2>
-              <p>{reading.condition}</p>
-            </section>
-            <section>
-              <h2>分支与异常</h2>
-              <p>{reading.exception}</p>
-            </section>
-            {notes.length > 0 && (
-              <section>
-                <h2>图谱补充说明</h2>
-                {notes.map((note, index) => (
-                  <section key={index}>
-                    <h3>{note.title}</h3>
-                    <ul>
-                      {note.items.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </section>
-                ))}
-              </section>
-            )}
-            {guide && <SourceGuideDocument guide={guide} initialFlow={guide.initialFlows?.[id]} />}
-            {graph && (
-              <>
-                <h2>节点与模块协作</h2>
-                <ModuleCoordination graph={graph} focusedSignal={focusedSignal} />
-                {graph.nodes.map((node) => (
-                  <section key={node.id}>
-                    <h3>{node.label}</h3>
-                    <p>{node.detail}</p>
-                    <NodeSignalNotes graph={graph} node={node} />
-                  </section>
-                ))}
-              </>
-            )}
-          </div>
-        }
-      />
+      <div className="unified-reader" data-reader-layout="diagram">
+        <ReaderFrame
+          title={title}
+          initialSelectedId={initialNode?.id}
+          detail={(node, select) => <CatalogNodeDetail node={node} select={select} graph={graph} />}
+        >
+          {entry.html ? (
+            <OriginalDiagram path={entry.html} title={title} theme={theme} />
+          ) : (
+            <div className="reader-loading">原图尚未生成</div>
+          )}
+        </ReaderFrame>
+      </div>
     </>
   );
 }
