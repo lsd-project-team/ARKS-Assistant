@@ -41,6 +41,7 @@ import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
 import { CodeWorkDialog } from '../code_work/CodeWorkDialog';
+import { CodeChangeSummary } from '../code_work/CodeChangeSummary';
 
 export function ChatPane({
   onUploadFiles,
@@ -72,6 +73,7 @@ export function ChatPane({
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
   const [codeWorkOpen, setCodeWorkOpen] = useState(false);
+  const [codeWorkFile, setCodeWorkFile] = useState('');
   const [selectionPreview, setSelectionPreview] = useState<{
     selection: Selection;
     index: number;
@@ -271,6 +273,7 @@ export function ChatPane({
   function executeCommand(command: ComposerCommand) {
     if (command === '修改代码') {
       setDraft('/修改代码 ');
+      setCodeWorkFile('');
       setCodeWorkOpen(true);
       return;
     }
@@ -506,6 +509,19 @@ export function ChatPane({
               </Button>
             </div>
           )}
+          {threadId && (
+            <CodeChangeSummary
+              key={`code-summary:${projectId}:${threadId}`}
+              threadId={threadId}
+              projectId={projectId}
+              busy={busy}
+              refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
+              onOpen={(path = '') => {
+                setCodeWorkFile(path);
+                setCodeWorkOpen(true);
+              }}
+            />
+          )}
           <ErrorText
             error={
               conversation.error || send.error || resume.error || regenerate.error || cancel.error
@@ -561,7 +577,10 @@ export function ChatPane({
           onCommand={executeCommand}
           onStop={() => active && cancel.mutate(active.id)}
           onUploadFiles={onUploadFiles}
-          onCodeWork={() => setCodeWorkOpen(true)}
+          onCodeWork={() => {
+            setCodeWorkFile('');
+            setCodeWorkOpen(true);
+          }}
           sending={send.isPending}
           busy={busy}
           queueing={!!queue.query.data?.items.length}
@@ -607,6 +626,7 @@ export function ChatPane({
         threadId={threadId}
         projectId={projectId}
         busy={busy}
+        initialPath={codeWorkFile}
         onClose={() => setCodeWorkOpen(false)}
         onRequest={() => {
           setCodeWorkOpen(false);

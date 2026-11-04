@@ -57,6 +57,10 @@ def create_router(services):
     async def read(thread_id: str, path: str, start_line: int = 1, end_line: int = 300):
         return await asyncio.to_thread(work.read, thread_id, path, start_line, end_line)
 
+    @router.get(prefix + "/summary")
+    async def summary(thread_id: str):
+        return await asyncio.to_thread(work.summary, thread_id)
+
     @router.put(prefix + "/file")
     async def write(thread_id: str, body: FileWrite):
         return await asyncio.to_thread(work.write, thread_id, body.path, body.content, body.version)

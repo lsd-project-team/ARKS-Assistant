@@ -13,6 +13,8 @@
 
 每个对话固定一份来源快照。管理员更换来源目录不会替换已经存在的副本；需要使用新来源时新建对话。聊天没有任意 Shell 命令或写回原源码工具。业务文件可新增，但入口 `Program.cs`、Properties、Simulation 驱动和工程配置不可编辑。新 C# 文件由固定的构建导入项纳入本次编译，原项目文件不改。
 
+聊天底部自动显示当前副本的修改摘要，包括文件数、总计和逐文件增删行数。默认展示前3个文件，可以展开全部；点击文件或“查看变更”进入差异详情，点击文件会直接定位。行数与详情使用同一份真实差异，撤销后更新、刷新后恢复。卡片表示当前副本累计修改，不是某条历史回复的独立修改快照，也不表示已通过验证。
+
 ## 验证含义
 
 依次编译虚拟驱动检查、运行驱动检查、以 `Configuration=Simulation` 编译修改后的主工程、运行新生成程序的 `--simulation-self-test`。构建和报告必须来自本次新目录；退出码非零、缺少 PASS 报告、超时或停止均不能判为通过。编译失败后不运行旧程序。
@@ -35,6 +37,6 @@
 
 `backend/app/modules/code_work/` 负责副本、编码、环境、固定执行及对话权限；`agents/tools/code_work.py` 将工具绑定到当前对话。前端面板位于 `features/chat/code_work/`，环境配置也接入管理员系统配置页。
 
-全局管理员接口为 `GET/PUT /api/settings/code-work`。对话接口均位于 `/api/p/{project}/threads/{thread}/code-work`，包含创建/状态、`file`、`diff`、`revert`、`verify`、`cancel`、`export`。下载请求带修订号，其他账号不能通过已知项目或对话 ID 读取、修改或执行。
+全局管理员接口为 `GET/PUT /api/settings/code-work`。对话接口均位于 `/api/p/{project}/threads/{thread}/code-work`，包含创建/状态、`summary`、`file`、`diff`、`revert`、`verify`、`cancel`、`export`。`summary` 仅返回当前累计修改的文件与行数，不触发副本创建或编译。下载请求带修订号，其他账号不能通过已知项目或对话 ID 读取、修改或执行。
 
-真实模型脚本、回归与实际页面结果见[第一版验收](../verification/code-work-v1-20261104.md)。旧流程的历史状态见[移除记录](../verification/remove-legacy-code-work-20261029.md)。
+真实模型脚本、回归与实际页面结果见[第一版验收](../verification/code-work-v1-20261104.md)，摘要展示见[代码修改摘要卡片](../verification/code-change-summary-20261104.md)。旧流程的历史状态见[移除记录](../verification/remove-legacy-code-work-20261029.md)。

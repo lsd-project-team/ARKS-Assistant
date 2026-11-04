@@ -109,6 +109,7 @@ def test_api_edits_export_stale_revert_and_deleted_thread_cleanup(work, services
         ]
         prefix = project_api(client, f"/threads/{thread}/code-work")
         assert client.post(prefix).status_code == 200
+        assert client.get(prefix + "/summary").json()["files"] == []
         read = client.get(prefix + "/file", params={"path": FILE}).json()
         response = client.put(
             prefix + "/file",
@@ -121,6 +122,12 @@ def test_api_edits_export_stale_revert_and_deleted_thread_cleanup(work, services
         assert response.status_code == 200
         current = response.json()
         assert current["revision"] == 1
+        summary_response = client.get(prefix + "/summary")
+        assert summary_response.status_code == 200
+        summary = summary_response.json()
+        assert summary["revision"] == 1 and len(summary["files"]) == 1
+        assert summary["files"][0]["path"] == FILE
+        assert (summary["additions"], summary["deletions"]) == (1, 4)
         assert (
             client.put(
                 prefix + "/file",
@@ -196,6 +203,7 @@ def test_other_account_cannot_read_edit_verify_or_export_work(work, services):
         login_second(client)
         for method, suffix in [
             ("GET", ""),
+            ("GET", "/summary"),
             ("POST", ""),
             ("GET", "/diff?path=" + FILE),
             ("POST", "/verify"),

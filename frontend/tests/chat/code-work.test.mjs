@@ -64,7 +64,7 @@ async function until(condition) {
   }
 }
 
-async function mounted(props, verify) {
+async function mounted(props, verify, setup = () => {}) {
   boundary.calls = [];
   boundary.role = 'user';
   boundary.status = {
@@ -79,7 +79,12 @@ async function mounted(props, verify) {
   boundary.diff = { path, version: 'v1', before: 'old', after: 'new', diff: '-old\n+new' };
   boundary.api = async (url, options, project) => {
     boundary.calls.push({ url, options, project });
-    if (url.includes('/diff?')) return structuredClone(boundary.diff);
+    if (url.includes('/diff?')) {
+      return {
+        ...structuredClone(boundary.diff),
+        path: new URL(url, 'http://test').searchParams.get('path'),
+      };
+    }
     if (url.endsWith('/revert')) {
       const body = JSON.parse(options.body);
       if (body.version !== boundary.diff.version) throw new Error('文件版本已变化，请刷新');
@@ -87,6 +92,7 @@ async function mounted(props, verify) {
     }
     return structuredClone(boundary.status);
   };
+  setup();
   const cache = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
@@ -207,4 +213,24 @@ test('成功撤销后刷新文件清单，失败日志可以展开查看', async
     await until(() => document.body.textContent.includes('尚无代码修改'));
     assert.match(document.body.textContent, /尚无代码修改/);
   });
+});
+
+test('从摘要点击指定文件时直接展示并撤销该文件，不跳到首个文件', async () => {
+  const other = 'AKRS.ZX2200/Main/Second.cs';
+  await mounted(
+    { initialPath: other },
+    async () => {
+      assert.equal(document.querySelector('.code-work-file-heading strong').textContent, other);
+      const reads = boundary.calls.filter((call) => call.url.includes('/diff?'));
+      assert.ok(reads.length > 0);
+      assert.ok(
+        reads.every((call) => new URL(call.url, 'http://test').searchParams.get('path') === other),
+      );
+      await click('撤销此文件');
+      await click('确认撤销');
+      const request = boundary.calls.find((call) => call.url.endsWith('/revert'));
+      assert.equal(JSON.parse(request.options.body).path, other);
+    },
+    () => boundary.status.files.push({ path: other, kind: 'modified', version: 'v1' }),
+  );
 });

@@ -1,7 +1,6 @@
 """每个对话持有固定来源的可写副本，编辑与验证共享版本和锁。"""
 
 import asyncio
-import difflib
 import io
 import json
 import shutil
@@ -13,6 +12,7 @@ from threading import Event, RLock
 
 from app.core.identifiers import now_iso
 from app.infrastructure.storage.files import digest, safe_path
+from app.modules.code_work.changes import change_summary, file_difference
 from app.modules.code_work.environment import CodeEnvironment
 from app.modules.code_work.files import (
     PROJECT,
@@ -113,6 +113,13 @@ class CodeWork:
                     "不代表视觉、力控、标定或真实设备验收。"
                 ),
             }
+
+    def summary(self, thread_id):
+        with _lock:
+            folder = self.folder(thread_id)
+            if not folder.is_dir():
+                return {"exists": False, "revision": 0, "files": [], "additions": 0, "deletions": 0}
+            return change_summary(folder, self._load(folder))
 
     def create(self, thread_id):
         with _lock:
@@ -304,23 +311,7 @@ class CodeWork:
             relative = file.relative_to(folder / "source").as_posix()
             if relative not in state["changes"]:
                 raise FileNotFoundError("此文件没有修改")
-            original = safe_path(folder, "baseline/" + relative)
-            before = decode_source(original.read_bytes())[0] if original.is_file() else ""
-            after = decode_source(file.read_bytes())[0]
-            lines = difflib.unified_diff(
-                before.splitlines(),
-                after.splitlines(),
-                fromfile="a/" + relative,
-                tofile="b/" + relative,
-                lineterm="",
-            )
-            return {
-                "path": relative,
-                "before": before,
-                "after": after,
-                "diff": "\n".join(lines),
-                "version": digest(file.read_bytes()),
-            }
+            return file_difference(folder, relative)
 
     def revert(self, thread_id, path, version):
         with _lock:

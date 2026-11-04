@@ -31,6 +31,19 @@ export interface WorkDiff {
   diff: string;
   version: string;
 }
+export interface WorkSummary {
+  exists: boolean;
+  revision: number;
+  additions: number;
+  deletions: number;
+  files: {
+    path: string;
+    kind: 'modified' | 'added';
+    version: string;
+    additions: number;
+    deletions: number;
+  }[];
+}
 export interface WorkEnvironment {
   source_root: string;
   msbuild: string;

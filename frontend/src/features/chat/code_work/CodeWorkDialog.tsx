@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, FileCode2, Play, RotateCcw, Square } from 'lucide-react';
 import { api, apiUrl, jsonBody } from '../../../app/api/client';
@@ -16,6 +16,7 @@ export function CodeWorkDialog({
   busy,
   onClose,
   onRequest,
+  initialPath = '',
 }: {
   open: boolean;
   threadId: string;
@@ -23,6 +24,7 @@ export function CodeWorkDialog({
   busy: boolean;
   onClose: () => void;
   onRequest: () => void;
+  initialPath?: string;
 }) {
   const admin = useAuth().session?.user.role === 'admin';
   const cache = useQueryClient();
@@ -34,8 +36,14 @@ export function CodeWorkDialog({
     enabled: open && !!threadId,
     refetchInterval: open ? 2000 : false,
   });
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState(initialPath);
   const [confirmRevert, setConfirmRevert] = useState<WorkDiff | null>(null);
+  useEffect(() => {
+    if (open) {
+      setSelected(initialPath);
+      setConfirmRevert(null);
+    }
+  }, [open, initialPath]);
   const status = query.data;
   const file = status?.files?.find((item) => item.path === selected) || status?.files?.[0];
   const diff = useQuery({
