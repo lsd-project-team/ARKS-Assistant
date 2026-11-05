@@ -7,6 +7,7 @@ from fastapi.responses import Response, StreamingResponse
 
 from app.core.config import dump_json
 from app.core.container import AppServices
+from app.modules.chat.attachment_router import create_router as attachments_router
 from app.modules.chat.context import ConversationContext
 from app.modules.chat.feedback import FeedbackCreate, submit_feedback
 from app.modules.chat.lifecycle import ConversationLifecycle
@@ -26,6 +27,7 @@ from app.modules.memory.visibility import run_memory_actor, visible_run_event
 
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
+    router.include_router(attachments_router(services))
     router.include_router(workflows_router(services))
     router.include_router(code_work_router(services))
     workspace = services.workspace
@@ -61,7 +63,9 @@ def create_router(services: AppServices) -> APIRouter:
         selections = validated_selections(workspace, body)
         async with runs.edit_lock:
             options = body.source_options.model_dump() if body.source_options else None
-            run = repository.create_run(thread_id, body.content, selections, options)
+            run = repository.create_run(
+                thread_id, body.content, selections, options, body.attachment_ids
+            )
             runs.start(run)
         return run
 
@@ -108,6 +112,10 @@ def create_router(services: AppServices) -> APIRouter:
             for message in data["messages"]:
                 rows.append(f"\n## {'用户' if message['role'] == 'user' else '助手'}\n")
                 rows.append(message["content"])
+                for attachment in message.get("attachments", []):
+                    rows.append(
+                        f"\n附件：{attachment['filename']}（SHA256 {attachment['sha256']}）\n"
+                    )
                 for selection in message["selections"]:
                     rows.append(
                         f"\n源码快照：{selection['path']} "

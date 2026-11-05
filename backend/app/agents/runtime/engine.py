@@ -92,6 +92,14 @@ class AgentRuntime:
 
     def input_message(self, message):
         content = message["content"]
+        if message.get("attachments"):
+            from app.core.config import dump_json
+
+            files = [
+                {key: row[key] for key in ("id", "filename", "sha256", "parse_status")}
+                for row in message["attachments"]
+            ]
+            content += "\n\n本条消息附加文档（正文请用附件读取工具核对）：\n" + dump_json(files)
         for selection in message["selections"]:
             stale = selection.get("stale", False)
             if stale:

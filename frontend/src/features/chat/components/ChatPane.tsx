@@ -42,14 +42,14 @@ import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
 import { CodeWorkDialog } from '../code_work/CodeWorkDialog';
 import { CodeChangeSummary } from '../code_work/CodeChangeSummary';
+import { useAttachments } from '../attachments/useAttachments';
+import { AttachmentUpload } from '../attachments/AttachmentUpload';
 
 export function ChatPane({
-  onUploadFiles,
   onToggleWorkspace,
   onSettings,
   showHeader,
 }: {
-  onUploadFiles?: () => void;
   onToggleWorkspace: () => void;
   onSettings: (tab: 'model' | 'mcp') => void;
   showHeader: boolean;
@@ -70,6 +70,8 @@ export function ChatPane({
     request<T>(path, options, id);
   const project = useCurrentProject();
   const { content: draft, selections } = conversationDraft;
+  const uploader = useAttachments(projectId, threadId);
+  const attachmentInput = useRef<HTMLInputElement>(null);
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
   const [codeWorkOpen, setCodeWorkOpen] = useState(false);
@@ -143,7 +145,11 @@ export function ChatPane({
           `/threads/${key}/queue`,
           {
             method: 'POST',
-            body: jsonBody({ content: submitted.content.trim(), selections: submitted.selections }),
+            body: jsonBody({
+              content: submitted.content.trim(),
+              selections: submitted.selections,
+              attachment_ids: submitted.attachments?.map((item) => item.id) || [],
+            }),
           },
           projectId,
         );
@@ -153,7 +159,11 @@ export function ChatPane({
         key === 'new' ? '/threads/start' : `/threads/${key}/runs`,
         {
           method: 'POST',
-          body: jsonBody({ content: submitted.content.trim(), selections: submitted.selections }),
+          body: jsonBody({
+            content: submitted.content.trim(),
+            selections: submitted.selections,
+            attachment_ids: submitted.attachments?.map((item) => item.id) || [],
+          }),
         },
         projectId,
       );
@@ -601,7 +611,16 @@ export function ChatPane({
           onSend={submitDraft}
           onCommand={executeCommand}
           onStop={() => active && cancel.mutate(active.id)}
-          onUploadFiles={onUploadFiles}
+          onUploadFiles={() => attachmentInput.current?.click()}
+          uploading={uploader.busy}
+          attachments={
+            <AttachmentUpload
+              uploader={uploader}
+              attachments={conversationDraft.attachments || []}
+              sending={send.isPending}
+              inputRef={attachmentInput}
+            />
+          }
           onCodeWork={() => {
             setCodeWorkFile('');
             setCodeWorkRun('');

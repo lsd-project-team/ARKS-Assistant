@@ -27,6 +27,7 @@ class ConversationLifecycle:
         row = services.repository.catalog.get(thread_id, include_deleted=True)
         if row["state"] != "deleted":
             raise ValueError("请先将对话移入回收站")
+        attachment_ids = services.repository.attachments.thread_ids(thread_id)
         await self.code_work.purge(thread_id)
         async with AsyncSqliteSaver.from_conn_string(
             str(services.paths.data / "checkpoints.sqlite3")
@@ -56,3 +57,4 @@ class ConversationLifecycle:
             if folder.exists():
                 shutil.rmtree(folder)
         services.repository.catalog.purge(thread_id)
+        services.repository.attachments.prune(attachment_ids)

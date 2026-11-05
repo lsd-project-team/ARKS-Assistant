@@ -30,10 +30,11 @@ class ConversationQueue:
             )
             return {"paused": thread.queue_paused, "items": [record_dict(row) for row in rows]}
 
-    def add(self, thread_id, content, selections, source_options=None):
+    def add(self, thread_id, content, selections, source_options=None, attachment_ids=None):
         self.repository.creation_guard()
         with self.repository.lock, self.repository.database.session.begin() as session:
             self.repository.catalog.row(session, thread_id)
+            attachments = self.repository.attachments.bind(session, attachment_ids or [])
             if source_options is None:
                 source_options = self.repository.source_preferences.read(session)["source_options"]
             count = session.scalar(
@@ -47,6 +48,7 @@ class ConversationQueue:
                 thread_id=thread_id,
                 content=content,
                 selections_json=dump_json(selections),
+                attachments_json=dump_json(attachments),
                 source_options_json=dump_json(source_options or {}),
                 **question_actor(),
             )
@@ -54,12 +56,18 @@ class ConversationQueue:
             session.flush()
             return record_dict(row)
 
-    def update(self, item_id, content, selections, version, source_options=None):
+    def update(
+        self, item_id, content, selections, version, source_options=None, attachment_ids=None
+    ):
         with self.repository.lock, self.repository.database.session.begin() as session:
             row = self.row(session, item_id)
             if row.updated_at != version:
                 raise ValueError("问题已在其他窗口更新，请重新打开后编辑")
             row.content, row.selections_json = content, dump_json(selections)
+            if attachment_ids is not None:
+                row.attachments_json = dump_json(
+                    self.repository.attachments.bind(session, attachment_ids)
+                )
             for key, value in question_actor().items():
                 setattr(row, key, value)
             if source_options is not None:
@@ -105,6 +113,7 @@ class ConversationQueue:
                 item["selections"],
                 item["source_options"],
                 actor={"actor_id": row.actor_id, "actor_json": row.actor_json},
+                attachment_ids=[attachment["id"] for attachment in item["attachments"]],
             )
             session.delete(row)
             return run

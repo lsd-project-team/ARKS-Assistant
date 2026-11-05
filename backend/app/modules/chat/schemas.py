@@ -68,6 +68,7 @@ class RunCreate(BaseModel):
     content: str = Field(min_length=1, max_length=30000)
     selections: list[CodeSelection] = Field(default_factory=list, max_length=8)
     source_options: SourceOptions | None = None
+    attachment_ids: list[str] | None = Field(default=None, max_length=10)
 
     @model_validator(mode="after")
     def validate_content(self):

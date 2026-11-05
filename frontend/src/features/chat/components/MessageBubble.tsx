@@ -15,6 +15,7 @@ import { RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { InlineQuestionEditor } from './InlineQuestionEditor';
 import { contentToMarkdown } from '../rich/contentToMarkdown';
 import { FeedbackDialog, type FeedbackTarget } from './FeedbackDialog';
+import { AttachmentList } from '../attachments/AttachmentList';
 
 export function MessageBubble({
   message,
@@ -101,6 +102,7 @@ export function MessageBubble({
             {selection.stale && <span>旧版本</span>}
           </button>
         ))}
+        <AttachmentList attachments={message.attachments || []} />
         {run && <RunTrace runId={run.id} />}
         <div>
           {message.role === 'assistant' ? (

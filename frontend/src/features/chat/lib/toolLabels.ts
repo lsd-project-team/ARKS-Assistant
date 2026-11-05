@@ -1,4 +1,6 @@
 const labels: Record<string, string> = {
+  read_chat_attachment: '读取上传文档',
+  search_chat_attachment: '检索上传文档',
   prepare_code_workspace: '创建独立代码副本',
   find_work_files: '查找副本文件',
   read_work_file: '读取代码副本',

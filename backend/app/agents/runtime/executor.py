@@ -182,6 +182,7 @@ class AgentRunExecutor:
                 retrieval=retrieval,
                 policy=policy,
                 retrieval_context=retrieval_context(prior, message["selections"]),
+                attachment_messages=[*prior, message],
             )
             checkpoint_id = (
                 f"{run['thread_id']}:project:{regeneration_context['generation']}"

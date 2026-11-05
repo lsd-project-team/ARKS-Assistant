@@ -22,6 +22,8 @@ export function ChatComposer({
   model,
   modelControl,
   context,
+  attachments,
+  uploading = false,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
@@ -29,8 +31,9 @@ export function ChatComposer({
   onSend: () => void;
   onCommand: (command: ComposerCommand) => void;
   onStop: () => void;
-  /** 文件上传预留回调，未接入时保持入口禁用。 */
   onUploadFiles?: () => void;
+  uploading?: boolean;
+  attachments?: ReactNode;
   onCodeWork?: () => void;
   sending: boolean;
   busy: boolean;
@@ -61,7 +64,7 @@ export function ChatComposer({
     command === '修改代码' ||
     (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
-  const canSubmit = !sending && (command ? available(command) : !!draft.trim());
+  const canSubmit = !sending && !uploading && (command ? available(command) : !!draft.trim());
   function submit() {
     if (!canSubmit) return;
     if (command) {
@@ -118,6 +121,7 @@ export function ChatComposer({
           <div className="command-keyboard-hint">↑ ↓ 选择 · Enter 执行 · Esc 收起</div>
         </div>
       )}
+      {attachments}
       <textarea
         ref={inputRef}
         value={draft}
@@ -156,7 +160,7 @@ export function ChatComposer({
             className="attach-file"
             aria-label={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
             title={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
-            disabled={!onUploadFiles || sending}
+            disabled={!onUploadFiles || sending || uploading}
             onClick={onUploadFiles}
           >
             <Plus size={18} />

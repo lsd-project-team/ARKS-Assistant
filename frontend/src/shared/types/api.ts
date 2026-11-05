@@ -29,6 +29,16 @@ export interface Selection {
   version: string;
   stale?: boolean;
 }
+export interface ChatAttachment {
+  id: string;
+  filename: string;
+  sha256: string;
+  size: number;
+  characters: number;
+  parse_status: 'readable' | 'partial';
+  parse_notes: string;
+  created_at: string;
+}
 export interface Message {
   source_workspace_id?: string | null;
   id: string;
@@ -36,6 +46,7 @@ export interface Message {
   role: string;
   content: string;
   selections: Selection[];
+  attachments?: ChatAttachment[];
   source_options?: Partial<SourceOptions>;
   created_at?: string;
   context_active?: boolean;
@@ -112,6 +123,7 @@ export interface QueuedQuestion {
   thread_id: string;
   content: string;
   selections: Selection[];
+  attachments?: ChatAttachment[];
   source_options?: Partial<SourceOptions>;
   created_at: string;
   updated_at: string;

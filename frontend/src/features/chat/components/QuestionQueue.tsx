@@ -57,6 +57,7 @@ export function QuestionQueuePanel({
                 >
                   <span>{item.content}</span>
                   {item.selections.length > 0 && <small>{item.selections.length} 个选区</small>}
+                  {!!item.attachments?.length && <small>{item.attachments.length} 个附件</small>}
                 </button>
                 <button
                   aria-label={`编辑待发送问题 ${item.content}`}

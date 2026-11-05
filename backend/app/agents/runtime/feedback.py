@@ -46,6 +46,8 @@ def tool_stage(name):
     if name in {
         "search_handover_materials",
         "read_handover_material",
+        "read_chat_attachment",
+        "search_chat_attachment",
     }:
         return "reading_materials"
     if name in {"search_debug_issues", "read_debug_issue"}:
