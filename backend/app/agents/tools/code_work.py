@@ -21,6 +21,12 @@ edit_work_file 替换唯一匹配的原文；write_work_file 保存完整文件�
 修改业务代码时使用set_work_requirement保存与本次需求对应的C#断言测试，随后再验证。
 测试代码是Run方法体，支持System/Linq/Reflection/HarmonyLib及using static CodeWork.Harness。
 使用Check(条件,说明)执行真实行为断言；可用Invoke/typeof访问原类型，不能用恒真断言代替需求验证。
+int CountCalls(MethodBase method, Action action)返回action内原方法的实际调用次数，不替换业务实现。
+验证宿主已初始化虚拟硬件；测试填写C#方法体，不另建Main/Run或模拟驱动来替代原业务。
+宿主已导入点胶Models/Modules/Controllers，可使用System1Domain和DispenseModule等类型。
+CountCalls的返回值只统计传入Action执行期间的调用；用空Action再次调用得到的是0，不是上次结果。
+反例和修复使用同一预期断言：如预期一次，原代码实际两次时该断言应失败，修复后应通过。
+原实现的两次调用写入失败日志，不添加修复后仍要求两次的相反断言，不为通过而削弱测试。
 每轮最多验证3次，失败后根据日志修复业务代码再重验；首次验证后本轮验收测试固定，不能削弱断言。
 需要原界面按钮流程时使用enable_work_desktop_flow开启固定启动、暂停、继续、生产、停止验证。
 本轮验证被用户停止（cancelled）时，说明未完成并停止，不自行重新启动验证。

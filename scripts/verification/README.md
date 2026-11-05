@@ -1,5 +1,7 @@
 # 验证脚本
 
+`code_work_loop.py --live --output output/<新短目录>` 使用当前真实供应商，在独立账号、数据库和工程中验证开阀需求的原版反例、AI实际修改、编译、虚拟驱动、原工程自检、原桌面七步、候选重验及测试工程合入/回退。默认只读桌面ARKS原工程，可用 `--source-root` 指定；不写正式聊天或原业务目录，凭据仅装入内存。`--resume` 仅收集已有运行继续验收，不重新发起模型调用；默认临时项目有限额度2000000，不清零已用量。需要本机MSBuild及原工程依赖，消耗真实模型额度；目录宜短以适配.NET Framework资源路径限制，结果和边界见[循环修复复测](../../docs/verification/code-work-loop-20261105.md)。
+
 `source_answer_quality.py --live --output output/source-answer/<新文件>.json` 使用当前供应商，在临时C#源码及数据库中验证方法解释、调用流程、问题定位与修改建议、逐字原文。只读正式配置至内存，支持`--cases explain flow fix verbatim`选择场景；不覆盖既有输出，不写正式账号或聊天。自动检查引用、未调用源码结论复核、格式、历史一致性及原文，阅读质量仍须人工核对，历史结果见[源码回答验收](../../docs/verification/source-answer-organization-20261030.md)。
 
 `arks_source_answers.py --live --settings-data <正式配置所在目录> --source-root <真实只读源码根> --output output/arks-source-steps/live.json` 在隔离账号和数据库上复测“取片的步骤”及漏晶分支流程图；先放入无关经验话题检查切换，再实际检索ARKS源码。核对HTTP/SSE精确重放、当前引用、4/6条历史、无结论复核调用、源码指纹不变，以及步骤组件和普通Mermaid围栏的真实前端渲染。不执行设备，不向正式库写样例；消耗当前供应商额度，见[专项验收](../../docs/verification/source-retrieval-steps-20261030.md)。

@@ -5,7 +5,9 @@ import re
 import struct
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict, Field
+import tree_sitter_c_sharp
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+from tree_sitter import Language, Parser
 
 from app.infrastructure.storage.files import digest
 from app.modules.code_work.files import atomic_bytes
@@ -22,13 +24,56 @@ class RequirementWrite(BaseModel):
     code: str = Field(min_length=1, max_length=30_000)
     enabled: bool = True
 
+    @field_validator("code")
+    @classmethod
+    def valid_counting_source(cls, value):
+        # 在保存/冻结前检查宿主接口误用，给模型可修正的反馈，不改写验收断言。
+        source = ("class Requirement { void Run() {\n" + value + "\n} }").encode()
+        root = Parser(Language(tree_sitter_c_sharp.language())).parse(source).root_node
+        if root.has_error:
+            raise ValueError("需求测试必须是有效的C#方法体，请先修正语法后保存")
+        pending = [root]
+        while pending:
+            node = pending.pop()
+            pending.extend(node.named_children)
+            if node.type != "invocation_expression":
+                continue
+            name = node.child_by_field_name("function")
+            if name is None or name.text.decode() not in {
+                "CountCalls",
+                "Harness.CountCalls",
+                "CodeWork.Harness.CountCalls",
+            }:
+                continue
+            if node.parent.type == "expression_statement":
+                raise ValueError(
+                    "必须保存CountCalls返回值："
+                    "int calls = CountCalls(method, () => { 原业务操作; });"
+                    "随后Check(calls == 1, 说明)，不要忽略返回值后再用空Action取次数"
+                )
+            arguments = node.child_by_field_name("arguments")
+            if arguments is None or len(arguments.named_children) != 2:
+                continue
+            action = arguments.named_children[1].named_children[0]
+            body = action.child_by_field_name("body")
+            if (
+                body is not None
+                and body.type == "block"
+                and not any(child.type != "comment" for child in body.named_children)
+            ):
+                raise ValueError("CountCalls的Action必须执行待测业务操作，空Action不会返回上次次数")
+        return value
+
 
 def validation_version(state):
     cases = [
         {key: item[key] for key in ("id", "name", "expectation", "code", "enabled")}
         for item in state.get("requirements", [])
     ]
-    host = digest(b"".join(path.read_bytes() for path in sorted(RESOURCES.glob("*.cs"))))
+    host = digest(
+        Path(__file__).read_bytes()
+        + b"".join(path.read_bytes() for path in sorted(RESOURCES.glob("*.cs")))
+    )
     return digest(
         json.dumps(
             {"requirements": cases, "desktop": state.get("desktop_flow", False), "host": host},
@@ -71,6 +116,9 @@ def prepare_harness(root, output, state, compiler):
     code = (
         """using System; using System.Linq; using System.Collections.Generic;
 using System.Reflection; using System.Threading; using System.Windows.Forms; using HarmonyLib;
+using AKRS.ZX2200.DispenseSystem.Models;
+using AKRS.ZX2200.DispenseSystem.Modules;
+using AKRS.ZX2200.DispenseSystem.Controllers;
 using static CodeWork.Harness;
 namespace CodeWork { internal static class RequirementCases {
 internal static readonly Dictionary<string, Action> All = new Dictionary<string, Action> {

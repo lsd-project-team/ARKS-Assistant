@@ -73,11 +73,29 @@ class EditingModel(DeterministicModel):
         )
 
 
+@pytest.mark.parametrize("exhausted_retrieval", [False, True])
 async def test_agent_uses_writable_copy_tools_without_changing_original(
-    work, services, monkeypatch
+    work, services, monkeypatch, exhausted_retrieval
 ):
     service, thread, original = work
     model = EditingModel()
+    if exhausted_retrieval:
+        from app.agents.analysis.retrieval_budget import RetrievalBudget
+
+        monkeypatch.setattr(
+            "app.agents.runtime.executor.RetrievalBudget",
+            lambda emit, _limit, _reserve, evidence, progress: RetrievalBudget(
+                emit, 0, 0, evidence, progress
+            ),
+        )
+        bound_tools = []
+
+        def bind_tools(self, definitions, **options):
+            assert options.get("tool_choice") != "none"
+            bound_tools.append({tool.name for tool in definitions})
+            return self
+
+        monkeypatch.setattr(EditingModel, "bind_tools", bind_tools)
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *a, **kw: model)
     paths, _, workspace, repository, memories, settings = services
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
@@ -99,6 +117,11 @@ async def test_agent_uses_writable_copy_tools_without_changing_original(
     assert "+ int Value = 2;" in service.diff(thread, FILE)["diff"]
     assert "Value = 1" in (original / "Main/Example.cs").read_text(encoding="utf-8")
     assert any(kind == "code_work" for kind, _ in events)
+    if exhausted_retrieval:
+        assert bound_tools and all(
+            {"read_work_file", "edit_work_file", "verify_code_workspace"} <= tools
+            for tools in bound_tools
+        )
 
 
 def test_api_edits_export_stale_revert_and_deleted_thread_cleanup(work, services):

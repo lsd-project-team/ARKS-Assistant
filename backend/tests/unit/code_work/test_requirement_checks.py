@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from app.modules.code_work.checks import read_report, validation_version
+from app.modules.code_work.checks import RequirementWrite, read_report, validation_version
 from tests.helpers.code_work import make_work
 
 
@@ -15,6 +15,57 @@ def case_body(**extra):
         "code": 'Check(1 + 1 == 2, "示例断言");',
         **extra,
     }
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        'CountCalls(method, () => obj.Open()); Check(true, "ignored");',
+        'int calls = CountCalls(method, () => {}); Check(calls == 1, "wrong scope");',
+        "int calls = Harness.CountCalls(method, () => { /* nothing */ });",
+        "int calls = CountCalls(method, () => { obj.Open(; });",
+    ],
+)
+def test_invalid_counting_test_is_rejected_before_it_can_be_saved_or_frozen(
+    services, tmp_path, code
+):
+    work, thread, _ = make_work(services, tmp_path)
+    before = work.status(thread)["revision"]
+    with pytest.raises(ValueError, match="CountCalls|方法体"):
+        work.set_requirement(thread, case_body(code=code), run_id="new")
+    status = work.status(thread)
+    assert status["revision"] == before and status["requirements"] == []
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        'int calls = CountCalls(method, () => { obj.Open(); }); Check(calls == 1, "once");',
+        'Check(CountCalls(method, () => obj.Open()) == 0, "already open");',
+        'string example = "CountCalls(method, () => {})"; Check(example.Length > 0, "text");',
+    ],
+)
+def test_counting_requires_a_real_action_but_preserves_original_case_source(code):
+    assert RequirementWrite.model_validate(case_body(code=code)).code == code
+
+
+@pytest.mark.parametrize("changed", ["generator", "harness"])
+def test_validation_version_tracks_generated_test_context_and_runtime_host(
+    tmp_path, monkeypatch, changed
+):
+    from app.modules.code_work import checks
+
+    generator = tmp_path / "checks.py"
+    generator.write_bytes(b"original compiler context")
+    resources = tmp_path / "harness"
+    resources.mkdir()
+    host = resources / "Harness.cs"
+    host.write_bytes(b"original runtime host")
+    monkeypatch.setattr(checks, "__file__", str(generator))
+    monkeypatch.setattr(checks, "RESOURCES", resources)
+    before = validation_version({})
+    (generator if changed == "generator" else host).write_bytes(b"changed API")
+    assert validation_version({}) != before
 
 
 def test_requirement_versions_freeze_during_repair_and_invalidate_pass(services, tmp_path):

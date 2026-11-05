@@ -115,8 +115,11 @@ class AgentGraphBuilder:
         code_mode = requested_work.lstrip().startswith("/修改代码") or await asyncio.to_thread(
             runtime.code_work.exists, thread_id
         )
+        retrieval = retrieval or RetrievalBudget(emit)
         if code_mode:
-            tools += code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
+            work_tools = code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
+            tools += work_tools
+            retrieval.workflow_tools = frozenset(tool.name for tool in work_tools)
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -272,7 +275,7 @@ class AgentGraphBuilder:
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations
                 ),
-                retrieval or RetrievalBudget(emit),
+                retrieval,
                 ContextBudget(
                     settings.model.context_tokens,
                     settings.model.output_tokens,
