@@ -182,8 +182,8 @@ test('状态栏直接提供对照切换与合并，移除更多菜单和其他�
     assert.equal(document.querySelector('.code-work-locations'), null);
     assert.equal(document.querySelector('[aria-label="代码差异"]').dataset.split, 'false');
     assert.equal(document.querySelector('[aria-label="变更范围"]').value, '');
-    assert.equal(document.querySelector('[role="status"]').textContent, '尚未验证');
-    assert.equal(document.querySelectorAll('.code-review-top-actions button').length, 5);
+    assert.equal(button('查看验证详情'), undefined);
+    assert.equal(document.querySelectorAll('.code-review-top-actions button').length, 4);
     assert.equal(button('刷新变更'), undefined);
     assert.equal(button(`复制文件路径：${path}`), undefined);
     assert.equal(button('更多变更操作'), undefined);
@@ -378,18 +378,26 @@ test('不同文件版本的旧摘要不显示为当前增删统计', async () =>
   );
 });
 
-test('一行验证状态保留停止与过期结果，基础回归不等同于需求验证通过', async () => {
+test('执行验证后展示结果页，保留停止、过期提示与无需求断言的范围说明', async () => {
   await mounted({}, async (cache) => {
+    await click('编译与仿真验证');
+    assert.match(document.querySelector('.code-review-page-title').textContent, /验证详情/);
     const job = { id: 'job', revision: 1, steps: [], error: '' };
     for (const [verification, current, expected] of [
       [{ ...job, status: 'cancelled' }, true, '验证已停止'],
-      [{ ...job, status: 'failed' }, false, '需重新验证（上次失败）'],
-      [{ ...job, status: 'passed' }, true, '基础回归通过'],
+      [{ ...job, status: 'failed' }, false, '代码或测试已修改，需重新验证'],
+      [{ ...job, status: 'passed' }, true, '验证通过'],
       [{ ...job, status: 'passed', requirements: [{ id: 'assertion' }] }, true, '验证通过'],
     ]) {
       await setStatus(cache, { ...boundary.status, verification, verification_current: current });
-      assert.equal(document.querySelector('[role="status"]').textContent, expected);
-      assert.equal(document.querySelector('.code-verification'), null);
+      assert.equal(document.querySelector('.code-verification > strong').textContent, expected);
+      assert.equal(button('查看验证详情'), undefined);
+      if (!verification.requirements?.length) {
+        assert.match(
+          document.querySelector('.code-verification').textContent,
+          /基础回归结果不代表本次需求已验证/,
+        );
+      }
     }
   });
 });
@@ -427,13 +435,14 @@ test('旧版本的成功不展示为当前代码通过，验证期间禁用编�
         verification,
       });
     await update({ id: 'job-1', revision: 0, status: 'passed', steps: [], error: '' });
-    assert.match(document.querySelector('[role="status"]').textContent, /需重新验证/);
-    assert.doesNotMatch(document.querySelector('[role="status"]').textContent, /验证通过/);
+    assert.equal(button('查看验证详情'), undefined);
+    assert.equal(document.querySelector('.code-verification'), null);
     await click('编译与仿真验证');
     assert.equal(boundary.calls.filter(({ url }) => url.endsWith('/verify')).length, 1);
     await update({ id: 'job-2', revision: 1, status: 'testing', steps: [], error: '' });
     assert.equal(button('编译与仿真验证'), undefined);
     assert.ok(button('停止验证'));
+    await click('返回变更');
     await click(`文件操作：${path}`);
     assert.equal(button('撤销此文件').disabled, true);
     assert.ok(button('停止验证'));
@@ -506,9 +515,9 @@ test('右侧面板 Escape 可关闭，填写反馈时保留输入且运行中继
   });
 });
 
-test('成功撤销后刷新文件清单，失败日志可以展开查看', async () => {
+test('执行验证后可查看失败日志，返回后撤销刷新文件清单', async () => {
   await mounted({}, async (cache) => {
-    await setStatus(cache, {
+    boundary.status = {
       ...boundary.status,
       verification_current: true,
       verification: {
@@ -520,10 +529,10 @@ test('成功撤销后刷新文件清单，失败日志可以展开查看', async
           { name: '编译', status: 'failed', log: 'Example.cs(3): error CS1002', exit_code: 1 },
         ],
       },
-    });
+    };
+    await setStatus(cache, boundary.status);
     assert.equal(document.querySelector('.code-verification'), null);
-    assert.match(document.querySelector('[role="status"]').textContent, /验证失败/);
-    await click('查看验证详情');
+    await click('编译与仿真验证');
     assert.match(document.querySelector('.code-verification pre').textContent, /CS1002/);
     await click('返回变更');
     await click('撤销此文件');
@@ -684,7 +693,7 @@ test('需求测试更新带原版本，失败保留表单内容', async () => {
   await mounted(
     {},
     async () => {
-      await click('查看验证详情');
+      await click('编译与仿真验证');
       await click('查看/编辑');
       assert.equal(document.querySelector('form textarea').value, '必须只执行一次');
       await click('保存测试');

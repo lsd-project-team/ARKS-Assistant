@@ -1,7 +1,6 @@
 import { ArrowLeft, Columns2, GitMerge, Play, Square, X } from 'lucide-react';
 import { Button } from '../../../shared/ui/ui';
 import { ReviewLineCounts } from './CodeReviewFile';
-import { VerificationSummary } from './VerificationSummary';
 import type { WorkStatus, WorkSummary } from './types';
 
 export function CodeReviewToolbar({
@@ -12,7 +11,6 @@ export function CodeReviewToolbar({
   onScope,
   summary,
   onClose,
-  onDetails,
   verifying,
   blocked,
   verifyPending,
@@ -30,7 +28,6 @@ export function CodeReviewToolbar({
   onScope: (id: string) => void;
   summary?: WorkSummary;
   onClose: () => void;
-  onDetails: () => void;
   verifying: boolean;
   blocked: boolean;
   verifyPending: boolean;
@@ -102,22 +99,17 @@ export function CodeReviewToolbar({
         >
           <GitMerge size={15} />
         </button>
-        {status?.exists && !runId && (
-          <>
-            <VerificationSummary inline status={status} onDetails={onDetails} />
-            {!verifying && (
-              <button
-                className="code-review-icon"
-                type="button"
-                aria-label="编译与仿真验证"
-                title="编译与仿真验证"
-                disabled={blocked || verifyPending}
-                onClick={onVerify}
-              >
-                <Play size={14} />
-              </button>
-            )}
-          </>
+        {status?.exists && !runId && !verifying && (
+          <button
+            className="code-review-icon"
+            type="button"
+            aria-label="编译与仿真验证"
+            title="编译与仿真验证"
+            disabled={blocked || verifyPending}
+            onClick={onVerify}
+          >
+            <Play size={14} />
+          </button>
         )}
         {verifying && (
           <button

@@ -49,27 +49,6 @@
 .code-work-options-menu button:disabled {
   opacity: 0.45;
 }
-.code-verification-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-  padding: 7px 0;
-  margin-bottom: 6px;
-  font-size: 12px;
-  text-align: left;
-  color: var(--muted);
-}
-.code-verification-summary > span:last-child {
-  font-size: 11px;
-}
-.code-verification-summary[data-status='failed'] > span:first-child {
-  color: #c85b55;
-}
-.code-verification-summary[data-status='passed'] > span:first-child {
-  color: #29985a;
-}
 .code-work-compact .code-work-changes.single-file {
   display: block;
 }

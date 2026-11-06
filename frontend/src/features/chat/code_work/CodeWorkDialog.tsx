@@ -97,7 +97,10 @@ export function CodeWorkDialog({
   });
   const verify = useMutation({
     mutationFn: () => api<WorkStatus>(`${base}/verify`, { method: 'POST' }, projectId),
-    onSuccess: changed,
+    onSuccess: () => {
+      changed();
+      setTab('checks');
+    },
   });
   const cancel = useMutation({
     mutationFn: () => api<WorkStatus>(`${base}/cancel`, { method: 'POST' }, projectId),
@@ -115,7 +118,6 @@ export function CodeWorkDialog({
         onScope={changeScope}
         summary={currentSummary}
         onClose={onClose}
-        onDetails={() => setTab('checks')}
         verifying={verifying}
         blocked={blocked}
         verifyPending={verify.isPending}

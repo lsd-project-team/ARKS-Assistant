@@ -18,14 +18,6 @@
 .code-work-dialog > .modal-heading .button {
   display: none;
 }
-.code-review-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
 .code-work-primary.code-review-topbar {
   position: sticky;
   top: 0;
@@ -93,8 +85,7 @@
 .code-review-top-actions {
   flex-shrink: 0;
 }
-.code-review-icon,
-.code-verification-summary.code-verification-inline {
+.code-review-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -111,20 +102,13 @@
   color: var(--muted);
 }
 .code-review-icon:hover,
-.code-review-icon[aria-pressed='true'],
-.code-verification-inline:hover {
+.code-review-icon[aria-pressed='true'] {
   background: var(--surface-hover);
   color: var(--text);
 }
 .code-review-icon:disabled {
   opacity: 0.35;
   cursor: default;
-}
-.code-verification-inline[data-status='failed'] {
-  color: #c85b55;
-}
-.code-verification-inline[data-status='passed'] {
-  color: #29985a;
 }
 .code-review-page-title {
   display: flex;
