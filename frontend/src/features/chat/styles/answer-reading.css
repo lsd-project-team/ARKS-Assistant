@@ -1,0 +1,228 @@
+/* 回答使用独立的阅读色阶，不覆盖用户提问、源码编辑器或图表的业务配色。 */
+.answer-reading {
+  --answer-font-size: 16px;
+  --answer-line-height: 1.85;
+  --answer-space: 18px;
+  --answer-section-space: 32px;
+  --answer-text: var(--text);
+  --answer-heading: var(--text);
+  --answer-muted: var(--text-secondary);
+  --answer-link: var(--reading-accent, var(--accent));
+  --answer-border: var(--border);
+  --answer-inline-text: var(--warning-text);
+  --answer-inline-surface: var(--warning-surface);
+  --answer-code-surface: var(--surface-subtle);
+  --answer-code-toolbar: var(--surface-muted);
+  --answer-soft-surface: color-mix(in srgb, var(--accent) 7%, var(--panel));
+  --answer-row-surface: color-mix(in srgb, var(--accent) 3%, var(--panel));
+  min-width: 0;
+  color: var(--answer-text);
+  font-size: var(--answer-font-size);
+  line-height: var(--answer-line-height);
+}
+
+:root[data-appearance='white'] .answer-reading {
+  --answer-text: #344052;
+  --answer-heading: #152238;
+  --answer-muted: #5f6b7a;
+  --answer-link: #2259b3;
+  --answer-border: #dce2e9;
+  --answer-inline-text: #775019;
+  --answer-inline-surface: #f4eee4;
+  --answer-code-surface: #f1f4f8;
+  --answer-code-toolbar: #e8edf4;
+  --answer-soft-surface: #edf3fb;
+  --answer-row-surface: #f7f9fc;
+}
+
+:root[data-appearance='dark'] .answer-reading {
+  --answer-text: #cbd2dc;
+  --answer-heading: #f1f4fa;
+  --answer-muted: #a1adbe;
+  --answer-link: #9ebfff;
+  --answer-border: #343c49;
+  --answer-inline-text: #efc68b;
+  --answer-inline-surface: #302a22;
+  --answer-code-surface: #11151c;
+  --answer-code-toolbar: #252c36;
+  --answer-soft-surface: #212b3b;
+  --answer-row-surface: #1c2028;
+}
+
+.answer-reading .markdown {
+  color: var(--answer-text);
+  font-size: var(--answer-font-size);
+  line-height: var(--answer-line-height);
+  overflow-wrap: anywhere;
+}
+.answer-reading .markdown p {
+  margin-block: 0 var(--answer-space);
+}
+.answer-reading .markdown :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--answer-heading);
+  margin-block: var(--answer-section-space) 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+.answer-reading .markdown h1 {
+  font-size: 1.45em;
+}
+.answer-reading .markdown h2 {
+  font-size: 1.25em;
+}
+.answer-reading .markdown h3 {
+  font-size: 1.12em;
+}
+.answer-reading .markdown :is(h2, h3) {
+  border-inline-start: 3px solid var(--answer-link);
+  padding-inline-start: 12px;
+}
+.answer-reading .markdown > :first-child {
+  margin-top: 0;
+}
+.answer-reading .markdown > :last-child {
+  margin-bottom: 0;
+}
+.answer-reading .markdown strong,
+.answer-reading .rich-content :is(h3, h4) {
+  color: var(--answer-heading);
+  font-weight: 600;
+}
+.answer-reading .markdown :is(ul, ol) {
+  margin-block: var(--answer-space);
+}
+.answer-reading .markdown li {
+  margin-block: 8px;
+}
+.answer-reading .markdown li::marker {
+  color: var(--answer-link);
+}
+.answer-reading .markdown blockquote {
+  margin: var(--answer-space) 0;
+  padding: 12px 16px;
+  border-inline-start: 3px solid var(--answer-link);
+  border-radius: 0 6px 6px 0;
+  color: var(--answer-text);
+  background: var(--answer-soft-surface);
+}
+.answer-reading .markdown blockquote > :last-child {
+  margin-bottom: 0;
+}
+.answer-reading .markdown :not(pre) > code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--answer-inline-text);
+  background: var(--answer-inline-surface);
+  font: 0.87em/1.65 var(--font-code);
+  /* 跨行路径只在首尾保留内边距，避免窄栏每行克隆边距而溢出。 */
+  box-decoration-break: slice;
+  overflow-wrap: anywhere;
+}
+.answer-reading .markdown a {
+  color: var(--answer-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.answer-reading .answer-code {
+  margin-block: 20px;
+  border-color: var(--answer-border);
+  background: var(--answer-code-surface);
+}
+.answer-reading .answer-code-toolbar {
+  min-height: 38px;
+  color: var(--answer-muted);
+  border-color: var(--answer-border);
+  background: var(--answer-code-toolbar);
+}
+.answer-reading .answer-code-name {
+  color: var(--answer-heading);
+}
+.answer-reading .answer-code-language {
+  color: var(--answer-muted);
+}
+.answer-reading .answer-code pre {
+  padding: 16px;
+  font: 13.5px/1.75 var(--font-code);
+}
+/* 仅设置代码默认字色；语法 token 继续使用已有深浅主题高亮。 */
+.answer-reading .answer-code pre code {
+  color: var(--answer-text);
+  background: transparent;
+}
+
+.answer-reading :is(.markdown table, .rich-table) {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--answer-text);
+}
+.answer-reading :is(.markdown, .rich-table) :is(th, td) {
+  padding: 11px 14px;
+  border-bottom-color: var(--answer-border);
+}
+.answer-reading :is(.markdown, .rich-table) th {
+  color: var(--answer-heading);
+  background: var(--answer-soft-surface);
+}
+.answer-reading :is(.markdown, .rich-table) tbody tr:nth-child(even) {
+  background: var(--answer-row-surface);
+}
+.answer-reading :is(.rich-chart, .rich-mermaid) figcaption,
+.answer-reading .rich-table caption {
+  color: var(--answer-heading);
+}
+.answer-reading :is(.rich-description, .rich-status),
+.answer-reading .rich-overview-item .markdown {
+  color: var(--answer-text);
+}
+.answer-reading .rich-step-number {
+  color: var(--answer-link);
+  background: var(--answer-soft-surface);
+  border-color: var(--answer-border);
+}
+.answer-reading .rich-collapsible > summary {
+  color: var(--answer-heading);
+}
+.answer-reading .answer-sources {
+  --answer-font-size: 12px;
+  --answer-line-height: 1.8;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--answer-border);
+  font-size: 12px;
+}
+.answer-reading .answer-sources-label,
+.answer-reading .rich-source-label small {
+  color: var(--answer-muted);
+}
+.answer-reading .markdown .source-link,
+.answer-reading .rich-source-link:not(:disabled),
+.answer-reading .answer-code-link:not(:disabled) {
+  color: var(--answer-link);
+}
+
+/* 颜色来自已有工具状态，不能根据正文中的“通过”等词推断执行结果。 */
+.chat-pane .tool-call-card[data-state='success'] .tool-call-status {
+  color: var(--success-text);
+}
+.chat-pane .tool-call-card[data-state='skipped'] .tool-call-status {
+  color: var(--warning-text);
+}
+.chat-pane .tool-call-card[data-state='failed'] .tool-call-status {
+  color: var(--danger-text);
+}
+
+@container (max-width: 480px) {
+  .answer-reading {
+    --answer-font-size: 15.5px;
+    --answer-line-height: 1.8;
+    --answer-section-space: 28px;
+  }
+  .answer-reading .answer-code pre {
+    padding: 12px;
+  }
+  .answer-reading :is(.markdown, .rich-table) :is(th, td) {
+    padding: 10px;
+  }
+}

@@ -18,7 +18,7 @@ export function AnswerMarkdown({
     [content, streaming, parse],
   );
   return (
-    <>
+    <div className="answer-reading">
       <RichContentSegments
         segments={presentation.body}
         runId={runId}
@@ -27,6 +27,6 @@ export function AnswerMarkdown({
       />
       {afterContent}
       <AnswerSources sources={presentation.sources} runId={runId} sourceId={sourceId} />
-    </>
+    </div>
   );
 }
