@@ -246,6 +246,7 @@ test('删除块反馈保留旧行范围、版本与草稿，撤销须确认精�
       await change(document.querySelector('[aria-label="差异反馈说明"]'), '请保留这个分支');
       await click('带入聊天输入框');
       assert.equal(requests.length, 1);
+      assert.match(requests[0], /^请先读取当前副本/);
       assert.match(requests[0], /文件：AKRS.ZX2200\/Main\/Example.cs/);
       assert.match(requests[0], /所查看版本：v1/);
       assert.match(requests[0], /修改前第 2–2 行/);

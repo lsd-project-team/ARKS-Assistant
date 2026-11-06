@@ -54,7 +54,7 @@ export function ReviewDiff({
       .slice(start - 1, Math.min(end, start + 79))
       .join('\n');
     onReview(
-      `/修改代码 请先读取当前副本核对后处理以下差异反馈。\n文件：${diff.path}\n所查看版本：${diff.version}${diff.run_id ? `（历史轮次 ${diff.run_id}）` : ''}\n${side}第 ${start}–${end} 行：\n\`\`\`csharp\n${content}\n\`\`\`\n要求：${comment.trim()}`,
+      `请先读取当前副本核对后处理以下差异反馈。\n文件：${diff.path}\n所查看版本：${diff.version}${diff.run_id ? `（历史轮次 ${diff.run_id}）` : ''}\n${side}第 ${start}–${end} 行：\n\`\`\`csharp\n${content}\n\`\`\`\n要求：${comment.trim()}`,
     );
   };
   return (

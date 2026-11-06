@@ -19,8 +19,7 @@ from app.modules.code_work.files import code_manifest, snapshot  # noqa: E402
 from tests.helpers.accounts import sign_in  # noqa: E402
 
 FILE = "AKRS.ZX2200/DispenseSystem/Controllers/DispenseController.cs"
-QUESTION = """/修改代码
-请在当前对话的独立工程副本中，修改点胶系统 DispenseController.OpenDispensingElectric：
+QUESTION = """请在当前对话的独立工程副本中，修改点胶系统 DispenseController.OpenDispensingElectric：
 点胶阀已经开启时直接返回；只有关闭时才调用底层开阀方法。保留方法签名、关闭操作和状态读取功能。
 请实际完成以下流程：
 1. 先添加需求断言，用 CountCalls 统计真实 DispenseModule.OpenDispensingElectric 的调用次数，

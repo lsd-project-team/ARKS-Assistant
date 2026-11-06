@@ -114,23 +114,18 @@ class AgentGraphBuilder:
             requested_work += "\n此前已授权的请求：" + policy["question"]
         if evidence is not None:
             evidence.user_request = requested_work
-        code_mode = requested_work.lstrip().startswith("/修改代码") or await asyncio.to_thread(
-            runtime.code_work.exists, thread_id
-        )
         retrieval = retrieval or RetrievalBudget(emit)
         document_prompt, attachment_ids = attachment_context(
             runtime.repository, attachment_messages or []
         )
-        # 附件对话允许按用户明确提出的改码要求使用副本工具；上传或阅读本身不触发编辑。
-        code_mode = code_mode or bool(attachment_ids)
         if attachment_ids:
             document_tools = attachment_tools(runtime.repository.attachments, attachment_ids, emit)
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
-        if code_mode:
-            work_tools = code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
-            tools += work_tools
-            retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
+        # 工具始终可用，由模型理解自然语言需求；只有实际调用准备工具才创建副本。
+        work_tools = code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
+        tools += work_tools
+        retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -202,14 +197,7 @@ class AgentGraphBuilder:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         prompt += document_prompt
-        prompt += (
-            CODE_WORK_GUIDANCE
-            if code_mode
-            else (
-                "\n业务源码保持只读，可提供分析与修改建议；"
-                "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
-            )
-        )
+        prompt += CODE_WORK_GUIDANCE
         if debug_issues:
             # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。
             prompt += "\n" + RETRIEVAL_GUIDANCE + "\n" + ANSWER_GUIDANCE
@@ -265,7 +253,7 @@ class AgentGraphBuilder:
                 AnswerFormatValidation(emit),
                 *(
                     [CodeWorkRepair(runtime.code_work, thread_id, run_id, emit)]
-                    if code_mode and run_id and not inspection
+                    if run_id and not inspection
                     else []
                 ),
                 *(

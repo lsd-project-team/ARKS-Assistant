@@ -60,9 +60,7 @@ export function ChatComposer({
   const menuOpen = !dismissed && matches.length > 0;
   const selectedCommand = matches[Math.min(selected, matches.length - 1)];
   const available = (command: ComposerCommand) =>
-    command === '记录问题' ||
-    command === '修改代码' ||
-    (command === 'context' ? canContext : canCompact);
+    command === '记录问题' || (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
   const canSubmit = !sending && !uploading && (command ? available(command) : !!draft.trim());
   function submit() {
@@ -131,7 +129,7 @@ export function ChatComposer({
           setSelected(0);
           setDismissed(false);
         }}
-        placeholder="描述你的问题，或输入 / 使用命令…"
+        placeholder="描述你的问题或修改需求，或输入 / 使用命令…"
         aria-label="对话输入"
         aria-controls={menuOpen ? listId : undefined}
         aria-expanded={menuOpen}

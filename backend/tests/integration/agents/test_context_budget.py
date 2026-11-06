@@ -152,7 +152,8 @@ async def test_tool_overhead_triggers_native_compaction_without_losing_originals
     frame = repository.latest_event(thread["id"], "context_budget")["breakdown"]
     overhead = frame["system"] + frame["tools"] + frame["memory"]
     threshold = min(int(limit * 0.75), int(input_budget(limit, output) * 0.9))
-    length = max(20, (threshold - overhead + 500) // 12)
+    # 工具常驻后可用正文减少，但历史仍须长于摘要保留尾部，否则没有可压缩的旧消息。
+    length = max(input_budget(limit, output) // 48, (threshold - overhead + 500) // 12)
     history = []
     for index in range(6):
         old = repository.create_run(thread["id"], f"原问题{index}:" + "中" * length, [])
@@ -178,7 +179,14 @@ async def test_tool_overhead_triggers_native_compaction_without_losing_originals
         ),
     )
     events = repository.events(following["id"])
-    assert any(row["kind"] == "stage" and row["payload"]["stage"] == "compacting" for row in events)
+    assert any(
+        row["kind"] == "stage" and row["payload"]["stage"] == "compacting" for row in events
+    ), {
+        "overhead": overhead,
+        "threshold": threshold,
+        "history_length": length,
+        "budgets": [row["payload"] for row in events if row["kind"] == "context_budget"],
+    }
     budgets = [row["payload"] for row in events if row["kind"] == "context_budget"]
     assert budgets[0]["tokens"] > threshold
     assert budgets[-1]["tokens"] <= input_budget(limit, output)

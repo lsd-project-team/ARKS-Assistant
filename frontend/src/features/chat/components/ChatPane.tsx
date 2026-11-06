@@ -307,13 +307,6 @@ export function ChatPane({
             ? '压缩未完成，可在对话中重试或继续'
             : '';
   function executeCommand(command: ComposerCommand) {
-    if (command === '修改代码') {
-      setDraft('/修改代码 ');
-      setCodeWorkFile('');
-      setCodeWorkRun('');
-      setCodeWorkOpen(true);
-      return;
-    }
     if (command === '记录问题') {
       setDraft('/记录问题 ');
       composerInput.current?.focus();
@@ -676,15 +669,7 @@ export function ChatPane({
         onClose={() => setCodeWorkOpen(false)}
         onRequest={(request) => {
           setCodeWorkOpen(false);
-          setDraft(
-            request
-              ? draft.trim()
-                ? `${draft}\n\n${request}`
-                : request
-              : draft.startsWith('/修改代码')
-                ? draft
-                : `/修改代码 ${draft}`,
-          );
+          if (request) setDraft(draft.trim() ? `${draft}\n\n${request}` : request);
           composerInput.current?.focus();
         }}
       />

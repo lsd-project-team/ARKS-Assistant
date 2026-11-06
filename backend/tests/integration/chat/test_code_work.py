@@ -74,10 +74,14 @@ class EditingModel(DeterministicModel):
 
 
 @pytest.mark.parametrize("exhausted_retrieval", [False, True])
+@pytest.mark.parametrize("question", ["将 Value 初值改为2", "/修改代码 将 Value 改为2"])
 async def test_agent_uses_writable_copy_tools_without_changing_original(
-    work, services, monkeypatch, exhausted_retrieval
+    work, services, monkeypatch, exhausted_retrieval, question
 ):
-    service, thread, original = work
+    service, _, original = work
+    # 首次请求既没有附件，也没有预先创建的副本，不能由旧入口条件碰巧放行。
+    thread = services[3].create_thread("直接描述新需求")["id"]
+    assert not service.exists(thread)
     model = EditingModel()
     if exhausted_retrieval:
         from app.agents.analysis.retrieval_budget import RetrievalBudget
@@ -101,7 +105,7 @@ async def test_agent_uses_writable_copy_tools_without_changing_original(
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     run = repository.create_run(
         thread,
-        "/修改代码 将 Value 改为2",
+        question,
         [],
         SourceOptions(use_memory=False, use_knowledge=False, use_deepwiki=False).model_dump(),
     )
@@ -122,6 +126,31 @@ async def test_agent_uses_writable_copy_tools_without_changing_original(
             {"read_work_file", "edit_work_file", "verify_code_workspace"} <= tools
             for tools in bound_tools
         )
+
+
+@pytest.mark.parametrize("configured", [False, True])
+async def test_plain_answer_does_not_prepare_or_modify_code_copy(
+    services, tmp_path, monkeypatch, configured
+):
+    if configured:
+        make_work(services, tmp_path)
+    model = DeterministicModel()
+    monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *a, **kw: model)
+    paths, _, workspace, repository, memories, settings = services
+    runtime = AgentRuntime(paths, settings, workspace, repository, memories)
+    thread = repository.create_thread("只解释")["id"]
+    run = repository.create_run(
+        thread,
+        "请解释重复调用的原因，先不要修改代码",
+        [],
+        SourceOptions(use_memory=False, use_knowledge=False, use_deepwiki=False).model_dump(),
+    )
+    events = []
+    answer = await runtime.execute(run, lambda kind, payload: events.append((kind, payload)))
+    assert answer == "测试回复"
+    assert not runtime.code_work.exists(thread)
+    assert not runtime.code_work.folder(thread).exists()
+    assert not any(kind == "code_work" for kind, _ in events)
 
 
 def test_api_edits_export_stale_revert_and_deleted_thread_cleanup(work, services):

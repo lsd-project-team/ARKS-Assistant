@@ -60,7 +60,7 @@ export function RequirementPanel({
             disabled={disabled}
             onClick={() =>
               onRequest(
-                '/修改代码 请先读取当前副本和实际差异，为本次需求添加能检出错误实现的C#断言测试（set_work_requirement），再运行验证；保留已有验收断言。',
+                '请先读取当前副本和实际差异，为本次需求添加能检出错误实现的C#断言测试（set_work_requirement），再运行验证；保留已有验收断言。',
               )
             }
           >
