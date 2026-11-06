@@ -183,7 +183,7 @@ test('默认集中展示单个文件差异，次级信息按需打开且不会�
     assert.equal(document.querySelector('.code-verification'), null);
     assert.equal(document.querySelector('.code-review-comment'), null);
     assert.equal(document.querySelector('.code-work-locations'), null);
-    assert.equal(document.querySelector('[aria-label="代码差异"]').dataset.split, 'true');
+    assert.equal(document.querySelector('[aria-label="代码差异"]').dataset.split, 'false');
     assert.equal(document.querySelector('[aria-label="变更范围"]').value, '');
     assert.equal(document.querySelector('[role="status"]').textContent, '尚未验证');
     assert.equal(document.querySelectorAll('.code-review-top-actions button').length, 4);
@@ -193,7 +193,7 @@ test('默认集中展示单个文件差异，次级信息按需打开且不会�
     assert.equal(button('验证详情'), undefined);
     assert.equal(button('让 AI 修改'), undefined);
     assert.equal(button('收起全部文件'), undefined);
-    assert.ok(button('切换为统一差异'));
+    assert.ok(button('切换为左右对照'));
     assert.ok(button('开启自动换行'));
     await click('工程信息');
     assert.match(document.body.textContent, /当前副本版本 1/);
@@ -267,10 +267,10 @@ test('文件连续排列并延迟读取，统一控制左右对照、换行和�
       );
       await click(`查看修改文件：${path}`);
       await until(() => document.querySelectorAll('[aria-label="代码差异"]').length === 2);
-      await click('切换为统一差异');
+      await click('切换为左右对照');
       assert.ok(
         [...document.querySelectorAll('[aria-label="代码差异"]')].every(
-          (node) => node.dataset.split === 'false',
+          (node) => node.dataset.split === 'true',
         ),
       );
       await click('开启自动换行');
@@ -283,11 +283,11 @@ test('文件连续排列并延迟读取，统一控制左右对照、换行和�
       assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 0);
       await click('展开全部文件');
       assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 2);
-      await click('切换为左右对照');
+      await click('切换为统一差异');
       await click('关闭自动换行');
       assert.ok(
         [...document.querySelectorAll('[aria-label="代码差异"]')].every(
-          (node) => node.dataset.split === 'true' && node.dataset.wrap === 'false',
+          (node) => node.dataset.split === 'false' && node.dataset.wrap === 'false',
         ),
       );
     },

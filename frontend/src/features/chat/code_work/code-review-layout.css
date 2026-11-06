@@ -4,42 +4,6 @@
   padding: 0;
   scrollbar-gutter: auto;
 }
-/* 短差异填满右栏剩余高度；内容较长时仍由外层工作区统一滚动。 */
-.code-work-pane > .code-work-body.code-work-compact {
-  display: flex;
-  flex-direction: column;
-}
-.code-work-pane .code-review-topbar,
-.code-work-pane .code-review-file-header {
-  flex-shrink: 0;
-}
-.code-work-pane .code-review-files {
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 auto;
-  min-width: 0;
-}
-.code-work-pane .code-review-file {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 auto;
-}
-.code-work-pane .code-review-file:has(> .code-review-file-content:not([hidden])) {
-  flex-grow: 1;
-}
-.code-work-pane .code-review-file-content:not([hidden]),
-.code-work-pane .code-review-highlight {
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 auto;
-  min-width: 0;
-}
-.code-work-pane .code-review-highlight > diffs-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 auto;
-  min-width: 0;
-}
 .code-work-dialog > .modal-heading {
   position: absolute;
   width: 1px;

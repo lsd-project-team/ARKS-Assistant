@@ -56,7 +56,7 @@ export function CodeWorkDialog({
   const [runId, setRunId] = useState(initialRunId);
   const [tab, setTab] = useState<'changes' | 'checks' | 'history' | 'merge' | 'info'>('changes');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [view, setView] = useState({ split: true, wrap: false });
+  const [view, setView] = useState({ split: false, wrap: false });
   useEffect(() => {
     if (open) {
       setRunId(initialRunId);
