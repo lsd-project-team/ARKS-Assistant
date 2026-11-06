@@ -6,7 +6,7 @@ export const MAX_ATTACHMENTS = 10;
 export function attachmentError(file: Pick<File, 'name' | 'size'>): string {
   const extension = /\.[^.]+$/.exec(file.name)?.[0].toLowerCase();
   if (!extension || !ACCEPTED_ATTACHMENTS.split(',').includes(extension))
-    return '不支持此格式，请使用 DOCX、文本 PDF、XLSX、CSV、ZIP 或文本文件';
+    return '不支持此格式，请使用 DOCX、PDF、XLSX、CSV、ZIP 或文本文件';
   if (!file.size) return '文件不能为空';
   if (file.size > MAX_FILE_SIZE) return '单个文件不能超过 32 MB';
   return '';

@@ -9,6 +9,7 @@ from pathlib import PurePosixPath
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
+from app.infrastructure.pdf_ocr import OcrLimitError, PdfOcrBudget
 from app.modules.handover.infrastructure.parsers.archive import MAX_EXPANDED, safe_archive
 from app.modules.handover.infrastructure.parsers.docx import parse_docx
 from app.modules.handover.infrastructure.parsers.pdf import parse_pdf
@@ -39,7 +40,7 @@ def filename_for(filename):
     if not name or len(name) > 250 or any(ord(char) < 32 for char in name):
         raise ValueError("文件名为空、过长或含控制字符")
     if PurePosixPath(name).suffix.lower() not in EXTENSIONS:
-        raise ValueError("支持 DOCX、文本 PDF、XLSX、CSV、ZIP 和常见文本文件；DOC 请转 DOCX")
+        raise ValueError("支持 DOCX、PDF、XLSX、CSV、ZIP 和常见文本文件；DOC 请转 DOCX")
     return name
 
 
@@ -142,7 +143,7 @@ def include_office_expansion(data, expanded, entries):
     return expanded, entries
 
 
-def parse_zip(data):
+def parse_zip(data, ocr_budget):
     parts, skipped, partial, read = TextParts(), [], [], 0
     with safe_archive(data) as archive:
         members = archive.infolist()
@@ -165,8 +166,10 @@ def parse_zip(data):
                 member_data = archive.read(item)
                 if extension in {".docx", ".xlsx"}:
                     expanded, entries = include_office_expansion(member_data, expanded, entries)
-                _, content, status, notes = parse_attachment(member_data, path)
-            except AttachmentLimitError:
+                _, content, status, notes = parse_attachment(
+                    member_data, path, ocr_budget=ocr_budget
+                )
+            except (AttachmentLimitError, OcrLimitError):
                 raise
             except (ValueError, zipfile.BadZipFile, RuntimeError, NotImplementedError) as error:
                 skipped.append(f"{path}（解析失败：{error}）")
@@ -189,14 +192,16 @@ def parse_zip(data):
     return parts.text(), "partial" if skipped or partial else "readable", notes
 
 
-def parse_attachment(data, filename):
+def parse_attachment(data, filename, *, ocr_budget=None):
     try:
-        return _parse_attachment(data, filename)
+        return _parse_attachment(
+            data, filename, ocr_budget if ocr_budget is not None else PdfOcrBudget()
+        )
     except (zipfile.BadZipFile, RuntimeError, NotImplementedError) as error:
         raise ValueError("压缩文档损坏或使用不支持的压缩方式，请重新导出后上传") from error
 
 
-def _parse_attachment(data, filename):
+def _parse_attachment(data, filename, ocr_budget):
     if not data or len(data) > MAX_UPLOAD:
         raise ValueError("文件不能为空且单个文件不能超过 32 MB")
     filename = filename_for(filename)
@@ -204,17 +209,21 @@ def _parse_attachment(data, filename):
     if extension in {".xlsx", ".csv"}:
         content, status, notes = parse_spreadsheet(data, extension)
     elif extension == ".zip":
-        content, status, notes = parse_zip(data)
+        content, status, notes = parse_zip(data, ocr_budget)
     elif extension in {".pdf", ".docx"}:
-        parser = parse_pdf if extension == ".pdf" else parse_docx
         try:
-            content, status, notes, _ = parser(data)
+            if extension == ".pdf":
+                content, status, notes, _ = parse_pdf(data, ocr=ocr_budget)
+            else:
+                content, status, notes, _ = parse_docx(data)
         except ValueError:
             raise
         except Exception as error:
             raise ValueError("文档损坏或无法解析，请重新导出后上传") from error
         if status == "needs_ocr":
-            raise ValueError("文档没有可提取文字，请使用文本版文档；扫描件和图片识别暂未接入")
+            if extension == ".pdf":
+                raise ValueError("扫描件 PDF 经 OCR 后仍没有可读取文字。" + notes)
+            raise ValueError("Word 正文没有可读取文字；内嵌图片识别暂未接入")
     else:
         text, _ = decode_source(data)
         if not text.strip():

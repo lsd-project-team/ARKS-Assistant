@@ -167,7 +167,7 @@ class DocumentEditingModel(DeterministicModel):
             name, args = "read_chat_attachment", {"attachment_id": self.attachment_id}
         elif last.name == "read_chat_attachment":
             result = json.loads(last.content)
-            self.target = int(re.search(r"NewValue = (\d+)", result["content"])[1])
+            self.target = int(re.search(r"NewValue\s*=\s*(\d+)", result["content"])[1])
             name = "prepare_code_workspace"
         elif last.name == "prepare_code_workspace":
             name, args = "read_work_file", {"path": FILE}
@@ -221,6 +221,8 @@ class DocumentEditingModel(DeterministicModel):
         (".docx", 37, True),
         (".xlsx", 41, True),
         (".csv", 43, True),
+        (".scan.pdf", 47, False),
+        (".scan.pdf", 47, True),
     ],
 )
 async def test_document_content_drives_actual_copy_edit(

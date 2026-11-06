@@ -3,9 +3,11 @@
 import io
 import zipfile
 from functools import lru_cache
+from pathlib import Path
 from xml.sax.saxutils import escape
 
 from openpyxl import Workbook
+from PIL import Image
 from pypdf import PdfWriter
 from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 
@@ -21,6 +23,13 @@ def zip_bytes(files):
 @lru_cache(maxsize=64)
 def document_bytes(extension, value=7):
     text = f"NewValue = {value}"
+    if extension == ".scan.pdf":
+        if value != 47:
+            raise ValueError("固定扫描样例的目标值为 47")
+        output = io.BytesIO()
+        with Image.open(Path(__file__).parents[1] / "fixtures/ocr/scan-zh-en.png") as image:
+            image.convert("RGB").save(output, format="PDF", resolution=150)
+        return output.getvalue()
     if extension == ".xlsx":
         book = Workbook()
         sheet = book.active
