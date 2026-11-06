@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { SelectedLineRange } from '@pierre/diffs';
 import { Button } from '../../../shared/ui/ui';
-import type { WorkDiff, WorkHunk } from './types';
+import type { WorkDiff } from './types';
 
 const CodeDiffView = lazy(() => import('./CodeDiffView'));
 class DiffBoundary extends Component<
@@ -19,15 +19,11 @@ class DiffBoundary extends Component<
 
 export function ReviewDiff({
   diff,
-  disabled,
-  onRevertHunk,
   onReview,
   compact = false,
   view,
 }: {
   diff: WorkDiff;
-  disabled?: boolean;
-  onRevertHunk?: (hunk: WorkHunk) => void;
   onReview?: (request: string) => void;
   compact?: boolean;
   view?: { split: boolean; wrap: boolean };
@@ -35,7 +31,6 @@ export function ReviewDiff({
   const [split, setSplit] = useState(false);
   const [selected, setSelected] = useState<SelectedLineRange | null>(null);
   const [comment, setComment] = useState('');
-  const [confirm, setConfirm] = useState('');
   const [selectionHint, setSelectionHint] = useState('');
   const onSelect = useCallback((range: SelectedLineRange | null) => {
     const mixed = range?.endSide && range.endSide !== (range.side || 'additions');
@@ -45,10 +40,8 @@ export function ReviewDiff({
   useEffect(() => {
     setSelected(null);
     setComment('');
-    setConfirm('');
   }, [diff.path, diff.version, diff.run_id]);
   const fallback = <pre aria-label="代码差异">{diff.diff}</pre>;
-  const HunkContainer = compact ? 'details' : 'div';
   const requestReview = () => {
     if (!selected || !comment.trim() || !onReview) return;
     const start = Math.min(selected.start, selected.end),
@@ -101,62 +94,6 @@ export function ReviewDiff({
           </Suspense>
         </DiffBoundary>
       </div>
-      {!!diff.hunks?.length && (
-        <HunkContainer className={compact ? 'code-review-hunk-actions' : undefined}>
-          {compact && <summary>修改块操作</summary>}
-          <div className="code-review-hunks" aria-label="修改块">
-            {diff.hunks.map((hunk, index) => (
-              <div key={hunk.id}>
-                <span>
-                  修改块 {index + 1} · 新版 L{hunk.new_start}–
-                  {hunk.new_start + Math.max(1, hunk.new_lines) - 1}
-                </span>
-                {onReview && (
-                  <Button
-                    onClick={() =>
-                      onSelect(
-                        hunk.new_lines
-                          ? {
-                              start: hunk.new_start,
-                              end: hunk.new_start + hunk.new_lines - 1,
-                              side: 'additions',
-                            }
-                          : {
-                              start: hunk.old_start,
-                              end: hunk.old_start + Math.max(1, hunk.old_lines) - 1,
-                              side: 'deletions',
-                            },
-                      )
-                    }
-                  >
-                    反馈此处
-                  </Button>
-                )}
-                {onRevertHunk && !diff.historical && (
-                  <Button disabled={disabled} onClick={() => setConfirm(hunk.id)}>
-                    撤销此块
-                  </Button>
-                )}
-                {confirm === hunk.id && (
-                  <span className="code-hunk-confirm" role="alert">
-                    确认撤销这个修改块？
-                    <Button
-                      disabled={disabled}
-                      onClick={() => {
-                        onRevertHunk?.(hunk);
-                        setConfirm('');
-                      }}
-                    >
-                      确认撤销
-                    </Button>
-                    <Button onClick={() => setConfirm('')}>保留</Button>
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </HunkContainer>
-      )}
       {compact && selectionHint && <p className="muted">{selectionHint}</p>}
       {onReview && (!compact || selected) && (
         <div className="code-review-comment">

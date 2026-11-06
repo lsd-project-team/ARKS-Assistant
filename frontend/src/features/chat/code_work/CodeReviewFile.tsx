@@ -78,19 +78,6 @@ export function CodeReviewFile({
       onChanged();
     },
   });
-  const revertHunk = useMutation({
-    mutationKey: [...key, 'edit'],
-    mutationFn: ({ version, hunkId }: { version: string; hunkId: string }) =>
-      api(
-        `${base}/revert-hunk`,
-        {
-          method: 'POST',
-          body: jsonBody({ path: file.path, version, hunk_id: hunkId }),
-        },
-        projectId,
-      ),
-    onSuccess: onChanged,
-  });
   const copyPath = async () => {
     try {
       await navigator.clipboard.writeText(file.path);
@@ -150,23 +137,12 @@ export function CodeReviewFile({
       )}
       <div className="code-review-file-content" hidden={!expanded}>
         {diff.data ? (
-          <ReviewDiff
-            compact
-            view={view}
-            diff={diff.data}
-            disabled={disabled}
-            onReview={onReview}
-            onRevertHunk={
-              !runId
-                ? (hunk) => revertHunk.mutate({ version: diff.data!.version, hunkId: hunk.id })
-                : undefined
-            }
-          />
+          <ReviewDiff compact view={view} diff={diff.data} onReview={onReview} />
         ) : (
           expanded && !diff.error && <p className="muted code-review-loading">正在读取差异…</p>
         )}
       </div>
-      <ErrorText error={diff.error || revert.error || revertHunk.error || copyError} />
+      <ErrorText error={diff.error || revert.error || copyError} />
     </section>
   );
 }

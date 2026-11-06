@@ -99,13 +99,6 @@
   background: var(--panel);
   font-size: 12px;
 }
-.code-review-hunk-actions > summary {
-  cursor: pointer;
-  color: var(--muted);
-  padding: 8px 10px;
-  font-size: 12px;
-  border-top: 1px solid var(--border);
-}
 .code-work-panel-host,
 .code-work-pane {
   min-width: 0;
@@ -344,25 +337,6 @@
 }
 .code-review-highlight diffs-container {
   display: block;
-}
-.code-review-hunks {
-  display: grid;
-  gap: 8px;
-  padding: 10px;
-  border-top: 1px solid var(--border);
-  font-size: 12px;
-}
-.code-review-hunks > div {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-.code-hunk-confirm {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
 }
 .code-review-comment {
   padding: 10px;

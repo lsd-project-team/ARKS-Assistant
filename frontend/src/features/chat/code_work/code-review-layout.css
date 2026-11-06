@@ -213,11 +213,6 @@
 .code-work-compact > :not(.code-review-topbar):not(.code-review-files):not(.error-text) {
   margin: 12px;
 }
-.code-review-file .code-review-hunk-actions > summary {
-  border-top: 0;
-  font-size: 11px;
-  padding-block: 6px;
-}
 @container (max-width: 440px) {
   .code-work-primary.code-review-topbar {
     flex-wrap: wrap;

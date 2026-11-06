@@ -38,7 +38,7 @@ const compiled = await build({
           loader: 'jsx',
           resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
           contents: path.endsWith('CodeDiffView')
-            ? 'export default function CodeDiffView({diff,split,wrap}) { return <pre aria-label="代码差异" data-split={split} data-wrap={wrap}>{diff.diff}</pre>; }'
+            ? 'export default function CodeDiffView({diff,split,wrap,onSelect}) { boundary.select = onSelect; return <pre aria-label="代码差异" data-split={split} data-wrap={wrap}>{diff.diff}</pre>; }'
             : path.endsWith('AuthContext')
               ? 'export const useAuth = () => ({ session: { user: { role: boundary.role } } });'
               : path.endsWith('/ui')
@@ -68,6 +68,7 @@ async function until(condition) {
 
 async function mounted(props, verify, setup = () => {}) {
   boundary.calls = [];
+  boundary.select = null;
   boundary.role = 'user';
   boundary.status = {
     exists: true,
@@ -555,12 +556,16 @@ const change = async (element, value) => {
   });
 };
 
-test('删除块反馈保留旧行范围、版本与草稿，撤销须确认精确修改块', async () => {
+test('移除修改块操作后仍可通过行号选区反馈，保留旧行范围与版本', async () => {
   const requests = [];
   await mounted(
     { onRequest: (text) => requests.push(text) },
     async () => {
-      await click('反馈此处');
+      assert.equal(document.querySelector('[aria-label="修改块"]'), null);
+      assert.equal(button('反馈此处'), undefined);
+      assert.equal(button('撤销此块'), undefined);
+      assert.equal(document.querySelector('.code-review-comment'), null);
+      await act(async () => boundary.select({ start: 2, end: 2, side: 'deletions' }));
       assert.match(document.querySelector('.code-review-comment').textContent, /修改前 L2–2/);
       await change(document.querySelector('[aria-label="差异反馈说明"]'), '请保留这个分支');
       await click('带入聊天输入框');
@@ -570,18 +575,9 @@ test('删除块反馈保留旧行范围、版本与草稿，撤销须确认精�
       assert.match(requests[0], /所查看版本：v1/);
       assert.match(requests[0], /修改前第 2–2 行/);
       assert.match(requests[0], /removed/);
-      await click('撤销此块');
-      assert.equal(
-        boundary.calls.some((call) => call.url.endsWith('/revert-hunk')),
-        false,
+      assert.ok(
+        boundary.calls.every(({ options }) => !options?.method || options.method === 'GET'),
       );
-      await click('确认撤销');
-      const call = boundary.calls.find((call) => call.url.endsWith('/revert-hunk'));
-      assert.deepEqual(JSON.parse(call.options.body), {
-        path,
-        version: 'v1',
-        hunk_id: 'hunk-exact',
-      });
     },
     () => {
       boundary.diff.before = 'kept\nremoved\n';
