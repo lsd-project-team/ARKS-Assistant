@@ -32,3 +32,7 @@
 20题套件须先逐题对照资料、源码和浏览器实际渲染填写 `grades.json`，再运行 `python -m scripts.verification.answer_quality.report 新批次目录 基线目录` 生成全部20题前后变化；题集或数据指纹不同会拒绝比较，不能拼接不同版本的较好答案。最新结果见[筛选、事实核查与排版分离复测](../../docs/verification/answer-quality-split-20261020.md)：准确性改善，阅读均分未提升，保留全部失败与退步题。
 
 `rich_content_ui.py` 默认仅使用隔离数据与可控模型；显式 `--live` 使用当前真实模型和只读 `trunk/`，会消耗额度。`--directory output/<已有隔离目录>` 可保留结果重启，`--live-token-budget` 仅设置临时项目额度，默认2,000,000；不清零已用量。真实模型页使用 `localhost`，正式历史页使用 `127.0.0.1`，避免登录 Cookie 相互覆盖。执行与限制见[Rich Content 真实验收](../../docs/verification/chat-rich-content-live-20261020.md)。
+
+晶圆厂商文档适配使用 `wafer_vendor.py`，通过真实聊天 API 和当前模型在隔离目录中运行。先执行 `--live --case clarify --output output/<新短目录>`，再执行 `--live --case adapt --spec backend/tests/fixtures/wafer_vendor_b_v2.md --output output/<同一目录>`。`--token-budget` 只改变该测试项目的有限额度，保留已用量；`--resume` 仅继续最近失败运行，不重建对话或覆盖旧报告。`adapt-feedback` 与 `adapt-test-fix` 分别用于记录明确的人工纠错输入；后者按当前用例实际 id/version 更新。
+
+完成本轮编译后运行 `wafer_vendor_independent.py output/<同一目录>`，独立检查转换、异常、缓存、实际导入入口及真实 WaferMap 库读取。`--allow-failed-checks` 仅用于已编译但模型断言失败时诊断，不代表整轮通过；`--output-name` 保存新一轮独立结果且禁止覆盖旧目录。历史 v1 模拟规范有已确认的枚举错误，保留为失败证据；新验收使用 v2。完整范围见[晶圆厂商适配验收](../../docs/verification/wafer-vendor-20261106.md)。

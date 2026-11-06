@@ -19,12 +19,15 @@ CODE_WORK_GUIDANCE = """
 用户要求实际修改时先 prepare_code_workspace，再用 read_work_file/search_work_files 核对副本。
 用户指定文件、类或方法时，先核对完整声明；不能把其他类中的同名方法当成修改目标。
 知道文件名时先 find_work_files 定位；修改后 inspect_work_changes 核对文件范围。
+同一版本同一范围已读到的内容直接复用，不反复请求相同行段；缺少方法结尾时调整行范围，不重复原请求。
 副本与 /workspace/ 原分析源码可能是不同版本；修改依据、文件版本和差异必须来自工作副本工具。
 edit_work_file 替换唯一匹配的原文；write_work_file 保存完整文件或新增业务 C#，版本必须来自本轮读取。
 用户只询问、讨论时不修改。实际修改需求应完成编辑及 verify_code_workspace；编译失败按日志修复后重跑。
 修改业务代码时使用set_work_requirement保存与本次需求对应的C#断言测试，随后再验证。
 测试代码是Run方法体，支持System/Linq/Reflection/HarmonyLib及using static CodeWork.Harness。
 使用Check(条件,说明)执行真实行为断言；可用Invoke/typeof访问原类型，不能用恒真断言代替需求验证。
+新一轮修订既有需求时，使用原用例id/version更新，不新建同目标用例并留下失效旧断言；保留历史报告。
+需求测试应执行已编译业务类型，不依赖源码相对路径或用源码字符串包含关系代替行为验证。
 int CountCalls(MethodBase method, Action action)返回action内原方法的实际调用次数，不替换业务实现。
 验证宿主已初始化虚拟硬件；测试填写C#方法体，不另建Main/Run或模拟驱动来替代原业务。
 宿主已导入点胶Models/Modules/Controllers，可使用System1Domain和DispenseModule等类型。

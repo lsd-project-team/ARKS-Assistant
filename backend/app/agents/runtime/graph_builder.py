@@ -20,6 +20,7 @@ from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.answer_review import AnswerReviewNote
 from app.agents.runtime.artifacts import thread_artifacts
+from app.agents.runtime.code_work_reads import CodeWorkReadProgress
 from app.agents.runtime.code_work_repair import CodeWorkRepair
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
@@ -252,7 +253,10 @@ class AgentGraphBuilder:
                 AnswerReviewNote(emit),
                 AnswerFormatValidation(emit),
                 *(
-                    [CodeWorkRepair(runtime.code_work, thread_id, run_id, emit)]
+                    [
+                        CodeWorkReadProgress(emit),
+                        CodeWorkRepair(runtime.code_work, thread_id, run_id, emit),
+                    ]
                     if run_id and not inspection
                     else []
                 ),
