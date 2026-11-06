@@ -1,4 +1,19 @@
 /* 固定顶部和底部，项目与最近对话共享一个滚动区。 */
+.legacy-visual .app-navigation {
+  --navigation-font-size: 16px;
+  --navigation-meta-font-size: 13px;
+}
+/* 统一主文字；主题中的字号也读取同一变量，避免加载顺序造成大小不一。 */
+.legacy-visual
+  .app-navigation
+  :is(.workspace-brand strong, .workspace-sections > button, .sidebar-views button, .project-name) {
+  font-size: var(--navigation-font-size);
+}
+.legacy-visual .app-navigation .workspace-brand strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .legacy-visual .app-navigation .sidebar-views {
   flex-shrink: 0;
   margin: 8px 0 4px;
@@ -9,7 +24,7 @@
   padding: 4px 4px 6px;
 }
 .legacy-visual .app-navigation :is(.sidebar-heading strong, .sidebar-section-title > span) {
-  font-size: 14px;
+  font-size: var(--navigation-meta-font-size);
 }
 .legacy-visual .app-navigation .sidebar-scroll {
   min-width: 0;
@@ -91,7 +106,7 @@
   height: 32px;
   padding: 4px 0;
   text-align: left;
-  font-size: 13px;
+  font-size: var(--navigation-font-size, 13px);
   font-weight: 450;
 }
 .project-name svg {
@@ -120,7 +135,7 @@
 .legacy-visual .app-navigation .sidebar .thread-select {
   width: 100%;
   padding: 6px 32px 6px 8px;
-  font-size: 13px;
+  font-size: var(--navigation-font-size);
   line-height: 20px;
 }
 .legacy-visual .app-navigation .sidebar .thread-row.active {
@@ -162,7 +177,7 @@
   border-radius: 6px;
   background: transparent;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--navigation-meta-font-size, 12px);
   padding: 5px 8px;
   text-align: left;
 }
@@ -176,7 +191,7 @@
 .project-no-chats,
 .legacy-visual .app-navigation .sidebar-empty {
   display: block;
-  font-size: 12px;
+  font-size: var(--navigation-meta-font-size, 12px);
   line-height: 1.6;
   padding: 6px 8px;
   margin: 0;

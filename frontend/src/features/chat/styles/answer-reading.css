@@ -1,6 +1,6 @@
 /* 回答使用独立的阅读色阶，不覆盖用户提问、源码编辑器或图表的业务配色。 */
 .answer-reading {
-  --answer-font-size: 16px;
+  --answer-font-size: 17px;
   --answer-line-height: 1.85;
   --answer-space: 18px;
   --answer-section-space: 32px;
@@ -144,7 +144,11 @@
 }
 .answer-reading .answer-code pre {
   padding: 16px;
-  font: 13.5px/1.75 var(--font-code);
+}
+/* 项目壳的 Markdown 样式按需加载；明确回复上下文，避免字号再次被 12px 覆盖。 */
+.answer-reading .markdown .answer-code pre,
+.answer-reading .answer-code pre {
+  font: 14px/1.75 var(--font-code);
 }
 /* 仅设置代码默认字色；语法 token 继续使用已有深浅主题高亮。 */
 .answer-reading .answer-code pre code {
@@ -153,7 +157,7 @@
 }
 
 .answer-reading :is(.markdown table, .rich-table) {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.75;
   color: var(--answer-text);
 }
@@ -175,6 +179,20 @@
 .answer-reading :is(.rich-description, .rich-status),
 .answer-reading .rich-overview-item .markdown {
   color: var(--answer-text);
+}
+.answer-reading :is(.rich-description, .rich-status) {
+  font-size: var(--answer-font-size);
+  line-height: var(--answer-line-height);
+}
+/* 原卡片正文使用重要声明；覆盖只限定在回答中，其他页面继续沿用原字号。 */
+.answer-reading :is(.rich-overview-item, .rich-step-body) .markdown {
+  font-size: var(--answer-font-size) !important;
+}
+.answer-reading .rich-content h3 {
+  font-size: 1.12em;
+}
+.answer-reading .rich-content h4 {
+  font-size: 1em;
 }
 .answer-reading .rich-step-number {
   color: var(--answer-link);
@@ -215,7 +233,7 @@
 
 @container (max-width: 480px) {
   .answer-reading {
-    --answer-font-size: 15.5px;
+    --answer-font-size: 16px;
     --answer-line-height: 1.8;
     --answer-section-space: 28px;
   }
