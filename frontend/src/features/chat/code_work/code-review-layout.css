@@ -94,7 +94,6 @@
   flex-shrink: 0;
 }
 .code-review-icon,
-.code-review-top-actions .code-work-options > .button,
 .code-verification-summary.code-verification-inline {
   display: inline-flex;
   align-items: center;

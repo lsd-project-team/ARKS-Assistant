@@ -148,15 +148,12 @@ const button = (text) =>
     (node) => node.textContent === text || node.getAttribute('aria-label') === text,
   );
 const click = async (text) => {
-  if (!button(text)) {
+  if (text === '撤销此文件' && !button(text)) {
     await act(async () => {
-      const trigger =
-        text === '撤销此文件'
-          ? document
-              .querySelector('.code-review-file-content:not([hidden])')
-              ?.closest('.code-review-file')
-              .querySelector('[aria-haspopup="menu"]')
-          : button('更多变更操作');
+      const trigger = document
+        .querySelector('.code-review-file-content:not([hidden])')
+        ?.closest('.code-review-file')
+        .querySelector('[aria-haspopup="menu"]');
       trigger?.click();
     });
   }
@@ -175,7 +172,7 @@ const setStatus = async (cache, status) => {
   });
 };
 
-test('默认集中展示单个文件差异，次级信息按需打开且不会触发写入', async () => {
+test('状态栏直接提供对照切换与合并，移除更多菜单和其他菜单入口', async () => {
   await mounted({}, async () => {
     assert.equal(document.querySelector('nav[aria-label="修改文件"]'), null);
     assert.equal(document.querySelectorAll('.code-review-file').length, 1);
@@ -186,31 +183,28 @@ test('默认集中展示单个文件差异，次级信息按需打开且不会�
     assert.equal(document.querySelector('[aria-label="代码差异"]').dataset.split, 'false');
     assert.equal(document.querySelector('[aria-label="变更范围"]').value, '');
     assert.equal(document.querySelector('[role="status"]').textContent, '尚未验证');
-    assert.equal(document.querySelectorAll('.code-review-top-actions button').length, 4);
+    assert.equal(document.querySelectorAll('.code-review-top-actions button').length, 5);
     assert.equal(button('刷新变更'), undefined);
     assert.equal(button(`复制文件路径：${path}`), undefined);
-    await click('更多变更操作');
+    assert.equal(button('更多变更操作'), undefined);
     assert.equal(button('验证详情'), undefined);
     assert.equal(button('让 AI 修改'), undefined);
     assert.equal(button('收起全部文件'), undefined);
     assert.ok(button('切换为左右对照'));
-    assert.ok(button('开启自动换行'));
-    await click('工程信息');
-    assert.match(document.body.textContent, /当前副本版本 1/);
-    assert.ok(document.querySelector('.code-work-locations'));
-    await click('返回变更');
-    await click('历史');
-    assert.match(document.querySelector('.code-review-page-title').textContent, /修改历史/);
-    await click('返回变更');
+    for (const label of ['开启自动换行', '历史', '下载修改', '工程信息']) {
+      assert.equal(button(label), undefined);
+    }
+    assert.ok(button('切换为左右对照').closest('.code-review-top-actions'));
+    assert.ok(button('合并').closest('.code-review-top-actions'));
     assert.equal(document.querySelectorAll('.code-review-file').length, 1);
     assert.ok(boundary.calls.every(({ options }) => !options?.method || options.method === 'GET'));
   });
 });
 
-test('更多菜单支持方向键、Escape 和外部关闭，Escape 不会连带关闭面板', async () => {
+test('文件菜单保留方向键、Escape 和外部关闭，Escape 不会连带关闭面板', async () => {
   let closed = 0;
   await mounted({ embedded: true, onClose: () => closed++ }, async () => {
-    await click('更多变更操作');
+    await click(`文件操作：${path}`);
     const menu = document.querySelector('[role="menu"]');
     const first = menu.querySelector('button');
     assert.equal(document.activeElement, first);
@@ -225,14 +219,14 @@ test('更多菜单支持方向键、Escape 和外部关闭，Escape 不会连带
         ),
       );
     await key(first, 'ArrowDown');
-    assert.equal(document.activeElement.textContent, '开启自动换行');
+    assert.equal(document.activeElement.textContent, '撤销此文件');
     await key(document.activeElement, 'End');
-    assert.equal(document.activeElement.textContent, '工程信息');
+    assert.equal(document.activeElement.textContent, '撤销此文件');
     await key(document.activeElement, 'Escape');
     assert.equal(document.querySelector('[role="menu"]'), null);
-    assert.equal(document.activeElement, button('更多变更操作'));
+    assert.equal(document.activeElement, button(`文件操作：${path}`));
     assert.equal(closed, 0);
-    await click('更多变更操作');
+    await click(`文件操作：${path}`);
     await act(async () =>
       document.body.dispatchEvent(new window.Event('pointerdown', { bubbles: true })),
     );
@@ -240,7 +234,7 @@ test('更多菜单支持方向键、Escape 和外部关闭，Escape 不会连带
   });
 });
 
-test('文件连续排列并延迟读取，统一控制左右对照、换行和展开收起', async () => {
+test('文件连续排列并延迟读取，状态栏统一切换对照，文件标题分别展开收起', async () => {
   const second = 'AKRS.ZX2200/Controllers/Valve.cs';
   await mounted(
     { initialPath: second },
@@ -273,18 +267,13 @@ test('文件连续排列并延迟读取，统一控制左右对照、换行和�
           (node) => node.dataset.split === 'true',
         ),
       );
-      await click('开启自动换行');
-      assert.ok(
-        [...document.querySelectorAll('[aria-label="代码差异"]')].every(
-          (node) => node.dataset.wrap === 'true',
-        ),
-      );
-      await click('收起全部文件');
+      await click(`查看修改文件：${path}`);
+      await click(`查看修改文件：${second}`);
       assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 0);
-      await click('展开全部文件');
+      await click(`查看修改文件：${path}`);
+      await click(`查看修改文件：${second}`);
       assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 2);
       await click('切换为统一差异');
-      await click('关闭自动换行');
       assert.ok(
         [...document.querySelectorAll('[aria-label="代码差异"]')].every(
           (node) => node.dataset.split === 'false' && node.dataset.wrap === 'false',

@@ -1,6 +1,5 @@
-import { ArrowLeft, Play, Square, X } from 'lucide-react';
+import { ArrowLeft, Columns2, GitMerge, Play, Square, X } from 'lucide-react';
 import { Button } from '../../../shared/ui/ui';
-import { CodeWorkMenu } from './CodeWorkMenu';
 import { ReviewLineCounts } from './CodeReviewFile';
 import { VerificationSummary } from './VerificationSummary';
 import type { WorkStatus, WorkSummary } from './types';
@@ -20,7 +19,9 @@ export function CodeReviewToolbar({
   cancelPending,
   onVerify,
   onCancel,
-  items,
+  split,
+  onToggleView,
+  onMerge,
 }: {
   title?: string;
   onBack: () => void;
@@ -36,7 +37,9 @@ export function CodeReviewToolbar({
   cancelPending: boolean;
   onVerify: () => void;
   onCancel: () => void;
-  items: Parameters<typeof CodeWorkMenu>[0]['items'];
+  split: boolean;
+  onToggleView: () => void;
+  onMerge: () => void;
 }) {
   // 历史按真实运行编号去重；没有逐轮记录时只提供累计修改，避免伪造“上一轮”。
   const turns = [...(status?.history || [])]
@@ -78,7 +81,27 @@ export function CodeReviewToolbar({
         </div>
       )}
       <div className="code-review-top-actions" role="group" aria-label="变更操作">
-        <CodeWorkMenu items={items} />
+        <button
+          className="code-review-icon"
+          type="button"
+          aria-label={split ? '切换为统一差异' : '切换为左右对照'}
+          title={split ? '切换为统一差异' : '切换为左右对照'}
+          aria-pressed={split}
+          disabled={!!title || !status?.exists}
+          onClick={onToggleView}
+        >
+          <Columns2 size={15} />
+        </button>
+        <button
+          className="code-review-icon"
+          type="button"
+          aria-label="合并"
+          title="合并"
+          disabled={!status?.exists || title === '合并'}
+          onClick={onMerge}
+        >
+          <GitMerge size={15} />
+        </button>
         {status?.exists && !runId && (
           <>
             <VerificationSummary inline status={status} onDetails={onDetails} />

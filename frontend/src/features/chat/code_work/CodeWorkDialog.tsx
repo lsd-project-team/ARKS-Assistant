@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIsMutating, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileCode2 } from 'lucide-react';
-import { api, apiUrl } from '../../../app/api/client';
+import { api } from '../../../app/api/client';
 import { useAuth } from '../../auth/AuthContext';
-import { sessionFetch } from '../../auth/session';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
-import { CodeEnvironmentPanel } from './CodeEnvironmentPanel';
 import { verificationBusy, type WorkStatus, type WorkSummary } from './types';
-import { WorkspaceInfo } from './WorkspaceInfo';
 import { RequirementPanel } from './RequirementPanel';
-import { WorkHistory } from './WorkHistory';
 import { WorkRecovery } from './WorkRecovery';
 import { MergePanel } from './MergePanel';
 import { VerificationReport } from './VerificationReport';
@@ -54,9 +50,9 @@ export function CodeWorkDialog({
     refetchInterval: open ? 2000 : false,
   });
   const [runId, setRunId] = useState(initialRunId);
-  const [tab, setTab] = useState<'changes' | 'checks' | 'history' | 'merge' | 'info'>('changes');
+  const [tab, setTab] = useState<'changes' | 'checks' | 'merge'>('changes');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [view, setView] = useState({ split: false, wrap: false });
+  const [split, setSplit] = useState(false);
   useEffect(() => {
     if (open) {
       setRunId(initialRunId);
@@ -87,7 +83,6 @@ export function CodeWorkDialog({
       : undefined;
   const defaultPath = files?.find((file) => file.path === initialPath)?.path || files?.[0]?.path;
   const isExpanded = (path: string) => expanded[path] ?? path === defaultPath;
-  const allCollapsed = !files?.some((file) => isExpanded(file.path));
   const editing = useIsMutating({ mutationKey: [...key, 'edit'] }) > 0;
   const changeScope = (id: string) => {
     setRunId(id);
@@ -108,33 +103,12 @@ export function CodeWorkDialog({
     mutationFn: () => api<WorkStatus>(`${base}/cancel`, { method: 'POST' }, projectId),
     onSuccess: changed,
   });
-  const download = useMutation({
-    mutationFn: async () => {
-      const response = await sessionFetch(
-        apiUrl(`${base}/export?revision=${status!.revision}`, projectId),
-      );
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || '下载失败');
-      }
-      const url = URL.createObjectURL(await response.blob());
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = 'code-changes.zip';
-      anchor.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    },
-  });
   const verifying = verificationBusy(status?.verification);
   const blocked = busy || verifying || editing || !!status?.recovery?.length;
   const body = (
     <div className="code-work-body code-work-compact">
       <CodeReviewToolbar
-        title={
-          tab === 'changes'
-            ? undefined
-            : { checks: '验证详情', history: '修改历史', merge: '合并', info: '工程信息' }[tab]
-        }
+        title={tab === 'changes' ? undefined : { checks: '验证详情', merge: '合并' }[tab]}
         onBack={() => setTab('changes')}
         status={status}
         runId={runId}
@@ -148,63 +122,10 @@ export function CodeWorkDialog({
         cancelPending={cancel.isPending}
         onVerify={() => verify.mutate()}
         onCancel={() => cancel.mutate()}
-        items={[
-          ...(tab === 'changes' && !!files?.length
-            ? [
-                {
-                  label: view.split ? '切换为统一差异' : '切换为左右对照',
-                  onSelect: () => setView({ ...view, split: !view.split }),
-                },
-                {
-                  label: view.wrap ? '关闭自动换行' : '开启自动换行',
-                  onSelect: () => setView({ ...view, wrap: !view.wrap }),
-                },
-                ...((files?.length || 0) > 1
-                  ? [
-                      {
-                        label: allCollapsed ? '展开全部文件' : '收起全部文件',
-                        onSelect: () =>
-                          setExpanded(
-                            Object.fromEntries(
-                              (files || []).map((file) => [file.path, allCollapsed]),
-                            ),
-                          ),
-                      },
-                    ]
-                  : []),
-              ]
-            : []),
-          ...(runId
-            ? [
-                {
-                  label: '当前验证详情',
-                  onSelect: () => setTab('checks'),
-                  disabled: !status?.exists,
-                },
-              ]
-            : []),
-          { label: '历史', onSelect: () => setTab('history'), disabled: !status?.exists },
-          { label: '合并', onSelect: () => setTab('merge'), disabled: !status?.exists },
-          {
-            label: '下载修改',
-            onSelect: () => download.mutate(),
-            disabled: !status?.files?.length || download.isPending,
-          },
-          { label: '工程信息', onSelect: () => setTab('info') },
-        ]}
+        split={split}
+        onToggleView={() => setSplit((current) => !current)}
+        onMerge={() => setTab('merge')}
       />
-      {tab === 'info' && (
-        <>
-          {admin && <CodeEnvironmentPanel />}
-          {status?.exists && (
-            <>
-              <p className="muted">当前副本版本 {status.revision}</p>
-              <WorkspaceInfo status={status} base={base} projectId={projectId} />
-              <p className="muted code-work-scope">{status.scope}</p>
-            </>
-          )}
-        </>
-      )}
       {!threadId && tab === 'changes' && (
         <div className="code-work-empty">
           <FileCode2 size={30} />
@@ -239,7 +160,7 @@ export function CodeWorkDialog({
               onChanged={changed}
             />
           )}
-          {status.prepared === false && (tab === 'checks' || tab === 'info') && (
+          {status.prepared === false && tab === 'checks' && (
             <p className="muted">备份中的修改已保留。验证时将按同版本源码重新准备本机依赖。</p>
           )}
           {status.verification && tab === 'checks' && (
@@ -262,17 +183,6 @@ export function CodeWorkDialog({
                 onRequest={onRequest}
               />
             </>
-          )}
-          {tab === 'history' && (
-            <WorkHistory
-              status={status}
-              base={base}
-              projectId={projectId}
-              onSelect={(id) => {
-                changeScope(id);
-                setTab('changes');
-              }}
-            />
           )}
           {tab === 'merge' && (
             <MergePanel
@@ -306,7 +216,7 @@ export function CodeWorkDialog({
                       }))
                     }
                     focus={!!initialPath && file.path === initialPath}
-                    view={view}
+                    view={{ split, wrap: false }}
                     disabled={blocked}
                     onChanged={changed}
                     onReview={onRequest}
@@ -326,14 +236,7 @@ export function CodeWorkDialog({
         </>
       )}
       <ErrorText
-        error={
-          query.error ||
-          create.error ||
-          verify.error ||
-          cancel.error ||
-          summary.error ||
-          download.error
-        }
+        error={query.error || create.error || verify.error || cancel.error || summary.error}
       />
     </div>
   );

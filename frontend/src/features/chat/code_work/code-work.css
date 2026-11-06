@@ -280,29 +280,6 @@
   background: #22c55e12;
 }
 
-.code-work-locations {
-  margin-bottom: 12px;
-  font-size: 12px;
-}
-.code-work-locations summary {
-  cursor: pointer;
-}
-.code-work-locations > div {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-block: 8px;
-}
-.code-work-locations code {
-  flex: 1;
-  min-width: 180px;
-  overflow-wrap: anywhere;
-}
-.code-work-locations > small {
-  display: block;
-  overflow-wrap: anywhere;
-}
 .code-work-tabs {
   display: flex;
   gap: 6px;
@@ -393,9 +370,6 @@
 .code-work-dialog .code-work-checkbox {
   display: flex;
 }
-.code-work-history > .code-verification {
-  display: block;
-}
 .code-requirements {
   display: grid;
   gap: 10px;
@@ -434,13 +408,11 @@
 .code-requirement-row p {
   margin: 6px 0;
 }
-.code-work-history,
 .code-merge-history {
   display: grid;
   gap: 12px;
   font-size: 13px;
 }
-.code-work-history > div,
 .code-merge-history > div {
   display: flex;
   flex-wrap: wrap;
@@ -448,16 +420,6 @@
   gap: 8px;
   padding: 10px;
   border-bottom: 1px solid var(--border);
-}
-.code-work-history time,
-.code-work-history small {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  margin-block: 4px;
-}
-.code-work-history > div > div {
-  flex: 1;
 }
 .code-merge-selection {
   display: grid;
@@ -515,9 +477,6 @@
   margin-left: 8px;
 }
 @media (max-width: 700px) {
-  .code-work-locations code {
-    flex-basis: 100%;
-  }
   .code-work-artifacts img {
     width: 145px;
     height: 95px;
