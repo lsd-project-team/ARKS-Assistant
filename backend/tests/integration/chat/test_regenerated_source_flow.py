@@ -143,21 +143,11 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
             )
             assert calls["selection"] == 0
             validation = repository.run_event(saved["id"], "answer_validation")
-            verified = mode == "cited"
-            assert validation["passed"] is verified
-            if verified:
-                assert result == answer()
-                assert calls["regenerated"] == 1
-                assert calls["reviews"] == 0
-            else:
-                assert "源码核对提示" not in result
-                assert calls["regenerated"] == 1 and calls["reviews"] == 0
-                draft = answer(citation=mode not in {"missing_first", "missing_all"})
-                assert result.startswith(draft)
-                if mode in {"missing_first", "missing_all"}:
-                    assert result == draft
-                else:
-                    assert "Program.cs" in result[len(draft) :]
+            assert validation is None
+            assert calls["regenerated"] == 1 and calls["reviews"] == 0
+            draft = answer(citation=mode not in {"missing_first", "missing_all"})
+            assert result == draft
+            assert "源码核对提示" not in result
             evidence = [
                 row["payload"]
                 for row in repository.events(saved["id"])
@@ -173,7 +163,7 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
                 assert not any(row["reason"] == "source_review" for row in evidence)
             assert repository.run(original["id"])["answer"] == first["answer"]
             events = repository.events(saved["id"])
-            assert not any(row["kind"] == "token" for row in events)
+            assert any(row["kind"] == "token" for row in events)
             assert [
                 row["payload"]["text"] for row in events if row["kind"] == "answer_replace"
             ] == [result]

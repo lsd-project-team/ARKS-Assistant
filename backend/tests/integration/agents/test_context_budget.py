@@ -84,7 +84,12 @@ def test_memory_injection_respects_token_budget_and_preserves_original(services)
 
 async def test_framework_budget_snapshot_survives_configuration_change(services, monkeypatch):
     paths, _, workspace, repository, memories, settings = services
-    configuration = AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512))
+    # 本例验证运行配置快照；完整工具定义已接近 16K，使用能容纳请求的预算。
+    # 不可压缩的超量请求仍由下方 8K 反例验证拒绝行为。
+    original_limit = 32768
+    configuration = AppSettings(
+        model=ModelSettings(context_tokens=original_limit, output_tokens=512)
+    )
     settings.save(configuration)
     seed_memory(memories, MemoryWrite(name="入口.md", content="Program.cs 的 Main 是程序入口。"))
     monkeypatch.setattr(
@@ -114,9 +119,9 @@ async def test_framework_budget_snapshot_survives_configuration_change(services,
     assert snapshot["complete"] and snapshot["phase"] == "model_request"
     assert all(value > 0 for value in snapshot["breakdown"].values())
     assert snapshot["tokens"] <= snapshot["input_limit"]
-    settings.save(AppSettings(model=ModelSettings(context_tokens=32768)))
+    settings.save(AppSettings(model=ModelSettings(context_tokens=65536)))
     restored = await ConversationContext(runtime).read(thread["id"])
-    assert restored["limit"] == 16384 and restored["output_reserved"] == 512
+    assert restored["limit"] == original_limit and restored["output_reserved"] == 512
     # 引用纠正可包含临时提示；下一轮状态预算应和运行收尾一致，而非保留临时开销。
     assert restored["tokens"] == repository.latest_event(thread["id"], "context")["tokens"]
 

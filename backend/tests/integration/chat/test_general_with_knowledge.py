@@ -3,7 +3,7 @@
 import asyncio
 
 import pytest
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
 from app.agents.runtime.engine import AgentRuntime
@@ -88,7 +88,7 @@ async def test_general_reply_never_loads_or_searches_knowledge_before_answering(
         runtime.semantic.close()
 
 
-async def test_followup_reusing_record_reference_is_loaded_and_fact_checked_without_search(
+async def test_followup_reads_existing_record_without_similarity_search_or_final_review(
     services, monkeypatch
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -110,6 +110,23 @@ async def test_followup_reusing_record_reference_is_loaded_and_fact_checked_with
                 or "你负责核查历史经验回答" in messages[0].text
             ):
                 return super()._generate(messages, *args, **kwargs)
+            if not any(isinstance(row, ToolMessage) for row in messages):
+                return ChatResult(
+                    generations=[
+                        ChatGeneration(
+                            message=AIMessage(
+                                content="",
+                                tool_calls=[
+                                    {
+                                        "id": "read-existing",
+                                        "name": "read_debug_issue",
+                                        "args": {"record_id": saved["id"]},
+                                    }
+                                ],
+                            )
+                        )
+                    ]
+                )
             return ChatResult(
                 generations=[ChatGeneration(message=AIMessage(content="本次42。" + reference))]
             )
@@ -125,7 +142,8 @@ async def test_followup_reusing_record_reference_is_loaded_and_fact_checked_with
             run, lambda kind, row: repository.event(run["id"], kind, row)
         )
         assert "42" in answer and reference in answer
-        assert repository.run_event(run["id"], "knowledge_answer_review")["verdict"] == "passed"
+        assert repository.run_event(run["id"], "knowledge_answer_review") is None
+        assert repository.run_event(run["id"], "knowledge_selection")["references"] == [reference]
         assert repository.run_event(run["id"], "knowledge_search") is None
         context = ConversationContext(runtime).run_sources(run["id"])
         assert [row["id"] for row in context["debug_issues"]] == [saved["id"]]

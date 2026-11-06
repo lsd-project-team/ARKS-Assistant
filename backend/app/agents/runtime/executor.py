@@ -14,7 +14,6 @@ from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
 from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
 from app.modules.chat.rich_presentation import source_pointers
-from app.modules.knowledge.citations import canonical_knowledge_citations
 from app.modules.source_analysis.evidence import SourceEvidence
 
 
@@ -24,36 +23,15 @@ class AgentRunExecutor:
 
     async def execute(self, run, emit, owned_models):
         runtime = self.runtime
-        original_emit, observed = emit, {}
-        knowledge_references = []
-        hold_source_answer, publishing_final = False, False
-        hold_knowledge_answer = False
+        original_emit = emit
+        displayed_text = ""
 
         def emit(kind, payload):
-            nonlocal hold_knowledge_answer, hold_source_answer
-            observed[kind] = payload
-            if kind == "source_evidence":
-                hold_source_answer = True
-            if kind == "stage" and payload.get("stage") == "reading_source":
-                hold_source_answer = True
-            if kind == "knowledge_reference":
-                knowledge_references.append(payload)
-                hold_knowledge_answer = (
-                    hold_knowledge_answer or payload.get("kind") == "debug_issue"
-                )
-            if kind == "tool_start" and payload.get("name") in {
-                "search_debug_issues",
-                "read_debug_issue",
-            }:
-                # 空筛选及筛选失败同样要等最后的事实边界处理，不能先流出补造的历史结果。
-                hold_knowledge_answer = True
-            # 续写中间稿同样会发 answer_replace；证据核对完成前不发布中间结论。
-            if (
-                kind == "answer_replace"
-                and (hold_source_answer or hold_knowledge_answer)
-                and not publishing_final
-            ):
-                return
+            nonlocal displayed_text
+            if kind == "token":
+                displayed_text += payload["text"]
+            elif kind == "answer_replace":
+                displayed_text = payload["text"]
             return original_emit(kind, payload)
 
         async with AsyncSqliteSaver.from_conn_string(
@@ -72,7 +50,6 @@ class AgentRunExecutor:
             )
             evidence.mandatory = evidence.required
             evidence.user_request = message["content"]
-            hold_source_answer = evidence.required
             policy = run["analysis_policy"]
             previous = (
                 previous_run_event(runtime.repository, run, "analysis_progress")
@@ -103,7 +80,6 @@ class AgentRunExecutor:
                 # 重新生成确实使用过源码的回答仍须核对；旧运行仅查询过源码不构成强制理由。
                 if any(source_pointers(linked.get("answer") or "")):
                     evidence.required = True
-                    hold_source_answer = True
                 cursor = 0
                 while True:
                     events = runtime.repository.events(previous_run, cursor)
@@ -272,8 +248,6 @@ class AgentRunExecutor:
                 if mode == "messages":
                     chunk, metadata = event
                     if metadata.get("lc_source") in {
-                        "source_verification",
-                        "knowledge_verification",
                         "knowledge_selection",
                         "history_selection",
                     }:
@@ -292,9 +266,7 @@ class AgentRunExecutor:
                             emit("stage", {"stage": "generating"})
                             generating = True
                         text += part
-                        # 已筛选的经验仍可能被草稿误述，事实核查完成后统一显示最终稿。
-                        if not hold_source_answer and not hold_knowledge_answer:
-                            emit("token", {"text": part})
+                        emit("token", {"text": part})
                 else:
                     if any(
                         getattr(item, "type", "") == "tool" or getattr(item, "tool_calls", [])
@@ -339,12 +311,6 @@ class AgentRunExecutor:
                 else {"output": "incomplete", "finish_reason": None}
             )
             progress_snapshot = progress.snapshot()
-            progress_snapshot["verified_citations"] = [
-                row
-                for row in observed.get("answer_validation", {}).get("citations", [])
-                if row.get("valid")
-            ]
-            progress_snapshot["semantic_review"] = observed.get("source_review")
             emit("analysis_progress", progress_snapshot)
             emit(
                 "run_completion",
@@ -352,8 +318,6 @@ class AgentRunExecutor:
                     output,
                     progress_snapshot,
                     retrieval.counts,
-                    observed.get("answer_validation"),
-                    observed.get("source_review"),
                 ),
             )
             settings = current_configuration(runtime.settings).model
@@ -362,14 +326,6 @@ class AgentRunExecutor:
                 effective, snapshot, settings.context_tokens, settings.output_tokens
             )
             emit("context", current)
-            formatted = canonical_knowledge_citations(answer, knowledge_references)
-            if (
-                hold_source_answer
-                or hold_knowledge_answer
-                or formatted != text
-                or any(row.get("kind") == "debug_issue" for row in knowledge_references)
-            ):
-                publishing_final = True
-                emit("answer_replace", {"text": formatted})
-                answer = formatted
+            if answer != displayed_text:
+                emit("answer_replace", {"text": answer})
             return answer

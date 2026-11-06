@@ -63,7 +63,7 @@ async def test_graph_continuation_cache_final_validation_and_persisted_status(
     assert completion["output"] == "complete" and completion["continuations"] == 1
     assert completion["counts"]["success"] == 2 and completion["counts"]["cached"] == 1
     context = ConversationContext(runtime).run_sources(run["id"])
-    assert context["answer_validation"]["passed"]
+    assert context["answer_validation"] is None
     assert context["tools"][1]["cached"]
     assert context["analysis_progress"]["pending"] == []
     assert context["analysis_plan"]["mode"] == "deep"

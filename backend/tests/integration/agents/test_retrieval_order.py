@@ -1,4 +1,4 @@
-"""实际图、工具和核查组合：按需选源，经验足够时停止，混合依据各自保留。"""
+"""实际图与工具组合：按需选源，依据足够时停止，回答后不再来源复核。"""
 
 import json
 
@@ -28,7 +28,7 @@ from tests.helpers.models import DeterministicModel
         "fallback",
     ],
 )
-async def test_selected_basis_controls_retrieval_and_review_without_forced_source_loop(
+async def test_selected_basis_controls_retrieval_without_post_generation_review(
     services, monkeypatch, route
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -71,6 +71,11 @@ async def test_selected_basis_controls_retrieval_and_review_without_forced_sourc
         "fallback": "经验中找不到入口说明时，请读取Program.cs解释入口",
     }
     checks = []
+
+    def forbidden_reference_check(*_args, **_kwargs):
+        pytest.fail("回答生成后不能再检查源码引用")
+
+    monkeypatch.setattr(SourceEvidence, "check", forbidden_reference_check)
     if route == "mixed-unavailable-context":
 
         def unavailable(*_args):
@@ -158,9 +163,11 @@ async def test_selected_basis_controls_retrieval_and_review_without_forced_sourc
                 "fallback": ["search_debug_issues", "read_source"],
             }[route]
         )
-        assert len(checks) == (0 if route in {"source", "fallback"} else 1)
-        validation = [row for kind, row in events if kind == "answer_validation"][-1]
-        assert validation["passed"]
+        assert checks == []
+        assert not {"answer_validation", "knowledge_answer_review", "answer_review_note"} & {
+            kind for kind, _ in events
+        }
+        assert any(kind == "token" for kind, _ in events)
         assert not any("系统引用核对结果" in str(row) for row in checks)
     finally:
         runtime.semantic.close()

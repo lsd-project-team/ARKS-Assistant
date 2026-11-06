@@ -191,7 +191,9 @@ class EvidenceRepairModel(DeterministicModel):
         return ChatResult(generations=[ChatGeneration(message=answer)])
 
 
-async def test_real_graph_repair_tool_loop_and_usage_are_persisted(services, monkeypatch):
+async def test_real_graph_keeps_model_answer_and_usage_without_reference_recheck(
+    services, monkeypatch
+):
     paths, _, workspace, repository, memories, settings = services
     settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512)))
     monkeypatch.setattr(
@@ -204,11 +206,10 @@ async def test_real_graph_repair_tool_loop_and_usage_are_persisted(services, mon
     answer = await runtime.execute(
         run, lambda kind, payload: repository.event(run["id"], kind, payload)
     )
-    assert answer.startswith("入口 [Program.cs:999](source:Program.cs#L999)")
-    assert "行号范围不存在" in answer
+    assert answer == "入口 [Program.cs:999](source:Program.cs#L999)"
     events = repository.events(run["id"], 0)
     validation = [event["payload"] for event in events if event["kind"] == "answer_validation"]
-    assert not validation[-1]["passed"]
+    assert validation == []
     assert not any(event["kind"] in {"source_evidence", "tool_start"} for event in events)
     usage = [event["payload"] for event in events if event["kind"] == "provider_usage"]
     answer_usage = [row for row in usage if row["purpose"] == "answer"]

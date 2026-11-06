@@ -419,6 +419,6 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
     assert stages[:2] == ["connecting_model", "connecting_mcp"]
     assert "reading_source" in stages and "reading_wiki" in stages
     assert stages.count("generating") == 3 and "checking_sources" not in stages
-    assert any(kind == "answer_validation" and row["passed"] for kind, row in events)
+    assert not any(kind == "answer_validation" for kind, _ in events)
     assert not any(kind == "source_review" for kind, _ in events)
     assert len([kind for kind, _ in events if kind == "tool_end"]) == 2

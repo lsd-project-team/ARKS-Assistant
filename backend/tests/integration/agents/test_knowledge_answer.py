@@ -14,7 +14,7 @@ from tests.helpers.models import DeterministicModel, fixture_selections
 
 
 @pytest.mark.parametrize("via_tool", [False, True])
-async def test_final_revision_is_persisted_without_review_json_streaming(
+async def test_model_answer_streams_and_persists_without_post_generation_review(
     services, monkeypatch, via_tool
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -30,7 +30,7 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     reference = f"[蓝膜刺穿经验](debug-issue:{saved['id']}/1)"
     original = "任何工况都能根治。" + reference
     note = "216颗的历史组合结果不能证明任何工况都能根治。"
-    expected = original + "\n\n**注意**：" + note
+    expected = original
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
@@ -82,13 +82,16 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     repository.finish(run["id"], answer)
     assert answer == expected
     assert repository.thread(run["thread_id"])["messages"][-1]["content"] == expected
-    assert len(reviewed) == 1
-    assert all(
-        [row["reference"] for row in payload["records"]] == [reference] for payload in reviewed
-    )
+    assert reviewed == []
     assert "不应发送的其他记录" not in str(reviewed)
     assert not any('"verdict"' in payload["text"] for kind, payload in events if kind == "token")
-    assert not any(kind == "token" for kind, _ in events)
+    assert any(kind == "token" for kind, _ in events)
+    assert not {
+        "knowledge_answer_review",
+        "knowledge_answer_check",
+        "answer_validation",
+        "answer_review_note",
+    } & {kind for kind, _ in events}
     assert answer.startswith(original) and "不能采用的修订正文" not in answer
     assert any(kind == "answer_replace" and row["text"] == expected for kind, row in events)
     assert (
@@ -109,12 +112,21 @@ def test_review_context_rejects_unknown_or_wrong_version_references(services):
     assert "compatibility" in records[0]
 
 
-async def test_model_format_is_preserved_in_final_answer_and_history(services, monkeypatch):
+@pytest.mark.parametrize(
+    "original",
+    [
+        "**" + "这份记录仅限本次条件，不证明所有设备都适用。" * 4 + "**",
+        "模型正文。[未登记经验](debug-issue:missing/999)",
+        "模型正文。[Missing.cs:999](source:Missing.cs#L999)",
+    ],
+)
+async def test_model_format_is_preserved_in_final_answer_and_history(
+    services, monkeypatch, original
+):
     from langchain_core.messages import AIMessage
     from langchain_core.outputs import ChatGeneration, ChatResult
 
     paths, _, workspace, repository, memories, settings = services
-    original = "**" + "这份记录仅限本次条件，不证明所有设备都适用。" * 4 + "**"
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
@@ -132,4 +144,7 @@ async def test_model_format_is_preserved_in_final_answer_and_history(services, m
     assert repository.thread(run["thread_id"])["messages"][-1]["content"] == answer
     displayed = [row["text"] for kind, row in events if kind == "answer_replace"]
     assert displayed[-1] == answer
+    assert not {"answer_validation", "knowledge_answer_review", "answer_review_note"} & {
+        kind for kind, _ in events
+    }
     runtime.semantic.close()

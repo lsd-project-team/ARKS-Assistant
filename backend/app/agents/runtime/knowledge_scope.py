@@ -89,7 +89,7 @@ def selected_records(result, records):
 
 
 def selection_result(result, records):
-    # 缺少新字段的旧协议仍按资料查询保守处理，不能因此绕过事实核查。
+    # 缺少新字段的旧协议仍按资料查询处理，避免用通用回答补造历史事实。
     scope = result.get("scope", "records")
     if scope not in ("general", "records"):
         raise ValueError("invalid question scope")

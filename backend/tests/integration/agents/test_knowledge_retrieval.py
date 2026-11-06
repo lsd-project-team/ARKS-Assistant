@@ -141,11 +141,8 @@ async def test_empty_search_and_valid_empty_selection_are_not_processing_failure
     assert not any(kind == "knowledge_reference" for kind, _ in events)
 
 
-async def test_followup_selection_uses_context_and_final_check_receives_same_context(
-    services, issues
-):
+async def test_followup_selection_uses_current_context_before_returning_records(services, issues):
     from app.agents.context.retrieval_context import retrieval_context
-    from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 
     saved = issues.save(
         DebugWrite(title="设备B V3报警", payload={"problem": "设备B V3结果42。"}), {}
@@ -157,25 +154,8 @@ async def test_followup_selection_uses_context_and_final_check_receives_same_con
     assert selector.requests[0]["context"] == context
     assert selector.requests[0]["question"] == "它当时怎么解决的？"
 
-    class Reviewer:
-        async def ainvoke(self, messages, **kwargs):
-            payload = json.loads(messages[-1].text)
-            assert payload["context"] == context and "设备B V3" in str(payload["context"])
-            return AIMessage(content='{"verdict":"passed","answer":""}')
-
-    guard = KnowledgeAnswerGuard(
-        Reviewer(),
-        "它当时怎么解决的？",
-        selected.review_records,
-        lambda *_: None,
-        16000,
-        preselected=selected.selected,
-        context=context,
-    )
-    assert await guard.review("结果42。", selected.selected()[1], selected.review_records()) == {
-        "verdict": "passed",
-        "note": "",
-    }
+    assert selected.selected()[1][0]["id"] == saved["id"]
+    assert "设备B V3结果42" in str(selected.selected()[1][0]["content"])
 
 
 async def test_parallel_search_and_read_share_one_selection_and_frozen_version(services, issues):
@@ -296,7 +276,7 @@ async def test_budget_timeout_and_cancellation_do_not_expose_candidates(services
     assert not any(kind == "knowledge_reference" for kind, _ in events)
 
 
-async def test_answer_model_only_sees_selected_content_and_final_facts_are_still_corrected(
+async def test_answer_model_only_sees_selected_content_without_final_fact_review(
     services, issues, monkeypatch
 ):
     paths, _, workspace, repository, memories, settings = services
@@ -310,7 +290,7 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
     reference = f"[阀门试验](debug-issue:{saved['id']}/1)"
     original = "本次结果43。" + reference
     note = "记录中的本次结果为42，并非43。"
-    expected = original + "\n\n**注意**：" + note
+    expected = original
     phases, answer_inputs, checks = [], [], []
 
     class Model(DeterministicModel):
@@ -374,8 +354,8 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
     try:
         answer = await runtime.execute(run, lambda *row: events.append(row))
         assert answer == expected
-        assert checks[0]["answer"] == original and "不可采用的修订" not in answer
-        assert phases == ["answer", "selection", "answer", "verification"]
+        assert checks == [] and "不可采用的修订" not in answer
+        assert phases == ["answer", "selection", "answer"]
         context = str([row.content for messages in answer_inputs for row in messages])
         # 随机 UUID 也可能包含 888/999；检查事实原句，避免把合法记录编号误判为泄漏。
         assert "本次结果42" in context
@@ -388,7 +368,9 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
                 "display_hint" not in row.text for row in messages if isinstance(row, ToolMessage)
             )
         assert all("无关结果888" not in str(payload) for payload in checks)
-        assert "999" in str(checks[0]["record_context"])
+        assert not {"knowledge_answer_check", "knowledge_answer_review", "answer_review_note"} & {
+            kind for kind, _ in events
+        }
         assert not any('"selections"' in row["text"] for kind, row in events if kind == "token")
         assert [row["id"] for kind, row in events if kind == "knowledge_reference"] == [saved["id"]]
     finally:
@@ -396,7 +378,7 @@ async def test_answer_model_only_sees_selected_content_and_final_facts_are_still
 
 
 @pytest.mark.parametrize("scope", ["records", "general", "unavailable"])
-async def test_empty_preselection_preserves_original_and_reports_only_known_support_gap(
+async def test_empty_preselection_does_not_expose_candidates_or_append_a_review_note(
     services, issues, monkeypatch, scope
 ):
     paths, _, workspace, repository, memories, settings = services
@@ -416,7 +398,7 @@ async def test_empty_preselection_preserves_original_and_reports_only_known_supp
             elif "你负责核查历史经验回答" in messages[0].text:
                 pytest.fail("无选定资料时不能调用事实核查或把候选作为核查依据")
             elif any(isinstance(row, ToolMessage) for row in messages):
-                # 即使主模型编造没有引用的数字，历史查询的空筛选也必须拦住。
+                # 回答内容只由主模型生成；空筛选仍不能向它公开候选正文。
                 answer = AIMessage(content="普通说明。" if scope == "general" else "试验结果42。")
             else:
                 answer = AIMessage(
@@ -439,13 +421,15 @@ async def test_empty_preselection_preserves_original_and_reports_only_known_supp
     try:
         answer = await runtime.execute(run, lambda *row: events.append(row))
         if scope == "records":
-            assert answer == "试验结果42。\n\n**注意**：本轮没有选到能支撑该历史答案的经验记录。"
+            assert answer == "试验结果42。"
         elif scope == "unavailable":
             assert answer == "试验结果42。"
-            assert any(
-                k == "knowledge_answer_review" and p["verdict"] == "unknown" for k, p in events
-            )
+            assert any(k == "knowledge_filter" and p["status"] == "unavailable" for k, p in events)
         else:
             assert answer == "普通说明。"
+        assert not any(
+            k in {"knowledge_reference", "knowledge_answer_review", "answer_review_note"}
+            for k, _ in events
+        )
     finally:
         runtime.semantic.close()

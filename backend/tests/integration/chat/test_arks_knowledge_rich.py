@@ -141,8 +141,7 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
         assert rows[-1]["kind"] == "done" and rows[-1]["payload"]["status"] == "completed"
         answer = rows[-1]["payload"]["answer"]
         original = document(state["reference"], wrong_unit=True)
-        note = "资料未注明顶针高度280～300的单位，原答中的μm没有依据。"
-        assert answer == original + "\n\n**注意**：" + note
+        assert answer == original
         assert "不得采用的修订内容" not in answer
         assert "280～300μm" in answer and state["reference"] in answer
         blocks = [block for _, _, doc in rich_documents(answer) for block in doc.blocks]
@@ -151,13 +150,8 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
             ("parameters", "table"),
             ("result", "markdown"),
         ]
-        assert len(state["checks"]) == 1 and "final_check" not in state["checks"][0]
-        assert (
-            next(row["payload"] for row in rows if row["kind"] == "knowledge_answer_review")[
-                "verdict"
-            ]
-            == "issues"
-        )
+        assert state["checks"] == []
+        assert not {"knowledge_answer_review", "answer_review_note"} & {row["kind"] for row in rows}
         assert next(row["payload"] for row in rows if row["kind"] == "answer_format_validation")[
             "passed"
         ]

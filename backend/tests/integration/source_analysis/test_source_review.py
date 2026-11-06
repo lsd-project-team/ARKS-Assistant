@@ -86,7 +86,7 @@ async def test_long_flow_keeps_model_format_through_source_fact_check_and_displa
     assert answer == original and checked == []
     assert not any(kind == "source_review" for kind, _ in events)
     assert repository.thread(run["thread_id"])["messages"][-1]["content"] == original
-    assert not any(kind == "token" for kind, _ in events)
+    assert any(kind == "token" for kind, _ in events)
     assert any(kind == "answer_replace" and row["text"] == original for kind, row in events)
     runtime.semantic.close()
 

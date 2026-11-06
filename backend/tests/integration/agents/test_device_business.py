@@ -91,5 +91,5 @@ async def test_main_project_priority_reaches_model_with_optional_sources_disable
     assert "用户明确指定的文件或附带选区应先核对" in prompt
     assert "其他项目不能套用这个目录" in prompt
     assert "源码核对提示" not in answer
-    validation = [payload for kind, payload in events if kind == "answer_validation"][-1]
-    assert validation["passed"]
+    assert not any(kind == "answer_validation" for kind, _ in events)
+    assert any(kind == "source_evidence" for kind, _ in events)

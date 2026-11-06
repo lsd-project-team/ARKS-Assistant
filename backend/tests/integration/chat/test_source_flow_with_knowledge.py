@@ -127,11 +127,12 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
         assert phases == ["read", "answer"]
         assert repository.run_event(run["id"], "source_review") is None
         validation = repository.run_event(run["id"], "answer_validation")
-        assert validation["passed"] and all(row["valid"] for row in validation["citations"])
-        assert len(validation["citations"]) == 1
+        assert validation is None
+        assert repository.run_event(run["id"], "source_evidence")["path"] == "Program.cs"
         assert "没有选到" not in answer and "源码回答缺少" not in answer
         assert "等待相关人员确认" not in answer
-        assert not any(event["kind"] in {"token", "knowledge_selection"} for event in events)
+        assert not any(event["kind"] == "knowledge_selection" for event in events)
+        assert any(event["kind"] == "token" for event in events)
         assert [
             event["payload"]["text"] for event in events if event["kind"] == "answer_replace"
         ] == [answer]
@@ -147,7 +148,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
 
 
 @pytest.mark.parametrize("defect", ["path", "version", "workspace", "claim"])
-async def test_source_guard_reports_invalid_reference_without_rewriting_or_unrelated_knowledge(
+async def test_source_answer_has_no_reference_recheck_or_unrelated_knowledge(
     services, monkeypatch, defect
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -207,15 +208,10 @@ async def test_source_guard_reports_invalid_reference_without_rewriting_or_unrel
         answer = await runtime.execute(
             run, lambda kind, payload: repository.event(run["id"], kind, payload)
         )
-        # 引用校验只报告路径、版本或目录问题，不修改正文；未启用语义复核。
-        assert answer.startswith(broken)
-        if defect == "claim":
-            assert answer == broken
-        else:
-            assert answer != broken and answer[len(broken) :].count("。") == 1
+        assert answer == broken
         assert calls.count("answer") == 1
         assert calls.count("review") == 0
-        assert repository.run_event(run["id"], "answer_validation")["passed"] is (defect == "claim")
+        assert repository.run_event(run["id"], "answer_validation") is None
         assert repository.run_event(run["id"], "source_review") is None
         assert repository.run_event(run["id"], "context_sources")["debug_issues"] == []
         assert not any(
@@ -227,7 +223,7 @@ async def test_source_guard_reports_invalid_reference_without_rewriting_or_unrel
 
 @pytest.mark.parametrize("with_history", [False, True])
 @pytest.mark.parametrize("defect", ["range", "version", "workspace"])
-async def test_source_issue_keeps_entire_flow_and_reports_only_one_note(
+async def test_source_issue_does_not_change_flow_or_append_a_review_note(
     services, monkeypatch, with_history, defect
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -288,18 +284,18 @@ async def test_source_issue_keeps_entire_flow_and_reports_only_one_note(
         assert (
             documents[0].blocks[0].steps[0].description == "Main 方法体为空；其余流程本轮尚未核实。"
         )
-        assert answer.startswith(draft) and "源码核对提示" not in answer
-        assert answer[len(draft) :].strip().count("。") == 1
+        assert answer == draft and "源码核对提示" not in answer
         assert len(answers) == 1
-        # 原来的引用字段也保留；具体失败状态仍完整记录在运行详情。
+        # 保留模型实际输出的引用字段，不在生成后核查或追加说明。
         pointers = list(source_pointers(answer))
         assert len(pointers) == 2 and pointers[0].start_line == 2
         validation = repository.run_event(run["id"], "answer_validation")
-        assert not validation["passed"] and any(not row["valid"] for row in validation["citations"])
+        assert validation is None
         events = repository.events(run["id"])
         assert not any(
-            event["kind"] in {"token", "knowledge_selection", "source_review"} for event in events
+            event["kind"] in {"knowledge_selection", "source_review"} for event in events
         )
+        assert any(event["kind"] == "token" for event in events)
         assert [
             event["payload"]["text"] for event in events if event["kind"] == "answer_replace"
         ] == [answer]

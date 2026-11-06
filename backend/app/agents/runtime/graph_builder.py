@@ -18,12 +18,10 @@ from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
 from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
-from app.agents.runtime.answer_review import AnswerReviewNote
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.code_work_reads import CodeWorkReadProgress
 from app.agents.runtime.code_work_repair import CodeWorkRepair
 from app.agents.runtime.configuration import current_configuration
-from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.runtime.privacy import redact
@@ -40,9 +38,6 @@ from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
 from app.modules.memory.selection import MemorySelection
 from app.modules.projects.context import project_prompt
 from app.modules.source_analysis.backend import SourceBackend
-from app.modules.source_analysis.evidence import (
-    SourceEvidenceGuard,
-)
 
 
 class AgentGraphBuilder:
@@ -70,7 +65,7 @@ class AgentGraphBuilder:
         run_id="",
     ):
         runtime = self.runtime
-        # 筛选后的工具结果和最终核查共用本轮资料范围。
+        # 工具返回前完成相关性筛选，回答生成后不再追加来源复核。
         settings = current_configuration(runtime.settings, runtime.repository.database)
         options = SourceOptions.model_validate(source_options or {})
         instructions = await asyncio.to_thread(instruction_snapshot, runtime.paths)
@@ -250,7 +245,6 @@ class AgentGraphBuilder:
                     evidence,
                     deep=bool(policy and policy["mode"] == "deep"),
                 ),
-                AnswerReviewNote(emit),
                 AnswerFormatValidation(emit),
                 *(
                     [
@@ -259,22 +253,6 @@ class AgentGraphBuilder:
                     ]
                     if run_id and not inspection
                     else []
-                ),
-                *(
-                    # 按用户要求不再调用源码结论复核模型，保留确定性的路径/行号/版本校验。
-                    [SourceEvidenceGuard(evidence)] if evidence is not None else []
-                ),
-                KnowledgeAnswerGuard(
-                    None if inspection else model,
-                    question_text or "",
-                    lambda: debug_issues.review_records() if debug_issues else [],
-                    emit,
-                    available,
-                    source_required=bool(evidence and evidence.required),
-                    resolve=debug_issues.resolve_references if debug_issues else None,
-                    preselected=debug_issues.selected if debug_issues else None,
-                    context=retrieval_context,
-                    source_evidence=evidence,
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations

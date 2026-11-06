@@ -118,7 +118,7 @@ def test_actual_graph_api_stream_history_files_and_frontend_are_compatible(servi
         assert [row["payload"]["name"] for row in rows if row["kind"] == "tool_start"] == [
             "read_source"
         ]
-        assert any(row["kind"] == "answer_validation" and row["payload"]["passed"] for row in rows)
+        assert not any(row["kind"] == "answer_validation" for row in rows)
         cursor = rows[len(rows) // 2]["sequence"]
         replay = events(
             client.get(

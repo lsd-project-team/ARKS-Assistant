@@ -65,6 +65,9 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
         )
 
     assert result is graph
+    assert not {"AnswerReviewNote", "SourceEvidenceGuard", "KnowledgeAnswerGuard"} & {
+        type(item).__name__ for item in captured["middleware"]
+    }
     prompt = captured["system_prompt"]
     tools = {item.name for item in captured["tools"]}
     assert "本轮项目标记" in prompt

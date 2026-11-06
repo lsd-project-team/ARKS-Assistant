@@ -140,7 +140,8 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
             return ChatResult(generations=[ChatGeneration(message=result)])
 
     paths, _, workspace, repository, memories, settings = services
-    settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=1024)))
+    # 本例验证结构化回答链路，使用能容纳常驻工具及源码阅读规则的上下文。
+    settings.save(AppSettings(model=ModelSettings(context_tokens=32768, output_tokens=1024)))
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: StructuredModel()
     )
@@ -151,7 +152,8 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
     )
     assert actual == answer
     validation = repository.run_event(run["id"], "answer_validation")
-    assert validation["passed"] and validation["citations"][0]["start_line"] == 2
+    assert validation is None
+    assert repository.run_event(run["id"], "source_evidence")["start_line"] == 2
     assert repository.run_event(run["id"], "source_review") is None
 
 

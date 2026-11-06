@@ -79,12 +79,11 @@ async def test_search_read_review_display_and_history_preserve_model_format(
             "search_source",
             "read_source",
         ]
-        assert repository.run_event(run["id"], "answer_validation")["passed"]
+        assert repository.run_event(run["id"], "answer_validation") is None
         assert repository.run_event(run["id"], "answer_format_validation")["passed"]
         assert repository.run_event(run["id"], "source_review") is None
-        assert not any(
-            row["kind"] in {"answer_draft", "answer_presentation", "token"} for row in events
-        )
+        assert not any(row["kind"] in {"answer_draft", "answer_presentation"} for row in events)
+        assert any(row["kind"] == "token" for row in events)
         assert [row["payload"]["text"] for row in events if row["kind"] == "answer_replace"] == [
             answer
         ]
