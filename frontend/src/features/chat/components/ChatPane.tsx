@@ -621,11 +621,6 @@ export function ChatPane({
               inputRef={attachmentInput}
             />
           }
-          onCodeWork={() => {
-            setCodeWorkFile('');
-            setCodeWorkRun('');
-            codeWorkPanel.show();
-          }}
           sending={send.isPending}
           busy={busy}
           queueing={!!queue.query.data?.items.length}
