@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronRight, Copy, FileCode2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, FileCode2 } from 'lucide-react';
 import { api, jsonBody } from '../../../app/api/client';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { toast } from '../../../shared/utils/toasts';
@@ -121,15 +121,6 @@ export function CodeReviewFile({
           {file.kind === 'added' && <small>新增</small>}
         </button>
         {stats && <ReviewLineCounts {...stats} />}
-        <button
-          type="button"
-          className="code-review-icon"
-          aria-label={`复制文件路径：${file.path}`}
-          title="复制文件路径"
-          onClick={() => void copyPath()}
-        >
-          <Copy size={13} />
-        </button>
         <CodeWorkMenu
           label={`文件操作：${file.path}`}
           items={[

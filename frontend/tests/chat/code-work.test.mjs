@@ -185,6 +185,15 @@ test('默认集中展示单个文件差异，次级信息按需打开且不会�
     assert.equal(document.querySelector('[aria-label="代码差异"]').dataset.split, 'true');
     assert.equal(document.querySelector('[aria-label="变更范围"]').value, '');
     assert.equal(document.querySelector('[role="status"]').textContent, '尚未验证');
+    assert.equal(document.querySelectorAll('.code-review-top-actions button').length, 4);
+    assert.equal(button('刷新变更'), undefined);
+    assert.equal(button(`复制文件路径：${path}`), undefined);
+    await click('更多变更操作');
+    assert.equal(button('验证详情'), undefined);
+    assert.equal(button('让 AI 修改'), undefined);
+    assert.equal(button('收起全部文件'), undefined);
+    assert.ok(button('切换为统一差异'));
+    assert.ok(button('开启自动换行'));
     await click('工程信息');
     assert.match(document.body.textContent, /当前副本版本 1/);
     assert.ok(document.querySelector('.code-work-locations'));
@@ -215,7 +224,7 @@ test('更多菜单支持方向键、Escape 和外部关闭，Escape 不会连带
         ),
       );
     await key(first, 'ArrowDown');
-    assert.equal(document.activeElement.textContent, '历史');
+    assert.equal(document.activeElement.textContent, '开启自动换行');
     await key(document.activeElement, 'End');
     assert.equal(document.activeElement.textContent, '工程信息');
     await key(document.activeElement, 'Escape');
@@ -257,13 +266,13 @@ test('文件连续排列并延迟读取，统一控制左右对照、换行和�
       );
       await click(`查看修改文件：${path}`);
       await until(() => document.querySelectorAll('[aria-label="代码差异"]').length === 2);
-      await click('左右对照');
+      await click('切换为统一差异');
       assert.ok(
         [...document.querySelectorAll('[aria-label="代码差异"]')].every(
           (node) => node.dataset.split === 'false',
         ),
       );
-      await click('自动换行');
+      await click('开启自动换行');
       assert.ok(
         [...document.querySelectorAll('[aria-label="代码差异"]')].every(
           (node) => node.dataset.wrap === 'true',
@@ -273,6 +282,13 @@ test('文件连续排列并延迟读取，统一控制左右对照、换行和�
       assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 0);
       await click('展开全部文件');
       assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 2);
+      await click('切换为左右对照');
+      await click('关闭自动换行');
+      assert.ok(
+        [...document.querySelectorAll('[aria-label="代码差异"]')].every(
+          (node) => node.dataset.split === 'true' && node.dataset.wrap === 'false',
+        ),
+      );
     },
     () => boundary.status.files.push({ path: second, version: 'second-v2', kind: 'modified' }),
   );
@@ -304,6 +320,7 @@ test('轮次选择使用独立快照及统计，切回累计后恢复可撤销�
         '新增 7 行，删除 3 行',
       );
       await click(`文件操作：${path}`);
+      assert.ok(button('复制路径'));
       assert.equal(button('撤销此文件'), undefined);
       assert.equal(button('编译与仿真验证'), undefined);
       await act(async () => {
@@ -422,13 +439,19 @@ test('旧版本的成功不展示为当前代码通过，验证期间禁用编�
     await update({ id: 'job-1', revision: 0, status: 'passed', steps: [], error: '' });
     assert.match(document.querySelector('[role="status"]').textContent, /需重新验证/);
     assert.doesNotMatch(document.querySelector('[role="status"]').textContent, /验证通过/);
+    await click('编译与仿真验证');
+    assert.equal(boundary.calls.filter(({ url }) => url.endsWith('/verify')).length, 1);
     await update({ id: 'job-2', revision: 1, status: 'testing', steps: [], error: '' });
-    assert.equal(button('编译与仿真验证').disabled, true);
-    await click('更多变更操作');
-    assert.equal(button('让 AI 修改').disabled, true);
+    assert.equal(button('编译与仿真验证'), undefined);
+    assert.ok(button('停止验证'));
     await click(`文件操作：${path}`);
     assert.equal(button('撤销此文件').disabled, true);
     assert.ok(button('停止验证'));
+    await click('停止验证');
+    assert.equal(boundary.calls.filter(({ url }) => url.endsWith('/cancel')).length, 1);
+    await update({ id: 'job-2', revision: 1, status: 'cancelled', steps: [], error: '' });
+    assert.ok(button('编译与仿真验证'));
+    assert.equal(button('停止验证'), undefined);
   });
 });
 
@@ -667,8 +690,6 @@ test('普通用户可审查合并，不能出现写回入口；恢复冲突阻�
       });
       assert.match(document.body.textContent, /请管理员核对并确认结束恢复/);
       assert.equal(button('编译与仿真验证').disabled, true);
-      await click('更多变更操作');
-      assert.equal(button('让 AI 修改').disabled, true);
     },
     () => mergeSetup(false),
   );
@@ -678,7 +699,7 @@ test('需求测试更新带原版本，失败保留表单内容', async () => {
   await mounted(
     {},
     async () => {
-      await click('验证详情');
+      await click('查看验证详情');
       await click('查看/编辑');
       assert.equal(document.querySelector('form textarea').value, '必须只执行一次');
       await click('保存测试');

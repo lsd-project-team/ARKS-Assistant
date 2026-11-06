@@ -87,6 +87,7 @@ export function CodeWorkDialog({
       : undefined;
   const defaultPath = files?.find((file) => file.path === initialPath)?.path || files?.[0]?.path;
   const isExpanded = (path: string) => expanded[path] ?? path === defaultPath;
+  const allCollapsed = !files?.some((file) => isExpanded(file.path));
   const editing = useIsMutating({ mutationKey: [...key, 'edit'] }) > 0;
   const changeScope = (id: string) => {
     setRunId(id);
@@ -139,14 +140,6 @@ export function CodeWorkDialog({
         runId={runId}
         onScope={changeScope}
         summary={currentSummary}
-        view={view}
-        onView={setView}
-        allCollapsed={!files?.some((file) => isExpanded(file.path))}
-        onToggleAll={() => {
-          const expand = !files?.some((file) => isExpanded(file.path));
-          setExpanded(Object.fromEntries((files || []).map((file) => [file.path, expand])));
-        }}
-        onRefresh={changed}
         onClose={onClose}
         onDetails={() => setTab('checks')}
         verifying={verifying}
@@ -156,12 +149,42 @@ export function CodeWorkDialog({
         onVerify={() => verify.mutate()}
         onCancel={() => cancel.mutate()}
         items={[
-          { label: '验证详情', onSelect: () => setTab('checks'), disabled: !status?.exists },
+          ...(tab === 'changes' && !!files?.length
+            ? [
+                {
+                  label: view.split ? '切换为统一差异' : '切换为左右对照',
+                  onSelect: () => setView({ ...view, split: !view.split }),
+                },
+                {
+                  label: view.wrap ? '关闭自动换行' : '开启自动换行',
+                  onSelect: () => setView({ ...view, wrap: !view.wrap }),
+                },
+                ...((files?.length || 0) > 1
+                  ? [
+                      {
+                        label: allCollapsed ? '展开全部文件' : '收起全部文件',
+                        onSelect: () =>
+                          setExpanded(
+                            Object.fromEntries(
+                              (files || []).map((file) => [file.path, allCollapsed]),
+                            ),
+                          ),
+                      },
+                    ]
+                  : []),
+              ]
+            : []),
+          ...(runId
+            ? [
+                {
+                  label: '当前验证详情',
+                  onSelect: () => setTab('checks'),
+                  disabled: !status?.exists,
+                },
+              ]
+            : []),
           { label: '历史', onSelect: () => setTab('history'), disabled: !status?.exists },
           { label: '合并', onSelect: () => setTab('merge'), disabled: !status?.exists },
-          ...(onRequest
-            ? [{ label: '让 AI 修改', onSelect: () => onRequest(), disabled: blocked }]
-            : []),
           {
             label: '下载修改',
             onSelect: () => download.mutate(),
