@@ -38,7 +38,7 @@ const compiled = await build({
           loader: 'jsx',
           resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
           contents: path.endsWith('CodeDiffView')
-            ? 'export default function CodeDiffView({diff}) { return <pre aria-label="代码差异">{diff.diff}</pre>; }'
+            ? 'export default function CodeDiffView({diff,split,wrap}) { return <pre aria-label="代码差异" data-split={split} data-wrap={wrap}>{diff.diff}</pre>; }'
             : path.endsWith('AuthContext')
               ? 'export const useAuth = () => ({ session: { user: { role: boundary.role } } });'
               : path.endsWith('/ui')
@@ -81,10 +81,22 @@ async function mounted(props, verify, setup = () => {}) {
   boundary.diff = { path, version: 'v1', before: 'old', after: 'new', diff: '-old\n+new' };
   boundary.api = async (url, options, project) => {
     boundary.calls.push({ url, options, project });
+    if (url.includes('/summary'))
+      return {
+        exists: true,
+        revision: boundary.status.revision,
+        additions: boundary.status.files.length * 2,
+        deletions: boundary.status.files.length,
+        files: boundary.status.files.map((file) => ({ ...file, additions: 2, deletions: 1 })),
+      };
     if (url.includes('/diff?')) {
+      const target = new URL(url, 'http://test').searchParams.get('path');
       return {
         ...structuredClone(boundary.diff),
-        path: new URL(url, 'http://test').searchParams.get('path'),
+        path: target,
+        version:
+          boundary.status.files.find((file) => file.path === target)?.version ??
+          boundary.diff.version,
       };
     }
     if (url.endsWith('/revert')) {
@@ -136,7 +148,16 @@ const button = (text) =>
   );
 const click = async (text) => {
   if (!button(text)) {
-    await act(async () => button('更多变更操作')?.click());
+    await act(async () => {
+      const trigger =
+        text === '撤销此文件'
+          ? document
+              .querySelector('.code-review-file-content:not([hidden])')
+              ?.closest('.code-review-file')
+              .querySelector('[aria-haspopup="menu"]')
+          : button('更多变更操作');
+      trigger?.click();
+    });
   }
   assert.ok(button(text), `button: ${text}`);
   await act(async () => {
@@ -156,21 +177,22 @@ const setStatus = async (cache, status) => {
 test('默认集中展示单个文件差异，次级信息按需打开且不会触发写入', async () => {
   await mounted({}, async () => {
     assert.equal(document.querySelector('nav[aria-label="修改文件"]'), null);
-    assert.ok(document.querySelector('.code-work-changes.single-file'));
+    assert.equal(document.querySelectorAll('.code-review-file').length, 1);
     assert.equal(document.querySelector('.code-work-options-menu'), null);
     assert.equal(document.querySelector('.code-verification'), null);
     assert.equal(document.querySelector('.code-review-comment'), null);
     assert.equal(document.querySelector('.code-work-locations'), null);
-    assert.equal(document.querySelector('select[aria-label="差异显示方式"]').value, 'unified');
+    assert.equal(document.querySelector('[aria-label="代码差异"]').dataset.split, 'true');
+    assert.equal(document.querySelector('[aria-label="变更范围"]').value, '');
     assert.equal(document.querySelector('[role="status"]').textContent, '尚未验证');
     await click('工程信息');
     assert.match(document.body.textContent, /当前副本版本 1/);
     assert.ok(document.querySelector('.code-work-locations'));
     await click('返回变更');
     await click('历史');
-    assert.match(document.querySelector('.code-work-primary > strong').textContent, /修改历史/);
+    assert.match(document.querySelector('.code-review-page-title').textContent, /修改历史/);
     await click('返回变更');
-    assert.ok(document.querySelector('.code-work-changes.single-file'));
+    assert.equal(document.querySelectorAll('.code-review-file').length, 1);
     assert.ok(boundary.calls.every(({ options }) => !options?.method || options.method === 'GET'));
   });
 });
@@ -206,6 +228,147 @@ test('更多菜单支持方向键、Escape 和外部关闭，Escape 不会连带
     );
     assert.equal(document.querySelector('[role="menu"]'), null);
   });
+});
+
+test('文件连续排列并延迟读取，统一控制左右对照、换行和展开收起', async () => {
+  const second = 'AKRS.ZX2200/Controllers/Valve.cs';
+  await mounted(
+    { initialPath: second },
+    async () => {
+      const rows = document.querySelectorAll('.code-review-file');
+      assert.equal(rows.length, 2);
+      assert.equal(rows[0].querySelector('[aria-expanded]').getAttribute('aria-expanded'), 'false');
+      assert.equal(rows[1].querySelector('[aria-expanded]').getAttribute('aria-expanded'), 'true');
+      assert.ok(
+        boundary.calls
+          .filter(({ url }) => url.includes('/diff?'))
+          .every(({ url }) => url.includes(encodeURIComponent(second))),
+      );
+      await until(() => document.querySelector('.code-review-scope-pill .code-review-counts'));
+      assert.equal(
+        document
+          .querySelector('.code-review-scope-pill .code-review-counts')
+          .getAttribute('aria-label'),
+        '新增 4 行，删除 2 行',
+      );
+      assert.equal(
+        rows[1].querySelector('.code-review-counts').getAttribute('aria-label'),
+        '新增 2 行，删除 1 行',
+      );
+      await click(`查看修改文件：${path}`);
+      await until(() => document.querySelectorAll('[aria-label="代码差异"]').length === 2);
+      await click('左右对照');
+      assert.ok(
+        [...document.querySelectorAll('[aria-label="代码差异"]')].every(
+          (node) => node.dataset.split === 'false',
+        ),
+      );
+      await click('自动换行');
+      assert.ok(
+        [...document.querySelectorAll('[aria-label="代码差异"]')].every(
+          (node) => node.dataset.wrap === 'true',
+        ),
+      );
+      await click('收起全部文件');
+      assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 0);
+      await click('展开全部文件');
+      assert.equal(document.querySelectorAll('.code-review-file-content:not([hidden])').length, 2);
+    },
+    () => boundary.status.files.push({ path: second, version: 'second-v2', kind: 'modified' }),
+  );
+});
+
+test('轮次选择使用独立快照及统计，切回累计后恢复可撤销的当前文件', async () => {
+  await mounted(
+    {},
+    async () => {
+      const scope = document.querySelector('select[aria-label="变更范围"]');
+      assert.equal(
+        [...scope.options].find((option) => option.textContent === '上一轮').value,
+        'last-turn',
+      );
+      assert.equal([...scope.options].filter((option) => option.value === 'last-turn').length, 1);
+      await act(async () => {
+        scope.value = 'last-turn';
+        scope.dispatchEvent(new window.Event('change', { bubbles: true }));
+      });
+      await until(
+        () =>
+          document.querySelector('[aria-label="代码差异"]')?.textContent ===
+          '-snapshot-before\n+snapshot-after',
+      );
+      assert.equal(
+        document
+          .querySelector('.code-review-scope-pill .code-review-counts')
+          .getAttribute('aria-label'),
+        '新增 7 行，删除 3 行',
+      );
+      await click(`文件操作：${path}`);
+      assert.equal(button('撤销此文件'), undefined);
+      assert.equal(button('编译与仿真验证'), undefined);
+      await act(async () => {
+        scope.value = '';
+        scope.dispatchEvent(new window.Event('change', { bubbles: true }));
+      });
+      await until(
+        () => document.querySelector('[aria-label="代码差异"]')?.textContent === '-old\n+new',
+      );
+      await click('撤销此文件');
+      await click('确认撤销');
+      const request = boundary.calls.find((call) => call.url.endsWith('/revert'));
+      assert.deepEqual(JSON.parse(request.options.body), { path, version: 'v1' });
+    },
+    () => {
+      boundary.status.history = [
+        { id: '3', run_id: 'last-turn', revision: 3, files: [path] },
+        { id: 'old', run_id: 'old-turn', revision: 1, files: [path] },
+        { id: '1', run_id: 'last-turn', revision: 1, files: [path] },
+        { id: '2', run_id: 'last-turn', revision: 2, files: [path] },
+      ];
+      const previous = boundary.api;
+      boundary.api = async (url, options, project) => {
+        if (url.includes('run_id=last-turn')) {
+          boundary.calls.push({ url, options, project });
+          return url.includes('/summary')
+            ? {
+                exists: true,
+                revision: 0,
+                additions: 7,
+                deletions: 3,
+                files: [
+                  { path, version: 'snapshot-v0', kind: 'modified', additions: 7, deletions: 3 },
+                ],
+              }
+            : {
+                ...boundary.diff,
+                version: 'snapshot-v0',
+                historical: true,
+                run_id: 'last-turn',
+                diff: '-snapshot-before\n+snapshot-after',
+              };
+        }
+        return previous(url, options, project);
+      };
+    },
+  );
+});
+
+test('不同文件版本的旧摘要不显示为当前增删统计', async () => {
+  await mounted(
+    {},
+    async () => {
+      assert.equal(document.querySelector('.code-review-scope-pill .code-review-counts'), null);
+      assert.equal(document.querySelector('.code-review-file .code-review-counts'), null);
+    },
+    () => {
+      const previous = boundary.api;
+      boundary.api = async (url, options, project) => {
+        const result = await previous(url, options, project);
+        if (url.includes('/summary')) result.files[0].version = 'old-version';
+        return result;
+      };
+    },
+  );
 });
 
 test('一行验证状态保留停止与过期结果，基础回归不等同于需求验证通过', async () => {
@@ -263,6 +426,7 @@ test('旧版本的成功不展示为当前代码通过，验证期间禁用编�
     assert.equal(button('编译与仿真验证').disabled, true);
     await click('更多变更操作');
     assert.equal(button('让 AI 修改').disabled, true);
+    await click(`文件操作：${path}`);
     assert.equal(button('撤销此文件').disabled, true);
     assert.ok(button('停止验证'));
   });
@@ -286,13 +450,19 @@ test('右侧变更区保留指定文件和历史轮次，不创建模态遮罩�
       assert.ok(document.querySelector('section[aria-label="代码变更"]'));
       assert.equal(document.querySelector('[role="dialog"], [aria-modal="true"]'), null);
       assert.equal(document.querySelector('.code-work-dialog'), null);
-      assert.match(document.querySelector('.code-work-file-heading').textContent, /Second.cs/);
+      assert.match(
+        document
+          .querySelector('.code-review-file-content:not([hidden])')
+          .closest('.code-review-file').textContent,
+        /Second.cs/,
+      );
       assert.ok(
         boundary.calls.some(
           ({ url }) =>
             url.includes(`path=${encodeURIComponent(second)}`) && url.endsWith('run_id=run-7'),
         ),
       );
+      await click(`文件操作：${second}`);
       assert.equal(button('撤销此文件'), undefined);
       await act(async () => document.querySelector('[aria-label="关闭代码变更"]').click());
       assert.equal(closed, 1);
@@ -304,6 +474,7 @@ test('右侧变更区保留指定文件和历史轮次，不创建模态遮罩�
 test('右侧面板 Escape 可关闭，填写反馈时保留输入且运行中继续禁用编辑', async () => {
   let closed = 0;
   await mounted({ embedded: true, busy: true, onClose: () => closed++ }, async () => {
+    await click(`文件操作：${path}`);
     assert.equal(button('撤销此文件').disabled, true);
     assert.equal(button('编译与仿真验证').disabled, true);
     const panel = document.querySelector('.code-work-pane');
@@ -544,7 +715,10 @@ test('从摘要点击指定文件时直接展示并撤销该文件，不跳到�
   await mounted(
     { initialPath: other },
     async () => {
-      const heading = document.querySelector('.code-work-file-heading strong');
+      const heading = document
+        .querySelector('.code-review-file-content:not([hidden])')
+        .closest('.code-review-file')
+        .querySelector('strong');
       assert.equal(heading.textContent, 'Second.cs');
       assert.equal(heading.title, other);
       const reads = boundary.calls.filter((call) => call.url.includes('/diff?'));

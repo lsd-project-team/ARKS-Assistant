@@ -1,22 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, FileCode2, Play, RotateCcw, Square, X } from 'lucide-react';
-import { api, apiUrl, jsonBody } from '../../../app/api/client';
+import { useIsMutating, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { FileCode2 } from 'lucide-react';
+import { api, apiUrl } from '../../../app/api/client';
 import { useAuth } from '../../auth/AuthContext';
 import { sessionFetch } from '../../auth/session';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { CodeEnvironmentPanel } from './CodeEnvironmentPanel';
-import { verificationBusy, type WorkDiff, type WorkStatus, type WorkSummary } from './types';
+import { verificationBusy, type WorkStatus, type WorkSummary } from './types';
 import { WorkspaceInfo } from './WorkspaceInfo';
 import { RequirementPanel } from './RequirementPanel';
 import { WorkHistory } from './WorkHistory';
 import { WorkRecovery } from './WorkRecovery';
 import { MergePanel } from './MergePanel';
-import { ReviewDiff } from './ReviewDiff';
 import { VerificationReport } from './VerificationReport';
-import { VerificationSummary } from './VerificationSummary';
-import { CodeWorkMenu } from './CodeWorkMenu';
+import { CodeReviewToolbar } from './CodeReviewToolbar';
+import { CodeReviewFile } from './CodeReviewFile';
 import './code-work.css';
+import './code-review-layout.css';
 
 export function CodeWorkDialog({
   open,
@@ -53,37 +53,45 @@ export function CodeWorkDialog({
     enabled: open && !!threadId,
     refetchInterval: open ? 2000 : false,
   });
-  const [selected, setSelected] = useState(initialPath);
   const [runId, setRunId] = useState(initialRunId);
   const [tab, setTab] = useState<'changes' | 'checks' | 'history' | 'merge' | 'info'>('changes');
-  const [confirmRevert, setConfirmRevert] = useState<WorkDiff | null>(null);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [view, setView] = useState({ split: true, wrap: false });
   useEffect(() => {
     if (open) {
-      setSelected(initialPath);
       setRunId(initialRunId);
       setTab('changes');
-      setConfirmRevert(null);
+      setExpanded({});
     }
-  }, [open, initialPath, initialRunId]);
+  }, [open, initialPath, initialRunId, projectId, threadId]);
   const status = query.data;
-  const historical = useQuery({
-    queryKey: [...key, 'turn', runId],
+  const summary = useQuery({
+    queryKey: [...key, 'review-summary', status?.revision, runId],
     queryFn: () =>
-      api<WorkSummary>(`${base}/summary?run_id=${encodeURIComponent(runId)}`, undefined, projectId),
-    enabled: open && !!runId,
-  });
-  const files = runId ? historical.data?.files : status?.files;
-  const file = files?.find((item) => item.path === selected) || files?.[0];
-  const diff = useQuery({
-    queryKey: [...key, 'diff', file?.path, file?.version, runId],
-    queryFn: () =>
-      api<WorkDiff>(
-        `${base}/diff?path=${encodeURIComponent(file!.path)}${runId ? `&run_id=${encodeURIComponent(runId)}` : ''}`,
+      api<WorkSummary>(
+        `${base}/summary${runId ? `?run_id=${encodeURIComponent(runId)}` : ''}`,
         undefined,
         projectId,
       ),
-    enabled: open && !!file,
+    enabled: open && !!threadId && (!!runId || !!status?.exists),
   });
+  const files = runId ? summary.data?.files : status?.files;
+  const versions = new Map(status?.files?.map((file) => [file.path, file.version]));
+  const currentSummary =
+    summary.data &&
+    (runId ||
+      (summary.data.revision === status?.revision &&
+        summary.data.files.length === versions.size &&
+        summary.data.files.every((file) => versions.get(file.path) === file.version)))
+      ? summary.data
+      : undefined;
+  const defaultPath = files?.find((file) => file.path === initialPath)?.path || files?.[0]?.path;
+  const isExpanded = (path: string) => expanded[path] ?? path === defaultPath;
+  const editing = useIsMutating({ mutationKey: [...key, 'edit'] }) > 0;
+  const changeScope = (id: string) => {
+    setRunId(id);
+    setExpanded({});
+  };
   const changed = () => {
     void cache.invalidateQueries({ queryKey: key });
   };
@@ -97,30 +105,6 @@ export function CodeWorkDialog({
   });
   const cancel = useMutation({
     mutationFn: () => api<WorkStatus>(`${base}/cancel`, { method: 'POST' }, projectId),
-    onSuccess: changed,
-  });
-  const revert = useMutation({
-    mutationFn: (target: WorkDiff) =>
-      api<WorkStatus>(
-        `${base}/revert`,
-        { method: 'POST', body: jsonBody({ path: target.path, version: target.version }) },
-        projectId,
-      ),
-    onSuccess: () => {
-      setConfirmRevert(null);
-      changed();
-    },
-  });
-  const revertHunk = useMutation({
-    mutationFn: (hunkId: string) =>
-      api(
-        `${base}/revert-hunk`,
-        {
-          method: 'POST',
-          body: jsonBody({ path: diff.data!.path, version: diff.data!.version, hunk_id: hunkId }),
-        },
-        projectId,
-      ),
     onSuccess: changed,
   });
   const download = useMutation({
@@ -141,58 +125,51 @@ export function CodeWorkDialog({
     },
   });
   const verifying = verificationBusy(status?.verification);
-  const blocked = busy || verifying || !!status?.recovery?.length;
+  const blocked = busy || verifying || editing || !!status?.recovery?.length;
   const body = (
     <div className="code-work-body code-work-compact">
-      <div className="code-work-toolbar code-work-primary">
-        {tab !== 'changes' && (
-          <Button onClick={() => setTab('changes')} aria-label="返回变更" title="返回变更">
-            <ArrowLeft size={15} />
-          </Button>
-        )}
-        <strong>
-          {tab === 'changes'
-            ? files
-              ? `${files.length} 个文件`
-              : status?.exists
-                ? '正在读取变更…'
-                : '变更'
-            : { checks: '验证详情', history: '修改历史', merge: '合并', info: '工程信息' }[tab]}
-        </strong>
-        {status?.exists && !runId && (
-          <Button
-            aria-label="编译与仿真验证"
-            title="编译与仿真验证"
-            onClick={() => verify.mutate()}
-            disabled={blocked || verify.isPending}
-          >
-            <Play size={13} />
-            验证
-          </Button>
-        )}
-        {verifying && (
-          <Button onClick={() => cancel.mutate()} disabled={cancel.isPending}>
-            <Square size={13} />
-            停止验证
-          </Button>
-        )}
-        <CodeWorkMenu
-          items={[
-            { label: '验证详情', onSelect: () => setTab('checks'), disabled: !status?.exists },
-            { label: '历史', onSelect: () => setTab('history'), disabled: !status?.exists },
-            { label: '合并', onSelect: () => setTab('merge'), disabled: !status?.exists },
-            ...(onRequest
-              ? [{ label: '让 AI 修改', onSelect: () => onRequest(), disabled: blocked }]
-              : []),
-            {
-              label: '下载修改',
-              onSelect: () => download.mutate(),
-              disabled: !status?.files?.length || download.isPending,
-            },
-            { label: '工程信息', onSelect: () => setTab('info') },
-          ]}
-        />
-      </div>
+      <CodeReviewToolbar
+        title={
+          tab === 'changes'
+            ? undefined
+            : { checks: '验证详情', history: '修改历史', merge: '合并', info: '工程信息' }[tab]
+        }
+        onBack={() => setTab('changes')}
+        status={status}
+        runId={runId}
+        onScope={changeScope}
+        summary={currentSummary}
+        view={view}
+        onView={setView}
+        allCollapsed={!files?.some((file) => isExpanded(file.path))}
+        onToggleAll={() => {
+          const expand = !files?.some((file) => isExpanded(file.path));
+          setExpanded(Object.fromEntries((files || []).map((file) => [file.path, expand])));
+        }}
+        onRefresh={changed}
+        onClose={onClose}
+        onDetails={() => setTab('checks')}
+        verifying={verifying}
+        blocked={blocked}
+        verifyPending={verify.isPending}
+        cancelPending={cancel.isPending}
+        onVerify={() => verify.mutate()}
+        onCancel={() => cancel.mutate()}
+        items={[
+          { label: '验证详情', onSelect: () => setTab('checks'), disabled: !status?.exists },
+          { label: '历史', onSelect: () => setTab('history'), disabled: !status?.exists },
+          { label: '合并', onSelect: () => setTab('merge'), disabled: !status?.exists },
+          ...(onRequest
+            ? [{ label: '让 AI 修改', onSelect: () => onRequest(), disabled: blocked }]
+            : []),
+          {
+            label: '下载修改',
+            onSelect: () => download.mutate(),
+            disabled: !status?.files?.length || download.isPending,
+          },
+          { label: '工程信息', onSelect: () => setTab('info') },
+        ]}
+      />
       {tab === 'info' && (
         <>
           {admin && <CodeEnvironmentPanel />}
@@ -242,9 +219,6 @@ export function CodeWorkDialog({
           {status.prepared === false && (tab === 'checks' || tab === 'info') && (
             <p className="muted">备份中的修改已保留。验证时将按同版本源码重新准备本机依赖。</p>
           )}
-          {tab === 'changes' && !runId && (
-            <VerificationSummary status={status} onDetails={() => setTab('checks')} />
-          )}
           {status.verification && tab === 'checks' && (
             <VerificationReport
               job={status.verification}
@@ -272,8 +246,7 @@ export function CodeWorkDialog({
               base={base}
               projectId={projectId}
               onSelect={(id) => {
-                setRunId(id);
-                setSelected('');
+                changeScope(id);
                 setTab('changes');
               }}
             />
@@ -289,104 +262,53 @@ export function CodeWorkDialog({
             />
           )}
           {tab === 'changes' && (
-            <>
-              {runId && (
-                <div className="code-review-toolbar">
-                  <span title={`历史轮次 ${runId}`}>本轮快照 · 只读</span>
-                  <Button
-                    onClick={() => {
-                      setRunId('');
-                      setSelected('');
-                    }}
-                  >
-                    查看全部待合入修改
-                  </Button>
-                </div>
-              )}
+            <div className="code-review-files" aria-label="修改文件">
               {!!files?.length ? (
-                <div className={`code-work-changes${files.length === 1 ? ' single-file' : ''}`}>
-                  {files.length > 1 && (
-                    <nav aria-label="修改文件">
-                      {files.map((item) => (
-                        <button
-                          key={item.path}
-                          title={item.path}
-                          aria-label={`查看修改文件：${item.path}`}
-                          className={file?.path === item.path ? 'selected' : ''}
-                          onClick={() => {
-                            setSelected(item.path);
-                            setConfirmRevert(null);
-                          }}
-                        >
-                          <span>
-                            {item.path.split('/').at(-1)}
-                            {item.kind === 'added' ? ' · 新增' : ''}
-                          </span>
-                          <small>{item.path.slice(0, item.path.lastIndexOf('/'))}</small>
-                        </button>
-                      ))}
-                    </nav>
-                  )}
-                  <div className="code-work-diff">
-                    <div className="code-work-file-heading">
-                      <strong title={file?.path}>{file?.path.split('/').at(-1)}</strong>
-                      {!runId && (
-                        <Button
-                          disabled={!diff.data || blocked || revert.isPending}
-                          aria-label="撤销此文件"
-                          title="撤销此文件"
-                          onClick={() => setConfirmRevert(diff.data!)}
-                        >
-                          <RotateCcw size={12} />
-                        </Button>
-                      )}
-                    </div>
-                    {confirmRevert?.path === file?.path && confirmRevert && (
-                      <div className="code-revert-confirm" role="alert">
-                        <span>撤销副本中此文件的全部修改？</span>
-                        <Button
-                          onClick={() => revert.mutate(confirmRevert)}
-                          disabled={revert.isPending}
-                        >
-                          确认撤销
-                        </Button>
-                        <Button onClick={() => setConfirmRevert(null)}>保留修改</Button>
-                      </div>
+                files.map((file) => (
+                  <CodeReviewFile
+                    key={`${projectId}:${threadId}:${runId}:${file.path}`}
+                    file={file}
+                    stats={currentSummary?.files.find(
+                      (item) => item.path === file.path && item.version === file.version,
                     )}
-                    {diff.data ? (
-                      <ReviewDiff
-                        compact
-                        diff={diff.data}
-                        disabled={blocked || revertHunk.isPending}
-                        onRevertHunk={!runId ? (hunk) => revertHunk.mutate(hunk.id) : undefined}
-                        onReview={onRequest}
-                      />
-                    ) : (
-                      <p className="muted">正在读取差异…</p>
-                    )}
-                  </div>
-                </div>
+                    base={base}
+                    projectId={projectId}
+                    threadId={threadId}
+                    runId={runId}
+                    expanded={isExpanded(file.path)}
+                    onToggle={() =>
+                      setExpanded((current) => ({
+                        ...current,
+                        [file.path]: !isExpanded(file.path),
+                      }))
+                    }
+                    focus={!!initialPath && file.path === initialPath}
+                    view={view}
+                    disabled={blocked}
+                    onChanged={changed}
+                    onReview={onRequest}
+                  />
+                ))
               ) : (
-                <p className="muted">
-                  {runId
-                    ? '此轮没有保存的代码修改。'
-                    : '尚无待合入的代码修改。在聊天中描述需求，AI 会先读取副本再修改。'}
+                <p className="muted code-review-loading">
+                  {summary.isPending
+                    ? '正在读取变更…'
+                    : runId
+                      ? '此轮没有保存的代码修改。'
+                      : '尚无待合入的代码修改。在聊天中描述需求，AI 会先读取副本再修改。'}
                 </p>
               )}
-            </>
+            </div>
           )}
         </>
       )}
       <ErrorText
         error={
           query.error ||
-          diff.error ||
           create.error ||
           verify.error ||
           cancel.error ||
-          revert.error ||
-          revertHunk.error ||
-          historical.error ||
+          summary.error ||
           download.error
         }
       />
@@ -411,13 +333,6 @@ export function CodeWorkDialog({
           }
         }}
       >
-        <header className="code-work-pane-heading">
-          <FileCode2 size={16} aria-hidden="true" />
-          <h2>代码变更</h2>
-          <button type="button" aria-label="关闭代码变更" title="关闭代码变更" onClick={onClose}>
-            <X size={16} />
-          </button>
-        </header>
         {body}
       </section>
     ) : null;

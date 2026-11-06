@@ -23,12 +23,14 @@ export function ReviewDiff({
   onRevertHunk,
   onReview,
   compact = false,
+  view,
 }: {
   diff: WorkDiff;
   disabled?: boolean;
   onRevertHunk?: (hunk: WorkHunk) => void;
   onReview?: (request: string) => void;
   compact?: boolean;
+  view?: { split: boolean; wrap: boolean };
 }) {
   const [split, setSplit] = useState(false);
   const [selected, setSelected] = useState<SelectedLineRange | null>(null);
@@ -62,33 +64,40 @@ export function ReviewDiff({
   };
   return (
     <>
-      <div className="code-review-toolbar" role="group" aria-label="差异显示方式">
-        {compact ? (
-          <select
-            className="code-review-mode"
-            aria-label="差异显示方式"
-            value={split ? 'split' : 'unified'}
-            onChange={(event) => setSplit(event.target.value === 'split')}
-          >
-            <option value="unified">统一差异</option>
-            <option value="split">左右对照</option>
-          </select>
-        ) : (
-          <>
-            <Button aria-pressed={!split} onClick={() => setSplit(false)}>
-              统一差异
-            </Button>
-            <Button aria-pressed={split} onClick={() => setSplit(true)}>
-              左右对照
-            </Button>
-          </>
-        )}
-        {diff.historical && <span className="muted">历史快照，只读查看</span>}
-      </div>
+      {!view && (
+        <div className="code-review-toolbar" role="group" aria-label="差异显示方式">
+          {compact ? (
+            <select
+              className="code-review-mode"
+              aria-label="差异显示方式"
+              value={split ? 'split' : 'unified'}
+              onChange={(event) => setSplit(event.target.value === 'split')}
+            >
+              <option value="unified">统一差异</option>
+              <option value="split">左右对照</option>
+            </select>
+          ) : (
+            <>
+              <Button aria-pressed={!split} onClick={() => setSplit(false)}>
+                统一差异
+              </Button>
+              <Button aria-pressed={split} onClick={() => setSplit(true)}>
+                左右对照
+              </Button>
+            </>
+          )}
+          {diff.historical && <span className="muted">历史快照，只读查看</span>}
+        </div>
+      )}
       <div className="code-review-highlight" aria-label="带行号的代码差异">
         <DiffBoundary key={`${diff.path}:${diff.version}`} fallback={fallback}>
           <Suspense fallback={fallback}>
-            <CodeDiffView diff={diff} split={split} onSelect={onSelect} />
+            <CodeDiffView
+              diff={diff}
+              split={view?.split ?? split}
+              wrap={view?.wrap}
+              onSelect={onSelect}
+            />
           </Suspense>
         </DiffBoundary>
       </div>

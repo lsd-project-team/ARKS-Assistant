@@ -9,10 +9,12 @@ export default function CodeDiffView({
   diff,
   split,
   onSelect,
+  wrap = false,
 }: {
   diff: WorkDiff;
   split: boolean;
   onSelect: (range: SelectedLineRange | null) => void;
+  wrap?: boolean;
 }) {
   const dark = useAppearance((state) => state.mode === 'dark');
   const fileDiff = useMemo(
@@ -31,9 +33,11 @@ export default function CodeDiffView({
       disableFileHeader: true,
       enableLineSelection: true,
       onLineSelected: onSelect,
-      overflow: 'scroll' as const,
+      overflow: wrap ? ('wrap' as const) : ('scroll' as const),
+      hunkSeparators: 'line-info' as const,
+      lineDiffType: 'word-alt' as const,
     }),
-    [split, dark, onSelect],
+    [split, dark, onSelect, wrap],
   );
   return <FileDiff fileDiff={fileDiff} options={options} disableWorkerPool />;
 }

@@ -4,7 +4,13 @@ import { MoreHorizontal } from 'lucide-react';
 type MenuItem = { label: string; onSelect: () => void; disabled?: boolean };
 
 /** 菜单留在当前容器内，弹窗和嵌入式面板共用同一套焦点与键盘行为。 */
-export function CodeWorkMenu({ items }: { items: MenuItem[] }) {
+export function CodeWorkMenu({
+  items,
+  label = '更多变更操作',
+}: {
+  items: MenuItem[];
+  label?: string;
+}) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
@@ -29,8 +35,8 @@ export function CodeWorkMenu({ items }: { items: MenuItem[] }) {
         ref={trigger}
         type="button"
         className="button icon-button"
-        aria-label="更多变更操作"
-        title="更多变更操作"
+        aria-label={label}
+        title={label}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? id : undefined}
@@ -50,7 +56,7 @@ export function CodeWorkMenu({ items }: { items: MenuItem[] }) {
           id={id}
           className="code-work-options-menu"
           role="menu"
-          aria-label="更多变更操作"
+          aria-label={label}
           onKeyDown={(event) => {
             if (event.key === 'Escape' || event.key === 'Tab') {
               event.stopPropagation();
