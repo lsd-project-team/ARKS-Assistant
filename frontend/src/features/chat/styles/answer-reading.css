@@ -21,32 +21,34 @@
   line-height: var(--answer-line-height);
 }
 
-:root[data-appearance='white'] .answer-reading {
-  --answer-text: #344052;
-  --answer-heading: #152238;
-  --answer-muted: #5f6b7a;
-  --answer-link: #2259b3;
-  --answer-border: #dce2e9;
-  --answer-inline-text: #775019;
-  --answer-inline-surface: #f4eee4;
-  --answer-code-surface: #f1f4f8;
-  --answer-code-toolbar: #e8edf4;
-  --answer-soft-surface: #edf3fb;
-  --answer-row-surface: #f7f9fc;
+/* Nord 的灰白、蓝灰与 Frost 青色仅映射到回复内，保留页面原有底色和布局。 */
+:root:is([data-appearance='white'], [data-appearance='classic']) .answer-reading {
+  --answer-text: #3b4252;
+  --answer-heading: #2e3440;
+  --answer-muted: #4c566a;
+  /* 浅色的文字强调由 Frost 加深，保证小字号引用与底色有足够对比。 */
+  --answer-link: #3f6089;
+  --answer-border: #d8dee9;
+  --answer-inline-text: #3b4252;
+  --answer-inline-surface: #e5e9f0;
+  --answer-code-surface: #eceff4;
+  --answer-code-toolbar: #e5e9f0;
+  --answer-soft-surface: #e5e9f0;
+  --answer-row-surface: #f0f2f6;
 }
 
 :root[data-appearance='dark'] .answer-reading {
-  --answer-text: #cbd2dc;
-  --answer-heading: #f1f4fa;
-  --answer-muted: #a1adbe;
-  --answer-link: #9ebfff;
-  --answer-border: #343c49;
-  --answer-inline-text: #efc68b;
-  --answer-inline-surface: #302a22;
-  --answer-code-surface: #11151c;
-  --answer-code-toolbar: #252c36;
-  --answer-soft-surface: #212b3b;
-  --answer-row-surface: #1c2028;
+  --answer-text: #d8dee9;
+  --answer-heading: #eceff4;
+  --answer-muted: #b1bdce;
+  --answer-link: #88c0d0;
+  --answer-border: #4c566a;
+  --answer-inline-text: #d8dee9;
+  --answer-inline-surface: #3b4252;
+  --answer-code-surface: #2e3440;
+  --answer-code-toolbar: #3b4252;
+  --answer-soft-surface: #3b4252;
+  --answer-row-surface: #343c4a;
 }
 
 .answer-reading .markdown {
