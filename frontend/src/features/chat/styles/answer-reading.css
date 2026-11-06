@@ -1,20 +1,19 @@
-/* 回答使用独立的阅读色阶，不覆盖用户提问、源码编辑器或图表的业务配色。 */
+/* 仅调整 AI 回复的阅读层级，外部布局与交互组件继续使用原有样式。 */
 .answer-reading {
   --answer-font-size: 16px;
-  --answer-line-height: 1.85;
-  --answer-space: 18px;
-  --answer-section-space: 32px;
+  --answer-line-height: 1.8;
+  --answer-space: 14px;
+  --answer-section-space: 24px;
   --answer-text: var(--text);
   --answer-heading: var(--text);
   --answer-muted: var(--text-secondary);
   --answer-link: var(--reading-accent, var(--accent));
   --answer-border: var(--border);
-  --answer-inline-text: var(--warning-text);
-  --answer-inline-surface: var(--warning-surface);
+  --answer-inline-text: var(--answer-heading);
+  --answer-inline-surface: transparent;
   --answer-code-surface: var(--surface-subtle);
   --answer-code-toolbar: var(--surface-muted);
-  --answer-soft-surface: color-mix(in srgb, var(--accent) 7%, var(--panel));
-  --answer-row-surface: color-mix(in srgb, var(--accent) 3%, var(--panel));
+  --answer-soft-surface: var(--surface-subtle);
   min-width: 0;
   color: var(--answer-text);
   font-size: var(--answer-font-size);
@@ -22,31 +21,25 @@
 }
 
 :root[data-appearance='white'] .answer-reading {
-  --answer-text: #344052;
-  --answer-heading: #152238;
-  --answer-muted: #5f6b7a;
-  --answer-link: #2259b3;
-  --answer-border: #dce2e9;
-  --answer-inline-text: #775019;
-  --answer-inline-surface: #f4eee4;
-  --answer-code-surface: #f1f4f8;
-  --answer-code-toolbar: #e8edf4;
-  --answer-soft-surface: #edf3fb;
-  --answer-row-surface: #f7f9fc;
+  --answer-text: #41434a;
+  --answer-heading: #25262b;
+  --answer-muted: #686b73;
+  --answer-link: #396a9e;
+  --answer-border: #dcdde1;
+  --answer-code-surface: #f7f7f8;
+  --answer-code-toolbar: #efeff1;
+  --answer-soft-surface: #f4f4f5;
 }
 
 :root[data-appearance='dark'] .answer-reading {
-  --answer-text: #cbd2dc;
-  --answer-heading: #f1f4fa;
-  --answer-muted: #a1adbe;
-  --answer-link: #9ebfff;
-  --answer-border: #343c49;
-  --answer-inline-text: #efc68b;
-  --answer-inline-surface: #302a22;
-  --answer-code-surface: #11151c;
-  --answer-code-toolbar: #252c36;
-  --answer-soft-surface: #212b3b;
-  --answer-row-surface: #1c2028;
+  --answer-text: #d1d2d6;
+  --answer-heading: #f2f2f3;
+  --answer-muted: #a5a7ad;
+  --answer-link: #9eb7d8;
+  --answer-border: #383b42;
+  --answer-code-surface: #1c1e24;
+  --answer-code-toolbar: #24262d;
+  --answer-soft-surface: #202227;
 }
 
 .answer-reading .markdown {
@@ -58,25 +51,29 @@
 .answer-reading .markdown p {
   margin-block: 0 var(--answer-space);
 }
+.answer-reading > .rich-content > .markdown:first-child > p:first-child {
+  color: var(--answer-heading);
+  font-weight: 500;
+}
 .answer-reading .markdown :is(h1, h2, h3, h4, h5, h6) {
   color: var(--answer-heading);
-  margin-block: var(--answer-section-space) 12px;
+  margin-block: var(--answer-section-space) 10px;
   font-weight: 600;
-  line-height: 1.45;
+  line-height: 1.5;
   text-wrap: pretty;
 }
 .answer-reading .markdown h1 {
-  font-size: 1.45em;
+  font-size: 1.35em;
 }
 .answer-reading .markdown h2 {
-  font-size: 1.25em;
+  font-size: 1.13em;
 }
 .answer-reading .markdown h3 {
-  font-size: 1.12em;
+  font-size: 1.03em;
 }
 .answer-reading .markdown :is(h2, h3) {
-  border-inline-start: 3px solid var(--answer-link);
-  padding-inline-start: 12px;
+  border-inline-start: 0;
+  padding-inline-start: 0;
 }
 .answer-reading .markdown > :first-child {
   margin-top: 0;
@@ -93,29 +90,29 @@
   margin-block: var(--answer-space);
 }
 .answer-reading .markdown li {
-  margin-block: 8px;
+  margin-block: 6px;
 }
 .answer-reading .markdown li::marker {
-  color: var(--answer-link);
+  color: var(--answer-muted);
 }
 .answer-reading .markdown blockquote {
   margin: var(--answer-space) 0;
-  padding: 12px 16px;
-  border-inline-start: 3px solid var(--answer-link);
-  border-radius: 0 6px 6px 0;
+  padding: 2px 14px;
+  border-inline-start: 2px solid var(--answer-border);
+  border-radius: 0;
   color: var(--answer-text);
-  background: var(--answer-soft-surface);
+  background: transparent;
 }
 .answer-reading .markdown blockquote > :last-child {
   margin-bottom: 0;
 }
 .answer-reading .markdown :not(pre) > code {
-  padding: 2px 5px;
-  border-radius: 4px;
+  padding: 0;
+  border-radius: 0;
   color: var(--answer-inline-text);
   background: var(--answer-inline-surface);
-  font: 0.87em/1.65 var(--font-code);
-  /* 跨行路径只在首尾保留内边距，避免窄栏每行克隆边距而溢出。 */
+  font: 0.9em/1.65 var(--font-code);
+  /* 保留长路径的自然断行，避免跨行装饰扩大窄栏。 */
   box-decoration-break: slice;
   overflow-wrap: anywhere;
 }
@@ -126,25 +123,27 @@
 }
 
 .answer-reading .answer-code {
-  margin-block: 20px;
+  margin-block: 16px;
+  border-radius: 8px;
   border-color: var(--answer-border);
   background: var(--answer-code-surface);
 }
 .answer-reading .answer-code-toolbar {
-  min-height: 38px;
+  min-height: 34px;
+  font-size: 12px;
   color: var(--answer-muted);
   border-color: var(--answer-border);
   background: var(--answer-code-toolbar);
 }
 .answer-reading .answer-code-name {
-  color: var(--answer-heading);
+  color: var(--answer-muted);
 }
 .answer-reading .answer-code-language {
   color: var(--answer-muted);
 }
 .answer-reading .answer-code pre {
-  padding: 16px;
-  font: 13.5px/1.75 var(--font-code);
+  padding: 12px 14px;
+  font: 13px/1.75 var(--font-code);
 }
 /* 仅设置代码默认字色；语法 token 继续使用已有深浅主题高亮。 */
 .answer-reading .answer-code pre code {
@@ -154,19 +153,22 @@
 
 .answer-reading :is(.markdown table, .rich-table) {
   font-size: 14px;
-  line-height: 1.75;
+  line-height: 1.65;
   color: var(--answer-text);
 }
 .answer-reading :is(.markdown, .rich-table) :is(th, td) {
-  padding: 11px 14px;
+  padding: 8px 12px;
   border-bottom-color: var(--answer-border);
 }
 .answer-reading :is(.markdown, .rich-table) th {
   color: var(--answer-heading);
-  background: var(--answer-soft-surface);
+  background: transparent;
+}
+.answer-reading :is(.markdown, .rich-table) thead {
+  border-top: 1px solid var(--answer-border);
 }
 .answer-reading :is(.markdown, .rich-table) tbody tr:nth-child(even) {
-  background: var(--answer-row-surface);
+  background: transparent;
 }
 .answer-reading :is(.rich-chart, .rich-mermaid) figcaption,
 .answer-reading .rich-table caption {
@@ -177,7 +179,7 @@
   color: var(--answer-text);
 }
 .answer-reading .rich-step-number {
-  color: var(--answer-link);
+  color: var(--answer-heading);
   background: var(--answer-soft-surface);
   border-color: var(--answer-border);
 }
@@ -187,9 +189,9 @@
 .answer-reading .answer-sources {
   --answer-font-size: 12px;
   --answer-line-height: 1.8;
-  margin-top: 24px;
-  padding-top: 14px;
-  border-top: 1px solid var(--answer-border);
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: 0;
   font-size: 12px;
 }
 .answer-reading .answer-sources-label,
@@ -200,6 +202,42 @@
 .answer-reading .rich-source-link:not(:disabled),
 .answer-reading .answer-code-link:not(:disabled) {
   color: var(--answer-link);
+}
+.answer-reading .answer-code-file {
+  border-color: transparent;
+  background: transparent;
+  padding-inline: 0;
+  color: var(--answer-muted);
+}
+.answer-reading .answer-code-link:not(:disabled) {
+  background: transparent;
+}
+.answer-reading .answer-code-link:hover:not(:disabled) {
+  background: var(--answer-soft-surface);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* 修改摘要位于回答下方；限定助手消息，避免影响右侧变更工作区。 */
+.chat-pane .message.assistant .code-change-summary {
+  margin-block: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+}
+.chat-pane .message.assistant .code-change-heading {
+  padding: 10px;
+}
+.chat-pane .message.assistant .code-change-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  background: transparent;
+}
+.chat-pane .message.assistant .code-change-files button {
+  padding-block: 8px;
+}
+.chat-pane .message.assistant .answer-actions {
+  margin-top: 12px;
 }
 
 /* 颜色来自已有工具状态，不能根据正文中的“通过”等词推断执行结果。 */
@@ -216,13 +254,13 @@
 @container (max-width: 480px) {
   .answer-reading {
     --answer-font-size: 15.5px;
-    --answer-line-height: 1.8;
-    --answer-section-space: 28px;
+    --answer-line-height: 1.75;
+    --answer-section-space: 22px;
   }
   .answer-reading .answer-code pre {
     padding: 12px;
   }
   .answer-reading :is(.markdown, .rich-table) :is(th, td) {
-    padding: 10px;
+    padding: 8px 10px;
   }
 }
