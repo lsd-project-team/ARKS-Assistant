@@ -16,7 +16,7 @@ from app.infrastructure.storage.validation import validate_backup
 from app.main import create_app
 from app.modules.chat.models import ChatAttachment
 from tests.helpers.api_paths import project_api
-from tests.helpers.chat_attachments import document_bytes
+from tests.helpers.chat_attachments import document_bytes, zip_bytes
 from tests.helpers.code_work import FILE, make_work
 from tests.helpers.models import DeterministicModel
 
@@ -30,6 +30,33 @@ def upload(client, extension=".xlsx", value=7):
     )
     assert response.status_code == 201, response.text
     return response.json()
+
+
+def test_mixed_zip_upload_preview_and_download(services):
+    files = {
+        "docs/需求" + extension: document_bytes(extension, value)
+        for extension, value in [(".pdf", 31), (".docx", 37), (".xlsx", 41), (".csv", 43)]
+    }
+    data = zip_bytes(files)
+    with TestClient(create_app(services[0])) as client:
+        response = client.post(
+            project_api(client, "/attachments"),
+            params={"filename": "资料包.zip"},
+            content=data,
+            headers={"Content-Type": "application/octet-stream"},
+        )
+        assert response.status_code == 201, response.text
+        attachment = response.json()
+        assert attachment["filename"] == "资料包.zip"
+        assert attachment["parse_status"] == "readable"
+        assert attachment["size"] == len(data) and isinstance(attachment["characters"], int)
+        prefix = project_api(client, f"/attachments/{attachment['id']}")
+        preview = client.get(prefix)
+        assert preview.status_code == 200
+        content = preview.json()["content"]
+        for path, value in zip(files, [31, 37, 41, 43], strict=True):
+            assert f"[文件 {path}]" in content and f"NewValue = {value}" in content
+        assert client.get(prefix + "/download").content == data
 
 
 def test_upload_bind_history_queue_edit_fork_download_and_backup(services, monkeypatch):
@@ -182,15 +209,31 @@ class DocumentEditingModel(DeterministicModel):
 
 
 @pytest.mark.parametrize(
-    "extension,value",
-    [(".xlsx", 7), (".csv", 13), (".docx", 17), (".pdf", 19), (".md", 23), (".zip", 29)],
+    "extension,value,pack_in_zip",
+    [
+        (".xlsx", 7, False),
+        (".csv", 13, False),
+        (".docx", 17, False),
+        (".pdf", 19, False),
+        (".md", 23, False),
+        (".zip", 29, False),
+        (".pdf", 31, True),
+        (".docx", 37, True),
+        (".xlsx", 41, True),
+        (".csv", 43, True),
+    ],
 )
 async def test_document_content_drives_actual_copy_edit(
-    services, tmp_path, monkeypatch, extension, value
+    services, tmp_path, monkeypatch, extension, value, pack_in_zip
 ):
     work, thread, original = make_work(services, tmp_path)
     paths, _, workspace, repository, memories, settings = services
-    attachment = repository.attachments.upload(document_bytes(extension, value), "需求" + extension)
+    data = document_bytes(extension, value)
+    if pack_in_zip:
+        data = zip_bytes({"docs/需求" + extension: data})
+    attachment = repository.attachments.upload(
+        data, "需求" + (".zip" if pack_in_zip else extension)
+    )
     model = DocumentEditingModel(attachment_id=attachment["id"])
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_model", lambda *args, **kwargs: model

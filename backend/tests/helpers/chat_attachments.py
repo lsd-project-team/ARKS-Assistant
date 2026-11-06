@@ -10,6 +10,14 @@ from pypdf import PdfWriter
 from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 
 
+def zip_bytes(files):
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, content in files.items():
+            archive.writestr(name, content)
+    return output.getvalue()
+
+
 @lru_cache(maxsize=64)
 def document_bytes(extension, value=7):
     text = f"NewValue = {value}"

@@ -9,7 +9,7 @@ from pathlib import PurePosixPath
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-from app.modules.handover.infrastructure.parsers.archive import safe_archive
+from app.modules.handover.infrastructure.parsers.archive import MAX_EXPANDED, safe_archive
 from app.modules.handover.infrastructure.parsers.docx import parse_docx
 from app.modules.handover.infrastructure.parsers.pdf import parse_pdf
 from app.modules.source_analysis.workspace import decode_source
@@ -39,8 +39,12 @@ def filename_for(filename):
     if not name or len(name) > 250 or any(ord(char) < 32 for char in name):
         raise ValueError("文件名为空、过长或含控制字符")
     if PurePosixPath(name).suffix.lower() not in EXTENSIONS:
-        raise ValueError("支持 DOCX、文本 PDF、XLSX、CSV、源码 ZIP 和常见文本文件；DOC 请转 DOCX")
+        raise ValueError("支持 DOCX、文本 PDF、XLSX、CSV、ZIP 和常见文本文件；DOC 请转 DOCX")
     return name
+
+
+class AttachmentLimitError(ValueError):
+    """整体资源超限必须拒绝，不能当作单个坏文件跳过。"""
 
 
 class TextParts:
@@ -50,7 +54,7 @@ class TextParts:
     def add(self, text):
         self.size += len(text) + 1
         if self.size > MAX_CONTENT:
-            raise ValueError("文档提取正文超过 100 万字，请按功能范围拆分后上传")
+            raise AttachmentLimitError("文档提取正文超过 100 万字，请按功能范围拆分后上传")
         self.parts.append(text)
 
     def text(self):
@@ -125,34 +129,64 @@ def parse_spreadsheet(data, extension):
     )
 
 
-def parse_source_zip(data):
-    parts, skipped, read = TextParts(), [], 0
+def include_office_expansion(data, expanded, entries):
+    # DOCX/XLSX 自身也是压缩包，其内部展开量必须计入外层 ZIP 的总预算。
+    with safe_archive(data) as document:
+        members = document.infolist()
+        expanded += sum(item.file_size for item in members)
+        entries += len(members)
+    if expanded > MAX_EXPANDED or entries > 2000:
+        raise AttachmentLimitError(
+            "ZIP 含 Office 文档展开后累计超过 64 MB 或 2000 项，请拆分后上传"
+        )
+    return expanded, entries
+
+
+def parse_zip(data):
+    parts, skipped, partial, read = TextParts(), [], [], 0
     with safe_archive(data) as archive:
-        for item in archive.infolist():
+        members = archive.infolist()
+        expanded, entries = sum(item.file_size for item in members), len(members)
+        for item in members:
             if item.is_dir():
                 continue
             path = item.filename.replace("\\", "/")
-            if PurePosixPath(path).suffix.lower() not in TEXT_EXTENSIONS:
-                skipped.append(path)
+            extension = PurePosixPath(path).suffix.lower()
+            # 仅解析一层文件；Office 内部结构交给原解析器，不递归展开嵌套 ZIP。
+            if extension not in EXTENSIONS - {".zip"}:
+                skipped.append(f"{path}（格式暂不支持，嵌套 ZIP 不递归读取）")
                 continue
-            if item.file_size > 2_000_000:
-                skipped.append(path)
+            limit = 2_000_000 if extension in TEXT_EXTENSIONS else MAX_UPLOAD
+            if item.file_size > limit:
+                label = "文本超过 2 MB" if extension in TEXT_EXTENSIONS else "文件超过 32 MB"
+                skipped.append(f"{path}（{label}）")
                 continue
             try:
-                content, _ = decode_source(archive.read(item))
-            except ValueError:
-                skipped.append(path)
+                member_data = archive.read(item)
+                if extension in {".docx", ".xlsx"}:
+                    expanded, entries = include_office_expansion(member_data, expanded, entries)
+                _, content, status, notes = parse_attachment(member_data, path)
+            except AttachmentLimitError:
+                raise
+            except (ValueError, zipfile.BadZipFile, RuntimeError, NotImplementedError) as error:
+                skipped.append(f"{path}（解析失败：{error}）")
                 continue
-            parts.add(f"[文件 {path}]\n{content}")
+            parts.add(f"[文件 {path}]\n[解析说明] {notes}\n{content}")
+            if status == "partial":
+                partial.append(path)
             read += 1
-    if not read:
-        raise ValueError("ZIP 中没有可读取的源码或文本文件")
-    notes = f"读取 {read} 个文本文件；未解压到工程、未执行内容。"
+    notes = f"读取 {read} 个文件；未解压到工程、未执行内容。"
+    if partial:
+        notes += " 部分可读的文件：" + ", ".join(partial[:30])
+        if len(partial) > 30:
+            notes += f"等 {len(partial)} 项"
     if skipped:
         notes += " 未读取的文件：" + ", ".join(skipped[:30])
         if len(skipped) > 30:
             notes += f"等 {len(skipped)} 项"
-    return parts.text(), "partial" if skipped else "readable", notes
+    if not read:
+        raise ValueError("ZIP 中没有可读取的文档、源码或文本文件。" + notes)
+    return parts.text(), "partial" if skipped or partial else "readable", notes
 
 
 def parse_attachment(data, filename):
@@ -170,7 +204,7 @@ def _parse_attachment(data, filename):
     if extension in {".xlsx", ".csv"}:
         content, status, notes = parse_spreadsheet(data, extension)
     elif extension == ".zip":
-        content, status, notes = parse_source_zip(data)
+        content, status, notes = parse_zip(data)
     elif extension in {".pdf", ".docx"}:
         parser = parse_pdf if extension == ".pdf" else parse_docx
         try:
@@ -190,5 +224,5 @@ def _parse_attachment(data, filename):
     if not content.strip():
         raise ValueError("文档没有可读取的内容")
     if len(content) > MAX_CONTENT:
-        raise ValueError("文档提取正文超过 100 万字，请按功能范围拆分后上传")
+        raise AttachmentLimitError("文档提取正文超过 100 万字，请按功能范围拆分后上传")
     return filename, content, status, notes
