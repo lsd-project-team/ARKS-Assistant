@@ -16,6 +16,7 @@ export function Modal({
   description,
   children,
   className,
+  onEscapeKeyDown,
 }: {
   open: boolean;
   onClose: () => void;
@@ -23,6 +24,7 @@ export function Modal({
   description?: string;
   children: ReactNode;
   className?: string;
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
 }) {
   const descriptionId = useId();
   return (
@@ -30,6 +32,7 @@ export function Modal({
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
         <Dialog.Content
+          onEscapeKeyDown={onEscapeKeyDown}
           className={cn('modal-content', className)}
           aria-describedby={description ? descriptionId : undefined}
         >

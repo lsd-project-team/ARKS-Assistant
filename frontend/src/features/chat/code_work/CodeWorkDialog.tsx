@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, FileCode2, Play, RotateCcw, Square, X } from 'lucide-react';
+import { ArrowLeft, FileCode2, Play, RotateCcw, Square, X } from 'lucide-react';
 import { api, apiUrl, jsonBody } from '../../../app/api/client';
 import { useAuth } from '../../auth/AuthContext';
 import { sessionFetch } from '../../auth/session';
@@ -14,6 +14,8 @@ import { WorkRecovery } from './WorkRecovery';
 import { MergePanel } from './MergePanel';
 import { ReviewDiff } from './ReviewDiff';
 import { VerificationReport } from './VerificationReport';
+import { VerificationSummary } from './VerificationSummary';
+import { CodeWorkMenu } from './CodeWorkMenu';
 import './code-work.css';
 
 export function CodeWorkDialog({
@@ -53,7 +55,7 @@ export function CodeWorkDialog({
   });
   const [selected, setSelected] = useState(initialPath);
   const [runId, setRunId] = useState(initialRunId);
-  const [tab, setTab] = useState<'changes' | 'checks' | 'history' | 'merge'>('changes');
+  const [tab, setTab] = useState<'changes' | 'checks' | 'history' | 'merge' | 'info'>('changes');
   const [confirmRevert, setConfirmRevert] = useState<WorkDiff | null>(null);
   useEffect(() => {
     if (open) {
@@ -141,16 +143,76 @@ export function CodeWorkDialog({
   const verifying = verificationBusy(status?.verification);
   const blocked = busy || verifying || !!status?.recovery?.length;
   const body = (
-    <div className="code-work-body">
-      {admin && <CodeEnvironmentPanel />}
-      {!threadId && (
+    <div className="code-work-body code-work-compact">
+      <div className="code-work-toolbar code-work-primary">
+        {tab !== 'changes' && (
+          <Button onClick={() => setTab('changes')} aria-label="返回变更" title="返回变更">
+            <ArrowLeft size={15} />
+          </Button>
+        )}
+        <strong>
+          {tab === 'changes'
+            ? files
+              ? `${files.length} 个文件`
+              : status?.exists
+                ? '正在读取变更…'
+                : '变更'
+            : { checks: '验证详情', history: '修改历史', merge: '合并', info: '工程信息' }[tab]}
+        </strong>
+        {status?.exists && !runId && (
+          <Button
+            aria-label="编译与仿真验证"
+            title="编译与仿真验证"
+            onClick={() => verify.mutate()}
+            disabled={blocked || verify.isPending}
+          >
+            <Play size={13} />
+            验证
+          </Button>
+        )}
+        {verifying && (
+          <Button onClick={() => cancel.mutate()} disabled={cancel.isPending}>
+            <Square size={13} />
+            停止验证
+          </Button>
+        )}
+        <CodeWorkMenu
+          items={[
+            { label: '验证详情', onSelect: () => setTab('checks'), disabled: !status?.exists },
+            { label: '历史', onSelect: () => setTab('history'), disabled: !status?.exists },
+            { label: '合并', onSelect: () => setTab('merge'), disabled: !status?.exists },
+            ...(onRequest
+              ? [{ label: '让 AI 修改', onSelect: () => onRequest(), disabled: blocked }]
+              : []),
+            {
+              label: '下载修改',
+              onSelect: () => download.mutate(),
+              disabled: !status?.files?.length || download.isPending,
+            },
+            { label: '工程信息', onSelect: () => setTab('info') },
+          ]}
+        />
+      </div>
+      {tab === 'info' && (
+        <>
+          {admin && <CodeEnvironmentPanel />}
+          {status?.exists && (
+            <>
+              <p className="muted">当前副本版本 {status.revision}</p>
+              <WorkspaceInfo status={status} base={base} projectId={projectId} />
+              <p className="muted code-work-scope">{status.scope}</p>
+            </>
+          )}
+        </>
+      )}
+      {!threadId && tab === 'changes' && (
         <div className="code-work-empty">
           <FileCode2 size={30} />
           <p>在聊天中描述修改要求，发送后会为这段对话准备独立副本。</p>
           {onRequest && <Button onClick={() => onRequest()}>开始描述修改要求</Button>}
         </div>
       )}
-      {threadId && !status?.exists && (
+      {threadId && !status?.exists && tab === 'changes' && (
         <div className="code-work-empty">
           <p>
             {status?.configured
@@ -167,7 +229,6 @@ export function CodeWorkDialog({
       )}
       {status?.exists && (
         <>
-          <WorkspaceInfo status={status} base={base} projectId={projectId} />
           {!!status.recovery?.length && (
             <WorkRecovery
               items={status.recovery}
@@ -178,58 +239,13 @@ export function CodeWorkDialog({
               onChanged={changed}
             />
           )}
-          <div className="code-work-toolbar">
-            <span>
-              副本版本 {status.revision} · {status.files?.length || 0} 个文件有修改
-              <small className="code-work-source">来源 {status.source_version?.slice(0, 12)}</small>
-            </span>
-            {onRequest && (
-              <Button onClick={() => onRequest()} disabled={blocked}>
-                让 AI 修改
-              </Button>
-            )}
-            <Button onClick={() => verify.mutate()} disabled={blocked || verify.isPending}>
-              <Play size={13} />
-              编译与仿真验证
-            </Button>
-            {verifying && (
-              <Button onClick={() => cancel.mutate()} disabled={cancel.isPending}>
-                <Square size={13} />
-                停止验证
-              </Button>
-            )}
-            <Button
-              onClick={() => download.mutate()}
-              disabled={!status.files?.length || download.isPending}
-            >
-              <Download size={13} />
-              下载修改
-            </Button>
-          </div>
-          <div className="code-work-tabs" role="tablist" aria-label="代码工作视图">
-            {(
-              [
-                ['changes', '改动'],
-                ['checks', '验证'],
-                ['history', '历史'],
-                ['merge', '合并'],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                type="button"
-                key={id}
-                role="tab"
-                aria-selected={tab === id}
-                onClick={() => setTab(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          {status.prepared === false && (
+          {status.prepared === false && (tab === 'checks' || tab === 'info') && (
             <p className="muted">备份中的修改已保留。验证时将按同版本源码重新准备本机依赖。</p>
           )}
-          {status.verification && (tab === 'changes' || tab === 'checks') && (
+          {tab === 'changes' && !runId && (
+            <VerificationSummary status={status} onDetails={() => setTab('checks')} />
+          )}
+          {status.verification && tab === 'checks' && (
             <VerificationReport
               job={status.verification}
               current={!!status.verification_current}
@@ -237,16 +253,18 @@ export function CodeWorkDialog({
               projectId={projectId}
             />
           )}
-          <p className="muted code-work-scope">{status.scope}</p>
           {tab === 'checks' && (
-            <RequirementPanel
-              status={status}
-              base={base}
-              projectId={projectId}
-              disabled={blocked}
-              onChanged={changed}
-              onRequest={onRequest}
-            />
+            <>
+              <p className="muted code-work-scope">{status.scope}</p>
+              <RequirementPanel
+                status={status}
+                base={base}
+                projectId={projectId}
+                disabled={blocked}
+                onChanged={changed}
+                onRequest={onRequest}
+              />
+            </>
           )}
           {tab === 'history' && (
             <WorkHistory
@@ -274,7 +292,7 @@ export function CodeWorkDialog({
             <>
               {runId && (
                 <div className="code-review-toolbar">
-                  <span>历史轮次 {runId.slice(0, 8)} · 快照只读</span>
+                  <span title={`历史轮次 ${runId}`}>本轮快照 · 只读</span>
                   <Button
                     onClick={() => {
                       setRunId('');
@@ -286,32 +304,40 @@ export function CodeWorkDialog({
                 </div>
               )}
               {!!files?.length ? (
-                <div className="code-work-changes">
-                  <nav aria-label="修改文件">
-                    {files.map((item) => (
-                      <button
-                        key={item.path}
-                        className={file?.path === item.path ? 'selected' : ''}
-                        onClick={() => {
-                          setSelected(item.path);
-                          setConfirmRevert(null);
-                        }}
-                      >
-                        <small>{item.kind === 'added' ? '新增' : '修改'}</small>
-                        {item.path}
-                      </button>
-                    ))}
-                  </nav>
+                <div className={`code-work-changes${files.length === 1 ? ' single-file' : ''}`}>
+                  {files.length > 1 && (
+                    <nav aria-label="修改文件">
+                      {files.map((item) => (
+                        <button
+                          key={item.path}
+                          title={item.path}
+                          aria-label={`查看修改文件：${item.path}`}
+                          className={file?.path === item.path ? 'selected' : ''}
+                          onClick={() => {
+                            setSelected(item.path);
+                            setConfirmRevert(null);
+                          }}
+                        >
+                          <span>
+                            {item.path.split('/').at(-1)}
+                            {item.kind === 'added' ? ' · 新增' : ''}
+                          </span>
+                          <small>{item.path.slice(0, item.path.lastIndexOf('/'))}</small>
+                        </button>
+                      ))}
+                    </nav>
+                  )}
                   <div className="code-work-diff">
                     <div className="code-work-file-heading">
-                      <strong>{file?.path}</strong>
+                      <strong title={file?.path}>{file?.path.split('/').at(-1)}</strong>
                       {!runId && (
                         <Button
                           disabled={!diff.data || blocked || revert.isPending}
+                          aria-label="撤销此文件"
+                          title="撤销此文件"
                           onClick={() => setConfirmRevert(diff.data!)}
                         >
                           <RotateCcw size={12} />
-                          撤销此文件
                         </Button>
                       )}
                     </div>
@@ -329,6 +355,7 @@ export function CodeWorkDialog({
                     )}
                     {diff.data ? (
                       <ReviewDiff
+                        compact
                         diff={diff.data}
                         disabled={blocked || revertHunk.isPending}
                         onRevertHunk={!runId ? (hunk) => revertHunk.mutate(hunk.id) : undefined}
@@ -398,9 +425,13 @@ export function CodeWorkDialog({
     <Modal
       open={open}
       onClose={onClose}
-      title="代码修改"
-      description="每个对话使用独立副本，可查看差异、编译与运行原工程仿真。"
+      title="代码变更"
       className="code-work-dialog"
+      onEscapeKeyDown={(event) => {
+        if ((event.target as HTMLElement).closest('.code-work-options-menu')) {
+          event.preventDefault();
+        }
+      }}
     >
       {body}
     </Modal>

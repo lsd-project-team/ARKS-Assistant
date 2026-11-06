@@ -3,6 +3,109 @@
   max-width: 1180px;
   max-height: 90vh;
 }
+.code-work-primary {
+  position: relative;
+  gap: 8px;
+  min-height: 34px;
+}
+.code-work-primary > strong {
+  margin-right: auto;
+  font-size: 13px;
+  font-weight: 500;
+}
+.code-work-primary > .button,
+.code-work-options > .button {
+  min-height: 28px;
+  padding: 5px 8px;
+}
+.code-work-options {
+  position: relative;
+}
+.code-work-options-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  width: 170px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 8px 28px #0002;
+}
+.code-work-options-menu button {
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--text);
+}
+.code-work-options-menu button:hover,
+.code-work-options-menu button:focus-visible {
+  background: var(--surface-hover);
+}
+.code-work-options-menu button:disabled {
+  opacity: 0.45;
+}
+.code-verification-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  padding: 7px 0;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-align: left;
+  color: var(--muted);
+}
+.code-verification-summary > span:last-child {
+  font-size: 11px;
+}
+.code-verification-summary[data-status='failed'] > span:first-child {
+  color: #c85b55;
+}
+.code-verification-summary[data-status='passed'] > span:first-child {
+  color: #29985a;
+}
+.code-work-compact .code-work-changes.single-file {
+  display: block;
+}
+.code-work-compact .code-work-changes nav button > span {
+  display: block;
+  font-weight: 500;
+}
+.code-work-compact .code-work-changes nav small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.code-work-compact .code-work-file-heading {
+  padding: 7px 10px;
+  min-height: 34px;
+}
+.code-work-compact .code-work-file-heading > .button {
+  padding: 4px;
+}
+.code-review-mode {
+  padding: 5px 24px 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--panel);
+  font-size: 12px;
+}
+.code-review-hunk-actions > summary {
+  cursor: pointer;
+  color: var(--muted);
+  padding: 8px 10px;
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+}
 .code-work-panel-host,
 .code-work-pane {
   min-width: 0;

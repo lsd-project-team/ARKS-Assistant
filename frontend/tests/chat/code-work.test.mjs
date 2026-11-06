@@ -131,10 +131,17 @@ async function mounted(props, verify, setup = () => {}) {
   }
 }
 const button = (text) =>
-  Array.from(document.querySelectorAll('button')).find((node) => node.textContent === text);
+  Array.from(document.querySelectorAll('button')).find(
+    (node) => node.textContent === text || node.getAttribute('aria-label') === text,
+  );
 const click = async (text) => {
+  if (!button(text)) {
+    await act(async () => button('更多变更操作')?.click());
+  }
   assert.ok(button(text), `button: ${text}`);
   await act(async () => {
+    const details = button(text).closest('details');
+    if (details && !details.open) details.querySelector('summary').click();
     button(text).click();
     await new Promise((resolve) => setTimeout(resolve, 20));
   });
@@ -145,6 +152,77 @@ const setStatus = async (cache, status) => {
     await new Promise((resolve) => setTimeout(resolve, 20));
   });
 };
+
+test('默认集中展示单个文件差异，次级信息按需打开且不会触发写入', async () => {
+  await mounted({}, async () => {
+    assert.equal(document.querySelector('nav[aria-label="修改文件"]'), null);
+    assert.ok(document.querySelector('.code-work-changes.single-file'));
+    assert.equal(document.querySelector('.code-work-options-menu'), null);
+    assert.equal(document.querySelector('.code-verification'), null);
+    assert.equal(document.querySelector('.code-review-comment'), null);
+    assert.equal(document.querySelector('.code-work-locations'), null);
+    assert.equal(document.querySelector('select[aria-label="差异显示方式"]').value, 'unified');
+    assert.equal(document.querySelector('[role="status"]').textContent, '尚未验证');
+    await click('工程信息');
+    assert.match(document.body.textContent, /当前副本版本 1/);
+    assert.ok(document.querySelector('.code-work-locations'));
+    await click('返回变更');
+    await click('历史');
+    assert.match(document.querySelector('.code-work-primary > strong').textContent, /修改历史/);
+    await click('返回变更');
+    assert.ok(document.querySelector('.code-work-changes.single-file'));
+    assert.ok(boundary.calls.every(({ options }) => !options?.method || options.method === 'GET'));
+  });
+});
+
+test('更多菜单支持方向键、Escape 和外部关闭，Escape 不会连带关闭面板', async () => {
+  let closed = 0;
+  await mounted({ embedded: true, onClose: () => closed++ }, async () => {
+    await click('更多变更操作');
+    const menu = document.querySelector('[role="menu"]');
+    const first = menu.querySelector('button');
+    assert.equal(document.activeElement, first);
+    const key = async (target, value) =>
+      act(async () =>
+        target.dispatchEvent(
+          new window.KeyboardEvent('keydown', {
+            key: value,
+            bubbles: true,
+            cancelable: true,
+          }),
+        ),
+      );
+    await key(first, 'ArrowDown');
+    assert.equal(document.activeElement.textContent, '历史');
+    await key(document.activeElement, 'End');
+    assert.equal(document.activeElement.textContent, '工程信息');
+    await key(document.activeElement, 'Escape');
+    assert.equal(document.querySelector('[role="menu"]'), null);
+    assert.equal(document.activeElement, button('更多变更操作'));
+    assert.equal(closed, 0);
+    await click('更多变更操作');
+    await act(async () =>
+      document.body.dispatchEvent(new window.Event('pointerdown', { bubbles: true })),
+    );
+    assert.equal(document.querySelector('[role="menu"]'), null);
+  });
+});
+
+test('一行验证状态保留停止与过期结果，基础回归不等同于需求验证通过', async () => {
+  await mounted({}, async (cache) => {
+    const job = { id: 'job', revision: 1, steps: [], error: '' };
+    for (const [verification, current, expected] of [
+      [{ ...job, status: 'cancelled' }, true, '验证已停止'],
+      [{ ...job, status: 'failed' }, false, '需重新验证（上次失败）'],
+      [{ ...job, status: 'passed' }, true, '基础回归通过'],
+      [{ ...job, status: 'passed', requirements: [{ id: 'assertion' }] }, true, '验证通过'],
+    ]) {
+      await setStatus(cache, { ...boundary.status, verification, verification_current: current });
+      assert.equal(document.querySelector('[role="status"]').textContent, expected);
+      assert.equal(document.querySelector('.code-verification'), null);
+    }
+  });
+});
 
 test('差异按当前项目与对话读取，撤销只提交已确认的文件版本', async () => {
   await mounted({}, async (cache) => {
@@ -179,12 +257,11 @@ test('旧版本的成功不展示为当前代码通过，验证期间禁用编�
         verification,
       });
     await update({ id: 'job-1', revision: 0, status: 'passed', steps: [], error: '' });
-    assert.match(
-      document.querySelector('[role="status"]').textContent,
-      /代码或测试已修改，需重新验证/,
-    );
+    assert.match(document.querySelector('[role="status"]').textContent, /需重新验证/);
+    assert.doesNotMatch(document.querySelector('[role="status"]').textContent, /验证通过/);
     await update({ id: 'job-2', revision: 1, status: 'testing', steps: [], error: '' });
     assert.equal(button('编译与仿真验证').disabled, true);
+    await click('更多变更操作');
     assert.equal(button('让 AI 修改').disabled, true);
     assert.equal(button('撤销此文件').disabled, true);
     assert.ok(button('停止验证'));
@@ -260,8 +337,11 @@ test('成功撤销后刷新文件清单，失败日志可以展开查看', async
         ],
       },
     });
-    assert.match(document.querySelector('.code-verification pre').textContent, /CS1002/);
+    assert.equal(document.querySelector('.code-verification'), null);
     assert.match(document.querySelector('[role="status"]').textContent, /验证失败/);
+    await click('查看验证详情');
+    assert.match(document.querySelector('.code-verification pre').textContent, /CS1002/);
+    await click('返回变更');
     await click('撤销此文件');
     await click('确认撤销');
     await until(() => document.body.textContent.includes('尚无待合入的代码修改'));
@@ -416,6 +496,7 @@ test('普通用户可审查合并，不能出现写回入口；恢复冲突阻�
       });
       assert.match(document.body.textContent, /请管理员核对并确认结束恢复/);
       assert.equal(button('编译与仿真验证').disabled, true);
+      await click('更多变更操作');
       assert.equal(button('让 AI 修改').disabled, true);
     },
     () => mergeSetup(false),
@@ -426,7 +507,7 @@ test('需求测试更新带原版本，失败保留表单内容', async () => {
   await mounted(
     {},
     async () => {
-      await click('验证');
+      await click('验证详情');
       await click('查看/编辑');
       assert.equal(document.querySelector('form textarea').value, '必须只执行一次');
       await click('保存测试');
@@ -463,7 +544,9 @@ test('从摘要点击指定文件时直接展示并撤销该文件，不跳到�
   await mounted(
     { initialPath: other },
     async () => {
-      assert.equal(document.querySelector('.code-work-file-heading strong').textContent, other);
+      const heading = document.querySelector('.code-work-file-heading strong');
+      assert.equal(heading.textContent, 'Second.cs');
+      assert.equal(heading.title, other);
       const reads = boundary.calls.filter((call) => call.url.includes('/diff?'));
       assert.ok(reads.length > 0);
       assert.ok(
