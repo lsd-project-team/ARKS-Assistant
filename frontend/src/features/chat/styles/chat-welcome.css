@@ -50,7 +50,7 @@
 }
 .app-shell .chat-welcome p {
   margin: 12px 0 0;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.8;
   color: var(--text-muted);
   text-wrap: balance;
@@ -73,7 +73,7 @@
   border: 1px solid var(--border);
   border-radius: 20px;
   background: var(--panel);
-  font-size: 13px;
+  font-size: var(--font-size-control);
   font-weight: 400;
   line-height: 1.5;
   color: var(--text-secondary);
@@ -103,7 +103,7 @@
     font-size: 22px;
   }
   .app-shell .chat-welcome p {
-    font-size: 13px;
+    font-size: var(--font-size-body);
   }
   .welcome-suggestions button {
     padding: 8px 11px;

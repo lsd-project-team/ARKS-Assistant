@@ -1,6 +1,6 @@
 .message.assistant .message-bubble > div > .markdown,
 .message.assistant > .markdown {
-  font-size: 15px;
+  font-size: var(--font-size-body);
   line-height: 1.8;
   letter-spacing: normal;
 }
@@ -8,7 +8,7 @@
 .debug-source-images {
   margin-top: 24px;
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.8;
 }
 .debug-source-images + .debug-source-images {

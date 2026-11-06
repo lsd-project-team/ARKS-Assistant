@@ -21,6 +21,7 @@ import './features/projects/styles/projects.css';
 import './app/layouts/styles/sidebar-navigation.css';
 import './shared/styles/theme-interface.css';
 import './shared/styles/control-surfaces.css';
+import './shared/styles/typography.css';
 import './features/chat/styles/answer-content.css';
 import './features/chat/styles/rich-content.css';
 import './features/chat/styles/answer-reading.css';

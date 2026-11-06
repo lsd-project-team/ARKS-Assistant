@@ -75,7 +75,7 @@
 .answer-code-language {
   margin-inline-start: 10px;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--font-size-code);
 }
 .chat-pane .markdown :is(ul, ol) {
   margin-block: var(--answer-space);
@@ -140,7 +140,7 @@
   width: 100%;
   max-width: 100%;
   margin-block: 20px;
-  font-size: 13px;
+  font-size: var(--font-size-table);
   line-height: 1.65;
   scrollbar-width: thin;
   font-variant-numeric: tabular-nums;
@@ -164,13 +164,13 @@
   margin-inline: 2px;
   padding: 2px 5px;
   color: var(--text-secondary);
-  font: 12px/1.6 var(--font-ui);
+  font: var(--font-size-meta)/1.6 var(--font-ui);
   box-decoration-break: clone;
 }
 .chat-pane .message-label {
   margin-bottom: 16px;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .chat-pane .answer-actions {
   gap: 4px;
@@ -203,7 +203,7 @@
   min-height: 28px;
 }
 .chat-pane .answer-code pre {
-  font: 13px/1.7 var(--font-code);
+  font: var(--font-size-code)/1.7 var(--font-code);
 }
 @container (max-width: 480px) {
   .chat-pane .message.assistant {

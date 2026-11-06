@@ -30,6 +30,7 @@ export interface WorkspaceState extends FileNavigation {
   chatPositions: Record<string, ChatPosition>;
   closedFiles: FileLocation[];
   sourceFontSize: number;
+  sourceTypographyVersion: number;
   sourceLineHeight: number;
   drafts: Record<string, ConversationDraft>;
   chatRatio: number;

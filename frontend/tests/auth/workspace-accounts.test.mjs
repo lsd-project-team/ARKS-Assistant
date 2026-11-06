@@ -14,6 +14,25 @@ const { ownedLegacyWorkspace, prepareLegacyWorkspace, workspaceStorageKey } =
 const { sessionFetch, setSessionToken, setSessionAccount } =
   await import('../../src/features/auth/session.ts');
 
+test('源码旧默认字号升级为14px，保留自定义字号、草稿和阅读位置', () => {
+  const current = useWorkspace.getInitialState();
+  const merge = useWorkspace.persist.getOptions().merge;
+  assert.equal(current.sourceFontSize, 14);
+  const savedState = {
+    sourceFontSize: 12,
+    activePath: 'Example.cs',
+    positions: { 'Example.cs': 37 },
+    drafts: { chat: { content: '尚未发送' } },
+  };
+  const upgraded = merge(savedState, current);
+  assert.equal(upgraded.sourceFontSize, 14);
+  assert.equal(upgraded.sourceTypographyVersion, 1);
+  assert.deepEqual(upgraded.positions, savedState.positions);
+  assert.deepEqual(upgraded.drafts, savedState.drafts);
+  assert.equal(merge({ ...savedState, sourceFontSize: 18 }, current).sourceFontSize, 18);
+  assert.equal(merge({ ...savedState, sourceTypographyVersion: 1 }, current).sourceFontSize, 12);
+});
+
 test('切换账号隔离当前项目、最近对话、草稿和源码位置，切回恢复自己的内容', () => {
   activateWorkspaceAccount('first');
   useWorkspace.getState().initializeProject('project-a');

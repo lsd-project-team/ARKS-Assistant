@@ -4,7 +4,7 @@
   border-radius: 14px;
   background: var(--panel);
   overflow: hidden;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .code-change-heading {
   display: flex;
@@ -29,6 +29,7 @@
   margin-right: auto;
 }
 .code-change-title strong {
+  font-size: var(--font-size-body);
   font-weight: 600;
 }
 .code-change-subtitle {
@@ -36,7 +37,7 @@
   flex-wrap: wrap;
   gap: 8px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .code-change-heading > button {
   flex-shrink: 0;
@@ -47,7 +48,7 @@
   gap: 5px;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .code-change-add {
   color: #18783a;
@@ -115,13 +116,13 @@
 }
 .code-change-error {
   margin-block: 12px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .code-change-scope {
   display: flex;
   gap: 6px;
   padding: 0 12px 8px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .code-change-scope button {
@@ -144,5 +145,20 @@
   }
   .code-change-icon {
     display: none;
+  }
+}
+/* 分屏宽度独立于窗口，窄聊天栏也要给标题和操作留出自然换行空间。 */
+@container (max-width: 420px) {
+  .code-change-heading {
+    flex-wrap: wrap;
+  }
+  .code-change-icon {
+    display: none;
+  }
+  .code-change-title {
+    flex: 1 1 130px;
+  }
+  .code-change-heading > button {
+    margin-left: auto;
   }
 }

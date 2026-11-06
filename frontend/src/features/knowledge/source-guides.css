@@ -71,7 +71,7 @@
 }
 .knowledge-workspace .source-step-detail h3 {
   margin: 0 0 12px;
-  font-size: 18px;
+  font-size: var(--font-size-subtitle);
 }
 .knowledge-workspace .source-flow-outcome {
   padding-top: 18px;
@@ -80,7 +80,7 @@
 }
 .knowledge-workspace .source-flow-outcome h4 {
   margin: 0 0 8px;
-  font-size: 13px;
+  font-size: var(--font-size-subtitle);
 }
 .knowledge-workspace .source-claim p {
   line-height: 1.85;
@@ -88,7 +88,7 @@
 }
 .knowledge-workspace .source-guide-boundary {
   margin-top: 16px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .knowledge-workspace .source-guide-boundary > summary {

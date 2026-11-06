@@ -57,7 +57,7 @@
   background: transparent;
   box-shadow: none;
   color: var(--text);
-  font-size: 12px;
+  font-size: var(--font-size-control);
   cursor: pointer;
 }
 .code-review-counts {
@@ -66,7 +66,7 @@
   flex-shrink: 0;
   gap: 4px;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   font-variant-numeric: tabular-nums;
   font-weight: 400;
 }
@@ -114,7 +114,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 .code-review-page-title > .button {
   border: 0;
@@ -144,7 +144,7 @@
   gap: 6px;
   text-align: left;
   padding: 3px 0;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   color: var(--text);
 }
 .code-review-file-toggle > svg {
@@ -169,7 +169,7 @@
 }
 .code-review-file-toggle > small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
 }
 .code-review-file-header .code-work-options > .button {
@@ -191,7 +191,7 @@
 }
 .code-review-loading {
   padding: 14px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .code-work-compact > :not(.code-review-topbar):not(.code-review-files):not(.error-text) {
   margin: 12px;

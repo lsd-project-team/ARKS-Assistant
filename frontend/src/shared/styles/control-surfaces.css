@@ -1,6 +1,6 @@
 /* 公共浮层规范放在根节点上，Portal 和三个外观均使用同一套尺寸与语义颜色。 */
 :root {
-  --control-height: 38px;
+  --control-height: 40px;
   --control-radius: 10px;
   --popup-radius: 12px;
   --dialog-radius: 14px;
@@ -32,7 +32,7 @@
     .composer-commands
   ) {
   border-radius: var(--popup-radius);
-  font-size: 13px;
+  font-size: var(--font-size-control);
   line-height: 1.6;
 }
 :root[data-appearance] .modal-overlay {
@@ -42,7 +42,7 @@
 :root[data-appearance] .modal-content {
   border-radius: var(--dialog-radius);
   max-height: calc(100dvh - 32px);
-  font-size: 14px;
+  font-size: var(--font-size-body);
 }
 :root .modal-content > form {
   display: flex;
@@ -56,13 +56,13 @@
   background: var(--surface);
 }
 :root .modal-heading h2 {
-  font-size: 20px;
+  font-size: var(--font-size-dialog-title);
   line-height: 1.5;
   font-weight: 600;
 }
 :root .modal-heading p {
   margin-top: 6px;
-  font-size: 13px;
+  font-size: var(--font-size-meta);
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -86,12 +86,12 @@
 :root .modal-footer > span {
   margin-right: auto;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 :root .modal-content .button:not(.icon-button) {
-  min-height: 36px;
+  min-height: 40px;
   border-radius: var(--control-radius);
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 :root[data-appearance]
   :is(.modal-content, .admin-filter-grid)
@@ -101,7 +101,7 @@
   border-color: var(--border);
   background: var(--control-background, var(--panel));
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--font-size-control);
   line-height: 1.6;
 }
 :root[data-appearance]
@@ -120,20 +120,20 @@
   box-shadow: var(--focus-ring);
 }
 :root .modal-content :is(.admin-form, .settings-fields) label:not(.admin-checkbox) {
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 :root .ui-select-trigger:not(.model-picker .ui-select-trigger) {
   height: var(--control-height);
   border-radius: var(--control-radius);
-  font: 400 13px/1.6 var(--font-ui);
+  font: 400 var(--font-size-control)/1.6 var(--font-ui);
 }
 :root .ui-select-value {
   flex: 1;
   text-align: left;
 }
 :root .ui-select-item {
-  min-height: 36px;
-  font-size: 13px;
+  min-height: 40px;
+  font-size: var(--font-size-control);
 }
 :root .ui-select-item > span:first-child {
   min-width: 0;
@@ -161,7 +161,7 @@
   padding: 8px 10px;
   gap: 9px;
   border-radius: 7px;
-  font: 400 13px/1.6 var(--font-ui);
+  font: 400 var(--font-size-control)/1.6 var(--font-ui);
 }
 :root :is(.thread-menu, .file-menu, .account-menu) > button:focus-visible {
   outline: none;

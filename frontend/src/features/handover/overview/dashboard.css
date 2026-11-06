@@ -28,7 +28,7 @@
   padding: 22px 26px 16px;
 }
 .handover-overview .handover-header h1 {
-  font-size: 20px;
+  font-size: var(--font-size-page-title);
 }
 .handover-overview .handover-tabs {
   padding-inline: 26px;
@@ -45,7 +45,7 @@
   border-radius: 0;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .dashboard-intro {
   display: flex;
@@ -56,21 +56,21 @@
 }
 .dashboard-intro h2 {
   margin: 0;
-  font-size: 21px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
   letter-spacing: -0.6px;
   line-height: 1.4;
 }
 .dashboard-intro p {
   margin: 4px 0 0;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-sync {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   white-space: nowrap;
 }
@@ -126,7 +126,7 @@
   align-items: center;
   gap: 9px;
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
   line-height: 1.6;
 }
@@ -149,7 +149,7 @@
 }
 .dashboard-panel-heading p {
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   margin: 5px 0 0;
   line-height: 1.6;
 }
@@ -166,7 +166,7 @@
   line-height: 1.15;
 }
 .dashboard-panel-metric > span {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-panel-content {
@@ -183,14 +183,14 @@
   margin-top: 12px;
 }
 .dashboard-panel > footer > span {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-page-link {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   font-weight: 500;
   padding: 3px 0;
 }
@@ -224,7 +224,7 @@
   gap: 5px;
   padding: 3px 10px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   line-height: 1.7;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -239,7 +239,7 @@
   color: var(--text);
 }
 .dashboard-segmented button > span {
-  font-size: 10px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .dashboard-chart-heading {
@@ -247,11 +247,11 @@
   justify-content: space-between;
   align-items: center;
   min-height: 32px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-chart-heading > small {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .handover-dashboard figure {
   margin: 0;
@@ -313,14 +313,14 @@
   transition: color 150ms;
 }
 .dashboard-ring-center > span {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   margin-top: 4px;
   white-space: nowrap;
 }
 .dashboard-ring-center > small {
   color: var(--text-secondary);
-  font-size: 9px;
+  font-size: var(--font-size-meta);
   margin-top: 2px;
   opacity: 0.75;
 }
@@ -339,7 +339,7 @@
   border-radius: 7px;
   padding: 4px 9px;
   text-align: left;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   line-height: 1.5;
 }
 .dashboard-chart-legend button > i {
@@ -348,7 +348,7 @@
   border-radius: 50%;
 }
 .dashboard-chart-legend button strong {
-  font-size: 13px;
+  font-size: var(--font-size-body);
   font-weight: 550;
 }
 .dashboard-chart-legend button[data-highlighted='true'] {
@@ -382,7 +382,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   overflow-wrap: anywhere;
 }
 .dashboard-chart-tooltip i {
@@ -393,11 +393,11 @@
   flex-shrink: 0;
 }
 .dashboard-chart-tooltip strong {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 600;
 }
 .dashboard-chart-tooltip small {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   font-weight: 400;
   color: var(--text-secondary);
 }
@@ -415,17 +415,17 @@
   display: flex;
   align-items: baseline;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-subtitle);
   font-weight: 500;
   margin: 0;
 }
 .dashboard-selection-heading h3 > span {
-  font-size: 10px;
+  font-size: var(--font-size-subtitle);
   color: var(--text-secondary);
   font-weight: 400;
 }
 .dashboard-selection-heading > button {
-  font-size: 10px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .dashboard-selection-heading > button:hover {
@@ -454,7 +454,7 @@
 }
 .dashboard-record-row strong {
   display: block;
-  font-size: 12px;
+  font-size: var(--font-size-body);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -464,7 +464,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   margin-top: 2px;
   white-space: nowrap;
@@ -475,18 +475,18 @@
   opacity: 0.6;
 }
 .dashboard-record-row .handover-status {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   padding: 2px 5px;
   max-width: 75px;
 }
 .dashboard-record-row .task-status {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
 }
 .dashboard-issue-status {
   border-radius: 5px;
   padding: 2px 5px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
   color: var(--text-secondary);
   background: var(--surface-subtle);
@@ -527,11 +527,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   margin-bottom: 10px;
 }
 .dashboard-package-chart > figcaption > span {
-  font-size: 9px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-package-bar {
@@ -551,19 +551,19 @@
 .dashboard-package-bar strong {
   display: block;
   min-width: 0;
-  font-size: 12px;
+  font-size: var(--font-size-body);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .dashboard-package-bar b {
-  font-size: 15px;
+  font-size: var(--font-size-body);
   font-weight: 550;
   white-space: nowrap;
 }
 .dashboard-package-bar b small {
-  font-size: 9px;
+  font-size: var(--font-size-meta);
   font-weight: 400;
   color: var(--text-secondary);
 }
@@ -599,7 +599,7 @@
   gap: 6px;
 }
 .dashboard-package-summary span {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-package-summary strong {
@@ -609,13 +609,13 @@
   letter-spacing: -0.5px;
 }
 .dashboard-package-summary strong small {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   font-weight: 400;
   color: var(--text-secondary);
   letter-spacing: 0;
 }
 .dashboard-chart-note {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   line-height: 1.8;
   color: var(--text-secondary);
   margin: 16px 0 0;
@@ -625,11 +625,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .dashboard-activity-controls .dashboard-segmented button {
-  font-size: 10px;
+  font-size: var(--font-size-control);
   padding: 2px 8px;
 }
 .dashboard-operations-chart {
@@ -647,7 +647,7 @@
   justify-content: space-between;
   width: 18px;
   height: 120px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   line-height: 1;
   color: var(--text-secondary);
 }
@@ -697,12 +697,12 @@
   top: -21px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   font-weight: 500;
 }
 .dashboard-column-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--font-size-control);
   margin-top: 7px;
   padding-block: 2px;
   white-space: nowrap;
@@ -750,12 +750,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   margin-bottom: 1px;
 }
 .dashboard-event-meta time {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
 }
 .dashboard-event-row strong {
@@ -763,14 +763,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .dashboard-event-row small {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .dashboard-event-row > svg {
@@ -789,7 +789,7 @@
   margin: 0;
   padding: 17px 8px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   text-align: center;
 }
 .dashboard-empty-chart {
@@ -857,7 +857,7 @@
   justify-content: flex-end;
   gap: 10px;
   margin-top: 4px;
-  font-size: 10px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .dashboard-list-pager > div {

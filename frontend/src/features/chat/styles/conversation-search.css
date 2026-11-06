@@ -37,7 +37,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  font-size: 16px;
+  font-size: var(--font-size-control);
   line-height: 1.5;
   outline: none;
   box-shadow: none;
@@ -63,7 +63,7 @@
 .conversation-search-section {
   padding: 15px 22px 8px;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--font-size-control);
   flex-shrink: 0;
 }
 .conversation-search-results {
@@ -106,26 +106,26 @@
   white-space: nowrap;
 }
 .conversation-search-copy strong {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
   line-height: 1.6;
 }
 .conversation-search-copy small {
   margin-top: 3px;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.7;
 }
 .conversation-search-meta {
   flex-shrink: 0;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .conversation-search-empty {
   margin: 0;
   padding: 30px 12px 38px;
   text-align: center;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   color: var(--text-muted);
 }
 .conversation-search-results > .error-text {
@@ -145,7 +145,7 @@
   padding: 12px 22px;
   border-top: 1px solid var(--border);
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   flex-shrink: 0;
 }
 .conversation-search-dialog kbd {
@@ -157,7 +157,7 @@
   padding: 0 4px;
   border: 1px solid var(--border);
   border-radius: 4px;
-  font: 10px var(--font-ui);
+  font: var(--font-size-code) var(--font-ui);
 }
 .conversation-search-footer > span {
   white-space: nowrap;

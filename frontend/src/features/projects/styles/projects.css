@@ -26,7 +26,7 @@
   border: 0;
   padding: 0;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .chat-project-name span {
   color: var(--text-muted);
@@ -67,7 +67,7 @@
   flex-direction: column;
   gap: 8px;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .project-form input {
   width: 100%;
@@ -128,7 +128,7 @@
 }
 .historical-source-path {
   padding: 12px 24px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   color: var(--text-muted);
   overflow-wrap: anywhere;
 }
@@ -137,7 +137,7 @@
   overflow: auto;
   max-height: 65vh;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.9;
 }
 .historical-source-lines > div {
@@ -183,7 +183,7 @@
   min-width: 0;
 }
 .project-delete-option strong {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .project-delete-option small {

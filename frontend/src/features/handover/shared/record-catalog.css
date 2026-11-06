@@ -26,7 +26,7 @@
 }
 .record-catalog-count {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
 }
 .record-catalog-grid {
@@ -79,17 +79,17 @@
   border: 0;
   padding: 2px 8px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
 }
 .record-catalog-open > strong {
-  font-size: 16px;
+  font-size: var(--font-size-body);
   overflow-wrap: anywhere;
 }
 .record-catalog-open > p {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--font-size-body);
   line-height: 1.75;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -100,7 +100,7 @@
 }
 .record-catalog-open > small {
   margin-top: auto;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   overflow-wrap: anywhere;
 }
@@ -118,7 +118,7 @@
   color: var(--text-secondary);
 }
 .record-catalog-empty strong {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 @container (max-width: 850px) {

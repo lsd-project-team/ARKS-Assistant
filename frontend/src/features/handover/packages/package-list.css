@@ -2,7 +2,7 @@
   display: inline-flex;
   gap: 6px;
   align-items: center;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   min-height: 30px;
   padding: 4px 8px;
   align-self: flex-end;

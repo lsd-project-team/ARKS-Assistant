@@ -88,7 +88,7 @@
 }
 
 :root[data-appearance] .chat-welcome p {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 400;
 }
 
@@ -133,7 +133,7 @@
 }
 
 :root[data-appearance] .composer textarea {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 400;
 }
 

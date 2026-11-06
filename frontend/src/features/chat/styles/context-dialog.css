@@ -19,7 +19,7 @@
   padding: 9px 12px;
   border-radius: 9px;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .context-tabs button[aria-selected='true'] {
   background: var(--panel);
@@ -60,7 +60,7 @@
 .context-overview span,
 .context-count {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   font-weight: 400;
 }
 .context-dialog .context-card,
@@ -89,12 +89,12 @@
 }
 .context-dialog .context-memory summary span {
   display: inline-block;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-muted);
 }
 .context-empty-note {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-size-meta);
   color: var(--text-muted);
 }
 .context-dialog .knowledge-feedback details {
@@ -104,7 +104,7 @@
 .context-dialog .knowledge-feedback summary {
   width: auto;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--font-size-control);
   font-weight: 500;
 }
 .context-advanced {
@@ -113,20 +113,20 @@
 }
 .context-advanced > summary {
   padding: 15px 16px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   cursor: pointer;
   color: var(--text-secondary);
 }
 .context-advanced > summary small {
   margin-left: 10px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-muted);
 }
 .context-advanced-body {
   display: grid;
   gap: 14px;
   padding: 0 16px 16px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   line-height: 1.65;
 }
 .context-advanced-body > details {
@@ -144,7 +144,7 @@
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: 14px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .context-usage-card > div {
   display: flex;
@@ -161,7 +161,7 @@
 }
 .context-usage-card small {
   margin-left: 5px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .context-usage-card progress {
   display: block;
@@ -185,7 +185,7 @@
 }
 .context-usage-card p {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .context-summary-empty {
   display: grid;
@@ -197,13 +197,13 @@
 }
 .context-summary-empty strong {
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .context-summary-empty p,
 .context-summary-empty small {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.6;
 }
 .context-section-heading {

@@ -18,7 +18,7 @@
 }
 .task-metrics span {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .task-metrics strong {
   display: block;
@@ -47,7 +47,7 @@
 }
 .task-table td:last-child {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-table);
 }
 .task-table td .handover-select-trigger {
   height: 34px;
@@ -67,7 +67,7 @@
   display: inline-block;
   padding: 3px 9px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   background: var(--surface-muted);
   color: var(--text-secondary);
 }
@@ -100,7 +100,7 @@
   display: flex;
   justify-content: space-between;
   margin: 0 0 12px;
-  font-size: 13px;
+  font-size: var(--font-size-subtitle);
 }
 .task-board h3 span {
   color: var(--text-secondary);
@@ -119,12 +119,12 @@
   border-radius: 8px;
 }
 .task-board-card strong {
-  font-size: 13px;
+  font-size: var(--font-size-body);
   overflow-wrap: anywhere;
 }
 .task-board-card span,
 .task-board-card time {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .modal-content.handover-modal.task-editor {
@@ -144,7 +144,7 @@
   flex-direction: column;
   min-width: 0;
   gap: 7px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .task-editor-fields label small {
   margin-left: 6px;
@@ -176,12 +176,12 @@
 }
 .task-detail-summary dt {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   margin-bottom: 8px;
 }
 .task-detail-summary dd {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   overflow-wrap: anywhere;
 }
 .task-detail-summary dd small {
@@ -193,7 +193,7 @@
   margin-bottom: 20px;
 }
 .task-detail-text h3 {
-  font-size: 13px;
+  font-size: var(--font-size-subtitle);
   margin: 0 0 8px;
 }
 .task-detail-text p {
@@ -201,7 +201,7 @@
   overflow-wrap: anywhere;
   margin: 0;
   line-height: 1.8;
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 .task-archive-action {
   margin-top: 20px;

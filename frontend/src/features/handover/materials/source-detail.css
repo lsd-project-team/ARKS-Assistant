@@ -6,7 +6,7 @@
   flex-wrap: wrap;
   gap: 12px;
   margin: 0 0 20px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .source-detail-organizer > span {
   color: var(--text-secondary);
@@ -17,7 +17,7 @@
   border-bottom: 1px solid var(--border);
 }
 .source-detail-notes h3 {
-  font-size: 13px;
+  font-size: var(--font-size-subtitle);
   font-weight: 500;
   margin: 0 0 6px;
 }
@@ -29,11 +29,11 @@
 }
 .source-detail-notes p {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--font-size-meta);
 }
 .source-detail-text pre {
   font: inherit;
-  font-size: 14px;
+  font-size: var(--font-size-code);
   line-height: 1.9;
   color: var(--text);
   background: transparent;
@@ -43,7 +43,7 @@
 }
 .source-detail-preview-note {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--font-size-meta);
   margin: 0 0 16px;
 }
 .source-detail .handover-form-footer {

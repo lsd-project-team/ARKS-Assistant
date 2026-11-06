@@ -37,6 +37,12 @@ export const useWorkspace = create<WorkspaceState>()(
             : [];
         return {
           ...state,
+          // 升级旧默认字号；其他自定义字号及升级后主动选择的 12px 继续保留。
+          sourceFontSize:
+            !restored.sourceTypographyVersion && state.sourceFontSize === 12
+              ? current.sourceFontSize
+              : state.sourceFontSize,
+          sourceTypographyVersion: current.sourceTypographyVersion,
           // 旧版保存的归档视图和未知值回到最近，原草稿与阅读位置继续恢复。
           sidebarView: state.sidebarView === 'deleted' ? 'deleted' : 'active',
           history,
@@ -68,6 +74,7 @@ export const useWorkspace = create<WorkspaceState>()(
         chatPositions: state.chatPositions,
         closedFiles: state.closedFiles,
         sourceFontSize: state.sourceFontSize,
+        sourceTypographyVersion: state.sourceTypographyVersion,
         sourceLineHeight: state.sourceLineHeight,
         positions: state.positions,
         chatRatio: state.chatRatio,
