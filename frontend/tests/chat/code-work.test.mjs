@@ -200,6 +200,51 @@ test('未创建对话的入口只准备修改请求，不请求不存在的副�
   });
 });
 
+test('右侧变更区保留指定文件和历史轮次，不创建模态遮罩或允许历史撤销', async () => {
+  const second = 'AKRS.ZX2200/Main/Second.cs';
+  let closed = 0;
+  await mounted(
+    { embedded: true, initialPath: second, initialRunId: 'run-7', onClose: () => closed++ },
+    async () => {
+      assert.ok(document.querySelector('section[aria-label="代码变更"]'));
+      assert.equal(document.querySelector('[role="dialog"], [aria-modal="true"]'), null);
+      assert.equal(document.querySelector('.code-work-dialog'), null);
+      assert.match(document.querySelector('.code-work-file-heading').textContent, /Second.cs/);
+      assert.ok(
+        boundary.calls.some(
+          ({ url }) =>
+            url.includes(`path=${encodeURIComponent(second)}`) && url.endsWith('run_id=run-7'),
+        ),
+      );
+      assert.equal(button('撤销此文件'), undefined);
+      await act(async () => document.querySelector('[aria-label="关闭代码变更"]').click());
+      assert.equal(closed, 1);
+    },
+    () => boundary.status.files.push({ path: second, kind: 'modified', version: 'v2' }),
+  );
+});
+
+test('右侧面板 Escape 可关闭，填写反馈时保留输入且运行中继续禁用编辑', async () => {
+  let closed = 0;
+  await mounted({ embedded: true, busy: true, onClose: () => closed++ }, async () => {
+    assert.equal(button('撤销此文件').disabled, true);
+    assert.equal(button('编译与仿真验证').disabled, true);
+    const panel = document.querySelector('.code-work-pane');
+    const input = document.createElement('textarea');
+    input.value = '尚未提交的反馈';
+    panel.append(input);
+    await act(async () =>
+      input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })),
+    );
+    assert.equal(closed, 0);
+    assert.equal(input.value, '尚未提交的反馈');
+    await act(async () =>
+      panel.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })),
+    );
+    assert.equal(closed, 1);
+  });
+});
+
 test('成功撤销后刷新文件清单，失败日志可以展开查看', async () => {
   await mounted({}, async (cache) => {
     await setStatus(cache, {

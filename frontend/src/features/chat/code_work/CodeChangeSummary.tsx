@@ -83,7 +83,13 @@ export function CodeChangeSummary({
             {useTurn ? '本轮修改' : '全部待合入'} <LineCounts {...summary} />
           </span>
         </div>
-        <Button onClick={() => onOpen(undefined, useTurn ? runId : '')}>查看变更</Button>
+        <Button
+          aria-controls="code-work-panel"
+          title="在右侧查看代码变更"
+          onClick={() => onOpen(undefined, useTurn ? runId : '')}
+        >
+          查看变更
+        </Button>
       </div>
       {runId && showCumulative && !!turn.data?.files.length && (
         <div className="code-change-scope" role="group" aria-label="修改摘要范围">
@@ -102,6 +108,7 @@ export function CodeChangeSummary({
               type="button"
               title={file.path}
               aria-label={`查看文件差异：${file.path}`}
+              aria-controls="code-work-panel"
               onClick={() => onOpen(file.path, useTurn ? runId : '')}
             >
               <span className="code-change-path">

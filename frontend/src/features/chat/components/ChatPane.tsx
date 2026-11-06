@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { X, FileCode2, ChevronDown, RotateCcw, Folders } from 'lucide-react';
 import { api as request, jsonBody } from '../../../app/api/client';
@@ -49,10 +50,17 @@ export function ChatPane({
   onToggleWorkspace,
   onSettings,
   showHeader,
+  codeWorkPanel,
 }: {
   onToggleWorkspace: () => void;
   onSettings: (tab: 'model' | 'mcp') => void;
   showHeader: boolean;
+  codeWorkPanel: {
+    open: boolean;
+    target: HTMLElement | null;
+    show: () => void;
+    close: (restore?: boolean) => void;
+  };
 }) {
   const {
     projectId,
@@ -74,7 +82,6 @@ export function ChatPane({
   const attachmentInput = useRef<HTMLInputElement>(null);
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
-  const [codeWorkOpen, setCodeWorkOpen] = useState(false);
   const [codeWorkFile, setCodeWorkFile] = useState('');
   const [codeWorkRun, setCodeWorkRun] = useState('');
   const [selectionPreview, setSelectionPreview] = useState<{
@@ -283,7 +290,7 @@ export function ChatPane({
         onOpen={(path = '', snapshotRun = '') => {
           setCodeWorkFile(path);
           setCodeWorkRun(snapshotRun);
-          setCodeWorkOpen(true);
+          codeWorkPanel.show();
         }}
       />
     );
@@ -617,7 +624,7 @@ export function ChatPane({
           onCodeWork={() => {
             setCodeWorkFile('');
             setCodeWorkRun('');
-            setCodeWorkOpen(true);
+            codeWorkPanel.show();
           }}
           sending={send.isPending}
           busy={busy}
@@ -658,21 +665,27 @@ export function ChatPane({
         runId={context?.runId}
         onClose={() => setContext(undefined)}
       />
-      <CodeWorkDialog
-        key={`code-work:${projectId}:${threadId}`}
-        open={codeWorkOpen}
-        threadId={threadId}
-        projectId={projectId}
-        busy={busy}
-        initialPath={codeWorkFile}
-        initialRunId={codeWorkRun}
-        onClose={() => setCodeWorkOpen(false)}
-        onRequest={(request) => {
-          setCodeWorkOpen(false);
-          if (request) setDraft(draft.trim() ? `${draft}\n\n${request}` : request);
-          composerInput.current?.focus();
-        }}
-      />
+      {codeWorkPanel.open &&
+        codeWorkPanel.target &&
+        createPortal(
+          <CodeWorkDialog
+            key={`code-work:${projectId}:${threadId}`}
+            open
+            embedded
+            threadId={threadId}
+            projectId={projectId}
+            busy={busy}
+            initialPath={codeWorkFile}
+            initialRunId={codeWorkRun}
+            onClose={() => codeWorkPanel.close()}
+            onRequest={(request) => {
+              codeWorkPanel.close();
+              if (request) setDraft(draft.trim() ? `${draft}\n\n${request}` : request);
+              composerInput.current?.focus();
+            }}
+          />,
+          codeWorkPanel.target,
+        )}
       {selectionPreview && (
         <SelectionPreview
           selection={selectionPreview.selection}
