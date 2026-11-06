@@ -36,6 +36,12 @@ export default function CodeDiffView({
       overflow: wrap ? ('wrap' as const) : ('scroll' as const),
       hunkSeparators: 'line-info' as const,
       lineDiffType: 'word-alt' as const,
+      // 随外层差异区延伸背景和滚动条，代码行仍保持自然行高。
+      unsafeCSS: `
+        :host { background: var(--diffs-bg); }
+        [data-diff] { flex: 1 0 auto; }
+        [data-code] { align-self: stretch; align-content: start; }
+      `,
     }),
     [split, dark, onSelect, wrap],
   );
