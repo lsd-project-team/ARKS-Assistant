@@ -220,6 +220,69 @@
   color: var(--answer-link);
 }
 
+/* 仅页尾源码标签使用灰绿色；可用性继续读取原按钮状态，不改变引用行为。 */
+.answer-reading .answer-sources-code {
+  --answer-font-size: 13px;
+  --source-tag-surface: #f0f6f3;
+  --source-tag-border: #d5e5dc;
+  --source-tag-text: #466457;
+  --source-tag-range-surface: #deeee5;
+  --source-tag-range-text: #28634e;
+  --source-tag-hover: #cee3d7;
+  --source-tag-disabled-text: #7d8590;
+  --source-tag-disabled-surface: #f3f4f5;
+  --source-tag-disabled-border: #e3e5e8;
+  font-size: 13px;
+}
+:root[data-appearance='dark'] .answer-reading .answer-sources-code {
+  --source-tag-surface: #202b26;
+  --source-tag-border: #354b40;
+  --source-tag-text: #b0c5b8;
+  --source-tag-range-surface: #2d4437;
+  --source-tag-range-text: #b3d4be;
+  --source-tag-hover: #3b5747;
+  --source-tag-disabled-text: #a0a6ae;
+  --source-tag-disabled-surface: #25282c;
+  --source-tag-disabled-border: #3c4046;
+}
+.answer-reading .answer-sources-code .answer-sources-label {
+  font-size: 13px;
+}
+.answer-reading .answer-sources-code .answer-code-file {
+  border-color: var(--source-tag-border);
+  border-radius: 6px;
+  background: var(--source-tag-surface);
+  color: var(--source-tag-text);
+  font-size: 13px;
+}
+.answer-reading .answer-sources-code .answer-code-link {
+  padding-block: 1px;
+  border-radius: 3px;
+  font-size: 13px;
+}
+.answer-reading .answer-sources-code .answer-code-link:not(:disabled) {
+  background: var(--source-tag-range-surface);
+  color: var(--source-tag-range-text);
+}
+.answer-reading .answer-sources-code .answer-code-link:hover:not(:disabled) {
+  background: var(--source-tag-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.answer-reading .answer-sources-code .answer-code-link:focus-visible {
+  outline-color: var(--source-tag-range-text);
+}
+.answer-reading .answer-sources-code .answer-code-file:not(:has(.answer-code-link:enabled)) {
+  border-color: var(--source-tag-disabled-border);
+  background: var(--source-tag-disabled-surface);
+  color: var(--source-tag-disabled-text);
+}
+.answer-reading .answer-sources-code .answer-code-link:disabled {
+  opacity: 1;
+  background: transparent;
+  color: var(--source-tag-disabled-text);
+}
+
 /* 颜色来自已有工具状态，不能根据正文中的“通过”等词推断执行结果。 */
 .chat-pane .tool-call-card[data-state='success'] .tool-call-status {
   color: var(--success-text);
