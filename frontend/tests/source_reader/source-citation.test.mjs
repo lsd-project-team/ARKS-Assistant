@@ -119,6 +119,24 @@ for (const scope of ['independent', 'project-a'])
     });
   });
 
+test('搜索引用没有历史版本时通过原读取入口定位当前版本，保留项目及行范围', async () => {
+  await withCitation(
+    'project-a',
+    async (open) => {
+      assert.equal(await open('Dir/SignalPool.cs', 136, 152, undefined, 'main'), true);
+      const state = useWorkspace.getState();
+      assert.equal(state.activePath, 'Dir/SignalPool.cs');
+      assert.equal(state.jump.line, 136);
+      assert.equal(state.jump.endLine, 152);
+      assert.equal(state.historicalSource, null);
+      assert.deepEqual(environment.notices, []);
+      assert.equal(environment.requests[1].path, '/file?path=Dir%2FSignalPool.cs');
+      assert.equal(environment.requests[1].scope, 'project-a');
+    },
+    (path) => (path.endsWith('/source-context') ? context : { ...file, version: 'current-v9' }),
+  );
+});
+
 test('第一次点击等待源码身份返回，不因项目信息尚未加载而误弹窗', async () => {
   let resolve;
   const pending = new Promise((r) => {

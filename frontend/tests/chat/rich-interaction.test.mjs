@@ -225,6 +225,98 @@ test('右侧源码定位失败时提示错误，不回退为源码弹窗', async
   }
 });
 
+test('历史/流式搜索引用和已读引用共用来源按钮，点击按当前源码定位且不额外补读', async () => {
+  environment.jumps = [];
+  environment.reads = [];
+  await mounted(async ({ render, client }) => {
+    const path = 'Dir/SignalPool.cs';
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [
+        {
+          path: 'Dir/Read.cs',
+          start_line: 1,
+          end_line: 30,
+          version: 'v1',
+          source_workspace_id: 'main',
+          current_status: 'match',
+        },
+      ],
+      tools: [
+        {
+          id: 's',
+          name: 'search_source',
+          status: 'success',
+          result: JSON.stringify({ matches: [{ path, line: 136, text: 'Signal.Ready();' }] }),
+        },
+      ],
+    });
+    const content =
+      '说明。\n\n来源：[SignalPool.cs:136–152](source:Dir/SignalPool.cs#L136-L152) [Read.cs:2–3](source:Dir/Read.cs#L2-L3)';
+    for (const streaming of [false, true]) {
+      await render(
+        createElement(AnswerMarkdown, { content, runId: 'r', sourceId: 'main', streaming }),
+      );
+      const buttons = [...document.querySelectorAll('.answer-code-link')];
+      assert.deepEqual(
+        buttons.map((button) => [button.textContent, button.disabled]),
+        [
+          ['136–152', false],
+          ['2–3', false],
+        ],
+      );
+      await act(async () => buttons[0].click());
+      assert.deepEqual(environment.jumps.at(-1), [path, 136, 152, undefined, 'main']);
+      assert.deepEqual(environment.reads, []);
+      assert.equal(document.querySelector('[role=dialog]'), null);
+      assert.doesNotMatch(
+        document.querySelector('.answer-sources').textContent,
+        /搜索|未核实|当前版本/,
+      );
+      assert.ok(
+        document.querySelector('.answer-sources').classList.contains('answer-sources-code'),
+      );
+    }
+  });
+});
+
+test('带已知版本问题的引用即使搜索命中也保持禁用', async () => {
+  environment.jumps = [];
+  await mounted(async ({ render, client }) => {
+    const source = {
+      path: 'Dir/Changed.cs',
+      start_line: 12,
+      end_line: 24,
+      version: 'v1',
+      source_workspace_id: 'main',
+    };
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [{ ...source, current_status: 'changed' }],
+      tools: [
+        {
+          id: 's',
+          name: 'search_source',
+          status: 'success',
+          result: JSON.stringify({
+            matches: [{ path: source.path, line: 12, text: 'Changed();' }],
+          }),
+        },
+      ],
+    });
+    await render(
+      createElement(AnswerMarkdown, {
+        content: fence([{ id: 'src', type: 'source_reference', sources: [source] }]),
+        runId: 'r',
+        sourceId: 'main',
+      }),
+    );
+    const button = document.querySelector('.answer-code-link');
+    assert.equal(button.disabled, true);
+    assert.match(button.title, /版本已变化/);
+    await act(async () => button.click());
+    assert.deepEqual(environment.jumps, []);
+  });
+});
+
 test('工具卡片区分运行、成功、失败和跳过，空结果及参数不丢失且展开状态稳定', async () => {
   await mounted(async ({ render }) => {
     const tools = [

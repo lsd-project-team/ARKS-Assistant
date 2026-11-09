@@ -7,7 +7,7 @@ import type { RunContext, Selection } from '../../../shared/types/api';
 import { toast } from '../../../shared/utils/toasts';
 import { readCitationSource, useSourceCitation } from '../../source_reader/hooks/useSourceCitation';
 import { SelectionPreview } from '../components/SelectionPreview';
-import { resolveSourceEvidence } from './sourceEvidence';
+import { resolveSourceReference } from './sourceSearch';
 import type { SourcePointer } from './types';
 import { codeRange } from './codeSources';
 
@@ -35,7 +35,12 @@ export function SourceReference({
     staleTime: 15000,
     retry: false,
   });
-  const resolved = resolveSourceEvidence(source, context.data?.source_evidence || [], sourceId);
+  const resolved = resolveSourceReference(
+    source,
+    context.data?.source_evidence || [],
+    context.data?.tools || [],
+    sourceId,
+  );
   const evidence = resolved.evidence;
   const reason = !runId
     ? '这条引用没有关联可核对的运行记录'
@@ -70,7 +75,7 @@ export function SourceReference({
       }
       const result = await readCitationSource(cache, projectId, evidence.path, origin);
       if (useWorkspace.getState().projectId !== projectId) return;
-      if (result.source.version !== evidence.version)
+      if (resolved.kind === 'read' && result.source.version !== evidence.version)
         throw new Error('源码已变化，不能将当前内容作为原引用预览');
       if (source.start_line < 1 || end > result.source.line_count)
         throw new Error('原引用行号已失效');
@@ -81,7 +86,7 @@ export function SourceReference({
         end_line: end,
         start_column: 1,
         end_column: (lines[end - 1]?.length || 0) + 1,
-        version: evidence.version,
+        version: result.source.version,
         source_workspace_id: origin,
         content: lines.slice(source.start_line - 1, end).join('\n'),
       });
@@ -134,8 +139,8 @@ export function SourceReference({
               {source.source_workspace_id && <p>原引用目录：{source.source_workspace_id}</p>}
               {evidence && (
                 <p>
-                  来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} · 版本{' '}
-                  {evidence.version}
+                  来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} ·{' '}
+                  {evidence.version ? `版本 ${evidence.version}` : '当前源码'}
                 </p>
               )}
               {reason && <p role="status">{reason}</p>}
@@ -182,7 +187,7 @@ export function SourceReference({
         <SelectionPreview
           selection={preview}
           title={`引用源码 · ${label}`}
-          description="本轮核对版本的源码片段"
+          description={resolved.kind === 'search' ? '当前源码片段' : '本轮核对版本的源码片段'}
           onClose={() => setPreview(undefined)}
         />
       )}
