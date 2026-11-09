@@ -146,6 +146,10 @@
 .legacy-visual .app-navigation .sidebar .thread-title {
   text-overflow: clip;
 }
+.legacy-visual .app-navigation .sidebar .thread-title[data-overflow='true'] {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}
 .legacy-visual .app-navigation .sidebar .thread-row.active {
   background: var(--selection-background);
   box-shadow: none;

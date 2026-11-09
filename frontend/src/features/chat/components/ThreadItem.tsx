@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { MoreHorizontal, Pin, LoaderCircle, CircleAlert } from 'lucide-react';
 import type { Thread } from '../../../shared/types/api';
@@ -41,6 +41,8 @@ export function ThreadItem({
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(row.title);
   const [error, setError] = useState('');
+  const [titleOverflowing, setTitleOverflowing] = useState(false);
+  const titleElement = useRef<HTMLSpanElement>(null);
   const cancelled = useRef(false);
   const saving = useRef(false);
   const popup = useRef<HTMLDivElement>(null);
@@ -52,6 +54,26 @@ export function ThreadItem({
     typeof menu === 'object' ? menu : undefined,
   );
   const pinned = row.pinned_order !== undefined && row.pinned_order !== null;
+  useLayoutEffect(() => {
+    const element = titleElement.current;
+    if (!element) return;
+    let active = true;
+    const measure = () => {
+      if (active) setTitleOverflowing(element.scrollWidth > element.clientWidth);
+    };
+    measure();
+    const observer =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : undefined;
+    observer?.observe(element);
+    const fonts = document.fonts;
+    fonts?.ready.then(measure);
+    fonts?.addEventListener('loadingdone', measure);
+    return () => {
+      active = false;
+      observer?.disconnect();
+      fonts?.removeEventListener('loadingdone', measure);
+    };
+  }, [row.title, filter, selected, editing]);
   useEffect(() => {
     if (menu && menuPosition.visibility === 'visible')
       popup.current
@@ -164,7 +186,11 @@ export function ThreadItem({
             disabled={row.state === 'deleted'}
             onClick={onSelect}
           >
-            <span className="thread-title">
+            <span
+              ref={titleElement}
+              className="thread-title"
+              data-overflow={titleOverflowing || undefined}
+            >
               <Highlight text={row.title} query={filter} />
             </span>
             {row.snippet && (

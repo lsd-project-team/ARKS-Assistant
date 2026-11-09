@@ -1,5 +1,7 @@
 # ARKS智能助手项目协作说明
 
+2026-11-09，按用户要求将左栏长对话标题末尾改为 24px 透明渐隐，仅实际溢出时启用，短标题保持清晰；宽度、标题及字体加载变化自动重测，字号、布局、悬停完整标题和操作菜单保留。说明见[回答与左栏样式](docs/features/answer-reading.md)，验收见[长标题渐隐验收](docs/verification/sidebar-title-fade-20261109.md)。
+
 2026-11-09，按用户标注去掉左栏对话标题截断时的省略号：项目内、最近列表及回收站共用单行裁切样式，完整标题及悬停提示保留，行操作菜单和原字号、布局不变。说明见[回答与左栏样式](docs/features/answer-reading.md)，验收见[对话标题裁切验收](docs/verification/sidebar-title-clip-20261109.md)。
 
 2026-11-09，按用户追加要求，仅将左侧导航的 Windows 中文字体统一为微软雅黑 UI，局部字体变量覆盖主导航、项目/对话列表和底栏按钮；保留既有字号、行高、列宽、折叠及配色。说明见[全站字号层级](docs/features/typography.md)，验收见[左栏中文字体验收](docs/verification/sidebar-font-20261109.md)。
