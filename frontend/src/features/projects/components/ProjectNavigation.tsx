@@ -15,6 +15,7 @@ import type { Project, Thread } from '../../../shared/types/api';
 import { ProjectEditor } from './ProjectEditor';
 import { ErrorText } from '../../../shared/ui/ui';
 import { ProjectMenu } from './ProjectMenu';
+import { OverflowText } from '../../../shared/ui/OverflowText';
 
 type ThreadRenderer = (thread: Thread) => ReactNode;
 
@@ -122,7 +123,7 @@ function ProjectGroup({
           }}
         >
           <Folder size={15} strokeWidth={1.5} />
-          <span>{project.name}</span>
+          <OverflowText className="project-title">{project.name}</OverflowText>
           {project.pinned_order !== null && <Pin size={10} />}
         </button>
         <button

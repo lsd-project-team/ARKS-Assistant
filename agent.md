@@ -1,5 +1,7 @@
 # ARKS智能助手项目协作说明
 
+2026-11-09，按用户追加要求，左栏超长项目名称也去掉省略号并使用末尾 24px 透明渐隐；与对话标题共用溢出检测组件，短名称保持清晰，文件夹/置顶图标、悬停完整名称、原字号和布局保留。说明见[回答与左栏样式](docs/features/answer-reading.md)，验收见[项目名称渐隐验收](docs/verification/project-name-fade-20261109.md)。
+
 2026-11-09，按用户要求将左栏长对话标题末尾改为 24px 透明渐隐，仅实际溢出时启用，短标题保持清晰；宽度、标题及字体加载变化自动重测，字号、布局、悬停完整标题和操作菜单保留。说明见[回答与左栏样式](docs/features/answer-reading.md)，验收见[长标题渐隐验收](docs/verification/sidebar-title-fade-20261109.md)。
 
 2026-11-09，按用户标注去掉左栏对话标题截断时的省略号：项目内、最近列表及回收站共用单行裁切样式，完整标题及悬停提示保留，行操作菜单和原字号、布局不变。说明见[回答与左栏样式](docs/features/answer-reading.md)，验收见[对话标题裁切验收](docs/verification/sidebar-title-clip-20261109.md)。

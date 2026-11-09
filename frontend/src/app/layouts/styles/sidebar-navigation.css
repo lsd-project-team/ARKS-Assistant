@@ -143,10 +143,10 @@
   font-size: var(--navigation-font-size);
   line-height: 20px;
 }
-.legacy-visual .app-navigation .sidebar .thread-title {
+.legacy-visual .app-navigation .sidebar :is(.thread-title, .project-title) {
   text-overflow: clip;
 }
-.legacy-visual .app-navigation .sidebar .thread-title[data-overflow='true'] {
+.legacy-visual .app-navigation .sidebar :is(.thread-title, .project-title)[data-overflow='true'] {
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
   mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }
