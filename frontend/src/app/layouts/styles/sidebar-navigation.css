@@ -143,6 +143,9 @@
   font-size: var(--navigation-font-size);
   line-height: 20px;
 }
+.legacy-visual .app-navigation .sidebar .thread-title {
+  text-overflow: clip;
+}
 .legacy-visual .app-navigation .sidebar .thread-row.active {
   background: var(--selection-background);
   box-shadow: none;

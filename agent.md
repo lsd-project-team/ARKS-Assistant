@@ -1,5 +1,7 @@
 # ARKS智能助手项目协作说明
 
+2026-11-09，按用户标注去掉左栏对话标题截断时的省略号：项目内、最近列表及回收站共用单行裁切样式，完整标题及悬停提示保留，行操作菜单和原字号、布局不变。说明见[回答与左栏样式](docs/features/answer-reading.md)，验收见[对话标题裁切验收](docs/verification/sidebar-title-clip-20261109.md)。
+
 2026-11-09，按用户追加要求，仅将左侧导航的 Windows 中文字体统一为微软雅黑 UI，局部字体变量覆盖主导航、项目/对话列表和底栏按钮；保留既有字号、行高、列宽、折叠及配色。说明见[全站字号层级](docs/features/typography.md)，验收见[左栏中文字体验收](docs/verification/sidebar-font-20261109.md)。
 
 2026-11-09，按用户确认的 ChatGPT 正文效果，仅调整 AI 回复为宽窄栏统一 16px、26px 行高，Windows 中文优先微软雅黑 UI；结构化正文同步，代码块与表格字号、深浅色阶及回复外界面保留。说明见[回答阅读样式](docs/features/answer-reading.md)，验收见[回复正文排版验收](docs/verification/answer-body-typography-20261109.md)。
