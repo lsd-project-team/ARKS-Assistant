@@ -1,7 +1,9 @@
 /* 回答使用独立的阅读色阶，不覆盖用户提问、源码编辑器或图表的业务配色。 */
 .answer-reading {
-  --answer-font-size: 17px;
-  --answer-line-height: 1.85;
+  --answer-font-size: 16px;
+  --answer-line-height: 26px;
+  /* 正文缩小后，行内代码仍保留原来的宽栏字号；窄栏及固定字号区域单独复原。 */
+  --answer-inline-scale: calc(17 / 16);
   --answer-space: 18px;
   --answer-section-space: 32px;
   --answer-text: var(--text);
@@ -17,6 +19,9 @@
   --answer-row-surface: color-mix(in srgb, var(--accent) 3%, var(--panel));
   min-width: 0;
   color: var(--answer-text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
+    sans-serif;
   font-size: var(--answer-font-size);
   line-height: var(--answer-line-height);
 }
@@ -114,7 +119,7 @@
   border-radius: 4px;
   color: var(--answer-inline-text);
   background: var(--answer-inline-surface);
-  font: 0.87em/1.65 var(--font-code);
+  font: calc(0.87em * var(--answer-inline-scale))/1.65 var(--font-code);
   /* 跨行路径只在首尾保留内边距，避免窄栏每行克隆边距而溢出。 */
   box-decoration-break: slice;
   overflow-wrap: anywhere;
@@ -129,6 +134,8 @@
   margin-block: 20px;
   border-color: var(--answer-border);
   background: var(--answer-code-surface);
+  font-family: var(--font-ui);
+  line-height: 1.85;
 }
 .answer-reading .answer-code-toolbar {
   min-height: 38px;
@@ -157,6 +164,7 @@
 }
 
 .answer-reading :is(.markdown table, .rich-table) {
+  --answer-inline-scale: 1;
   font-size: 15px;
   line-height: 1.75;
   color: var(--answer-text);
@@ -205,10 +213,12 @@
 .answer-reading .answer-sources {
   --answer-font-size: 12px;
   --answer-line-height: 1.8;
+  --answer-inline-scale: 1;
   margin-top: 24px;
   padding-top: 14px;
   border-top: 1px solid var(--answer-border);
   font-size: 12px;
+  font-family: var(--font-ui);
 }
 .answer-reading .answer-sources-label,
 .answer-reading .rich-source-label small {
@@ -296,9 +306,11 @@
 
 @container (max-width: 480px) {
   .answer-reading {
-    --answer-font-size: 16px;
-    --answer-line-height: 1.8;
+    --answer-inline-scale: 1;
     --answer-section-space: 28px;
+  }
+  .answer-reading .answer-code {
+    line-height: 1.8;
   }
   .answer-reading .answer-code pre {
     padding: 12px;

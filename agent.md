@@ -1,5 +1,7 @@
 # ARKS智能助手项目协作说明
 
+2026-11-09，按用户确认的 ChatGPT 正文效果，仅调整 AI 回复为宽窄栏统一 16px、26px 行高，Windows 中文优先微软雅黑 UI；结构化正文同步，代码块与表格字号、深浅色阶及回复外界面保留。说明见[回答阅读样式](docs/features/answer-reading.md)，验收见[回复正文排版验收](docs/verification/answer-body-typography-20261109.md)。
+
 2026-11-06，按用户确认统一其余界面的字号层级：正文 16px、控件 14px、辅助信息 13px、代码 14px、表格 15px，覆盖聊天、代码区、公共弹窗、设置、登录及业务页面，并统一标题层级和控件高度。源码旧默认 12px 迁移为 14px，其他自定义值与草稿、位置保留；AI 回复和左栏沿用已确认方案，画布节点及品牌大标题保留原比例。使用见[全站字号层级](docs/features/typography.md)，验收见[字号统一验收](docs/verification/unified-typography-20261106.md)。
 
 2026-11-06，按用户选定的灰绿色方案调整 AI 回复页尾源码来源：13px 文件标签、独立行号色块与 6px 圆角，深浅色及灰绿外观分别适配；悬停加深，禁用标签和行号保持灰色。仅修改回复 CSS，源码定位和既有版本、权限边界保留。说明见[回答阅读样式](docs/features/answer-reading.md)，验收见[来源标签配色验收](docs/verification/source-citation-colors-20261106.md)。
