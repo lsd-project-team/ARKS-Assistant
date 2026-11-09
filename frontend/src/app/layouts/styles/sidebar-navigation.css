@@ -1,7 +1,12 @@
 /* 固定顶部和底部，项目与最近对话共享一个滚动区。 */
 .legacy-visual .app-navigation {
+  /* 局部覆盖也供底栏按钮的 font 简写使用，不改变导航外的界面字体。 */
+  --font-ui:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
+    sans-serif;
   --navigation-font-size: 16px;
   --navigation-meta-font-size: 13px;
+  font-family: var(--font-ui);
 }
 /* 统一主文字；主题中的字号也读取同一变量，避免加载顺序造成大小不一。 */
 .legacy-visual
