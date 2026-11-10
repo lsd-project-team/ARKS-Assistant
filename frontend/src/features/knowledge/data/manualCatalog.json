@@ -16,7 +16,7 @@
       "searchText": "运行时架构 四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。 操作员 触摸屏 / 鼠标 SoftKey 授权 启动即校验 主界面 MainForm DevExpress · 323 个界面类 机器状态机 MachineState 全局枚举 动作节点执行器 S2ActionNodeController 固晶线程 BondTask · 66,871 行 晶圆线程 WaferTask · 39,818 行 点胶线程 DispenseWorkTask 物流线程 TransportTask HardwareRepository GetHardware<T>(\"中文名\") Infrastructure DB · 日志 · 事件总线 · AOP SQL Server 库 ZX2200 · SqlSugar 运动控制平台 ETEL · 固高 · 雷赛 视觉 PR VisionMaster 定位 · HALCON 显示 轴 / IO / 执行器 气缸 · 点胶阀 · 真空 · 光源 三个必须先懂的事实 四个子系统各有一个常驻线程，外层统一是 while (Signal.WaitStart()) 停机不是 CancellationToken：Stop 让 WaitStart 返回 false，Pause 在里面 20 ms 空转 流程不是 if 判断，而是一条扁平 ActionNode 链，游标取第一个 Finished == false 的节点 平台边界：哪些能改 11 个 AKRS.Galaxy2.* 工程有源码，可直接改（停机语义就在 Machine/Models/Signal.cs） libs/ 里 20 个 AKRS.Galaxy2.* DLL 是黑盒，只能靠 .pdb 反编译 AKRS.Galaxy2.Parameters 在仓库内缺失，是一处构建断点 硬件栈的真实分布 运动控制三家并存：ETEL / 固高 Googol / 雷赛 Leadshine 匹配定位 100% 由海康 VisionMaster 承担，HALCON 只用于画图与区域显示 硬件对象只认中文名字符串，拼错在运行期才炸",
       "htmlSha256": "cbcd7ac42247468331e19f9715a26d18fd1c168706fee80ddd6f7abb45b19b46",
       "documentHashes": {
-        "00-项目总览.md": "411da4bc5074a2fe0fb3327b98ea8510c0ad2a39e9973fefe8f1143e18dfd55b"
+        "00-项目总览.md": "68708da1162d9cab73f4c26cb380dfe1f29725d60d15c5bd06f694307e1b3da7"
       }
     },
     {
@@ -35,7 +35,7 @@
       "searchText": "停机到底怎么生效 Working / Pause / Stop 三态，以及 WaitStart 里那 20 ms 的忙等。 待机 待机状态，尚未启动生产 运行 WaitStart() 返回 true 暂停 循环体 20 ms 空转 停止 不再执行新节点 Sleep(20) 每 20 ms 查一次状态 线程退出 while 条件为 false 没有 CancellationToken 全项目找不到取消令牌，停止靠一个全局枚举 四个线程都在转 while (Signal.WaitStart()) 停不下来的问题，先查这个枚举有没有被真正改到 暂停是忙等 Pause 期间每 20 ms 醒一次查状态 所以暂停时 CPU 占用不会归零 急停和暂停走的是同一个枚举，只是终值不同 急停先停轴，再清理状态 普通停止设置 Stop，暂停设置 Pause；急停还先停止各轴运动 EmergencyStop 先逐轴 StopMove，再调用 Stop 清理软件状态 所以查「停不下来」先查这个枚举有没有被改到",
       "htmlSha256": "7cb6f8ffd9cabe92fcaf56966ba2a54e3b324f984795a85e2f09014d0409560d",
       "documentHashes": {
-        "00-项目总览.md": "411da4bc5074a2fe0fb3327b98ea8510c0ad2a39e9973fefe8f1143e18dfd55b"
+        "00-项目总览.md": "68708da1162d9cab73f4c26cb380dfe1f29725d60d15c5bd06f694307e1b3da7"
       }
     },
     {
@@ -294,7 +294,7 @@
       "searchText": "整机标定：三类产物，三套互不相通的机制 补偿表真身在固件；JSON 只是副本。 CalibrateTask 13 个流程 · 走位取像 CalibService 网格 / 圆拟合 / N 点仿射 CalibController 走位 + 定心重试 CalibrateRunPara 4 个矩阵 + 位置点 CalibratePara.json 只存副本 MachineCoordinateSystem 逐坐标系重新 Init GlobalCalibrationDomain 网格 + 双线性插值 DomainEx 实验版 多区域 · BilinearCompensator FrmGlobalCalibration 8 种模式界面 驱动器固件 ETEL DownloadMapping · 固高 CompensateX/Y 补偿表的真身在固件里 二维补偿表实际写在运动控制器固件 JSON 只是副本，删了不一定影响运行 所以要清补偿，得走 DownloadMapping 那条路 三类产物三套机制 JSON 副本、iwcal 文件、驱动器固件 三者互不相通，也不互相校验 「标定没生效」先确认改的是哪一套 两处死代码 BehaviorNode 等 6 个行为树脚手架全仓库零引用 FrmAssistant2DStage 没有 new，分步示教不可达 读到它们不要以为功能存在",
       "htmlSha256": "6c9f360c5fd3c47deee589f9fd6f09781d6065f893f181c9b0c67ff32ba37b26",
       "documentHashes": {
-        "13-整机标定.md": "4c088d1082c6e45f610f6153061ec687a6b51c2a9b06e8473ab3139a98d08b48"
+        "13-整机标定.md": "94c7346647db492a51ff8686a5ada9f74c13a9eebd92abe6994d3d9a37016fb5"
       }
     },
     {
@@ -315,7 +315,7 @@
       "searchText": "标定界面：12 步向导，确定与取消等价 本层几乎无算法；实验窗体仍挂在主菜单。 UcMainSystem 菜单 唯一正常入口 示教向导族 系统2 11 步 · 点胶 4 步 · 光源 2 步 AssistantConfig 列表 驱动上一步 / 下一步 / 完成 CalibrateRunPara 「下一步」写入当前机械坐标 5 家坐标系对象 向导完成后重建 结果确认窗体 只读两张表 FrmStartup 8 个单项标定按钮 TestAlg 实验算法 12 个方法 · 写死 D:\\ Excel FrmCalibTest 菜单入口已注释 确定和取消等价 结果确认窗体的两个按钮效果完全一样 关窗即完成，接受与放弃无差别 别指望点取消能撤销已经写进去的坐标 本层几乎没有算法 算法全在 Models/CalibrateTask.cs 这里只有窗体、步进、落点 「标定不准」先查算法层 实验窗体还挂在主菜单上 TestAlg 写死 D:\\ 下的 Excel 部分实验窗体确实在产线菜单里 操作员点得到，也改得到",
       "htmlSha256": "3d893d37a355125a9451bd1d90d02d60e7a4105b8d4e896781259a3e70f47029",
       "documentHashes": {
-        "14-标定系统界面与测试.md": "518f69d8b2d4c3d9a0e2bbc9710e14668e95eddce043457b36dad97e497ac3af"
+        "14-标定系统界面与测试.md": "d13c86cd6f6e4dfdbb3b53b9f6b9223150179388e0b1aaf0193ac9ea8fb71fd3"
       }
     },
     {
@@ -783,7 +783,7 @@
       "searchText": "标定：九个单步入口，一个矩阵仓库 13 条流程 + 5 个 Only*，产物只有仿射矩阵与位置点。 FrmStartup 9 个单步入口 CalibrateTask 13 条流程 + 5 个 Only* CalibrateRunPara ~50 字段 + 4 个仿射矩阵 CalibratePara.json 全流程只 Save 一次 CalibService Halcon 薄封装 · 21 个静态方法 CalibController 运动 + 定位 MachineCoordinateSystem 提前 Save，参数却没 Save 旧版全局标定 二维双线性插值 新版 2D 补偿 扫描点表 + 双线性 生产侧 固晶 · 点胶 · 晶圆 唯一产物是两个东西 仿射矩阵（4 个 HTuple）与一批位置点 其余全是流程、界面、中间量 参数长在 CalibrateRunPara 里，落一个 JSON 5 个 Only* 里只有 1 个落盘 只有 OnlyUpLookCameraCalib 在 :1665 存了盘 OnlyWaferCameraCaib 算出的 homMatTrans 连内存都没留 下次开机等于没标过 第 4 个对话框点 Cancel 是跳过 Save 在 5 个框全 OK 之后才执行 取消后坐标系已经更新，参数还是旧的 机台从此不一致，且没有提示",
       "htmlSha256": "28919a22b72b376f5decb47585e3394e57087a09f50101ba8f41b9e1f7b08e89",
       "documentHashes": {
-        "41-标定系统全景与流程图.md": "f75a8ed2a7c123f30136c320ef791d1fa00dba9a11f36af1ce91c3fbc184e827"
+        "41-标定系统全景与流程图.md": "69a824ee8ff7376942e3ba3fa531d91ba71c12594c9daa50b16a354f6ad6235f"
       }
     },
     {
@@ -912,7 +912,7 @@
       "searchText": "文档体系地图：三层，一条链路 _raw → 正文 → _atlas 的对应关系与阅读入口。 00~30 模块文档 28 篇 · 按代码目录写 31~44 全景文档 14 篇 · 按子系统写 _写作规范 ×2 规定上面两批怎么写 13 份素材稿 5.5 万行 · 全景文档的草稿 11 份工作底账 按钮清单 · 幽灵文件 · UI 阻塞 素材索引 素材的目录与对照 46 张图 42 篇正文 43 张 + 3 张跨篇 index.html 入口 卡片导航 · 点开即看 _tools 工具链 重渲染 46 张只需一条命令 读者 维护 / 新人 / 产线 三层各管一件事 _raw 负责「当时查到了什么」 31~44 与 00~30 负责「结论是什么」 _atlas 负责「30 秒看懂」 只留一层会缺东西 只留图：细节全丢，改代码没依据 只留文档：8000 行的文件没人从头读 只留 raw：碎、重复、没有结论 从哪进 第一次来：先开 index.html 要改代码：按编号找源文档 要核对结论：回 _raw 查原始记录",
       "htmlSha256": "3d42c41cd822eeb7729f63ec4e0907e4fd6ea029c7fecb7fec2b4d3082ba8236",
       "documentHashes": {
-        "00-项目总览.md": "411da4bc5074a2fe0fb3327b98ea8510c0ad2a39e9973fefe8f1143e18dfd55b"
+        "00-项目总览.md": "68708da1162d9cab73f4c26cb380dfe1f29725d60d15c5bd06f694307e1b3da7"
       }
     }
   ]
