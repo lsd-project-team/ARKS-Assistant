@@ -16,7 +16,7 @@
       "searchText": "运行时架构 四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。 操作员 触摸屏 / 鼠标 SoftKey 授权 启动即校验 主界面 MainForm DevExpress · 323 个界面类 机器状态机 MachineState 全局枚举 动作节点执行器 S2ActionNodeController 固晶线程 BondTask · 66,871 行 晶圆线程 WaferTask · 39,818 行 点胶线程 DispenseWorkTask 物流线程 TransportTask HardwareRepository GetHardware<T>(\"中文名\") Infrastructure DB · 日志 · 事件总线 · AOP SQL Server 库 ZX2200 · SqlSugar 运动控制平台 ETEL · 固高 · 雷赛 视觉 PR VisionMaster 定位 · HALCON 显示 轴 / IO / 执行器 气缸 · 点胶阀 · 真空 · 光源 三个必须先懂的事实 四个子系统各有一个常驻线程，外层统一是 while (Signal.WaitStart()) 停机不是 CancellationToken：Stop 让 WaitStart 返回 false，Pause 在里面 20 ms 空转 流程不是 if 判断，而是一条扁平 ActionNode 链，游标取第一个 Finished == false 的节点 平台边界：哪些能改 11 个 AKRS.Galaxy2.* 工程有源码，可直接改（停机语义就在 Machine/Models/Signal.cs） libs/ 里 20 个 AKRS.Galaxy2.* DLL 是黑盒，只能靠 .pdb 反编译 AKRS.Galaxy2.Parameters 在仓库内缺失，是一处构建断点 硬件栈的真实分布 运动控制三家并存：ETEL / 固高 Googol / 雷赛 Leadshine 匹配定位 100% 由海康 VisionMaster 承担，HALCON 只用于画图与区域显示 硬件对象只认中文名字符串，拼错在运行期才炸",
       "htmlSha256": "cbcd7ac42247468331e19f9715a26d18fd1c168706fee80ddd6f7abb45b19b46",
       "documentHashes": {
-        "00-项目总览.md": "793d3ba29b150a1b34d58021bb754b4048ca273209de164a41a2efeebc3b5d75"
+        "00-项目总览.md": "8da6d298ce8e6fd00241a6aacf6b3d8986e145cd714600eeee4d3e2d805b3312"
       }
     },
     {
@@ -35,7 +35,7 @@
       "searchText": "停机到底怎么生效 Working / Pause / Stop 三态，以及 WaitStart 里那 20 ms 的忙等。 待机 待机状态，尚未启动生产 运行 WaitStart() 返回 true 暂停 循环体 20 ms 空转 停止 不再执行新节点 Sleep(20) 每 20 ms 查一次状态 线程退出 while 条件为 false 没有 CancellationToken 全项目找不到取消令牌，停止靠一个全局枚举 四个线程都在转 while (Signal.WaitStart()) 停不下来的问题，先查这个枚举有没有被真正改到 暂停是忙等 Pause 期间每 20 ms 醒一次查状态 所以暂停时 CPU 占用不会归零 急停和暂停走的是同一个枚举，只是终值不同 急停先停轴，再清理状态 普通停止设置 Stop，暂停设置 Pause；急停还先停止各轴运动 EmergencyStop 先逐轴 StopMove，再调用 Stop 清理软件状态 所以查「停不下来」先查这个枚举有没有被改到",
       "htmlSha256": "7cb6f8ffd9cabe92fcaf56966ba2a54e3b324f984795a85e2f09014d0409560d",
       "documentHashes": {
-        "00-项目总览.md": "793d3ba29b150a1b34d58021bb754b4048ca273209de164a41a2efeebc3b5d75"
+        "00-项目总览.md": "8da6d298ce8e6fd00241a6aacf6b3d8986e145cd714600eeee4d3e2d805b3312"
       }
     },
     {
@@ -605,7 +605,7 @@
       "searchText": "固晶（上）：23 个动作节点怎么被推着走 按钮 → 线程 → 节点 → 子控制器 → 硬件，排序不在本模块。 主界面按钮 启动 / 停止 / 暂停 Machine.Operate 启动入口 S2 节点排序器 Main/Machine/Process BondTask 固晶线程 while (Signal.WaitStart()) ActionNode 23 子类 IsDoWork / DoWork 节点仓库 21 + 8 个实例 System2Domain 单例 · 参数 · 计数器 7 个子控制器 BondHead · UpLook · IPT 轴 / 相机 / 力控 运控卡 · 视觉 DLL · GV 每个节点只回答两个问题 现在该不该做我：IsDoWork() 做了成不成功：DoWork() 返回 ExcuteResult 23 个子类里 BPActionNode 一族占 13 个文件 / 10,120 行 排序不在这里 节点顺序由 Main/Machine/Process/S2ActionNodeController 决定 本篇只管动作怎么实现，不管先后 所以改流程要动 Main，改动作才动 BondSystem 读到死代码别慌 §6.4 列了未挂载的节点，写了但没装进系统 UpLookCorrectionActionNode 单文件 2,044 行，是本篇最大 System2Controller 拆成 4 个 partial，共 5,157 行",
       "htmlSha256": "2184380e3145ec828759db2c93587467e88c23d911d20664bb9d921a7e0d9f80",
       "documentHashes": {
-        "32-固晶系统全景与流程图（上）· 模型、动作节点与调度.md": "5e11ae0e901589ac66639dda720fc0aabb58fc70bbb0edba22a19fd6482c9a91"
+        "32-固晶系统全景与流程图（上）· 模型、动作节点与调度.md": "c637285052a1d12ccca2031c6a0de8af59bb62fe3909482660f4d362a58c8baa"
       }
     },
     {
@@ -624,7 +624,7 @@
       "searchText": "固晶（下）：界面层怎么把点击变成动作 入口集中在 Main；全层只有一条落盘通道；主循环没有 try/catch。 Main 的 4 个入口 new / ShowForm / ShowDialog 示教向导族 Assistant/ · 20 个文件 手册页族 Manual/ · 直接开关真空 参数设置页 Setting/ · 11 个页 试验页 51 个按钮 UcBondModuelSetting · 2,070 行 IProgrammingControl 唯一落盘契约 · Confirm() Settings/*.json 设备参数 / 配方参数 BondTask 主循环 DoWork() 无 try/catch SlideFluxerTask 信号池握手 + 超时 BondModule 模组 1,101 行 · 焊头 + 顶针 + 视觉 力控闭环 Modbus RTU 读实际力值 全层只有一条落盘通道 任何参数都要经 IProgrammingControl.Confirm() 才能存 而 11 个设置页里只有 4 个实现了这个接口 没实现的页，改了值也存不下去 两个「保存」按钮不等价 点「保存」：Confirm() 异常被 catch，弹一句英文 点「开始」：同一个 Confirm() 裸调，异常直冒消息泵 同一个失败，两种表现 主循环挂了没人知道 BondTask.DoWork() 通篇没有 try/catch 异常让任务进 Faulted，消费方只看 TaskStatus.Running 机器停转，但无弹框、无日志",
       "htmlSha256": "893f2d8cc8c2180ad8be325e0fe74cbc3ba730bb4ef27e6c3b38dd36c35e9143",
       "documentHashes": {
-        "33-固晶系统全景与流程图（下）· 界面与按钮流程.md": "27c10a8c79eae1331e5e6bd49313c8f4d44d67760e177f8eb79c7ec26ea63321"
+        "33-固晶系统全景与流程图（下）· 界面与按钮流程.md": "78ebeddaa3d1782024c8f779b361619aa6abd2a03a1bf0f2f6986b582b03043b"
       }
     },
     {
@@ -893,7 +893,7 @@
         "02-机器模型与流程调度.md": "7997a4e985a13721c82ade93c4d8588c26989e141c0c5b0db2c3b1a9dda26fcf",
         "04-基础设施界面层.md": "f62f0195a4f2386b3479794583b4c3fda410f56479f92fba0a5a45d7d4505bc8",
         "11-支撑特性一-测高运动与监控.md": "4decdb97fcf35c07756410723ca95bcebcc4cd7564119c17849c54516d173c3b",
-        "32-固晶系统全景与流程图（上）· 模型、动作节点与调度.md": "5e11ae0e901589ac66639dda720fc0aabb58fc70bbb0edba22a19fd6482c9a91"
+        "32-固晶系统全景与流程图（上）· 模型、动作节点与调度.md": "c637285052a1d12ccca2031c6a0de8af59bb62fe3909482660f4d362a58c8baa"
       }
     },
     {
@@ -912,7 +912,7 @@
       "searchText": "文档体系地图：三层，一条链路 _raw → 正文 → _atlas 的对应关系与阅读入口。 00~30 模块文档 28 篇 · 按代码目录写 31~44 全景文档 14 篇 · 按子系统写 _写作规范 ×2 规定上面两批怎么写 13 份素材稿 5.5 万行 · 全景文档的草稿 11 份工作底账 按钮清单 · 幽灵文件 · UI 阻塞 素材索引 素材的目录与对照 46 张图 42 篇正文 43 张 + 3 张跨篇 index.html 入口 卡片导航 · 点开即看 _tools 工具链 重渲染 46 张只需一条命令 读者 维护 / 新人 / 产线 三层各管一件事 _raw 负责「当时查到了什么」 31~44 与 00~30 负责「结论是什么」 _atlas 负责「30 秒看懂」 只留一层会缺东西 只留图：细节全丢，改代码没依据 只留文档：8000 行的文件没人从头读 只留 raw：碎、重复、没有结论 从哪进 第一次来：先开 index.html 要改代码：按编号找源文档 要核对结论：回 _raw 查原始记录",
       "htmlSha256": "3d42c41cd822eeb7729f63ec4e0907e4fd6ea029c7fecb7fec2b4d3082ba8236",
       "documentHashes": {
-        "00-项目总览.md": "793d3ba29b150a1b34d58021bb754b4048ca273209de164a41a2efeebc3b5d75"
+        "00-项目总览.md": "8da6d298ce8e6fd00241a6aacf6b3d8986e145cd714600eeee4d3e2d805b3312"
       }
     }
   ]
