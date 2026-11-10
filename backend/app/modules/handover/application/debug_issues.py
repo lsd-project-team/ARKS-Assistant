@@ -52,6 +52,11 @@ class DebugIssues:
         metadata = image_metadata(data, filename, recorded_at)
         return self.store.append_debug_image(identifier, version, metadata, data, actor_name(actor))
 
+    def rotate_image(self, identifier, version, index, rotation, actor):
+        return self.store.rotate_debug_image(
+            identifier, version, index, rotation, actor_name(actor)
+        )
+
     def captured(self, message_id):
         return next(
             (

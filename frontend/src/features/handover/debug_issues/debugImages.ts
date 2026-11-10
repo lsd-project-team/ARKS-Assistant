@@ -5,6 +5,7 @@ export interface DebugImage {
   id: string;
   name: string;
   recorded_at: string;
+  rotation?: 0 | 90 | 180 | 270;
 }
 
 export function debugImages(payload: Payload): DebugImage[] {

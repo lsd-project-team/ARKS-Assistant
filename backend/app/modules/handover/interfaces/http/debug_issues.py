@@ -5,7 +5,7 @@ import asyncio
 from fastapi import APIRouter, Query, Request, Response
 
 from app.modules.auth.router import identity
-from app.modules.handover.application.commands import DebugWrite
+from app.modules.handover.application.commands import DebugImageRotation, DebugWrite
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.domain.images import MAX_IMAGE_BYTES
 from app.modules.handover.interfaces.http.context import HandoverHTTPContext
@@ -59,4 +59,21 @@ def register(router: APIRouter, ctx: HandoverHTTPContext):
             blob["content"],
             media_type=blob["media_type"],
             headers={"X-Content-Type-Options": "nosniff"},
+        )
+
+    @router.patch("/debug-issues/{identifier}/images/{version}/{index}/rotation")
+    async def rotate_image(
+        identifier: str,
+        version: int,
+        index: int,
+        body: DebugImageRotation,
+        request: Request,
+    ):
+        return await asyncio.to_thread(
+            DebugIssues(store()).rotate_image,
+            identifier,
+            version,
+            index,
+            body.rotation,
+            identity(request)["user"],
         )

@@ -141,6 +141,7 @@ class DebugImage(BaseModel):
     id: str = Field(pattern=r"^[a-f0-9]{64}$")
     name: str = Field(min_length=1, max_length=250)
     recorded_at: Short = ""
+    rotation: Literal[0, 90, 180, 270] = 0
 
 
 class DebugIssueMetadata(Payload):

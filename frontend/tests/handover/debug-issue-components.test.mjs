@@ -39,6 +39,7 @@ const bundled = await build({
     },
   ],
 });
+
 const bundledModule = { exports: {} };
 new Function('require', 'module', 'exports', bundled.outputFiles[0].text)(
   createRequire(import.meta.url),
@@ -46,6 +47,48 @@ new Function('require', 'module', 'exports', bundled.outputFiles[0].text)(
   bundledModule.exports,
 );
 const { DebugIssuePage, DebugIssueDetail } = bundledModule.exports;
+
+test('当前问题与经验原图提供旋转操作，固定版本只读展示', () => {
+  const row = {
+    id: 'image-issue',
+    kind: 'debug_issue',
+    title: '图片方向',
+    state: 'draft',
+    version: 2,
+    updated_at: '2026-11-10',
+    payload: {
+      question: '图片方向',
+      answer: '需要调整',
+      images: [
+        { id: 'image-a', name: 'a.png', recorded_at: '' },
+        { id: 'image-b', name: 'b.png', recorded_at: '' },
+      ],
+    },
+  };
+  const current = renderToStaticMarkup(
+    createElement(DebugIssueDetail, {
+      row,
+      client: {},
+      onEdit() {},
+      onChanged() {},
+      onOpen() {},
+      onClose() {},
+    }),
+  );
+  assert.equal((current.match(/调整原图 [12] 方向/g) || []).length, 2);
+  const historical = renderToStaticMarkup(
+    createElement(DebugIssueDetail, {
+      row,
+      version: 2,
+      client: {},
+      onEdit() {},
+      onChanged() {},
+      onOpen() {},
+      onClose() {},
+    }),
+  );
+  assert.doesNotMatch(historical, /调整原图 [12] 方向/);
+});
 
 test('当前列表与固定版本详情隐藏来源信息，仍显示记录人、日期和完整业务原文', () => {
   const row = {

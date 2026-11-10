@@ -19,6 +19,7 @@ from app.modules.handover.infrastructure.persistence.debug_images import DebugIm
 from app.modules.handover.infrastructure.persistence.material_files import attach_material_files
 from app.modules.handover.infrastructure.persistence.models import (
     HandoverBlob,
+    HandoverDebugImage,
     HandoverEvent,
     HandoverRecord,
     HandoverRevision,
@@ -88,17 +89,32 @@ class HandoverStore(DebugImageStorage):
         )
         if not revision:
             raise FileNotFoundError("交接记录版本不存在")
+        payload = json.loads(revision.payload_json)
+        self._decorate_image_rotations(session, identifier, payload)
         result = {
             **record_dict(row),
             "title": revision.title,
             "version": revision.version,
             "state": revision.state,
-            "payload": json.loads(revision.payload_json),
+            "payload": payload,
             "confirmation": json.loads(revision.confirmation_json),
             "updated_at": revision.created_at,
         }
         attach_material_files(session, [result])
         return result
+
+    @staticmethod
+    def _decorate_image_rotations(session, identifier, payload):
+        metadata = payload.get("metadata") if isinstance(payload, dict) else None
+        images = metadata.get("images") if isinstance(metadata, dict) else None
+        if not isinstance(images, list):
+            return
+        for image in images:
+            if not isinstance(image, dict) or not isinstance(image.get("id"), str):
+                continue
+            stored = session.get(HandoverDebugImage, (identifier, image["id"]))
+            if stored:
+                image["rotation"] = stored.rotation
 
     def get(self, identifier, version=None):
         with self.database.session() as session:

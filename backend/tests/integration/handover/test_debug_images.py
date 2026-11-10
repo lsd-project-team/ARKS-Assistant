@@ -2,9 +2,11 @@
 
 import base64
 import json
+from io import BytesIO
 
 import pytest
 from fastapi.testclient import TestClient
+from PIL import Image
 from sqlalchemy import func, select
 
 from app.core.config import Paths
@@ -81,6 +83,38 @@ def test_original_images_keep_bytes_duplicate_positions_and_fixed_versions(servi
         assert old.search("adv-3")[0]["version"] == 4
         assert DebugIssueCorpus(services[1]).search("adv-3")[0]["version"] == 5
         assert client.get(image_url(row, 0)).content == PNG
+
+
+def test_image_rotation_is_persisted_across_versions_without_rewriting_original_bytes(services):
+    with TestClient(create_app(services[0])) as client:
+        sign_in(client, "user")
+        original = Image.new("RGB", (2, 1), "red")
+        source = BytesIO()
+        original.save(source, format="PNG")
+        row = client.post("/api/handover/debug-issues", json=BODY).json()
+        row = upload(client, row, data=source.getvalue()).json()
+        row = upload(client, row).json()
+        index = 0
+        response = client.patch(
+            f"/api/handover/debug-issues/{row['id']}/images/{row['version']}/{index}/rotation",
+            json={"rotation": 90},
+        )
+        assert response.status_code == 200, response.text
+        assert response.json()["version"] == row["version"]
+        assert response.json()["payload"]["metadata"]["images"][index]["rotation"] == 90
+        rotated = Image.open(BytesIO(client.get(image_url(row, index)).content))
+        assert rotated.size == (1, 2)
+        old_version = Image.open(
+            BytesIO(client.get(image_url({**row, "version": 2}, index)).content)
+        )
+        assert old_version.size == (1, 2)
+        with services[1].session() as session:
+            stored = session.get(
+                HandoverDebugImage,
+                (row["id"], row["payload"]["metadata"]["images"][index]["id"]),
+            )
+            assert stored.rotation == 90
+            assert stored.content == source.getvalue()
 
 
 def test_search_returns_original_image_metadata_without_vision_or_image_indexing(services):

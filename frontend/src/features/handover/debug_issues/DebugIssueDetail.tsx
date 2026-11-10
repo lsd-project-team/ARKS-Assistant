@@ -115,7 +115,12 @@ export function DebugIssueDetail({
       {!version && row.state !== 'archived' && (
         <DebugIssueImageUpload row={row} client={client} onChanged={onChanged} />
       )}
-      <DebugIssueImages row={row} />
+      <DebugIssueImages
+        row={row}
+        client={client}
+        editable={!version && row.state !== 'archived'}
+        onChanged={onChanged}
+      />
       {text(payload.original_text) && (
         <details className="debug-issue-original">
           <summary>查看录入原文</summary>

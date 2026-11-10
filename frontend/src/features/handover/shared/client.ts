@@ -36,6 +36,21 @@ export function handoverClient() {
         })}`,
         { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: file },
       ),
+    rotateDebugImage: <T>(id: string, version: number, index: number, rotation: number) =>
+      request<T>(
+        '/debug-issues/' +
+          encodeURIComponent(id) +
+          '/images/' +
+          version +
+          '/' +
+          index +
+          '/rotation',
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rotation }),
+        },
+      ),
     download: async (path: string, filename: string) => {
       const response = await sessionFetch(root + path);
       if (!response.ok) {

@@ -1,5 +1,7 @@
 """应用用例输入；HTTP 与 Agent 共用相同字段约束。"""
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.modules.handover.domain.debug_issues import DebugContent
@@ -50,3 +52,8 @@ class DebugWrite(BaseModel):
         if not value.strip():
             raise ValueError("请填写问题标题")
         return value.strip()
+
+
+class DebugImageRotation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    rotation: Literal[0, 90, 180, 270]

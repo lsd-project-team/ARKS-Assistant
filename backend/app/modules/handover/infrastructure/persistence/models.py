@@ -51,6 +51,8 @@ class HandoverDebugImage(Base):
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
     media_type: Mapped[str] = mapped_column(String(100))
     content: Mapped[bytes] = mapped_column(LargeBinary)
+    # 方向属于图片本身，跨记录版本复用，原始字节仍保持不变。
+    rotation: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
 
 
 class HandoverEvent(Base):
