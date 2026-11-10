@@ -16,7 +16,7 @@
       "searchText": "运行时架构 四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。 操作员 触摸屏 / 鼠标 SoftKey 授权 启动即校验 主界面 MainForm DevExpress · 323 个界面类 机器状态机 MachineState 全局枚举 动作节点执行器 S2ActionNodeController 固晶线程 BondTask · 66,871 行 晶圆线程 WaferTask · 39,818 行 点胶线程 DispenseWorkTask 物流线程 TransportTask HardwareRepository GetHardware<T>(\"中文名\") Infrastructure DB · 日志 · 事件总线 · AOP SQL Server 库 ZX2200 · SqlSugar 运动控制平台 ETEL · 固高 · 雷赛 视觉 PR VisionMaster 定位 · HALCON 显示 轴 / IO / 执行器 气缸 · 点胶阀 · 真空 · 光源 三个必须先懂的事实 四个子系统各有一个常驻线程，外层统一是 while (Signal.WaitStart()) 停机不是 CancellationToken：Stop 让 WaitStart 返回 false，Pause 在里面 20 ms 空转 流程不是 if 判断，而是一条扁平 ActionNode 链，游标取第一个 Finished == false 的节点 平台边界：哪些能改 11 个 AKRS.Galaxy2.* 工程有源码，可直接改（停机语义就在 Machine/Models/Signal.cs） libs/ 里 20 个 AKRS.Galaxy2.* DLL 是黑盒，只能靠 .pdb 反编译 AKRS.Galaxy2.Parameters 在仓库内缺失，是一处构建断点 硬件栈的真实分布 运动控制三家并存：ETEL / 固高 Googol / 雷赛 Leadshine 匹配定位 100% 由海康 VisionMaster 承担，HALCON 只用于画图与区域显示 硬件对象只认中文名字符串，拼错在运行期才炸",
       "htmlSha256": "cbcd7ac42247468331e19f9715a26d18fd1c168706fee80ddd6f7abb45b19b46",
       "documentHashes": {
-        "00-项目总览.md": "68708da1162d9cab73f4c26cb380dfe1f29725d60d15c5bd06f694307e1b3da7"
+        "00-项目总览.md": "157658e8f3b6f143372426843e51bf652264d480f2e98db7500d2020278ee98e"
       }
     },
     {
@@ -35,7 +35,7 @@
       "searchText": "停机到底怎么生效 Working / Pause / Stop 三态，以及 WaitStart 里那 20 ms 的忙等。 待机 待机状态，尚未启动生产 运行 WaitStart() 返回 true 暂停 循环体 20 ms 空转 停止 不再执行新节点 Sleep(20) 每 20 ms 查一次状态 线程退出 while 条件为 false 没有 CancellationToken 全项目找不到取消令牌，停止靠一个全局枚举 四个线程都在转 while (Signal.WaitStart()) 停不下来的问题，先查这个枚举有没有被真正改到 暂停是忙等 Pause 期间每 20 ms 醒一次查状态 所以暂停时 CPU 占用不会归零 急停和暂停走的是同一个枚举，只是终值不同 急停先停轴，再清理状态 普通停止设置 Stop，暂停设置 Pause；急停还先停止各轴运动 EmergencyStop 先逐轴 StopMove，再调用 Stop 清理软件状态 所以查「停不下来」先查这个枚举有没有被改到",
       "htmlSha256": "7cb6f8ffd9cabe92fcaf56966ba2a54e3b324f984795a85e2f09014d0409560d",
       "documentHashes": {
-        "00-项目总览.md": "68708da1162d9cab73f4c26cb380dfe1f29725d60d15c5bd06f694307e1b3da7"
+        "00-项目总览.md": "157658e8f3b6f143372426843e51bf652264d480f2e98db7500d2020278ee98e"
       }
     },
     {
@@ -683,7 +683,7 @@
       "searchText": "支撑特性：名字最响的那个补偿，首行就 return 45 个界面无自有入口；终极补偿是死代码；参数即时生效。 Main Ribbon 45 个按钮入口 45 个业务 UI 无自有入口 参数老系统 UcProgramArgs · 1,816 行 参数新系统 FrmParamManager · 树恒空 网格补偿 TransportUnitCompensate 焊后缺陷补偿 DefectCompensate 温漂补偿 TpMarkCompensate 终极补偿 BondCompensate · 首行 return 统计写库 BlockingCollection(500) 风冷 PID Kp / Ki / Kd 闭环 固晶节点 / BondTask 补偿的唯一消费者 45 个界面，一条自己的入口都没有 入口全在 Main/ 的 Ribbon 按钮上 本模块只被调用，不起线程、不画主界面 所以「这个设置在哪里」要先去 Main 找按钮 名声最响的补偿是死的 BondCompensate 首行就无条件 return（:76） :78-168 全部不可达，但标定界面还在读它的行列数 真正生效的是 TransportUnitCompensate 网格补偿 改参数是即时生效的 UcProgramArgs.LeaveCheck 直接反射改活对象 不需要点保存，离开输入框就改了 想撤销只能记得原值",
       "htmlSha256": "dcc352d0f2cf5995bffdf5e85fcd28e126d3cec52ba6af9bed186455551a3446",
       "documentHashes": {
-        "36-支撑特性全景与流程图.md": "c589091d6ebce5ac0eb05a7de7edb95b60b4c082292698b36e9f8a46f05dc1e4"
+        "36-支撑特性全景与流程图.md": "663751ef138ef9ecc852f0ab23751929bcef0318ebec592d34e9fa514804f224"
       }
     },
     {
@@ -742,7 +742,7 @@
       "searchText": "物流搬运：段序靠令牌，状态一个都不落盘 10 条线程 + 令牌环定段序；一个异常永久少一条线程。 TransportController 2,671 行 · 9 条 TransferXxx 10 条搬运线程 等信号 → 调流程 → 休眠 TransportDomain 唯一入口 · StartTask 只调一次 TransportProgram 5 段 + 2 料仓 + 2 示教状态 SignalPool 令牌环 10 个具名信号决定段序 5 段硬件模组 中文硬件名 → 速度 / 回零 段控制器基类 93 行 · 只有 HasMaterialInModule 固晶 / 点胶 跨模块直读载具 硬件 轴 · 传感器 · 加热 12 个界面 按钮直调流程方法 没有中央状态机 段间顺序由平台信号令牌环决定，不是代码里的状态迁移 流道状态一个都不落盘 「机器现在什么状态」在代码里没有一处能答 一个异常永久少一条线程 catch 只弹模态框，while 随之退出 Task 落 RanToCompletion 而不是 Faulted Start() 不会再调一次，这条搬运线就没了 5 段抽象是半成品 控制器树和模组树都建了 5 个派生类 三段 SearchBelt() 只有 throw new NotImplementedException() 而基类 MapBelt() 会调它 —— 这三段搜料路径根本不存在",
       "htmlSha256": "118cf393e520599b85311021c9f0b9d5c6f07b34f712f38a2579d0b61c8633a8",
       "documentHashes": {
-        "39-物流搬运系统全景与流程图.md": "5a641fe8106f6ddc04a783aef1e67a894e5ab0cb51e8555df5d398fdf4010263"
+        "39-物流搬运系统全景与流程图.md": "e5f44d36896a5fcfca0f7f43acc65ef3de41fa6d919672cd2565fa7814c294e4"
       }
     },
     {
@@ -761,7 +761,7 @@
       "searchText": "点胶：三条链共用一套无锁控制器 生产链/手动链/配置链共用硬件；有些窗体打开即落盘。 Main 的节点调度器 S1ActionNodeController 点胶界面 UcEpoxyApplication · 1,152 + 2,077 行 S1 动作节点 17 个 继承平台 ActionNode DispenseWorkTask 常驻线程 · 循环取节点 System1Domain 唯一门面 · 暴露三个控制器 DispenseController 1,088 行 · 挤胶 / 画线 / 插补 测高 / 视觉 气缸等位 · 拍照转同步 System1Program 配方 Save() → DispenseProgram.json 轴 / 气缸 / 相机 平台硬件门面 这里没有调度器 真正的节点调度在 Main/S1ActionNodeController Services/System2ActionNodesService.cs（925 行）是死文件，不参与编译 所以在本目录找不到「下一步做什么」 三条链共用一套硬件，没有锁 生产链、手动链、配置链调的是同一批控制器与轴 自动跑着点手动按钮，会同时往同一根轴发指令 全目录没有一把 lock 有的窗体打开即生效 构造函数 / Load 里就改数据甚至落盘 点取消不会回滚（FrmDispenseOverAllSettings） 排查「参数怎么变了」先想有没有人打开过设置页",
       "htmlSha256": "3c78d25b63b698507db6b384fae7a3e66a68dfe55ebccb43d4e632ea7d26402e",
       "documentHashes": {
-        "40-点胶系统全景与流程图.md": "571d0b44e80be3c789481e097bd7967a587bb6dc54fcea561e7ce79717d7e986"
+        "40-点胶系统全景与流程图.md": "af96e88b2820419df4e11a44c05923e114bf5939e69bd7ceb1a025e5d889d39c"
       }
     },
     {
@@ -802,7 +802,7 @@
       "searchText": "实验系统：20 处保存，零处回滚 能改生产配置的调试面板，31 个窗体各抄一套，无回滚。 主菜单 ItemClick 13 个窗体的启动点 诊断页入口 另 6 个窗体 31 个实验窗体 7 个子目录各抄一套 FrmBaseTest 名字像基类 Save() 20 处 直接改生产配置 生产配置 相机标定 · 安全区 · 硬件 结果窗 Max / Min / 3σ / CMK 后台线程弹窗 FrmBMCTest → 结果窗 4 个幽灵文件 811 行 · 不在 .csproj 零回滚能力 Restore / Backup 无命中 这是一个能改生产的调试面板 68 处 Save，其中 20 处直接落生产配置 相机标定、取片安全区、硬件配置都在里面 但它挂在 HMI 主菜单上，操作员点得到 零回滚 全目录 Restore / Backup / Rollback 无命中 改坏了无法判断是哪次实验改的 现场只能靠人回忆或重装 FrmBaseTest 不是基类 全工程没有任何类型继承它 31 个窗体各自复制一套流程 这才是 8 组复制粘贴的结构性根因",
       "htmlSha256": "b3b3121b693a97d8acead1d5c47bfd37b313db04d39cc4661c3da3fbe939f8df",
       "documentHashes": {
-        "42-实验系统全景与流程图.md": "5211397650c10d8919f22679459661dd763656463048efa22e11d94376d9fb28"
+        "42-实验系统全景与流程图.md": "b34533ca8527615fde0853df24f447ba361c2055e0699149fa466e71307e5da3"
       }
     },
     {
@@ -912,7 +912,7 @@
       "searchText": "文档体系地图：三层，一条链路 _raw → 正文 → _atlas 的对应关系与阅读入口。 00~30 模块文档 28 篇 · 按代码目录写 31~44 全景文档 14 篇 · 按子系统写 _写作规范 ×2 规定上面两批怎么写 13 份素材稿 5.5 万行 · 全景文档的草稿 11 份工作底账 按钮清单 · 幽灵文件 · UI 阻塞 素材索引 素材的目录与对照 46 张图 42 篇正文 43 张 + 3 张跨篇 index.html 入口 卡片导航 · 点开即看 _tools 工具链 重渲染 46 张只需一条命令 读者 维护 / 新人 / 产线 三层各管一件事 _raw 负责「当时查到了什么」 31~44 与 00~30 负责「结论是什么」 _atlas 负责「30 秒看懂」 只留一层会缺东西 只留图：细节全丢，改代码没依据 只留文档：8000 行的文件没人从头读 只留 raw：碎、重复、没有结论 从哪进 第一次来：先开 index.html 要改代码：按编号找源文档 要核对结论：回 _raw 查原始记录",
       "htmlSha256": "3d42c41cd822eeb7729f63ec4e0907e4fd6ea029c7fecb7fec2b4d3082ba8236",
       "documentHashes": {
-        "00-项目总览.md": "68708da1162d9cab73f4c26cb380dfe1f29725d60d15c5bd06f694307e1b3da7"
+        "00-项目总览.md": "157658e8f3b6f143372426843e51bf652264d480f2e98db7500d2020278ee98e"
       }
     }
   ]
