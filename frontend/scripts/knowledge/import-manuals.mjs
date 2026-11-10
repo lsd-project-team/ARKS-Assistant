@@ -80,6 +80,23 @@ const topics = {
   91: ['recovery'],
   92: ['architecture'],
 };
+// 目录标题按阅读层次区分；文件名和历史链接保持不变。
+const entryTitles = {
+  31: '料单元系统·总览与主流程',
+  32: '固晶系统·调度与动作节点总览',
+  33: '固晶系统·界面与按钮流程细节',
+  34: '晶圆系统·模型、实体与调度总览',
+  35: '晶圆系统·界面与按钮流程细节',
+  36: '支撑特性·全景与主流程',
+  37: '基础设施·架构与依赖总览',
+  38: '主框架·启动与调度总览',
+  39: '物流搬运系统·全景与主流程',
+  40: '点胶系统·全景与主流程',
+  41: '标定系统·全景与主流程',
+  42: '实验系统·全景与主流程',
+  43: '料单元系统·按钮与交互细节',
+  44: '本地化与工程杂项·工程说明',
+};
 const search = await readFile(resolve(target, 'search.html'), 'utf8');
 const data = JSON.parse(search.match(/const DATA = (.*);/)[1]);
 const digest = (value) => createHash('sha256').update(value).digest('hex');
@@ -115,7 +132,7 @@ for (const item of data) {
   entries.push({
     id: `manual-${key}`,
     file,
-    title: item.id.replace(/^\d+-/, ''),
+    title: entryTitles[key] || item.id.replace(/^\d+-/, ''),
     summary: item.desc,
     detailAnchor:
       key === '00-stop'

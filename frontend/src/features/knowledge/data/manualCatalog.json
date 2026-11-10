@@ -572,7 +572,7 @@
     {
       "id": "manual-31",
       "file": "31-料单元系统全景与流程图.html",
-      "title": "料单元系统全景与流程图",
+      "title": "料单元系统·总览与主流程",
       "summary": "载具→基板→基岛→焊点的实体链，配置单例与三套 Mapping。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -592,7 +592,7 @@
     {
       "id": "manual-32",
       "file": "32-固晶系统全景与流程图（上）· 模型、动作节点与调度.html",
-      "title": "固晶系统全景与流程图（上）· 模型、动作节点与调度",
+      "title": "固晶系统·调度与动作节点总览",
       "summary": "按钮 → 线程 → 节点 → 子控制器 → 硬件，排序不在本模块。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -611,7 +611,7 @@
     {
       "id": "manual-33",
       "file": "33-固晶系统全景与流程图（下）· 界面与按钮流程.html",
-      "title": "固晶系统全景与流程图（下）· 界面与按钮流程",
+      "title": "固晶系统·界面与按钮流程细节",
       "summary": "入口集中在 Main；全层只有一条落盘通道；主循环没有 try/catch。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -630,7 +630,7 @@
     {
       "id": "manual-34",
       "file": "34-晶圆系统全景与流程图（上）· 模型、实体与调度.html",
-      "title": "晶圆系统全景与流程图（上）· 模型、实体与调度",
+      "title": "晶圆系统·模型、实体与调度总览",
       "summary": "门面—控制器—模组—硬件四层；没有状态机，异常当业务流。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -649,7 +649,7 @@
     {
       "id": "manual-35",
       "file": "35-晶圆系统全景与流程图（下）· 界面与按钮流程.html",
-      "title": "晶圆系统全景与流程图（下）· 界面与按钮流程",
+      "title": "晶圆系统·界面与按钮流程细节",
       "summary": "调控制器 / 落盘 / 弹窗 / 只改界面；按钮不是唯一入口。",
       "detailAnchor": "overview",
       "type": "sequence",
@@ -668,7 +668,7 @@
     {
       "id": "manual-36",
       "file": "36-支撑特性全景与流程图.html",
-      "title": "支撑特性全景与流程图",
+      "title": "支撑特性·全景与主流程",
       "summary": "45 个界面无自有入口；终极补偿是死代码；参数即时生效。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -689,7 +689,7 @@
     {
       "id": "manual-37",
       "file": "37-基础设施全景与流程图.html",
-      "title": "基础设施全景与流程图",
+      "title": "基础设施·架构与依赖总览",
       "summary": "UI 工具箱 + 路径表 + 数据访问层，以及与 Main 的依赖环。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -709,7 +709,7 @@
     {
       "id": "manual-38",
       "file": "38-主框架全景与流程图.html",
-      "title": "主框架全景与流程图",
+      "title": "主框架·启动与调度总览",
       "summary": "UcMainSystem 是 9 个 .cs 拼成的类；39 个按钮同一道门禁。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -729,7 +729,7 @@
     {
       "id": "manual-39",
       "file": "39-物流搬运系统全景与流程图.html",
-      "title": "物流搬运系统全景与流程图",
+      "title": "物流搬运系统·全景与主流程",
       "summary": "10 条线程 + 令牌环定段序；一个异常永久少一条线程。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -748,7 +748,7 @@
     {
       "id": "manual-40",
       "file": "40-点胶系统全景与流程图.html",
-      "title": "点胶系统全景与流程图",
+      "title": "点胶系统·全景与主流程",
       "summary": "生产链/手动链/配置链共用硬件；有些窗体打开即落盘。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -767,7 +767,7 @@
     {
       "id": "manual-41",
       "file": "41-标定系统全景与流程图.html",
-      "title": "标定系统全景与流程图",
+      "title": "标定系统·全景与主流程",
       "summary": "13 条流程 + 5 个 Only*，产物只有仿射矩阵与位置点。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -789,7 +789,7 @@
     {
       "id": "manual-42",
       "file": "42-实验系统全景与流程图.html",
-      "title": "实验系统全景与流程图",
+      "title": "实验系统·全景与主流程",
       "summary": "能改生产配置的调试面板，31 个窗体各抄一套，无回滚。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -808,7 +808,7 @@
     {
       "id": "manual-43",
       "file": "43-料单元系统按钮与交互流程详解.html",
-      "title": "料单元系统按钮与交互流程详解",
+      "title": "料单元系统·按钮与交互细节",
       "summary": "四种按钮来源；ProductConfiguration 与 ProductDomain 是两个文件。",
       "detailAnchor": "overview",
       "type": "architecture",
@@ -828,7 +828,7 @@
     {
       "id": "manual-44",
       "file": "44-本地化与工程杂项全景.html",
-      "title": "本地化与工程杂项全景",
+      "title": "本地化与工程杂项·工程说明",
       "summary": "三块资产合集；Common.cs 从未参与编译；构建期改写 IL。",
       "detailAnchor": "overview",
       "type": "architecture",
