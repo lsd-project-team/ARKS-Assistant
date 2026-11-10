@@ -586,7 +586,7 @@
       "searchText": "料单元：一份数据，四个消费方 载具→基板→基岛→焊点的实体链，配置单例与三套 Mapping。 固晶区（系统2） BondTask · S2 节点家族 点胶区（系统1） DispenseWorkTask 物流搬运 TransportTask · 分段程序 TransportUnit 载具 GetConfigByType() 现场取配置 Substrate 基板 一块基板 Module 基岛 一个基岛 BondPosition 焊点 两颗芯片贴这里 ProductConfiguration 配方单例 · 参数不随实体走 TuService 32 个静态方法 · 2,081 行 Mapping 三套实现 实时图 / 新版 / 旧版 示教与产品编程 UcEditProductProgramming 配置与实体是分离的 实体本身不带工艺参数，参数在 ProductConfiguration 单例里 实体通过 GetConfigByType() 现场去取（BaseMatter.cs:111） 所以「改实体」和「改配置」是两件事 一个焊点的完成状态有两个 S1RemainingSteps / S2RemainingSteps 各存一份 S2 的状态会反过来影响 S1 的判定 查「这颗为什么没做」要看两个字典，不是一个 同一份数据三套显示 实时图 UcTransportShow / 新版 FrmTuMappingNew / 旧版 FrmTuMapping 三者行为互不一致 UseNewMappingUi 默认 false，旧版才是现役（UcTransportConfig.cs:107）",
       "htmlSha256": "24ef27c36948307fedfe414cc800c8b3fd990745433098a4306ce86747e05409",
       "documentHashes": {
-        "31-料单元系统全景与流程图.md": "b552570aa6d0cbf380d068887257e58c2f137064f0ebee831a53e15c51e67db0"
+        "31-料单元系统全景与流程图.md": "1ad85d968fca9f3d4c9a159e7f00d90a988afc40c29b4b15cc85eeb162ee48cc"
       }
     },
     {
@@ -822,7 +822,7 @@
       "searchText": "料单元界面：243 个处理器，两套单例 四种按钮来源；ProductConfiguration 与 ProductDomain 是两个文件。 配方编辑宿主 确认动作 :873 / :1071 配置外壳 UcTransportUnitFrame · 隐式入口 带树编辑器 FrmTransportUnitEdit 对象功能编辑器 UcObjectFunctionEdit · 25 个处理器 Mapping 两窗体 新旧各一套 · 26 个处理器 TUAssistantHelper 示教 4 个入口 ProductConfiguration 配方主文件 ProductDomain 另一个文件 · 测高走这里 轴 / 相机 / 光源 示教直接下发 按钮有四种来源 Designer 接线 234 处，去重后 233 个处理器 外加 7 个有定义无接线、3 个匿名 lambda，共 243 个 只数 _Click 一定会漏 两套持久化单例 ProductConfiguration.json 与 ProductDomain.json 是两个文件 测高结果走 ProductDomain 所以那条测高结果不会进 ProductConfiguration.json 示教只改内存不落盘 BtAssistantVision_Click 改完不 Save BtAssistantMeasureHeight_Click 连刷新都没有 示教完直接退出，重启后参数没了",
       "htmlSha256": "917e63c107a91bc4e2698d4b2859c8ec8ce954c05094a6492998ae638ca2c1b3",
       "documentHashes": {
-        "43-料单元系统按钮与交互流程详解.md": "2466045c09f71f26ff50f494da822dc2b8b3b7da6dd0e5b7dd7012151d8f1468"
+        "43-料单元系统按钮与交互流程详解.md": "98bb6c7b664166cbc8031e3cc4d4982f0ceb9e6e884e217d0c70e2585e7f22ac"
       }
     },
     {
