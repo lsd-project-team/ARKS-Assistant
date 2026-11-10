@@ -53,3 +53,17 @@ test('全部交付图和42篇正文均能从业务专题与图谱目录进入，
       );
   }
 });
+
+test('模块图解目录标题区分总览、调度和按钮细节入口', () => {
+  const titles = Object.fromEntries(
+    manuals
+      .filter((entry) => /^manual-(3[1-9]|4[0-4])$/.test(entry.id))
+      .map((entry) => [entry.id, entry.title]),
+  );
+  assert.equal(titles['manual-31'], '料单元系统·总览与主流程');
+  assert.equal(titles['manual-43'], '料单元系统·按钮与交互细节');
+  assert.equal(titles['manual-32'], '固晶系统·调度与动作节点总览');
+  assert.equal(titles['manual-33'], '固晶系统·界面与按钮流程细节');
+  assert.equal(titles['manual-34'], '晶圆系统·模型、实体与调度总览');
+  assert.equal(titles['manual-35'], '晶圆系统·界面与按钮流程细节');
+});
