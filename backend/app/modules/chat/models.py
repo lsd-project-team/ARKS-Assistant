@@ -39,6 +39,7 @@ class Message(Base):
     role: Mapped[str] = mapped_column(String(20))
     content: Mapped[str] = mapped_column(Text)
     selections_json: Mapped[str] = mapped_column(Text, default="[]")
+    attachments_json: Mapped[str] = mapped_column(Text, default="[]", server_default="[]")
     source_options_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     context_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
@@ -82,14 +83,49 @@ class RunEvent(Base):
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
 
 
+class AnswerFeedback(Base):
+    __tablename__ = "answer_feedback"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    thread_id: Mapped[str] = mapped_column(ForeignKey("threads.id", ondelete="CASCADE"), index=True)
+    message_id: Mapped[str] = mapped_column(
+        ForeignKey("messages.id", ondelete="CASCADE"), index=True
+    )
+    question_id: Mapped[str | None] = mapped_column(
+        ForeignKey("messages.id", ondelete="CASCADE"), nullable=True
+    )
+    run_id: Mapped[str | None] = mapped_column(
+        ForeignKey("runs.id", ondelete="CASCADE"), nullable=True
+    )
+    actor_id: Mapped[str] = mapped_column(String(36))
+    actor_json: Mapped[str] = mapped_column(Text)
+    category: Mapped[str] = mapped_column(String(40), default="")
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
+
+
 class QueuedQuestion(Base):
     __tablename__ = "queued_questions"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     thread_id: Mapped[str] = mapped_column(ForeignKey("threads.id", ondelete="CASCADE"), index=True)
     content: Mapped[str] = mapped_column(Text)
     selections_json: Mapped[str] = mapped_column(Text, default="[]")
+    attachments_json: Mapped[str] = mapped_column(Text, default="[]", server_default="[]")
     source_options_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     created_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     updated_at: Mapped[str] = mapped_column(String(40), default=now_iso)
     actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     actor_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
+
+
+class ChatAttachment(Base):
+    __tablename__ = "chat_attachments"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    owner_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    workspace_id: Mapped[str] = mapped_column(String(80), index=True)
+    filename: Mapped[str] = mapped_column(String(250))
+    sha256: Mapped[str] = mapped_column(String(64))
+    size: Mapped[int] = mapped_column(Integer)
+    content: Mapped[str] = mapped_column(Text)
+    parse_status: Mapped[str] = mapped_column(String(20))
+    parse_notes: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[str] = mapped_column(String(40), default=now_iso)

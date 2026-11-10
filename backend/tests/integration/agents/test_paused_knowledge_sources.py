@@ -13,7 +13,7 @@ from app.modules.handover.application.commands import DebugWrite
 from app.modules.handover.application.debug_issues import DebugIssues
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 from app.modules.knowledge.corpora.handover_materials import HandoverMaterialCorpus
-from app.modules.projects.models import Project, ProjectMaterial
+from app.modules.projects.models import Project
 from tests.helpers.memories import MemorySeed as MemoryWrite
 from tests.helpers.memories import seed_memory
 from tests.helpers.models import DeterministicModel
@@ -34,20 +34,6 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     project_id = "sources-project"
     with database.session.begin() as session:
         session.add(Project(id=project_id, name="来源测试", source_root=str(paths.workspace)))
-        session.flush()
-        session.add_all(
-            [
-                ProjectMaterial(
-                    project_id=project_id, title="取片不稳定", content="项目文档暂停标记"
-                ),
-                ProjectMaterial(
-                    project_id=project_id,
-                    title="取片不稳定",
-                    kind="conclusion",
-                    content="旧共享结论暂停标记",
-                ),
-            ]
-        )
     repository.project_id = project_id
     store = HandoverStore(database=database)
     handover = store.create(
@@ -148,15 +134,13 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     assert "个人偏好保留标记" in text
     assert "交接资料暂停标记" not in text
     assert "本轮未接入流程图谱、功能说明和交接资料" in text
-    assert "项目文档暂停标记" not in text
-    assert "旧共享结论暂停标记" not in text
     assert not hasattr(runtime, "project_reading")
     assert ("问题与经验保留标记" in text) is use_knowledge
     assert ("search_debug_issues" in tools) is use_knowledge
     snapshot = ConversationContext(runtime).run_sources(run["id"])
     assert snapshot["handover_materials"] == []
     assert snapshot["knowledge_retrieval"] == []
-    assert snapshot["materials"] == []
+    assert "materials" not in snapshot
     assert [row["id"] for row in snapshot["debug_issues"]] == (
         [issue["id"]] if use_knowledge else []
     )

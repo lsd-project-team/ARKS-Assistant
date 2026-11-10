@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "blocks": [
+    { "id": "body", "type": "markdown", "content": "## 合同验收\n\n保留普通 Markdown 与 $x^2$。" },
+    {
+      "id": "chart",
+      "type": "chart",
+      "title": "明确提供的测试输入",
+      "chart_type": "bar",
+      "labels": ["甲", "乙", "丙"],
+      "series": [{ "id": "values", "name": "输入值", "values": [0, 7, null] }]
+    },
+    {
+      "id": "flow",
+      "type": "mermaid",
+      "title": "输入处理",
+      "content": "flowchart LR\nA[接收输入] --> B[检查数据]\nB --> C[显示内容]"
+    },
+    {
+      "id": "map",
+      "type": "mindmap",
+      "title": "展示类型",
+      "nodes": [
+        { "id": "root", "label": "富内容" },
+        { "id": "markdown", "label": "Markdown", "parent_id": "root" },
+        { "id": "chart", "label": "图表", "parent_id": "root" }
+      ]
+    },
+    {
+      "id": "file",
+      "type": "file",
+      "record_id": "fixture-file",
+      "name": "验收原文件.txt",
+      "version": 1
+    },
+    {
+      "id": "tool",
+      "type": "tool_call",
+      "tool": {
+        "id": "read-entry",
+        "name": "read_source",
+        "arguments": { "path": "Program.cs", "start_line": 2, "end_line": 2 },
+        "status": "success",
+        "result": "Main 方法体为空。"
+      }
+    },
+    {
+      "id": "source",
+      "type": "source_reference",
+      "sources": [{ "path": "Program.cs", "start_line": 2, "end_line": 2 }]
+    }
+  ]
+}

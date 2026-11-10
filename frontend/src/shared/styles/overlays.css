@@ -30,7 +30,7 @@
   flex-shrink: 0;
 }
 .modal-heading p {
-  font-size: 13px;
+  font-size: var(--font-size-meta);
 }
 .dialog-body {
   min-height: 0;
@@ -48,7 +48,7 @@
 }
 .modal-footer > span {
   min-width: 0;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .modal-content p,
 .modal-content strong {
@@ -64,17 +64,17 @@
 }
 .modal-content .settings-fields,
 .modal-content .memory-editor {
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .modal-content .settings-fields > label,
 .modal-content .memory-editor label,
 .modal-content .field-pair label {
-  font-size: 13px;
+  font-size: var(--font-size-control);
   font-weight: 500;
 }
 .modal-content input:not([type='checkbox']):not([type='radio']),
 .modal-content textarea {
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .modal-content .button {
   min-height: 36px;
@@ -179,7 +179,7 @@
 }
 .memory-list small {
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .unsaved-notice,
 .discard-question {
@@ -222,7 +222,7 @@
   border-radius: 10px;
   background: var(--panel);
   color: var(--text);
-  font: 400 14px/1.5 var(--font-ui);
+  font: 400 var(--font-size-control)/1.5 var(--font-ui);
   text-align: left;
   cursor: pointer;
 }
@@ -260,7 +260,7 @@
   background: var(--panel);
   color: var(--text);
   box-shadow: var(--shadow-raised);
-  font: 400 14px/1.6 var(--font-ui);
+  font: 400 var(--font-size-control)/1.6 var(--font-ui);
 }
 .ui-select-viewport {
   padding: 5px;
@@ -315,7 +315,7 @@
   gap: 6px;
   border: 0;
   background: transparent;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
   box-shadow: none;
 }
@@ -350,7 +350,7 @@
   min-height: 34px;
   padding: 8px 10px;
   gap: 9px;
-  font: 400 14px/1.5 var(--font-ui);
+  font: 400 var(--font-size-control)/1.5 var(--font-ui);
   color: inherit;
   border-radius: 7px;
   text-align: left;

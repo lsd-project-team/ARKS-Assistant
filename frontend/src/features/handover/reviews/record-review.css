@@ -24,7 +24,7 @@
   display: flex;
   gap: 14px;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   padding-bottom: 20px;
 }
 .record-review-content .handover-record-fields {
@@ -51,11 +51,11 @@
 }
 .record-review-sidebar-heading h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-subtitle);
 }
 .record-review-version {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   margin: 12px 0 28px;
 }
 .record-review-form label {
@@ -64,7 +64,7 @@
   margin-bottom: 20px;
 }
 .record-review-form label > span {
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .record-review-form textarea {
   resize: vertical;
@@ -74,7 +74,7 @@
 .record-review-form small,
 .record-review-result p,
 .record-review-outcome dt {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   line-height: 1.7;
 }
@@ -101,7 +101,7 @@
 }
 .record-review-outcome dd {
   margin: 6px 0 18px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   line-height: 1.8;
@@ -113,7 +113,7 @@
 }
 .record-review-history summary {
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .record-review-history article {
   display: grid;

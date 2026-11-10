@@ -29,6 +29,16 @@ export interface Selection {
   version: string;
   stale?: boolean;
 }
+export interface ChatAttachment {
+  id: string;
+  filename: string;
+  sha256: string;
+  size: number;
+  characters: number;
+  parse_status: 'readable' | 'partial';
+  parse_notes: string;
+  created_at: string;
+}
 export interface Message {
   source_workspace_id?: string | null;
   id: string;
@@ -36,6 +46,7 @@ export interface Message {
   role: string;
   content: string;
   selections: Selection[];
+  attachments?: ChatAttachment[];
   source_options?: Partial<SourceOptions>;
   created_at?: string;
   context_active?: boolean;
@@ -63,14 +74,13 @@ export interface Run {
 }
 export interface Thread {
   owner_id?: string | null;
-  project_state?: 'active' | 'archived' | null;
   project_name?: string;
   project_id?: string | null;
   id: string;
   title: string;
   created_at?: string;
   updated_at: string;
-  state?: 'active' | 'archived' | 'deleted';
+  state?: 'active' | 'deleted';
   pinned_order?: number | null;
   has_unread?: boolean;
   latest_status?: string | null;
@@ -87,28 +97,13 @@ export interface Project {
   id: string;
   name: string;
   source_root: string | null;
-  state: 'active' | 'archived';
+  state: 'active';
   pinned_order: number | null;
   created_at: string;
   updated_at: string;
   thread_count?: number;
   knowledge_available?: boolean;
   source_workspace_id?: string | null;
-}
-export interface ProjectMaterial {
-  id: string;
-  project_id: string;
-  title: string;
-  kind: 'document' | 'conclusion';
-  source_name: string;
-  content?: string;
-  version: number;
-  state: 'active' | 'deleted';
-  origin_thread_id?: string | null;
-  origin_message_id?: string | null;
-  created_at: string;
-  updated_at: string;
-  revision_at?: string;
 }
 export interface ProjectList {
   projects: Project[];
@@ -128,6 +123,7 @@ export interface QueuedQuestion {
   thread_id: string;
   content: string;
   selections: Selection[];
+  attachments?: ChatAttachment[];
   source_options?: Partial<SourceOptions>;
   created_at: string;
   updated_at: string;
@@ -326,7 +322,6 @@ export interface RunContext {
     local: { commit: string | null; dirty: boolean | null };
   }[];
   knowledge_retrieval?: { titles: string[]; injected: boolean }[];
-  materials?: { id: string; title: string; version: number; citation: string }[];
   debug_issues?: { id: string; title: string; version: number; citation: string }[];
   model?: ModelSnapshot;
   budget?: ContextUsage | null;
@@ -347,7 +342,7 @@ export interface RunContext {
 
 export interface KnowledgeReference {
   image_count?: number;
-  kind: 'material' | 'handover_material' | 'debug_issue';
+  kind: 'handover_material' | 'debug_issue';
   id: string;
   title: string;
   version: number;

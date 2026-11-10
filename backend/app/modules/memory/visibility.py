@@ -32,7 +32,9 @@ def visible_run_event(event, actor_id):
         }
     if not owner or actor_id == owner:
         return event
-    if kind == "memory_selection":
+    if kind == "memory_selection" or (
+        kind == "provider_usage" and payload.get("purpose") == "memory_selection"
+    ):
         return None
     if kind == "memory_save" and payload.get("scope") == "user":
         return None

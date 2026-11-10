@@ -40,7 +40,12 @@ def create_router(services: AppServices):
         selections = validated_selections(services.workspace, body)
         async with manager.edit_lock:
             run = repository.branches.edit_latest(
-                thread_id, message_id, body.content, selections, source_options(body)
+                thread_id,
+                message_id,
+                body.content,
+                selections,
+                source_options(body),
+                body.attachment_ids,
             )
             manager.start(run)
         return run
@@ -53,7 +58,9 @@ def create_router(services: AppServices):
     async def enqueue(thread_id: str, body: RunCreate):
         selections = validated_selections(services.workspace, body)
         async with manager.edit_lock:
-            item = repository.queue.add(thread_id, body.content, selections, source_options(body))
+            item = repository.queue.add(
+                thread_id, body.content, selections, source_options(body), body.attachment_ids
+            )
             run = repository.queue.dispatch(thread_id)
             if run:
                 manager.start(run)
@@ -64,7 +71,12 @@ def create_router(services: AppServices):
         selections = validated_selections(services.workspace, body)
         async with manager.edit_lock:
             return repository.queue.update(
-                item_id, body.content, selections, body.version, source_options(body)
+                item_id,
+                body.content,
+                selections,
+                body.version,
+                source_options(body),
+                body.attachment_ids,
             )
 
     @router.delete("/api/queue/{item_id}")
@@ -78,9 +90,6 @@ def create_router(services: AppServices):
         if action not in {"pause", "continue"}:
             raise ValueError("队列操作必须是 pause 或 continue")
         async with manager.edit_lock:
-            thread = repository.catalog.get(thread_id)
-            if action == "continue" and thread["state"] == "archived":
-                repository.catalog.change(thread_id, "active")
             repository.queue.pause(thread_id, action == "pause")
             run = repository.queue.dispatch(thread_id)
             if run:

@@ -2,9 +2,9 @@ from types import SimpleNamespace
 
 import pytest
 from langchain.agents.middleware.types import ModelRequest
-from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
-from app.agents.context.task_guidance import TaskGuidance
+from app.agents.context.task_guidance import SOURCE_ANSWER_NOTE_ID, TaskGuidance
 from app.agents.prompts.system import SYSTEM_PROMPT
 from tests.helpers.models import DeterministicModel
 
@@ -22,41 +22,41 @@ async def effective_request(middleware, request=None):
     return await middleware.awrap_model_call(request, handler)
 
 
-@pytest.mark.parametrize("question", ["你好", "介绍 Vue", "蓝膜刺穿处理经验", "周末活动流程"])
+@pytest.mark.parametrize(
+    "question",
+    ["你好", "介绍 Vue", "蓝膜刺穿处理经验", "周末活动流程", "顶针刺穿怎么处理", "学习方法有哪些"],
+)
 async def test_general_questions_keep_source_and_device_display_rules_out(question):
     current = await effective_request(TaskGuidance(question, {"read_source"}))
     assert "【源码核查】" not in current.system_message.text
     assert "回答展示协议" not in current.system_message.text
-    assert (
-        "当前项目实现、设备具体流程、操作或前置条件必须先读取当前源码"
-        in current.system_message.text
+    assert "当前软件实现、代码流程或参数计算必须读取当前源码" in current.system_message.text
+    assert "问题与经验已覆盖的工艺处理建议可按该经验回答" in current.system_message.text
+
+
+@pytest.mark.parametrize("question", ["Program.cs 的入口是什么", "设备标定流程"])
+async def test_source_rules_do_not_force_a_flow_layout(question):
+    current = await effective_request(
+        TaskGuidance(question, {"read_source"}, SimpleNamespace(required=True, reads=[]))
     )
-
-
-@pytest.mark.parametrize(
-    ("question", "flow"),
-    [("Program.cs 的入口是什么", False), ("设备标定流程", True)],
-)
-async def test_source_rules_apply_before_first_model_call_and_flow_rules_only_for_flow(
-    question, flow
-):
-    current = await effective_request(TaskGuidance(question, {"read_source"}))
     prompt = current.system_message.text
     assert prompt.count("【源码核查】") == 1
     assert "[文件名:行号](source:相对路径#L行号)" in prompt
     assert "本地源码优先于 DeepWiki" in prompt
     assert "发起调用不等于硬件完成" in prompt
-    assert ("回答展示协议" in prompt) is flow
+    assert "默认用step_flow" not in prompt
     assert "先规划候选项并调用 plan_source_checks" not in prompt
 
 
 @pytest.mark.parametrize("required,reads", [(True, []), (False, [{"path": "Program.cs"}])])
-async def test_selections_and_restored_reads_keep_rules_for_short_followups(required, reads):
+async def test_selections_keep_rules_but_unused_restored_reads_do_not_activate_source(
+    required, reads
+):
     middleware = TaskGuidance(
         "继续", {"read_source"}, SimpleNamespace(required=required, reads=reads)
     )
     current = await effective_request(middleware)
-    assert "【源码核查】" in current.system_message.text
+    assert ("【源码核查】" in current.system_message.text) is required
 
 
 @pytest.mark.parametrize(
@@ -101,6 +101,27 @@ async def test_deep_task_keeps_report_rules_and_preserves_request_metadata_and_m
     assert "先规划候选项并调用 plan_source_checks" in current.system_message.text
     assert current.system_message.text.startswith("已有系统上下文")
     assert current.system_message.additional_kwargs == {"test_metadata": "keep"}
-    assert current.messages == messages
+    assert current.messages[:-1] == messages
+    assert current.messages[-1].id == SOURCE_ANSWER_NOTE_ID
+    assert request.messages == messages
     assert system.text == "已有系统上下文"
     assert request.system_message is system
+
+
+async def test_source_reminder_is_request_only_and_deduplicated_after_tool_results():
+    original = [
+        HumanMessage(content="解释 Program.cs"),
+        AIMessage(content="", tool_calls=[{"id": "read", "name": "read_source", "args": {}}]),
+        ToolMessage(content="实际源码及行号", tool_call_id="read"),
+    ]
+    request = ModelRequest(model=DeterministicModel(), messages=original)
+    middleware = TaskGuidance(
+        "解释 Program.cs", {"read_source"}, SimpleNamespace(required=True, reads=[])
+    )
+    first = await effective_request(middleware, request)
+    second = await effective_request(middleware, first)
+    assert first.messages == second.messages
+    assert second.messages[:-1] == original
+    assert second.messages[-2] is original[-1]
+    assert sum(row.id == SOURCE_ANSWER_NOTE_ID for row in second.messages) == 1
+    assert request.messages == original and len(original) == 3

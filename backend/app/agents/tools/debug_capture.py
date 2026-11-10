@@ -17,7 +17,8 @@ from app.infrastructure.providers.models import create_model
 from app.infrastructure.providers.usage import reported_usage
 from app.modules.chat.regeneration import CONTEXT_EVENT
 from app.modules.handover.application.debug_issues import DebugIssues
-from app.modules.handover.domain.debug_issues import DebugContent
+from app.modules.handover.domain.debug_issues import LegacyDebugContent
+from app.modules.handover.domain.debug_knowledge import debug_metadata
 from app.modules.handover.infrastructure.ai import json_model
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
 
@@ -33,7 +34,7 @@ def command_text(content):
 class ExtractedIssue(BaseModel):
     model_config = ConfigDict(extra="forbid")
     title: str = Field(min_length=1, max_length=200)
-    payload: DebugContent
+    payload: LegacyDebugContent
 
 
 def grounded(value, original):
@@ -146,7 +147,7 @@ async def capture_command(runtime, run, emit, owned_models):
             runtime.repository.project_id,
         )
     status = {"resolved": "已解决", "open": "未解决", "recorded": "已记录"}[
-        row["payload"]["resolution_status"]
+        debug_metadata(row["payload"])["resolution_status"]
     ]
     title = row["title"].replace("[", "（").replace("]", "）")
     answer = (

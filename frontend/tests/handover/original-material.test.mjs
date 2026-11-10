@@ -127,9 +127,8 @@ test('不支持预览的文件只提供原文件下载，不显示提取正文',
 test('无原附件的旧文本仍可查阅，原文转义显示且不进入新的录入流程', () => {
   const html = render({
     ...base,
-    kind: 'interview',
     original_file: null,
-    payload: { transcript: '旧原文\n<script>原始字符</script>' },
+    payload: { content: '旧原文\n<script>原始字符</script>' },
   });
   assert.ok(html.includes('这条历史资料没有附件'));
   assert.ok(html.includes('&lt;script&gt;原始字符&lt;/script&gt;'));

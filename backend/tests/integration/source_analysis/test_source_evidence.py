@@ -3,6 +3,7 @@
 import json
 import os
 
+import pytest
 from langchain.agents.middleware.types import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
@@ -82,10 +83,88 @@ async def test_guard_repairs_and_marks_unverified_links(services):
 
     request = ModelRequest(model=DeterministicModel(), messages=[HumanMessage(content="解释源码")])
     response = await guard.awrap_model_call(request, handler)
-    assert len(requests) == 3 and "read_source" in requests[-1].messages[-1].text
-    assert "source:Program.cs#L999" not in response.result[0].text
-    assert "引用未核对" in response.result[0].text and "源码核对提示" in response.result[0].text
+    assert len(requests) == 1
+    assert "source:Program.cs#L999" in response.result[0].text
+    assert response.result[0].text == "结论 [坏引用](source:Program.cs#L999)"
+    assert "999" in response.result[0].additional_kwargs["source_review_note"]
     assert events[-1][0] == "answer_validation" and not events[-1][1]["passed"]
+
+
+@pytest.mark.parametrize(
+    ("required", "read_source", "draft", "passed"),
+    [
+        (False, False, "方案参考[经验](debug-issue:trial/1)。", True),
+        (True, False, "方案参考[经验](debug-issue:trial/1)。", False),
+        (True, True, "方案参考[经验](debug-issue:trial/1)。", False),
+        (True, True, "入口是[Main](source:Program.cs#L2)。", True),
+    ],
+)
+async def test_guard_keeps_answer_without_appended_source_warning(
+    services, required, read_source, draft, passed
+):
+    _, _, workspace, *_ = services
+    events, requests = [], []
+    ledger = SourceEvidence(workspace, lambda *event: events.append(event), required=required)
+    if read_source:
+        ledger.record(source_excerpt(workspace, "Program.cs", 2, 2))
+
+    async def handler(request):
+        requests.append(request)
+        return ModelResponse(result=[AIMessage(content=draft)])
+
+    request = ModelRequest(
+        model=DeterministicModel(), messages=[HumanMessage(content="取片如何处理")]
+    )
+    response = await SourceEvidenceGuard(ledger).awrap_model_call(request, handler)
+    # 即使本轮读过源码但最终仅引用经验，也不把核对报告追加进正文。
+    assert response.result[0].text == draft
+    assert len(requests) == 1
+    validation = [payload for kind, payload in events if kind == "answer_validation"][-1]
+    assert validation["passed"] is passed
+    if not passed:
+        assert "源码回答缺少可定位的引用" in validation["reasons"]
+
+
+@pytest.mark.parametrize(
+    ("mandatory", "changed", "passed"),
+    [(False, False, True), (True, False, False), (False, True, False)],
+)
+async def test_only_current_verified_experience_can_waive_optional_source_requirement(
+    services, mandatory, changed, passed
+):
+    from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
+
+    workspace = services[2]
+    events, requests = [], []
+    ledger = SourceEvidence(workspace, lambda *row: events.append(row), required=True)
+    ledger.mandatory = mandatory
+    reference = "[处理经验](debug-issue:trial/1)"
+    records = [{"reference": reference, "content": {"答案": "组合调整后216颗无刺穿。"}}]
+    knowledge = KnowledgeAnswerGuard(
+        DeterministicModel(),
+        "蓝膜怎么处理？",
+        lambda: records,
+        lambda *_: None,
+        16000,
+        preselected=lambda: ("records", records),
+    )
+
+    async def draft(_request):
+        return ModelResponse(result=[AIMessage(content="组合调整后216颗无刺穿。" + reference)])
+
+    async def handler(request):
+        requests.append(request)
+        response = await knowledge.awrap_model_call(request, draft)
+        if changed:
+            response.result[0].content += "正文已被其他步骤修改。"
+        return response
+
+    request = ModelRequest(
+        model=DeterministicModel(), messages=[HumanMessage(content="蓝膜怎么处理？")]
+    )
+    await SourceEvidenceGuard(ledger).awrap_model_call(request, handler)
+    assert len(requests) == 1
+    assert [row for kind, row in events if kind == "answer_validation"][-1]["passed"] is passed
 
 
 class EvidenceRepairModel(DeterministicModel):
@@ -112,7 +191,9 @@ class EvidenceRepairModel(DeterministicModel):
         return ChatResult(generations=[ChatGeneration(message=answer)])
 
 
-async def test_real_graph_repair_tool_loop_and_usage_are_persisted(services, monkeypatch):
+async def test_real_graph_keeps_model_answer_and_usage_without_reference_recheck(
+    services, monkeypatch
+):
     paths, _, workspace, repository, memories, settings = services
     settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512)))
     monkeypatch.setattr(
@@ -125,14 +206,14 @@ async def test_real_graph_repair_tool_loop_and_usage_are_persisted(services, mon
     answer = await runtime.execute(
         run, lambda kind, payload: repository.event(run["id"], kind, payload)
     )
-    assert "#L2)" in answer and "#L999" not in answer
+    assert answer == "入口 [Program.cs:999](source:Program.cs#L999)"
     events = repository.events(run["id"], 0)
     validation = [event["payload"] for event in events if event["kind"] == "answer_validation"]
-    assert validation[-1]["passed"]
-    assert any(event["kind"] == "source_evidence" for event in events)
+    assert validation == []
+    assert not any(event["kind"] in {"source_evidence", "tool_start"} for event in events)
     usage = [event["payload"] for event in events if event["kind"] == "provider_usage"]
     answer_usage = [row for row in usage if row["purpose"] == "answer"]
-    assert len(answer_usage) == 3 and all(
+    assert len(answer_usage) == 1 and all(
         row["reported"] and row["input_tokens"] == 100 for row in answer_usage
     )
 

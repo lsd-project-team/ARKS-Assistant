@@ -65,6 +65,9 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
         )
 
     assert result is graph
+    assert not {"AnswerReviewNote", "SourceEvidenceGuard", "KnowledgeAnswerGuard"} & {
+        type(item).__name__ for item in captured["middleware"]
+    }
     prompt = captured["system_prompt"]
     tools = {item.name for item in captured["tools"]}
     assert "本轮项目标记" in prompt
@@ -73,19 +76,27 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "同路径异版本" in prompt
     assert "本轮未接入流程图谱、功能说明和交接资料" in prompt
     assert prompt.count("【回答方式】") == 1
-    assert "回答展示协议" not in prompt
+    assert "可选回答展示协议" in prompt
+    assert "默认用step_flow" not in prompt
     assert "【源码核查】" not in prompt
-    assert "当前项目实现、设备具体流程、操作或前置条件必须先读取当前源码" in prompt
+    assert "当前软件实现、代码流程或参数计算必须读取当前源码" in prompt
+    assert "问题与经验已覆盖的工艺处理建议可按该经验回答" in prompt
+    assert "不把经验问答自动扩成源码排查" in prompt
+    assert "用户要求图文并茂或示意图时" in prompt
+    assert "不能声称是原图、实物照片或已执行的验证" in prompt
 
     assert "项目工具要求：" not in prompt
     assert "create_code_change" not in tools
     assert "edit_change_file" not in tools and "verify_code_change" not in tools
     assert "update_code_change_requirements" not in prompt
-    assert "没有修改文件、执行命令或审核交付工具" in prompt
+    assert {"prepare_code_workspace", "edit_work_file", "verify_code_workspace"} <= tools
+    assert "无需斜杠命令、附件或预先创建副本" in prompt
+    assert "仅解释原因、分析流程、讨论方案或明确暂不修改时，只回答" in prompt
+    assert "没有修改文件、执行命令或审核交付工具" not in prompt
     assert ("问题识别与查询路由" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
-    assert ("与项目相关：" in prompt) is knowledge
-    assert ("与项目无关：" in prompt) is knowledge
+    assert ("足够就直接生成答案并结束" in prompt) is knowledge
+    assert ("日常问题、通用知识及与ARKS项目无关" in prompt) is knowledge
     assert "remember" not in tools
     assert ("本轮不使用长期记忆" in prompt) is (not memory)
     assert "长期记忆由后台" in prompt

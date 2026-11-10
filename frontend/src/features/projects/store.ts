@@ -17,6 +17,7 @@ export function projectsState(
   | 'switchProject'
   | 'startConversation'
   | 'resetProjectSource'
+  | 'removeProject'
 > {
   return {
     projectId: '',
@@ -89,5 +90,40 @@ export function projectsState(
             : {}),
         };
       }),
+
+    removeProject: (id, disposition) => {
+      const current = get();
+      const threadId = current.projectId === id ? current.threadId : '';
+      if (current.projectId === id) {
+        current.switchProject('independent');
+        get().selectThread(disposition === 'independent' ? threadId : '');
+        get().setSidebarView(disposition === 'trash' ? 'deleted' : 'active');
+        if (threadId && disposition === 'independent') get().setThreadEntry(threadId, 'recent');
+      }
+      set((state) => {
+        const projectSessions = { ...state.projectSessions };
+        const sourceBindings = { ...state.sourceBindings };
+        const expandedProjects = { ...state.expandedProjects };
+        const drafts = { ...state.drafts };
+        const source = drafts[draftKey('', id)];
+        const targetKey = draftKey('', 'independent');
+        const target = drafts[targetKey];
+        if (source) {
+          // 两边都有草稿时保留两份正文和全部选区，不覆盖原独立草稿或截断选区。
+          drafts[targetKey] = target
+            ? {
+                ...target,
+                content: [target.content, source.content].filter(Boolean).join('\n\n'),
+                selections: [...target.selections, ...source.selections],
+              }
+            : source;
+        }
+        delete drafts[draftKey('', id)];
+        delete projectSessions[id];
+        delete sourceBindings[id];
+        delete expandedProjects[id];
+        return { projectSessions, sourceBindings, expandedProjects, drafts };
+      });
+    },
   };
 }

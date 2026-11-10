@@ -14,7 +14,7 @@ from tests.helpers.models import DeterministicModel, fixture_selections
 
 
 @pytest.mark.parametrize("via_tool", [False, True])
-async def test_final_revision_is_persisted_without_review_json_streaming(
+async def test_model_answer_streams_and_persists_without_post_generation_review(
     services, monkeypatch, via_tool
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -28,10 +28,9 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     issues.save(DebugWrite(title="通信故障X778", payload={"problem": "不应发送的其他记录"}), {})
     reviewed = []
     reference = f"[蓝膜刺穿经验](debug-issue:{saved['id']}/1)"
-    revision = (
-        "本次组合调整后216颗无刺穿。\n\n### 如何复用\n先核对发生条件。"
-        "\n\n### 适用范围\n记录不足以证明长期根治。" + reference
-    )
+    original = "任何工况都能根治。" + reference
+    note = "216颗的历史组合结果不能证明任何工况都能根治。"
+    expected = original
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
@@ -43,13 +42,12 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
             elif "你负责核查历史经验回答" in messages[0].text:
                 payload = json.loads(messages[-1].text)
                 reviewed.append(payload)
-                passed = payload["answer"] == revision
                 answer = AIMessage(
                     content=json.dumps(
                         {
-                            "verdict": "passed" if passed else "revised",
-                            "reason": "保留试验边界",
-                            "answer": "" if passed else revision,
+                            "verdict": "issues",
+                            "note": note,
+                            "answer": "不能采用的修订正文",
                         }
                     )
                 )
@@ -82,17 +80,24 @@ async def test_final_revision_is_persisted_without_review_json_streaming(
     events = []
     answer = await runtime.execute(run, lambda *event: events.append(event))
     repository.finish(run["id"], answer)
-    assert answer == revision
-    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == revision
-    assert len(reviewed) == 2
-    assert all(
-        [row["reference"] for row in payload["records"]] == [reference] for payload in reviewed
-    )
+    assert answer == expected
+    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == expected
+    assert reviewed == []
     assert "不应发送的其他记录" not in str(reviewed)
     assert not any('"verdict"' in payload["text"] for kind, payload in events if kind == "token")
-    assert not any("任何工况" in payload["text"] for kind, payload in events if kind == "token")
-    assert any(kind == "answer_replace" and row["text"] == revision for kind, row in events)
-    assert issues.store.get(saved["id"])["payload"]["original_text"] == "组合调整后216颗无刺穿。"
+    assert any(kind == "token" for kind, _ in events)
+    assert not {
+        "knowledge_answer_review",
+        "knowledge_answer_check",
+        "answer_validation",
+        "answer_review_note",
+    } & {kind for kind, _ in events}
+    assert answer.startswith(original) and "不能采用的修订正文" not in answer
+    assert any(kind == "answer_replace" and row["text"] == expected for kind, row in events)
+    assert (
+        issues.store.get(saved["id"])["payload"]["metadata"]["original_text"]
+        == "组合调整后216颗无刺穿。"
+    )
 
 
 def test_review_context_rejects_unknown_or_wrong_version_references(services):
@@ -103,16 +108,25 @@ def test_review_context_rejects_unknown_or_wrong_version_references(services):
     corpus = DebugIssueCorpus(services[1])
     assert corpus.review_records({saved["id"]: 2, "unknown": 1}) == []
     records = corpus.review_records({saved["id"]: 1})
-    assert len(records) == 1 and records[0]["content"]["内容说明"] == "原始事实"
+    assert len(records) == 1 and records[0]["content"]["问题"] == "原始事实"
     assert "compatibility" in records[0]
 
 
-async def test_final_presentation_is_not_overwritten_by_graph_checkpoint(services, monkeypatch):
+@pytest.mark.parametrize(
+    "original",
+    [
+        "**" + "这份记录仅限本次条件，不证明所有设备都适用。" * 4 + "**",
+        "模型正文。[未登记经验](debug-issue:missing/999)",
+        "模型正文。[Missing.cs:999](source:Missing.cs#L999)",
+    ],
+)
+async def test_model_format_is_preserved_in_final_answer_and_history(
+    services, monkeypatch, original
+):
     from langchain_core.messages import AIMessage
     from langchain_core.outputs import ChatGeneration, ChatResult
 
     paths, _, workspace, repository, memories, settings = services
-    original = "**" + "这份记录仅限本次条件，不证明所有设备都适用。" * 4 + "**"
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
@@ -126,8 +140,11 @@ async def test_final_presentation_is_not_overwritten_by_graph_checkpoint(service
     events = []
     answer = await runtime.execute(run, lambda *e: events.append(e))
     repository.finish(run["id"], answer)
-    assert answer == original.replace("**", "")
+    assert answer == original
     assert repository.thread(run["thread_id"])["messages"][-1]["content"] == answer
     displayed = [row["text"] for kind, row in events if kind == "answer_replace"]
     assert displayed[-1] == answer
+    assert not {"answer_validation", "knowledge_answer_review", "answer_review_note"} & {
+        kind for kind, _ in events
+    }
     runtime.semantic.close()

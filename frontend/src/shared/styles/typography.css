@@ -1,0 +1,27 @@
+/* 全站按信息角色选择字号；AI 回答保留独立的 17/16px 阅读方案。 */
+:root {
+  --font-size-body: 16px;
+  --font-size-control: 14px;
+  --font-size-meta: 13px;
+  --font-size-code: 14px;
+  --font-size-table: 15px;
+  --font-size-page-title: 22px;
+  --font-size-section-title: 18px;
+  --font-size-subtitle: 16px;
+  --font-size-dialog-title: 20px;
+  --font-size-bar-title: 16px;
+  --diffs-font-size: var(--font-size-code);
+}
+
+/* 没有专用字号的普通控件也保持同一层级，图标按钮沿用原尺寸。 */
+button,
+input,
+select,
+textarea {
+  font-size: var(--font-size-control);
+}
+
+.model-picker,
+.model-picker select {
+  min-width: 0;
+}

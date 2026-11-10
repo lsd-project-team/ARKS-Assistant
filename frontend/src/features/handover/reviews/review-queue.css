@@ -18,14 +18,14 @@
   min-width: 20px;
   padding: 0 5px;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   text-align: center;
   color: var(--text-secondary);
   background: var(--surface-subtle);
 }
 .handover-review-count {
   margin: 12px 0 16px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .handover-review-reason {
@@ -35,7 +35,7 @@
   border-radius: 7px;
   border: 1px solid var(--border);
   background: var(--surface-subtle);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.7;
   overflow-wrap: anywhere;
   color: var(--text-secondary);

@@ -32,7 +32,7 @@ PNG = base64.b64decode(
 GIF = base64.b64decode("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
 EVENTS = {
     "knowledge_stage_error",
-    "answer_presentation",
+    "answer_format_validation",
     "answer_draft",
     "review_raw",
     "knowledge_selection",

@@ -1,7 +1,7 @@
 import { text, type Payload } from '../shared/types';
-import { debugIssueFields, debugKnowledgeFields } from './debugIssues';
+import { debugIssueFields, debugMetadataFields } from './debugIssues';
 
-type Field = (typeof debugIssueFields)[number] | (typeof debugKnowledgeFields)[number];
+type Field = (typeof debugIssueFields)[number] | (typeof debugMetadataFields)[number];
 
 export function DebugIssueFields({
   fields,
@@ -15,11 +15,7 @@ export function DebugIssueFields({
   return (
     <div className="debug-issue-editor-fields">
       {fields.map((field) => {
-        const required =
-          'required' in field ||
-          (field.key === 'solution' &&
-            payload.record_type === 'problem' &&
-            payload.resolution_status === 'resolved');
+        const required = 'required' in field;
         return (
           <label key={field.key} className={`debug-issue-field ${'short' in field ? 'short' : ''}`}>
             <span>
@@ -30,14 +26,14 @@ export function DebugIssueFields({
               <input
                 maxLength={2000}
                 value={text(payload[field.key])}
-                placeholder={'placeholder' in field ? field.placeholder : undefined}
+                placeholder={'placeholder' in field ? String(field.placeholder) : undefined}
                 onChange={(event) => onChange(field.key, event.target.value)}
               />
             ) : (
               <textarea
                 required={required}
-                maxLength={30000}
-                rows={3}
+                maxLength={field.key === 'answer' ? 100000 : 30000}
+                rows={field.key === 'answer' ? 7 : 2}
                 value={text(payload[field.key])}
                 placeholder={'placeholder' in field ? field.placeholder : '可选'}
                 onChange={(event) => onChange(field.key, event.target.value)}

@@ -1,10 +1,33 @@
-const starterQuestions = [
-  { label: '了解项目结构', question: '这个项目的模块如何组织？' },
-  { label: '解释选中代码', question: '帮我理解选中的代码' },
-  { label: '开始开发模块', question: '如何开始开发一个新模块？' },
-];
+import { CodeXml, Workflow, Wrench } from 'lucide-react';
 
-export function ChatWelcome({ onQuestion }: { onQuestion: (question: string) => void }) {
+export function ChatWelcome({
+  hasSelection,
+  disabled,
+  onQuestion,
+}: {
+  hasSelection: boolean;
+  disabled: boolean;
+  onQuestion: (question: string) => void;
+}) {
+  const starterQuestions = [
+    {
+      label: '了解功能流程',
+      question: '请说明【功能名称】的操作步骤、运行流程和关键条件。',
+      Icon: Workflow,
+    },
+    {
+      label: '排查设备问题',
+      question: '请结合调试经验和相关源码，帮我分析这个问题：【异常现象】。',
+      Icon: Wrench,
+    },
+    {
+      label: hasSelection ? '解释选中代码' : '分析业务代码',
+      question: hasSelection
+        ? '请解释选中代码的作用、执行逻辑和相关调用。'
+        : '请帮我分析【模块或方法】的作用、执行逻辑和调用关系。',
+      Icon: CodeXml,
+    },
+  ];
   return (
     <div className="chat-welcome">
       <div className="welcome-hero">
@@ -12,16 +35,18 @@ export function ChatWelcome({ onQuestion }: { onQuestion: (question: string) => 
         <h2>想从哪里开始？</h2>
       </div>
       <div className="welcome-support">
-        <p>解释代码、追踪模块，或聊聊你的想法。</p>
+        <p>了解设备流程、查找调试经验，或结合源码分析问题。</p>
         <div className="welcome-suggestions" role="group" aria-label="推荐问题">
-          {starterQuestions.map(({ label, question }) => (
+          {starterQuestions.map(({ label, question, Icon }) => (
             <button
               key={question}
               type="button"
+              disabled={disabled}
               title={question}
               onClick={() => onQuestion(question)}
             >
-              {label}
+              <Icon size={14} aria-hidden="true" />
+              <span>{label}</span>
             </button>
           ))}
         </div>

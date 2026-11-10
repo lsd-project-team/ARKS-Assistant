@@ -5,13 +5,6 @@ import {
   answerReferences,
 } from '../../src/features/knowledge/lib/answerReferences.ts';
 
-const material = {
-  kind: 'material',
-  id: 'manual',
-  title: '项目说明',
-  version: 3,
-  citation: 'material:project-a/manual/3#L10-L30',
-};
 const handover = {
   kind: 'handover_material',
   id: 'handover-a',
@@ -28,7 +21,7 @@ const issue = {
   resolution_status: 'open',
   compatibility: { status: 'needs_confirmation', missing: ['设备版本'] },
 };
-const available = [material, handover, issue];
+const available = [handover, issue];
 
 test('问候、资料标题与纯文本地址不把候选资料算作本轮参考', () => {
   for (const answer of [
@@ -46,26 +39,19 @@ test('只显示实际引用的资料，保留风险和适用条件信息', () =>
 });
 
 test('允许引用已带入片段内的子范围，打开位置使用实际引用的行号', () => {
-  assert.deepEqual(
-    answerReferences(
-      '[项目说明](material:project-a/manual/3#L12-14)，[资料](handover-source:handover-a/1#L8)。',
-      available,
-    ),
-    [
-      { ...material, citation: 'material:project-a/manual/3#L12-14' },
-      { ...handover, citation: 'handover-source:handover-a/1#L8' },
-    ],
-  );
+  assert.deepEqual(answerReferences('[资料](handover-source:handover-a/1#L8)。', available), [
+    { ...handover, citation: 'handover-source:handover-a/1#L8' },
+  ]);
 });
 
 test('按引用顺序排列，同一资料版本的多个片段只计一次', () => {
   assert.deepEqual(
     answerReferences(
-      '[记录](debug-issue:issue-a/2)\n[资料一](material:project-a/manual/3#L11)\n' +
-        '[资料二](material:project-a/manual/3#L20-L25)\n[记录](debug-issue:issue-a/2)',
-      [...available, material],
+      '[记录](debug-issue:issue-a/2)\n[资料一](handover-source:handover-a/1#L11)\n' +
+        '[资料二](handover-source:handover-a/1#L15-L20)\n[记录](debug-issue:issue-a/2)',
+      [...available, handover],
     ),
-    [issue, { ...material, citation: 'material:project-a/manual/3#L11' }],
+    [issue, { ...handover, citation: 'handover-source:handover-a/1#L11' }],
   );
 });
 
@@ -81,15 +67,7 @@ test('同一资料的不同已记录版本独立列出，未知版本不显示',
 });
 
 for (const target of [
-  'material:other-project/manual/3#L12',
-  'material:project-a/unknown/3#L12',
-  'material:project-a/manual/2#L12',
-  'material:project-a/manual/3#L9',
-  'material:project-a/manual/3#L10-L31',
-  'material:project-a/manual/3#L20-L10',
-  'material:project-a/manual/3#L0',
-  'material:project-a/manual/3#L9007199254740992',
-  'material:project-a/manual/3#L10?extra=1',
+  'material:project-a/manual/3#L12',
   'handover-source:unknown/1#L8',
   'handover-source:handover-a/2#L8',
   'handover-source:handover-a/1#L21',
@@ -146,8 +124,8 @@ test('流式半截链接不显示，完成链接才显示，替换回答后不�
 });
 
 test('引用行号恰好处于带入范围边界时可用；空候选不会推测资料', () => {
-  assert.deepEqual(answerReferences('[说明](material:project-a/manual/3#L10-L30)', available), [
-    material,
+  assert.deepEqual(answerReferences('[说明](handover-source:handover-a/1#L1-L20)', available), [
+    handover,
   ]);
   assert.deepEqual(answerReferences('[记录](debug-issue:issue-a/2)', []), []);
 });
@@ -158,7 +136,7 @@ test('候选元数据与其引用地址身份不一致时不接受', () => {
       { ...issue, citation: 'debug-issue:other/2' },
       { ...issue, version: 1 },
       { ...issue, id: 'other' },
-      { ...issue, kind: 'material' },
+      { ...issue, kind: 'handover_material' },
     ]),
     [],
   );

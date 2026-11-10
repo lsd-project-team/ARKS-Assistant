@@ -91,41 +91,28 @@ async function submit() {
   await new Promise(setImmediate);
 }
 
-test('主表统一六项，辅助信息默认收起；已解决时处理方法必填', () => {
+test('主表只有问题答案关键词，记录信息默认收起', () => {
   storage.clear();
   const html = render({}, row);
   const primary = html.split('<details')[0];
-  assert.equal((primary.match(/<label\b/g) || []).length, 6);
-  for (const label of ['标题', '适用条件', '内容说明', '处理方法', '结果记录', '注意事项'])
-    assert.ok(primary.includes(label), label);
-  assert.match(primary, /<textarea required=""[^>]*>更换密封圈<\/textarea>/);
-  assert.match(
-    html,
-    /<details class="debug-issue-additional"><summary>辅助信息（选填）<\/summary>/,
-  );
+  assert.equal((primary.match(/<label\b/g) || []).length, 3);
+  for (const label of ['问题', '答案', '关键词']) assert.ok(primary.includes(label), label);
   for (const label of [
-    '记录类型',
-    '处理状态',
-    '设备与环境',
-    '事项日期',
+    '标题',
+    '适用条件',
+    '内容说明',
+    '处理方法',
+    '结果记录',
+    '注意事项',
     '原记录人',
-    '原记录时间',
-    '处理经过',
-    '问题原因',
-    '关键词',
-  ]) {
-    assert.ok(!primary.includes(label + '</span>'), label);
-    assert.ok(html.includes(label), label);
-  }
-  const experience = render(
-    {},
-    { ...row, payload: { ...payload, record_type: 'experience', resolution_status: 'recorded' } },
-  ).split('<details')[0];
-  assert.ok(!experience.includes('处理状态'));
-  assert.match(experience, /<textarea(?! required)[^>]*>更换密封圈<\/textarea>/);
+  ])
+    assert.ok(!primary.includes('<span>' + label), label);
+  assert.equal((primary.match(/<textarea required/g) || []).length, 2);
+  assert.match(html, /<summary>记录信息（选填）<\/summary>/);
+  assert.ok(html.includes('原记录人') && html.includes('8月25日 10:14'));
 });
 
-test('补充区未展开也完整提交旧字段，不改写记录人、日期、条件与关键词，内部来源由服务端保留', async () => {
+test('保存三项正文并把可编辑管理字段放入metadata，保留旧事实而不发送来源身份', async () => {
   storage.clear();
   const original = structuredClone(row);
   let sent;
@@ -139,15 +126,24 @@ test('补充区未展开也完整提交旧字段，不改写记录人、日期�
     row,
   );
   await submit();
-  assert.deepEqual(sent, [
-    '/debug-issues/legacy',
-    { title: '旧记录', version: 7, payload },
-    'PATCH',
-  ]);
+  assert.equal(sent[0], '/debug-issues/legacy');
+  assert.equal(sent[2], 'PATCH');
+  assert.equal(sent[1].version, 7);
+  const value = sent[1].payload;
+  assert.deepEqual(Object.keys(value).sort(), ['answer', 'keywords', 'metadata', 'question']);
+  assert.equal(value.question, payload.problem);
+  for (const fact of ['更换密封圈', '检查真空管路', '密封圈破损', '连续取片20次正常'])
+    assert.ok(value.answer.includes(fact));
+  assert.equal(value.metadata.recorded_by, '原作者');
+  assert.equal(value.metadata.recorded_at, '8月25日 10:14');
+  assert.equal(value.metadata.resolution_status, 'resolved');
+  for (const key of ['original_text', 'reported_by', 'images', 'source_message_id'])
+    assert.equal(key in value.metadata, false);
+  assert.deepEqual(value.keywords, payload.keywords);
   assert.deepEqual(row, original);
 });
 
-test('旧草稿恢复后隐藏字段继续提交，提交失败不清空草稿', async () => {
+test('旧草稿可转为问答保存，提交失败继续保留草稿', async () => {
   storage.clear();
   const key = 'arks-handover-draft:global:new:debug_issue';
   const draft = {
@@ -165,6 +161,8 @@ test('旧草稿恢复后隐藏字段继续提交，提交失败不清空草稿',
   });
   assert.ok(html.includes('已恢复未保存的记录'));
   await submit();
-  assert.deepEqual(sent[1], { title: draft.title, version: undefined, payload });
+  assert.equal(sent[1].title, payload.problem);
+  assert.equal(sent[1].payload.question, payload.problem);
+  assert.equal(sent[1].payload.metadata.recorded_by, '原作者');
   assert.equal(storage.get(key), saved);
 });

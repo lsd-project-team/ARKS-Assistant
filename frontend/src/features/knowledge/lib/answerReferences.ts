@@ -1,5 +1,6 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import type { KnowledgeReference } from '../../../shared/types/api';
+import { answerSourceLinks } from '../../chat/rich/answerSources.ts';
 
 type MarkdownNode = {
   type: string;
@@ -13,28 +14,16 @@ interface KnowledgeCitation {
   kind: KnowledgeReference['kind'];
   id: string;
   version: number;
-  projectId?: string;
   start?: number;
   end?: number;
 }
 
 function parseCitation(citation: string): KnowledgeCitation | undefined {
   const debug = citation.match(/^debug-issue:([\w-]+)\/(\d+)$/);
-  const material = citation.match(/^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
   const handover = citation.match(/^handover-source:([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
   let parsed: KnowledgeCitation;
   if (debug) {
     parsed = { citation, kind: 'debug_issue', id: debug[1], version: Number(debug[2]) };
-  } else if (material) {
-    parsed = {
-      citation,
-      kind: 'material',
-      projectId: material[1],
-      id: material[2],
-      version: Number(material[3]),
-      start: Number(material[4]),
-      end: Number(material[5] || material[4]),
-    };
   } else if (handover) {
     parsed = {
       citation,
@@ -80,6 +69,12 @@ export function answerKnowledgeCitations(answer: string): KnowledgeCitation[] {
     const parsed = url && parseCitation(url);
     if (parsed) citations.push(parsed);
   });
+  // 图文块里的真实引用也决定原图加载；协议JSON中的普通字符串不当作引用。
+  for (const url of answerSourceLinks(answer)) {
+    const parsed = parseCitation(url);
+    if (parsed && !citations.some((item) => item.citation === parsed.citation))
+      citations.push(parsed);
+  }
   return citations;
 }
 
@@ -96,13 +91,12 @@ export function answerReferences(answer: string, references: KnowledgeReference[
         source.kind === citation.kind &&
         source.id === citation.id &&
         source.version === citation.version &&
-        source.projectId === citation.projectId &&
         (citation.start === undefined ||
           (source.start! <= citation.start && source.end! >= citation.end!)),
     );
     if (!match) continue;
     // 同一资料版本可引用多个片段；列表按首次引用顺序只列一次，保留实际引用位置。
-    const key = `${citation.kind}:${citation.projectId || ''}:${citation.id}:${citation.version}`;
+    const key = `${citation.kind}:${citation.id}:${citation.version}`;
     if (!used.has(key)) used.set(key, { ...match.row, citation: citation.citation });
   }
   return [...used.values()];

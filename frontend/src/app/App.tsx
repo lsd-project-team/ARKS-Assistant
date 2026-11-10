@@ -9,6 +9,7 @@ import { Sidebar } from '../features/chat/components/Sidebar';
 import { FileExplorer } from '../features/source_reader/components/FileExplorer';
 import { ChatPane } from '../features/chat/components/ChatPane';
 import { PaneDivider } from './layouts/PaneDivider';
+import { useCodeWorkPanel } from './layouts/hooks/useCodeWorkPanel';
 import { SettingsDialog } from '../features/settings/components/SettingsDialog';
 import { useWorkspace } from './state/store';
 import { api } from './api/client';
@@ -93,6 +94,7 @@ export default function App() {
     setWorkspaceOpen,
   } = useWorkspace();
   const navigationLayout = useNavigationLayout(navigationWidth);
+  const codeWorkPanel = useCodeWorkPanel();
   const motion = useLayoutMotion(
     { collapsed, codeOpen, explorerOpen },
     `${collapsed}:${codeOpen}:${explorerOpen}:${readingFocused}:${chatRatio}:${focusChatRatio}:${explorerWidth}:${navigationLayout.width}`,
@@ -117,6 +119,7 @@ export default function App() {
     refetchInterval: 15000,
   });
   function toggleWorkspace() {
+    if (codeWorkPanel.open) codeWorkPanel.close(false);
     const visible = (codeOpen || explorerOpen) && (window.innerWidth > 800 || mobile === 'code');
     setWorkspaceOpen(!visible);
   }
@@ -275,13 +278,14 @@ export default function App() {
             showHeader={!knowledgeOpen && !handover.open && !timing.open}
             onSettings={(tab) => setDialog(tab === 'mcp' ? 'mcp' : 'settings')}
             onToggleWorkspace={toggleWorkspace}
+            codeWorkPanel={codeWorkPanel}
           />
           {(motion.codeMounted || motion.filesMounted) && (
             <PaneDivider kind={motion.codeMounted ? 'chat' : 'files'} />
           )}
           <section
             className="source-workspace"
-            aria-label="源码工作区"
+            aria-label={codeWorkPanel.open ? '代码变更工作区' : '源码工作区'}
             hidden={!motion.codeMounted && !motion.filesMounted}
             inert={!codeOpen && !explorerOpen}
           >
@@ -290,13 +294,19 @@ export default function App() {
                 <Suspense
                   fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}
                 >
-                  <CodePane onSearch={() => setSearchOpen(true)} />
+                  {codeWorkPanel.open ? (
+                    <div ref={codeWorkPanel.setTarget} className="code-pane code-work-panel-host" />
+                  ) : (
+                    <CodePane onSearch={() => setSearchOpen(true)} />
+                  )}
                 </Suspense>
               </WorkspaceLoadBoundary>
             )}
-            {motion.codeMounted && motion.filesMounted && <PaneDivider kind="files" />}
+            {motion.codeMounted && motion.filesMounted && !codeWorkPanel.open && (
+              <PaneDivider kind="files" />
+            )}
             <FileExplorer
-              hidden={!motion.filesMounted}
+              hidden={!motion.filesMounted || codeWorkPanel.open}
               onClose={() => setExplorerOpen(false)}
               onQuickOpen={() => setDialog('files')}
             />

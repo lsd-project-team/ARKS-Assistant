@@ -70,8 +70,14 @@ class SourceBackend(BackendProtocol):
     ) -> GrepResult:
         try:
             relative = self.relative(path)
-            self.workspace.resolve(relative)
-            result = self.workspace.search(pattern, glob or "*", min(max_count or 100, 100))
+            scope = self.workspace.resolve(relative)
+            result = self.workspace.search(
+                pattern,
+                glob or "*",
+                min(max_count or 100, 100),
+                diverse=not scope.is_file(),
+                path=relative,
+            )
             matches = [
                 {**match, "path": "/" + match["path"]}
                 for match in result["matches"]

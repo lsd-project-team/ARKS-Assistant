@@ -10,30 +10,34 @@ from deepagents.middleware.summarization import SummarizationToolMiddleware
 from app.agents.analysis.policy import CONTINUE_QUESTION
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.budget import BudgetedSummarization, ContextBudget
+from app.agents.context.history_selection import ConversationHistorySelection
 from app.agents.context.instructions import GlobalAgentInstructions, instruction_snapshot
 from app.agents.context.task_guidance import TaskGuidance
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
-from app.agents.prompts.system import SYSTEM_PROMPT
+from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMPT
 from app.agents.runtime.answer_completion import AnswerCompletion
-from app.agents.runtime.answer_draft import FlowAnswerDraft
+from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
+from app.agents.runtime.code_work_reads import CodeWorkReadProgress
+from app.agents.runtime.code_work_repair import CodeWorkRepair
 from app.agents.runtime.configuration import current_configuration
-from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
+from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.runtime.privacy import redact
+from app.agents.tools.attachments import attachment_context, attachment_tools
+from app.agents.tools.code_work import CODE_WORK_GUIDANCE, code_work_tools
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
+from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
 from app.modules.chat.schemas import SourceOptions
+from app.modules.knowledge.corpora.debug_issues import ANSWER_GUIDANCE
 from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
 from app.modules.memory.selection import MemorySelection
 from app.modules.projects.context import project_prompt
 from app.modules.source_analysis.backend import SourceBackend
-from app.modules.source_analysis.evidence import (
-    SourceEvidenceGuard,
-)
 
 
 class AgentGraphBuilder:
@@ -53,19 +57,15 @@ class AgentGraphBuilder:
         evidence=None,
         source_options=None,
         verified_context="",
+        attachment_messages=None,
         progress=None,
         retrieval=None,
         policy=None,
+        retrieval_context=None,
+        run_id="",
     ):
         runtime = self.runtime
-        # 自动带入及工具检索共用来源事件；复核不能读取未检索的其他记录。
-        debug_references, original_emit = {}, emit
-
-        def emit(kind, payload):
-            if kind == "knowledge_reference" and payload.get("kind") == "debug_issue":
-                debug_references[payload["id"]] = payload["version"]
-            return original_emit(kind, payload)
-
+        # 工具返回前完成相关性筛选，回答生成后不再追加来源复核。
         settings = current_configuration(runtime.settings, runtime.repository.database)
         options = SourceOptions.model_validate(source_options or {})
         instructions = await asyncio.to_thread(instruction_snapshot, runtime.paths)
@@ -110,13 +110,30 @@ class AgentGraphBuilder:
             requested_work += "\n此前已授权的请求：" + policy["question"]
         if evidence is not None:
             evidence.user_request = requested_work
+        retrieval = retrieval or RetrievalBudget(emit)
+        document_prompt, attachment_ids = attachment_context(
+            runtime.repository, attachment_messages or []
+        )
+        if attachment_ids:
+            document_tools = attachment_tools(runtime.repository.attachments, attachment_ids, emit)
+            tools += document_tools
+            retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
+        # 工具始终可用，由模型理解自然语言需求；只有实际调用准备工具才创建副本。
+        work_tools = code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
+        tools += work_tools
+        retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
         tools += conversation_tools(runtime.repository, thread_id)
+        available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
         debug_issues = (
-            DebugIssueLookup(
-                runtime.repository.database,
-                emit,
+            KnowledgeRetrieval(
+                DebugIssueLookup(runtime.repository.database, emit, requested_work),
+                model,
                 requested_work,
+                emit,
+                available,
+                timeout=min(30, settings.model.timeout_seconds),
+                context=retrieval_context,
             )
             if options.use_knowledge
             else None
@@ -131,11 +148,12 @@ class AgentGraphBuilder:
         ]
         if not inspection and servers:
             tools += await runtime.remote_tools(servers, emit)
-        available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         budget = min(int(settings.model.context_tokens * 0.75), int(available * 0.9))
         memory_prompt, included_memories = (
             await MemorySelection(runtime.memories, model, settings.model, emit).prepare(
-                memory_query or requested_work, max_tokens=min(8000, available // 6)
+                memory_query or requested_work,
+                max_tokens=min(8000, available // 6),
+                context=retrieval_context,
             )
             if options.use_memory and not inspection
             else ("", [])
@@ -154,6 +172,7 @@ class AgentGraphBuilder:
         )
         prompt = (
             SYSTEM_PROMPT
+            + RICH_CONTENT_GUIDANCE
             + project_prompt()
             + f"\nDeepWiki 仓库：{settings.deepwiki_repo or '未配置'}\n"
         )
@@ -163,11 +182,7 @@ class AgentGraphBuilder:
             "\n本轮补读源码见 verified_source_context；"
             "同路径异版本的历史选区或工具结果只作历史快照。"
         )
-        prompt += (
-            "\n本轮未接入流程图谱、功能说明和交接资料，不能声称已检索这些来源。"
-            "项目资料和全项目阅读功能已移除，不检索项目文档、旧共享结论或阅读成果。"
-            "相关代码问题请读取本地源码；历史对话中的资料引用不代表本轮已经检索。"
-        )
+        prompt += "\n本轮未接入流程图谱、功能说明和交接资料，不能声称已检索这些来源。"
         if policy:
             prompt += (
                 f"\n本轮分析模式：{policy['mode']}，工具额度 {policy['limit']}，"
@@ -177,18 +192,17 @@ class AgentGraphBuilder:
                 prompt += "\n继续核查用户此前的问题，剩余项优先：" + policy["question"]
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
-        prompt += (
-            "\n业务源码保持只读，可提供分析与修改建议；"
-            "没有修改文件、执行命令或审核交付工具，不能声称已执行。"
-        )
+        prompt += document_prompt
+        prompt += CODE_WORK_GUIDANCE
         if debug_issues:
-            prompt += "\n" + RETRIEVAL_GUIDANCE
+            # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。
+            prompt += "\n" + RETRIEVAL_GUIDANCE + "\n" + ANSWER_GUIDANCE
         if not inspection:
             emit(
                 "context_sources",
                 {
+                    "tracking_version": 1,
                     "memories": included_memories,
-                    "materials": [],
                     "handover_materials": [],
                     "debug_issues": [],
                     "source_options": options.model_dump(),
@@ -204,6 +218,15 @@ class AgentGraphBuilder:
             "\n个人偏好以当前登录账号带入的记忆为准，"
             "不把其他人在共享对话里的偏好当作本账号长期偏好。"
         )
+        # 展示协议说明组件语法；在其后明确组织要求，由同一次生成直接形成可读答案。
+        prompt += "\n" + ANSWER_ORGANIZATION_GUIDANCE
+        history_selection = ConversationHistorySelection(
+            model,
+            requested_work,
+            emit,
+            available,
+            timeout=min(45, settings.model.timeout_seconds),
+        )
         graph = create_deep_agent(
             model=model,
             tools=tools,
@@ -214,6 +237,7 @@ class AgentGraphBuilder:
             middleware=[
                 summary,
                 SummarizationToolMiddleware(summary),
+                *([history_selection] if not inspection else []),
                 GlobalAgentInstructions(instructions),
                 TaskGuidance(
                     requested_work,
@@ -221,34 +245,25 @@ class AgentGraphBuilder:
                     evidence,
                     deep=bool(policy and policy["mode"] == "deep"),
                 ),
+                AnswerFormatValidation(emit),
                 *(
-                    [SourceEvidenceGuard(evidence, None if inspection else model)]
-                    if evidence is not None
+                    [
+                        CodeWorkReadProgress(emit),
+                        CodeWorkRepair(runtime.code_work, thread_id, run_id, emit),
+                    ]
+                    if run_id and not inspection
                     else []
-                ),
-                KnowledgeAnswerGuard(
-                    None if inspection else model,
-                    question_text or "",
-                    lambda: debug_issues.review_records(debug_references) if debug_issues else [],
-                    emit,
-                    available,
-                    source_required=bool(evidence and evidence.required),
-                    resolve=debug_issues.resolve_references if debug_issues else None,
-                ),
-                FlowAnswerDraft(
-                    None if inspection else model,
-                    question_text or "",
-                    evidence,
-                    emit,
-                    available,
-                    instructions=instructions,
                 ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations
                 ),
-                retrieval or RetrievalBudget(emit),
+                retrieval,
                 ContextBudget(
-                    settings.model.context_tokens, settings.model.output_tokens, memory_prompt, emit
+                    settings.model.context_tokens,
+                    settings.model.output_tokens,
+                    memory_prompt,
+                    emit,
+                    history_selection=history_selection if not inspection else None,
                 ),
                 ProviderUsage(emit),
                 FilesystemMiddleware(

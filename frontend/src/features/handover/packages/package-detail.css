@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .package-detail-summary {
@@ -17,13 +17,13 @@
   border-bottom: 1px solid var(--border);
 }
 .package-detail-summary dt {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   margin-bottom: 4px;
 }
 .package-detail-summary dd {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   overflow-wrap: anywhere;
 }
 .package-detail-note {
@@ -31,19 +31,19 @@
 }
 .package-detail h3 {
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: var(--font-size-subtitle);
   font-weight: 600;
 }
 .package-detail-note p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 .package-detail-contents > p {
   margin: 0 0 12px;
-  font-size: 12px;
+  font-size: var(--font-size-body);
   color: var(--text-secondary);
 }
 .package-content-groups {
@@ -65,7 +65,7 @@
   background: var(--surface-subtle);
   margin: 0;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: var(--font-size-subtitle);
   font-weight: 500;
 }
 .package-content-group h4 span {
@@ -87,7 +87,7 @@
   padding: 9px 12px;
   width: 100%;
   text-align: left;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   line-height: 1.6;
 }
 .package-content-group button:hover {
@@ -100,7 +100,7 @@
 .package-content-group .package-item-error {
   display: block;
   padding: 0 12px 8px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--handover-danger);
 }
 .package-detail .handover-form-footer {

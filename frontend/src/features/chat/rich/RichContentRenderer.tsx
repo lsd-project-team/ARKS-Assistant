@@ -1,15 +1,27 @@
-import { memo, useMemo, type ComponentProps } from 'react';
+import { lazy, memo, Suspense, useMemo, type ComponentProps } from 'react';
 import { Markdown } from '../../../app/components/Markdown';
 import { CodeBlock } from '../../../shared/ui/markdown/CodeBlock';
 import { CollapsibleSection, DataTable, OverviewGrid, StepFlow } from './ContentBlocks';
 import { FlowDiagram } from './FlowDiagram';
-import { createContentParser } from './parseContent';
+import { createContentParser, type ContentSegment } from './parseContent';
 import type { ContentBlock, SourcePointer } from './types';
-import { remarkRecordAnswer } from '../lib/recordAnswerPresentation';
 import { SourceReference } from './SourceReference';
 import { BlockBoundary } from './BlockBoundary';
+import { CodeContent, SourceReferenceBlock, ToolCall, UnsupportedContent } from './BasicBlocks';
 
-const answerPlugins = [remarkRecordAnswer];
+const ChartBlock = lazy(() =>
+  import('./ChartBlock').then((module) => ({ default: module.ChartBlock })),
+);
+const MermaidBlock = lazy(() =>
+  import('./MermaidBlock').then((module) => ({ default: module.MermaidBlock })),
+);
+const MindmapBlock = lazy(() =>
+  import('./MindmapBlock').then((module) => ({ default: module.MindmapBlock })),
+);
+const FileBlock = lazy(() =>
+  import('./FileBlock').then((module) => ({ default: module.FileBlock })),
+);
+
 type Context = Pick<ComponentProps<typeof Markdown>, 'runId' | 'sourceId'>;
 const TextBlock = memo(function TextBlock({
   content,
@@ -17,15 +29,7 @@ const TextBlock = memo(function TextBlock({
   sourceId,
   streaming,
 }: Context & { content: string; streaming?: boolean }) {
-  return (
-    <Markdown
-      content={content}
-      runId={runId}
-      sourceId={sourceId}
-      remarkPlugins={answerPlugins}
-      streaming={streaming}
-    />
-  );
+  return <Markdown content={content} runId={runId} sourceId={sourceId} streaming={streaming} />;
 });
 
 const Block = memo(function Block({ block, runId, sourceId }: Context & { block: ContentBlock }) {
@@ -37,28 +41,28 @@ const Block = memo(function Block({ block, runId, sourceId }: Context & { block:
   );
   switch (block.type) {
     case 'text':
+    case 'markdown':
       return renderText(block.content);
     case 'overview_grid':
       return <OverviewGrid block={block} renderText={renderText} renderSource={renderSource} />;
     case 'step_flow':
       return <StepFlow block={block} renderText={renderText} renderSource={renderSource} />;
     case 'source_reference':
-      return (
-        <div className="rich-sources">
-          {block.sources.map((source, index) => renderSource(source, `${block.id}:${index}`))}
-        </div>
-      );
+      return <SourceReferenceBlock block={block} renderSource={renderSource} />;
     case 'code':
-      return (
-        <div>
-          <CodeBlock filename={block.filename} startLine={block.start_line}>
-            <code className={block.language ? `language-${block.language}` : undefined}>
-              {block.content}
-            </code>
-          </CodeBlock>
-          {block.source && renderSource(block.source, block.id)}
-        </div>
-      );
+      return <CodeContent block={block} renderSource={renderSource} />;
+    case 'tool_call':
+      return <ToolCall block={block} />;
+    case 'unsupported':
+      return <UnsupportedContent block={block} />;
+    case 'chart':
+      return <ChartBlock block={block} />;
+    case 'mermaid':
+      return <MermaidBlock block={block} />;
+    case 'mindmap':
+      return <MindmapBlock block={block} />;
+    case 'file':
+      return <FileBlock block={block} />;
     case 'table':
       return <DataTable block={block} />;
     case 'diagram':
@@ -77,7 +81,9 @@ function Blocks({ blocks, runId, sourceId }: Context & { blocks: ContentBlock[] 
     <div className="rich-content">
       {blocks.map((block) => (
         <BlockBoundary key={block.id} block={block}>
-          <Block block={block} runId={runId} sourceId={sourceId} />
+          <Suspense fallback={<p role="status">正在加载内容组件…</p>}>
+            <Block block={block} runId={runId} sourceId={sourceId} />
+          </Suspense>
         </BlockBoundary>
       ))}
     </div>
@@ -92,6 +98,22 @@ export function RichContentRenderer({
 }: Context & { content: string; streaming?: boolean }) {
   const parse = useMemo(createContentParser, []);
   const segments = useMemo(() => parse(content, streaming), [content, streaming, parse]);
+  return (
+    <RichContentSegments
+      segments={segments}
+      runId={runId}
+      sourceId={sourceId}
+      streaming={streaming}
+    />
+  );
+}
+
+export function RichContentSegments({
+  segments,
+  runId,
+  sourceId,
+  streaming = false,
+}: Context & { segments: ContentSegment[]; streaming?: boolean }) {
   return (
     <div className="rich-content">
       {segments.map((segment, index) => {

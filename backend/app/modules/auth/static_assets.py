@@ -4,6 +4,8 @@ import hashlib
 import json
 import re
 from pathlib import Path, PurePosixPath
+from threading import Lock
+from time import monotonic
 
 LOGIN_IMAGES = {"brand/arks-assistant-icon.png", "brand/arks-login-mark.png"}
 
@@ -20,7 +22,44 @@ def public_name(name):
 class StaticAssets:
     def __init__(self, directory: Path):
         self.directory = directory.resolve()
+        self._lock = Lock()
+        self._signature = self.signature()
+        self._retry_at = 0.0
         self.public = self.load()
+
+    def signature(self):
+        values = []
+        # 清单先发布、首页最后替换；二者变化都需要重新核对完整构建。
+        for name in ("public-assets.json", "index.html"):
+            try:
+                stat = (self.directory / name).lstat()
+            except OSError:
+                values.append(None)
+            else:
+                values.append(
+                    (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+                )
+        return tuple(values)
+
+    def refresh(self):
+        with self._lock:
+            signature = self.signature()
+            if signature == self._signature and (
+                not self._retry_at or monotonic() < self._retry_at
+            ):
+                return
+            try:
+                public = self.load()
+                if signature != self.signature():
+                    raise ValueError("前端发布尚未完成")
+            except ValueError:
+                # 半成品或坏清单暂不匿名开放，稍后重试；不触碰已有登录会话。
+                public = frozenset()
+                self._retry_at = monotonic() + 1
+            else:
+                self._retry_at = 0.0
+            self.public = public
+            self._signature = signature
 
     def load(self):
         manifest = self.directory / "public-assets.json"
@@ -58,6 +97,7 @@ class StaticAssets:
         return frozenset("/" + name for name in files)
 
     def allows(self, path):
+        self.refresh()
         return ("/index.html" if path == "/" else path) in self.public
 
     @staticmethod

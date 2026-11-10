@@ -169,26 +169,10 @@ function ConversationSearchBody({
         </Dialog.Close>
       </div>
       <div className="conversation-search-section project-search-scope">
-        <span>
-          {trimmed
-            ? '搜索结果'
-            : view === 'active'
-              ? '最近对话'
-              : view === 'archived'
-                ? '已归档对话'
-                : '已删除对话'}
-        </span>
+        <span>{trimmed ? '搜索结果' : view === 'active' ? '最近对话' : '已删除对话'}</span>
         <Select value={scope} onValueChange={setScope} aria-label="对话搜索范围">
-          <option value="current">
-            当前项目{view === 'active' ? '' : view === 'archived' ? '的归档对话' : '的已删除对话'}
-          </option>
-          <option value="all">
-            {view === 'active'
-              ? '全部项目与独立对话'
-              : view === 'archived'
-                ? '全部归档范围'
-                : '全部已删除对话'}
-          </option>
+          <option value="current">当前项目{view === 'deleted' ? '的已删除对话' : ''}</option>
+          <option value="all">{view === 'active' ? '全部项目与独立对话' : '全部已删除对话'}</option>
         </Select>
       </div>
       <div className="conversation-search-results" aria-busy={waiting}>
@@ -196,15 +180,7 @@ function ConversationSearchBody({
         <div
           id={listId}
           role="listbox"
-          aria-label={
-            trimmed
-              ? '匹配对话'
-              : view === 'active'
-                ? '最近对话'
-                : view === 'archived'
-                  ? '已归档对话'
-                  : '已删除对话'
-          }
+          aria-label={trimmed ? '匹配对话' : view === 'active' ? '最近对话' : '已删除对话'}
         >
           {entries.map((row, index) => (
             <ConversationSearchResult
@@ -226,9 +202,7 @@ function ConversationSearchBody({
                 ? '没有匹配的对话，试试其他关键词'
                 : view === 'active'
                   ? '暂无最近对话'
-                  : view === 'archived'
-                    ? '暂无归档对话'
-                    : '回收站为空'}
+                  : '回收站为空'}
           </p>
         )}
         {threads.hasNextPage && !waiting && (
@@ -297,13 +271,7 @@ function ConversationSearchResult({
         )}
       </span>
       <span className="conversation-search-meta">
-        {row.state === 'deleted'
-          ? '已删除'
-          : row.state === 'archived'
-            ? '已归档'
-            : row.project_state === 'archived'
-              ? '已归档项目'
-              : conversationGroup(row)}
+        {row.state === 'deleted' ? '已删除' : conversationGroup(row)}
       </span>
     </button>
   );

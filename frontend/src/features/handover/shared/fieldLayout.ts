@@ -10,10 +10,7 @@ export const relations: Record<string, Kind> = {
   package_id: 'package',
 };
 export const shortFields = new Set([
-  'author',
-  'interviewer',
   'date',
-  'topic',
   'owner',
   'due',
   'location',

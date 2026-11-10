@@ -7,17 +7,20 @@ import type { RunContext, Selection } from '../../../shared/types/api';
 import { toast } from '../../../shared/utils/toasts';
 import { readCitationSource, useSourceCitation } from '../../source_reader/hooks/useSourceCitation';
 import { SelectionPreview } from '../components/SelectionPreview';
-import { resolveSourceEvidence } from './sourceEvidence';
+import { resolveSourceReference } from './sourceSearch';
 import type { SourcePointer } from './types';
+import { codeRange } from './codeSources';
 
 export function SourceReference({
   source,
   runId,
   sourceId,
+  compact = false,
 }: {
   source: SourcePointer;
   runId?: string;
   sourceId?: string;
+  compact?: boolean;
 }) {
   const projectId = useWorkspace((state) => state.projectId);
   const cache = useQueryClient();
@@ -32,7 +35,12 @@ export function SourceReference({
     staleTime: 15000,
     retry: false,
   });
-  const resolved = resolveSourceEvidence(source, context.data?.source_evidence || [], sourceId);
+  const resolved = resolveSourceReference(
+    source,
+    context.data?.source_evidence || [],
+    context.data?.tools || [],
+    sourceId,
+  );
   const evidence = resolved.evidence;
   const reason = !runId
     ? '这条引用没有关联可核对的运行记录'
@@ -41,7 +49,9 @@ export function SourceReference({
       : context.error
         ? '无法读取本轮引用依据，可重试核对'
         : resolved.reason;
-  const label = `${source.path.split('/').at(-1)}:${source.start_line}${source.end_line && source.end_line !== source.start_line ? `–${source.end_line}` : ''}`;
+  const label = `${source.path.split(/[\\/]/).at(-1)}:${codeRange(source)}`;
+  const Frame = compact ? 'span' : 'div';
+  const ErrorTag = compact ? 'span' : 'p';
   async function navigate(previewOnly: boolean) {
     if (reason || !evidence) return;
     setOpening(true);
@@ -65,7 +75,7 @@ export function SourceReference({
       }
       const result = await readCitationSource(cache, projectId, evidence.path, origin);
       if (useWorkspace.getState().projectId !== projectId) return;
-      if (result.source.version !== evidence.version)
+      if (resolved.kind === 'read' && result.source.version !== evidence.version)
         throw new Error('源码已变化，不能将当前内容作为原引用预览');
       if (source.start_line < 1 || end > result.source.line_count)
         throw new Error('原引用行号已失效');
@@ -76,7 +86,7 @@ export function SourceReference({
         end_line: end,
         start_column: 1,
         end_column: (lines[end - 1]?.length || 0) + 1,
-        version: evidence.version,
+        version: result.source.version,
         source_workspace_id: origin,
         content: lines.slice(source.start_line - 1, end).join('\n'),
       });
@@ -87,86 +97,100 @@ export function SourceReference({
     }
   }
   return (
-    <div className="rich-source-reference">
-      <div className="rich-source-controls">
+    <Frame className={compact ? 'answer-code-citation' : 'rich-source-reference'}>
+      <Frame className={compact ? 'answer-code-citation-controls' : 'rich-source-controls'}>
         <button
-          className="rich-source-link"
+          className={compact ? 'answer-code-link' : 'rich-source-link'}
           type="button"
           disabled={!!reason || opening}
-          title={reason || `${source.path} · 打开源码`}
+          title={reason || `${compact ? label : source.path} · 打开源码`}
           aria-label={`打开源码 ${label}`}
           onClick={() => void navigate(false)}
         >
-          <FileCode2 size={12} aria-hidden="true" />
-          {label}
-          {reason && <small>未核实</small>}
+          {compact ? (
+            codeRange(source)
+          ) : (
+            <>
+              <FileCode2 size={12} aria-hidden="true" />
+              <span className="rich-source-label">
+                <strong>{label}</strong>
+                <small>{source.path}</small>
+              </span>
+              {reason && <small>未核实</small>}
+            </>
+          )}
         </button>
-        <details className="rich-source-info">
-          <summary aria-label={`查看引用详情 ${label}`} title="引用详情">
-            <Info size={13} aria-hidden="true" />
-            <span className="rich-sr-only">引用详情</span>
-          </summary>
-          <div className="rich-source-panel">
-            <p className="rich-source-path">{source.path}</p>
-            <p>
-              行号 {source.start_line}–{source.end_line || source.start_line}
-            </p>
-            <p>
-              原始引用：source:{encodeURIComponent(source.path)}#L{source.start_line}-L
-              {source.end_line || source.start_line}
-            </p>
-            {evidence && (
+        {!compact && (
+          <details className="rich-source-info">
+            <summary aria-label={`查看引用详情 ${label}`} title="引用详情">
+              <Info size={13} aria-hidden="true" />
+              <span className="rich-sr-only">引用详情</span>
+            </summary>
+            <div className="rich-source-panel">
+              <p className="rich-source-path">{source.path}</p>
               <p>
-                来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} · 版本{' '}
-                {evidence.version}
+                行号 {source.start_line}–{source.end_line || source.start_line}
               </p>
-            )}
-            {reason && <p role="status">{reason}</p>}
-            <div className="rich-source-actions">
-              <button
-                type="button"
-                disabled={!!reason || opening}
-                onClick={() => void navigate(true)}
-              >
-                预览源码
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  void navigator.clipboard
-                    .writeText(source.path)
-                    .then(() => toast('源码路径已复制'))
-                    .catch(() => setError('复制路径失败，请手动选择完整路径。'))
-                }
-              >
-                <Copy size={12} aria-hidden="true" />
-                复制路径
-              </button>
-              {runId && (
+              <p>
+                原始引用：source:{encodeURIComponent(source.path)}#L{source.start_line}-L
+                {source.end_line || source.start_line}
+              </p>
+              {source.version && <p>原引用版本：{source.version}</p>}
+              {source.source_workspace_id && <p>原引用目录：{source.source_workspace_id}</p>}
+              {evidence && (
+                <p>
+                  来源：{evidence.source_workspace_id || sourceId || '当前源码目录'} ·{' '}
+                  {evidence.version ? `版本 ${evidence.version}` : '当前源码'}
+                </p>
+              )}
+              {reason && <p role="status">{reason}</p>}
+              <div className="rich-source-actions">
                 <button
                   type="button"
-                  disabled={context.isFetching}
-                  onClick={() => void context.refetch()}
+                  disabled={!!reason || opening}
+                  onClick={() => void navigate(true)}
                 >
-                  重新核对
+                  预览源码
                 </button>
-              )}
+                <button
+                  type="button"
+                  onClick={() =>
+                    void navigator.clipboard
+                      .writeText(source.path)
+                      .then(() => toast('源码路径已复制'))
+                      .catch(() => setError('复制路径失败，请手动选择完整路径。'))
+                  }
+                >
+                  <Copy size={12} aria-hidden="true" />
+                  复制路径
+                </button>
+                {runId && (
+                  <button
+                    type="button"
+                    disabled={context.isFetching}
+                    onClick={() => void context.refetch()}
+                  >
+                    重新核对
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        </details>
-      </div>
+          </details>
+        )}
+      </Frame>
       {error && (
-        <p className="rich-source-error" role="alert">
+        <ErrorTag className="rich-source-error" role="alert">
           {error}
-        </p>
+        </ErrorTag>
       )}
       {preview && (
         <SelectionPreview
           selection={preview}
-          description="本轮核对版本的源码片段"
+          title={`引用源码 · ${label}`}
+          description={resolved.kind === 'search' ? '当前源码片段' : '本轮核对版本的源码片段'}
           onClose={() => setPreview(undefined)}
         />
       )}
-    </div>
+    </Frame>
   );
 }

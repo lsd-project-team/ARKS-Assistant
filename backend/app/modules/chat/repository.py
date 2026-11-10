@@ -10,6 +10,7 @@ from app.infrastructure.database.serialization import record_dict
 from app.infrastructure.database.session import Database
 from app.modules.admin.identity import question_actor
 from app.modules.auth.ownership import current_owner
+from app.modules.chat.attachments import ChatAttachments
 from app.modules.chat.branches import ConversationBranches
 from app.modules.chat.catalog import ConversationCatalog, title_from_question
 from app.modules.chat.history import ConversationHistory
@@ -42,6 +43,7 @@ class Repository:
         self.lock = RLock()
         self.catalog = ConversationCatalog(database, workspace_id)
         self.history = ConversationHistory(database, self.catalog)
+        self.attachments = ChatAttachments(self)
         self.branches = ConversationBranches(self)
         self.queue = ConversationQueue(self)
 
@@ -119,7 +121,12 @@ class Repository:
             session.get(Run, run_id).model_snapshot_json = dump_json(snapshot)
 
     def create_run(
-        self, thread_id: str | None, content: str, selections: list[dict], source_options=None
+        self,
+        thread_id: str | None,
+        content: str,
+        selections: list[dict],
+        source_options=None,
+        attachment_ids=None,
     ) -> dict:
         if thread_id:
             self.catalog.get(thread_id)
@@ -135,7 +142,14 @@ class Repository:
                 session.add(new_thread)
                 session.flush()
                 thread_id = new_thread.id
-            return self.add_run(session, thread_id, content, selections, source_options)
+            return self.add_run(
+                session,
+                thread_id,
+                content,
+                selections,
+                source_options,
+                attachment_ids=attachment_ids,
+            )
 
     @staticmethod
     def ensure_idle(session, thread_id):
@@ -144,9 +158,19 @@ class Repository:
         ):
             raise ValueError("此对话正在回复，请先停止或等待完成")
 
-    def add_run(self, session, thread_id, content, selections, source_options=None, actor=None):
+    def add_run(
+        self,
+        session,
+        thread_id,
+        content,
+        selections,
+        source_options=None,
+        actor=None,
+        attachment_ids=None,
+    ):
         self.creation_guard()
         self.ensure_idle(session, thread_id)
+        attachments = self.attachments.bind(session, attachment_ids or [])
         if source_options is None:
             source_options = self.source_preferences.read(session)["source_options"]
         thread = self.catalog.row(session, thread_id)
@@ -158,12 +182,13 @@ class Repository:
             )
         ):
             thread.title = title_from_question(content, selections)
-        thread.state, thread.updated_at = "active", now_iso()
+        thread.updated_at = now_iso()
         message = Message(
             thread_id=thread_id,
             role="user",
             content=content,
             selections_json=dump_json(selections),
+            attachments_json=dump_json(attachments),
             source_options_json=dump_json(source_options or {}),
             source_workspace_id=self.source_workspace_id,
             **(actor if actor is not None else question_actor()),

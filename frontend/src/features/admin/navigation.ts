@@ -8,7 +8,7 @@ export function adminRoute(hash: string) {
   const match = /^#admin\/(overview|users|questions|settings|data)(?:\/([^?]+))?$/.exec(hash);
   const page = timing.open
     ? 'action-timing'
-    : handover.open && handover.tab !== 'overview'
+    : handover.open
       ? handover.tab === 'updates'
         ? 'reviews'
         : 'handover'

@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from app.agents.context.tokens import estimate_tokens
 from app.agents.runtime.privacy import redact_messages
 from app.core.config import dump_json
-from app.infrastructure.providers.usage import reported_usage
+from app.infrastructure.providers.usage import failed_usage, reported_usage
 
 
 class ReviewUnavailable(ValueError):
@@ -37,6 +37,7 @@ class ReviewCalls:
                     messages, config={"metadata": {"lc_source": purpose}}
                 )
             except Exception:
+                self.emit("provider_usage", failed_usage(purpose, started))
                 raise ReviewUnavailable("provider_error") from None
             self.emit(
                 "provider_usage",

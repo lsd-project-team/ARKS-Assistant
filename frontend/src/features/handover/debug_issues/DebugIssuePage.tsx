@@ -32,7 +32,7 @@ export function DebugIssuePage({
           <Search size={16} />
           <input
             aria-label="搜索问题与经验"
-            placeholder="搜索事项、记录人、日期或处理办法…"
+            placeholder="搜索问题、答案或关键词…"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -68,12 +68,11 @@ export function DebugIssuePage({
                 {debugStatus(row.payload)}
               </span>
             </div>
-            <strong>{row.title}</strong>
-            <p>{text(row.payload.problem)}</p>
-            {text(row.payload.solution) && (
+            <strong>{text(row.payload.question) || row.title}</strong>
+            {text(row.payload.answer) && (
               <div className="debug-issue-solution">
-                <span>处理方法</span>
-                {text(row.payload.solution)}
+                <span>答案</span>
+                {text(row.payload.answer)}
               </div>
             )}
             {!!ids(row.payload.keywords).length && (
@@ -85,12 +84,6 @@ export function DebugIssuePage({
                   ))}
               </div>
             )}
-            <small>
-              {text(row.payload.recorded_by) || text(row.payload.reported_by) || '未记录姓名'} ·{' '}
-              {text(row.payload.recorded_at) ||
-                text(row.payload.occurred_on) ||
-                row.updated_at.slice(0, 10)}
-            </small>
           </button>
         ))}
       </div>

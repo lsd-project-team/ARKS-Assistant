@@ -33,31 +33,33 @@ code_agent/
 
 ## 后端归属
 
-| 位置 | 职责 |
-| --- | --- |
-| `backend/app/main.py` | ASGI 入口 |
-| `backend/app/bootstrap.py` | 创建服务、装配依赖、注册路由与生命周期 |
-| `backend/app/core/` | 配置、日志、标识、服务契约和运行基础约定 |
-| `backend/app/modules/` | 按业务组织实现与接口 |
-| `backend/app/agents/` | 图构建、执行、工具、上下文、分析策略与提示词 |
-| `backend/app/infrastructure/` | 通用数据库、模型协议、MCP、存储和缓存实现 |
-| `backend/tools/SourceAnalysis/` | C# / Roslyn 分析工具 |
-| `backend/migrations/` | 数据库迁移 |
-| `backend/tests/` | 后端测试 |
+| 位置                            | 职责                                         |
+| ------------------------------- | -------------------------------------------- |
+| `backend/app/main.py`           | ASGI 入口                                    |
+| `backend/app/bootstrap.py`      | 创建服务、装配依赖、注册路由与生命周期       |
+| `backend/app/core/`             | 配置、日志、标识、服务契约和运行基础约定     |
+| `backend/app/modules/`          | 按业务组织实现与接口                         |
+| `backend/app/agents/`           | 图构建、执行、工具、上下文、分析策略与提示词 |
+| `backend/app/infrastructure/`   | 通用数据库、模型协议、MCP、存储和缓存实现    |
+| `backend/tools/SourceAnalysis/` | C# / Roslyn 分析工具                         |
+| `backend/migrations/`           | 数据库迁移                                   |
+| `backend/tests/`                | 后端测试                                     |
 
-业务模块包括 `auth`、`projects`、`chat`、`source_analysis`、`knowledge`、`memory`、`handover`、`settings`、`admin`。新增行为先放入所属业务，不重新堆到应用根目录。全项目阅读、项目资料管理和旧代码修改流程已移除；`source_analysis/reading/` 与 `infrastructure/database/legacy_code_work.py` 仅保留历史表兼容。聊天的模型额度归 `settings/model_ledger.py`，临时文件边界归 `infrastructure/storage/files.py`，不再依赖旧修改模块。
+业务模块包括 `auth`、`projects`、`chat`、`source_analysis`、`knowledge`、`memory`、`handover`、`settings`、`admin`。新增行为先放入所属业务，不重新堆到应用根目录。全项目阅读、项目资料管理和旧代码修改流程已移除；项目资料与阅读旧表仅在 `migrations/` 中定义，不注册应用模型或提供旧引用读取；`infrastructure/database/legacy_code_work.py` 仍用于修改档案的历史表兼容。聊天的模型额度归 `settings/model_ledger.py`，临时文件边界归 `infrastructure/storage/files.py`，不再依赖旧修改模块。
 
 - 普通模块按需要使用 `router.py`、`schemas.py`、`service.py`、`models.py` 及职责明确的辅助文件；复杂度不足时不强套 DDD 四层。
 - HTTP 接口负责请求、身份与响应，业务规则归服务或用例；统一装配留在 `bootstrap.py`，业务模块不反向导入 `main.py` 或 `bootstrap.py`。
 - ORM 模型归所属业务；交接模型位于自身持久化目录。全应用只保留一个数据库 `Base`，由 `infrastructure/database/registry.py` 统一注册。移动类不能顺带改变表名、索引、外键或迁移语义。
 - 跨业务调用优先复用已有服务或明确接口，避免新增隐藏的全局状态与循环依赖。
 
+新增的 `code_work` 模块只负责每个对话的原工程 Simulation 副本、固定编译/自检及差异；工具装配在 `agents/tools/code_work.py`，页面在 `features/chat/code_work/`，管理员环境入口接入系统配置。它不恢复或依赖历史 `legacy_code_work` 执行流程。
+
 ## 交接模块分层
 
 ```text
 backend/app/modules/handover/
 ├─ domain/                  # 业务内容、状态、版本与约束
-├─ application/             # 记录、资料、调试、候选和交接包用例
+├─ application/             # 记录、资料、调试和交接包用例
 │  ├─ commands.py           # 用例输入
 │  └─ ports.py              # 仓储、解析器、导出器和生成器接口
 ├─ infrastructure/
@@ -65,7 +67,7 @@ backend/app/modules/handover/
 │  ├─ parsers/              # Word、PDF、ZIP 等解析
 │  ├─ exporters/            # Word、ZIP 等导出
 │  └─ ai.py                 # 模型连接、输出适配与释放
-└─ interfaces/http/         # 概览、记录、资料、调试、候选、交接包、复核接口
+└─ interfaces/http/         # 概览、记录、资料、调试、交接包、复核接口
 ```
 
 - `domain` 不导入 FastAPI、SQLAlchemy、模型 SDK、HTTP 接口或启动装配。

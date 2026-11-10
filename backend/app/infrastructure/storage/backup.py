@@ -35,6 +35,24 @@ def create_backup(paths: Paths) -> Path:
                 for file in (paths.data / group).rglob("*"):
                     if group == "instructions" and file.name != "agent.md":
                         continue
+                    relative = file.relative_to(paths.data / group).parts
+                    if group == "scratch" and len(relative) >= 3 and relative[0] == "cw":
+                        # 代码修改保留状态、来源指纹、基线与业务 C#。
+                        # DLL、原工程资源和验证输出恢复后按同版本来源重新准备。
+                        area = relative[2]
+                        if not (
+                            area in {"state.json", "inputs.json", "baseline", "history", "reports"}
+                            or area == "merges"
+                            and len(relative) == 5
+                            and file.name in {"plan.json", "transaction.json", "state.json"}
+                            or area == "merges"
+                            and len(relative) == 7
+                            and relative[4] == "reports"
+                            and file.suffix in {".png", ".json"}
+                            or area == "source"
+                            and file.suffix.lower() == ".cs"
+                        ):
+                            continue
                     if file.is_file():
                         if file.is_symlink() or not file.resolve().is_relative_to(paths.data):
                             raise ValueError("备份资料包含越界链接，请先核对资料目录")

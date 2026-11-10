@@ -7,7 +7,7 @@ from app.modules.handover.infrastructure.persistence.models import HandoverBlob,
 
 
 def attach_material_files(session, rows):
-    materials = {row["id"]: row for row in rows if row["kind"] in {"source", "interview"}}
+    materials = {row["id"]: row for row in rows if row["kind"] == "source"}
     if not materials:
         return rows
     for row in materials.values():

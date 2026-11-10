@@ -8,7 +8,9 @@ from app.agents.context.tokens import current_budget
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.engine import AgentRuntime
 from app.infrastructure.providers.models import close_models
+from app.modules.chat.run_trace import RunTrace
 from app.modules.chat.schemas import SummaryCorrection
+from app.modules.memory.identity import user_memory_owner
 from app.modules.memory.visibility import run_memory_actor, visible_run_event
 
 
@@ -109,6 +111,7 @@ class ConversationContext:
     def run_sources(self, run_id: str) -> dict:
         run = self.repository.run(run_id)
         actor_id = run_memory_actor(self.repository, run)
+        memory_private = bool(user_memory_owner() and actor_id != user_memory_owner())
         message = self.repository.message(run["message_id"])
         snapshot = None
         budget = None
@@ -122,6 +125,7 @@ class ConversationContext:
         tool_ends = {}
         instructions = None
         references, searches, memory_saves = {}, [], []
+        trace = RunTrace()
         cursor = 0
         while True:
             events = self.repository.events(run_id, cursor)
@@ -131,11 +135,14 @@ class ConversationContext:
                     instructions = event["payload"]
                 if event is None:
                     continue
+                trace.observe(event)
                 if event["kind"] == "knowledge_reference":
                     row = event["payload"]
-                    references[(row["kind"], row["id"], row["version"], row["citation"])] = row
+                    if row["kind"] in {"handover_material", "debug_issue"}:
+                        references[(row["kind"], row["id"], row["version"], row["citation"])] = row
                 if event["kind"] == "knowledge_search":
-                    searches.append(event["payload"])
+                    if event["payload"].get("kind") in {"handover_material", "debug_issue"}:
+                        searches.append(event["payload"])
                 if event["kind"] == "memory_save":
                     memory_saves.append(event["payload"])
                 if event["kind"] == "context_sources":
@@ -177,7 +184,6 @@ class ConversationContext:
             cursor = events[-1]["sequence"]
         # 兼容升级前已经记录的自动带入快照，不把“允许使用”冒充实际来源。
         for field, kind in (
-            ("materials", "material"),
             ("handover_materials", "handover_material"),
             ("debug_issues", "debug_issue"),
         ):
@@ -189,7 +195,6 @@ class ConversationContext:
             "agent_instructions": instructions,
             "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
-            "materials": snapshot.get("materials", []) if snapshot else [],
             "handover_materials": snapshot.get("handover_materials", []) if snapshot else [],
             "debug_issues": [row for row in references.values() if row["kind"] == "debug_issue"],
             "recorded": snapshot is not None,
@@ -208,4 +213,5 @@ class ConversationContext:
             "searches": searches,
             "memory_saves": memory_saves,
             "source_review": source_review,
+            "trace": {**trace.report(run), "memory_private": memory_private},
         }

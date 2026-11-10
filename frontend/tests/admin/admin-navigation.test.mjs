@@ -13,10 +13,16 @@ test('从管理页进入交接、复核和固定历史地址时，直接按当�
   assert.equal(review.handover.version, 3);
 });
 
-test('管理员默认进入概览，问答详情支持独立刷新，聊天地址不挂载管理员聊天', () => {
+test('管理员默认进入管理概览，交接概览保留工作台，问答详情支持独立刷新', () => {
   assert.equal(adminRoute('#admin/questions/thread-1').questionId, 'thread-1');
   assert.equal(adminRoute('#admin/questions/thread-1').page, 'questions');
-  assert.equal(adminRoute('#handover/overview').page, 'overview');
+  assert.equal(adminRoute('#admin/overview').page, 'overview');
+  for (const hash of ['#handover', '#handover/overview']) {
+    const route = adminRoute(hash);
+    assert.equal(route.valid, true);
+    assert.equal(route.page, 'handover');
+    assert.equal(route.handover.tab, 'overview');
+  }
   for (const hash of ['', '#chat', '#graphs']) {
     assert.equal(adminRoute(hash).valid, false);
     assert.equal(adminRoute(hash).page, 'overview');

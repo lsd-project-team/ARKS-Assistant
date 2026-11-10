@@ -109,15 +109,20 @@ def test_move_keeps_source_identity_and_all_messages(services, tmp_path):
         )
 
 
-def test_archive_remove_and_running_guard(services):
+def test_remove_move_and_source_change_keep_running_guard(services, tmp_path):
     paths = services[0]
+    other = tmp_path / "other-source"
+    other.mkdir()
     app = create_app(paths)
     with TestClient(app) as client:
-        project = create_project(client, "可归档", str(paths.workspace))
+        project = create_project(client, "运行保护", str(paths.workspace))
         repository = app.state.projects.services(project["id"]).repository
         run = repository.create_run(None, "问题", [])
+        assert client.delete(f"/api/projects/{project['id']}").status_code == 409
         assert (
-            client.patch(f"/api/projects/{project['id']}", json={"state": "archived"}).status_code
+            client.patch(
+                f"/api/projects/{project['id']}", json={"source_root": str(other)}
+            ).status_code
             == 409
         )
         assert (
@@ -129,14 +134,10 @@ def test_archive_remove_and_running_guard(services):
         repository.finish(run["id"], "结果")
         assert (
             client.patch(f"/api/projects/{project['id']}", json={"state": "archived"}).status_code
-            == 200
+            == 422
         )
         assert client.get(scoped(project, f"/threads/{run['thread_id']}")).status_code == 200
-        assert client.post(scoped(project, "/threads"), json={}).status_code == 409
-        assert (
-            client.patch(f"/api/projects/{project['id']}", json={"state": "active"}).status_code
-            == 200
-        )
+        assert client.post(scoped(project, "/threads"), json={}).status_code == 201
         assert (
             client.delete(f"/api/projects/{project['id']}?disposition=independent").status_code
             == 200
@@ -186,6 +187,35 @@ def test_removed_default_project_does_not_break_restart(services):
         assert client.get("/api/projects").json()["projects"] == []
         assert client.get(f"/api/p/independent/threads/{thread['id']}").status_code == 200
         assert client.get(f"/api/projects/{project['id']}").status_code == 404
+
+
+@pytest.mark.parametrize("disposition", ["independent", "trash"])
+def test_remove_project_preserves_messages_citations_and_source_files(services, disposition):
+    paths = services[0]
+    with TestClient(create_app(paths)) as client:
+        project = create_project(client, "删除流程", str(paths.workspace))
+        repository = client.app.state.projects.services(project["id"]).repository
+        run = repository.create_run(None, "保留原问题", [{"path": "Program.cs"}])
+        repository.finish(run["id"], "保留原回答")
+        thread_id = run["thread_id"]
+        original = repository.thread(thread_id)
+        source = (paths.workspace / "Program.cs").read_bytes()
+        old_deleted = repository.create_thread("原回收站对话")
+        repository.catalog.change(old_deleted["id"], "deleted")
+        response = client.delete(f"/api/projects/{project['id']}?disposition={disposition}")
+        assert response.status_code == 200 and response.json()["thread_count"] == 2
+        assert client.get(f"/api/projects/{project['id']}").status_code == 404
+        assert (paths.workspace / "Program.cs").read_bytes() == source
+        current = client.app.state.projects.services("independent").repository
+        saved = current.catalog.get(thread_id, include_deleted=True)
+        assert saved["project_id"] is None and saved["workspace_id"] == "independent"
+        assert saved["state"] == ("deleted" if disposition == "trash" else "active")
+        assert current.catalog.get(old_deleted["id"], include_deleted=True)["state"] == "deleted"
+        if disposition == "trash":
+            assert client.post(f"/api/p/independent/threads/{thread_id}/restore").status_code == 200
+        reloaded = current.thread(thread_id)
+        assert reloaded["messages"] == original["messages"]
+        assert reloaded["runs"] == original["runs"]
 
 
 def test_source_change_restarts_context_and_preserves_original_citations(services, tmp_path):
@@ -249,62 +279,45 @@ def test_global_search_paginates_beyond_two_hundred_and_shows_project(services):
         assert rows[0]["project_name"] == "检索 B" and rows[-1]["project_name"] == "检索 A"
 
 
-def test_sidebar_recent_filters_archived_projects_before_pagination_and_trash_keeps_them(services):
+def test_sidebar_recent_paginates_all_projects_and_trash_keeps_ownership(services):
     with TestClient(create_app(services[0])) as client:
-        active = create_project(client, "正常项目")
-        archived = create_project(client, "归档项目")
-        normal = client.post(scoped(active, "/threads"), json={"title": "正常对话"}).json()
+        first = create_project(client, "项目 A")
+        second = create_project(client, "项目 B")
+        normal = client.post(scoped(first, "/threads"), json={"title": "正常对话"}).json()
         independent = client.post("/api/p/independent/threads", json={"title": "独立对话"}).json()
-        hidden = [
-            client.post(
-                scoped(archived, "/threads"), json={"title": f"归档中的对话 {index}"}
-            ).json()
-            for index in range(6)
+        recent = [
+            client.post(scoped(second, "/threads"), json={"title": f"最近对话 {i}"}).json()
+            for i in range(6)
         ]
-        assert (
-            client.patch(f"/api/projects/{archived['id']}", json={"state": "archived"}).status_code
-            == 200
-        )
-        response = client.get(
-            "/api/projects/search-threads?state=active&project_state=active&limit=2"
-        )
-        assert response.status_code == 200
-        assert {row["id"] for row in response.json()} == {normal["id"], independent["id"]}
-        assert (
-            client.get(
-                "/api/projects/search-threads?state=active&offset=1&limit=1&project_state=active"
-            ).json()[0]["id"]
-            == normal["id"]
-        )
-        unfiltered = client.get("/api/projects/search-threads?state=active").json()
-        assert len(unfiltered) == 8
-        assert unfiltered[0]["project_state"] == "archived"
-        assert client.delete(scoped(archived, f"/threads/{hidden[0]['id']}")).status_code == 200
+        rows = client.get("/api/projects/search-threads?state=active").json()
+        assert {row["id"] for row in rows} == {
+            normal["id"],
+            independent["id"],
+            *(row["id"] for row in recent),
+        }
+        assert [
+            row["id"]
+            for row in client.get(
+                "/api/projects/search-threads?state=active&offset=1&limit=2"
+            ).json()
+        ] == [row["id"] for row in rows[1:3]]
+        assert client.delete(scoped(second, f"/threads/{recent[0]['id']}")).status_code == 200
         trash = client.get("/api/projects/search-threads?state=deleted").json()
-        assert [row["id"] for row in trash] == [hidden[0]["id"]]
-        assert (
-            client.post(scoped(archived, f"/threads/{hidden[0]['id']}/restore")).status_code == 200
-        )
+        assert [row["id"] for row in trash] == [recent[0]["id"]]
+        assert trash[0]["project_id"] == second["id"]
+        assert client.post(scoped(second, f"/threads/{recent[0]['id']}/restore")).status_code == 200
         assert client.get("/api/projects/search-threads?state=deleted").json() == []
-        assert client.get("/api/projects/search-threads?project_state=invalid").status_code == 422
 
 
-def test_search_views_filter_status_and_project_before_pagination(services):
+def test_search_filters_status_and_project_before_pagination(services):
     app = create_app(services[0])
     with TestClient(app) as client:
-        active = create_project(client, "正常项目")
-        archived = create_project(client, "归档项目")
-        client.patch(f"/api/projects/{archived['id']}", json={"state": "archived"})
+        first = create_project(client, "项目 A")
+        second = create_project(client, "项目 B")
         combinations = [
-            (active["id"], "active"),
-            (active["id"], "archived"),
-            (archived["id"], "active"),
-            (archived["id"], "archived"),
-            (active["id"], "deleted"),
-            (archived["id"], "deleted"),
-            (None, "active"),
-            (None, "archived"),
-            (None, "deleted"),
+            (project_id, state)
+            for project_id in (first["id"], second["id"], None)
+            for state in ("active", "deleted")
         ]
         records = []
         with app.state.projects.database.session.begin() as session:
@@ -325,54 +338,49 @@ def test_search_views_filter_status_and_project_before_pagination(services):
                 )
                 records.append({"id": identifier, "project_id": project_id, "state": state})
 
-        def expected(view, project_id="all"):
+        def expected(state, project_id="all"):
             return [
                 row["id"]
                 for row in reversed(records)
                 if (project_id == "all" or row["project_id"] == project_id)
-                and (
-                    row["state"] == view
-                    or (
-                        view == "archived"
-                        and row["state"] == "active"
-                        and row["project_id"] == archived["id"]
-                    )
-                )
+                and row["state"] == state
             ]
 
-        for view in ("archived", "deleted"):
+        for state in ("active", "deleted"):
             rows = []
-            for offset in range(0, len(expected(view)) + 7, 7):
+            for offset in range(0, len(expected(state)) + 7, 7):
                 response = client.get(
-                    f"/api/projects/search-threads?view={view}&query=共同关键词&limit=7&offset={offset}"
+                    f"/api/projects/search-threads?state={state}&query=共同关键词&limit=7&offset={offset}"
                 )
                 assert response.status_code == 200
                 rows.extend(response.json())
-            assert [row["id"] for row in rows] == expected(view)
-            for project_id in (active["id"], archived["id"], "independent"):
+            assert [row["id"] for row in rows] == expected(state)
+            for project_id in (first["id"], second["id"], "independent"):
+                scope = "view=deleted" if state == "deleted" else "state=active"
                 result = client.get(
-                    f"/api/projects/search-threads?view={view}&project_id={project_id}&limit=200"
+                    f"/api/projects/search-threads?{scope}&project_id={project_id}&limit=200"
                 ).json()
                 assert [row["id"] for row in result] == expected(
-                    view, None if project_id == "independent" else project_id
+                    state, None if project_id == "independent" else project_id
                 )
             assert (
-                client.get(f"/api/projects/search-threads?view={view}&query=不存在的关键词").json()
+                client.get(
+                    f"/api/projects/search-threads?state={state}&query=不存在的关键词"
+                ).json()
                 == []
             )
-        archived_projects = client.get(
-            "/api/projects/search-threads?state=active&project_state=archived"
-        ).json()
-        assert all(row["project_id"] == archived["id"] for row in archived_projects)
-        assert client.get("/api/projects/search-threads?view=invalid").status_code == 422
+        for query in ("view=invalid", "view=archived", "state=archived"):
+            assert client.get(f"/api/projects/search-threads?{query}").status_code == 422
         assert (
-            client.get("/api/projects/search-threads?view=archived&project_id=missing").status_code
+            client.get("/api/projects/search-threads?view=deleted&project_id=missing").status_code
             == 404
         )
+        assert client.get("/api/projects?state=archived").status_code == 422
 
 
-def test_project_order_pinning_and_archive_queue_guard(services):
-    with TestClient(create_app(services[0])) as client:
+def test_project_order_pinning_and_remove_queue_guard(services):
+    app = create_app(services[0])
+    with TestClient(app) as client:
         first, second = create_project(client, "排序 A"), create_project(client, "排序 B")
         assert (
             client.post(
@@ -385,13 +393,10 @@ def test_project_order_pinning_and_archive_queue_guard(services):
         client.patch(f"/api/projects/{first['id']}", json={"pinned": True})
         assert client.get("/api/projects").json()["projects"][0]["id"] == first["id"]
         thread = client.post(scoped(first, "/threads"), json={}).json()
-        client.patch(f"/api/projects/{first['id']}", json={"state": "archived"})
-        assert (
-            client.post(
-                scoped(first, f"/threads/{thread['id']}/queue"), json={"content": "不应加入队列"}
-            ).status_code
-            == 409
-        )
+        repository = app.state.projects.services(first["id"]).repository
+        queued = repository.queue.add(thread["id"], "仍在等待的问题", [])
+        assert client.delete(f"/api/projects/{first['id']}").status_code == 409
+        assert repository.queue.list(thread["id"])["items"][0]["id"] == queued["id"]
 
 
 def test_running_projects_keep_name_and_source_snapshots(services, tmp_path, monkeypatch):

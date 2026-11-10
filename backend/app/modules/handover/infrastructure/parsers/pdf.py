@@ -3,7 +3,41 @@ import io
 from pypdf import PdfReader
 
 
-def parse_pdf(data):
+def apply_ocr(data, pages, empty, ocr):
+    results = ocr(data, empty)
+    recognized, uncertain, failed = [], [], []
+    remaining = []
+    for number in empty:
+        result = results[number]
+        if result["text"].strip():
+            pages[number - 1] = f"[第 {number} 页] [OCR 识别]\n{result['text']}"
+            recognized.append(number)
+            if result["partial"]:
+                uncertain.append(number)
+        else:
+            remaining.append(number)
+            reason = result.get("error") or "未识别到文字"
+            pages[number - 1] += f"[OCR 未读取：{reason}]"
+            failed.append(f"{number}（{reason}）")
+    notes = (
+        f"共 {len(pages)} 页；OCR 已识别页：{recognized or '无'}；"
+        f"OCR 低置信或识别不完整页：{uncertain or '无'}；"
+        f"无可提取文字页：{remaining or '无'}。"
+        "本地 OCR 结果按识别行保存；表格关系和图片含义未解析。"
+    )
+    if failed:
+        notes += " 未读取页：" + ", ".join(failed)
+    status = (
+        "needs_ocr"
+        if len(remaining) == len(pages)
+        else "partial"
+        if remaining or uncertain
+        else "readable"
+    )
+    return "\n\n".join(pages), status, notes, []
+
+
+def parse_pdf(data, *, ocr=None):
     try:
         reader = PdfReader(io.BytesIO(data))
         if reader.is_encrypted:
@@ -16,6 +50,8 @@ def parse_pdf(data):
             pages.append(f"[第 {index} 页]\n{text}")
             if not text.strip():
                 empty.append(index)
+        if ocr is not None and empty:
+            return apply_ocr(data, pages, empty, ocr)
         status = "needs_ocr" if len(empty) == len(pages) else "partial" if empty else "readable"
         notes = (
             f"共 {len(pages)} 页；无可提取文字页：{empty or '无'}。"

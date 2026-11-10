@@ -29,6 +29,16 @@ class DebugIssueLookup:
             return []
         return self._corpus.review_records(references)
 
+    def snapshot_records(self, identifiers):
+        """仅供内部筛选读取固定快照，不发出已带入回答的来源事件。"""
+        corpus = self._load()
+        versions = {
+            identifier: corpus.items[identifier]["version"]
+            for identifier in dict.fromkeys(identifiers)
+            if identifier in corpus.items
+        }
+        return corpus.review_records(versions)
+
     def resolve_references(self, references):
         # 追问可能复用前文引用；仅实际引用记录时按编号核对，不进行全库相似度搜索。
         requested = {}

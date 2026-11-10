@@ -55,7 +55,7 @@
 }
 
 :root[data-appearance] .sidebar-views button {
-  font-size: 13px;
+  font-size: var(--navigation-font-size, 13px);
 }
 
 :root[data-appearance='white'] .sidebar-views button.selected {
@@ -64,18 +64,18 @@
 }
 
 :root[data-appearance] .project-name {
-  font-size: 14px;
+  font-size: var(--navigation-font-size, 14px);
   font-weight: 500;
 }
 
 /* 列表使用常规字重，选中标题沿用独立的强调规则。 */
 :root[data-appearance] .app-navigation .sidebar .thread-select {
-  font-size: 14px;
+  font-size: var(--navigation-font-size, 14px);
   font-weight: 400;
 }
 
 :root[data-appearance] .sidebar-footer {
-  font-size: 12px;
+  font-size: var(--navigation-meta-font-size, 12px);
 }
 
 :root[data-appearance] .chat-heading strong {
@@ -88,7 +88,7 @@
 }
 
 :root[data-appearance] .chat-welcome p {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 400;
 }
 
@@ -98,13 +98,7 @@
   margin-bottom: 18px;
 }
 
-:root[data-appearance] .welcome-suggestions button {
-  font-size: 14px;
-  font-weight: 400;
-}
-
 :root[data-appearance='white'] .welcome-suggestions button {
-  border-radius: 8px;
   background: transparent;
 }
 
@@ -139,7 +133,7 @@
 }
 
 :root[data-appearance] .composer textarea {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 400;
 }
 

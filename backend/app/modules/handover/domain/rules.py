@@ -2,17 +2,21 @@
 
 
 def linked_ids(payload):
+    if isinstance(payload.get("metadata"), dict):
+        payload = {**payload["metadata"], **payload}
     result = {item["record_id"] for item in payload.get("evidence", [])}
     result.update(item["record_id"] for item in payload.get("records", []))
     for key in ("task_id", "baseline_id", "source_id", "package_id", "supersedes"):
         if payload.get(key):
             result.add(payload[key])
-    for key in ("dependencies", "constraints", "task_ids", "record_ids"):
+    for key in ("dependencies", "constraints", "task_ids"):
         result.update(payload.get(key, []))
     return result
 
 
 def validate_links(kind, payload, records, revision):
+    if kind == "debug_issue" and isinstance(payload.get("metadata"), dict):
+        payload = {**payload["metadata"], **payload}
     for identifier in linked_ids(payload):
         if identifier not in records or records[identifier]["state"] == "archived":
             raise ValueError("引用必须属于当前项目且未归档")
@@ -39,8 +43,8 @@ def validate_links(kind, payload, records, revision):
         quote = evidence.get("quote", "")
         # 引文必须来自固定版本正文，模型不能编造来源或从新版本冒充旧引文。
         source = old["payload"]
-        if old["kind"] in {"source", "interview"}:
-            content = [source.get("content", source.get("transcript", ""))]
+        if old["kind"] == "source":
+            content = [source.get("content", "")]
         else:
             content = [value for value in source.values() if isinstance(value, str)]
         if quote and not any(quote in value for value in content):
@@ -116,8 +120,6 @@ def required(payload, fields):
 
 def confirmation_gate(record, records):
     kind, payload = record["kind"], record["payload"]
-    if kind in {"candidate", "job"}:
-        raise ValueError("AI 候选须审核后合并，运行记录不能人工确认")
     if kind == "task":
         required(payload, [("goal", "目标"), ("acceptance", "验收标准"), ("owner", "负责人")])
         if payload["work_status"] == "accepted":
@@ -224,8 +226,6 @@ def confirmation_gate(record, records):
         source = records[payload["source_id"]]
         if source["payload"]["format"] not in {"source", "zip", "cs", "cpp", "c", "h"}:
             raise ValueError("基线须关联固定源码文件或源码 ZIP，说明文档不能代替源码基线")
-    elif kind == "interview":
-        required(payload, [("author", "原作者"), ("date", "访谈日期"), ("transcript", "访谈原文")])
     elif kind == "issue" and payload["status"] == "resolved":
         required(payload, [("owner", "处理人"), ("answer", "处理结论"), ("closure", "关闭依据")])
         if not payload["evidence"]:

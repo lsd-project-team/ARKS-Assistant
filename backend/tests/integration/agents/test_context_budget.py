@@ -84,7 +84,12 @@ def test_memory_injection_respects_token_budget_and_preserves_original(services)
 
 async def test_framework_budget_snapshot_survives_configuration_change(services, monkeypatch):
     paths, _, workspace, repository, memories, settings = services
-    configuration = AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=512))
+    # 本例验证运行配置快照；完整工具定义已接近 16K，使用能容纳请求的预算。
+    # 不可压缩的超量请求仍由下方 8K 反例验证拒绝行为。
+    original_limit = 32768
+    configuration = AppSettings(
+        model=ModelSettings(context_tokens=original_limit, output_tokens=512)
+    )
     settings.save(configuration)
     seed_memory(memories, MemoryWrite(name="入口.md", content="Program.cs 的 Main 是程序入口。"))
     monkeypatch.setattr(
@@ -114,9 +119,9 @@ async def test_framework_budget_snapshot_survives_configuration_change(services,
     assert snapshot["complete"] and snapshot["phase"] == "model_request"
     assert all(value > 0 for value in snapshot["breakdown"].values())
     assert snapshot["tokens"] <= snapshot["input_limit"]
-    settings.save(AppSettings(model=ModelSettings(context_tokens=32768)))
+    settings.save(AppSettings(model=ModelSettings(context_tokens=65536)))
     restored = await ConversationContext(runtime).read(thread["id"])
-    assert restored["limit"] == 16384 and restored["output_reserved"] == 512
+    assert restored["limit"] == original_limit and restored["output_reserved"] == 512
     # 引用纠正可包含临时提示；下一轮状态预算应和运行收尾一致，而非保留临时开销。
     assert restored["tokens"] == repository.latest_event(thread["id"], "context")["tokens"]
 
@@ -152,7 +157,8 @@ async def test_tool_overhead_triggers_native_compaction_without_losing_originals
     frame = repository.latest_event(thread["id"], "context_budget")["breakdown"]
     overhead = frame["system"] + frame["tools"] + frame["memory"]
     threshold = min(int(limit * 0.75), int(input_budget(limit, output) * 0.9))
-    length = max(20, (threshold - overhead + 500) // 12)
+    # 工具常驻后可用正文减少，但历史仍须长于摘要保留尾部，否则没有可压缩的旧消息。
+    length = max(input_budget(limit, output) // 48, (threshold - overhead + 500) // 12)
     history = []
     for index in range(6):
         old = repository.create_run(thread["id"], f"原问题{index}:" + "中" * length, [])
@@ -178,7 +184,14 @@ async def test_tool_overhead_triggers_native_compaction_without_losing_originals
         ),
     )
     events = repository.events(following["id"])
-    assert any(row["kind"] == "stage" and row["payload"]["stage"] == "compacting" for row in events)
+    assert any(
+        row["kind"] == "stage" and row["payload"]["stage"] == "compacting" for row in events
+    ), {
+        "overhead": overhead,
+        "threshold": threshold,
+        "history_length": length,
+        "budgets": [row["payload"] for row in events if row["kind"] == "context_budget"],
+    }
     budgets = [row["payload"] for row in events if row["kind"] == "context_budget"]
     assert budgets[0]["tokens"] > threshold
     assert budgets[-1]["tokens"] <= input_budget(limit, output)

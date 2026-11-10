@@ -10,8 +10,42 @@ interface BlockBase {
   id: string;
 }
 export interface TextBlock extends BlockBase {
-  type: 'text';
+  type: 'text' | 'markdown';
   content: string;
+}
+export interface ToolCallBlock extends BlockBase {
+  type: 'tool_call';
+  tool: ToolEvent;
+}
+export interface ChartBlock extends BlockBase {
+  type: 'chart';
+  title?: string;
+  chart_type: 'bar' | 'line' | 'pie';
+  labels: string[];
+  series: { id: string; name: string; values: (number | null)[] }[];
+}
+export interface MermaidBlock extends BlockBase {
+  type: 'mermaid';
+  title?: string;
+  content: string;
+}
+export interface MindmapBlock extends BlockBase {
+  type: 'mindmap';
+  title?: string;
+  nodes: { id: string; label: string; parent_id?: string }[];
+}
+export interface FileBlock extends BlockBase {
+  type: 'file';
+  record_id: string;
+  name: string;
+  version?: number;
+}
+// 仅由前端校验器生成，模型不能借此注册组件或事件。
+export interface UnsupportedBlock extends BlockBase {
+  type: 'unsupported';
+  original_type: string;
+  raw: unknown;
+  error: string;
 }
 export interface OverviewBlock extends BlockBase {
   type: 'overview_grid';
@@ -77,8 +111,15 @@ export type ContentBlock =
   | CodeContentBlock
   | TableBlock
   | DiagramBlock
+  | ToolCallBlock
+  | ChartBlock
+  | MermaidBlock
+  | MindmapBlock
+  | FileBlock
+  | UnsupportedBlock
   | CollapsibleBlock;
 export interface RichDocument {
   version: 1;
   blocks: ContentBlock[];
 }
+import type { ToolEvent } from '../../../shared/types/api';

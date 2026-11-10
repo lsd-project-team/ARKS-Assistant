@@ -9,8 +9,7 @@ class RecordService:
         self.repository = repository
 
     def overview(self):
-        # 停用的提取候选与作业仅保留历史快照，不再作为工作台内容返回。
-        rows = [row for row in self.repository.list() if row["kind"] not in {"candidate", "job"}]
+        rows = self.repository.list()
         records = {row["id"]: row for row in rows if row["state"] != "archived"}
         blocks = {
             row["id"]: task_blocks(row, records)
@@ -20,7 +19,7 @@ class RecordService:
         return {"scope_id": "global", "records": rows, "blocks": blocks}
 
     def create(self, body):
-        if body.kind in {"source", "package", "job", "candidate", "debug_issue"}:
+        if body.kind in {"source", "package", "debug_issue"}:
             raise ValueError("请使用对应的业务录入入口")
         return self.repository.create(body.kind, body.title, body.payload, body.actor)
 

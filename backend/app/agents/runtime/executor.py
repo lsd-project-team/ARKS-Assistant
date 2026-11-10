@@ -1,24 +1,20 @@
 """Agent 运行职责拆分，依赖通过运行实例显式传入。"""
 
 import asyncio
-import re
 
 from langchain_core.messages import AIMessage, HumanMessage, RemoveMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.analysis.progress import AnalysisProgress
 from app.agents.analysis.retrieval_budget import RetrievalBudget
+from app.agents.context.retrieval_context import retrieval_context
 from app.agents.context.tokens import current_budget, input_budget
 from app.agents.runtime.answer_completion import termination
-from app.agents.runtime.answer_presentation import format_answer
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
 from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
-from app.modules.knowledge.citations import canonical_knowledge_citations
-from app.modules.source_analysis.evidence import (
-    SourceEvidence,
-    requires_source_evidence,
-)
+from app.modules.chat.rich_presentation import source_pointers
+from app.modules.source_analysis.evidence import SourceEvidence
 
 
 class AgentRunExecutor:
@@ -27,17 +23,15 @@ class AgentRunExecutor:
 
     async def execute(self, run, emit, owned_models):
         runtime = self.runtime
-        original_emit, observed = emit, {}
-        knowledge_references = []
-        hold_flow_answer, publishing_final = False, False
+        original_emit = emit
+        displayed_text = ""
 
         def emit(kind, payload):
-            observed[kind] = payload
-            if kind == "knowledge_reference":
-                knowledge_references.append(payload)
-            # 续写中间稿同样会发 answer_replace；只挡 token 会提前露出未整理、未复核正文。
-            if kind == "answer_replace" and hold_flow_answer and not publishing_final:
-                return
+            nonlocal displayed_text
+            if kind == "token":
+                displayed_text += payload["text"]
+            elif kind == "answer_replace":
+                displayed_text = payload["text"]
             return original_emit(kind, payload)
 
         async with AsyncSqliteSaver.from_conn_string(
@@ -52,16 +46,10 @@ class AgentRunExecutor:
             evidence = SourceEvidence(
                 runtime.workspace,
                 emit,
-                required=bool(
-                    message["selections"]
-                    or requires_source_evidence(message["content"])
-                    or run["analysis_policy"]["mode"] == "deep"
-                ),
+                required=bool(message["selections"] or run["analysis_policy"]["mode"] == "deep"),
             )
+            evidence.mandatory = evidence.required
             evidence.user_request = message["content"]
-            hold_flow_answer = bool(
-                evidence.required and re.search(r"流程|步骤|怎么走|启动前检查", message["content"])
-            )
             policy = run["analysis_policy"]
             previous = (
                 previous_run_event(runtime.repository, run, "analysis_progress")
@@ -71,6 +59,7 @@ class AgentRunExecutor:
             progress = AnalysisProgress(evidence, emit, previous)
             # 继续普通模式的源码核查也沿用来源复核要求，不能因问题只写“继续”而跳过。
             evidence.required = evidence.required or bool(previous and previous.get("checks"))
+            evidence.mandatory = evidence.required
             retrieval = RetrievalBudget(
                 emit, policy["limit"], policy["reserve"], evidence, progress
             )
@@ -87,6 +76,10 @@ class AgentRunExecutor:
                 if previous_run in visited_runs:
                     break
                 visited_runs.add(previous_run)
+                linked = runtime.repository.run(previous_run)
+                # 重新生成确实使用过源码的回答仍须核对；旧运行仅查询过源码不构成强制理由。
+                if any(source_pointers(linked.get("answer") or "")):
+                    evidence.required = True
                 cursor = 0
                 while True:
                     events = runtime.repository.events(previous_run, cursor)
@@ -112,7 +105,6 @@ class AgentRunExecutor:
                     if len(events) < 500:
                         break
                     cursor = events[-1]["sequence"]
-                linked = runtime.repository.run(previous_run)
                 previous_run = linked.get("resumed_from") or linked.get("regenerated_from")
             verified_context = await evidence.prepare(
                 message["selections"], max_tokens=min(4000, max(0, available // 5))
@@ -145,6 +137,12 @@ class AgentRunExecutor:
                 + "\n"
                 + "\n".join(selection["path"] for selection in message["selections"])
             )
+            before = (
+                regeneration_context["before_message_id"] if regeneration_context else message["id"]
+            )
+            prior = await asyncio.to_thread(
+                runtime.repository.branches.context, run["thread_id"], before=before
+            )
             graph = await runtime.graph(
                 run["thread_id"],
                 saver,
@@ -152,12 +150,15 @@ class AgentRunExecutor:
                 owned_models,
                 memory_query=memory_query,
                 question_text=message["content"],
+                run_id=run["id"],
                 evidence=evidence,
                 source_options=message.get("source_options"),
                 verified_context=verified_context,
                 progress=progress,
                 retrieval=retrieval,
                 policy=policy,
+                retrieval_context=retrieval_context(prior, message["selections"]),
+                attachment_messages=[*prior, message],
             )
             checkpoint_id = (
                 f"{run['thread_id']}:project:{regeneration_context['generation']}"
@@ -176,12 +177,6 @@ class AgentRunExecutor:
                 await saver.adelete_thread(checkpoint_id)
                 state = await graph.aget_state(config)
             if not state.values.get("messages"):
-                before = (
-                    regeneration_context["before_message_id"]
-                    if regeneration_context
-                    else message["id"]
-                )
-                prior = runtime.repository.branches.context(run["thread_id"], before=before)
                 if prior:
                     seeds = [
                         runtime.current_input(row)
@@ -253,10 +248,8 @@ class AgentRunExecutor:
                 if mode == "messages":
                     chunk, metadata = event
                     if metadata.get("lc_source") in {
-                        "source_verification",
-                        "knowledge_verification",
                         "knowledge_selection",
-                        "answer_draft",
+                        "history_selection",
                     }:
                         continue
                     if metadata.get("lc_source") == "summarization":
@@ -273,11 +266,7 @@ class AgentRunExecutor:
                             emit("stage", {"stage": "generating"})
                             generating = True
                         text += part
-                        # 经验草稿可能尚未筛除其他日期的候选，复核完成后统一显示最终稿。
-                        if not hold_flow_answer and not any(
-                            row.get("kind") == "debug_issue" for row in knowledge_references
-                        ):
-                            emit("token", {"text": part})
+                        emit("token", {"text": part})
                 else:
                     if any(
                         getattr(item, "type", "") == "tool" or getattr(item, "tool_calls", [])
@@ -322,12 +311,6 @@ class AgentRunExecutor:
                 else {"output": "incomplete", "finish_reason": None}
             )
             progress_snapshot = progress.snapshot()
-            progress_snapshot["verified_citations"] = [
-                row
-                for row in observed.get("answer_validation", {}).get("citations", [])
-                if row.get("valid")
-            ]
-            progress_snapshot["semantic_review"] = observed.get("source_review")
             emit("analysis_progress", progress_snapshot)
             emit(
                 "run_completion",
@@ -335,8 +318,6 @@ class AgentRunExecutor:
                     output,
                     progress_snapshot,
                     retrieval.counts,
-                    observed.get("answer_validation"),
-                    observed.get("source_review"),
                 ),
             )
             settings = current_configuration(runtime.settings).model
@@ -345,15 +326,6 @@ class AgentRunExecutor:
                 effective, snapshot, settings.context_tokens, settings.output_tokens
             )
             emit("context", current)
-            formatted = canonical_knowledge_citations(answer, knowledge_references)
-            if output["output"] == "complete":
-                formatted = format_answer(formatted, message["content"], emit)
-            if (
-                hold_flow_answer
-                or formatted != text
-                or any(row.get("kind") == "debug_issue" for row in knowledge_references)
-            ):
-                publishing_final = True
-                emit("answer_replace", {"text": formatted})
-                answer = formatted
+            if answer != displayed_text:
+                emit("answer_replace", {"text": answer})
             return answer

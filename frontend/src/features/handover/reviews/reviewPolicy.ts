@@ -5,7 +5,7 @@ export function canReviewRecord(row: HandoverRecord, historical = false) {
     return !historical && ['draft', 'needs_review', 'rejected'].includes(row.state);
   return (
     !historical &&
-    !['source', 'interview', 'task', 'candidate', 'job'].includes(row.kind) &&
+    !['source', 'task'].includes(row.kind) &&
     ['draft', 'needs_review'].includes(row.state)
   );
 }

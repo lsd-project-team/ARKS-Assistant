@@ -17,12 +17,70 @@ function reset() {
   useWorkspace.setState(useWorkspace.getInitialState(), true);
 }
 
+test('删除当前项目后独立继续原对话，保留对话草稿并清理旧源码状态', () => {
+  reset();
+  const api = () => useWorkspace.getState();
+  api().initializeProject('A');
+  api().selectThread('chat-a');
+  api().setDraft('原对话草稿');
+  api().openFile('A.cs', 12);
+  api().setProjectExpanded('A', true);
+  useWorkspace.setState({ sourceBindings: { A: 'source-A' } });
+  api().removeProject('A', 'independent');
+  assert.equal(api().projectId, 'independent');
+  assert.equal(api().threadId, 'chat-a');
+  assert.equal(draftFor(api()).content, '原对话草稿');
+  assert.equal(api().activePath, '');
+  assert.equal(api().threadEntries['chat-a'], 'recent');
+  for (const field of ['projectSessions', 'sourceBindings', 'expandedProjects'])
+    assert.equal(api()[field].A, undefined);
+});
+
+test('删除其他项目合并新草稿时不覆盖当前项目及原独立草稿和选区', () => {
+  reset();
+  const api = () => useWorkspace.getState();
+  api().initializeProject('independent');
+  api().setDraft('独立草稿');
+  api().addSelection({ path: 'independent.cs' });
+  api().switchProject('A');
+  api().setDraft('项目草稿');
+  api().addSelection({ path: 'A.cs' });
+  api().switchProject('B');
+  api().selectThread('chat-b');
+  api().setDraft('B 的草稿');
+  api().removeProject('A', 'trash');
+  assert.equal(api().projectId, 'B');
+  assert.equal(api().threadId, 'chat-b');
+  assert.equal(draftFor(api()).content, 'B 的草稿');
+  assert.equal(api().drafts['new:A'], undefined);
+  assert.equal(api().drafts['new:independent'].content, '独立草稿\n\n项目草稿');
+  assert.deepEqual(
+    api().drafts['new:independent'].selections.map((row) => row.path),
+    ['independent.cs', 'A.cs'],
+  );
+});
+
+test('当前项目对话移入回收站后离开旧对话，新草稿和可恢复的对话草稿均保留', () => {
+  reset();
+  const api = () => useWorkspace.getState();
+  api().initializeProject('A');
+  api().setDraft('新对话草稿');
+  api().selectThread('chat-a');
+  api().setDraft('原对话未发送内容');
+  api().removeProject('A', 'trash');
+  assert.equal(api().projectId, 'independent');
+  assert.equal(api().threadId, '');
+  assert.equal(api().sidebarView, 'deleted');
+  assert.equal(draftFor(api()).content, '新对话草稿');
+  assert.equal(api().drafts['chat-a'].content, '原对话未发送内容');
+});
+
 const creationProjects = {
   default_project_id: 'A',
   projects: [
     { id: 'A', state: 'active' },
     { id: 'B', state: 'active' },
-    { id: 'archived', state: 'archived' },
+    { id: 'deleted', state: 'deleted' },
   ],
 };
 
@@ -30,7 +88,7 @@ test('公共新对话入口始终独立，只有明确指定有效项目时才�
   assert.equal(newConversationProject(creationProjects), 'independent');
   assert.equal(newConversationProject(creationProjects, 'A'), 'A');
   assert.equal(newConversationProject(creationProjects, 'B'), 'B');
-  assert.equal(newConversationProject(creationProjects, 'archived'), undefined);
+  assert.equal(newConversationProject(creationProjects, 'deleted'), undefined);
   assert.equal(newConversationProject(creationProjects, 'removed'), undefined);
 });
 
@@ -44,7 +102,7 @@ test('创建独立对话不依赖默认项目、有效项目数量或项目列�
     'independent',
   );
   assert.equal(
-    newConversationProject({ ...creationProjects, default_project_id: 'archived' }),
+    newConversationProject({ ...creationProjects, default_project_id: 'deleted' }),
     'independent',
   );
 });
@@ -58,7 +116,7 @@ test('统一新对话动作保留当前项目源码阅读位置及已有对话�
   state().setDraft('B 的旧对话草稿');
   state().openFile('Program.cs', 40);
   state().savePosition('Program.cs', 40);
-  state().setSidebarView('archived');
+  state().setSidebarView('deleted');
   state().startConversation(newConversationProject(creationProjects, 'B'));
   assert.equal(state().projectId, 'B');
   assert.equal(state().threadId, '');
@@ -75,7 +133,7 @@ test('从项目新建独立对话时保留项目会话和草稿，独立草稿�
   state().openFile('Default.cs', 12);
   state().selectThread('chat-a');
   state().setDraft('默认项目的草稿');
-  state().setSidebarView('archived');
+  state().setSidebarView('deleted');
   state().startConversation(newConversationProject(creationProjects));
   assert.equal(state().projectId, 'independent');
   assert.equal(state().threadId, '');
@@ -166,19 +224,35 @@ test('项目切换与刷新保留列表类型和各项目的展开状态', () =>
   reset();
   const state = () => useWorkspace.getState();
   state().initializeProject('A');
-  state().setSidebarView('archived');
+  state().setSidebarView('deleted');
   state().setProjectExpanded('A', false);
   state().setProjectExpanded('B', true);
   state().switchProject('B');
-  assert.equal(state().sidebarView, 'archived');
+  assert.equal(state().sidebarView, 'deleted');
   assert.deepEqual(state().expandedProjects, { A: false, B: true });
   const options = useWorkspace.persist.getOptions();
   useWorkspace.setState(
     options.merge(options.partialize(state()), useWorkspace.getInitialState()),
     true,
   );
-  assert.equal(state().sidebarView, 'archived');
+  assert.equal(state().sidebarView, 'deleted');
   assert.deepEqual(state().expandedProjects, { A: false, B: true });
+});
+
+test('旧归档视图恢复到最近时保留原草稿、选择和展开状态', () => {
+  reset();
+  const state = useWorkspace.getState();
+  state.initializeProject('A');
+  state.selectThread('chat-a');
+  state.setDraft('不能丢失的草稿');
+  state.setProjectExpanded('A', true);
+  const options = useWorkspace.persist.getOptions();
+  const persisted = { ...options.partialize(useWorkspace.getState()), sidebarView: 'archived' };
+  const restored = options.merge(persisted, useWorkspace.getInitialState());
+  assert.equal(restored.sidebarView, 'active');
+  assert.equal(restored.threadId, 'chat-a');
+  assert.equal(draftFor(restored).content, '不能丢失的草稿');
+  assert.deepEqual(restored.expandedProjects, { A: true });
 });
 
 test('从最近列表删除其他项目的对话会清理保存的选择，同时保留当前会话', () => {

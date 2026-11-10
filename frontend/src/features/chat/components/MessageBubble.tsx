@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Copy, Check, RotateCcw, FileCode2, Pencil, MessageSquare } from 'lucide-react';
 import { useWorkspace } from '../../../app/state/store';
 import type { Message, Run } from '../../../shared/types/api';
@@ -14,6 +14,8 @@ import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { InlineQuestionEditor } from './InlineQuestionEditor';
 import { contentToMarkdown } from '../rich/contentToMarkdown';
+import { FeedbackDialog, type FeedbackTarget } from './FeedbackDialog';
+import { AttachmentList } from '../attachments/AttachmentList';
 
 export function MessageBubble({
   message,
@@ -22,6 +24,7 @@ export function MessageBubble({
   onRegenerate,
   onEdit,
   recent = false,
+  afterAnswer,
 }: {
   message: Message;
   run?: Run;
@@ -29,14 +32,15 @@ export function MessageBubble({
   onRegenerate: (id: string) => void;
   onEdit?: (content: string) => Promise<unknown>;
   recent?: boolean;
+  afterAnswer?: ReactNode;
 }) {
   const editButton = useRef<HTMLButtonElement>(null);
   const [editing, setEditing] = useState(false);
   const [preview, setPreview] = useState<Selection>();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<unknown>();
+  const [feedbackTarget, setFeedbackTarget] = useState<FeedbackTarget>();
   const project = useCurrentProject();
-  const Content = message.role === 'assistant' ? AnswerMarkdown : Markdown;
   async function copy() {
     try {
       await navigator.clipboard.writeText(
@@ -98,22 +102,34 @@ export function MessageBubble({
             {selection.stale && <span>旧版本</span>}
           </button>
         ))}
+        <AttachmentList attachments={message.attachments || []} />
         {run && <RunTrace runId={run.id} />}
         <div>
-          <Content
-            content={message.content}
-            runId={run?.id}
-            sourceId={message.source_workspace_id || undefined}
-          />
+          {message.role === 'assistant' ? (
+            <AnswerMarkdown
+              content={message.content}
+              runId={run?.id}
+              sourceId={message.source_workspace_id || undefined}
+              afterContent={
+                run?.status === 'completed' && (
+                  <RunKnowledgeSummary
+                    runId={run.id}
+                    answer={message.content}
+                    projectId={project.data?.id || useWorkspace.getState().projectId}
+                    recent={recent}
+                  />
+                )
+              }
+            />
+          ) : (
+            <Markdown
+              content={message.content}
+              runId={run?.id}
+              sourceId={message.source_workspace_id || undefined}
+            />
+          )}
         </div>
-        {message.role === 'assistant' && run?.status === 'completed' && (
-          <RunKnowledgeSummary
-            runId={run.id}
-            answer={message.content}
-            projectId={project.data?.id || useWorkspace.getState().projectId}
-            recent={recent}
-          />
-        )}
+        {message.role === 'assistant' && afterAnswer}
       </div>
       <div className={`answer-actions ${message.role === 'user' ? 'question-actions' : ''}`}>
         {message.role === 'assistant' && (
@@ -151,7 +167,14 @@ export function MessageBubble({
             type="button"
             aria-label="反馈回复"
             title="反馈回复"
-            onClick={() => toast('反馈功能暂未开放')}
+            disabled={!message.thread_id && !run?.thread_id}
+            onClick={() =>
+              setFeedbackTarget({
+                messageId: message.id,
+                threadId: message.thread_id || run!.thread_id,
+                projectId: useWorkspace.getState().projectId,
+              })
+            }
           >
             <MessageSquare size={14} />
             <span>反馈</span>
@@ -170,6 +193,9 @@ export function MessageBubble({
         )}
       </div>
       <ErrorText error={error} />
+      {feedbackTarget && (
+        <FeedbackDialog target={feedbackTarget} onClose={() => setFeedbackTarget(undefined)} />
+      )}
       {preview && <SelectionPreview selection={preview} onClose={() => setPreview(undefined)} />}
     </div>
   );

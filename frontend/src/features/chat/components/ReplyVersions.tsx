@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Message, Run } from '../../../shared/types/api';
 import { MessageBubble } from './MessageBubble';
@@ -8,11 +8,15 @@ export function ReplyVersions({
   selectedMessage,
   canRegenerate,
   onRegenerate,
+  afterAnswer,
+  renderAfterAnswer,
 }: {
   versions: { message: Message; run: Run }[];
   selectedMessage: string;
   canRegenerate: boolean;
   onRegenerate: (id: string) => void;
+  afterAnswer?: ReactNode;
+  renderAfterAnswer?: (run: Run) => ReactNode;
 }) {
   const [chosen, setChosen] = useState('');
   const wanted = chosen || selectedMessage;
@@ -44,6 +48,13 @@ export function ReplyVersions({
       <MessageBubble
         message={current.message}
         run={current.run}
+        afterAnswer={
+          renderAfterAnswer
+            ? renderAfterAnswer(current.run)
+            : index === versions.length - 1
+              ? afterAnswer
+              : undefined
+        }
         canRegenerate={canRegenerate && current.run.status === 'completed'}
         onRegenerate={(id) => {
           setChosen('');

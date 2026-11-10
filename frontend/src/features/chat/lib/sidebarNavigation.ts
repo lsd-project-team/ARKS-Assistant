@@ -1,6 +1,6 @@
 import type { Thread } from '../../../shared/types/api';
 
-export type SidebarView = 'active' | 'archived' | 'deleted';
+export type SidebarView = 'active' | 'deleted';
 export type ThreadEntry = 'project' | 'recent';
 export const projectThreadPreview = 3;
 export const recentThreadPreview = 8;
@@ -33,7 +33,7 @@ export function visibleThreads(rows: Thread[], selected: Thread | undefined, pre
   ];
 }
 
-// 归档项目同时保留正常和已归档对话，两类分页合并时按统一规则排序并去重。
+// 项目对话分页合并时按统一规则排序并去重。
 export function projectThreadOrder(rows: Thread[]): Thread[] {
   return [...new Map(rows.map((row) => [row.id, row])).values()].sort((left, right) => {
     const pinned = (left.pinned_order ?? Infinity) - (right.pinned_order ?? Infinity);

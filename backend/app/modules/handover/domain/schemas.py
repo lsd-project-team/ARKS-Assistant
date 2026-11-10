@@ -2,14 +2,12 @@
 
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, model_validator
 
 Text = Annotated[str, Field(max_length=100000)]
 Short = Annotated[str, Field(max_length=2000)]
 Kind = Literal[
     "source",
-    "interview",
-    "candidate",
     "task",
     "decision",
     "constraint",
@@ -22,7 +20,6 @@ Kind = Literal[
     "training",
     "receipt",
     "package",
-    "job",
 ]
 
 
@@ -56,16 +53,6 @@ class Source(Payload):
     parse_notes: Text = ""
     path: Short = ""
     files: list[dict[str, str]] = Field(default_factory=list, max_length=2000)
-
-
-class Interview(Payload):
-    author: Short = ""
-    interviewer: Short = ""
-    date: Short = ""
-    topic: Short = ""
-    questions: Text = ""
-    transcript: Text = ""
-    correction: Text = ""
 
 
 class Task(Payload):
@@ -156,12 +143,11 @@ class DebugImage(BaseModel):
     recorded_at: Short = ""
 
 
-class DebugIssue(Payload):
+class DebugIssueMetadata(Payload):
     record_type: Literal["problem", "experience", "progress", "archive"] = "problem"
     occurred_on: Short = ""
     recorded_by: Short = ""
     recorded_at: Short = ""
-    problem: Text = ""
     conditions: Text = ""
     environment: Text = ""
     device: Short = ""
@@ -169,10 +155,8 @@ class DebugIssue(Payload):
     module: Short = ""
     investigation: Text = ""
     cause: Text = ""
-    solution: Text = ""
     verification: Text = ""
     resolution_status: Literal["open", "resolved", "recorded"] = "open"
-    keywords: list[Short] = Field(default_factory=list, max_length=20)
     original_text: Text = ""
     images: list[DebugImage] = Field(default_factory=list, max_length=100)
     reported_by: Short = ""
@@ -182,6 +166,21 @@ class DebugIssue(Payload):
     source_change_id: str = Field(default="", max_length=36)
     source_change_version: str = Field(default="", max_length=64)
     source_verification_id: str = Field(default="", max_length=36)
+
+
+class DebugIssue(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    question: Text = ""
+    answer: Text = ""
+    keywords: list[Short] = Field(default_factory=list, max_length=20)
+    metadata: DebugIssueMetadata = Field(default_factory=DebugIssueMetadata)
+
+    @model_validator(mode="before")
+    @classmethod
+    def legacy(cls, value):
+        from app.modules.handover.domain.debug_knowledge import knowledge_payload
+
+        return knowledge_payload(value) if isinstance(value, dict) else value
 
 
 class PlanStep(BaseModel):
@@ -242,28 +241,8 @@ class Package(Payload):
     gaps: Text = ""
 
 
-class Candidate(Payload):
-    target_kind: Literal["task", "decision", "constraint", "issue", "framework", "training", "plan"]
-    proposed: dict = Field(default_factory=dict)
-    reason: Text = ""
-    promoted_id: str = ""
-
-
-class Job(Payload):
-    action: Literal["extract", "plan", "framework", "training"]
-    record_ids: list[str] = Field(min_length=1, max_length=20)
-    input_versions: dict[str, int] = Field(default_factory=dict)
-    status: Literal["queued", "running", "succeeded", "failed", "cancelled", "interrupted"] = (
-        "queued"
-    )
-    error: Text = ""
-    result_ids: list[str] = Field(default_factory=list)
-
-
 PAYLOADS = {
     "source": Source,
-    "interview": Interview,
-    "candidate": Candidate,
     "task": Task,
     "decision": Decision,
     "constraint": Constraint,
@@ -276,7 +255,6 @@ PAYLOADS = {
     "training": Training,
     "receipt": Receipt,
     "package": Package,
-    "job": Job,
 }
 
 

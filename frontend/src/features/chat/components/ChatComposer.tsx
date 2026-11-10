@@ -21,7 +21,8 @@ export function ChatComposer({
   model,
   modelControl,
   context,
-  readOnly = false,
+  attachments,
+  uploading = false,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
@@ -29,8 +30,9 @@ export function ChatComposer({
   onSend: () => void;
   onCommand: (command: ComposerCommand) => void;
   onStop: () => void;
-  /** 文件上传预留回调，未接入时保持入口禁用。 */
   onUploadFiles?: () => void;
+  uploading?: boolean;
+  attachments?: ReactNode;
   sending: boolean;
   busy: boolean;
   queueing?: boolean;
@@ -41,7 +43,6 @@ export function ChatComposer({
   model: string;
   modelControl?: ReactNode;
   context: ReactNode;
-  readOnly?: boolean;
 }) {
   const listId = useId();
   useLayoutEffect(() => {
@@ -59,7 +60,7 @@ export function ChatComposer({
   const available = (command: ComposerCommand) =>
     command === '记录问题' || (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
-  const canSubmit = !sending && !readOnly && (command ? available(command) : !!draft.trim());
+  const canSubmit = !sending && !uploading && (command ? available(command) : !!draft.trim());
   function submit() {
     if (!canSubmit) return;
     if (command) {
@@ -116,16 +117,17 @@ export function ChatComposer({
           <div className="command-keyboard-hint">↑ ↓ 选择 · Enter 执行 · Esc 收起</div>
         </div>
       )}
+      {attachments}
       <textarea
         ref={inputRef}
         value={draft}
-        disabled={sending || readOnly}
+        disabled={sending}
         onChange={(event) => {
           onChange(event.target.value);
           setSelected(0);
           setDismissed(false);
         }}
-        placeholder={readOnly ? '项目已归档，恢复后可以继续对话' : '询问代码，或输入 / 使用命令…'}
+        placeholder="描述你的问题或修改需求，或输入 / 使用命令…"
         aria-label="对话输入"
         aria-controls={menuOpen ? listId : undefined}
         aria-expanded={menuOpen}
@@ -154,7 +156,7 @@ export function ChatComposer({
             className="attach-file"
             aria-label={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
             title={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
-            disabled={!onUploadFiles || sending || readOnly}
+            disabled={!onUploadFiles || sending || uploading}
             onClick={onUploadFiles}
           >
             <Plus size={18} />

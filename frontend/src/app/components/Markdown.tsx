@@ -1,5 +1,8 @@
 import {
   Children,
+  isValidElement,
+  lazy,
+  Suspense,
   createContext,
   useContext,
   useState,
@@ -8,26 +11,62 @@ import {
 } from 'react';
 import ReactMarkdown, { defaultUrlTransform, type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import { useSourceCitation } from '../../features/source_reader/hooks/useSourceCitation';
 import { CodeBlock } from '../../shared/ui/markdown/CodeBlock';
 import { api } from '../api/client';
-import type { RunContext, ProjectMaterial } from '../../shared/types/api';
+import type { RunContext } from '../../shared/types/api';
 import { toast } from '../../shared/utils/toasts';
 import { useWorkspace } from '../state/store';
-import { MaterialViewer } from '../../features/projects/components/MaterialViewer';
 import { HandoverMaterialViewer } from '../../features/handover/materials/components/HandoverMaterialViewer';
 import type { HandoverRecord } from '../../features/handover/shared/types';
 import { isKnowledgeReference } from '../../features/knowledge/lib/knowledgeReference';
 import { citationEndLine } from '../../features/source_reader/lib/citationRange';
-import { remarkDebugCitationLabels } from '../../features/chat/lib/recordAnswerPresentation';
 import { DebugIssueReference } from '../../features/chat/components/DebugIssueReference';
 
 const CitationRun = createContext<string | undefined>(undefined);
 const CitationSource = createContext<string | undefined>(undefined);
 const Streaming = createContext(false);
+const MermaidBlock = lazy(() =>
+  import('../../features/chat/rich/MermaidBlock')
+    .then((module) => ({ default: module.MermaidBlock }))
+    .catch(() => ({
+      default: ({ block }: { block: { content: string } }) => (
+        <div>
+          <p role="status">流程图组件加载失败，已保留源码。</p>
+          <CodeBlock>
+            <code>{block.content}</code>
+          </CodeBlock>
+        </div>
+      ),
+    })),
+);
 
 function MarkdownPre({ children }: { children?: ReactNode }) {
   const streaming = useContext(Streaming);
+  const code = Children.toArray(children).find((child) => isValidElement(child));
+  if (
+    isValidElement<{ className?: string; children?: ReactNode }>(code) &&
+    code.props.className === 'language-mermaid'
+  ) {
+    const content = Children.toArray(code.props.children).join('');
+    return (
+      <Suspense
+        fallback={
+          <CodeBlock streaming rawContent={content}>
+            {children}
+          </CodeBlock>
+        }
+      >
+        <MermaidBlock
+          block={{ id: 'markdown-mermaid', type: 'mermaid', content }}
+          streaming={streaming}
+        />
+      </Suspense>
+    );
+  }
   return <CodeBlock streaming={streaming}>{children}</CodeBlock>;
 }
 
@@ -36,7 +75,6 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
   const runId = useContext(CitationRun);
   const sourceId = useContext(CitationSource);
   const projectId = useWorkspace((state) => state.projectId);
-  const [material, setMaterial] = useState<ProjectMaterial>();
   const [handoverMaterial, setHandoverMaterial] = useState<HandoverRecord>();
   const handoverReference = href?.match(/^handover-source:([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
   if (handoverReference)
@@ -83,35 +121,7 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
         {children}
       </DebugIssueReference>
     );
-  const reference = href?.match(/^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/);
-  if (reference)
-    return (
-      <>
-        <button
-          className="source-link"
-          onClick={async () => {
-            try {
-              const saved = await api<ProjectMaterial>(
-                `/projects/${reference[1]}/materials/${reference[2]}?version=${reference[3]}`,
-              );
-              if (useWorkspace.getState().projectId === projectId) setMaterial(saved);
-            } catch {
-              toast('无法读取这份项目资料的引用版本');
-            }
-          }}
-        >
-          {children}
-        </button>
-        {material && (
-          <MaterialViewer
-            material={material}
-            start={Number(reference[4])}
-            end={Number(reference[5] || reference[4])}
-            onClose={() => setMaterial(undefined)}
-          />
-        )}
-      </>
-    );
+  if (!href) return <span>{children}</span>;
   const source = href?.match(/^source:(.+)#L(\d+)(?:-L?(\d+))?$/);
   if (!source)
     return isKnowledgeReference(href || '') ? (
@@ -170,20 +180,26 @@ function MarkdownLink({ href, children }: ComponentProps<'a'>) {
 }
 
 // 渲染组件保持同一身份，页面更新和源码跳转才不会重建代码块、丢失展开与换行状态。
-const markdownComponents: Components = { pre: MarkdownPre, a: MarkdownLink };
+const markdownComponents: Components = {
+  pre: MarkdownPre,
+  a: MarkdownLink,
+  table: ({ children }) => (
+    <div className="markdown-table-scroll" role="region" aria-label="表格，可横向滚动" tabIndex={0}>
+      <table>{children}</table>
+    </div>
+  ),
+};
 
 export function Markdown({
   content,
   runId,
   sourceId,
-  remarkPlugins = [],
   streaming = false,
 }: {
   content: string;
   runId?: string;
   sourceId?: string;
   streaming?: boolean;
-  remarkPlugins?: NonNullable<ComponentProps<typeof ReactMarkdown>['remarkPlugins']>;
 }) {
   return (
     <CitationRun.Provider value={runId}>
@@ -192,10 +208,10 @@ export function Markdown({
           <div className="markdown">
             <ReactMarkdown
               // 工艺范围常写成20~30g、280~300，单个波浪号不能跨参数误解析为删除线。
-              remarkPlugins={[
-                [remarkGfm, { singleTilde: false }],
-                ...remarkPlugins,
-                remarkDebugCitationLabels,
+              remarkPlugins={[[remarkGfm, { singleTilde: false }], remarkMath]}
+              // 只转换数学语法树；不启用 raw HTML，公式中的链接和 HTML 扩展也不受信任。
+              rehypePlugins={[
+                [rehypeKatex, { throwOnError: false, trust: false, maxExpand: 500, maxSize: 20 }],
               ]}
               urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
               components={markdownComponents}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -16,6 +16,11 @@ import {
 } from '../knowledge/lib/knowledgeReference';
 import { debugIssueFields } from '../handover/debug_issues/debugIssues';
 import { text as fieldText, type HandoverRecord } from '../handover/shared/types';
+import { AnswerFeedbackList } from './AnswerFeedbackList';
+
+const CodeWorkDialog = lazy(() =>
+  import('../chat/code_work/CodeWorkDialog').then((module) => ({ default: module.CodeWorkDialog })),
+);
 
 export function QuestionsPage({ identifier }: { identifier?: string }) {
   const [text, setText] = useState('');
@@ -25,6 +30,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
   const [after, setAfter] = useState('');
   const [before, setBefore] = useState('');
   const [offset, setOffset] = useState(0);
+  const [hasFeedback, setHasFeedback] = useState(false);
   const settled = useDebouncedValue(text);
   const users = useQuery({
     queryKey: ['admin-accounts'],
@@ -32,13 +38,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
   });
   const projects = useQuery({
     queryKey: ['admin-projects'],
-    queryFn: async () => {
-      const [active, archived] = await Promise.all([
-        adminApi<ProjectList>('/projects'),
-        adminApi<ProjectList>('/projects?state=archived'),
-      ]);
-      return { ...active, projects: [...active.projects, ...archived.projects] };
-    },
+    queryFn: () => adminApi<ProjectList>('/projects'),
   });
   const parameters = new URLSearchParams({
     query: settled,
@@ -46,6 +46,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
     project_id: project,
     status,
     offset: String(offset),
+    has_feedback: String(hasFeedback),
   });
   if (after) parameters.set('after', new Date(`${after}T00:00:00`).toISOString());
   if (before) parameters.set('before', new Date(`${before}T23:59:59.999`).toISOString());
@@ -70,6 +71,17 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
       </header>
       <section className="admin-panel">
         <div className="admin-filter-grid">
+          <label className="admin-feedback-filter">
+            <input
+              type="checkbox"
+              checked={hasFeedback}
+              onChange={(event) => {
+                setHasFeedback(event.target.checked);
+                setOffset(0);
+              }}
+            />
+            仅看有反馈
+          </label>
           <label className="admin-search">
             <Search size={16} />
             <input
@@ -147,6 +159,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
                 <th>用户</th>
                 <th>所属项目</th>
                 <th>提问数</th>
+                <th>反馈数</th>
                 <th>最近状态</th>
                 <th>更新时间</th>
                 <th />
@@ -159,13 +172,12 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
                     <a className="admin-title-link" href={`#admin/questions/${row.id}`}>
                       {row.title}
                     </a>
-                    {row.state !== 'active' && (
-                      <small>{row.state === 'deleted' ? '已移入回收站' : '已归档'}</small>
-                    )}
+                    {row.state === 'deleted' && <small>已移入回收站</small>}
                   </td>
                   <td>{row.users.join('、')}</td>
                   <td>{row.project_name}</td>
                   <td>{row.questions}</td>
+                  <td>{row.feedback_count || 0}</td>
                   <td>
                     <span
                       className={`admin-badge ${row.status === 'completed' ? 'success' : row.status === 'failed' ? 'danger' : ''}`}
@@ -205,6 +217,7 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
 }
 
 function QuestionViewer({ identifier }: { identifier: string }) {
+  const [codeOpen, setCodeOpen] = useState(false);
   const [reference, setReference] = useState<{ href: string; run?: RecordedRun }>();
   const detail = useInfiniteQuery({
     queryKey: ['admin-question', identifier],
@@ -224,13 +237,16 @@ function QuestionViewer({ identifier }: { identifier: string }) {
       detail.data?.pages.flatMap((page) => page.runs).map((run) => [run.id, run]),
     ).values(),
   ];
+  const feedback = detail.data?.pages.flatMap((page) => page.feedback || []) || [];
   const markdown = (content: string, run?: RecordedRun) => (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       urlTransform={(url) => (isKnowledgeReference(url) ? url : defaultUrlTransform(url))}
       components={{
         a: ({ href, children }) =>
-          isKnowledgeReference(href || '') ? (
+          !href ? (
+            <span>{children}</span>
+          ) : isKnowledgeReference(href) ? (
             <button className="source-link" onClick={() => setReference({ href: href!, run })}>
               {children}
             </button>
@@ -257,7 +273,21 @@ function QuestionViewer({ identifier }: { identifier: string }) {
             {first?.project_name} · {first?.total || 0} 条消息
           </p>
         </div>
+        {first && first.thread.state !== 'deleted' && (
+          <Button onClick={() => setCodeOpen(true)}>代码副本与合并</Button>
+        )}
       </header>
+      {codeOpen && first && (
+        <Suspense fallback={<p role="status">正在加载代码副本…</p>}>
+          <CodeWorkDialog
+            open
+            threadId={identifier}
+            projectId={first.thread.project_id || 'independent'}
+            busy={runs.some((run) => ['queued', 'running'].includes(run.status))}
+            onClose={() => setCodeOpen(false)}
+          />
+        </Suspense>
+      )}
       <ErrorText error={detail.error} />
       {detail.isError && <Button onClick={() => void detail.refetch()}>重试</Button>}
       {detail.isPending && <p role="status">正在读取问答…</p>}
@@ -284,6 +314,7 @@ function QuestionViewer({ identifier }: { identifier: string }) {
               <p className="admin-collection-note">来自对话分支的原始消息</p>
             )}
             <div className="admin-markdown">{markdown(message.content, run)}</div>
+            <AnswerFeedbackList items={feedback.filter((item) => item.message_id === message.id)} />
             {message.selections.map((selection, index) => (
               <details className="admin-evidence" key={index}>
                 <summary>
@@ -402,41 +433,20 @@ function RunDetails({
         .map((event) => (
           <details key={event.id}>
             <summary>带入的资料与记忆</summary>
-            <ContextSources value={event.payload} onReference={onReference} />
+            <ContextSources value={event.payload} />
           </details>
         ))}
     </details>
   );
 }
 
-function ContextSources({
-  value,
-  onReference,
-}: {
-  value: unknown;
-  onReference: (href: string) => void;
-}) {
+function ContextSources({ value }: { value: unknown }) {
   const sources = value as {
-    materials?: { id: string; title: string; version: number; citation?: string }[];
     memories?: { name: string; scope: string; version?: string }[];
   };
   return (
     <div>
-      <p>
-        {!!sources.materials?.length && <>历史项目资料：{sources.materials.length} 份 · </>}
-        长期记忆：{sources.memories?.length || 0} 条
-      </p>
-      {sources.materials?.map((material) => (
-        <p key={material.id}>
-          {material.citation && /^material:/.test(material.citation) ? (
-            <button className="source-link" onClick={() => onReference(material.citation!)}>
-              {material.title} · v{material.version}
-            </button>
-          ) : (
-            `${material.title} · v${material.version}`
-          )}
-        </p>
-      ))}
+      <p>长期记忆：{sources.memories?.length || 0} 条</p>
       {sources.memories?.map((memory) => (
         <p key={`${memory.scope}/${memory.name}`}>
           {memory.name} · {memory.scope === 'project' ? '项目记忆' : '用户偏好'}
@@ -457,7 +467,6 @@ function ReferenceDialog({
   onClose: () => void;
 }) {
   const source = /^source:(.+)#L(\d+)(?:-L?(\d+))?$/.exec(href);
-  const material = /^material:([\w-]+)\/([\w-]+)\/(\d+)#L(\d+)(?:-L?(\d+))?$/.exec(href);
   const handover = handoverReference(href);
   let sourcePath = source?.[1] || '';
   try {
@@ -490,12 +499,6 @@ function ReferenceDialog({
                 .slice(handover.start - 1, handover.end)
                 .join('\n');
         return { title: row.title, text: content, warning: `引用版本 v${row.version}` };
-      }
-      if (material) {
-        const saved = await adminApi<{ title: string; content: string }>(
-          `/projects/${material[1]}/materials/${material[2]}?version=${material[3]}`,
-        );
-        return { title: saved.title, text: saved.content, warning: '' };
       }
       if (!source || !evidence?.source_workspace_id)
         throw new Error('此历史引用未保存源码目录身份，请查看原始代码选区及来源记录。');

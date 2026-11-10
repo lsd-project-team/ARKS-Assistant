@@ -17,7 +17,7 @@
 }
 body {
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 400;
 }
 svg.lucide {
@@ -102,12 +102,12 @@ textarea::placeholder {
   box-shadow: none;
 }
 .workspace-brand strong {
-  font-size: 15px;
+  font-size: var(--font-size-body);
   font-weight: 600;
   letter-spacing: -0.015em;
 }
 .workspace-brand .nav-copy > span {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   line-height: 1.6;
 }
 .workspace-sections {
@@ -115,7 +115,7 @@ textarea::placeholder {
 }
 .workspace-sections > button {
   border-radius: 8px;
-  font-size: 14px;
+  font-size: var(--font-size-control);
   font-weight: 400;
 }
 .workspace-sections > button:hover {
@@ -139,7 +139,7 @@ textarea::placeholder {
 }
 .legacy-visual .app-navigation .sidebar-views button {
   border-radius: 7px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 500;
   color: var(--text-secondary);
   min-height: 30px;
@@ -166,7 +166,7 @@ textarea::placeholder {
 }
 .legacy-visual .app-navigation .thread-select {
   padding: 9px 10px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   font-weight: 400;
   line-height: 1.55;
 }
@@ -175,7 +175,7 @@ textarea::placeholder {
 }
 .legacy-visual .app-navigation .sidebar-heading strong {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-body);
   font-weight: 500;
   letter-spacing: 0;
 }
@@ -187,7 +187,7 @@ textarea::placeholder {
   height: 16px;
 }
 .navigation-tools > button {
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .navigation-tools > button:hover {
   background: var(--surface-hover);
@@ -197,7 +197,7 @@ textarea::placeholder {
   border-bottom-color: var(--border);
 }
 .legacy-visual .chat-heading strong {
-  font-size: 14px;
+  font-size: var(--font-size-bar-title);
   font-weight: 600;
 }
 .legacy-visual .chat-heading .button {
@@ -250,7 +250,7 @@ textarea::placeholder {
   color: var(--reading-accent);
 }
 .legacy-visual .markdown {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 400;
   line-height: 1.8;
 }
@@ -280,7 +280,7 @@ textarea::placeholder {
 }
 .legacy-visual .composer textarea {
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.8;
   box-shadow: none;
 }
@@ -359,7 +359,7 @@ textarea::placeholder {
 }
 .legacy-visual .code-tab {
   border-radius: 9px 9px 0 0;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .legacy-visual .code-tab.active {
@@ -421,7 +421,7 @@ textarea::placeholder {
   background: var(--panel);
 }
 .modal-heading h2 {
-  font-size: 20px;
+  font-size: var(--font-size-dialog-title);
   font-weight: 600;
   letter-spacing: 0;
 }
@@ -518,13 +518,13 @@ textarea::placeholder {
   line-height: 1.4;
 }
 .legacy-visual .knowledge-workspace .page-header h1 {
-  font-size: clamp(26px, 2.3vw, 32px);
+  font-size: var(--font-size-page-title);
   font-weight: 600;
   letter-spacing: 0;
   line-height: 1.5;
 }
 .legacy-visual .knowledge-workspace .page-header p {
-  font-size: 14px;
+  font-size: var(--font-size-meta);
   line-height: 1.85;
 }
 .legacy-visual .knowledge-workspace .eyebrow {
@@ -534,15 +534,15 @@ textarea::placeholder {
 }
 .legacy-visual .knowledge-workspace .header-actions .pill {
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .legacy-visual .knowledge-workspace .section-heading h2 {
-  font-size: 19px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
   letter-spacing: 0;
 }
 .legacy-visual .knowledge-workspace .section-heading p {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .legacy-visual .knowledge-workspace .filter-row {
   border-color: transparent;
@@ -594,24 +594,24 @@ textarea::placeholder {
 }
 .legacy-visual .knowledge-workspace .graph-card h3 {
   font-weight: 600;
-  font-size: 17px;
+  font-size: var(--font-size-subtitle);
   letter-spacing: 0;
   line-height: 1.65;
 }
 .legacy-visual .knowledge-workspace .graph-card p.diagram-question {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.85;
 }
 .legacy-visual .knowledge-workspace .card-topic {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .legacy-visual .knowledge-workspace .graph-card .card-actions {
   border-top-color: color-mix(in srgb, var(--border) 65%, transparent);
 }
 .legacy-visual .knowledge-workspace .graph-read-button {
   font-family: var(--font-ui);
-  font-size: 13px;
+  font-size: var(--font-size-control);
   font-weight: 500;
   color: var(--reading-accent);
 }
@@ -659,21 +659,21 @@ textarea::placeholder {
   background: transparent;
 }
 .legacy-visual .knowledge-workspace .production-chapter b {
-  font-size: 13px;
+  font-size: var(--font-size-control);
   font-weight: 500;
 }
 .legacy-visual .knowledge-workspace .topic-card h2 {
-  font-size: 18px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
   letter-spacing: 0;
   line-height: 1.7;
 }
 .legacy-visual .knowledge-workspace .topic-card p {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.85;
 }
 .legacy-visual .knowledge-workspace .topic-card strong {
-  font-size: 13px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .legacy-visual .knowledge-workspace .topic-card-meta .eyebrow {
@@ -690,7 +690,7 @@ textarea::placeholder {
 }
 .legacy-visual .knowledge-workspace .reading-disclosure > summary {
   padding: 18px 22px;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .legacy-visual .knowledge-workspace .reading-disclosure > summary::after {
@@ -761,28 +761,28 @@ textarea::placeholder {
   letter-spacing: 0;
 }
 .legacy-visual .chat-welcome p {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   color: var(--text-secondary);
 }
 .legacy-visual
   :is(.message-label, .run-activity, .tool-activity, .branch-origin, .composer-context) {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .legacy-visual .message-label {
   font-weight: 500;
   margin-bottom: 10px;
 }
 .legacy-visual :is(.answer-actions time, .message-label > small) {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-muted);
 }
 .legacy-visual .markdown code {
-  font-size: 13px;
+  font-size: var(--font-size-code);
   color: var(--text);
 }
 .legacy-visual .markdown .source-link {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--reading-accent);
 }
 .legacy-visual .source-link:hover {
@@ -848,7 +848,7 @@ textarea::placeholder {
     border-radius: 16px;
   }
   .legacy-visual .knowledge-workspace .page-header h1 {
-    font-size: 25px;
+    font-size: var(--font-size-page-title);
   }
   .legacy-visual .knowledge-workspace .showcase-hero h1 {
     font-size: 30px;

@@ -1,5 +1,4 @@
 import type { RunContext } from '../../../shared/types/api';
-import { Markdown } from '../../../app/components/Markdown';
 import { AnalysisRunDetails } from './AnalysisRunDetails';
 
 export function RunEvidenceDetails({
@@ -55,17 +54,6 @@ export function RunEvidenceDetails({
             .map((title) => (
               <p key={title}>{title}</p>
             ))}
-        </details>
-      )}
-      {!context.references?.length && !!context.materials?.length && (
-        <details>
-          <summary>实际带入的项目资料</summary>
-          {context.materials.map((material) => (
-            <Markdown
-              key={material.id}
-              content={`[${material.title.replace(/[\[\]\n]/g, ' ')} · 版本 ${material.version}](${material.citation})`}
-            />
-          ))}
         </details>
       )}
       {requests.length > 0 && (

@@ -12,11 +12,11 @@
 }
 .storage-summary dt {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .storage-summary dd {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   font-variant-numeric: tabular-nums;
 }
 .backup-preview {
@@ -33,5 +33,5 @@
 .backup-preview ol {
   padding-left: 20px;
   line-height: 1.8;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }

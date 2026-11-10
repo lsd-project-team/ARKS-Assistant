@@ -5,7 +5,7 @@ import json
 from sqlalchemy import exists, func, or_, select
 
 from app.infrastructure.database.serialization import record_dict
-from app.modules.chat.models import Message, Run, RunEvent, Thread
+from app.modules.chat.models import AnswerFeedback, Message, Run, RunEvent, Thread
 from app.modules.projects.models import Project
 
 
@@ -23,9 +23,14 @@ class QuestionRecords:
         before=None,
         limit=30,
         offset=0,
+        has_feedback=False,
     ):
         with self.database.session() as session:
             statement = select(Thread)
+            if has_feedback:
+                statement = statement.where(
+                    exists(select(AnswerFeedback.id).where(AnswerFeedback.thread_id == Thread.id))
+                )
             if project_id:
                 statement = statement.where(Thread.project_id == project_id)
             questions = select(Message.id).where(
@@ -77,6 +82,11 @@ class QuestionRecords:
                     .limit(1)
                 )
                 project = session.get(Project, row.project_id) if row.project_id else None
+                feedback_count = session.scalar(
+                    select(func.count())
+                    .select_from(AnswerFeedback)
+                    .where(AnswerFeedback.thread_id == row.id)
+                )
                 names = list(
                     dict.fromkeys(
                         json.loads(m.actor_json).get("display_name") or "未记录" for m in messages
@@ -91,6 +101,7 @@ class QuestionRecords:
                         "project_id": row.project_id,
                         "users": names,
                         "questions": len(messages),
+                        "feedback_count": feedback_count,
                         "updated_at": row.updated_at,
                         "status": latest.status if latest else "未运行",
                     }
@@ -142,11 +153,18 @@ class QuestionRecords:
                 select(func.count()).select_from(Message).where(Message.thread_id == identifier)
             )
             project = session.get(Project, thread.project_id) if thread.project_id else None
+            # 与当前消息页一起读取，避免每页重复返回整个对话的反馈。
+            feedback = session.scalars(
+                select(AnswerFeedback)
+                .where(AnswerFeedback.message_id.in_(message_ids))
+                .order_by(AnswerFeedback.created_at, AnswerFeedback.id)
+            )
             return {
                 "thread": record_dict(thread),
                 "project_name": project.name if project else "独立对话",
                 "messages": [record_dict(row) for row in messages],
                 "runs": result_runs,
+                "feedback": [record_dict(row) for row in feedback],
                 "total": total,
                 "offset": offset,
                 "limit": limit,

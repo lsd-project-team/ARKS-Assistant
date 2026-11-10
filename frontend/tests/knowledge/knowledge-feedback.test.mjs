@@ -55,8 +55,8 @@ test('后续语义检索恢复后，不继续提示降级', () => {
   assert.deepEqual(
     searchNotices(
       [
-        { kind: 'material', matched: 1, degraded: true },
-        { kind: 'material', matched: 1, degraded: false },
+        { kind: 'debug_issue', matched: 1, degraded: true },
+        { kind: 'debug_issue', matched: 1, degraded: false },
       ],
       [],
     ),

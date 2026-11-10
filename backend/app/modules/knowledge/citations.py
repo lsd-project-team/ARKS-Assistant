@@ -2,11 +2,9 @@
 
 import re
 
-LINK = re.compile(r"\[([^\]\n]*)\]\(((?:debug-issue|handover-source|material):[^\s)]+)\)")
+LINK = re.compile(r"\[([^\]\n]*)\]\(((?:debug-issue|handover-source):[^\s)]+)\)")
 CODE = re.compile(r"(?ms)^[ \t]*(`{3,}|~{3,})[^\n]*\n.*?^[ \t]*\1[ \t]*$|`+[^`\n]*`+")
-BARE = re.compile(
-    r"(?:debug-issue:[\w-]+/\d+|handover-source:[\w-]+/\d+#L\d+(?:-L?\d+)?|material:[\w-]+/[\w-]+/\d+#L\d+(?:-L?\d+)?)"
-)
+BARE = re.compile(r"(?:debug-issue:[\w-]+/\d+|handover-source:[\w-]+/\d+#L\d+(?:-L?\d+)?)")
 
 
 def canonical_knowledge_citations(answer, references):

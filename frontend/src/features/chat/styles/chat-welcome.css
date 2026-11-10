@@ -50,7 +50,7 @@
 }
 .app-shell .chat-welcome p {
   margin: 12px 0 0;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.8;
   color: var(--text-muted);
   text-wrap: balance;
@@ -61,25 +61,38 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  margin-top: 28px;
+  margin-top: 18px;
 }
 .welcome-suggestions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-width: 0;
-  padding: 9px 14px;
+  padding: 10px 13px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 20px;
   background: var(--panel);
-  font-size: 13px;
+  font-size: var(--font-size-control);
+  font-weight: 400;
   line-height: 1.5;
   color: var(--text-secondary);
 }
-.welcome-suggestions button:hover {
+.welcome-suggestions button svg {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+.welcome-suggestions button:hover:not(:disabled) {
   border-color: var(--border-strong);
   background: var(--surface-subtle);
   color: var(--text);
 }
-.welcome-suggestions button:active {
+.welcome-suggestions button:active:not(:disabled) {
   background: var(--selection-background);
+}
+.welcome-suggestions button:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 .app-shell .chat-pane[data-empty='true'] .composer-area {
   background: transparent;
@@ -90,14 +103,14 @@
     font-size: 22px;
   }
   .app-shell .chat-welcome p {
-    font-size: 13px;
-  }
-  .welcome-suggestions {
-    gap: 6px;
-    margin-top: 22px;
+    font-size: var(--font-size-body);
   }
   .welcome-suggestions button {
     padding: 8px 11px;
-    font-size: 12px;
+  }
+}
+@media (pointer: coarse) {
+  .welcome-suggestions button {
+    min-height: 44px;
   }
 }

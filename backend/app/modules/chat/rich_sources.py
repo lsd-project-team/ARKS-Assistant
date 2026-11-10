@@ -41,7 +41,7 @@ def rewrite_source_citations(content, rewrite_markdown, invalid_source):
                 for name in type(value).model_fields:
                     if name not in PROSE_FIELDS | NESTED_FIELDS:
                         continue
-                    if name == "content" and getattr(value, "type", None) == "code":
+                    if name == "content" and getattr(value, "type", None) in {"code", "mermaid"}:
                         continue
                     changes[name] = rewrite(getattr(value, name))
                 return value.model_copy(update=changes)

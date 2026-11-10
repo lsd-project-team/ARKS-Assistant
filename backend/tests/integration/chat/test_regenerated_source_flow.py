@@ -128,7 +128,7 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
                     },
                 )
         latest = first
-        for generation in range(rounds):
+        for _generation in range(rounds):
             calls["regenerated"] = 0
             regenerated = repository.regenerate(latest["id"])
             manager.start(regenerated)
@@ -143,15 +143,11 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
             )
             assert calls["selection"] == 0
             validation = repository.run_event(saved["id"], "answer_validation")
-            verified = mode in {"cited", "missing_first"}
-            assert validation["passed"] is verified
-            if verified:
-                assert result == answer()
-                assert calls["regenerated"] == (1 if mode == "cited" else 2)
-                assert calls["reviews"] == 2 + generation
-            else:
-                assert "源码核对提示" in result
-                assert calls["regenerated"] == 3 and calls["reviews"] == 1
+            assert validation is None
+            assert calls["regenerated"] == 1 and calls["reviews"] == 0
+            draft = answer(citation=mode not in {"missing_first", "missing_all"})
+            assert result == draft
+            assert "源码核对提示" not in result
             evidence = [
                 row["payload"]
                 for row in repository.events(saved["id"])
@@ -160,14 +156,14 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
             if mode in {"changed", "foreign"}:
                 assert not evidence
             else:
-                # 本轮语义复核会另行登记自己的读取，不能与供主模型复用的工具读取混为一项。
+                # 不再追加模型结论复核读取，重新生成仍复用实际同版本源码。
                 model_reads = [row for row in evidence if not row.get("review_only")]
                 assert len(model_reads) == 1 and model_reads[0]["reason"] == "regenerate"
                 assert model_reads[0]["start_line"] == model_reads[0]["end_line"] == 2
-                assert sum(row["reason"] == "source_review" for row in evidence) == int(verified)
+                assert not any(row["reason"] == "source_review" for row in evidence)
             assert repository.run(original["id"])["answer"] == first["answer"]
             events = repository.events(saved["id"])
-            assert not any(row["kind"] == "token" for row in events)
+            assert any(row["kind"] == "token" for row in events)
             assert [
                 row["payload"]["text"] for row in events if row["kind"] == "answer_replace"
             ] == [result]

@@ -41,28 +41,28 @@ class SequenceReviewModel(DeterministicModel):
                 content="最后一次 return false 在 Move 调用之后。[依据](source:Program.cs#L4-L5)"
             )
         else:
-            answer = AIMessage(content="全部返回在 Move 前。[依据](source:Program.cs#L3-L5)")
+            answer = AIMessage(
+                content="Move 调用之后还有返回 false。[依据](source:Program.cs#L4-L5)"
+            )
         return ChatResult(generations=[ChatGeneration(message=answer)])
 
 
-async def test_long_flow_is_composed_before_source_fact_check_and_final_text_is_displayed(
+async def test_long_flow_keeps_model_format_through_source_fact_check_and_display(
     services, monkeypatch
 ):
     paths, _, workspace, repository, memory, settings = services
     read = workspace.read("Program.cs")
     reference = "[依据](source:Program.cs#L1-L3)"
-    short = "启动流程：读取入口后再分析调用关系，设备动作仍需核对。" + reference
+    original = "流程背景。" * 350 + reference
     checked = []
 
     class Model(DeterministicModel):
         def _generate(self, messages, stop=None, run_manager=None, **kwargs):
-            if "你只负责把流程草稿" in messages[0].text:
-                text = short
-            elif "独立的源码结论复核器" in messages[0].text:
+            if "独立的源码结论复核器" in messages[0].text:
                 checked.append(json.loads(messages[-1].text)["answer"])
                 text = json.dumps({"verdict": "passed", "issues": []})
             else:
-                text = "流程背景。" * 350 + reference
+                text = original
             return ChatResult(generations=[ChatGeneration(message=AIMessage(content=text))])
 
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
@@ -83,14 +83,17 @@ async def test_long_flow_is_composed_before_source_fact_check_and_final_text_is_
     events = []
     answer = await runtime.execute(run, lambda *e: events.append(e))
     repository.finish(run["id"], answer)
-    assert answer == short and checked == [short]
-    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == short
-    assert not any(kind == "token" for kind, _ in events)
-    assert any(kind == "answer_replace" and row["text"] == short for kind, row in events)
+    assert answer == original and checked == []
+    assert not any(kind == "source_review" for kind, _ in events)
+    assert repository.thread(run["thread_id"])["messages"][-1]["content"] == original
+    assert any(kind == "token" for kind, _ in events)
+    assert any(kind == "answer_replace" and row["text"] == original for kind, row in events)
     runtime.semantic.close()
 
 
-async def test_semantic_correction_and_review_stream_are_separate(services, monkeypatch):
+async def test_chat_preserves_main_answer_without_calling_source_conclusion_reviewer(
+    services, monkeypatch
+):
     paths, _, workspace, repository, memory, settings = services
     (workspace.root / "Program.cs").write_text(
         "class Program {\n bool Ready() {\n if (false) return false;\n Move();\n"
@@ -119,7 +122,11 @@ async def test_semantic_correction_and_review_stream_are_separate(services, monk
     answer = await runtime.execute(run, lambda *event: events.append(event))
     assert "Move 调用之后" in answer and "全部返回在 Move 前" not in answer
     reviews = [payload["verdict"] for kind, payload in events if kind == "source_review"]
-    assert reviews == ["needs_correction", "passed"]
+    assert reviews == []
+    assert not any(
+        kind == "provider_usage" and payload.get("purpose") == "source_verification"
+        for kind, payload in events
+    )
     assert not any('"verdict"' in payload["text"] for kind, payload in events if kind == "token")
     runtime.semantic.close()
 
@@ -149,7 +156,8 @@ async def test_unknown_mechanism_is_visible_in_final_reply(services):
     result = await guard.awrap_model_call(
         ModelRequest(model=DeterministicModel(), messages=[]), handler
     )
-    assert "结论复核提示" in result.result[0].text and "参数机制未核实" in result.result[0].text
+    assert result.result[0].text == "调用点在[这里](source:Program.cs#L2)。"
+    assert "source_review_note" not in result.result[0].additional_kwargs
 
 
 def test_unsupported_mechanism_is_removed_but_its_verified_citation_remains():

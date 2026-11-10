@@ -12,7 +12,7 @@
   display: grid;
   gap: 7px;
   margin-top: 12px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .analysis-settings input {
   width: 100%;
@@ -21,7 +21,7 @@
   padding: 8px 10px;
 }
 .analysis-run-details {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
@@ -62,7 +62,7 @@
   display: grid;
   gap: 7px;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .profile-toolbar select,
 .mcp-settings-panel input:not([type='checkbox']),
@@ -74,19 +74,19 @@
   padding: 9px 10px;
   background: var(--panel);
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--font-size-code);
 }
 .profile-current {
   display: flex;
   gap: 10px;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-muted);
 }
 .profile-current .button {
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .mcp-server-list {
   display: grid;
@@ -110,13 +110,13 @@
   align-items: center;
   flex: 1;
   text-align: left;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .mcp-server-list small {
   display: block;
   color: var(--text-muted);
   margin-top: 3px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .secret-fields {
   min-width: 0;
@@ -128,7 +128,7 @@
 .secret-fields legend {
   padding: 0 4px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .secret-fields > div {
   display: grid;
@@ -142,7 +142,7 @@
   align-items: center;
   gap: 5px;
   padding: 5px 0;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-muted);
 }
 .capability-results,
@@ -154,12 +154,12 @@
 .capability-results > summary {
   cursor: pointer;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .capability-results > summary small {
   margin-left: 12px;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .capability-results > div {
   padding: 10px 0 6px;
@@ -172,10 +172,10 @@
   display: flex;
   justify-content: space-between;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .capability-results small {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .capability-results .passed small {
   color: var(--success-text);
@@ -186,7 +186,7 @@
 .capability-results p,
 .mcp-tool-results p {
   margin: 6px 0 0;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   line-height: 1.6;
   color: var(--text-secondary);
   overflow-wrap: anywhere;
@@ -197,7 +197,7 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   padding: 8px 0;
   color: var(--text-secondary);
 }
@@ -205,7 +205,7 @@
   max-height: 180px;
   overflow: auto;
   white-space: pre-wrap;
-  font-size: 11px;
+  font-size: var(--font-size-code);
 }
 .unsaved-notice {
   display: flex;
@@ -215,7 +215,7 @@
   margin-top: 12px;
   background: var(--warning-surface);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--warning-text);
 }
 .unsaved-notice > span {
@@ -224,7 +224,7 @@
 .settings-validation,
 .field-error {
   color: var(--danger-text);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   line-height: 1.7;
 }
 .model-picker {
@@ -233,7 +233,7 @@
   align-items: center;
   gap: 4px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-control);
   max-width: 220px;
 }
 .model-picker select {
@@ -259,7 +259,7 @@
   padding: 10px 12px;
   border-radius: 8px;
   background: var(--surface-subtle);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .run-model-record small {
@@ -283,7 +283,7 @@
 .memory-history summary,
 .memory-review summary {
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .memory-history pre,
 .memory-review pre {
@@ -291,7 +291,7 @@
   overflow: auto;
   white-space: pre-wrap;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--font-size-code);
   line-height: 1.7;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -316,7 +316,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .context-budget dt {
   color: var(--text-muted);
@@ -326,11 +326,12 @@
   font-variant-numeric: tabular-nums;
 }
 .context-budget p {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.65;
 }
 
-.agent-instructions-panel, .agent-instructions-panel > label {
+.agent-instructions-panel,
+.agent-instructions-panel > label {
   display: grid;
   gap: 10px;
   min-width: 0;

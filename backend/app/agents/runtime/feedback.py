@@ -2,6 +2,7 @@
 
 from langchain_core.exceptions import ContextOverflowError
 
+from app.agents.context.history_selection import HistorySelectionUnavailable
 from app.infrastructure.providers.models import safe_error
 
 
@@ -10,7 +11,9 @@ def error_feedback(error, settings):
     name = type(error).__name__.lower()
     text = safe_error(error, settings)
     lowered = text.lower()
-    if status in {401, 403}:
+    if isinstance(error, HistorySelectionUnavailable):
+        code, hint, action = "history_selection", "原始消息和摘要保留，请重试筛选。", "retry"
+    elif status in {401, 403}:
         code, hint, action = (
             "authentication",
             "密钥无效或没有模型权限，请检查供应商配置。",
@@ -43,6 +46,8 @@ def tool_stage(name):
     if name in {
         "search_handover_materials",
         "read_handover_material",
+        "read_chat_attachment",
+        "search_chat_attachment",
     }:
         return "reading_materials"
     if name in {"search_debug_issues", "read_debug_issue"}:

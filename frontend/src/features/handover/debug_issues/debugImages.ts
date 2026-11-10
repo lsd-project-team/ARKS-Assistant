@@ -1,4 +1,5 @@
 import type { Payload } from '../shared/types';
+import { debugMetadata } from './debugKnowledge';
 
 export interface DebugImage {
   id: string;
@@ -7,6 +8,7 @@ export interface DebugImage {
 }
 
 export function debugImages(payload: Payload): DebugImage[] {
+  payload = debugMetadata(payload);
   if (!Array.isArray(payload.images)) return [];
   // 使用记录中的位置顺序；相同图片再次出现时也要保留。
   return payload.images.filter(

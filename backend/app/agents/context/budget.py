@@ -107,9 +107,12 @@ class BudgetedSummarization(SummarizationMiddleware):
 
 
 class ContextBudget(AgentMiddleware):
-    def __init__(self, limit: int, output: int, memory_prompt: str, emit):
+    def __init__(
+        self, limit: int, output: int, memory_prompt: str, emit, *, history_selection=None
+    ):
         self.limit, self.output = limit, output
         self.memory_prompt, self.emit = memory_prompt, emit
+        self.history_selection = history_selection
 
     async def awrap_model_call(self, request, handler):
         system = request.system_message
@@ -123,6 +126,8 @@ class ContextBudget(AgentMiddleware):
             **request_budget(request, self.limit, self.output, self.memory_prompt),
             "phase": "model_request",
         }
+        if self.history_selection and self.history_selection.active:
+            budget["history_filtered"] = True
         self.emit("context_budget", budget)
         self.emit("context", budget)
         if budget["tokens"] > budget["input_limit"]:

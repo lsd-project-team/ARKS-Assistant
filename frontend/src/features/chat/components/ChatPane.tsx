@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { X, FileCode2, ChevronDown, RotateCcw, Folders } from 'lucide-react';
 import { api as request, jsonBody } from '../../../app/api/client';
@@ -14,7 +15,7 @@ import { AnswerMarkdown } from './AnswerMarkdown';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import { useChatScroll } from '../hooks/useChatScroll';
 import { MessageBubble } from './MessageBubble';
-import { ToolActivity } from './ToolActivity';
+import { RunTraceDetails } from './RunTrace';
 import { ContextDialog } from './ContextDialog';
 import { ChatComposer } from './ChatComposer';
 import { ComposerContext } from './ComposerContext';
@@ -35,22 +36,31 @@ import { MessageArchive } from './MessageArchive';
 import { RunArchive } from './RunArchive';
 import { ModelPicker } from '../../settings/components/ModelPicker';
 import { ChatWelcome } from './ChatWelcome';
-import { KnowledgeFeedback } from './RunKnowledgeSummary';
+import { KnowledgeFeedback, RunKnowledgeSummary } from './RunKnowledgeSummary';
 import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
+import { CodeWorkDialog } from '../code_work/CodeWorkDialog';
+import { CodeChangeSummary } from '../code_work/CodeChangeSummary';
+import { useAttachments } from '../attachments/useAttachments';
+import { AttachmentUpload } from '../attachments/AttachmentUpload';
 
 export function ChatPane({
-  onUploadFiles,
   onToggleWorkspace,
   onSettings,
   showHeader,
+  codeWorkPanel,
 }: {
-  onUploadFiles?: () => void;
   onToggleWorkspace: () => void;
   onSettings: (tab: 'model' | 'mcp') => void;
   showHeader: boolean;
+  codeWorkPanel: {
+    open: boolean;
+    target: HTMLElement | null;
+    show: () => void;
+    close: (restore?: boolean) => void;
+  };
 }) {
   const {
     projectId,
@@ -67,15 +77,19 @@ export function ChatPane({
   const api = <T,>(path: string, options?: RequestInit, id = projectId) =>
     request<T>(path, options, id);
   const project = useCurrentProject();
-  const archivedProject = project.data?.state === 'archived';
   const { content: draft, selections } = conversationDraft;
+  const uploader = useAttachments(projectId, threadId);
+  const attachmentInput = useRef<HTMLInputElement>(null);
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
+  const [codeWorkFile, setCodeWorkFile] = useState('');
+  const [codeWorkRun, setCodeWorkRun] = useState('');
   const [selectionPreview, setSelectionPreview] = useState<{
     selection: Selection;
     index: number;
   }>();
   const composerInput = useRef<HTMLTextAreaElement>(null);
+  const focusWelcomeQuestion = useRef(false);
   const mobile = useWorkspace((state) => state.mobile);
   const cache = useQueryClient();
   const conversation = useConversation(threadId);
@@ -110,6 +124,18 @@ export function ChatPane({
   useEffect(() => {
     if (selections.length) composerInput.current?.focus();
   }, [selections.length]);
+  useEffect(() => {
+    if (!focusWelcomeQuestion.current) return;
+    focusWelcomeQuestion.current = false;
+    const input = composerInput.current;
+    if (!input) return;
+    input.focus();
+    // 等受控输入框显示新草稿后，再选中模板中需要用户补充的部分。
+    const placeholder = /【[^】]+】/.exec(draft);
+    if (placeholder) {
+      input.setSelectionRange(placeholder.index, placeholder.index + placeholder[0].length);
+    }
+  }, [draft]);
   const send = useMutation({
     mutationFn: async ({
       key,
@@ -126,7 +152,11 @@ export function ChatPane({
           `/threads/${key}/queue`,
           {
             method: 'POST',
-            body: jsonBody({ content: submitted.content.trim(), selections: submitted.selections }),
+            body: jsonBody({
+              content: submitted.content.trim(),
+              selections: submitted.selections,
+              attachment_ids: submitted.attachments?.map((item) => item.id) || [],
+            }),
           },
           projectId,
         );
@@ -136,7 +166,11 @@ export function ChatPane({
         key === 'new' ? '/threads/start' : `/threads/${key}/runs`,
         {
           method: 'POST',
-          body: jsonBody({ content: submitted.content.trim(), selections: submitted.selections }),
+          body: jsonBody({
+            content: submitted.content.trim(),
+            selections: submitted.selections,
+            attachment_ids: submitted.attachments?.map((item) => item.id) || [],
+          }),
         },
         projectId,
       );
@@ -236,6 +270,31 @@ export function ChatPane({
   const runs = conversation.data?.runs || [];
   const { replyRuns, versionGroups } = groupReplies(messages, runs);
   const interrupted = latest && ['failed', 'cancelled', 'interrupted'].includes(latest.status);
+  // 当前累计修改只跟随最新回答，避免重复挂到历史回复或旧版本上。
+  const summaryMessageId =
+    !active && !interrupted
+      ? messages
+          .filter((message) => message.role === 'assistant' && message.context_active !== false)
+          .at(-1)?.id
+      : undefined;
+  const renderCodeSummary = (runId: string, showCumulative: boolean) =>
+    threadId && (
+      <CodeChangeSummary
+        key={`code-summary:${projectId}:${threadId}:${runId}`}
+        threadId={threadId}
+        projectId={projectId}
+        busy={busy && active?.id === runId}
+        runId={runId}
+        showCumulative={showCumulative}
+        refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
+        onOpen={(path = '', snapshotRun = '') => {
+          setCodeWorkFile(path);
+          setCodeWorkRun(snapshotRun);
+          codeWorkPanel.show();
+        }}
+      />
+    );
+  const codeChangeSummary = renderCodeSummary(active?.id || latest?.id || '', true);
   const canContext = !!threadId;
   const canCompact =
     canContext && messages.length > 0 && !busy && !send.isPending && !compact.isPending;
@@ -341,9 +400,15 @@ export function ChatPane({
           {threadId && conversation.isPending && <p className="muted">正在读取对话…</p>}
           {showWelcome && (
             <ChatWelcome
+              hasSelection={selections.length > 0}
+              disabled={send.isPending}
               onQuestion={(question) => {
+                if (draft.trim()) {
+                  composerInput.current?.focus();
+                  return;
+                }
+                focusWelcomeQuestion.current = true;
                 setDraft(question);
-                composerInput.current?.focus();
               }}
             />
           )}
@@ -361,8 +426,14 @@ export function ChatPane({
                     <ReplyVersions
                       versions={versions}
                       selectedMessage={messageJump.id}
-                      canRegenerate={!archivedProject && !busy && !regenerate.isPending}
+                      canRegenerate={!busy && !regenerate.isPending}
                       onRegenerate={(id) => regenerate.mutate(id)}
+                      renderAfterAnswer={(versionRun) =>
+                        renderCodeSummary(
+                          versionRun.id,
+                          versionRun.response_message_id === summaryMessageId,
+                        )
+                      }
                     />
                   </MessageArchive>
                 </div>
@@ -374,12 +445,10 @@ export function ChatPane({
               <MessageBubble
                 message={message}
                 run={run}
-                canRegenerate={
-                  !archivedProject && !busy && !regenerate.isPending && run?.status === 'completed'
-                }
+                canRegenerate={!busy && !regenerate.isPending && run?.status === 'completed'}
                 onRegenerate={(id) => regenerate.mutate(id)}
                 onEdit={
-                  !archivedProject && !busy && conversation.data?.editable_message_id === message.id
+                  !busy && conversation.data?.editable_message_id === message.id
                     ? (content) =>
                         editQuestion.mutateAsync({
                           id: message.thread_id || threadId,
@@ -392,6 +461,9 @@ export function ChatPane({
                     : undefined
                 }
                 recent={run?.id === latest?.id}
+                afterAnswer={
+                  run ? renderCodeSummary(run.id, message.id === summaryMessageId) : undefined
+                }
               />
             );
             return (
@@ -428,30 +500,29 @@ export function ChatPane({
                 ARKS软件智能助手{' '}
                 <RunActivity run={active} stage={stream.stage} detail={stream.detail} busy={busy} />
               </div>
-              <ToolActivity tools={stream.tools} />
-              {stream.answer ? (
-                <AnswerMarkdown
-                  content={stream.answer}
-                  runId={active.id}
-                  streaming={!stream.finished}
-                />
-              ) : (
-                <span className="muted">
-                  正在思考<span className="typing-dots">…</span>
-                </span>
-              )}
-              {stream.feedback && (
-                <RunFeedback
-                  feedback={stream.feedback}
-                  onSettings={onSettings}
-                  onContext={() => setContext({ runId: active.id })}
-                />
-              )}
-              <KnowledgeFeedback
-                answer={stream.answer}
-                references={stream.references}
-                saves={stream.memorySaves}
+              <RunTraceDetails key={active.id} tools={stream.tools} />
+              <AnswerMarkdown
+                content={stream.answer}
+                runId={active.id}
+                streaming={!stream.finished}
+                afterContent={
+                  <>
+                    {stream.feedback && (
+                      <RunFeedback
+                        feedback={stream.feedback}
+                        onSettings={onSettings}
+                        onContext={() => setContext({ runId: active.id })}
+                      />
+                    )}
+                    <KnowledgeFeedback
+                      answer={stream.answer}
+                      references={stream.references}
+                      saves={stream.memorySaves}
+                    />
+                  </>
+                }
               />
+              {codeChangeSummary}
             </div>
           )}
           {interrupted && (
@@ -466,11 +537,21 @@ export function ChatPane({
                   onContext={() => setContext({ runId: latest.id })}
                 />
               )}
-              {latest.answer && <AnswerMarkdown content={latest.answer} runId={latest.id} />}
-              <Button
-                onClick={() => resume.mutate(latest.id)}
-                disabled={archivedProject || resume.isPending}
-              >
+              {latest.answer && (
+                <AnswerMarkdown
+                  content={latest.answer}
+                  runId={latest.id}
+                  afterContent={
+                    <RunKnowledgeSummary
+                      answer={latest.answer}
+                      runId={latest.id}
+                      projectId={useWorkspace.getState().projectId}
+                    />
+                  }
+                />
+              )}
+              {!active && codeChangeSummary}
+              <Button onClick={() => resume.mutate(latest.id)} disabled={resume.isPending}>
                 <RotateCcw size={13} />
                 {latest.status === 'failed' ? '重试运行' : '继续回复'}
               </Button>
@@ -493,11 +574,6 @@ export function ChatPane({
         </div>
       </div>
       <div className="composer-area">
-        {archivedProject && (
-          <div className="project-readonly-notice">
-            此项目已归档，历史内容可以查看。可在侧栏项目菜单中恢复后继续对话。
-          </div>
-        )}
         <QuestionQueuePanel key={`queue:${threadId}`} queue={queue} threadId={threadId} />
         {scroll.showLatest && (
           <button className="back-to-latest" onClick={scroll.toLatest}>
@@ -528,7 +604,6 @@ export function ChatPane({
           </div>
         )}
         <ChatComposer
-          readOnly={archivedProject}
           key={`composer:${threadId}`}
           inputRef={composerInput}
           draft={draft}
@@ -536,13 +611,22 @@ export function ChatPane({
           onSend={submitDraft}
           onCommand={executeCommand}
           onStop={() => active && cancel.mutate(active.id)}
-          onUploadFiles={onUploadFiles}
+          onUploadFiles={() => attachmentInput.current?.click()}
+          uploading={uploader.busy}
+          attachments={
+            <AttachmentUpload
+              uploader={uploader}
+              attachments={conversationDraft.attachments || []}
+              sending={send.isPending}
+              inputRef={attachmentInput}
+            />
+          }
           sending={send.isPending}
           busy={busy}
           queueing={!!queue.query.data?.items.length}
           stopping={cancel.isPending}
           canContext={canContext}
-          canCompact={!archivedProject && canCompact}
+          canCompact={canCompact}
           compactDisabledReason={!messages.length ? '请先发送一条消息' : '请等待当前运行完成'}
           model={
             modelPreference.data?.model_profiles.find(
@@ -576,6 +660,27 @@ export function ChatPane({
         runId={context?.runId}
         onClose={() => setContext(undefined)}
       />
+      {codeWorkPanel.open &&
+        codeWorkPanel.target &&
+        createPortal(
+          <CodeWorkDialog
+            key={`code-work:${projectId}:${threadId}`}
+            open
+            embedded
+            threadId={threadId}
+            projectId={projectId}
+            busy={busy}
+            initialPath={codeWorkFile}
+            initialRunId={codeWorkRun}
+            onClose={() => codeWorkPanel.close()}
+            onRequest={(request) => {
+              codeWorkPanel.close();
+              if (request) setDraft(draft.trim() ? `${draft}\n\n${request}` : request);
+              composerInput.current?.focus();
+            }}
+          />,
+          codeWorkPanel.target,
+        )}
       {selectionPreview && (
         <SelectionPreview
           selection={selectionPreview.selection}

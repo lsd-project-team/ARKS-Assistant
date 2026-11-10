@@ -14,7 +14,7 @@ from app.modules.handover.domain.rules import (
     linked_ids,
     validate_links,
 )
-from app.modules.handover.domain.schemas import validate_payload
+from app.modules.handover.domain.schemas import PAYLOADS, validate_payload
 from app.modules.handover.infrastructure.persistence.debug_images import DebugImageStorage
 from app.modules.handover.infrastructure.persistence.material_files import attach_material_files
 from app.modules.handover.infrastructure.persistence.models import (
@@ -53,7 +53,9 @@ class HandoverStore(DebugImageStorage):
         self.include_review = can_read_review()
 
     def _rows(self, session):
-        return {row.id: record_dict(row) for row in session.scalars(select(HandoverRecord))}
+        # 只装配当前支持的类型，旧库中的停用记录不进入列表、关联校验或导出。
+        statement = select(HandoverRecord).where(HandoverRecord.kind.in_(PAYLOADS))
+        return {row.id: record_dict(row) for row in session.scalars(statement)}
 
     def list(self):
         with self.database.session() as session:
@@ -73,7 +75,7 @@ class HandoverStore(DebugImageStorage):
 
     def _get(self, session, identifier):
         row = session.get(HandoverRecord, identifier)
-        if not row:
+        if not row or row.kind not in PAYLOADS:
             raise FileNotFoundError("交接记录不存在")
         return row
 
@@ -128,7 +130,11 @@ class HandoverStore(DebugImageStorage):
     def events(self):
         with self.database.session() as session:
             rows = session.scalars(
-                select(HandoverEvent).order_by(HandoverEvent.id.desc()).limit(1000)
+                select(HandoverEvent)
+                .join(HandoverRecord, HandoverRecord.id == HandoverEvent.record_id)
+                .where(HandoverRecord.kind.in_(PAYLOADS))
+                .order_by(HandoverEvent.id.desc())
+                .limit(1000)
             )
             return [
                 {
@@ -173,8 +179,6 @@ class HandoverStore(DebugImageStorage):
             confirmation_gate({"kind": kind, "payload": payload, "id": identifier}, rows)
 
     def create(self, kind, title, payload, actor, *, blob=None):
-        if kind in {"job", "candidate"}:
-            raise ValueError("AI 候选与作业功能已移除")
         value = validate_payload(kind, payload)
         with self.lock, self.database.session.begin() as session:
             identifier = new_id()
@@ -209,8 +213,6 @@ class HandoverStore(DebugImageStorage):
                 raise ValueError("不能改变记录类型")
             if row.kind in {"source", "package"}:
                 raise ValueError("资料与交接包是固定快照，请创建新版本记录")
-            if row.kind in {"job", "candidate"}:
-                raise ValueError("历史 AI 候选与作业仅可查看")
             value = validate_payload(row.kind, body.payload)
             self._validate(session, identifier, row.kind, value)
             old = json.loads(row.payload_json)
@@ -263,8 +265,6 @@ class HandoverStore(DebugImageStorage):
     def action(self, identifier, action, body):
         with self.lock, self.database.session.begin() as session:
             row = self._get(session, identifier)
-            if row.kind in {"job", "candidate"}:
-                raise ValueError("历史 AI 候选与作业仅可查看")
             assert_version(row.version, body.version)
             records = self._rows(session) if action == "confirm" else {}
             outcome = Record.from_mapping(record_dict(row)).review(action, records)

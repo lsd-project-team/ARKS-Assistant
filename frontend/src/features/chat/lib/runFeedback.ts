@@ -8,7 +8,7 @@ export const runStages: Record<string, string> = {
   reading_source: '读取源码',
   reading_debug: '检索问题与经验',
   reading_materials: '检索资料正文',
-  checking_sources: '核对源码引用',
+  checking_sources: '筛选相关资料',
   reading_wiki: '查阅 DeepWiki',
   reading_memory: '读取记忆与历史',
   compacting: '压缩上下文',

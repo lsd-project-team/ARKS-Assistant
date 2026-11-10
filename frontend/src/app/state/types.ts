@@ -24,11 +24,13 @@ export interface WorkspaceState extends FileNavigation {
   startConversation: (projectId: string) => void;
   initializeProject: (id: string) => void;
   resetProjectSource: (id: string) => void;
+  removeProject: (id: string, disposition: 'independent' | 'trash') => void;
   threadId: string;
   messageJump: MessageJump;
   chatPositions: Record<string, ChatPosition>;
   closedFiles: FileLocation[];
   sourceFontSize: number;
+  sourceTypographyVersion: number;
   sourceLineHeight: number;
   drafts: Record<string, ConversationDraft>;
   chatRatio: number;

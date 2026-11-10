@@ -37,7 +37,15 @@ export default function KnowledgeWorkspace({
       );
       break;
     case 'catalog':
-      page = <DiagramDetail key={route.id} id={route.id} navigate={navigate} theme={theme} />;
+      page = (
+        <DiagramDetail
+          key={route.id}
+          id={route.id}
+          section={route.section}
+          navigate={navigate}
+          theme={theme}
+        />
+      );
       break;
     case 'topic':
       page = <TopicDetail key={route.id} id={route.id} navigate={navigate} />;

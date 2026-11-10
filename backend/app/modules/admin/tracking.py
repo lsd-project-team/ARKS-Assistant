@@ -17,6 +17,7 @@ from app.modules.admin.models import (
     UsageVisit,
 )
 from app.modules.chat.models import Message, Thread
+from app.modules.handover.domain.schemas import PAYLOADS
 from app.modules.handover.infrastructure.persistence.models import HandoverRecord
 from app.modules.memory.models import MemoryRecord
 from app.modules.projects.models import Project
@@ -46,10 +47,8 @@ def business_category(method, path):
         if path.endswith(("/export", "/cancel")):
             return None
         return "交接业务"
-    if path == "/api/projects" or re.fullmatch(
-        r"/api/projects/[^/]+(?:/materials(?:/[^/]+)?)?", path
-    ):
-        return "项目与资料"
+    if path == "/api/projects" or re.fullmatch(r"/api/projects/[^/]+", path):
+        return "项目管理"
     if path.startswith("/api/memories") and not path.endswith(("/review", "/history")):
         return "知识维护"
     return None
@@ -120,7 +119,7 @@ class UsageTracking:
     def successful_request(self, user, method, path, request_id):
         category = business_category(method, path)
         relative = re.sub(r"^/api/p/[^/]+/", "/api/", path)
-        configuration = relative == "/api/settings" or category in {"项目与资料", "知识维护"}
+        configuration = relative == "/api/settings" or category in {"项目管理", "知识维护"}
         if (
             user["role"] == "admin"
             and method in {"POST", "PUT", "PATCH", "DELETE"}
@@ -169,7 +168,7 @@ class UsageTracking:
                     .where(Thread.state != "deleted")
                 )
                 or 0,
-                "交接记录": count(HandoverRecord, HandoverRecord.kind.not_in(["job", "candidate"])),
+                "交接记录": count(HandoverRecord, HandoverRecord.kind.in_(PAYLOADS)),
             }
             daily = {}
 

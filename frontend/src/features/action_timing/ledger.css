@@ -9,7 +9,7 @@
   flex-direction: column;
   background: var(--surface-warm);
   color: var(--text);
-  font: 400 14px/1.65 var(--font-ui);
+  font: 400 var(--font-size-body)/1.65 var(--font-ui);
   container-type: inline-size;
 }
 .ledger-workspace,
@@ -42,7 +42,7 @@
   gap: 10px;
   min-width: 0;
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-size-page-title);
   font-weight: 600;
   letter-spacing: -0.3px;
 }
@@ -80,7 +80,7 @@
   align-items: center;
   justify-content: center;
   min-height: 38px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   white-space: nowrap;
 }
 .ledger-table-panel {
@@ -105,7 +105,7 @@
   flex-shrink: 0;
   min-height: 32px;
   padding: 5px 10px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .ledger-table-panel {
   display: flex;
@@ -137,13 +137,13 @@
   color: var(--text-secondary);
   background: transparent;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   white-space: nowrap;
   cursor: pointer;
 }
 .ledger-category small {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   font-variant-numeric: tabular-nums;
 }
 .ledger-category:hover {
@@ -190,7 +190,7 @@
   /* 外层已提供边框和底色，避免主题聚焦样式再给内层输入框叠一圈光晕。 */
   background: transparent !important;
   box-shadow: none !important;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .ledger-toolbar > .ui-select-trigger {
   flex: 0 0 120px;
@@ -204,12 +204,12 @@
   min-width: 520px;
   border-collapse: collapse;
   text-align: left;
-  font-size: 13px;
+  font-size: var(--font-size-table);
 }
 .ledger-table th {
   background: var(--surface-subtle);
   color: var(--text-secondary, var(--muted));
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 500;
   padding: 11px 14px;
   white-space: nowrap;
@@ -308,7 +308,7 @@ th[aria-sort='descending'] .ledger-sort {
 }
 .ledger-empty h2 {
   margin: 3px 0 0;
-  font-size: 16px;
+  font-size: var(--font-size-section-title);
   font-weight: 500;
   color: var(--text);
 }
@@ -326,7 +326,7 @@ th[aria-sort='descending'] .ledger-sort {
   margin-top: auto;
   border-top: 1px solid var(--border);
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .ledger-pagination > span {
   margin-right: auto;
@@ -350,7 +350,7 @@ th[aria-sort='descending'] .ledger-sort {
   display: grid;
   gap: 8px;
   color: var(--text-secondary, var(--text));
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .ledger-fields > label > span {
   color: var(--danger-text);
@@ -369,7 +369,7 @@ th[aria-sort='descending'] .ledger-sort {
 }
 .ledger-fields .ledger-muted {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .ledger-category-form {
   display: grid;
@@ -402,7 +402,7 @@ th[aria-sort='descending'] .ledger-sort {
 }
 .ledger-category-list small {
   display: block;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
   margin-top: 3px;
 }
@@ -459,7 +459,7 @@ th[aria-sort='descending'] .ledger-sort {
   max-height: 180px;
   overflow: auto;
   color: var(--danger-text);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 /* 分类沿用工作台的横向导航，窄工作区只滚动分类，不挤压动作表。 */
 @container (max-width: 600px) {

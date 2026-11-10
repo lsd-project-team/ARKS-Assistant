@@ -7,6 +7,7 @@ def record_dict(record) -> dict:
     result = {column.name: getattr(record, column.name) for column in record.__table__.columns}
     for field in (
         "selections_json",
+        "attachments_json",
         "payload_json",
         "model_snapshot_json",
         "source_options_json",

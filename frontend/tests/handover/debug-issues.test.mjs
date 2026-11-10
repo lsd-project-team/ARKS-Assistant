@@ -23,9 +23,9 @@ test('六项投影保留旧字段事实，已合入方法和注意事项的内�
   };
   const original = structuredClone(payload);
   const projected = debugKnowledgePayload(payload);
-  assert.equal(projected.problem, payload.problem);
-  assert.ok(projected.conditions.includes('设备：ZX2200 HS'));
-  assert.ok(projected.conditions.includes('模块：S1'));
+  assert.equal(projected.question, payload.problem);
+  assert.ok(projected.answer.includes('现场加热'));
+  assert.ok(projected.answer.includes('更换密封圈'));
   assert.equal(projected.original_text, payload.original_text);
   assert.deepEqual(projected.images, payload.images);
   assert.equal(projected.verification, undefined);
@@ -102,7 +102,7 @@ test('导入来源编号和文件不进入展示及编辑，正文、状态与�
   assert.equal(visible.problem, '完整正文');
   assert.equal(visible.resolution_status, 'open');
   const editable = debugEditablePayload(payload);
-  assert.equal(editable.notes, visible.notes);
+  assert.ok(editable.answer.includes('处理后仍需验证'));
   assert.deepEqual(editable.keywords, visible.keywords);
   assert.deepEqual(payload, before);
 });
@@ -130,11 +130,11 @@ test('工作进展和经验按已记录展示，记录人和两个日期可独�
     resolution_status: 'open',
     reported_by: '李少达',
   });
-  assert.equal(payload.resolution_status, 'recorded');
+  assert.equal(payload.metadata.resolution_status, 'recorded');
   assert.equal(debugStatus(payload), '已记录');
-  assert.equal(payload.occurred_on, '8月28日');
-  assert.equal(payload.recorded_at, '9月1日 15:49');
-  assert.equal(payload.recorded_by, '贺强');
+  assert.equal(payload.metadata.occurred_on, '8月28日');
+  assert.equal(payload.metadata.recorded_at, '9月1日 15:49');
+  assert.equal(payload.metadata.recorded_by, '贺强');
   assert.equal('reported_by' in payload, false);
   const rows = [
     { id: 'progress', kind: 'debug_issue', title: '发货延期', updated_at: '2026-10-16', payload },
@@ -145,7 +145,7 @@ test('工作进展和经验按已记录展示，记录人和两个日期可独�
   );
   assert.deepEqual(filterDebugIssues(rows, '', 'open'), []);
   assert.deepEqual(filterDebugIssues(rows, '', '', 'problem'), []);
-  assert.equal(debugEditablePayload({ problem: '旧问题' }).record_type, 'problem');
+  assert.equal(debugEditablePayload({ problem: '旧问题' }).metadata.record_type, 'problem');
 });
 
 test('编辑请求仅发送可编辑事实字段，原文和对话身份由服务端保留', () => {
@@ -158,8 +158,8 @@ test('编辑请求仅发送可编辑事实字段，原文和对话身份由服�
     solution: '处理',
     resolution_status: 'resolved',
   });
-  assert.equal(value.problem, '报警');
-  assert.equal(value.resolution_status, 'resolved');
+  assert.equal(value.question, '报警');
+  assert.equal(value.metadata.resolution_status, 'resolved');
   for (const field of ['original_text', 'reported_by', 'source_message_id', 'origin'])
     assert.equal(field in value, false);
 });

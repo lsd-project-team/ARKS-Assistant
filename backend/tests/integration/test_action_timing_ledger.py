@@ -409,7 +409,7 @@ def test_timing_project_names_and_data_are_independent_of_chat_lifecycle(service
             == 409
         )
         assert client.post("/api/action-timing/projects", json={"name": "  "}).status_code == 422
-        for changes in ({"name": "个人对话"}, {"state": "archived"}):
+        for changes in ({"name": "个人对话"}, {"pinned": True}):
             assert client.patch("/api/projects/" + chat["id"], json=changes).status_code == 200
             data = client.get(BASE).json()
             assert data["writable"] and data["items"] == [item]

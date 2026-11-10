@@ -1,6 +1,6 @@
 .knowledge-feedback {
   margin-top: 16px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
 }
 .knowledge-feedback details {
@@ -12,7 +12,7 @@
   width: fit-content;
 }
 .knowledge-feedback .muted {
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   margin: 8px 0;
 }
 .knowledge-reference {
@@ -21,7 +21,7 @@
   margin: 12px 0;
 }
 .knowledge-reference .markdown {
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .knowledge-reference .markdown p {
   margin: 0;

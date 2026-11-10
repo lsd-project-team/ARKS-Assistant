@@ -85,7 +85,7 @@ strong {
 }
 .muted {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.7;
 }
 .padded {
@@ -100,7 +100,7 @@ strong {
   border: 1px solid var(--border);
   border-radius: 9px;
   background: white;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   white-space: nowrap;
   transition:
     background 0.15s,
@@ -131,7 +131,7 @@ strong {
 .error-text {
   color: #b44a54;
   background: #fdf0f1;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   padding: 10px 12px;
   border-radius: 8px;
   margin: 8px 0;
@@ -142,7 +142,7 @@ strong {
   align-items: center;
   gap: 6px;
   color: #3d8269;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .tiny-dot {
   width: 5px;
@@ -181,7 +181,7 @@ strong {
   padding: 0 18px;
 }
 .sidebar-heading strong {
-  font-size: 17px;
+  font-size: var(--font-size-body);
   letter-spacing: -0.4px;
 }
 .sidebar-heading > div {
@@ -236,7 +236,7 @@ strong {
   padding: 9px 11px;
   min-width: 0;
   flex: 1;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   text-align: left;
 }
 .thread-select span {
@@ -245,7 +245,7 @@ strong {
   white-space: nowrap;
 }
 .thread-row input {
-  font-size: 12px;
+  font-size: var(--font-size-control);
   padding: 8px;
 }
 .sidebar-footer {
@@ -253,7 +253,7 @@ strong {
   align-items: center;
   gap: 7px;
   padding: 17px 20px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .offline .tiny-dot {
@@ -296,7 +296,7 @@ strong {
   min-height: 60px;
   border-bottom: 1px solid var(--border);
   padding: 0 22px;
-  font-size: 14px;
+  font-size: var(--font-size-body);
 }
 .chat-heading > div {
   display: flex;
@@ -336,7 +336,7 @@ strong {
   color: var(--text);
 }
 .chat-welcome p {
-  font-size: 13px;
+  font-size: var(--font-size-body);
   line-height: 1.85;
   color: var(--muted);
   margin: 0 0 29px;
@@ -349,7 +349,7 @@ strong {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   color: var(--muted);
   margin-bottom: 12px;
   letter-spacing: 0.1px;
@@ -372,7 +372,7 @@ strong {
   display: none;
 }
 .markdown {
-  font-size: 15px;
+  font-size: var(--font-size-body);
   line-height: 1.9;
   color: var(--text);
 }
@@ -385,7 +385,7 @@ strong {
 .markdown h1,
 .markdown h2,
 .markdown h3 {
-  font-size: 15px;
+  font-size: var(--font-size-body);
   font-weight: 600;
   margin: 20px 0 10px;
   color: var(--text);
@@ -408,7 +408,7 @@ strong {
   background: var(--surface-subtle);
   color: var(--text-secondary);
   border-radius: 4px;
-  font-size: 12px;
+  font-size: var(--font-size-code);
 }
 .markdown pre {
   overflow: auto;
@@ -427,7 +427,7 @@ strong {
   display: block;
   overflow-x: auto;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: var(--font-size-table);
 }
 .markdown th,
 .markdown td {
@@ -447,7 +447,7 @@ strong {
 }
 .source-link {
   display: inline;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   padding: 1px 4px;
   border: 1px solid var(--border);
@@ -468,7 +468,7 @@ strong {
   border-radius: 7px;
   background: var(--surface-subtle);
   padding: 4px 7px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   margin: 0 4px 9px 0;
 }
@@ -496,7 +496,7 @@ strong {
   color: var(--text-secondary);
 }
 .thinking {
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
   margin-left: auto;
 }
@@ -510,7 +510,7 @@ strong {
   padding: 9px 11px;
   background: var(--surface-subtle);
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .tool-activity summary {
   display: flex;
@@ -523,7 +523,7 @@ strong {
 }
 .tool-activity pre {
   font-family: Consolas, monospace;
-  font-size: 11px;
+  font-size: var(--font-size-code);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   max-height: 180px;
@@ -532,7 +532,7 @@ strong {
 }
 .saved-trace {
   margin-bottom: 13px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .saved-trace > summary {
@@ -567,7 +567,7 @@ strong {
   border: 0;
   outline: none;
   box-shadow: none;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.8;
   padding: 0;
   min-height: 58px;
@@ -604,7 +604,7 @@ strong {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
   min-width: 0;
 }
@@ -644,7 +644,7 @@ strong {
   background: var(--surface-subtle);
   color: var(--text-secondary);
   border-radius: 10px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   padding: 7px 8px;
   max-width: 100%;
 }
@@ -655,7 +655,7 @@ strong {
 .selection-chip small {
   color: var(--muted);
   margin-left: 6px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .selection-chip button {
   padding: 2px;
@@ -669,7 +669,7 @@ strong {
 }
 .stream-notice {
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   padding: 6px 0;
 }
 
@@ -766,7 +766,7 @@ strong {
   padding: 0 6px 0 10px;
   border: 1px solid transparent;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   color: var(--muted);
   height: 30px;
   transition:
@@ -801,7 +801,7 @@ strong {
   color: var(--muted);
 }
 .empty-tab {
-  font-size: 12px;
+  font-size: var(--font-size-control);
   color: var(--muted);
   padding-left: 6px;
 }
@@ -835,7 +835,7 @@ strong {
   scrollbar-color: var(--border-strong) transparent;
   --diffs-font-family:
     ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-  --diffs-font-size: 12px;
+  --diffs-font-size: var(--font-size-code);
   --diffs-line-height: 21.6px;
   --diffs-gap-block: 0;
   --diffs-min-number-column-width: 4ch;
@@ -861,12 +861,12 @@ strong {
   min-width: 0;
   width: 0;
   padding: 5px 6px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .source-search span {
   padding: 0 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--font-size-control);
   white-space: nowrap;
 }
 .source-search button {
@@ -899,12 +899,12 @@ strong {
 }
 .editor-empty h2 {
   font-weight: 500;
-  font-size: 19px;
+  font-size: var(--font-size-section-title);
   color: var(--text-secondary);
   margin: 0 0 12px;
 }
 .editor-empty p {
-  font-size: 12px;
+  font-size: var(--font-size-body);
   line-height: 1.9;
   color: var(--text-faint);
   margin: 0;
@@ -914,7 +914,7 @@ strong {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-faint);
   margin-top: 28px;
 }
@@ -949,7 +949,7 @@ strong {
   justify-content: space-between;
   gap: 10px;
   padding: 6px 12px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .code-status span {
@@ -974,7 +974,7 @@ strong {
   border-bottom: 1px solid var(--border);
   padding: 0 10px;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 .explorer-heading > span {
   display: flex;
@@ -1002,7 +1002,7 @@ strong {
 .search-box input {
   border: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   min-width: 0;
   box-shadow: none;
 }
@@ -1015,7 +1015,7 @@ strong {
   gap: 7px;
   width: 100%;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   text-align: left;
 }
@@ -1028,7 +1028,7 @@ strong {
   gap: 7px;
   min-height: 28px;
   height: 28px;
-  font-size: 13px;
+  font-size: var(--font-size-control);
   width: calc(100% - 12px);
   margin: 0 6px;
   border-radius: 5px;
@@ -1107,13 +1107,13 @@ strong {
 }
 .modal-heading h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-dialog-title);
   font-weight: 600;
   color: var(--text);
 }
 .modal-heading p {
   margin: 6px 0 0;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .dialog-tabs {
@@ -1128,7 +1128,7 @@ strong {
   align-items: center;
   padding: 10px 8px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-control);
   border-bottom: 2px solid transparent;
 }
 .dialog-tabs button.selected {
@@ -1149,14 +1149,14 @@ strong {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .settings-fields input,
 .settings-fields select,
 .memory-editor input,
 .memory-editor select {
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .settings-fields .button {
   align-self: flex-start;
@@ -1170,12 +1170,12 @@ strong {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
 }
 .json-editor {
   font-family: Consolas, monospace;
-  font-size: 11px;
+  font-size: var(--font-size-code);
   line-height: 1.6;
 }
 .button-row {
@@ -1193,7 +1193,7 @@ strong {
   background: var(--surface-subtle);
 }
 .modal-footer > span {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
 }
 .settings-fields .checkbox-label {
@@ -1231,7 +1231,7 @@ strong {
   text-align: left;
   width: 100%;
   padding: 10px 8px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
   color: var(--text-secondary);
   border-radius: 6px;
 }
@@ -1241,7 +1241,7 @@ strong {
 }
 .memory-list small {
   display: block;
-  font-size: 9px;
+  font-size: var(--font-size-meta);
   margin-top: 5px;
   color: var(--text-faint);
 }
@@ -1254,14 +1254,14 @@ strong {
   gap: 15px;
 }
 .memory-editor textarea {
-  font-size: 12px;
+  font-size: var(--font-size-control);
   line-height: 1.8;
 }
 .memory-source {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   text-align: left;
   overflow-wrap: anywhere;
@@ -1286,7 +1286,7 @@ strong {
   gap: 5px;
   padding: 6px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--font-size-control);
 }
 .answer-actions button:hover {
   color: var(--text);
@@ -1299,14 +1299,14 @@ strong {
 }
 .context-body h3 {
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--font-size-subtitle);
   margin: 0 0 14px;
 }
 .context-body pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--font-size-code);
   line-height: 1.8;
   max-height: 300px;
   overflow: auto;
@@ -1322,7 +1322,7 @@ strong {
   border-radius: 10px;
   padding: 12px;
   margin: 8px 0;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .context-memory summary {
   cursor: pointer;
@@ -1330,13 +1330,13 @@ strong {
 .context-memory summary span,
 .context-memory small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   margin-left: 10px;
 }
 .context-source {
   display: block;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   padding: 8px 0;
   text-align: left;
   overflow-wrap: anywhere;
@@ -1372,7 +1372,7 @@ strong {
   padding-top: 8px;
   border-top: 1px solid var(--border);
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .composer-context-actions {
   display: flex;
@@ -1413,7 +1413,7 @@ strong {
 }
 .composer-context .error-text {
   margin-top: 6px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .composer-commands {
   position: absolute;
@@ -1446,10 +1446,10 @@ strong {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 10px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .composer-commands code {
-  font-size: 12px;
+  font-size: var(--font-size-code);
 }
 .composer-commands strong {
   font-weight: 500;
@@ -1457,13 +1457,13 @@ strong {
 .composer-commands small {
   display: block;
   margin-top: 4px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   line-height: 1.5;
   color: var(--text-secondary);
 }
 .command-keyboard-hint {
   padding: 5px 10px 3px;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--text-faint);
 }
 .back-to-latest {
@@ -1479,7 +1479,7 @@ strong {
   border-radius: 20px;
   background: var(--panel);
   box-shadow: var(--shadow-raised);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   white-space: nowrap;
   z-index: 3;
 }
@@ -1490,7 +1490,7 @@ mark {
 }
 kbd {
   font-family: inherit;
-  font-size: 10px;
+  font-size: var(--font-size-code);
   color: var(--muted);
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -1500,7 +1500,7 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   color: var(--text-secondary);
   margin: 0 12px 10px;
   padding: 4px 2px;
@@ -1534,12 +1534,12 @@ kbd {
 }
 .quick-file-list strong {
   display: block;
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .quick-file-list small {
   display: block;
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   overflow-wrap: anywhere;
   margin-top: 5px;
 }
@@ -1603,7 +1603,7 @@ kbd {
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-control);
     color: var(--muted);
     border-radius: 7px;
   }
@@ -1743,7 +1743,7 @@ kbd {
   border-radius: 999px;
   background: var(--panel);
   box-shadow: 0 2px 7px #00000005;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   line-height: 1;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -1797,7 +1797,7 @@ kbd {
 }
 .file-toolbar .file-mode-button {
   gap: 5px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   padding: 5px 7px;
 }
 .file-menu-anchor {
@@ -1820,7 +1820,7 @@ kbd {
   gap: 9px;
   padding: 7px 9px;
   justify-content: flex-start;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   white-space: nowrap;
 }
 .file-menu button > svg:last-child:not(:first-child) {
@@ -1841,7 +1841,7 @@ kbd {
 }
 .file-name small {
   display: block;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1856,7 +1856,7 @@ kbd {
   overflow: auto;
   padding: 24px clamp(18px, 4cqw, 48px) 64px;
   background: var(--panel);
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.75;
   overflow-wrap: anywhere;
   scrollbar-width: thin;
@@ -1877,13 +1877,13 @@ kbd {
   margin-bottom: 16px;
 }
 .markdown-preview h3 {
-  font-size: 17px;
+  font-size: var(--font-size-body);
   margin-top: 24px;
 }
 .markdown-preview h4,
 .markdown-preview h5,
 .markdown-preview h6 {
-  font-size: 15px;
+  font-size: var(--font-size-body);
   margin-top: 20px;
 }
 .markdown-preview h1,
@@ -1959,7 +1959,7 @@ kbd {
   padding: 30px 16px 16px;
   white-space: pre;
   font-family: Consolas, monospace;
-  font-size: 12px;
+  font-size: var(--font-size-code);
   line-height: 1.7;
 }
 .preview-code-block code {
@@ -1971,7 +1971,7 @@ kbd {
   position: absolute;
   top: 7px;
   left: 16px;
-  font-size: 10px;
+  font-size: var(--font-size-code);
   color: var(--muted);
 }
 .markdown-preview table {
@@ -2001,7 +2001,7 @@ kbd {
 }
 .selection-lines {
   opacity: 0.6;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 @container (max-width: 560px) {
   .toolbar-label {
@@ -2049,7 +2049,7 @@ kbd {
   }
   .markdown-preview {
     padding-top: 20px;
-    font-size: 13px;
+    font-size: var(--font-size-control);
   }
 }
 @media (min-width: 801px) and (max-width: 1100px) {

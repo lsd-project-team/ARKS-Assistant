@@ -94,6 +94,9 @@ def request_budget(request, limit: int, output: int, memory_prompt: str = "") ->
 
 def current_budget(messages, snapshot: dict | None, limit: int, output: int) -> dict:
     if snapshot:
+        if snapshot.get("history_filtered"):
+            # 历史投影不写回检查点；不能拿完整档案覆盖最后实际请求的估算。
+            return {**snapshot, "breakdown": dict(snapshot["breakdown"])}
         result = {**snapshot, "breakdown": {**snapshot["breakdown"], **message_breakdown(messages)}}
         result["tokens"] = sum(result["breakdown"].values())
         return result

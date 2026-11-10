@@ -32,7 +32,7 @@ ARKS 将源码和问题与经验放在同一个工作区。你可以一边阅读
 - **整理资料与交接**：在交接工作台维护共享资料、任务进度和调试问题，生成交接包并保留版本历史。
 - **管理动作耗时**：按分类维护动作、耗时和备注，支持添加、编辑、Excel/CSV预览导入与全部/筛选导出。数据可后期补充，旧源码模拟已移除，见[动作耗时台账说明](docs/features/action-timing.md)。
 
-> 原源码工作区保持只读。“查看项目”入口与项目首页已移除，通过侧栏管理项目和对话。旧隔离修改、需求约定、预设命令验证和审核交付流程已完整移除；聊天保留源码读取、分析和代码建议。历史档案保留备份兼容，具体边界见[代码工作清理说明](docs/features/code-work.md)。
+> 原源码工作区保持只读。直接在聊天描述软件问题或修改需求，AI 可在独立副本中编辑主工程业务 C#，编译并执行原工程已有的 Simulation 自检，无需输入斜杠命令。输入框“代码修改”面板可查看差异、撤销和下载修改。需由管理员配置可信本机 Windows 原工程与 MSBuild；覆盖范围和使用方法见[独立代码副本](docs/features/code-work.md)。旧需求约定、预设命令、审核交付及历史档案接口继续停用。
 
 ## 快速开始
 
@@ -88,7 +88,7 @@ API 密钥保存在本机 `data/settings.private.json`，Git 和应用导出的�
 | 日常操作、知识问答与调试记录 | [使用指南](docs/features/user-guide.md)                                                                                          |
 | 安装选项、启动排查与开发检查 | [本地运行与开发](docs/development/local-development.md)                                                                          |
 | 项目、源码目录与资料管理     | [项目功能](docs/features/projects.md)                                                                                            |
-| 已移除的代码修改流程       | [清理状态与历史档案](docs/features/code-work.md)                                                                                  |
+| 独立代码修改与仿真验证       | [使用方法、验证范围与历史边界](docs/features/code-work.md)                                                                       |
 | 账号角色与数据访问范围       | [账号与访问控制](docs/features/accounts-and-handover-access.md) · [项目与对话隔离](docs/features/account-workspace-isolation.md) |
 | 本地数据备份与停服恢复       | [备份与恢复](docs/development/backup-and-restore.md)                                                                             |
 | 公司 Linux 部署与迁移边界    | [Linux 部署](docs/development/linux-deployment.md)                                                                               |

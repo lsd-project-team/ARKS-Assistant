@@ -23,6 +23,7 @@ def test_stage_is_unknown_when_only_function_or_other_identifier_is_recorded(mod
     assert result["status"] == "needs_confirmation"
     assert result["missing"] == ["module"]
     assert "module" not in result["matched"]
+    assert result["reason"] == ""
 
 
 @pytest.mark.parametrize("module", ["S2固晶", "s2", "S1/S2共享中转台"])
@@ -30,6 +31,7 @@ def test_explicit_matching_stage_still_matches(module):
     result = compatibility(record(module), explicit_filters("ZX2200 HS V2.1.0 S2 加热取片"))
     assert result["status"] == "matched"
     assert "module" in result["matched"]
+    assert result["reason"] == ""
 
 
 @pytest.mark.parametrize(
@@ -46,4 +48,6 @@ def test_other_explicit_conflicts_are_not_relaxed(module, question):
     filters = explicit_filters(question)
     if question == "中转台取片":
         filters["module"] = "点胶"
-    assert compatibility(record(module), filters)["status"] == "mismatch"
+    result = compatibility(record(module), filters)
+    assert result["status"] == "mismatch"
+    assert result["reason"]  # 明确冲突仍保留具体原因，不能随泛化提醒一起清空。

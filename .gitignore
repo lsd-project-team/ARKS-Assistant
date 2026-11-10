@@ -11,6 +11,9 @@ backend/tools/**/obj/
 **/node_modules/
 frontend/dist/
 frontend/dist-*/
+# 文档生成的原始草稿与静态 HTML 导出不作为源码提交。
+docs/_raw/
+html页面/
 # 本地历史参考仓库不作为嵌套 Git 仓库提交。
 其他模块/
 *.log

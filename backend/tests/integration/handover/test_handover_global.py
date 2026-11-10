@@ -20,32 +20,35 @@ def test_global_records_survive_dialog_project_changes_and_new_writes(services):
         row = client.post(
             "/api/handover/records",
             json={
-                "kind": "interview",
+                "kind": "issue",
                 "title": "全局笔录",
                 "actor": "整理人",
-                "payload": {"transcript": "原作者说明，尚未核验。"},
+                "payload": {"question": "原作者说明，尚未核验。"},
             },
         ).json()
         before = client.get("/api/handover").json()
         assert row["scope_id"] == "global" and row["source_project_id"] is None
         for project_id in (first, second):
-            client.patch(f"/api/projects/{project_id}", json={"state": "archived"})
+            assert (
+                client.patch(
+                    f"/api/projects/{project_id}", json={"name": f"新名称-{project_id}"}
+                ).status_code
+                == 200
+            )
             assert client.get("/api/handover").json() == before
         changed = client.patch(
             f"/api/handover/records/{row['id']}",
             json={
-                "kind": "interview",
+                "kind": "issue",
                 "title": row["title"],
                 "actor": "接手人",
                 "version": 1,
-                "payload": {"transcript": "补充全局笔录"},
+                "payload": {"question": "补充全局笔录"},
             },
         )
         assert changed.status_code == 200
         assert (
-            client.get(f"/api/handover/records/{row['id']}?version=1").json()["payload"][
-                "transcript"
-            ]
+            client.get(f"/api/handover/records/{row['id']}?version=1").json()["payload"]["question"]
             == "原作者说明，尚未核验。"
         )
         context = client.get("/api/handover/context").json()

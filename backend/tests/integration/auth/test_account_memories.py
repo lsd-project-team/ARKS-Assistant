@@ -79,13 +79,22 @@ def test_run_sources_events_and_trace_hide_another_accounts_private_memory(servi
         repository.event(
             run["id"], "memory_selection", {"status": "PRIVATE-SELECTION", "candidate_count": 1}
         )
+        repository.event(
+            run["id"], "provider_usage", {"purpose": "memory_selection", "duration_ms": 123}
+        )
         repository.finish(run["id"], "公开的回答")
         assert "PRIVATE-MEMORY" in client.get(f"{prefix}/runs/{run['id']}/context").text
+        own = client.get(f"{prefix}/runs/{run['id']}/context").json()
+        assert own["trace"]["model_calls"] == 1 and not own["trace"]["memory_private"]
         sign_in(client, "admin")
         for suffix in ("context", "trace", "events"):
             response = client.get(f"{prefix}/runs/{run['id']}/{suffix}")
             assert response.status_code == 200
             assert "PRIVATE-" not in response.text, response.text
+            if suffix == "context":
+                trace = response.json()["trace"]
+                assert trace["memory_private"] and "memory" not in trace["filters"]
+                assert trace["model_calls"] == 0
 
 
 async def test_queue_execution_uses_question_submitter_not_dispatcher(services):

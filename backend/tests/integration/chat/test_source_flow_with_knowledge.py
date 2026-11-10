@@ -53,7 +53,7 @@ def seed_unrelated_records(database):
         )
 
 
-@pytest.mark.parametrize("presentation", ["markdown", "rich", "composed"])
+@pytest.mark.parametrize("presentation", ["markdown", "rich", "long-rich"])
 @pytest.mark.parametrize("use_knowledge", [True, False])
 @pytest.mark.parametrize("verdict", ["passed", "unknown"])
 async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repairs(
@@ -67,7 +67,8 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
     compact = flow("Main 方法体为空，没有后续动作。")
     if presentation == "markdown":
         compact = "1. Main 方法体为空，没有后续动作。[源码](source:Program.cs#L2-L2)"
-    draft = flow("尚待整理的冗长流程说明。" * 200) if presentation == "composed" else compact
+    if presentation == "long-rich":
+        compact = flow("Main 方法体为空，没有后续动作。" * 200)
     phases = []
 
     class Model(DeterministicModel):
@@ -79,10 +80,6 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
             if "你只负责筛选资料" in messages[0].text:
                 phases.append("knowledge_selection")
                 result = AIMessage(content='{"selections":[]}')
-            elif "draft" in payload and "question" in payload:
-                assert payload["draft"] == draft
-                phases.append("compose")
-                result = AIMessage(content=compact)
             elif "answer" in payload and "source" in payload:
                 assert "Main 方法体为空" in payload["answer"]
                 phases.append("review")
@@ -91,7 +88,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
                 isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
             ):
                 phases.append("answer")
-                result = AIMessage(content=draft)
+                result = AIMessage(content=compact)
             else:
                 phases.append("read")
                 result = AIMessage(
@@ -122,27 +119,20 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
         saved = repository.run(run["id"])
         assert saved["status"] == "completed", saved.get("error")
         answer = saved["answer"]
-        if verdict == "passed":
-            assert answer == compact
-        else:
-            assert answer.startswith(compact)
+        assert answer == compact
         events = repository.events(run["id"])
         context = repository.run_event(run["id"], "context_sources")
         assert context["debug_issues"] == []
         assert not any(event["kind"] == "knowledge_search" for event in events)
-        assert phases == [
-            "read",
-            "answer",
-            *(["compose"] if presentation == "composed" else []),
-            "review",
-        ]
-        assert repository.run_event(run["id"], "source_review")["verdict"] == verdict
+        assert phases == ["read", "answer"]
+        assert repository.run_event(run["id"], "source_review") is None
         validation = repository.run_event(run["id"], "answer_validation")
-        assert validation["passed"] and all(row["valid"] for row in validation["citations"])
-        assert len(validation["citations"]) == 1
+        assert validation is None
+        assert repository.run_event(run["id"], "source_evidence")["path"] == "Program.cs"
         assert "没有选到" not in answer and "源码回答缺少" not in answer
         assert "等待相关人员确认" not in answer
-        assert not any(event["kind"] in {"token", "knowledge_selection"} for event in events)
+        assert not any(event["kind"] == "knowledge_selection" for event in events)
+        assert any(event["kind"] == "token" for event in events)
         assert [
             event["payload"]["text"] for event in events if event["kind"] == "answer_replace"
         ] == [answer]
@@ -158,7 +148,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
 
 
 @pytest.mark.parametrize("defect", ["path", "version", "workspace", "claim"])
-async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowledge(
+async def test_source_answer_has_no_reference_recheck_or_unrelated_knowledge(
     services, monkeypatch, defect
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -218,10 +208,11 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
         answer = await runtime.execute(
             run, lambda kind, payload: repository.event(run["id"], kind, payload)
         )
-        assert answer == corrected and calls.count("answer") == 2
-        assert calls.count("review") == (2 if defect == "claim" else 1)
-        assert repository.run_event(run["id"], "answer_validation")["passed"]
-        assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
+        assert answer == broken
+        assert calls.count("answer") == 1
+        assert calls.count("review") == 0
+        assert repository.run_event(run["id"], "answer_validation") is None
+        assert repository.run_event(run["id"], "source_review") is None
         assert repository.run_event(run["id"], "context_sources")["debug_issues"] == []
         assert not any(
             event["kind"] == "knowledge_search" for event in repository.events(run["id"])
@@ -232,7 +223,7 @@ async def test_source_guard_still_repairs_unverified_source_with_unrelated_knowl
 
 @pytest.mark.parametrize("with_history", [False, True])
 @pytest.mark.parametrize("defect", ["range", "version", "workspace"])
-async def test_exhausted_source_repairs_keep_flow_and_disable_only_unverified_links(
+async def test_source_issue_does_not_change_flow_or_append_a_review_note(
     services, monkeypatch, with_history, defect
 ):
     paths, database, workspace, repository, memories, settings = services
@@ -293,18 +284,18 @@ async def test_exhausted_source_repairs_keep_flow_and_disable_only_unverified_li
         assert (
             documents[0].blocks[0].steps[0].description == "Main 方法体为空；其余流程本轮尚未核实。"
         )
-        assert "引用未核对" in answer and "源码核对提示" in answer
-        assert len(answers) == 3
-        # 同一路径/行号有伪造版本时全部停用，避免为冲突来源背书。
+        assert answer == draft and "源码核对提示" not in answer
+        assert len(answers) == 1
+        # 保留模型实际输出的引用字段，不在生成后核查或追加说明。
         pointers = list(source_pointers(answer))
-        assert len(pointers) == (1 if defect == "range" else 0)
-        assert not pointers or pointers[0].start_line == 2
+        assert len(pointers) == 2 and pointers[0].start_line == 2
         validation = repository.run_event(run["id"], "answer_validation")
-        assert not validation["passed"] and any(not row["valid"] for row in validation["citations"])
+        assert validation is None
         events = repository.events(run["id"])
         assert not any(
-            event["kind"] in {"token", "knowledge_selection", "source_review"} for event in events
+            event["kind"] in {"knowledge_selection", "source_review"} for event in events
         )
+        assert any(event["kind"] == "token" for event in events)
         assert [
             event["payload"]["text"] for event in events if event["kind"] == "answer_replace"
         ] == [answer]

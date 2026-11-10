@@ -2,27 +2,21 @@
 
 import asyncio
 import json
+import re
 
 from langchain_core.tools import tool
 
 from app.agents.context.tokens import fit_text
-from app.modules.handover.domain.debug_knowledge import knowledge_sections
+from app.modules.handover.domain.debug_knowledge import debug_metadata, knowledge_payload
 from app.modules.handover.infrastructure.persistence.models import HandoverRecord
 from app.modules.knowledge.debug_matching import compatibility, explicit_filters, heating
 from app.modules.knowledge.feedback import references
 from app.modules.knowledge.search import catalog
 
 SEARCH_FIELDS = {
-    "problem": 5,
-    "module": 4,
+    "question": 5,
+    "answer": 2,
     "keywords": 6,
-    "cause": 3,
-    "solution": 2,
-    "conditions": 2,
-    "environment": 1,
-    "software_version": 2,
-    "investigation": 1,
-    "device": 3,
 }
 READ_FIELDS = {
     "problem": "内容说明",
@@ -52,45 +46,18 @@ TYPE_LABELS = {
     "archive": "资料归档",
 }
 ANSWER_GUIDANCE = (
-    "检索结果是候选，先逐条阅读正文并按本题设备、时间范围和阶段筛选；跨阶段记录只使用对应片段。"
-    "回答、复核及失败降级均须保留选定范围，不把其他日期、其他设备的记录一起倒出。"
-    "用户指定设备、日期或时间段时，只展示对应记录；仅在用户要求对比或汇总时扩展其他记录。"
-    "用户只输入主题、问题名或经验标题时，先简短提炼核心认识，再按内容分段展开依据。"
-    "多项参数或并列建议用列表，解释用自然段；内容较多时用贴合内容的短标题，不强制固定栏目。"
-    "背景、参数、解释与适用边界分开组织，一段只讲一个重点，不把它们堆成大段文字。"
-    "同一事实讲一次，不先总述再重复列清单；简单查询不为排版扩写。"
-    "不要按‘问题、处理办法、验证记录、经验’逐项复述，不沿用旧回复的记录卡片格式，也不以‘记录如下’开场。"
-    "先结合记录事实直接回答用户的问题，再按问题复杂度安排篇幅和段落，解释结果、变化与依据。"
-    "理解并归纳资料，用自己的话把相关事实串起来；需要分析时可比较方案、解释原因并提出建议。"
-    "分析和建议须有依据并说明适用条件，不把单次结果推广为普遍有效；关键数值、单位、工况和结果保持准确。"
-    "表达像清晰的技术同事：结论在前，只对少量关键词或数值加粗，不整句整段加粗，列表前后留空行。"
-    "不要给每段都加字段标签或小标题，避免‘这条经验的核心是、以下按记录展开’等套话。"
-    "只问经验主题时简短说明适用范围，不自动扩成现场操作指导，也不列设备、版本、模块等缺项清单。"
-    "保留原记录人的判断归属，自己的推断必须明确标注，不能补造原因、处理结果或图内数据。"
-    "原文的‘主因、根治、必然有效’属于记录中的判断，应写明‘原记录认为’或‘记录将其归因于’，"
-    "不能原样变成助手确认的事实；实际观察结果用‘本次记录显示’等措辞限定。"
-    "组合调整与试验成功不能证明某个单项措施独立有效；无单因素对照时不分配各因素的独立贡献，"
-    "不补造参数单位，也不把有限样本或单一工况扩大为长期、所有规格均有效。"
-    "资料没有提供对照数据，只能说‘记录未提供’，不能断言实际没做过对照。"
-    "把原文‘根治’等绝对判断改为有归属、有限定的经验认识，避免照搬绝对措辞再追加长篇免责声明。"
-    "页面只展示AI回复的文字和回答实际引用记录的全部原图，并保留重复图片的位置。"
-    "AI回复选取回答当前问题所需的事实与关键依据；下方直接展示原图，不另附记录正文或原文折叠区。"
-    "不要重复引用整段记录，也不要说明下方还会展示记录文字、原记录人和时间。"
-    "不要套用记录标题、原记录人、记录文字、试验条件、原图这样的表单模板。"
-    "原图在回答下方直接展示，不要要求用户点击引用或附件才能看图。"
-    "用户仅查历史事实时，先准确回答所问内容与引用；末尾可有一两句直接相关的延伸引导，不追加无关日期。"
-    "用户索要原文或明确不要建议时，正文与引用后结束。"
-    "用户需要分析或处理建议时，可围绕所问记录展开，明确哪些是记录事实、哪些是推断或建议，"
-    "不能把建议写成已经实施或验证的处理结果。"
+    "【经验资料专用规则】通用回答方式、事实边界和格式沿用主提示。"
+    "compatibility仅用于内部判断；missing可能是本题未提供信息，不能断言原记录缺项。"
+    "已知条件冲突时不能直接套用；未解决记录不能当作有效方案，已解决仅指历史记录人的反馈。"
+    "用户指定设备、日期或阶段时，只展示对应记录；历史查询不扩展到当前故障排查。"
+    "用户要求图文并茂、示意图或流程图时，根据已选资料的条件、组合方案、结果组织示意，"
+    "没有历史原图也可以生成有依据的示意图，并标明是方案示意或经验归纳，不能冒充原图、实物照片或设备验证。"
+    "图中并列参数保持组合关系，不把它们画成历史试验先后顺序。"
+    "原图与生成的示意图区分处理：页面还会展示回答实际引用记录的全部原图，并保留重复图片的位置。"
+    "原图在回答下方直接展示，不另附整段记录正文，不要要求用户点击引用或附件才能看图，也不介绍图片数量或展示方式。"
     "本轮未识别图片，不要推断图内数值或声称看图分析，也不要声称无法展示原图。"
-    "直接使用 reference 中的 Markdown 链接，引用只显示真实标题；"
-    "链接中的固定修订用于内部定位和关联原图。"
-    "不要在回答或引用标签中展示记录ID、记录修订版本、归档状态、详情起始行或原图数量。"
-    "设备软件版本、工艺参数和原始试验结果属于业务事实，需要时仍应准确保留。"
-    "来源引用紧接在回答正文最后一句之后，放在同一段或最后一个列表项末尾，不单独另起引用段落。"
-    "不要写‘本次试验的原图如下’、‘3张原图随上述引用直接展示’等图片数量、展示方式或引用说明。"
-    "回答使用自然语言，不列图片ID、哈希、文件名清单、内部字段名或枚举值。"
-    "不要附加系统录入人、记录状态类别、图片清单或空字段缺项检查。"
+    "直接使用 reference 中的 Markdown 链接，引用只显示真实标题，固定修订用于内部定位和关联原图。"
+    "不展示记录ID、修订版本、归档状态、详情起始行、图片ID、哈希、内部字段或系统录入信息。"
 )
 
 
@@ -103,38 +70,32 @@ def reference(row):
     return f"[{title}]({citation(row)})"
 
 
-def readable_payload(payload):
-    """模型读取业务表述，状态枚举及附件索引仍只保存在内部快照中。"""
-    values = {
-        **payload,
-        "resolution_status": STATUS_LABELS.get(payload.get("resolution_status"), "未说明"),
-        "record_type": TYPE_LABELS.get(payload.get("record_type"), "未说明"),
+def readable_payload(payload, query=""):
+    """默认只给问答正文；明确查询原文、记录人或日期时才展开对应metadata。"""
+    document = knowledge_payload(payload)
+    content = {
+        "问题": document["question"],
+        "答案": document["answer"],
+        "关键词": "、".join(document["keywords"]),
     }
-    auxiliary = {
-        label: values[key]
-        for key, label in READ_FIELDS.items()
-        if key
-        not in {
-            "conditions",
-            "problem",
-            "investigation",
-            "cause",
-            "solution",
-            "verification",
-            "notes",
-        }
-        and values.get(key)
-    }
-    # 标题在外层记录及引用中；正文统一为其余五项，原文和检索辅助字段仍保留。
-    return {
-        **{key: value for key, value in knowledge_sections(payload).items() if value},
-        **auxiliary,
-    }
+    metadata = document["metadata"]
+    if re.search(r"原文|逐字|原始描述", query):
+        content["录入原文"] = metadata.get("original_text", "")
+    if re.search(r"谁|记录人|作者|时间|日期|何时|哪天|什么时候|\d+月|\d{4}[-/]", query):
+        content.update(
+            {
+                label: metadata[key]
+                for key, label in READ_FIELDS.items()
+                if key in {"recorded_by", "recorded_at", "occurred_on"} and metadata.get(key)
+            }
+        )
+    return {key: value for key, value in content.items() if value}
 
 
 class DebugIssueCorpus:
     def __init__(self, database, emit=None, context_query=""):
         self.emit = emit or (lambda *_: None)
+        self.context_query = context_query
         self.context_filters = explicit_filters(context_query) if context_query else {}
         self.index = catalog(database).snapshot(
             "handover:debug",
@@ -158,11 +119,17 @@ class DebugIssueCorpus:
             if row and row["version"] == version:
                 result.append(
                     {
+                        **{key: row[key] for key in ("id", "title", "version")},
+                        "citation": citation(row),
+                        "image_count": len(debug_metadata(row["payload"]).get("images", [])),
+                        "resolution_status": debug_metadata(row["payload"]).get(
+                            "resolution_status", "open"
+                        ),
                         "reference": reference(row),
                         "compatibility": compatibility(
                             row, self.context_filters or explicit_filters("")
                         ),
-                        "content": readable_payload(row["payload"]),
+                        "content": readable_payload(row["payload"], self.context_query),
                     }
                 )
         return result
@@ -183,6 +150,7 @@ class DebugIssueCorpus:
         def applicable(row):
             match = compatibility(row, filters)
             if match["status"] == "mismatch":
+                metadata = debug_metadata(row["payload"])
                 excluded.append(
                     {
                         "id": row["id"],
@@ -190,11 +158,9 @@ class DebugIssueCorpus:
                         "version": row["version"],
                         "citation": citation(row),
                         "compatibility": match,
-                        "device": row["payload"].get(
-                            "device", row["payload"].get("environment", "")
-                        )[:300],
-                        "software_version": row["payload"].get("software_version", "")[:300],
-                        "conditions": row["payload"].get("conditions", "")[:300],
+                        "device": metadata.get("device", metadata.get("environment", ""))[:300],
+                        "software_version": metadata.get("software_version", "")[:300],
+                        "conditions": metadata.get("conditions", "")[:300],
                     }
                 )
                 return False
@@ -204,33 +170,41 @@ class DebugIssueCorpus:
         for score, identifier, _ in self.index.search(query, min(10, limit), applicable):
             row = self.items[identifier]
             document = row
+            payload = knowledge_payload(row["payload"])
+            metadata = payload["metadata"]
             result.append(
                 {
                     "id": row["id"],
                     "title": document["title"],
                     "version": row["version"],
                     "citation": citation(row),
-                    "image_count": len(document["payload"].get("images", [])),
+                    "image_count": len(metadata.get("images", [])),
                     "reference": reference(row),
                     "score": score,
                     "compatibility": compatibility(row, filters),
                     "payload": {
                         key: value[:1200] if isinstance(value, str) else value
+                        for key in SEARCH_FIELDS
+                        for value in [payload.get(key, "")]
+                    },
+                    "metadata": {
+                        key: metadata[key]
                         for key in (
-                            *SEARCH_FIELDS,
-                            "verification",
-                            "resolution_status",
-                            "reported_by",
                             "record_type",
+                            "resolution_status",
+                            "device",
+                            "software_version",
+                            "module",
+                            "conditions",
                             "occurred_on",
                             "recorded_by",
                             "recorded_at",
                         )
-                        for value in [document["payload"].get(key, "")]
+                        if metadata.get(key)
                     },
                     "truncated_fields": [
                         key
-                        for key, value in document["payload"].items()
+                        for key, value in payload.items()
                         if isinstance(value, str) and len(value) > 1200
                     ],
                 }
@@ -271,14 +245,16 @@ class DebugIssueCorpus:
                 "version": row["version"],
                 "citation": citation(row),
                 "compatibility": compatibility(row, self.context_filters or explicit_filters("")),
-                "resolution_status": row["payload"].get("resolution_status", "open"),
-                "image_count": len(row["payload"].get("images", [])),
+                "resolution_status": debug_metadata(row["payload"]).get(
+                    "resolution_status", "open"
+                ),
+                "image_count": len(debug_metadata(row["payload"]).get("images", [])),
             },
         )
         # 模型只读取业务文字。图片哈希、存储文件名和来源关联由页面读取固定版本，
         # 不进入回答上下文，避免把附件内部信息当成用户要求的“全部原图”。
         content = json.dumps(
-            readable_payload(document["payload"]),
+            readable_payload(document["payload"], self.context_query),
             ensure_ascii=False,
             indent=2,
         )
@@ -288,7 +264,7 @@ class DebugIssueCorpus:
             "version": row["version"],
             "citation": citation(row),
             "reference": reference(row),
-            "image_count": len(document["payload"].get("images", [])),
+            "image_count": len(debug_metadata(document["payload"]).get("images", [])),
             "display_hint": ANSWER_GUIDANCE,
             "compatibility": compatibility(row, self.context_filters or explicit_filters("")),
             "content": content[offset : offset + 8000],
@@ -299,14 +275,23 @@ class DebugIssueCorpus:
         blocks, sources = [], []
         report = self.search_report(query, 4, track=False)
         for item in report["matches"]:
+            projected = knowledge_payload(self.items[item["id"]]["payload"])
             preview = {
-                **item,
+                **{key: value for key, value in item.items() if key != "metadata"},
                 "payload": readable_payload(
                     {
-                        key: value[:800] if isinstance(value, str) else value
-                        for key, value in item["payload"].items()
-                    }
+                        **projected,
+                        "question": projected["question"][:800],
+                        "answer": projected["answer"][:800],
+                    },
+                    query,
                 ),
+                "metadata": {
+                    "处理状态": STATUS_LABELS.get(
+                        item["metadata"].get("resolution_status"), "未说明"
+                    ),
+                    "记录类别": TYPE_LABELS.get(item["metadata"].get("record_type"), "未说明"),
+                },
             }
             block = json.dumps(preview, ensure_ascii=False)
             if fit_text("\n".join([*blocks, block]), budget) != "\n".join([*blocks, block]):
@@ -319,7 +304,7 @@ class DebugIssueCorpus:
                         for key in ("id", "title", "version", "citation", "compatibility")
                     },
                     "payload": {
-                        "resolution_status": item["payload"].get("resolution_status", "open")
+                        "resolution_status": item["metadata"].get("resolution_status", "open")
                     },
                     "image_count": item["image_count"],
                 }
@@ -353,7 +338,7 @@ class DebugIssueCorpus:
         return debug_issue_tools(self)
 
 
-def debug_issue_tools(corpus):
+def debug_issue_tools(corpus, *, search=None, read=None):
     @tool
     async def search_debug_issues(
         query: str,
@@ -365,8 +350,21 @@ def debug_issue_tools(corpus):
     ) -> str:
         """检索本系统已保存的问题与经验，包括历史故障、处理办法、设备试验结果和工作记录。
         按标题、设备、日期、现象或报警码关键词查找，内容来自本地记录库，不是项目源码。
+        运行时先独立筛选，仅返回与当前问题相关的原文片段；筛选失败不提供候选原文。
         未解决记录不是已验证方案；引用返回的真实 reference，包括实际标题和固定版本。
         """
+        if search is not None:
+            return json.dumps(
+                await search(
+                    query,
+                    limit,
+                    device=device,
+                    software_version=software_version,
+                    module=module,
+                    conditions=conditions,
+                ),
+                ensure_ascii=False,
+            )
         report = await asyncio.to_thread(
             corpus.search_report,
             query,
@@ -377,19 +375,35 @@ def debug_issue_tools(corpus):
             conditions=conditions,
         )
         report["matches"] = [
-            {**item, "payload": readable_payload(item["payload"])} for item in report["matches"]
+            {
+                **{key: value for key, value in item.items() if key != "metadata"},
+                "payload": readable_payload(
+                    {**item["payload"], "metadata": item["metadata"]}, query
+                ),
+                "metadata": {
+                    "处理状态": STATUS_LABELS.get(
+                        item["metadata"].get("resolution_status"), "未说明"
+                    ),
+                    "记录类别": TYPE_LABELS.get(item["metadata"].get("record_type"), "未说明"),
+                },
+            }
+            for item in report["matches"]
         ]
         return json.dumps(report, ensure_ascii=False)
 
     @tool
     async def read_debug_issue(record_id: str, offset: int = 0) -> str:
         """按 record_id 读取本系统问题与经验的固定版本原文，包括历史设备试验和处理记录。
-        内容来自记录库，不是项目源码。存在 next_offset 时继续读取余文；历史方案须核对适用条件。
+        运行时先独立筛选，仅返回与当前问题相关的原文片段，不返回未选中的内容。
+        内容为历史经验，不是项目源码。存在 next_offset 时继续读取余文。
         使用返回的真实 reference，页面据此显示原图；不输出图片ID、文件名或内部字段名。
         图片由页面显示，本工具不识别图片内容。
         """
         return json.dumps(
-            await asyncio.to_thread(corpus.read, record_id, offset), ensure_ascii=False
+            await read(record_id, offset)
+            if read is not None
+            else await asyncio.to_thread(corpus.read, record_id, offset),
+            ensure_ascii=False,
         )
 
     from app.agents.tools.guards import safe_source_tools

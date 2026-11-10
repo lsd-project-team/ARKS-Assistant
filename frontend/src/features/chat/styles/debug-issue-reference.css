@@ -16,7 +16,7 @@
 .debug-issue-reference-meta {
   margin: 0 0 12px;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 
 .debug-issue-reference-body > .debug-issue-detail-fields > div:first-child {

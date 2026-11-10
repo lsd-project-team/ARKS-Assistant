@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class ThreadCreate(BaseModel):
@@ -10,13 +10,14 @@ class ThreadCreate(BaseModel):
 
 
 class ThreadUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     title: str | None = Field(default=None, min_length=1, max_length=120)
-    state: Literal["active", "archived"] | None = None
     pinned: bool | None = None
 
     @model_validator(mode="after")
     def validate_change(self):
-        if self.title is None and self.state is None and self.pinned is None:
+        if self.title is None and self.pinned is None:
             raise ValueError("请指定要修改的会话信息")
         if self.title is not None:
             self.title = self.title.strip()
@@ -67,6 +68,7 @@ class RunCreate(BaseModel):
     content: str = Field(min_length=1, max_length=30000)
     selections: list[CodeSelection] = Field(default_factory=list, max_length=8)
     source_options: SourceOptions | None = None
+    attachment_ids: list[str] | None = Field(default=None, max_length=10)
 
     @model_validator(mode="after")
     def validate_content(self):

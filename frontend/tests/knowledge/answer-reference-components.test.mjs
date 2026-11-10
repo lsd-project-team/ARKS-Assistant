@@ -68,7 +68,7 @@ const references = [
     resolution_status: 'open',
   },
 ];
-const searches = [{ kind: 'material', matched: 0 }];
+const searches = [{ kind: 'debug_issue', matched: 0, degraded: true }];
 const render = (props) => renderToStaticMarkup(createElement(KnowledgeFeedback, props));
 
 test('流式问候有候选和检索未命中时，也不显示本轮参考或检索提示', () => {
@@ -96,7 +96,7 @@ test('上下文保留完整候选与检索提示，并明确区分于回答引�
   assert.match(html, /资料检索记录 · 2 条资料/);
   assert.match(html, /M8 DAF信息收集.docx/);
   assert.match(html, /中转台取片异常/);
-  assert.match(html, /未找到相关可用内容/);
+  assert.match(html, /语义检索暂不可用/);
   assert.match(html, /不表示回答已经引用/);
   assert.doesNotMatch(html, /v2/);
   assert.match(html, /未解决，不能作为已验证方案/);
@@ -136,14 +136,10 @@ test('历史无引用回答不显示原来的“参考资料与记忆”占位�
   assert.doesNotMatch(html, /本轮参考|参考资料与记忆|M8 DAF|中转台取片异常/);
 });
 
-test('历史引用回答使用本条回复的内容筛选缓存记录，切换版本不会串用引用', () => {
+test('历史原图反馈不再追加旧参考列表，来源由统一页尾组件负责', () => {
   const context = { references, searches };
   const first = renderHistory('[原文](handover-source:daf/1#L5)', context);
-  assert.match(first, /<details><summary>参考资料<\/summary>/);
-  assert.doesNotMatch(first, /本轮参考/);
-  assert.match(first, /M8 DAF信息收集.docx/);
-  assert.match(first, /handover-source:daf\/1#L5/);
-  assert.doesNotMatch(first, /中转台取片异常/);
+  assert.equal(first, '<div class="run-knowledge-summary"></div>');
   const second = renderHistory('[记录](debug-issue:pickup/2)', context);
   assert.equal(second, '<div class="run-knowledge-summary"></div>');
 });

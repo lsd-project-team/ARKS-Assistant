@@ -44,7 +44,14 @@ def test_version_conflict_is_detected_before_state_change():
     assert current.state == "draft" and current.version == 3
 
 
-@pytest.mark.parametrize("kind", ["job", "task", "candidate", "package"])
+def test_confirmation_rejects_unavailable_history_without_missing_record_error():
+    current = record(kind="issue", payload={"evidence": [{"record_id": "retired", "version": 1}]})
+    with pytest.raises(ValueError, match="关联记录不可用"):
+        current.review("confirm", {})
+    assert current.state == "draft" and current.version == 3
+
+
+@pytest.mark.parametrize("kind", ["task", "package"])
 def test_special_records_cannot_be_rejected_in_common_review(kind):
     with pytest.raises(ValueError):
         record(kind=kind).review("reject", {})

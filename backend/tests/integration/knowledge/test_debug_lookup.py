@@ -44,7 +44,7 @@ async def test_first_tool_call_freezes_one_version_and_next_run_gets_new_version
     )
     result = json.loads(await tools["search_debug_issues"].ainvoke({"query": "E901"}))
     assert result["matches"][0]["version"] == 2
-    assert lookup.review_records({saved["id"]: 2})[0]["content"]["内容说明"] == "调用前已更新"
+    assert lookup.review_records({saved["id"]: 2})[0]["content"]["问题"] == "调用前已更新"
     other = DebugIssueLookup(services[1], lambda *_: None, "E901")
     assert other.read(saved["id"])["version"] == 3
 
@@ -80,7 +80,7 @@ def test_reused_reference_reads_only_matching_version_without_semantic_search(
     events = []
     lookup = DebugIssueLookup(services[1], lambda *row: events.append(row), "结果是什么")
     records = lookup.resolve_references({f"debug-issue:{saved['id']}/1"})
-    assert records[0]["content"]["内容说明"] == "已知事实42"
+    assert records[0]["content"]["问题"] == "已知事实42"
     assert [kind for kind, _ in events] == ["knowledge_reference"]
     assert lookup.resolve_references({f"debug-issue:{saved['id']}/99"}) == []
     assert len(events) == 1

@@ -22,6 +22,9 @@ class DeterministicModel(BaseChatModel):
         if "你只负责复核长期记忆" in messages[0].text:
             records = json.loads(messages[-1].text)["candidates"]
             content = json.dumps({"memory_ids": [row["id"] for row in records]})
+        elif "你只负责选择回答需要的较早对话" in messages[0].text:
+            records = json.loads(messages[-1].text)["candidates"]
+            content = json.dumps({"carry_ids": [], "relevant_ids": [row["id"] for row in records]})
         elif "你只负责筛选资料" in messages[0].text:
             records = json.loads(messages[-1].text)["records"]
             content = json.dumps({"selections": fixture_selections(records)})

@@ -79,6 +79,7 @@ class ConversationBranches:
                         role=row.role,
                         content=row.content,
                         selections_json=row.selections_json,
+                        attachments_json=row.attachments_json,
                         source_options_json=row.source_options_json,
                         created_at=row.created_at,
                         origin_message_id=row.id,
@@ -90,7 +91,9 @@ class ConversationBranches:
             session.flush()
             return record_dict(branch)
 
-    def edit_latest(self, thread_id, message_id, content, selections, source_options=None):
+    def edit_latest(
+        self, thread_id, message_id, content, selections, source_options=None, attachment_ids=None
+    ):
         with self.repository.lock, self.repository.database.session.begin() as session:
             self.repository.catalog.row(session, thread_id)
             latest = session.scalar(
@@ -114,7 +117,14 @@ class ConversationBranches:
                 if source_options is not None
                 else record_dict(latest)["source_options"]
             )
-            run = self.repository.add_run(session, thread_id, content, selections, options)
+            identifiers = (
+                attachment_ids
+                if attachment_ids is not None
+                else [row["id"] for row in record_dict(latest)["attachments"]]
+            )
+            run = self.repository.add_run(
+                session, thread_id, content, selections, options, attachment_ids=identifiers
+            )
             session.get(Message, run["message_id"]).replaces_id = message_id
             session.get(Run, run["id"]).reset_context = True
             session.get(Thread, thread_id).updated_at = now_iso()

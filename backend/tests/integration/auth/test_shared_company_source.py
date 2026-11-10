@@ -107,17 +107,13 @@ def test_existing_owners_keep_project_and_private_names_are_not_copied(services)
         assert "PRIVATE-" not in str(snapshot)
 
 
-def test_archiving_default_is_respected_and_independent_chat_still_has_source(services):
+def test_removing_default_is_respected_and_independent_chat_still_has_source(services):
     with TestClient(create_app(services[0])) as client:
         sign_in(client, "user")
         original = default_project(client)
-        assert (
-            client.patch(f"/api/projects/{original['id']}", json={"state": "archived"}).status_code
-            == 200
-        )
+        assert client.delete(f"/api/projects/{original['id']}").status_code == 200
         sign_in(client, "user")
         assert client.get("/api/projects").json()["projects"] == []
-        assert len(client.get("/api/projects?state=archived").json()["projects"]) == 1
         response = client.get("/api/p/independent/file?path=Program.cs")
         assert response.status_code == 200
         assert response.json()["source_workspace_id"] == services[2].source_id

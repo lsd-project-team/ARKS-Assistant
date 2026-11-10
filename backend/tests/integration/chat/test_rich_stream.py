@@ -121,9 +121,12 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
             elif any(
                 isinstance(row, ToolMessage) and row.name == "read_source" for row in messages
             ):
+                assert "【源码核查】" in messages[0].text
                 result = AIMessage(content=answer)
             else:
-                assert "默认用step_flow" in messages[0].text
+                # 首次由模型选择来源；读源码后才追加专项核查规则。
+                assert "【源码核查】" not in messages[0].text
+                assert "默认用step_flow" not in messages[0].text
                 result = AIMessage(
                     content="",
                     tool_calls=[
@@ -137,7 +140,8 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
             return ChatResult(generations=[ChatGeneration(message=result)])
 
     paths, _, workspace, repository, memories, settings = services
-    settings.save(AppSettings(model=ModelSettings(context_tokens=16384, output_tokens=1024)))
+    # 本例验证结构化回答链路，使用能容纳常驻工具及源码阅读规则的上下文。
+    settings.save(AppSettings(model=ModelSettings(context_tokens=32768, output_tokens=1024)))
     monkeypatch.setattr(
         "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: StructuredModel()
     )
@@ -148,13 +152,12 @@ async def test_actual_agent_graph_reads_source_and_checks_structured_answer(serv
     )
     assert actual == answer
     validation = repository.run_event(run["id"], "answer_validation")
-    assert validation["passed"] and validation["citations"][0]["start_line"] == 2
-    assert repository.run_event(run["id"], "source_review")["verdict"] == "passed"
+    assert validation is None
+    assert repository.run_event(run["id"], "source_evidence")["start_line"] == 2
+    assert repository.run_event(run["id"], "source_review") is None
 
 
-async def test_flow_draft_is_hidden_until_compact_answer_and_source_review_finish(
-    services, monkeypatch
-):
+async def test_long_flow_is_reviewed_and_published_without_layout_rewriting(services, monkeypatch):
     def flow(description):
         return (
             "```rich-content\n"
@@ -183,7 +186,7 @@ async def test_flow_draft_is_hidden_until_compact_answer_and_source_review_finis
             + "\n```"
         )
 
-    original, compact = flow("尚待整理的冗长草稿。" * 200), flow("Main 方法体为空，没有后续步骤。")
+    original = flow("Main 方法体为空，没有后续步骤。" * 200)
     events, phases = [], []
 
     class Model(DeterministicModel):
@@ -192,14 +195,8 @@ async def test_flow_draft_is_hidden_until_compact_answer_and_source_review_finis
                 payload = json.loads(messages[-1].text)
             except ValueError:
                 payload = {}
-            if "draft" in payload and "question" in payload:
-                assert payload["draft"] == original
-                phases.append("compose")
-                result = AIMessage(content=compact)
-            elif "answer" in payload and "source" in payload:
-                assert (
-                    "尚待整理" not in payload["answer"] and "Main 方法体为空" in payload["answer"]
-                )
+            if "answer" in payload and "source" in payload:
+                assert "Main 方法体为空" in payload["answer"]
                 assert not any(kind in {"token", "answer_replace"} for kind, _ in events)
                 phases.append("review")
                 result = AIMessage(content='{"verdict":"passed","issues":[]}')
@@ -228,9 +225,10 @@ async def test_flow_draft_is_hidden_until_compact_answer_and_source_review_finis
     try:
         actual = await runtime.execute(run, lambda *event: events.append(event))
         repository.finish(run["id"], actual)
-        assert phases == ["compose", "review"] and actual == compact
+        assert phases == [] and actual == original
+        assert not any(kind == "source_review" for kind, _ in events)
         displayed = [row["text"] for kind, row in events if kind == "answer_replace"]
-        assert displayed == [compact]
-        assert repository.thread(run["thread_id"])["messages"][-1]["content"] == compact
+        assert displayed == [original]
+        assert repository.thread(run["thread_id"])["messages"][-1]["content"] == original
     finally:
         runtime.semantic.close()

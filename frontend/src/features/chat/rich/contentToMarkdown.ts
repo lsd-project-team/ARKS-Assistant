@@ -13,6 +13,7 @@ function blocksToMarkdown(blocks: ContentBlock[]): string {
       const title = 'title' in block && block.title ? `### ${block.title}\n\n` : '';
       switch (block.type) {
         case 'text':
+        case 'markdown':
           return block.content;
         case 'overview_grid':
           return (
@@ -74,6 +75,47 @@ function blocksToMarkdown(blocks: ContentBlock[]): string {
           );
         case 'collapsible':
           return title + blocksToMarkdown(block.blocks);
+        case 'tool_call':
+          return `工具：${block.tool.name}\n\n${JSON.stringify(block.tool.arguments, null, 2) ?? ''}\n\n${block.tool.result ?? '执行中'}`;
+        case 'unsupported':
+          return JSON.stringify(block.raw, null, 2);
+        case 'chart':
+          return (
+            title +
+            blocksToMarkdown([
+              {
+                id: block.id,
+                type: 'table',
+                columns: [
+                  { id: 'label', label: '项目' },
+                  ...block.series.map((series) => ({ id: series.id, label: series.name })),
+                ],
+                rows: block.labels.map((label, i) => ({
+                  id: `row-${i}`,
+                  cells: [label, ...block.series.map((series) => series.values[i])],
+                })),
+              },
+            ])
+          );
+        case 'mermaid': {
+          const fence = '`'.repeat(
+            Math.max(2, ...Array.from(block.content.matchAll(/`+/g), (match) => match[0].length)) +
+              1,
+          );
+          return `${title}${fence}mermaid\n${block.content}\n${fence}`;
+        }
+        case 'mindmap':
+          return (
+            title +
+            block.nodes
+              .map(
+                (node) =>
+                  `${node.parent_id ? `${block.nodes.find((parent) => parent.id === node.parent_id)?.label} → ` : ''}${node.label}`,
+              )
+              .join('\n')
+          );
+        case 'file':
+          return `${block.name}（资料 ${block.record_id}${block.version ? ` · v${block.version}` : ''}）`;
       }
     })
     .join('\n\n');

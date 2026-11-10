@@ -1,8 +1,9 @@
-import type { Selection, SourceOptions } from '../../../shared/types/api.ts';
+import type { Selection, SourceOptions, ChatAttachment } from '../../../shared/types/api.ts';
 import type { WorkspaceState } from '../../../app/state/types.ts';
 export interface ConversationDraft {
   content: string;
   selections: Selection[];
+  attachments?: ChatAttachment[];
   source_options?: Partial<SourceOptions>;
 }
 const EMPTY_DRAFT: ConversationDraft = { content: '', selections: [] };

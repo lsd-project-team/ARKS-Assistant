@@ -9,7 +9,7 @@
   background: radial-gradient(circle at 13% 0%, #123552 0, var(--bg) 42%);
   color: var(--ink);
   font:
-    14px/1.6 Inter,
+    var(--font-size-body)/1.6 Inter,
     'Segoe UI',
     'Microsoft YaHei',
     sans-serif;
@@ -39,7 +39,7 @@
 .knowledge-workspace .breadcrumb span {
   display: block;
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .breadcrumb strong {
   display: block;
@@ -54,7 +54,7 @@
   border-radius: 9px;
   background: var(--panel);
   color: var(--muted);
-  font-size: 16px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .icon-button:hover {
   border-color: var(--cyan);
@@ -74,7 +74,7 @@
 }
 .knowledge-workspace .page-header h1 {
   margin: 6px 0 10px;
-  font-size: clamp(27px, 3vw, 43px);
+  font-size: var(--font-size-page-title);
   line-height: 1.12;
   letter-spacing: -0.04em;
 }
@@ -85,7 +85,7 @@
 }
 .knowledge-workspace .eyebrow {
   color: var(--cyan);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -106,7 +106,7 @@
   border-radius: 9px;
   background: var(--panel);
   color: var(--ink);
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 700;
   transition: 0.18s;
 }
@@ -121,14 +121,14 @@
 }
 .knowledge-workspace .button.small {
   padding: 6px 9px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .text-button {
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--cyan);
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .card {
   border: 1px solid var(--line);
@@ -148,10 +148,10 @@
   margin: 0;
 }
 .knowledge-workspace .panel h2 {
-  font-size: 18px;
+  font-size: var(--font-size-section-title);
 }
 .knowledge-workspace .panel h3 {
-  font-size: 15px;
+  font-size: var(--font-size-subtitle);
 }
 .knowledge-workspace .panel p {
   margin: 5px 0 0;
@@ -166,7 +166,7 @@
 }
 .knowledge-workspace .panel-title p {
   margin-top: 4px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .pill,
 .knowledge-workspace .tag {
@@ -178,7 +178,7 @@
   border-radius: 999px;
   background: rgba(94, 231, 215, 0.09);
   color: #aed0d9;
-  font-size: 10px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .dot {
   width: 8px;
@@ -203,12 +203,12 @@
 }
 .knowledge-workspace .section-heading h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-size-section-title);
 }
 .knowledge-workspace .section-heading p {
   margin: 3px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .filter-row {
   display: flex;
@@ -261,14 +261,14 @@
 }
 .knowledge-workspace .graph-card h3 {
   margin: 15px 0 8px;
-  font-size: 15px;
+  font-size: var(--font-size-subtitle);
   line-height: 1.35;
 }
 .knowledge-workspace .graph-card p {
   min-height: 38px;
   margin: 0 0 13px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-body);
 }
 .knowledge-workspace .card-actions {
   display: flex;
@@ -305,7 +305,7 @@
 }
 .knowledge-workspace .node-tabs small {
   color: var(--muted-2);
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .selected-node {
   min-width: 0;
@@ -324,7 +324,7 @@
 }
 .knowledge-workspace .branch-list b {
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .branch-list button {
   width: max-content;
@@ -335,7 +335,7 @@
   background: transparent;
   color: var(--cyan);
   text-align: left;
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .branch-list button:hover {
   background: var(--panel-soft);
@@ -358,13 +358,13 @@
 .knowledge-workspace th {
   background: var(--panel-deep);
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-control);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .knowledge-workspace td {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-table);
 }
 .knowledge-workspace tbody tr:hover td {
   background: rgba(94, 231, 215, 0.04);
@@ -379,7 +379,7 @@
   background: #091824;
   color: #a9f5e9;
   font:
-    11px Consolas,
+    var(--font-size-code) Consolas,
     monospace;
 }
 .knowledge-workspace .original-diagram {
@@ -425,7 +425,7 @@
 .knowledge-workspace .showcase-outline li span {
   color: var(--cyan);
   font:
-    13px Consolas,
+    var(--font-size-control) Consolas,
     monospace;
 }
 .knowledge-workspace .presentation-metrics {
@@ -455,7 +455,7 @@
 .knowledge-workspace .production-chapter > span {
   color: var(--cyan);
   font:
-    13px Consolas,
+    var(--font-size-control) Consolas,
     monospace;
 }
 .knowledge-workspace .production-chapter b {
@@ -482,11 +482,11 @@
   justify-content: space-between;
   gap: 10px;
   color: var(--muted-2);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .topic-card h2 {
   margin: 16px 0 9px;
-  font-size: 20px;
+  font-size: var(--font-size-section-title);
   line-height: 1.5;
 }
 .knowledge-workspace .topic-card p {
@@ -496,7 +496,7 @@
 }
 .knowledge-workspace .topic-card strong {
   color: var(--cyan);
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 .knowledge-workspace .topic-card:hover,
 .knowledge-workspace .production-chapter:hover {
@@ -510,7 +510,7 @@
 }
 .knowledge-workspace .reading-summary h2 {
   margin-top: 10px;
-  font-size: 18px;
+  font-size: var(--font-size-section-title);
 }
 .knowledge-workspace .reading-summary ul {
   margin: 12px 0 0;
@@ -587,10 +587,10 @@
 }
 .knowledge-workspace .coordination-list b {
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .coordination-list p {
-  font-size: 12px;
+  font-size: var(--font-size-body);
 }
 .knowledge-workspace [data-selected='true'] {
   outline: 2px solid var(--cyan);
@@ -604,7 +604,7 @@
 .knowledge-workspace .module-cooperation > summary {
   cursor: pointer;
   color: var(--cyan);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   font-weight: 700;
 }
 .knowledge-workspace .coordination-topics {
@@ -619,7 +619,7 @@
 .knowledge-workspace .node-coordination ul {
   padding-left: 18px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .node-coordination li + li {
   margin-top: 10px;
@@ -656,7 +656,7 @@
     display: none;
   }
   .knowledge-workspace .page-header h1 {
-    font-size: 29px;
+    font-size: var(--font-size-page-title);
   }
 }
 
@@ -683,7 +683,7 @@
   margin-bottom: 16px;
 }
 .knowledge-workspace .page-header h1 {
-  font-size: clamp(26px, 2.6vw, 38px);
+  font-size: var(--font-size-page-title);
   line-height: 1.35;
 }
 .knowledge-workspace .header-actions {
@@ -704,16 +704,16 @@
 }
 .knowledge-workspace .graph-card p.diagram-question {
   min-height: 0;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   line-height: 1.7;
 }
 .knowledge-workspace .card-topic {
   margin-top: auto;
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .graph-card h3 {
-  font-size: 17px;
+  font-size: var(--font-size-subtitle);
   line-height: 1.55;
 }
 .knowledge-workspace .graph-card {
@@ -737,7 +737,7 @@
 }
 .knowledge-workspace .diagram-reading h2 {
   margin-top: 8px;
-  font-size: 16px;
+  font-size: var(--font-size-section-title);
 }
 .knowledge-workspace .diagram-reading p {
   margin-top: 10px;
@@ -808,7 +808,7 @@
     padding: 20px 12px 40px;
   }
   .knowledge-workspace .page-header h1 {
-    font-size: 26px;
+    font-size: var(--font-size-page-title);
   }
   .knowledge-workspace .header-actions {
     margin-top: 10px;
@@ -875,12 +875,12 @@
   vertical-align: middle;
 }
 .knowledge-workspace .breadcrumb span {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   letter-spacing: 0.04em;
 }
 .knowledge-workspace .breadcrumb strong {
   margin-top: 2px;
-  font-size: 13px;
+  font-size: var(--font-size-meta);
   font-weight: 500;
 }
 .knowledge-workspace .icon-button {
@@ -914,30 +914,30 @@
 }
 .knowledge-workspace .page-header h1 {
   margin: 10px 0 14px;
-  font-size: clamp(28px, 2.7vw, 38px);
+  font-size: var(--font-size-page-title);
   line-height: 1.4;
   font-weight: 600;
   letter-spacing: -0.035em;
 }
 .knowledge-workspace .page-header p {
-  font-size: 14px;
+  font-size: var(--font-size-meta);
   line-height: 1.85;
 }
 .knowledge-workspace .page-header small {
   display: block;
   margin-top: 8px;
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
   overflow-wrap: anywhere;
 }
 .knowledge-workspace .eyebrow {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
   font-weight: 500;
   letter-spacing: 0.12em;
 }
 .knowledge-workspace .header-actions .pill {
   font:
-    12px 'Segoe UI',
+    var(--font-size-meta) 'Segoe UI',
     sans-serif;
   padding: 7px 12px;
 }
@@ -947,7 +947,7 @@
   padding: 9px 14px;
   border-radius: 8px;
   background: var(--panel);
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 500;
   box-shadow: none;
 }
@@ -972,13 +972,13 @@
 .knowledge-workspace .button.small {
   min-height: 30px;
   padding: 6px 10px;
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .text-button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 500;
 }
 .knowledge-workspace .text-button .ui-icon {
@@ -998,7 +998,7 @@
   padding: 26px;
 }
 .knowledge-workspace .panel h2 {
-  font-size: 18px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
 }
 .knowledge-workspace .panel h3 {
@@ -1015,13 +1015,13 @@
   margin: 36px 0 20px;
 }
 .knowledge-workspace .section-heading h2 {
-  font-size: 21px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
   letter-spacing: -0.025em;
 }
 .knowledge-workspace .section-heading p {
   margin-top: 5px;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   line-height: 1.7;
 }
 .knowledge-workspace .pill,
@@ -1030,7 +1030,7 @@
   padding: 4px 9px;
   background: var(--panel-soft);
   color: var(--muted);
-  font-size: 10px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .filter-row {
   gap: 10px;
@@ -1045,7 +1045,7 @@
   border-color: transparent;
   border-radius: 7px;
   background: var(--panel-deep);
-  font-size: 12px;
+  font-size: var(--font-size-control);
 }
 .knowledge-workspace .filter-row input::placeholder {
   color: var(--muted-2);
@@ -1094,18 +1094,18 @@
 }
 .knowledge-workspace .graph-card h3 {
   margin: 23px 0 10px;
-  font-size: 18px;
+  font-size: var(--font-size-subtitle);
   font-weight: 600;
   line-height: 1.55;
   letter-spacing: -0.025em;
 }
 .knowledge-workspace .graph-card p.diagram-question {
   margin-bottom: 22px;
-  font-size: 13px;
+  font-size: var(--font-size-body);
   line-height: 1.9;
 }
 .knowledge-workspace .card-topic {
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .graph-card .card-actions {
   margin-top: 16px;
@@ -1122,7 +1122,7 @@
   border: 0;
   background: transparent;
   color: var(--cyan);
-  font-size: 12px;
+  font-size: var(--font-size-control);
   font-weight: 500;
   text-align: left;
 }
@@ -1170,7 +1170,7 @@
 .knowledge-workspace .showcase-hero p {
   max-width: 500px;
   margin: 0 0 30px;
-  font-size: 13px;
+  font-size: var(--font-size-body);
   line-height: 1.95;
 }
 .knowledge-workspace .showcase-hero .card-actions {
@@ -1229,19 +1229,19 @@
   background: var(--hero-surface);
   color: var(--cyan);
   font:
-    10px Consolas,
+    var(--font-size-meta) Consolas,
     monospace;
 }
 .knowledge-workspace .showcase-outline li b {
   display: block;
-  font-size: 12px;
+  font-size: var(--font-size-meta);
   font-weight: 500;
 }
 .knowledge-workspace .showcase-outline li small {
   display: block;
   margin-top: 3px;
   color: var(--muted-2);
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .presentation-metrics {
   display: grid;
@@ -1270,7 +1270,7 @@
 }
 .knowledge-workspace .presentation-metrics small {
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .production-chapters {
   gap: 0 36px;
@@ -1288,10 +1288,10 @@
 }
 .knowledge-workspace .production-chapter > span {
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .production-chapter b {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .knowledge-workspace .production-chapter > .ui-icon {
@@ -1327,29 +1327,29 @@
 }
 .knowledge-workspace .topic-card-meta {
   align-items: center;
-  font-size: 10px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .topic-card-meta .eyebrow {
   font:
-    11px Consolas,
+    var(--font-size-meta) Consolas,
     monospace;
 }
 .knowledge-workspace .topic-card h2 {
   margin: 22px 0 10px;
-  font-size: 19px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
   letter-spacing: -0.025em;
 }
 .knowledge-workspace .topic-card p {
   margin-bottom: 25px;
-  font-size: 13px;
+  font-size: var(--font-size-body);
   line-height: 1.85;
 }
 .knowledge-workspace .topic-card strong {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .knowledge-workspace .topic-card strong .ui-icon {
@@ -1375,7 +1375,7 @@
 .knowledge-workspace .original-diagram .panel-title p {
   margin-top: 3px;
   color: var(--muted-2);
-  font-size: 11px;
+  font-size: var(--font-size-meta);
 }
 .knowledge-workspace .original-diagram iframe {
   height: clamp(500px, 70vh, 820px);
@@ -1403,13 +1403,13 @@
 .knowledge-workspace .diagram-reading h2,
 .knowledge-workspace .reading-summary h2 {
   margin-top: 12px;
-  font-size: 16px;
+  font-size: var(--font-size-section-title);
   font-weight: 500;
 }
 .knowledge-workspace .diagram-reading p,
 .knowledge-workspace .reading-summary p,
 .knowledge-workspace .reading-summary li {
-  font-size: 13px;
+  font-size: var(--font-size-body);
   line-height: 1.95;
 }
 .knowledge-workspace .reading-summary {
@@ -1428,7 +1428,7 @@
   gap: 20px;
   padding: 22px 26px;
   list-style: none;
-  font-size: 14px;
+  font-size: var(--font-size-body);
   font-weight: 500;
 }
 .knowledge-workspace .reading-disclosure > summary::-webkit-details-marker {
@@ -1482,7 +1482,7 @@
 }
 .knowledge-workspace .node-tabs button {
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: var(--font-size-control);
   line-height: 1.7;
   border-radius: 7px;
 }
@@ -1494,7 +1494,7 @@
 }
 .knowledge-workspace .selected-node > h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
 }
 .knowledge-workspace .branch-list {
@@ -1622,7 +1622,7 @@
     gap: 10px;
   }
   .knowledge-workspace .showcase-outline li small {
-    font-size: 10px;
+    font-size: var(--font-size-meta);
   }
   .knowledge-workspace .presentation-metrics {
     margin-bottom: 32px;
@@ -1658,10 +1658,10 @@
     display: block;
   }
   .knowledge-workspace .page-header h1 {
-    font-size: 28px;
+    font-size: var(--font-size-page-title);
   }
   .knowledge-workspace .page-header p {
-    font-size: 13px;
+    font-size: var(--font-size-meta);
   }
   .knowledge-workspace .header-actions {
     margin-top: 18px;
@@ -1688,7 +1688,7 @@
     gap: 5px;
   }
   .knowledge-workspace .section-heading h2 {
-    font-size: 19px;
+    font-size: var(--font-size-section-title);
   }
   .knowledge-workspace .graph-card {
     padding: 24px;

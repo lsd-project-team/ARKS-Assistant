@@ -19,6 +19,7 @@ export function readerState(
   | 'historyIndex'
   | 'closedFiles'
   | 'sourceFontSize'
+  | 'sourceTypographyVersion'
   | 'sourceLineHeight'
   | 'positions'
   | 'expandedDirectories'
@@ -63,7 +64,9 @@ export function readerState(
 
     closedFiles: [],
 
-    sourceFontSize: 12,
+    sourceFontSize: 14,
+
+    sourceTypographyVersion: 1,
 
     sourceLineHeight: 1.8,
 

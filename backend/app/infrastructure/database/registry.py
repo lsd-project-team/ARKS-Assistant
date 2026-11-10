@@ -11,7 +11,6 @@ from app.modules.memory import models as memory
 from app.modules.projects import models as projects
 from app.modules.settings import models as settings
 from app.modules.source_analysis import models as source_analysis
-from app.modules.source_analysis.reading import models as project_reading
 
 REGISTERED_MODELS = (
     action_timing,
@@ -22,7 +21,6 @@ REGISTERED_MODELS = (
     auth,
     admin,
     handover,
-    project_reading,
     legacy_code_work,
     settings,
 )

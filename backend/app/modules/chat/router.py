@@ -1,11 +1,15 @@
 """会话和运行 API；SSE 连接仅订阅持久化事件。"""
 
+from typing import Literal
+
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import Response, StreamingResponse
 
 from app.core.config import dump_json
 from app.core.container import AppServices
+from app.modules.chat.attachment_router import create_router as attachments_router
 from app.modules.chat.context import ConversationContext
+from app.modules.chat.feedback import FeedbackCreate, submit_feedback
 from app.modules.chat.lifecycle import ConversationLifecycle
 from app.modules.chat.schemas import (
     PinMove,
@@ -17,21 +21,28 @@ from app.modules.chat.schemas import (
 )
 from app.modules.chat.workflow_router import create_router as workflows_router
 from app.modules.chat.workflow_router import validated_selections
+from app.modules.code_work.router import create_router as code_work_router
 from app.modules.memory.visibility import run_memory_actor, visible_run_event
 
 
 def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
+    router.include_router(attachments_router(services))
     router.include_router(workflows_router(services))
+    router.include_router(code_work_router(services))
     workspace = services.workspace
     repository = services.repository
     runs = services.runs
     context = ConversationContext(services.runtime)
     lifecycle = ConversationLifecycle(services)
 
+    @router.post("/api/threads/{thread_id}/messages/{message_id}/feedback", status_code=201)
+    def feedback(thread_id: str, message_id: str, body: FeedbackCreate):
+        return submit_feedback(repository, thread_id, message_id, body)
+
     @router.get("/api/threads")
     async def threads(
-        state: str = "active",
+        state: Literal["active", "deleted"] = "active",
         query: str = "",
         limit: int = Query(default=100, ge=1, le=200),
         offset: int = Query(default=0, ge=0),
@@ -52,7 +63,9 @@ def create_router(services: AppServices) -> APIRouter:
         selections = validated_selections(workspace, body)
         async with runs.edit_lock:
             options = body.source_options.model_dump() if body.source_options else None
-            run = repository.create_run(thread_id, body.content, selections, options)
+            run = repository.create_run(
+                thread_id, body.content, selections, options, body.attachment_ids
+            )
             runs.start(run)
         return run
 
@@ -74,8 +87,6 @@ def create_router(services: AppServices) -> APIRouter:
         async with runs.edit_lock:
             if body.title is not None:
                 repository.rename(thread_id, body.title)
-            if body.state is not None:
-                repository.catalog.change(thread_id, body.state)
             if body.pinned is not None:
                 repository.catalog.pin(thread_id, body.pinned)
         return repository.catalog.get(thread_id)
@@ -101,6 +112,10 @@ def create_router(services: AppServices) -> APIRouter:
             for message in data["messages"]:
                 rows.append(f"\n## {'用户' if message['role'] == 'user' else '助手'}\n")
                 rows.append(message["content"])
+                for attachment in message.get("attachments", []):
+                    rows.append(
+                        f"\n附件：{attachment['filename']}（SHA256 {attachment['sha256']}）\n"
+                    )
                 for selection in message["selections"]:
                     rows.append(
                         f"\n源码快照：{selection['path']} "

@@ -63,14 +63,11 @@ export async function prepareLegacyWorkspace(id: string, request: <T>(path: stri
   const legacy = localStorage.getItem('trunk-workspace');
   if (!legacy || localStorage.getItem(key)) return;
   const list = await request<{ projects: Entry[] }>('/api/projects');
-  const archived = await request<{ projects: Entry[] }>('/api/projects?state=archived');
   const projectIds = new Set(
-    [...list.projects, ...archived.projects]
-      .filter((row) => row.owner_id === id)
-      .map((row) => row.id),
+    list.projects.filter((row) => row.owner_id === id).map((row) => row.id),
   );
   const threadIds = new Set<string>();
-  for (const state of ['active', 'archived', 'deleted']) {
+  for (const state of ['active', 'deleted']) {
     for (let offset = 0; ; offset += 200) {
       const rows = await request<Entry[]>(
         `/api/projects/search-threads?state=${state}&limit=200&offset=${offset}`,

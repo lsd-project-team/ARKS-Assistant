@@ -26,11 +26,6 @@ const { default: Markdown } = await import(
 const { default: gfm } = await import(
   pathToFileURL(require.resolve("remark-gfm"))
 );
-const { remarkRecordAnswer } = await import(
-  pathToFileURL(
-    resolve(root, "frontend/src/features/chat/lib/recordAnswerPresentation.ts"),
-  )
-);
 const manifest = JSON.parse(
   await readFile(resolve(input, "manifest.json"), "utf8"),
 );
@@ -73,7 +68,7 @@ for (const row of rows) {
   const rendered = renderToStaticMarkup(
     createElement(Markdown, {
       children: row.answer || `本题运行失败：${row.error || "未知原因"}`,
-      remarkPlugins: [[gfm, { singleTilde: false }], remarkRecordAnswer],
+      remarkPlugins: [[gfm, { singleTilde: false }]],
       urlTransform: (url) => url,
       components: {
         a: ({ children }) =>

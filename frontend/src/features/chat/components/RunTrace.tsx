@@ -33,8 +33,21 @@ export function RunTrace({ runId }: { runId: string }) {
     ?.slice()
     .reverse()
     .find((event) => event.kind === 'analysis_progress')?.payload as AnalysisProgress | undefined;
-  if (!tools?.length && !completion && !progress) return null;
+  return <RunTraceDetails tools={tools || []} completion={completion} progress={progress} />;
+}
+
+export function RunTraceDetails({
+  tools,
+  completion,
+  progress,
+}: {
+  tools: ToolEvent[];
+  completion?: RunCompletion;
+  progress?: AnalysisProgress;
+}) {
+  if (!tools.length && !completion && !progress) return null;
   return (
+    // 使用原生折叠状态，工具及答案更新不改变用户手动展开或收起的选择。
     <details className="saved-trace">
       <summary>
         <ListTree size={12} />
@@ -44,7 +57,7 @@ export function RunTrace({ runId }: { runId: string }) {
         <ChevronDown size={12} />
       </summary>
       <AnalysisRunDetails completion={completion} progress={progress} showSummary={false} />
-      <ToolActivity tools={tools || []} showSummary={false} />
+      <ToolActivity tools={tools} showSummary={false} />
     </details>
   );
 }

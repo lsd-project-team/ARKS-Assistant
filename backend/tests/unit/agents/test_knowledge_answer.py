@@ -7,13 +7,14 @@ import pytest
 from langchain.agents.middleware.types import ModelRequest, ModelResponse
 from langchain_core.messages import AIMessage, HumanMessage
 
+from app.agents.runtime.answer_review import AnswerReviewNote
 from app.agents.runtime.knowledge_answer import KnowledgeAnswerGuard
 from app.modules.chat.rich_presentation import project_rich_content
 from tests.helpers.models import DeterministicModel, fixture_selections
 
 REF = "[试验 · v1](debug-issue:case/1)"
 RECORDS = [{"reference": REF, "content": {"验证记录": "216颗无刺穿。"}}]
-PASSED = {"verdict": "passed", "answer": ""}
+PASSED = {"verdict": "passed", "note": ""}
 
 
 class Reviewer:
@@ -60,9 +61,11 @@ async def call(
             result=[text if isinstance(text, AIMessage) else AIMessage(content=text)]
         )
 
-    response = await guard.awrap_model_call(
-        ModelRequest(model=DeterministicModel(), messages=[HumanMessage(content=question)]),
-        handler,
+    async def checked(request):
+        return await guard.awrap_model_call(request, handler)
+
+    response = await AnswerReviewNote().awrap_model_call(
+        ModelRequest(model=DeterministicModel(), messages=[HumanMessage(content=question)]), checked
     )
     return response.result[0].text, events
 
@@ -83,21 +86,19 @@ async def test_selection_does_not_see_draft_and_fact_check_cannot_reselect_or_fo
     assert events[-1][1]["verdict"] == "passed"
 
 
-async def test_real_fact_correction_gets_final_check_with_same_selected_source():
-    revision = "本次216颗无刺穿，不能证明长期稳定。" + REF
-    reviewer = Reviewer([{"verdict": "revised", "answer": revision}, PASSED])
-    answer, events = await call(reviewer, "已长期量产稳定。" + REF)
-    assert answer == revision
+async def test_fact_issue_adds_one_note_without_rewriting_or_second_check():
+    original = "已长期量产稳定。" + REF
+    note = "216颗的记录结果不能证明长期量产稳定。"
+    reviewer = Reviewer({"verdict": "issues", "note": note, "answer": "不能采用的修订全文"})
+    answer, events = await call(reviewer, original)
+    assert answer == original + "\n\n**注意**：" + note
+    assert "不能采用的修订全文" not in answer
     facts = [
         payload for purpose, payload in reviewer.requests if purpose == "knowledge_verification"
     ]
-    assert len(facts) == 2 and facts[-1]["final_check"]
-    assert facts[0]["records"] == facts[1]["records"] == RECORDS
-    assert all(
-        '"answer"' not in str(payload)
-        for kind, payload in events
-        if kind == "knowledge_answer_check"
-    )
+    assert len(facts) == 1 and "final_check" not in facts[0]
+    assert facts[0]["answer"] == original
+    assert events[-1][1]["verdict"] == "issues"
 
 
 async def test_bad_selection_schema_is_repaired_before_any_fact_check():
@@ -126,20 +127,21 @@ async def test_invalid_fact_protocol_can_recover_without_reselecting(bad):
     assert any(kind == "knowledge_stage_error" for kind, _ in events)
 
 
-async def test_selection_failure_is_processing_failure_not_missing_business_data():
+async def test_selection_failure_preserves_original_and_only_records_processing_error():
+    original = "本次记录216颗无刺穿。" + REF
     answer, events = await call(Reviewer(selection="not json"))
-    assert "资料筛选暂未完成" in answer and "不代表资料库没有" in answer
-    assert "216颗" not in answer and "debug-issue:" not in answer
+    assert answer == original
+    assert events[-1][1]["verdict"] == "unknown"
     assert events[-2][1]["code"] == "invalid_structure"
 
 
-async def test_valid_empty_selection_does_not_publish_candidate_or_claim_catalog_absence():
-    answer, events = await call(Reviewer(selection={"selections": []}))
-    assert "本轮返回的资料中" in answer and "无法据此确认" in answer
-    assert "处理失败" not in answer and "216颗" not in answer and "debug-issue:" not in answer
-    assert any(
-        kind == "knowledge_answer_review" and row["references"] == [] for kind, row in events
-    )
+async def test_empty_selection_adds_support_gap_without_rewriting_original():
+    original = "本次记录216颗无刺穿。" + REF
+    reviewer = Reviewer(selection={"selections": []})
+    answer, events = await call(reviewer)
+    assert answer == original + "\n\n**注意**：本轮没有选到能支撑该历史答案的经验记录。"
+    assert all(purpose != "knowledge_verification" for purpose, _ in reviewer.requests)
+    assert events[-1][1]["verdict"] == "issues"
 
 
 @pytest.mark.parametrize(
@@ -167,7 +169,7 @@ async def test_general_question_is_not_replaced_when_unrelated_records_select_no
 
 
 @pytest.mark.parametrize("rich", [False, True])
-async def test_general_scope_does_not_bypass_review_when_answer_uses_experience(rich):
+async def test_general_scope_does_not_hide_unsupported_experience_or_rewrite_it(rich):
     original = "通用介绍中夹带未经核查的记录。" + REF
     if rich:
         original = (
@@ -178,28 +180,27 @@ async def test_general_scope_does_not_bypass_review_when_answer_uses_experience(
             + "\n```"
         )
     answer, _ = await call(
-        Reviewer(selection={"scope": "general", "selections": []}),
-        original,
-        question="介绍Vue框架",
+        Reviewer(selection={"scope": "general", "selections": []}), original, question="介绍Vue框架"
     )
-    assert "没有选到" in answer and REF not in project_rich_content(answer)
+    assert answer == original + "\n\n**注意**：本轮没有选到能支撑该历史答案的经验记录。"
+    assert REF in project_rich_content(answer)
 
 
-async def test_reference_without_current_record_cannot_escape_review_as_no_sources():
+async def test_missing_reference_adds_one_note_without_changing_original():
     reviewer, checked = Reviewer(), []
 
     def missing(references):
         checked.append(references)
         return []
 
+    original = "本次记录216颗无刺穿。" + REF
     answer, events = await call(reviewer, records=[], resolve=missing)
     assert checked == [{"debug-issue:case/1"}]
-    assert "资料筛选暂未完成" in answer and REF not in answer and "216" not in answer
-    assert reviewer.requests == []
-    assert any(row.get("code") == "reference_unavailable" for _, row in events)
+    assert answer == original + "\n\n**注意**：回答中的经验引用未在本轮可用记录中找到。"
+    assert reviewer.requests == [] and events[-1][1]["verdict"] == "issues"
 
 
-async def test_fact_provider_failure_keeps_only_preselected_time_fragment_and_error_code():
+async def test_fact_provider_failure_preserves_draft_and_keeps_error_out_of_body():
     target = "7月25日，23.2℃，精度-4~2μm。"
     records = [
         {"reference": REF, "content": {"正文": "7月23日，3μm。" + target + "7月27日，900μm。"}}
@@ -208,63 +209,62 @@ async def test_fact_provider_failure_keeps_only_preselected_time_fragment_and_er
         RuntimeError("credential-do-not-echo"),
         {"selections": [{"id": 1, "parts": [{"field": "正文", "start": 2, "end": 2}]}]},
     )
+    original = "本次记录216颗无刺穿。" + REF
     answer, events = await call(reviewer, records=records)
-    assert target in answer and "自动事实核查未完成" in answer
-    assert "7月23日" not in answer and "900" not in answer
+    assert answer == original
     assert "credential-do-not-echo" not in str(events)
-    assert any(
-        kind == "knowledge_stage_error" and row["code"] == "provider_error" for kind, row in events
-    )
+    facts = [p for purpose, p in reviewer.requests if purpose == "knowledge_verification"]
+    assert len(facts) == 1 and facts[0]["records"][0]["content"] == {"正文": target}
+    assert any(k == "knowledge_stage_error" and r["code"] == "provider_error" for k, r in events)
 
 
-async def test_omitted_result_is_available_for_fact_check_without_reintroducing_other_records():
-    original = "7月25日14:47开始，23.2℃。该阶段精度由-4~4μm变为-4~2μm。"
+async def test_full_record_supports_specific_note_without_reintroducing_other_records():
+    evidence = "7月25日14:47开始，23.2℃。该阶段精度由-4~4μm变为-4~2μm。"
     records = [
-        {"reference": REF, "content": {"正文": original}},
+        {"reference": REF, "content": {"正文": evidence}},
         {"reference": "[其他设备](debug-issue:other/1)", "content": {"正文": "adv-30，900μm。"}},
     ]
-    revision = "该阶段范围由-4~4μm变为-4~2μm。" + REF
+    note = "原记录给出了精度由-4~4μm变为-4~2μm的结果。"
     reviewer = Reviewer(
-        [{"verdict": "revised", "answer": revision}, PASSED],
+        {"verdict": "issues", "note": note},
         {"selections": [{"id": 1, "parts": [{"field": "正文", "start": 1, "end": 1}]}]},
     )
-    answer, _ = await call(reviewer, "原记录没有提供精度。" + REF, records)
-    assert answer == revision
-    facts = [
-        payload for purpose, payload in reviewer.requests if purpose == "knowledge_verification"
-    ]
-    assert len(facts) == 2
-    for payload in facts:
-        assert "-4~2" not in str(payload["records"])
-        assert payload["record_context"] == records[:1]
-        assert "900" not in str(payload)
+    original = "原记录没有提供精度。" + REF
+    answer, _ = await call(reviewer, original, records)
+    assert answer == original + "\n\n**注意**：" + note
+    facts = [p for purpose, p in reviewer.requests if purpose == "knowledge_verification"]
+    assert len(facts) == 1
+    assert "-4~2" not in str(facts[0]["records"])
+    assert facts[0]["record_context"] == records[:1] and "900" not in str(facts[0])
 
 
-async def test_repeated_wrong_facts_never_release_unverified_revision():
-    reviewer = Reviewer({"verdict": "revised", "answer": "未经确认的新结论"})
+async def test_review_never_uses_returned_replacement_or_retries_to_rewrite():
+    original = "本次记录216颗无刺穿。" + REF
+    note = "该记录只有216颗样本。"
+    reviewer = Reviewer({"verdict": "issues", "note": note, "answer": "未经确认的新结论"})
     answer, events = await call(reviewer)
-    assert "未经确认的新结论" not in answer and "216颗" in answer
-    assert any(
-        kind == "knowledge_stage_error" and row["code"] == "unresolved_facts"
-        for kind, row in events
-    )
+    assert answer == original + "\n\n**注意**：" + note and "未经确认的新结论" not in answer
+    assert sum(p == "knowledge_verification" for p, _ in reviewer.requests) == 1
+    assert not any(k == "answer_replace" for k, _ in events)
 
 
-async def test_foreign_reference_cannot_pass_merely_because_reviewer_says_passed():
-    answer, _ = await call(Reviewer(), "无关900μm。[其他](debug-issue:other/1)")
-    assert "900" not in answer and "other/1" not in answer
-    assert "216颗" in answer
+async def test_foreign_reference_is_reported_even_when_model_says_passed():
+    original = "无关900μm。[其他](debug-issue:other/1)"
+    answer, events = await call(Reviewer(), original)
+    assert answer == original + "\n\n**注意**：回答中的经验引用与本轮选定记录或版本不一致。"
+    assert events[-1][1]["verdict"] == "issues"
 
 
 @pytest.mark.parametrize("records,limit", [([], 10000), (RECORDS, 1)])
-async def test_no_records_or_input_budget_never_calls_provider(records, limit):
+async def test_no_records_or_input_budget_never_calls_provider_or_rewrites(records, limit):
     reviewer = Reviewer(AssertionError("不应请求供应商"))
+    original = "本次记录216颗无刺穿。" + REF
     answer, events = await call(reviewer, records=records, limit=limit)
-    assert reviewer.requests == []
+    assert reviewer.requests == [] and answer == original
     if records:
-        assert "处理失败" in answer and any(row.get("code") == "input_budget" for _, row in events)
+        assert any(r.get("code") == "input_budget" for _, r in events)
     else:
-        assert "216颗" in answer and events == []
+        assert events == []
 
 
 async def test_cancellation_is_not_swallowed_as_review_failure():
@@ -322,10 +322,11 @@ async def test_source_answer_is_not_replaced_by_unrelated_knowledge_or_selection
         RICH_SOURCE.replace('"version":1', '"version":9'),
     ],
 )
-async def test_code_examples_or_invalid_rich_content_do_not_bypass_knowledge_review(fake_source):
+async def test_code_examples_do_not_hide_support_gap_or_get_rewritten(fake_source):
+    original = "候选记录。\n\n" + fake_source
     reviewer = Reviewer(selection={"selections": []})
-    answer, _ = await call(reviewer, "候选记录。\n\n" + fake_source)
-    assert "没有选到" in answer
+    answer, _ = await call(reviewer, original)
+    assert answer == original + "\n\n**注意**：本轮没有选到能支撑该历史答案的经验记录。"
     assert [purpose for purpose, _ in reviewer.requests] == ["knowledge_selection"]
 
 
@@ -341,21 +342,17 @@ async def test_mixed_source_and_knowledge_answer_still_receives_fact_review(sour
     ]
 
 
-async def test_unselected_knowledge_reference_inside_rich_text_is_still_rejected():
+async def test_unselected_reference_in_rich_text_is_reported_without_removing_blocks():
     document = {
         "version": 1,
         "blocks": [{"id": "text", "type": "text", "content": "其他记录。" + REF}],
     }
-    text = RICH_SOURCE + "\n```rich-content\n" + json.dumps(document) + "\n```"
+    original = RICH_SOURCE + "\n```rich-content\n" + json.dumps(document) + "\n```"
     reviewer = Reviewer(selection={"selections": []})
-    answer, _ = await call(reviewer, text)
-    assert REF not in project_rich_content(answer)
-    assert "资料筛选暂未完成" in answer
-    assert [purpose for purpose, _ in reviewer.requests] == [
-        "knowledge_selection",
-        "knowledge_verification",
-        "knowledge_verification",
-    ]
+    answer, _ = await call(reviewer, original)
+    assert answer == original + "\n\n**注意**：本轮没有选到能支撑该历史答案的经验记录。"
+    assert REF in project_rich_content(answer)
+    assert [p for p, _ in reviewer.requests] == ["knowledge_selection"]
 
 
 @pytest.mark.parametrize(
@@ -390,7 +387,7 @@ async def test_source_task_missing_citations_is_left_to_source_guard_instead_of_
 async def test_explicit_historical_request_is_not_exempted_by_source_requirement(question):
     reviewer = Reviewer(selection={"selections": []})
     answer, _ = await call(reviewer, source_required=True, question=question)
-    assert "没有选到" in answer and "216颗" not in answer
+    assert answer.startswith("本次记录216颗无刺穿。" + REF) and "没有选到" in answer
     assert [purpose for purpose, _ in reviewer.requests] == ["knowledge_selection"]
 
 
@@ -400,3 +397,61 @@ async def test_source_verbatim_request_is_not_misclassified_as_historical_materi
     original = "代码原文待补齐引用。"
     answer, _ = await call(reviewer, original, source_required=True, question=question)
     assert answer == original and reviewer.requests == []
+
+
+@pytest.mark.parametrize(
+    "block",
+    [
+        {
+            "id": "flow",
+            "type": "mermaid",
+            "content": "flowchart TD\n A[组合调整] --> B[216颗无刺穿]",
+        },
+        {
+            "id": "map",
+            "type": "mindmap",
+            "nodes": [
+                {"id": "root", "label": "本次试验"},
+                {"id": "result", "label": "216颗", "parent_id": "root"},
+            ],
+        },
+        {
+            "id": "chart",
+            "type": "chart",
+            "chart_type": "bar",
+            "labels": ["本次取放颗数"],
+            "series": [{"id": "count", "name": "数量", "values": [216]}],
+        },
+    ],
+)
+async def test_no_original_images_does_not_remove_verified_visuals_or_their_ids(block):
+    records = [{**RECORDS[0], "image_count": 0}]
+    original = (
+        "本次记录216颗无刺穿，不代表长期验证。"
+        + REF
+        + "\n\n```rich-content\n"
+        + json.dumps({"version": 1, "blocks": [block]})
+        + "\n```"
+    )
+    reviewer = Reviewer()
+    answer, events = await call(reviewer, original, records, question="用图文并茂说明本次试验")
+    assert answer == original
+    assert reviewer.requests[-1][1]["record_context"][0]["image_count"] == 0
+    assert reviewer.requests[-1][1]["answer"] == original
+    assert reviewer.requests[-1][1]["answer_text"] == project_rich_content(original)
+    assert "216" in reviewer.requests[-1][1]["answer_text"]
+    assert not any(kind == "answer_replace" for kind, _ in events)
+    assert events[-1][1]["verdict"] == "passed"
+
+
+async def test_visual_issue_adds_note_without_rewriting_graph():
+    original = (
+        '```rich-content\n{"version":1,"blocks":[{"id":"bad","type":"mermaid",'
+        '"content":"flowchart TD\\n A[075顶针] --> B[保证长期根治]"}]}\n```\n' + REF
+    )
+    note = "216颗样本不能证明保证长期根治。"
+    reviewer = Reviewer({"verdict": "issues", "note": note, "answer": "不应采用的图形修订"})
+    answer, _ = await call(reviewer, original, question="用流程图展示经验")
+    assert answer == original + "\n\n**注意**：" + note
+    assert "保证长期根治" in answer and "不应采用的图形修订" not in answer
+    assert sum(p == "knowledge_verification" for p, _ in reviewer.requests) == 1

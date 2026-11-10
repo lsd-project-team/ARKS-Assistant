@@ -78,10 +78,6 @@ export function useSidebarActions() {
       } else if (action === 'restore') {
         await restore(row);
         toast('对话已恢复');
-      } else if (action === 'archive') {
-        await api(`/threads/${row.id}`, { method: 'PATCH', body: jsonBody({ state: 'archived' }) });
-        if (useWorkspace.getState().threadId === row.id) selectThread('');
-        toast('对话已归档', { label: '撤销', run: () => restore(row) });
       } else if (action === 'pin') {
         const pinned = row.pinned_order !== null && row.pinned_order !== undefined;
         await api(`/threads/${row.id}`, { method: 'PATCH', body: jsonBody({ pinned: !pinned }) });

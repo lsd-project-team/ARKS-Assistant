@@ -1,5 +1,15 @@
 # 验证脚本
 
+`code_work_loop.py --live --output output/<新短目录>` 使用当前真实供应商，在独立账号、数据库和工程中验证开阀需求的原版反例、AI实际修改、编译、虚拟驱动、原工程自检、原桌面七步、候选重验及测试工程合入/回退。默认只读桌面ARKS原工程，可用 `--source-root` 指定；不写正式聊天或原业务目录，凭据仅装入内存。`--resume` 仅收集已有运行继续验收，不重新发起模型调用；默认临时项目有限额度2000000，不清零已用量。需要本机MSBuild及原工程依赖，消耗真实模型额度；目录宜短以适配.NET Framework资源路径限制，结果和边界见[循环修复复测](../../docs/verification/code-work-loop-20261105.md)。
+
+`source_answer_quality.py --live --output output/source-answer/<新文件>.json` 使用当前供应商，在临时C#源码及数据库中验证方法解释、调用流程、问题定位与修改建议、逐字原文。只读正式配置至内存，支持`--cases explain flow fix verbatim`选择场景；不覆盖既有输出，不写正式账号或聊天。自动检查引用、未调用源码结论复核、格式、历史一致性及原文，阅读质量仍须人工核对，历史结果见[源码回答验收](../../docs/verification/source-answer-organization-20261030.md)。
+
+`arks_source_answers.py --live --settings-data <正式配置所在目录> --source-root <真实只读源码根> --output output/arks-source-steps/live.json` 在隔离账号和数据库上复测“取片的步骤”及漏晶分支流程图；先放入无关经验话题检查切换，再实际检索ARKS源码。核对HTTP/SSE精确重放、当前引用、4/6条历史、无结论复核调用、源码指纹不变，以及步骤组件和普通Mermaid围栏的真实前端渲染。不执行设备，不向正式库写样例；消耗当前供应商额度，见[专项验收](../../docs/verification/source-retrieval-steps-20261030.md)。
+
+`rich_content_roundtrip.py --live` 使用当前真实供应商，在临时账号、源码、数据库及附件上验证新增富内容块的生成、现有 HTTP/SSE、重连重放、多轮历史及前端引擎渲染；只读正式配置至内存，不复制密钥或业务历史。需要前后端依赖，明确消耗模型额度，结果只写入 `output/`。见[本轮验收](../../docs/verification/rich-content-roundtrip-20261030.md)。
+
+`arks_rich_content.py --live --settings-data <正式配置所在目录> --output output/arks-rich-content/live.json` 使用截图蓝膜案例的问答副本，在独立临时账号与数据库上验证两轮真实经验图文、事实修订、引用、HTTP/SSE重放、历史及前端图形。仅将配置读入内存，不读取正式会话、不向正式知识库写入样例；无历史原图也必须生成有依据的示意图。需要前后端依赖，消耗当前供应商额度，见[专项验收](../../docs/verification/arks-rich-content-20261030.md)。
+
 默认回归分别在 `backend/` 运行 `uv run pytest -q`，在 `frontend/` 运行 `npm test` 和 `npm run build`。这些测试使用隔离数据目录与测试模型。
 
 真实供应商类脚本需要显式执行并消耗 API 额度，不属于默认测试，也不会由启动脚本自动运行。下表区分历史入口、独立配置质量套件和不调用供应商的离线验收。
@@ -22,3 +32,7 @@
 20题套件须先逐题对照资料、源码和浏览器实际渲染填写 `grades.json`，再运行 `python -m scripts.verification.answer_quality.report 新批次目录 基线目录` 生成全部20题前后变化；题集或数据指纹不同会拒绝比较，不能拼接不同版本的较好答案。最新结果见[筛选、事实核查与排版分离复测](../../docs/verification/answer-quality-split-20261020.md)：准确性改善，阅读均分未提升，保留全部失败与退步题。
 
 `rich_content_ui.py` 默认仅使用隔离数据与可控模型；显式 `--live` 使用当前真实模型和只读 `trunk/`，会消耗额度。`--directory output/<已有隔离目录>` 可保留结果重启，`--live-token-budget` 仅设置临时项目额度，默认2,000,000；不清零已用量。真实模型页使用 `localhost`，正式历史页使用 `127.0.0.1`，避免登录 Cookie 相互覆盖。执行与限制见[Rich Content 真实验收](../../docs/verification/chat-rich-content-live-20261020.md)。
+
+晶圆厂商文档适配使用 `wafer_vendor.py`，通过真实聊天 API 和当前模型在隔离目录中运行。先执行 `--live --case clarify --output output/<新短目录>`，再执行 `--live --case adapt --spec backend/tests/fixtures/wafer_vendor_b_v2.md --output output/<同一目录>`。`--token-budget` 只改变该测试项目的有限额度，保留已用量；`--resume` 仅继续最近失败运行，不重建对话或覆盖旧报告。`adapt-feedback` 与 `adapt-test-fix` 分别用于记录明确的人工纠错输入；后者按当前用例实际 id/version 更新。
+
+完成本轮编译后运行 `wafer_vendor_independent.py output/<同一目录>`，独立检查转换、异常、缓存、实际导入入口及真实 WaferMap 库读取。`--allow-failed-checks` 仅用于已编译但模型断言失败时诊断，不代表整轮通过；`--output-name` 保存新一轮独立结果且禁止覆盖旧目录。历史 v1 模拟规范有已确认的枚举错误，保留为失败证据；新验收使用 v2。完整范围见[晶圆厂商适配验收](../../docs/verification/wafer-vendor-20261106.md)。

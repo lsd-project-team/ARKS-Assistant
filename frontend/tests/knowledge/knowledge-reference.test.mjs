@@ -6,19 +6,15 @@ import {
   isKnowledgeReference,
 } from '../../src/features/knowledge/lib/knowledgeReference.ts';
 
-test('用户端与管理端都保留四类内部引用，不允许其他协议充当资料引用', () => {
-  for (const href of [
-    'source:Program.cs#L1',
-    'material:p/m/2#L1',
-    'debug-issue:issue/2',
-    'handover-source:source/3#L2',
-  ])
+test('用户端与管理端都保留三类内部引用，不允许其他协议充当资料引用', () => {
+  for (const href of ['source:Program.cs#L1', 'debug-issue:issue/2', 'handover-source:source/3#L2'])
     assert.equal(isKnowledgeReference(href), true);
   for (const href of [
     'javascript:alert(1)',
     'data:text/html,private',
     'https://example.com',
     'xsource:other',
+    'material:p/m/2#L1',
   ])
     assert.equal(isKnowledgeReference(href), false);
 });
@@ -49,16 +45,10 @@ test('历史交接引用保留记录、版本和行号，拒绝不完整或越�
     assert.equal(handoverReference(href), undefined);
 });
 
-test('普通资料保留原文与行号，旧访谈资料按既有正文结构读取', () => {
+test('资料正文保留原文与行号，缺少正文时不构造内容', () => {
   assert.equal(
     handoverDocumentText({ kind: 'source', payload: { content: '第一行\n第二行' } }),
     '第一行\n第二行',
   );
-  assert.equal(
-    handoverDocumentText({
-      kind: 'interview',
-      payload: { topic: '调试记录', transcript: '现场描述' },
-    }),
-    '主题：调试记录\n访谈原文：现场描述',
-  );
+  assert.equal(handoverDocumentText({ kind: 'source', payload: {} }), '');
 });

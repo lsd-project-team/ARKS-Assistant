@@ -1,0 +1,382 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { build } from 'esbuild';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import { JSDOM } from 'jsdom';
+import { act, createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+
+const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'http://localhost/' });
+globalThis.window = dom.window;
+globalThis.document = dom.window.document;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+const environment = {
+  jumps: [],
+  reads: [],
+  sourceVersion: 'v1',
+  opened: true,
+  files: [],
+  row: undefined,
+};
+const compiled = await build({
+  stdin: {
+    contents:
+      "export { AnswerMarkdown } from './src/features/chat/components/AnswerMarkdown'; export { FileBlock } from './src/features/chat/rich/FileBlock'; export { ToolActivity } from './src/features/chat/components/ToolActivity';",
+    resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
+    loader: 'tsx',
+  },
+  bundle: true,
+  write: false,
+  format: 'cjs',
+  platform: 'node',
+  jsx: 'automatic',
+  external: [
+    'react',
+    'react/*',
+    'react-dom',
+    'react-dom/*',
+    '@tanstack/react-query',
+    'lucide-react',
+    '@radix-ui/*',
+    '@pierre/diffs',
+    'clsx',
+    'tailwind-merge',
+    'zustand',
+  ],
+  loader: { '.css': 'empty' },
+  plugins: [
+    {
+      name: 'external-boundaries',
+      setup(builder) {
+        builder.onResolve(
+          {
+            filter:
+              /(state\/store|api\/client|hooks\/useSourceCitation|handover\/shared\/client|materials\/OriginalMaterialViewer|components\/(HandoverMaterialViewer|SelectionPreview)|markdown\/CodeSyntax)$/,
+          },
+          ({ path }) => ({ path, namespace: 'boundary' }),
+        );
+        builder.onLoad({ filter: /.*/, namespace: 'boundary' }, ({ path }) => ({
+          loader: 'js',
+          contents: path.endsWith('store')
+            ? 'export const useWorkspace = s => s({projectId:"p"}); useWorkspace.getState = () => ({projectId:"p"});'
+            : path.endsWith('handover/shared/client')
+              ? 'export const handoverClient = () => ({ get: async path => { environment.files.push(path); return environment.row; } });'
+              : path.endsWith('api/client')
+                ? 'export class ApiError extends Error {}; export const api = () => {throw Error("禁止网络");};'
+                : path.endsWith('useSourceCitation')
+                  ? 'export const useSourceCitation = () => async (...args) => { environment.jumps.push(args); return environment.opened; }; export const readCitationSource = async (cache, project, path, origin) => { environment.reads.push([project, path, origin]); return {source:{version:environment.sourceVersion,line_count:100,content:Array.from({length:100},(_,i)=>`line ${i+1}`).join("\\n")}}; };'
+                  : path.endsWith('OriginalMaterialViewer')
+                    ? 'import { createElement } from "react"; export const OriginalMaterialViewer = ({row}) => createElement("div", {"data-viewer": row.id}, row.title);'
+                    : path.endsWith('CodeSyntax')
+                      ? 'import { createElement } from "react"; export const CodeSyntax = ({content}) => createElement("code", null, content);'
+                      : 'import { createElement } from "react"; export const HandoverMaterialViewer = () => null; export const SelectionPreview = ({selection,title,onClose}) => createElement("div",{role:"dialog","aria-label":title,"data-selection":JSON.stringify(selection)}, createElement("pre",null,selection.content),createElement("button",{onClick:onClose},"关闭"));',
+        }));
+      },
+    },
+  ],
+});
+const module = { exports: {} };
+const require = createRequire(import.meta.url);
+const { QueryClient, QueryClientProvider } = require('@tanstack/react-query');
+new Function('require', 'module', 'exports', 'environment', compiled.outputFiles[0].text)(
+  require,
+  module,
+  module.exports,
+  environment,
+);
+const { AnswerMarkdown, FileBlock, ToolActivity } = module.exports;
+const fence = (blocks) => '```rich-content\n' + JSON.stringify({ version: 1, blocks }) + '\n```';
+async function mounted(verify) {
+  const root = createRoot(document.getElementById('root'));
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const render = async (element) =>
+    act(async () => root.render(createElement(QueryClientProvider, { client }, element)));
+  try {
+    await verify({ render, client });
+  } finally {
+    await act(async () => root.unmount());
+    client.clear();
+  }
+}
+
+test('点击引用行号按原路径、范围、版本和目录打开右侧源码；流式块不重建', async () => {
+  environment.jumps = [];
+  environment.reads = [];
+  await mounted(async ({ render, client }) => {
+    const source = {
+      path: '@sources/library/Dir/源.cs',
+      start_line: 12,
+      end_line: 24,
+      version: 'v1',
+      source_workspace_id: 'library',
+    };
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [{ ...source, current_status: 'match', source_workspace_id: 'library' }],
+    });
+    const content = fence([
+      { id: 'code', type: 'code', language: 'python', content: 'print(1)\n'.repeat(30) },
+      { id: 'source', type: 'source_reference', sources: [source] },
+      {
+        id: 'tool',
+        type: 'tool_call',
+        tool: { id: 'call', name: 'read_source', result: '完成', status: 'success' },
+      },
+    ]);
+    await render(createElement(AnswerMarkdown, { content, runId: 'r', streaming: true }));
+    const button = document.querySelector('.answer-code-link');
+    assert.equal(button.disabled, false);
+    await act(async () => button.click());
+    assert.deepEqual(environment.jumps, [[source.path, 12, 24, 'v1', 'library']]);
+    assert.deepEqual(environment.reads, []);
+    assert.equal(document.querySelector('[role="dialog"]'), null);
+    await act(async () => document.querySelector('.code-expand').click());
+    const tool = document.querySelector('.tool-call-card');
+    tool.open = true;
+    await render(
+      createElement(AnswerMarkdown, {
+        content: content + '\n\n新增段落',
+        runId: 'r',
+        streaming: true,
+      }),
+    );
+    assert.equal(document.querySelector('.tool-call-card'), tool);
+    assert.equal(tool.open, true);
+    assert.equal(document.querySelector('.code-expand').getAttribute('aria-expanded'), 'true');
+    assert.equal(document.querySelector('.answer-code-link'), button);
+    await render(
+      createElement(AnswerMarkdown, { content: JSON.parse(JSON.stringify(content)), runId: 'r' }),
+    );
+    assert.equal(button.getAttribute('aria-label'), '打开源码 源.cs:12–24');
+  });
+});
+
+test('同一文件合成一个标签且文件名只出现一次，各行号共用右侧定位逻辑', async () => {
+  environment.jumps = [];
+  environment.reads = [];
+  await mounted(async ({ render, client }) => {
+    const source = {
+      path: 'Dir/Engine.cs',
+      start_line: 12,
+      end_line: 24,
+      version: 'v1',
+      source_workspace_id: 's',
+    };
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [{ ...source, start_line: 1, end_line: 100, current_status: 'match' }],
+    });
+    const content =
+      fence([{ id: 'src', type: 'source_reference', sources: [source] }]) +
+      '\n\n来源：[另一个范围](source:Dir/Engine.cs#L30-L32)';
+    await render(createElement(AnswerMarkdown, { content, runId: 'r' }));
+    assert.equal(document.querySelectorAll('.answer-code-file').length, 1);
+    assert.equal(
+      document.querySelectorAll('.rich-source-reference,.rich-source-link,details').length,
+      0,
+    );
+    const links = [...document.querySelectorAll('.answer-code-link')];
+    assert.deepEqual(
+      links.map((item) => item.textContent),
+      ['12–24', '30–32'],
+    );
+    for (const [index, link] of links.entries()) {
+      assert.equal(link.getAttribute('aria-haspopup'), null);
+      await act(async () => link.click());
+      assert.deepEqual(environment.jumps[index], [
+        'Dir/Engine.cs',
+        index ? 30 : 12,
+        index ? 32 : 24,
+        'v1',
+        's',
+      ]);
+      assert.equal(document.querySelector('[role="dialog"]'), null);
+    }
+    assert.equal(environment.jumps.length, 2);
+    assert.equal(environment.reads.length, 0);
+    assert.equal(document.querySelectorAll('.answer-code-filename').length, 1);
+    assert.equal(
+      document.querySelector('.answer-code-file').textContent.split('Engine.cs').length - 1,
+      1,
+    );
+    assert.doesNotMatch(document.body.textContent, /Dir\//);
+  });
+});
+
+test('右侧源码定位失败时提示错误，不回退为源码弹窗', async () => {
+  environment.opened = false;
+  try {
+    await mounted(async ({ render, client }) => {
+      const source = { path: 'Dir/Engine.cs', start_line: 12, end_line: 24, version: 'v1' };
+      client.setQueryData(['source-evidence', 'p', 'r'], {
+        source_evidence: [{ ...source, current_status: 'match' }],
+      });
+      await render(
+        createElement(AnswerMarkdown, {
+          content: fence([{ id: 'src', type: 'source_reference', sources: [source] }]),
+          runId: 'r',
+        }),
+      );
+      await act(async () => document.querySelector('.answer-code-link').click());
+      assert.equal(document.querySelector('[role="dialog"]'), null);
+      assert.match(document.querySelector('[role="alert"]').textContent, /未能定位原引用/);
+    });
+  } finally {
+    environment.opened = true;
+  }
+});
+
+test('历史/流式搜索引用和已读引用共用来源按钮，点击按当前源码定位且不额外补读', async () => {
+  environment.jumps = [];
+  environment.reads = [];
+  await mounted(async ({ render, client }) => {
+    const path = 'Dir/SignalPool.cs';
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [
+        {
+          path: 'Dir/Read.cs',
+          start_line: 1,
+          end_line: 30,
+          version: 'v1',
+          source_workspace_id: 'main',
+          current_status: 'match',
+        },
+      ],
+      tools: [
+        {
+          id: 's',
+          name: 'search_source',
+          status: 'success',
+          result: JSON.stringify({ matches: [{ path, line: 136, text: 'Signal.Ready();' }] }),
+        },
+      ],
+    });
+    const content =
+      '说明。\n\n来源：[SignalPool.cs:136–152](source:Dir/SignalPool.cs#L136-L152) [Read.cs:2–3](source:Dir/Read.cs#L2-L3)';
+    for (const streaming of [false, true]) {
+      await render(
+        createElement(AnswerMarkdown, { content, runId: 'r', sourceId: 'main', streaming }),
+      );
+      const buttons = [...document.querySelectorAll('.answer-code-link')];
+      assert.deepEqual(
+        buttons.map((button) => [button.textContent, button.disabled]),
+        [
+          ['136–152', false],
+          ['2–3', false],
+        ],
+      );
+      await act(async () => buttons[0].click());
+      assert.deepEqual(environment.jumps.at(-1), [path, 136, 152, undefined, 'main']);
+      assert.deepEqual(environment.reads, []);
+      assert.equal(document.querySelector('[role=dialog]'), null);
+      assert.doesNotMatch(
+        document.querySelector('.answer-sources').textContent,
+        /搜索|未核实|当前版本/,
+      );
+      assert.ok(
+        document.querySelector('.answer-sources').classList.contains('answer-sources-code'),
+      );
+    }
+  });
+});
+
+test('带已知版本问题的引用即使搜索命中也保持禁用', async () => {
+  environment.jumps = [];
+  await mounted(async ({ render, client }) => {
+    const source = {
+      path: 'Dir/Changed.cs',
+      start_line: 12,
+      end_line: 24,
+      version: 'v1',
+      source_workspace_id: 'main',
+    };
+    client.setQueryData(['source-evidence', 'p', 'r'], {
+      source_evidence: [{ ...source, current_status: 'changed' }],
+      tools: [
+        {
+          id: 's',
+          name: 'search_source',
+          status: 'success',
+          result: JSON.stringify({
+            matches: [{ path: source.path, line: 12, text: 'Changed();' }],
+          }),
+        },
+      ],
+    });
+    await render(
+      createElement(AnswerMarkdown, {
+        content: fence([{ id: 'src', type: 'source_reference', sources: [source] }]),
+        runId: 'r',
+        sourceId: 'main',
+      }),
+    );
+    const button = document.querySelector('.answer-code-link');
+    assert.equal(button.disabled, true);
+    assert.match(button.title, /版本已变化/);
+    await act(async () => button.click());
+    assert.deepEqual(environment.jumps, []);
+  });
+});
+
+test('工具卡片区分运行、成功、失败和跳过，空结果及参数不丢失且展开状态稳定', async () => {
+  await mounted(async ({ render }) => {
+    const tools = [
+      { id: 'run', name: 'read_source', arguments: { path: '**原文**' } },
+      { id: 'done', name: 'search_source', status: 'success', result: '' },
+      { id: 'failed', name: 'read_source', status: 'error', result: '找不到文件' },
+      {
+        id: 'skip',
+        name: 'read_source',
+        execution_status: 'skipped',
+        skip_reason: 'verification_reserved',
+      },
+    ];
+    await render(createElement(ToolActivity, { tools }));
+    assert.deepEqual(
+      [...document.querySelectorAll('.tool-call-card')].map((item) => item.dataset.state),
+      ['pending', 'success', 'failed', 'skipped'],
+    );
+    assert.match(document.body.textContent, /（空结果）/);
+    assert.match(document.body.textContent, /\*\*原文\*\*/);
+    assert.equal(document.querySelector('strong'), null);
+    const running = document.querySelector('.tool-call-card');
+    running.open = true;
+    await render(
+      createElement(ToolActivity, {
+        tools: [{ ...tools[0], status: 'success', result: '源码内容' }, ...tools.slice(1)],
+      }),
+    );
+    assert.equal(document.querySelector('.tool-call-card'), running);
+    assert.equal(running.open, true);
+    assert.equal(running.dataset.state, 'success');
+  });
+});
+
+test('文件通过已有资料接口打开；旧版本和非资料记录不会冒充原附件', async () => {
+  for (const [kind, version, expected] of [
+    ['source', 2, true],
+    ['source', 3, false],
+    ['task', 2, false],
+  ]) {
+    environment.files = [];
+    environment.row = { id: 'file-record', kind, version, title: '真实资料标题' };
+    await mounted(async ({ render }) => {
+      await render(
+        createElement(FileBlock, {
+          block: {
+            id: 'file',
+            type: 'file',
+            record_id: 'file-record',
+            name: '资料.pdf',
+            version: 2,
+          },
+        }),
+      );
+      await act(async () => document.querySelector('.rich-file > button').click());
+      assert.deepEqual(environment.files, ['/records/file-record']);
+      assert.equal(!!document.querySelector('[data-viewer="file-record"]'), expected);
+      if (!expected) assert.ok(document.querySelector('[role="alert"]'));
+    });
+  }
+});
+
+test.after(() => dom.window.close());

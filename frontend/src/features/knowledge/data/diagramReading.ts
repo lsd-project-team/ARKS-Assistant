@@ -1,3 +1,5 @@
+import { manualReadings } from './manualCatalog.ts';
+
 export interface DiagramReading {
   title: string;
   summary: string;
@@ -89,11 +91,12 @@ config-production-gates|配置与生产条件依据|追溯配置项与生产入�
   .trim()
   .split('\n');
 
-export const diagramReadings: Record<string, DiagramReading> = Object.fromEntries(
-  rows.map((row) => {
+export const diagramReadings: Record<string, DiagramReading> = Object.fromEntries([
+  ...Object.entries(manualReadings),
+  ...rows.map((row) => {
     const [id, title, summary, condition, exception] = row.split('|');
     return [id, { title, summary, condition, exception }];
   }),
-);
+]);
 
 export const isSupportingEntry = (entry: { type: string }) => entry.type === 'supplemental';

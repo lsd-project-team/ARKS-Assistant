@@ -9,8 +9,15 @@
 resources/deployment/Dockerfile.linux text eol=lf
 # 静态资料带源码指纹，保留原始字节，避免检出时换行转换使校验失效。
 frontend/public/** -text
+# 已复核图谱的字节指纹依赖换行；这两份旧交付保留 CRLF，其余使用 LF。
+resources/knowledge/flows/*.html text eol=lf
+resources/knowledge/flows/*.archify.json text eol=lf
+resources/knowledge/flows/transport-workflow.html text eol=crlf
+resources/knowledge/flows/transport-start-gating-workflow.html text eol=crlf
 # 新版样例的交付回执按原始字节核对 HTML 和输入文件。
 resources/knowledge/flows/startup-v3-sample/** -text
 # Archify 交付与候选指纹需要在检出后保持一致。
 resources/knowledge/flows/g0-archify/** -text
 resources/knowledge/flows/functional-atlas/** -text
+# 导入说明及图解统一使用 LF，使跨平台检出后的资源摘要保持一致。
+resources/knowledge/flows/manuals/** text eol=lf whitespace=-blank-at-eol,-blank-at-eof

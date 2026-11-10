@@ -1,0 +1,97 @@
+.answer-sources {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: var(--font-size-control);
+}
+.answer-sources-label {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.answer-sources-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+  min-width: 0;
+}
+.answer-sources-list > .markdown > p {
+  margin: 0;
+}
+
+.answer-code-sources {
+  display: inline;
+}
+.answer-sources-code {
+  display: block;
+  line-height: 2.3;
+}
+.answer-sources-code .answer-sources-label {
+  display: inline-block;
+  vertical-align: top;
+  padding: 5px 0;
+  border-block: 1px solid transparent;
+  font: var(--font-size-code)/1.8 var(--font-ui);
+  margin-right: 6px;
+}
+.answer-sources-code .answer-sources-list,
+.answer-sources-code .answer-sources-list > .markdown {
+  display: contents;
+}
+.answer-sources-code .answer-sources-list > .markdown > p {
+  display: inline;
+}
+.answer-code-file {
+  display: inline-block;
+  max-width: calc(100% - 55px);
+  vertical-align: top;
+  padding: 3px 6px;
+  margin-right: 6px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  font: var(--font-size-code)/1.8 var(--font-ui);
+}
+.answer-code-filename {
+  overflow-wrap: anywhere;
+}
+.answer-code-citation {
+  display: inline;
+}
+.answer-code-citation-controls {
+  display: inline-block;
+  white-space: nowrap;
+}
+.answer-code-link {
+  border: 0;
+  border-radius: 5px;
+  padding: 2px 6px;
+  margin-block: 1px;
+  margin-left: 4px;
+  background: var(--surface-hover);
+  color: inherit;
+  font: var(--font-size-code)/1.6 var(--font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.answer-code-link:hover:not(:disabled) {
+  background: var(--selection-hover, var(--surface-muted));
+  color: var(--accent);
+}
+.answer-code-link:disabled {
+  opacity: 0.65;
+  color: var(--muted);
+  cursor: help;
+}
+.answer-code-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.answer-code-invalid {
+  color: var(--muted);
+  font-size: var(--font-size-code);
+  overflow-wrap: anywhere;
+}

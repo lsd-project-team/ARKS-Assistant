@@ -75,7 +75,7 @@ test('资料列表只显示原文件、真实上传人和上传时间，不显�
     original_file: { name: '原始手册.pdf', previewable: true },
   };
   const legacy = {
-    ...row('旧记录', 'interview', { transcript: '不展示的访谈正文' }),
+    ...row('旧记录', 'source', { content: '不展示的资料正文' }),
     created_by: '李少达',
   };
   const html = render(MaterialsPage, [
@@ -89,7 +89,7 @@ test('资料列表只显示原文件、真实上传人和上传时间，不显�
     assert.ok(html.includes(value), value);
   for (const obsolete of [
     '不展示的已提取正文',
-    '不展示的访谈正文',
+    '不展示的资料正文',
     '非上传人',
     '非资料',
     '已移出的文件',
