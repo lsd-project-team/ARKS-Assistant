@@ -1399,29 +1399,6 @@
   font-size: var(--font-size-body);
   line-height: 1.6;
 }
-.knowledge-workspace .presentation-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 30px;
-  padding: 28px 4px 34px;
-}
-.knowledge-workspace .presentation-metrics span {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  min-width: 0;
-}
-.knowledge-workspace .presentation-metrics b {
-  color: var(--ink);
-  font-size: clamp(25px, 3vw, 34px);
-  font-weight: 500;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-.knowledge-workspace .presentation-metrics small {
-  color: var(--muted);
-  font-size: var(--font-size-body);
-}
 @media (max-width: 900px) {
   .knowledge-workspace .showcase-hero {
     grid-template-columns: 1fr;
@@ -1457,19 +1434,5 @@
   .knowledge-workspace .showcase-outline li:not(:last-child)::after {
     left: 20px;
     bottom: -18px;
-  }
-  .knowledge-workspace .presentation-metrics {
-    gap: 12px;
-    padding: 24px 2px 28px;
-  }
-  .knowledge-workspace .presentation-metrics span {
-    display: block;
-  }
-  .knowledge-workspace .presentation-metrics b,
-  .knowledge-workspace .presentation-metrics small {
-    display: block;
-  }
-  .knowledge-workspace .presentation-metrics small {
-    margin-top: 6px;
   }
 }

@@ -12,7 +12,6 @@ import { DiagramContent } from './reader/DiagramContent';
 import { GraphViewSelector } from './reader/GraphViewSelector';
 import { graphOwner, selectedGraphId } from './data/graphCollections';
 import {
-  graphDirectory,
   graphEntry,
   graphMembers,
   publicGraphs,
@@ -62,20 +61,6 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
           </ol>
         </div>
       </section>
-      <div className="presentation-metrics" aria-label="图谱统计">
-        <span>
-          <b>{graphDirectory.length.toString().padStart(2, '0')}</b>
-          <small>图谱入口</small>
-        </span>
-        <span>
-          <b>{archifyData.graphs.length.toString().padStart(2, '0')}</b>
-          <small>生产主流程</small>
-        </span>
-        <span>
-          <b>{publicGraphs.length}</b>
-          <small>流程图谱</small>
-        </span>
-      </div>
       <div className="filter-row">
         <input
           aria-label="搜索图谱"

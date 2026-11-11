@@ -161,8 +161,7 @@ test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱�
   assert.match(html, /class="showcase-hero card"/);
   assert.match(html, /class="showcase-outline"/);
   assert.match(html, /从生产全局/);
-  assert.match(html, /图谱入口/);
-  assert.match(html, /流程图谱/);
+  assert.doesNotMatch(html, /presentation-metrics|图谱统计|图谱入口/);
   assert.doesNotMatch(html, /找到你要了解的流程|先读 8 条生产主流程/);
   assert.equal((html.match(/查看图谱/g) ?? []).length, 77);
   assert.match(html, /设备、产品和相机中的位置怎样转换为同一个 G0 目标/);
