@@ -17,6 +17,7 @@ from pydantic import Field
 WORKBOOK_NAME = "传输字段保护默认状态工艺确认表.xlsx"
 WORKBOOK_SHA256 = "51161cf93f2b191ef9432f56dcf9b466fdcfc0c560bd92c09867117d89255763"
 SHEET = "工艺确认清单"
+MCP_DISPLAY_NAME = "ZX2200 参数复用 MCP"
 HEADERS = (
     "库",
     "字段名",
@@ -36,8 +37,8 @@ FIELD_ALIASES = {
     "点胶压力": {"EpoxyApplication.DispensePressure", "EpoxyApplication.Vacuum"},
 }
 DECISION_LABELS = {
-    "recipe_shared": "按原表可随配方跨设备下发",
-    "protected": "程序登记一致，按原表保护规则不直接复用源机值",
+    "recipe_shared": "按 MCP 规则可随配方跨设备下发",
+    "protected": "程序登记一致，按 MCP 规则不直接复用源机值",
     "pending": "暂不能确认直接复用",
 }
 
@@ -103,7 +104,7 @@ def decision_for(cells) -> tuple[str, str, str]:
         if "未找到" in registration:
             detail = "需先核对目标机软件版本及对应字段，再确认保护登记和工艺要求。"
         if protection == "是":
-            detail += "按原表的默认保护计划，应保留目标机值。"
+            detail += "按 MCP 的默认保护计划，应保留目标机值。"
         return "pending", "暂不能确认直接复用", detail
     if confirmed == "是" or (not confirmed and protection == "是"):
         action = {
@@ -113,11 +114,11 @@ def decision_for(cells) -> tuple[str, str, str]:
             "示教状态": "使用目标机的现场示教状态。",
             "运行时": "使用目标机的运行状态。",
         }.get(category, "使用目标机已有值。")
-        return "protected", "按原表保护规则不直接复用源机值", action
+        return "protected", "按 MCP 保护规则不直接复用源机值", action
     if category == "配方共用":
         return (
             "recipe_shared",
-            "按原表可随配方跨设备下发",
+            "按 MCP 规则可随配方跨设备下发",
             "用于具体两台设备时，需核对目标机的产品、工艺或配置是否适用。",
         )
     return "pending", "暂不能确认直接复用", "需补充工艺确认或该参数在目标机上的适用依据。"
@@ -130,7 +131,7 @@ def rule_result(row: int, cells) -> dict:
         "decision": code,
         "conclusion": conclusion,
         "target_check": condition,
-        "source": f"{WORKBOOK_NAME} / {SHEET}!A{row}:H{row}（第 {row} 行）",
+        "source": f"{MCP_DISPLAY_NAME} / {SHEET}第{row}行",
         "excel_row": row,
         "original_cells": dict(zip(HEADERS, cells, strict=True)),
     }
@@ -138,7 +139,7 @@ def rule_result(row: int, cells) -> dict:
 
 def create_server(path: Path) -> MCPServer:
     rows = load_rules(path)
-    server = MCPServer("ZX2200 参数复用 MCP")
+    server = MCPServer(MCP_DISPLAY_NAME)
 
     @server.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False))
     def lookup(
@@ -150,18 +151,20 @@ def create_server(path: Path) -> MCPServer:
         """回答 ZX2200 参数迁移、能否直接复用、下发或覆盖目标机、默认传输保护等问题。
 
         此工具是原 535 条 Excel 规则的查询入口，回答这类问题时先调用。query 传参数中文名、
-        程序字段名、库.字段名、库名或“点胶”。library 可填准确库名或点胶模块。原表依据必须向用户
-        引用工作表名和实际 Excel 行号，并说明原始默认保护、类别和登记状态。工艺确认空白
+        程序字段名、库.字段名、库名或“点胶”。library 可填准确库名或点胶模块。依据必须使用 MCP
+        名称、工作表名和实际行号，并说明默认保护、类别和登记状态。工艺确认空白
         就说明尚未填写。回答首句沿用结果的 conclusion，紧接 target_check，避免改变确定性。
         pending 的首句是“暂不能确认直接复用”，不要写成“不能直接复用”或“可以直接复用”。
         recipe_shared 是配方规则，指定目标机仍需核对条件。ambiguous 按各项结论说明同名差异，
         不替用户选库。unknown_library 或 scoped_not_found 先去掉 library 重查。全表
-        not_found 回答“原清单未覆盖，暂不能判断能否直接复用”，不要推断该
-        字段是否存在或能否传输，也不要用其他字段充当本题依据。按原清单回答时无需查源码。
+        not_found 回答“MCP 规则库未覆盖，暂不能判断能否直接复用”，不要推断该
+        字段是否存在或能否传输，也不要用其他字段充当本题依据。按 MCP 规则回答时无需查源码。
         模块汇总直接采用 decision_summary（全部匹配项）。其中待确认也可能默认保护为“是”，
         不把 protected 的数量当作默认保护总数。按需用 next_offset 继续取明细。
-        单条复用问答简短回答：先写结论和核对事项，再写原表的默认保护、类别、程序登记状态及
-        行号，到此结束。原表记录不能写成实机验证、传输承诺或修改原表和程序的要求。
+        单条复用问答简短回答：先写结论和核对事项，再写 MCP 规则中的默认保护、类别、程序登记
+        状态及行号，到此结束。不要生成“原表登记情况”标题，不要展示 Excel 文件名或路径。
+        末尾保留一条“来源：ZX2200 参数复用 MCP · 工艺确认清单第N行”。MCP 规则记录不能写成
+        实机验证、传输承诺或修改原表和程序的要求。
         """
         if not normalize(query):
             raise ValueError("请输入参数名称或模块名称")
@@ -173,18 +176,19 @@ def create_server(path: Path) -> MCPServer:
         page = found[offset : offset + limit]
         summary = Counter(decision_for(cells)[0] for _, cells in found)
         conclusion = {
-            "not_found": "原清单未覆盖，暂不能判断能否直接复用",
-            "ambiguous": "清单中匹配多个字段，需结合库和字段名核对",
+            "not_found": "MCP 规则库未覆盖，暂不能判断能否直接复用",
+            "ambiguous": "MCP 规则库匹配多个字段，需结合库和字段名核对",
             "unknown_library": "没有匹配的库名，请去掉库筛选重查",
             "scoped_not_found": "指定范围内没有匹配项，可去掉库筛选查询整张表",
         }.get(match)
         if match == "ambiguous" and set(summary) == {"protected", "pending"}:
-            conclusion = "匹配多个字段。部分按原表规则保护，其余暂不能确认直接复用，需核对所属库。"
+            conclusion = "匹配多个字段。部分按 MCP 规则保护，其余暂不能确认直接复用，需核对所属库。"
         if len(found) == 1 and match != "group":
             conclusion = decision_for(found[0][1])[1]
         return {
             "dataset": {
-                "file": WORKBOOK_NAME,
+                "mcp_name": MCP_DISPLAY_NAME,
+                "rule_version": "535-v1",
                 "sheet": SHEET,
                 "row_count": ROW_COUNT,
                 "sha256": WORKBOOK_SHA256,
