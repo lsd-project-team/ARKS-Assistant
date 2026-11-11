@@ -8,7 +8,6 @@ import { Select } from '../../shared/ui/Select';
 import { useWorkspace } from '../../app/state/store';
 import type { Project, ProjectList } from '../../shared/types/api';
 import { adminApi, dateTime } from './client';
-import { WorkspaceEnvironmentPanel } from '../chat/workspace_work/WorkspaceEnvironmentPanel';
 
 export function ConfigurationPage({
   dataOnly,
@@ -90,12 +89,6 @@ export function ConfigurationPage({
             </div>
           </div>
           <ErrorText error={projects.error || current.error} />
-        </section>
-      )}
-      {!dataOnly && (
-        <section className="admin-panel">
-          <h2>代码工作区</h2>
-          <WorkspaceEnvironmentPanel />
         </section>
       )}
       {dataOnly ? (

@@ -1,12 +1,10 @@
-export type ComposerCommand = 'context' | 'compact' | '记录问题' | (string & {});
+export type ComposerCommand = 'context' | 'compact' | '记录问题';
 
-export interface ComposerCommandItem {
-  id: string;
+export const composerCommands: ReadonlyArray<{
+  id: ComposerCommand;
   label: string;
   description: string;
-}
-
-export const composerCommands: ReadonlyArray<ComposerCommandItem> = [
+}> = [
   { id: 'context', label: '查看上下文', description: '查看当前对话的用量和压缩摘要' },
   { id: 'compact', label: '压缩上下文', description: '归纳当前对话，保留目标、结论和待办' },
   {
@@ -16,22 +14,14 @@ export const composerCommands: ReadonlyArray<ComposerCommandItem> = [
   },
 ];
 
-function allCommands(extra: ReadonlyArray<ComposerCommandItem>) {
-  // MCP 触发命令来自服务端配置，排在后面的内置命令之后。
-  return [...composerCommands, ...extra];
-}
-
-export function matchingCommands(content: string, extra: ReadonlyArray<ComposerCommandItem> = []) {
+export function matchingCommands(content: string) {
   const input = content.trim().toLowerCase();
   // 仅把独立的斜杠命令作为操作，包含正文或换行的文本仍按普通消息发送。
   if (!/^\/[a-z\u4e00-\u9fff]*$/.test(input)) return [];
-  return allCommands(extra).filter((command) => `/${command.id}`.toLowerCase().startsWith(input));
+  return composerCommands.filter((command) => `/${command.id}`.startsWith(input));
 }
 
-export function exactCommand(
-  content: string,
-  extra: ReadonlyArray<ComposerCommandItem> = [],
-): ComposerCommand | undefined {
+export function exactCommand(content: string): ComposerCommand | undefined {
   const input = content.trim().toLowerCase();
-  return allCommands(extra).find((command) => input === `/${command.id}`.toLowerCase())?.id;
+  return composerCommands.find((command) => input === `/${command.id}`)?.id;
 }

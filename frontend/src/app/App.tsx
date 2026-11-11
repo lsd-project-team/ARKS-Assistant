@@ -9,8 +9,6 @@ import { Sidebar } from '../features/chat/components/Sidebar';
 import { FileExplorer } from '../features/source_reader/components/FileExplorer';
 import { ChatPane } from '../features/chat/components/ChatPane';
 import { PaneDivider } from './layouts/PaneDivider';
-import { useWorkspaceWorkPanel } from './layouts/hooks/useWorkspaceWorkPanel';
-import { WorkspaceWorkPanel } from '../features/chat/workspace_work/WorkspaceWorkPanel';
 import { SettingsDialog } from '../features/settings/components/SettingsDialog';
 import { useWorkspace } from './state/store';
 import { api } from './api/client';
@@ -95,7 +93,6 @@ export default function App() {
     setWorkspaceOpen,
   } = useWorkspace();
   const navigationLayout = useNavigationLayout(navigationWidth);
-  const workPanel = useWorkspaceWorkPanel();
   const motion = useLayoutMotion(
     { collapsed, codeOpen, explorerOpen },
     `${collapsed}:${codeOpen}:${explorerOpen}:${readingFocused}:${chatRatio}:${focusChatRatio}:${explorerWidth}:${navigationLayout.width}`,
@@ -120,7 +117,6 @@ export default function App() {
     refetchInterval: 15000,
   });
   function toggleWorkspace() {
-    if (workPanel.open) workPanel.close(false);
     const visible = (codeOpen || explorerOpen) && (window.innerWidth > 800 || mobile === 'code');
     setWorkspaceOpen(!visible);
   }
@@ -167,14 +163,6 @@ export default function App() {
             active: timing.open,
             onOpen: () => {
               location.hash = timingHash();
-            },
-          }}
-          workspaceWork={{
-            active: workPanel.open,
-            onOpen: () => {
-              if (!threadId) return;
-              if (workPanel.open) workPanel.close();
-              else workPanel.show();
             },
           }}
         >
@@ -302,24 +290,13 @@ export default function App() {
                 <Suspense
                   fallback={<div className="code-pane padded muted">正在加载源码编辑器…</div>}
                 >
-                  {workPanel.open ? (
-                    <WorkspaceWorkPanel
-                      threadId={threadId}
-                      projectId={useWorkspace.getState().projectId}
-                      busy={false}
-                      onClose={() => workPanel.close()}
-                    />
-                  ) : (
-                    <CodePane onSearch={() => setSearchOpen(true)} />
-                  )}
+                  <CodePane onSearch={() => setSearchOpen(true)} />
                 </Suspense>
               </WorkspaceLoadBoundary>
             )}
-            {motion.codeMounted && motion.filesMounted && !workPanel.open && (
-              <PaneDivider kind="files" />
-            )}
+            {motion.codeMounted && motion.filesMounted && <PaneDivider kind="files" />}
             <FileExplorer
-              hidden={!motion.filesMounted || workPanel.open}
+              hidden={!motion.filesMounted}
               onClose={() => setExplorerOpen(false)}
               onQuickOpen={() => setDialog('files')}
             />

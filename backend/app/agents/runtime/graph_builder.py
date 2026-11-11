@@ -26,7 +26,6 @@ from app.agents.runtime.privacy import redact
 from app.agents.tools.attachments import attachment_context, attachment_tools
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
-from app.agents.tools.workspace_work import WORKSPACE_WORK_GUIDANCE, workspace_work_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
 from app.modules.chat.rich_presentation import RICH_CONTENT_GUIDANCE
@@ -61,7 +60,6 @@ class AgentGraphBuilder:
         policy=None,
         retrieval_context=None,
         run_id="",
-        mcp_triggers=None,
     ):
         runtime = self.runtime
         # 工具返回前完成相关性筛选，回答生成后不再追加来源复核。
@@ -117,9 +115,6 @@ class AgentGraphBuilder:
             document_tools = attachment_tools(runtime.repository.attachments, attachment_ids, emit)
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
-        work_tools = workspace_work_tools(runtime.workspace_work, thread_id, emit)
-        tools += work_tools
-        retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -138,16 +133,11 @@ class AgentGraphBuilder:
         )
         if debug_issues:
             tools += debug_issues.tools()
-        # 配置了触发命令的服务只按命令接入，不参与模型按问题自动选择。
-        active_triggers = {item.casefold() for item in (mcp_triggers or ())}
         servers = [
             server
             for server in settings.mcp_servers
-            if (not server.trigger or server.trigger.casefold() in active_triggers)
-            and (
-                (options.use_deepwiki and settings.deepwiki_repo)
-                or "deepwiki" not in (server.name + server.url).lower()
-            )
+            if (options.use_deepwiki and settings.deepwiki_repo)
+            or "deepwiki" not in (server.name + server.url).lower()
         ]
         if not inspection and servers:
             tools += await runtime.remote_tools(servers, emit)
@@ -181,14 +171,6 @@ class AgentGraphBuilder:
         )
         prompt += "\n已有长期记忆：\n" + memory_prompt
         prompt += "\nDeepWiki 使用当前项目关联的仓库；未关联时不能沿用其他项目或历史对话的仓库。"
-        for server in servers:
-            if not server.trigger:
-                continue
-            prompt += (
-                f"\n本轮用户用 /{server.trigger} 指定了「{server.name}」，"
-                "相关问题优先使用它的工具核对；工具无法回答时说明原因，"
-                "不要用源码或长期记忆替代它的结论。"
-            )
         prompt += (
             "\n本轮补读源码见 verified_source_context；"
             "同路径异版本的历史选区或工具结果只作历史快照。"
@@ -204,7 +186,6 @@ class AgentGraphBuilder:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         prompt += document_prompt
-        prompt += WORKSPACE_WORK_GUIDANCE
         if debug_issues:
             # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。
             prompt += "\n" + RETRIEVAL_GUIDANCE + "\n" + ANSWER_GUIDANCE

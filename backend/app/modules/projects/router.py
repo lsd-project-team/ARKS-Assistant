@@ -20,7 +20,6 @@ from app.modules.projects.service import Projects
 from app.modules.source_analysis import router as workspace
 from app.modules.source_analysis.collection import source_prefix
 from app.modules.source_analysis.workspace import Workspace
-from app.modules.workspace_work import router as workspace_work
 
 
 class SourceFolder(BaseModel):
@@ -244,7 +243,7 @@ class ProjectDispatcher:
         entry = self.apps.get(project_id)
         if not entry or entry[0] is not services:
             app = FastAPI(exception_handlers=self.exception_handlers)
-            modules = [workspace, conversations, memories, knowledge, action_timing, workspace_work]
+            modules = [workspace, conversations, memories, knowledge, action_timing]
             for module in modules:
                 app.include_router(module.create_router(services))
             self.apps[project_id] = (services, app)

@@ -80,17 +80,6 @@ def create_router(services: AppServices) -> APIRouter:
             feedback = error_feedback(error, profile.config)
             return JSONResponse({"detail": feedback["text"], **feedback}, status_code=502)
 
-    @router.get("/api/mcp/commands")
-    async def mcp_commands():
-        # 只公开命令词和服务名，供输入框提示；具体配置和凭据仍只在设置页。
-        return {
-            "commands": [
-                {"command": server.trigger, "name": server.name}
-                for server in settings.load().mcp_servers
-                if server.enabled and server.trigger
-            ]
-        }
-
     @router.post("/api/mcp/{server_id}/probe")
     async def test_mcp(server_id: str, body: McpProbe | None = None):
         config = settings.load()

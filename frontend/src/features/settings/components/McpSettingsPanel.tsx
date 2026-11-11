@@ -97,7 +97,6 @@ export function McpSettingsPanel({
             args: [],
             headers: {},
             env: {},
-            trigger: '',
           };
           onChange({ ...settings, mcp_servers: [...settings.mcp_servers, row] });
           setChosen(id);
@@ -172,19 +171,6 @@ export function McpSettingsPanel({
               />
             </>
           )}
-          <label>
-            触发命令
-            <input
-              maxLength={20}
-              value={server.trigger || ''}
-              onChange={(event) => change('trigger', event.target.value)}
-              placeholder="例如 参数复用（留空则按问题自动选择）"
-            />
-          </label>
-          <p className="muted">
-            填写后该服务不参与自动选择：只有消息以 /{(server.trigger || '').trim() || '命令'}{' '}
-            开头才会接入，并在本对话内保持启用，新对话重新从命令开始。
-          </p>
           <div className="button-row">
             <Button disabled={busy} onClick={() => onProbe(server)}>
               <Cable size={14} />

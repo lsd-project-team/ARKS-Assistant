@@ -11,8 +11,6 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from app.core.commands import normalize_trigger
-
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 SECRET_MASK = "••••••"
 
@@ -79,8 +77,6 @@ class McpSettings(BaseModel):
     args: list[str] = Field(default_factory=list)
     headers: dict[str, str] = Field(default_factory=dict)
     env: dict[str, str] = Field(default_factory=dict)
-    # 非空时该服务不参与自动选择，只有消息以 /触发命令 开头（或在同一对话里用过）才接入。
-    trigger: str = ""
 
     @field_validator("headers", "env")
     @classmethod
@@ -103,7 +99,6 @@ class McpSettings(BaseModel):
         self.name = self.name.strip()
         if not self.name:
             raise ValueError("MCP 名称不能为空")
-        self.trigger = normalize_trigger(self.trigger)
         self.url = http_address(self.url)
         if self.enabled and self.transport == "stdio" and not self.command.strip():
             raise ValueError("本地 MCP 命令不能为空")
@@ -178,9 +173,6 @@ class AppSettings(BaseModel):
             raise ValueError("模型配置 ID 不能重复")
         if len({server.id for server in self.mcp_servers}) != len(self.mcp_servers):
             raise ValueError("MCP 配置 ID 不能重复")
-        triggers = [server.trigger.casefold() for server in self.mcp_servers if server.trigger]
-        if len(set(triggers)) != len(triggers):
-            raise ValueError("MCP 触发命令不能重复")
         if not self.active_profile_id:
             self.active_profile_id = self.model_profiles[0].id
         selected = next(

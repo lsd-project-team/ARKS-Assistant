@@ -1,11 +1,6 @@
 import { useId, useLayoutEffect, useState, type ReactNode, type RefObject } from 'react';
 import { ArrowUp, ListPlus, Plus, Square, Zap } from 'lucide-react';
-import {
-  exactCommand,
-  matchingCommands,
-  type ComposerCommand,
-  type ComposerCommandItem,
-} from '../lib/composerCommands';
+import { exactCommand, matchingCommands, type ComposerCommand } from '../lib/composerCommands';
 import { Button } from '../../../shared/ui/ui';
 
 export function ChatComposer({
@@ -14,7 +9,6 @@ export function ChatComposer({
   onChange,
   onSend,
   onCommand,
-  commands = [],
   onStop,
   onUploadFiles,
   sending,
@@ -35,7 +29,6 @@ export function ChatComposer({
   onChange: (content: string) => void;
   onSend: () => void;
   onCommand: (command: ComposerCommand) => void;
-  commands?: ReadonlyArray<ComposerCommandItem>;
   onStop: () => void;
   onUploadFiles?: () => void;
   uploading?: boolean;
@@ -61,19 +54,12 @@ export function ChatComposer({
   }, [draft, inputRef]);
   const [selected, setSelected] = useState(0);
   const [dismissed, setDismissed] = useState(false);
-  const matches = matchingCommands(draft, commands);
+  const matches = matchingCommands(draft);
   const menuOpen = !dismissed && matches.length > 0;
   const selectedCommand = matches[Math.min(selected, matches.length - 1)];
-  // 内置命令按当前对话状态可用性判断；MCP 触发命令只是填入命令词，始终可用。
   const available = (command: ComposerCommand) =>
-    command === '记录问题'
-      ? true
-      : command === 'context'
-        ? canContext
-        : command === 'compact'
-          ? canCompact
-          : true;
-  const command = exactCommand(draft, commands) || (menuOpen ? selectedCommand?.id : undefined);
+    command === '记录问题' || (command === 'context' ? canContext : canCompact);
+  const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
   const canSubmit = !sending && !uploading && (command ? available(command) : !!draft.trim());
   function submit() {
     if (!canSubmit) return;
