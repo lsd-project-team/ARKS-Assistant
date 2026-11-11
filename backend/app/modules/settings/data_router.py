@@ -12,14 +12,13 @@ from app.infrastructure.storage.backup import create_backup
 from app.infrastructure.storage.manifest import MAX_ARCHIVE_BYTES
 from app.infrastructure.storage.validation import validate_backup
 from app.modules.chat.models import Run
-from app.modules.code_work.service import backup_guard
 
 
 def create_router(services) -> APIRouter:
     router = APIRouter()
 
     def consistent_backup():
-        with backup_guard(services.paths.data), services.repository.lock, services.memories.lock:
+        with services.repository.lock, services.memories.lock:
             with services.database.session() as session:
                 if session.query(Run).filter(Run.status.in_(("running", "queued"))).first():
                     raise ValueError("请等待当前回复完成或停止后导出备份")

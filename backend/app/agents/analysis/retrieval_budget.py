@@ -142,9 +142,8 @@ class RetrievalBudget(AgentMiddleware):
         )
         if self.workflow_tools:
             guidance += (
-                "\n检索额度只约束来源查阅，副本工具仍可用。"
-                "实际修改请求应继续用副本工具读取当前版本、编辑、保存需求断言和仿真验证；"
-                "不要转去反复读取原源码，不把准备或读取说成已完成修改。"
+                "\n检索额度只约束来源查阅，附件读取工具仍可用。"
+                "需要文档内容时继续用附件工具读取当前版本；不要转去反复读取原源码。"
             )
         prompt = (request.system_message.text if request.system_message else "") + guidance
         overrides = {"system_message": SystemMessage(content=prompt)}
