@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from app.modules.chat.runs import RunManager
     from app.modules.memory.service import MemoryService
     from app.modules.source_analysis.workspace import Workspace
+    from app.modules.workspace_work.service import WorkspaceWork
 
 
 @dataclass(slots=True)
@@ -25,3 +26,4 @@ class AppServices:
     memories: MemoryService
     runtime: AgentRuntime
     runs: RunManager
+    workspace_work: WorkspaceWork

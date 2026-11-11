@@ -1,4 +1,4 @@
-import { Settings2, Menu, ClipboardList, Timer } from 'lucide-react';
+import { Settings2, Menu, ClipboardList, Timer, FileCode2 } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { Route } from '../../features/knowledge/routes';
 import { AppearanceSwitch } from '../../features/settings/components/AppearanceSwitch';
@@ -15,6 +15,7 @@ export function WorkspaceNavigation({
   onSettings,
   handover,
   actionTiming,
+  workspaceWork,
   children,
 }: {
   route: Route;
@@ -26,6 +27,7 @@ export function WorkspaceNavigation({
   onSettings: () => void;
   handover?: { active: boolean; onOpen: () => void };
   actionTiming?: { active: boolean; onOpen: () => void };
+  workspaceWork?: { active: boolean; onOpen: () => void };
   children?: ReactNode;
 }) {
   const navigationControl = useRef<HTMLButtonElement>(null);
@@ -122,6 +124,18 @@ export function WorkspaceNavigation({
           >
             <Timer size={18} strokeWidth={1.5} />
             <span className="nav-copy">动作耗时统计</span>
+          </button>
+        )}
+        {workspaceWork && (
+          <button
+            title="代码工作区"
+            aria-label="代码工作区"
+            aria-current={workspaceWork.active ? 'page' : undefined}
+            className={workspaceWork.active ? 'active' : ''}
+            onClick={workspaceWork.onOpen}
+          >
+            <FileCode2 size={18} strokeWidth={1.5} />
+            <span className="nav-copy">代码工作区</span>
           </button>
         )}
       </nav>

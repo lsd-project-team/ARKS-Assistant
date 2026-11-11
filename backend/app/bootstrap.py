@@ -135,4 +135,14 @@ def create_services(paths: Paths) -> AppServices:
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     runs = RunManager(repository, runtime, settings)
     runtime.project_lock = runs.edit_lock
-    return AppServices(paths, settings, database, workspace, repository, memories, runtime, runs)
+    return AppServices(
+        paths,
+        settings,
+        database,
+        workspace,
+        repository,
+        memories,
+        runtime,
+        runs,
+        runtime.workspace_work,
+    )

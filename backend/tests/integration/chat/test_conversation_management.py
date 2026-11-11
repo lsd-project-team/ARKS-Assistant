@@ -11,6 +11,7 @@ from app.main import create_app
 from app.modules.chat.lifecycle import ConversationLifecycle
 from app.modules.chat.models import Message, Run, RunEvent, Thread
 from app.modules.chat.runs import RunManager
+from app.modules.workspace_work.service import WorkspaceWork
 from tests.helpers.api_paths import project_api
 
 
@@ -76,7 +77,15 @@ async def test_trash_stops_active_reply_and_purge_cleans_checkpoints_and_preserv
     runtime = WaitingRuntime()
     manager = RunManager(repository, runtime, settings)
     services_object = AppServices(
-        paths, settings, database, workspace, repository, memories, runtime, manager
+        paths,
+        settings,
+        database,
+        workspace,
+        repository,
+        memories,
+        runtime,
+        manager,
+        WorkspaceWork(paths, repository),
     )
     lifecycle = ConversationLifecycle(services_object)
     thread = repository.create_thread("删除测试")

@@ -458,6 +458,7 @@ class Projects:
                 memories,
                 runtime,
                 runs,
+                runtime.workspace_work,
             )
             self.contexts[project_id] = services
             return services

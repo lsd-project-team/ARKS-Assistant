@@ -23,7 +23,7 @@ Agent 的入口、图构建、执行器和提示词分别维护。聊天、源�
 
 全项目阅读、项目资料与旧代码修改流程已移除。项目资料与阅读旧表仅在 `migrations/` 中定义，应用不注册相关模型，不再读取旧资料引用或导出其正文；原库与完整备份中的旧数据保留。`infrastructure/database/legacy_code_work.py` 继续兼容旧修改档案与模型额度表，不装配运行服务或接口。模型额度记账归 `settings/model_ledger.py`，聊天临时文件边界归 `infrastructure/storage/files.py`。模型适配与工具回填归 `agents/`。
 
-2026-11-11 起，`modules/code_work/`、对应工具与前端面板已整体移除，历史副本与报告留在 `data/scratch/cw/` 不再读写；通用代码工作与就地模式正在按新方案重建，见[改造方案](general-code-work.md)。
+2026-11-11 起，`modules/code_work/`、对应工具与前端面板已整体移除，历史副本与报告留在 `data/scratch/cw/` 不再读写；就地式的 `modules/workspace_work/` 已接入，按项目配置本地工作目录与命令白名单，聊天直接读写文件并通过右侧面板查看差异、命令输出和审批，见[通用代码工作区](../features/workspace-work.md)。
 
 ## 前端
 

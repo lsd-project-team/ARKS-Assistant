@@ -20,6 +20,7 @@ from app.modules.memory.service import MemoryService
 from app.modules.settings.model_ledger import ModelLedger
 from app.modules.source_analysis.csharp import CSharpAnalysis
 from app.modules.source_analysis.workspace import Workspace
+from app.modules.workspace_work.service import WorkspaceWork
 
 
 class AgentRuntime:
@@ -37,6 +38,7 @@ class AgentRuntime:
     ):
         self.paths, self.settings, self.workspace = paths, settings, workspace
         self.repository, self.memories = repository, memories
+        self.workspace_work = WorkspaceWork(paths, repository)
         self.mcp_cache = ToolCatalog(paths.data / "mcp-tools")
         self.knowledge = ProjectKnowledge(workspace)
         self.semantic = CSharpAnalysis(workspace)
