@@ -22,7 +22,7 @@ export default function KnowledgeWorkspace({
   let page;
   switch (route.kind) {
     case 'graphs':
-      page = <GraphAtlas navigate={navigate} />;
+      page = <GraphAtlas navigate={navigate} theme={theme} />;
       break;
     case 'graph':
       page = (

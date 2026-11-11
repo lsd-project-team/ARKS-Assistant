@@ -158,6 +158,8 @@ test('G0 三张关系图都引用实际 Archify HTML，公式与数值例子继�
 test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱仍可展示', () => {
   const html = render(GraphAtlas, {});
   assert.doesNotMatch(html, /专题|card-topic|topic-card/);
+  assert.match(html, /src="\/knowledge\/flow-intro-light\.svg"/);
+  assert.doesNotMatch(html, /找到你要了解的流程|先读 8 条生产主流程/);
   assert.equal((html.match(/查看图谱/g) ?? []).length, 77);
   assert.match(html, /设备、产品和相机中的位置怎样转换为同一个 G0 目标/);
   const entry = archifyData.flowchartCatalog.entries.find(

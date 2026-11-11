@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import type { ReactNode } from 'react';
 import { archifyData } from './data/archifyData';
 import { presentationTopics, displayDiagramTitle } from './data/presentation';
 import { diagramReadings } from './data/diagramReading';
@@ -21,30 +20,13 @@ import {
   searchGraphDirectory,
 } from './data/graphDirectory';
 export { diagramRoute } from './routes';
-function PageHeader({
-  eyebrow,
-  title,
-  children,
-  actions,
+export function GraphAtlas({
+  navigate,
+  theme = 'light',
 }: {
-  eyebrow?: string;
-  title: ReactNode;
-  children: ReactNode;
-  actions?: ReactNode;
+  navigate: (route: Route) => void;
+  theme?: 'dark' | 'light';
 }) {
-  return (
-    <div className="page-header">
-      <div>
-        {eyebrow && <span className="eyebrow">{eyebrow}</span>}
-        <h1>{title}</h1>
-        <p>{children}</p>
-      </div>
-      {actions && <div className="header-actions">{actions}</div>}
-    </div>
-  );
-}
-
-export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('all');
   const [level, setLevel] = useState('all');
@@ -53,18 +35,15 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
   const detailed = entries.filter(({ entry }) => !entry.chapter);
   return (
     <>
-      <PageHeader
-        title="找到你要了解的流程"
-        actions={
-          <>
-            <span className="pill">
-              {entries.length} / {graphDirectory.length} 个图谱
-            </span>
-          </>
-        }
-      >
-        先读 8 条生产主流程，再按问题查找图谱。主图、细节图与说明可在同一页阅读。
-      </PageHeader>
+      <section className="graph-directory-intro" aria-label="系统与流程介绍">
+        <img
+          src={`/knowledge/flow-intro-${theme}.svg`}
+          alt="ZX2200 系统与流程主链：启动、输送、S1 点胶、S2 固晶"
+        />
+        <span className="graph-directory-count pill">
+          {entries.length} / {graphDirectory.length} 个图谱
+        </span>
+      </section>
       <div className="filter-row">
         <input
           aria-label="搜索图谱"
