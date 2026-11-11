@@ -12,7 +12,7 @@
 
 ## 验证
 
-- 后端完整回归：`1262 passed, 2 skipped`。13 个失败全部为 `httpx` 读取本机代理环境变量时抛 `InvalidURL: Invalid port: ':1]'`，集中在 `test_model_probe`、`test_provider_lifecycle` 和 1 个协议参数用例，均为未改动测试，与本功能无关。
+- 后端完整回归：`1262 passed, 2 skipped`。13 个失败全部为 `httpx` 读取本机代理环境变量时抛 `InvalidURL: Invalid port: ':1]'`，集中在 `test_model_probe`、`test_provider_lifecycle` 和 1 个协议参数用例，均为未改动测试，与本功能无关。已复核：清除 `HTTP_PROXY/HTTPS_PROXY/NO_PROXY` 等变量后，同一批用例 `19 passed`，确认失败来自本机 `NO_PROXY` 中的 `[::1]` 写法，而非代码。
 - 新增后端测试 13 项：读写与版本锁、唯一匹配、批量补丁原子性、路径越界与忽略目录、搜索行号、还原（单文件/整轮）、白名单拒绝、审批同意、审批拒绝、命令超时、API 往返与数据目录拒绝。
 - Ruff：`app` 与本次新增/修改测试文件通过。
 - 前端：`tsc -b` 通过，`npm test` 452 项通过，生产构建成功（约 1 分 19 秒）。
