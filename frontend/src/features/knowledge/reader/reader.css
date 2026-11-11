@@ -324,3 +324,27 @@
     padding: 14px;
   }
 }
+.knowledge-workspace .graph-view-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 24px;
+}
+.knowledge-workspace .graph-view-selector .ui-select-trigger {
+  flex: 1 1 260px;
+  min-width: 0;
+  max-width: 640px;
+}
+.knowledge-workspace .graph-view-heading {
+  margin: 0 0 20px;
+}
+.knowledge-workspace .graph-view-heading h2 {
+  margin: 0 0 8px;
+  font-size: var(--font-size-section-title);
+}
+.knowledge-workspace .graph-view-heading p,
+.knowledge-workspace .graph-match {
+  color: var(--muted);
+  font-size: var(--font-size-meta);
+}

@@ -19,7 +19,7 @@ test('旧目录回到全部图谱，23个旧专题链接直接恢复到公开图
   for (const reading of presentationTopics) {
     const route = routeFromHash('#topic/' + reading.id);
     const id = route.slug ?? route.id;
-    assert.equal(id, reading.diagrams[0], reading.id);
+    assert.equal(route.view ?? id, reading.diagrams[0], reading.id);
     assert.ok(
       archifyData.flowchartCatalog.entries.some(
         (entry) => entry.id === id && entry.type !== 'supplemental',

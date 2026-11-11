@@ -1,12 +1,9 @@
 import { archifyData } from '../data/archifyData';
-import { diagramReadings } from '../data/diagramReading';
 import { displayDiagramTitle, topicForDiagram } from '../data/presentation';
 import { NodeSignalNotes } from '../CooperationNotes';
 import type { FlowchartCatalogEntry, FlowGraph } from '../types';
-import type { Route } from '../routes';
 import { OriginalDiagram } from '../OriginalDiagram';
 import { ReaderFrame, DiagramNodeDetail, type DiagramNode } from './ReaderFrame';
-import { ReaderPageHeader } from './ReaderPageHeader';
 import { SourceGuidePanel } from '../SourceGuidePanel';
 import { guideForPage } from '../sourceGuides';
 import { GraphReadingNotes } from './GraphReadingNotes';
@@ -14,17 +11,14 @@ import { GraphReadingNotes } from './GraphReadingNotes';
 export function CatalogReader({
   entry,
   focusedSignal,
-  navigate,
   theme,
 }: {
   entry: FlowchartCatalogEntry;
   focusedSignal?: string;
-  navigate: (route: Route) => void;
   theme: 'light' | 'dark';
 }) {
   const id = entry.id;
   const title = displayDiagramTitle(id, entry.title);
-  const reading = diagramReadings[id];
   const graph = archifyData.graphs.find((graph) => graph.slug === id);
   const topic = topicForDiagram(id);
   const readingNotes = topic?.diagrams[0] === id ? topic : undefined;
@@ -47,18 +41,6 @@ export function CatalogReader({
   );
   return (
     <>
-      <ReaderPageHeader
-        title={title}
-        summary={reading.summary}
-        navigate={navigate}
-        actions={
-          graph && (
-            <button className="button" onClick={() => navigate({ kind: 'chat', flow: graph.slug })}>
-              讨论这个流程
-            </button>
-          )
-        }
-      />
       {guide ? (
         <SourceGuidePanel page={guide.topic} overview={diagram} />
       ) : (

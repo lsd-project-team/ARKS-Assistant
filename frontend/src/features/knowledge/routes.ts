@@ -1,4 +1,5 @@
 import { readingGraphPaths } from './data/readingDestinations.ts';
+import { graphOwner, primaryWorkflowIds, selectedGraphId } from './data/graphCollections.ts';
 
 export interface ChatRoute {
   kind: 'chat';
@@ -8,17 +9,42 @@ export interface ChatRoute {
 export type Route =
   | ChatRoute
   | { kind: 'graphs' }
-  | { kind: 'graph'; slug: string; signal?: string }
-  | { kind: 'catalog'; id: string; section?: string };
+  | ({ kind: 'graph'; slug: string } & DiagramLocation)
+  | ({ kind: 'catalog'; id: string } & DiagramLocation);
+
+export interface DiagramLocation {
+  view?: string;
+  signal?: string;
+  section?: string;
+}
+
+export function diagramRoute(
+  id: string,
+  location: DiagramLocation = {},
+): Extract<Route, { kind: 'graph' | 'catalog' }> {
+  const owner = graphOwner(id);
+  const selected = selectedGraphId(id, location.view);
+  const details = {
+    ...(selected !== owner ? { view: selected } : {}),
+    ...(location.signal !== undefined ? { signal: location.signal } : {}),
+    ...(location.section !== undefined ? { section: location.section } : {}),
+  };
+  return primaryWorkflowIds.has(owner)
+    ? { kind: 'graph', slug: owner, ...details }
+    : { kind: 'catalog', id: owner, ...details };
+}
 
 export function routeFromHash(hash = window.location.hash): Route {
   const [value, query] = hash.replace(/^#/, '').split('?');
   const params = new URLSearchParams(query);
   if (value === 'graphs' || value === 'modules' || value === 'overview') return { kind: 'graphs' };
   const [kind, id] = value.split('/');
-  if (kind === 'graph' && id) return { kind, slug: id, signal: params.get('signal') ?? undefined };
-  if (kind === 'catalog' && id)
-    return { kind, id, ...(params.has('section') ? { section: params.get('section')! } : {}) };
+  if ((kind === 'graph' || kind === 'catalog') && id)
+    return diagramRoute(id, {
+      view: params.get('view') ?? undefined,
+      signal: params.get('signal') ?? undefined,
+      section: params.get('section') ?? undefined,
+    });
   if (kind === 'topic') {
     const destination = readingGraphPaths[id];
     return routeFromHash(typeof destination === 'string' ? destination : 'graphs');
@@ -29,11 +55,18 @@ export function routeFromHash(hash = window.location.hash): Route {
   return { kind: 'chat' };
 }
 export function routeHash(route: Route): string {
-  if (route.kind === 'catalog' && route.section !== undefined)
-    return `catalog/${route.id}?section=${encodeURIComponent(route.section)}`;
-  if (route.kind === 'graph')
-    return `graph/${route.slug}${route.signal ? `?signal=${encodeURIComponent(route.signal)}` : ''}`;
-  if ('id' in route) return `${route.kind}/${route.id}`;
+  if (route.kind === 'graph' || route.kind === 'catalog') {
+    const current = diagramRoute(route.kind === 'graph' ? route.slug : route.id, route);
+    const params = [
+      ['view', current.view],
+      ['signal', current.signal],
+      ['section', current.section],
+    ]
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value!)}`)
+      .join('&');
+    return `${current.kind}/${current.kind === 'graph' ? current.slug : current.id}${params ? '?' + params : ''}`;
+  }
   return route.kind;
 }
 export const routeNames: Record<string, string> = {

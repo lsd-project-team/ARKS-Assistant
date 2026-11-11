@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { presentationTopics } from '../../src/features/knowledge/data/presentation.ts';
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
 import { readingGraphPaths } from '../../src/features/knowledge/data/readingDestinations.ts';
+import { graphOwner } from '../../src/features/knowledge/data/graphCollections.ts';
 import { routeFromHash } from '../../src/features/knowledge/routes.ts';
 import { sourceGuides } from '../../src/features/knowledge/sourceGuides.ts';
 import { manuals } from '../../src/features/knowledge/data/manualCatalog.ts';
@@ -55,7 +56,7 @@ const render = (component, props) =>
 const renderLegacyReading = (id) => {
   const route = routeFromHash('#topic/' + id);
   assert.ok(['graph', 'catalog'].includes(route.kind));
-  return render(DiagramDetail, { id: route.slug ?? route.id, theme: 'light' });
+  return render(DiagramDetail, { id: route.slug ?? route.id, view: route.view, theme: 'light' });
 };
 
 test('46张导入图保留图解并返回图谱目录，旧章节链接继续可读', () => {
@@ -157,7 +158,7 @@ test('G0 三张关系图都引用实际 Archify HTML，公式与数值例子继�
 test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱仍可展示', () => {
   const html = render(GraphAtlas, {});
   assert.doesNotMatch(html, /专题|card-topic|topic-card/);
-  assert.equal((html.match(/查看图谱/g) ?? []).length, 121);
+  assert.equal((html.match(/查看图谱/g) ?? []).length, 77);
   assert.match(html, /设备、产品和相机中的位置怎样转换为同一个 G0 目标/);
   const entry = archifyData.flowchartCatalog.entries.find(
     (item) => item.id === 'g0-coordinate-system',
@@ -449,6 +450,14 @@ test('全部121张公开图谱采用整宽画布，无详细说明页签或文�
   assert.equal(entries.length, 121);
   for (const entry of entries) {
     const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
+    assert.ok(html.includes(`data-graph-view="${entry.id}"`), entry.id);
+    const canonical = render(DiagramDetail, {
+      id: graphOwner(entry.id),
+      view: entry.id,
+      theme: 'light',
+    });
+    assert.equal(html, canonical, entry.id);
+    assert.equal((html.match(/<h1>/g) ?? []).length, 1, entry.id);
     assert.equal((html.match(/data-reader-layout="diagram"/g) ?? []).length, 1, entry.id);
     assert.equal((html.match(/aria-label="图谱工具"/g) ?? []).length, 1, entry.id);
     for (const control of [

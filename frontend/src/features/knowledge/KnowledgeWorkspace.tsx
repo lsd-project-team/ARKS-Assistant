@@ -29,6 +29,8 @@ export default function KnowledgeWorkspace({
         <DiagramDetail
           key={route.slug}
           id={route.slug}
+          view={route.view}
+          section={route.section}
           focusedSignal={route.signal}
           navigate={navigate}
           theme={theme}
@@ -40,6 +42,8 @@ export default function KnowledgeWorkspace({
         <DiagramDetail
           key={route.id}
           id={route.id}
+          view={route.view}
+          focusedSignal={route.signal}
           section={route.section}
           navigate={navigate}
           theme={theme}
