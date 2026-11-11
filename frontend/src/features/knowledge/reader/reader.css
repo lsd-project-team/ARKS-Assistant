@@ -348,37 +348,3 @@
   color: var(--muted);
   font-size: var(--font-size-meta);
 }
-.knowledge-workspace .graph-directory-intro {
-  position: relative;
-  margin: 2px 0 28px;
-  overflow: hidden;
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-}
-.knowledge-workspace .graph-directory-intro img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.knowledge-workspace .graph-directory-count {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  border-color: rgba(191, 233, 226, 0.28);
-  background: rgba(8, 38, 51, 0.48);
-  color: #e9fffb;
-}
-@media (max-width: 640px) {
-  .knowledge-workspace .graph-directory-intro {
-    border-radius: 14px;
-  }
-  .knowledge-workspace .graph-directory-intro img {
-    min-height: 0;
-    object-fit: contain;
-    object-position: center;
-  }
-  .knowledge-workspace .graph-directory-count {
-    top: 12px;
-    right: 12px;
-  }
-}

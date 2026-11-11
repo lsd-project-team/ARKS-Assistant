@@ -1292,3 +1292,184 @@
     transform: none;
   }
 }
+
+/* 图谱目录顶部展示卡：沿用原“系统与流程”阅读路线的版式，并与当前表面变量对齐。 */
+.knowledge-workspace .showcase-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: clamp(34px, 6vw, 76px);
+  align-items: stretch;
+  margin: 2px 0 0;
+  padding: clamp(34px, 5vw, 56px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--hero-surface);
+  box-shadow: var(--shadow);
+}
+.knowledge-workspace .showcase-intro {
+  align-self: center;
+  min-width: 0;
+}
+.knowledge-workspace .showcase-hero .hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted-2);
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.knowledge-workspace .showcase-hero h1 {
+  margin: 24px 0 22px;
+  color: var(--ink);
+  font-size: clamp(34px, 3.8vw, 58px);
+  font-weight: 650;
+  line-height: 1.22;
+  letter-spacing: -0.045em;
+}
+.knowledge-workspace .showcase-hero h1 span {
+  color: var(--cyan);
+}
+.knowledge-workspace .showcase-hero p {
+  max-width: 600px;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.85;
+}
+.knowledge-workspace .showcase-outline {
+  align-self: stretch;
+  min-width: 0;
+  padding: 8px 0 8px clamp(26px, 4vw, 52px);
+  border-left: 1px solid var(--line);
+}
+.knowledge-workspace .showcase-outline > .eyebrow {
+  color: var(--muted-2);
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.knowledge-workspace .showcase-outline ol {
+  display: grid;
+  gap: 22px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.knowledge-workspace .showcase-outline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+.knowledge-workspace .showcase-outline li:not(:last-child)::after {
+  position: absolute;
+  top: 32px;
+  bottom: -22px;
+  left: 26px;
+  width: 1px;
+  background: var(--line);
+  content: '';
+}
+.knowledge-workspace .showcase-outline .route-number {
+  position: relative;
+  z-index: 1;
+  color: var(--cyan);
+  font-size: 16px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.knowledge-workspace .showcase-outline li b,
+.knowledge-workspace .showcase-outline li small {
+  display: block;
+}
+.knowledge-workspace .showcase-outline li b {
+  color: var(--ink);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  line-height: 1.55;
+}
+.knowledge-workspace .showcase-outline li small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: var(--font-size-body);
+  line-height: 1.6;
+}
+.knowledge-workspace .presentation-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px;
+  padding: 28px 4px 34px;
+}
+.knowledge-workspace .presentation-metrics span {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+.knowledge-workspace .presentation-metrics b {
+  color: var(--ink);
+  font-size: clamp(25px, 3vw, 34px);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.knowledge-workspace .presentation-metrics small {
+  color: var(--muted);
+  font-size: var(--font-size-body);
+}
+@media (max-width: 900px) {
+  .knowledge-workspace .showcase-hero {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .knowledge-workspace .showcase-outline {
+    padding: 28px 0 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+@media (max-width: 560px) {
+  .knowledge-workspace .showcase-hero {
+    gap: 28px;
+    padding: 28px 24px;
+    border-radius: 14px;
+  }
+  .knowledge-workspace .showcase-hero h1 {
+    margin: 20px 0 16px;
+    font-size: clamp(32px, 10vw, 44px);
+  }
+  .knowledge-workspace .showcase-hero p {
+    font-size: var(--font-size-body);
+  }
+  .knowledge-workspace .showcase-outline ol {
+    gap: 18px;
+    margin-top: 22px;
+  }
+  .knowledge-workspace .showcase-outline li {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .knowledge-workspace .showcase-outline li:not(:last-child)::after {
+    left: 20px;
+    bottom: -18px;
+  }
+  .knowledge-workspace .presentation-metrics {
+    gap: 12px;
+    padding: 24px 2px 28px;
+  }
+  .knowledge-workspace .presentation-metrics span {
+    display: block;
+  }
+  .knowledge-workspace .presentation-metrics b,
+  .knowledge-workspace .presentation-metrics small {
+    display: block;
+  }
+  .knowledge-workspace .presentation-metrics small {
+    margin-top: 6px;
+  }
+}

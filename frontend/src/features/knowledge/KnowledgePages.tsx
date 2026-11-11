@@ -20,13 +20,7 @@ import {
   searchGraphDirectory,
 } from './data/graphDirectory';
 export { diagramRoute } from './routes';
-export function GraphAtlas({
-  navigate,
-  theme = 'light',
-}: {
-  navigate: (route: Route) => void;
-  theme?: 'dark' | 'light';
-}) {
+export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('all');
   const [level, setLevel] = useState('all');
@@ -35,15 +29,53 @@ export function GraphAtlas({
   const detailed = entries.filter(({ entry }) => !entry.chapter);
   return (
     <>
-      <section className="graph-directory-intro" aria-label="系统与流程介绍">
-        <img
-          src={`/knowledge/flow-intro-${theme}.svg`}
-          alt="ZX2200 系统与流程主链：启动、输送、S1 点胶、S2 固晶"
-        />
-        <span className="graph-directory-count pill">
-          {entries.length} / {graphDirectory.length} 个图谱
-        </span>
+      <section className="showcase-hero card" aria-label="系统与流程介绍">
+        <div className="showcase-intro">
+          <span className="eyebrow hero-kicker">
+            <UiIcon name="flow" />
+            ZX2200 · 系统与流程
+          </span>
+          <h1>
+            从生产全局
+            <br />
+            <span>读懂每个环节</span>
+          </h1>
+          <p>从业务流程理解模块职责，查看各环节的执行条件、协作关系与异常处理。</p>
+        </div>
+        <div className="showcase-outline">
+          <span className="eyebrow">阅读路线</span>
+          <ol>
+            {[
+              ['建立系统模型', '理解边界与模块职责'],
+              ['阅读生产主流程', '串起启动、加工与交接'],
+              ['展开图谱与条件', '了解执行条件与异常处理'],
+              ['理解协作与异常', '查看模块交接与失败分支'],
+            ].map(([title, description], index) => (
+              <li key={title}>
+                <span className="route-number">{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <b>{title}</b>
+                  <small>{description}</small>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
+      <div className="presentation-metrics" aria-label="图谱统计">
+        <span>
+          <b>{graphDirectory.length.toString().padStart(2, '0')}</b>
+          <small>图谱入口</small>
+        </span>
+        <span>
+          <b>{archifyData.graphs.length.toString().padStart(2, '0')}</b>
+          <small>生产主流程</small>
+        </span>
+        <span>
+          <b>{publicGraphs.length}</b>
+          <small>流程图谱</small>
+        </span>
+      </div>
       <div className="filter-row">
         <input
           aria-label="搜索图谱"
