@@ -1,0 +1,164 @@
+.code-change-summary {
+  margin: 14px 0 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  overflow: hidden;
+  font-size: var(--font-size-control);
+}
+.code-change-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+.code-change-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 38px;
+  flex-shrink: 0;
+  background: var(--surface-subtle);
+  border-radius: 9px;
+  color: var(--text-secondary);
+}
+.code-change-title {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  margin-right: auto;
+}
+.code-change-title strong {
+  font-size: var(--font-size-body);
+  font-weight: 600;
+}
+.code-change-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: var(--font-size-meta);
+}
+.code-change-heading > button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.code-change-counts {
+  display: inline-flex;
+  gap: 5px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-meta);
+}
+.code-change-add {
+  color: #18783a;
+}
+.code-change-delete {
+  color: #bd3838;
+}
+.code-change-files {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.code-change-files li {
+  padding: 0;
+  margin: 0;
+}
+.code-change-files button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  text-align: left;
+  color: var(--text-secondary);
+}
+.code-change-files button:hover {
+  background: var(--surface-hover);
+}
+.code-change-files button:focus-visible,
+.code-change-expand:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+.code-change-path {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.code-change-directory {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.code-change-name {
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.code-change-expand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+.code-change-expand:hover {
+  background: var(--surface-hover);
+}
+.code-change-error {
+  margin-block: 12px;
+  font-size: var(--font-size-meta);
+}
+.code-change-scope {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 8px;
+  font-size: var(--font-size-meta);
+  color: var(--muted);
+}
+.code-change-scope button {
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+.code-change-scope button[aria-pressed='true'] {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+:root[data-appearance='dark'] .code-change-add {
+  color: #76d397;
+}
+:root[data-appearance='dark'] .code-change-delete {
+  color: #f58c8c;
+}
+@media (max-width: 420px) {
+  .code-change-heading {
+    gap: 8px;
+  }
+  .code-change-icon {
+    display: none;
+  }
+}
+/* 分屏宽度独立于窗口，窄聊天栏也要给标题和操作留出自然换行空间。 */
+@container (max-width: 420px) {
+  .code-change-heading {
+    flex-wrap: wrap;
+  }
+  .code-change-icon {
+    display: none;
+  }
+  .code-change-title {
+    flex: 1 1 130px;
+  }
+  .code-change-heading > button {
+    margin-left: auto;
+  }
+}

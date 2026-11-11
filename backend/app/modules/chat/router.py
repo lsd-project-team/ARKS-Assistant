@@ -21,6 +21,7 @@ from app.modules.chat.schemas import (
 )
 from app.modules.chat.workflow_router import create_router as workflows_router
 from app.modules.chat.workflow_router import validated_selections
+from app.modules.code_work.router import create_router as code_work_router
 from app.modules.memory.visibility import run_memory_actor, visible_run_event
 
 
@@ -28,6 +29,7 @@ def create_router(services: AppServices) -> APIRouter:
     router = APIRouter()
     router.include_router(attachments_router(services))
     router.include_router(workflows_router(services))
+    router.include_router(code_work_router(services))
     workspace = services.workspace
     repository = services.repository
     runs = services.runs

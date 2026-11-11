@@ -8,6 +8,7 @@ import { Select } from '../../shared/ui/Select';
 import { useWorkspace } from '../../app/state/store';
 import type { Project, ProjectList } from '../../shared/types/api';
 import { adminApi, dateTime } from './client';
+import { CodeEnvironmentPanel } from '../chat/code_work/CodeEnvironmentPanel';
 
 export function ConfigurationPage({
   dataOnly,
@@ -28,10 +29,11 @@ export function ConfigurationPage({
   });
   const [editing, setEditing] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [codeDirty, setCodeDirty] = useState(false);
   const dirtyChanged = useCallback((value: boolean) => {
     setDirty(value);
   }, []);
-  useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange]);
+  useEffect(() => onDirtyChange?.(dirty || codeDirty), [dirty, codeDirty, onDirtyChange]);
   const events = useQuery({
     queryKey: ['admin-events'],
     queryFn: () =>
@@ -68,7 +70,7 @@ export function ConfigurationPage({
               当前配置项目
               <Select
                 aria-label="选择配置项目"
-                disabled={dirty}
+                disabled={dirty || codeDirty}
                 value={projectId}
                 onValueChange={(value) => useWorkspace.getState().switchProject(value)}
               >
@@ -89,6 +91,12 @@ export function ConfigurationPage({
             </div>
           </div>
           <ErrorText error={projects.error || current.error} />
+        </section>
+      )}
+      {!dataOnly && (
+        <section className="admin-panel">
+          <h2>代码修改</h2>
+          <CodeEnvironmentPanel onDirtyChange={setCodeDirty} />
         </section>
       )}
       {dataOnly ? (

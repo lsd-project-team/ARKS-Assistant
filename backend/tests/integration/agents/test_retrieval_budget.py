@@ -61,9 +61,9 @@ async def test_budget_uses_protocol_specific_stop_choice(protocol):
 
 
 @pytest.mark.parametrize("used", [1, 2])
-async def test_retrieval_reserve_and_exhaustion_keep_document_workflow_available(used):
+async def test_retrieval_reserve_and_exhaustion_keep_copy_editing_and_verification_available(used):
     budget = RetrievalBudget(lambda *_: None, max_calls=2, reserve=1)
-    budget.workflow_tools = frozenset({"read_chat_attachment", "search_chat_attachment"})
+    budget.workflow_tools = frozenset({"read_work_file", "edit_work_file", "verify_code_workspace"})
     executed = []
 
     async def handler(request):
@@ -74,31 +74,31 @@ async def test_retrieval_reserve_and_exhaustion_keep_document_workflow_available
         await budget.awrap_tool_call(
             SimpleNamespace(tool_call={"id": str(index), "name": "read_source"}), handler
         )
-    for name in ("read_chat_attachment", "search_chat_attachment"):
+    for name in ("read_work_file", "edit_work_file", "verify_code_workspace"):
         result = await budget.awrap_tool_call(
             SimpleNamespace(tool_call={"id": name, "name": name}), handler
         )
         assert result.status == "success", result.content
-    assert executed[-2:] == ["read_chat_attachment", "search_chat_attachment"]
+    assert executed[-3:] == ["read_work_file", "edit_work_file", "verify_code_workspace"]
     assert budget.used == used
     assert budget.counts["attempted"] == used
 
     @tool
-    def read_chat_attachment(attachment_id: str) -> str:
-        """Read a bound attachment."""
-        return attachment_id
+    def read_work_file(path: str) -> str:
+        """Read the current editable copy."""
+        return path
 
-    tools = [read_chat_attachment, {"type": "function", "function": {"name": "read_source"}}]
+    tools = [read_work_file, {"type": "function", "function": {"name": "read_source"}}]
     request = ModelRequest(
         model=DeterministicModel(), messages=[], tools=tools, state={"messages": []}, runtime=None
     )
 
     async def model_handler(current):
         assert current.tool_choice != "none"
-        assert read_chat_attachment in current.tools
-        assert "附件" in current.system_message.text
+        assert read_work_file in current.tools
+        assert "副本" in current.system_message.text
         if used == 2:
-            assert current.tools == [read_chat_attachment]
+            assert current.tools == [read_work_file]
         return "workflow can continue"
 
     assert await budget.awrap_model_call(request, model_handler) == "workflow can continue"
@@ -109,7 +109,7 @@ async def test_repeated_cached_reads_cannot_loop_until_graph_recursion_limit(wit
     evidence = SimpleNamespace(cached=lambda *_: True)
     budget = RetrievalBudget(lambda *_: None, max_calls=24, evidence=evidence)
     if with_workflow:
-        budget.workflow_tools = frozenset({"search_chat_attachment"})
+        budget.workflow_tools = frozenset({"edit_work_file"})
     called = []
 
     async def tool_handler(request):
@@ -126,7 +126,7 @@ async def test_repeated_cached_reads_cannot_loop_until_graph_recursion_limit(wit
     request = ModelRequest(
         model=DeterministicModel(),
         messages=[],
-        tools=[{"name": "search_chat_attachment"}],
+        tools=[{"name": "edit_work_file"}],
         state={"messages": []},
         runtime=None,
     )
@@ -134,10 +134,7 @@ async def test_repeated_cached_reads_cannot_loop_until_graph_recursion_limit(wit
     async def model_handler(current):
         assert "重复" in current.system_message.text
         if with_workflow:
-            assert (
-                current.tools == [{"name": "search_chat_attachment"}]
-                and current.tool_choice != "none"
-            )
+            assert current.tools == [{"name": "edit_work_file"}] and current.tool_choice != "none"
         else:
             assert current.tool_choice == "none"
         return "stopped rereading"

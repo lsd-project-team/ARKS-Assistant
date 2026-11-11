@@ -88,6 +88,11 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "项目工具要求：" not in prompt
     assert "create_code_change" not in tools
     assert "edit_change_file" not in tools and "verify_code_change" not in tools
+    assert "update_code_change_requirements" not in prompt
+    assert {"prepare_code_workspace", "edit_work_file", "verify_code_workspace"} <= tools
+    assert "无需斜杠命令、附件或预先创建副本" in prompt
+    assert "仅解释原因、分析流程、讨论方案或明确暂不修改时，只回答" in prompt
+    assert "没有修改文件、执行命令或审核交付工具" not in prompt
     assert ("问题识别与查询路由" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
     assert ("足够就直接生成答案并结束" in prompt) is knowledge

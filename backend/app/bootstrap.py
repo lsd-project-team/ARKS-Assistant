@@ -26,6 +26,7 @@ from app.modules.auth.router import create_router as auth_router
 from app.modules.auth.service import AuthService
 from app.modules.chat.repository import Repository
 from app.modules.chat.runs import RunManager
+from app.modules.code_work.router import environment_router
 from app.modules.handover.infrastructure.exporters.archive import DocumentPackageExporter
 from app.modules.handover.infrastructure.parsers.documents import DocumentParser
 from app.modules.handover.infrastructure.persistence.repository import HandoverStore
@@ -88,6 +89,7 @@ def create_app(paths: Paths | None = None) -> FastAPI:
     app.include_router(auth_router(auth, projects, deployment=deployment))
     app.include_router(admin_router(auth, usage))
     app.include_router(usage_router(usage))
+    app.include_router(environment_router(services))
 
     @app.exception_handler(ValueError)
     async def invalid_request(_request, error):

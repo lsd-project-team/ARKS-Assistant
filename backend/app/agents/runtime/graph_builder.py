@@ -19,11 +19,14 @@ from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMP
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
+from app.agents.runtime.code_work_reads import CodeWorkReadProgress
+from app.agents.runtime.code_work_repair import CodeWorkRepair
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.runtime.privacy import redact
 from app.agents.tools.attachments import attachment_context, attachment_tools
+from app.agents.tools.code_work import CODE_WORK_GUIDANCE, code_work_tools
 from app.agents.tools.conversation import conversation_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
@@ -115,6 +118,10 @@ class AgentGraphBuilder:
             document_tools = attachment_tools(runtime.repository.attachments, attachment_ids, emit)
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
+        # 工具始终可用，由模型理解自然语言需求；只有实际调用准备工具才创建副本。
+        work_tools = code_work_tools(runtime.code_work, thread_id, emit, run_id=run_id)
+        tools += work_tools
+        retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -186,6 +193,7 @@ class AgentGraphBuilder:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         prompt += document_prompt
+        prompt += CODE_WORK_GUIDANCE
         if debug_issues:
             # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。
             prompt += "\n" + RETRIEVAL_GUIDANCE + "\n" + ANSWER_GUIDANCE
@@ -238,6 +246,14 @@ class AgentGraphBuilder:
                     deep=bool(policy and policy["mode"] == "deep"),
                 ),
                 AnswerFormatValidation(emit),
+                *(
+                    [
+                        CodeWorkReadProgress(emit),
+                        CodeWorkRepair(runtime.code_work, thread_id, run_id, emit),
+                    ]
+                    if run_id and not inspection
+                    else []
+                ),
                 AnswerCompletion(
                     emit, settings.model.output_tokens, settings.analysis.max_continuations
                 ),
