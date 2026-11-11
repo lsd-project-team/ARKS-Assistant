@@ -38,3 +38,18 @@ test('含正文、代码或路径的输入不会误当成上下文命令', () =>
     assert.deepEqual(matchingCommands(content), []);
   }
 });
+
+test('MCP 触发命令按服务端配置加入输入框命令', () => {
+  const extra = [{ id: '参数复用', label: 'ZX2200 参数复用 MCP', description: '使用该服务回答' }];
+  assert.deepEqual(
+    matchingCommands('/参', extra).map((item) => item.id),
+    ['参数复用'],
+  );
+  assert.deepEqual(
+    matchingCommands('/', extra).map((item) => item.id),
+    ['context', 'compact', '记录问题', '参数复用'],
+  );
+  assert.equal(exactCommand('/参数复用', extra), '参数复用');
+  assert.equal(exactCommand('  /参数复用  '), undefined);
+  assert.deepEqual(matchingCommands('/参数复用 点胶针偏移', extra), []);
+});

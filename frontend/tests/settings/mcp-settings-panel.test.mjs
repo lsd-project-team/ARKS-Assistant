@@ -36,6 +36,7 @@ const server = {
   args: [],
   headers: {},
   env: {},
+  trigger: '',
 };
 
 function render(servers, probes = {}) {
@@ -56,6 +57,13 @@ test('未配置 MCP 服务时可以打开设置，保留新增入口与高级配
   assert.match(html, /新增 MCP 服务/);
   assert.match(html, /高级 JSON 配置/);
   assert.doesNotMatch(html, /测试此服务/);
+});
+
+test('可配置触发命令，并说明只有命令才会接入', () => {
+  const html = render([{ ...server, trigger: '参数复用' }]);
+  assert.match(html, /触发命令/);
+  assert.match(html, /\/参数复用/);
+  assert.match(html, /不参与自动选择/);
 });
 
 test('只展示与当前 MCP 配置匹配的检测结果', () => {

@@ -61,6 +61,7 @@ class AgentGraphBuilder:
         policy=None,
         retrieval_context=None,
         run_id="",
+        mcp_triggers=None,
     ):
         runtime = self.runtime
         # 工具返回前完成相关性筛选，回答生成后不再追加来源复核。
@@ -137,11 +138,16 @@ class AgentGraphBuilder:
         )
         if debug_issues:
             tools += debug_issues.tools()
+        # 配置了触发命令的服务只按命令接入，不参与模型按问题自动选择。
+        active_triggers = {item.casefold() for item in (mcp_triggers or ())}
         servers = [
             server
             for server in settings.mcp_servers
-            if (options.use_deepwiki and settings.deepwiki_repo)
-            or "deepwiki" not in (server.name + server.url).lower()
+            if (not server.trigger or server.trigger.casefold() in active_triggers)
+            and (
+                (options.use_deepwiki and settings.deepwiki_repo)
+                or "deepwiki" not in (server.name + server.url).lower()
+            )
         ]
         if not inspection and servers:
             tools += await runtime.remote_tools(servers, emit)
@@ -175,6 +181,14 @@ class AgentGraphBuilder:
         )
         prompt += "\n已有长期记忆：\n" + memory_prompt
         prompt += "\nDeepWiki 使用当前项目关联的仓库；未关联时不能沿用其他项目或历史对话的仓库。"
+        for server in servers:
+            if not server.trigger:
+                continue
+            prompt += (
+                f"\n本轮用户用 /{server.trigger} 指定了「{server.name}」，"
+                "相关问题优先使用它的工具核对；工具无法回答时说明原因，"
+                "不要用源码或长期记忆替代它的结论。"
+            )
         prompt += (
             "\n本轮补读源码见 verified_source_context；"
             "同路径异版本的历史选区或工具结果只作历史快照。"

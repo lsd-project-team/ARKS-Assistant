@@ -12,6 +12,7 @@ from app.agents.context.tokens import current_budget, input_budget
 from app.agents.runtime.answer_completion import termination
 from app.agents.runtime.completion import completion_report
 from app.agents.runtime.configuration import current_configuration
+from app.core.commands import split_command, used_triggers
 from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
 from app.modules.chat.rich_presentation import source_pointers
 from app.modules.source_analysis.evidence import SourceEvidence
@@ -38,6 +39,8 @@ class AgentRunExecutor:
             str(runtime.paths.data / "checkpoints.sqlite3")
         ) as saver:
             message = runtime.repository.message(run["message_id"])
+            triggers = runtime.command_triggers()
+            question = split_command(message["content"], triggers)[1] or message["content"]
             regeneration_context = (
                 runtime.repository.run_event(run["id"], CONTEXT_EVENT)
                 if run.get("regenerated_from")
@@ -49,7 +52,7 @@ class AgentRunExecutor:
                 required=bool(message["selections"] or run["analysis_policy"]["mode"] == "deep"),
             )
             evidence.mandatory = evidence.required
-            evidence.user_request = message["content"]
+            evidence.user_request = question
             policy = run["analysis_policy"]
             previous = (
                 previous_run_event(runtime.repository, run, "analysis_progress")
@@ -133,7 +136,7 @@ class AgentRunExecutor:
                     except (ValueError, OSError) as error:
                         emit("source_relations", {"analysis": "unknown", "reason": str(error)})
             memory_query = (
-                message["content"]
+                question
                 + "\n"
                 + "\n".join(selection["path"] for selection in message["selections"])
             )
@@ -143,16 +146,22 @@ class AgentRunExecutor:
             prior = await asyncio.to_thread(
                 runtime.repository.branches.context, run["thread_id"], before=before
             )
+            # 触发过一次后，本对话的后续追问继续使用该来源；新对话重新从命令开始。
+            active_triggers = used_triggers(
+                [*(row["content"] for row in prior if row["role"] == "user"), message["content"]],
+                triggers,
+            )
             graph = await runtime.graph(
                 run["thread_id"],
                 saver,
                 emit,
                 owned_models,
                 memory_query=memory_query,
-                question_text=message["content"],
+                question_text=question,
                 run_id=run["id"],
                 evidence=evidence,
                 source_options=message.get("source_options"),
+                mcp_triggers=active_triggers,
                 verified_context=verified_context,
                 progress=progress,
                 retrieval=retrieval,

@@ -160,6 +160,11 @@ export interface McpServer {
   args: string[];
   headers: Record<string, string>;
   env: Record<string, string>;
+  trigger: string;
+}
+export interface McpCommand {
+  command: string;
+  name: string;
 }
 export interface ModelPreference {
   active_profile_id: string;

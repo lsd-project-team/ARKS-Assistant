@@ -5,6 +5,7 @@ import { api as request, jsonBody } from '../../../app/api/client';
 import { useWorkspace, draftFor, draftKey, type ConversationDraft } from '../../../app/state/store';
 import { useRunStream } from '../hooks/useRunStream';
 import type {
+  McpCommand,
   ModelPreference,
   QueuedQuestion,
   Run,
@@ -86,6 +87,17 @@ export function ChatPane({
     queryKey: ['model-preference'],
     queryFn: () => api<ModelPreference>('/model-preference'),
   });
+  // 配置了触发命令的 MCP 服务只按 /命令 接入，这里只取命令词用于输入框提示。
+  const mcpCommands = useQuery({
+    queryKey: ['mcp-commands'],
+    queryFn: () => api<{ commands: McpCommand[] }>('/mcp/commands'),
+    staleTime: 60_000,
+  });
+  const commandItems = (mcpCommands.data?.commands || []).map((item) => ({
+    id: item.command,
+    label: item.name,
+    description: `使用 ${item.name} 回答，本对话内保持启用`,
+  }));
   const latest = conversation.data?.runs.at(-1);
   const active = activeRun(started, conversation.data, threadId);
   const stream = useRunStream(active);
@@ -279,6 +291,12 @@ export function ChatPane({
   function executeCommand(command: ComposerCommand) {
     if (command === '记录问题') {
       setDraft('/记录问题 ');
+      composerInput.current?.focus();
+      return;
+    }
+    if (commandItems.some((item) => item.id === command)) {
+      // 只填入命令词和空格，问题由用户接着写；发送后后端按命令接入对应 MCP。
+      setDraft(`/${command} `);
       composerInput.current?.focus();
       return;
     }
@@ -562,6 +580,7 @@ export function ChatPane({
           onChange={setDraft}
           onSend={submitDraft}
           onCommand={executeCommand}
+          commands={commandItems}
           onStop={() => active && cancel.mutate(active.id)}
           onUploadFiles={() => attachmentInput.current?.click()}
           uploading={uploader.busy}

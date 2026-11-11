@@ -8,7 +8,6 @@ import {
   parseMcpJson,
 } from '../../src/features/settings/lib/settingsDraft.ts';
 
-
 const settings = () =>
   normalizeSettings({
     model: emptyModel(),
@@ -57,6 +56,24 @@ test('配置验证拦截错误地址、无效 ID、容量和不存在的当前�
   assert.match(errors, /预留/);
   assert.match(errors, /温度/);
   assert.match(errors, /当前模型配置不存在/);
+});
+
+test('MCP 触发命令校验格式、重名，并在高级 JSON 中保留', () => {
+  const parse = (trigger) =>
+    parseMcpJson(
+      `[{"id":"a","name":"A","transport":"stdio","command":"python","trigger":"${trigger}"}]`,
+    )[0];
+  const value = settings();
+  value.mcp_servers = [parse('参数复用')];
+  assert.equal(value.mcp_servers[0].trigger, '参数复用');
+  assert.deepEqual(validateSettings(value), []);
+  value.mcp_servers.push({ ...parse('参数复用'), id: 'b', name: 'B' });
+  assert.match(validateSettings(value).join(' '), /触发命令不能重复/);
+  value.mcp_servers[1].trigger = 'compact';
+  assert.match(validateSettings(value).join(' '), /内置命令重名/);
+  value.mcp_servers[1].trigger = '带 空格';
+  assert.match(validateSettings(value).join(' '), /只能使用中文/);
+  assert.equal(parseMcpJson('[{"id":"x","name":"x"}]')[0].trigger, '');
 });
 
 test('高级 MCP JSON 类型检查，并保留凭据掩码和未启用草稿', () => {

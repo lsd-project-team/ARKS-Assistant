@@ -10,6 +10,7 @@ from app.agents.runtime.executor import AgentRunExecutor
 from app.agents.runtime.feedback import tool_stage
 from app.agents.runtime.graph_builder import AgentGraphBuilder
 from app.agents.tools.debug_capture import capture_command
+from app.core.commands import split_command
 from app.core.config import Paths, SettingsStore
 from app.infrastructure.mcp.client import ToolCatalog, adapt_tool
 from app.infrastructure.providers.models import close_models
@@ -90,8 +91,19 @@ class AgentRuntime:
     async def graph(self, *args, **kwargs):
         return await AgentGraphBuilder(self).build(*args, **kwargs)
 
+    def command_triggers(self):
+        """当前配置里所有 MCP 触发命令；空集合表示全部服务按问题自动选择。"""
+        return {
+            server.trigger
+            for server in current_configuration(self.settings).mcp_servers
+            if server.trigger
+        }
+
     def input_message(self, message):
-        content = message["content"]
+        # 触发命令只用于选择来源，不进入模型正文；保存的消息仍保留用户原文。
+        content = (
+            split_command(message["content"], self.command_triggers())[1] or message["content"]
+        )
         if message.get("attachments"):
             from app.core.config import dump_json
 
@@ -133,11 +145,16 @@ class AgentRuntime:
 
     async def execute(self, run, emit):
         owned_models = []
+        content = self.repository.message(run["message_id"])["content"]
         configuration, policy = configured_analysis(
             current_configuration(self.settings),
-            self.repository.message(run["message_id"])["content"],
+            content,
             previous_run_event(self.repository, run, "analysis_plan"),
         )
+        trigger, question = split_command(content, self.command_triggers())
+        if trigger and not question:
+            # 只有命令没有正文时不调用模型，明确要求补充问题，避免空回答。
+            raise ValueError(f"请在 /{trigger} 后输入问题或参数名")
         run = {**run, "analysis_policy": policy}
         try:
             with bind_configuration(configuration):

@@ -120,11 +120,21 @@ export function validateSettings(settings: Settings): string[] {
       errors.push(`${name}：超时应为 10–600 秒的整数`);
   }
   const servers = new Set<string>();
+  const triggers = new Set<string>();
   for (const server of settings.mcp_servers) {
     if (!server.name.trim()) errors.push('MCP 名称不能为空');
     if (!/^[a-zA-Z0-9_-]{1,40}$/.test(server.id) || servers.has(server.id))
       errors.push(`MCP ID 无效或重复：${server.id}`);
     servers.add(server.id);
+    const trigger = (server.trigger || '').trim().replace(/^\//, '');
+    if (trigger) {
+      if (!/^[A-Za-z0-9_\-\u4e00-\u9fff]{1,20}$/.test(trigger))
+        errors.push(`${server.name}：触发命令只能使用中文、字母、数字、下划线或短横线`);
+      else if (['context', 'compact', '记录问题', 'record-issue'].includes(trigger.toLowerCase()))
+        errors.push(`${server.name}：触发命令与内置命令重名`);
+      else if (triggers.has(trigger.toLowerCase())) errors.push(`${server.name}：触发命令不能重复`);
+      triggers.add(trigger.toLowerCase());
+    }
     if (server.url && invalidAddress(server.url)) errors.push(`${server.name}：MCP 地址无效`);
     if (server.enabled && server.transport !== 'stdio' && !server.url.trim())
       errors.push(`${server.name}：请填写 MCP 地址`);
@@ -149,7 +159,7 @@ export function parseMcpJson(text: string): McpServer[] {
       throw new Error('每个 MCP 服务器都需要字符串 id 和 name');
     if (row.transport && !['streamable_http', 'sse', 'stdio'].includes(row.transport))
       throw new Error('MCP transport 必须是 streamable_http、sse 或 stdio');
-    for (const field of ['url', 'command'])
+    for (const field of ['url', 'command', 'trigger'])
       if (row[field] !== undefined && typeof row[field] !== 'string')
         throw new Error(`MCP ${field} 必须是字符串`);
     if (row.enabled !== undefined && typeof row.enabled !== 'boolean')
@@ -179,6 +189,7 @@ export function parseMcpJson(text: string): McpServer[] {
         args: [],
         headers: {},
         env: {},
+        trigger: '',
         ...row,
       }) as McpServer,
   );
