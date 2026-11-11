@@ -138,7 +138,7 @@ def rule_result(row: int, cells) -> dict:
 
 def create_server(path: Path) -> MCPServer:
     rows = load_rules(path)
-    server = MCPServer("ZX2200 原535条参数复用规则")
+    server = MCPServer("ZX2200 参数复用 MCP")
 
     @server.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=False))
     def lookup(
