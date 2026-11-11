@@ -47,7 +47,7 @@ export default function HandoverWorkspace({
   recordId: string;
   version?: number;
   navigate: (tab: Tab, id?: string, version?: number) => void;
-  onWorkspaceNavigate?: (kind: 'chat' | 'graphs' | 'modules') => void;
+  onWorkspaceNavigate?: (kind: 'chat' | 'graphs') => void;
   management?: boolean;
 }) {
   const scopeId = handoverScope;

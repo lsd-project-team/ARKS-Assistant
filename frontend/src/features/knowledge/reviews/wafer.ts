@@ -50,7 +50,7 @@ export const waferGuide: SourceGuide = {
       refs: ['w-carrier', 'w-change-operation', 'w-single-finish', 'w-flip-worker-results'],
     },
     {
-      text: '完整换片向导选择保存、AKRS.WM 内部寻路和文件机制、PR 算法控制器及底层运动/相机驱动仍待展开。当前有 Nine 标记未回写与图片复用、地图双点抛异常、多次定位失败 OK 读取 null 结果、部分等待无整体期限等边界；不能把整个供晶专题视为完成。',
+      text: '完整换片向导选择保存、AKRS.WM 内部寻路和文件机制、PR 算法控制器及底层运动/相机驱动仍待展开。当前有 Nine 标记未回写与图片复用、地图双点抛异常、多次定位失败 OK 读取 null 结果、部分等待无整体期限等边界；不能把整个供晶图谱视为完成。',
       refs: [
         'ws-nine-ink',
         'ws-nine-struct',

@@ -197,7 +197,7 @@ export const publicVisionGuide: SourceGuide = {
         step(
           'save',
           '当前点与整个对象分别完成',
-          '匹配结果经工位转换得到 G0 点和局部点，选择 P1–P4 结果对象。SaveInfo 写匹配值、点位和成功/更新标志；物料域达到设定点数后才更新产品坐标。坐标计算与限值规则统一见产品坐标专题。',
+          '匹配结果经工位转换得到 G0 点和局部点，选择 P1–P4 结果对象。SaveInfo 写匹配值、点位和成功/更新标志；物料域达到设定点数后才更新产品坐标。坐标计算与限值规则统一见产品坐标图谱。',
           ['pv-point-info', 'pv-s1-point', 'pv-s2-point', 'pv-save-info', 'pc-update'],
         ),
       ],
@@ -277,7 +277,7 @@ export const publicVisionGuide: SourceGuide = {
   ],
   boundaries: [
     {
-      text: '覆盖模板初始化、相机硬件与采图、普通/缺陷结果、产品四层调用、身份与墨点、人工处理。算法模块和驱动依赖现场 SDK 与配置；本专题没有运行实际视觉或轴运动。G0 转换和产品坐标写回分别链接到公共专题。',
+      text: '覆盖模板初始化、相机硬件与采图、普通/缺陷结果、产品四层调用、身份与墨点、人工处理。算法模块和驱动依赖现场 SDK 与配置；本图谱没有运行实际视觉或轴运动。G0 转换和产品坐标写回分别链接到公共图谱。',
       refs: ['pv-init', 'pv-prwork', 'pv-service', 'pv-s2-wrapper', 'pv-alarm-ok'],
     },
   ],

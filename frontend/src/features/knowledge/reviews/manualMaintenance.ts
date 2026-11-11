@@ -90,7 +90,7 @@ export const manualMaintenanceGuide: SourceGuide = {
         {
           id: 'press',
           title: '距离与力模式分别循环',
-          text: '距离模式按速度100下到清洁高度再抬高2；其他模式调用力控设定后复位到高度+2。循环次数≤0会跳过下压，但区域点此前已占用，随后仍会请求安全Z并吹气。力控和安全运动的具体机制复用公共专题。',
+          text: '距离模式按速度100下到清洁高度再抬高2；其他模式调用力控设定后复位到高度+2。循环次数≤0会跳过下压，但区域点此前已占用，随后仍会请求安全Z并吹气。力控和安全运动的具体机制复用公共图谱。',
           refs: ['mn-clean-action'],
           outcomes: [],
         },
@@ -286,7 +286,7 @@ export const manualMaintenanceGuide: SourceGuide = {
         {
           id: 'plate-height',
           title: '板面测高失败没有立即停止回调',
-          text: 'Load固定S1和TouchDown类型，先安全位、开测高气缸；激光硬件在此改变提示，实际类型经公共助手进入S1 HeightSensor接口。失败只设置Abort，同一回调仍构造并请求相机位置。测高和模式细节复用公共测高专题。',
+          text: 'Load固定S1和TouchDown类型，先安全位、开测高气缸；激光硬件在此改变提示，实际类型经公共助手进入S1 HeightSensor接口。失败只设置Abort，同一回调仍构造并请求相机位置。测高和模式细节复用公共测高图谱。',
           refs: ['mn-plate-teach', 'mn-plate-done', 'mn-height-helper', 'mn-height'],
           outcomes: [],
         },
@@ -403,7 +403,7 @@ export const manualMaintenanceGuide: SourceGuide = {
       refs: ['mn-clean-action', 'mn-throw', 'mn-pre-work'],
     },
     {
-      text: '工具更换、力控、安全运动与测高复用公共专题；完整生产点胶轨迹和后检测分别留在对应工艺专题展开。',
+      text: '工具更换、力控、安全运动与测高复用公共图谱；完整生产点胶轨迹和后检测分别留在对应工艺图谱展开。',
       refs: ['mn-pick-order', 'mn-clean-action', 'mn-board-test', 'mn-height'],
     },
   ],

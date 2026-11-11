@@ -437,16 +437,14 @@ button.workspace-brand-mark {
 .legacy-visual .knowledge-workspace .section-heading {
   margin: 28px 0 16px;
 }
-.legacy-visual .knowledge-workspace .graph-grid,
-.legacy-visual .knowledge-workspace .topic-grid {
+.legacy-visual .knowledge-workspace .graph-grid {
   gap: 16px;
 }
 .legacy-visual .knowledge-workspace .card {
   border-radius: 14px;
   background: var(--panel);
 }
-.legacy-visual .knowledge-workspace .graph-card,
-.legacy-visual .knowledge-workspace .topic-card {
+.legacy-visual .knowledge-workspace .graph-card {
   box-shadow: none;
   padding: 22px;
 }
@@ -468,31 +466,6 @@ button.workspace-brand-mark {
 .legacy-visual .knowledge-workspace .graph-read-button {
   min-height: 30px;
 }
-.legacy-visual .knowledge-workspace .topic-card h2 {
-  margin: 14px 0 8px;
-}
-.legacy-visual .knowledge-workspace .topic-card p {
-  margin-bottom: 16px;
-}
-.legacy-visual .knowledge-workspace .showcase-hero {
-  padding: 32px;
-  gap: 32px;
-  background: var(--hero-surface);
-}
-.legacy-visual .knowledge-workspace .showcase-hero h1 {
-  margin: 16px 0;
-  font-size: clamp(32px, 3.1vw, 42px);
-}
-.legacy-visual .knowledge-workspace .showcase-hero p {
-  margin-bottom: 22px;
-}
-.legacy-visual .knowledge-workspace .showcase-outline ol {
-  gap: 18px;
-}
-.legacy-visual .knowledge-workspace .presentation-metrics {
-  margin: 20px 0 28px;
-  padding-bottom: 18px;
-}
 .legacy-visual .knowledge-workspace .button.primary {
   background: var(--text);
   color: var(--panel);
@@ -501,9 +474,6 @@ button.workspace-brand-mark {
 .legacy-visual .knowledge-workspace .graph-symbol {
   background: var(--surface-muted);
   color: var(--text-secondary);
-}
-.legacy-visual .knowledge-workspace .topic-card strong {
-  color: var(--text);
 }
 .legacy-visual .knowledge-workspace .original-diagram iframe {
   background: #fff;
@@ -627,13 +597,8 @@ button.workspace-brand-mark {
     width: 100%;
     flex: auto;
   }
-  .legacy-visual .knowledge-workspace .graph-card,
-  .legacy-visual .knowledge-workspace .topic-card,
-  .legacy-visual .knowledge-workspace .showcase-hero {
+  .legacy-visual .knowledge-workspace .graph-card {
     padding: 20px;
-  }
-  .legacy-visual .knowledge-workspace .showcase-hero {
-    gap: 24px;
   }
   .appearance-options {
     grid-template-columns: 1fr;

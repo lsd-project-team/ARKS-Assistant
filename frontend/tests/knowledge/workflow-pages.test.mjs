@@ -7,6 +7,9 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { presentationTopics } from '../../src/features/knowledge/data/presentation.ts';
 import { archifyData } from '../../src/features/knowledge/data/archifyData.ts';
+import { readingGraphPaths } from '../../src/features/knowledge/data/readingDestinations.ts';
+import { routeFromHash } from '../../src/features/knowledge/routes.ts';
+import { sourceGuides } from '../../src/features/knowledge/sourceGuides.ts';
 import { manuals } from '../../src/features/knowledge/data/manualCatalog.ts';
 
 const result = await build({
@@ -46,12 +49,16 @@ new Function('require', 'module', 'exports', result.outputFiles[0].text)(
   module,
   module.exports,
 );
-const { TopicDetail, DiagramDetail, GraphAtlas, coordinateVisual, functionalVisual } =
-  module.exports;
+const { DiagramDetail, GraphAtlas, coordinateVisual, functionalVisual } = module.exports;
 const render = (component, props) =>
   renderToStaticMarkup(createElement(component, { navigate() {}, ...props }));
+const renderLegacyReading = (id) => {
+  const route = routeFromHash('#topic/' + id);
+  assert.ok(['graph', 'catalog'].includes(route.kind));
+  return render(DiagramDetail, { id: route.slug ?? route.id, theme: 'light' });
+};
 
-test('46张导入图保留图解与专题返回，旧章节链接不再打开详细说明', () => {
+test('46张导入图保留图解并返回图谱目录，旧章节链接继续可读', () => {
   for (const entry of manuals) {
     const html = render(DiagramDetail, { id: entry.id, theme: 'light' });
     assert.ok(html.includes(entry.title), entry.id);
@@ -64,15 +71,21 @@ test('46张导入图保留图解与专题返回，旧章节链接不再打开详
     });
     assert.match(legacy, /data-diagram-source=/);
     assert.doesNotMatch(legacy, /详细说明|reader-document|role="tab/);
-    assert.match(html, /返回业务专题/);
+    assert.match(html, /全部图谱/);
+    assert.doesNotMatch(html, /专题|#topic\//);
   }
 });
 
-test('全部专题保留流程内容，不再显示源码模块、依据、路径和快照选区', () => {
+test('23个旧专题的说明和全部阅读环节迁入对应图谱，移除专题入口', () => {
   for (const topic of presentationTopics) {
-    const html = render(TopicDetail, { id: topic.id });
-    assert.ok(html.includes(topic.title));
-    assert.match(html, /建议阅读顺序/);
+    const html = renderLegacyReading(topic.id);
+    assert.ok(html.includes(topic.summary), topic.id);
+    assert.ok(html.includes(topic.purpose), topic.id);
+    for (const note of [...topic.conditions, ...topic.exceptions])
+      assert.ok(html.includes(renderToStaticMarkup(createElement('li', null, note))), topic.id);
+    for (const flow of sourceGuides.find((guide) => guide.topic === topic.id)?.flows ?? [])
+      assert.ok(html.includes(flow.title), topic.id + '/' + flow.id);
+    assert.doesNotMatch(html, /全部专题|阅读专题|返回业务专题|href="#topic\//);
     assert.doesNotMatch(
       html,
       /源码模块结构|关联源码模块|源码依据|查看依据|查看协作依据|source-evidence|source-module|<pre/,
@@ -106,7 +119,7 @@ test('生产流程保留原图、节点说明和协作条件，移除节点依�
 });
 
 test('G0 从专题和图谱目录进入同一阅读页，使用 Archify 交付图', () => {
-  const topic = render(TopicDetail, { id: 'g0' });
+  const topic = renderLegacyReading('g0');
   const catalog = render(DiagramDetail, { id: 'g0-coordinate-system', theme: 'light' });
   assert.equal(catalog, topic);
   assert.match(topic, /data-archify-source="g0-archify\/device-overview\.html"/);
@@ -143,6 +156,8 @@ test('G0 三张关系图都引用实际 Archify HTML，公式与数值例子继�
 
 test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱仍可展示', () => {
   const html = render(GraphAtlas, {});
+  assert.doesNotMatch(html, /专题|card-topic|topic-card/);
+  assert.equal((html.match(/查看图谱/g) ?? []).length, 121);
   assert.match(html, /设备、产品和相机中的位置怎样转换为同一个 G0 目标/);
   const entry = archifyData.flowchartCatalog.entries.find(
     (item) => item.id === 'g0-coordinate-system',
@@ -158,7 +173,7 @@ test('全部图谱包含可进入的 G0 内嵌阅读入口，既有独立图谱�
 });
 
 test('产品专题与目录共用整宽阅读页，并复用父链原图和定位更新交付', () => {
-  const topic = render(TopicDetail, { id: 'product-coordinates' });
+  const topic = renderLegacyReading('product-coordinates');
   const catalog = render(DiagramDetail, { id: 'product-coordinate-lifecycle', theme: 'light' });
   assert.equal(catalog, topic);
   for (const text of [
@@ -170,7 +185,7 @@ test('产品专题与目录共用整宽阅读页，并复用父链原图和定�
   ])
     assert.ok(topic.includes(text));
   assert.match(topic, /class="atlas-reader"/);
-  assert.match(topic, /href="#topic\/g0"/);
+  assert.match(topic, /href="#catalog\/g0-coordinate-system"/);
   for (const [flow, step, source] of [
     ['product-hierarchy', 'chain', 'g0-archify/product-reading.html'],
     ['product-update', 'overview', 'functional-atlas/product-update.html'],
@@ -182,7 +197,7 @@ test('产品专题与目录共用整宽阅读页，并复用父链原图和定�
 });
 
 test('公共视觉默认先展示实际单点链路，保留六个环节和产品写回链接', () => {
-  const topic = render(TopicDetail, { id: 'public-vision' });
+  const topic = renderLegacyReading('public-vision');
   assert.equal(topic, render(DiagramDetail, { id: 'public-vision-process', theme: 'light' }));
   for (const text of [
     '模板与初始化',
@@ -194,12 +209,12 @@ test('公共视觉默认先展示实际单点链路，保留六个环节和产�
   ])
     assert.ok(topic.includes(text));
   assert.ok(topic.includes('data-archify-source="functional-atlas/vision-point.html"'));
-  assert.match(topic, /href="#topic\/product-coordinates"/);
+  assert.match(topic, /href="#catalog\/product-coordinate-lifecycle"/);
   assert.doesNotMatch(topic, /源码依据|source-evidence|<pre/);
 });
 
 test('相机标定专题绑定 S2 调度图，并提供保存与复核的对照表', () => {
-  const topic = render(TopicDetail, { id: 'camera-calibration' });
+  const topic = renderLegacyReading('camera-calibration');
   assert.equal(topic, render(DiagramDetail, { id: 'camera-calibration-process', theme: 'light' }));
   assert.ok(topic.includes('data-archify-source="functional-atlas/camera-calibration.html"'));
   for (const text of [
@@ -220,7 +235,7 @@ test('相机标定专题绑定 S2 调度图，并提供保存与复核的对照�
 });
 
 test('安全运动专题展示实际高度分支，并保留 XY 恢复原 Z 的差异', () => {
-  const topic = render(TopicDetail, { id: 'motion-safety' });
+  const topic = renderLegacyReading('motion-safety');
   assert.equal(topic, render(DiagramDetail, { id: 'safe-motion-process', theme: 'light' }));
   assert.ok(topic.includes('data-archify-source="functional-atlas/safe-motion-branches.html"'));
   for (const text of [
@@ -233,7 +248,7 @@ test('安全运动专题展示实际高度分支，并保留 XY 恢复原 Z 的�
     '等待、异常与停止',
   ])
     assert.ok(topic.includes(text), text);
-  assert.match(topic, /href="#topic\/recovery"/);
+  assert.match(topic, /href="#graph\/failure-recovery-workflow"/);
   const table = renderToStaticMarkup(functionalVisual('sm-order', 'table'));
   assert.equal((table.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 5);
   assert.match(table, /安全 Z → XY → 恢复原 Z/);
@@ -241,7 +256,7 @@ test('安全运动专题展示实际高度分支，并保留 XY 恢复原 Z 的�
 });
 
 test('工具校准专题共用阅读页，独立入口与七行保存边界均可阅读', () => {
-  const topic = render(TopicDetail, { id: 'tool-calibration' });
+  const topic = renderLegacyReading('tool-calibration');
   assert.equal(topic, render(DiagramDetail, { id: 'tool-calibration-process', theme: 'light' }));
   assert.ok(topic.includes('data-archify-source="functional-atlas/tool-calibration-entry.html"'));
   for (const title of [
@@ -255,7 +270,7 @@ test('工具校准专题共用阅读页，独立入口与七行保存边界均�
     '保存取消与工具',
   ])
     assert.ok(topic.includes(title), title);
-  assert.match(topic, /href="#topic\/camera-calibration"/);
+  assert.match(topic, /href="#catalog\/camera-calibration-process"/);
   const table = renderToStaticMarkup(functionalVisual('tc-results', 'persistence'));
   assert.equal((table.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 7);
   assert.match(table, /收尾保存代码已注释/);
@@ -264,7 +279,7 @@ test('工具校准专题共用阅读页，独立入口与七行保存边界均�
 });
 
 test('全局标定专题区分新区域与旧驱动链，并保留八条保存路径', () => {
-  const topic = render(TopicDetail, { id: 'global-calibration' });
+  const topic = renderLegacyReading('global-calibration');
   assert.equal(topic, render(DiagramDetail, { id: 'global-calibration-process', theme: 'light' }));
   assert.ok(topic.includes('data-archify-source="functional-atlas/global-region-chain.html"'));
   for (const title of [
@@ -282,7 +297,7 @@ test('全局标定专题区分新区域与旧驱动链，并保留八条保存�
     assert.ok(topic.includes(title), title);
   const driver = renderToStaticMarkup(functionalVisual('gc-driver', 'overview'));
   assert.ok(driver.includes('data-archify-source="functional-atlas/global-driver-mapping.html"'));
-  assert.match(topic, /href="#topic\/motion-safety"/);
+  assert.match(topic, /href="#catalog\/safe-motion-process"/);
   const table = renderToStaticMarkup(functionalVisual('gc-completion', 'persistence'));
   assert.equal((table.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 8);
   assert.match(table, /没有同样的尾部域保存/);
@@ -291,7 +306,7 @@ test('全局标定专题区分新区域与旧驱动链，并保留八条保存�
 });
 
 test('光源专题共用目录入口，区分硬件、采集、缓存和视觉换算', () => {
-  const topic = render(TopicDetail, { id: 'lightness' });
+  const topic = renderLegacyReading('lightness');
   assert.equal(topic, render(DiagramDetail, { id: 'lightness-process', theme: 'light' }));
   for (const title of [
     '相机与灯光',
@@ -310,7 +325,7 @@ test('光源专题共用目录入口，区分硬件、采集、缓存和视觉�
 });
 
 test('测高专题共用目录入口，读数和保存分表并保留两条实际结果链', () => {
-  const topic = render(TopicDetail, { id: 'height-measurement' });
+  const topic = renderLegacyReading('height-measurement');
   assert.equal(topic, render(DiagramDetail, { id: 'height-measurement-process', theme: 'light' }));
   for (const title of [
     '入口与读数口径',
@@ -340,11 +355,11 @@ test('测高专题共用目录入口，读数和保存分表并保留两条实�
         'data-archify-source="functional-atlas/' + id + '.html"',
       ),
     );
-  assert.match(topic, /href="#topic\/global-calibration"/);
+  assert.match(topic, /href="#catalog\/global-calibration-process"/);
 });
 
 test('力控专题与目录共用阅读页，读数和保存分表并保留真实驱动及换算图', () => {
-  const topic = render(TopicDetail, { id: 'force-control' });
+  const topic = renderLegacyReading('force-control');
   assert.equal(topic, render(DiagramDetail, { id: 'force-control-process', theme: 'light' }));
   for (const title of [
     '入口与读数',
@@ -375,12 +390,12 @@ test('力控专题与目录共用阅读页，读数和保存分表并保留真�
         'data-archify-source="functional-atlas/' + id + '.html"',
       ),
     );
-  assert.match(topic, /href="#topic\/height-measurement"/);
-  assert.match(topic, /href="#topic\/motion-safety"/);
+  assert.match(topic, /href="#catalog\/height-measurement-process"/);
+  assert.match(topic, /href="#catalog\/safe-motion-process"/);
 });
 
 test('工具库专题与目录共用阅读页，区分四种状态并绑定保存表和真实换嘴图', () => {
-  const topic = render(TopicDetail, { id: 'tool-bank' });
+  const topic = renderLegacyReading('tool-bank');
   assert.equal(topic, render(DiagramDetail, { id: 'tool-bank-process', theme: 'light' }));
   assert.match(topic, /data-archify-source="functional-atlas\/tool-change-overview.html"/);
   const states = renderToStaticMarkup(functionalVisual('nb-identity', 'overview'));
@@ -392,12 +407,12 @@ test('工具库专题与目录共用阅读页，区分四种状态并绑定保�
   assert.match(persistence, /取消不统一回滚/);
   const change = renderToStaticMarkup(functionalVisual('nb-change', 'overview'));
   assert.match(change, /data-archify-source="functional-atlas\/tool-change-overview.html"/);
-  assert.match(topic, /href="#topic\/tool-calibration"/);
-  assert.match(topic, /href="#topic\/motion-safety"/);
+  assert.match(topic, /href="#catalog\/tool-calibration-process"/);
+  assert.match(topic, /href="#catalog\/safe-motion-process"/);
 });
 
 test('维护专题默认展示清嘴图，目录共用并区分六个手动入口与八类保存', () => {
-  const topic = render(TopicDetail, { id: 'manual-maintenance' });
+  const topic = renderLegacyReading('manual-maintenance');
   assert.equal(topic, render(DiagramDetail, { id: 'manual-maintenance-process', theme: 'light' }));
   assert.match(topic, /data-archify-source="functional-atlas\/nozzle-clean-overview.html"/);
   const entries = renderToStaticMarkup(functionalVisual('mn-manual', 'overview'));
@@ -408,11 +423,11 @@ test('维护专题默认展示清嘴图，目录共用并区分六个手动入�
   assert.match(saves, /早于实际清洁/);
   assert.match(saves, /该方法自身未 Save/);
   for (const link of ['tool-bank', 'height-measurement', 'force-control', 'motion-safety'])
-    assert.ok(topic.includes('href="#topic/' + link + '"'), link);
+    assert.ok(topic.includes('href="#' + readingGraphPaths[link] + '"'), link);
 });
 
 test('耗材专题与目录共用扫描图，汇集和复位分表并链接更换与维护', () => {
-  const topic = render(TopicDetail, { id: 'consumables' });
+  const topic = renderLegacyReading('consumables');
   assert.equal(topic, render(DiagramDetail, { id: 'consumables-process', theme: 'light' }));
   assert.match(topic, /data-archify-source="functional-atlas\/consumables-scan-overview.html"/);
   const sources = renderToStaticMarkup(functionalVisual('life-sources', 'overview'));
@@ -423,7 +438,7 @@ test('耗材专题与目录共用扫描图，汇集和复位分表并链接更�
   assert.equal((reset.match(/<tbody>[\s\S]*?<\/tbody>/)?.[0].match(/<tr>/g) ?? []).length, 4);
   assert.match(reset, /保留报警时间与IsAlarmed/);
   for (const link of ['tool-bank', 'manual-maintenance'])
-    assert.ok(topic.includes('href="#topic/' + link + '"'), link);
+    assert.ok(topic.includes('href="#' + readingGraphPaths[link] + '"'), link);
 });
 
 // 枚举整个公开目录，防止只统一示例而遗漏旧架构图、时序图或内嵌专题。

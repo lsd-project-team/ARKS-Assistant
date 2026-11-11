@@ -55,7 +55,7 @@ export const manualReadings = Object.fromEntries(
     {
       title: entry.title,
       summary: entry.summary,
-      condition: '按所属业务专题阅读具体入口、配置与执行分支。',
+      condition: '按所属业务图谱阅读具体入口、配置与执行分支。',
       exception: '图解概括主干，详细说明保留各分支的处理条件与原有风险记录。',
     },
   ]),

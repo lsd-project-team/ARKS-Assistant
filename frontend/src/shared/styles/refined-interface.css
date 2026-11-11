@@ -569,8 +569,7 @@ textarea::placeholder {
   border-radius: 14px;
   box-shadow: var(--surface-stroke);
 }
-.legacy-visual .knowledge-workspace .graph-card:hover,
-.legacy-visual .knowledge-workspace .topic-card:hover {
+.legacy-visual .knowledge-workspace .graph-card:hover {
   border-color: transparent;
   box-shadow:
     inset 0 0 0 1px var(--selection-border),
@@ -602,10 +601,6 @@ textarea::placeholder {
   font-size: var(--font-size-body);
   line-height: 1.85;
 }
-.legacy-visual .knowledge-workspace .card-topic {
-  color: var(--text-muted);
-  font-size: var(--font-size-meta);
-}
 .legacy-visual .knowledge-workspace .graph-card .card-actions {
   border-top-color: color-mix(in srgb, var(--border) 65%, transparent);
 }
@@ -625,59 +620,8 @@ textarea::placeholder {
   padding-inline: 0;
   background: transparent;
 }
-.legacy-visual .knowledge-workspace .showcase-hero {
-  box-shadow: var(--surface-stroke);
-  border-radius: 18px;
-  background: var(--hero-surface);
-}
-.legacy-visual .knowledge-workspace .showcase-hero h1 {
-  font-weight: 600;
-  font-size: clamp(32px, 3.1vw, 42px);
-  letter-spacing: 0;
-  line-height: 1.5;
-}
-.legacy-visual .knowledge-workspace .showcase-outline {
-  border-color: var(--border-strong);
-}
-.legacy-visual .knowledge-workspace .showcase-outline li b {
-  font-weight: 500;
-}
-.legacy-visual .knowledge-workspace .showcase-outline li .route-number {
-  font-family: var(--font-ui);
-  border-color: transparent;
-  box-shadow: var(--surface-stroke);
-  background: var(--panel);
-}
-.legacy-visual .knowledge-workspace .presentation-metrics b,
 .legacy-visual .knowledge-workspace .engineering-metrics b {
   font-weight: 400;
-}
-.legacy-visual .knowledge-workspace .production-chapter {
-  border-radius: 0;
-  box-shadow: none;
-  border-bottom-color: var(--border);
-  background: transparent;
-}
-.legacy-visual .knowledge-workspace .production-chapter b {
-  font-size: var(--font-size-control);
-  font-weight: 500;
-}
-.legacy-visual .knowledge-workspace .topic-card h2 {
-  font-size: var(--font-size-section-title);
-  font-weight: 600;
-  letter-spacing: 0;
-  line-height: 1.7;
-}
-.legacy-visual .knowledge-workspace .topic-card p {
-  font-size: var(--font-size-body);
-  line-height: 1.85;
-}
-.legacy-visual .knowledge-workspace .topic-card strong {
-  font-size: var(--font-size-body);
-  font-weight: 500;
-}
-.legacy-visual .knowledge-workspace .topic-card-meta .eyebrow {
-  font-family: var(--font-ui);
 }
 .legacy-visual .knowledge-workspace .reading-summary .card,
 .legacy-visual .knowledge-workspace .diagram-reading .card {
@@ -835,8 +779,7 @@ textarea::placeholder {
   .knowledge-workspace .card {
     transition: none;
   }
-  .legacy-visual .knowledge-workspace .graph-card:hover,
-  .legacy-visual .knowledge-workspace .topic-card:hover {
+  .legacy-visual .knowledge-workspace .graph-card:hover {
     transform: none;
   }
   .legacy-visual .app-navigation .thread-row {
@@ -849,8 +792,5 @@ textarea::placeholder {
   }
   .legacy-visual .knowledge-workspace .page-header h1 {
     font-size: var(--font-size-page-title);
-  }
-  .legacy-visual .knowledge-workspace .showcase-hero h1 {
-    font-size: 30px;
   }
 }

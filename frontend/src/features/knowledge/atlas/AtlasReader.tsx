@@ -1,3 +1,4 @@
+import { readingGraphPaths } from '../data/readingDestinations';
 import { SourceGuidePanel } from '../SourceGuidePanel';
 import type { ComponentType } from 'react';
 import { ArchifyFigure, ReadingFigure } from '../coordinates/ArchifyFigure';
@@ -108,85 +109,85 @@ export function AtlasReader({ page }: { page: string }) {
     <div className="atlas-reader">
       <SourceGuidePanel key={page} page={page} renderVisual={functionalVisual} />
       <nav className="section card panel" aria-label="公共流程">
-        <a className="text-button" href="#topic/g0">
+        <a className="text-button" href={`#${readingGraphPaths['g0']}`}>
           G0 坐标转换与生产应用 →
         </a>
         {page === 'public-vision' ? (
-          <a className="text-button" href="#topic/product-coordinates">
+          <a className="text-button" href={`#${readingGraphPaths['product-coordinates']}`}>
             产品坐标写回与定位限值 →
           </a>
         ) : (
-          <a className="text-button" href="#topic/public-vision">
+          <a className="text-button" href={`#${readingGraphPaths['public-vision']}`}>
             公共视觉与失败处理 →
           </a>
         )}
         {page === 'motion-safety' && (
-          <a className="text-button" href="#topic/recovery">
+          <a className="text-button" href={`#${readingGraphPaths['recovery']}`}>
             暂停停止与物料恢复 →
           </a>
         )}
         {page === 'tool-calibration' && (
-          <a className="text-button" href="#topic/camera-calibration">
+          <a className="text-button" href={`#${readingGraphPaths['camera-calibration']}`}>
             相机与机械坐标标定 →
           </a>
         )}
         {page === 'tool-bank' && (
           <>
-            <a className="text-button" href="#topic/tool-calibration">
+            <a className="text-button" href={`#${readingGraphPaths['tool-calibration']}`}>
               工具高度与中心校准 →
             </a>
-            <a className="text-button" href="#topic/motion-safety">
+            <a className="text-button" href={`#${readingGraphPaths['motion-safety']}`}>
               安全运动与等待边界 →
             </a>
           </>
         )}
         {page === 'manual-maintenance' && (
           <>
-            <a className="text-button" href="#topic/tool-bank">
+            <a className="text-button" href={`#${readingGraphPaths['tool-bank']}`}>
               工具更换与人工入口 →
             </a>
-            <a className="text-button" href="#topic/height-measurement">
+            <a className="text-button" href={`#${readingGraphPaths['height-measurement']}`}>
               测高与工具准备 →
             </a>
-            <a className="text-button" href="#topic/force-control">
+            <a className="text-button" href={`#${readingGraphPaths['force-control']}`}>
               清洁力控的设定与复位 →
             </a>
-            <a className="text-button" href="#topic/motion-safety">
+            <a className="text-button" href={`#${readingGraphPaths['motion-safety']}`}>
               安全运动与等待边界 →
             </a>
           </>
         )}
         {page === 'consumables' && (
           <>
-            <a className="text-button" href="#topic/tool-bank">
+            <a className="text-button" href={`#${readingGraphPaths['tool-bank']}`}>
               工具更换与槽位状态 →
             </a>
-            <a className="text-button" href="#topic/manual-maintenance">
+            <a className="text-button" href={`#${readingGraphPaths['manual-maintenance']}`}>
               换胶与手动维护的保存 →
             </a>
           </>
         )}
         {page === 'height-measurement' && (
           <>
-            <a className="text-button" href="#topic/motion-safety">
+            <a className="text-button" href={`#${readingGraphPaths['motion-safety']}`}>
               安全运动与等待边界 →
             </a>
-            <a className="text-button" href="#topic/global-calibration">
+            <a className="text-button" href={`#${readingGraphPaths['global-calibration']}`}>
               全局标定与旧偏移插值 →
             </a>
           </>
         )}
         {page === 'global-calibration' && (
-          <a className="text-button" href="#topic/motion-safety">
+          <a className="text-button" href={`#${readingGraphPaths['motion-safety']}`}>
             安全运动与等待边界 →
           </a>
         )}
         {page === 'force-control' && (
           <>
-            <a className="text-button" href="#topic/height-measurement">
+            <a className="text-button" href={`#${readingGraphPaths['height-measurement']}`}>
               TouchDown 准备与焊头测高 →
             </a>
-            <a className="text-button" href="#topic/motion-safety">
+            <a className="text-button" href={`#${readingGraphPaths['motion-safety']}`}>
               安全运动与等待边界 →
             </a>
           </>

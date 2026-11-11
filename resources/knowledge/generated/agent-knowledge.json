@@ -1997,7 +1997,7 @@
       "id": "g0-coordinate-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "g0",
-      "text": "本专题依据坐标库及 ZX2200 中的示教、标定和生产调用，说明当前实现。设备实际原点与轴方向由现场标定和参数决定；这里没有给出可直接用于设备的偏移值。",
+      "text": "本图谱依据坐标库及 ZX2200 中的示教、标定和生产调用，说明当前实现。设备实际原点与轴方向由现场标定和参数决定；这里没有给出可直接用于设备的偏移值。",
       "references": [
         {
           "id": "g0-math",
@@ -2987,7 +2987,7 @@
       "id": "product-coordinates-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "product-coordinates",
-      "text": "覆盖产品层级、普通与异形展开、定位计算和写回、工位偏移及焊点补偿。图文说明当前静态实现；公共坐标转换见 G0，视觉采集和报警另见视觉专题，设备实际定位与运动未在这里运行。",
+      "text": "覆盖产品层级、普通与异形展开、定位计算和写回、工位偏移及焊点补偿。图文说明当前静态实现；公共坐标转换见 G0，视觉采集和报警另见视觉图谱，设备实际定位与运动未在这里运行。",
       "references": [
         {
           "id": "pc-init",
@@ -3939,7 +3939,7 @@
       "id": "public-vision-review:pv-objects:save",
       "title": "建议阅读顺序 / 产品各层怎样调用 / 当前点与整个对象分别完成",
       "topic": "public-vision",
-      "text": "匹配结果经工位转换得到 G0 点和局部点，选择 P1–P4 结果对象。SaveInfo 写匹配值、点位和成功/更新标志；物料域达到设定点数后才更新产品坐标。坐标计算与限值规则统一见产品坐标专题。",
+      "text": "匹配结果经工位转换得到 G0 点和局部点，选择 P1–P4 结果对象。SaveInfo 写匹配值、点位和成功/更新标志；物料域达到设定点数后才更新产品坐标。坐标计算与限值规则统一见产品坐标图谱。",
       "references": [
         {
           "id": "pv-point-info",
@@ -4317,7 +4317,7 @@
       "id": "public-vision-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "public-vision",
-      "text": "覆盖模板初始化、相机硬件与采图、普通/缺陷结果、产品四层调用、身份与墨点、人工处理。算法模块和驱动依赖现场 SDK 与配置；本专题没有运行实际视觉或轴运动。G0 转换和产品坐标写回分别链接到公共专题。",
+      "text": "覆盖模板初始化、相机硬件与采图、普通/缺陷结果、产品四层调用、身份与墨点、人工处理。算法模块和驱动依赖现场 SDK 与配置；本图谱没有运行实际视觉或轴运动。G0 转换和产品坐标写回分别链接到公共图谱。",
       "references": [
         {
           "id": "pv-init",
@@ -4693,7 +4693,7 @@
       "id": "camera-calibration-review:cc-cameras:transforms",
       "title": "建议阅读顺序 / 点胶与 Bond 采点 / VM 与 Halcon 是两套输出",
       "topic": "camera-calibration",
-      "text": "从属坐标 Init 使用物理点和像素点生成 VM 标定；NPointTrans 另把两组 XY 传给 Halcon，求矩阵并分解比例、角度、平移和斜切。G0 专题解释这些坐标怎样被后续调用，保存时序见“保存与复核”。",
+      "text": "从属坐标 Init 使用物理点和像素点生成 VM 标定；NPointTrans 另把两组 XY 传给 Halcon，求矩阵并分解比例、角度、平移和斜切。G0 图谱解释这些坐标怎样被后续调用，保存时序见“保存与复核”。",
       "references": [
         {
           "id": "cc-dispense",
@@ -5245,7 +5245,7 @@
       "id": "camera-calibration-review:cc-persistence:files",
       "title": "建议阅读顺序 / 保存与复核 / 参数与转换文件各归其主",
       "topic": "camera-calibration",
-      "text": "标定运行参数的文件配置为设备目录 CalibratePara.json，Save 实现继承自外部 Singleton；这里证明调用顺序，未实测该库的序列化和持久性。坐标 JSON 与 .iwcal 的生成和刷新统一在 G0 专题解释。",
+      "text": "标定运行参数的文件配置为设备目录 CalibratePara.json，Save 实现继承自外部 Singleton；这里证明调用顺序，未实测该库的序列化和持久性。坐标 JSON 与 .iwcal 的生成和刷新统一在 G0 图谱解释。",
       "references": [
         {
           "id": "cc-parameter-path",
@@ -5669,7 +5669,7 @@
       "id": "camera-calibration-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "camera-calibration",
-      "text": "覆盖主入口、四类相机与机械坐标标定、焊头偏移、旋转复核、公共对中对焦及独立方法差异。源码数值用于解释实现；本页没有执行设备、生成现场标定参数或验证硬件精度。公共坐标转换与视觉采图分别链接到已有专题。",
+      "text": "覆盖主入口、四类相机与机械坐标标定、焊头偏移、旋转复核、公共对中对焦及独立方法差异。源码数值用于解释实现；本页没有执行设备、生成现场标定参数或验证硬件精度。公共坐标转换与视觉采图分别链接到已有图谱。",
       "references": [
         {
           "id": "cc-entry",
@@ -5755,7 +5755,7 @@
       "id": "safe-motion-source-review:sm-targets:convert",
       "title": "建议阅读顺序 / 目标与软限位 / 三维 G0 点先转机械目标",
       "topic": "motion-safety",
-      "text": "三维 MoveToG0Pos 先用 Bond 坐标的一层逆变换，再进入安全 XYZ；CameraMoveToG0Pos 先减焊头到相机偏移。完整父链转换统一见 G0 专题，不把这层接口当作所有坐标类型的通用变换。",
+      "text": "三维 MoveToG0Pos 先用 Bond 坐标的一层逆变换，再进入安全 XYZ；CameraMoveToG0Pos 先减焊头到相机偏移。完整父链转换统一见 G0 图谱，不把这层接口当作所有坐标类型的通用变换。",
       "references": [
         {
           "id": "sm-target-wrappers",
@@ -6899,7 +6899,7 @@
       "id": "safe-motion-source-review:sm-completion:stop",
       "title": "建议阅读顺序 / 等待、异常与停止 / 停止状态不代替逐轴结束",
       "topic": "motion-safety",
-      "text": "普通 Stop 写状态并清部分信号/输出，没有逐轴 StopMove 或统一等待任务。急停另并行请求轴停止，再普通 Stop 并调用三个任务中止接口；这一层没有统一 join 或物料恢复，后续处理见恢复专题。",
+      "text": "普通 Stop 写状态并清部分信号/输出，没有逐轴 StopMove 或统一等待任务。急停另并行请求轴停止，再普通 Stop 并调用三个任务中止接口；这一层没有统一 join 或物料恢复，后续处理见恢复图谱。",
       "references": [
         {
           "id": "stop-state",
@@ -6957,7 +6957,7 @@
       "id": "safe-motion-source-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "motion-safety",
-      "text": "覆盖目标转换、软限位、安全高度顺序、场景分派、圆限位/路径工具、插补及等待停止。图表依据当前实现，没有执行现场轴运动、测定安全距离或验证驱动精度。区域动作的完整工艺步骤在所属生产专题继续展开。",
+      "text": "覆盖目标转换、软限位、安全高度顺序、场景分派、圆限位/路径工具、插补及等待停止。图表依据当前实现，没有执行现场轴运动、测定安全距离或验证驱动精度。区域动作的完整工艺步骤在所属生产图谱继续展开。",
       "references": [
         {
           "id": "sm-xyz",
@@ -8315,7 +8315,7 @@
       "id": "tool-calibration-source-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "tool-calibration",
-      "text": "覆盖当前独立校准、示教、未启用组合和旧全部顶针接口；没有执行设备动作或验证标定精度。公共坐标、视觉及安全运动在对应专题阅读，实际换嘴工艺和生产取片在所属专题继续展开。",
+      "text": "覆盖当前独立校准、示教、未启用组合和旧全部顶针接口；没有执行设备动作或验证标定精度。公共坐标、视觉及安全运动在对应图谱阅读，实际换嘴工艺和生产取片在所属图谱继续展开。",
       "references": [
         {
           "id": "tc-page-combined",
@@ -12235,7 +12235,7 @@
       "id": "height-measurement-source-review:mh-product:plane",
       "title": "建议阅读顺序 / 物料多点与回写 / 当前多点主链按均值调整 Z",
       "topic": "height-measurement",
-      "text": "S1/S2 当前方法以结果均值减配置 Z 均值，整体平移坐标 Z，没有在这里拟合平面或按 XY 插值。旧 MeasureHeightOnEntity 在采集正文前已直接返回 Success；旧 Bond 偏移插值另见全局标定专题。",
+      "text": "S1/S2 当前方法以结果均值减配置 Z 均值，整体平移坐标 Z，没有在这里拟合平面或按 XY 插值。旧 MeasureHeightOnEntity 在采集正文前已直接返回 Success；旧 Bond 偏移插值另见全局标定图谱。",
       "references": [
         {
           "id": "mh-s1-production",
@@ -16653,7 +16653,7 @@
       "id": "force-control-source-review:boundary:0",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "force-control",
-      "text": "本专题解释当前主程序中的入口、算法和保存调用。驱动 SDK、真实轴运动、力值精度与现场参数仍需设备验收，接口返回和完成提示不能替代这些证据。",
+      "text": "本图谱解释当前主程序中的入口、算法和保存调用。驱动 SDK、真实轴运动、力值精度与现场参数仍需设备验收，接口返回和完成提示不能替代这些证据。",
       "references": [
         {
           "id": "fc-set",
@@ -16691,7 +16691,7 @@
       "id": "force-control-source-review:boundary:1",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "force-control",
-      "text": "传感器测高、G0 坐标及安全运动通过公共专题继续阅读；此处集中说明力控数据、通道和标定结果，保留未启用代码与诊断工具的适用范围。",
+      "text": "传感器测高、G0 坐标及安全运动通过公共图谱继续阅读；此处集中说明力控数据、通道和标定结果，保留未启用代码与诊断工具的适用范围。",
       "references": [
         {
           "id": "fc-teach",
@@ -17781,7 +17781,7 @@
       "id": "tool-bank-source-review:nb-geometry",
       "title": "建议阅读顺序 / 几何与工具助手",
       "topic": "tool-bank",
-      "text": "高度和对中的计算复用公共校准专题，这里说明工具选择、几何和完成边界。",
+      "text": "高度和对中的计算复用公共校准图谱，这里说明工具选择、几何和完成边界。",
       "references": [
         {
           "id": "nb-program-assist",
@@ -19371,7 +19371,7 @@
       "id": "tool-bank-source-review:boundary:1",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "tool-bank",
-      "text": "高度和对中的具体采样复用公共校准专题；G0转换与安全运动分别由对应专题展开，避免重复说明。",
+      "text": "高度和对中的具体采样复用公共校准图谱；G0转换与安全运动分别由对应图谱展开，避免重复说明。",
       "references": [
         {
           "id": "nb-geometry-entry",
@@ -19747,7 +19747,7 @@
       "id": "manual-maintenance-source-review:mn-clean:press",
       "title": "建议阅读顺序 / 清洁动作 / 距离与力模式分别循环",
       "topic": "manual-maintenance",
-      "text": "距离模式按速度100下到清洁高度再抬高2；其他模式调用力控设定后复位到高度+2。循环次数≤0会跳过下压，但区域点此前已占用，随后仍会请求安全Z并吹气。力控和安全运动的具体机制复用公共专题。",
+      "text": "距离模式按速度100下到清洁高度再抬高2；其他模式调用力控设定后复位到高度+2。循环次数≤0会跳过下压，但区域点此前已占用，随后仍会请求安全Z并吹气。力控和安全运动的具体机制复用公共图谱。",
       "references": [
         {
           "id": "mn-clean-action",
@@ -20737,7 +20737,7 @@
       "id": "manual-maintenance-source-review:mn-teaching:plate-height",
       "title": "建议阅读顺序 / 位置与距离示教 / 板面测高失败没有立即停止回调",
       "topic": "manual-maintenance",
-      "text": "Load固定S1和TouchDown类型，先安全位、开测高气缸；激光硬件在此改变提示，实际类型经公共助手进入S1 HeightSensor接口。失败只设置Abort，同一回调仍构造并请求相机位置。测高和模式细节复用公共测高专题。",
+      "text": "Load固定S1和TouchDown类型，先安全位、开测高气缸；激光硬件在此改变提示，实际类型经公共助手进入S1 HeightSensor接口。失败只设置Abort，同一回调仍构造并请求相机位置。测高和模式细节复用公共测高图谱。",
       "references": [
         {
           "id": "mn-plate-teach",
@@ -21323,7 +21323,7 @@
       "id": "manual-maintenance-source-review:boundary:1",
       "title": "建议阅读顺序 / 复核边界",
       "topic": "manual-maintenance",
-      "text": "工具更换、力控、安全运动与测高复用公共专题；完整生产点胶轨迹和后检测分别留在对应工艺专题展开。",
+      "text": "工具更换、力控、安全运动与测高复用公共图谱；完整生产点胶轨迹和后检测分别留在对应工艺图谱展开。",
       "references": [
         {
           "id": "mn-pick-order",
@@ -22751,7 +22751,7 @@
       "id": "consumables-source-review:life-reset:assistant",
       "title": "建议阅读顺序 / 清零与更换 / S2助手确认后才走显式清零",
       "topic": "consumables",
-      "text": "S2点胶助手正常尾部可询问是否重置胶水有效期和点胶头次数，确认才分别Clear。这发生在此前的程序、设备和仓库Save之后，回调中没有追加同样的保存。S1换胶和普通换嘴的当前完成路径没有同样的寿命Clear；具体更换过程可从页尾公共专题继续读。",
+      "text": "S2点胶助手正常尾部可询问是否重置胶水有效期和点胶头次数，确认才分别Clear。这发生在此前的程序、设备和仓库Save之后，回调中没有追加同样的保存。S1换胶和普通换嘴的当前完成路径没有同样的寿命Clear；具体更换过程可从页尾公共图谱继续读。",
       "references": [
         {
           "id": "life-assistant-reset",
@@ -36217,7 +36217,7 @@
       "id": "s2-source-review:boundary:1",
       "title": "S2 配方、取晶、固晶与检测 / 复核边界",
       "topic": "s2",
-      "text": "完整运动曲线、换嘴清嘴、供晶/翻转线程、校正视觉与拾回、胶检算法及焊后数据反馈仍需继续复核。当前也存在参考点模式缺少独立 case、蘸胶空跑直接抛异常等实现限制；不能按方法名或旧图把这些环节补写为已实现，更不代表全 S2 专题完成。",
+      "text": "完整运动曲线、换嘴清嘴、供晶/翻转线程、校正视觉与拾回、胶检算法及焊后数据反馈仍需继续复核。当前也存在参考点模式缺少独立 case、蘸胶空跑直接抛异常等实现限制；不能按方法名或旧图把这些环节补写为已实现，更不代表全 S2 图谱完成。",
       "references": [
         {
           "id": "s2-pick-mode",
@@ -42343,7 +42343,7 @@
       "id": "wafer-source-review:boundary:1",
       "title": "供晶、换料、四种搜索与翻转交接 / 复核边界",
       "topic": "wafer",
-      "text": "完整换片向导选择保存、AKRS.WM 内部寻路和文件机制、PR 算法控制器及底层运动/相机驱动仍待展开。当前有 Nine 标记未回写与图片复用、地图双点抛异常、多次定位失败 OK 读取 null 结果、部分等待无整体期限等边界；不能把整个供晶专题视为完成。",
+      "text": "完整换片向导选择保存、AKRS.WM 内部寻路和文件机制、PR 算法控制器及底层运动/相机驱动仍待展开。当前有 Nine 标记未回写与图片复用、地图双点抛异常、多次定位失败 OK 读取 null 结果、部分等待无整体期限等边界；不能把整个供晶图谱视为完成。",
       "references": [
         {
           "id": "ws-nine-ink",

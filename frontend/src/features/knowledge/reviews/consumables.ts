@@ -277,7 +277,7 @@ export const consumablesGuide: SourceGuide = {
         {
           id: 'assistant',
           title: 'S2助手确认后才走显式清零',
-          text: 'S2点胶助手正常尾部可询问是否重置胶水有效期和点胶头次数，确认才分别Clear。这发生在此前的程序、设备和仓库Save之后，回调中没有追加同样的保存。S1换胶和普通换嘴的当前完成路径没有同样的寿命Clear；具体更换过程可从页尾公共专题继续读。',
+          text: 'S2点胶助手正常尾部可询问是否重置胶水有效期和点胶头次数，确认才分别Clear。这发生在此前的程序、设备和仓库Save之后，回调中没有追加同样的保存。S1换胶和普通换嘴的当前完成路径没有同样的寿命Clear；具体更换过程可从页尾公共图谱继续读。',
           refs: [
             'life-assistant-reset',
             'mn-change-save',

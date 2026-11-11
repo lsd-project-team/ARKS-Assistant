@@ -40,7 +40,7 @@ test('文档章节路由可刷新恢复，包含中文及特殊符号的章节�
   assert.deepEqual(routeFromHash('#catalog/manual-32'), { kind: 'catalog', id: 'manual-32' });
 });
 
-test('全部交付图和42篇正文均能从业务专题与图谱目录进入，多专题归类保持完整', () => {
+test('全部交付图保留目录入口和42篇正文资源，内部关联可供继续阅读', () => {
   assert.equal(manuals.length, 46);
   assert.equal(new Set(manuals.flatMap((entry) => entry.documents)).size, 42);
   assert.equal(new Set(manuals.map((entry) => entry.id)).size, 46);

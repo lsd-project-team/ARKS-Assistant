@@ -81,7 +81,7 @@ export const cameraCalibrationGuide: SourceGuide = {
         step(
           'transforms',
           'VM 与 Halcon 是两套输出',
-          '从属坐标 Init 使用物理点和像素点生成 VM 标定；NPointTrans 另把两组 XY 传给 Halcon，求矩阵并分解比例、角度、平移和斜切。G0 专题解释这些坐标怎样被后续调用，保存时序见“保存与复核”。',
+          '从属坐标 Init 使用物理点和像素点生成 VM 标定；NPointTrans 另把两组 XY 传给 Halcon，求矩阵并分解比例、角度、平移和斜切。G0 图谱解释这些坐标怎样被后续调用，保存时序见“保存与复核”。',
           ['cc-dispense', 'cc-bond-sampling', 'cc-fit', 'g0-savecal'],
         ),
       ],
@@ -221,7 +221,7 @@ export const cameraCalibrationGuide: SourceGuide = {
         step(
           'files',
           '参数与转换文件各归其主',
-          '标定运行参数的文件配置为设备目录 CalibratePara.json，Save 实现继承自外部 Singleton；这里证明调用顺序，未实测该库的序列化和持久性。坐标 JSON 与 .iwcal 的生成和刷新统一在 G0 专题解释。',
+          '标定运行参数的文件配置为设备目录 CalibratePara.json，Save 实现继承自外部 Singleton；这里证明调用顺序，未实测该库的序列化和持久性。坐标 JSON 与 .iwcal 的生成和刷新统一在 G0 图谱解释。',
           ['cc-parameter-path', 'cc-path', 'g0-catalog', 'g0-savecal'],
         ),
         step(
@@ -314,7 +314,7 @@ export const cameraCalibrationGuide: SourceGuide = {
   ],
   boundaries: [
     {
-      text: '覆盖主入口、四类相机与机械坐标标定、焊头偏移、旋转复核、公共对中对焦及独立方法差异。源码数值用于解释实现；本页没有执行设备、生成现场标定参数或验证硬件精度。公共坐标转换与视觉采图分别链接到已有专题。',
+      text: '覆盖主入口、四类相机与机械坐标标定、焊头偏移、旋转复核、公共对中对焦及独立方法差异。源码数值用于解释实现；本页没有执行设备、生成现场标定参数或验证硬件精度。公共坐标转换与视觉采图分别链接到已有图谱。',
       refs: ['cc-entry', 'cc-main', 'cc-focus', 'cc-offset-review'],
     },
   ],

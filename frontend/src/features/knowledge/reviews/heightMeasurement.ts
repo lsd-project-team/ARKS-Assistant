@@ -193,7 +193,7 @@ export const heightMeasurementGuide: SourceGuide = {
         {
           id: 'plane',
           title: '当前多点主链按均值调整 Z',
-          text: 'S1/S2 当前方法以结果均值减配置 Z 均值，整体平移坐标 Z，没有在这里拟合平面或按 XY 插值。旧 MeasureHeightOnEntity 在采集正文前已直接返回 Success；旧 Bond 偏移插值另见全局标定专题。',
+          text: 'S1/S2 当前方法以结果均值减配置 Z 均值，整体平移坐标 Z，没有在这里拟合平面或按 XY 插值。旧 MeasureHeightOnEntity 在采集正文前已直接返回 Success；旧 Bond 偏移插值另见全局标定图谱。',
           refs: ['mh-s1-production', 'mh-s2-production', 'mh-old-production'],
           outcomes: [],
         },

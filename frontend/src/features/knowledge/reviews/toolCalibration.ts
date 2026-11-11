@@ -283,7 +283,7 @@ export const toolCalibrationGuide: SourceGuide = {
   ],
   boundaries: [
     {
-      text: '覆盖当前独立校准、示教、未启用组合和旧全部顶针接口；没有执行设备动作或验证标定精度。公共坐标、视觉及安全运动在对应专题阅读，实际换嘴工艺和生产取片在所属专题继续展开。',
+      text: '覆盖当前独立校准、示教、未启用组合和旧全部顶针接口；没有执行设备动作或验证标定精度。公共坐标、视觉及安全运动在对应图谱阅读，实际换嘴工艺和生产取片在所属图谱继续展开。',
       refs: ['tc-page-combined', 'tc-nozzle-auto', 'tc-batch-old', 'tc-pick-core'],
     },
   ],

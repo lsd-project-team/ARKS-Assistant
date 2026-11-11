@@ -17,7 +17,7 @@ export const safeMotionGuide: SourceGuide = {
         step(
           'convert',
           '三维 G0 点先转机械目标',
-          '三维 MoveToG0Pos 先用 Bond 坐标的一层逆变换，再进入安全 XYZ；CameraMoveToG0Pos 先减焊头到相机偏移。完整父链转换统一见 G0 专题，不把这层接口当作所有坐标类型的通用变换。',
+          '三维 MoveToG0Pos 先用 Bond 坐标的一层逆变换，再进入安全 XYZ；CameraMoveToG0Pos 先减焊头到相机偏移。完整父链转换统一见 G0 图谱，不把这层接口当作所有坐标类型的通用变换。',
           ['sm-target-wrappers', 'sm-convert'],
         ),
         step(
@@ -235,7 +235,7 @@ export const safeMotionGuide: SourceGuide = {
         step(
           'stop',
           '停止状态不代替逐轴结束',
-          '普通 Stop 写状态并清部分信号/输出，没有逐轴 StopMove 或统一等待任务。急停另并行请求轴停止，再普通 Stop 并调用三个任务中止接口；这一层没有统一 join 或物料恢复，后续处理见恢复专题。',
+          '普通 Stop 写状态并清部分信号/输出，没有逐轴 StopMove 或统一等待任务。急停另并行请求轴停止，再普通 Stop 并调用三个任务中止接口；这一层没有统一 join 或物料恢复，后续处理见恢复图谱。',
           ['stop-state', 'stop-signals', 'stop-outputs', 'emergency-axes', 'emergency-tasks'],
         ),
       ],
@@ -243,7 +243,7 @@ export const safeMotionGuide: SourceGuide = {
   ],
   boundaries: [
     {
-      text: '覆盖目标转换、软限位、安全高度顺序、场景分派、圆限位/路径工具、插补及等待停止。图表依据当前实现，没有执行现场轴运动、测定安全距离或验证驱动精度。区域动作的完整工艺步骤在所属生产专题继续展开。',
+      text: '覆盖目标转换、软限位、安全高度顺序、场景分派、圆限位/路径工具、插补及等待停止。图表依据当前实现，没有执行现场轴运动、测定安全距离或验证驱动精度。区域动作的完整工艺步骤在所属生产图谱继续展开。',
       refs: ['sm-xyz', 'sm-limits', 'sm-uplook-dispatch', 'sm-gg-run', 'emergency-axes'],
     },
   ],

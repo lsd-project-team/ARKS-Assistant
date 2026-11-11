@@ -7,6 +7,9 @@ import type { Route } from '../routes';
 import { OriginalDiagram } from '../OriginalDiagram';
 import { ReaderFrame, DiagramNodeDetail, type DiagramNode } from './ReaderFrame';
 import { ReaderPageHeader } from './ReaderPageHeader';
+import { SourceGuidePanel } from '../SourceGuidePanel';
+import { guideForPage } from '../sourceGuides';
+import { GraphReadingNotes } from './GraphReadingNotes';
 
 export function CatalogReader({
   entry,
@@ -24,15 +27,29 @@ export function CatalogReader({
   const reading = diagramReadings[id];
   const graph = archifyData.graphs.find((graph) => graph.slug === id);
   const topic = topicForDiagram(id);
+  const readingNotes = topic?.diagrams[0] === id ? topic : undefined;
+  const guide = readingNotes && guideForPage(readingNotes.id);
   const initialNode = graph?.nodes.find(
     (node) => focusedSignal && node.signals.includes(focusedSignal),
+  );
+  const diagram = (
+    <ReaderFrame
+      title={title}
+      initialSelectedId={initialNode?.id}
+      detail={(node, select) => <CatalogNodeDetail node={node} select={select} graph={graph} />}
+    >
+      {entry.html ? (
+        <OriginalDiagram path={entry.html} title={title} theme={theme} />
+      ) : (
+        <div className="reader-loading">原图尚未生成</div>
+      )}
+    </ReaderFrame>
   );
   return (
     <>
       <ReaderPageHeader
         title={title}
         summary={reading.summary}
-        topic={topic}
         navigate={navigate}
         actions={
           graph && (
@@ -42,19 +59,14 @@ export function CatalogReader({
           )
         }
       />
-      <div className="unified-reader" data-reader-layout="diagram">
-        <ReaderFrame
-          title={title}
-          initialSelectedId={initialNode?.id}
-          detail={(node, select) => <CatalogNodeDetail node={node} select={select} graph={graph} />}
-        >
-          {entry.html ? (
-            <OriginalDiagram path={entry.html} title={title} theme={theme} />
-          ) : (
-            <div className="reader-loading">原图尚未生成</div>
-          )}
-        </ReaderFrame>
-      </div>
+      {guide ? (
+        <SourceGuidePanel page={guide.topic} overview={diagram} />
+      ) : (
+        <div className="unified-reader" data-reader-layout="diagram">
+          {diagram}
+        </div>
+      )}
+      {readingNotes && <GraphReadingNotes reading={readingNotes} includeSummary />}
     </>
   );
 }

@@ -28,7 +28,7 @@ const existingTopics: PresentationTopic[] = [
     ],
     exceptions: [
       '外部驱动和视觉运行环境的结果，需要结合现场配置确认。',
-      '总体图用于建立系统模型，局部失败与恢复方式在对应专题中展开。',
+      '总体图用于建立系统模型，局部失败与恢复方式在对应图谱中展开。',
     ],
     diagrams: [
       'zx2200-architecture',

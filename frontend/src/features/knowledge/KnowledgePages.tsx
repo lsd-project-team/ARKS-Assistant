@@ -7,14 +7,13 @@ import type { FlowchartCatalogEntry } from './types';
 import type { Route } from './routes';
 import { UiIcon } from './UiIcon';
 import { Select } from '../../shared/ui/Select';
-import { SourceGuidePanel } from './SourceGuidePanel';
 import { CoordinateReader } from './coordinates/CoordinateReader';
 import { AtlasReader } from './atlas/AtlasReader';
-import { functionalTopics } from './data/functionalTopics';
 import { CatalogReader } from './reader/CatalogReader';
 import { ReaderPageHeader } from './reader/ReaderPageHeader';
 import { manualById } from './data/manualCatalog';
-import { ManualCards, ManualReader } from './manuals/ManualReader';
+import { ManualReader } from './manuals/ManualReader';
+import { GraphReadingNotes } from './reader/GraphReadingNotes';
 const catalog = archifyData.flowchartCatalog.entries;
 const publicCatalog = catalog.filter((entry) => !isSupportingEntry(entry));
 export const diagramRoute = (id: string): Route =>
@@ -44,53 +43,14 @@ function PageHeader({
   );
 }
 
-export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Route) => void }) {
+function InlineDiagramReader({ id, navigate }: { id: string; navigate: (route: Route) => void }) {
   const topic = presentationTopics.find((topic) => topic.id === id);
-  if (!topic) return <Missing onBack={() => navigate({ kind: 'modules' })} />;
-  const entries = topic.diagrams
-    .map((id) => catalog.find((entry) => entry.id === id))
-    .filter((entry): entry is FlowchartCatalogEntry => Boolean(entry));
+  if (!topic) return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
   return (
     <>
-      <ReaderPageHeader
-        title={topic.title}
-        summary={topic.summary}
-        navigate={navigate}
-        actions={
-          <button className="button" onClick={() => navigate({ kind: 'modules' })}>
-            全部专题
-          </button>
-        }
-      />
-      {topic.id === 'g0' ? (
-        <CoordinateReader />
-      ) : functionalTopics.some((item) => item.id === topic.id) ? (
-        <AtlasReader page={topic.id} />
-      ) : (
-        <>
-          <SourceGuidePanel key={id} page={id} />
-          <section className="section">
-            <div className="section-heading">
-              <div>
-                <h2>建议阅读顺序</h2>
-                <p>先了解整体流程，再阅读具体条件与异常</p>
-              </div>
-            </div>
-            <div className="graph-grid">
-              {entries
-                .filter((entry) => !isSupportingEntry(entry) && !manualById(entry.id))
-                .map((entry) => (
-                  <CatalogCard
-                    key={entry.id}
-                    entry={entry}
-                    onOpen={() => navigate(diagramRoute(entry.id))}
-                  />
-                ))}
-            </div>
-          </section>
-        </>
-      )}
-      <ManualCards topic={id} navigate={navigate} />
+      <ReaderPageHeader title={topic.title} summary={topic.summary} navigate={navigate} />
+      {topic.id === 'g0' ? <CoordinateReader /> : <AtlasReader page={topic.id} />}
+      <GraphReadingNotes reading={topic} />
     </>
   );
 }
@@ -98,7 +58,6 @@ export function TopicDetail({ id, navigate }: { id: string; navigate: (route: Ro
 export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('all');
-  const [topic, setTopic] = useState('all');
   const [level, setLevel] = useState('all');
   const entries = publicCatalog.filter(
     (entry) =>
@@ -106,8 +65,6 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
         .toLowerCase()
         .includes(query.toLowerCase()) &&
       (type === 'all' || entry.type === type) &&
-      (topic === 'all' ||
-        presentationTopics.find((item) => item.id === topic)?.diagrams.includes(entry.id)) &&
       (level === 'all' || (level === 'main' ? Boolean(entry.chapter) : !entry.chapter)),
   );
   const main = entries.filter((entry) => entry.chapter);
@@ -118,16 +75,13 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
         title="找到你要了解的流程"
         actions={
           <>
-            <button className="button" onClick={() => navigate({ kind: 'modules' })}>
-              ← 功能与流程
-            </button>
             <span className="pill">
               {entries.length} / {publicCatalog.length} 张图
             </span>
           </>
         }
       >
-        先读 8 条生产主流程，再按问题进入专题图。
+        先读 8 条生产主流程，再按问题查找具体图谱，图和说明在同一页阅读。
       </PageHeader>
       <div className="filter-row">
         <input
@@ -140,14 +94,6 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
           <option value="all">全部层级</option>
           <option value="main">生产主流程</option>
           <option value="detail">深入阅读</option>
-        </Select>
-        <Select aria-label="阅读专题" value={topic} onValueChange={setTopic}>
-          <option value="all">全部专题</option>
-          {presentationTopics.map((topic) => (
-            <option key={topic.id} value={topic.id}>
-              {topic.title}
-            </option>
-          ))}
         </Select>
         <Select aria-label="图谱类型" value={type} onValueChange={setType}>
           <option value="all">全部类型</option>
@@ -195,7 +141,6 @@ export function GraphAtlas({ navigate }: { navigate: (route: Route) => void }) {
             className="button"
             onClick={() => {
               setQuery('');
-              setTopic('all');
               setType('all');
               setLevel('all');
             }}
@@ -235,7 +180,6 @@ function CatalogCard({ entry, onOpen }: { entry: FlowchartCatalogEntry; onOpen: 
       </div>
       <h3>{displayDiagramTitle(entry.id, entry.title)}</h3>
       <p className="diagram-question">{diagramReadings[entry.id]?.summary}</p>
-      <div className="card-topic">{topicForDiagram(entry.id)?.title}</div>
       <div className="card-actions">
         <button className="graph-read-button" onClick={onOpen}>
           查看图谱
@@ -264,19 +208,22 @@ export function DiagramDetail({
     return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
   if (manualById(id))
     return <ManualReader id={id} section={section} navigate={navigate} theme={theme} />;
-  if (entry.inlineTopic) return <TopicDetail id={entry.inlineTopic} navigate={navigate} />;
   const topic = topicForDiagram(id);
   const related = publicCatalog.filter(
     (item) => item.id !== id && topic?.diagrams.includes(item.id),
   );
   return (
     <>
-      <CatalogReader
-        entry={entry}
-        focusedSignal={focusedSignal}
-        navigate={navigate}
-        theme={theme}
-      />
+      {entry.inlineTopic ? (
+        <InlineDiagramReader id={entry.inlineTopic} navigate={navigate} />
+      ) : (
+        <CatalogReader
+          entry={entry}
+          focusedSignal={focusedSignal}
+          navigate={navigate}
+          theme={theme}
+        />
+      )}
       {related.length > 0 && (
         <section className="section">
           <div className="section-heading">

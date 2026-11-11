@@ -203,7 +203,7 @@ export const productCoordinatesGuide: SourceGuide = {
   ],
   boundaries: [
     {
-      text: '覆盖产品层级、普通与异形展开、定位计算和写回、工位偏移及焊点补偿。图文说明当前静态实现；公共坐标转换见 G0，视觉采集和报警另见视觉专题，设备实际定位与运动未在这里运行。',
+      text: '覆盖产品层级、普通与异形展开、定位计算和写回、工位偏移及焊点补偿。图文说明当前静态实现；公共坐标转换见 G0，视觉采集和报警另见视觉图谱，设备实际定位与运动未在这里运行。',
       refs: ['pc-init', 'pc-update', 'pc-compensate', 'g0-forward'],
     },
   ],

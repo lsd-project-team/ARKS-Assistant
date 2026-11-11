@@ -3,8 +3,7 @@ import { NavigationIcon } from '../../shared/ui/NavigationIcon';
 import { useAppearance } from '../settings/lib/appearance';
 import { routeNames, type Route } from './routes';
 import { WorkspaceHeading } from '../../app/layouts/WorkspaceHeader';
-import { GraphAtlas, DiagramDetail, TopicDetail, diagramRoute } from './KnowledgePages';
-import { ShowcaseHome } from './PresentationViews';
+import { GraphAtlas, DiagramDetail } from './KnowledgePages';
 import './legacy-styles.css';
 
 export default function KnowledgeWorkspace({
@@ -47,17 +46,8 @@ export default function KnowledgeWorkspace({
         />
       );
       break;
-    case 'topic':
-      page = <TopicDetail key={route.id} id={route.id} navigate={navigate} />;
-      break;
     default:
-      page = (
-        <ShowcaseHome
-          onTopic={(id) => navigate({ kind: 'topic', id })}
-          onDiagram={(id) => navigate(diagramRoute(id))}
-          onAllDiagrams={() => navigate({ kind: 'graphs' })}
-        />
-      );
+      page = <GraphAtlas navigate={navigate} />;
   }
   return (
     <section className="knowledge-workspace" aria-label="功能与流程" ref={scroller}>

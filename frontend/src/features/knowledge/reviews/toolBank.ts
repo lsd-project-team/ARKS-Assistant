@@ -234,7 +234,7 @@ export const toolBankGuide: SourceGuide = {
     {
       id: 'nb-geometry',
       title: '几何与工具助手',
-      text: '高度和对中的计算复用公共校准专题，这里说明工具选择、几何和完成边界。',
+      text: '高度和对中的计算复用公共校准图谱，这里说明工具选择、几何和完成边界。',
       refs: [
         'nb-program-assist',
         'nb-geometry-entry',
@@ -577,7 +577,7 @@ export const toolBankGuide: SourceGuide = {
       refs: ['nb-change', 'nb-test-loop'],
     },
     {
-      text: '高度和对中的具体采样复用公共校准专题；G0转换与安全运动分别由对应专题展开，避免重复说明。',
+      text: '高度和对中的具体采样复用公共校准图谱；G0转换与安全运动分别由对应图谱展开，避免重复说明。',
       refs: ['nb-geometry-entry', 'nb-safe-z'],
     },
   ],

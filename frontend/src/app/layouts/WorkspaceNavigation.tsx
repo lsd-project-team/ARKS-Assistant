@@ -38,7 +38,7 @@ export function WorkspaceNavigation({
   }, [compact]);
   // 新对话是新建动作，不代表当前页面；所有聊天入口都不高亮它。
   const active =
-    handover?.active || actionTiming?.active || route.kind === 'chat' ? undefined : 'modules';
+    handover?.active || actionTiming?.active || route.kind === 'chat' ? undefined : 'graphs';
   return (
     <aside
       className="app-navigation"
@@ -85,7 +85,7 @@ export function WorkspaceNavigation({
         {(
           [
             { kind: 'chat', label: '新对话' },
-            { kind: 'modules', label: '功能与流程' },
+            { kind: 'graphs', label: '功能与流程' },
           ] as const
         ).map((item) => (
           <button
