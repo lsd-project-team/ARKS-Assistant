@@ -10,7 +10,7 @@ from app.main import create_app
 from app.modules.code_work.files import PROJECT
 from tests.helpers.accounts import login_second, sign_in
 from tests.helpers.api_paths import project_api
-from tests.helpers.code_work import FILE, make_work
+from tests.helpers.code_work import FILE, configure_project_environment, make_work
 
 
 def prepare(client, base=None):
@@ -116,11 +116,16 @@ def test_merge_api_requires_current_verified_preview_confirmation_and_can_rollba
 def test_normal_user_can_review_but_cannot_write_original_and_other_user_cannot_read(
     services, tmp_path
 ):
-    _, _, original = make_work(services, tmp_path)
+    service, _, original = make_work(services, tmp_path)
+    source = service.environment.load().source_root
     with TestClient(create_app(services[0])) as client:
         sign_in(client, "user")
         project = client.post("/api/projects", json={"name": "私人代码副本"})
         assert project.status_code == 201, project.text
+        # 项目不再继承全局执行环境，由管理员为该项目单独绑定源码。
+        sign_in(client, "admin")
+        configure_project_environment(client, project.json()["id"], source)
+        sign_in(client, "user")
         prefix = prepare(client, f"/api/p/{project.json()['id']}")
         plan = client.post(prefix + "/merge/preview", json={}).json()
         endpoint = prefix + "/merge/" + plan["id"]

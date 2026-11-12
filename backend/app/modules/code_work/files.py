@@ -14,8 +14,35 @@ from app.modules.source_analysis.workspace import IGNORED, MAX_FILE_BYTES, decod
 EXCLUDED = IGNORED | {".svn", "Settings", "SimulationData", "tags", "branches"}
 MAX_COPY_BYTES = 4_000_000_000
 MAX_COPY_FILES = 30_000
+SIMULATION_ENTRY = "Infrastructure/Simulation/OriginalSimulation.cs"
+# 旧版固定项目名，只保留给既有副本和历史测试识别；运行路径按目录结构识别主工程。
 PROJECT = "AKRS.ZX2200"
 PROTECTED = {"Program.cs"}
+
+
+def main_project(root):
+    """按目录结构识别主工程，不再把某个项目名写死在代码里。"""
+    base = Path(root)
+    if not base.is_dir():
+        raise ValueError("源码目录不存在")
+    found = [
+        directory.name
+        for directory in base.iterdir()
+        if directory.is_dir()
+        and not is_link(directory)
+        and (directory / SIMULATION_ENTRY).is_file()
+        and (directory / f"{directory.name}.csproj").is_file()
+    ]
+    if not found:
+        raise ValueError(
+            "源码目录需包含主工程：工程目录下需有同名 .csproj 和 "
+            "Infrastructure/Simulation/OriginalSimulation.cs"
+        )
+    if len(found) > 1:
+        raise ValueError(
+            "源码目录包含多个主工程，请每个项目只绑定一个：" + "、".join(sorted(found))
+        )
+    return found[0]
 
 
 def atomic_bytes(path, data):
@@ -38,13 +65,15 @@ def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def editable_path(root, value):
+def editable_path(root, value, project=None):
     path = safe_path(root, value)
     relative = path.relative_to(Path(root).resolve())
-    # 首版固定仿真入口、工程与驱动，编辑范围限于原主工程的业务 C#。
+    # 已创建副本可带固定主工程；恢复中的空树按目录结构识别。
+    project = project or main_project(root)
+    # 编辑范围限于原主工程的业务 C#；启动入口、仿真驱动和工程配置保持固定。
     if (
         not relative.parts
-        or relative.parts[0] != PROJECT
+        or relative.parts[0] != project
         or path.suffix.lower() != ".cs"
         or len(relative.parts) < 2
         or relative.parts[1].lower() in {"properties", "infrastructure"}
@@ -120,25 +149,26 @@ def code_manifest(root):
     return result
 
 
-def copy_project_outputs(source, destination, budget):
+def copy_project_outputs(source, destination, budget, project=None):
     """保留项目引用的离线输出路径；只复制依赖程序自身，不复制重复的依赖树。"""
     source = Path(source).resolve()
+    project = project or main_project(source)
     namespace = {"m": "http://schemas.microsoft.com/developer/msbuild/2003"}
-    main = source / PROJECT
-    document = ET.parse(main / f"{PROJECT}.csproj")
+    main = source / project
+    document = ET.parse(main / f"{project}.csproj")
     for item in document.findall(".//m:ProjectReference[@Include]", namespace):
-        project = (main / item.attrib["Include"].replace("\\", "/")).resolve()
-        if not project.is_relative_to(source):
+        reference = (main / item.attrib["Include"].replace("\\", "/")).resolve()
+        if not reference.is_relative_to(source):
             raise ValueError("项目引用超出仿真源码目录")
-        if not project.is_file():
+        if not reference.is_file():
             continue  # 保留原工程的缺失引用，由构建日志报告。
-        properties = ET.parse(project)
-        assembly = properties.findtext(".//m:AssemblyName", project.stem, namespace)
+        properties = ET.parse(reference)
+        assembly = properties.findtext(".//m:AssemblyName", reference.stem, namespace)
         kind = properties.findtext(".//m:OutputType", "Library", namespace)
         name = assembly + (".dll" if kind.lower() == "library" else ".exe")
         if Path(name).name != name or "\\" in name:
             raise ValueError("依赖程序集名称不能包含路径")
-        relative = project.parent.relative_to(source) / "bin/Debug" / name
+        relative = reference.parent.relative_to(source) / "bin/Debug" / name
         origin = source / relative
         if not origin.is_file():
             origin = main / "bin/Debug" / name
@@ -156,18 +186,19 @@ def copy_project_outputs(source, destination, budget):
 def snapshot(source, destination):
     budget = [0, 0]
     copy_tree(source, destination, budget)
-    main = Path(source) / PROJECT
-    copy_tree(main / "bin/Debug", destination / PROJECT / "bin/Debug", budget)
-    copy_project_outputs(source, destination, budget)
+    project = main_project(source)
+    main = Path(source) / project
+    copy_tree(main / "bin/Debug", destination / project / "bin/Debug", budget)
+    copy_project_outputs(source, destination, budget, project)
     for name in (
-        f"{PROJECT}.csproj.nuget.g.props",
-        f"{PROJECT}.csproj.nuget.g.targets",
+        f"{project}.csproj.nuget.g.props",
+        f"{project}.csproj.nuget.g.targets",
         "project.assets.json",
         "project.nuget.cache",
     ):
         origin = main / "obj" / name
         if origin.is_file():
-            atomic_bytes(destination / PROJECT / "obj" / name, origin.read_bytes())
+            atomic_bytes(destination / project / "obj" / name, origin.read_bytes())
 
 
 def input_manifest(root):

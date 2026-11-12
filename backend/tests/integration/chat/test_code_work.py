@@ -16,7 +16,7 @@ from app.main import create_app
 from app.modules.chat.schemas import SourceOptions
 from tests.helpers.accounts import sign_in
 from tests.helpers.api_paths import project_api
-from tests.helpers.code_work import FILE, make_work
+from tests.helpers.code_work import FILE, configure_project_environment, make_work
 from tests.helpers.models import DeterministicModel
 
 
@@ -229,13 +229,19 @@ def test_config_requires_admin_and_missing_thread_is_not_created(services):
 @pytest.mark.authentication
 def test_other_account_cannot_read_edit_verify_or_export_work(work, services):
     service, _, _ = work
+    source = service.environment.load().source_root
     with TestClient(create_app(services[0])) as client:
         sign_in(client, "user")
         project = client.post("/api/projects", json={"name": "私有代码工作"}).json()
         base = f"/api/p/{project['id']}"
+        # 每个项目单独配置源码与编译环境，管理员配置后才能创建副本。
+        sign_in(client, "admin")
+        configure_project_environment(client, project["id"], source)
+        sign_in(client, "user")
         thread = client.post(base + "/threads", json={"title": "私人副本"}).json()["id"]
         prefix = base + f"/threads/{thread}/code-work"
         assert client.post(prefix).status_code == 200
+        assert client.get(base + "/settings/code-work").status_code == 403
         assert client.get("/api/settings/code-work").status_code == 403
         assert client.put("/api/settings/code-work", json={}).status_code == 403
         # 切换另一名普通用户；已知项目和对话ID也不能绕过归属。

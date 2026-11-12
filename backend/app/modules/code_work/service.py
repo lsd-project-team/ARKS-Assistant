@@ -16,12 +16,12 @@ from app.modules.code_work import history
 from app.modules.code_work.changes import change_summary, file_difference
 from app.modules.code_work.environment import CodeEnvironment
 from app.modules.code_work.files import (
-    PROJECT,
     atomic_bytes,
     code_manifest,
     editable_path,
     encode_text,
     input_manifest,
+    main_project,
     read_json,
     save_json,
     snapshot,
@@ -47,7 +47,8 @@ def backup_guard(data):
 class CodeWork:
     def __init__(self, paths, repository):
         self.paths, self.repository = paths, repository
-        self.environment = CodeEnvironment(paths.data)
+        project_id = getattr(repository, "project_id", None) or repository.workspace_id
+        self.environment = CodeEnvironment(paths.data, project_id)
         # 项目切换/目录改绑可装配新 runtime；运行句柄仍以同一数据目录共享。
         with _lock:
             self.tasks, self.stops = _jobs.setdefault(str(paths.data.resolve()), ({}, {}))
@@ -182,11 +183,12 @@ class CodeWork:
                 if manifest != code_manifest(source):
                     raise ValueError("创建期间原源码发生变化，请重试以固定同一版本")
                 locked = {}
+                project = main_project(work)
                 for path in [
-                    work / PROJECT / "Program.cs",
-                    work / PROJECT / f"{PROJECT}.csproj",
-                    work / PROJECT / "App.config",
-                    *(work / PROJECT / "Infrastructure/Simulation").glob("*.cs"),
+                    work / project / "Program.cs",
+                    work / project / f"{project}.csproj",
+                    work / project / "App.config",
+                    *(work / project / "Infrastructure/Simulation").glob("*.cs"),
                 ]:
                     locked[path.relative_to(work).as_posix()] = digest(path.read_bytes())
                 state = {
@@ -195,6 +197,7 @@ class CodeWork:
                     "created_at": now_iso(),
                     "source_version": digest(json.dumps(manifest, sort_keys=True).encode()),
                     "source_path": str(source.resolve()),
+                    "project": project,
                     "baseline": manifest,
                     "locked": locked,
                     "changes": {},
@@ -227,7 +230,11 @@ class CodeWork:
                 # 上次替换完成、写就绪标记前中断；确认编辑仍在后才清理旧树。
                 for path, item in state["changes"].items():
                     if (
-                        digest(editable_path(folder / "source", path).read_bytes())
+                        digest(
+                            editable_path(
+                                folder / "source", path, state.get("project") or None
+                            ).read_bytes()
+                        )
                         != item["version"]
                     ):
                         raise ValueError("副本恢复尚未完成，请核对保留的 source.previous")
@@ -247,10 +254,12 @@ class CodeWork:
                     "当前仿真源码或依赖与副本来源版本不同，修改已保留；请选择同版本源码"
                 )
             for path, item in state["changes"].items():
-                data = editable_path(folder / "source", path).read_bytes()
+                data = editable_path(
+                    folder / "source", path, state.get("project") or None
+                ).read_bytes()
                 if digest(data) != item["version"]:
                     raise ValueError("恢复的修改文件指纹不符，不能重建验证副本")
-                atomic_bytes(editable_path(staging, path), data)
+                atomic_bytes(editable_path(staging, path, state.get("project") or None), data)
             # 备份中的 source 只有已保存的 C#；先保留旧树，失败时可以恢复。
             (folder / "source").rename(previous)
             try:
@@ -302,7 +311,7 @@ class CodeWork:
         with _lock:
             folder, state = self._state(thread_id)
             self._ensure_idle(thread_id, state)
-            file = editable_path(folder / "source", path)
+            file = editable_path(folder / "source", path, state.get("project") or None)
             relative = file.relative_to(folder / "source").as_posix()
             data = file.read_bytes() if file.is_file() else b""
             current_version = digest(data) if file.is_file() else ""
@@ -357,19 +366,19 @@ class CodeWork:
     def diff(self, thread_id, path, run_id=""):
         with _lock:
             folder, state = self._state(thread_id)
-            file = editable_path(folder / "source", path)
+            file = editable_path(folder / "source", path, state.get("project") or None)
             relative = file.relative_to(folder / "source").as_posix()
             if run_id:
                 return history.turn_diff(folder, state, run_id, relative)
             if relative not in state["changes"]:
                 raise FileNotFoundError("此文件没有修改")
-            return file_difference(folder, relative)
+            return file_difference(folder, relative, project=state.get("project") or None)
 
     def revert(self, thread_id, path, version):
         with _lock:
             folder, state = self._state(thread_id)
             self._ensure_idle(thread_id, state)
-            file = editable_path(folder / "source", path)
+            file = editable_path(folder / "source", path, state.get("project") or None)
             relative = file.relative_to(folder / "source").as_posix()
             if relative not in state["changes"] or digest(file.read_bytes()) != version:
                 raise ValueError("文件版本已变化，请刷新差异后重试")
@@ -590,7 +599,9 @@ class CodeWork:
             with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
                 patches = []
                 for path in sorted(state["changes"]):
-                    data = editable_path(folder / "source", path).read_bytes()
+                    data = editable_path(
+                        folder / "source", path, state.get("project") or None
+                    ).read_bytes()
                     if digest(data) != state["changes"][path]["version"]:
                         raise ValueError("副本文件被外部修改，请先核对代码版本")
                     archive.writestr(path, data)

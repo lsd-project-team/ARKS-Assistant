@@ -5,7 +5,7 @@ from difflib import SequenceMatcher
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
 
-from app.modules.code_work.files import PROJECT, encode_text
+from app.modules.code_work.files import encode_text
 from app.modules.source_analysis.workspace import decode_source
 
 
@@ -52,7 +52,7 @@ def merge(base, source, workspace):
     return encode_text("".join(result), source)
 
 
-def include_files(data, files):
+def include_files(data, files, project):
     """只给经典C#项目补充缺少的Compile项，保留原编码、换行和排版。"""
     text = decode_source(data)[0]
     root = ET.fromstring(text)
@@ -67,9 +67,9 @@ def include_files(data, files):
         if item.tag.rsplit("}", 1)[-1] == "Compile"
     }
     missing = [
-        path[len(PROJECT) + 1 :]
+        path[len(project) + 1 :]
         for path in files
-        if path.startswith(PROJECT + "/") and path[len(PROJECT) + 1 :].lower() not in included
+        if path.startswith(project + "/") and path[len(project) + 1 :].lower() not in included
     ]
     if not missing:
         return data

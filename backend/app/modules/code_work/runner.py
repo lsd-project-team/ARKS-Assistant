@@ -12,7 +12,12 @@ from threading import Semaphore
 from app.core.identifiers import now_iso
 from app.infrastructure.storage.files import digest, safe_path
 from app.modules.code_work.checks import prepare_harness, read_report, validation_version
-from app.modules.code_work.files import PROJECT, atomic_bytes, code_manifest, save_json
+from app.modules.code_work.files import (
+    atomic_bytes,
+    code_manifest,
+    main_project,
+    save_json,
+)
 
 _capacity = Semaphore(1)
 MAX_LOG_BYTES = 8_000_000
@@ -121,7 +126,8 @@ def verify_workspace(service, thread_id, folder, state, stop):
                     shutil.rmtree(previous)
                 except OSError:
                     job["cleanup_warning"] = "旧构建输出被占用，本次保留；不影响新版本验证"
-        project = work / PROJECT
+        project_name = main_project(work)
+        project = work / project_name
         output = root / "Simulation"
 
         def step(name, args, *, report=None, pattern=None):
@@ -174,25 +180,25 @@ def verify_workspace(service, thread_id, folder, state, stop):
             "Target",
             Name="IncludeNewWorkFiles",
             BeforeTargets="CoreCompile",
-            Condition=f"'$(MSBuildProjectName)' == '{PROJECT}'",
+            Condition=f"'$(MSBuildProjectName)' == '{project_name}'",
         )
         group = ET.SubElement(target, "ItemGroup")
-        project_document = ET.parse(project / f"{PROJECT}.csproj")
+        project_document = ET.parse(project / f"{project_name}.csproj")
         included = {
             item.attrib.get("Include", "").replace("\\", "/").lower()
             for item in project_document.iter()
             if item.tag.rsplit("}", 1)[-1] == "Compile"
         }
         for path, change in state["changes"].items():
-            if change["kind"] == "added" and path[len(PROJECT) + 1 :].lower() not in included:
+            if change["kind"] == "added" and path[len(project_name) + 1 :].lower() not in included:
                 ET.SubElement(group, "Compile", Include=str(safe_path(work, path)))
         import_path = root / "new-files.targets"
         ET.ElementTree(imports).write(import_path, encoding="utf-8", xml_declaration=True)
         obj = root / "obj"
         obj.mkdir()
         for name in (
-            f"{PROJECT}.csproj.nuget.g.props",
-            f"{PROJECT}.csproj.nuget.g.targets",
+            f"{project_name}.csproj.nuget.g.props",
+            f"{project_name}.csproj.nuget.g.targets",
             "project.assets.json",
             "project.nuget.cache",
         ):
@@ -203,7 +209,7 @@ def verify_workspace(service, thread_id, folder, state, stop):
             "编译修改后的原工程",
             [
                 compiler,
-                str(project / f"{PROJECT}.csproj"),
+                str(project / f"{project_name}.csproj"),
                 "/t:Build",
                 "/nologo",
                 "/v:minimal",
@@ -221,7 +227,7 @@ def verify_workspace(service, thread_id, folder, state, stop):
                 f"/p:CustomBeforeMicrosoftCommonTargets={import_path}",
             ],
         )
-        executable = output / f"{PROJECT}.exe"
+        executable = output / f"{project_name}.exe"
         if not executable.is_file():
             raise ValueError("编译没有生成原工程程序，未执行仿真")
         step(

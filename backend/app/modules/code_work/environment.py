@@ -1,4 +1,4 @@
-"""管理员指定可信本机 Simulation 工程；普通对话不能提交执行命令。"""
+"""按项目保存可信本机源码与编译环境；普通对话不能提交执行命令。"""
 
 import os
 import shutil
@@ -8,9 +8,10 @@ from threading import RLock
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.modules.code_work.files import PROJECT, read_json, save_json
+from app.modules.code_work.files import main_project, read_json, save_json
 
 _lock = RLock()
+FILE_NAME = "code-work.local.json"
 
 
 class EnvironmentWrite(BaseModel):
@@ -21,13 +22,45 @@ class EnvironmentWrite(BaseModel):
     version: str = ""
 
 
+class ProjectProfile(EnvironmentWrite):
+    project: str = Field(default="", max_length=200)
+
+
+def migrate_legacy(data, project_id):
+    """旧版只有一份全局执行环境；升级时归到默认项目，其他项目不继承。"""
+    path = Path(data) / FILE_NAME
+    if not path.exists() or not project_id:
+        return
+    raw = read_json(path)
+    if not isinstance(raw, dict) or "projects" in raw:
+        return
+    entry = {key: raw[key] for key in ("source_root", "msbuild", "timeout_seconds") if key in raw}
+    if entry.get("source_root"):
+        save_json(path, {"projects": {project_id: entry}})
+
+
 class CodeEnvironment:
-    def __init__(self, data):
-        self.path = Path(data) / "code-work.local.json"
+    def __init__(self, data, project_id=None):
+        self.path = Path(data) / FILE_NAME
+        self.project_id = project_id or "default"
+
+    def _projects(self):
+        if not self.path.exists():
+            return {}
+        raw = read_json(self.path)
+        if not isinstance(raw, dict):
+            return {}
+        projects = raw.get("projects")
+        return projects if isinstance(projects, dict) else {}
 
     def load(self):
-        value = read_json(self.path) if self.path.exists() else {}
-        return EnvironmentWrite.model_validate(value)
+        value = ProjectProfile.model_validate(self._projects().get(self.project_id) or {})
+        if not value.project and value.source_root:
+            try:
+                value.project = main_project(value.source_root)
+            except (OSError, ValueError):
+                value.project = ""
+        return value
 
     def version(self):
         from app.infrastructure.storage.files import digest
@@ -35,30 +68,43 @@ class CodeEnvironment:
         return digest(self.path.read_bytes() if self.path.exists() else b"")
 
     def public(self):
-        return {**self.load().model_dump(), "version": self.version(), "windows": os.name == "nt"}
+        return {
+            **self.load().model_dump(),
+            "version": self.version(),
+            "windows": os.name == "nt",
+        }
 
     def save(self, body):
         with _lock:
             if body.version != self.version():
                 raise ValueError("执行环境已更新，请刷新后重试")
+            source, project = "", ""
             if body.source_root:
                 root = Path(body.source_root).expanduser()
                 if not root.is_absolute() or not root.is_dir():
-                    raise ValueError("请选择包含 AKRS.ZX2200 工程的本机绝对目录")
-                required = root / PROJECT / "Infrastructure/Simulation/OriginalSimulation.cs"
-                if not required.is_file() or not (root / PROJECT / f"{PROJECT}.csproj").is_file():
-                    raise ValueError("来源缺少原工程 Simulation 实现，请选择它的 trunk 目录")
-                body.source_root = str(root.resolve())
-            if body.msbuild:
-                compiler = Path(body.msbuild)
+                    raise ValueError("请填写本机已存在的绝对源码目录")
+                # 主工程按目录结构识别，不再要求某个固定项目名。
+                project = main_project(root)
+                source = str(root.resolve())
+            variant = body.msbuild
+            if variant:
+                compiler = Path(variant)
                 if (
                     not compiler.is_absolute()
                     or not compiler.is_file()
                     or compiler.name.lower() != "msbuild.exe"
                 ):
                     raise ValueError("MSBuild 必须是本机 MSBuild.exe 的绝对路径")
-                body.msbuild = str(compiler.resolve())
-            save_json(self.path, body.model_dump(exclude={"version"}))
+                variant = str(compiler.resolve())
+            entry = {
+                "source_root": source,
+                "project": project,
+                "msbuild": variant,
+                "timeout_seconds": body.timeout_seconds,
+            }
+            projects = dict(self._projects())
+            projects[self.project_id] = entry
+            save_json(self.path, {"projects": projects})
             return self.public()
 
     def compiler(self):

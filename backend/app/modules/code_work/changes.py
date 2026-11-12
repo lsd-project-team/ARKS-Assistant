@@ -6,8 +6,8 @@ from app.modules.code_work.history import difference
 from app.modules.code_work.review import hunks
 
 
-def file_difference(folder, path, *, include_hunks=True):
-    file = editable_path(folder / "source", path)
+def file_difference(folder, path, *, include_hunks=True, project=None):
+    file = editable_path(folder / "source", path, project)
     original = safe_path(folder, "baseline/" + path)
     before = original.read_bytes() if original.is_file() else b""
     data = file.read_bytes()
@@ -20,7 +20,9 @@ def file_difference(folder, path, *, include_hunks=True):
 def change_summary(folder, state):
     files = []
     for path, item in sorted(state["changes"].items()):
-        difference = file_difference(folder, path, include_hunks=False)
+        difference = file_difference(
+            folder, path, include_hunks=False, project=state.get("project") or None
+        )
         if difference["version"] != item["version"]:
             raise ValueError("副本文件被外部修改，请先打开代码修改面板核对")
         files.append(

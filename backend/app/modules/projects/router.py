@@ -12,6 +12,7 @@ from app.modules.action_timing import router as action_timing
 from app.modules.auth.ownership import require_source, require_thread
 from app.modules.auth.router import require_admin
 from app.modules.chat import router as conversations
+from app.modules.code_work.router import environment_router as code_work_environment
 from app.modules.knowledge import router as knowledge
 from app.modules.memory import router as memories
 from app.modules.projects.association import repository_name
@@ -246,6 +247,8 @@ class ProjectDispatcher:
             modules = [workspace, conversations, memories, knowledge, action_timing]
             for module in modules:
                 app.include_router(module.create_router(services))
+            # 每个项目独立管理自己的源码与编译环境，互不继承。
+            app.include_router(code_work_environment(services))
             self.apps[project_id] = (services, app)
         app = self.apps[project_id][1]
         scoped = {

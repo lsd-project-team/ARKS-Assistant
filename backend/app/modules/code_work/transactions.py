@@ -4,14 +4,15 @@ import re
 from pathlib import Path
 
 from app.infrastructure.storage.files import digest, is_link, safe_path
-from app.modules.code_work.files import PROJECT, atomic_bytes, read_json, save_json
+from app.modules.code_work.files import atomic_bytes, main_project, read_json, save_json
 from app.modules.code_work.history import blob, content
 
 
 def target_file(root, relative):
     path = safe_path(root, relative)
-    if not relative.startswith(PROJECT + "/") or not (
-        path.suffix.lower() == ".cs" or relative == f"{PROJECT}/{PROJECT}.csproj"
+    project = main_project(root)
+    if not relative.startswith(project + "/") or not (
+        path.suffix.lower() == ".cs" or relative == f"{project}/{project}.csproj"
     ):
         raise ValueError("合并只能写入已预览的主工程源码及编译项")
     return path

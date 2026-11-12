@@ -145,6 +145,7 @@ export interface WorkSummary {
 }
 export interface WorkEnvironment {
   source_root: string;
+  project: string;
   msbuild: string;
   timeout_seconds: number;
   version: string;

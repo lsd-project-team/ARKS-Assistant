@@ -139,7 +139,7 @@ def test_new_file_is_in_project_and_rollback_restores_project(services, tmp_path
     assert any(item["kind"] == "project" for item in plan["files"])
     work.merge_apply(thread, plan["id"], {})
     assert b"Main\\Added.cs" in project.read_bytes()
-    assert include_files(project.read_bytes(), [added]) == project.read_bytes()
+    assert include_files(project.read_bytes(), [added], PROJECT) == project.read_bytes()
     work.merge_rollback(thread, plan["id"], {})
     assert project.read_bytes() == before and not (original / "Main/Added.cs").exists()
     assert work.status(thread)["files"][0]["path"] == added
@@ -255,5 +255,5 @@ def test_interrupted_write_preserves_external_edit_and_requires_versioned_acknow
 
 
 def test_project_compile_item_escapes_xml_filename():
-    project = include_files(b"<Project />", [f"{PROJECT}/Main/A&B.cs"])
+    project = include_files(b"<Project />", [f"{PROJECT}/Main/A&B.cs"], PROJECT)
     assert b"A&amp;B.cs" in project

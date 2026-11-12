@@ -79,6 +79,13 @@ class Projects:
         self.account_defaults = AccountProjects(self)
 
     def initialize(self):
+        from app.modules.code_work.environment import migrate_legacy
+
+        # 旧版执行环境只有一份，升级时归到默认项目；其他项目需要各自配置。
+        try:
+            migrate_legacy(self.base.paths.data, self.default_id)
+        except (OSError, ValueError):
+            pass
         with self.database.session.begin() as session:
             if not session.get(Project, self.default_id):
                 session.add(

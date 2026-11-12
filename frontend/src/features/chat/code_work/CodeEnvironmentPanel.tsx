@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, jsonBody } from '../../../app/api/client';
+import { useWorkspace } from '../../../app/state/store';
 import { Button, ErrorText } from '../../../shared/ui/ui';
 import type { WorkEnvironment } from './types';
 import './code-work.css';
@@ -11,6 +12,8 @@ export function CodeEnvironmentPanel({
   onDirtyChange?: (dirty: boolean) => void;
 }) {
   const cache = useQueryClient();
+  const projectId = useWorkspace((state) => state.projectId);
+  const key = ['code-work-environment', projectId ?? ''];
   const [saved, setSaved] = useState(false);
   const dirtyChanged = useCallback(
     (dirty: boolean) => {
@@ -20,7 +23,7 @@ export function CodeEnvironmentPanel({
     [onDirtyChange],
   );
   const query = useQuery({
-    queryKey: ['code-work-environment'],
+    queryKey: key,
     queryFn: () => api<WorkEnvironment>('/settings/code-work'),
   });
   if (!query.data) return <ErrorText error={query.error} />;
@@ -32,7 +35,7 @@ export function CodeEnvironmentPanel({
       saved={saved}
       onSaved={(value) => {
         setSaved(true);
-        cache.setQueryData(['code-work-environment'], value);
+        cache.setQueryData(key, value);
         void cache.invalidateQueries({ queryKey: ['code-work'] });
       }}
     />
@@ -80,16 +83,20 @@ function EnvironmentForm({
         }}
       >
         <p className="muted">
-          选择原工程 Simulation 所在的 trunk。副本运行使用本机 Windows 权限，需使用可信源码与依赖。
+          为当前项目单独绑定本机源码与编译环境，各项目互不继承。副本运行使用本机 Windows
+          权限，需使用可信源码与依赖。
         </p>
         <label>
           仿真源码目录
           <input
             value={draft.source_root}
             onChange={(event) => setDraft({ ...draft, source_root: event.target.value })}
-            placeholder="包含 AKRS.ZX2200 工程的绝对目录"
+            placeholder="包含主工程的源码根目录"
           />
         </label>
+        {environment.project && (
+          <p className="muted">已识别主工程：{environment.project}</p>
+        )}
         <label>
           MSBuild.exe
           <input

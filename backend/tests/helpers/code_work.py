@@ -7,6 +7,19 @@ from app.modules.code_work.service import CodeWork
 FILE = f"{PROJECT}/Main/Example.cs"
 
 
+def configure_project_environment(client, project_id, source):
+    """管理员为指定项目单独绑定源码；项目之间不再共享一份执行环境。"""
+    base = f"/api/p/{project_id}"
+    current = client.get(base + "/settings/code-work")
+    assert current.status_code == 200, current.text
+    response = client.put(
+        base + "/settings/code-work",
+        json={"source_root": str(source), "version": current.json()["version"]},
+    )
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
 def make_work(services, tmp_path):
     paths, _, _, repository, *_ = services
     source = tmp_path / "simulation-source"

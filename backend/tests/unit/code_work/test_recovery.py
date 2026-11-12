@@ -33,7 +33,7 @@ def test_snapshot_preserves_project_reference_output_locations(tmp_path):
     )
     (main / "bin/Debug").mkdir(parents=True)
     (main / "bin/Debug/Dependency.dll").write_bytes(b"pinned-dependency")
-    copy_project_outputs(source, destination, [0, 0])
+    copy_project_outputs(source, destination, [0, 0], PROJECT)
     assert (
         destination / "Dependency/bin/Debug/Dependency.dll"
     ).read_bytes() == b"pinned-dependency"

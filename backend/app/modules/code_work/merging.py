@@ -15,12 +15,12 @@ from app.core.identifiers import now_iso
 from app.infrastructure.storage.files import digest, is_link, safe_path
 from app.modules.code_work import history, transactions
 from app.modules.code_work.files import (
-    PROJECT,
     atomic_bytes,
     code_manifest,
     editable_path,
     encode_text,
     input_manifest,
+    main_project,
     read_json,
     save_json,
     snapshot,
@@ -67,13 +67,14 @@ def baseline_data(folder, state, path):
 
 
 def locked_manifest(root):
+    project = main_project(root)
     return {
         path.relative_to(root).as_posix(): digest(path.read_bytes())
         for path in [
-            root / PROJECT / "Program.cs",
-            root / PROJECT / f"{PROJECT}.csproj",
-            root / PROJECT / "App.config",
-            *(root / PROJECT / "Infrastructure/Simulation").glob("*.cs"),
+            root / project / "Program.cs",
+            root / project / f"{project}.csproj",
+            root / project / "App.config",
+            *(root / project / "Infrastructure/Simulation").glob("*.cs"),
         ]
         if path.is_file()
     }
@@ -251,7 +252,8 @@ class MergeWork:
                         "kind": "modified" if theirs is not None else "added",
                         "version": history.blob(folder, merged),
                     }
-        project_path = f"{PROJECT}/{PROJECT}.csproj"
+        project = main_project(candidate)
+        project_path = f"{project}/{project}.csproj"
         project_file = safe_path(candidate, project_path)
         project_before = project_file.read_bytes()
         additions = [
@@ -259,7 +261,7 @@ class MergeWork:
             for row in rows
             if not row["source"] and row["status"] != "conflict" and row["result"]
         ]
-        project_after = include_files(project_before, additions)
+        project_after = include_files(project_before, additions, project)
         if project_before != project_after:
             atomic_bytes(project_file, project_after)
             result = history.difference(project_path, project_before, project_after)

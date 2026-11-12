@@ -1,3 +1,5 @@
+2026-11-12，代码工作的执行环境改为按项目保存，主工程按目录结构识别，不再写死 `AKRS.ZX2200`；旧单份配置启动时迁到默认项目，其他项目不继承。副本复制、可编辑范围、合并写回和构建使用识别出的主工程名。验证宿主仍属 ARKS 适配器。说明见[代码工作](docs/features/code-work.md)，验收见[项目绑定验收](docs/verification/code-work-project-binding-20261112.md)。
+
 2026-11-12，参数复用使用 `/参数复用` 命令，菜单可直接插入；仅显式命令会调用 `parameter_reuse` MCP。验证见[参数复用命令验收](docs/verification/parameter-reuse-command-20261112.md)。
 
 # ARKS智能助手项目协作说明
