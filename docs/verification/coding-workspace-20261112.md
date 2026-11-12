@@ -31,6 +31,7 @@
 
 - 聊天工具链回归 `tests/integration/coding/test_agent_loop.py`：脚本化模型在空目录里先 `write_file` 建文件，再 `run_command` 执行 `dotnet --version`，最后给出回答；断言文件内容、命令调用顺序、检查点已生成和 `coding` 事件已推送。1 项通过。
 - 真实工程执行：把点胶机工程作为项目目录，通过编码执行器运行 `dotnet build Sp900SerialClient.csproj` 和 `dotnet run --project Sp900SelfTest`，构建成功、9 项协议自测全部通过，并生成检查点。说明普通命令（构建、测试）在白名单档位下可以直接完成。
+- 空目录建工程：在空项目里用文件工具创建 `src/App.csproj` 和 `src/Program.cs`，再通过执行器运行 `dotnet build` 与 `dotnet run`，退出码均为 0，输出 `scaffold-ok 通信协议`，并生成检查点。
 - 执行器补齐 `APPDATA`/`LOCALAPPDATA`/`ProgramData` 等环境变量，避免 `dotnet`/NuGet 在精简环境下报 `Value cannot be null (path1)`。
 
 ## 尚未完成
