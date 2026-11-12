@@ -15,7 +15,7 @@ MAX_BACKGROUND = 5
 ALLOW = [
     r"^(ls|dir|pwd|cd|cat|type|head|tail|rg|grep|findstr)\b",
     r"^git\s+(status|diff|log|show|rev-parse)\b",
-    r"^(dotnet\s+(build|test|restore|run|publish|--info|--version|--list-sdks)|msbuild)\b",
+    r"^(dotnet\s+(build|test|restore|run|publish|new|add|sln|nuget|--info|--version|--list-sdks)|msbuild)\b",
     r"^(npm\s+(test|run|ci)|npx\s+tsc|node\s+--version)\b",
     r"^(python|py)\s+(-m\s+)?(pytest|unittest)",
     r"^(pip|pip3)\s+(list|show)\b",

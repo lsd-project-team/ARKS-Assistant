@@ -34,9 +34,17 @@
 - 空目录建工程：在空项目里用文件工具创建 `src/App.csproj` 和 `src/Program.cs`，再通过执行器运行 `dotnet build` 与 `dotnet run`，退出码均为 0，输出 `scaffold-ok 通信协议`，并生成检查点。
 - 执行器补齐 `APPDATA`/`LOCALAPPDATA`/`ProgramData` 等环境变量，避免 `dotnet`/NuGet 在精简环境下报 `Value cannot be null (path1)`。
 
+## 真实模型实跑开发任务书
+
+- 环境：`deepseek-flash`，空目录 `C:\Users\w\Desktop\点胶机-agent`，项目级审批设为 `full`。
+- 过程：模型先用 `run_command` 检查 .NET/NuGet 环境，再连续 `write_file` 创建工程、协议层、串口适配器、界面、图标和自测工程，运行 `dotnet build`、自测、`dotnet publish`，全程 40 次工具调用、约 4.5 分钟，未触发重复拦截。
+- 产物：`Sp900SerialClient.cs`（约 43 KB）、`MainForm.cs`（约 56 KB）、`UiParts.cs`、`Icons.cs`、`SerialPortConnection.cs`、`SelfTest/` 两个文件，以及 `publish/win-x64/Sp900SerialClient.exe`（65,940,246 字节）。
+- 独立复核（不只信模型自述）：`dotnet build` 两个工程均退出 0；直接运行 `SelfTest` 得到 **35 项通过、0 失败、退出码 0**；启动生成的 WinForms 程序，窗口标题为“SP900 点胶机通信工具”，界面截图见 `output/agent-run-ui.png`。
+- 第一次实跑在检查 NuGet 缓存时反复执行近似命令，触发 116 步递归上限；随后新增 `CodingRepeatGuard`（同一工具+参数连续三次即拦截）并在编码提示中要求“了解基本情况后直接写代码”，第二次实跑未再出现空转。
+
 ## 尚未完成
 
-- 真实模型在界面里从空目录完成整份开发任务书的演示仍需人工执行；工具链、审批、快照和构建环境已经具备。
+- 真机连接、读取参数、设置参数仍需要接 SP900 设备验证；本次只验证了离线协议、构建、自测和界面启动。
 - 文件级撤销与多会话冲突提示可以继续细化。
 
 ## 旧流程移除
