@@ -14,6 +14,7 @@ class SettingsWrite(BaseModel):
     timeout_seconds: int | None = Field(default=None, ge=10, le=900)
     build_command: str | None = Field(default=None, max_length=500)
     test_command: str | None = Field(default=None, max_length=500)
+    enabled: bool | None = None
 
 
 class FileWrite(BaseModel):

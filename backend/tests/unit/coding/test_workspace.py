@@ -97,6 +97,17 @@ def test_allowlist_requires_confirmation_for_unknown_command(tmp_path):
     assert safe["exit_code"] == 0
 
 
+def test_default_analysis_root_stays_read_only_until_enabled(tmp_path, monkeypatch):
+    work, root = make_workspace(tmp_path)
+    monkeypatch.setattr("app.modules.coding.service.READONLY_ROOT", root.resolve())
+
+    with pytest.raises(ValueError, match="只读"):
+        work.write_file("new.txt", "content")
+
+    work.save_settings({"enabled": True})
+    assert work.write_file("new.txt", "content")["created"]
+
+
 def test_background_process_can_be_read_and_stopped(tmp_path):
     work, _ = make_workspace(tmp_path)
 

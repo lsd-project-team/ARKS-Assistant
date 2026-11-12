@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from threading import RLock
 
+from app.core.config import PROJECT_ROOT
 from app.core.identifiers import now_iso
 from app.modules.coding import files
 from app.modules.coding.executor import ApprovalRequired, Executor
@@ -15,8 +16,10 @@ DEFAULT_SETTINGS = {
     "timeout_seconds": 120,
     "build_command": "",
     "test_command": "",
+    "enabled": False,
 }
 MODES = {"allowlist", "confirm", "full"}
+READONLY_ROOT = (PROJECT_ROOT / "trunk").resolve()
 
 
 class CodingWorkspace:
@@ -59,6 +62,8 @@ class CodingWorkspace:
         for key in ("build_command", "test_command"):
             if key in changes:
                 value[key] = str(changes[key])[:500]
+        if "enabled" in changes:
+            value["enabled"] = bool(changes["enabled"])
         self.settings_path.parent.mkdir(parents=True, exist_ok=True)
         self.settings_path.write_text(
             json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -76,8 +81,14 @@ class CodingWorkspace:
     def search_files(self, query, path=".", glob=""):
         return files.search_text(self.root, query, path, glob)
 
+    def _guard_write(self):
+        """默认分析目录（trunk）保持只读，避免问答引用的原代码被就地改写。"""
+        if self.root.resolve() == READONLY_ROOT and not self.load_settings()["enabled"]:
+            raise ValueError("当前是只读分析项目，请选择其他目录建项目，或显式启用该项目的编码")
+
     def write_file(self, path, content, expected_hash=""):
         with self.lock:
+            self._guard_write()
             self.snapshots.ensure()
             result = files.write_text(self.root, path, content, expected_hash)
             self._touch()
@@ -85,6 +96,7 @@ class CodingWorkspace:
 
     def create_directory(self, path):
         with self.lock:
+            self._guard_write()
             self.snapshots.ensure()
             result = files.create_directory(self.root, path)
             self._touch()
@@ -92,6 +104,7 @@ class CodingWorkspace:
 
     def move_path(self, path, destination):
         with self.lock:
+            self._guard_write()
             self.snapshots.checkpoint("before-move")
             result = files.move(self.root, path, destination)
             self._touch()
@@ -99,6 +112,7 @@ class CodingWorkspace:
 
     def delete_path(self, path, recursive=False):
         with self.lock:
+            self._guard_write()
             self.snapshots.checkpoint("before-delete")
             result = files.delete(self.root, path, recursive)
             self._touch()
@@ -122,6 +136,7 @@ class CodingWorkspace:
     # ---------- 命令 ----------
     def run_command(self, command, cwd=".", timeout=None, approved=False):
         with self.lock:
+            self._guard_write()
             settings = self.load_settings()
             try:
                 result = self.executor.run(
@@ -136,6 +151,7 @@ class CodingWorkspace:
             return result
 
     def start_process(self, command, cwd=".", approved=False):
+        self._guard_write()
         result = self.executor.start(command, cwd, approved=approved)
         self._audit("start", command, None)
         return result
