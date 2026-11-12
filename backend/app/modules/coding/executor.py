@@ -187,12 +187,25 @@ class Executor:
             "TEMP",
             "TMP",
             "USERPROFILE",
+            "USERNAME",
+            "APPDATA",
+            "LOCALAPPDATA",
+            "ProgramData",
+            "ProgramFiles",
+            "ProgramFiles(x86)",
             "HOMEDRIVE",
             "HOMEPATH",
             "COMSPEC",
         )
         env = {key: os.environ[key] for key in keep if key in os.environ}
-        env.update({"PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8", "DOTNET_CLI_UI_LANGUAGE": "en"})
+        env.update(
+            {
+                "PYTHONUTF8": "1",
+                "PYTHONIOENCODING": "utf-8",
+                "DOTNET_CLI_UI_LANGUAGE": "en",
+                "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+            }
+        )
         return env
 
     def _kill(self, pid):

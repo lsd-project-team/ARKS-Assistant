@@ -45,6 +45,10 @@ def test_project_coding_api_reads_writes_runs_and_restores(services, tmp_path):
         points = client.get(base + "/checkpoints").json()
         assert points["checkpoints"]
 
+        # 旧副本与合并接口已经移除，不能再注册或误用。
+        assert client.get("/api/settings/code-work").status_code == 404
+        assert client.get(base.replace("/coding", "/threads/x/code-work")).status_code in {404, 405}
+
         result = root / "docs/readme.md"
         assert result.is_file()
         assert "通信协议" in result.read_text(encoding="utf-8")

@@ -25,12 +25,19 @@
 - 聊天管线回归：`tests/integration/chat/test_api.py`、`test_autonomous_answer.py` 5 项通过。
 - `ruff check` 与 `ruff format` 通过。
 
+## 端到端
+
+- 聊天工具链回归 `tests/integration/coding/test_agent_loop.py`：脚本化模型在空目录里先 `write_file` 建文件，再 `run_command` 执行 `dotnet --version`，最后给出回答；断言文件内容、命令调用顺序、检查点已生成和 `coding` 事件已推送。1 项通过。
+- 真实工程执行：把点胶机工程作为项目目录，通过编码执行器运行 `dotnet build Sp900SerialClient.csproj` 和 `dotnet run --project Sp900SelfTest`，构建成功、9 项协议自测全部通过，并生成检查点。说明普通命令（构建、测试）在白名单档位下可以直接完成。
+- 执行器补齐 `APPDATA`/`LOCALAPPDATA`/`ProgramData` 等环境变量，避免 `dotnet`/NuGet 在精简环境下报 `Value cannot be null (path1)`。
+
 ## 尚未完成
 
-- 前端变更面板已提供检查点、diff、回滚和审批；更细的文件级撤销与冲突提示仍可继续完善。
-- 真正由聊天 Agent 从空目录完成点胶机开发任务书的端到端验收尚未执行（工具链和构建环境已具备）。
+- 真实模型在界面里从空目录完成整份开发任务书的演示仍需人工执行；工具链、审批、快照和构建环境已经具备。
+- 文件级撤销与多会话冲突提示可以继续细化。
 
 ## 旧流程移除
 
-原副本、合并、候选验证、需求断言、桌面流程、固定 C# 宿主和“编译与仿真环境”页已删除；`/threads/{id}/code-work/*` 与 `/api/settings/code-work` 接口不再注册，旧前端面板一并移除。旧副本目录保留在磁盘，可手动清理。
+原副本、合并、候选验证、需求断言、桌面流程、固定 C# 宿主和“编译与仿真环境”页已删除；`/threads/{id}/code-work/*` 与 `/api/settings/code-work` 接口不再注册（测试断言 404），旧前端面板一并移除。旧副本目录保留在磁盘，可手动清理。
+
 
