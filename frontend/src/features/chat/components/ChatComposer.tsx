@@ -100,12 +100,10 @@ export function ChatComposer({
               }}
             >
               <span>
-                <code>/{item.id}</code>
                 <strong>{item.label}</strong>
               </span>
             </button>
           ))}
-          <div className="command-keyboard-hint">↑ ↓ 选择 · Enter 执行 · Esc 收起</div>
         </div>
       )}
       {attachments}

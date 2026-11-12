@@ -5,7 +5,7 @@ export const composerCommands: ReadonlyArray<{
   label: string;
 }> = [
   { id: 'context', label: '查看上下文' },
-  { id: 'compact', label: '压缩上下文' },
+  { id: 'compact', label: '记录上下文' },
   {
     id: '记录问题',
     label: '记录问题与经验',
