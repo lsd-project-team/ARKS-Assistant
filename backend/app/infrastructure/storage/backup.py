@@ -31,10 +31,8 @@ def create_backup(paths: Paths) -> Path:
                 ):
                     source.backup(target)
             # 密钥配置不进入导出备份；恢复后通过设置页重新填写。
-            for group in ("memories", "scratch", "instructions"):
+            for group in ("memories", "scratch"):
                 for file in (paths.data / group).rglob("*"):
-                    if group == "instructions" and file.name != "agent.md":
-                        continue
                     relative = file.relative_to(paths.data / group).parts
                     if group == "scratch" and len(relative) >= 3 and relative[0] == "cw":
                         # 代码修改保留状态、来源指纹、基线与业务 C#。

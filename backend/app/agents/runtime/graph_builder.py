@@ -11,7 +11,6 @@ from app.agents.analysis.policy import CONTINUE_QUESTION
 from app.agents.analysis.retrieval_budget import RetrievalBudget
 from app.agents.context.budget import BudgetedSummarization, ContextBudget
 from app.agents.context.history_selection import ConversationHistorySelection
-from app.agents.context.instructions import GlobalAgentInstructions, instruction_snapshot
 from app.agents.context.task_guidance import TaskGuidance
 from app.agents.context.tokens import estimate_tokens, input_budget
 from app.agents.prompts.retrieval import RETRIEVAL_GUIDANCE
@@ -24,7 +23,6 @@ from app.agents.runtime.code_work_repair import CodeWorkRepair
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
-from app.agents.runtime.privacy import redact
 from app.agents.tools.attachments import attachment_context, attachment_tools
 from app.agents.tools.code_work import CODE_WORK_GUIDANCE, code_work_tools
 from app.agents.tools.conversation import conversation_tools
@@ -68,9 +66,6 @@ class AgentGraphBuilder:
         # 工具返回前完成相关性筛选，回答生成后不再追加来源复核。
         settings = current_configuration(runtime.settings, runtime.repository.database)
         options = SourceOptions.model_validate(source_options or {})
-        instructions = await asyncio.to_thread(instruction_snapshot, runtime.paths)
-        if not inspection:
-            emit("agent_instructions", redact(instructions))
         if not inspection:
             emit("stage", {"stage": "connecting_model"})
         model = StateInspectionModel() if inspection else create_model(settings.model)
@@ -238,7 +233,6 @@ class AgentGraphBuilder:
                 summary,
                 SummarizationToolMiddleware(summary),
                 *([history_selection] if not inspection else []),
-                GlobalAgentInstructions(instructions),
                 TaskGuidance(
                     requested_work,
                     source_tool_names,

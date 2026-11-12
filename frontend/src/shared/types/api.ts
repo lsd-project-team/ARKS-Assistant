@@ -269,9 +269,7 @@ export interface ContextUsage {
   headroom?: number;
   basis?: 'last_request' | 'legacy_messages';
   phase?: 'before_compaction' | 'model_request';
-  breakdown?: Partial<
-    Record<'system' | 'tools' | 'memory' | 'instructions' | 'messages' | 'selections', number>
-  >;
+  breakdown?: Partial<Record<'system' | 'tools' | 'memory' | 'messages' | 'selections', number>>;
 }
 export interface StorageStats {
   groups: Record<'databases' | 'memories' | 'archives' | 'backups' | 'recovery' | 'other', number>;
@@ -300,7 +298,6 @@ export interface ConversationContext extends ContextUsage {
   message_count: number;
 }
 export interface RunContext {
-  agent_instructions?: { content: string; version: string; updated_at: string | null } | null;
   references?: KnowledgeReference[];
   searches?: KnowledgeSearch[];
   memory_saves?: MemorySaveFeedback[];

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, Brain, Cable, Check, Cpu, FileText, LoaderCircle, Palette } from 'lucide-react';
+import { BookOpen, Brain, Cable, Check, Cpu, LoaderCircle, Palette } from 'lucide-react';
 import { useSettingsDraft } from '../hooks/useSettingsDraft';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { ModelSettingsPanel } from './ModelSettingsPanel';
@@ -11,8 +11,6 @@ import { MemorySettingsPanel } from '../../memory/components/MemorySettingsPanel
 import { useSourcePreferences } from '../../chat/hooks/useSourcePreferences';
 import { KnowledgeSourceSettings } from './KnowledgeSourceSettings';
 import { useAuth } from '../../auth/AuthContext';
-import { useAgentInstructions } from '../hooks/useAgentInstructions';
-import { AgentInstructionsPanel } from './AgentInstructionsPanel';
 
 export function SettingsDialog({
   open,
@@ -36,7 +34,6 @@ export function SettingsDialog({
   const [mcpEditorVersion, setMcpEditorVersion] = useState(0);
   const controller = useSettingsDraft(open, onClose, advancedDirty);
   const sourceController = useSourcePreferences(open && tab === 'sources');
-  const instructionController = useAgentInstructions(open && tab === 'instructions');
   const configurationTab = tab === 'model' || tab === 'mcp' || tab === 'memory';
   // 未应用的 JSON 也是草稿，切换标签页前要避免把它留在已卸载的编辑器里。
   const [pendingTab, setPendingTab] = useState<string>();
@@ -49,23 +46,15 @@ export function SettingsDialog({
   }, [open, startingTab]);
   const { draft, busy } = controller;
   useEffect(() => {
-    onDirtyChange?.(
-      controller.dirty || sourceController.dirty || instructionController.dirty || advancedDirty,
-    );
-  }, [
-    controller.dirty,
-    sourceController.dirty,
-    instructionController.dirty,
-    advancedDirty,
-    onDirtyChange,
-  ]);
+    onDirtyChange?.(controller.dirty || sourceController.dirty || advancedDirty);
+  }, [controller.dirty, sourceController.dirty, advancedDirty, onDirtyChange]);
   useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
   function closeSettings() {
     if (advancedDirty) {
       setPendingTab('close');
       return;
     }
-    instructionController.leave(() => sourceController.leave(controller.close));
+    sourceController.leave(controller.close);
   }
   const Container = embedded ? EmbeddedSettings : Modal;
   return (
@@ -81,7 +70,6 @@ export function SettingsDialog({
           { id: 'appearance', title: '外观', icon: Palette },
           { id: 'model', title: '模型', icon: Cpu },
           { id: 'mcp', title: 'MCP', icon: Cable },
-          { id: 'instructions', title: '全局 agent.md', icon: FileText },
           { id: 'sources', title: '知识来源', icon: BookOpen },
           { id: 'memory', title: '长期记忆', icon: Brain },
         ]
@@ -90,15 +78,13 @@ export function SettingsDialog({
             <button
               key={item.id}
               className={tab === item.id ? 'selected' : ''}
-              disabled={busy || sourceController.busy || instructionController.busy}
+              disabled={busy || sourceController.busy}
               onClick={() => {
                 if (tab === item.id) return;
-                instructionController.leave(() =>
-                  sourceController.leave(() => {
-                    if (advancedDirty) setPendingTab(item.id);
-                    else setTab(item.id);
-                  }),
-                );
+                sourceController.leave(() => {
+                  if (advancedDirty) setPendingTab(item.id);
+                  else setTab(item.id);
+                });
               }}
             >
               <item.icon size={14} />
@@ -152,7 +138,6 @@ export function SettingsDialog({
           </fieldset>
         )}
         {tab === 'memory' && <MemorySettingsPanel />}
-        {tab === 'instructions' && <AgentInstructionsPanel controller={instructionController} />}
         {configurationTab && !!controller.errors.length && (
           <ul className="settings-validation" role="alert">
             {controller.errors.map((message) => (
@@ -160,18 +145,18 @@ export function SettingsDialog({
             ))}
           </ul>
         )}
-        {tab !== 'sources' && tab !== 'instructions' && (
+        {tab !== 'sources' && (
           <ErrorText
             error={controller.error || controller.saved.error}
             reveal={!!controller.error}
           />
         )}
-        {tab !== 'sources' && tab !== 'instructions' && !!controller.error && (
+        {tab !== 'sources' && !!controller.error && (
           <Button disabled={busy} onClick={controller.reload}>
             读取最新设置
           </Button>
         )}
-        {tab !== 'sources' && tab !== 'instructions' && controller.feedback && (
+        {tab !== 'sources' && controller.feedback && (
           <p className="success-text">
             <Check size={14} />
             {controller.feedback}
@@ -179,7 +164,6 @@ export function SettingsDialog({
         )}
         <UnsavedNotice guard={controller.guard} />
         <UnsavedNotice guard={sourceController.guard} />
-        <UnsavedNotice guard={instructionController.guard} />
         {pendingTab && (
           <ConfirmationNotice>
             <span>JSON 修改尚未应用到表单。</span>
@@ -201,41 +185,18 @@ export function SettingsDialog({
       </div>
       <div className="modal-footer">
         <span>
-          {tab === 'instructions'
-            ? instructionController.dirty
-              ? '有未保存的全局指令'
-              : ''
-            : !canConfigure && configurationTab
-              ? '系统配置由管理员维护'
-              : tab === 'appearance'
-                ? ''
-                : tab === 'sources'
-                  ? sourceController.dirty
-                    ? '有未保存的知识来源修改'
-                    : ''
-                  : controller.dirty || advancedDirty
-                    ? '有未保存的修改'
-                    : ''}
+          {!canConfigure && configurationTab
+            ? '系统配置由管理员维护'
+            : tab === 'appearance'
+              ? ''
+              : tab === 'sources'
+                ? sourceController.dirty
+                  ? '有未保存的知识来源修改'
+                  : ''
+                : controller.dirty || advancedDirty
+                  ? '有未保存的修改'
+                  : ''}
         </span>
-        {tab === 'instructions' && (
-          <Button
-            className="primary"
-            disabled={
-              instructionController.busy ||
-              !instructionController.draft ||
-              !instructionController.dirty ||
-              !!instructionController.validation
-            }
-            onClick={() => void instructionController.save()}
-          >
-            {instructionController.busy ? (
-              <LoaderCircle size={14} className="spin" />
-            ) : (
-              <Check size={14} />
-            )}
-            保存全局指令
-          </Button>
-        )}
         {tab === 'sources' && (
           <Button
             className="primary"

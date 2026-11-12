@@ -123,7 +123,6 @@ class ConversationContext:
         source_review = None
         completion, progress, plan = None, None, None
         tool_ends = {}
-        instructions = None
         references, searches, memory_saves = {}, [], []
         trace = RunTrace()
         cursor = 0
@@ -131,8 +130,6 @@ class ConversationContext:
             events = self.repository.events(run_id, cursor)
             for original in events:
                 event = visible_run_event(original, actor_id)
-                if event and event["kind"] == "agent_instructions":
-                    instructions = event["payload"]
                 if event is None:
                     continue
                 trace.observe(event)
@@ -192,7 +189,6 @@ class ConversationContext:
                 references.setdefault(key, {"kind": kind, **row})
         return {
             "model": run["model_snapshot"],
-            "agent_instructions": instructions,
             "budget": budget,
             "memories": snapshot["memories"] if snapshot else [],
             "handover_materials": snapshot.get("handover_materials", []) if snapshot else [],

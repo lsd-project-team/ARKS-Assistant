@@ -3,7 +3,6 @@
 import asyncio
 
 from app.agents.analysis.policy import configured_analysis
-from app.agents.context.instructions import bind_agent_instructions
 from app.agents.runtime.configuration import bind_configuration, model_snapshot
 from app.agents.runtime.engine import AgentRuntime
 from app.agents.runtime.feedback import error_feedback
@@ -13,7 +12,6 @@ from app.modules.chat.models import Run
 from app.modules.chat.regeneration import previous_run_event
 from app.modules.chat.repository import TERMINAL, Repository
 from app.modules.projects.context import bind_project
-from app.modules.settings.agent_instructions import AgentInstructionsStore
 from app.modules.settings.model_preferences import ModelPreferences
 
 
@@ -26,7 +24,6 @@ class RunManager:
         self.edit_lock = asyncio.Lock()
         self.closing = False
         self.project_snapshot = lambda: {}
-        self.agent_instructions = AgentInstructionsStore(settings.path.parent)
 
     def start(self, run: dict):
         project = self.project_snapshot()
@@ -42,7 +39,6 @@ class RunManager:
             **project,
             "_execution_user": actor if actor.get("id") else None,
         }
-        run["agent_instructions"] = self.agent_instructions.read(actor.get("id"))
         with self.repository.database.session.begin() as session:
             session.get(Run, run["id"]).project_snapshot_json = dump_json(project)
         run["project_snapshot"] = project
@@ -75,7 +71,6 @@ class RunManager:
             with (
                 bind_configuration(configuration),
                 bind_project(run.get("project_snapshot", {})),
-                bind_agent_instructions(run["agent_instructions"]),
             ):
                 await self._execute(run, configuration)
         finally:

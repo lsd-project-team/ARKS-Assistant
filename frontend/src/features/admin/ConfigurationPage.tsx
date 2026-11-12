@@ -110,7 +110,7 @@ export function ConfigurationPage({
           embedded
           initialTab="model"
           onDirtyChange={dirtyChanged}
-          allowedTabs={['model', 'mcp', 'instructions', 'sources', 'memory', 'appearance']}
+          allowedTabs={['model', 'mcp', 'sources', 'memory', 'appearance']}
           onClose={() => {}}
         />
       )}
