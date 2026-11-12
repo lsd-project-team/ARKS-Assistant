@@ -509,4 +509,5 @@ class Projects:
         }.values():
             await services.runs.shutdown()
             await services.runtime.code_work.shutdown()
+            services.runtime.coding.executor.stop_all()
             services.runtime.semantic.close()
