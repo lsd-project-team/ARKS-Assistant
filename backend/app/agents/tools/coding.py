@@ -10,7 +10,7 @@ from app.modules.coding.executor import ApprovalRequired
 CODING_GUIDANCE = """
 【项目编码】
 当前项目目录就是工作区，所有路径都使用项目内相对路径。
-用户描述需求后直接完成：先 list_files / read_file / search_files 了解现状，
+用户描述需求后直接完成：先 list_files / read_project_file / search_files 了解现状，
 再建目录、写文件、跑构建或测试。
 新建项目可以是空目录，从零创建工程结构也可以。
 覆盖已有文件必须带上一次读取得到的 hash；新建文件 hash 留空。
@@ -49,9 +49,9 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
         return await run("list_files", work.list_files, path, depth)
 
     @tool
-    async def read_file(path: str, start_line: int = 1, end_line: int = 400) -> str:
+    async def read_project_file(path: str, start_line: int = 1, end_line: int = 400) -> str:
         """Read a text file with line numbers and its hash."""
-        return await run("read_file", work.read_file, path, start_line, end_line)
+        return await run("read_project_file", work.read_file, path, start_line, end_line)
 
     @tool
     async def search_files(query: str, path: str = ".", glob: str = "") -> str:
@@ -125,7 +125,7 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
 
     return [
         list_files,
-        read_file,
+        read_project_file,
         search_files,
         write_file,
         create_directory,

@@ -6,18 +6,14 @@ import shutil
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.core.container import AppServices
-from app.modules.code_work.service import CodeWork
 
 
 class ConversationLifecycle:
     def __init__(self, services: AppServices):
         self.services = services
-        self.code_work = CodeWork(services.paths, services.repository)
 
     async def trash(self, thread_id: str):
         services = self.services
-        if thread_id in self.code_work.tasks:
-            self.code_work.cancel(thread_id)
         for identifier in services.repository.active_runs(thread_id):
             await services.runs.cancel(identifier)
         return services.repository.catalog.change(thread_id, "deleted")
@@ -28,7 +24,6 @@ class ConversationLifecycle:
         if row["state"] != "deleted":
             raise ValueError("请先将对话移入回收站")
         attachment_ids = services.repository.attachments.thread_ids(thread_id)
-        await self.code_work.purge(thread_id)
         async with AsyncSqliteSaver.from_conn_string(
             str(services.paths.data / "checkpoints.sqlite3")
         ) as saver:

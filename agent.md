@@ -1,3 +1,5 @@
+2026-11-12，移除旧版代码副本、合并、候选验证、需求断言、桌面流程和“编译与仿真环境”页；聊天改为原地编码：项目目录即工作区，通用文件工具、Git 快照回滚、项目内命令执行与审批，旧 `/code-work/*` 接口不再注册。说明见[原地编码 Agent](docs/features/in-place-coding-agent.md)，验收见[编码工作区验收](docs/verification/coding-workspace-20261112.md)。
+
 2026-11-12，代码工作的执行环境改为按项目保存，主工程按目录结构识别，不再写死 `AKRS.ZX2200`；旧单份配置启动时迁到默认项目，其他项目不继承。副本复制、可编辑范围、合并写回和构建使用识别出的主工程名。验证宿主仍属 ARKS 适配器。说明见[代码工作](docs/features/code-work.md)，验收见[项目绑定验收](docs/verification/code-work-project-binding-20261112.md)。
 
 2026-11-12，参数复用使用 `/参数复用` 命令，菜单可直接插入；仅显式命令会调用 `parameter_reuse` MCP。验证见[参数复用命令验收](docs/verification/parameter-reuse-command-20261112.md)。

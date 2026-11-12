@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { X, FileCode2, ChevronDown, RotateCcw, Folders, Code2 } from 'lucide-react';
 import { api as request, jsonBody } from '../../../app/api/client';
@@ -41,9 +41,9 @@ import { useCurrentProject } from '../../projects/hooks/useProjects';
 import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
-import { CodeWorkDialog } from '../code_work/CodeWorkDialog';
+
 import { CodingPanel } from '../../coding/CodingPanel';
-import { CodeChangeSummary } from '../code_work/CodeChangeSummary';
+
 import { useAttachments } from '../attachments/useAttachments';
 import { AttachmentUpload } from '../attachments/AttachmentUpload';
 
@@ -51,17 +51,10 @@ export function ChatPane({
   onToggleWorkspace,
   onSettings,
   showHeader,
-  codeWorkPanel,
 }: {
   onToggleWorkspace: () => void;
   onSettings: (tab: 'model' | 'mcp') => void;
   showHeader: boolean;
-  codeWorkPanel: {
-    open: boolean;
-    target: HTMLElement | null;
-    show: () => void;
-    close: (restore?: boolean) => void;
-  };
 }) {
   const {
     projectId,
@@ -83,8 +76,6 @@ export function ChatPane({
   const attachmentInput = useRef<HTMLInputElement>(null);
   const [started, setStarted] = useState<Run>();
   const [context, setContext] = useState<{ runId?: string }>();
-  const [codeWorkFile, setCodeWorkFile] = useState('');
-  const [codeWorkRun, setCodeWorkRun] = useState('');
   const [codingOpen, setCodingOpen] = useState(false);
   const [selectionPreview, setSelectionPreview] = useState<{
     selection: Selection;
@@ -272,31 +263,6 @@ export function ChatPane({
   const runs = conversation.data?.runs || [];
   const { replyRuns, versionGroups } = groupReplies(messages, runs);
   const interrupted = latest && ['failed', 'cancelled', 'interrupted'].includes(latest.status);
-  // 当前累计修改只跟随最新回答，避免重复挂到历史回复或旧版本上。
-  const summaryMessageId =
-    !active && !interrupted
-      ? messages
-          .filter((message) => message.role === 'assistant' && message.context_active !== false)
-          .at(-1)?.id
-      : undefined;
-  const renderCodeSummary = (runId: string, showCumulative: boolean) =>
-    threadId && (
-      <CodeChangeSummary
-        key={`code-summary:${projectId}:${threadId}:${runId}`}
-        threadId={threadId}
-        projectId={projectId}
-        busy={busy && active?.id === runId}
-        runId={runId}
-        showCumulative={showCumulative}
-        refreshKey={`${latest?.id}:${latest?.status}:${stream.finished}`}
-        onOpen={(path = '', snapshotRun = '') => {
-          setCodeWorkFile(path);
-          setCodeWorkRun(snapshotRun);
-          codeWorkPanel.show();
-        }}
-      />
-    );
-  const codeChangeSummary = renderCodeSummary(active?.id || latest?.id || '', true);
   const canContext = !!threadId;
   const canCompact =
     canContext && messages.length > 0 && !busy && !send.isPending && !compact.isPending;
@@ -444,12 +410,6 @@ export function ChatPane({
                       selectedMessage={messageJump.id}
                       canRegenerate={!busy && !regenerate.isPending}
                       onRegenerate={(id) => regenerate.mutate(id)}
-                      renderAfterAnswer={(versionRun) =>
-                        renderCodeSummary(
-                          versionRun.id,
-                          versionRun.response_message_id === summaryMessageId,
-                        )
-                      }
                     />
                   </MessageArchive>
                 </div>
@@ -477,9 +437,6 @@ export function ChatPane({
                     : undefined
                 }
                 recent={run?.id === latest?.id}
-                afterAnswer={
-                  run ? renderCodeSummary(run.id, message.id === summaryMessageId) : undefined
-                }
               />
             );
             return (
@@ -538,7 +495,6 @@ export function ChatPane({
                   </>
                 }
               />
-              {codeChangeSummary}
             </div>
           )}
           {interrupted && (
@@ -566,7 +522,6 @@ export function ChatPane({
                   }
                 />
               )}
-              {!active && codeChangeSummary}
               <Button onClick={() => resume.mutate(latest.id)} disabled={resume.isPending}>
                 <RotateCcw size={13} />
                 {latest.status === 'failed' ? '重试运行' : '继续回复'}
@@ -675,27 +630,6 @@ export function ChatPane({
         runId={context?.runId}
         onClose={() => setContext(undefined)}
       />
-      {codeWorkPanel.open &&
-        codeWorkPanel.target &&
-        createPortal(
-          <CodeWorkDialog
-            key={`code-work:${projectId}:${threadId}`}
-            open
-            embedded
-            threadId={threadId}
-            projectId={projectId}
-            busy={busy}
-            initialPath={codeWorkFile}
-            initialRunId={codeWorkRun}
-            onClose={() => codeWorkPanel.close()}
-            onRequest={(request) => {
-              codeWorkPanel.close();
-              if (request) setDraft(draft.trim() ? `${draft}\n\n${request}` : request);
-              composerInput.current?.focus();
-            }}
-          />,
-          codeWorkPanel.target,
-        )}
       {selectionPreview && (
         <SelectionPreview
           selection={selectionPreview.selection}

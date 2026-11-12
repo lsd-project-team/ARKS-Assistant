@@ -1,15 +1,9 @@
 import json
-import re
 import zipfile
 
-import pytest
 from fastapi.testclient import TestClient
-from langchain_core.messages import AIMessage, ToolMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
-from pydantic import Field
 from sqlalchemy import select
 
-from app.agents.runtime.engine import AgentRuntime
 from app.agents.tools.attachments import attachment_context, attachment_tools
 from app.infrastructure.storage.backup import create_backup
 from app.infrastructure.storage.validation import validate_backup
@@ -17,8 +11,6 @@ from app.main import create_app
 from app.modules.chat.models import ChatAttachment
 from tests.helpers.api_paths import project_api
 from tests.helpers.chat_attachments import document_bytes, zip_bytes
-from tests.helpers.code_work import FILE, make_work
-from tests.helpers.models import DeterministicModel
 
 
 def upload(client, extension=".xlsx", value=7):
@@ -152,117 +144,6 @@ def test_bad_upload_and_invalid_binding_are_atomic(services, monkeypatch):
         with services[1].session() as session:
             assert not list(session.scalars(select(ChatAttachment)))
 
-
-class DocumentEditingModel(DeterministicModel):
-    attachment_id: str
-    target: int = 0
-    calls_seen: list[str] = Field(default_factory=list)
-
-    def _generate(self, messages, stop=None, run_manager=None, **kwargs):
-        tools = [message for message in messages if isinstance(message, ToolMessage)]
-        last = tools[-1] if tools else None
-        args = {}
-        if last is None:
-            assert self.attachment_id in str(messages)
-            name, args = "read_chat_attachment", {"attachment_id": self.attachment_id}
-        elif last.name == "read_chat_attachment":
-            result = json.loads(last.content)
-            self.target = int(re.search(r"NewValue\s*=\s*(\d+)", result["content"])[1])
-            name = "prepare_code_workspace"
-        elif last.name == "prepare_code_workspace":
-            name, args = "read_work_file", {"path": FILE}
-        elif last.name == "read_work_file":
-            name, args = (
-                "edit_work_file",
-                {
-                    "path": FILE,
-                    "old_text": "int Value = 1;",
-                    "new_text": f"int Value = {self.target};",
-                    "version": json.loads(last.content)["version"],
-                },
-            )
-        else:
-            return ChatResult(
-                generations=[
-                    ChatGeneration(
-                        message=AIMessage(content=f"已按文档修改为 {self.target}，尚未执行仿真。")
-                    )
-                ]
-            )
-        self.calls_seen.append(name)
-        return ChatResult(
-            generations=[
-                ChatGeneration(
-                    message=AIMessage(
-                        content="",
-                        tool_calls=[
-                            {
-                                "id": f"doc-{len(tools)}",
-                                "name": name,
-                                "args": args,
-                            }
-                        ],
-                    )
-                )
-            ]
-        )
-
-
-@pytest.mark.parametrize(
-    "extension,value,pack_in_zip",
-    [
-        (".xlsx", 7, False),
-        (".csv", 13, False),
-        (".docx", 17, False),
-        (".pdf", 19, False),
-        (".md", 23, False),
-        (".zip", 29, False),
-        (".pdf", 31, True),
-        (".docx", 37, True),
-        (".xlsx", 41, True),
-        (".csv", 43, True),
-        (".scan.pdf", 47, False),
-        (".scan.pdf", 47, True),
-    ],
-)
-async def test_document_content_drives_actual_copy_edit(
-    services, tmp_path, monkeypatch, extension, value, pack_in_zip
-):
-    work, thread, original = make_work(services, tmp_path)
-    paths, _, workspace, repository, memories, settings = services
-    data = document_bytes(extension, value)
-    if pack_in_zip:
-        data = zip_bytes({"docs/需求" + extension: data})
-    attachment = repository.attachments.upload(
-        data, "需求" + (".zip" if pack_in_zip else extension)
-    )
-    model = DocumentEditingModel(attachment_id=attachment["id"])
-    monkeypatch.setattr(
-        "app.agents.runtime.graph_builder.create_model", lambda *args, **kwargs: model
-    )
-    run = repository.create_run(
-        thread,
-        "请根据附件里的新值修改现有代码",
-        [],
-        {"use_memory": False, "use_knowledge": False, "use_deepwiki": False},
-        [attachment["id"]],
-    )
-    runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    events = []
-    answer = await runtime.execute(run, lambda kind, payload: events.append((kind, payload)))
-    assert model.target == value and f"{value}" in answer
-    assert model.calls_seen == [
-        "read_chat_attachment",
-        "prepare_code_workspace",
-        "read_work_file",
-        "edit_work_file",
-    ]
-    assert f"+ int Value = {value};" in work.diff(thread, FILE)["diff"]
-    assert "Value = 1" in (original / "Main/Example.cs").read_text(encoding="utf-8")
-    assert any(
-        kind == "attachment_read" and payload["sha256"] == attachment["sha256"]
-        for kind, payload in events
-    )
 
 
 async def test_attachment_tools_reject_other_conversation_ids_and_search_paginates(services):

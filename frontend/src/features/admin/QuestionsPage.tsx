@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -17,10 +17,6 @@ import {
 import { debugIssueFields } from '../handover/debug_issues/debugIssues';
 import { text as fieldText, type HandoverRecord } from '../handover/shared/types';
 import { AnswerFeedbackList } from './AnswerFeedbackList';
-
-const CodeWorkDialog = lazy(() =>
-  import('../chat/code_work/CodeWorkDialog').then((module) => ({ default: module.CodeWorkDialog })),
-);
 
 export function QuestionsPage({ identifier }: { identifier?: string }) {
   const [text, setText] = useState('');
@@ -217,7 +213,6 @@ export function QuestionsPage({ identifier }: { identifier?: string }) {
 }
 
 function QuestionViewer({ identifier }: { identifier: string }) {
-  const [codeOpen, setCodeOpen] = useState(false);
   const [reference, setReference] = useState<{ href: string; run?: RecordedRun }>();
   const detail = useInfiniteQuery({
     queryKey: ['admin-question', identifier],
@@ -273,21 +268,7 @@ function QuestionViewer({ identifier }: { identifier: string }) {
             {first?.project_name} · {first?.total || 0} 条消息
           </p>
         </div>
-        {first && first.thread.state !== 'deleted' && (
-          <Button onClick={() => setCodeOpen(true)}>代码副本与合并</Button>
-        )}
       </header>
-      {codeOpen && first && (
-        <Suspense fallback={<p role="status">正在加载代码副本…</p>}>
-          <CodeWorkDialog
-            open
-            threadId={identifier}
-            projectId={first.thread.project_id || 'independent'}
-            busy={runs.some((run) => ['queued', 'running'].includes(run.status))}
-            onClose={() => setCodeOpen(false)}
-          />
-        </Suspense>
-      )}
       <ErrorText error={detail.error} />
       {detail.isError && <Button onClick={() => void detail.refetch()}>重试</Button>}
       {detail.isPending && <p role="status">正在读取问答…</p>}
