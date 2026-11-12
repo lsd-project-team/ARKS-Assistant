@@ -4,13 +4,12 @@ import asyncio
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, FastAPI, Query, Request
+from fastapi import APIRouter, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.modules.action_timing import router as action_timing
 from app.modules.auth.ownership import require_source, require_thread
-from app.modules.auth.router import require_admin
 from app.modules.chat import router as conversations
 from app.modules.code_work.router import environment_router as code_work_environment
 from app.modules.coding.router import create_router as coding_router
@@ -126,10 +125,12 @@ def create_router(projects: Projects):
 
     @router.post("/api/projects", status_code=201)
     async def create(body: ProjectCreate, request: Request):
-        if (body.source_root or body.source_folders) and not projects.account_defaults.permits(
-            body.source_root, body.source_folders
-        ):
-            require_admin(request)
+        # 编码项目由用户自己选择本机目录；只保留排除助手数据目录的安全校验。
+        permitted = projects.account_defaults.allowed(body.source_root) and all(
+            projects.account_defaults.allowed(folder.root) for folder in body.source_folders
+        )
+        if not permitted:
+            raise HTTPException(status_code=403, detail="源码目录不能与助手数据目录互相包含")
         async with projects.edit_lock:
             return projects.create(body)
 
@@ -189,22 +190,13 @@ def create_router(projects: Projects):
 
     @router.patch("/api/projects/{project_id}")
     async def edit(project_id: str, body: ProjectUpdate, request: Request):
-        existing = projects.get(project_id)
-        changing_root = (
-            "source_root" in body.model_fields_set and body.source_root != existing["source_root"]
-        )
-        changing_folders = (
-            "source_folders" in body.model_fields_set
-            and [item.model_dump() for item in body.source_folders] != existing["source_folders"]
-        )
-        if (changing_root or changing_folders) and not projects.account_defaults.permits(
-            body.source_root if "source_root" in body.model_fields_set else existing["source_root"],
-            body.source_folders
-            if "source_folders" in body.model_fields_set
-            else existing["source_folders"],
-        ):
-            # 源码目录决定服务器文件可读范围，普通用户不能把它改为账号数据目录。
-            require_admin(request)
+        roots = []
+        if "source_root" in body.model_fields_set:
+            roots.append(body.source_root)
+        if "source_folders" in body.model_fields_set:
+            roots.extend(folder.root for folder in body.source_folders)
+        if any(not projects.account_defaults.allowed(root) for root in roots):
+            raise HTTPException(status_code=403, detail="源码目录不能与助手数据目录互相包含")
         async with projects.edit_lock:
             return projects.update(project_id, body)
 

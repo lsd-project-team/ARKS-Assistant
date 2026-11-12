@@ -5,9 +5,7 @@ import { useWorkspace } from '../../../app/state/store';
 import type { Project } from '../../../shared/types/api';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { toast } from '../../../shared/utils/toasts';
-import { useProjects } from '../hooks/useProjects';
 import { useProjectAssociation } from '../hooks/useProjectAssociation';
-import { useAuth } from '../../auth/AuthContext';
 
 export function ProjectEditor({
   project,
@@ -18,19 +16,13 @@ export function ProjectEditor({
   onClose: () => void;
   onCreated?: () => void;
 }) {
-  const canConfigureSource = useAuth().session?.user.role === 'admin';
-  const availableProjects = useProjects();
   const [name, setName] = useState(project?.name || '');
   const [root, setRoot] = useState(project?.source_root || '');
   // 精简表单不再编辑附加目录，保存时保留已有项目的关联。
   const folders = project?.source_folders || [];
   const [wiki, setWiki] = useState(project?.deepwiki_repo || '');
   const [automatic, setAutomatic] = useState(!project);
-  const effectiveRoot =
-    root ||
-    (!project && !canConfigureSource
-      ? availableProjects.data?.default_source?.source_root || ''
-      : '');
+  const effectiveRoot = root;
   const association = useProjectAssociation(
     effectiveRoot,
     folders.map((folder) => folder.root),
@@ -111,10 +103,9 @@ export function ProjectEditor({
             主源码目录
             <input
               value={effectiveRoot}
-              readOnly={!canConfigureSource}
               maxLength={1024}
               onChange={(event) => setRoot(event.target.value)}
-              placeholder={'本机目录，如 D:\\projects\\ZX2200'}
+              placeholder={'本机目录，如 D:\\projects\\Sp900Client'}
             />
           </label>
           <label>

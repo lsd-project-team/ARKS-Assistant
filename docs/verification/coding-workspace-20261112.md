@@ -11,6 +11,7 @@
 - **检查点与回滚**：手动检查点、单文件回滚、整项目回到检查点（会删除该检查点之后新增的文件），回滚本身也留检查点。
 - **命令执行**：项目内 `cwd`、可配超时、超时结束进程树、输出截断并写日志；审批三档（allowlist / confirm / full），危险模式（格式化、删盘、改系统配置、管道执行）即使 full 也拒绝。
 - **后台常驻**：启动返回 job id，可读尾部日志、可停止，项目关闭时统一结束。
+- **用户自选目录**：新建/编辑项目可自行填写本机源码目录，不再要求管理员；仍拒绝指向助手数据目录（403）。
 - **审计**：命令记录写入 `data/coding/audit/<project>.jsonl`。
 - **只读保护**：默认分析目录（`trunk`）保持只读，除非项目显式 `enabled=true`，避免问答引用的原代码被就地改写。
 - **工具接入**：聊天工具改为 `list_files / read_file / search_files / write_file / create_directory / move_path / delete_path / run_command / start_process / read_process / stop_process / checkpoint / list_checkpoints / diff_checkpoint / restore_checkpoint`，旧的副本工具不再挂载。

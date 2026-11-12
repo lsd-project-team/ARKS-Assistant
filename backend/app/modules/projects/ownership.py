@@ -1,6 +1,7 @@
 """公司源码共用，账号的项目身份、对话和知识仍各自保存。"""
 
 import uuid
+from pathlib import Path
 
 from sqlalchemy import select
 
@@ -57,3 +58,11 @@ class AccountProjects:
     def permits(self, root, folders):
         binding = self.source()
         return root == binding["source_root"] and not folders
+
+    def allowed(self, root):
+        """用户自选目录时不能指向助手数据目录，避免把数据库和附件当项目源码。"""
+        if not root:
+            return True
+        target = Path(root).expanduser().resolve()
+        data = Path(self.projects.base.paths.data).resolve()
+        return not (target == data or target.is_relative_to(data) or data.is_relative_to(target))
