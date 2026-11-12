@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { X, FileCode2, ChevronDown, RotateCcw, Folders } from 'lucide-react';
+import { X, FileCode2, ChevronDown, RotateCcw, Folders, Code2 } from 'lucide-react';
 import { api as request, jsonBody } from '../../../app/api/client';
 import { useWorkspace, draftFor, draftKey, type ConversationDraft } from '../../../app/state/store';
 import { useRunStream } from '../hooks/useRunStream';
@@ -42,6 +42,7 @@ import { WorkspaceHeading } from '../../../app/layouts/WorkspaceHeader';
 import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
 import { CodeWorkDialog } from '../code_work/CodeWorkDialog';
+import { CodingPanel } from '../../coding/CodingPanel';
 import { CodeChangeSummary } from '../code_work/CodeChangeSummary';
 import { useAttachments } from '../attachments/useAttachments';
 import { AttachmentUpload } from '../attachments/AttachmentUpload';
@@ -84,6 +85,7 @@ export function ChatPane({
   const [context, setContext] = useState<{ runId?: string }>();
   const [codeWorkFile, setCodeWorkFile] = useState('');
   const [codeWorkRun, setCodeWorkRun] = useState('');
+  const [codingOpen, setCodingOpen] = useState(false);
   const [selectionPreview, setSelectionPreview] = useState<{
     selection: Selection;
     index: number;
@@ -334,6 +336,7 @@ export function ChatPane({
   }
   return (
     <section className="chat-pane" data-empty={showWelcome || undefined}>
+      <CodingPanel open={codingOpen} onClose={() => setCodingOpen(false)} />
       <WorkspaceHeading className="chat-heading" active={showHeader}>
         <div>
           {project.data && (
@@ -347,6 +350,14 @@ export function ChatPane({
           </strong>
         </div>
         <div>
+          <Button
+            className="icon-button"
+            aria-label="项目编码"
+            title="项目编码：变更、检查点与命令审批"
+            onClick={() => setCodingOpen(true)}
+          >
+            <Code2 size={17} aria-hidden="true" />
+          </Button>
           <Button
             className="icon-button workspace-toggle"
             aria-label="工作区"
