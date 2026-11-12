@@ -1,6 +1,7 @@
 """项目级编码工作区：文件、快照、命令与设置。"""
 
 import json
+import uuid
 from datetime import datetime
 from pathlib import Path
 from threading import RLock
@@ -30,6 +31,7 @@ class CodingWorkspace:
         self.settings_path = self.data / "coding" / "settings" / f"{self.project_id}.json"
         self.audit_path = self.data / "coding" / "audit" / f"{self.project_id}.jsonl"
         self.lock = RLock()
+        self.approvals = {}
         self.snapshots = Snapshots(self.data, self.project_id, self.root)
         self.executor = Executor(
             self.root,
@@ -161,6 +163,41 @@ class CodingWorkspace:
 
     def stop_process(self, job_id):
         return self.executor.stop(job_id)
+
+    # ---------- 审批 ----------
+    def request_approval(self, command, cwd=".", timeout=120):
+        with self.lock:
+            approval_id = uuid.uuid4().hex[:12]
+            self.approvals[approval_id] = {
+                "id": approval_id,
+                "command": command,
+                "cwd": cwd,
+                "timeout": timeout,
+                "status": "pending",
+                "created_at": now_iso(),
+                "result": None,
+            }
+            return dict(self.approvals[approval_id])
+
+    def list_approvals(self):
+        with self.lock:
+            return [dict(row) for row in self.approvals.values() if row["status"] == "pending"]
+
+    def decide_approval(self, approval_id, approved):
+        with self.lock:
+            row = self.approvals.get(approval_id)
+            if not row:
+                raise FileNotFoundError("审批请求不存在或已过期")
+            if row["status"] != "pending":
+                raise ValueError("该请求已经处理")
+            if not approved:
+                row["status"] = "rejected"
+                return dict(row)
+        result = self.run_command(row["command"], row["cwd"], row["timeout"], approved=True)
+        with self.lock:
+            row["status"] = "approved"
+            row["result"] = result
+            return dict(row)
 
     # ---------- 辅助 ----------
     def _touch(self):

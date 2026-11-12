@@ -97,6 +97,31 @@ def test_allowlist_requires_confirmation_for_unknown_command(tmp_path):
     assert safe["exit_code"] == 0
 
 
+def test_unknown_command_can_be_approved_and_executed(tmp_path):
+    work, _ = make_workspace(tmp_path, mode="allowlist")
+
+    with pytest.raises(ApprovalRequired) as error:
+        work.run_command("Get-Location")
+
+    request = work.request_approval(error.value.command, error.value.cwd, error.value.timeout)
+    assert [row["id"] for row in work.list_approvals()] == [request["id"]]
+
+    done = work.decide_approval(request["id"], True)
+
+    assert done["status"] == "approved"
+    assert done["result"]["exit_code"] == 0
+    assert work.list_approvals() == []
+
+
+def test_rejected_approval_does_not_run_command(tmp_path):
+    work, _ = make_workspace(tmp_path, mode="allowlist")
+    request = work.request_approval("Get-Location")
+
+    rejected = work.decide_approval(request["id"], False)
+
+    assert rejected["status"] == "rejected" and rejected["result"] is None
+
+
 def test_default_analysis_root_stays_read_only_until_enabled(tmp_path, monkeypatch):
     work, root = make_workspace(tmp_path)
     monkeypatch.setattr("app.modules.coding.service.READONLY_ROOT", root.resolve())

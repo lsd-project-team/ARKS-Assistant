@@ -34,6 +34,12 @@ DANGEROUS = [
 class ApprovalRequired(Exception):
     """命令不在自动放行范围，需要用户确认。"""
 
+    def __init__(self, command, cwd, timeout, message):
+        super().__init__(message)
+        self.command = command
+        self.cwd = cwd
+        self.timeout = timeout
+
 
 class Executor:
     def __init__(self, root, logs, mode="allowlist"):
@@ -67,7 +73,9 @@ class Executor:
             raise ValueError("命令不能为空")
         if not approved and not self.allowed(command):
             kind = self.classify(command)
-            raise ApprovalRequired(f"命令需要用户确认（{kind}）：{command}")
+            raise ApprovalRequired(
+                command, cwd or ".", timeout, f"命令需要用户确认（{kind}）：{command}"
+            )
         workdir = self._workdir(cwd)
         job_id = uuid.uuid4().hex[:12]
         log = self.logs / f"{job_id}.log"
@@ -108,7 +116,9 @@ class Executor:
         if not command:
             raise ValueError("命令不能为空")
         if not approved and not self.allowed(command):
-            raise ApprovalRequired(f"命令需要用户确认：{command}")
+            raise ApprovalRequired(
+                command, cwd or ".", DEFAULT_TIMEOUT, f"命令需要用户确认：{command}"
+            )
         if len(self._jobs) >= MAX_BACKGROUND:
             raise ValueError("后台任务数量已达上限，请先停止部分任务")
         workdir = self._workdir(cwd)

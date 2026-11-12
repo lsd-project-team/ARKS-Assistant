@@ -5,6 +5,7 @@ import asyncio
 from langchain_core.tools import tool
 
 from app.core.config import dump_json
+from app.modules.coding.executor import ApprovalRequired
 
 CODING_GUIDANCE = """
 【项目编码】
@@ -25,6 +26,13 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
     def call(name, function, *args, **kwargs):
         try:
             result = function(*args, **kwargs)
+        except ApprovalRequired as error:
+            payload = {
+                "ok": False,
+                "approval_required": True,
+                "approval": work.request_approval(error.command, error.cwd, error.timeout),
+                "message": "命令需要用户在界面上确认，批准后会由后台执行；不要反复重试。",
+            }
         except Exception as error:  # 工具失败要让模型看到原因，而不是中断整轮
             payload = {"ok": False, "error": str(error)}
         else:

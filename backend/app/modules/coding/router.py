@@ -38,6 +38,11 @@ class RestoreWrite(BaseModel):
     paths: list[str] = Field(default_factory=list, max_length=200)
 
 
+class ApprovalDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    approved: bool
+
+
 def create_router(services):
     router = APIRouter()
     coding = services.runtime.coding
@@ -113,5 +118,13 @@ def create_router(services):
     @router.delete("/api/coding/process/{job_id}")
     async def stop_process(job_id: str):
         return await asyncio.to_thread(coding.stop_process, job_id)
+
+    @router.get("/api/coding/approvals")
+    async def approvals():
+        return {"approvals": await asyncio.to_thread(coding.list_approvals)}
+
+    @router.post("/api/coding/approvals/{approval_id}")
+    async def decide_approval(approval_id: str, body: ApprovalDecision):
+        return await asyncio.to_thread(coding.decide_approval, approval_id, body.approved)
 
     return router
