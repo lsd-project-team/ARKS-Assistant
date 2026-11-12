@@ -17,7 +17,6 @@ export function ChatComposer({
   stopping,
   canContext,
   canCompact,
-  compactDisabledReason,
   model,
   modelControl,
   context,
@@ -39,7 +38,6 @@ export function ChatComposer({
   stopping: boolean;
   canContext: boolean;
   canCompact: boolean;
-  compactDisabledReason: string;
   model: string;
   modelControl?: ReactNode;
   context: ReactNode;
@@ -105,13 +103,6 @@ export function ChatComposer({
                 <code>/{item.id}</code>
                 <strong>{item.label}</strong>
               </span>
-              <small>
-                {available(item.id)
-                  ? item.description
-                  : item.id === 'context'
-                    ? '请先开始一段对话'
-                    : compactDisabledReason}
-              </small>
             </button>
           ))}
           <div className="command-keyboard-hint">↑ ↓ 选择 · Enter 执行 · Esc 收起</div>

@@ -627,7 +627,6 @@ export function ChatPane({
           stopping={cancel.isPending}
           canContext={canContext}
           canCompact={canCompact}
-          compactDisabledReason={!messages.length ? '请先发送一条消息' : '请等待当前运行完成'}
           model={
             modelPreference.data?.model_profiles.find(
               (profile) => profile.id === modelPreference.data.active_profile_id,
