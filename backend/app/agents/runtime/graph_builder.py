@@ -36,7 +36,6 @@ from app.modules.memory.selection import MemorySelection
 from app.modules.projects.context import project_prompt
 from app.modules.source_analysis.backend import SourceBackend
 
-
 PARAMETER_REUSE_REQUEST = re.compile(r"^\s*/参数复用(?=\s|$)")
 
 
@@ -188,8 +187,10 @@ class AgentGraphBuilder:
         prompt += "\nDeepWiki 使用当前项目关联的仓库；未关联时不能沿用其他项目或历史对话的仓库。"
         if parameter_reuse_request:
             prompt += (
-                "\n本轮是用户主动发起的参数复用查询。必须先调用 parameter_reuse MCP 的 lookup 工具，"
-                "query 只使用 /参数复用 后面的参数或模块文本；再依据工具返回的结论、核对事项和行号回答，"
+                "\n本轮是用户主动发起的参数复用查询。"
+                "必须先调用 parameter_reuse MCP 的 lookup 工具，"
+                "query 只使用 /参数复用 后面的参数或模块文本；"
+                "再依据工具返回的结论、核对事项和行号回答，"
                 "不要把斜杠命令本身当作普通问题解释。"
             )
         prompt += (

@@ -23,7 +23,9 @@
 - `tests/unit/coding/test_workspace.py`：新建/读取/覆盖保护/移动/删除、路径越界拒绝、检查点与单文件回滚、整项目回滚删除新增文件、前台命令、白名单确认、后台进程起停，7 项通过。
 - `tests/integration/coding/test_api.py`：项目级 API 建项目→写文件→读目录→执行命令→列检查点，1 项通过。
 - 聊天管线回归：`tests/integration/chat/test_api.py`、`test_autonomous_answer.py` 5 项通过。
-- `ruff check` 与 `ruff format` 通过。
+- 全量后端：1241 项通过、2 项跳过、13 项失败；失败全部是本机 `NO_PROXY` 含 `[::1]` 导致的代理地址解析错误，与本次改动无关。
+- 前端：`tsc -b` 通过，`npm test` 445 项通过，生产构建成功。
+- `ruff check` 与 `ruff format --check` 通过。
 
 ## 端到端
 

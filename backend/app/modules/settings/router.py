@@ -23,6 +23,7 @@ def create_router(services: AppServices) -> APIRouter:
     settings = services.settings
     runtime = services.runtime
     preferences = ModelPreferences(services.database, settings)
+
     @router.get("/api/model-preference")
     async def get_model_preference(request: Request):
         return preferences.public(identity(request)["user"]["id"])
