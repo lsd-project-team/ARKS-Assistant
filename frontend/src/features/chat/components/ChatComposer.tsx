@@ -56,7 +56,9 @@ export function ChatComposer({
   const menuOpen = !dismissed && matches.length > 0;
   const selectedCommand = matches[Math.min(selected, matches.length - 1)];
   const available = (command: ComposerCommand) =>
-    command === '记录问题' || (command === 'context' ? canContext : canCompact);
+    command === '记录问题' ||
+    command === '参数复用' ||
+    (command === 'context' ? canContext : canCompact);
   const command = exactCommand(draft) || (menuOpen ? selectedCommand?.id : undefined);
   const canSubmit = !sending && !uploading && (command ? available(command) : !!draft.trim());
   function submit() {

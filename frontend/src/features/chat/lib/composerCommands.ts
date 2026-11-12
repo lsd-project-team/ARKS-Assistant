@@ -1,4 +1,4 @@
-export type ComposerCommand = 'context' | 'compact' | '记录问题';
+export type ComposerCommand = 'context' | 'compact' | '记录问题' | '参数复用';
 
 export const composerCommands: ReadonlyArray<{
   id: ComposerCommand;
@@ -6,6 +6,7 @@ export const composerCommands: ReadonlyArray<{
 }> = [
   { id: 'context', label: '查看上下文' },
   { id: 'compact', label: '记录上下文' },
+  { id: '参数复用', label: '参数复用' },
   {
     id: '记录问题',
     label: '记录问题与经验',

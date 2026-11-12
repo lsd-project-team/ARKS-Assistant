@@ -1,6 +1,7 @@
 """Agent 运行职责拆分，依赖通过运行实例显式传入。"""
 
 import asyncio
+import re
 
 from deepagents import create_deep_agent
 from deepagents.backends import CompositeBackend, FilesystemBackend
@@ -36,6 +37,13 @@ from app.modules.knowledge.corpora.debug_lookup import DebugIssueLookup
 from app.modules.memory.selection import MemorySelection
 from app.modules.projects.context import project_prompt
 from app.modules.source_analysis.backend import SourceBackend
+
+
+PARAMETER_REUSE_REQUEST = re.compile(r"^\s*/参数复用(?=\s|$)")
+
+
+def is_parameter_reuse_request(content: str) -> bool:
+    return bool(PARAMETER_REUSE_REQUEST.match(content))
 
 
 class AgentGraphBuilder:
@@ -135,11 +143,18 @@ class AgentGraphBuilder:
         )
         if debug_issues:
             tools += debug_issues.tools()
+        parameter_reuse_request = is_parameter_reuse_request(requested_work)
         servers = [
             server
             for server in settings.mcp_servers
-            if (options.use_deepwiki and settings.deepwiki_repo)
-            or "deepwiki" not in (server.name + server.url).lower()
+            if (server.id == "parameter_reuse" and parameter_reuse_request)
+            or (
+                server.id != "parameter_reuse"
+                and (
+                    (options.use_deepwiki and settings.deepwiki_repo)
+                    or "deepwiki" not in (server.name + server.url).lower()
+                )
+            )
         ]
         if not inspection and servers:
             tools += await runtime.remote_tools(servers, emit)
@@ -173,6 +188,12 @@ class AgentGraphBuilder:
         )
         prompt += "\n已有长期记忆：\n" + memory_prompt
         prompt += "\nDeepWiki 使用当前项目关联的仓库；未关联时不能沿用其他项目或历史对话的仓库。"
+        if parameter_reuse_request:
+            prompt += (
+                "\n本轮是用户主动发起的参数复用查询。必须先调用 parameter_reuse MCP 的 lookup 工具，"
+                "query 只使用 /参数复用 后面的参数或模块文本；再依据工具返回的结论、核对事项和行号回答，"
+                "不要把斜杠命令本身当作普通问题解释。"
+            )
         prompt += (
             "\n本轮补读源码见 verified_source_context；"
             "同路径异版本的历史选区或工具结果只作历史快照。"

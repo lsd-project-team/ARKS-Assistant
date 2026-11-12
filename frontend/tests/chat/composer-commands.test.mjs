@@ -5,7 +5,7 @@ import { exactCommand, matchingCommands } from '../../src/features/chat/lib/comp
 test('斜杠前缀筛选命令，独立命令允许空白和大小写', () => {
   assert.deepEqual(
     matchingCommands('/').map((item) => item.id),
-    ['context', 'compact', '记录问题'],
+    ['context', 'compact', '参数复用', '记录问题'],
   );
   assert.deepEqual(
     matchingCommands('/com').map((item) => item.id),

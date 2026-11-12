@@ -3,6 +3,20 @@ from pathlib import Path
 import pytest
 
 from app.modules.parameter_migration.mcp_server import decision_for, find_rules, load_rules
+from app.agents.runtime.graph_builder import is_parameter_reuse_request
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        ("/参数复用 点胶压力", True),
+        (" /参数复用\tDispenser.EditState", True),
+        ("请问/参数复用 点胶压力", False),
+        ("/参数复用说明", False),
+    ],
+)
+def test_parameter_reuse_is_explicit_only(content, expected):
+    assert is_parameter_reuse_request(content) is expected
 
 
 @pytest.mark.parametrize(

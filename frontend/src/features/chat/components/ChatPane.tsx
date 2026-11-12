@@ -319,6 +319,11 @@ export function ChatPane({
       composerInput.current?.focus();
       return;
     }
+    if (command === '参数复用') {
+      setDraft('/参数复用 ');
+      composerInput.current?.focus();
+      return;
+    }
     const submitted = matchingCommands(draft).length ? conversationDraft : undefined;
     if (command === 'context' && canContext) {
       if (submitted) consumeCommand(draftKey(threadId, projectId), submitted);
