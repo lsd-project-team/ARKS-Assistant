@@ -114,6 +114,7 @@ export function useRunStream(run: Run | undefined) {
       void cache.invalidateQueries({ queryKey: ['queue', run.thread_id] });
       void cache.invalidateQueries({ queryKey: ['memories'] });
       void cache.invalidateQueries({ queryKey: ['context', run.thread_id] });
+      void cache.invalidateQueries({ queryKey: ['coding-changes'] });
     });
     // 重连提示独立于 MCP / 压缩提示，恢复连接后只撤掉断线状态。
     source.onopen = () => setConnectionNotice('');
