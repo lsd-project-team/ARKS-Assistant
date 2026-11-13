@@ -135,17 +135,21 @@ test('管理员从头部切换权限并二次确认完全权限', async () => {
   }
 });
 
-test('普通成员只能看到当前档位，不能打开菜单', async () => {
+test('项目成员也能打开菜单并切换档位', async () => {
   globalThis.__admin = false;
   globalThis.__settings = { permission: 'read-only', writable: false, enabled: false };
+  globalThis.__saved = undefined;
   const root = createRoot(document.getElementById('root'));
   try {
     await mount(root);
     const chip = document.querySelector('.permission-chip');
-    assert.equal(chip.disabled, true);
+    assert.equal(chip.disabled, false);
     assert.match(chip.textContent, /仅可查看/);
     await act(async () => chip.click());
-    assert.equal(document.querySelector('.permission-popover'), null);
+    const items = [...document.querySelectorAll('.permission-popover [role="menuitemradio"]')];
+    assert.equal(items.length, 3);
+    await act(async () => items[1].click());
+    assert.deepEqual(globalThis.__saved, { permission: 'workspace-write' });
   } finally {
     await act(async () => root.unmount());
   }

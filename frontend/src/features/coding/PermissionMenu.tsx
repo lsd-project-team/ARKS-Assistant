@@ -6,7 +6,6 @@ import { createPortal } from 'react-dom';
 import { api, jsonBody } from '../../app/api/client';
 import { useWorkspace } from '../../app/state/store';
 import { toast } from '../../shared/utils/toasts';
-import { useAuth } from '../auth/AuthContext';
 
 export type Permission = 'read-only' | 'workspace-write' | 'full-access';
 
@@ -47,7 +46,6 @@ const SETTINGS_KEY = 'coding-settings';
 
 export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   const projectId = useWorkspace((state) => state.projectId);
-  const admin = useAuth().session?.user?.role === 'admin';
   const cache = useQueryClient();
   const root = useRef<HTMLDivElement>(null);
   const chip = useRef<HTMLButtonElement>(null);
@@ -96,7 +94,7 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   }, [open]);
 
   function toggle() {
-    if (!admin) return;
+    if (save.isPending) return;
     if (open) {
       setOpen(false);
       return;
@@ -115,7 +113,7 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
     { previous?: CodingSettings }
   >({
     mutationFn: (body) =>
-      api<CodingSettings>('/coding/settings', { method: 'PUT', body: jsonBody(body) }),
+      api<CodingSettings>('/coding/permission', { method: 'PUT', body: jsonBody(body) }),
     onMutate: async (body) => {
       const key = [SETTINGS_KEY, projectId] as const;
       await cache.cancelQueries({ queryKey: key });
@@ -141,7 +139,7 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
 
   function choose(value: Permission) {
     setOpen(false);
-    if (!admin || save.isPending || value === current) return;
+    if (save.isPending || value === current) return;
     const body: { permission: Permission; enabled?: boolean } = { permission: value };
     if (value === 'workspace-write' && settings.data?.readonly && !settings.data.enabled) {
       if (!window.confirm('该目录是只读分析目录，切换为「工作区内修改」会同时启用编码写入。继续？'))
@@ -168,8 +166,8 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
               role="radio"
               aria-checked={active}
               className={active ? 'active' : ''}
-              disabled={!admin || save.isPending}
-              title={admin ? item.description : '仅管理员可以切换权限'}
+              disabled={save.isPending}
+              title={item.description}
               onClick={() => choose(item.value)}
             >
               <Icon size={15} aria-hidden="true" />
@@ -190,18 +188,15 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
         className="permission-chip"
         aria-haspopup="menu"
         aria-expanded={open}
-        disabled={!admin}
-        title={admin ? '切换权限档位' : '仅管理员可以切换权限'}
+        disabled={save.isPending}
+        title="切换权限档位"
         onClick={toggle}
       >
         <CurrentIcon size={15} aria-hidden="true" />
         <span className={`permission-label permission-${current}`}>{option.label}</span>
-        {admin && <ChevronDown size={13} aria-hidden="true" />}
+        <ChevronDown size={13} aria-hidden="true" />
       </button>
-      {open &&
-        admin &&
-        position &&
-        createPortal(
+      {open && position && createPortal(
           <div
             ref={popover}
             className="permission-popover"

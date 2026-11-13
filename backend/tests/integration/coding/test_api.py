@@ -140,6 +140,17 @@ def test_permission_switch_requires_admin_and_scope_applies(services, tmp_path):
         )
         assert denied.status_code == 403
 
+        # 权限档位单独放开给项目所有者，但仍不能操作别人的项目。
+        allowed = client.put(
+            f"/api/p/{own['id']}/coding/permission", json={"permission": "full-access"}
+        )
+        assert allowed.status_code == 200
+        assert allowed.json()["permission"] == "full-access"
+        foreign = client.put(
+            f"/api/p/{project['id']}/coding/permission", json={"permission": "read-only"}
+        )
+        assert foreign.status_code == 404
+
         sign_in(client, "admin")
         client.put(base + "/settings", json={"permission": "workspace-write"})
         pending = client.post(base + "/command", json={"command": "Get-Location"}).json()

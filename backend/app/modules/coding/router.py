@@ -21,6 +21,11 @@ class SettingsWrite(BaseModel):
     enabled: bool | None = None
 
 
+class PermissionWrite(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    permission: str = Field(pattern="^(read-only|workspace-write|full-access)$")
+
+
 class FileWrite(BaseModel):
     model_config = ConfigDict(extra="forbid")
     path: str = Field(min_length=1, max_length=500)
@@ -87,6 +92,11 @@ def create_router(services):
     async def set_settings(body: SettingsWrite, request: Request):
         require_admin(request)
         return coding.save_settings(body.model_dump(exclude_none=True))
+
+    @router.put("/api/coding/permission")
+    async def set_permission(body: PermissionWrite):
+        # 项目归属已在分发层校验：能到达这里的只会是项目所有者或管理员。
+        return await asyncio.to_thread(coding.save_settings, {"permission": body.permission})
 
     @router.get("/api/coding/tree")
     async def tree(

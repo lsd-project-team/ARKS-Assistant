@@ -343,7 +343,7 @@ coding 模块
 
 ### 19.1 权限三档
 
-- 聊天头部与编码面板提供三档权限：仅可查看（`read-only`）、工作区内修改（`workspace-write`）、完全权限（`full-access`）；仅管理员可切换。
+- 聊天头部与编码面板提供三档权限：仅可查看（`read-only`）、工作区内修改（`workspace-write`）、完全权限（`full-access`）；项目所有者可切换，超时/构建命令等其它编码设置仍仅管理员可改。
 - 仅可查看：写入、删除、移动、回滚、启动后台进程全部拒绝；命令只允许只读白名单（`ls/cat/rg/git status|diff|log`、`node --version` 等），包含 `; | & > <`、反引号或 `$(` 的命令直接拒绝，不进入审批。
 - 工作区内修改：项目内可写（`trunk` 只读目录仍需显式启用）；安全命令自动执行，未知命令弹确认，破坏性命令拒绝。
 - 完全权限：项目内可写；除危险命令外全部直接执行，不再弹确认。
@@ -368,7 +368,8 @@ coding 模块
 
 | 方法 | 路径 | 说明 |
 | --- | --- | --- |
-| PUT | `/api/p/{project}/coding/settings` | 新增 `permission`：`read-only` / `workspace-write` / `full-access` |
+| PUT | `/api/p/{project}/coding/settings` | 新增 `permission`：`read-only` / `workspace-write` / `full-access`（该接口仍仅管理员） |
+| PUT | `/api/p/{project}/coding/permission` | 项目所有者切换权限档位，只接受 `permission` |
 | POST | `/api/p/{project}/coding/approvals/{id}` | 请求体新增 `scope`：`once`（默认）/ `session` |
 
 `GET /coding/settings` 与审批响应会返回 `permission`、`scope`；旧的 `approval_mode` 仍保留并自动同步。
