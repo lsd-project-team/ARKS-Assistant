@@ -33,6 +33,14 @@ def create_router(services):
         path, filename = store.download(identifier)
         return FileResponse(path, filename=filename, media_type="application/octet-stream")
 
+    @router.get("/api/attachments/{identifier}/image")
+    def image(identifier: str):
+        # 只对真实图片声明图片类型并允许内联显示，避免把任意附件当页面渲染。
+        path, filename, media_type = store.image(identifier)
+        return FileResponse(
+            path, filename=filename, media_type=media_type, content_disposition_type="inline"
+        )
+
     @router.delete("/api/attachments/{identifier}")
     async def remove(identifier: str):
         async with services.runs.edit_lock:

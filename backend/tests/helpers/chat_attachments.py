@@ -21,6 +21,14 @@ def zip_bytes(files):
 
 
 @lru_cache(maxsize=64)
+def image_bytes(size=(120, 80), image_format="PNG", color="red"):
+    image = Image.new("RGB", size, color)
+    output = io.BytesIO()
+    image.save(output, format=image_format)
+    return output.getvalue()
+
+
+@lru_cache(maxsize=64)
 def document_bytes(extension, value=7):
     text = f"NewValue = {value}"
     if extension == ".scan.pdf":

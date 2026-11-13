@@ -21,6 +21,7 @@ from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
 from app.agents.runtime.coding_repeat import CodingRepeatGuard
 from app.agents.runtime.configuration import current_configuration
+from app.agents.runtime.images import ImageAttachments
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.tools.attachments import attachment_context, attachment_tools
@@ -285,6 +286,8 @@ class AgentGraphBuilder:
                     emit,
                     history_selection=history_selection if not inspection else None,
                 ),
+                # 预算检查基于文本标记；确需发送的图片在这里才展开为多模态内容。
+                ImageAttachments(runtime.repository.attachments),
                 ProviderUsage(emit),
                 FilesystemMiddleware(
                     backend=backend,

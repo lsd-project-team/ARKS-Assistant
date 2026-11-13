@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { FileText, X, Download } from 'lucide-react';
+import { Download, FileText, X } from 'lucide-react';
 import { api, apiUrl } from '../../../app/api/client';
 import { useWorkspace } from '../../../app/state/store';
 import type { ChatAttachment } from '../../../shared/types/api';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
+import { isImageAttachment } from './files';
 import './attachments.css';
 
 interface AttachmentPage extends ChatAttachment {
@@ -13,7 +14,49 @@ interface AttachmentPage extends ChatAttachment {
   next_offset: number | null;
 }
 
-function AttachmentPreview({
+function DownloadLink({ attachment }: { attachment: ChatAttachment }) {
+  const projectId = useWorkspace((state) => state.projectId);
+  return (
+    <a
+      className="button"
+      href={apiUrl(`/attachments/${attachment.id}/download`, projectId)}
+      download
+    >
+      <Download size={14} /> 下载原文件
+    </a>
+  );
+}
+
+function ImagePreview({
+  attachment,
+  onClose,
+}: {
+  attachment: ChatAttachment;
+  onClose: () => void;
+}) {
+  const projectId = useWorkspace((state) => state.projectId);
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      title={attachment.filename}
+      className="attachment-preview"
+      description="上传图片的原图预览"
+    >
+      <div className="attachment-preview-body">
+        <p className="attachment-notes">{attachment.parse_notes}</p>
+        <DownloadLink attachment={attachment} />
+        <img
+          className="attachment-preview-image"
+          src={apiUrl(`/attachments/${attachment.id}/image`, projectId)}
+          alt={attachment.filename}
+        />
+      </div>
+    </Modal>
+  );
+}
+
+function DocumentPreview({
   attachment,
   onClose,
 }: {
@@ -38,13 +81,7 @@ function AttachmentPreview({
     >
       <div className="attachment-preview-body">
         <p className="attachment-notes">{attachment.parse_notes}</p>
-        <a
-          className="button"
-          href={apiUrl(`/attachments/${attachment.id}/download`, projectId)}
-          download
-        >
-          <Download size={14} /> 下载原文件
-        </a>
+        <DownloadLink attachment={attachment} />
         <ErrorText error={page.error} />
         {page.isPending ? <p role="status">正在读取文档…</p> : <pre>{page.data?.content}</pre>}
         <div className="attachment-pages">
@@ -82,43 +119,67 @@ export function AttachmentList({
   disabled?: boolean;
 }) {
   const [preview, setPreview] = useState<ChatAttachment>();
+  const projectId = useWorkspace((state) => state.projectId);
   if (!attachments.length) return null;
   return (
-    <div className="chat-attachments" aria-label="附加文档">
-      {attachments.map((attachment) => (
-        <div className="chat-attachment" key={attachment.id}>
-          <FileText size={17} />
-          <button
-            type="button"
-            className="attachment-name"
-            title={attachment.parse_notes}
-            onClick={() => setPreview(attachment)}
-          >
-            <span>{attachment.filename}</span>
-            <small>
-              {Math.max(1, Math.ceil(attachment.size / 1024))} KB ·{' '}
-              {attachment.parse_status === 'partial' ? '部分内容可读' : '可读取'}
-            </small>
-          </button>
-          {onRemove && (
+    <div className="chat-attachments" aria-label="附加文档与图片">
+      {attachments.map((attachment) => {
+        const image = isImageAttachment(attachment);
+        return (
+          <div className={`chat-attachment${image ? ' image' : ''}`} key={attachment.id}>
+            {image ? (
+              <img
+                className="attachment-thumb"
+                src={apiUrl(`/attachments/${attachment.id}/image`, projectId)}
+                alt={attachment.filename}
+                loading="lazy"
+              />
+            ) : (
+              <FileText size={17} />
+            )}
             <button
               type="button"
-              disabled={disabled}
-              aria-label={`移除附件 ${attachment.filename}`}
-              onClick={() => onRemove(attachment.id)}
+              className="attachment-name"
+              title={attachment.parse_notes}
+              onClick={() => setPreview(attachment)}
             >
-              <X size={13} />
+              <span>{attachment.filename}</span>
+              <small>
+                {Math.max(1, Math.ceil(attachment.size / 1024))} KB ·{' '}
+                {image
+                  ? '图片，已随消息发送给模型'
+                  : attachment.parse_status === 'partial'
+                    ? '部分内容可读'
+                    : '可读取'}
+              </small>
             </button>
-          )}
-        </div>
-      ))}
-      {preview && (
-        <AttachmentPreview
-          key={preview.id}
-          attachment={preview}
-          onClose={() => setPreview(undefined)}
-        />
-      )}
+            {onRemove && (
+              <button
+                type="button"
+                disabled={disabled}
+                aria-label={`移除附件 ${attachment.filename}`}
+                onClick={() => onRemove(attachment.id)}
+              >
+                <X size={13} />
+              </button>
+            )}
+          </div>
+        );
+      })}
+      {preview &&
+        (isImageAttachment(preview) ? (
+          <ImagePreview
+            key={preview.id}
+            attachment={preview}
+            onClose={() => setPreview(undefined)}
+          />
+        ) : (
+          <DocumentPreview
+            key={preview.id}
+            attachment={preview}
+            onClose={() => setPreview(undefined)}
+          />
+        ))}
     </div>
   );
 }

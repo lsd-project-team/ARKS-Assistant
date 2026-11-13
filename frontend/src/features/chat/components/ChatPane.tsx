@@ -47,6 +47,7 @@ import { CodingPanel } from '../../coding/CodingPanel';
 
 import { useAttachments } from '../attachments/useAttachments';
 import { AttachmentUpload } from '../attachments/AttachmentUpload';
+import { clipboardImages } from '../attachments/files';
 
 export function ChatPane({
   onToggleWorkspace,
@@ -588,6 +589,7 @@ export function ChatPane({
           onCommand={executeCommand}
           onStop={() => active && cancel.mutate(active.id)}
           onUploadFiles={() => attachmentInput.current?.click()}
+          onPasteFiles={(files) => void uploader.upload(clipboardImages(files))}
           uploading={uploader.busy}
           attachments={
             <AttachmentUpload

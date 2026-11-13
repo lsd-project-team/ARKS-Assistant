@@ -10,6 +10,7 @@ from sqlalchemy import exists, or_, select
 from app.core.identifiers import new_id
 from app.modules.auth.ownership import current_owner, owner_filter, thread_filter
 from app.modules.chat.attachment_parsing import MAX_ATTACHMENTS, parse_attachment
+from app.modules.chat.image_attachments import is_image, media_type_of_file
 from app.modules.chat.models import ChatAttachment, Message, QueuedQuestion, Thread
 
 
@@ -19,6 +20,7 @@ def attachment_metadata(row):
         "filename": row.filename,
         "sha256": row.sha256,
         "size": row.size,
+        "kind": "image" if is_image(row.filename) else "document",
         "parse_status": row.parse_status,
         "parse_notes": row.parse_notes,
         "characters": len(row.content),
@@ -120,6 +122,16 @@ class ChatAttachments:
         ):
             raise ValueError("附件原文件缺失或版本不符，请恢复备份后重试")
         return path, metadata["filename"]
+
+    def image(self, identifier):
+        """图片预览按真实格式返回；其他附件仍然只走下载。"""
+        path, filename = self.download(identifier)
+        if not is_image(filename):
+            raise ValueError("附件不是图片")
+        media_type = media_type_of_file(path)
+        if not media_type:
+            raise ValueError("图片附件无法识别，请重新上传")
+        return path, filename, media_type
 
     def search(self, identifier, query, offset=0):
         if not query.strip() or len(query) > 200 or offset < 0:

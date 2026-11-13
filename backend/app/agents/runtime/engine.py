@@ -13,6 +13,7 @@ from app.agents.tools.debug_capture import capture_command
 from app.core.config import Paths, SettingsStore
 from app.infrastructure.mcp.client import ToolCatalog, adapt_tool
 from app.infrastructure.providers.models import close_models
+from app.modules.chat.image_attachments import marker
 from app.modules.chat.regeneration import previous_run_event
 from app.modules.chat.repository import Repository
 from app.modules.coding.service import CodingWorkspace
@@ -92,11 +93,25 @@ class AgentRuntime:
         if message.get("attachments"):
             from app.core.config import dump_json
 
-            files = [
+            documents = [
                 {key: row[key] for key in ("id", "filename", "sha256", "parse_status")}
                 for row in message["attachments"]
+                if row.get("kind") != "image"
             ]
-            content += "\n\n本条消息附加文档（正文请用附件读取工具核对）：\n" + dump_json(files)
+            images = [
+                row for row in message["attachments"] if row.get("kind") == "image"
+            ]
+            if documents:
+                content += "\n\n本条消息附加文档（正文请用附件读取工具核对）：\n" + dump_json(
+                    documents
+                )
+            if images:
+                # 只放文本标记；像素内容在模型请求边界展开，检查点不保存 base64。
+                content += (
+                    "\n\n本条消息附加图片（图片已随消息直接提供，可直接查看并回答；"
+                    "不要调用附件读取工具获取图片内容）：\n"
+                    + "\n".join(marker(row["id"], row["filename"]) for row in images)
+                )
         for selection in message["selections"]:
             stale = selection.get("stale", False)
             if stale:

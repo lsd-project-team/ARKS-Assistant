@@ -10,6 +10,7 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
 from app.infrastructure.pdf_ocr import OcrLimitError, PdfOcrBudget
+from app.modules.chat.image_attachments import IMAGE_EXTENSIONS, describe
 from app.modules.handover.infrastructure.parsers.archive import MAX_EXPANDED, safe_archive
 from app.modules.handover.infrastructure.parsers.docx import parse_docx
 from app.modules.handover.infrastructure.parsers.pdf import parse_pdf
@@ -32,7 +33,7 @@ TEXT_EXTENSIONS = {
     ".ini",
     ".log",
 }
-EXTENSIONS = TEXT_EXTENSIONS | {".docx", ".pdf", ".zip", ".xlsx", ".csv"}
+EXTENSIONS = TEXT_EXTENSIONS | {".docx", ".pdf", ".zip", ".xlsx", ".csv"} | IMAGE_EXTENSIONS
 
 
 def filename_for(filename):
@@ -40,7 +41,9 @@ def filename_for(filename):
     if not name or len(name) > 250 or any(ord(char) < 32 for char in name):
         raise ValueError("文件名为空、过长或含控制字符")
     if PurePosixPath(name).suffix.lower() not in EXTENSIONS:
-        raise ValueError("支持 DOCX、PDF、XLSX、CSV、ZIP 和常见文本文件；DOC 请转 DOCX")
+        raise ValueError(
+            "支持 DOCX、PDF、XLSX、CSV、ZIP、PNG/JPG/GIF/WebP 图片和常见文本文件；DOC 请转 DOCX"
+        )
     return name
 
 
@@ -154,6 +157,10 @@ def parse_zip(data, ocr_budget):
             path = item.filename.replace("\\", "/")
             extension = PurePosixPath(path).suffix.lower()
             # 仅解析一层文件；Office 内部结构交给原解析器，不递归展开嵌套 ZIP。
+            if extension in IMAGE_EXTENSIONS:
+                # ZIP 内的图片无法随当前消息发送给模型，明确跳过而不是假装已读。
+                skipped.append(f"{path}（图片请单独上传，ZIP 内图片不会发送给模型）")
+                continue
             if extension not in EXTENSIONS - {".zip"}:
                 skipped.append(f"{path}（格式暂不支持，嵌套 ZIP 不递归读取）")
                 continue
@@ -206,7 +213,9 @@ def _parse_attachment(data, filename, ocr_budget):
         raise ValueError("文件不能为空且单个文件不能超过 32 MB")
     filename = filename_for(filename)
     extension = PurePosixPath(filename).suffix.lower()
-    if extension in {".xlsx", ".csv"}:
+    if extension in IMAGE_EXTENSIONS:
+        content, status, notes = describe(data)
+    elif extension in {".xlsx", ".csv"}:
         content, status, notes = parse_spreadsheet(data, extension)
     elif extension == ".zip":
         content, status, notes = parse_zip(data, ocr_budget)

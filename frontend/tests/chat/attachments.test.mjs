@@ -8,6 +8,8 @@ import { act, createElement, useRef } from 'react';
 import {
   attachmentError,
   ACCEPTED_ATTACHMENTS,
+  clipboardImages,
+  isImageAttachment,
   MAX_FILE_SIZE,
 } from '../../src/features/chat/attachments/files.ts';
 
@@ -31,14 +33,14 @@ for (const key of [
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const environment = {
-  state: { drafts: {} },
+  state: { drafts: {}, projectId: 'p1' },
   request: async () => ({}),
   calls: [],
   element: createElement,
 };
 const compiled = await build({
   stdin: {
-    contents: `export { useAttachments } from './src/features/chat/attachments/useAttachments'; export { ChatComposer } from './src/features/chat/components/ChatComposer';`,
+    contents: `export { useAttachments } from './src/features/chat/attachments/useAttachments'; export { ChatComposer } from './src/features/chat/components/ChatComposer'; export { AttachmentList } from './src/features/chat/attachments/AttachmentList';`,
     resolveDir: fileURLToPath(new URL('../../', import.meta.url)),
     loader: 'tsx',
   },
@@ -47,6 +49,7 @@ const compiled = await build({
   format: 'cjs',
   platform: 'node',
   packages: 'external',
+  loader: { '.css': 'empty' },
   jsx: 'automatic',
   plugins: [
     {
@@ -58,10 +61,10 @@ const compiled = await build({
         );
         builder.onLoad({ filter: /.*/, namespace: 'attachment-test' }, ({ path }) => ({
           contents: path.endsWith('/client')
-            ? 'export const api = (...args) => { environment.calls.push(args); return environment.request(...args); };'
+            ? 'export const api = (...args) => { environment.calls.push(args); return environment.request(...args); }; export const apiUrl = (path, project) => "/api/projects/" + project + path;'
             : path.endsWith('/store')
-              ? `export const draftKey = (thread, project) => thread || (project ? 'new:' + project : 'new'); export const useWorkspace = { getState: () => environment.state, setState: (change) => { environment.state = { ...environment.state, ...change(environment.state) }; } };`
-              : `export const Button = (props) => environment.element('button', props);`,
+              ? `export const draftKey = (thread, project) => thread || (project ? 'new:' + project : 'new'); export const useWorkspace = Object.assign((selector) => selector(environment.state), { getState: () => environment.state, setState: (change) => { environment.state = { ...environment.state, ...change(environment.state) }; } });`
+              : `export const Button = (props) => environment.element('button', props); export const Modal = (props) => environment.element('div', { 'data-modal': props.title }, props.children); export const ErrorText = () => null;`,
         }));
       },
     },
@@ -74,7 +77,7 @@ new Function('require', 'module', 'exports', 'environment', compiled.outputFiles
   bundled.exports,
   environment,
 );
-const { useAttachments, ChatComposer } = bundled.exports;
+const { useAttachments, ChatComposer, AttachmentList } = bundled.exports;
 let uploader;
 function Harness({ project = 'p1', thread = 't1' }) {
   uploader = useAttachments(project, thread);
@@ -92,7 +95,7 @@ const metadata = (id) => ({
 });
 
 async function mounted(verify) {
-  environment.state = { drafts: {} };
+  environment.state = { drafts: {}, projectId: 'p1' };
   environment.calls = [];
   const root = createRoot(document.getElementById('root'));
   try {
@@ -228,6 +231,95 @@ test('上传解析期间允许输入，发送按钮被禁用以避免漏发附�
     await act(async () => root.render(createElement(Composer)));
     assert.equal(document.querySelector('textarea').disabled, false);
     assert.equal(document.querySelector('[aria-label="发送消息"]').disabled, true);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('图片格式可选，粘贴截图生成可辨认文件名', () => {
+  assert.equal(attachmentError({ name: '报错.PNG', size: 1024 }), '');
+  assert.equal(attachmentError({ name: '现场.JPG', size: 1024 }), '');
+  assert.equal(attachmentError({ name: '动图.gif', size: 1024 }), '');
+  assert.equal(isImageAttachment({ name: 'a.webp' }), true);
+  assert.equal(isImageAttachment({ name: '说明.txt' }), false);
+  assert.equal(isImageAttachment({ name: '没有扩展名', kind: 'image' }), true);
+  const pasted = clipboardImages(
+    [new File([new Uint8Array([1])], 'image.png', { type: 'image/png' })],
+    new Date(2026, 10, 13, 9, 5, 7),
+  );
+  assert.equal(pasted[0].name, '截图-20261113-090507.png');
+  const pair = clipboardImages(
+    [
+      new File([new Uint8Array([1])], 'image.png', { type: 'image/png' }),
+      new File([new Uint8Array([1])], 'blob', { type: 'image/jpeg' }),
+    ],
+    new Date(2026, 10, 13, 9, 5, 7),
+  );
+  assert.deepEqual(
+    pair.map((file) => file.name),
+    ['截图-20261113-090507.png', '截图-20261113-090507-2.jpg'],
+  );
+  assert.equal(clipboardImages([new File(['text'], 'a.txt', { type: 'text/plain' })]).length, 0);
+});
+
+test('图片附件显示缩略图并打开原图预览', async () => {
+  environment.state = { drafts: {}, projectId: 'p1' };
+  const image = {
+    ...metadata('img1'),
+    filename: '报错截图.png',
+    kind: 'image',
+  };
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(AttachmentList, { attachments: [image] })));
+    const thumb = document.querySelector('img.attachment-thumb');
+    assert.ok(thumb);
+    assert.match(thumb.getAttribute('src'), /\/attachments\/img1\/image$/);
+    assert.match(document.querySelector('.chat-attachment small').textContent, /图片/);
+    await act(async () => document.querySelector('.attachment-name').click());
+    const preview = document.querySelector('img.attachment-preview-image');
+    assert.ok(preview);
+    assert.match(preview.getAttribute('src'), /\/attachments\/img1\/image$/);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('粘贴图片交给上传，纯文字粘贴不受影响', async () => {
+  const pasted = [];
+  const root = createRoot(document.getElementById('root'));
+  function Composer() {
+    return createElement(ChatComposer, {
+      inputRef: useRef(null),
+      draft: '',
+      onChange() {},
+      onSend() {},
+      onCommand() {},
+      onStop() {},
+      onUploadFiles() {},
+      onPasteFiles: (files) => pasted.push(...files),
+      sending: false,
+      uploading: false,
+      busy: false,
+      stopping: false,
+      canContext: false,
+      canCompact: false,
+      model: 'test',
+      context: null,
+    });
+  }
+  try {
+    await act(async () => root.render(createElement(Composer)));
+    const textarea = document.querySelector('textarea');
+    const image = new File([new Uint8Array([1])], 'image.png', { type: 'image/png' });
+    const paste = new dom.window.Event('paste', { bubbles: true });
+    Object.defineProperty(paste, 'clipboardData', { value: { files: [image] } });
+    await act(async () => textarea.dispatchEvent(paste));
+    assert.equal(pasted.length, 1);
+    const plain = new dom.window.Event('paste', { bubbles: true });
+    Object.defineProperty(plain, 'clipboardData', { value: { files: [] } });
+    await act(async () => textarea.dispatchEvent(plain));
+    assert.equal(pasted.length, 1);
   } finally {
     await act(async () => root.unmount());
   }

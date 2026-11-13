@@ -11,6 +11,7 @@ export function ChatComposer({
   onCommand,
   onStop,
   onUploadFiles,
+  onPasteFiles,
   sending,
   busy,
   queueing = false,
@@ -30,6 +31,7 @@ export function ChatComposer({
   onCommand: (command: ComposerCommand) => void;
   onStop: () => void;
   onUploadFiles?: () => void;
+  onPasteFiles?: (files: File[]) => void;
   uploading?: boolean;
   attachments?: ReactNode;
   sending: boolean;
@@ -125,6 +127,15 @@ export function ChatComposer({
         aria-autocomplete="list"
         aria-activedescendant={menuOpen ? `${listId}-${selectedCommand.id}` : undefined}
         rows={2}
+        onPaste={(event) => {
+          // 截图可以直接粘贴；只在剪贴板确实带图片文件时接管，文字粘贴保持不变。
+          const files = Array.from(event.clipboardData?.files || []).filter((file) =>
+            file.type.startsWith('image/'),
+          );
+          if (!files.length || !onPasteFiles) return;
+          event.preventDefault();
+          onPasteFiles(files);
+        }}
         onKeyDown={(event) => {
           if (event.nativeEvent.isComposing) return;
           if (menuOpen && ['ArrowUp', 'ArrowDown'].includes(event.key)) {
@@ -145,8 +156,8 @@ export function ChatComposer({
           <button
             type="button"
             className="attach-file"
-            aria-label={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
-            title={onUploadFiles ? '上传文件' : '上传文件（暂未开放）'}
+            aria-label={onUploadFiles ? '上传文件或图片' : '上传文件（暂未开放）'}
+            title={onUploadFiles ? '上传文件或图片，也可以直接粘贴截图' : '上传文件（暂未开放）'}
             disabled={!onUploadFiles || sending || uploading}
             onClick={onUploadFiles}
           >

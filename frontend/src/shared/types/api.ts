@@ -34,6 +34,7 @@ export interface ChatAttachment {
   filename: string;
   sha256: string;
   size: number;
+  kind?: 'image' | 'document';
   characters: number;
   parse_status: 'readable' | 'partial';
   parse_notes: string;

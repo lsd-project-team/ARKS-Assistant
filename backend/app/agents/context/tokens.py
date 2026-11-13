@@ -7,6 +7,10 @@ import re
 from langchain_core.messages.utils import count_tokens_approximately
 from langchain_core.utils.function_calling import convert_to_openai_tool
 
+# 图片在请求边界才换成多模态块；预算按供应商单图上限预留，避免低估请求。
+IMAGE_TOKENS = 1024
+IMAGE_MARKER = "<attachment-image"
+
 
 def text_tokens(text: str) -> int:
     return math.ceil(max(len(text) / 4, len(text.encode("utf-8")) / 3))
@@ -43,7 +47,8 @@ def estimate_tokens(messages, *, tools=None) -> int:
                 value[key] = item
         serialized.append(json.dumps(value, ensure_ascii=False, default=str))
     byte_estimate = sum(text_tokens(value) + 8 for value in serialized)
-    return max(approximate, byte_estimate) + tools_tokens(tools)
+    images = sum(str(getattr(row, "content", "")).count(IMAGE_MARKER) for row in rows)
+    return max(approximate, byte_estimate) + tools_tokens(tools) + images * IMAGE_TOKENS
 
 
 def input_budget(limit: int, output: int) -> int:
