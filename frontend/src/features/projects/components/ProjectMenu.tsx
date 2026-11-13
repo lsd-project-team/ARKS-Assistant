@@ -99,6 +99,24 @@ export function ProjectMenu({ project, onEdit }: { project: Project; onEdit: () 
             </button>
             <button
               role="menuitem"
+              disabled={!project.source_root}
+              onClick={async () => {
+                close();
+                try {
+                  await api(`/projects/${project.id}/reveal`, { method: 'POST' });
+                } catch (error) {
+                  toast(
+                    error instanceof Error ? error.message : '无法打开源码目录',
+                    undefined,
+                    'error',
+                  );
+                }
+              }}
+            >
+              在文件夹中显示
+            </button>
+            <button
+              role="menuitem"
               onClick={() => void change('', { pinned: project.pinned_order === null })}
             >
               {project.pinned_order === null ? '置顶项目' : '取消置顶项目'}

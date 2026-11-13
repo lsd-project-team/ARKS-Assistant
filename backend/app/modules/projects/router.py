@@ -1,6 +1,8 @@
 """项目管理入口与固定项目服务的 ASGI 分派。"""
 
 import asyncio
+import os
+import subprocess
 from pathlib import Path
 from typing import Literal
 
@@ -184,6 +186,23 @@ def create_router(projects: Projects):
     async def order(project_id: str, body: ProjectOrder):
         async with projects.edit_lock:
             return projects.reorder(project_id, body.before_id)
+
+    @router.post("/api/projects/{project_id}/reveal")
+    def reveal(project_id: str):
+        row = projects.get(project_id)
+        root = (row.get("source_root") or "").strip()
+        if not root:
+            raise HTTPException(status_code=400, detail="项目未关联源码目录")
+        path = Path(root).resolve()
+        if not path.is_dir():
+            raise HTTPException(status_code=404, detail="源码目录不存在")
+        if os.name != "nt":
+            raise HTTPException(status_code=400, detail="仅支持在本机 Windows 中打开")
+        try:
+            subprocess.Popen(["explorer.exe", str(path)])
+        except OSError as error:
+            raise HTTPException(status_code=500, detail=f"无法打开资源管理器：{error}") from error
+        return {"ok": True}
 
     @router.delete("/api/projects/{project_id}")
     async def remove(project_id: str, disposition: str = "independent"):
