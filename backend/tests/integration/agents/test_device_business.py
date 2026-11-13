@@ -81,7 +81,7 @@ async def test_main_project_priority_reaches_model_with_optional_sources_disable
         "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: Model()
     )
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    options = {"use_knowledge": False, "use_memory": False, "use_deepwiki": False}
+    options = {"use_knowledge": False, "use_memory": False}
     run = repository.create_run(None, "我想做设备标定，给我输出一下标定流程", [], options)
     events = []
     answer = await runtime.execute(run, lambda kind, payload: events.append((kind, payload)))

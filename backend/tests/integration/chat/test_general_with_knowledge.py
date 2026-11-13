@@ -59,7 +59,7 @@ async def test_general_reply_never_loads_or_searches_knowledge_before_answering(
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
     manager = RunManager(repository, runtime, settings)
-    options = {"use_memory": False, "use_knowledge": use_knowledge, "use_deepwiki": False}
+    options = {"use_memory": False, "use_knowledge": use_knowledge}
     thread_id = None
     if with_history:
         prior = repository.create_run(None, "查一下真空报警记录", [], options)
@@ -133,7 +133,7 @@ async def test_followup_reads_existing_record_without_similarity_search_or_final
 
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    options = {"use_memory": False, "use_knowledge": True, "use_deepwiki": False}
+    options = {"use_memory": False, "use_knowledge": True}
     prior = repository.create_run(None, "查询试验结果", [], options)
     repository.finish(prior["id"], "本次结果为42。" + reference)
     run = repository.create_run(prior["thread_id"], "那这次结果是多少", [], options)

@@ -37,14 +37,14 @@ async def test_source_rules_reach_real_graph_after_unclassified_question_selects
         "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: Model()
     )
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    options = {"use_knowledge": False, "use_memory": False, "use_deepwiki": False}
+    options = {"use_knowledge": False, "use_memory": False}
     run = repository.create_run(None, "帮我看看有什么", [], options)
     answer = await runtime.execute(run, lambda *_args: None)
     repository.finish(run["id"], answer)
     assert len(prompts) == 2
     assert "【源码核查】" not in prompts[0]
     assert prompts[1].count("【源码核查】") == 1
-    assert "本地源码优先于 DeepWiki" in prompts[1]
+
     assert "可选回答展示协议" in prompts[1]
     assert "默认用step_flow" not in prompts[1]
     assert reminder_ids == [[], [SOURCE_ANSWER_NOTE_ID]]

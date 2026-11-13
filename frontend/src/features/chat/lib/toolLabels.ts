@@ -37,10 +37,8 @@ const labels: Record<string, string> = {
   glob: '查找文件',
   grep: '检索文件内容',
   write_todos: '整理待办',
-  read_wiki_structure: '读取项目文档目录',
-  read_wiki_contents: '读取项目文档',
   ask_question: '查询项目文档',
 };
 export const toolLabel = (name: string) =>
-  labels[name.replace(/^mcp_deepwiki_/, '')] ||
+  labels[name] ||
   (name.startsWith('mcp_') ? '查询外部资料' : '执行辅助操作');

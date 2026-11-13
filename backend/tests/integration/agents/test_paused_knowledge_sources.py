@@ -3,10 +3,9 @@
 import pytest
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
-from langchain_core.tools import tool
 
 from app.agents.runtime.engine import AgentRuntime
-from app.core.config import AppSettings, McpSettings, ModelSettings
+from app.core.config import AppSettings, ModelSettings
 from app.modules.chat.context import ConversationContext
 from app.modules.chat.schemas import SourceOptions
 from app.modules.handover.application.commands import DebugWrite
@@ -27,8 +26,6 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     settings.save(
         AppSettings(
             model=ModelSettings(context_tokens=32768, output_tokens=512),
-            deepwiki_repo="test/example",
-            mcp_servers=[McpSettings(id="wiki", name="DeepWiki", url="https://example.test/mcp")],
         )
     )
     project_id = "sources-project"
@@ -59,7 +56,7 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
         ),
     )
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    tools, prompts, connections = [], [], []
+    tools, prompts = [], []
 
     class Model(DeterministicModel):
         def bind_tools(self, supplied, **_kwargs):
@@ -101,24 +98,13 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     monkeypatch.setattr(runtime.knowledge, "tools", forbidden)
     monkeypatch.setattr(HandoverMaterialCorpus, "__init__", forbidden)
 
-    @tool
-    async def deepwiki_probe(query: str) -> str:
-        """Deterministic stand-in for a configured remote DeepWiki tool."""
-        return query
-
-    async def remote_tools(servers, _emit):
-        connections.extend(server.name for server in servers)
-        return [deepwiki_probe]
-
-    monkeypatch.setattr(runtime, "remote_tools", remote_tools)
     options = SourceOptions(use_knowledge=use_knowledge).model_dump()
     run = repository.create_run(None, "取片不稳定有哪些处理经验", [], options)
     answer = await runtime.execute(
         run, lambda kind, payload: repository.event(run["id"], kind, payload)
     )
     assert answer == "测试回复"
-    assert connections == ["DeepWiki"]
-    assert {"read_source", "deepwiki_probe"} <= set(tools)
+    assert "read_source" in tools
     assert "remember" not in tools
     assert not {
         "search_project_knowledge",

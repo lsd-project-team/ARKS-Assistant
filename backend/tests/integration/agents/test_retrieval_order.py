@@ -137,7 +137,7 @@ async def test_selected_basis_controls_retrieval_without_post_generation_review(
 
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    options = {"use_memory": False, "use_knowledge": True, "use_deepwiki": False}
+    options = {"use_memory": False, "use_knowledge": True}
     run = repository.create_run(None, questions[route], [], options)
     if route == "regenerated-experience":
         previous = SourceEvidence(

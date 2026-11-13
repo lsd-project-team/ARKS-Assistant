@@ -5,12 +5,11 @@ import { resolvedSources } from '../../src/features/settings/lib/sourceOptions.t
 
 test('旧草稿使用兼容来源默认值，关闭资料不影响源码选择', () => {
   assert.deepEqual(resolvedSources(), {
-    use_deepwiki: true,
     use_knowledge: true,
     use_memory: true,
   });
   useWorkspace.setState({ threadId: 'source-control', drafts: {} });
-  const options = { use_deepwiki: false, use_knowledge: false, use_memory: false };
+  const options = { use_knowledge: false, use_memory: false };
   useWorkspace.getState().setSourceOptions(options);
   useWorkspace.getState().setDraft('解释入口');
   const draft = draftFor(useWorkspace.getState());

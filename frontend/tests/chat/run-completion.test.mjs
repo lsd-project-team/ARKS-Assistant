@@ -41,7 +41,6 @@ test('analysis defaults survive older settings and invalid reserve is rejected',
     active_profile_id: 'default',
     mcp_servers: [],
     auto_memory: true,
-    deepwiki_repo: '',
     version: '',
   });
   assert.deepEqual(settings.analysis, defaultAnalysis);

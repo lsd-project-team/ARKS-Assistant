@@ -145,14 +145,7 @@ class AgentGraphBuilder:
         servers = [
             server
             for server in settings.mcp_servers
-            if (server.id == "parameter_reuse" and parameter_reuse_request)
-            or (
-                server.id != "parameter_reuse"
-                and (
-                    (options.use_deepwiki and settings.deepwiki_repo)
-                    or "deepwiki" not in (server.name + server.url).lower()
-                )
-            )
+            if server.id != "parameter_reuse" or parameter_reuse_request
         ]
         if not inspection and servers:
             tools += await runtime.remote_tools(servers, emit)
@@ -178,14 +171,8 @@ class AgentGraphBuilder:
             trim_tokens_to_summarize=max(1, available // 2),
             token_counter=estimate_tokens,
         )
-        prompt = (
-            SYSTEM_PROMPT
-            + RICH_CONTENT_GUIDANCE
-            + project_prompt()
-            + f"\nDeepWiki 仓库：{settings.deepwiki_repo or '未配置'}\n"
-        )
+        prompt = SYSTEM_PROMPT + RICH_CONTENT_GUIDANCE + project_prompt()
         prompt += "\n已有长期记忆：\n" + memory_prompt
-        prompt += "\nDeepWiki 使用当前项目关联的仓库；未关联时不能沿用其他项目或历史对话的仓库。"
         if parameter_reuse_request:
             prompt += (
                 "\n本轮是用户主动发起的参数复用查询。"

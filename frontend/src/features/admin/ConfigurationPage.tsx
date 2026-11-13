@@ -83,10 +83,6 @@ export function ConfigurationPage({
               <span className="muted">源码目录</span>
               <p>{current.data?.source_root || '未关联源码目录'}</p>
             </div>
-            <div>
-              <span className="muted">DeepWiki 仓库</span>
-              <p>{current.data?.deepwiki_repo || '未关联仓库'}</p>
-            </div>
           </div>
           <ErrorText error={projects.error || current.error} />
         </section>

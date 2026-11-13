@@ -26,25 +26,9 @@ export function RunEvidenceDetails({
       {context.source_options && (
         <p className="muted">
           本轮允许检索：本地源码
-          {context.source_options.use_deepwiki && '、DeepWiki'}
           {context.source_options.use_knowledge && '、问题与经验'}
           {context.source_options.use_memory && '、长期记忆'}
         </p>
-      )}
-      {!!context.wiki_provenance?.length && (
-        <details>
-          <summary>实际使用的 DeepWiki · {context.wiki_provenance.length} 次</summary>
-          {context.wiki_provenance.map((item, index) => (
-            <p key={index}>
-              {item.repo} · {item.note}
-              <br />
-              本地提交：{item.local.commit || '未知'}
-              {item.local.dirty && '（含本地修改）'}
-              <br />
-              Wiki 索引提交：{item.remote_indexed_commit || '未提供'}
-            </p>
-          ))}
-        </details>
       )}
       {!!context.knowledge_retrieval?.length && (
         <details>

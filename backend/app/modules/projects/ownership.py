@@ -14,13 +14,8 @@ class AccountProjects:
 
     def source(self):
         root = str(self.projects.base.workspace.root)
-        repo = self.projects.base.settings.load().deepwiki_repo
-        with self.projects.database.session() as session:
-            original = session.get(Project, self.projects.default_id)
-            if original and original.source_root == root and original.deepwiki_repo:
-                repo = original.deepwiki_repo
-        # 只使用管理员已配置的公司源码关联，不复制任何人的资料或记忆。
-        return {"source_root": root, "source_folders": [], "deepwiki_repo": repo}
+        # 只使用管理员配置的公司源码目录，不复制任何人的资料或记忆。
+        return {"source_root": root, "source_folders": []}
 
     def ensure(self, user):
         if user["role"] != "user":
@@ -46,7 +41,6 @@ class AccountProjects:
                     owner_id=user["id"],
                     name="ZX2200 软件分析",
                     source_root=binding["source_root"],
-                    deepwiki_repo=binding["deepwiki_repo"],
                 )
             )
 

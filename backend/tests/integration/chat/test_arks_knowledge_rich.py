@@ -126,7 +126,7 @@ def test_arks_knowledge_fact_revision_preserves_graphics_citations_and_roundtrip
     fixture = json.loads(
         (ROOT / "backend/tests/fixtures/knowledge/blue-film-rich.json").read_text(encoding="utf-8")
     )
-    options = {"use_memory": False, "use_knowledge": True, "use_deepwiki": False}
+    options = {"use_memory": False, "use_knowledge": True}
     with TestClient(create_app(paths)) as client:
         saved = client.post("/api/handover/debug-issues", json=fixture)
         assert saved.status_code == 201, saved.text

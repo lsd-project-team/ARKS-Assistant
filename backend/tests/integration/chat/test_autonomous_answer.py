@@ -65,7 +65,7 @@ async def test_search_read_review_display_and_history_preserve_model_format(
         None,
         "说明 Program.cs 的入口流程",
         [],
-        {"use_knowledge": False, "use_memory": False, "use_deepwiki": False},
+        {"use_knowledge": False, "use_memory": False},
     )
     try:
         manager.start(run)

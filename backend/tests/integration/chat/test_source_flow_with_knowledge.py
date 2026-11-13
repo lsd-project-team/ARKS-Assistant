@@ -111,7 +111,7 @@ async def test_unrelated_knowledge_does_not_replace_source_flow_or_trigger_repai
         None,
         question,
         [],
-        {"use_knowledge": use_knowledge, "use_deepwiki": False, "use_memory": False},
+        {"use_knowledge": use_knowledge, "use_memory": False},
     )
     try:
         manager.start(run)
@@ -270,7 +270,7 @@ async def test_source_issue_does_not_change_flow_or_append_a_review_note(
         thread_id,
         QUESTION,
         [],
-        {"use_knowledge": True, "use_deepwiki": False, "use_memory": False},
+        {"use_knowledge": True, "use_memory": False},
     )
     try:
         manager.start(run)

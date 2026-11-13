@@ -3,7 +3,6 @@ import { resolvedSources } from '../../settings/lib/sourceOptions';
 import '../../settings/styles/source-options.css';
 
 const choices = [
-  ['use_deepwiki', 'DeepWiki', '查阅远端架构说明'],
   ['use_knowledge', '问题与经验', '检索历史问题、处理办法和经验记录'],
   ['use_memory', '长期记忆', '带入后台生成的记忆，并允许按设置参与后台提取'],
 ] as const;
@@ -44,13 +43,13 @@ export function SourceOptionsControl({
       <div className="source-options-presets">
         <button
           type="button"
-          onClick={() => onChange({ use_deepwiki: false, use_knowledge: false, use_memory: false })}
+          onClick={() => onChange({ use_knowledge: false, use_memory: false })}
         >
           仅本地源码
         </button>
         <button
           type="button"
-          onClick={() => onChange({ use_deepwiki: true, use_knowledge: true, use_memory: true })}
+          onClick={() => onChange({ use_knowledge: true, use_memory: true })}
         >
           使用全部资料
         </button>

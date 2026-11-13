@@ -91,7 +91,7 @@ def test_existing_owners_keep_project_and_private_names_are_not_copied(services)
             original = session.get(Project, services[2].id)
             original.owner_id = user.id
             original.name = "PRIVATE-PROJECT"
-            original.deepwiki_repo = "company/ZX2200"
+
         sign_in(client, "user")
         assert default_project(client)["id"] == services[2].id
         assert len(client.get("/api/projects").json()["projects"]) == 1
@@ -100,10 +100,10 @@ def test_existing_owners_keep_project_and_private_names_are_not_copied(services)
         second = default_project(client)
         assert "description" not in second and "instructions" not in second
         assert second["name"] == "ZX2200 软件分析"
-        assert second["deepwiki_repo"] == "company/ZX2200"
+
         assert "PRIVATE-" not in client.get("/api/projects").text
         snapshot = client.app.state.projects.snapshot("independent")
-        assert snapshot["deepwiki_repo"] == "company/ZX2200"
+
         assert "PRIVATE-" not in str(snapshot)
 
 

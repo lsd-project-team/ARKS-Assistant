@@ -34,9 +34,7 @@ class CodingAgentModel(DeterministicModel):
                 ChatGeneration(
                     message=AIMessage(
                         content="",
-                        tool_calls=[
-                            {"id": f"call-{len(tools)}", "name": name, "args": args}
-                        ],
+                        tool_calls=[{"id": f"call-{len(tools)}", "name": name, "args": args}],
                     )
                 )
             ]
@@ -58,7 +56,7 @@ async def test_agent_creates_file_and_runs_command_in_project(services, tmp_path
         thread,
         "在这个空项目里创建 hello 文件，并检查构建环境",
         [],
-        SourceOptions(use_memory=False, use_knowledge=False, use_deepwiki=False).model_dump(),
+        SourceOptions(use_memory=False, use_knowledge=False).model_dump(),
     )
 
     events = []

@@ -53,7 +53,7 @@ def tool_stage(name):
     if name in {"search_debug_issues", "read_debug_issue"}:
         return "reading_debug"
     if name.startswith("mcp_"):
-        return "reading_wiki"
+        return "reading_remote"
     if name in {"recall_conversation", "read_conversation_message", "remember"}:
         return "reading_memory"
     if name == "compact_conversation":

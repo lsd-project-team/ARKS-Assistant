@@ -93,7 +93,6 @@ export interface Thread {
 export interface Project {
   owner_id?: string | null;
   source_folders: { root: string; label: string; source_id: string }[];
-  deepwiki_repo: string;
   id: string;
   name: string;
   source_root: string | null;
@@ -108,7 +107,7 @@ export interface Project {
 export interface ProjectList {
   projects: Project[];
   default_project_id: string | null;
-  default_source?: Pick<Project, 'source_root' | 'source_folders' | 'deepwiki_repo'>;
+  default_source?: Pick<Project, 'source_root' | 'source_folders'>;
 }
 export interface Conversation extends Thread {
   messages: Message[];
@@ -173,7 +172,6 @@ export interface Settings {
   version: string;
   mcp_servers: McpServer[];
   auto_memory: boolean;
-  deepwiki_repo: string;
   analysis?: AnalysisSettings;
 }
 export interface AnalysisSettings {
@@ -311,13 +309,6 @@ export interface RunContext {
     reason?: string;
     scope?: string;
   };
-  wiki_provenance?: {
-    status: string;
-    note: string;
-    repo: string;
-    remote_indexed_commit: string | null;
-    local: { commit: string | null; dirty: boolean | null };
-  }[];
   knowledge_retrieval?: { titles: string[]; injected: boolean }[];
   debug_issues?: { id: string; title: string; version: number; citation: string }[];
   model?: ModelSnapshot;
@@ -364,7 +355,6 @@ export interface MemorySaveFeedback {
 }
 
 export interface SourceOptions {
-  use_deepwiki: boolean;
   use_knowledge: boolean;
   use_memory: boolean;
 }

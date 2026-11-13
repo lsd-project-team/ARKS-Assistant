@@ -24,7 +24,6 @@ from app.modules.chat.models import Message, QueuedQuestion, Run, Thread
 from app.modules.chat.repository import Repository
 from app.modules.chat.runs import RunManager
 from app.modules.memory.service import MemoryService
-from app.modules.projects.association import associate_repository
 from app.modules.projects.models import Project
 from app.modules.projects.ownership import AccountProjects
 from app.modules.source_analysis.collection import ProjectAnalysis, SourceCollection
@@ -85,7 +84,6 @@ class Projects:
                     Project(
                         id=self.default_id,
                         name="ZX2200 软件分析",
-                        deepwiki_repo=self.base.settings.load().deepwiki_repo,
                         source_root=str(self.base.workspace.root),
                     )
                 )
@@ -147,7 +145,6 @@ class Projects:
                 "name",
                 "source_root",
                 "source_folders",
-                "deepwiki_repo",
             )
         }
 
@@ -197,26 +194,6 @@ class Projects:
             "knowledge_available": self.knowledge_available(str(services.workspace.root)),
         }
 
-    def association(self, primary, folders=()):
-        root = source_root(primary)
-        extra = [source_root(value) for value in folders if value.strip()]
-        with self.database.session() as session:
-            known = [
-                {"source_root": source, "deepwiki_repo": repo}
-                for source, repo in session.execute(
-                    select(Project.source_root, Project.deepwiki_repo).where(
-                        Project.state != "deleted",
-                        Project.source_root.is_not(None),
-                        owner_filter(Project),
-                    )
-                )
-            ]
-        return {
-            "source_root": root,
-            "knowledge_available": self.knowledge_available(root),
-            **associate_repository([root] if root else list(dict.fromkeys(extra)), known),
-        }
-
     @staticmethod
     def register_sources(session, root, folders):
         sources = [(Workspace(Path(root)).source_id, root)] if root else []
@@ -231,18 +208,12 @@ class Projects:
         if binding:
             root = binding["source_root"]
         folders = source_folders(body.source_folders, root)
-        repo = body.deepwiki_repo
-        if binding and not repo:
-            repo = binding["deepwiki_repo"]
-        if body.auto_associate and not repo:
-            repo = self.association(root, [item["root"] for item in folders])["deepwiki_repo"]
         with self.database.session.begin() as session:
             self.register_sources(session, root, folders)
             row = Project(
                 owner_id=current_owner(),
                 id=uuid.uuid4().hex,
                 name=body.name,
-                deepwiki_repo=repo,
                 source_root=root,
                 source_folders_json=json.dumps(folders, ensure_ascii=False),
                 sort_order=(
@@ -271,8 +242,7 @@ class Projects:
 
     def update(self, project_id, body):
         changes = body.model_dump(exclude_unset=True)
-        auto = changes.pop("auto_associate", False)
-        if not changes and not auto:
+        if not changes:
             raise ValueError("请指定要修改的项目信息")
         if "source_root" in changes:
             changes["source_root"] = source_root(changes["source_root"])
@@ -291,11 +261,6 @@ class Projects:
                     [SimpleNamespace(**item) for item in json.loads(row.source_folders_json)],
                     primary,
                 )
-            if auto:
-                folders = json.loads(changes.get("source_folders_json", row.source_folders_json))
-                changes["deepwiki_repo"] = self.association(
-                    primary, [item["root"] for item in folders]
-                )["deepwiki_repo"]
             root_changed = (
                 "source_root" in changes and changes["source_root"] != row.source_root
             ) or (

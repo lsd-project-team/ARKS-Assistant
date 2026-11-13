@@ -99,7 +99,6 @@ def test_actual_graph_api_stream_history_files_and_frontend_are_compatible(servi
                 "source_options": {
                     "use_knowledge": False,
                     "use_memory": False,
-                    "use_deepwiki": False,
                 },
             },
         )
@@ -159,7 +158,6 @@ def test_actual_graph_api_stream_history_files_and_frontend_are_compatible(servi
                 "source_options": {
                     "use_knowledge": False,
                     "use_memory": False,
-                    "use_deepwiki": False,
                 },
             },
         )
@@ -275,7 +273,6 @@ def test_source_syntax_repair_keeps_steps_and_version_without_conclusion_review(
                 "source_options": {
                     "use_knowledge": False,
                     "use_memory": False,
-                    "use_deepwiki": False,
                 },
             },
         )

@@ -14,7 +14,6 @@ const settings = () =>
     model: emptyModel(),
     mcp_servers: [],
     auto_memory: true,
-    deepwiki_repo: '',
     version: 'version',
   });
 

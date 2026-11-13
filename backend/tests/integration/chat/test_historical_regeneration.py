@@ -18,7 +18,7 @@ from app.modules.chat.regeneration import CONTEXT_EVENT, previous_run_event
 from app.modules.chat.runs import RunManager
 from tests.helpers.models import DeterministicModel
 
-SOURCES = {"use_memory": False, "use_knowledge": False, "use_deepwiki": False}
+SOURCES = {"use_memory": False, "use_knowledge": False}
 
 
 def answered(repository, thread_id, question, answer):

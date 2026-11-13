@@ -119,7 +119,7 @@ class ConversationContext:
         evidence = []
         usage = []
         validation = None
-        wiki, knowledge = [], []
+        knowledge = []
         source_review = None
         completion, progress, plan = None, None, None
         tool_ends = {}
@@ -170,8 +170,6 @@ class ConversationContext:
                     usage.append(event["payload"])
                 if event["kind"] == "answer_validation":
                     validation = event["payload"]
-                if event["kind"] == "wiki_provenance":
-                    wiki.append(event["payload"])
                 if event["kind"] == "knowledge_retrieval":
                     knowledge.append(event["payload"])
                 if event["kind"] == "source_review":
@@ -203,7 +201,6 @@ class ConversationContext:
             "provider_usage": usage,
             "answer_validation": validation,
             "source_options": snapshot.get("source_options") if snapshot else None,
-            "wiki_provenance": wiki,
             "knowledge_retrieval": knowledge,
             "references": list(references.values()),
             "searches": searches,

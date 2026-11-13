@@ -71,7 +71,6 @@ class AgentRuntime:
                         server,
                         remote,
                         workspace=self.workspace,
-                        repo=current_configuration(self.settings).deepwiki_repo,
                         emit=emit,
                     )
                     for remote in definitions

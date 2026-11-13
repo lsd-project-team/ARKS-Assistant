@@ -226,8 +226,7 @@ async def test_irreducible_request_is_not_sent_and_keeps_original(services, monk
     settings.save(
         AppSettings(
             model=ModelSettings(context_tokens=8192, output_tokens=512),
-            deepwiki_repo="example/project" if oversized == "tools" else "",
-            mcp_servers=[McpSettings(id="wiki", name="DeepWiki", url="https://example.com/mcp")]
+            mcp_servers=[McpSettings(id="external", name="外部工具", url="https://example.com/mcp")]
             if oversized == "tools"
             else [],
         )

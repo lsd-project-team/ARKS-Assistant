@@ -2,7 +2,7 @@
 
 import asyncio
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Literal
 
 from fastapi import APIRouter, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, Response
@@ -14,7 +14,6 @@ from app.modules.chat import router as conversations
 from app.modules.coding.router import create_router as coding_router
 from app.modules.knowledge import router as knowledge
 from app.modules.memory import router as memories
-from app.modules.projects.association import repository_name
 from app.modules.projects.export import export_project
 from app.modules.projects.service import Projects
 from app.modules.source_analysis import router as workspace
@@ -32,8 +31,6 @@ class ProjectCreate(BaseModel):
 
     name: str = Field(min_length=1, max_length=120)
     source_root: str | None = Field(default=None, max_length=1024)
-    deepwiki_repo: str = Field(default="", max_length=200)
-    auto_associate: bool = True
     source_folders: list[SourceFolder] = Field(default_factory=list, max_length=8)
 
     @field_validator("name")
@@ -43,28 +40,16 @@ class ProjectCreate(BaseModel):
             raise ValueError("项目名称不能为空")
         return value.strip()
 
-    @field_validator("deepwiki_repo")
-    @classmethod
-    def valid_repository(cls, value):
-        if not value.strip():
-            return ""
-        normalized = repository_name(value)
-        if not normalized:
-            raise ValueError("请填写 owner/repository 或 GitHub 仓库地址")
-        return normalized
-
 
 class ProjectUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str | None = Field(default=None, min_length=1, max_length=120)
     source_root: str | None = Field(default=None, max_length=1024)
-    deepwiki_repo: str | None = Field(default=None, max_length=200)
-    auto_associate: bool = False
     pinned: bool | None = None
     source_folders: list[SourceFolder] = Field(default_factory=list, max_length=8)
 
-    @field_validator("name", "deepwiki_repo", "pinned")
+    @field_validator("name", "pinned")
     @classmethod
     def non_null(cls, value):
         if value is None:
@@ -79,11 +64,6 @@ class ProjectUpdate(BaseModel):
         if not value:
             raise ValueError("项目名称不能为空")
         return value
-
-    @field_validator("deepwiki_repo")
-    @classmethod
-    def valid_repository(cls, value):
-        return ProjectCreate.valid_repository(value)
 
 
 class MoveThreads(BaseModel):
@@ -132,13 +112,6 @@ def create_router(projects: Projects):
             raise HTTPException(status_code=403, detail="源码目录不能与助手数据目录互相包含")
         async with projects.edit_lock:
             return projects.create(body)
-
-    @router.get("/api/projects/association")
-    async def association(
-        source_root: str = Query(default="", max_length=1024),
-        source_roots: Annotated[list[str] | None, Query(max_length=8)] = None,
-    ):
-        return await asyncio.to_thread(projects.association, source_root, source_roots or [])
 
     @router.get("/api/projects/search-threads")
     async def search(

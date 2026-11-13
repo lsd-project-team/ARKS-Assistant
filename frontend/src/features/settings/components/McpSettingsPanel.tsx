@@ -161,7 +161,7 @@ export function McpSettingsPanel({
                 <input
                   value={server.url}
                   onChange={(event) => change('url', event.target.value)}
-                  placeholder="https://mcp.deepwiki.com/mcp"
+                  placeholder="https://example.com/mcp"
                 />
               </label>
               <SecretFields

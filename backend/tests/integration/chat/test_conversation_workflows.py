@@ -372,25 +372,26 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
     paths, _, workspace, repository, memories, settings = services
     settings.save(
         AppSettings(
-            deepwiki_repo="example/project",
-            mcp_servers=[McpSettings(id="wiki", name="DeepWiki", url="https://example.com/mcp")],
+            mcp_servers=[
+                McpSettings(id="external", name="外部工具", url="https://example.com/mcp")
+            ],
         )
     )
 
     @tool
-    def mcp_wiki_lookup():
+    def mcp_external_lookup():
         """界面阶段验收中的本地 Wiki 替身。"""
         return "Program 是入口模块"
 
     def generate(_self, messages, *_a, **_kw):
         messages = [row for row in messages if row.id != SOURCE_ANSWER_NOTE_ID]
         last = messages[-1]
-        if getattr(last, "name", "") == "mcp_wiki_lookup":
+        if getattr(last, "name", "") == "mcp_external_lookup":
             answer = AIMessage(content="核对完成。[Program.cs:2](source:Program.cs#L2)")
         elif getattr(last, "name", "") == "read_source":
             answer = AIMessage(
                 content="查阅架构",
-                tool_calls=[{"name": "mcp_wiki_lookup", "args": {}, "id": "wiki"}],
+                tool_calls=[{"name": "mcp_external_lookup", "args": {}, "id": "wiki"}],
             )
         else:
             answer = AIMessage(
@@ -403,7 +404,7 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
 
     async def remote_tools(_self, _servers, emit):
         emit("stage", {"stage": "connecting_mcp", "detail": "本地验收"})
-        return [mcp_wiki_lookup]
+        return [mcp_external_lookup]
 
     monkeypatch.setattr(DeterministicModel, "_generate", generate)
     monkeypatch.setattr(
@@ -417,7 +418,7 @@ async def test_runtime_stage_tracks_real_source_and_wiki_tool_rounds(services, m
     stages = [payload["stage"] for kind, payload in events if kind == "stage"]
     assert answer.startswith("核对完成。[Program.cs:2](source:Program.cs#L2)")
     assert stages[:2] == ["connecting_model", "connecting_mcp"]
-    assert "reading_source" in stages and "reading_wiki" in stages
+    assert "reading_source" in stages and "reading_remote" in stages
     assert stages.count("generating") == 3 and "checking_sources" not in stages
     assert not any(kind == "answer_validation" for kind, _ in events)
     assert not any(kind == "source_review" for kind, _ in events)

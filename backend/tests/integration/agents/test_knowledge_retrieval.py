@@ -348,7 +348,7 @@ async def test_answer_model_only_sees_selected_content_without_final_fact_review
         None,
         "查询本次试验结果",
         [],
-        {"use_memory": False, "use_knowledge": True, "use_deepwiki": False},
+        {"use_memory": False, "use_knowledge": True},
     )
     events = []
     try:
@@ -415,7 +415,7 @@ async def test_empty_preselection_does_not_expose_candidates_or_append_a_review_
         None,
         "查询本次试验结果",
         [],
-        {"use_memory": False, "use_knowledge": True, "use_deepwiki": False},
+        {"use_memory": False, "use_knowledge": True},
     )
     events = []
     try:

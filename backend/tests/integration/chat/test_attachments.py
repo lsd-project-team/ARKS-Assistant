@@ -145,7 +145,6 @@ def test_bad_upload_and_invalid_binding_are_atomic(services, monkeypatch):
             assert not list(session.scalars(select(ChatAttachment)))
 
 
-
 async def test_attachment_tools_reject_other_conversation_ids_and_search_paginates(services):
     repository = services[3]
     first = repository.attachments.upload(b"rule " * 20, "rules.txt")

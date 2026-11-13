@@ -16,7 +16,6 @@ export function KnowledgeSourceSettings({
       {project.data && (
         <div className="knowledge-source-binding">
           <p className="muted">源码目录：{project.data.source_root || '未关联主目录'}</p>
-          <p className="muted">DeepWiki 仓库：{project.data.deepwiki_repo || '未关联'}</p>
         </div>
       )}
       {controller.saved.isPending && <p className="muted">正在读取知识来源…</p>}

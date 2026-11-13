@@ -15,7 +15,6 @@ class Project(Base):
     name: Mapped[str] = mapped_column(String(120))
     source_root: Mapped[str | None] = mapped_column(Text, nullable=True)
     source_folders_json: Mapped[str] = mapped_column(Text, default="[]", server_default="[]")
-    deepwiki_repo: Mapped[str] = mapped_column(String(200), default="", server_default="")
     state: Mapped[str] = mapped_column(String(20), default="active", server_default="active")
     pinned_order: Mapped[int | None] = mapped_column(Integer, nullable=True)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, server_default="0")

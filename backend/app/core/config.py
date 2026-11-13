@@ -144,7 +144,6 @@ class AppSettings(BaseModel):
     mcp_servers: list[McpSettings] = Field(default_factory=list, max_length=20)
     auto_memory: bool = True
     memory_generation: MemoryGenerationSettings = Field(default_factory=MemoryGenerationSettings)
-    deepwiki_repo: str = ""
     analysis: AnalysisSettings = Field(default_factory=AnalysisSettings)
 
     @model_validator(mode="before")

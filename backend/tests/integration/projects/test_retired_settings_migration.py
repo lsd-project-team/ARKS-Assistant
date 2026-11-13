@@ -20,9 +20,7 @@ def test_upgrade_removes_settings_and_snapshots_preserving_business_data(service
     _, database, _, repository, *_ = services
     with database.session.begin() as session:
         for state in ("active", "archived", "deleted"):
-            session.add(
-                Project(id=state, name=f"原名称-{state}", state=state, deepwiki_repo="org/repo")
-            )
+            session.add(Project(id=state, name=f"原名称-{state}", state=state))
     run = repository.create_run(None, "保留原问题", [])
     repository.finish(run["id"], "保留原答案")
     kept_snapshot = {

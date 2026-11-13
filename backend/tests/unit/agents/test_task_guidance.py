@@ -42,7 +42,6 @@ async def test_source_rules_do_not_force_a_flow_layout(question):
     prompt = current.system_message.text
     assert prompt.count("【源码核查】") == 1
     assert "[文件名:行号](source:相对路径#L行号)" in prompt
-    assert "本地源码优先于 DeepWiki" in prompt
     assert "发起调用不等于硬件完成" in prompt
     assert "默认用step_flow" not in prompt
     assert "先规划候选项并调用 plan_source_checks" not in prompt

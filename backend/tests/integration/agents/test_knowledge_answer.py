@@ -74,7 +74,7 @@ async def test_model_answer_streams_and_persists_without_post_generation_review(
         "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: Model()
     )
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    options = {"use_memory": False, "use_knowledge": True, "use_deepwiki": False}
+    options = {"use_memory": False, "use_knowledge": True}
     query = "请读取经验编号" if via_tool else "蓝膜刺穿经验"
     run = repository.create_run(None, query, [], options)
     events = []

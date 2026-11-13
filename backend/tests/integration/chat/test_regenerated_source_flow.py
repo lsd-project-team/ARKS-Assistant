@@ -101,7 +101,6 @@ async def test_real_regeneration_revalidates_prior_reads_and_never_becomes_empty
         {
             "use_knowledge": True,
             "use_memory": True,
-            "use_deepwiki": True,
         },
     )
     try:

@@ -45,10 +45,6 @@ class RunManager:
         configuration = ModelPreferences(self.repository.database, self.settings).configuration(
             actor.get("id")
         )
-        if project:
-            configuration = configuration.model_copy(
-                update={"deepwiki_repo": project.get("deepwiki_repo", "")}
-            )
         configuration, _policy = configured_analysis(
             configuration,
             self.repository.message(run["message_id"])["content"],

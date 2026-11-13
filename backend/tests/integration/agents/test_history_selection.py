@@ -375,7 +375,7 @@ async def test_real_agent_keeps_archives_and_recall_after_filtering_older_answer
 
     monkeypatch.setattr("app.agents.runtime.graph_builder.create_model", lambda *_a, **_k: Model())
     runtime = AgentRuntime(paths, settings, workspace, repository, memories)
-    options = {"use_memory": False, "use_knowledge": False, "use_deepwiki": False}
+    options = {"use_memory": False, "use_knowledge": False}
     thread = repository.create_thread("历史筛选")
     for n in range(8):
         run = repository.create_run(thread["id"], f"用户要求{n}，只读。", [], options)

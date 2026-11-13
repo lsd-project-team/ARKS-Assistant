@@ -9,7 +9,7 @@ from tests.helpers.memories import MemorySeed as MemoryWrite
 from tests.helpers.memories import seed_memory
 from tests.helpers.models import DeterministicModel
 
-LOCAL = {"use_deepwiki": False, "use_knowledge": False, "use_memory": False}
+LOCAL = {"use_knowledge": False, "use_memory": False}
 
 
 def test_queue_edit_branch_and_regenerate_preserve_sources(services):

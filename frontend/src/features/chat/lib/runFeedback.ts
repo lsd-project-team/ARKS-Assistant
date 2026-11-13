@@ -9,7 +9,7 @@ export const runStages: Record<string, string> = {
   reading_debug: '检索问题与经验',
   reading_materials: '检索资料正文',
   checking_sources: '筛选相关资料',
-  reading_wiki: '查阅 DeepWiki',
+  reading_remote: '查询外部工具',
   reading_memory: '读取记忆与历史',
   compacting: '压缩上下文',
   generating: '生成回复',

@@ -58,9 +58,7 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
             lambda *_args: None,
             inspection=True,
             question_text="你好",
-            source_options=SourceOptions(
-                use_knowledge=knowledge, use_memory=memory, use_deepwiki=False
-            ).model_dump(),
+            source_options=SourceOptions(use_knowledge=knowledge, use_memory=memory).model_dump(),
             verified_context=verified,
         )
 

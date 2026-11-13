@@ -54,7 +54,6 @@ class CodeSelection(BaseModel):
 
 
 class SourceOptions(BaseModel):
-    use_deepwiki: bool = True
     use_knowledge: bool = True
     use_memory: bool = True
 

@@ -5,7 +5,6 @@ import { useWorkspace } from '../../../app/state/store';
 import type { Project } from '../../../shared/types/api';
 import { Button, ErrorText, Modal } from '../../../shared/ui/ui';
 import { toast } from '../../../shared/utils/toasts';
-import { useProjectAssociation } from '../hooks/useProjectAssociation';
 
 export function ProjectEditor({
   project,
@@ -20,14 +19,7 @@ export function ProjectEditor({
   const [root, setRoot] = useState(project?.source_root || '');
   // 精简表单不再编辑附加目录，保存时保留已有项目的关联。
   const folders = project?.source_folders || [];
-  const [wiki, setWiki] = useState(project?.deepwiki_repo || '');
-  const [automatic, setAutomatic] = useState(!project);
   const effectiveRoot = root;
-  const association = useProjectAssociation(
-    effectiveRoot,
-    folders.map((folder) => folder.root),
-    automatic,
-  );
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<unknown>();
   const cache = useQueryClient();
@@ -44,8 +36,6 @@ export function ProjectEditor({
             root: folder.root.trim(),
             label: folder.label.trim(),
           })),
-          deepwiki_repo: automatic ? '' : wiki.trim(),
-          auto_associate: automatic,
         }),
       });
       await cache.invalidateQueries({ queryKey: ['projects'] });
@@ -108,30 +98,7 @@ export function ProjectEditor({
               placeholder={'本机目录，如 D:\\projects\\Sp900Client'}
             />
           </label>
-          <label>
-            DeepWiki 仓库 <span className="muted">可选</span>
-            <input
-              aria-label="DeepWiki 仓库"
-              value={automatic ? association.data?.deepwiki_repo || '' : wiki}
-              readOnly={automatic}
-              maxLength={200}
-              onChange={(event) => setWiki(event.target.value)}
-              placeholder={automatic ? '根据源码目录自动识别' : 'owner/repository 或 GitHub 地址'}
-            />
-          </label>
-          <label className="project-association-toggle">
-            <input
-              type="checkbox"
-              checked={automatic}
-              onChange={(event) => {
-                if (!event.target.checked && association.data?.deepwiki_repo)
-                  setWiki(association.data.deepwiki_repo);
-                setAutomatic(event.target.checked);
-              }}
-            />
-            自动关联 DeepWiki 仓库
-          </label>
-          <ErrorText error={error || (automatic ? association.error : undefined)} />
+          <ErrorText error={error} />
         </div>
         <div className="modal-footer">
           <Button type="button" disabled={pending} onClick={onClose}>
@@ -140,7 +107,7 @@ export function ProjectEditor({
           <Button
             type="submit"
             className="primary"
-            disabled={pending || !name.trim() || association.detecting}
+            disabled={pending || !name.trim()}
           >
             {pending ? '正在保存…' : project ? '保存' : '创建项目'}
           </Button>
