@@ -15,8 +15,25 @@ globalThis.document = dom.window.document;
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 globalThis.MutationObserver = dom.window.MutationObserver;
 globalThis.getComputedStyle = dom.window.getComputedStyle.bind(dom.window);
-globalThis.HTMLElement = dom.window.HTMLElement;
-globalThis.Node = dom.window.Node;
+for (const key of [
+  'Event',
+  'CustomEvent',
+  'KeyboardEvent',
+  'MouseEvent',
+  'FocusEvent',
+  'PointerEvent',
+  'HTMLElement',
+  'HTMLInputElement',
+  'Element',
+  'Node',
+  'NodeFilter',
+  'TreeWalker',
+  'Document',
+  'DocumentFragment',
+  'DOMRect',
+]) {
+  if (dom.window[key]) globalThis[key] = dom.window[key];
+}
 dom.window.confirm = () => true;
 
 const compiled = await build({
@@ -113,7 +130,7 @@ async function mount(root, inline = false) {
   await act(async () => root.render(createElement(PermissionMenu, { inline })));
 }
 
-test('管理员从头部切换权限并二次确认完全权限', async () => {
+test('切换完全权限先弹应用内确认，确认后才提交', async () => {
   globalThis.__admin = true;
   globalThis.__settings = { permission: 'workspace-write', writable: true, enabled: true };
   globalThis.__saved = undefined;
@@ -129,7 +146,30 @@ test('管理员从头部切换权限并二次确认完全权限', async () => {
     assert.equal(items[1].getAttribute('aria-checked'), 'true');
 
     await act(async () => items[2].click());
+    assert.equal(globalThis.__saved, undefined);
+    assert.match(document.querySelector('.permission-confirm').textContent, /切换到完全权限/);
+    assert.match(document.querySelector('.permission-confirm').textContent, /危险命令仍会被拒绝/);
+
+    await act(async () => document.querySelector('.permission-confirm .primary').click());
     assert.deepEqual(globalThis.__saved, { permission: 'full-access' });
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('取消确认不会提交权限变更', async () => {
+  globalThis.__settings = { permission: 'workspace-write', writable: true, enabled: true };
+  globalThis.__saved = undefined;
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await mount(root);
+    await act(async () => document.querySelector('.permission-chip').click());
+    const items = [...document.querySelectorAll('.permission-popover [role="menuitemradio"]')];
+    await act(async () => items[2].click());
+    assert.ok(document.querySelector('.permission-confirm'));
+    await act(async () => document.querySelector('.permission-confirm .button').click());
+    assert.equal(globalThis.__saved, undefined);
+    assert.equal(document.querySelector('.permission-confirm'), null);
   } finally {
     await act(async () => root.unmount());
   }
@@ -172,6 +212,9 @@ test('内联三档可切换，只读目录切到工作区会同时启用编码',
     assert.equal(buttons[0].getAttribute('aria-checked'), 'true');
 
     await act(async () => buttons[1].click());
+    assert.equal(globalThis.__saved, undefined);
+    assert.match(document.querySelector('.permission-confirm').textContent, /启用编码/);
+    await act(async () => document.querySelector('.permission-confirm .primary').click());
     assert.deepEqual(globalThis.__saved, { permission: 'workspace-write', enabled: true });
   } finally {
     await act(async () => root.unmount());

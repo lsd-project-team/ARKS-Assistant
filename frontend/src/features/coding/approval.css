@@ -239,3 +239,37 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.permission-confirm-overlay {
+  z-index: 66;
+}
+.permission-confirm {
+  z-index: 67;
+  width: min(460px, calc(100vw - 40px));
+  padding: 22px;
+  gap: 10px;
+}
+.permission-confirm-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.permission-confirm-desc {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.permission-confirm-effects {
+  margin: 2px 0 6px;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.permission-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}

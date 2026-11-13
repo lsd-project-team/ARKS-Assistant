@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as Dialog from '@radix-ui/react-dialog';
 import { Check, ChevronDown, Eye, ShieldAlert, ShieldCheck } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { api, jsonBody } from '../../app/api/client';
@@ -54,6 +55,70 @@ function placeAt(rect: DOMRect) {
   return { top: rect.bottom + 6, right };
 }
 
+function PermissionConfirm({
+  permission,
+  submitting,
+  onCancel,
+  onConfirm,
+}: {
+  permission: Permission;
+  submitting: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const descriptionId = useId();
+  const fullAccess = permission === 'full-access';
+  const effects = fullAccess
+    ? [
+        '对本项目的所有对话生效',
+        '命令不再逐条确认，危险命令仍会被拒绝',
+        '切换后待确认的命令会被取消，可随时切回',
+      ]
+    : [
+        '对本项目的所有对话生效',
+        '允许写入项目文件，并在可行时启用编码',
+        '切回「仅可查看」即可停止写入',
+      ];
+  return (
+    <Dialog.Root open onOpenChange={(next) => !next && onCancel()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="modal-overlay permission-confirm-overlay" />
+        <Dialog.Content
+          className="modal-content permission-confirm"
+          aria-describedby={descriptionId}
+        >
+          <Dialog.Title className="permission-confirm-title">
+            {fullAccess ? '切换到完全权限？' : '启用编码并切换到工作区内修改？'}
+          </Dialog.Title>
+          <p className="permission-confirm-desc" id={descriptionId}>
+            {fullAccess
+              ? '完全权限会让项目内的命令直接执行，不再逐条确认；危险命令仍会被拒绝。'
+              : '当前目录是只读分析目录。确认后会同时允许写入项目文件，项目内的编码能力随之启用。'}
+          </p>
+          <ul className="permission-confirm-effects">
+            {effects.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <div className="permission-confirm-actions">
+            <button type="button" className="button" onClick={onCancel}>
+              取消
+            </button>
+            <button
+              type="button"
+              className="button primary"
+              disabled={submitting}
+              onClick={onConfirm}
+            >
+              {fullAccess ? '确认切换' : '启用并切换'}
+            </button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
+
 export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   const projectId = useWorkspace((state) => state.projectId);
   const cache = useQueryClient();
@@ -61,6 +126,9 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   const chip = useRef<HTMLButtonElement>(null);
   const popover = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState<{ permission: Permission; enabled?: boolean } | null>(
+    null,
+  );
   const [position, setPosition] = useState<{
     top?: number;
     bottom?: number;
@@ -153,22 +221,41 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   function choose(value: Permission) {
     setOpen(false);
     if (save.isPending || value === current) return;
-    const body: { permission: Permission; enabled?: boolean } = { permission: value };
-    if (value === 'workspace-write' && settings.data?.readonly && !settings.data.enabled) {
-      if (!window.confirm('该目录是只读分析目录，切换为「工作区内修改」会同时启用编码写入。继续？'))
-        return;
-      body.enabled = true;
-    }
-    if (value === 'full-access' && !window.confirm('完全权限会跳过命令确认；危险命令仍会被拒绝。确定切换？'))
+    if (value === 'full-access') {
+      setPending({ permission: value });
       return;
+    }
+    if (value === 'workspace-write' && settings.data?.readonly && !settings.data.enabled) {
+      setPending({ permission: value, enabled: true });
+      return;
+    }
+    save.mutate({ permission: value });
+  }
+
+  function confirmPending() {
+    if (!pending) return;
+    const body: { permission: Permission; enabled?: boolean } = { permission: pending.permission };
+    if (pending.enabled) body.enabled = true;
+    setPending(null);
     save.mutate(body);
   }
+
+  const confirmDialog = pending ? (
+    <PermissionConfirm
+      permission={pending.permission}
+      submitting={save.isPending}
+      onCancel={() => setPending(null)}
+      onConfirm={confirmPending}
+    />
+  ) : null;
 
   if (!active) return null;
 
   if (inline) {
     return (
-      <div className="permission-inline" role="radiogroup" aria-label="权限档位">
+      <>
+        {confirmDialog}
+        <div className="permission-inline" role="radiogroup" aria-label="权限档位">
         {OPTIONS.map((item) => {
           const Icon = item.icon;
           const active = item.value === current;
@@ -189,12 +276,15 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
             </button>
           );
         })}
-      </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="permission-menu" ref={root}>
+    <>
+      {confirmDialog}
+      <div className="permission-menu" ref={root}>
       <button
         type="button"
         ref={chip}
@@ -245,6 +335,7 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
           </div>,
           document.body,
         )}
-    </div>
+      </div>
+    </>
   );
 }
