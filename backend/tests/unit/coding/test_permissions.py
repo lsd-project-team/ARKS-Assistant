@@ -120,6 +120,9 @@ def test_session_scope_allows_the_same_command_again(tmp_path):
     assert not again.get("approval_required")
     assert work.list_approvals() == []
 
+    approved = [row for row in work.list_audit() if row["action"] == "approve"]
+    assert approved and approved[0]["scope"] == "session"
+
     # 不同命令、其他对话、切换权限后都要重新确认。
     assert work.run_command("Get-Date", wait=False, thread_id="thread-1")["approval_required"]
     assert work.run_command("Get-Location", wait=False, thread_id="thread-2")["approval_required"]

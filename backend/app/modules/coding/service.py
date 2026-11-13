@@ -663,6 +663,15 @@ class CodingWorkspace:
             row["_event"].set()
         if approved and row.get("scope") == "session":
             self._remember_session(row["command"], row.get("thread_id", ""))
+        if approved:
+            self._audit(
+                "approve",
+                row["command"],
+                None,
+                thread_id=row.get("thread_id", ""),
+                run_id=row.get("run_id", ""),
+                scope=row.get("scope") or "once",
+            )
         if waiting:
             # 等待中的工具线程会在收到结果后执行并回填。
             return self.approval(approval_id)
@@ -844,6 +853,7 @@ class CodingWorkspace:
         run_id="",
         duration_ms=None,
         output="",
+        scope="",
     ):
         self.audit_path.parent.mkdir(parents=True, exist_ok=True)
         row = {
@@ -856,6 +866,7 @@ class CodingWorkspace:
             "permission": self.permission(),
             "thread_id": thread_id,
             "run_id": run_id,
+            "scope": scope,
             "duration_ms": duration_ms,
             "output_digest": hashlib.sha256(output.encode("utf-8")).hexdigest() if output else "",
         }
