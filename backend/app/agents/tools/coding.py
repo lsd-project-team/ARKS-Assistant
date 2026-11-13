@@ -1,10 +1,33 @@
 """聊天中的原地编码工具；直接读写项目目录，用快照回滚。"""
 
 import asyncio
+import json
+import re
 
 from langchain_core.tools import tool
 
 from app.core.config import dump_json
+from app.modules.coding import diagnostics
+
+BUILD_COMMAND = re.compile(r"\bdotnet\s+build\b", re.IGNORECASE)
+TEST_COMMAND = re.compile(r"\bdotnet\s+(?:test|run\s+--project\s+\S*tests)", re.IGNORECASE)
+
+
+def _record_command_check(checks, command, output, exit_code):
+    text = command or ""
+    parsed = diagnostics.parse_diagnostics(output, exit_code)
+    if BUILD_COMMAND.search(text):
+        checks.record_verify(
+            {
+                "ok": parsed["error_count"] == 0,
+                "kind": "build",
+                "warning_count": parsed["warning_count"],
+                "summary": parsed["summary"],
+            }
+        )
+    elif TEST_COMMAND.search(text):
+        counts = diagnostics.parse_tests(output, exit_code)
+        checks.record_verify({"ok": counts["ok"], "kind": "test", **counts})
 
 CODING_GUIDANCE = """
 【项目编码】
@@ -244,7 +267,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
     @tool
     async def run_command(command: str, cwd: str = ".", timeout_seconds: int = 120) -> str:
         """Run a one-shot shell command in the project directory."""
-        return await run(
+        result = await run(
             "run_command",
             work.run_command,
             command,
@@ -256,6 +279,15 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
             run_id=run_id,
             thread_id=thread_id,
         )
+        if checks is not None:
+            # 模型可能用 run_command 而不是 verify 跑构建/测试，验收门禁也要看到结果。
+            try:
+                payload = json.loads(result)
+            except (TypeError, ValueError):
+                payload = {}
+            if payload.get("ok"):
+                _record_command_check(checks, command, payload.get("output") or "", 0)
+        return result
 
     @tool
     async def start_process(command: str, cwd: str = ".") -> str:
