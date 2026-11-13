@@ -10,7 +10,9 @@ from app.modules.coding.executor import ApprovalRequired
 CODING_GUIDANCE = """
 【项目编码】
 当前项目目录就是工作区，所有路径都使用项目内相对路径。
-用户描述需求后直接完成：先 list_files / read_project_file / search_files 了解现状，
+工艺、设备操作、故障与经验类问题不要当作编码任务：先调用 search_debug_issues 检索本地问题与经验，
+再结合检索结果回答；只有用户明确要求修改代码、创建工程或运行命令时才使用文件与命令工具。
+用户明确要求实现或修改时，先 list_files / read_project_file / search_files 了解现状，
 再建目录、写文件、跑构建或测试。
 新建项目可以是空目录，从零创建工程结构也可以。
 覆盖已有文件必须带上一次读取得到的 hash；新建文件 hash 留空。

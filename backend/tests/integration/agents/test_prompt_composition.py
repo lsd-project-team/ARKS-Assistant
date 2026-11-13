@@ -92,11 +92,13 @@ async def test_prompt_rules_follow_available_tools_and_preserve_current_context(
     assert "prepare_code_workspace" not in tools
     assert {"list_files", "read_project_file", "write_file", "run_command"} <= tools
     assert "当前项目目录就是工作区" in prompt
-    assert "用户描述需求后直接完成" in prompt
+    assert "用户明确要求实现或修改时" in prompt
     assert "没有修改文件、执行命令或审核交付工具" not in prompt
     assert ("问题识别与查询路由" in prompt) is knowledge
     assert ("search_debug_issues" in tools) is knowledge
     assert ("足够就直接生成答案并结束" in prompt) is knowledge
+    assert ("现场故障、工艺参数、材料耗材" in prompt) is knowledge
+    assert "先调用 search_debug_issues" in prompt
     assert ("日常问题、通用知识及与ARKS项目无关" in prompt) is knowledge
     assert "remember" not in tools
     assert ("本轮不使用长期记忆" in prompt) is (not memory)

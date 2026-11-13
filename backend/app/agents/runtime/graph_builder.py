@@ -19,8 +19,8 @@ from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMP
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
-from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.coding_repeat import CodingRepeatGuard
+from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
 from app.agents.tools.attachments import attachment_context, attachment_tools
