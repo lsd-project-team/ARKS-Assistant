@@ -128,7 +128,7 @@ export function ThreadItem({
       className={`thread-row ${selected ? 'active' : ''} ${editing ? 'editing' : ''} ${dragging ? 'dragging' : ''}`}
       data-thread-id={row.id}
       onDragOver={(event) => {
-        if (!draggable || drag?.state?.kind !== 'thread') return;
+        if (!draggable || drag?.state?.kind !== 'thread' || drag.state.id === row.id) return;
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = 'move';
