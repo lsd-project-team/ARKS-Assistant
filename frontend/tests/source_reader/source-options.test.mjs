@@ -6,7 +6,7 @@ import { resolvedSources } from '../../src/features/settings/lib/sourceOptions.t
 test('旧草稿使用兼容来源默认值，关闭资料不影响源码选择', () => {
   assert.deepEqual(resolvedSources(), {
     use_knowledge: true,
-    use_memory: true,
+    use_memory: false,
   });
   useWorkspace.setState({ threadId: 'source-control', drafts: {} });
   const options = { use_knowledge: false, use_memory: false };

@@ -42,7 +42,9 @@ def seed_memory(memory, request):
     repository = Repository(memory.database, memory.workspace.id)
     thread_id = None
     for _ in range(2):
-        run = repository.create_run(thread_id, request.content, [])
+        run = repository.create_run(
+            thread_id, request.content, [], {"use_knowledge": True, "use_memory": True}
+        )
         thread_id = run["thread_id"]
         repository.finish(
             run["id"], "历史对话的补充背景，仅用于构造有足够上下文的记忆测试输入。" * 3

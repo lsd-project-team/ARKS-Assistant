@@ -292,7 +292,7 @@ async def test_runtime_answer_only_receives_approved_memory_not_other_candidates
         "app.agents.runtime.graph_builder.create_model", lambda *_args, **_kwargs: Model()
     )
     runtime = AgentRuntime(services[0], services[5], services[2], services[3], memory)
-    run = services[3].create_run(None, query, [])
+    run = services[3].create_run(None, query, [], source_options={"use_memory": True})
     await runtime.execute(run, lambda kind, row: services[3].event(run["id"], kind, row))
     assert len(selector_context) == 2 and any("另一套参数" in row for row in selector_context)
     assert "必须确认负压已经释放" in "\n".join(answer_context)

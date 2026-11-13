@@ -192,7 +192,9 @@ def test_run_memory_snapshot_is_exact_and_survives_later_edits(services):
     )
     prompt, snapshot = memories.prompt_snapshot("回答偏好")
     assert "当时的回答偏好" in prompt
-    run = repository.create_run(thread["id"], "问题", [])
+    run = repository.create_run(
+        thread["id"], "问题", [], {"use_knowledge": False, "use_memory": True}
+    )
     repository.event(run["id"], "context_sources", {"memories": snapshot})
     seed_memory(
         memories,

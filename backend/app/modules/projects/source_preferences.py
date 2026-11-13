@@ -29,7 +29,11 @@ class SourcePreferences:
         row = session.get(SourcePreference, self.scope_id)
         return {
             "source_options": SourceOptions.model_validate(
-                json.loads(row.options_json) if row else {}
+                {
+                    "use_knowledge": True,
+                    "use_memory": False,
+                    **(json.loads(row.options_json) if row else {}),
+                }
             ).model_dump(),
             "version": row.version if row else 0,
         }
