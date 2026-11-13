@@ -27,16 +27,16 @@ def collect(events):
 
 
 @pytest.mark.asyncio
-async def test_repeated_read_is_blocked_after_three_calls():
+async def test_repeated_read_returns_cached_result_after_three_calls():
     events = []
     guard = CodingRepeatGuard(collect(events))
     for index in range(3):
         result = await guard.awrap_tool_call(
             request("read_project_file", {"path": "a.cs"}, f"c{index}"), handler
         )
-    payload = json.loads(result.content)
-    assert payload["repeated"] is True
-    assert any(kind == "coding_repeat_blocked" for kind, _ in events)
+    assert result.content == "ok"
+    assert result.additional_kwargs.get("cached") is True
+    assert any(kind == "coding_repeat_cached" for kind, _ in events)
 
 
 @pytest.mark.asyncio

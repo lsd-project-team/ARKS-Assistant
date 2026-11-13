@@ -38,6 +38,7 @@ class CodingRepeatGuard(AgentMiddleware):
         self.total_limit = total_limit
         self.total = 0
         self.counts = {}
+        self.cached = {}
         self.blocked_streak = 0
 
     async def awrap_model_call(self, request, handler):
@@ -63,11 +64,6 @@ class CodingRepeatGuard(AgentMiddleware):
             self.total += 1
             if self.total > self.total_limit:
                 self.blocked_streak += 1
-                if self.blocked_streak >= LOOP_LIMIT:
-                    raise RuntimeError(
-                        "连续重复工具调用过多，已停止本轮以避免空转；"
-                        "请检查失败的自测或界面问题后重试。"
-                    )
                 self.emit("coding_budget_blocked", {"total": self.total})
                 return _blocked(
                     request,
@@ -83,6 +79,7 @@ class CodingRepeatGuard(AgentMiddleware):
                 )
         if name in PROGRESS:
             self.counts.clear()
+            self.cached.clear()
             self.blocked_streak = 0
             return await handler(request)
         if name not in GUARDED:
@@ -94,27 +91,36 @@ class CodingRepeatGuard(AgentMiddleware):
         count = self.counts.get(key, 0) + 1
         self.counts[key] = count
         if count < self.limit:
+            result = await handler(request)
+            if not _failed(result):
+                self.cached[key] = _reusable(result)
+            return result
+        if key in self.cached:
+            # 重复读取直接返回上次结果，避免用错误消息把模型逼进重试循环。
+            self.emit("coding_repeat_cached", {"tool": name, "count": count})
             self.blocked_streak = 0
-            return await handler(request)
-        self.blocked_streak += 1
-        if self.blocked_streak >= LOOP_LIMIT:
-            raise RuntimeError(
-                "连续重复工具调用过多，已停止本轮以避免空转；请检查测试或界面问题后重试。"
-            )
-        self.emit("coding_repeat_blocked", {"tool": name, "count": count})
-        return _blocked(
-            request,
-            name,
-            {
-                "ok": False,
-                "repeated": True,
-                "note": (
-                    "相同的工具调用已经连续执行三次，本次已拦截。"
-                    "请改用已有结果，直接写文件、创建工程或运行构建；"
-                    "需要不同信息时改变路径、范围或命令。"
-                ),
-            },
+            return self.cached[key]
+        result = await handler(request)
+        if not _failed(result):
+            self.cached[key] = _reusable(result)
+        return result
+
+
+def _failed(result):
+    return getattr(result, "status", "success") == "error"
+
+
+def _reusable(result):
+    try:
+        return result.model_copy(
+            update={
+                "content": result.text
+                or "（同一调用已执行过，返回上次相同结果；请基于该结果继续，不要重复读取。）",
+                "additional_kwargs": {**getattr(result, "additional_kwargs", {}), "cached": True},
+            }
         )
+    except AttributeError:
+        return result
 
 
 def _blocked(request, name, payload):

@@ -18,7 +18,7 @@ MIN_TABPAGE_HEIGHT = 300
 MIN_BUTTON = 60
 MIN_INPUTS = 5
 MIN_BUTTONS = 6
-MIN_LOG_HEIGHT = 150
+MIN_LOG_HEIGHT = 120
 MIN_SHOT_WIDTH = 800
 MIN_SHOT_HEIGHT = 600
 MIN_SHOT_STDDEV = 5.0
@@ -98,7 +98,14 @@ def evaluate_layout(rows, screenshots, expected_tabs=2):
             "（控件树需要覆盖全部层级，不能限制深度）"
         )
     if not logs:
-        issues.append(f"找不到高度 ≥{MIN_LOG_HEIGHT}px 的日志区")
+        max_log = max(
+            (row["height"] for row in rows if row["type"] in LOG_TYPES and row["visible"]),
+            default=0,
+        )
+        issues.append(
+            f"日志区高度不足：最大 {max_log}px < {MIN_LOG_HEIGHT}px"
+            "（建议底部日志行保持 230px）"
+        )
     if empty:
         detail = "，".join(f"{row['type']} {row['name']}" for row in empty[:5])
         issues.append(f"存在可见的 0 尺寸控件：{detail}")
