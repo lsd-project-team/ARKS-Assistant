@@ -11,6 +11,7 @@ from pathlib import Path
 
 from app.core.config import PROJECT_ROOT
 from app.core.identifiers import now_iso
+from app.infrastructure.images import MAX_IMAGE_BYTES, inspect
 from app.modules.coding import files
 from app.modules.coding.executor import Executor
 from app.modules.coding.snapshots import Snapshots
@@ -125,6 +126,19 @@ class CodingWorkspace:
 
     def read_file(self, path, start_line=1, end_line=400):
         return files.read_text(self.root, path, start_line, end_line)
+
+    def read_image(self, path):
+        """读取项目内图片用于模型直接查看；只读操作，不要求项目可写。"""
+        relative_path, data = files.read_binary(self.root, path, MAX_IMAGE_BYTES)
+        image_format, width, height, frames = inspect(data)
+        return {
+            "path": relative_path,
+            "data": data,
+            "format": image_format,
+            "width": width,
+            "height": height,
+            "frames": frames,
+        }
 
     def search_files(self, query, path=".", glob=""):
         return files.search_text(self.root, query, path, glob)

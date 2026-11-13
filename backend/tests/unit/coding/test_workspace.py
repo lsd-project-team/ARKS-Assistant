@@ -207,7 +207,7 @@ def test_edit_file_keeps_original_encoding_and_newlines(tmp_path):
 def test_edit_file_preserves_utf8_bom(tmp_path):
     work, root = make_workspace(tmp_path)
     target = root / "bom.txt"
-    target.write_bytes(codecs.BOM_UTF8 + "第一行\r\n第二行\r\n".encode("utf-8"))
+    target.write_bytes(codecs.BOM_UTF8 + "第一行\r\n第二行\r\n".encode())
 
     read = work.read_file("bom.txt")
     work.edit_file("bom.txt", [{"old": "第二行", "new": "改后"}], read["version"])
@@ -357,3 +357,24 @@ def test_background_process_can_be_read_and_stopped(tmp_path):
         for row in restored.list_jobs()["jobs"]
     )
     restored.executor.stop_all()
+
+
+def test_read_image_validates_bytes_path_and_limits(tmp_path):
+    from tests.helpers.chat_attachments import image_bytes
+
+    work, root = make_workspace(tmp_path)
+    shots = root / "shots"
+    shots.mkdir()
+    png = image_bytes((120, 80))
+    (shots / "app.png").write_bytes(png)
+    result = work.read_image("shots/app.png")
+    assert result["format"] == "PNG"
+    assert (result["width"], result["height"]) == (120, 80)
+    assert result["data"] == png
+    with pytest.raises(FileNotFoundError):
+        work.read_image("shots/missing.png")
+    (shots / "note.txt").write_bytes(b"not an image")
+    with pytest.raises(ValueError):
+        work.read_image("shots/note.txt")
+    with pytest.raises(ValueError):
+        work.read_image("../outside.png")

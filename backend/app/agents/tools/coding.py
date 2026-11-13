@@ -1,15 +1,21 @@
 """聊天中的原地编码工具；直接读写项目目录，用快照回滚。"""
 
 import asyncio
+from typing import Annotated
 
-from langchain_core.tools import tool
+from langchain_core.messages import HumanMessage, ToolMessage
+from langchain_core.tools import InjectedToolCallId, tool
+from langgraph.types import Command
 
 from app.core.config import dump_json
+from app.core.identifiers import new_id
+from app.modules.chat.image_attachments import path_marker
 
 CODING_GUIDANCE = """
 【项目编码】
 当前项目目录就是工作区，所有路径都使用项目内相对路径。
-读取和修改项目文件用 read_project_file / list_files / search_files / find_files / write_file / edit_file；
+读取和修改项目文件用 read_project_file / list_files / search_files /
+find_files / write_file / edit_file；
 带 /workspace/ 前缀的只读工具用于引用当前源码，不要用它们判断项目工作区的可写状态。
 工艺、设备操作、故障与经验类问题不要当作编码任务：先调用 search_debug_issues 检索本地问题与经验，
 再结合检索结果回答；只有用户明确要求修改代码、创建工程或运行命令时才使用文件与命令工具。
@@ -19,6 +25,8 @@ CODING_GUIDANCE = """
 修改已有文件优先用 edit_file：按原文精确替换，需要先读取并带上 version；大范围重写才用 write_file。
 覆盖已有文件必须带上一次读取得到的 hash；新建文件 hash 留空。
 图片、图标等二进制资源用 write_binary_file，内容为 base64。
+需要看界面、报错截图或设计图时，用 view_image 打开项目内的图片（PNG/JPG/GIF/WebP）；
+运行程序后先截图保存到项目内，再用 view_image 查看，不要凭猜测描述界面。
 删除、移动前系统会自动建快照；每轮结束系统会自动记录检查点，用户可从检查点回滚。
 run_command 用于构建、测试和一次性命令；start_process 用于常驻服务，
 返回 job_id 后可用 read_process/stop_process 查看和停止。
@@ -52,6 +60,45 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
     async def read_project_file(path: str, start_line: int = 1, end_line: int = 400) -> str:
         """Read a text file with line numbers and its hash."""
         return await run("read_project_file", work.read_file, path, start_line, end_line)
+
+    @tool
+    async def view_image(path: str, tool_call_id: Annotated[str, InjectedToolCallId]) -> Command:
+        """Look at an image file in the project directly (screenshot, design, icon).
+
+        Use it after capturing a screenshot or when the user points to a project image.
+        """
+        try:
+            result = await asyncio.to_thread(work.read_image, path)
+        except Exception as error:  # 失败原因让模型看到，由它修正路径或说明无法查看
+            emit("coding", {"tool": "view_image", "ok": False})
+            return Command(
+                update={
+                    "messages": [
+                        ToolMessage(
+                            content=dump_json({"ok": False, "error": str(error)}),
+                            tool_call_id=tool_call_id,
+                        )
+                    ]
+                }
+            )
+        emit("coding", {"tool": "view_image", "ok": True})
+        summary = (
+            f"已加载项目图片 {result['path']}"
+            f"（{result['format']}，{result['width']}×{result['height']}）。"
+            "图片已附在本轮消息，可直接查看并回答。"
+        )
+        # 只放文本标记；像素内容在模型请求边界展开，检查点不保存 base64。
+        return Command(
+            update={
+                "messages": [
+                    ToolMessage(content=summary, tool_call_id=tool_call_id),
+                    HumanMessage(
+                        content=summary + "\n" + path_marker(result["path"]),
+                        id=new_id(),
+                    ),
+                ]
+            }
+        )
 
     @tool
     async def search_files(query: str, path: str = ".", glob: str = "") -> str:
@@ -186,6 +233,7 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
     return [
         list_files,
         read_project_file,
+        view_image,
         search_files,
         find_files,
         write_file,

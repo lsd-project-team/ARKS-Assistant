@@ -128,6 +128,17 @@ def read_text(root, path, start_line=1, end_line=400):
     }
 
 
+def read_binary(root, path, limit=32 * 1024 * 1024):
+    """按原字节读取项目内文件；图片查看使用，不做文本解码。"""
+    target = resolve(root, path)
+    if not target.is_file():
+        raise FileNotFoundError(f"文件不存在：{path}")
+    size = target.stat().st_size
+    if size > limit:
+        raise ValueError(f"文件超过 {limit // (1024 * 1024)} MB，不能直接查看")
+    return relative(root, target), target.read_bytes()
+
+
 def write_text(root, path, content, expected_hash=""):
     target = resolve(root, path)
     if target.is_dir():

@@ -287,7 +287,7 @@ class AgentGraphBuilder:
                     history_selection=history_selection if not inspection else None,
                 ),
                 # 预算检查基于文本标记；确需发送的图片在这里才展开为多模态内容。
-                ImageAttachments(runtime.repository.attachments),
+                ImageAttachments(runtime.repository.attachments, runtime.coding),
                 ProviderUsage(emit),
                 FilesystemMiddleware(
                     backend=backend,

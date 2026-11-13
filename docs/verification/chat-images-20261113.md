@@ -41,3 +41,18 @@
 - `deepseek-v4-pro` 等不支持视觉的模型会由供应商返回错误，界面显示错误信息；当前配置的 `deepseek-flash` 支持视觉。
 - 未在浏览器里人工点击缩略图/预览/粘贴，页面验证由用户在实际使用时确认；后端与组件测试、生产构建已覆盖渲染路径。
 - 本会话 Shell 的 `NO_PROXY` 含 `[::1]` 时 httpx2 报 `Invalid port`，服务已用清理重复代理变量后的环境启动；普通桌面启动不受影响。
+
+## 补充：编码代理查看项目图片（view_image）
+
+用户提出“让助手自己去看它运行后的界面截图”，此前编码工具只能返回文本，代理看不到自己生成的 PNG。
+
+实现：`view_image` 工具读取项目内 PNG/JPG/GIF/WebP（按内容校验，单边 ≤8192 像素、≤32 MB），返回工具结果并追加一条只含 `<attachment-image path=… />` 标记的用户消息；`ImageAttachments` 中间件在模型请求边界把标记展开为图片块。检查点、摘要与历史正文不保存 base64；图片缺失、路径越界或格式不符时明确告诉模型“未能发送”，不会假装看过。
+
+验证：
+
+1. `pytest tests/unit/coding`：45 项通过，覆盖图片读取与路径校验、`view_image` 工具在工具节点内返回 ToolMessage + HumanMessage 标记、失败/缺失图片提示、含引号文件名、助手消息不展开图片。
+2. `pytest tests/unit/coding tests/unit/agents tests/unit/chat tests/integration/chat/test_image_attachments.py`：304 项通过。
+3. `pytest tests/integration/agents tests/integration/chat/test_api.py tests/integration/chat/test_conversation_workflows.py`：170 项通过；`test_retrieval_budget[openai]` 仍因本机 `NO_PROXY` 的 `[::1]` 报错，清理代理变量后通过。
+4. 真实模型端到端：隔离数据目录 + 8767 端口，创建临时项目并放入截图（“界面截图 / VIEW-OK 7788”，左侧蓝色方框），提问“用 view_image 打开 screenshots/app.png，告诉我图中黑色文字和蓝色方框的位置”。`deepseek-flash` 回答“黑色文字有两行：界面截图、VIEW-OK 7788；蓝色方框位于图片左侧”，说明工具注入与图片展开在真实代理运行中生效。
+
+限制：`view_image` 只读项目目录内的图片；截图需要先保存到项目内。历史轮次会重新携带已查看图片，占用上下文按 1024 tokens/张预留。
