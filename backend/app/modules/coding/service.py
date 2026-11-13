@@ -287,7 +287,7 @@ class CodingWorkspace:
         project = self._project_file()
         if project is None:
             raise ValueError("项目内找不到 .csproj，请先创建工程或使用 scaffold_winforms")
-        shots, output, missing = [], "", []
+        shots, outputs, output, missing = [], [], "", []
         for index in range(max(1, min(int(tabs), 4))):
             relative = f"shots/ui_tab{index}.png"
             target = self.root / relative
@@ -305,11 +305,15 @@ class CodingWorkspace:
                     "error": "截图命令需要审批，未执行；且无法确认界面，请不要宣称界面已验证",
                     "approval": result.get("approval"),
                 }
-            output += (result.get("output") or "") + "\n"
+            console = result.get("output") or ""
             layout_file = self.root / f"{relative}.layout.txt"
+            # 优先用应用写下的控件树；控制台输出也会打印同一份，不能重复计算。
             if layout_file.is_file():
-                # WinExe 的标准输出在某些启动方式下拿不到，以应用同时写下的控件树兜底。
-                output += layout_file.read_text(encoding="utf-8", errors="replace") + "\n"
+                tab_output = layout_file.read_text(encoding="utf-8", errors="replace") + "\n"
+            else:
+                tab_output = console + "\n"
+            outputs.append(tab_output)
+            output += tab_output
             if target.is_file():
                 shots.append(relative)
             else:
@@ -322,6 +326,15 @@ class CodingWorkspace:
             [ui_checks.analyze_screenshot(self.root / shot) for shot in shots],
         )
         issues = list(report["issues"])
+        for index, tab_output in enumerate(outputs):
+            page_count = sum(
+                1 for row in ui_checks.parse_layout(tab_output) if row["type"] == "TabPage"
+            )
+            if page_count != 2:
+                issues.append(
+                    f"第 {index + 1} 个标签页的页签数量应为 2，实际 {page_count}"
+                    "（不要重复创建 TabPage，骨架已有参数设置/设备功能两页）"
+                )
         if missing:
             issues.append(
                 f"未生成截图：{', '.join(missing)}；"

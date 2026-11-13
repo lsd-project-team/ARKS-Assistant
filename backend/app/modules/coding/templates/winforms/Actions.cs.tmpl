@@ -1,0 +1,13 @@
+namespace __NAMESPACE__;
+
+/// <summary>
+/// 业务实现入口：协议调用、按钮动作和界面状态更新写在这里。
+/// 不要重写 MainForm 的布局；参数控件与日志区已经在骨架中就绪。
+/// </summary>
+internal sealed partial class MainForm
+{
+    partial void HandleAction(string key)
+    {
+        WriteLog($"请先连接串口设备（动作：{key}）。", UiTheme.Grey);
+    }
+}

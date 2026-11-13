@@ -22,6 +22,7 @@ def test_scaffold_creates_skeleton_with_replacements(tmp_path):
     work, root = make_workspace(tmp_path)
     result = work.scaffold("winforms", {"__PRODUCT__": "测试上位机"})
     assert set(result["files"]) == {
+        "Actions.cs",
         "App.csproj",
         "MainForm.cs",
         "Program.cs",

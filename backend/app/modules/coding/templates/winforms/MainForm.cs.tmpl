@@ -7,28 +7,29 @@ namespace __NAMESPACE__;
 /// 工业设备控制软件骨架：标题条 / 标签页 / 功能区 / 工作区 / 通信日志。
 /// 协议层与业务动作由后续实现接入 OnAction 与参数控件。
 /// </summary>
-internal sealed class MainForm : Form
+internal sealed partial class MainForm : Form
 {
     private readonly TableLayoutPanel _root = new();
-    private readonly TabControl _tabs = new();
+    internal readonly TabControl Tabs = new();
     private readonly FlowLayoutPanel _actionHost = new();
-    private readonly ComboBox _portBox = new();
+    internal readonly ComboBox PortBox = new();
     private readonly Button _refreshButton = new();
-    private readonly Label _statusLabel = new();
-    private readonly RichTextBox _logBox = new();
+    internal readonly Label StatusLabel = new();
+    internal readonly RichTextBox LogBox = new();
     private readonly TabPage _pageParams = new("参数设置");
     private readonly TabPage _pageDevice = new("设备功能");
 
-    private readonly NumericUpDown _channel = new();
-    private readonly ComboBox _mode = new();
-    private readonly NumericUpDown _pressure = new();
-    private readonly NumericUpDown _time = new();
-    private readonly NumericUpDown _vacuum = new();
-    private readonly TextBox _modelName = new();
-    private readonly ComboBox _standby = new();
-    private readonly ComboBox _piston = new();
-    private readonly TextBox _alarm = new();
-    private readonly TextBox _remain = new();
+    internal readonly NumericUpDown Channel = new();
+    internal readonly ComboBox Mode = new();
+    internal readonly NumericUpDown Pressure = new();
+    internal readonly NumericUpDown Time = new();
+    internal readonly NumericUpDown Vacuum = new();
+    internal readonly TextBox ModelName = new();
+    internal readonly ComboBox Standby = new();
+    internal readonly ComboBox Piston = new();
+    internal readonly TextBox Alarm = new();
+    internal readonly TextBox Remain = new();
+    internal readonly TableLayoutPanel ParamsForm = new();
 
     public MainForm()
     {
@@ -64,7 +65,7 @@ internal sealed class MainForm : Form
 
         _root.Controls.Add(BuildTitleBar(), 0, 0);
         _root.Controls.Add(BuildRibbon(), 0, 1);
-        _root.Controls.Add(_tabs, 0, 2);
+        _root.Controls.Add(Tabs, 0, 2);
         _root.Controls.Add(BuildLogArea(), 0, 3);
         Controls.Add(_root);
     }
@@ -169,10 +170,10 @@ internal sealed class MainForm : Form
             },
             0,
             0);
-        _portBox.DropDownStyle = ComboBoxStyle.DropDownList;
-        _portBox.Dock = DockStyle.Fill;
-        _portBox.Margin = new Padding(0, 2, 6, 2);
-        host.Controls.Add(_portBox, 1, 0);
+        PortBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        PortBox.Dock = DockStyle.Fill;
+        PortBox.Margin = new Padding(0, 2, 6, 2);
+        host.Controls.Add(PortBox, 1, 0);
 
         _refreshButton.Text = "刷新";
         _refreshButton.Width = 64;
@@ -181,29 +182,29 @@ internal sealed class MainForm : Form
         _refreshButton.Click += (_, _) => RefreshPorts();
         host.Controls.Add(_refreshButton, 2, 0);
 
-        _statusLabel.Text = "● 未连接";
-        _statusLabel.AutoSize = true;
-        _statusLabel.ForeColor = UiTheme.Grey;
-        _statusLabel.Anchor = AnchorStyles.Left;
-        host.Controls.Add(_statusLabel, 0, 1);
-        host.SetColumnSpan(_statusLabel, 3);
+        StatusLabel.Text = "● 未连接";
+        StatusLabel.AutoSize = true;
+        StatusLabel.ForeColor = UiTheme.Grey;
+        StatusLabel.Anchor = AnchorStyles.Left;
+        host.Controls.Add(StatusLabel, 0, 1);
+        host.SetColumnSpan(StatusLabel, 3);
         return host;
     }
 
     private void BuildTabs()
     {
-        _tabs.Dock = DockStyle.Fill;
-        _tabs.Margin = Padding.Empty;
-        _tabs.Padding = new Point(14, 4);
-        _tabs.Font = UiTheme.UiFont(9f);
+        Tabs.Dock = DockStyle.Fill;
+        Tabs.Margin = Padding.Empty;
+        Tabs.Padding = new Point(14, 4);
+        Tabs.Font = UiTheme.UiFont(9f);
         _pageParams.BackColor = UiTheme.WindowBack;
         _pageParams.Padding = new Padding(8);
         _pageDevice.BackColor = UiTheme.WindowBack;
         _pageDevice.Padding = new Padding(8);
-        _tabs.TabPages.Add(_pageParams);
-        _tabs.TabPages.Add(_pageDevice);
-        _tabs.SelectedIndexChanged += (_, _) => RebuildActions();
-        _tabs.SelectedIndex = 0;
+        Tabs.TabPages.Add(_pageParams);
+        Tabs.TabPages.Add(_pageDevice);
+        Tabs.SelectedIndexChanged += (_, _) => RebuildActions();
+        Tabs.SelectedIndex = 0;
     }
 
     private void BuildParamsPage()
@@ -225,14 +226,12 @@ internal sealed class MainForm : Form
             Dock = DockStyle.Fill,
             Margin = new Padding(0, 0, 8, 0),
         };
-        var form = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 3,
-            RowCount = 6,
-            BackColor = UiTheme.CardBack,
-            Padding = new Padding(6, 24, 6, 6),
-        };
+        var form = ParamsForm;
+        form.Dock = DockStyle.Fill;
+        form.ColumnCount = 3;
+        form.RowCount = 6;
+        form.BackColor = UiTheme.CardBack;
+        form.Padding = new Padding(6, 24, 6, 6);
         form.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
         form.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130));
         form.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
@@ -241,27 +240,27 @@ internal sealed class MainForm : Form
             form.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
         }
 
-        _channel.Minimum = 1;
-        _channel.Maximum = 500;
-        _channel.Value = 1;
-        _mode.Items.AddRange(new object[] { "手动", "定时" });
-        _mode.SelectedIndex = 1;
-        _mode.DropDownStyle = ComboBoxStyle.DropDownList;
-        _pressure.Minimum = 30;
-        _pressure.Maximum = 500;
-        _pressure.Value = 100;
-        _time.Minimum = 20;
-        _time.Maximum = 999999;
-        _time.Value = 500;
-        _vacuum.Minimum = 0;
-        _vacuum.Maximum = 500;
-        _vacuum.Value = 20;
-        AddRow(form, 0, "通道号", _channel, "");
-        AddRow(form, 1, "点胶模式", _mode, "");
-        AddRow(form, 2, "点胶气压", _pressure, "kPa");
-        AddRow(form, 3, "点胶时间", _time, "ms");
-        AddRow(form, 4, "真空压力", _vacuum, "0.01kPa");
-        AddRow(form, 5, "机种名", _modelName, "");
+        Channel.Minimum = 1;
+        Channel.Maximum = 500;
+        Channel.Value = 1;
+        Mode.Items.AddRange(new object[] { "手动", "定时" });
+        Mode.SelectedIndex = 1;
+        Mode.DropDownStyle = ComboBoxStyle.DropDownList;
+        Pressure.Minimum = 30;
+        Pressure.Maximum = 500;
+        Pressure.Value = 100;
+        Time.Minimum = 20;
+        Time.Maximum = 999999;
+        Time.Value = 500;
+        Vacuum.Minimum = 0;
+        Vacuum.Maximum = 500;
+        Vacuum.Value = 20;
+        AddRow(form, 0, "通道号", Channel, "");
+        AddRow(form, 1, "点胶模式", Mode, "");
+        AddRow(form, 2, "点胶气压", Pressure, "kPa");
+        AddRow(form, 3, "点胶时间", Time, "ms");
+        AddRow(form, 4, "真空压力", Vacuum, "0.01kPa");
+        AddRow(form, 5, "机种名", ModelName, "");
         values.Controls.Add(form);
         page.Controls.Add(values, 0, 0);
 
@@ -313,14 +312,14 @@ internal sealed class MainForm : Form
         form.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         form.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
         form.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
-        _standby.Items.AddRange(new object[] { "无待机", "5 分钟", "10 分钟", "15 分钟", "30 分钟", "1 小时" });
-        _standby.SelectedIndex = 0;
-        _standby.DropDownStyle = ComboBoxStyle.DropDownList;
-        _piston.Items.AddRange(new object[] { "关", "开" });
-        _piston.SelectedIndex = 0;
-        _piston.DropDownStyle = ComboBoxStyle.DropDownList;
-        AddRow(form, 0, "待机时间", _standby, "");
-        AddRow(form, 1, "活塞补正", _piston, "");
+        Standby.Items.AddRange(new object[] { "无待机", "5 分钟", "10 分钟", "15 分钟", "30 分钟", "1 小时" });
+        Standby.SelectedIndex = 0;
+        Standby.DropDownStyle = ComboBoxStyle.DropDownList;
+        Piston.Items.AddRange(new object[] { "关", "开" });
+        Piston.SelectedIndex = 0;
+        Piston.DropDownStyle = ComboBoxStyle.DropDownList;
+        AddRow(form, 0, "待机时间", Standby, "");
+        AddRow(form, 1, "活塞补正", Piston, "");
         settings.Controls.Add(form);
         page.Controls.Add(settings, 0, 0);
 
@@ -337,10 +336,10 @@ internal sealed class MainForm : Form
         statusForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         statusForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
         statusForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
-        _alarm.ReadOnly = true;
-        AddRow(statusForm, 0, "报警位", _alarm, "");
-        _remain.ReadOnly = true;
-        AddRow(statusForm, 1, "胶液余量", _remain, "");
+        Alarm.ReadOnly = true;
+        AddRow(statusForm, 0, "报警位", Alarm, "");
+        Remain.ReadOnly = true;
+        AddRow(statusForm, 1, "胶液余量", Remain, "");
         status.Controls.Add(statusForm);
         page.Controls.Add(status, 1, 0);
         _pageDevice.Controls.Add(page);
@@ -395,14 +394,14 @@ internal sealed class MainForm : Form
         host.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         host.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
 
-        _logBox.Dock = DockStyle.Fill;
-        _logBox.ReadOnly = true;
-        _logBox.BorderStyle = BorderStyle.None;
-        _logBox.BackColor = Color.White;
-        _logBox.ForeColor = UiTheme.TextMain;
-        _logBox.Font = new Font("Consolas", 9f);
-        _logBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-        host.Controls.Add(_logBox, 0, 0);
+        LogBox.Dock = DockStyle.Fill;
+        LogBox.ReadOnly = true;
+        LogBox.BorderStyle = BorderStyle.None;
+        LogBox.BackColor = Color.White;
+        LogBox.ForeColor = UiTheme.TextMain;
+        LogBox.Font = new Font("Consolas", 9f);
+        LogBox.ScrollBars = RichTextBoxScrollBars.Vertical;
+        host.Controls.Add(LogBox, 0, 0);
 
         var toolbar = new FlowLayoutPanel
         {
@@ -412,13 +411,13 @@ internal sealed class MainForm : Form
             BackColor = UiTheme.CardBack,
         };
         var clear = new Button { Text = "清空", Width = 60, Height = 24 };
-        clear.Click += (_, _) => _logBox.Clear();
+        clear.Click += (_, _) => LogBox.Clear();
         var copy = new Button { Text = "复制", Width = 60, Height = 24 };
         copy.Click += (_, _) =>
         {
-            if (_logBox.TextLength > 0)
+            if (LogBox.TextLength > 0)
             {
-                Clipboard.SetText(_logBox.Text);
+                Clipboard.SetText(LogBox.Text);
             }
         };
         var save = new Button { Text = "保存", Width = 60, Height = 24 };
@@ -445,7 +444,7 @@ internal sealed class MainForm : Form
         };
         if (dialog.ShowDialog(this) == DialogResult.OK)
         {
-            File.WriteAllText(dialog.FileName, _logBox.Text, Encoding.UTF8);
+            File.WriteAllText(dialog.FileName, LogBox.Text, Encoding.UTF8);
         }
     }
 
@@ -454,7 +453,7 @@ internal sealed class MainForm : Form
         _actionHost.SuspendLayout();
         _actionHost.Controls.Clear();
         AddAction("connect", "连接", RibbonKind.Connect);
-        if (_tabs.SelectedTab == _pageParams)
+        if (Tabs.SelectedTab == _pageParams)
         {
             AddAction("test", "测试通信", RibbonKind.Test);
             AddAction("read", "读取参数", RibbonKind.Read);
@@ -484,12 +483,23 @@ internal sealed class MainForm : Form
     /// <summary>业务动作入口：协议层实现后在这里接入对应指令。</summary>
     private void OnAction(string key)
     {
-        Log($"请先连接串口设备（动作：{key}）。", UiTheme.Grey);
+        HandleAction(key);
+    }
+
+    /// <summary>由 Actions.cs 实现：协议与按钮交互放在那里，布局保持骨架。</summary>
+    partial void HandleAction(string key);
+
+    internal void WriteLog(string text, Color color) => Log(text, color);
+
+    internal void SetStatus(string text, Color color)
+    {
+        StatusLabel.Text = text;
+        StatusLabel.ForeColor = color;
     }
 
     private void RefreshPorts()
     {
-        _portBox.Items.Clear();
+        PortBox.Items.Clear();
         string[] ports;
         try
         {
@@ -501,26 +511,26 @@ internal sealed class MainForm : Form
         }
         foreach (var port in ports)
         {
-            _portBox.Items.Add(port);
+            PortBox.Items.Add(port);
         }
-        if (_portBox.Items.Count == 0)
+        if (PortBox.Items.Count == 0)
         {
-            _portBox.Items.Add("无可用串口");
+            PortBox.Items.Add("无可用串口");
         }
-        _portBox.SelectedIndex = 0;
+        PortBox.SelectedIndex = 0;
         Log($"已刷新串口列表：{(ports.Length == 0 ? "无" : string.Join(", ", ports))}。", UiTheme.Grey);
     }
 
     private void Log(string text, Color color)
     {
-        if (_logBox.IsDisposed)
+        if (LogBox.IsDisposed)
         {
             return;
         }
-        _logBox.SelectionStart = _logBox.TextLength;
-        _logBox.SelectionColor = color;
-        _logBox.AppendText($"[{DateTime.Now:HH:mm:ss.fff}] {text}\r\n");
-        _logBox.SelectionColor = UiTheme.TextMain;
-        _logBox.ScrollToCaret();
+        LogBox.SelectionStart = LogBox.TextLength;
+        LogBox.SelectionColor = color;
+        LogBox.AppendText($"[{DateTime.Now:HH:mm:ss.fff}] {text}\r\n");
+        LogBox.SelectionColor = UiTheme.TextMain;
+        LogBox.ScrollToCaret();
     }
 }
