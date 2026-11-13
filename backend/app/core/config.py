@@ -109,11 +109,12 @@ class McpSettings(BaseModel):
 
 class AnalysisSettings(BaseModel):
     mode: Literal["auto", "standard", "deep"] = "auto"
-    standard_calls: int = Field(default=24, ge=8, le=128)
-    deep_calls: int = Field(default=64, ge=16, le=192)
+    # 界面不再暴露这些数字；保留字段用于内部安全上限和旧配置兼容。
+    standard_calls: int = Field(default=128, ge=8, le=128)
+    deep_calls: int = Field(default=192, ge=16, le=192)
     verification_reserve: int = Field(default=8, ge=2, le=32)
-    long_output_tokens: int = Field(default=8192, ge=1024, le=65536)
-    max_continuations: int = Field(default=2, ge=0, le=2)
+    long_output_tokens: int = Field(default=65536, ge=1024, le=65536)
+    max_continuations: int = Field(default=8, ge=0, le=8)
 
     @model_validator(mode="after")
     def validate_limits(self):
@@ -121,6 +122,11 @@ class AnalysisSettings(BaseModel):
             raise ValueError("深度分析预算不能小于普通分析预算")
         if self.verification_reserve >= min(self.standard_calls, self.deep_calls):
             raise ValueError("复核预留次数必须小于工具调用预算")
+        # 旧版默认值直接抬高到安全上限，避免升级后仍沿用 24/64 和 2 次续写。
+        if self.standard_calls == 24 and self.deep_calls == 64:
+            self.standard_calls, self.deep_calls = 128, 192
+        if self.max_continuations <= 2:
+            self.max_continuations = 8
         return self
 
 

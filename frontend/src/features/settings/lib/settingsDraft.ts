@@ -7,11 +7,11 @@ import type {
 
 export const defaultAnalysis: AnalysisSettings = {
   mode: 'auto',
-  standard_calls: 24,
-  deep_calls: 64,
+  standard_calls: 128,
+  deep_calls: 192,
   verification_reserve: 8,
-  long_output_tokens: 8192,
-  max_continuations: 2,
+  long_output_tokens: 65536,
+  max_continuations: 8,
 };
 
 export const emptyModel = (): ModelSettings => ({
@@ -73,7 +73,7 @@ export function validateSettings(settings: Settings): string[] {
     ['deep_calls', 16, 192],
     ['verification_reserve', 2, 32],
     ['long_output_tokens', 1024, 65536],
-    ['max_continuations', 0, 2],
+    ['max_continuations', 0, 8],
   ] as const)
     if (!Number.isInteger(analysis[key]) || analysis[key] < min || analysis[key] > max)
       errors.push(`分析设置 ${key} 应为 ${min}–${max} 的整数`);

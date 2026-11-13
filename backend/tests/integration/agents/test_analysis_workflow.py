@@ -15,8 +15,8 @@ from app.modules.source_analysis.reads import batch_source
 def test_scope_policy_preserves_configuration_and_continuation_scope():
     settings = AppSettings()
     effective, policy = configured_analysis(settings, "这个项目还有没完成的进度到哪里了")
-    assert policy["mode"] == "deep" and policy["limit"] == 64 and policy["reserve"] == 8
-    assert effective.model.output_tokens == 8192 and settings.model.output_tokens == 4096
+    assert policy["mode"] == "deep" and policy["limit"] == 192 and policy["reserve"] == 8
+    assert effective.model.output_tokens == 12288 and settings.model.output_tokens == 4096
     assert analysis_policy(settings, "继续核查", policy)["mode"] == "deep"
     assert analysis_policy(settings, "解释这个函数")["mode"] == "standard"
     assert analysis_policy(settings, "另一个普通问题", policy)["continuing"] is False
@@ -134,7 +134,7 @@ def test_partial_review_and_output_cutoff_have_independent_status():
         completion_report({"output": "incomplete"}, progress, counts)["stage"]
         == "answer_incomplete"
     )
-    assert AnalysisSettings().max_continuations == 2
+    assert AnalysisSettings().max_continuations == 8
 
 
 def test_missing_parent_directory_is_resolved_only_for_unique_source(services):

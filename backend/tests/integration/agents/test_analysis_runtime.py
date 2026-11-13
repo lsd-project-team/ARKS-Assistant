@@ -58,7 +58,7 @@ async def test_graph_continuation_cache_final_validation_and_persisted_status(
     await manager.tasks[run["id"]]
     saved = repository.run(run["id"])
     assert saved["status"] == "completed" and saved["answer"].endswith("进度也需要验收记录。")
-    assert saved["model_snapshot"]["output_tokens"] == 8192
+    assert saved["model_snapshot"]["output_tokens"] == 12288
     completion = repository.run_event(run["id"], "run_completion")
     assert completion["output"] == "complete" and completion["continuations"] == 1
     assert completion["counts"]["success"] == 2 and completion["counts"]["cached"] == 1

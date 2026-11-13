@@ -27,26 +27,6 @@ export function AnalysisSettingsPanel({
           <option value="deep">深度分析</option>
         </Select>
       </label>
-      {(
-        [
-          ['standard_calls', '普通工具预算', 8, 128],
-          ['deep_calls', '深度工具预算', 16, 192],
-          ['verification_reserve', '关键源码复核预留', 2, 32],
-          ['long_output_tokens', '深度分析回复 token 上限', 1024, 65536],
-          ['max_continuations', '自动续写次数', 0, 2],
-        ] as const
-      ).map(([key, label, min, max]) => (
-        <label key={key}>
-          {label}
-          <input
-            type="number"
-            min={min}
-            max={max}
-            value={value[key]}
-            onChange={(event) => change(key, Number(event.target.value))}
-          />
-        </label>
-      ))}
     </details>
   );
 }

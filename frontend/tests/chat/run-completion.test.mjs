@@ -33,7 +33,7 @@ test('tool counters distinguish actual failures and budget skips, including old 
   assert.match(toolSummary(tools), /成功 1.*未执行 2.*失败 1/);
 });
 
-test('analysis defaults survive older settings and invalid reserve is rejected', () => {
+test('analysis defaults use high safety limits and invalid reserve is rejected', () => {
   const model = emptyModel();
   const settings = normalizeSettings({
     model,
@@ -44,15 +44,18 @@ test('analysis defaults survive older settings and invalid reserve is rejected',
     version: '',
   });
   assert.deepEqual(settings.analysis, defaultAnalysis);
+  assert.equal(settings.analysis.standard_calls, 128);
+  assert.equal(settings.analysis.deep_calls, 192);
+  assert.equal(settings.analysis.max_continuations, 8);
   assert.deepEqual(validateSettings(settings), []);
   assert.ok(
     validateSettings({
       ...settings,
-      analysis: { ...defaultAnalysis, verification_reserve: 24 },
+      analysis: { ...defaultAnalysis, standard_calls: 8, verification_reserve: 8 },
     }).some((row) => row.includes('预留')),
   );
   assert.ok(
-    validateSettings({ ...settings, analysis: { ...defaultAnalysis, max_continuations: 3 } })
+    validateSettings({ ...settings, analysis: { ...defaultAnalysis, max_continuations: 9 } })
       .length,
   );
 });

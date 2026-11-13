@@ -38,10 +38,12 @@ def analysis_policy(settings, question, previous=None):
     limit = configured.deep_calls if deep else configured.standard_calls
     output = settings.model.output_tokens
     if deep:
-        # 保留输入余量；不修改用户保存的模型配置，也不突破上下文容量。
-        output = min(
-            max(output, configured.long_output_tokens), settings.model.context_tokens - 1025
+        # 回复长度取模型上下文扣除输入预留后的最大值；输入预留避免压缩后仍无空间。
+        input_reserve = min(
+            settings.model.context_tokens - 1024,
+            max(8192, settings.model.context_tokens * 5 // 8),
         )
+        output = max(1024, settings.model.context_tokens - input_reserve)
     return {
         "mode": "deep" if deep else "standard",
         "reason": "继续此前分析" if continuing else "项目范围分析" if deep else "普通问题",
