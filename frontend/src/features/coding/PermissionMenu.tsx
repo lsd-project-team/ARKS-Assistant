@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, ChevronDown, Eye, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { api, jsonBody } from '../../app/api/client';
 import { useWorkspace } from '../../app/state/store';
@@ -49,7 +50,10 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   const admin = useAuth().session?.user?.role === 'admin';
   const cache = useQueryClient();
   const root = useRef<HTMLDivElement>(null);
+  const chip = useRef<HTMLButtonElement>(null);
+  const popover = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [position, setPosition] = useState<{ top: number; right: number } | null>(null);
   // 独立对话没有项目工作区，不显示权限入口。
   const active = Boolean(projectId) && projectId !== 'independent';
   const settings = useQuery({
@@ -65,11 +69,44 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   useEffect(() => {
     if (!open) return;
     const close = (event: MouseEvent) => {
-      if (!root.current?.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      if (!root.current?.contains(target) && !popover.current?.contains(target)) setOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
     };
     document.addEventListener('mousedown', close);
-    return () => document.removeEventListener('mousedown', close);
+    document.addEventListener('keydown', escape);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', escape);
+    };
   }, [open]);
+
+  // 顶栏的标题槽有 overflow hidden，弹出层必须挂到 body 上并按按钮位置固定定位。
+  useEffect(() => {
+    if (!open) return;
+    const place = () => {
+      const rect = chip.current?.getBoundingClientRect();
+      if (rect) setPosition({ top: rect.bottom + 6, right: Math.max(12, window.innerWidth - rect.right) });
+    };
+    place();
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
+  }, [open]);
+
+  function toggle() {
+    if (!admin) return;
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    const rect = chip.current?.getBoundingClientRect();
+    if (rect) {
+      setPosition({ top: rect.bottom + 6, right: Math.max(12, window.innerWidth - rect.right) });
+    }
+    setOpen(true);
+  }
 
   const save = useMutation<
     CodingSettings,
@@ -149,41 +186,51 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
     <div className="permission-menu" ref={root}>
       <button
         type="button"
+        ref={chip}
         className="permission-chip"
         aria-haspopup="menu"
         aria-expanded={open}
         disabled={!admin}
         title={admin ? '切换权限档位' : '仅管理员可以切换权限'}
-        onClick={() => setOpen((value) => !value)}
+        onClick={toggle}
       >
         <CurrentIcon size={15} aria-hidden="true" />
         <span className={`permission-label permission-${current}`}>{option.label}</span>
         {admin && <ChevronDown size={13} aria-hidden="true" />}
       </button>
-      {open && admin && (
-        <div className="permission-popover" role="menu">
-          {OPTIONS.map((item) => {
-            const Icon = item.icon;
-            const active = item.value === current;
-            return (
-              <button
-                key={item.value}
-                type="button"
-                role="menuitemradio"
-                aria-checked={active}
-                onClick={() => choose(item.value)}
-              >
-                <Icon size={16} aria-hidden="true" />
-                <span>
-                  {item.label}
-                  <small>{item.description}</small>
-                </span>
-                {active && <Check size={15} aria-hidden="true" />}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {open &&
+        admin &&
+        position &&
+        createPortal(
+          <div
+            ref={popover}
+            className="permission-popover"
+            role="menu"
+            style={{ position: 'fixed', top: position.top, right: position.right }}
+          >
+            {OPTIONS.map((item) => {
+              const Icon = item.icon;
+              const checked = item.value === current;
+              return (
+                <button
+                  key={item.value}
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={checked}
+                  onClick={() => choose(item.value)}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                  <span>
+                    {item.label}
+                    <small>{item.description}</small>
+                  </span>
+                  {checked && <Check size={15} aria-hidden="true" />}
+                </button>
+              );
+            })}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
