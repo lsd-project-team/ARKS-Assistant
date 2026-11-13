@@ -148,6 +148,9 @@ class CodingWorkspace:
                 if item["binary"]:
                     continue
                 chunk = self.snapshots.diff(base, head, [item["path"]])
+                item["patch"] = chunk[:100_000]
+                if len(chunk) > 100_000:
+                    item["patch"] += "\n…（该文件 diff 过长，已截断）"
                 if len(diff) + len(chunk) > limit:
                     diff += "\n…（diff 过长，已截断，请在编码面板查看完整内容）"
                     truncated = True

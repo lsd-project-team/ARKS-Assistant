@@ -46,6 +46,9 @@ export function readerState(
   | 'setRootExpanded'
   | 'setWordWrap'
   | 'setSourceMode'
+  | 'sourceDiff'
+  | 'openDiff'
+  | 'closeDiff'
   | 'savePosition'
   | 'restoreReadingPosition'
 > {
@@ -84,6 +87,17 @@ export function readerState(
 
     sourceModes: {},
 
+    sourceDiff: null,
+
+    openDiff: (diff) =>
+      set({
+        sourceDiff: diff,
+        codeOpen: true,
+        mobile: 'code',
+      }),
+
+    closeDiff: () => set({ sourceDiff: null }),
+
     jump: { line: 1, time: 0, align: 'start' },
 
     openFile: (path, line, mode, endLine) =>
@@ -95,6 +109,7 @@ export function readerState(
         ],
         ...(line !== undefined ? { sourceModes: { ...state.sourceModes, [path]: true } } : {}),
         codeOpen: true,
+        sourceDiff: null,
         navigationVersion: state.navigationVersion + 1,
         mobile: 'code',
       })),

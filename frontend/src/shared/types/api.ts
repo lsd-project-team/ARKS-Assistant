@@ -319,6 +319,7 @@ export interface RunContext {
       additions: number | null;
       deletions: number | null;
       binary: boolean;
+      patch?: string;
     }[];
     diff: string;
     truncated: boolean;

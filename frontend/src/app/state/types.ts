@@ -48,6 +48,19 @@ export interface WorkspaceState extends FileNavigation {
   revealTime: number;
   wordWrap: boolean;
   sourceModes: Record<string, boolean>;
+  sourceDiff: {
+    path: string;
+    text: string;
+    additions: number | null;
+    deletions: number | null;
+  } | null;
+  openDiff: (diff: {
+    path: string;
+    text: string;
+    additions: number | null;
+    deletions: number | null;
+  }) => void;
+  closeDiff: () => void;
   jump: { line: number; time: number; align: 'start' | 'center'; endLine?: number };
   mobile: 'code' | 'chat';
   openFile: (path: string, line?: number, mode?: FileOpenMode, endLine?: number) => void;

@@ -72,4 +72,5 @@ async def test_agent_creates_file_and_runs_command_in_project(services, tmp_path
     assert changes and changes[0]["files"][0]["path"] == "hello.txt"
     assert changes[0]["files"][0]["status"] == "added"
     assert "+hello" in changes[0]["diff"]
+    assert "+hello" in changes[0]["files"][0]["patch"]
     runtime.coding.executor.stop_all()

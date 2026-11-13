@@ -1,7 +1,7 @@
 import { useProjectApi } from '../../projects/hooks/useProjectApi';
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { FileCode2, LockKeyhole, ChevronRight, X } from 'lucide-react';
+import { FileCode2, LockKeyhole, ChevronRight, GitCompareArrows, X } from 'lucide-react';
 import { query } from '../../../app/api/client';
 import { useWorkspace } from '../../../app/state/store';
 import type { SourceFile } from '../../../shared/types/api';
@@ -10,16 +10,25 @@ import { SourceViewer } from './SourceViewer';
 import { MarkdownPreview } from './MarkdownPreview';
 import { FileToolbar } from './FileToolbar';
 import { FileTabs } from './FileTabs';
+import { DiffViewer } from './DiffViewer';
 
 export function CodePane({ onSearch }: { onSearch: () => void }) {
   const api = useProjectApi();
-  const { activePath, wordWrap, sourceModes, navigateHistory, setLayout } = useWorkspace();
+  const {
+    activePath,
+    wordWrap,
+    sourceModes,
+    navigateHistory,
+    setLayout,
+    sourceDiff,
+    closeDiff,
+  } = useWorkspace();
   const markdown = /\.(md|markdown)$/i.test(activePath);
   const showSource = !markdown || !!sourceModes[activePath];
   const source = useQuery({
     queryKey: ['source', activePath],
     queryFn: () => api<SourceFile>(`/file?path=${query(activePath)}`),
-    enabled: !!activePath,
+    enabled: !!activePath && !sourceDiff,
   });
   useEffect(() => {
     const shortcut = (event: KeyboardEvent) => {
@@ -36,7 +45,21 @@ export function CodePane({ onSearch }: { onSearch: () => void }) {
   return (
     <section className="code-pane" aria-label="源码显示区">
       <div className="code-heading">
-        <FileTabs />
+        {sourceDiff ? (
+          <div className="diff-heading">
+            <GitCompareArrows size={14} />
+            <span className="diff-heading-path">{sourceDiff.path}</span>
+            <span className="answer-coding-lines">
+              <span className="added">+{sourceDiff.additions ?? 0}</span>
+              <span className="removed">-{sourceDiff.deletions ?? 0}</span>
+            </span>
+            <button type="button" className="diff-close" onClick={closeDiff} title="关闭对比">
+              返回文件
+            </button>
+          </div>
+        ) : (
+          <FileTabs />
+        )}
         <button
           className="close-code-pane"
           aria-label="关闭源码显示区"
@@ -46,67 +69,77 @@ export function CodePane({ onSearch }: { onSearch: () => void }) {
           <X size={16} />
         </button>
       </div>
-      <FileToolbar
-        markdown={markdown}
-        showSource={showSource}
-        onSearch={onSearch}
-        onRefresh={() => {
-          useWorkspace.getState().restoreReadingPosition();
-          void source.refetch();
-        }}
-        loading={source.isFetching}
-        lineCount={source.data?.line_count || 0}
-      />
-      <div
-        className="editor-container"
-        id="source-reading-panel"
-        role="tabpanel"
-        aria-label={activePath || '文件阅读区'}
-      >
-        <ErrorText error={source.error} />
-        {source.data ? (
-          showSource ? (
-            <SourceViewer
-              key={`${activePath}:${source.data.version}`}
-              source={source.data}
-              wordWrap={wordWrap}
-            />
-          ) : (
-            <MarkdownPreview key={`${activePath}:${source.data.version}`} source={source.data} />
-          )
-        ) : activePath ? (
-          <div className="editor-empty">
-            <p>
-              {source.isPending ? '正在读取文件…' : '暂时无法打开这个文件，请重试或选择其他文件。'}
-            </p>
+      {sourceDiff ? (
+        <div className="editor-container diff-container" role="region" aria-label="代码对比">
+          <DiffViewer text={sourceDiff.text} />
+        </div>
+      ) : (
+        <>
+          <FileToolbar
+            markdown={markdown}
+            showSource={showSource}
+            onSearch={onSearch}
+            onRefresh={() => {
+              useWorkspace.getState().restoreReadingPosition();
+              void source.refetch();
+            }}
+            loading={source.isFetching}
+            lineCount={source.data?.line_count || 0}
+          />
+          <div
+            className="editor-container"
+            id="source-reading-panel"
+            role="tabpanel"
+            aria-label={activePath || '文件阅读区'}
+          >
+            <ErrorText error={source.error} />
+            {source.data ? (
+              showSource ? (
+                <SourceViewer
+                  key={`${activePath}:${source.data.version}`}
+                  source={source.data}
+                  wordWrap={wordWrap}
+                />
+              ) : (
+                <MarkdownPreview key={`${activePath}:${source.data.version}`} source={source.data} />
+              )
+            ) : activePath ? (
+              <div className="editor-empty">
+                <p>
+                  {source.isPending
+                    ? '正在读取文件…'
+                    : '暂时无法打开这个文件，请重试或选择其他文件。'}
+                </p>
+              </div>
+            ) : (
+              <div className="editor-empty">
+                <div className="empty-code-icon">
+                  <FileCode2 size={30} strokeWidth={1.3} />
+                </div>
+                <h2>从源码开始</h2>
+                <p>从右侧文件树打开文件，选中代码后加入左侧问答。</p>
+                <div className="empty-hint">
+                  <span>浏览文件</span>
+                  <ChevronRight size={12} />
+                  <span>选中代码</span>
+                  <ChevronRight size={12} />
+                  <span>向 Agent 提问</span>
+                </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="editor-empty">
-            <div className="empty-code-icon">
-              <FileCode2 size={30} strokeWidth={1.3} />
-            </div>
-            <h2>从源码开始</h2>
-            <p>从右侧文件树打开文件，选中代码后加入左侧问答。</p>
-            <div className="empty-hint">
-              <span>浏览文件</span>
-              <ChevronRight size={12} />
-              <span>选中代码</span>
-              <ChevronRight size={12} />
-              <span>向 Agent 提问</span>
-            </div>
+          <div className="code-status">
+            <span>
+              <LockKeyhole size={11} />
+              {markdown && !showSource ? '文档预览 · 只读' : '源码只读'}
+            </span>
+            <span>
+              {source.data?.encoding || 'UTF-8'}
+              {source.data && ` · ${source.data.line_count} 行`}
+            </span>
           </div>
-        )}
-      </div>
-      <div className="code-status">
-        <span>
-          <LockKeyhole size={11} />
-          {markdown && !showSource ? '文档预览 · 只读' : '源码只读'}
-        </span>
-        <span>
-          {source.data?.encoding || 'UTF-8'}
-          {source.data && ` · ${source.data.line_count} 行`}
-        </span>
-      </div>
+        </>
+      )}
     </section>
   );
 }
