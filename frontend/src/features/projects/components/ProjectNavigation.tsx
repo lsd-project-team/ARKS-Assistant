@@ -16,7 +16,7 @@ import { ProjectEditor } from './ProjectEditor';
 import { ErrorText } from '../../../shared/ui/ui';
 import { ProjectMenu } from './ProjectMenu';
 import { OverflowText } from '../../../shared/ui/OverflowText';
-import { useSidebarDrag, useLongPressDrag } from '../../chat/components/sidebarDrag';
+import { useSidebarDrag } from '../../chat/components/sidebarDrag';
 
 type ThreadRenderer = (thread: Thread) => ReactNode;
 
@@ -87,7 +87,6 @@ function ProjectGroup({
   const expanded = expandedProjects[project.id] ?? current;
   const drag = useSidebarDrag();
   const pinnedGroup = project.pinned_order !== null ? 'pinned' : 'normal';
-  const dragHandlers = useLongPressDrag('project', project.id, pinnedGroup);
   const dragging = drag?.state?.kind === 'project' && drag.state.id === project.id;
   const dropTarget = drag?.state?.overProjectId === project.id;
   const projectDrag = drag?.state?.kind === 'project';
@@ -122,11 +121,50 @@ function ProjectGroup({
       className={`project-group ${current ? 'current' : ''} ${dragging ? 'dragging' : ''} ${dropTarget ? 'drop-target' : ''} ${dropBefore ? 'drop-before' : ''} ${dropAfter ? 'drop-after' : ''}`}
       data-project-id={project.id}
       data-pinned={pinnedGroup === 'pinned' ? 'true' : 'false'}
+      onDragOver={(event) => {
+        if (!drag?.state) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (drag.state.kind === 'thread') {
+          event.dataTransfer.dropEffect = 'move';
+          drag.hoverProject(project.id, null);
+          return;
+        }
+        if (drag.state.id === project.id || drag.state.group !== pinnedGroup) {
+          event.dataTransfer.dropEffect = 'none';
+          drag.hoverNone();
+          return;
+        }
+        const rows = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            `[data-project-id][data-pinned="${pinnedGroup === 'pinned' ? 'true' : 'false'}"]`,
+          ),
+        );
+        const index = rows.indexOf(event.currentTarget);
+        const rect = event.currentTarget.getBoundingClientRect();
+        const after = event.clientY > rect.top + rect.height / 2;
+        const beforeId = after ? (rows[index + 1]?.dataset.projectId ?? null) : project.id;
+        event.dataTransfer.dropEffect = 'move';
+        drag.hoverProject(project.id, beforeId);
+      }}
+      onDrop={(event) => {
+        if (!drag?.state) return;
+        event.preventDefault();
+        event.stopPropagation();
+        void drag.drop();
+      }}
     >
       <div className="project-navigation-row">
         <button
           className="project-name"
-          {...dragHandlers}
+          draggable
+          onDragStart={(event) => {
+            event.stopPropagation();
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', project.id);
+            drag?.start('project', project.id, pinnedGroup);
+          }}
+          onDragEnd={() => drag?.end()}
           title={project.name}
           aria-expanded={expanded}
           aria-controls={`project-conversations-${project.id}`}

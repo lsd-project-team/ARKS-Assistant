@@ -236,13 +236,9 @@
   flex: 0 0 16px;
 }
 
-/* 长按拖拽：项目排序与把最近对话拖入项目。 */
-body.sidebar-dragging {
-  user-select: none;
-  cursor: grabbing;
-}
-body.sidebar-dragging * {
-  cursor: grabbing !important;
+/* 原生拖拽：项目排序与最近对话拖入项目，使用蓝色插入线。 */
+.project-group {
+  position: relative;
 }
 .project-group.dragging,
 .thread-row.dragging {
@@ -254,13 +250,26 @@ body.sidebar-dragging * {
 .project-group.drop-before::before,
 .project-group.drop-after::after {
   content: '';
-  display: block;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
   height: 2px;
-  margin: 0 8px;
-  border-radius: 2px;
-  background: var(--accent);
+  border-radius: 1px;
+  background: #2f6fed;
+  z-index: 2;
+}
+.project-group.drop-before::before {
+  top: -4px;
+}
+.project-group.drop-after::after {
+  bottom: -4px;
+}
+.project-name[draggable='true'],
+.thread-select[draggable='true'] {
+  cursor: grab;
 }
 .sidebar-thread-section.drop-target {
   border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--accent);
+  box-shadow: inset 0 0 0 2px #2f6fed;
 }

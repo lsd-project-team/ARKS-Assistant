@@ -2,11 +2,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useMemo,
   useRef,
   useState,
-  type MouseEvent as ReactMouseEvent,
-  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -28,7 +26,12 @@ interface DragState {
 
 interface DragContextValue {
   state?: DragState;
-  begin: (kind: DragKind, id: string, group: DragGroup) => void;
+  start: (kind: DragKind, id: string, group: DragGroup) => void;
+  hoverProject: (projectId: string, beforeId: string | null) => void;
+  hoverRecent: () => void;
+  hoverNone: () => void;
+  drop: () => Promise<void>;
+  end: () => void;
 }
 
 const DragContext = createContext<DragContextValue | null>(null);
@@ -37,173 +40,96 @@ export function useSidebarDrag() {
   return useContext(DragContext);
 }
 
-// 长按 400 毫秒进入拖拽；移动超过 8 像素视为滚动，避免和列表滚动冲突。
-export function useLongPressDrag(kind: DragKind, id: string, group: DragGroup) {
-  const drag = useSidebarDrag();
-  const timer = useRef<number | undefined>(undefined);
-  const origin = useRef<{ x: number; y: number } | undefined>(undefined);
-  const suppress = useRef(false);
-  const cancel = () => {
-    if (timer.current !== undefined) window.clearTimeout(timer.current);
-    timer.current = undefined;
-  };
-  useEffect(() => cancel, []);
-  return {
-    onPointerDown: (event: ReactPointerEvent) => {
-      if (!drag || event.button !== 0 || drag.state) return;
-      origin.current = { x: event.clientX, y: event.clientY };
-      timer.current = window.setTimeout(() => {
-        timer.current = undefined;
-        suppress.current = true;
-        drag.begin(kind, id, group);
-      }, 400);
-    },
-    onPointerMove: (event: ReactPointerEvent) => {
-      if (!origin.current || timer.current === undefined) return;
-      if (
-        Math.abs(event.clientX - origin.current.x) > 8 ||
-        Math.abs(event.clientY - origin.current.y) > 8
-      )
-        cancel();
-    },
-    onPointerUp: cancel,
-    onPointerCancel: cancel,
-    onClickCapture: (event: ReactMouseEvent) => {
-      if (!suppress.current) return;
-      suppress.current = false;
-      event.preventDefault();
-      event.stopPropagation();
-    },
-    onContextMenu: (event: ReactMouseEvent) => {
-      if (!suppress.current) return;
-      event.preventDefault();
-    },
-  };
-}
-
-function projectRows(group: DragGroup) {
-  return Array.from(
-    document.querySelectorAll<HTMLElement>(
-      `[data-project-id][data-pinned="${group === 'pinned' ? 'true' : 'false'}"]`,
-    ),
-  );
-}
-
+// 与 DeepSeek Harness 一致：使用浏览器原生拖拽，拖到行的上半/下半显示插入线。
 export function SidebarDragProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DragState | undefined>(undefined);
-  const drag = useRef<DragState | undefined>(undefined);
+  const current = useRef<DragState | undefined>(undefined);
+  const committed = useRef(false);
   const cache = useQueryClient();
 
-  const update = useCallback((next: DragState | undefined) => {
-    drag.current = next;
+  const set = useCallback((next: DragState | undefined) => {
+    current.current = next;
     setState(next);
   }, []);
 
-  const begin = useCallback(
-    (kind: DragKind, id: string, group: DragGroup) => update({ kind, id, group }),
-    [update],
+  const value = useMemo<DragContextValue>(
+    () => ({
+      state,
+      start: (kind, id, group) => {
+        committed.current = false;
+        set({ kind, id, group });
+      },
+      hoverProject: (projectId, beforeId) => {
+        const active = current.current;
+        if (!active) return;
+        if (
+          active.kind === 'project' &&
+          active.beforeId === beforeId &&
+          active.overProjectId === projectId
+        )
+          return;
+        set({ ...active, overProjectId: projectId, overRecent: false, beforeId });
+      },
+      hoverRecent: () => {
+        const active = current.current;
+        if (!active || active.kind !== 'thread' || active.overRecent) return;
+        set({ ...active, overProjectId: undefined, overRecent: true, beforeId: undefined });
+      },
+      hoverNone: () => {
+        const active = current.current;
+        if (!active || (!active.overProjectId && !active.overRecent)) return;
+        set({ ...active, overProjectId: undefined, overRecent: false, beforeId: undefined });
+      },
+      drop: async () => {
+        const active = current.current;
+        if (!active || committed.current) return;
+        committed.current = true;
+        set(undefined);
+        try {
+          if (active.kind === 'project') {
+            if (!active.overProjectId || active.beforeId === active.id) return;
+            await api(`/projects/${active.id}/order`, {
+              method: 'POST',
+              body: jsonBody({ before_id: active.beforeId ?? null }),
+            });
+            await cache.invalidateQueries({ queryKey: ['projects'] });
+            toast('项目顺序已调整');
+            return;
+          }
+          if (active.overProjectId) {
+            await api('/projects/move-threads', {
+              method: 'POST',
+              body: jsonBody({ ids: [active.id], project_id: active.overProjectId }),
+            });
+            if (useWorkspace.getState().threadId === active.id)
+              useWorkspace.getState().selectThread('');
+            await cache.invalidateQueries({ queryKey: ['threads'] });
+            await cache.invalidateQueries({ queryKey: ['project-threads'] });
+            await cache.invalidateQueries({ queryKey: ['projects'] });
+            toast('对话已移动');
+          } else if (active.overRecent) {
+            await api('/projects/move-threads', {
+              method: 'POST',
+              body: jsonBody({ ids: [active.id], project_id: null }),
+            });
+            if (useWorkspace.getState().threadId === active.id)
+              useWorkspace.getState().selectThread('');
+            await cache.invalidateQueries({ queryKey: ['threads'] });
+            await cache.invalidateQueries({ queryKey: ['project-threads'] });
+            await cache.invalidateQueries({ queryKey: ['projects'] });
+            toast('对话已移到最近对话');
+          }
+        } catch (error) {
+          toast(error instanceof Error ? error.message : '拖拽操作失败', undefined, 'error');
+        }
+      },
+      end: () => {
+        committed.current = false;
+        set(undefined);
+      },
+    }),
+    [state, set, cache],
   );
 
-  const active = !!state;
-  useEffect(() => {
-    if (!active) return;
-    document.body.classList.add('sidebar-dragging');
-    const onMove = (event: PointerEvent) => {
-      const current = drag.current;
-      if (!current) return;
-      const hit = document.elementFromPoint(event.clientX, event.clientY);
-      if (!hit || !(hit instanceof Element)) return;
-      if (current.kind === 'thread') {
-        const recent = hit.closest('[data-recent-drop]');
-        const project = hit.closest<HTMLElement>('[data-project-id]');
-        const projectOk =
-          project &&
-          project.dataset.projectId !== current.id &&
-          project.dataset.projectId !== undefined;
-        update({
-          ...current,
-          overRecent: !project && !!recent,
-          overProjectId: projectOk ? project.dataset.projectId : undefined,
-          beforeId: undefined,
-        });
-        return;
-      }
-      const target = hit.closest<HTMLElement>('[data-project-id]');
-      if (!target || target.dataset.projectId === current.id) {
-        update({ ...current, overProjectId: undefined, beforeId: undefined });
-        return;
-      }
-      if (target.dataset.pinned !== (current.group === 'pinned' ? 'true' : 'false')) {
-        update({ ...current, overProjectId: undefined, beforeId: undefined });
-        return;
-      }
-      const rows = projectRows(current.group);
-      const index = rows.indexOf(target);
-      const rect = target.getBoundingClientRect();
-      const after = event.clientY > rect.top + rect.height / 2;
-      const beforeId = after
-        ? (rows[index + 1]?.dataset.projectId ?? null)
-        : target.dataset.projectId;
-      update({ ...current, overProjectId: target.dataset.projectId, beforeId: beforeId ?? null });
-    };
-
-    const finish = async () => {
-      const current = drag.current;
-      update(undefined);
-      if (!current) return;
-      try {
-        if (current.kind === 'project') {
-          if (!current.overProjectId) return;
-          if (current.beforeId === current.id) return;
-          await api(`/projects/${current.id}/order`, {
-            method: 'POST',
-            body: jsonBody({ before_id: current.beforeId ?? null }),
-          });
-          await cache.invalidateQueries({ queryKey: ['projects'] });
-          toast('项目顺序已调整');
-          return;
-        }
-        if (current.overProjectId) {
-          await api('/projects/move-threads', {
-            method: 'POST',
-            body: jsonBody({ ids: [current.id], project_id: current.overProjectId }),
-          });
-          if (useWorkspace.getState().threadId === current.id)
-            useWorkspace.getState().selectThread('');
-          await cache.invalidateQueries({ queryKey: ['threads'] });
-          await cache.invalidateQueries({ queryKey: ['project-threads'] });
-          await cache.invalidateQueries({ queryKey: ['projects'] });
-          toast('对话已移动');
-        } else if (current.overRecent) {
-          await api('/projects/move-threads', {
-            method: 'POST',
-            body: jsonBody({ ids: [current.id], project_id: null }),
-          });
-          if (useWorkspace.getState().threadId === current.id)
-            useWorkspace.getState().selectThread('');
-          await cache.invalidateQueries({ queryKey: ['threads'] });
-          await cache.invalidateQueries({ queryKey: ['project-threads'] });
-          await cache.invalidateQueries({ queryKey: ['projects'] });
-          toast('对话已移到最近对话');
-        }
-      } catch (error) {
-        toast(error instanceof Error ? error.message : '拖拽操作失败', undefined, 'error');
-      }
-    };
-
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', finish);
-    window.addEventListener('pointercancel', finish);
-    const preventScroll = (event: TouchEvent) => event.preventDefault();
-    document.addEventListener('touchmove', preventScroll, { passive: false });
-    return () => {
-      document.body.classList.remove('sidebar-dragging');
-      document.removeEventListener('touchmove', preventScroll);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', finish);
-      window.removeEventListener('pointercancel', finish);
-    };
-  }, [active, update, cache]);
-
-  return <DragContext.Provider value={{ state, begin }}>{children}</DragContext.Provider>;
+  return <DragContext.Provider value={value}>{children}</DragContext.Provider>;
 }

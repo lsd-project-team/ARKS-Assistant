@@ -6,7 +6,7 @@ import { threadStatus } from '../lib/conversationList';
 import { Highlight } from '../../../shared/ui/markdown/Highlight';
 import { OverflowText } from '../../../shared/ui/OverflowText';
 import { usePopupPosition } from '../../../shared/hooks/usePopupPosition';
-import { useLongPressDrag, useSidebarDrag } from './sidebarDrag';
+import { useSidebarDrag } from './sidebarDrag';
 
 export type ThreadAction =
   'rename' | 'pin' | 'restore' | 'delete' | 'purge' | 'export' | 'up' | 'down' | 'move';
@@ -57,7 +57,6 @@ export function ThreadItem({
   );
   const pinned = row.pinned_order !== undefined && row.pinned_order !== null;
   const drag = useSidebarDrag();
-  const dragHandlers = useLongPressDrag('thread', row.id, pinned ? 'pinned' : 'normal');
   const dragging = draggable && drag?.state?.kind === 'thread' && drag.state.id === row.id;
   useEffect(() => {
     if (menu && menuPosition.visibility === 'visible')
@@ -166,7 +165,13 @@ export function ThreadItem({
         <>
           <button
             className="thread-select"
-            {...(draggable ? dragHandlers : {})}
+            draggable={draggable}
+            onDragStart={(event) => {
+              event.dataTransfer.effectAllowed = 'move';
+              event.dataTransfer.setData('text/plain', row.id);
+              drag?.start('thread', row.id, pinned ? 'pinned' : 'normal');
+            }}
+            onDragEnd={() => drag?.end()}
             title={row.title}
             aria-current={selected ? 'true' : undefined}
             disabled={row.state === 'deleted'}

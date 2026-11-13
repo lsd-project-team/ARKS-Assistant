@@ -216,6 +216,18 @@ function RecentThreads({
       className={`sidebar-thread-section ${overRecent ? 'drop-target' : ''}`}
       data-recent-drop={view === 'active' ? 'true' : undefined}
       aria-label={view === 'active' ? '最近对话' : '已删除对话'}
+      onDragOver={(event) => {
+        if (drag?.state?.kind !== 'thread') return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        drag.hoverRecent();
+      }}
+      onDrop={(event) => {
+        if (drag?.state?.kind !== 'thread') return;
+        event.preventDefault();
+        event.stopPropagation();
+        void drag.drop();
+      }}
     >
       {view !== 'deleted' && (
         <div className="sidebar-section-title">
