@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { archifyData } from './data/archifyData';
 import { presentationTopics, displayDiagramTitle } from './data/presentation';
 import { diagramReadings } from './data/diagramReading';
 import type { FlowchartCatalogEntry } from './types';
@@ -202,7 +201,6 @@ export function DiagramDetail({
   if (!entry || !selected) return <Missing onBack={() => navigate({ kind: 'graphs' })} />;
   const related = relatedGraphs(owner);
   const members = graphMembers(owner);
-  const discussion = archifyData.graphs.find((graph) => graph.slug === owner);
   const summary = entry.inlineTopic
     ? (presentationTopics.find((item) => item.id === entry.inlineTopic)?.summary ?? '')
     : (diagramReadings[owner]?.summary ?? '');
@@ -212,16 +210,6 @@ export function DiagramDetail({
         title={displayDiagramTitle(owner, entry.title)}
         summary={summary}
         navigate={navigate}
-        actions={
-          discussion && (
-            <button
-              className="button"
-              onClick={() => navigate({ kind: 'chat', flow: discussion.slug })}
-            >
-              讨论这个流程
-            </button>
-          )
-        }
       />
       <GraphViewSelector
         entries={members}

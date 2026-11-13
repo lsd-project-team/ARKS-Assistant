@@ -3,8 +3,6 @@ import { graphOwner, primaryWorkflowIds, selectedGraphId } from './data/graphCol
 
 export interface ChatRoute {
   kind: 'chat';
-  flow?: string;
-  message?: string;
 }
 export type Route =
   | ChatRoute
