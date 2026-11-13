@@ -1,0 +1,35 @@
+# __PRODUCT__
+
+本项目由 ARKS 智能助手生成，基于 .NET 8 WinForms，用于通过 RS-232 控制设备。
+
+## 运行
+
+```
+dotnet build
+dotnet run --project App.csproj
+```
+
+## 离线界面核对
+
+```
+dotnet run --project App.csproj -- --screenshot shots/ui_tab0.png 0
+dotnet run --project App.csproj -- --screenshot shots/ui_tab1.png 1
+```
+
+截图保存在 `shots/`，同目录的 `.layout.txt` 记录每个控件的 bounds，供自动界面检查使用。
+
+## 结构
+
+| 文件 | 作用 |
+| --- | --- |
+| `Program.cs` | 入口；支持 `--screenshot` 离线截图模式 |
+| `MainForm.cs` | 标题条 / 标签页 / 功能区 / 工作区 / 日志 |
+| `UiParts.cs` | 主题、框线模块、功能区按钮与图标 |
+| `ScreenshotTool.cs` | DrawToBitmap 截图与控件树输出 |
+
+## 约定
+
+- 使用 `TableLayoutPanel` 按行高排布，不依赖 Dock 顺序；
+- 动作按钮集中在功能区，页面里只放表单；
+- 写入类操作完成后必须回读核对；
+- 破坏性操作（清零、校准）要二次确认。

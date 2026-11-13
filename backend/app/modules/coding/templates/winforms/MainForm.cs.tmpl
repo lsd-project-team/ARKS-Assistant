@@ -1,0 +1,526 @@
+using System.IO.Ports;
+using System.Text;
+
+namespace __NAMESPACE__;
+
+/// <summary>
+/// 工业设备控制软件骨架：标题条 / 标签页 / 功能区 / 工作区 / 通信日志。
+/// 协议层与业务动作由后续实现接入 OnAction 与参数控件。
+/// </summary>
+internal sealed class MainForm : Form
+{
+    private readonly TableLayoutPanel _root = new();
+    private readonly TabControl _tabs = new();
+    private readonly FlowLayoutPanel _actionHost = new();
+    private readonly ComboBox _portBox = new();
+    private readonly Button _refreshButton = new();
+    private readonly Label _statusLabel = new();
+    private readonly RichTextBox _logBox = new();
+    private readonly TabPage _pageParams = new("参数设置");
+    private readonly TabPage _pageDevice = new("设备功能");
+
+    private readonly NumericUpDown _channel = new();
+    private readonly ComboBox _mode = new();
+    private readonly NumericUpDown _pressure = new();
+    private readonly NumericUpDown _time = new();
+    private readonly NumericUpDown _vacuum = new();
+    private readonly TextBox _modelName = new();
+    private readonly ComboBox _standby = new();
+    private readonly ComboBox _piston = new();
+    private readonly TextBox _alarm = new();
+    private readonly TextBox _remain = new();
+
+    public MainForm()
+    {
+        Text = "__PRODUCT__";
+        ClientSize = new Size(1180, 800);
+        MinimumSize = new Size(1000, 700);
+        StartPosition = FormStartPosition.CenterScreen;
+        BackColor = UiTheme.WindowBack;
+        Font = UiTheme.UiFont(9f);
+        BuildLayout();
+        BuildTabs();
+        BuildParamsPage();
+        BuildDevicePage();
+        RebuildActions();
+        RefreshPorts();
+        Log("程序启动，等待连接设备。", UiTheme.Grey);
+    }
+
+    private void BuildLayout()
+    {
+        _root.Dock = DockStyle.Fill;
+        _root.ColumnCount = 1;
+        _root.RowCount = 4;
+        _root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        _root.RowStyles.Clear();
+        _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 52));
+        _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
+        _root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        _root.RowStyles.Add(new RowStyle(SizeType.Absolute, 230));
+        _root.Margin = Padding.Empty;
+        _root.Padding = Padding.Empty;
+        _root.BackColor = UiTheme.WindowBack;
+
+        _root.Controls.Add(BuildTitleBar(), 0, 0);
+        _root.Controls.Add(BuildRibbon(), 0, 1);
+        _root.Controls.Add(_tabs, 0, 2);
+        _root.Controls.Add(BuildLogArea(), 0, 3);
+        Controls.Add(_root);
+    }
+
+    private static Control BuildTitleBar()
+    {
+        var bar = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = UiTheme.HeaderBack,
+            Margin = Padding.Empty,
+        };
+        var product = new Label
+        {
+            Text = "__PRODUCT__",
+            Font = UiTheme.UiFont(15f, FontStyle.Bold),
+            ForeColor = UiTheme.TextMain,
+            AutoSize = true,
+            Location = new Point(14, 13),
+        };
+        var protocol = new Label
+        {
+            Text = "RS-232 · ASCII · 9600 8N1 · 无流控",
+            Font = UiTheme.UiFont(9f),
+            ForeColor = UiTheme.TextMuted,
+            AutoSize = true,
+            Location = new Point(360, 20),
+        };
+        var version = new Label
+        {
+            Text = "v__VERSION__",
+            Font = UiTheme.UiFont(9f),
+            ForeColor = UiTheme.TextMuted,
+            Dock = DockStyle.Right,
+            Width = 90,
+            TextAlign = ContentAlignment.MiddleRight,
+        };
+        bar.Controls.Add(version);
+        bar.Controls.Add(protocol);
+        bar.Controls.Add(product);
+        return bar;
+    }
+
+    private Control BuildRibbon()
+    {
+        var ribbon = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = UiTheme.RibbonBack,
+            Padding = new Padding(8, 0, 8, 0),
+            Margin = Padding.Empty,
+        };
+        var layout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 1,
+            BackColor = UiTheme.RibbonBack,
+            Margin = Padding.Empty,
+        };
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 340));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+        _actionHost.Dock = DockStyle.Fill;
+        _actionHost.WrapContents = false;
+        _actionHost.AutoScroll = false;
+        _actionHost.BackColor = UiTheme.RibbonBack;
+        _actionHost.Margin = Padding.Empty;
+
+        layout.Controls.Add(_actionHost, 0, 0);
+        layout.Controls.Add(BuildSerialGroup(), 1, 0);
+        ribbon.Controls.Add(layout);
+        return ribbon;
+    }
+
+    private Control BuildSerialGroup()
+    {
+        var host = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 3,
+            RowCount = 2,
+            BackColor = UiTheme.RibbonBack,
+            Padding = new Padding(0, 26, 0, 0),
+            Margin = Padding.Empty,
+        };
+        host.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 46));
+        host.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130));
+        host.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        host.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+        host.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+        host.Controls.Add(
+            new Label
+            {
+                Text = "串口",
+                AutoSize = true,
+                ForeColor = UiTheme.TextMain,
+                Anchor = AnchorStyles.Left,
+                Margin = new Padding(0, 6, 0, 0),
+            },
+            0,
+            0);
+        _portBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        _portBox.Dock = DockStyle.Fill;
+        _portBox.Margin = new Padding(0, 2, 6, 2);
+        host.Controls.Add(_portBox, 1, 0);
+
+        _refreshButton.Text = "刷新";
+        _refreshButton.Width = 64;
+        _refreshButton.Height = 26;
+        _refreshButton.Anchor = AnchorStyles.Left;
+        _refreshButton.Click += (_, _) => RefreshPorts();
+        host.Controls.Add(_refreshButton, 2, 0);
+
+        _statusLabel.Text = "● 未连接";
+        _statusLabel.AutoSize = true;
+        _statusLabel.ForeColor = UiTheme.Grey;
+        _statusLabel.Anchor = AnchorStyles.Left;
+        host.Controls.Add(_statusLabel, 0, 1);
+        host.SetColumnSpan(_statusLabel, 3);
+        return host;
+    }
+
+    private void BuildTabs()
+    {
+        _tabs.Dock = DockStyle.Fill;
+        _tabs.Margin = Padding.Empty;
+        _tabs.Padding = new Point(14, 4);
+        _tabs.Font = UiTheme.UiFont(9f);
+        _pageParams.BackColor = UiTheme.WindowBack;
+        _pageParams.Padding = new Padding(8);
+        _pageDevice.BackColor = UiTheme.WindowBack;
+        _pageDevice.Padding = new Padding(8);
+        _tabs.TabPages.Add(_pageParams);
+        _tabs.TabPages.Add(_pageDevice);
+        _tabs.SelectedIndexChanged += (_, _) => RebuildActions();
+        _tabs.SelectedIndex = 0;
+    }
+
+    private void BuildParamsPage()
+    {
+        var page = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 1,
+            BackColor = UiTheme.WindowBack,
+        };
+        page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58));
+        page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42));
+        page.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+        var values = new FramePanel
+        {
+            Caption = "通道参数",
+            Dock = DockStyle.Fill,
+            Margin = new Padding(0, 0, 8, 0),
+        };
+        var form = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 3,
+            RowCount = 6,
+            BackColor = UiTheme.CardBack,
+            Padding = new Padding(6, 24, 6, 6),
+        };
+        form.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
+        form.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130));
+        form.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        for (var index = 0; index < 6; index++)
+        {
+            form.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
+        }
+
+        _channel.Minimum = 1;
+        _channel.Maximum = 500;
+        _channel.Value = 1;
+        _mode.Items.AddRange(new object[] { "手动", "定时" });
+        _mode.SelectedIndex = 1;
+        _mode.DropDownStyle = ComboBoxStyle.DropDownList;
+        _pressure.Minimum = 30;
+        _pressure.Maximum = 500;
+        _pressure.Value = 100;
+        _time.Minimum = 20;
+        _time.Maximum = 999999;
+        _time.Value = 500;
+        _vacuum.Minimum = 0;
+        _vacuum.Maximum = 500;
+        _vacuum.Value = 20;
+        AddRow(form, 0, "通道号", _channel, "");
+        AddRow(form, 1, "点胶模式", _mode, "");
+        AddRow(form, 2, "点胶气压", _pressure, "kPa");
+        AddRow(form, 3, "点胶时间", _time, "ms");
+        AddRow(form, 4, "真空压力", _vacuum, "0.01kPa");
+        AddRow(form, 5, "机种名", _modelName, "");
+        values.Controls.Add(form);
+        page.Controls.Add(values, 0, 0);
+
+        var hint = new FramePanel { Caption = "说明", Dock = DockStyle.Fill };
+        hint.Controls.Add(
+            new Label
+            {
+                Dock = DockStyle.Fill,
+                ForeColor = UiTheme.TextMuted,
+                Text =
+                    "· 气压 30~500 kPa，时间 20~999999 ms，真空 0~500（0.01kPa）\r\n"
+                    + "· 读取/设置参数只作用于设备当前通道\r\n"
+                    + "· 写入后自动回读核对，不一致会报错\r\n"
+                    + "· 补正模式下设备拒绝改参数，请在设备屏幕退出",
+            });
+        page.Controls.Add(hint, 1, 0);
+        _pageParams.Controls.Add(page);
+    }
+
+    private void BuildDevicePage()
+    {
+        var page = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 1,
+            BackColor = UiTheme.WindowBack,
+        };
+        page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52));
+        page.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48));
+        page.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+        var settings = new FramePanel
+        {
+            Caption = "待机与补正",
+            Dock = DockStyle.Fill,
+            Margin = new Padding(0, 0, 8, 0),
+        };
+        var form = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 3,
+            RowCount = 2,
+            BackColor = UiTheme.CardBack,
+            Padding = new Padding(6, 24, 6, 6),
+        };
+        form.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
+        form.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130));
+        form.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        form.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
+        form.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
+        _standby.Items.AddRange(new object[] { "无待机", "5 分钟", "10 分钟", "15 分钟", "30 分钟", "1 小时" });
+        _standby.SelectedIndex = 0;
+        _standby.DropDownStyle = ComboBoxStyle.DropDownList;
+        _piston.Items.AddRange(new object[] { "关", "开" });
+        _piston.SelectedIndex = 0;
+        _piston.DropDownStyle = ComboBoxStyle.DropDownList;
+        AddRow(form, 0, "待机时间", _standby, "");
+        AddRow(form, 1, "活塞补正", _piston, "");
+        settings.Controls.Add(form);
+        page.Controls.Add(settings, 0, 0);
+
+        var status = new FramePanel { Caption = "设备状态", Dock = DockStyle.Fill };
+        var statusForm = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 2,
+            BackColor = UiTheme.CardBack,
+            Padding = new Padding(6, 24, 6, 6),
+        };
+        statusForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 92));
+        statusForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        statusForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
+        statusForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
+        _alarm.ReadOnly = true;
+        AddRow(statusForm, 0, "报警位", _alarm, "");
+        _remain.ReadOnly = true;
+        AddRow(statusForm, 1, "胶液余量", _remain, "");
+        status.Controls.Add(statusForm);
+        page.Controls.Add(status, 1, 0);
+        _pageDevice.Controls.Add(page);
+    }
+
+    private static void AddRow(TableLayoutPanel form, int row, string label, Control input, string unit)
+    {
+        var caption = new Label
+        {
+            Text = label,
+            AutoSize = true,
+            ForeColor = UiTheme.TextMain,
+            Anchor = AnchorStyles.Left,
+            Margin = new Padding(0, 8, 0, 0),
+        };
+        input.Anchor = AnchorStyles.Left;
+        input.Width = 120;
+        form.Controls.Add(caption, 0, row);
+        form.Controls.Add(input, 1, row);
+        if (!string.IsNullOrEmpty(unit))
+        {
+            form.Controls.Add(
+                new Label
+                {
+                    Text = unit,
+                    AutoSize = true,
+                    ForeColor = UiTheme.TextMuted,
+                    Anchor = AnchorStyles.Left,
+                    Margin = new Padding(8, 8, 0, 0),
+                },
+                2,
+                row);
+        }
+    }
+
+    private Control BuildLogArea()
+    {
+        var frame = new FramePanel
+        {
+            Caption = "通信日志",
+            Dock = DockStyle.Fill,
+            Padding = new Padding(10, 24, 10, 10),
+            Margin = Padding.Empty,
+        };
+        var host = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = UiTheme.CardBack,
+        };
+        host.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        host.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+
+        _logBox.Dock = DockStyle.Fill;
+        _logBox.ReadOnly = true;
+        _logBox.BorderStyle = BorderStyle.None;
+        _logBox.BackColor = Color.White;
+        _logBox.ForeColor = UiTheme.TextMain;
+        _logBox.Font = new Font("Consolas", 9f);
+        _logBox.ScrollBars = RichTextBoxScrollBars.Vertical;
+        host.Controls.Add(_logBox, 0, 0);
+
+        var toolbar = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            BackColor = UiTheme.CardBack,
+        };
+        var clear = new Button { Text = "清空", Width = 60, Height = 24 };
+        clear.Click += (_, _) => _logBox.Clear();
+        var copy = new Button { Text = "复制", Width = 60, Height = 24 };
+        copy.Click += (_, _) =>
+        {
+            if (_logBox.TextLength > 0)
+            {
+                Clipboard.SetText(_logBox.Text);
+            }
+        };
+        var save = new Button { Text = "保存", Width = 60, Height = 24 };
+        save.Click += (_, _) => SaveLog();
+        var legend = new Label
+        {
+            Text = "发送 = 深蓝   接收 = 深绿   错误 = 深红",
+            AutoSize = true,
+            ForeColor = UiTheme.TextMuted,
+            Margin = new Padding(16, 6, 0, 0),
+        };
+        toolbar.Controls.AddRange(new Control[] { clear, copy, save, legend });
+        host.Controls.Add(toolbar, 0, 1);
+        frame.Controls.Add(host);
+        return frame;
+    }
+
+    private void SaveLog()
+    {
+        using var dialog = new SaveFileDialog
+        {
+            Filter = "文本文件 (*.txt)|*.txt",
+            FileName = $"sp900-log-{DateTime.Now:yyyyMMdd-HHmmss}.txt",
+        };
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+        {
+            File.WriteAllText(dialog.FileName, _logBox.Text, Encoding.UTF8);
+        }
+    }
+
+    private void RebuildActions()
+    {
+        _actionHost.SuspendLayout();
+        _actionHost.Controls.Clear();
+        AddAction("connect", "连接", RibbonKind.Connect);
+        if (_tabs.SelectedTab == _pageParams)
+        {
+            AddAction("test", "测试通信", RibbonKind.Test);
+            AddAction("read", "读取参数", RibbonKind.Read);
+            AddAction("set", "设置参数", RibbonKind.Write);
+            AddAction("play", "执行点胶", RibbonKind.Play);
+            AddAction("info", "设备信息", RibbonKind.Info);
+        }
+        else
+        {
+            AddAction("test", "测试通信", RibbonKind.Test);
+            AddAction("alarm", "读报警", RibbonKind.Alarm);
+            AddAction("standby", "写待机设置", RibbonKind.Standby);
+            AddAction("zero", "计数清零", RibbonKind.Zero);
+            AddAction("calibrate", "传感器校准", RibbonKind.Calibrate);
+            AddAction("info", "设备信息", RibbonKind.Info);
+        }
+        _actionHost.ResumeLayout();
+    }
+
+    private void AddAction(string key, string text, RibbonKind kind)
+    {
+        var button = new RibbonButton { Name = key, Text = text, Kind = kind };
+        button.Click += (_, _) => OnAction(key);
+        _actionHost.Controls.Add(button);
+    }
+
+    /// <summary>业务动作入口：协议层实现后在这里接入对应指令。</summary>
+    private void OnAction(string key)
+    {
+        Log($"请先连接串口设备（动作：{key}）。", UiTheme.Grey);
+    }
+
+    private void RefreshPorts()
+    {
+        _portBox.Items.Clear();
+        string[] ports;
+        try
+        {
+            ports = SerialPort.GetPortNames();
+        }
+        catch (Exception)
+        {
+            ports = Array.Empty<string>();
+        }
+        foreach (var port in ports)
+        {
+            _portBox.Items.Add(port);
+        }
+        if (_portBox.Items.Count == 0)
+        {
+            _portBox.Items.Add("无可用串口");
+        }
+        _portBox.SelectedIndex = 0;
+        Log($"已刷新串口列表：{(ports.Length == 0 ? "无" : string.Join(", ", ports))}。", UiTheme.Grey);
+    }
+
+    private void Log(string text, Color color)
+    {
+        if (_logBox.IsDisposed)
+        {
+            return;
+        }
+        _logBox.SelectionStart = _logBox.TextLength;
+        _logBox.SelectionColor = color;
+        _logBox.AppendText($"[{DateTime.Now:HH:mm:ss.fff}] {text}\r\n");
+        _logBox.SelectionColor = UiTheme.TextMain;
+        _logBox.ScrollToCaret();
+    }
+}

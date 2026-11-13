@@ -3,7 +3,7 @@
 import json
 
 from langchain.agents.middleware.types import AgentMiddleware
-from langchain_core.messages import ToolMessage
+from langchain_core.messages import SystemMessage, ToolMessage
 
 GUARDED = {
     "list_files",
@@ -28,6 +28,7 @@ PROGRESS = {
     "start_process",
     "stop_process",
 }
+LOOP_LIMIT = 12
 
 
 class CodingRepeatGuard(AgentMiddleware):
@@ -37,12 +38,36 @@ class CodingRepeatGuard(AgentMiddleware):
         self.total_limit = total_limit
         self.total = 0
         self.counts = {}
+        self.blocked_streak = 0
+
+    async def awrap_model_call(self, request, handler):
+        if self.blocked_streak < 2:
+            return await handler(request)
+        guidance = (
+            "\n【重复调用保护】同一工具调用已被拦截多次，不要再读同一段内容。"
+            "直接修改或删除失败的自测、换一个命令/路径，或者结束本轮并说明未完成项。"
+        )
+        system = request.system_message
+        blocks = list(system.content_blocks) if system else []
+        blocks.append({"type": "text", "text": guidance})
+        prompt = (
+            system.model_copy(update={"content": blocks})
+            if system
+            else SystemMessage(content=blocks)
+        )
+        return await handler(request.override(system_message=prompt))
 
     async def awrap_tool_call(self, request, handler):
         name = request.tool_call["name"]
         if name in GUARDED or name in PROGRESS:
             self.total += 1
             if self.total > self.total_limit:
+                self.blocked_streak += 1
+                if self.blocked_streak >= LOOP_LIMIT:
+                    raise RuntimeError(
+                        "连续重复工具调用过多，已停止本轮以避免空转；"
+                        "请检查失败的自测或界面问题后重试。"
+                    )
                 self.emit("coding_budget_blocked", {"total": self.total})
                 return _blocked(
                     request,
@@ -58,6 +83,7 @@ class CodingRepeatGuard(AgentMiddleware):
                 )
         if name in PROGRESS:
             self.counts.clear()
+            self.blocked_streak = 0
             return await handler(request)
         if name not in GUARDED:
             return await handler(request)
@@ -68,7 +94,13 @@ class CodingRepeatGuard(AgentMiddleware):
         count = self.counts.get(key, 0) + 1
         self.counts[key] = count
         if count < self.limit:
+            self.blocked_streak = 0
             return await handler(request)
+        self.blocked_streak += 1
+        if self.blocked_streak >= LOOP_LIMIT:
+            raise RuntimeError(
+                "连续重复工具调用过多，已停止本轮以避免空转；请检查测试或界面问题后重试。"
+            )
         self.emit("coding_repeat_blocked", {"tool": name, "count": count})
         return _blocked(
             request,
@@ -90,4 +122,5 @@ def _blocked(request, name, payload):
         content=json.dumps(payload, ensure_ascii=False),
         tool_call_id=request.tool_call["id"],
         name=name,
+        status="error",
     )

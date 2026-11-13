@@ -1,0 +1,95 @@
+using System.Drawing.Imaging;
+using System.Text;
+
+namespace __NAMESPACE__;
+
+/// <summary>
+/// 离线界面核对：启动主窗体、渲染到 Bitmap 并保存 PNG，同时把控件树写到 .layout.txt。
+/// 用法：程序.exe --screenshot 输出路径 [标签页索引]
+/// </summary>
+internal static class ScreenshotTool
+{
+    public static void Capture(string path, int tabIndex)
+    {
+        ApplicationConfiguration.Initialize();
+        using var form = new MainForm();
+        form.StartPosition = FormStartPosition.Manual;
+        form.Location = new Point(0, 0);
+        form.Show();
+
+        for (var i = 0; i < 6; i++)
+        {
+            Application.DoEvents();
+            Thread.Sleep(120);
+        }
+
+        if (tabIndex > 0)
+        {
+            var tabs = FindTabControl(form);
+            if (tabs is not null && tabIndex < tabs.TabCount)
+            {
+                tabs.SelectedIndex = tabIndex;
+                tabs.SelectedIndexChanged += (_, _) => { };
+                for (var i = 0; i < 6; i++)
+                {
+                    Application.DoEvents();
+                    Thread.Sleep(120);
+                }
+            }
+        }
+
+        var lines = new List<string>();
+        DumpLayout(form, 0, lines);
+        foreach (var line in lines)
+        {
+            Console.WriteLine(line);
+        }
+        Console.Out.Flush();
+
+        var full = Path.GetFullPath(path);
+        var directory = Path.GetDirectoryName(full);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+        File.WriteAllLines(full + ".layout.txt", lines, Encoding.UTF8);
+
+        using var bitmap = new Bitmap(form.Width, form.Height);
+        form.DrawToBitmap(bitmap, new Rectangle(0, 0, form.Width, form.Height));
+        bitmap.Save(full, ImageFormat.Png);
+        form.Close();
+    }
+
+    private static TabControl? FindTabControl(Control parent)
+    {
+        foreach (Control control in parent.Controls)
+        {
+            if (control is TabControl tabs)
+            {
+                return tabs;
+            }
+            var found = FindTabControl(control);
+            if (found is not null)
+            {
+                return found;
+            }
+        }
+        return null;
+    }
+
+    private static void DumpLayout(Control parent, int depth, List<string> lines)
+    {
+        foreach (Control control in parent.Controls)
+        {
+            var bounds = control.Bounds;
+            lines.Add(
+                $"{new string(' ', depth * 2)}{control.GetType().Name} {control.Name} "
+                + $"bounds={{X={bounds.X},Y={bounds.Y},Width={bounds.Width},Height={bounds.Height}}} "
+                + $"dock={control.Dock} visible={control.Visible}");
+            if (depth < 10)
+            {
+                DumpLayout(control, depth + 1, lines);
+            }
+        }
+    }
+}

@@ -482,7 +482,14 @@ export function ChatPane({
                 ARKS软件智能助手{' '}
                 <RunActivity run={active} stage={stream.stage} detail={stream.detail} busy={busy} />
               </div>
-              <RunTraceDetails key={active.id} tools={stream.tools} />
+              <RunTraceDetails
+                key={active.id}
+                tools={stream.tools}
+                plan={stream.plan}
+                verification={stream.verification}
+                uiCheck={stream.uiCheck}
+                acceptance={stream.acceptance}
+              />
               {pendingApproval && (
                 <CodingApprovalCard key={pendingApproval.id} approval={pendingApproval} />
               )}

@@ -29,6 +29,35 @@ export interface Selection {
   version: string;
   stale?: boolean;
 }
+export interface PlanItem {
+  id: string;
+  title: string;
+  status: 'todo' | 'doing' | 'done' | 'blocked';
+  note?: string;
+}
+
+export interface VerificationResult {
+  ok?: boolean;
+  kind?: string;
+  summary?: string;
+  error?: string;
+  errors?: { file?: string; line?: number; code?: string; message?: string }[];
+}
+
+export interface UiCheckResult {
+  ok?: boolean;
+  issues?: string[];
+  shots?: string[];
+  notes?: string[];
+  error?: string;
+}
+
+export interface AcceptanceResult {
+  ok?: boolean;
+  missing?: string[];
+  final?: boolean;
+}
+
 export interface ChatAttachment {
   id: string;
   filename: string;

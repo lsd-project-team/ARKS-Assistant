@@ -65,6 +65,10 @@ coding 模块
 | `list_files` | `path="."`、`depth=2`、`pattern=""` | 列目录树，忽略构建产物与版本库目录 | 自动 |
 | `read_file` | `path`、`start_line`、`end_line` | 读文本，返回行号、编码、哈希 | 自动 |
 | `view_image` | `path` | 直接查看项目内图片（截图、设计图），作为用户消息交给支持视觉的模型 | 自动 |
+| `verify` | `kind="build"` / `"test"` | 执行构建或测试，返回 `文件:行:列 错误码` 结构化诊断与摘要 | 自动（白名单内） |
+| `check_ui` | `tabs=2` | 运行 `--screenshot`，解析控件树、校验截图与关键布局，返回问题清单与截图路径 | 自动（白名单内） |
+| `scaffold_winforms` | `product` | 在空目录生成经验证的 WinForms 布局骨架（标题条/功能区/页签/日志/截图工具），不含业务协议 | 自动 |
+| `update_plan` | `items=[{title,status,note}]` | 维护任务计划；状态 `todo/doing/done/blocked`，运行详情可见 | 自动 |
 | `search_files` | `query`、`path="."`、`glob=""` | 按内容搜索，返回路径与行 | 自动 |
 | `write_file` | `path`、`content`、`expected_hash=""` | 新建或覆盖文本；已有文件必须带哈希 | 自动（有快照） |
 | `create_directory` | `path` | 建目录（含父级） | 自动 |
@@ -81,11 +85,27 @@ coding 模块
 约束：
 
 - 单文件读写上限 2 MB；二进制文件拒绝读取，返回大小与类型。
-- `view_image` 读取项目内 PNG/JPG/GIF/WebP（按文件内容判断，单边 ≤8192 像素、单文件 ≤32 MB）；超过 2048 像素或 4 MB 时先在本机压缩。图片块只在该次模型请求时展开，检查点保存文本标记；同一项目后续轮次会重新带上历史图片。
+- `view_image` 读取项目内 PNG/JPG/GIF/WebP（按文件内容判断，单边 ≤8192 像素、单文件 ≤32 MB）；超过 2048 像素或 4 MB 时先在本机压缩。工具只返回文本；图片由模型请求边界统一注入，保证并行工具调用时 `tool_use` 后紧跟全部 `tool_result`；检查点保存文本标记，同一项目后续轮次会重新带上历史图片。
+- `verify` 只解析白名单内的构建/测试命令；需要审批的命令不阻塞等待，返回“未执行”而不是假装通过。
+- `check_ui` 要求项目支持 `--screenshot <png> <tab>`：应用内用 `DrawToBitmap` 渲染（不截桌面），同时写 `<png>.layout.txt` 控件树。判定项：标签页高 ≥300px、功能区大按钮 ≥6（≥60×60）、可见输入控件 ≥6、日志区 ≥150px、无可见 0 尺寸控件、截图非空白且 ≥800×600。
+- `scaffold_winforms` 只允许空目录；已有 `.cs/.csproj/.sln/.xaml` 时拒绝，避免覆盖现有工程。骨架固定 4 行布局（标题 52 / 功能区 100 / 页签填充 / 日志 230），从源头规避“页签被压成 0 高、按钮溢出、日志重叠”。
 - 写入使用临时文件 + 原子替换，保留原换行与 BOM（复用现有 `encode_text` 逻辑）。
 - 删除、移动前自动建检查点；同一轮内多次写只建一个轮次检查点。
 - 读取超过 500 行时分页，提示模型继续读取。
 - 工具调用统一发 `coding` 事件给前端，记录参数摘要、耗时与结果状态。
+
+### 6.1 从零生成（generation 模式）
+
+项目可写且目录内还没有 `.cs/.csproj/.sln/.xaml` 时，本轮自动进入从零生成：
+
+1. 工具与续写预算提高（检索 256 次、自动续写 12 次、重复保护总上限 400），但计划与验收门禁同时生效；
+2. 注入 `GENERATION_GUIDANCE`：先读需求建计划 → 协议层与回放自测 → `verify` 通过 → 界面 → `check_ui` + `view_image` → 验收清单；
+3. 问题明确提到 WinForms/C#/上位机/窗体时，运行前自动准备经验证的 WinForms 骨架（`App.csproj`、`Program.cs`、`MainForm.cs`、`UiParts.cs`、`ScreenshotTool.cs`），模型直接在骨架上实现协议与页面；其他技术栈不自动套模板；
+4. `update_plan` 维护步骤状态，运行详情展示计划与结果；
+5. `AcceptanceGate` 在最终回答前检查：计划完成、`verify build` 通过、`verify test` 通过、`check_ui` 通过；缺失项会要求继续（最多 3 次），仍不满足则带缺口收尾并记录 `acceptance` 事件；
+6. 新事件：`plan`、`verify`、`ui_check`、`acceptance`，只增字段，旧数据兼容。
+
+模板位置：`backend/app/modules/coding/templates/winforms/`（`App.csproj`、`Program.cs`、`ScreenshotTool.cs`、`UiParts.cs`、`MainForm.cs`、`README.md`）。模板只提供布局与截图基础设施，协议与业务逻辑由模型实现。
 
 ## 7. 命令执行
 

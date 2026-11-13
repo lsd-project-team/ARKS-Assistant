@@ -1,15 +1,10 @@
 """聊天中的原地编码工具；直接读写项目目录，用快照回滚。"""
 
 import asyncio
-from typing import Annotated
 
-from langchain_core.messages import HumanMessage, ToolMessage
-from langchain_core.tools import InjectedToolCallId, tool
-from langgraph.types import Command
+from langchain_core.tools import tool
 
 from app.core.config import dump_json
-from app.core.identifiers import new_id
-from app.modules.chat.image_attachments import path_marker
 
 CODING_GUIDANCE = """
 【项目编码】
@@ -33,12 +28,34 @@ run_command 用于构建、测试和一次性命令；start_process 用于常驻
 命令不在自动放行范围时会在本轮内等待用户确认；确认后自动继续。被拒绝或超时不要反复重试。
 当前权限决定是否可以写文件和是否需要确认：仅可查看时写入与写命令会被直接拒绝，需要时请让用户切换权限。
 命令输出会实时推送，结束后返回末尾摘要；需要更多时用 read_process 或读取日志。
+构建或测试用 verify：返回 file:line:code 结构化诊断，不要只从日志尾部猜错误。
+界面用 check_ui：自动跑 --screenshot、校验布局并生成截图，再用 view_image 看截图。
 不要编造执行结果；失败时读取日志、修复后重试。用户只询问、讨论时不修改任何文件。
 同一命令或同一文件读取不要连续重复；连续重复会被拦截。了解基本情况后直接开始创建工程、写代码和构建。
 """
 
+GENERATION_GUIDANCE = """
+【从零生成】
+本轮项目目录为空，目标是一次交付可运行、可验收的完整系统。
+1. 先读需求/任务书，调用 update_plan 建立 4-7 步计划
+   （协议层 → 回放测试 → 构建 → 界面骨架 → 业务功能 → 截图自检 → 验收）。
+2. 先实现协议层与离线回放测试，verify test 通过后再做界面；
+   自测覆盖需求要求的用例即可，不要额外加编码页/区域设置等设备未要求的测试；
+   自己新增的用例反复失败时先删除或修正，不要卡在同一个用例上；
+   若目录里已有 App.csproj / Program.cs / MainForm.cs / UiParts.cs / ScreenshotTool.cs
+   （生成模式会自动准备 WinForms 骨架），不要重复 scaffold，直接在骨架上实现页面与业务逻辑；
+   否则先 scaffold_winforms。每完成一步更新计划状态。
+3. 完成前必须调用 verify build、verify test 与 check_ui；对生成的截图调用 view_image 核对；任何一项失败先修复，
+   不得带着错误或空白界面宣称完成。check_ui 失败时先看返回的 issues 与 log_tail：
+   启动异常（尤其是 TabPage/Panel 结构错误）必须先修，修完重新 check_ui。
+4. 截图契约固定为 `--screenshot <png路径> <标签页索引>`（scaffold_winforms 已内置），
+   不要改成“输出目录”；控件 bounds 要递归打印全部层级（不限深度），
+   check_ui 依赖它校验参数表单、按钮与日志区。
+5. 最终回答按验收清单逐项给出证据（构建退出码、自测数量、截图路径），未满足项明确列出。
+"""
 
-def coding_tools(work, thread_id, emit, *, run_id=""):
+
+def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
     def call(name, function, *args, **kwargs):
         try:
             result = function(*args, **kwargs)
@@ -63,43 +80,94 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
         return await run("read_project_file", work.read_file, path, start_line, end_line)
 
     @tool
-    async def view_image(path: str, tool_call_id: Annotated[str, InjectedToolCallId]) -> Command:
+    async def view_image(path: str) -> str:
         """Look at an image file in the project directly (screenshot, design, icon).
 
-        Use it after capturing a screenshot or when the user points to a project image.
+        The image is attached to this turn's model context automatically.
         """
         try:
             result = await asyncio.to_thread(work.read_image, path)
         except Exception as error:  # 失败原因让模型看到，由它修正路径或说明无法查看
             emit("coding", {"tool": "view_image", "ok": False})
-            return Command(
-                update={
-                    "messages": [
-                        ToolMessage(
-                            content=dump_json({"ok": False, "error": str(error)}),
-                            tool_call_id=tool_call_id,
-                        )
-                    ]
-                }
-            )
+            return dump_json({"ok": False, "error": str(error)})
         emit("coding", {"tool": "view_image", "ok": True})
-        summary = (
-            f"已加载项目图片 {result['path']}"
-            f"（{result['format']}，{result['width']}×{result['height']}）。"
-            "图片已附在本轮消息，可直接查看并回答。"
-        )
-        # 只放文本标记；像素内容在模型请求边界展开，检查点不保存 base64。
-        return Command(
-            update={
-                "messages": [
-                    ToolMessage(content=summary, tool_call_id=tool_call_id),
-                    HumanMessage(
-                        content=summary + "\n" + path_marker(result["path"]),
-                        id=new_id(),
-                    ),
-                ]
+        return dump_json(
+            {
+                "ok": True,
+                "path": result["path"],
+                "format": result["format"],
+                "width": result["width"],
+                "height": result["height"],
+                "note": "图片已附在本轮消息，可直接查看并回答。",
             }
         )
+
+    @tool
+    async def verify(kind: str = "build") -> str:
+        """Build or test the project; returns file:line:code diagnostics and a summary.
+
+        For test, runs the configured test command, or the first tests/*.csproj
+        self-test console project, or `dotnet test` when neither exists.
+        """
+        try:
+            result = await asyncio.to_thread(work.verify, kind)
+        except Exception as error:
+            result = {"ok": False, "kind": kind, "error": str(error)}
+        if checks is not None:
+            checks.record_verify(result)
+        emit(
+            "verify",
+            {
+                "ok": bool(result.get("ok")),
+                "kind": kind,
+                "summary": result.get("summary") or result.get("error", ""),
+                "errors": result.get("errors", [])[:10],
+            },
+        )
+        return dump_json(result)
+
+    @tool
+    async def check_ui(tabs: int = 2) -> str:
+        """Render screenshots, validate layout, and return shot paths for view_image.
+
+        The app must support `--screenshot <png-path> <tab-index>` (scaffold_winforms
+        provides it) and print every control's bounds recursively, without a depth
+        limit. It must not treat the argument as an output directory.
+        """
+        try:
+            result = await asyncio.to_thread(work.check_ui, tabs)
+        except Exception as error:
+            result = {"ok": False, "error": str(error)}
+        if checks is not None:
+            checks.record_ui(result)
+        emit(
+            "ui_check",
+            {
+                "ok": bool(result.get("ok")),
+                "issues": (result.get("issues") or [])[:10],
+                "shots": result.get("shots", []),
+                "notes": result.get("notes", []),
+            },
+        )
+        return dump_json(result)
+
+    @tool
+    async def scaffold_winforms(product: str = "SP900 点胶机上位机") -> str:
+        """Create the verified WinForms skeleton (layout + screenshot entry) in an empty project.
+
+        The generated Program.cs already supports `--screenshot <png-path> <tab-index>`.
+        Keep that contract; do not replace it with an output-directory argument.
+        """
+        try:
+            result = await asyncio.to_thread(
+                work.scaffold, "winforms", {"__PRODUCT__": product}
+            )
+        except Exception as error:
+            result = {"ok": False, "error": str(error)}
+        if checks is not None:
+            checks.record_scaffold(result)
+        emit("coding", {"tool": "scaffold_winforms", "ok": bool(result.get("ok"))})
+        return dump_json(result)
 
     @tool
     async def search_files(query: str, path: str = ".", glob: str = "") -> str:
@@ -235,6 +303,9 @@ def coding_tools(work, thread_id, emit, *, run_id=""):
         list_files,
         read_project_file,
         view_image,
+        verify,
+        check_ui,
+        scaffold_winforms,
         search_files,
         find_files,
         write_file,

@@ -1,0 +1,200 @@
+using System.Drawing.Drawing2D;
+
+namespace __NAMESPACE__;
+
+internal static class UiTheme
+{
+    public static readonly Color WindowBack = Color.FromArgb(243, 247, 250);
+    public static readonly Color CardBack = Color.FromArgb(248, 251, 253);
+    public static readonly Color RibbonBack = Color.FromArgb(232, 240, 246);
+    public static readonly Color HeaderBack = Color.FromArgb(224, 236, 244);
+    public static readonly Color Border = Color.FromArgb(160, 184, 200);
+    public static readonly Color TextMain = Color.FromArgb(32, 46, 58);
+    public static readonly Color TextMuted = Color.FromArgb(96, 112, 124);
+    public static readonly Color Accent = Color.FromArgb(38, 108, 168);
+    public static readonly Color Green = Color.FromArgb(24, 116, 66);
+    public static readonly Color Red = Color.FromArgb(174, 48, 40);
+    public static readonly Color Blue = Color.FromArgb(28, 64, 140);
+    public static readonly Color Grey = Color.FromArgb(110, 118, 124);
+
+    public static Font UiFont(float size, FontStyle style = FontStyle.Regular) =>
+        new("Microsoft YaHei UI", size, style);
+}
+
+internal enum RibbonKind
+{
+    Connect,
+    Test,
+    Read,
+    Write,
+    Play,
+    Info,
+    Refresh,
+    Alarm,
+    Standby,
+    Zero,
+    Calibrate,
+}
+
+/// <summary>带 1px 框线和压线标题的工业风格模块。</summary>
+internal sealed class FramePanel : Panel
+{
+    public string Caption { get; set; } = "";
+
+    public FramePanel()
+    {
+        SetStyle(
+            ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.UserPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+            true);
+        BackColor = UiTheme.CardBack;
+        Padding = new Padding(12);
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+        e.Graphics.SmoothingMode = SmoothingMode.None;
+        using var pen = new Pen(UiTheme.Border);
+        e.Graphics.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
+        if (string.IsNullOrWhiteSpace(Caption))
+        {
+            return;
+        }
+        using var font = UiTheme.UiFont(9f, FontStyle.Bold);
+        var size = TextRenderer.MeasureText(Caption, font);
+        var labelRect = new Rectangle(10, 0, size.Width + 6, 18);
+        using var brush = new SolidBrush(BackColor);
+        e.Graphics.FillRectangle(brush, labelRect);
+        TextRenderer.DrawText(
+            e.Graphics,
+            Caption,
+            font,
+            labelRect,
+            UiTheme.Accent,
+            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+    }
+}
+
+/// <summary>32px 图标 + 下方文字的工业功能区按钮；自己清屏，避免父级透明时变黑块。</summary>
+internal sealed class RibbonButton : Button
+{
+    public RibbonKind Kind { get; set; }
+
+    public RibbonButton()
+    {
+        SetStyle(
+            ControlStyles.AllPaintingInWmPaint
+                | ControlStyles.UserPaint
+                | ControlStyles.OptimizedDoubleBuffer
+                | ControlStyles.ResizeRedraw,
+            true);
+        Size = new Size(88, 84);
+        Margin = new Padding(4, 2, 4, 2);
+        FlatStyle = FlatStyle.Flat;
+        FlatAppearance.BorderSize = 0;
+        BackColor = UiTheme.RibbonBack;
+        ForeColor = UiTheme.TextMain;
+        Font = UiTheme.UiFont(9f);
+        Cursor = Cursors.Hand;
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        e.Graphics.Clear(Enabled ? BackColor : UiTheme.RibbonBack);
+        var color = Enabled ? UiTheme.TextMain : UiTheme.Grey;
+        IconPainter.Draw(e.Graphics, Kind, 32, new Point((Width - 32) / 2, 8), color, Enabled);
+        TextRenderer.DrawText(
+            e.Graphics,
+            Text,
+            Font,
+            new Rectangle(0, 46, Width, 30),
+            color,
+            TextFormatFlags.HorizontalCenter | TextFormatFlags.Top | TextFormatFlags.WordBreak);
+        if (ClientRectangle.Contains(PointToClient(Cursor.Position)) && Enabled)
+        {
+            using var pen = new Pen(Color.FromArgb(70, UiTheme.Accent));
+            e.Graphics.DrawRectangle(pen, 1, 1, Width - 3, Height - 3);
+        }
+    }
+}
+
+internal static class IconPainter
+{
+    public static void Draw(Graphics g, RibbonKind kind, int size, Point origin, Color color, bool enabled)
+    {
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        using var pen = new Pen(color, 2.2f);
+        using var thin = new Pen(color, 1.5f);
+        using var fill = new SolidBrush(color);
+        var x = origin.X;
+        var y = origin.Y;
+        switch (kind)
+        {
+            case RibbonKind.Connect:
+                g.DrawRectangle(pen, x + 6, y + 14, 12, 10);
+                g.DrawLine(pen, x + 9, y + 14, x + 9, y + 7);
+                g.DrawLine(pen, x + 15, y + 14, x + 15, y + 7);
+                g.DrawLine(thin, x + 12, y + 8, x + 20, y + 1);
+                break;
+            case RibbonKind.Test:
+                g.DrawEllipse(thin, x + 4, y + 8, 7, 7);
+                g.DrawEllipse(thin, x + 21, y + 17, 7, 7);
+                g.DrawLine(pen, x + 10, y + 13, x + 21, y + 20);
+                break;
+            case RibbonKind.Read:
+                g.DrawLine(pen, x + 16, y + 4, x + 16, y + 20);
+                g.DrawLine(pen, x + 16, y + 20, x + 9, y + 13);
+                g.DrawLine(pen, x + 16, y + 20, x + 23, y + 13);
+                g.DrawLine(thin, x + 7, y + 26, x + 25, y + 26);
+                break;
+            case RibbonKind.Write:
+                g.DrawRectangle(thin, x + 7, y + 6, 18, 20);
+                g.DrawLine(pen, x + 12, y + 18, x + 16, y + 23);
+                g.DrawLine(pen, x + 16, y + 23, x + 24, y + 11);
+                break;
+            case RibbonKind.Play:
+                g.FillPolygon(fill, new[] { new Point(x + 10, y + 6), new Point(x + 26, y + 16), new Point(x + 10, y + 26) });
+                break;
+            case RibbonKind.Info:
+                g.DrawEllipse(pen, x + 6, y + 4, 20, 20);
+                g.FillEllipse(fill, x + 14, y + 9, 4, 4);
+                g.DrawLine(pen, x + 16, y + 15, x + 16, y + 21);
+                break;
+            case RibbonKind.Refresh:
+                g.DrawArc(pen, x + 7, y + 6, 18, 18, 40, 290);
+                g.FillPolygon(fill, new[] { new Point(x + 23, y + 3), new Point(x + 27, y + 11), new Point(x + 19, y + 10) });
+                break;
+            case RibbonKind.Alarm:
+                g.DrawArc(pen, x + 8, y + 4, 16, 18, 180, 180);
+                g.DrawLine(pen, x + 8, y + 13, x + 8, y + 22);
+                g.DrawLine(pen, x + 24, y + 13, x + 24, y + 22);
+                g.DrawLine(thin, x + 6, y + 22, x + 26, y + 22);
+                g.FillEllipse(fill, x + 14, y + 24, 4, 4);
+                break;
+            case RibbonKind.Standby:
+                g.DrawEllipse(pen, x + 7, y + 6, 18, 18);
+                g.DrawLine(pen, x + 16, y + 10, x + 16, y + 16);
+                g.DrawLine(pen, x + 16, y + 16, x + 20, y + 19);
+                break;
+            case RibbonKind.Zero:
+                g.DrawEllipse(pen, x + 8, y + 5, 16, 22);
+                g.DrawLine(thin, x + 11, y + 24, x + 21, y + 7);
+                break;
+            case RibbonKind.Calibrate:
+                g.DrawEllipse(pen, x + 6, y + 5, 20, 20);
+                g.DrawEllipse(thin, x + 11, y + 10, 10, 10);
+                g.DrawLine(pen, x + 16, y + 2, x + 16, y + 8);
+                g.DrawLine(pen, x + 16, y + 22, x + 16, y + 28);
+                g.DrawLine(pen, x + 3, y + 15, x + 9, y + 15);
+                g.DrawLine(pen, x + 23, y + 15, x + 29, y + 15);
+                break;
+        }
+        if (!enabled)
+        {
+            g.FillRectangle(new SolidBrush(Color.FromArgb(60, UiTheme.RibbonBack)), origin.X, origin.Y, size, size);
+        }
+    }
+}

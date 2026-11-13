@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type {
+  AcceptanceResult,
   CodingApproval,
   ContextUsage,
   ErrorFeedback,
+  PlanItem,
   Run,
   ToolEvent,
+  UiCheckResult,
+  VerificationResult,
   KnowledgeReference,
   KnowledgeSearch,
   MemorySaveFeedback,
@@ -33,6 +37,10 @@ export function useRunStream(run: Run | undefined) {
   const [memorySaves, setMemorySaves] = useState<MemorySaveFeedback[]>([]);
   const [approval, setApproval] = useState<CodingApproval>();
   const [commandOutput, setCommandOutput] = useState('');
+  const [plan, setPlan] = useState<PlanItem[]>([]);
+  const [verification, setVerification] = useState<VerificationResult>();
+  const [uiCheck, setUiCheck] = useState<UiCheckResult>();
+  const [acceptance, setAcceptance] = useState<AcceptanceResult>();
   useEffect(() => {
     setAnswer('');
     setTools([]);
@@ -49,6 +57,10 @@ export function useRunStream(run: Run | undefined) {
     setMemorySaves([]);
     setApproval(undefined);
     setCommandOutput('');
+    setPlan([]);
+    setVerification(undefined);
+    setUiCheck(undefined);
+    setAcceptance(undefined);
     setContext(undefined);
     if (!run || !['queued', 'running'].includes(run.status)) return;
     const source = new EventSource(apiUrl(`/runs/${run.id}/events`, projectId));
@@ -75,6 +87,12 @@ export function useRunStream(run: Run | undefined) {
     );
     listen('answer_replace', (payload) => buffer.replace(payload.text));
     listen('retrieval_budget', (payload) => setNotice(String(payload.text)));
+    listen('plan', (payload) => {
+      if (Array.isArray(payload.items)) setPlan(payload.items as unknown as PlanItem[]);
+    });
+    listen('verify', (payload) => setVerification(payload as unknown as VerificationResult));
+    listen('ui_check', (payload) => setUiCheck(payload as unknown as UiCheckResult));
+    listen('acceptance', (payload) => setAcceptance(payload as unknown as AcceptanceResult));
     listen('answer_completion', (payload) => {
       if (!payload.continuing && payload.output !== 'complete')
         setNotice(
@@ -168,5 +186,9 @@ export function useRunStream(run: Run | undefined) {
     finished,
     approval,
     commandOutput,
+    plan,
+    verification,
+    uiCheck,
+    acceptance,
   };
 }

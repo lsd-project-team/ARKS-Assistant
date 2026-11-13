@@ -30,6 +30,7 @@ __all__ = [
     "media_type_of_file",
     "path_marker",
     "prepare",
+    "view_image_paths",
 ]
 
 MARKER = re.compile(r"<attachment-image\b([^>]*?)/>")
@@ -50,6 +51,22 @@ def path_marker(path, filename=""):
         f'<attachment-image path="{_attribute(path)}" '
         f'name="{_attribute(filename or path)}" />'
     )
+
+
+def view_image_paths(messages):
+    """收集历史中的 view_image 调用路径；按出现顺序去重，供请求边界统一附图。"""
+    found = {}
+    for message in messages:
+        if getattr(message, "type", "") != "ai":
+            continue
+        for call in getattr(message, "tool_calls", None) or []:
+            if not isinstance(call, dict) or call.get("name") != "view_image":
+                continue
+            arguments = call.get("args") or {}
+            path = arguments.get("path") if isinstance(arguments, dict) else None
+            if isinstance(path, str) and path:
+                found.setdefault(path, None)
+    return list(found)
 
 
 def _attribute(value):

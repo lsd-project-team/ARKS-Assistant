@@ -12,7 +12,7 @@ from pathlib import Path
 from app.core.config import PROJECT_ROOT
 from app.core.identifiers import now_iso
 from app.infrastructure.images import MAX_IMAGE_BYTES, inspect
-from app.modules.coding import files
+from app.modules.coding import diagnostics, files, ui_checks
 from app.modules.coding.executor import Executor
 from app.modules.coding.snapshots import Snapshots
 
@@ -215,6 +215,188 @@ class CodingWorkspace:
             "height": height,
             "frames": frames,
         }
+
+    def is_empty(self):
+        """判断项目里是否还没有源码/工程文件，用于识别“从零生成”任务。"""
+        ignored = {".git", ".vs", "bin", "obj", "publish", "node_modules", "shots"}
+        try:
+            for path in self.root.rglob("*"):
+                if not path.is_file() or any(part in ignored for part in path.parts):
+                    continue
+                if path.suffix.lower() in {".cs", ".csproj", ".sln", ".xaml", ".fs", ".vb"}:
+                    return False
+        except OSError:
+            return False
+        return True
+
+    def verify(self, kind="build", timeout=None):
+        """执行构建或测试并把诊断结构化；需要审批的命令不阻塞等待。"""
+        if kind not in {"build", "test"}:
+            raise ValueError("verify 只支持 build 或 test")
+        settings, detected = self.load_settings(), self.environment()
+        if kind == "build":
+            command = (
+                settings.get("build_command") or detected.get("build_command") or "dotnet build"
+            )
+            timeout = timeout or 300
+        else:
+            command = (
+                settings.get("test_command")
+                or self._test_command()
+                or detected.get("test_command")
+                or "dotnet test"
+            )
+            timeout = timeout or 600
+        result = self.run_command(command, timeout=timeout, approved=False, wait=False)
+        if result.get("approval_required"):
+            return {
+                "ok": False,
+                "kind": kind,
+                "command": command,
+                "error": (
+                    "该验证命令不在自动放行范围，未执行；"
+                    "请先确认审批或改用白名单内的构建/测试命令"
+                ),
+                "approval": result.get("approval"),
+            }
+        output = result.get("output") or ""
+        parsed = diagnostics.parse_diagnostics(output, result.get("exit_code") or 0)
+        tests = (
+            diagnostics.parse_tests(output, result.get("exit_code") or 0)
+            if kind == "test"
+            else None
+        )
+        ok = parsed["ok"] and (tests is None or tests["ok"])
+        return {
+            "ok": ok,
+            "kind": kind,
+            "command": command,
+            "exit_code": result.get("exit_code"),
+            "duration_ms": result.get("duration_ms"),
+            "errors": parsed["errors"][:50],
+            "warnings": parsed["warnings"][:50],
+            "error_count": parsed["error_count"],
+            "warning_count": parsed["warning_count"],
+            "summary": parsed["summary"],
+            "tests": tests,
+            "log_tail": diagnostics.tail(output),
+        }
+
+    def check_ui(self, tabs=2, timeout=150):
+        """运行 --screenshot，解析控件树并校验截图，供 Agent 自检界面。"""
+        project = self._project_file()
+        if project is None:
+            raise ValueError("项目内找不到 .csproj，请先创建工程或使用 scaffold_winforms")
+        shots, output, missing = [], "", []
+        for index in range(max(1, min(int(tabs), 4))):
+            relative = f"shots/ui_tab{index}.png"
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.unlink(missing_ok=True)
+            result = self.run_command(
+                f'dotnet run --project "{project.name}" -- --screenshot "{relative}" {index}',
+                timeout=timeout,
+                approved=False,
+                wait=False,
+            )
+            if result.get("approval_required"):
+                return {
+                    "ok": False,
+                    "error": "截图命令需要审批，未执行；且无法确认界面，请不要宣称界面已验证",
+                    "approval": result.get("approval"),
+                }
+            output += (result.get("output") or "") + "\n"
+            layout_file = self.root / f"{relative}.layout.txt"
+            if layout_file.is_file():
+                # WinExe 的标准输出在某些启动方式下拿不到，以应用同时写下的控件树兜底。
+                output += layout_file.read_text(encoding="utf-8", errors="replace") + "\n"
+            if target.is_file():
+                shots.append(relative)
+            else:
+                missing.append(relative)
+                output += f"[截图缺失] {relative}\n"
+                # 第一张就没有截图说明 --screenshot 入口可能未实现，再试第二张只是浪费一轮超时。
+                break
+        report = ui_checks.evaluate_layout(
+            ui_checks.parse_layout(output),
+            [ui_checks.analyze_screenshot(self.root / shot) for shot in shots],
+        )
+        issues = list(report["issues"])
+        if missing:
+            issues.append(
+                f"未生成截图：{', '.join(missing)}；"
+                "应用需支持 --screenshot <png> <tab> 并打印控件 bounds"
+            )
+            crash = _runtime_error(output)
+            if crash:
+                issues.append(f"截图模式启动失败：{crash}")
+        return {
+            "ok": not issues,
+            "project": project.name,
+            "shots": shots,
+            "issues": issues,
+            "notes": report["notes"],
+            "counts": report["counts"],
+            "log_tail": diagnostics.tail(output),
+        }
+
+    def _project_file(self):
+        candidates = sorted(path for path in self.root.glob("*.csproj") if path.is_file())
+        return candidates[0] if candidates else None
+
+    def _test_command(self):
+        """没配置测试命令时，优先运行 tests/ 下的控制台自测工程，其次回退到框架检测。"""
+        candidates = (
+            sorted((self.root / "tests").glob("**/*.csproj"))
+            if (self.root / "tests").is_dir()
+            else []
+        )
+        if candidates:
+            relative = candidates[0].relative_to(self.root).as_posix()
+            return f'dotnet run --project "{relative}"'
+        return ""
+
+    def scaffold(self, template="winforms", values=None, path="."):
+        """把经验证的界面骨架写入空目录；已有源码的目录拒绝覆盖。"""
+        with self._locked():
+            self._require_writable()
+            target = files.resolve(self.root, path)
+            if not target.is_dir():
+                raise ValueError("目标不是目录")
+            template_dir = Path(__file__).resolve().parent / "templates" / template
+            if not template_dir.is_dir():
+                raise ValueError(f"未知模板：{template}")
+            existing = [item.name for item in target.iterdir() if item.is_file()]
+            if any(
+                name.endswith((".cs", ".csproj", ".sln", ".xaml")) for name in existing
+            ):
+                raise ValueError("目录已有源码或工程文件，不能 scaffold；请直接修改现有工程")
+            replacements = {
+                "__NAMESPACE__": "Sp900App",
+                "__ASSEMBLY__": "Sp900App",
+                "__PRODUCT__": "SP900 点胶机上位机",
+                "__VERSION__": "1.0.0",
+                **(values or {}),
+            }
+            written = []
+            for source in sorted(template_dir.iterdir()):
+                if not source.is_file():
+                    continue
+                name = source.name[:-5] if source.name.endswith(".tmpl") else source.name
+                destination = target / name
+                if destination.exists():
+                    raise ValueError(f"目标文件已存在：{name}")
+                text = source.read_text(encoding="utf-8")
+                for key, value in replacements.items():
+                    text = text.replace(key, str(value))
+                destination.write_text(text, encoding="utf-8", newline="\n")
+                written.append(files.relative(self.root, destination))
+            return {
+                "ok": True,
+                "template": template,
+                "path": files.relative(self.root, target),
+                "files": sorted(written),
+            }
 
     def search_files(self, query, path=".", glob=""):
         return files.search_text(self.root, query, path, glob)
@@ -888,3 +1070,12 @@ def _approval_message(status):
 
 def _stamp():
     return datetime.now().strftime("%Y%m%d-%H%M%S")
+
+
+def _runtime_error(output):
+    """从截图运行的输出里提取未处理异常，供 check_ui 直接告诉模型。"""
+    for line in reversed((output or "").splitlines()):
+        text = line.strip()
+        if "Unhandled exception" in text or ("Exception" in text and "System." in text):
+            return text[:300]
+    return ""

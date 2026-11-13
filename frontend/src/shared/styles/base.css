@@ -541,6 +541,62 @@ strong {
   align-items: center;
   cursor: pointer;
 }
+.run-checks {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.run-checks-title {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text);
+}
+.run-checks-plan {
+  display: grid;
+  gap: 3px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+.run-checks-plan li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.run-checks-plan li span {
+  flex-shrink: 0;
+  min-width: 44px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--surface-warm);
+  color: var(--muted);
+  font-size: var(--font-size-meta);
+  text-align: center;
+}
+.run-check-done span {
+  background: #e6f4ea;
+  color: #1a7f37;
+}
+.run-check-doing span {
+  background: #e8f0fb;
+  color: #245ea8;
+}
+.run-check-blocked span {
+  background: #fdecea;
+  color: #b3261e;
+}
+.run-checks-results {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.run-checks-results li {
+  color: var(--muted);
+}
 .composer-area {
   padding: 12px 18px 18px;
   background: var(--surface-warm);

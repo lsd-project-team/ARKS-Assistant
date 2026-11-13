@@ -4,7 +4,11 @@ import asyncio
 
 from langchain_core.messages import AIMessage, HumanMessage
 
-from app.agents.analysis.policy import configured_analysis
+from app.agents.analysis.policy import (
+    configured_analysis,
+    is_generation_request,
+    wants_winforms,
+)
 from app.agents.runtime.configuration import bind_configuration, current_configuration
 from app.agents.runtime.executor import AgentRunExecutor
 from app.agents.runtime.feedback import tool_stage
@@ -145,11 +149,32 @@ class AgentRuntime:
 
     async def execute(self, run, emit):
         owned_models = []
+        question = self.repository.message(run["message_id"])["content"]
         configuration, policy = configured_analysis(
             current_configuration(self.settings),
-            self.repository.message(run["message_id"])["content"],
+            question,
             previous_run_event(self.repository, run, "analysis_plan"),
         )
+        if (
+            self.coding.writable()
+            and self.coding.is_empty()
+            and policy["mode"] != "deep"
+            and is_generation_request(question)
+        ):
+            # 空项目且用户明确要求做系统/程序时才按“从零生成”提高预算并启用门禁。
+            policy = {
+                **policy,
+                "generation": True,
+                "limit": max(policy["limit"], 256),
+                "max_continuations": 12,
+            }
+            if wants_winforms(question):
+                # 先落一个经验证的布局骨架，保证 --screenshot 契约与容器结构正确；
+                # 协议与业务逻辑仍由模型在骨架上实现。
+                try:
+                    self.coding.scaffold("winforms", {"__PRODUCT__": "上位机应用"})
+                except (ValueError, OSError):
+                    pass
         run = {**run, "analysis_policy": policy}
         coding_base = None
         try:

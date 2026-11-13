@@ -19,14 +19,17 @@ from app.agents.prompts.system import ANSWER_ORGANIZATION_GUIDANCE, SYSTEM_PROMP
 from app.agents.runtime.answer_completion import AnswerCompletion
 from app.agents.runtime.answer_format import AnswerFormatValidation
 from app.agents.runtime.artifacts import thread_artifacts
+from app.agents.runtime.checks import AcceptanceGate, RunChecks
 from app.agents.runtime.coding_repeat import CodingRepeatGuard
 from app.agents.runtime.configuration import current_configuration
 from app.agents.runtime.images import ImageAttachments
 from app.agents.runtime.knowledge_selection import KnowledgeRetrieval
 from app.agents.runtime.model_budget import ProjectModelBudget
+from app.agents.runtime.plan import PlanGuidance, PlanStore
 from app.agents.tools.attachments import attachment_context, attachment_tools
-from app.agents.tools.coding import CODING_GUIDANCE, coding_tools
+from app.agents.tools.coding import CODING_GUIDANCE, GENERATION_GUIDANCE, coding_tools
 from app.agents.tools.conversation import conversation_tools
+from app.agents.tools.plan import plan_tools
 from app.agents.tools.source import source_tools
 from app.infrastructure.providers.models import StateInspectionModel, create_model
 from app.infrastructure.providers.usage import ProviderUsage, SummaryUsage
@@ -85,6 +88,7 @@ class AgentGraphBuilder:
         policy=None,
         retrieval_context=None,
         run_id="",
+        generation=False,
     ):
         runtime = self.runtime
         # 工具返回前完成相关性筛选，回答生成后不再追加来源复核。
@@ -138,11 +142,17 @@ class AgentGraphBuilder:
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
         # 工具始终可用，由模型理解自然语言需求；权限档位决定写入与命令确认。
-        work_tools = coding_tools(runtime.coding, thread_id, emit, run_id=run_id)
+        checks, plans = RunChecks(generation), PlanStore()
+        work_tools = coding_tools(
+            runtime.coding, thread_id, emit, run_id=run_id, checks=checks
+        )
         tools += work_tools
+        tools += plan_tools(plans, emit)
         retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
         permission = runtime.coding.permission()
         prompt_extra = CODING_GUIDANCE
+        if generation:
+            prompt_extra += GENERATION_GUIDANCE
         if not runtime.coding.writable():
             if permission == "read-only":
                 prompt_extra += (
@@ -292,9 +302,23 @@ class AgentGraphBuilder:
                     deep=bool(policy and policy["mode"] == "deep"),
                 ),
                 AnswerFormatValidation(emit),
-                *([CodingRepeatGuard(emit)] if run_id and not inspection else []),
+                PlanGuidance(plans, generation),
+                *(
+                    [CodingRepeatGuard(emit, total_limit=400 if generation else 150)]
+                    if run_id and not inspection
+                    else []
+                ),
+                *(
+                    [AcceptanceGate(checks, plans, emit, generation)]
+                    if generation and not inspection
+                    else []
+                ),
                 AnswerCompletion(
-                    emit, settings.model.output_tokens, settings.analysis.max_continuations
+                    emit,
+                    settings.model.output_tokens,
+                    policy["max_continuations"]
+                    if policy
+                    else settings.analysis.max_continuations,
                 ),
                 retrieval,
                 ContextBudget(

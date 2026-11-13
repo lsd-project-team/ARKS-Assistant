@@ -13,6 +13,26 @@ CONTINUE_QUESTION = re.compile(
     r"|开始|现在开始|动手|continue)[吧。.!！ ]*$",
     re.I,
 )
+GENERATION_ACTION = re.compile(
+    r"从零|生成|实现|开发|编写|创建|搭建|制作|做一个|做个", re.I
+)
+GENERATION_TARGET = re.compile(
+    r"系统|上位机|程序|应用|软件|工具|项目|界面|骨架|WinForms|WinForm|窗体", re.I
+)
+
+
+def is_generation_request(question):
+    """只有明确要求做系统/程序时，空项目才进入从零生成；普通提问不受门禁约束。"""
+    text = question or ""
+    return bool(GENERATION_ACTION.search(text) and GENERATION_TARGET.search(text))
+
+
+WINDOW_APP = re.compile(r"winforms?|winform|c#|上位机|窗体|桌面程序|桌面软件", re.I)
+
+
+def wants_winforms(question):
+    """明确提到 WinForms/C#/上位机/窗体时，生成模式自动准备 WinForms 骨架。"""
+    return bool(WINDOW_APP.search(question or ""))
 
 REPORT_GUIDANCE = """项目进度问题先给当前可确认的进度和主要缺口，再按模块说明影响与下一步。
 未实现或停用、待测试验证、待工艺确认、标定及配置前置条件必须分开。
