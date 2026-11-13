@@ -96,66 +96,192 @@
   overflow-wrap: anywhere;
 }
 
-
 .answer-coding-changes {
   margin-top: 14px;
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--surface-subtle);
+  overflow: hidden;
   font-size: 13px;
-  background: var(--bg-elevated, transparent);
 }
-.answer-coding-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.answer-coding-lines { margin-left: auto; display: inline-flex; gap: 8px; flex: none; }
-.answer-coding-lines .added { color: #2f9e44; }
-.answer-coding-lines .removed { color: #e03131; }
-.answer-coding-files { list-style: none; margin: 0; padding: 0; }
+.answer-coding-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.answer-coding-icon {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #3b6ff5;
+  color: #fff;
+}
+.answer-coding-heading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.answer-coding-heading-text strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.answer-coding-heading-text span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.answer-coding-files {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
 .answer-coding-files li {
-  display: flex; align-items: center; gap: 4px;
-  border-top: 1px solid var(--line);
+  display: flex;
 }
 .answer-coding-row {
-  flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0;
-  background: none; border: 0; padding: 7px 2px; color: inherit;
-  cursor: pointer; text-align: left; font-size: 13px;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
 }
-.answer-coding-row:hover { background: var(--bg-subtle, rgba(127,127,127,0.08)); }
-.answer-coding-row:disabled { cursor: default; opacity: 0.75; }
-.answer-coding-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.answer-coding-status { color: var(--muted); flex: none; font-size: 12px; }
-.answer-coding-open {
-  flex: none; display: inline-flex; align-items: center; justify-content: center;
-  background: none; border: 0; padding: 4px; color: var(--muted); cursor: pointer;
+.answer-coding-row:hover {
+  background: var(--surface-hover);
+  color: var(--text);
 }
-.answer-coding-open:hover { color: var(--text); }
+.answer-coding-row:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.answer-coding-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.answer-coding-lines {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 10px;
+  flex: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.answer-coding-lines .added {
+  color: #16a34a;
+}
+.answer-coding-lines .removed {
+  color: #dc2626;
+}
+.answer-coding-binary {
+  margin-left: auto;
+  flex: none;
+  color: var(--muted);
+  font-size: 12px;
+}
 .answer-coding-more {
-  display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
-  background: none; border: 0; padding: 2px 0; color: var(--muted); cursor: pointer; font-size: 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  font-size: 12px;
 }
-.answer-coding-more:hover { color: var(--text); }
+.answer-coding-more:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+.answer-coding-note {
+  margin: 0;
+  padding: 0 16px 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
 
-.diff-heading { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13px; }
-.diff-heading-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.diff-heading .answer-coding-lines { margin-left: 0; }
-.diff-close {
-  margin-left: auto; background: none; border: 0; color: var(--muted);
-  cursor: pointer; font-size: 12px; padding: 4px 6px;
+.diff-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
 }
-.diff-close:hover { color: var(--text); }
-.diff-container { overflow: auto; }
+.diff-heading-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.diff-heading .answer-coding-lines {
+  margin-left: 0;
+}
+.diff-close {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+.diff-close:hover {
+  color: var(--text);
+}
+.diff-container {
+  overflow: auto;
+}
 .diff-viewer {
   font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
   font-size: 12px;
   line-height: 1.55;
   min-width: max-content;
 }
-.diff-row { display: grid; grid-template-columns: 52px 52px minmax(0, 1fr); }
-.diff-line {
-  text-align: right; padding-right: 8px; color: var(--muted);
-  user-select: none; border-right: 1px solid var(--line);
+.diff-row {
+  display: grid;
+  grid-template-columns: 52px 52px minmax(0, 1fr);
 }
-.diff-code { padding-left: 10px; white-space: pre; }
-.diff-add { background: rgba(47, 158, 68, 0.12); }
-.diff-remove { background: rgba(224, 49, 49, 0.12); }
-.diff-hunk { color: var(--muted); background: rgba(127, 127, 127, 0.08); }
-.diff-meta { color: var(--muted); font-style: italic; }
+.diff-line {
+  text-align: right;
+  padding-right: 8px;
+  color: var(--muted);
+  user-select: none;
+  border-right: 1px solid var(--line);
+}
+.diff-code {
+  padding-left: 10px;
+  white-space: pre;
+}
+.diff-add {
+  background: rgba(47, 158, 68, 0.12);
+}
+.diff-remove {
+  background: rgba(224, 49, 49, 0.12);
+}
+.diff-hunk {
+  color: var(--muted);
+  background: rgba(127, 127, 127, 0.08);
+}
+.diff-meta {
+  color: var(--muted);
+  font-style: italic;
+}
