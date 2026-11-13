@@ -96,10 +96,12 @@ class CodingRepeatGuard(AgentMiddleware):
                 self.cached[key] = _reusable(result)
             return result
         if key in self.cached:
-            # 重复读取直接返回上次结果，避免用错误消息把模型逼进重试循环。
+            # 重复读取直接返回上次内容，但必须换成当前调用的 tool_call_id，
+            # 否则会出现“tool_result 找不到对应 tool_use”的 400。
             self.emit("coding_repeat_cached", {"tool": name, "count": count})
             self.blocked_streak = 0
-            return self.cached[key]
+            cached = self.cached[key]
+            return cached.model_copy(update={"tool_call_id": request.tool_call["id"]})
         result = await handler(request)
         if not _failed(result):
             self.cached[key] = _reusable(result)
