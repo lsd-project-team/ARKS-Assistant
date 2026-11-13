@@ -315,6 +315,35 @@ class Projects:
                     setattr(item, "pinned_order" if pinned else "sort_order", position + 1)
             return {"ok": True}
 
+    def reorder(self, project_id, before_id=None):
+        with self.lock, self.database.session.begin() as session:
+            row = require_project(session, project_id)
+            pinned = row.pinned_order is not None
+            same_group = (
+                Project.pinned_order.is_not(None) if pinned else Project.pinned_order.is_(None)
+            )
+            order = Project.pinned_order if pinned else Project.sort_order
+            rows = list(
+                session.scalars(
+                    select(Project)
+                    .where(Project.state == row.state, same_group, owner_filter(Project))
+                    .order_by(order, Project.id)
+                )
+            )
+            rows = [item for item in rows if item.id != project_id]
+            if before_id is None:
+                rows.append(row)
+            else:
+                index = next(
+                    (index for index, item in enumerate(rows) if item.id == before_id), None
+                )
+                if index is None:
+                    raise ValueError("目标项目不在同一分组，请刷新后重试")
+                rows.insert(index, row)
+            for position, item in enumerate(rows):
+                setattr(item, "pinned_order" if pinned else "sort_order", position + 1)
+            return {"ok": True}
+
     def move(self, ids, destination):
         target = self.get(destination) if destination else None
         if target:

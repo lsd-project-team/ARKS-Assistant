@@ -20,6 +20,7 @@ import { ThreadItem } from './ThreadItem';
 import { ProjectNavigation } from '../../projects/components/ProjectNavigation';
 import { ProjectEditor } from '../../projects/components/ProjectEditor';
 import { MoveThreadsDialog } from './MoveThreadsDialog';
+import { SidebarDragProvider, useSidebarDrag } from './sidebarDrag';
 
 interface SidebarProps {
   onNavigate: () => void;
@@ -56,6 +57,7 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
       }
       filter=""
       busy={actions.pending === row.id}
+      draggable={entry === 'recent'}
       onSelect={() => {
         onNavigate();
         useWorkspace.getState().switchProject(threadProject(row));
@@ -70,105 +72,111 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
     />
   );
   return (
-    <aside className="sidebar" aria-label="会话导航">
-      <div className="sidebar-views" aria-label="会话列表类型">
-        {(
-          [
-            { id: 'active', label: '最近' },
-            { id: 'deleted', label: '回收站' },
-          ] as const
-        ).map((item) => (
-          <button
-            key={item.id}
-            aria-pressed={view === item.id}
-            className={view === item.id ? 'selected' : ''}
-            onClick={() => setSidebarView(item.id)}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-      <div className="sidebar-heading">
-        <strong>{view === 'deleted' ? '已删除对话' : '项目'}</strong>
-        <div>
-          {view === 'active' && (
-            <button aria-label="新建项目" title="新建项目" onClick={() => setCreatingProject(true)}>
-              <Plus size={15} />
+    <SidebarDragProvider>
+      <aside className="sidebar" aria-label="会话导航">
+        <div className="sidebar-views" aria-label="会话列表类型">
+          {(
+            [
+              { id: 'active', label: '最近' },
+              { id: 'deleted', label: '回收站' },
+            ] as const
+          ).map((item) => (
+            <button
+              key={item.id}
+              aria-pressed={view === item.id}
+              className={view === item.id ? 'selected' : ''}
+              onClick={() => setSidebarView(item.id)}
+            >
+              {item.label}
             </button>
-          )}
-          <ConversationSearchDialog
-            key={view}
-            view={view}
-            onNavigate={(row) => {
-              if (row.state === 'deleted') {
-                setLocatedThread(row);
-                return;
-              }
-              setSidebarView('active');
-              onNavigate();
-            }}
-          />
+          ))}
         </div>
-      </div>
-      <div className="sidebar-scroll" ref={list}>
-        <ErrorText error={actions.error} />
-        {view !== 'deleted' && (
-          <ProjectNavigation
-            key={`projects:${view}`}
-            onNavigate={onNavigate}
-            renderThread={renderThread}
-            selectedThread={selectedThread}
-          />
-        )}
-        <RecentThreads
-          key={`threads:${view}`}
-          view={view}
-          renderThread={renderThread}
-          selectedThread={view === 'deleted' ? locatedThread : selectedThread}
-          onNavigate={onNavigate}
-        />
-      </div>
-      <div className={`sidebar-footer ${checking ? 'checking' : connected ? '' : 'offline'}`}>
-        <span className="tiny-dot" />
-        <span>{checking ? '正在连接…' : connected ? '本机工作区' : '服务未连接'}</span>
-      </div>
-      <Modal
-        open={!!actions.purging}
-        onClose={() => {
-          if (!actions.pending) {
-            actions.setPurging(undefined);
-            actions.setError(undefined);
-          }
-        }}
-        title="彻底删除对话"
-        className="confirmation-dialog"
-        description="此操作无法撤销。"
-      >
-        <div className="dialog-body">
-          <p>将删除“{actions.purging?.title}”的消息、运行记录、检查点和归属档案。</p>
-          <p className="muted">独立的长期记忆保留，来源标记为已删除。</p>
+        <div className="sidebar-heading">
+          <strong>{view === 'deleted' ? '已删除对话' : '项目'}</strong>
+          <div>
+            {view === 'active' && (
+              <button
+                aria-label="新建项目"
+                title="新建项目"
+                onClick={() => setCreatingProject(true)}
+              >
+                <Plus size={15} />
+              </button>
+            )}
+            <ConversationSearchDialog
+              key={view}
+              view={view}
+              onNavigate={(row) => {
+                if (row.state === 'deleted') {
+                  setLocatedThread(row);
+                  return;
+                }
+                setSidebarView('active');
+                onNavigate();
+              }}
+            />
+          </div>
+        </div>
+        <div className="sidebar-scroll" ref={list}>
           <ErrorText error={actions.error} />
+          {view !== 'deleted' && (
+            <ProjectNavigation
+              key={`projects:${view}`}
+              onNavigate={onNavigate}
+              renderThread={renderThread}
+              selectedThread={selectedThread}
+            />
+          )}
+          <RecentThreads
+            key={`threads:${view}`}
+            view={view}
+            renderThread={renderThread}
+            selectedThread={view === 'deleted' ? locatedThread : selectedThread}
+            onNavigate={onNavigate}
+          />
         </div>
-        <div className="modal-footer">
-          <Button disabled={!!actions.pending} onClick={() => actions.setPurging(undefined)}>
-            取消
-          </Button>
-          <Button
-            className="danger-button"
-            disabled={!!actions.pending}
-            onClick={() => void actions.permanentlyDelete()}
-          >
-            {actions.pending ? '正在删除…' : '彻底删除'}
-          </Button>
+        <div className={`sidebar-footer ${checking ? 'checking' : connected ? '' : 'offline'}`}>
+          <span className="tiny-dot" />
+          <span>{checking ? '正在连接…' : connected ? '本机工作区' : '服务未连接'}</span>
         </div>
-      </Modal>
-      {actions.moving && (
-        <MoveThreadsDialog ids={actions.moving} onClose={() => actions.setMoving(undefined)} />
-      )}
-      {creatingProject && (
-        <ProjectEditor onClose={() => setCreatingProject(false)} onCreated={onNavigate} />
-      )}
-    </aside>
+        <Modal
+          open={!!actions.purging}
+          onClose={() => {
+            if (!actions.pending) {
+              actions.setPurging(undefined);
+              actions.setError(undefined);
+            }
+          }}
+          title="彻底删除对话"
+          className="confirmation-dialog"
+          description="此操作无法撤销。"
+        >
+          <div className="dialog-body">
+            <p>将删除“{actions.purging?.title}”的消息、运行记录、检查点和归属档案。</p>
+            <p className="muted">独立的长期记忆保留，来源标记为已删除。</p>
+            <ErrorText error={actions.error} />
+          </div>
+          <div className="modal-footer">
+            <Button disabled={!!actions.pending} onClick={() => actions.setPurging(undefined)}>
+              取消
+            </Button>
+            <Button
+              className="danger-button"
+              disabled={!!actions.pending}
+              onClick={() => void actions.permanentlyDelete()}
+            >
+              {actions.pending ? '正在删除…' : '彻底删除'}
+            </Button>
+          </div>
+        </Modal>
+        {actions.moving && (
+          <MoveThreadsDialog ids={actions.moving} onClose={() => actions.setMoving(undefined)} />
+        )}
+        {creatingProject && (
+          <ProjectEditor onClose={() => setCreatingProject(false)} onCreated={onNavigate} />
+        )}
+      </aside>
+    </SidebarDragProvider>
   );
 }
 
@@ -184,6 +192,8 @@ function RecentThreads({
   onNavigate: () => void;
 }) {
   const startConversation = useNewConversation();
+  const drag = useSidebarDrag();
+  const overRecent = drag?.state?.kind === 'thread' && drag.state.overRecent;
   const [all, setAll] = useState(false);
   const threads = useInfiniteQuery({
     queryKey: ['threads', 'navigation', view],
@@ -203,7 +213,8 @@ function RecentThreads({
   );
   return (
     <section
-      className="sidebar-thread-section"
+      className={`sidebar-thread-section ${overRecent ? 'drop-target' : ''}`}
+      data-recent-drop={view === 'active' ? 'true' : undefined}
       aria-label={view === 'active' ? '最近对话' : '已删除对话'}
     >
       {view !== 'deleted' && (

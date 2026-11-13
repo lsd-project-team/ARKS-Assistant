@@ -390,7 +390,31 @@ def test_project_order_pinning_and_remove_queue_guard(services):
         )
         rows = client.get("/api/projects").json()["projects"]
         assert [item["name"] for item in rows][-2:] == ["排序 B", "排序 A"]
+        assert (
+            client.post(
+                f"/api/projects/{first['id']}/order", json={"before_id": second["id"]}
+            ).status_code
+            == 200
+        )
+        rows = client.get("/api/projects").json()["projects"]
+        assert [item["name"] for item in rows][-2:] == ["排序 A", "排序 B"]
         client.patch(f"/api/projects/{first['id']}", json={"pinned": True})
+        client.patch(f"/api/projects/{second['id']}", json={"pinned": True})
+        assert (
+            client.post(
+                f"/api/projects/{second['id']}/order", json={"before_id": first["id"]}
+            ).status_code
+            == 200
+        )
+        rows = client.get("/api/projects").json()["projects"]
+        assert [item["name"] for item in rows[:2]] == ["排序 B", "排序 A"]
+        client.patch(f"/api/projects/{second['id']}", json={"pinned": False})
+        assert (
+            client.post(
+                f"/api/projects/{second['id']}/order", json={"before_id": first["id"]}
+            ).status_code
+            == 409
+        )
         assert client.get("/api/projects").json()["projects"][0]["id"] == first["id"]
         thread = client.post(scoped(first, "/threads"), json={}).json()
         repository = app.state.projects.services(first["id"]).repository

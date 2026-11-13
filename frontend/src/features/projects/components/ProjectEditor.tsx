@@ -17,6 +17,8 @@ export function ProjectEditor({
 }) {
   const [name, setName] = useState(project?.name || '');
   const [root, setRoot] = useState(project?.source_root || '');
+  // 重命名只提交名称；新建项目才需要源码目录。
+  const editing = !!project;
   // 精简表单不再编辑附加目录，保存时保留已有项目的关联。
   const folders = project?.source_folders || [];
   const effectiveRoot = root;
@@ -29,14 +31,18 @@ export function ProjectEditor({
     try {
       const saved = await api<Project>(project ? `/projects/${project.id}` : '/projects', {
         method: project ? 'PATCH' : 'POST',
-        body: jsonBody({
-          name: name.trim(),
-          source_root: effectiveRoot.trim() || null,
-          source_folders: folders.map((folder) => ({
-            root: folder.root.trim(),
-            label: folder.label.trim(),
-          })),
-        }),
+        body: jsonBody(
+          project
+            ? { name: name.trim() }
+            : {
+                name: name.trim(),
+                source_root: effectiveRoot.trim() || null,
+                source_folders: folders.map((folder) => ({
+                  root: folder.root.trim(),
+                  label: folder.label.trim(),
+                })),
+              },
+        ),
       });
       await cache.invalidateQueries({ queryKey: ['projects'] });
       await cache.invalidateQueries({ queryKey: ['project', saved.id] });
@@ -70,7 +76,7 @@ export function ProjectEditor({
     <Modal
       open
       onClose={() => !pending && onClose()}
-      title={project ? '项目设置' : '新建项目'}
+      title={project ? '重命名' : '新建项目'}
       className="project-editor"
     >
       <form
@@ -89,26 +95,24 @@ export function ProjectEditor({
             onChange={(event) => setName(event.target.value)}
             placeholder="项目名称"
           />
-          <label>
-            主源码目录
-            <input
-              value={effectiveRoot}
-              maxLength={1024}
-              onChange={(event) => setRoot(event.target.value)}
-              placeholder={'本机目录，如 D:\\projects\\Sp900Client'}
-            />
-          </label>
+          {!editing && (
+            <label>
+              主源码目录
+              <input
+                value={effectiveRoot}
+                maxLength={1024}
+                onChange={(event) => setRoot(event.target.value)}
+                placeholder={'本机目录，如 D:\\projects\\Sp900Client'}
+              />
+            </label>
+          )}
           <ErrorText error={error} />
         </div>
         <div className="modal-footer">
           <Button type="button" disabled={pending} onClick={onClose}>
             取消
           </Button>
-          <Button
-            type="submit"
-            className="primary"
-            disabled={pending || !name.trim()}
-          >
+          <Button type="submit" className="primary" disabled={pending || !name.trim()}>
             {pending ? '正在保存…' : project ? '保存' : '创建项目'}
           </Button>
         </div>

@@ -235,3 +235,32 @@
   height: 16px;
   flex: 0 0 16px;
 }
+
+/* 长按拖拽：项目排序与把最近对话拖入项目。 */
+body.sidebar-dragging {
+  user-select: none;
+  cursor: grabbing;
+}
+body.sidebar-dragging * {
+  cursor: grabbing !important;
+}
+.project-group.dragging,
+.thread-row.dragging {
+  opacity: 0.45;
+}
+.project-group.drop-target > .project-navigation-row {
+  background: var(--selection-hover);
+}
+.project-group.drop-before::before,
+.project-group.drop-after::after {
+  content: '';
+  display: block;
+  height: 2px;
+  margin: 0 8px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.sidebar-thread-section.drop-target {
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--accent);
+}

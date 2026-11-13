@@ -6,6 +6,7 @@ import { threadStatus } from '../lib/conversationList';
 import { Highlight } from '../../../shared/ui/markdown/Highlight';
 import { OverflowText } from '../../../shared/ui/OverflowText';
 import { usePopupPosition } from '../../../shared/hooks/usePopupPosition';
+import { useLongPressDrag, useSidebarDrag } from './sidebarDrag';
 
 export type ThreadAction =
   'rename' | 'pin' | 'restore' | 'delete' | 'purge' | 'export' | 'up' | 'down' | 'move';
@@ -29,6 +30,7 @@ export function ThreadItem({
   onSelect,
   onAction,
   onRename,
+  draggable = false,
 }: {
   row: Thread;
   selected: boolean;
@@ -37,6 +39,7 @@ export function ThreadItem({
   onSelect: () => void;
   onAction: (action: ThreadAction) => void;
   onRename: (title: string) => Promise<unknown>;
+  draggable?: boolean;
 }) {
   const [menu, setMenu] = useState<'trigger' | { top: number; left: number }>();
   const [editing, setEditing] = useState(false);
@@ -53,6 +56,9 @@ export function ThreadItem({
     typeof menu === 'object' ? menu : undefined,
   );
   const pinned = row.pinned_order !== undefined && row.pinned_order !== null;
+  const drag = useSidebarDrag();
+  const dragHandlers = useLongPressDrag('thread', row.id, pinned ? 'pinned' : 'normal');
+  const dragging = draggable && drag?.state?.kind === 'thread' && drag.state.id === row.id;
   useEffect(() => {
     if (menu && menuPosition.visibility === 'visible')
       popup.current
@@ -120,9 +126,9 @@ export function ThreadItem({
         ];
   return (
     <div
-      className={`thread-row ${selected ? 'active' : ''} ${editing ? 'editing' : ''}`}
+      className={`thread-row ${selected ? 'active' : ''} ${editing ? 'editing' : ''} ${dragging ? 'dragging' : ''}`}
       onContextMenu={(event) => {
-        if (editing) return;
+        if (editing || event.defaultPrevented) return;
         event.preventDefault();
         setMenu({
           left: event.clientX,
@@ -160,6 +166,7 @@ export function ThreadItem({
         <>
           <button
             className="thread-select"
+            {...(draggable ? dragHandlers : {})}
             title={row.title}
             aria-current={selected ? 'true' : undefined}
             disabled={row.state === 'deleted'}

@@ -95,25 +95,13 @@ export function ProjectMenu({ project, onEdit }: { project: Project; onEdit: () 
                 onEdit();
               }}
             >
-              项目设置与重命名
+              重命名
             </button>
             <button
               role="menuitem"
               onClick={() => void change('', { pinned: project.pinned_order === null })}
             >
               {project.pinned_order === null ? '置顶项目' : '取消置顶项目'}
-            </button>
-            <button
-              role="menuitem"
-              onClick={() => void change('/position', { direction: -1 }, 'POST')}
-            >
-              向上移动
-            </button>
-            <button
-              role="menuitem"
-              onClick={() => void change('/position', { direction: 1 }, 'POST')}
-            >
-              向下移动
             </button>
             <button
               role="menuitem"

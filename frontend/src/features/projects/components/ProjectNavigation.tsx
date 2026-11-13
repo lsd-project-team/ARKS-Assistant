@@ -16,6 +16,7 @@ import { ProjectEditor } from './ProjectEditor';
 import { ErrorText } from '../../../shared/ui/ui';
 import { ProjectMenu } from './ProjectMenu';
 import { OverflowText } from '../../../shared/ui/OverflowText';
+import { useSidebarDrag, useLongPressDrag } from '../../chat/components/sidebarDrag';
 
 type ThreadRenderer = (thread: Thread) => ReactNode;
 
@@ -84,6 +85,14 @@ function ProjectGroup({
   const startConversation = useNewConversation();
   const current = projectId === project.id;
   const expanded = expandedProjects[project.id] ?? current;
+  const drag = useSidebarDrag();
+  const pinnedGroup = project.pinned_order !== null ? 'pinned' : 'normal';
+  const dragHandlers = useLongPressDrag('project', project.id, pinnedGroup);
+  const dragging = drag?.state?.kind === 'project' && drag.state.id === project.id;
+  const dropTarget = drag?.state?.overProjectId === project.id;
+  const projectDrag = drag?.state?.kind === 'project';
+  const dropBefore = dropTarget && projectDrag && drag?.state?.beforeId === project.id;
+  const dropAfter = dropTarget && projectDrag && drag?.state?.beforeId !== project.id;
   useEffect(() => {
     if (current && expandedProjects[project.id] === undefined) setProjectExpanded(project.id, true);
   }, [current, expandedProjects, project.id, setProjectExpanded]);
@@ -109,10 +118,15 @@ function ProjectGroup({
       : undefined;
   const visible = visibleThreads(rows, matchingSelected, all ? undefined : projectThreadPreview);
   return (
-    <div className={`project-group ${current ? 'current' : ''}`}>
+    <div
+      className={`project-group ${current ? 'current' : ''} ${dragging ? 'dragging' : ''} ${dropTarget ? 'drop-target' : ''} ${dropBefore ? 'drop-before' : ''} ${dropAfter ? 'drop-after' : ''}`}
+      data-project-id={project.id}
+      data-pinned={pinnedGroup === 'pinned' ? 'true' : 'false'}
+    >
       <div className="project-navigation-row">
         <button
           className="project-name"
+          {...dragHandlers}
           title={project.name}
           aria-expanded={expanded}
           aria-controls={`project-conversations-${project.id}`}

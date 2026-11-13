@@ -74,6 +74,10 @@ class ProjectPosition(BaseModel):
     direction: Literal[-1, 1]
 
 
+class ProjectOrder(BaseModel):
+    before_id: str | None = Field(default=None, max_length=32)
+
+
 def create_router(projects: Projects):
     router = APIRouter()
 
@@ -175,6 +179,11 @@ def create_router(projects: Projects):
     async def position(project_id: str, body: ProjectPosition):
         async with projects.edit_lock:
             return projects.position(project_id, body.direction)
+
+    @router.post("/api/projects/{project_id}/order")
+    async def order(project_id: str, body: ProjectOrder):
+        async with projects.edit_lock:
+            return projects.reorder(project_id, body.before_id)
 
     @router.delete("/api/projects/{project_id}")
     async def remove(project_id: str, disposition: str = "independent"):
