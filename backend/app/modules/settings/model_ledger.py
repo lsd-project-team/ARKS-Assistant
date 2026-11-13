@@ -17,7 +17,7 @@ from app.infrastructure.database.legacy_code_work import (
 
 class ModelLimit(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    token_limit: int | None = Field(default=500000, ge=1000, le=100_000_000)
+    token_limit: int | None = Field(default=None, ge=1000, le=100_000_000)
 
 
 class ModelLedger:
@@ -32,9 +32,9 @@ class ModelLedger:
         with self.database.session() as session:
             row = session.get(ModelBudgetPolicy, self.project_id)
             payload = json.loads(row.payload_json) if row else {}
-        # 旧键只用于兼容既有额度，旧磁盘/执行策略不再参与任何运行。
+        # 默认不限额；仍记录每天的实际用量，需要时可按项目写入 token_limit 恢复限制。
         return ModelLimit(
-            token_limit=payload.get("token_limit", payload.get("reading_token_limit", 500000))
+            token_limit=payload.get("token_limit", payload.get("reading_token_limit"))
         )
 
     def save(self, payload):

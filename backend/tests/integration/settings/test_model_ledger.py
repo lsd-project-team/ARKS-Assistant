@@ -128,7 +128,7 @@ def test_settlement_rejects_invalid_amount_without_refunding(policy, value):
 
 def test_policy_and_usage_are_project_scoped(policy):
     other = ModelLedger(policy.database, "project-b")
-    assert other.get().token_limit == 500000
+    assert other.get().token_limit is None
     other.save({"token_limit": 2000})
     other.reserve(1500)
     assert policy.get().token_limit == 1000
@@ -154,7 +154,8 @@ def test_unlimited_policy_persists_preserves_usage_and_can_restore_finite_limit(
         "calls": 2,
     }
     other = ModelLedger(policy.database, "project-b")
-    assert other.get().token_limit == 500000
+    assert other.get().token_limit is None
+    other.save({"token_limit": 500000})
     with pytest.raises(ValueError, match="预算不足"):
         other.reserve(500001)
     restored.save({**restored.get().model_dump(), "token_limit": 1000})
