@@ -136,6 +136,11 @@ class AgentRuntime:
             previous_run_event(self.repository, run, "analysis_plan"),
         )
         run = {**run, "analysis_policy": policy}
+        coding_base = None
+        try:
+            coding_base = await asyncio.to_thread(self.coding.begin_run, run["id"])
+        except Exception:
+            coding_base = None
         try:
             with bind_configuration(configuration):
                 captured = await capture_command(self, run, emit, owned_models)
@@ -144,6 +149,13 @@ class AgentRuntime:
                 return await self._execute(run, emit, owned_models)
         finally:
             await close_models(owned_models)
+            if coding_base:
+                try:
+                    changes = await asyncio.to_thread(self.coding.run_changes, coding_base)
+                except Exception:
+                    changes = None
+                if changes and changes["files"]:
+                    emit("coding_changes", changes)
 
     async def _execute(self, *args, **kwargs):
         return await AgentRunExecutor(self).execute(*args, **kwargs)

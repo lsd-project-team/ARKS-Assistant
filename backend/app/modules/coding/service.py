@@ -121,6 +121,46 @@ class CodingWorkspace:
             return result
 
     # ---------- 快照 ----------
+    def begin_run(self, run_id):
+        if self.root.resolve() == READONLY_ROOT and not self.settings().get("enabled"):
+            return None
+        with self.lock:
+            return self.snapshots.checkpoint(f"run-start-{run_id[:8]}")
+
+    def run_changes(self, base, *, limit=400_000):
+        with self.lock:
+            head = self.snapshots.checkpoint("run-end")
+            files = []
+            stats = self.snapshots.numstat(base, head)
+            for row in self.snapshots.name_status(base, head):
+                path = row["path"]
+                files.append(
+                    {
+                        "path": path,
+                        "status": {"A": "added", "D": "deleted", "R": "renamed"}.get(
+                            row["status"], "modified"
+                        ),
+                        **stats.get(path, {"additions": None, "deletions": None, "binary": False}),
+                    }
+                )
+            diff, truncated = "", False
+            for item in files:
+                if item["binary"]:
+                    continue
+                chunk = self.snapshots.diff(base, head, [item["path"]])
+                if len(diff) + len(chunk) > limit:
+                    diff += "\n…（diff 过长，已截断，请在编码面板查看完整内容）"
+                    truncated = True
+                    break
+                diff += chunk
+            return {
+                "base": base,
+                "head": head,
+                "files": files,
+                "diff": diff,
+                "truncated": truncated,
+            }
+
     def checkpoint(self, label=""):
         with self.lock:
             return {"commit": self.snapshots.checkpoint(label or f"run-{_stamp()}")}

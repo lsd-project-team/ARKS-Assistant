@@ -121,6 +121,7 @@ class ConversationContext:
         validation = None
         knowledge = []
         source_review = None
+        coding_changes = None
         completion, progress, plan = None, None, None
         tool_ends = {}
         references, searches, memory_saves = {}, [], []
@@ -174,6 +175,8 @@ class ConversationContext:
                     knowledge.append(event["payload"])
                 if event["kind"] == "source_review":
                     source_review = event["payload"]
+                if event["kind"] == "coding_changes":
+                    coding_changes = event["payload"]
             if len(events) < 500:
                 break
             cursor = events[-1]["sequence"]
@@ -206,5 +209,6 @@ class ConversationContext:
             "searches": searches,
             "memory_saves": memory_saves,
             "source_review": source_review,
+            "coding_changes": coding_changes,
             "trace": {**trace.report(run), "memory_private": memory_private},
         }

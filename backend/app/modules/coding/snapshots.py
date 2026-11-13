@@ -154,6 +154,40 @@ class Snapshots:
         self.checkpoint(f"restore-{commit[:8]}")
         return {"commit": commit, "paths": []}
 
+    def name_status(self, base, head=""):
+        self.ensure()
+        _check_commit(base)
+        arguments = ["diff", "--name-status", "-M", base]
+        if head:
+            _check_commit(head)
+            arguments.append(head)
+        rows = []
+        for line in self._git(*arguments).splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 2:
+                rows.append({"status": parts[0][:1], "path": parts[-1]})
+        return rows
+
+    def numstat(self, base, head=""):
+        self.ensure()
+        _check_commit(base)
+        arguments = ["diff", "--numstat", "-M", base]
+        if head:
+            _check_commit(head)
+            arguments.append(head)
+        rows = {}
+        for line in self._git(*arguments).splitlines():
+            parts = line.split("\t")
+            if len(parts) < 3:
+                continue
+            added, deleted, path = parts[0], parts[1], parts[-1]
+            rows[path] = {
+                "additions": None if added == "-" else int(added),
+                "deletions": None if deleted == "-" else int(deleted),
+                "binary": added == "-",
+            }
+        return rows
+
     def changed_paths(self, base, head=""):
         arguments = ["diff", "--name-only", base]
         if head:

@@ -310,6 +310,19 @@ export interface RunContext {
     scope?: string;
   };
   knowledge_retrieval?: { titles: string[]; injected: boolean }[];
+  coding_changes?: {
+    base: string;
+    head: string;
+    files: {
+      path: string;
+      status: 'added' | 'modified' | 'deleted' | 'renamed';
+      additions: number | null;
+      deletions: number | null;
+      binary: boolean;
+    }[];
+    diff: string;
+    truncated: boolean;
+  } | null;
   debug_issues?: { id: string; title: string; version: number; citation: string }[];
   model?: ModelSnapshot;
   budget?: ContextUsage | null;

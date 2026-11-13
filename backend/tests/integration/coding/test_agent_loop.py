@@ -68,4 +68,8 @@ async def test_agent_creates_file_and_runs_command_in_project(services, tmp_path
     checkpoints = runtime.coding.checkpoints()
     assert checkpoints["checkpoints"]
     assert any(kind == "coding" for kind, _ in events)
+    changes = [payload for kind, payload in events if kind == "coding_changes"]
+    assert changes and changes[0]["files"][0]["path"] == "hello.txt"
+    assert changes[0]["files"][0]["status"] == "added"
+    assert "+hello" in changes[0]["diff"]
     runtime.coding.executor.stop_all()

@@ -95,3 +95,29 @@
   font-size: var(--font-size-code);
   overflow-wrap: anywhere;
 }
+
+
+.answer-coding-changes {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.answer-coding-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.answer-coding-files { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.answer-coding-files li { display: flex; align-items: center; gap: 8px; }
+.answer-coding-path {
+  display: inline-flex; align-items: center; gap: 5px; background: none; border: 0;
+  padding: 0; color: inherit; cursor: pointer; text-align: left; word-break: break-all;
+}
+.answer-coding-path:hover { text-decoration: underline; }
+.answer-coding-status { color: var(--muted); flex: none; }
+.answer-coding-lines { margin-left: auto; display: inline-flex; gap: 8px; flex: none; }
+.answer-coding-lines .added { color: #2f9e44; }
+.answer-coding-lines .removed { color: #e03131; }
+.answer-coding-diff { margin-top: 8px; }
+.answer-coding-diff pre {
+  max-height: 420px; overflow: auto; background: var(--bg-subtle, #f7f7f7);
+  padding: 10px; border-radius: 6px; font-size: 12px; line-height: 1.5;
+}

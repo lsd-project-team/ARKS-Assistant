@@ -3,6 +3,7 @@ import { RichContentRenderer, RichContentSegments } from '../rich/RichContentRen
 import { createContentParser } from '../rich/parseContent';
 import { separateAnswerSources } from '../rich/answerSources';
 import { AnswerSources } from './AnswerSources';
+import { CodingChanges } from './CodingChanges';
 import '../styles/answer-sources.css';
 
 export function AnswerMarkdown({
@@ -27,6 +28,7 @@ export function AnswerMarkdown({
       />
       {afterContent}
       <AnswerSources sources={presentation.sources} runId={runId} sourceId={sourceId} />
+      <CodingChanges runId={runId} streaming={streaming} />
     </div>
   );
 }
