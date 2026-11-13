@@ -45,6 +45,7 @@ import { ReansweredQuestion } from './ReansweredQuestion';
 
 import { CodingPanel } from '../../coding/CodingPanel';
 import { PermissionMenu } from '../../coding/PermissionMenu';
+import { useApprovals } from '../../coding/useApprovals';
 
 import { useAttachments } from '../attachments/useAttachments';
 import { AttachmentUpload } from '../attachments/AttachmentUpload';
@@ -97,6 +98,11 @@ export function ChatPane({
   const latest = conversation.data?.runs.at(-1);
   const active = activeRun(started, conversation.data, threadId);
   const stream = useRunStream(active);
+  const approvals = useApprovals();
+  // 刷新页面后 SSE 里没有审批事件，用待确认列表补一张只读摘要卡片。
+  const pendingApproval =
+    stream.approval ||
+    (active && approvals.data?.approvals.find((row) => row.run_id === active.id));
   const busy = !!active && !stream.finished;
   const queue = useQuestionQueue(threadId, setStarted);
   const scroll = useChatScroll(
@@ -478,8 +484,8 @@ export function ChatPane({
                 <RunActivity run={active} stage={stream.stage} detail={stream.detail} busy={busy} />
               </div>
               <RunTraceDetails key={active.id} tools={stream.tools} />
-              {stream.approval && (
-                <CodingApprovalCard key={stream.approval.id} approval={stream.approval} />
+              {pendingApproval && (
+                <CodingApprovalCard key={pendingApproval.id} approval={pendingApproval} />
               )}
               <CodingConsole output={stream.commandOutput} />
               <AnswerMarkdown
