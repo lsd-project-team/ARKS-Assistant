@@ -1,0 +1,215 @@
+/* 审批弹窗与权限切换：两者都属于项目编码的即时操作层。 */
+.approval-overlay {
+  z-index: 69;
+}
+.approval-dialog {
+  z-index: 70;
+  width: min(600px, calc(100vw - 40px));
+  padding: 20px 22px 16px;
+  border-radius: 14px;
+  gap: 10px;
+}
+.approval-dialog-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.approval-dialog-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.approval-dialog-command {
+  margin: 0;
+  max-height: 30vh;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.approval-dialog-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.approval-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.approval-dialog-actions kbd {
+  margin-left: 4px;
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface-subtle);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 11px;
+}
+.approval-deny {
+  color: var(--danger-text);
+}
+.approval-allow-group {
+  position: relative;
+  display: inline-flex;
+}
+.approval-dialog-actions .approval-more {
+  padding-inline: 8px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  margin-left: -1px;
+}
+.approval-dialog-actions .approval-allow {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.approval-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 2;
+  min-width: 230px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.approval-menu button {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+.approval-menu button:hover:not(:disabled) {
+  background: var(--surface-subtle);
+}
+.approval-menu button:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.approval-dialog-remaining {
+  margin: 0;
+  text-align: right;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.permission-menu {
+  position: relative;
+  display: inline-flex;
+}
+.permission-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+}
+.permission-chip:hover:not(:disabled) {
+  background: var(--surface-subtle);
+}
+.permission-chip:disabled {
+  cursor: default;
+}
+.permission-label {
+  white-space: nowrap;
+}
+.permission-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  min-width: 240px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.permission-popover button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  font-size: 13px;
+}
+.permission-popover button:hover {
+  background: var(--surface-subtle);
+}
+.permission-popover button > span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.permission-popover small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.permission-inline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.permission-inline button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  font-size: 13px;
+}
+.permission-inline button.active {
+  border-color: color-mix(in srgb, var(--accent, #2f6feb) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent, #2f6feb) 8%, var(--surface));
+}
+.permission-inline button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.permission-inline small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+@media (max-width: 720px) {
+  .permission-inline {
+    grid-template-columns: 1fr;
+  }
+}

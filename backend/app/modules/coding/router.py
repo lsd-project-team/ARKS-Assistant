@@ -1,6 +1,7 @@
 """项目编码工作区 API：文件、检查点、命令、审批和后台任务。"""
 
 import asyncio
+from typing import Literal
 
 from fastapi import APIRouter, Query, Request
 from pydantic import BaseModel, ConfigDict, Field
@@ -11,6 +12,9 @@ from app.modules.auth.router import require_admin
 class SettingsWrite(BaseModel):
     model_config = ConfigDict(extra="forbid")
     approval_mode: str | None = Field(default=None, pattern="^(allowlist|confirm|full)$")
+    permission: str | None = Field(
+        default=None, pattern="^(read-only|workspace-write|full-access)$"
+    )
     timeout_seconds: int | None = Field(default=None, ge=10, le=900)
     build_command: str | None = Field(default=None, max_length=500)
     test_command: str | None = Field(default=None, max_length=500)
@@ -67,6 +71,7 @@ class RestoreRunWrite(BaseModel):
 class ApprovalDecision(BaseModel):
     model_config = ConfigDict(extra="forbid")
     approved: bool
+    scope: Literal["once", "session"] = "once"
 
 
 def create_router(services):
@@ -202,7 +207,9 @@ def create_router(services):
 
     @router.post("/api/coding/approvals/{approval_id}")
     async def decide_approval(approval_id: str, body: ApprovalDecision):
-        return await asyncio.to_thread(coding.decide_approval, approval_id, body.approved)
+        return await asyncio.to_thread(
+            coding.decide_approval, approval_id, body.approved, body.scope
+        )
 
     @router.get("/api/coding/audit")
     async def audit(request: Request, limit: int = Query(default=50, ge=1, le=500)):

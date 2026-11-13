@@ -1,58 +1,33 @@
-import { useEffect, useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Check, ShieldQuestion, X } from 'lucide-react';
-import { api } from '../../../app/api/client';
-import type { CodingApproval } from '../../../shared/types/api';
-import { toast } from '../../../shared/utils/toasts';
+import { ShieldQuestion } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
+import type { CodingApproval } from '../../../shared/types/api';
+
+const STATUS_TEXT: Record<string, string> = {
+  pending: '等待确认，请在弹出的确认框中处理',
+  approved: '已批准，命令正在执行…',
+  rejected: '已拒绝，本轮不会再执行这条命令',
+  expired: '等待确认超时，命令没有执行',
+  cancelled: '已取消，命令没有执行',
+};
+
+/**
+ * 聊天里的审批摘要：只展示状态，真正的决策入口是全局确认弹窗。
+ */
 export function CodingApprovalCard({ approval }: { approval: CodingApproval }) {
-  const cache = useQueryClient();
-  const [decided, setDecided] = useState<'approved' | 'rejected' | null>(null);
-  const decide = useMutation({
-    mutationFn: (approved: boolean) =>
-      api(`/coding/approvals/${approval.id}`, {
-        method: 'POST',
-        body: JSON.stringify({ approved }),
-      }),
-    onSuccess: (_data, approved) => {
-      setDecided(approved ? 'approved' : 'rejected');
-      void cache.invalidateQueries({ queryKey: ['coding-approvals'] });
-      void cache.invalidateQueries({ queryKey: ['coding-checkpoints'] });
-    },
-    onError: (error: Error) => toast(error.message, undefined, 'error'),
-  });
-  if (approval.status !== 'pending') return null;
   return (
     <section className="coding-approval" aria-label="命令需要确认">
       <div className="coding-approval-heading">
         <ShieldQuestion size={16} />
-        <strong>{approval.kind === 'process' ? '需要确认的后台命令' : '需要确认的命令'}</strong>
+        <strong>需要确认的命令</strong>
       </div>
       <pre className="coding-approval-command">{approval.command}</pre>
       <p className="muted">
-        目录：{approval.cwd || '.'} · 批准后会在本项目内执行并自动继续本轮
+        目录：{approval.cwd || '.'} · {approval.kind === 'process' ? '后台常驻' : '一次性命令'}
       </p>
-      {decided ? (
-        <p className="coding-approval-status">
-          {decided === 'approved' ? '已批准，正在执行…' : '已拒绝，本轮不会再执行这条命令。'}
-        </p>
-      ) : (
-        <div className="coding-approval-actions">
-          <button
-            type="button"
-            className="primary"
-            disabled={decide.isPending}
-            onClick={() => decide.mutate(true)}
-          >
-            <Check size={14} />
-            允许一次
-          </button>
-          <button type="button" disabled={decide.isPending} onClick={() => decide.mutate(false)}>
-            <X size={14} />
-            拒绝
-          </button>
-        </div>
-      )}
+      <p className="coding-approval-status">
+        {STATUS_TEXT[approval.status] || approval.status}
+      </p>
     </section>
   );
 }

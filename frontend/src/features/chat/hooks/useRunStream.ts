@@ -108,9 +108,11 @@ export function useRunStream(run: Run | undefined) {
       const row = payload as unknown as CodingApproval;
       if (row.status === 'pending') {
         setApproval(row);
-        return;
+      } else {
+        setApproval((previous) => (previous?.id === row.id ? undefined : previous));
       }
-      setApproval((previous) => (previous?.id === row.id ? undefined : previous));
+      // 审批弹窗与编码面板共用同一份待确认列表，SSE 只负责让它们尽快刷新。
+      void cache.invalidateQueries({ queryKey: ['coding-approvals'] });
     });
     listen('stage', (payload) => {
       setStage(String(payload.stage));

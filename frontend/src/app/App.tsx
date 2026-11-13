@@ -21,6 +21,7 @@ import { useLayoutMotion } from './layouts/hooks/useLayoutMotion';
 import { WorkspaceLoadBoundary } from './layouts/WorkspaceLoadBoundary';
 import { useNewConversation } from '../features/chat/hooks/useNewConversation';
 import { HistoricalSourceDialog } from '../features/source_reader/components/HistoricalSourceDialog';
+import { ApprovalDialogHost } from '../features/coding/ApprovalDialog';
 import '../features/chat/styles/conversations.css';
 import '../features/chat/styles/chat-experience.css';
 import '../features/chat/styles/conversation-workflows.css';
@@ -282,6 +283,7 @@ export default function App() {
           onOpen={() => setDialog('files')}
         />
         <Toasts />
+        <ApprovalDialogHost />
         <HistoricalSourceDialog />
         {searchOpen && <WorkspaceSearch onClose={() => setSearchOpen(false)} />}
       </div>

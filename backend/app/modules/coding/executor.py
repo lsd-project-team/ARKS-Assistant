@@ -41,6 +41,18 @@ DANGEROUS = [
     r"\b(sc|schtasks|net\s+user)\b",
     r"(-EncodedCommand|Invoke-Expression|\|\s*(bash|sh|powershell|pwsh)\b)",
 ]
+# 只读权限下允许的命令：必须单独判定，不能直接沿用 ALLOW，因为 ALLOW 里还包含
+# 构建、测试、安装等会写文件或联网的命令。
+READONLY_ALLOW = [
+    r"^(ls|dir|pwd|cat|type|head|tail|rg|grep|findstr)\b",
+    r"^git\s+(status|diff|log|show|rev-parse)\b",
+    r"^(where|which)\s+",
+    r"^(pip|pip3)\s+(list|show)\b",
+    r"^node\s+--version\b",
+    r"^(dotnet|msbuild)\s+--(info|version|list-sdks)\b",
+]
+# 只读判定拒绝任何串联、重定向或子表达式，避免 `git log; rm ...` 借前缀混过白名单。
+READONLY_BREAK = re.compile(r"[;|&<>`]|\$\(")
 # 这些命令会改动文件；绝对路径在项目外、使用环境变量或 .. 时直接拒绝。
 DESTRUCTIVE = re.compile(
     r"\b(Remove-Item|Remove-ItemProperty|ri|rd|rmdir|del|erase|Clear-Content|"
@@ -63,11 +75,12 @@ class ApprovalRequired(Exception):
 
 
 class Executor:
-    def __init__(self, root, logs, mode="allowlist"):
+    def __init__(self, root, logs, mode="allowlist", policy=None):
         self.root = Path(root).resolve()
         self.logs = Path(logs)
         self.logs.mkdir(parents=True, exist_ok=True)
         self.mode = mode
+        self.policy = policy or ("full" if mode == "full" else "allowlist")
         self._lock = RLock()
         self._jobs = {}
         self._running = {}
@@ -85,11 +98,22 @@ class Executor:
             return "safe"
         return "unknown"
 
-    def allowed(self, command):
-        if self.mode == "full":
-            return self.classify(command) != "dangerous"
-        if self.mode == "confirm":
+    def readonly_allowed(self, command):
+        """仅可查看档位允许的命令：只读白名单，且不能用连接符拼接别的命令。"""
+        text = command.strip()
+        if not text or READONLY_BREAK.search(text):
             return False
+        if any(re.search(pattern, text, re.IGNORECASE) for pattern in DANGEROUS):
+            return False
+        if self._escapes_project(text):
+            return False
+        return any(re.search(pattern, text, re.IGNORECASE) for pattern in READONLY_ALLOW)
+
+    def allowed(self, command):
+        if self.policy == "read-only":
+            return self.readonly_allowed(command)
+        if self.policy == "full":
+            return self.classify(command) != "dangerous"
         return self.classify(command) == "safe"
 
     def _escapes_project(self, text):

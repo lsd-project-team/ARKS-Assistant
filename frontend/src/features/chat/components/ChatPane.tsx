@@ -44,6 +44,7 @@ import { groupReplies } from '../lib/replyHistory';
 import { ReansweredQuestion } from './ReansweredQuestion';
 
 import { CodingPanel } from '../../coding/CodingPanel';
+import { PermissionMenu } from '../../coding/PermissionMenu';
 
 import { useAttachments } from '../attachments/useAttachments';
 import { AttachmentUpload } from '../attachments/AttachmentUpload';
@@ -318,6 +319,7 @@ export function ChatPane({
           </strong>
         </div>
         <div>
+          <PermissionMenu />
           <Button
             className="icon-button"
             aria-label="项目编码"

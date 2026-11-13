@@ -316,7 +316,7 @@ coding 模块
 
 ### 18.5 设置与环境
 
-- 编码面板新增管理员设置：审批档位、超时、构建/测试命令、只读项目启用开关。
+- 编码面板新增管理员设置：权限档位（详见第 19 节）、超时、构建/测试命令、只读项目启用开关。
 - 按目录中的 `.sln/.csproj`、`package.json`、`pyproject.toml`、`Cargo.toml`、`go.mod`、`pom.xml`、`build.gradle`、`CMakeLists.txt` 识别语言和默认构建/测试命令；已填写的命令优先。
 - 识别结果进入本轮提示词，模型直接使用建议命令，减少重复探测环境。
 
@@ -338,3 +338,37 @@ coding 模块
 | GET | `/api/p/{project}/coding/approvals?recent=true` | 待确认和最近审批 |
 | GET | `/api/p/{project}/coding/audit` | 管理员查看命令记录 |
 | GET | `/api/runs/{run_id}/coding` | 只返回本轮修改，不再读取完整运行上下文 |
+
+## 19. 2026-11-13 权限三档与审批弹窗
+
+### 19.1 权限三档
+
+- 聊天头部与编码面板提供三档权限：仅可查看（`read-only`）、工作区内修改（`workspace-write`）、完全权限（`full-access`）；仅管理员可切换。
+- 仅可查看：写入、删除、移动、回滚、启动后台进程全部拒绝；命令只允许只读白名单（`ls/cat/rg/git status|diff|log`、`node --version` 等），包含 `; | & > <`、反引号或 `$(` 的命令直接拒绝，不进入审批。
+- 工作区内修改：项目内可写（`trunk` 只读目录仍需显式启用）；安全命令自动执行，未知命令弹确认，破坏性命令拒绝。
+- 完全权限：项目内可写；除危险命令外全部直接执行，不再弹确认。
+- 危险命令（磁盘/分区/`git clean -f`/`git reset --hard`/访问项目外路径等）在任何档位都直接拒绝。
+- 旧配置没有 `permission` 时自动推导：`approval_mode=full` → 完全权限；可写 → 工作区内修改；`trunk` 未启用 → 仅可查看；下次保存时落盘。旧的 `approval_mode=confirm` 归入工作区内修改。
+- 切换权限会取消所有待确认请求并清空会话放行，同时写入审计（`action=permission`）。
+
+### 19.2 审批确认弹窗
+
+- 命令需要确认时不再只在聊天里显示内联按钮，而是弹出全局模态框，离开聊天页也会出现；`Esc` 拒绝、`Enter` 允许一次。
+- 弹窗展示工具类型（终端/后台进程）、命令代码块、目录与类型；右下角为「拒绝」与「允许一次」，主按钮带下拉。
+- 同一时刻只显示一条，其余显示「还有 N 条待确认」；待确认超时、取消或在别处处理完时弹窗自动关闭。
+- 聊天内联卡片保留为状态摘要（等待确认/已批准/已拒绝/超时），不再提供决策按钮；编码面板的待确认列表仍可兜底处理。
+- 数据源统一为 `GET /coding/approvals`（3 秒轮询 + `coding_approval` SSE 失效），面板与弹窗不会出现状态不一致。
+
+### 19.3 会话内允许
+
+- 弹窗下拉支持「本会话内允许这条命令」：按对话线程 + 完整命令精确匹配，4 小时过期，单线程最多 50 条，不落盘；切换权限或重启服务即失效。
+- 没有对话线程的命令（面板/API 直接发起）只支持一次性授权。
+
+### 19.4 API 变化
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| PUT | `/api/p/{project}/coding/settings` | 新增 `permission`：`read-only` / `workspace-write` / `full-access` |
+| POST | `/api/p/{project}/coding/approvals/{id}` | 请求体新增 `scope`：`once`（默认）/ `session` |
+
+`GET /coding/settings` 与审批响应会返回 `permission`、`scope`；旧的 `approval_mode` 仍保留并自动同步。

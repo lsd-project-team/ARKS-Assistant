@@ -5,6 +5,7 @@ import { useWorkspace } from '../../app/state/store';
 import { Button, ErrorText, Modal } from '../../shared/ui/ui';
 import { toast } from '../../shared/utils/toasts';
 import { useAuth } from '../auth/AuthContext';
+import { PermissionMenu } from './PermissionMenu';
 
 interface Approval {
   id: string;
@@ -31,6 +32,7 @@ interface CheckpointList {
 
 interface CodingSettings {
   approval_mode: 'allowlist' | 'confirm' | 'full';
+  permission: 'read-only' | 'workspace-write' | 'full-access';
   timeout_seconds: number;
   build_command: string;
   test_command: string;
@@ -74,11 +76,6 @@ const JOB_STATUS: Record<string, string> = {
 };
 
 const POLL = { refetchInterval: 2000 } as const;
-const MODES: { value: CodingSettings['approval_mode']; label: string }[] = [
-  { value: 'allowlist', label: '白名单自动，其他确认' },
-  { value: 'confirm', label: '所有命令都确认' },
-  { value: 'full', label: '全部放行（危险命令仍拒绝）' },
-];
 
 function diffPaths(diff: string) {
   const paths: string[] = [];
@@ -175,7 +172,6 @@ export function CodingPanel({ open, onClose }: { open: boolean; onClose: () => v
       api('/coding/settings', {
         method: 'PUT',
         body: jsonBody({
-          approval_mode: form.approval_mode,
           timeout_seconds: Number(form.timeout_seconds),
           build_command: form.build_command ?? '',
           test_command: form.test_command ?? '',
@@ -351,21 +347,10 @@ export function CodingPanel({ open, onClose }: { open: boolean; onClose: () => v
           <details>
             <summary>编码设置</summary>
             <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
-              <label>
-                审批档位
-                <select
-                  value={form.approval_mode ?? 'allowlist'}
-                  onChange={(event) =>
-                    setForm({ ...form, approval_mode: event.target.value as CodingSettings['approval_mode'] })
-                  }
-                >
-                  {MODES.map((mode) => (
-                    <option key={mode.value} value={mode.value}>
-                      {mode.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <div>
+                <p className="muted">权限档位（切换后立即生效）</p>
+                <PermissionMenu inline />
+              </div>
               <label>
                 命令超时（秒）
                 <input

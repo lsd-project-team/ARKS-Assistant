@@ -137,18 +137,36 @@ class AgentGraphBuilder:
             document_tools = attachment_tools(runtime.repository.attachments, attachment_ids, emit)
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
-        # 工具始终可用，由模型理解自然语言需求；只读项目由工作区在写入时拒绝。
+        # 工具始终可用，由模型理解自然语言需求；权限档位决定写入与命令确认。
         work_tools = coding_tools(runtime.coding, thread_id, emit, run_id=run_id)
         tools += work_tools
         retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
+        permission = runtime.coding.permission()
         prompt_extra = CODING_GUIDANCE
-        if runtime.coding.writable():
-            prompt_extra += coding_environment_hint(runtime.coding.environment())
+        if not runtime.coding.writable():
+            if permission == "read-only":
+                prompt_extra += (
+                    "\n【仅可查看】当前权限为仅可查看：写入文件、删除、移动、回滚和写命令都会被拒绝，"
+                    "只会放行查看类命令。用户要求改代码时，说明需要先在聊天头部把权限切换为"
+                    "「工作区内修改」或「完全权限」。"
+                )
+            else:
+                prompt_extra += (
+                    "\n【只读项目】当前项目是只读分析目录，写入文件、删除和命令会被拒绝；"
+                    "用户要求改代码时，说明需要选择或新建可写项目，或先在项目编码设置中启用。"
+                )
         else:
-            prompt_extra += (
-                "\n【只读项目】当前项目是只读分析目录，写入文件、删除和命令会被拒绝；"
-                "用户要求改代码时，说明需要选择或新建可写项目，或先在项目编码设置中启用。"
-            )
+            prompt_extra += coding_environment_hint(runtime.coding.environment())
+            if permission == "full-access":
+                prompt_extra += (
+                    "\n【权限：完全权限】项目内可以读写，命令除破坏性操作外直接执行，不会等待确认；"
+                    "仍要遵守项目内路径限制。"
+                )
+            else:
+                prompt_extra += (
+                    "\n【权限：工作区内修改】项目内可以读写；不在自动放行范围内的命令会等待用户确认，"
+                    "确认后自动继续。"
+                )
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。

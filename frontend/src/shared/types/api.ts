@@ -318,6 +318,7 @@ export interface CodingApproval {
   cwd: string;
   timeout: number;
   status: 'pending' | 'approved' | 'rejected' | 'expired' | 'cancelled';
+  scope?: 'once' | 'session' | null;
   created_at: string;
   finished_at?: string | null;
   result?: {

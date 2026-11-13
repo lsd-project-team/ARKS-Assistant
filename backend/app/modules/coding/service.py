@@ -18,14 +18,33 @@ from app.modules.coding.snapshots import Snapshots
 
 DEFAULT_SETTINGS = {
     "approval_mode": "allowlist",
+    "permission": "workspace-write",
     "timeout_seconds": 120,
     "build_command": "",
     "test_command": "",
     "enabled": False,
 }
 MODES = {"allowlist", "confirm", "full"}
+PERMISSIONS = {"read-only", "workspace-write", "full-access"}
+POLICY_BY_PERMISSION = {
+    "read-only": "read-only",
+    "workspace-write": "allowlist",
+    "full-access": "full",
+}
+APPROVAL_MODE_BY_PERMISSION = {
+    "read-only": "allowlist",
+    "workspace-write": "allowlist",
+    "full-access": "full",
+}
+PERMISSION_BY_APPROVAL_MODE = {
+    "allowlist": "workspace-write",
+    "confirm": "workspace-write",
+    "full": "full-access",
+}
 READONLY_ROOT = (PROJECT_ROOT / "trunk").resolve()
 APPROVAL_TIMEOUT = 300
+SESSION_ALLOW_TTL = 4 * 60 * 60
+SESSION_ALLOW_MAX = 50
 LOCK_TIMEOUT = 960
 OUTPUT_EVENT_CHARS = 1_500
 OUTPUT_EVENT_INTERVAL = 0.4
@@ -41,11 +60,15 @@ class CodingWorkspace:
         self.lock = threading.RLock()
         self.approvals = {}
         self.cancels = {}
+        # 本会话放行：thread_id -> {完整命令: 到期 monotonic 时间}，只存内存，切换权限即清空。
+        self.session_allow = {}
         self.snapshots = Snapshots(self.data, self.project_id, self.root)
+        settings = self.load_settings()
         self.executor = Executor(
             self.root,
             self.data / "coding" / "logs" / self.project_id,
-            self.load_settings()["approval_mode"],
+            settings["approval_mode"],
+            POLICY_BY_PERMISSION[settings["permission"]],
         )
 
     # ---------- 锁 ----------
@@ -60,18 +83,39 @@ class CodingWorkspace:
 
     # ---------- 设置 ----------
     def load_settings(self):
+        raw = {}
         if self.settings_path.exists():
-            value = json.loads(self.settings_path.read_text(encoding="utf-8"))
-        else:
-            value = {}
-        return {**DEFAULT_SETTINGS, **value}
+            raw = json.loads(self.settings_path.read_text(encoding="utf-8"))
+        value = {**DEFAULT_SETTINGS, **raw}
+        value["permission"] = self._derive_permission(raw, value)
+        return value
+
+    def _derive_permission(self, raw, value):
+        """旧配置没有 permission 时，从 approval_mode + 目录可写状态推导，避免破坏已有项目。"""
+        permission = raw.get("permission")
+        if permission in PERMISSIONS:
+            return permission
+        if value.get("approval_mode") == "full":
+            return "full-access"
+        if self._can_write_root(value):
+            return "workspace-write"
+        return "read-only"
+
+    def _can_write_root(self, value):
+        root = self.root.resolve()
+        return not root.is_relative_to(READONLY_ROOT) or bool(value.get("enabled"))
+
+    def permission(self):
+        return self.load_settings()["permission"]
 
     def settings(self):
+        value = self.load_settings()
+        root = self.root.resolve()
         return {
-            **self.load_settings(),
-            "root": str(self.root.resolve()),
+            **value,
+            "root": str(root),
             "writable": self.writable(),
-            "readonly": self.root.resolve().is_relative_to(READONLY_ROOT),
+            "readonly": root.is_relative_to(READONLY_ROOT),
             "environment": self.environment(),
         }
 
@@ -90,10 +134,17 @@ class CodingWorkspace:
 
     def save_settings(self, changes):
         value = self.load_settings()
+        previous_permission = value["permission"]
+        if "permission" in changes:
+            if changes["permission"] not in PERMISSIONS:
+                raise ValueError("权限必须是 read-only / workspace-write / full-access")
+            value["permission"] = changes["permission"]
+            value["approval_mode"] = APPROVAL_MODE_BY_PERMISSION[value["permission"]]
         if "approval_mode" in changes:
             if changes["approval_mode"] not in MODES:
                 raise ValueError("审批档位必须是 allowlist / confirm / full")
             value["approval_mode"] = changes["approval_mode"]
+            value["permission"] = PERMISSION_BY_APPROVAL_MODE[value["approval_mode"]]
         if "timeout_seconds" in changes:
             timeout = int(changes["timeout_seconds"])
             if not 10 <= timeout <= 900:
@@ -104,20 +155,45 @@ class CodingWorkspace:
                 value[key] = str(changes[key])[:500]
         if "enabled" in changes:
             value["enabled"] = bool(changes["enabled"])
+        explicit_permission = "permission" in changes or "approval_mode" in changes
+        if (
+            "enabled" in changes
+            and value["enabled"]
+            and value["permission"] == "read-only"
+            and not explicit_permission
+        ):
+            # 老流程是「勾选启用即可写」：只打开 enabled 时把推导出的只读档一并提升。
+            value["permission"] = "workspace-write"
+            value["approval_mode"] = "allowlist"
         self.settings_path.parent.mkdir(parents=True, exist_ok=True)
         self.settings_path.write_text(
             json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         self.executor.mode = value["approval_mode"]
+        self.executor.policy = POLICY_BY_PERMISSION[value["permission"]]
+        if value["permission"] != previous_permission:
+            self._cancel_pending_approvals()
+            self.session_allow.clear()
+            self._audit(
+                "permission",
+                f"{previous_permission} -> {value['permission']}",
+                None,
+            )
         return self.settings()
 
     def writable(self):
-        """默认分析目录（trunk）及其子目录保持只读，避免问答引用的原代码被就地改写。"""
-        root = self.root.resolve()
-        return not root.is_relative_to(READONLY_ROOT) or bool(self.load_settings()["enabled"])
+        """默认分析目录（trunk）及其子目录保持只读；权限为仅可查看时也不可写。"""
+        settings = self.load_settings()
+        if settings["permission"] == "read-only":
+            return False
+        return self._can_write_root(settings)
 
     def _require_writable(self):
         if not self.writable():
+            if self.permission() == "read-only":
+                raise ValueError(
+                    "当前权限为『仅可查看』（只读），不能修改文件；需要写入请在聊天头部切换权限"
+                )
             raise ValueError("当前是只读分析项目，请选择其他目录建项目，或显式启用该项目的编码")
 
     # ---------- 文件 ----------
@@ -322,11 +398,25 @@ class CodingWorkspace:
         command = (command or "").strip()
         if not command:
             raise ValueError("命令不能为空")
-        self._require_writable()
+        # 破坏性命令与项目外路径写入在任何权限档位都直接拒绝，不进入审批。
+        if self.executor.classify(command) == "dangerous":
+            raise ValueError("该命令被识别为危险命令或试图访问项目外路径，任何权限下都不会执行")
+        if self.permission() == "read-only":
+            if not self.executor.readonly_allowed(command):
+                raise ValueError(
+                    "当前权限为『仅可查看』，不能执行会改动文件或系统状态的命令；"
+                    "需要执行请在聊天头部切换权限"
+                )
+        else:
+            self._require_writable()
         settings = self.load_settings()
         timeout = max(5, min(int(timeout or settings["timeout_seconds"]), 900))
         approval = None
-        if not approved and not self.executor.allowed(command):
+        if (
+            not approved
+            and not self.executor.allowed(command)
+            and not self._session_allowed(command, thread_id)
+        ):
             approval = self.request_approval(
                 command,
                 cwd,
@@ -364,11 +454,11 @@ class CodingWorkspace:
 
     def _execute_command(self, command, cwd, timeout, run_id, thread_id, emit):
         with self._locked():
-            self._require_writable()
-            self.snapshots.ensure()
-            # 命令可能通过 shell 删除或覆盖文件，执行前先把已有改动存档。
-            if self.snapshots.has_changes():
-                self.snapshots.checkpoint("before-command")
+            if self.writable():
+                self.snapshots.ensure()
+                # 命令可能通过 shell 删除或覆盖文件，执行前先把已有改动存档。
+                if self.snapshots.has_changes():
+                    self.snapshots.checkpoint("before-command")
             stream = self._output_stream(emit, command, run_id)
             cancel = self.cancels.setdefault(run_id, threading.Event()) if run_id else None
             try:
@@ -411,9 +501,19 @@ class CodingWorkspace:
         command = (command or "").strip()
         if not command:
             raise ValueError("命令不能为空")
+        if self.executor.classify(command) == "dangerous":
+            raise ValueError("该命令被识别为危险命令或试图访问项目外路径，任何权限下都不会执行")
+        if self.permission() == "read-only":
+            raise ValueError(
+                "当前权限为『仅可查看』，不能启动后台进程；需要执行请在聊天头部切换权限"
+            )
         self._require_writable()
         approval = None
-        if not approved and not self.executor.allowed(command):
+        if (
+            not approved
+            and not self.executor.allowed(command)
+            and not self._session_allowed(command, thread_id)
+        ):
             approval = self.request_approval(
                 command,
                 cwd,
@@ -510,6 +610,7 @@ class CodingWorkspace:
             "created_at": now_iso(),
             "finished_at": None,
             "result": None,
+            "scope": None,
             "run_id": run_id,
             "thread_id": thread_id,
             "_event": threading.Event(),
@@ -546,7 +647,9 @@ class CodingWorkspace:
             )[: max(1, min(limit, 100))]
             return [_public(row) for row in rows]
 
-    def decide_approval(self, approval_id, approved):
+    def decide_approval(self, approval_id, approved, scope="once"):
+        if scope not in {"once", "session"}:
+            raise ValueError("审批范围必须是 once 或 session")
         with self.lock:
             row = self.approvals.get(approval_id)
             if not row:
@@ -554,8 +657,12 @@ class CodingWorkspace:
             if row["status"] != "pending":
                 raise ValueError("该请求已经处理")
             row["status"] = "approved" if approved else "rejected"
+            # 没有对话线程时无法按会话放行，退回一次性授权。
+            row["scope"] = (scope if row.get("thread_id") else "once") if approved else None
             waiting = bool(row.get("_waiting"))
             row["_event"].set()
+        if approved and row.get("scope") == "session":
+            self._remember_session(row["command"], row.get("thread_id", ""))
         if waiting:
             # 等待中的工具线程会在收到结果后执行并回填。
             return self.approval(approval_id)
@@ -569,6 +676,38 @@ class CodingWorkspace:
         result = self._approved_result(row)
         self._finish_approval(row, result, "approved")
         return self.approval(approval_id)
+
+    def _cancel_pending_approvals(self):
+        """切换权限后，已经无法按原权限执行的待确认请求要作废，避免批准了却执行不了。"""
+        with self.lock:
+            rows = [row for row in self.approvals.values() if row["status"] == "pending"]
+            for row in rows:
+                row["status"] = "cancelled"
+                row["finished_at"] = now_iso()
+        for row in rows:
+            self._emit_approval(row)
+
+    def _session_allowed(self, command, thread_id):
+        if not thread_id:
+            return False
+        rows = self.session_allow.get(thread_id)
+        if not rows:
+            return False
+        expiry = rows.get(command)
+        if expiry is None:
+            return False
+        if expiry <= time.monotonic():
+            rows.pop(command, None)
+            return False
+        return True
+
+    def _remember_session(self, command, thread_id):
+        if not thread_id:
+            return
+        rows = self.session_allow.setdefault(thread_id, {})
+        if command not in rows and len(rows) >= SESSION_ALLOW_MAX:
+            rows.pop(min(rows, key=rows.get), None)
+        rows[command] = time.monotonic() + SESSION_ALLOW_TTL
 
     def _approved_result(self, row):
         try:
@@ -714,6 +853,7 @@ class CodingWorkspace:
             "command": command,
             "exit_code": exit_code,
             "mode": self.load_settings()["approval_mode"],
+            "permission": self.permission(),
             "thread_id": thread_id,
             "run_id": run_id,
             "duration_ms": duration_ms,
