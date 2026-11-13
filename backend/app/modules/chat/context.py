@@ -108,6 +108,23 @@ class ConversationContext:
         )
         return result
 
+    def coding_changes(self, run_id: str) -> dict:
+        """只读取本轮修改事件，不重算源码证据或完整运行上下文。"""
+        run = self.repository.run(run_id)
+        actor_id = run_memory_actor(self.repository, run)
+        latest = None
+        cursor = 0
+        while True:
+            events = self.repository.events(run_id, cursor)
+            for original in events:
+                event = visible_run_event(original, actor_id)
+                if event is not None and event["kind"] == "coding_changes":
+                    latest = event["payload"]
+            if len(events) < 500:
+                break
+            cursor = events[-1]["sequence"]
+        return {"coding_changes": latest}
+
     def run_sources(self, run_id: str) -> dict:
         run = self.repository.run(run_id)
         actor_id = run_memory_actor(self.repository, run)

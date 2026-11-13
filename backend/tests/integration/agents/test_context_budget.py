@@ -110,6 +110,7 @@ async def test_framework_budget_snapshot_survives_configuration_change(services,
                 "version": "a" * 64,
             }
         ],
+        {"use_knowledge": True, "use_memory": True},
     )
     answer = await runtime.execute(
         run, lambda kind, payload: repository.event(run["id"], kind, payload)

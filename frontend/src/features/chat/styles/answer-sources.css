@@ -126,6 +126,28 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
+}
+.answer-coding-undo {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+.answer-coding-undo:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--accent, #3b6ff5);
+}
+.answer-coding-undo:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 .answer-coding-heading-text strong {
   color: var(--text);
@@ -284,4 +306,69 @@
 .diff-meta {
   color: var(--muted);
   font-style: italic;
+}
+
+.coding-approval {
+  margin-top: 12px;
+  border: 1px solid color-mix(in srgb, #d97706 35%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, #fef3c7 22%, var(--surface));
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.coding-approval-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-size: 13px;
+}
+.coding-approval-command {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.coding-approval-actions {
+  display: flex;
+  gap: 8px;
+}
+.coding-approval-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.coding-approval-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.coding-console {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-subtle);
+}
+.coding-console summary {
+  cursor: pointer;
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.coding-console pre {
+  margin: 0;
+  padding: 8px 10px;
+  max-height: 220px;
+  overflow: auto;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }

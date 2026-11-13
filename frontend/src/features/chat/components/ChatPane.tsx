@@ -29,6 +29,7 @@ import { QuestionQueuePanel } from './QuestionQueue';
 import { resolvedSources } from '../../settings/lib/sourceOptions';
 import { RunActivity } from './RunActivity';
 import { RunFeedback } from './RunFeedback';
+import { CodingApprovalCard, CodingConsole } from './CodingApproval';
 import { persistedFeedback } from '../lib/runFeedback';
 import { toast } from '../../../shared/utils/toasts';
 import { activeRun } from '../lib/activeRun';
@@ -474,6 +475,10 @@ export function ChatPane({
                 <RunActivity run={active} stage={stream.stage} detail={stream.detail} busy={busy} />
               </div>
               <RunTraceDetails key={active.id} tools={stream.tools} />
+              {stream.approval && (
+                <CodingApprovalCard key={stream.approval.id} approval={stream.approval} />
+              )}
+              <CodingConsole output={stream.commandOutput} />
               <AnswerMarkdown
                 content={stream.answer}
                 runId={active.id}

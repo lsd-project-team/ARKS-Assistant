@@ -94,7 +94,12 @@ async def test_actual_runtime_uses_only_current_branch_before_question_for_both_
     thread = repository.create_thread("追问背景")
     first = repository.create_run(thread["id"], "设备A V1真空报警", [])
     repository.finish(first["id"], "需继续核对设备A V1。")
-    run = repository.create_run(thread["id"], "它当时怎么解决的？", [])
+    run = repository.create_run(
+        thread["id"],
+        "它当时怎么解决的？",
+        [],
+        {"use_knowledge": True, "use_memory": True},
+    )
     contexts = []
     original = memory.candidates
 

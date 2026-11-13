@@ -118,6 +118,10 @@ class RunManager:
     async def cancel(self, run_id: str):
         run = self.repository.run(run_id)
         self.repository.queue.pause(run["thread_id"])
+        # 先结束工具线程里的前台命令和审批等待，再取消协程。
+        coding = getattr(self.runtime, "coding", None)
+        if coding is not None:
+            coding.cancel_run(run_id)
         task = self.tasks.get(run_id)
         if task:
             task.cancel()
@@ -129,6 +133,10 @@ class RunManager:
 
     async def shutdown(self):
         self.closing = True
+        coding = getattr(self.runtime, "coding", None)
+        if coding is not None:
+            for run_id in list(self.tasks):
+                coding.cancel_run(run_id)
         active = list(self.tasks.values())
         for task in active:
             task.cancel()

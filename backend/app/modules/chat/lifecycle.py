@@ -16,6 +16,9 @@ class ConversationLifecycle:
         services = self.services
         for identifier in services.repository.active_runs(thread_id):
             await services.runs.cancel(identifier)
+        coding = getattr(services.runtime, "coding", None)
+        if coding is not None:
+            coding.executor.stop_thread(thread_id)
         return services.repository.catalog.change(thread_id, "deleted")
 
     async def purge(self, thread_id: str):

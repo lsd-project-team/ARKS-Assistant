@@ -199,6 +199,10 @@ def create_router(services: AppServices) -> APIRouter:
     async def run_context(run_id: str):
         return context.run_sources(run_id)
 
+    @router.get("/api/runs/{run_id}/coding")
+    async def run_coding(run_id: str):
+        return context.coding_changes(run_id)
+
     @router.get("/api/runs/{run_id}/trace")
     async def trace(run_id: str):
         run = repository.run(run_id)

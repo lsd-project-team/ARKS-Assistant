@@ -83,7 +83,10 @@ def test_legacy_requests_keep_compatible_defaults():
 def test_project_defaults_are_captured_without_changing_saved_questions(services):
     repository = services[3]
     preferences = repository.source_preferences
-    assert preferences.get() == {"source_options": SourceOptions().model_dump(), "version": 0}
+    assert preferences.get() == {
+        "source_options": {**SourceOptions().model_dump(), "use_memory": False},
+        "version": 0,
+    }
     preferences.save(SourcePreferencesWrite(source_options=SourceOptions(**LOCAL), version=0))
     first = repository.create_run(None, "新问题使用项目默认值", [])
     repository.finish(first["id"], "第一答")

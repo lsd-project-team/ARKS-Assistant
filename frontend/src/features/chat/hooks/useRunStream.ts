@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type {
+  CodingApproval,
   ContextUsage,
   ErrorFeedback,
   Run,
@@ -30,6 +31,8 @@ export function useRunStream(run: Run | undefined) {
   const [references, setReferences] = useState<KnowledgeReference[]>([]);
   const [searches, setSearches] = useState<KnowledgeSearch[]>([]);
   const [memorySaves, setMemorySaves] = useState<MemorySaveFeedback[]>([]);
+  const [approval, setApproval] = useState<CodingApproval>();
+  const [commandOutput, setCommandOutput] = useState('');
   useEffect(() => {
     setAnswer('');
     setTools([]);
@@ -44,6 +47,8 @@ export function useRunStream(run: Run | undefined) {
     setReferences([]);
     setSearches([]);
     setMemorySaves([]);
+    setApproval(undefined);
+    setCommandOutput('');
     setContext(undefined);
     if (!run || !['queued', 'running'].includes(run.status)) return;
     const source = new EventSource(apiUrl(`/runs/${run.id}/events`, projectId));
@@ -78,9 +83,16 @@ export function useRunStream(run: Run | undefined) {
             : '回复可能被截断，完整度待确认。',
         );
     });
-    listen('tool_start', (payload) =>
-      setTools((previous) => [...previous, payload as unknown as ToolEvent]),
-    );
+    listen('tool_start', (payload) => {
+      setTools((previous) => [...previous, payload as unknown as ToolEvent]);
+      if (payload.name === 'run_command' || payload.name === 'start_process') {
+        const arguments_ = (payload.arguments || {}) as Record<string, unknown>;
+        const command = String(arguments_.command || '');
+        if (command) {
+          setCommandOutput((previous) => `${previous}\n$ ${command}\n`.slice(-8000));
+        }
+      }
+    });
     listen('tool_end', (payload) =>
       setTools((previous) =>
         previous.map((item) =>
@@ -88,6 +100,18 @@ export function useRunStream(run: Run | undefined) {
         ),
       ),
     );
+    listen('coding_output', (payload) => {
+      const chunk = String(payload.chunk || '');
+      if (chunk) setCommandOutput((previous) => (previous + chunk).slice(-8000));
+    });
+    listen('coding_approval', (payload) => {
+      const row = payload as unknown as CodingApproval;
+      if (row.status === 'pending') {
+        setApproval(row);
+        return;
+      }
+      setApproval((previous) => (previous?.id === row.id ? undefined : previous));
+    });
     listen('stage', (payload) => {
       setStage(String(payload.stage));
       setDetail(String(payload.detail || ''));
@@ -105,6 +129,7 @@ export function useRunStream(run: Run | undefined) {
     listen('done', (payload) => {
       buffer.finish(payload.answer);
       setFinished(true);
+      setApproval(undefined);
       setConnectionNotice('');
       setStage(String(payload.stage || payload.status));
       setDetail('');
@@ -139,5 +164,7 @@ export function useRunStream(run: Run | undefined) {
     detail,
     context,
     finished,
+    approval,
+    commandOutput,
   };
 }

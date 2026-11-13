@@ -52,3 +52,49 @@ def test_project_coding_api_reads_writes_runs_and_restores(services, tmp_path):
         result = root / "docs/readme.md"
         assert result.is_file()
         assert "通信协议" in result.read_text(encoding="utf-8")
+
+
+def test_project_coding_api_edits_binary_approves_and_audits(services, tmp_path):
+    root = tmp_path / "workspace"
+    root.mkdir()
+    with TestClient(create_app(services[0])) as client:
+        sign_in(client, "admin")
+        project = client.post(
+            "/api/projects", json={"name": "编码编辑", "source_root": str(root)}
+        ).json()
+        base = f"/api/p/{project['id']}/coding"
+        client.put(base + "/settings", json={"approval_mode": "full", "timeout_seconds": 60})
+
+        created = client.put(
+            base + "/file", json={"path": "src/main.py", "content": "def run():\n    return 1\n"}
+        ).json()
+        edited = client.patch(
+            base + "/file",
+            json={
+                "path": "src/main.py",
+                "edits": [{"old": "return 1", "new": "return 2"}],
+                "expected_hash": created["version"],
+            },
+        )
+        assert edited.status_code == 200, edited.text
+        assert "return 2" in (root / "src/main.py").read_text(encoding="utf-8")
+
+        binary = client.put(
+            base + "/binary",
+            json={"path": "assets/icon.png", "content_base64": "iVBORw0KGgo="},
+        )
+        assert binary.status_code == 200, binary.text
+        assert (root / "assets/icon.png").read_bytes() == b"\x89PNG\r\n\x1a\n"
+
+        client.put(base + "/settings", json={"approval_mode": "allowlist"})
+        pending = client.post(base + "/command", json={"command": "Get-Location"}).json()
+        assert pending["approval_required"]
+        approval_id = pending["approval"]["id"]
+        assert client.get(base + "/approvals").json()["approvals"][0]["id"] == approval_id
+
+        decided = client.post(base + f"/approvals/{approval_id}", json={"approved": True}).json()
+        assert decided["status"] == "approved"
+        assert decided["result"]["exit_code"] == 0
+
+        audit = client.get(base + "/audit").json()["rows"]
+        assert audit and audit[0]["command"]

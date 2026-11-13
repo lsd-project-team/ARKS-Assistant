@@ -295,6 +295,41 @@ export interface ConversationContext extends ContextUsage {
   summarized_count: number;
   message_count: number;
 }
+export interface CodingChangeFile {
+  path: string;
+  status: 'added' | 'modified' | 'deleted' | 'renamed';
+  additions: number | null;
+  deletions: number | null;
+  binary: boolean;
+  patch?: string;
+}
+export interface CodingChanges {
+  base: string;
+  head: string;
+  files: CodingChangeFile[];
+  diff: string;
+  truncated: boolean;
+}
+export interface CodingApproval {
+  id: string;
+  kind: 'command' | 'process';
+  command: string;
+  cwd: string;
+  timeout: number;
+  status: 'pending' | 'approved' | 'rejected' | 'expired' | 'cancelled';
+  created_at: string;
+  finished_at?: string | null;
+  result?: {
+    ok?: boolean;
+    exit_code?: number | null;
+    output?: string;
+    error?: string;
+    job_id?: string;
+    message?: string;
+  } | null;
+  run_id?: string;
+  thread_id?: string;
+}
 export interface RunContext {
   references?: KnowledgeReference[];
   searches?: KnowledgeSearch[];
@@ -310,20 +345,7 @@ export interface RunContext {
     scope?: string;
   };
   knowledge_retrieval?: { titles: string[]; injected: boolean }[];
-  coding_changes?: {
-    base: string;
-    head: string;
-    files: {
-      path: string;
-      status: 'added' | 'modified' | 'deleted' | 'renamed';
-      additions: number | null;
-      deletions: number | null;
-      binary: boolean;
-      patch?: string;
-    }[];
-    diff: string;
-    truncated: boolean;
-  } | null;
+  coding_changes?: CodingChanges | null;
   debug_issues?: { id: string; title: string; version: number; citation: string }[];
   model?: ModelSnapshot;
   budget?: ContextUsage | null;

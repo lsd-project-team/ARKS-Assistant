@@ -1,5 +1,7 @@
 """聊天工具链在空项目里创建文件并执行命令的端到端回归。"""
 
+import asyncio
+
 import pytest
 from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
@@ -39,6 +41,74 @@ class CodingAgentModel(DeterministicModel):
                 )
             ]
         )
+
+
+class ApprovalAgentModel(DeterministicModel):
+    calls: list[str] = Field(default_factory=list)
+
+    def _generate(self, messages, stop=None, run_manager=None, **kwargs):
+        tools = [message for message in messages if isinstance(message, ToolMessage)]
+        last = tools[-1] if tools else None
+        if last is None:
+            name, args = "run_command", {"command": "Get-Location"}
+        elif last.name == "run_command":
+            self.calls.append(last.text)
+            return ChatResult(
+                generations=[
+                    ChatGeneration(message=AIMessage(content="命令已执行并继续完成本轮。"))
+                ]
+            )
+        else:
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content="完成"))])
+        self.calls.append(name)
+        return ChatResult(
+            generations=[
+                ChatGeneration(
+                    message=AIMessage(
+                        content="",
+                        tool_calls=[{"id": f"call-{len(tools)}", "name": name, "args": args}],
+                    )
+                )
+            ]
+        )
+
+
+@pytest.mark.asyncio
+async def test_approval_keeps_run_alive_and_continues(services, tmp_path, monkeypatch):
+    paths, _, _, repository, memories, settings = services
+    root = tmp_path / "approval-project"
+    root.mkdir()
+    runtime = AgentRuntime(Paths(paths.data, root), settings, Workspace(root), repository, memories)
+    monkeypatch.setattr(
+        "app.agents.runtime.graph_builder.create_model", lambda *args, **kwargs: model
+    )
+    model = ApprovalAgentModel()
+    thread = repository.create_thread("审批")["id"]
+    run = repository.create_run(
+        thread,
+        "检查当前目录",
+        [],
+        SourceOptions(use_memory=False, use_knowledge=False).model_dump(),
+    )
+    events = []
+    task = asyncio.create_task(
+        runtime.execute(run, lambda kind, payload: events.append((kind, payload)))
+    )
+    pending = []
+    for _ in range(200):
+        pending = await asyncio.to_thread(runtime.coding.list_approvals)
+        if pending:
+            break
+        await asyncio.sleep(0.05)
+    assert pending, "命令应进入审批等待"
+    await asyncio.to_thread(runtime.coding.decide_approval, pending[0]["id"], True)
+    answer = await asyncio.wait_for(task, timeout=30)
+
+    assert "已执行" in answer
+    assert model.calls and "exit_code" in model.calls[-1]
+    assert any(kind == "coding_approval" for kind, _ in events)
+    assert any(kind == "coding_output" for kind, _ in events)
+    runtime.coding.executor.stop_all()
 
 
 @pytest.mark.asyncio

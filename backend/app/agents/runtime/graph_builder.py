@@ -40,6 +40,23 @@ from app.modules.source_analysis.backend import SourceBackend
 PARAMETER_REUSE_REQUEST = re.compile(r"^\s*/参数复用(?=\s|$)")
 
 
+def coding_environment_hint(environment):
+    parts = []
+    if environment.get("language"):
+        parts.append(f"识别到 {environment['language']} 工程")
+    if environment.get("build_command"):
+        parts.append(f"构建命令：{environment['build_command']}")
+    if environment.get("test_command"):
+        parts.append(f"测试命令：{environment['test_command']}")
+    if not parts:
+        return ""
+    return (
+        "\n项目环境："
+        + "；".join(parts)
+        + "。优先直接使用这些命令验证，不要反复探测环境；命令失败时再读取日志修复。"
+    )
+
+
 def is_parameter_reuse_request(content: str) -> bool:
     return bool(PARAMETER_REUSE_REQUEST.match(content))
 
@@ -119,10 +136,18 @@ class AgentGraphBuilder:
             document_tools = attachment_tools(runtime.repository.attachments, attachment_ids, emit)
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
-        # 工具始终可用，由模型理解自然语言需求；只有实际调用准备工具才创建副本。
+        # 工具始终可用，由模型理解自然语言需求；只读项目由工作区在写入时拒绝。
         work_tools = coding_tools(runtime.coding, thread_id, emit, run_id=run_id)
         tools += work_tools
         retrieval.workflow_tools |= frozenset(tool.name for tool in work_tools)
+        prompt_extra = CODING_GUIDANCE
+        if runtime.coding.writable():
+            prompt_extra += coding_environment_hint(runtime.coding.environment())
+        else:
+            prompt_extra += (
+                "\n【只读项目】当前项目是只读分析目录，写入文件、删除和命令会被拒绝；"
+                "用户要求改代码时，说明需要选择或新建可写项目，或先在项目编码设置中启用。"
+            )
         tools += conversation_tools(runtime.repository, thread_id)
         available = input_budget(settings.model.context_tokens, settings.model.output_tokens)
         # 主模型先选择是否查资料；定义工具时不建立问题库快照或自动检索。
@@ -196,7 +221,7 @@ class AgentGraphBuilder:
         # 恢复和重新生成也能看到本轮补读资料，不能只记录证据而不给模型正文。
         prompt += verified_context
         prompt += document_prompt
-        prompt += CODING_GUIDANCE
+        prompt += prompt_extra
         if debug_issues:
             # 每轮只在系统提示中装配一次，避免每次检索、分页返回重复回答规则。
             prompt += "\n" + RETRIEVAL_GUIDANCE + "\n" + ANSWER_GUIDANCE

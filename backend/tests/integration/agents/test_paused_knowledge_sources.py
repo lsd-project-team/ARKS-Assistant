@@ -149,7 +149,10 @@ async def test_code_question_and_selection_do_not_automatically_load_flow_guides
         pass
 
     async def graph(*_args, **kwargs):
-        assert kwargs["source_options"] == SourceOptions().model_dump()
+        assert kwargs["source_options"] == {
+            **SourceOptions().model_dump(),
+            "use_memory": False,
+        }
         if with_selection:
             assert "<verified_source_context>" in kwargs["verified_context"]
         raise ReachedGraph

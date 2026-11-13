@@ -1,27 +1,46 @@
 """项目目录内的通用文件读写；路径限制在项目根，保留原编码与换行。"""
 
+import base64
 import codecs
+import fnmatch
 import json
 import os
 import re
+import shutil
+import subprocess
 import tempfile
 from pathlib import Path
 
 from app.infrastructure.storage.files import digest, is_link, safe_path
 
 MAX_FILE_BYTES = 2_000_000
+MAX_BINARY_BYTES = 10_000_000
 MAX_LIST_ENTRIES = 2_000
 MAX_SEARCH_RESULTS = 200
+MAX_HITS_PER_FILE = 20
 EXCLUDED = {
     ".git",
     ".vs",
     ".svn",
+    ".idea",
+    ".venv",
+    "venv",
     "bin",
     "obj",
     "packages",
     "node_modules",
     "dist",
     "publish",
+    "build",
+    "out",
+    "target",
+    "coverage",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".tox",
+    ".gradle",
+    ".next",
 }
 BINARY_SUFFIXES = {
     ".dll",
@@ -114,32 +133,111 @@ def write_text(root, path, content, expected_hash=""):
     if target.is_dir():
         raise ValueError("目标是目录，不能写入")
     exists = target.is_file()
-    if exists and not expected_hash:
-        raise ValueError("覆盖已有文件必须带上一次读取的 version，避免覆盖他人修改")
+    original = None
     if exists:
-        current = digest(target.read_bytes())
-        if current != expected_hash:
+        if not expected_hash:
+            raise ValueError("覆盖已有文件必须带上一次读取的 version，避免覆盖他人修改")
+        original = target.read_bytes()
+        if digest(original) != expected_hash:
             raise ValueError("文件已被修改，请重新读取后再写")
     if len(content.encode("utf-8")) > MAX_FILE_BYTES:
         raise ValueError("写入内容超过 2 MB 限制")
-    encoding, bom, newline = "utf-8", b"", "\n"
-    if exists:
-        original = target.read_bytes()
-        text, detected = _decode(original)
-        encoding = "utf-16" if detected.startswith("utf-16") else detected
-        bom = original[: len(codecs.BOM_UTF8)] if original.startswith(codecs.BOM_UTF8) else b""
-        if detected.startswith("utf-16"):
-            bom = original[:2]
-        newline = "\r\n" if "\r\n" in text else "\n"
-    body = content.replace("\r\n", "\n")
-    if newline == "\r\n":
-        body = body.replace("\n", "\r\n")
-    if encoding == "utf-8":
-        data = bom + body.encode("utf-8")
-    elif encoding == "gb18030":
-        data = body.encode("gb18030")
+    data, _encoding = _encode_like(original, content)
+    atomic_bytes(target, data)
+    return {
+        "path": relative(root, target),
+        "version": digest(data),
+        "bytes": len(data),
+        "created": not exists,
+    }
+
+
+def _normalized(text):
+    return text.replace("\r\n", "\n")
+
+
+def _encode_like(original, content):
+    """按原文件的编码、BOM 和换行写回；新文件使用 UTF-8 + LF。"""
+    text = _normalized(content)
+    if original is None:
+        return text.encode("utf-8"), "utf-8"
+    decoded, detected = _decode(original)
+    if detected.startswith("utf-16"):
+        encoding = "utf-16"
+    elif detected == "utf-8-sig":
+        encoding = "utf-8"
     else:
-        data = bom + body.encode("utf-16-le" if bom == codecs.BOM_UTF16_LE else "utf-16-be")
+        encoding = detected
+    bom = b""
+    if original.startswith(codecs.BOM_UTF8):
+        bom = codecs.BOM_UTF8
+    elif detected.startswith("utf-16"):
+        bom = original[:2]
+    if "\r\n" in decoded:
+        text = text.replace("\n", "\r\n")
+    if encoding == "utf-8":
+        return bom + text.encode("utf-8"), encoding
+    if encoding == "gb18030":
+        return text.encode("gb18030"), encoding
+    return bom + text.encode("utf-16-le" if bom == codecs.BOM_UTF16_LE else "utf-16-be"), encoding
+
+
+def edit_text(root, path, edits, expected_hash=""):
+    """在已有文件中按精确文本替换；一次读取、一次原子写回。"""
+    target = resolve(root, path)
+    if not target.is_file():
+        raise FileNotFoundError(f"文件不存在：{path}")
+    if not expected_hash:
+        raise ValueError("编辑已有文件必须带上一次读取的 version")
+    original = target.read_bytes()
+    if digest(original) != expected_hash:
+        raise ValueError("文件已被修改，请重新读取后再写")
+    text, _encoding = _decode(original)
+    body = _normalized(text)
+    replacements = 0
+    for index, edit in enumerate(edits, 1):
+        old = _normalized(str(edit.get("old", edit.get("old_string", ""))))
+        new = _normalized(str(edit.get("new", edit.get("new_string", ""))))
+        if not old:
+            raise ValueError(f"第 {index} 处替换的原文不能为空")
+        count = body.count(old)
+        if count == 0:
+            raise ValueError(f"第 {index} 处没有找到要替换的原文，请重新读取文件确认")
+        if count > 1 and not edit.get("replace_all"):
+            raise ValueError(
+                f"第 {index} 处匹配到 {count} 个位置，请提供更长的上下文或设置 replace_all"
+            )
+        body = body.replace(old, new, -1 if edit.get("replace_all") else 1)
+        replacements += count if edit.get("replace_all") else 1
+    data, _encoding = _encode_like(original, body)
+    atomic_bytes(target, data)
+    return {
+        "path": relative(root, target),
+        "version": digest(data),
+        "bytes": len(data),
+        "replacements": replacements,
+    }
+
+
+def write_binary(root, path, content_base64, expected_hash=""):
+    """写入图片、图标等二进制资源（内容用 base64 传递）。"""
+    target = resolve(root, path)
+    if target.is_dir():
+        raise ValueError("目标是目录，不能写入")
+    try:
+        data = base64.b64decode(content_base64, validate=True)
+    except (ValueError, TypeError) as error:
+        raise ValueError("二进制内容必须是有效的 base64") from error
+    if len(data) > MAX_BINARY_BYTES:
+        raise ValueError("二进制内容超过 10 MB 限制")
+    exists = target.is_file()
+    original = None
+    if exists:
+        if not expected_hash:
+            raise ValueError("覆盖已有文件必须带上一次读取的 version")
+        original = target.read_bytes()
+        if digest(original) != expected_hash:
+            raise ValueError("文件已被修改，请重新读取后再写")
     atomic_bytes(target, data)
     return {
         "path": relative(root, target),
@@ -231,21 +329,85 @@ def list_tree(root, path=".", depth=2):
     }
 
 
+def _walk_files(root, base):
+    """按目录剪枝遍历文件，跳过构建产物、版本库和链接。"""
+    if base.is_file():
+        yield base
+        return
+    for folder, directories, names in os.walk(base, followlinks=False):
+        directories[:] = sorted(
+            name
+            for name in directories
+            if name not in EXCLUDED and not is_link(Path(folder) / name)
+        )
+        for name in sorted(names):
+            target = Path(folder) / name
+            if name in EXCLUDED or is_link(target):
+                continue
+            yield target
+
+
+def _rg_results(root, base, query, glob, limit):
+    executable = shutil.which("rg")
+    if not executable:
+        return None
+    arguments = [
+        executable,
+        "--line-number",
+        "--no-heading",
+        "--color",
+        "never",
+        "--fixed-strings",
+        "--ignore-case",
+        "--max-count",
+        str(MAX_HITS_PER_FILE),
+    ]
+    for name in sorted(EXCLUDED):
+        arguments += ["--glob", f"!**/{name}/**"]
+    if glob:
+        arguments += ["--glob", glob]
+    arguments += ["--", query, str(base)]
+    try:
+        result = subprocess.run(
+            arguments,
+            capture_output=True,
+            timeout=30,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if result.returncode not in (0, 1):
+        return None
+    rows, root_path = [], project_root(root)
+    for line in result.stdout.decode("utf-8", "replace").splitlines():
+        match = re.match(r"^(.*):(\d+):(.*)$", line)
+        if not match:
+            continue
+        try:
+            path = Path(match.group(1)).resolve().relative_to(root_path).as_posix()
+        except (OSError, ValueError):
+            continue
+        rows.append({"path": path, "line": int(match.group(2)), "text": match.group(3)[:300]})
+        if len(rows) >= min(limit, MAX_SEARCH_RESULTS):
+            break
+    return rows
+
+
 def search_text(root, query, path=".", glob="", limit=100):
     query = query.strip()
     if not query:
         raise ValueError("搜索内容不能为空")
     base = resolve(root, path)
-    pattern = re.compile(
-        rf"^{re.escape(glob).replace(r'\*', '.*').replace(r'\?', '.')}$", re.IGNORECASE
-    )
+    if base.is_file() and glob and not fnmatch.fnmatch(base.name, glob):
+        return {"query": query, "results": []}
+    rows = _rg_results(root, base, query, glob, limit)
+    if rows is not None:
+        return {"query": query, "results": rows}
     rows, scanned = [], 0
-    for file in sorted(base.rglob("*")):
+    for file in _walk_files(root, base):
         if len(rows) >= min(limit, MAX_SEARCH_RESULTS):
             break
-        if not file.is_file() or any(part in EXCLUDED for part in file.parts):
-            continue
-        if glob and not pattern.match(file.name):
+        if glob and not fnmatch.fnmatch(file.name, glob):
             continue
         scanned += 1
         if scanned > 5000 or file.stat().st_size > MAX_FILE_BYTES:
@@ -257,17 +419,74 @@ def search_text(root, query, path=".", glob="", limit=100):
             text, _ = _decode(data)
         except (ValueError, OSError):
             continue
+        hits = 0
         for number, line in enumerate(text.replace("\r\n", "\n").split("\n"), 1):
-            if query.lower() in line.lower():
-                rows.append(
-                    {
-                        "path": file.relative_to(project_root(root)).as_posix(),
-                        "line": number,
-                        "text": line.strip()[:300],
-                    }
-                )
+            if query.lower() not in line.lower():
+                continue
+            rows.append(
+                {
+                    "path": file.relative_to(project_root(root)).as_posix(),
+                    "line": number,
+                    "text": line.strip()[:300],
+                }
+            )
+            hits += 1
+            if hits >= MAX_HITS_PER_FILE or len(rows) >= min(limit, MAX_SEARCH_RESULTS):
                 break
     return {"query": query, "results": rows[:MAX_SEARCH_RESULTS]}
+
+
+def find_files(root, pattern, path=".", limit=100):
+    pattern = pattern.strip() or "*"
+    base = resolve(root, path)
+    rows = []
+    for file in _walk_files(root, base):
+        rel = file.relative_to(project_root(root)).as_posix()
+        if fnmatch.fnmatch(file.name, pattern) or fnmatch.fnmatch(rel, pattern):
+            rows.append(rel)
+            if len(rows) >= max(1, min(limit, 500)):
+                break
+    return {"pattern": pattern, "entries": rows}
+
+
+def detect_project(root):
+    """按目录中的工程文件给出语言和构建/测试命令建议；识别失败不影响编码。"""
+    root = project_root(root)
+    try:
+        names = {entry.name for entry in root.iterdir()}
+    except OSError:
+        return {}
+    if any(name.endswith((".sln", ".csproj")) for name in names):
+        return {"language": ".NET", "build": "dotnet build", "test": "dotnet test"}
+    if "package.json" in names:
+        scripts = {}
+        try:
+            scripts = json.loads((root / "package.json").read_text(encoding="utf-8")).get(
+                "scripts", {}
+            )
+        except (OSError, ValueError):
+            scripts = {}
+        return {
+            "language": "JavaScript/TypeScript",
+            "build": "npm run build" if "build" in scripts else "",
+            "test": "npm test" if "test" in scripts else "",
+        }
+    if (
+        names & {"pyproject.toml", "pytest.ini", "setup.cfg", "setup.py"}
+        or (root / "tests").is_dir()
+    ):
+        return {"language": "Python", "build": "", "test": "python -m pytest"}
+    if "Cargo.toml" in names:
+        return {"language": "Rust", "build": "cargo build", "test": "cargo test"}
+    if "go.mod" in names:
+        return {"language": "Go", "build": "go build ./...", "test": "go test ./..."}
+    if "pom.xml" in names:
+        return {"language": "Java", "build": "mvn package", "test": "mvn test"}
+    if any(name.startswith("build.gradle") for name in names):
+        return {"language": "Java/Kotlin", "build": "gradle build", "test": "gradle test"}
+    if "CMakeLists.txt" in names:
+        return {"language": "C/C++", "build": "cmake --build build", "test": ""}
+    return {}
 
 
 def tree_snapshot(root, depth=2):

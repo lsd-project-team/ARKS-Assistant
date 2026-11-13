@@ -9,6 +9,7 @@ GUARDED = {
     "list_files",
     "read_project_file",
     "search_files",
+    "find_files",
     "run_command",
     "read_process",
     "list_checkpoints",
@@ -16,6 +17,9 @@ GUARDED = {
 }
 PROGRESS = {
     "write_file",
+    "edit_file",
+    "multi_edit",
+    "write_binary_file",
     "create_directory",
     "move_path",
     "delete_path",
