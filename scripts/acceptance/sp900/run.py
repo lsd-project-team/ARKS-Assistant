@@ -216,6 +216,9 @@ def main():
             print(f"[bench] result dir {run_dir}")
     if args.no_grade:
         return 0 if result.get("status") == "completed" else 1
+    if result.get("status") != "completed":
+        print(f"[bench] 未干净完成：status={result.get('status')}，即使工件评分通过也判失败")
+        return 1
     return 0 if result.get("grade_exit") == 0 else 1
 
 

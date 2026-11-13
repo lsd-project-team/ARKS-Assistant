@@ -45,7 +45,8 @@ GENERATION_GUIDANCE = """
    若目录里已有 App.csproj / Program.cs / MainForm.cs / UiParts.cs / ScreenshotTool.cs
    （生成模式会自动准备 WinForms 骨架），不要重复 scaffold，直接在骨架上实现页面与业务逻辑；
    否则先 scaffold_winforms。每完成一步更新计划状态。
-3. 完成前必须调用 verify build、verify test 与 check_ui；对生成的截图调用 view_image 核对；任何一项失败先修复，
+3. 完成前必须调用 verify build、verify test 与 check_ui；
+   对生成的截图调用 view_image 核对；任何一项失败先修复，
    不得带着错误或空白界面宣称完成。check_ui 失败时先看返回的 issues 与 log_tail：
    启动异常（尤其是 TabPage/Panel 结构错误）必须先修，修完重新 check_ui。
 4. 截图契约固定为 `--screenshot <png路径> <标签页索引>`（scaffold_winforms 已内置），

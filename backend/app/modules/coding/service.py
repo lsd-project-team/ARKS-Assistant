@@ -330,14 +330,66 @@ class CodingWorkspace:
             crash = _runtime_error(output)
             if crash:
                 issues.append(f"截图模式启动失败：{crash}")
+        ok = not issues
+        checkpoint = self._remember_ui_pass() if ok else ""
         return {
-            "ok": not issues,
+            "ok": ok,
             "project": project.name,
             "shots": shots,
             "issues": issues,
             "notes": report["notes"],
             "counts": report["counts"],
+            "checkpoint": checkpoint,
+            "last_pass": self._last_ui_pass(),
             "log_tail": diagnostics.tail(output),
+        }
+
+    def _ui_pass_file(self):
+        return self.data / "coding" / "ui-pass" / f"{self.project_id}.json"
+
+    def _last_ui_pass(self):
+        path = self._ui_pass_file()
+        if not path.is_file():
+            return ""
+        try:
+            return str(json.loads(path.read_text(encoding="utf-8")).get("commit") or "")
+        except (ValueError, OSError):
+            return ""
+
+    def _remember_ui_pass(self):
+        """界面自检通过时保存一个检查点，供布局被改坏时回退。"""
+        if not self.writable() or not self.snapshots.available():
+            return ""
+        try:
+            commit = self.snapshots.checkpoint("ui-pass")
+        except (OSError, ValueError):
+            return ""
+        if not commit:
+            return ""
+        path = self._ui_pass_file()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps({"commit": commit, "at": now_iso()}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        return str(commit)
+
+    def recover_ui(self):
+        """回到最近一次界面自检通过的状态并重新自检；没有存档时明确失败。"""
+        commit = self._last_ui_pass()
+        if not commit:
+            return {"ok": False, "error": "没有可回退的界面通过状态"}
+        if not self.snapshots.exists():
+            return {"ok": False, "error": "项目还没有检查点，无法回退"}
+        with self._locked():
+            self._require_writable()
+            self.snapshots.restore(commit)
+        result = self.check_ui()
+        return {
+            **result,
+            "recovered_from": commit,
+            "ok": bool(result.get("ok")),
+            "issues": [] if result.get("ok") else result.get("issues", []),
         }
 
     def _project_file(self):

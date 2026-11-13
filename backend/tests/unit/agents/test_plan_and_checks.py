@@ -43,6 +43,38 @@ async def test_gate_forces_answer_when_technical_checks_pass():
     assert events[-1][1]["ok"] is True and events[-1][1]["plan_incomplete"] is True
 
 
+async def test_gate_recovers_ui_before_finishing():
+    from langchain.agents.middleware.types import ModelRequest
+    from langchain_core.messages import AIMessage, HumanMessage
+
+    from app.agents.runtime.checks import AcceptanceGate, RunChecks
+    from app.agents.runtime.plan import PlanStore
+    from app.infrastructure.providers.models import StateInspectionModel
+
+    checks, plan, events = RunChecks(generation=True), PlanStore(), []
+    checks.record_verify({"ok": True, "kind": "build"})
+    checks.record_ui({"ok": False, "issues": ["标签页高度过小"]})
+    plan.update([{"title": "验收", "status": "done"}])
+    recovered = []
+
+    def recover():
+        recovered.append(True)
+        return {"ok": True, "shots": ["shots/ui_tab0.png"], "recovered_from": "abc"}
+
+    async def handler(request):
+        return type("Response", (), {"result": [AIMessage(content="已回退到通过状态并收尾")]})()
+
+    gate = AcceptanceGate(
+        checks, plan, lambda *args: events.append(args), generation=True, recover=recover
+    )
+    request = ModelRequest(model=StateInspectionModel(), messages=[HumanMessage(content="做")])
+    await gate.awrap_model_call(request, handler)
+    assert recovered == [True]
+    assert checks.ui and checks.ui.get("ok") is True
+    assert any(event[1].get("recovered") for event in events)
+    assert events[-1][1]["ok"] is True
+
+
 def test_generation_intent_detection():
     from app.agents.analysis.policy import is_generation_request, wants_winforms
 

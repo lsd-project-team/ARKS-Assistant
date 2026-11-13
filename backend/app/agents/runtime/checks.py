@@ -1,5 +1,7 @@
 """完成前验收门禁：从零生成必须计划完成、构建通过、界面自检通过。"""
 
+import asyncio
+
 from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.messages import HumanMessage
 
@@ -50,12 +52,15 @@ class RunChecks:
 class AcceptanceGate(AgentMiddleware):
     """从零生成的最终回答前检查验收项；不满足则要求继续，最多重试两次。"""
 
-    def __init__(self, checks, plan, emit, generation=False, max_retries=3):
+    def __init__(self, checks, plan, emit, generation=False, max_retries=3, recover=None):
         self.checks, self.plan, self.emit = checks, plan, emit
         self.generation, self.max_retries = generation, max_retries
+        self.recover = recover
+        self.recovered = False
         self.attempts = 0
 
     async def awrap_model_call(self, request, handler):
+        await self.recover_ui_if_needed()
         technical = self.generation and self.checks.technical_complete()
         if technical:
             # 技术项已全部通过：禁止继续调用工具，让模型直接收尾，避免通过后空转。
@@ -106,6 +111,38 @@ class AcceptanceGate(AgentMiddleware):
         return await handler(
             request.override(messages=[*request.messages, answer, nudge])
         )
+
+    async def recover_ui_if_needed(self):
+        """界面被改坏时回退到最近一次通过状态，避免带着布局回退收尾。"""
+        if not self.generation or self.recovered or not self.recover:
+            return
+        ui = self.checks.ui
+        if not ui or ui.get("ok"):
+            return
+        if not (self.checks.verify and self.checks.verify.get("ok")):
+            return
+        if self.checks.test is not None and not self.checks.test.get("ok"):
+            return
+        self.recovered = True
+        try:
+            result = await asyncio.to_thread(self.recover)
+        except Exception as error:
+            result = {"ok": False, "error": str(error)}
+        if result.get("ok"):
+            self.checks.record_ui(result)
+            self.emit(
+                "acceptance",
+                {
+                    "ok": True,
+                    "recovered": True,
+                    "checkpoint": result.get("recovered_from", ""),
+                },
+            )
+        else:
+            self.emit(
+                "acceptance",
+                {"ok": False, "recover_error": result.get("error", "回退失败")},
+            )
 
     def details(self):
         lines = []

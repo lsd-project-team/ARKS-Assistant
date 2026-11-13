@@ -309,7 +309,15 @@ class AgentGraphBuilder:
                     else []
                 ),
                 *(
-                    [AcceptanceGate(checks, plans, emit, generation)]
+                    [
+                        AcceptanceGate(
+                            checks,
+                            plans,
+                            emit,
+                            generation,
+                            recover=runtime.coding.recover_ui,
+                        )
+                    ]
                     if generation and not inspection
                     else []
                 ),
