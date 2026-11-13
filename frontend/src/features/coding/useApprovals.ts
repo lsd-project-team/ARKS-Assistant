@@ -13,7 +13,7 @@ export function useApprovals(pollMs = 3000) {
     queryFn: () => api<{ approvals: CodingApproval[] }>('/coding/approvals'),
     refetchInterval: pollMs,
     refetchOnWindowFocus: true,
-    enabled: Boolean(projectId) && projectId !== 'independent',
+    enabled: Boolean(projectId),
   });
 }
 

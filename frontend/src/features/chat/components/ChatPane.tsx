@@ -325,7 +325,6 @@ export function ChatPane({
           </strong>
         </div>
         <div>
-          <PermissionMenu />
           <Button
             className="icon-button"
             aria-label="项目编码"
@@ -621,6 +620,7 @@ export function ChatPane({
           modelControl={
             modelPreference.data && <ModelPicker preference={modelPreference.data} busy={busy} />
           }
+          permissionControl={<PermissionMenu />}
           context={
             <ComposerContext
               threadId={threadId}

@@ -146,6 +146,12 @@ def test_permission_switch_requires_admin_and_scope_applies(services, tmp_path):
         )
         assert allowed.status_code == 200
         assert allowed.json()["permission"] == "full-access"
+        enabled = client.put(
+            f"/api/p/{own['id']}/coding/permission",
+            json={"permission": "workspace-write", "enabled": True},
+        )
+        assert enabled.status_code == 200
+        assert enabled.json()["enabled"] is True
         foreign = client.put(
             f"/api/p/{project['id']}/coding/permission", json={"permission": "read-only"}
         )

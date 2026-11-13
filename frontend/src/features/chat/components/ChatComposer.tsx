@@ -20,6 +20,7 @@ export function ChatComposer({
   canCompact,
   model,
   modelControl,
+  permissionControl,
   context,
   attachments,
   uploading = false,
@@ -42,6 +43,7 @@ export function ChatComposer({
   canCompact: boolean;
   model: string;
   modelControl?: ReactNode;
+  permissionControl?: ReactNode;
   context: ReactNode;
 }) {
   const listId = useId();
@@ -163,14 +165,15 @@ export function ChatComposer({
           >
             <Plus size={18} />
           </button>
+          {permissionControl}
+        </div>
+        <div className="composer-send-actions">
           {modelControl || (
             <span className="model-label" title={model}>
               <Zap size={12} fill="currentColor" />
               <span>{model}</span>
             </span>
           )}
-        </div>
-        <div className="composer-send-actions">
           {busy && (
             <Button
               type="button"

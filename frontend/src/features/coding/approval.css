@@ -213,3 +213,29 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* 输入框工具栏：加号右边显示权限，模型留在发送按钮左侧。 */
+.composer-tools .permission-menu {
+  flex-shrink: 0;
+}
+.composer-tools .permission-chip {
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-size-control);
+  gap: 5px;
+}
+.composer-tools .permission-chip:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.composer-send-actions .model-picker {
+  max-width: 42vw;
+}
+.composer-send-actions .model-label {
+  max-width: 42vw;
+  overflow: hidden;
+  white-space: nowrap;
+}

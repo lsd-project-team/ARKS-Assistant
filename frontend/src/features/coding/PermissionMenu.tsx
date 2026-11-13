@@ -43,6 +43,16 @@ const OPTIONS: {
 ];
 
 const SETTINGS_KEY = 'coding-settings';
+const MENU_HEIGHT = 190;
+
+function placeAt(rect: DOMRect) {
+  const right = Math.max(12, window.innerWidth - rect.right);
+  if (rect.bottom + MENU_HEIGHT + 12 > window.innerHeight) {
+    // 输入框贴近窗口底部时向上展开，避免菜单被裁掉。
+    return { bottom: Math.max(12, window.innerHeight - rect.top + 6), right };
+  }
+  return { top: rect.bottom + 6, right };
+}
 
 export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   const projectId = useWorkspace((state) => state.projectId);
@@ -51,9 +61,13 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
   const chip = useRef<HTMLButtonElement>(null);
   const popover = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState<{ top: number; right: number } | null>(null);
-  // 独立对话没有项目工作区，不显示权限入口。
-  const active = Boolean(projectId) && projectId !== 'independent';
+  const [position, setPosition] = useState<{
+    top?: number;
+    bottom?: number;
+    right: number;
+  } | null>(null);
+  // 独立对话也使用基础工作区，权限请求照常走 /coding/permission。
+  const active = Boolean(projectId);
   const settings = useQuery({
     queryKey: [SETTINGS_KEY, projectId],
     queryFn: () => api<CodingSettings>('/coding/settings'),
@@ -86,7 +100,8 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
     if (!open) return;
     const place = () => {
       const rect = chip.current?.getBoundingClientRect();
-      if (rect) setPosition({ top: rect.bottom + 6, right: Math.max(12, window.innerWidth - rect.right) });
+      if (!rect) return;
+      setPosition(placeAt(rect));
     };
     place();
     window.addEventListener('resize', place);
@@ -100,9 +115,7 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
       return;
     }
     const rect = chip.current?.getBoundingClientRect();
-    if (rect) {
-      setPosition({ top: rect.bottom + 6, right: Math.max(12, window.innerWidth - rect.right) });
-    }
+    if (rect) setPosition(placeAt(rect));
     setOpen(true);
   }
 
@@ -201,7 +214,13 @@ export function PermissionMenu({ inline = false }: { inline?: boolean }) {
             ref={popover}
             className="permission-popover"
             role="menu"
-            style={{ position: 'fixed', top: position.top, right: position.right }}
+            style={{
+              position: 'fixed',
+              right: position.right,
+              ...(position.top !== undefined
+                ? { top: position.top, bottom: 'auto' }
+                : { top: 'auto', bottom: position.bottom }),
+            }}
           >
             {OPTIONS.map((item) => {
               const Icon = item.icon;

@@ -24,6 +24,7 @@ class SettingsWrite(BaseModel):
 class PermissionWrite(BaseModel):
     model_config = ConfigDict(extra="forbid")
     permission: str = Field(pattern="^(read-only|workspace-write|full-access)$")
+    enabled: bool | None = None
 
 
 class FileWrite(BaseModel):
@@ -96,7 +97,9 @@ def create_router(services):
     @router.put("/api/coding/permission")
     async def set_permission(body: PermissionWrite):
         # 项目归属已在分发层校验：能到达这里的只会是项目所有者或管理员。
-        return await asyncio.to_thread(coding.save_settings, {"permission": body.permission})
+        return await asyncio.to_thread(
+            coding.save_settings, body.model_dump(exclude_none=True)
+        )
 
     @router.get("/api/coding/tree")
     async def tree(
