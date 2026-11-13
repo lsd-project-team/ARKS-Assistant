@@ -105,7 +105,7 @@ coding 模块
 5. `AcceptanceGate` 在最终回答前检查：计划完成、`verify build` 通过、`verify test` 通过、`check_ui` 通过；缺失项会要求继续（最多 3 次），仍不满足则带缺口收尾并记录 `acceptance` 事件；
 6. 新事件：`plan`、`verify`、`ui_check`、`acceptance`，只增字段，旧数据兼容。
 
-模板位置：`backend/app/modules/coding/templates/winforms/`（`App.csproj`、`Program.cs`、`ScreenshotTool.cs`、`UiParts.cs`、`MainForm.cs`、`README.md`）。模板只提供布局与截图基础设施，协议与业务逻辑由模型实现。
+模板位置：`backend/app/modules/coding/templates/winforms/`（`App.csproj`、`Program.cs`、`ScreenshotTool.cs`、`UiParts.cs`、`MainForm.cs`、`Actions.cs`、`README.md`）。模板提供完整的两页签布局、5 个参数控件、日志区与截图基础设施；协议与按钮动作写在 `Actions.cs` 或新文件，通过 `Channel/Mode/Pressure/Time/Vacuum` 等内部字段读写参数、`WriteLog/SetStatus` 更新界面，避免重写布局导致页签重复或控件丢失。`check_ui` 同时校验页签数量必须为 2。
 
 ## 7. 命令执行
 

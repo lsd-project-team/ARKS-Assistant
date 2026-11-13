@@ -36,7 +36,21 @@ def test_scaffold_creates_skeleton_with_replacements(tmp_path):
     assert "namespace Sp900App;" in main
     project = (root / "App.csproj").read_text(encoding="utf-8")
     assert "<Compile Include=\"MainForm.cs\" />" in project
+    assert "<Compile Include=\"Actions.cs\" />" in project
     assert "EnableDefaultCompileItems" in project
+
+
+def test_scaffold_protects_layout_files(tmp_path):
+    work, root = make_workspace(tmp_path)
+    result = work.scaffold()
+    assert "MainForm.cs" in result["protected"]
+    with pytest.raises(ValueError, match="受保护"):
+        work.write_file("MainForm.cs", "// rewrite")
+    with pytest.raises(ValueError, match="受保护"):
+        work.edit_file("UiParts.cs", [{"old": "x", "new": "y"}], "hash")
+    # Actions.cs 是业务入口，允许写；新文件也允许。
+    work.write_file("Sp900Protocol.cs", "// 实现协议调用")
+    assert (root / "Sp900Protocol.cs").is_file()
 
 
 def test_scaffold_refuses_existing_source(tmp_path):

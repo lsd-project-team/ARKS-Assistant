@@ -28,8 +28,9 @@ PROMPT = """按项目根目录的《任务书.md》从零实现完整的 SP900 �
    不要额外增加依赖编码页/系统区域设置（如 GBK 936）或其他设备未要求的测试；
    自己新增的测试若反复失败，先删除或修正，不要卡在同一个失败用例上。
 3. 界面：生成模式会自动准备 WinForms 骨架（App.csproj/Program.cs/MainForm.cs/UiParts.cs/ScreenshotTool.cs/Actions.cs），
-   不要在 MainForm.cs 里重写布局；协议与按钮动作写到 Actions.cs 或新文件，通过 Channel/Mode/Pressure/Time/Vacuum
-   等内部字段读写参数，用 WriteLog/SetStatus 更新界面。骨架已有两页签与日志区，保持页签数量为 2，不要重复 TabPage；
+   MainForm.cs/UiParts.cs/Program.cs/ScreenshotTool.cs 受保护，写入会被拒绝；协议与按钮动作写到 Actions.cs 或新文件，
+   通过 Channel/Mode/Pressure/Time/Vacuum 等内部字段读写参数，用 WriteLog/SetStatus 更新界面。
+   骨架已有两页签与日志区，保持页签数量为 2，不要重复 TabPage；
    保留 `--screenshot <png路径> <标签页索引>` 契约与全层级 bounds 打印。
 4. 完成前必须 verify build（0 错误 0 警告）、verify test（回放自测）与 check_ui 通过，并用 view_image 看截图核对；不要留 TODO、占位或未实现。
 5. 最终回答按任务书第九节逐项列出证据（构建、自测数量、截图路径），未满足项明确说明。

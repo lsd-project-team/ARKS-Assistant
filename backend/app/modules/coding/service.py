@@ -456,12 +456,52 @@ class CodingWorkspace:
                     text = text.replace(key, str(value))
                 destination.write_text(text, encoding="utf-8", newline="\n")
                 written.append(files.relative(self.root, destination))
+            protected = [
+                files.relative(self.root, target / name)
+                for name in (
+                    "MainForm.cs",
+                    "UiParts.cs",
+                    "Program.cs",
+                    "ScreenshotTool.cs",
+                )
+                if (target / name).is_file()
+            ]
+            if protected:
+                path = self.data / "coding" / "protected" / f"{self.project_id}.json"
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(protected, ensure_ascii=False), encoding="utf-8")
             return {
                 "ok": True,
                 "template": template,
                 "path": files.relative(self.root, target),
                 "files": sorted(written),
+                "protected": protected,
             }
+
+    def _protected_files(self):
+        path = self.data / "coding" / "protected" / f"{self.project_id}.json"
+        if not path.is_file():
+            return set()
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            return set()
+        return set(value) if isinstance(value, list) else set()
+
+    def _require_editable(self, path):
+        protected = self._protected_files()
+        if not protected:
+            return
+        try:
+            relative = files.relative(self.root, files.resolve(self.root, path))
+        except (ValueError, OSError):
+            return
+        if relative in protected:
+            raise ValueError(
+                "骨架 UI 文件受保护，不能重写布局；"
+                "请把协议与按钮交互写到 Actions.cs 或新文件，"
+                "用 Channel/Mode/Pressure/Time/Vacuum 等字段读写参数"
+            )
 
     def search_files(self, query, path=".", glob=""):
         return files.search_text(self.root, query, path, glob)
@@ -472,6 +512,7 @@ class CodingWorkspace:
     def write_file(self, path, content, expected_hash=""):
         with self._locked():
             self._require_writable()
+            self._require_editable(path)
             self.snapshots.ensure()
             result = files.write_text(self.root, path, content, expected_hash)
             self._touch()
@@ -480,6 +521,7 @@ class CodingWorkspace:
     def edit_file(self, path, edits, expected_hash=""):
         with self._locked():
             self._require_writable()
+            self._require_editable(path)
             self.snapshots.ensure()
             result = files.edit_text(self.root, path, edits, expected_hash)
             self._touch()
@@ -488,6 +530,7 @@ class CodingWorkspace:
     def write_binary(self, path, content_base64, expected_hash=""):
         with self._locked():
             self._require_writable()
+            self._require_editable(path)
             self.snapshots.ensure()
             result = files.write_binary(self.root, path, content_base64, expected_hash)
             self._touch()
@@ -504,6 +547,7 @@ class CodingWorkspace:
     def move_path(self, path, destination):
         with self._locked():
             self._require_writable()
+            self._require_editable(path)
             self.snapshots.checkpoint("before-move")
             result = files.move(self.root, path, destination)
             self._touch()
@@ -512,6 +556,7 @@ class CodingWorkspace:
     def delete_path(self, path, recursive=False):
         with self._locked():
             self._require_writable()
+            self._require_editable(path)
             self.snapshots.checkpoint("before-delete")
             result = files.delete(self.root, path, recursive)
             self._touch()

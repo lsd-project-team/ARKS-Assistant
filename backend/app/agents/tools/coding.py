@@ -43,7 +43,8 @@ GENERATION_GUIDANCE = """
    自测覆盖需求要求的用例即可，不要额外加编码页/区域设置等设备未要求的测试；
    自己新增的用例反复失败时先删除或修正，不要卡在同一个用例上；
    若目录里已有 App.csproj / Program.cs / MainForm.cs / UiParts.cs / ScreenshotTool.cs
-   （生成模式会自动准备 WinForms 骨架），不要重复 scaffold，也不要在 MainForm.cs 里重写布局；
+   （生成模式会自动准备 WinForms 骨架），不要重复 scaffold；
+   MainForm.cs / UiParts.cs / Program.cs / ScreenshotTool.cs 受保护，写入会被拒绝；
    协议与按钮动作写到 Actions.cs 或新文件，用 Channel/Mode/Pressure/Time/Vacuum 等内部字段读写参数，
    用 WriteLog/SetStatus 更新界面。骨架已有“参数设置/设备功能”两页与日志区，
    必须保持页签数量为 2，不要新增或重复 TabPage；否则先 scaffold_winforms。每完成一步更新计划状态。

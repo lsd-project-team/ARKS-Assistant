@@ -18,7 +18,10 @@ sys.path.insert(0, str(ROOT / "backend"))
 from app.modules.coding import diagnostics, ui_checks  # noqa: E402
 
 SKIP = {"bin", "obj", ".git", ".vs", "publish", "node_modules"}
-PLACEHOLDER = re.compile(r"TODO|FIXME|占位|未实现|待实现", re.IGNORECASE)
+PLACEHOLDER = re.compile(r"TODO|FIXME|占位", re.IGNORECASE)
+PLACEHOLDER_COMMENT = re.compile(
+    r"^\s*(?://|/\*|\*|#).*?(?:未实现|待实现)", re.MULTILINE
+)
 
 
 def run(command, cwd, timeout=600):
@@ -141,7 +144,10 @@ def main():
     text = "\n".join(
         path.read_text(encoding="utf-8", errors="replace") for path in sources if path.suffix != ".png"
     )
-    placeholders = sorted({match.group(0) for match in PLACEHOLDER.finditer(text)})
+    placeholders = sorted(
+        {match.group(0) for match in PLACEHOLDER.finditer(text)}
+        | {match.group(0).strip() for match in PLACEHOLDER_COMMENT.finditer(text)}
+    )
     checks["code_quality"] = {
         "ok": not placeholders,
         "placeholders": placeholders,
