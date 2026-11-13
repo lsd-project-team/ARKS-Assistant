@@ -19,6 +19,7 @@
 - 编码后端：`tests/unit/coding`、`tests/integration/coding` 共 27 项通过。
 - 关键聊天集成：`test_api.py`、`test_autonomous_answer.py`、`test_context_and_regeneration.py`、`test_run_trace.py` 共 15 项通过。
 - 项目与提示词：`tests/integration/projects`、`test_prompt_composition.py` 共 41 项通过。
+- 全量后端：1212 项通过、2 项跳过、13 项失败；失败全部是本机 `NO_PROXY` 含 `[::1]` 导致的代理地址解析错误，与本次改动无关，日志见 `output/full-backend-final-20261113.log`。
 - 前端：`npx tsc -b` 通过，`npm test` 419 项通过，`npm run build` 通过。
 - 新增回归覆盖：审批等待后继续执行、拒绝状态、命令输出事件、GB18030/CRLF 编辑保持、替换冲突、二进制写入、搜索多命中与文件名查找、项目外命令拒绝、命令前快照、只读保护、无 git 降级、构建命令识别。
 
