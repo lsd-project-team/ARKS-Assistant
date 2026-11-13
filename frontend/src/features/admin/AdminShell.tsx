@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useState, useSyncExternalStore } from 'react
 import { useQuery } from '@tanstack/react-query';
 import {
   BarChart3,
-  CheckCheck,
   ClipboardList,
   Database,
   Menu,
@@ -45,7 +44,6 @@ const navigation = [
   { id: 'questions', title: 'AI 问答记录', href: '#admin/questions', icon: MessageSquareText },
   { id: 'handover', title: '交接管理', href: '#handover/materials', icon: ClipboardList },
   { id: 'action-timing', title: '动作耗时统计', href: '#action-timing', icon: Timer },
-  { id: 'reviews', title: '复核与追溯', href: '#handover/updates', icon: CheckCheck },
   { id: 'settings', title: '系统配置', href: '#admin/settings', icon: Settings2 },
   { id: 'data', title: '数据维护', href: '#admin/data', icon: Database },
 ];

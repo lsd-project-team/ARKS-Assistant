@@ -13,84 +13,84 @@ export const archifyData: ArchifyData = {
           id: 'entry',
           label: '程序入口',
           detail:
-            'Mutex 单实例；磁盘不足返回；迁移提示、日志与后台辅助线程；按配置检查授权，失败返回。范围仅主入口外层。',
+            '程序启动时先保证同一时间只运行一个实例，磁盘空间不足就直接退出；随后处理版本迁移提示、启动日志和后台辅助线程，并按配置检查授权，授权不通过则退出。本节点只覆盖程序主入口的外层流程，不涉及后续生产动作。',
           signals: [],
         },
         {
           id: 'init',
           label: '非离线初始化',
           detail:
-            '仅非离线进入 PR/硬件初始化块；含轴卡与轴设置。catch 记录并弹窗，未直接退出；后续另有 Harmony/视觉事件设置。',
+            '只有非离线模式才会进入 PR 与硬件初始化，包括轴卡和轴参数设置。初始化出错时会记录并弹窗，但不会直接退出；之后还会进行 Harmony 与视觉事件的相关设置。',
           signals: [],
         },
         {
           id: 'home',
           label: '可选开机回零',
           detail:
-            '按 IsAxisResetBeforeWork 调用 AllAxisGoHome；人员取消、回零 false 或捕获异常返回 false。只有成功末段开补偿并置 AllAxisReset；Main 未检查该返回值。',
+            '是否在开机后回零由配置决定；回零过程中人员取消、回零未成功或出现异常，都按未回零处理。只有回零成功才会在末尾开启补偿并记录已回零，主流程并不检查这一结果。',
           signals: [],
         },
         {
           id: 'form',
           label: '主窗体加载',
           detail:
-            'Load 事件：非离线且未回零则禁用主区域并立即返回；只有通过且中途无异常才加载数据、初始化界面参数、连接仪器、选灯并启动后台。',
+            '主窗体加载时，如果处于离线或尚未回零，就禁用主操作区并立即结束加载。只有通过该放行且中途没有异常，才会加载数据、初始化界面参数、连接仪器、选择灯具并启动后台监控。',
           signals: [],
         },
         {
           id: 'operator',
           label: '点击生产启动',
           detail:
-            'ItemClick 事件按配置确认配方；Cancel 返回。关闭手动面板、退出单步后调用 Start；catch 调用 Stop，finally 恢复控件。',
+            '操作员点击生产启动后，按配置确认配方，取消则退出本次操作。确认后关闭手动面板、退出单步模式并执行启动；启动过程出错会执行停止，并在结束时恢复相关控件。',
           signals: [],
         },
         {
           id: 'checks',
           label: '启动检查通过？',
           detail:
-            'Prepare 先清理文件并复位信号，再检查回零、任务状态、初始化、门与 Working；请求安全位后依次调用各域、产品、焊点和制程检查。false 不代表无副作用；子检查内部不纳入本节点验收。',
+            '启动检查先清理文件并复位信号，再确认回零、任务状态、初始化、安全门与工作状态，随后请求安全位置，依次执行各域、产品、焊点和制程检查。检查不通过并不代表前面没有动作；各子检查内部的边界不在本节点验收范围内。',
           signals: [],
         },
         {
           id: 'working',
-          label: '置 Working',
+          label: '进入工作状态',
           detail:
-            '仅 Prepare 返回 true 后 SetState(Working)；是状态赋值与记录，不是所有任务启动成功的确认。',
+            '只有启动检查通过，系统才切换到工作状态。这里只表示状态已切换并留下记录，不代表各个生产任务都已经成功启动。',
           signals: [],
         },
         {
           id: 'dispatch',
           label: '启动并发任务',
           detail:
-            '按源码顺序发起输送→供晶→可选 S1→动作初始化→固晶→可选胶盘→可选翻转→两类真空检查；补偿模式跳过部分任务。调用顺序不等于并发任务完成顺序。',
+            '通过检查后，按既定顺序发起输送、供晶、可选的 S1、动作初始化、固晶、可选胶盘、可选翻转以及两类真空检查；补偿模式下会跳过部分任务。发起顺序不等于各任务的完成顺序。',
           signals: [],
         },
         {
           id: 'reject',
           label: '取消或检查失败返回',
           detail:
-            '配方确认 Cancel 在按钮内返回，或 Prepare false 使 Start 返回；前者不调用 Start，后者可能已发生清理、信号复位及移动请求。',
+            '配方确认时取消，会停留在按钮流程内不再启动；启动检查不通过，则启动动作返回。前者没有触发启动，后者此前可能已经发生过清理、信号复位和移动请求。',
           signals: [],
         },
         {
           id: 'monitor',
           label: '后台监控与存储',
           detail:
-            '仅主窗体加载通过门控后调用；线程不存在或不存活时新建后台线程。ThreadFlag 为真时依次调用门、激光、登出、温度、耗材、扫描与存储入口，再 Sleep(100)，不是固定 100ms 周期。',
+            '后台监控只在主窗体加载通过放行后才启动；没有后台线程或线程已不在运行时重新创建。后台运行开关打开时，依次执行安全门、激光、登出、温度、耗材、扫描与存储检查，每轮结束后休眠约 100 毫秒，并不是固定 100 毫秒周期。',
           signals: [],
         },
         {
           id: 'stop',
-          label: 'Stop 软件停止',
+          label: '软件停止',
           detail:
-            '普通 Stop 改状态、清窗报警、清单步与需晶、按 Online 条件关要料、关顶针吹气真空并清缺陷计数；无统一任务退出等待。详见停机复核。',
+            '普通停止会切换状态、清除窗体报警、清除单步和需晶标记，仅在联机配置下关闭要料，并关闭顶针吹气与真空、清零缺陷计数。停止没有统一等待各任务退出的环节，具体边界见停机复核。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'restart',
           label: '再次点击启动',
           detail:
-            '表示操作员再次触发同一个启动按钮事件，不是 Stop 自动调用 Start，也不是 Continue；仍需重新通过启动检查。',
+            '这里指操作员再次点击同一个启动按钮，不是停止动作自动触发启动，也不是继续。再次启动仍要重新通过全部启动检查。',
           signals: ['IsBondNeedChipSignal'],
         },
       ],
@@ -133,7 +133,7 @@ export const archifyData: ArchifyData = {
           id: 'operator-checks',
           from: 'operator',
           to: 'checks',
-          label: '确认通过调用 Start',
+          label: '确认通过后启动',
           role: 'main',
           variant: 'default',
         },
@@ -183,24 +183,24 @@ export const archifyData: ArchifyData = {
           dot: 'cyan',
           title: '控制顺序与调用边界',
           items: [
-            'Main 创建窗口，Load 由事件触发；生产启动来自按钮 ItemClick。',
-            '初始化与开机回零均有配置条件；无条件箭头不代表底层成功。',
+            '主程序创建主窗体，加载由窗体事件触发；生产启动来自操作员点击按钮。',
+            '初始化和开机回零都受配置条件控制；连线没有条件标记，也不代表底层动作一定成功。',
           ],
         },
         {
           dot: 'amber',
           title: '就绪检查有副作用',
           items: [
-            '清理文件与信号复位发生在检查前；还会请求安全位置。',
-            'Prepare false 只使 Start 返回，不能推断之前没有动作。',
+            '清理文件和复位信号发生在各项检查之前，期间还会请求安全位置。',
+            '启动检查不通过只会让启动动作退出，不能据此推断此前没有发生任何动作。',
           ],
         },
         {
           dot: 'amber',
           title: '完成与未完成范围',
           items: [
-            '本章复核外层控制流，非驱动、所有自检或设备运行验收。',
-            '100ms 是每轮调用之后休眠；Stop 返回不代表任务均退出。',
+            '本章只复核外层控制流程，不包含驱动、全部自检或设备运行验收。',
+            '每轮后台检查结束后休眠约 100 毫秒；停止动作返回也不代表所有任务都已退出。',
           ],
         },
       ],
@@ -214,7 +214,7 @@ export const archifyData: ArchifyData = {
           id: 'start',
           label: '输送启动与映射',
           detail:
-            '未配置输送返回；Init 后 DryCycle 转模拟入口。普通路径先检查，失败 Stop/return；按配置复位要料/反向刷新，再 MapMaterial。仅 LoadConfiguration==LoaderBin 在这里同时启动两个料仓任务；随后 TransportTask.Start。',
+            '未配置输送功能时直接退出；完成初始化后，空跑模式转入模拟入口。普通路径先做检查，检查失败则停止并退出；随后按配置复位要料或反向刷新，再进行物料映射。只有上料配置为料仓模式时，才在这里同时启动两个料仓任务，之后启动输送任务。',
           signals: [
             'AllowDispenseTransferToBondSignal',
             'AllowBondTransferToWaitingUnloadSignal',
@@ -226,7 +226,7 @@ export const archifyData: ArchifyData = {
           id: 'mode',
           label: '上料配置？',
           detail:
-            '按同一个 LoadConfiguration 选择：None 只处理 S1 已有料确认；非 LoaderBin 建皮带任务；LoaderBin 建推料任务。在线模式额外建立前端进料任务；各段任务并发，不是一次串行调用。',
+            '这里依据同一份上料配置分流：不启用时只确认 S1 已有料；非料仓模式建立皮带任务；料仓模式建立推料任务。联机模式下还会额外建立前端进料任务，各段任务并发运行，不是一次串行调用。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -242,7 +242,7 @@ export const archifyData: ArchifyData = {
           id: 'belt',
           label: '皮带或在线进料',
           detail:
-            'Online/OnlineWithAutoLoader 先有独立进料任务：PrepareFeeding 门控，等前端到料；超 5000ms 可重试、终止或不再上料。后续皮带任务调用 TransferLoadBeltToDispense；软件 Success 发 S1 来料，已有料也可直接发。',
+            '联机或联机自动上料时，先有独立的进料任务：进料准备通过后等待前端到料，超过 5 秒可选择重试、中止或不再上料。随后皮带任务执行送料，软件判定成功后发出 S1 来料信号，已有料时也可直接发出。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -258,7 +258,7 @@ export const archifyData: ArchifyData = {
           id: 'bin',
           label: '料仓定位与传送',
           detail:
-            'LoaderTask 先 MoveToCurrentPlaceLayer、发允许推料；传输任务 Wait LoaderAllowPush 后调用料仓传输，按结果发布来料、复位推料许可、发 AllowLoaderMove；定位任务再 MoveToNextPlaceLayer。未列出的结果与 Ignore 不能解释为物理确认。',
+            '料仓任务先把料仓移动到当前层并发出允许推料信号；传送任务等到推料允许后执行料仓传送，并按结果发布来料、复位推料许可、发出允许料仓移动信号；定位任务再移动到下一层。没有列出的结果和忽略处理，都不能当作物理位置已确认。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -274,7 +274,7 @@ export const archifyData: ArchifyData = {
           id: 's1',
           label: 'S1 来料与加工',
           detail:
-            '非离线 GetInputSignal 轮询来料 State 并直接赋 ReSet；按 Enable 和动作结果推进，正常结束且未停止才放行。未配置 S1 的皮带旁路在结果 switch 后发放行，并非仅 Success；料仓分支没有对应语句。',
+            '非离线时轮询读取来料状态并直接复位；之后按启用状态和动作结果推进，只有正常结束且没有停止才放行。未配置 S1 的皮带旁路在结果分类之后放行，并非只有成功才放行；料仓分支没有对应处理。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -290,7 +290,7 @@ export const archifyData: ArchifyData = {
           id: 's2',
           label: '放行并传入 S2',
           detail:
-            'S1 有料且 S2 无料才继续，自动模式 Wait S1 放行；成功路径迁移载具、清 S1 并 Save，任务收到 Success 才发 S2 来料。局部 Ignore 也可到 Success；该任务未单列控制器返回 Exception。',
+            '只有 S1 有料且 S2 无料才继续，自动模式下等待 S1 放行；成功路径会迁移载具、清除 S1 并保存，任务收到成功后才发出 S2 来料。局部忽略处理也可能进入成功，该任务没有单独列出控制器异常的返回。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -306,7 +306,7 @@ export const archifyData: ArchifyData = {
           id: 'wait',
           label: '传入等待下料区',
           detail:
-            'Bond SendAway 在已配置输送且未停止时放行；Bond 有料且等待区空，控制器自动 Wait 放行。传输后迁移载具、清 Bond 并 Save；两处 Retry 回不同标签，Ignore 可推进状态；该任务对 Exception 调 Stop。',
+            '固晶侧在已配置输送且未停止时放行；固晶有料且等待区为空时，控制器自动等待放行。传输完成后迁移载具、清除固晶位并保存；两处重试会回到不同位置，忽略处理仍可推进状态；该任务遇到异常会调用停止。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -323,28 +323,28 @@ export const archifyData: ArchifyData = {
           id: 'out',
           label: '按配置选下料',
           detail:
-            '这里仍按 LoadConfiguration 选下料：None 返回；非 LoaderBin 建等待区到出口皮带任务，LoaderBin 建入仓任务。占用/传感器门控因配置不同而异，不可概括成全模式统一互锁。',
+            '下料仍按上料配置选择：不启用时直接退出；非料仓模式建立等待区到出口皮带的传送任务；料仓模式建立入仓任务。占用和传感器门控随配置不同，不能概括为所有模式统一的互锁。',
           signals: ['AllowUnloaderMoveSignal', 'UnloaderAllowPushSignal'],
         },
         {
           id: 'online',
           label: '联机出口交接',
           detail:
-            '仅 Online/OnlineWithAutoUnloader 另启出口交接；等下游要料与出口感应出现/消失，Retry 不重新检查下游要料，Ignore 仍可清对象并 Save。普通 Belt 无此独立下游任务；出口任务未单列 Exception。',
+            '只有联机或联机自动下料才另外启动出口交接任务，等待下游要料与出口感应出现或消失。重试不会重新检查下游要料，忽略处理仍可清除对象并保存。普通皮带模式没有这个独立的下游任务；出口任务没有单独列出异常处理。',
           signals: ['AllowUnloaderMoveSignal', 'UnloaderAllowPushSignal'],
         },
         {
           id: 'unloader',
           label: '下料仓交接',
           detail:
-            'Wait UnloaderAllowPush 后传入料仓；控制器清等待区、更新状态、AddCurPlaceLayer 再 Save。任务复位推料许可并发 AllowUnloaderMove；料仓任务再次 MoveToCurrentPlaceLayer。移动/推杆/Save 内部未全部验收。',
+            '等到允许推料后传入料仓；控制器清除等待区、更新状态、累计当前层号并保存。任务随后复位推料许可并发出允许下料移动信号，料仓任务再移动到当前层。移动、推杆和保存内部并未全部验收。',
           signals: ['AllowUnloaderMoveSignal', 'UnloaderAllowPushSignal'],
         },
         {
           id: 'alarm',
           label: '局部报警处理',
           detail:
-            '代表性进料报警：5000ms 超时可 Retry、Abort 或 Ignore；Ignore 实为关闭 ContinuousFeeding 并 NoStart。其他卡料 Ignore 可能继续软件迁移；局部 Retry 标签和 Exception 处理不同，详见复核文档。',
+            '以进料报警为例：等待超过 5 秒可选择重试、中止或忽略；忽略实际上是关闭连续供料并保持未启动。其他卡料场景的忽略处理可能继续软件迁移；各处重试的返回位置和异常处理并不相同，详见复核文档。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -372,7 +372,7 @@ export const archifyData: ArchifyData = {
           id: 'mode-belt',
           from: 'mode',
           to: 'belt',
-          label: '非 None / 料仓',
+          label: '非空配置 / 料仓',
           role: 'main',
           variant: 'default',
         },
@@ -436,7 +436,7 @@ export const archifyData: ArchifyData = {
           id: 'out-unloader',
           from: 'out',
           to: 'unloader',
-          label: 'LoaderBin',
+          label: '料仓配置',
           role: 'branch',
           variant: 'default',
         },
@@ -452,7 +452,7 @@ export const archifyData: ArchifyData = {
           id: 'alarm-belt',
           from: 'alarm',
           to: 'belt',
-          label: '该处选择 Retry',
+          label: '该处选择重试',
           role: 'return',
           variant: 'dashed',
         },
@@ -462,18 +462,18 @@ export const archifyData: ArchifyData = {
           dot: 'cyan',
           title: '并发与配置边界',
           items: [
-            '图线是物料/信号主链，不是一个串行任务。',
-            '上下料选择共用 LoadConfiguration；Belt 不等于联机收板。',
-            'None、DryCycle 和已有物料复用按源码分支处理。',
+            '图上的连线表示物料与信号的主链路，不是一次串行任务。',
+            '上下料方式共用同一份配置；皮带模式不等于联机收板。',
+            '不启用、空跑和复用已有物料，分别有各自的处理分支。',
           ],
         },
         {
           dot: 'amber',
           title: '软件成功不等于机械确认',
           items: [
-            'Ignore 可能仍迁移状态、清对象或递增层号。',
-            '各处 Retry 位置与 Exception 处理不同，不能合并成统一恢复。',
-            '本图末端是局部交接，任务通常继续等待下一片。',
+            '选择忽略后，仍可能迁移状态、清除对象或递增层号。',
+            '各处重试的返回位置和异常处理不同，不能合并成统一的恢复方式。',
+            '本图终点只是局部交接，任务通常继续等待下一片物料。',
           ],
         },
       ],
@@ -487,42 +487,42 @@ export const archifyData: ArchifyData = {
           id: 'sort',
           label: '生成配方动作',
           detail:
-            'Init 清空消息，以启用的 ProcessSteps 和两类排序配置生成；Divide 按 last→Interactive→first 重组，再按异形配置剔除。注册集合与消息顺序不同，八种策略见复核表。',
+            '启动初始化时先清空消息，再按启用的工序步骤和两类排序配置生成动作序列；分组时按末道、人工交互、首道的顺序重排，然后按异形配置剔除。动作的注册顺序与消息顺序不同，八种策略见复核表。',
           signals: [],
         },
         {
           id: 'wait',
           label: '等来料并预点胶',
           detail:
-            '非离线才轮询来料：Sleep10，暂停先跳过，再调用预点胶。非 Success 或 Stop 返回 false，调用者安全位后退出且无显式 Stop。Set 直接赋 State=ReSet；未知状态抛异常。离线绕过此等待。',
+            '只有非离线才轮询来料：每次休眠约 10 毫秒，暂停期间先跳过，再执行预点胶。预点胶未成功或已停止时按未通过返回，调用方请求安全位置后退出，没有显式停止；收到来料置位时直接复位状态，遇到未知状态则抛出异常。离线模式跳过这段等待。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'inject',
           label: '注入焊点步骤',
           detail:
-            'Enable=true 才检查 IsProduct、必要时重建载具并 InjectSteps；只对匹配焊点名且缺失的步骤键加入 false，已有值保留。Enable=false 绕过动作进入普通收尾。',
+            '只有启用时才检查产品信息，必要时重建载具并注入步骤；只对焊点名匹配且缺失的步骤项补入未完成状态，已有值保持不变。未启用则跳过这段动作，直接进入普通收尾。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'next',
           label: '查未完成动作',
           detail:
-            '按顺序找首条未 Finished 消息，以名称在注册 ActionNodes 中 Find。消息耗尽或名称未匹配均可能返回 null，外层均 break；不能把空结果等同产品所有工艺完成。',
+            '按顺序找到第一条未完成的动作消息，再用名称在已注册动作中查找。消息取尽或名称没有匹配都可能得到空结果，外层都会结束本轮；不能把空结果理解为产品所有工艺都已完成。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'gate',
           label: '需要执行？',
           detail:
-            '执行 IsDoWork：各动作检查配置、物料状态、已定位/已测高/已识别或剩余步骤，具体条件不相同。false 直接标消息完成；门控异常不在动作 DoWork 的 catch 内。',
+            '执行前先判断当前动作是否需要做：各动作检查配置、物料状态、是否已定位、是否已测高、是否已识别或剩余步骤，具体条件并不相同。不需要执行时直接标记消息完成；判断过程中出现异常，不在动作执行的容错范围内。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'work',
           label: '执行当前动作',
           detail:
-            '非四类测高且非离线时先收回测高气缸，再 DoWork。定位 bool、分段 Wait 结果被忽略；身份识别离线真正返回，定位/测高/点胶离线不都立即返回。Success 可是跳过或物料禁用。详细动作表及下层边界见复核文档。',
+            '除四类测高动作外，非离线时会先收回测高气缸，再执行动作。定位结果和分段等待结果被忽略；识别动作在离线时会真正返回，而定位、测高和点胶在离线时并不都立即返回。成功也可能是跳过或物料禁用造成的。详细动作表与下层边界见复核文档。',
           signals: [
             'AllowDispense1TransferToDispense2Signal',
             'AllowDispenseTransferToBondSignal',
@@ -534,28 +534,28 @@ export const archifyData: ArchifyData = {
           id: 'result',
           label: '返回结果？',
           detail:
-            '仅处理正常返回的 ExcuteResult：Retry continue 重新取首条未完成消息；其他非 Success 走安全位与 Stop 后返回；Success 标当前消息完成。DoWork 外层没有统一 catch，未捕获异常不保证 Stop。',
+            '这里只处理正常返回的动作结果：重试会继续回到未完成动作的选取；其他非成功结果先请求安全位置、再停止并退出；成功则标记当前消息完成。动作执行外层没有统一容错，未捕获的异常不保证会执行停止。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'finish',
           label: '标当前消息完成',
           detail:
-            'IsDoWork=false 或返回 Success 调 FinishCurrentActionNode，将当前消息 Finished=true；下一轮仍受 Signal.WaitStart 控制。检测重做可先重置较早消息，物料状态与消息状态不是同一层。',
+            '动作不需要执行或返回成功时，把当前消息标记为已完成；下一轮仍受等待启动或停止指令控制。检测重做可以重置较早的消息，物料状态和消息状态不在同一层。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'stop',
           label: '安全位并 Stop',
           detail:
-            '动作返回非 Success 且非 Retry，依次请求安全位、调用 Machine.Stop、记录并 return。等料失败只有安全位后 return；抛异常与返回值失败不同，不保证执行此清理链。',
+            '动作返回非成功且不是重试时，依次请求安全位置、调用设备停止、记录并退出。等料失败只有安全位置请求后就退出；抛出异常与返回失败不同，不保证走这条清理流程。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
         {
           id: 'release',
           label: '条件放行与重置',
           detail:
-            '退出内循环或 Enable=false 后请求安全位；仅 IsStop=false 发 AllowDispenseTransferToBondSignal。Finish 把所有消息 Finished=false 并清当前指针，随后外层循环；不清空产品全部状态，不代表物料已传走。',
+            '退出内层循环或未启用动作后，先请求安全位置；只有未停止时才发出允许点胶传送信号。收尾会把所有消息重置为未完成并清空当前指针，然后进入外层循环；这不会清空产品的全部状态，也不代表物料已经传走。',
           signals: ['AllowDispenseTransferToBondSignal', 'TransferToDispense1FinishedSignal'],
         },
       ],
@@ -648,7 +648,7 @@ export const archifyData: ArchifyData = {
           id: 'result-next',
           from: 'result',
           to: 'next',
-          label: 'Retry',
+          label: '重试',
           role: 'return',
           variant: 'dashed',
         },
@@ -666,18 +666,18 @@ export const archifyData: ArchifyData = {
           dot: 'cyan',
           title: '选择与重做',
           items: [
-            '按配置排序；点胶 / 检测映射为 if / else if。',
-            '空结果也可能是动作名未匹配；Retry 重取未完成项。',
-            '检测可重置早期消息；Fail 也可禁用焊点后返回 Success。',
+            '按配置排序；点胶与检测分别映射到不同的处理分支。',
+            '空结果也可能只是动作名没有匹配；重试会重新选取未完成项。',
+            '检测可以重置较早的消息；判定不合格时也可禁用焊点后按成功返回。',
           ],
         },
         {
           dot: 'amber',
           title: '不可省略的边界',
           items: [
-            '等料预点胶失败直接退出；禁用 S1 则绕过动作。',
-            '分段 Wait、定位 bool 未检查；异常不保证 Stop。',
-            '仅未 Stop 才放行；底层动作与现场结果未全部验收。',
+            '等料预点胶失败会直接退出；未启用 S1 时则跳过相关动作。',
+            '分段等待结果和定位结果没有检查；出现异常也不保证执行停止。',
+            '只有未停止才放行；底层动作和现场结果并未全部验收。',
           ],
         },
       ],
@@ -691,65 +691,68 @@ export const archifyData: ArchifyData = {
           id: 'need',
           label: '等待芯片需求',
           detail:
-            'StartInit 后启动长期任务；等待共享需求事件。调用方先写芯片名再 Set；单独 DryCycle 可自发需求。',
+            '启动初始化后会拉起一个长期任务，等待共享的芯片需求事件。调用方先写入芯片名再发出需求；单独的空跑也可以自行产生需求。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'valid',
           label: '校验芯片料片',
-          detail: '未知名称抛异常；空片或名称变化置换片标志。',
+          detail: '芯片名称未知时抛出异常；空片或名称变化时切换换片标志。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'change',
           label: '需换料？',
-          detail: '检查 IsNeedChangeCarrier；为真才调用换片。',
+          detail: '检查是否需要换料，只有需要时才进入换片流程。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'search',
           label: '按模式搜晶',
-          detail: 'Single / Nine / WaferMap / Box。各模式 false 与异常不同，见搜索分支审查。',
+          detail:
+            '按单颗、九宫格、晶圆图或料盒四种模式搜索芯片。各模式在未找到和异常时的处理不同，详见搜索分支审查。',
           signals: [],
         },
         {
           id: 'found',
           label: '搜晶成功？',
-          detail: 'NextDie 的 bool 决定后续；false 仅在特定需换片条件下进入恢复，否则最终抛异常。',
+          detail:
+            '搜索结果决定后续走向；未找到时，只有满足特定换片条件才进入恢复流程，否则最终抛出异常。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'replace',
           label: '换料与初始化',
           detail:
-            'ChangeTabletAuto 的 false 不继续搜索；内部初始化 false 按配置回 Operation 或重开向导，空跑忽略该 bool。外层换片没有直接 Stop 门控。手动窗口先改共享内存再保存/请求运动，取消或失败不作本地回滚；无效名称保留旧 tempTablet。实际控件事件与设备行为未验收。',
+            '自动换料失败时不会继续搜索；内部初始化失败会按配置回到操作页或重新打开向导，空跑时忽略该结果。外层换片没有直接触发停止的门控。手动换片窗口先改共享内存，再保存并请求运动，取消或失败不做本地回滚；名称无效时保留旧的片名。实际控件事件与设备行为尚未验收。',
           signals: [],
         },
         {
           id: 'retry',
           label: '换片或选点',
           detail:
-            '需换片时，Map/DryCycle/非晶圆回检查；普通晶圆人工 OK 回检查，Retry 验范围并复位标志，其他返回抛异常。',
+            '需要换片时，晶圆图、空跑和非晶圆模式回到检查流程；普通晶圆模式由人工确认后回到检查，重试会校验范围并复位标志，其他情况返回异常。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'stop',
           label: '提示后请求停止',
           detail:
-            'Dowork catch 先弹窗再调用 Stop；弹窗异常会跳过 Stop。Stop 内先设置状态并写日志队列，入队阻塞/异常可发生在状态变 Stop 之后、其余清理之前。同样接收换片/搜索/准备异常；不是 FlipTask 的统一兜底，也不证明所有线程或输出安全退出。',
+            '动作出错时先弹窗提示，再请求停止；弹窗本身出错会跳过停止。停止流程先切换状态并写入日志队列，入队阻塞或异常可能发生在状态已切换之后、其余清理之前。换片、搜索和准备阶段的异常都进入这里；它不是翻转任务的统一兜底，也不证明所有线程和输出都已安全退出。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'ready',
           label: '发布晶圆就绪',
           detail:
-            '搜索 true 后更新名称并准备真空；清需求再 Set 晶圆可取。单次搜索随后 Stop；就绪不是已取走。',
+            '搜索成功后更新芯片名称并准备真空，随后清除需求并发出晶圆可取信号。单次搜索结束时随后停止；就绪不等于芯片已被取走。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'route',
           label: '翻转取料？',
-          detail: '逻辑分支跨任务：直取是否等待仍依相机/StaticWaffle；补偿工作不调用此等待包装。',
+          detail:
+            '这一分支跨任务：直取是否等待仍取决于相机与静态晶圆盘条件；补偿工作不调用这个等待包装。',
           signals: [
             'IsBondPickSucceedSignal',
             'IsWaferAllowPickSignal',
@@ -761,7 +764,7 @@ export const archifyData: ArchifyData = {
           id: 'flip',
           label: '翻转并发布',
           detail:
-            '独立 FlipTask 等晶圆；已有料跳过新取料。Success 置有料；Exception/Abort return，NoStart 重等；发布后等 S2 完成。',
+            '独立的翻转任务等待晶圆；已有料时跳过新的取料。成功即置为有料；异常或中止直接退出，未启动则重新等待；发布后等待 S2 完成。',
           signals: [
             'IsBondPickSucceedSignal',
             'IsWaferAllowPickSignal',
@@ -773,7 +776,7 @@ export const archifyData: ArchifyData = {
           id: 'pick',
           label: 'S2 接续',
           detail:
-            '等待成功再继续取晶；Pick 成功清翻转有料。后续 Task.Run 分发直取预取或翻转通知；不代表整个生产完成。',
+            '等待成功后继续取晶；取晶成功会清除翻转位的有料状态。之后分发直取预取或翻转通知；这不代表整个生产流程完成。',
           signals: ['IsWaferAllowPickSignal', 'IsBondNeedChipSignal', 'IsFlipTableAllowPickSignal'],
         },
       ],
@@ -816,7 +819,7 @@ export const archifyData: ArchifyData = {
           id: 'replace-search',
           from: 'replace',
           to: 'search',
-          label: '返回 true',
+          label: '换料成功',
           role: 'main',
           variant: 'default',
         },
@@ -832,7 +835,7 @@ export const archifyData: ArchifyData = {
           id: 'found-ready',
           from: 'found',
           to: 'ready',
-          label: 'true',
+          label: '已找到',
           role: 'main',
           variant: 'default',
         },
@@ -840,7 +843,7 @@ export const archifyData: ArchifyData = {
           id: 'found-retry',
           from: 'found',
           to: 'retry',
-          label: 'false 且需换片',
+          label: '未找到且需换片',
           role: 'branch',
           variant: 'default',
         },
@@ -906,17 +909,17 @@ export const archifyData: ArchifyData = {
           dot: 'cyan',
           title: '跨任务信号交接',
           items: [
-            '晶圆就绪由直取等待者或 FlipTask 消费；不是同步函数调用。',
-            'S2 接续不等于整机完成；连续生产由下一需求再次触发。',
+            '晶圆就绪信号由直取等待方或翻转任务接收，不是同步调用。',
+            'S2 接续不代表整机完成；连续生产由下一次芯片需求再次触发。',
           ],
         },
         {
           dot: 'amber',
           title: '恢复和退出边界',
           items: [
-            '换片 false 按分支重试；空跑忽略初始化结果，Stop 不保证中断。',
-            '异常先提示再 Stop；日志入队阻塞或失败可截断停止清理。',
-            '窗口先改内存后保存；取消或提交失败没有本地回滚。',
+            '换片未成功时按分支重试；空跑忽略初始化结果，停止也不保证中断流程。',
+            '异常先提示再请求停止；日志入队阻塞或失败会截断后续停止清理。',
+            '换片窗口先改内存再保存；取消或提交失败都没有本地回滚。',
           ],
         },
       ],
@@ -930,7 +933,7 @@ export const archifyData: ArchifyData = {
           id: 'wait',
           label: '等待 S2 来料',
           detail:
-            '先回安全位并可提前换嘴。补偿模式直接通过；有流道等入料信号，无流道检查载具并可能人工放料。',
+            '开始前先回安全位置，并可按配置提前更换吸嘴。补偿模式直接通过；有流道时等待入料信号，无流道时检查载具并可能需要人工放料。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -941,7 +944,7 @@ export const archifyData: ArchifyData = {
           id: 'prepare',
           label: '补偿并注入步骤',
           detail:
-            '三项补偿检查 false 直接 return；InjectSteps 只补焊点步骤键。Enable=false 跳过动作循环，仍走收尾。',
+            '三项补偿检查有一项不通过就直接退出；注入步骤只补齐焊点相关的步骤项。未启用动作时跳过动作循环，但仍执行收尾。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -952,14 +955,14 @@ export const archifyData: ArchifyData = {
           id: 'next',
           label: '选未完成消息',
           detail:
-            '查首个 Finished=false；动作名未匹配也可返回 null。连续同名两类校正消息会抛异常。',
+            '查找第一条未完成的动作消息；动作名没有匹配时也可能得到空结果。连续出现同名两类校正消息会抛出异常。',
           signals: [],
         },
         {
           id: 'type',
           label: '当前动作类别',
           detail:
-            '启动 Init 已编排消息；此处只是当前对象的阅读分组，不是循环内重新生成配方。每个动作先检查 IsDoWork。',
+            '启动初始化时已经编排好消息，这里只是对当前动作做阅读分组，不是在循环内重新生成配方。每个动作执行前都会先判断是否需要执行。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -970,7 +973,7 @@ export const archifyData: ArchifyData = {
           id: 'component',
           label: '组件动作序列',
           detail:
-            '编排 Pick、UpLook、SubstrateCamera、Bond；翻转时按 DipMode 插入 DipFlux。实际执行可由动作自身条件跳过，内部另章复核。',
+            '组件动作按取晶、上视、基板相机、固晶的顺序编排；翻转时按蘸胶模式插入蘸胶动作。实际执行中，动作可以按自身条件跳过，内部细节另章复核。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -981,7 +984,7 @@ export const archifyData: ArchifyData = {
           id: 'inspect',
           label: '检测或点胶消息',
           detail:
-            '字段优先级 Component→Defect→Epoxy，后两者生成 AfterBondCheck 或 S2Dispense。不是每次贴片必有检测。',
+            '字段优先顺序为组件、缺陷、点胶，后两者分别生成焊后检测或 S2 点胶消息。并不是每次贴片都一定有检测。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -992,7 +995,7 @@ export const archifyData: ArchifyData = {
           id: 'outcome',
           label: '处理动作返回',
           detail:
-            'Retry 重新选未完成；Alarm 人工处理；Abort/Exception 返回值 Stop并局部回退。IsDoWork=false及未单列返回值也会标完成；抛异常无统一catch。',
+            '重试会重新选择未完成动作；报警转人工处理；中止或异常时返回停止并做局部回退。不需要执行和未单独列出的结果也会标记完成；抛出异常没有统一容错。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1001,9 +1004,9 @@ export const archifyData: ArchifyData = {
         },
         {
           id: 'operator',
-          label: '人工处理 Alarm',
+          label: '人工处理报警',
           detail:
-            'Retry goto 当前动作检查，不经顶部 WaitStart；Ignore标消息完成；Abort Stop和局部回退。',
+            '重试会直接回到当前动作的检查，不经过顶部的等待启动或停止指令；忽略会标记消息完成；中止则执行停止和局部回退。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1012,9 +1015,9 @@ export const archifyData: ArchifyData = {
         },
         {
           id: 'stop',
-          label: 'Stop 后局部回退',
+          label: '停止后局部回退',
           detail:
-            '显式 Abort/Exception 或 Alarm选Abort：Stop→抬Z→按配置收胶盘→return；不是全部异常的finally保证。',
+            '明确的中止、异常或报警中选择中止时，先停止，再抬起 Z 轴，按配置收回胶盘，然后退出。这不是所有异常都能保证执行的收尾。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1025,7 +1028,7 @@ export const archifyData: ArchifyData = {
           id: 'complete',
           label: '收尾并重置消息',
           detail:
-            '回安全位、Finish全消息置false、补偿归一化、可选保存顶针时间。Enable=false或内层WaitStart=false也可到此；空消息列表无索引保护。',
+            '回到安全位置、把所有消息重置为未完成、补偿归一化，并可选保存顶针时间。未启用或内层等待指令未通过也会走到这里；消息列表为空时没有索引保护。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1036,7 +1039,7 @@ export const archifyData: ArchifyData = {
           id: 'release',
           label: '条件放行或取走',
           detail:
-            '仅非Stop时：自动Set下料许可；人工可保存Mapping、清载具、提示取走后Stop。许可不是物理传输完成。',
+            '只有未停止时才处理放行：自动模式下发出下料许可；人工模式下可保存映射、清除载具、提示取走后停止。许可不等于物理传输完成。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1047,7 +1050,7 @@ export const archifyData: ArchifyData = {
           id: 'flux',
           label: '胶盘并发任务',
           detail:
-            '独立任务等焊头离区后伸出、发允许蘸胶、等蘸胶完成、缩回、等再次允许伸出。超时可人工续等；不是同步配方子调用。',
+            '独立任务在焊头离开区域后伸出胶盘、发出允许蘸胶信号、等待蘸胶完成、缩回，再等待下一次允许伸出。等待超时可由人工续等；它不是同步的配方子调用。',
           signals: ['IsAllowDipFluxSignal', 'BondDipFluxFinishSignal', 'AllowSlideOutSignal'],
         },
       ],
@@ -1074,7 +1077,7 @@ export const archifyData: ArchifyData = {
           id: 'next-type',
           from: 'next',
           to: 'type',
-          label: '非 null',
+          label: '选到动作',
           role: 'main',
           variant: 'default',
         },
@@ -1114,7 +1117,7 @@ export const archifyData: ArchifyData = {
           id: 'outcome-next',
           from: 'outcome',
           to: 'next',
-          label: '标完成 / Retry',
+          label: '标完成 / 重试',
           role: 'return',
           variant: 'dashed',
         },
@@ -1122,7 +1125,7 @@ export const archifyData: ArchifyData = {
           id: 'outcome-operator',
           from: 'outcome',
           to: 'operator',
-          label: 'Alarm',
+          label: '报警',
           role: 'error',
           variant: 'security',
         },
@@ -1130,7 +1133,7 @@ export const archifyData: ArchifyData = {
           id: 'operator-next',
           from: 'operator',
           to: 'next',
-          label: 'Ignore',
+          label: '忽略',
           role: 'return',
           variant: 'dashed',
         },
@@ -1138,7 +1141,7 @@ export const archifyData: ArchifyData = {
           id: 'operator-stop',
           from: 'operator',
           to: 'stop',
-          label: 'Abort',
+          label: '中止',
           role: 'error',
           variant: 'security',
         },
@@ -1146,7 +1149,7 @@ export const archifyData: ArchifyData = {
           id: 'outcome-stop',
           from: 'outcome',
           to: 'stop',
-          label: 'Abort / Exception',
+          label: '中止 / 异常',
           role: 'error',
           variant: 'security',
         },
@@ -1154,7 +1157,7 @@ export const archifyData: ArchifyData = {
           id: 'next-complete',
           from: 'next',
           to: 'complete',
-          label: '返回 null',
+          label: '无未完成动作',
           role: 'main',
           variant: 'default',
         },
@@ -1170,7 +1173,7 @@ export const archifyData: ArchifyData = {
           id: 'operator-type',
           from: 'operator',
           to: 'type',
-          label: 'Retry 同一对象',
+          label: '重试同一动作',
           role: 'return',
           variant: 'dashed',
         },
@@ -1180,24 +1183,24 @@ export const archifyData: ArchifyData = {
           dot: 'cyan',
           title: '编排和执行分开理解',
           items: [
-            'Init 先按配置编排；图中类别只是已选动作的分组。',
-            '每条消息单独执行或跳过；蘸胶插入顺序由翻转与 DipMode 决定。',
+            '初始化时先按配置编排动作；图中的类别只是对已选动作的分组。',
+            '每条消息单独执行或跳过；蘸胶动作的插入顺序由翻转状态和蘸胶模式决定。',
           ],
         },
         {
           dot: 'amber',
           title: '收尾不等于全部成功',
           items: [
-            'Enable=false、内层 WaitStart=false 也可进入收尾。',
-            'Finish 重置消息；无匹配动作也可返回 null；物理下料另由流道执行。',
+            '未启用动作或内层等待指令未通过，也会进入收尾。',
+            '收尾会重置消息；没有匹配动作也可能得到空结果；物理下料另由流道执行。',
           ],
         },
         {
           dot: 'amber',
           title: '胶盘独立并发',
           items: [
-            '伸出→允许蘸胶→等蘸胶完成→缩回→等再次允许。',
-            '区域等待超时可续等；部分 return 没有统一 finally。',
+            '伸出、允许蘸胶、等待蘸胶完成、缩回，再等待下一次允许。',
+            '区域等待超时可人工续等；部分退出路径没有统一收尾。',
           ],
         },
       ],
@@ -1211,14 +1214,14 @@ export const archifyData: ArchifyData = {
           id: 'prepare',
           label: '准备芯片吸嘴',
           detail:
-            'IsDoWork可跳过；OffLine在try前Success；准备后换嘴/清嘴，DryCycle走独立模拟流程。普通路径取得补偿，再到NextDie。',
+            '是否需要执行会先判断，不满足条件可跳过；离线模式按成功返回；准备完成后更换或清洁吸嘴，空跑走独立的模拟流程。普通路径取得补偿后，进入下一颗定位。',
           signals: ['IsBondPickSucceedSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'ready',
           label: '条件等待供料',
           detail:
-            '非补偿工作调用等待包装；直取仍依相机/载具条件，翻转等翻转就绪。BondCamera移动搜索位后另等晶圆。',
+            '非补偿工作会调用等待包装；直取仍取决于相机和载具条件，翻转则等待翻转就绪。固晶相机会移动到搜索位，然后另外等待晶圆。',
           signals: [
             'IsBondPickSucceedSignal',
             'IsWaferAllowPickSignal',
@@ -1230,35 +1233,35 @@ export const archifyData: ArchifyData = {
           id: 'position',
           label: '定位与取前检查',
           detail:
-            'StaticWaffle定位可自动跳过或人工Retry；计算补偿位置、移动、启动采集，再查翻转交接位/芯片名。异常与非Success提前返回。',
+            '静态晶圆盘定位可自动跳过，也可人工重试；随后计算补偿位置、移动、启动采集，再检查翻转交接位和芯片名。异常和非成功结果会提前退出。',
           signals: ['IsBondPickSucceedSignal', 'IsWaferAllowPickSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'pick',
-          label: '执行 Pick',
+          label: '执行取片',
           detail:
-            '补偿工作直接Success；普通路径慢下、吸嘴真空、关平台真空、可选吹气、压力记录、Wafer顶针、延时及条件慢升。异常重抛至主catch。',
+            '补偿工作直接按成功处理；普通路径依次执行慢下、吸嘴真空、关闭平台真空、可选吹气、压力记录、晶圆顶针、延时和条件慢升。异常会向上抛出到主容错。',
           signals: ['IsBondPickSucceedSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'check',
           label: '配置的漏晶检测',
           detail:
-            'Usable计数先增加，再按配置检查真空。重检不重取；未启用可直接继续，不能将计数视为已检测合格数。',
+            '可用计数先增加，再按配置检查真空。重检不会重新取料；未启用检测可直接继续，不能把该计数当作已检测合格的数量。',
           signals: ['IsBondPickSucceedSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'handoff',
           label: '持料标记与通知',
           detail:
-            '标记持料并提交预开灯；WaitStart失败返回Abort。通过后异步直取预取或翻转通知，不await，不保证发信号完成。',
+            '标记为持料并提交预开灯；等待指令未通过则返回中止。通过后异步分发直取预取或翻转通知，不等待完成，也不保证信号已经发出。',
           signals: ['IsBondPickSucceedSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'result',
           label: '返回调度结果',
           detail:
-            '普通路径Success只代表本次同步流程返回；同步异常转Exception，finally只设动作Stop并WorkStop。异步任务不受这个catch统一处理。',
+            '普通路径的成功只代表本次同步流程正常返回；同步异常会转为异常结果，收尾只把动作置为停止并请求工作中止。异步任务不受这层容错统一处理。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1270,21 +1273,21 @@ export const archifyData: ArchifyData = {
           id: 'operator',
           label: '人工漏晶处理',
           detail:
-            '重检回检测；重取只回Pick；下一颗抛料并走条件通知；Ignore继续；Abort返回。未见统一次数上限。',
+            '重检回到检测；重取只回到取料；选择下一颗会抛料并按条件通知；忽略则继续；中止则退出。没有看到统一的次数上限。',
           signals: ['IsBondPickSucceedSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'nextdie',
           label: '抛料并请求下一颗',
           detail:
-            '直取刷新Map并发当前需求；翻转仅下一名null时补发晶圆需求，但均通知翻转取走。置IsRepickComponent，再回NextDie重新等待定位。',
+            '直取会刷新映射并发出当前需求；翻转仅在下一名称为空时补发晶圆需求，但两种情况都会通知翻转取走。随后置为重取标记，回到下一颗定位并重新等待。',
           signals: ['IsBondPickSucceedSignal', 'IsBondNeedChipSignal'],
         },
         {
           id: 'abort',
-          label: '返回 Abort',
+          label: '返回中止',
           detail:
-            '该人工出口只返回Abort，由BondTask Stop和局部回退。其他准备/等待早退也可能Abort，图未逐一重复绘制。',
+            '这个人工出口只返回中止，由固晶任务执行停止和局部回退。其他准备或等待阶段的提前退出也可能返回中止，图中没有逐一重复绘制。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1380,7 +1383,7 @@ export const archifyData: ArchifyData = {
           id: 'nextdie-ready',
           from: 'nextdie',
           to: 'ready',
-          label: '回 NextDie',
+          label: '回下一颗定位',
           role: 'return',
           variant: 'dashed',
         },
@@ -1406,24 +1409,24 @@ export const archifyData: ArchifyData = {
           dot: 'cyan',
           title: '重检、重取、下一颗不同',
           items: [
-            '重检只测真空；重取跳过定位和取前检查；下一颗重新等待定位。',
-            'Ignore继续不能证明实际有料；Usable计数在检测前增加。',
+            '重检只测真空；重取会跳过定位和取前检查；下一颗则重新等待定位。',
+            '选择忽略继续不能证明实际有料；可用计数在检测之前就已增加。',
           ],
         },
         {
           dot: 'amber',
           title: '返回不等于通知完成',
           items: [
-            '灯光和供料通知均为未await任务，Success不保证通知已完成。',
-            'OffLine直接返回；DryCycle独立模拟；同步异常与异步异常分开理解。',
+            '灯光和供料通知都是不等待完成的任务，成功返回不保证通知已经发完。',
+            '离线模式直接返回；空跑走独立模拟；同步异常与异步异常要分开理解。',
           ],
         },
         {
           dot: 'amber',
           title: '采集生命周期待验证',
           items: [
-            '正常停止采集调用被注释；循环共用标志且无直接Stop检查。',
-            '已登记静态风险，未运行复现；不将疑点写成已证实故障。',
+            '正常停止采集的调用已被停用；循环共用同一个标志，也没有直接检查停止。',
+            '该风险已登记但尚未实际运行复现，不把疑点写成已证实的故障。',
           ],
         },
       ],
@@ -1437,42 +1440,42 @@ export const archifyData: ArchifyData = {
           id: 'prepare',
           label: '准备并计算固晶位',
           detail:
-            'IsDoWork检查焊点和S2步骤。WorkStart在try之前；OffLine标步骤后Success；DryCycle独立模拟。普通路径组合位置/角度/高度补偿。',
+            '是否需要执行会检查焊点和 S2 步骤。工作状态在进入尝试前就置位；离线模式标记步骤后按成功返回，空跑走独立模拟。普通路径会组合位置、角度和高度补偿。',
           signals: [],
         },
         {
           id: 'move',
           label: '移动到预固晶位',
           detail:
-            '普通路径按AbsoluteMove或InterpolationMove选择预固晶移动；非Success直接返回。成功后通知胶盘、记录RealBondPos，再到ReBond。底层轨迹未纳入此次复核。',
+            '普通路径按绝对定位或插补移动选择预固晶位移动，非成功结果直接退出。成功后通知胶盘、记录实际固晶位置，再进入再次固晶。底层轨迹不在本次复核范围内。',
           signals: ['BondDipFluxFinishSignal', 'AllowSlideOutSignal'],
         },
         {
           id: 'bond',
-          label: '力曲线与 Bond',
+          label: '力曲线与固晶',
           detail:
-            'ReBond从力曲线/清零开始；按TU胶印周期选择动作。距离模式条件慢下，力模式进入力控；普通贴片关真空并异步弱吹，再记录压力、条件慢升/退力控。Bond非Success提前返回；正常后尝试导出xlsx，保存异常可递归Retry或放弃。',
+            '再次固晶从力曲线或清零开始，并按 TU 胶印周期选择动作。距离模式做条件慢下，力模式进入力控；普通贴片关闭真空并异步弱吹，再记录压力、条件慢升或退力控。固晶非成功会提前退出；正常后尝试导出表格文件，保存异常可递归重试或放弃。',
           signals: [],
         },
         {
           id: 'check',
           label: '回带检测需处理？',
           detail:
-            '普通贴片且开启芯片检测和慢速离开才检查回带；hasMaterial取检测反值。异步关真空不被主同步catch等待。条件不满足不等于检测合格。',
+            '只有普通贴片且开启芯片检测和慢速离开时才检查回带，是否有料取检测结果的反值。异步关闭真空不会被主同步流程的容错等待。条件不满足不等于检测合格。',
           signals: [],
         },
         {
           id: 'finish',
           label: '胶印检查与步骤收尾',
           detail:
-            '可选TU胶印视觉：Ignore→Fail→禁用焊点→包装Success；成功则再次Bond。随后计胶印次数、可选人工视觉等待、清持料、S2步骤字典置true、统计/耗材/上限。人工视觉遇Stop只退出等待，调用者仍继续收尾；步骤完成不是质量通过。',
+            '可选的 TU 胶印视觉检查失败时，按忽略、判定不合格、禁用焊点，最后包装成成功返回；检查成功则再次固晶。随后累计胶印次数、按需等待人工视觉确认、清除持料、把 S2 步骤置为完成，并更新统计、耗材和上限。人工视觉遇到停止只退出等待，调用方仍继续收尾；步骤完成不是质量通过。',
           signals: ['BondDipFluxFinishSignal', 'AllowSlideOutSignal'],
         },
         {
           id: 'return',
-          label: '收尾返回 Success',
+          label: '收尾返回成功',
           detail:
-            '普通收尾返回Success；预移动/Bond/胶印可提前返回；同步try异常返回Exception。finally只置State=Stop并发WorkStop；异步任务和入口事件不在同一异常保障内。外层BondTask解释结果，本节点不表示设备已安全复位。',
+            '普通收尾按成功返回；预移动、固晶或胶印阶段都可能提前返回；同步流程出现异常则返回异常。收尾只把状态置为停止并请求工作中止；异步任务和入口事件不在同一异常保障范围内。外层固晶任务会解释这些结果，本节点不代表设备已安全复位。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1483,27 +1486,28 @@ export const archifyData: ArchifyData = {
           id: 'choice',
           label: '回带报警选择',
           detail:
-            '回带报警四选项：Retry局部重贴；Abort计失败并返回；Ignore抛料后继续；Cancel抛料并重置相关消息、返回Retry。没有在这里设置人工重试次数上限。',
+            '回带报警提供四个选择：重试是局部重贴；中止计为失败并返回；忽略是抛料后继续；取消则抛料、重置相关消息并返回重试。这里没有设置人工重试次数上限。',
           signals: [],
         },
         {
           id: 'repick',
-          label: '重置动作返回 Retry',
+          label: '重置动作返回重试',
           detail:
-            'Cancel计失败与Reject、抛料；重置Pick、配置对应校正和Bond消息，置IsRepickComponent并返回Retry；不是整个动作表重置。',
+            '取消会计为失败并按不合格处理、抛料；同时重置取晶、对应校正和固晶消息，置为重取标记并返回重试；这不是重置整张动作表。',
           signals: [],
         },
         {
           id: 'throw',
           label: '抛料并计失败',
-          detail: 'Ignore计失败、抛料后仍进入后续胶印/收尾。控制流Success不证明此次贴装成功。',
+          detail:
+            '忽略会计为失败、抛料，之后仍进入后续胶印和收尾。控制流上的成功不代表这次贴装成功。',
           signals: [],
         },
         {
           id: 'stop',
-          label: '返回 Abort',
+          label: '返回中止',
           detail:
-            'Abort计失败后返回Abort，由外层BondTask处理停机；不能把这个动作返回等同所有硬件都已安全停止。',
+            '中止计为失败后返回中止，由外层固晶任务处理停机；不能把这个动作结果等同于所有硬件都已安全停止。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1535,7 +1539,7 @@ export const archifyData: ArchifyData = {
           id: 'bond-check',
           from: 'bond',
           to: 'check',
-          label: 'Bond成功',
+          label: '固晶成功',
           role: 'main',
           variant: 'default',
         },
@@ -1608,12 +1612,18 @@ export const archifyData: ArchifyData = {
         {
           dot: 'cyan',
           title: '重贴与重新取贴',
-          items: ['Retry回ReBond，不重算位置或通知胶盘。', 'Cancel重置指定消息，返回Retry交调度。'],
+          items: [
+            '重试会回到再次固晶，不重新计算位置，也不重新通知胶盘。',
+            '取消会重置指定消息，并按重试返回给调度。',
+          ],
         },
         {
           dot: 'amber',
-          title: 'Success不是质量判定',
-          items: ['胶印忽略可禁用焊点后仍返回Success。', '离线/空跑、提前返回及异常见源码复核。'],
+          title: '成功返回不是质量判定',
+          items: [
+            '胶印选择忽略时，可能禁用焊点后仍按成功返回。',
+            '离线、空跑、提前返回和异常情况，见相应的复核说明。',
+          ],
         },
       ],
       reviewDocument: 'bond-action-semantic-revalidation.md',
@@ -1626,7 +1636,7 @@ export const archifyData: ArchifyData = {
           id: 'ret',
           label: '动作执行与结果分类',
           detail:
-            '分别执行S1/S2动作并处理返回。S1除Retry/Success外尝试安全位再Stop；S2仅Abort/Exception/Alarm有特定分支，未列返回值可落到FinishCurrentActionNode。抛出的异常不等于返回Exception枚举；这些DoWork没有统一顶层catch。',
+            '分别执行 S1、S2 动作并处理返回结果。S1 除重试和成功外，会先尝试安全位置再停止；S2 只对中止、异常和报警有专门分支，未列出的结果会落到标记当前动作完成。抛出的异常不等于返回异常结果；这些动作执行都没有统一的顶层容错。',
           signals: [
             'AllowDispenseTransferToBondSignal',
             'AllowBondTransferToWaitingUnloadSignal',
@@ -1637,9 +1647,9 @@ export const archifyData: ArchifyData = {
         },
         {
           id: 'retry',
-          label: 'Retry保留未完成',
+          label: '重试保留未完成',
           detail:
-            '动作返回Retry执行continue，保留当前消息未完成并在循环顶部重新WaitStart、选消息；具体动作可将较早指定消息置false，不能泛化为固定回退。',
+            '动作返回重试时保留当前消息未完成，在循环顶部重新等待启动或停止指令并选择消息。具体动作可以把较早的指定消息重置为未完成，但不能概括为固定的回退位置。',
           signals: [
             'AllowDispenseTransferToBondSignal',
             'AllowBondTransferToWaitingUnloadSignal',
@@ -1650,9 +1660,9 @@ export const archifyData: ArchifyData = {
         },
         {
           id: 'alarm',
-          label: 'S2 Alarm人工选择',
+          label: 'S2 报警人工选择',
           detail:
-            'Alarm弹框：Retry直接goto RetryCommand，同一个actionNode重新IsDoWork，不回到循环顶部WaitStart或重新选择；Ignore落到标当前消息完成；Abort执行Stop、抬Z、条件收胶盘后返回。',
+            '报警弹窗中：重试直接回到当前动作重新判断是否需要执行，不回到循环顶部等待，也不重新选择消息；忽略会标记当前消息完成；中止则执行停止、抬起 Z 轴、按配置收回胶盘后返回。',
           signals: [
             'AllowBondTransferToWaitingUnloadSignal',
             'TransferToBondFinishedSignal',
@@ -1663,7 +1673,7 @@ export const archifyData: ArchifyData = {
           id: 'next',
           label: '继续消息选择',
           detail:
-            '动作Retry通过循环顶部再选未完成消息；S2 Alarm Ignore先标当前消息完成，再选下一条。动作不需要执行时也可标消息完成；这是调度完成，不能当质量通过。',
+            '动作重试会通过循环顶部重新选择未完成消息；S2 报警选择忽略时，先标记当前消息完成，再选择下一条。动作不需要执行时也可标记完成；这只是调度完成，不能当作质量通过。',
           signals: [
             'AllowDispenseTransferToBondSignal',
             'AllowBondTransferToWaitingUnloadSignal',
@@ -1676,28 +1686,28 @@ export const archifyData: ArchifyData = {
           id: 'door',
           label: '门监控或人工暂停',
           detail:
-            '后台按ThreadFlag循环调用门监控。配置安全门且Working且门未关才Pause；自动关门恢复分支为注释。人工Pause直接改状态。监控线程其他任务或弹窗可能影响下一次检查时机。',
+            '后台按运行开关循环执行安全门监控。配置了安全门、处于工作状态且门未关闭时才暂停；自动关门后恢复的分支当前未启用。人工暂停则直接切换状态。监控线程的其他任务或弹窗可能影响下一次检查的时机。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'pause',
-          label: '状态改为Pause',
+          label: '状态改为暂停',
           detail:
-            'Pause仅SetState(Pause)，并通过SetState登记变更队列。协作检查点WaitStart等待；已经进入Wait事件循环时不每轮查Pause，不能声称轴立即停或全任务挂起。',
+            '暂停只切换状态，并登记状态变更。协作检查点会在等待启动或停止指令时响应；已经进入等待事件循环时不会每轮检查暂停，因此不能声称轴会立即停止或所有任务都已挂起。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'continue',
-          label: '人工Continue',
+          label: '人工继续',
           detail:
-            '不配置门则直接Working；配置门且未关只提示；门关时先设两套IsFirstDispense=true再Working。方法未检查必须从Pause调用，也不重新创建任务；UI门控另行验证。',
+            '未配置安全门时直接回到工作状态；配置了安全门但门未关闭时只提示；门关闭时先把两套首次点胶标志置位，再回到工作状态。该动作不检查必须从暂停状态调用，也不会重新创建任务；界面门控另行验证。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'running',
           label: '存活任务可继续',
           detail:
-            '仅在仍存活、正在等待的任务进入对应检查点时可恢复。Loader/Unloader外层while(IsWorking)，若Pause时重新判断可能退出；Continue不会重建。料仓catch只弹窗，不能作为统一停机策略。',
+            '只有仍然存活、正在等待的任务进入相应检查点时才能恢复。上下料任务外层按工作状态循环，暂停时若重新判断可能直接退出；继续不会重建任务。料仓出错只弹窗，不能作为统一的停机策略。',
           signals: [
             'AllowLoaderMoveSignal',
             'LoaderAllowPushSignal',
@@ -1708,30 +1718,30 @@ export const archifyData: ArchifyData = {
         },
         {
           id: 'fault',
-          label: 'Stop或指定故障',
+          label: '停止或指定故障',
           detail:
-            '直接Stop或已追踪晶圆catch、编码器false返回可进入停止。环境/算法/捕获通讯异常返回false；光强不佳提示不直接返回false，不能泛称所有编码器报警都会Stop。',
+            '直接停止、已跟踪晶圆的异常以及编码器判定失败都可能进入停止。环境、算法和捕获到的通讯异常会按失败返回；光强不佳只提示、不直接按失败返回，因此不能概括为所有编码器报警都会停止。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'emergency',
           label: '急停请求轴停止',
           detail:
-            'Parallel.ForEach请求axis.StopMove(false,true)完成调用后执行Stop，再依次调用S1/Bond/晶圆Abort。Bond和晶圆Abort无实际终止；S1仅Dispose。前序抛异常可能阻断后序；无设备退出确认。',
+            '急停时并行请求各轴停止运动，调用完成后执行停止，再依次请求 S1、固晶和晶圆中止。固晶和晶圆的中止没有实际终止动作，S1 只做资源释放。前序步骤抛出异常可能阻断后续步骤，也没有设备退出确认。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'stop',
-          label: 'Stop与指定清理',
+          label: '停止与指定清理',
           detail:
-            '置Stop、异步清登记弹窗、停止报警、关单步、复位需晶信号、仅Online关要料、关顶针吹气/真空、清焊后缺陷计数；没有统一try/finally或Join。不等于所有输出/轴停止。',
+            '停止会切换状态、异步清除登记弹窗、停止报警、关闭单步、复位需晶信号，仅在联机时关闭要料，并关闭顶针吹气与真空、清零焊后缺陷计数。没有统一的收尾或等待结束环节，不等于所有输出和轴都已停止。',
           signals: ['IsBondNeedChipSignal'],
         },
         {
           id: 'exit',
           label: '检查点退出待确认',
           detail:
-            'Stop只能让相应协作检查返回false；调用方需检查返回且实际走到检查点。普通Stop没有统一Join/取消确认；S1/S2可在循环退出后继续局部收尾。底层运动、阻塞、异步线程是否结束未运行验收。',
+            '停止只能让相应的协作检查返回未通过，调用方还需要检查返回值并实际走到检查点。普通停止没有统一的等待结束或取消确认；S1、S2 可能在循环退出后继续做局部收尾。底层运动、阻塞和异步线程是否真正结束，尚未运行验收。',
           signals: [
             'AllowDispenseTransferToBondSignal',
             'AllowBondTransferToWaitingUnloadSignal',
@@ -1749,7 +1759,7 @@ export const archifyData: ArchifyData = {
           id: 'ret-retry',
           from: 'ret',
           to: 'retry',
-          label: 'Retry',
+          label: '重试',
           role: 'main',
           variant: 'default',
         },
@@ -1765,7 +1775,7 @@ export const archifyData: ArchifyData = {
           id: 'ret-alarm',
           from: 'ret',
           to: 'alarm',
-          label: 'S2 Alarm',
+          label: 'S2 报警',
           role: 'branch',
           variant: 'default',
           fromSide: 'top',
@@ -1775,7 +1785,7 @@ export const archifyData: ArchifyData = {
           id: 'alarm-next',
           from: 'alarm',
           to: 'next',
-          label: 'Ignore标完成',
+          label: '忽略并标完成',
           role: 'main',
           variant: 'default',
         },
@@ -1783,7 +1793,7 @@ export const archifyData: ArchifyData = {
           id: 'alarm-stop',
           from: 'alarm',
           to: 'stop',
-          label: 'Abort',
+          label: '中止',
           role: 'error',
           variant: 'security',
         },
@@ -1847,7 +1857,7 @@ export const archifyData: ArchifyData = {
           id: 'alarm-ret',
           from: 'alarm',
           to: 'ret',
-          label: 'Retry同动作',
+          label: '重试同一动作',
           role: 'return',
           variant: 'dashed',
           fromSide: 'bottom',
@@ -1858,18 +1868,18 @@ export const archifyData: ArchifyData = {
       cards: [
         {
           dot: 'cyan',
-          title: '两种Retry不可混同',
+          title: '两种重试不可混同',
           items: [
-            '动作Retry重选消息；Alarm Retry直接重做当前动作。',
-            'Ignore标调度完成，不代表动作质量合格。',
+            '动作重试会重新选择消息；报警重试则直接重做当前动作。',
+            '忽略只标记调度完成，不代表动作质量合格。',
           ],
         },
         {
           dot: 'amber',
           title: '状态不是退出确认',
           items: [
-            'Pause/Continue不统一挂起或重建任务。',
-            '普通Stop和Abort方法都不能证明所有线程退出。',
+            '暂停和继续不会统一挂起或重建任务。',
+            '普通停止和中止都不能证明所有线程已经退出。',
           ],
         },
       ],

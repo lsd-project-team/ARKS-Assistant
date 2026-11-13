@@ -1,21 +1,9 @@
-import { useMemo, useState, type ReactNode } from 'react';
-import { ArrowUpRight, BookOpen, CircleDot, Package, Activity, NotebookPen } from 'lucide-react';
-import { InteractiveRing, OperationBars, PackageBars } from './DashboardCharts';
-import {
-  DashboardEventList,
-  DashboardMaterialList,
-  DashboardRecordList,
-  SelectionHeading,
-} from './DashboardRecords';
-import {
-  eventsInRange,
-  overviewSummary,
-  selectEvents,
-  selectTasks,
-  selectIssues,
-  selectMaterials,
-} from './overviewData';
-import { tabs, type Definitions, type Event, type Overview, type Tab } from '../shared/types';
+import { useState, type ReactNode } from 'react';
+import { ArrowUpRight, BookOpen, CircleDot, Package, NotebookPen } from 'lucide-react';
+import { InteractiveRing, PackageBars } from './DashboardCharts';
+import { DashboardMaterialList, DashboardRecordList, SelectionHeading } from './DashboardRecords';
+import { overviewSummary, selectTasks, selectIssues, selectMaterials } from './overviewData';
+import { tabs, type Definitions, type Tab } from '../shared/types';
 
 type Summary = ReturnType<typeof overviewSummary>;
 type PanelProps = {
@@ -241,81 +229,3 @@ export function IssuesPanel({ data, definitions, onOpen, onNavigate }: PanelProp
   );
 }
 
-export function ActivityPanel({
-  data,
-  overview,
-  events,
-  eventsError,
-  onOpen,
-  onNavigate,
-  syncedAt,
-}: Omit<PanelProps, 'definitions'> & {
-  overview: Overview;
-  events?: Event[];
-  eventsError: boolean;
-  syncedAt: number;
-}) {
-  const [days, setDays] = useState(0);
-  const [action, setAction] = useState('all');
-  const rangeEvents = useMemo(() => eventsInRange(events || [], days), [events, days, syncedAt]);
-  const bars = useMemo(
-    () => overviewSummary(overview, rangeEvents).eventBars,
-    [overview, rangeEvents],
-  );
-  const selectedEvents = selectEvents(rangeEvents, action);
-  const active = bars.find((item) => item.id === action);
-  return (
-    <DashboardPanel
-      tab="updates"
-      hint={events ? '按最近 ' + events.length + ' 次操作统计' : '等待同步操作记录'}
-      icon={<Activity size={17} />}
-      count={events ? rangeEvents.length : undefined}
-      unit="次"
-      summary={data.reviewCount + ' 条记录待重新复核'}
-      onNavigate={onNavigate}
-    >
-      <div className="dashboard-activity-controls">
-        <span>近期操作分布</span>
-        <div className="dashboard-segmented" role="group" aria-label="筛选日志时间">
-          {[
-            { value: 0, label: '全部' },
-            { value: 7, label: '7天' },
-            { value: 30, label: '30天' },
-          ].map((item) => (
-            <button
-              key={item.value}
-              aria-pressed={days === item.value}
-              onClick={() => {
-                setDays(item.value);
-                setAction('all');
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </div>
-      {events ? (
-        <>
-          <OperationBars data={bars} selected={action} onSelect={setAction} />
-          <SelectionHeading
-            label={active ? active.label + '记录' : '最近动态'}
-            count={selectedEvents.length}
-            filtered={action !== 'all'}
-            onReset={() => setAction('all')}
-          />
-          <DashboardEventList
-            key={days + ':' + action}
-            events={selectedEvents}
-            records={overview.records}
-            onOpen={onOpen}
-          />
-        </>
-      ) : (
-        <p className="dashboard-empty dashboard-empty-chart" role="status">
-          {eventsError ? '操作记录加载失败，请点击顶部刷新重试。' : '正在加载操作记录…'}
-        </p>
-      )}
-    </DashboardPanel>
-  );
-}

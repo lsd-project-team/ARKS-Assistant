@@ -1,7 +1,7 @@
 import type { SourceGuide } from '../sourceGuides';
 import { flow, outcome, step } from './builders.ts';
 
-// 按当前方法体描述状态、清理和中止调用；不由方法名称推断线程或设备已停止。
+// 本页只说明各入口实际做过的状态写入、清理和中止动作；不据名称推断线程或设备已经停止。
 export const recoveryGuide: SourceGuide = {
   id: 'recovery-source-review',
   topic: 'recovery',
@@ -11,18 +11,18 @@ export const recoveryGuide: SourceGuide = {
     flow(
       'machine-state',
       '状态写入',
-      'IsWorking、IsPause、IsStop 都比较同一个机台状态枚举。SetState 只在新旧状态不同的分支写入状态并把变化记录加入统计队列。',
+      '工作、暂停、停止这三个状态判断，比较的是同一个机台状态。只有旧状态与本次请求的状态不同，才写入新状态，并把这次变化记入统计队列。',
       ['state-read', 'state-write'],
       [
         step(
           'old',
           '读取旧状态',
-          '读取 MachineStateModel.MachineState，与请求设置的状态比较。',
+          '先取出机台当前状态，再与本次请求设置的状态作比较。',
           ['state-write'],
           [
             outcome(
-              '状态相同',
-              '整个 if 块跳过，不再次写入状态，也不把这次调用加入变化记录队列。',
+              '状态未变化',
+              '整段写入动作都跳过：既不重复写状态，也不把这次请求记入变化队列。',
               'state-write',
             ),
           ],
@@ -30,18 +30,18 @@ export const recoveryGuide: SourceGuide = {
         step(
           'write',
           '创建记录并写入枚举',
-          '状态不同时，先创建含当前用户与状态变化描述的记录，再写入 MachineState。',
+          '状态确有变化时，先建一条记录，写明当前用户和这次状态变化的内容，再写入新的机台状态。',
           ['state-write'],
         ),
         step(
           'queue',
           '加入统计队列',
-          '状态写入后调用 DbEntityBlockingCollection.Add；这里没有等待数据库写入完成，也没有在方法内捕获异常或回滚状态。',
+          '状态写入后，把这条变化记录交给后台的落库队列。这里不等待数据库真正写完，也没有就地处理写入异常或回滚状态。',
           ['state-write'],
           [
             outcome(
-              '状态的含义',
-              '这三个 Is 方法没有查询轴是否停止或 Task 是否退出，状态枚举不能代替这些结果。',
+              '状态不能替代实况',
+              '这三个状态判断都不去查轴是否停下、任务是否退出，因此机台状态不能当作这些结果的替代证据。',
               'state-read',
               'state-write',
             ),
@@ -52,29 +52,26 @@ export const recoveryGuide: SourceGuide = {
     flow(
       'pause-entry',
       '暂停入口',
-      'BtPause_ItemClick 调用 Machine.Pause；Pause 的方法体只请求 SetState(Pause)。',
+      '暂停按钮只向机台发出暂停请求，实际动作就是把状态改成暂停，没有附带别的清理。',
       ['pause-ui', 'machine-pause'],
       [
-        step(
-          'click',
-          '点击暂停入口',
-          '该事件处理方法直接调用 Machine.Pause，没有在这里等待动作结束。',
-          ['pause-ui'],
-        ),
+        step('click', '点击暂停入口', '点击后立即发出暂停请求，界面不在这里等待动作收尾。', [
+          'pause-ui',
+        ]),
         step(
           'pause',
-          '写入 Pause 状态',
-          'Pause 调用 SetState(Pause)，方法内没有调用 StopMove、取消任务或等待任务退出。',
+          '写入暂停状态',
+          '写暂停状态这一步里没有停轴指令、没有取消任务，也没有等待任务退出。',
           ['machine-pause', 'state-write'],
           [
             outcome(
-              '任务观察暂停的位置',
-              'S1 GetInputSignal 在循环开头和预点胶动作后检查 Pause。动作执行期间的状态变化，需要到后续检查位置才由这段循环处理。',
+              '任务在检查点看暂停',
+              'S1 的取信号环节只在循环开头和预点胶动作之后看暂停状态。动作执行过程中按下的暂停，要等到下一个检查位置才被处理。',
               's1-input-loop',
             ),
             outcome(
-              '独立操作',
-              'Pause 不调用 Continue；继续按钮是另一个事件入口。',
+              '继续是独立入口',
+              '暂停不会顺带触发继续；继续按钮走的是另一个入口。',
               'machine-pause',
               'continue-ui',
             ),
@@ -85,34 +82,34 @@ export const recoveryGuide: SourceGuide = {
     flow(
       'continue-entry',
       '继续入口',
-      '继续按钮调用 Machine.Continue。这个入口按安全门配置处理，不重新调用生产 Start 的整套准备检查。',
+      '继续按钮走独立的继续入口：按安全门配置决定如何恢复，不会重跑生产启动那整套准备检查。',
       ['continue-ui', 'machine-continue', 'working-state'],
       [
-        step('click', '点击继续入口', 'BtContinue_ItemClick 直接调用 Machine.Continue。', [
+        step('click', '点击继续入口', '点击继续后直接进入继续处理，没有额外的确认环节。', [
           'continue-ui',
         ]),
         step(
           'door',
           '按安全门配置分支',
-          '未配置安全门时直接请求 Working；已配置时检查 IsSafeDoorClose。',
+          '没有配置安全门时，直接请求回到工作状态；配置了安全门的，先确认安全门是否关好。',
           ['machine-continue'],
           [
             outcome(
               '安全门未关',
-              '只弹出“请先关好安全门”提示，不在该分支写入 Working 或两个 IsFirstDispense 标记。',
+              '只弹出“请先关好安全门”提示；这条分支既不写工作状态，也不置位第一颗点胶的两个标记。',
               'machine-continue',
             ),
           ],
         ),
         step(
           'resume',
-          '按分支恢复 Working',
-          '已配置且安全门关闭时，先把 S1 与 S2 的 IsFirstDispense 设为 true，再请求 Working。未配置安全门的分支没有这两个赋值。',
+          '按分支恢复工作状态',
+          '配置了安全门且门已关好时，先把 S1 和 S2 的首颗点胶标记置位，再请求回到工作状态。没有配置安全门的分支不做这两个置位。',
           ['machine-continue'],
           [
             outcome(
-              '调用范围',
-              'Continue 没有检查当前枚举必须是 Pause，也没有在这里创建任务、调用 Prepare 或重新加载配方；不能把它写成完整的生产重启。',
+              '不等同于重新生产',
+              '继续入口不检查当前是否处于暂停，也不新建任务、不做启动前准备、不重载配方，因此不能写成完整的生产重启。',
               'machine-continue',
               'working-state',
             ),
@@ -123,29 +120,29 @@ export const recoveryGuide: SourceGuide = {
     flow(
       'ordinary-stop',
       '普通停止',
-      '停止按钮先禁用自身控件、显示停止提示，再调用 Machine.Stop。Stop 的清理按下列顺序调用，没有统一的任务退出等待。',
+      '停止按钮先把自己置灰并给出停止提示，再进入停止处理；停止里的各项清理按下面的顺序执行，全程没有统一的等待任务退出。',
       ['stop-ui', 'stop-state', 'stop-signals', 'stop-outputs'],
       [
         step(
           'entry',
           '更新按钮与停止状态',
-          'BtCancel_ItemClick 设置 Enabled = false 并显示提示；Machine.Stop 首先请求 SetState(Stop)。该按钮方法内没有 finally 恢复控件。',
+          '点下停止后按钮立即置灰并弹出提示；停止处理的第一件事是把状态写成停止。按钮这边没有兜底动作在结束时恢复控件。',
           ['stop-ui', 'stop-state'],
         ),
         step(
           'messages',
           '清弹窗并设置停止报警',
-          '依次调用 ClearMessageBox 和 SetStopStateAlarm；不在 Stop 中捕获这些调用的异常。',
+          '接着清掉提示框，再设置停止报警；这两步没有就地处理异常。',
           ['stop-state'],
           [
             outcome(
               '停止报警器分支',
-              'SetStopStateAlarm 在离线时直接返回；在线时按列表条件访问第一个报警器。条件把列表为 null 也列入执行分支，随后仍访问 [0]，不能描述为已安全处理报警器缺失。',
+              '离线时，设置停止报警直接返回。在线时按条件去取第一个报警器，而这个条件把报警器列表为空也算作可执行，随后仍去取第一个；所以不能说报警器缺失已被稳妥处理。',
               'stop-alarm',
             ),
             outcome(
               '异常中断',
-              '前序调用若抛出未处理异常，后面的清理语句不会由本方法继续执行；停止状态赋值与完整清理是不同观察点。',
+              '前面任一步出现未被处理的异常，后面的清理就不会继续执行。因此“状态已写成停止”和“清理已全部做完”是两件事。',
               'stop-state',
               'stop-signals',
               'stop-outputs',
@@ -155,18 +152,18 @@ export const recoveryGuide: SourceGuide = {
         step(
           'signals',
           '退出单步并复位需晶信号',
-          '设置 IsSingleStepWork = false，复位 IsBondNeedChipSignal。这里只复位这个需晶信号，不能描述成清空全部交接信号。',
+          '退出单步状态，并复位固晶的需晶信号。这里只复位这一个需晶信号，不等于把所有交接信号都清零。',
           ['stop-signals'],
         ),
         step(
           'outputs',
           '按配置关要料，再关顶针台真空',
-          'LoadConfiguration 为 Online 时调用 SetLoadingTableNeedTabletSignal(false)。随后无此条件地调用 CloseEjectionTableVacuum。',
+          '只有当前配置为在线时，才撤销上料台的需料片信号；随后不论是否在线，都会关闭顶针台真空。',
           ['stop-outputs', 'close-eject-vacuum'],
           [
             outcome(
-              '真空关闭调用内层',
-              'CloseEjectionTableVacuum 依次对吹气与真空调用 ResetCyc，两个传感器参数都传 0，并各自传入关闭延时；方法没有把返回结果汇总为停止成功标记。',
+              '真空关闭的内层动作',
+              '关闭真空这一步先对吹气、再对真空各复位一个周期，两者的传感器参数都取零，并各自带一段关闭延时；这些结果不会被汇总成“停止成功”的标记。',
               'close-eject-vacuum',
             ),
           ],
@@ -174,12 +171,12 @@ export const recoveryGuide: SourceGuide = {
         step(
           'counters',
           '清焊后缺陷计数',
-          '遍历 PostBondInspections，把 CurrentDefectNumber 设为 0，然后方法结束。',
+          '最后把焊后检测记录里的当前缺陷数逐条清零，然后停止处理结束。',
           ['stop-outputs'],
           [
             outcome(
-              '线程与物料',
-              '该方法未统一调用各任务的 Abort、Wait 或 Join，也没有在这里清空所有载具、晶圆及焊点对象；后续是否退出还需查看各任务观察停止的路径。',
+              '线程与物料未一并处理',
+              '整个停止处理没有逐个任务发中止指令，也没有等待任务结束；也没有在这里清空载具、晶圆和焊点对象。任务之后是否退出，还要看各任务什么时候去看停止状态。',
               'stop-state',
               'stop-signals',
               'stop-outputs',
@@ -191,36 +188,36 @@ export const recoveryGuide: SourceGuide = {
     flow(
       'emergency-stop-entry',
       '急停调用',
-      'EmergencyStop 先并行请求各轴停止，再调用普通 Stop，最后顺序调用 S1、S2 和供晶的中止入口。这些入口的实际方法体不同。',
+      '急停先同时向各轴发停止请求，再走一遍普通停止，最后依次通知 S1、S2 和供晶三个中止入口；这三个入口的实际动作并不相同。',
       ['emergency-axes', 'emergency-tasks', 'abort-s1', 'abort-s2', 'abort-wafer'],
       [
         step(
           'axes',
           '并行调用轴停止',
-          '取得 Axis 列表，以 Parallel.ForEach 调用每个 axis.StopMove(false, true)；这里只说明调用，不推断现场机械停止已确认。',
+          '取到轴清单后，对各轴同时发出停止指令。这里只说明指令已发出，不能推断现场机构确实已经停住。',
           ['emergency-axes'],
         ),
         step(
           'stop',
-          '执行普通 Stop',
-          '并行调用语句返回后，再调用 Machine.Stop；该方法与普通停止共用状态和清理逻辑。',
+          '执行普通停止',
+          '轴停止请求发出后，再执行一次普通停止；它和普通停止共用同一套状态写入和清理。',
           ['emergency-tasks', 'stop-state', 'stop-signals', 'stop-outputs'],
         ),
         step(
           'abort',
           '顺序调用三个中止入口',
-          '依次调用 DispenseWorkTask.AbortThread、BondTask.AbortThread 和 AbortWaferSubThread。输送 StartTask 行在这里被注释，不是实际执行语句。',
+          '接着依次通知点胶任务、固晶任务和供晶子任务中止。输送任务的启动那一行已被注释，因此不在这条路径上执行。',
           ['emergency-tasks'],
           [
             outcome(
-              'S1 方法体',
-              '直接调用 DispenseTask.Dispose，没有空值分支、取消请求或等待退出语句。',
+              'S1 入口',
+              '点胶这边只做一次资源释放，没有空值判断、没有取消请求，也没有等待退出。',
               'abort-s1',
             ),
-            outcome('S2 方法体', 'BondTask.AbortThread 方法体为空。', 'abort-s2'),
+            outcome('S2 入口', '固晶任务这边收到通知后什么也没做，中止入口是空的。', 'abort-s2'),
             outcome(
-              '供晶方法体',
-              '原线程 Abort 相关语句全部被注释，当前方法没有实际执行的中止语句。',
+              '供晶入口',
+              '供晶这边原有的线程中止语句全被注释掉，目前没有任何实际执行的中止动作。',
               'abort-wafer',
             ),
           ],
@@ -228,12 +225,12 @@ export const recoveryGuide: SourceGuide = {
         step(
           'boundary',
           '方法结束，不汇总退出结果',
-          '最后一个中止入口返回后，EmergencyStop 到达方法末尾。方法没有统一捕获异常或汇总任务退出结果；前面的调用抛出异常时，后续顺序调用可能不执行。',
+          '三个中止入口都返回后，急停流程就结束了。整段既不统一处理异常，也不汇总各任务有没有退出；前面任一步出现异常，后面的顺序调用就可能不再执行。',
           ['emergency-axes', 'emergency-tasks'],
           [
             outcome(
-              '方法名与结果',
-              '这三个方法名不能作为所有生产线程已结束的证据。急停后的线程退出、设备状态和再次启动仍需继续核对各模块。',
+              '名称不等于结果',
+              '这三个中止入口的名字，不能当作所有生产任务已经结束的证据。急停之后任务何时真正退出、设备处于什么状态、能否再次启动，还要逐个模块继续核对。',
               'abort-s1',
               'abort-s2',
               'abort-wafer',
@@ -246,24 +243,24 @@ export const recoveryGuide: SourceGuide = {
     flow(
       'task-closed-gate',
       '再次启动门控',
-      '再次点击生产启动仍调用 Prepare，并使用 IsAllowTaskClosed 的任务状态检查。它与 Continue 的安全门入口不同。',
+      '停止或急停后再次点生产启动，仍会重新走启动前的准备检查，其中有一道任务状态检查；它和继续入口的安全门分支是两条不同的路。',
       ['prepare-gates', 'running-tasks', 'machine-continue'],
       [
         step(
           'collect',
-          '收集待检查 Task',
-          '列表包含按配置参与的 S1、供晶、固晶、胶盘、翻转，以及各输送段和上下料 Task。',
+          '收集待检查任务',
+          '参与检查的清单按当前配置来定，包括 S1、供晶、固晶、胶盘、翻转，以及各段输送和上下料的任务。',
           ['running-tasks'],
         ),
         step(
           'running',
-          '只在 Running 时拒绝',
-          '检查列表中的非空 Task，只要 Status 等于 Running 就提示并返回 false；遍历结束返回 true。',
+          '只在运行中时拒绝',
+          '逐个看清单里已存在的任务，只要有一个仍处于运行中，就提示并拒绝启动；全部看完都没有运行中的，才放行。',
           ['running-tasks'],
           [
             outcome(
               '门控范围',
-              '返回 true 只说明这个判断没有发现 Running；不能据此推断全部 Task 已成功完成或全部硬件已停止。',
+              '放行只说明这轮检查没有发现运行中的任务，不能据此推断所有任务都已正常完成，也不能推断硬件都已停下。',
               'running-tasks',
               'state-read',
             ),
@@ -274,11 +271,11 @@ export const recoveryGuide: SourceGuide = {
   ],
   boundaries: [
     {
-      text: '本次复核暂停、继续、普通停止、急停与再次启动的入口及中止方法体。动作内层的 Retry、Ignore、消息等待与物料恢复仍须按各生产模块继续阅读。',
+      text: '本页核对暂停、继续、普通停止、急停和再次启动这几个入口，以及各自中止时到底做了什么。动作内部的失败重试、可忽略的结果、提示等待和物料恢复，仍要按各生产模块继续核对。',
       refs: ['machine-pause', 'machine-continue', 'emergency-tasks', 's1-input-loop'],
     },
     {
-      text: '页面展示的是当前源码的行为和缺失的确认步骤，没有执行生产代码或修改设备控制逻辑。',
+      text: '本页只说明程序当前已有的行为，以及仍然缺失的确认步骤；没有运行生产，也没有改动设备控制逻辑。',
       refs: ['stop-state', 'emergency-axes', 'abort-s1', 'abort-s2', 'abort-wafer'],
     },
   ],

@@ -45,8 +45,8 @@ const existingTopics: PresentationTopic[] = [
     purpose:
       '把程序初始化、主窗体加载与操作员生产启动分开阅读，说明系统何时进入工作状态、何时启动各任务。',
     conditions: [
-      'Main 按回零配置调用 AllAxisGoHome；MainForm_Load 对在线且未回零另有门控。',
-      '生产启动仍检查 AllAxisReset，再检查任务、初始化、安全门及六个运行环节。',
+      '程序启动时按回零配置执行开机回零；主界面加载时，在线模式若尚未回零还会被拦下。',
+      '生产启动还会核对回零完成状态，再检查任务、初始化、安全门和六个运行环节。',
     ],
     exceptions: [
       '取消或检查失败会在相应入口返回。',
@@ -64,8 +64,8 @@ const existingTopics: PresentationTopic[] = [
       '各交接段需要满足对应物料占用、放行信号和传感器条件。',
     ],
     exceptions: [
-      '超时、卡料和失败的 Retry 返回位置因交接段而异。',
-      '部分 Ignore 分支仍推进软件状态，需要阅读局部处理说明。',
+      '超时、卡料和失败后的重试位置因交接段而异。',
+      '部分忽略分支仍推进软件状态，需要阅读局部处理说明。',
     ],
     diagrams: [
       'transport-workflow',
@@ -85,8 +85,8 @@ const existingTopics: PresentationTopic[] = [
       '在线来料、预点胶、暂停及步骤状态共同影响执行。',
     ],
     exceptions: [
-      'Retry、Abort、Fail 和检测结果在各层的传播方式不同。',
-      '停止、重启和返工涉及消息与步骤状态保留，应按具体路径阅读。',
+      '重试、中止、失败和检测结果在各层的处理方式不同。',
+      '停止、重启和返工涉及动作消息与步骤状态的保留，应按具体路径阅读。',
     ],
     diagrams: [
       'dispense-workflow',
@@ -107,7 +107,7 @@ const existingTopics: PresentationTopic[] = [
     summary: '了解搜晶模式、自动换片及供晶与取片的握手。',
     purpose: '根据供料模式和地图状态选择晶粒，处理换料、搜索与翻转，并向取片任务交接。',
     conditions: [
-      'Wafer、Waffle、FlipTable 及搜索模式决定供料路径。',
+      '晶圆、料盒、翻转台及搜索模式决定供料路径。',
       '当前物料、地图状态、停止状态与交接信号共同控制推进。',
     ],
     exceptions: [
@@ -156,7 +156,7 @@ const existingTopics: PresentationTopic[] = [
     purpose: '说明系统在暂停、失败和停止时如何处理信号、任务、载具与恢复前置条件。',
     conditions: [
       '继续运行需要满足所属入口的状态和门控条件。',
-      '恢复路径受当前任务、物料和 Mapping 状态影响。',
+      '恢复路径受当前任务、物料和映射状态影响。',
     ],
     exceptions: [
       '普通 Stop 没有统一等待所有任务退出。',

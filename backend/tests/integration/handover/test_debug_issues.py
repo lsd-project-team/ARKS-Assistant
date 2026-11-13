@@ -36,8 +36,6 @@ def test_manual_issue_save_update_revision_and_user_permissions(services):
         old = client.get(f"/api/handover/records/{row['id']}?version=1").json()
         assert "更换密封圈" not in old["payload"]["answer"] and old["version"] == 1
         assert "confirmation" not in old
-        assert client.get(f"/api/handover/records/{row['id']}/history").status_code == 403
-        assert client.get("/api/handover/events").status_code == 403
         # 未经管理员复核也可检索；处理状态与交接复核状态分离。
         matches = DebugIssueCorpus(client.app.state.auth.database).search("E901 真空")
         assert matches[0]["version"] == 2

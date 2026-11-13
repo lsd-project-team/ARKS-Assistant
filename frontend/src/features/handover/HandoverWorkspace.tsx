@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { WorkspaceHeading } from '../../app/layouts/WorkspaceHeader';
 import { draftFor, useWorkspace } from '../../app/state/store';
 import { Button, ErrorText } from '../../shared/ui/ui';
-import { useAuth } from '../auth/AuthContext';
 import { DebugIssueEditor } from './debug_issues/DebugIssueEditor';
 import { DebugIssuePage } from './debug_issues/DebugIssuePage';
 import { SourceImport } from './materials/SourceImport';
@@ -14,8 +13,7 @@ import { PackageBuilder } from './packages/PackageBuilder';
 import { PackageList } from './packages/PackageList';
 import { RecordEditor } from './records/RecordEditor';
 import { RecordView } from './records/RecordView';
-import { ActivityPage } from './reviews/ActivityPage';
-import { allowedHandoverTab, canReview, handoverTabs } from './shared/access';
+import { handoverTabs } from './shared/access';
 import { handoverClient } from './shared/client';
 import './shared/handover.css';
 import { PageHeading, pageDescriptions } from './shared/Presentation';
@@ -23,7 +21,6 @@ import {
   handoverScope,
   tabs,
   type Definitions,
-  type Event,
   type HandoverContext,
   type HandoverRecord,
   type Kind,
@@ -51,13 +48,6 @@ export default function HandoverWorkspace({
   management?: boolean;
 }) {
   const scopeId = handoverScope;
-  const account = useAuth().session?.user;
-  const role = account?.role;
-  const reviewAccess = canReview(role);
-  const pageAllowed = allowedHandoverTab(tab, role);
-  useEffect(() => {
-    if (!pageAllowed) navigate('overview');
-  }, [pageAllowed]);
   const workbench = useRef<HTMLElement>(null);
   useEffect(() => {
     workbench.current?.scrollTo({ top: 0 });
@@ -77,12 +67,6 @@ export default function HandoverWorkspace({
     queryKey: ['handover-schema', scopeId],
     queryFn: () => client.get<Definitions>('/schema'),
     staleTime: Infinity,
-  });
-  const events = useQuery({
-    queryKey: ['handover-events', scopeId],
-    queryFn: () => client.get<Event[]>('/events'),
-    enabled: reviewAccess && (tab === 'overview' || tab === 'updates'),
-    refetchInterval: 5000,
   });
   const [editor, setEditor] = useState<{ kind: Kind; row?: HandoverRecord; initial?: Payload }>();
   const [operation, setOperationValue] = useState('');
@@ -192,12 +176,6 @@ export default function HandoverWorkspace({
   const current = rows.filter((row) =>
     archive ? row.state === 'archived' : row.state !== 'archived',
   );
-  if (!pageAllowed)
-    return (
-      <section className="handover-workbench" role="status">
-        正在返回交接概览…
-      </section>
-    );
   return (
     <section
       ref={workbench}
@@ -208,7 +186,7 @@ export default function HandoverWorkspace({
         <div>
           <h1>
             <ClipboardList size={23} />
-            {management ? (tab === 'updates' ? '复核与追溯' : '交接管理') : '交接工作台'}
+            {management ? '交接管理' : '交接工作台'}
           </h1>
         </div>
         <div className="handover-actions">
@@ -218,11 +196,9 @@ export default function HandoverWorkspace({
           </Button>
         </div>
       </WorkspaceHeading>
-      {!(management && tab === 'updates') && (
+      {(
         <nav className="handover-tabs" aria-label="交接工作台页面">
-          {handoverTabs(role)
-            .filter((item) => !management || item.id !== 'updates')
-            .map((item) => (
+          {handoverTabs().map((item) => (
               <button
                 key={item.id}
                 aria-current={tab === item.id ? 'page' : undefined}
@@ -238,7 +214,7 @@ export default function HandoverWorkspace({
       )}
       <div className="handover-body">
         <ErrorText
-          error={overview.error || definitions.error || context.error || events.error}
+          error={overview.error || definitions.error || context.error}
           reveal
         />
         {(overview.error || definitions.error) && <Button onClick={refresh}>重试加载</Button>}
@@ -253,16 +229,10 @@ export default function HandoverWorkspace({
               <OverviewPage
                 overview={overview.data}
                 definitions={definitions.data}
-                events={events.data}
-                eventsError={!!events.error}
-                syncedAt={Math.min(
-                  overview.dataUpdatedAt,
-                  events.dataUpdatedAt || overview.dataUpdatedAt,
-                )}
-                syncing={overview.isFetching || events.isFetching}
+                syncedAt={overview.dataUpdatedAt}
+                syncing={overview.isFetching}
                 onOpen={open}
                 onNavigate={navigate}
-                canReview={reviewAccess}
               />
             )}
             {tab !== 'overview' && (
@@ -270,7 +240,7 @@ export default function HandoverWorkspace({
                 title={tabs.find((item) => item.id === tab)!.label}
                 description={management ? undefined : pageDescriptions[tab]}
               >
-                {!['updates', 'materials'].includes(tab) && (
+                {tab !== 'materials' && (
                   <label className="handover-checkbox">
                     <input
                       type="checkbox"
@@ -338,18 +308,8 @@ export default function HandoverWorkspace({
               />
             )}
             {tab === 'materials' && <MaterialsPage rows={rows} onOpen={open} />}
-            {tab === 'updates' && reviewAccess && (
-              <ActivityPage
-                events={events.data || []}
-                rows={rows}
-                definitions={definitions.data}
-                onOpen={open}
-              />
-            )}
             {recordId && !editor && (
               <RecordView
-                canReview={reviewAccess}
-                reviewOnly={tab === 'updates'}
                 key={`${scopeId}:${recordId}:${version || ''}`}
                 scopeId={scopeId}
                 identifier={recordId}
@@ -359,7 +319,6 @@ export default function HandoverWorkspace({
                 records={rows}
 
                 actor={actor}
-                confirmationActor={account?.display_name || account?.username}
                 onActor={setActor}
                 onClose={() => navigate(tab)}
                 onOpen={open}

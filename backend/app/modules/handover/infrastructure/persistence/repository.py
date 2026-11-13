@@ -204,6 +204,7 @@ class HandoverStore(DebugImageStorage):
                 kind=kind,
                 title=title,
                 payload_json=dump(value),
+                state="confirmed",
             )
             session.add(row)
             session.flush()
@@ -235,7 +236,7 @@ class HandoverStore(DebugImageStorage):
             row.title, row.payload_json = body.title, dump(value)
             row.version += 1
             row.updated_at = now_iso()
-            row.state = "needs_review" if row.state in {"confirmed", "needs_review"} else "draft"
+            row.state = "confirmed"
             self._snapshot(
                 session, row, "updated", body.actor, body.reason or "修改内容，保留原版本"
             )
@@ -250,6 +251,8 @@ class HandoverStore(DebugImageStorage):
             return record_dict(row)
 
     def _invalidate(self, session, identifier, actor, reason, *, related=None, previous=None):
+        # 复核流程已移除：记录保存即可用，不再把下游记录标成待复核或递增版本。
+        return
         rows = self._rows(session)
         affected = {identifier}
         # 新增验证、问题或设备约束也需要让已确认工作和计划重新复核。

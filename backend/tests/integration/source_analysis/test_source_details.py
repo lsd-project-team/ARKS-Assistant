@@ -31,12 +31,7 @@ def add_source(client, actor="上传整理人", **changes):
 
 def test_source_organizer_is_original_uploader_in_current_and_fixed_versions(client):
     source = add_source(client)
-    confirmed = client.post(
-        f"/api/handover/records/{source['id']}/confirm",
-        json={"version": 1, "actor": "后续审核人", "opinion": "审核意见"},
-    )
-    assert confirmed.status_code == 200, confirmed.text
-    for suffix in ("", "?version=1", "?version=2"):
+    for suffix in ("", "?version=1"):
         response = client.get(f"/api/handover/records/{source['id']}{suffix}")
         assert response.status_code == 200
         row = response.json()
@@ -61,11 +56,6 @@ def test_replacing_source_retains_each_uploads_own_organizer(client):
 
 def test_regular_reader_sees_upload_organizer_without_private_review_history(client):
     source = add_source(client)
-    confirmed = client.post(
-        f"/api/handover/records/{source['id']}/confirm",
-        json={"version": 1, "actor": "PRIVATE-REVIEW-ACTOR", "opinion": "PRIVATE-REVIEW-OPINION"},
-    )
-    assert confirmed.status_code == 200, confirmed.text
     accounts = json.loads(client.app.state.auth.initial_accounts.read_text(encoding="utf-8"))
     ordinary = next(account for account in accounts if account["username"] == "user")
     login = client.post(
@@ -78,5 +68,3 @@ def test_regular_reader_sees_upload_organizer_without_private_review_history(cli
     assert response.json()["created_by"] == "上传整理人"
     assert "confirmation" not in response.json()
     assert "PRIVATE-REVIEW" not in response.text
-    assert client.get(f"/api/handover/records/{source['id']}/history").status_code == 403
-    assert client.get("/api/handover/events").status_code == 403

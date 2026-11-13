@@ -4,18 +4,18 @@ export const s1ActionFlows = [
   flow(
     's1-dispense-commit',
     '点胶与步骤提交',
-    '点胶节点先经过单步、预点胶及 WaitStart，再计算位置并调用插补。焊点步骤在返回 Success 和线程完成消息之前提交。',
+    '点胶动作先经过单步等待、预点胶和等待启动或停止指令，再计算位置并执行插补。焊点步骤在动作返回成功、线程把消息标为完成之前就已提交。',
     ['s1-point-before', 's1-point-work', 's1-worker-results'],
     [
       step(
         'single',
         '单步与离线标记',
-        'OffLineWork 先调用 S1FinishedStep，把当前焊点步骤写 true，之后才等待单步。非单步模式直接通过；单步等待返回 false 时点胶节点返回 Abort。',
+        '离线生产会先提交当前焊点步骤，把它记为完成，之后才等待单步。非单步模式直接通过；单步等待返回不通过时，点胶动作中止。',
         ['s1-point-before', 's1-single-gate', 's1-point-finished'],
         [
           outcome(
             '等待期间关闭单步模式',
-            'Signal.WaitSingleStep 循环发现 IsSingleStepWork=false 返回 false；它没有调用 WaitStart，也没有在该循环检查机器 Stop/Pause。不能把它解释成统一的暂停停止门控。',
+            '单步等待循环一旦发现单步模式已关闭，就返回不通过；它没有转到等待启动或停止指令，也没有在这个循环里检查机器的停止和暂停。不能把它解释成统一的暂停停止门控。',
             's1-single-signal',
           ),
         ],
@@ -23,29 +23,29 @@ export const s1ActionFlows = [
       step(
         'pre',
         '预点胶与停止检查',
-        '调用 PreDispenseAction.DoWork，非 Success 返回 Alarm；随后 Signal.WaitStart=false 返回 Fail。这两处都早于本次插补，但离线分支可能已提交过焊点步骤。',
+        '先执行预点胶动作，结果不是成功就报警并停止本次点胶。随后检查启动等待，不满足就返回失败。这两处都早于本次插补，但离线分支可能已经提交过焊点步骤。',
         ['s1-point-before', 'tr-signal-start'],
       ),
       step(
         'dispense',
         '胶型、坐标与插补',
-        '按当前步骤查询胶型。胶型偏移经焊点坐标变换后，加点胶位置补偿和设备偏移；角度由坐标系角度加旋转补偿。DryCycle 将 isDrip 设为 false，仍调用 InterpolationApplication；返回非 Success 则返回 Alarm。',
+        '按当前步骤查询胶型。胶型偏移经焊点坐标变换后，叠加点胶位置补偿和设备偏移；角度由坐标系角度加旋转补偿。空跑时把滴胶标记置为关闭，仍执行插补；插补结果不是成功就报警返回。',
         ['s1-current-context', 's1-point-work'],
       ),
       step(
         'commit',
         '先提交焊点，再完成收尾',
-        '插补返回 Success 后先 S1FinishedStep，再刷新统计。观看点位的等待、预点胶时机标记及 finally 回调都发生在焊点提交之后；直到动作返回，线程才有机会标记消息 Finished。',
+        '插补成功后先提交焊点步骤，再刷新统计。观看点位的等待、预点胶时机标记和收尾回调都发生在焊点提交之后；直到动作返回，线程才有机会把消息标为完成。',
         ['s1-point-work', 's1-point-after', 's1-worker-results', 's1-reset-messages'],
         [
           outcome(
             '观看期间停止',
-            '观看循环检查 IsStop，停止时清观看开关并 break，随后仍可走后续标记和 Success 返回；不会在该 break 处回滚已提交的焊点步骤。',
+            '观看循环会检查停止标志，停止时关闭观看并跳出循环，随后仍可走后续标记和成功返回；不会在这个跳出点回滚已提交的焊点步骤。',
             's1-point-after',
           ),
           outcome(
             '回调异常',
-            'WorkStart 位于 try 前；finally 先置动作 State=Stop，再调用 WorkStop 和刷新载具。回调或刷新抛出的异常可能向线程传播，不能保证由 catch 转成 Exception 返回码并进入线程 Stop 分支。',
+            '开始回调在异常保护之外；收尾时先把动作状态置为停止，再调用停止回调并刷新载具。回调或刷新抛出的异常可能直接传给线程，不能保证被统一转成异常结果并进入线程的停止分支。',
             's1-point-before',
             's1-point-after',
             's1-worker-results',
@@ -57,30 +57,30 @@ export const s1ActionFlows = [
   flow(
     's1-segment-handshake',
     '分段排序与等待',
-    'Divide 在消息队列中插入交互动作。交互通过两个信号请求 S1 段间输送；它调用 Wait，却没有使用 Wait 的布尔结果。',
+    '分段处理会在动作消息队列中插入一个交互动作。交互动作通过两个信号请求 S1 段间输送；它发起等待，却没有采用等待给出的对错结果。',
     ['s1-divide-messages', 's1-segment-action'],
     [
       step(
         'partition',
         '按索引拆分消息',
-        'GetFirstMatrixIndex 对异形配置取坐标 X<0 的基板索引；普通配置取矩阵前 ColumnCount/2 列。排序方法把消息分成索引在集合中和不在集合中两组；不是简单按基板编号一半切分。',
+        '拆分时，异形配置取坐标为负的基板序号；普通配置取矩阵前一半列。排序把消息分成序号在集合内和不在集合内两组，不是简单按基板编号对半切分。',
         ['s1-segment-index', 's1-divide-messages'],
       ),
       step(
         'insert',
         '实际执行顺序',
-        '重组时先加入不在集合中的 lastActionNodeMessages，再加入 InteractiveAction，最后加入在集合中的 firstActionNodeMessages。两组各自保持原消息相对顺序；基板索引 0 的消息也参与该分组。',
+        '重组时先加入不在集合内的消息，再加入交互动作，最后加入在集合内的消息。两组各自保持原有相对顺序；基板序号为 0 的消息也参与这个分组。',
         ['s1-divide-messages'],
       ),
       step(
         'request',
         '按位置标记发段间许可',
-        'InteractiveAction 仅在 Divide 且 IsTuInDispense1=true 时调用 MoveZToSafePos，发 AllowDispense1TransferToDispense2Signal，再等 TransferToDispense2FinishedSignal。非 Divide 或已不在第一段直接走 Success。',
+        '交互动作只在分段处理且第一段仍在点胶时，先把 Z 移到安全位，发出允许第一段向第二段输送的信号，再等待第二段输送完成。不在分段处理或已不在第一段的，直接按成功通过。',
         ['s1-segment-action'],
         [
           outcome(
-            '等待返回 false',
-            'Wait 初始或循环检查到 Stop 可返回 false，但交互动作未检查返回值，仍置 IsFirstDispense=true 并走 Success。调用本身没有整体超时参数。',
+            '等待结果未被采用',
+            '等待在初次检查或循环中发现停止条件时会返回不通过，但交互动作没有检查这个结果，仍把第一段标记置为有效并按成功继续。这次等待本身没有整体超时设置。',
             's1-segment-action',
             'tr-signal-wait',
           ),
@@ -89,12 +89,12 @@ export const s1ActionFlows = [
       step(
         'pause',
         '等待期间的状态检查',
-        'Signal.Wait 进入事件等待前调用一次 WaitStart；事件轮询循环检查 Stop，没有重新检查 Pause。因此进入等待之后的暂停，不等于该循环必然阻塞信号消费。',
+        '等待在进入事件循环前会检查一次启动或停止指令；事件轮询循环只检查停止，没有重新检查暂停。因此进入等待之后才按下的暂停，不必然阻塞该循环继续消费信号。',
         ['tr-signal-wait', 'tr-signal-start'],
         [
           outcome(
             '交互收尾异常',
-            '正常 try 异常被转为 Exception，但 WorkStart 在 try 前，WorkStop 在 finally。回调异常仍可能覆盖预定返回结果并向线程传播。',
+            '正常流程里的异常会转成异常结果，但开始回调在异常保护之外，停止回调放在收尾段。回调抛出异常时，仍可能覆盖预定返回结果并传给线程。',
             's1-segment-action',
           ),
         ],
@@ -104,30 +104,30 @@ export const s1ActionFlows = [
   flow(
     's1-defect-result',
     '检测结果如何回到线程',
-    '检测节点按模式调用视觉与 PostBondEpoxyCheck，再将结果转换成焊点提交、禁用、停止或返工。动作返回 Success 不一定表示执行过视觉检测或判定合格。',
+    '检测动作按模式调用视觉采集和点胶后胶量检查，再把结果转换成焊点提交、焊点禁用、停机或返工。动作返回成功，不一定表示实际做过视觉检测或判定合格。',
     ['s1-defect-run', 's1-defect-results'],
     [
       step(
         'gate',
         '确认当前焊点需要检测',
-        '与点胶节点一样，禁用、仅 S2 启用、当前步骤不再需要执行时跳过；焊点为空抛异常。OffLineWork 在 DoWork 中先提交焊点步骤，之后仍进入检测模式 switch。',
+        '与点胶动作一样，焊点被禁用、只在 S2 启用、当前步骤已不需要执行时跳过；当前焊点为空则报告异常。离线生产在正式执行时先提交焊点步骤，之后仍进入检测模式分支。',
         ['s1-defect-gate', 's1-defect-run'],
       ),
       step(
         'mode',
         '当前实现只处理一种模式',
-        'WithoutReferenceSearch 计算检测位置，调用 DispenseVisionDefect，再进入结果处理。这个 switch 没有其他 case；其他模式直接走尾部 Success，不在这里拍照，也没有在该尾部补写 S1FinishedStep。',
+        '当前只处理一种不带参考搜索的检测模式：先计算检测位置，采集胶检图像，再进入结果处理。这个分支没有其他模式；其他模式直接走到尾部按成功返回，既不在这里拍照，也没有在尾部补记焊点步骤。',
         ['s1-defect-run'],
       ),
       step(
         'result',
         '区分提交、禁用与重做',
-        'PostBondEpoxyCheck 返回 Success 时提交当前步骤；Fail 时禁用焊点却返回 Success；Abort 时调用 Stop 并返回 Abort；Retry 调用 ReDispense 后返回 Retry；其他值抛异常。此处只解释返回码消费，不推断检查内部的判定标准。',
+        '胶量检查返回成功时提交当前步骤；检查不通过时禁用焊点，却仍按成功返回；要求中止时停机并返回中止；要求重做时先准备返工，再返回重试；其他结果报告异常。这里只解释结果如何被采用，不推断检查内部的判定标准。',
         ['s1-defect-results'],
         [
           outcome(
-            'Fail 的线程行为',
-            '线程看到的是 Success，因而标当前动作消息完成；不是在这里因 Fail 退出。后续节点仍按焊点禁用状态进行 IsDoWork 判断。',
+            '检查不通过时线程的行为',
+            '线程看到的是成功，因此把当前动作消息标为完成；不会因检查不通过在这里退出。后续动作仍按焊点禁用状态判断是否需要执行。',
             's1-defect-results',
             's1-worker-results',
             's1-point-gate',
@@ -135,7 +135,7 @@ export const s1ActionFlows = [
           ),
           outcome(
             '异常与收尾',
-            'try 内的异常返回 Exception；finally 置 State=Stop，调用停止回调及载具刷新。开始回调和 finally 回调的异常不保证被该 catch 包含。',
+            '异常保护范围内的错误返回异常结果；收尾时把动作状态置为停止，调用停止回调并刷新载具。开始回调和收尾回调里的异常，不保证被这段异常保护包含。',
             's1-defect-run',
           ),
         ],
@@ -145,24 +145,24 @@ export const s1ActionFlows = [
   flow(
     's1-rework-state',
     '返工与两套完成状态',
-    '返工先清焊点步骤，再尝试清指定动作消息。常规 Finish 只清消息标记；重新排序或再次 InjectSteps 也不等于清空已有焊点步骤。',
+    '返工先清空当前焊点的步骤记录，再尝试清掉指定动作消息的完成标记。常规收尾只清消息标记；重新排序或再次注入焊点步骤，也不等于清空已有焊点步骤。',
     ['s1-defect-rework', 's1-rework-messages', 's1-reset-messages', 's1-inject'],
     [
       step(
         'point',
         '先重置当前焊点全部步骤',
-        'ReDispense 遍历当前焊点 S1RemainingSteps 的键，把值写 false；准备重置的动作列表包含点胶节点和检测节点。焊点字典重置发生在调用 SetActionNodeReWork 之前。',
+        '返工准备会逐项处理当前焊点的全部剩余步骤，逐项改为未完成；需要重置的动作包括点胶动作和检测动作。焊点记录的重置发生在重置指定动作之前。',
         ['s1-defect-rework'],
       ),
       step(
         'message',
         '必须精确匹配动作上下文',
-        'WorkMessages 非空时，SetActionNodeReWork 为每个指定动作 Find 同动作名、同基板、同基岛、同 ProcessStepName 的消息，将找到的 Finished 置 false；找不到就抛 ActionNode Sort Error。其 for 虽多次迭代，Find 条件不含循环索引，未逐条重置同名消息。空消息列表会跳过内层循环，不在这里抛缺配对异常，也不重置消息。',
+        '动作消息列表非空时，为每个指定动作查找同动作名、同基板、同基岛、同步骤名的消息，把找到的完成标记清掉；找不到就报动作节点排序错误。查找条件里不含循环序号，多次循环也不会逐条重置同名消息。消息列表为空时跳过这层循环，不报缺配对错误，也不重置消息。',
         ['s1-rework-messages'],
         [
           outcome(
-            '点胶与检测步骤名不同',
-            '两种消息按配方的 if / else if 生成；重置却要求都与当前检测步骤同名。缺少相应消息时抛异常，已有焊点字典修改没有在该方法内回滚，不能宣称返工请求总能成功建立。',
+            '点胶与检测的步骤名不同',
+            '两类消息按配方二选一生成；重置却要求它们都与当前检测步骤同名。缺少对应消息时报告异常，已改动的焊点记录没有在这一步回滚，不能宣称返工请求总能建立成功。',
             's1-step-action',
             's1-defect-rework',
             's1-rework-messages',
@@ -171,14 +171,14 @@ export const s1ActionFlows = [
       ),
       step(
         'retry',
-        'Retry 从队首重新选择',
-        '返工顺利返回 Retry 时，线程不标当前消息完成，下轮 GetNextActionNode 从队首找未完成项。若 ReDispense 抛异常，则在检测动作的 try/catch 内返回 Exception；finally 回调仍可能再次抛异常。',
+        '重试从队首重新选择',
+        '返工顺利时动作返回重试，线程不把当前消息标为完成，下一轮从队首重新找未完成项。若返工准备报告异常，则在检测动作的异常保护内转为异常结果；收尾回调仍可能再次抛出异常。',
         ['s1-defect-results', 's1-defect-run', 's1-worker-results', 's1-next-message'],
       ),
       step(
         'restart',
         '消息清空不等于业务步骤清空',
-        'Finish 把消息 Finished 全部置 false；Init 清空并重建消息；InjectSteps 只补缺失键。若再次生产复用原载具且没有其他路径重置已完成步骤，IsS1NeedStep 仍为 false，动作可被跳过并由线程标消息完成。',
+        '结束收尾会把动作消息的完成标记全部清掉；初始化会清空并重建消息；注入焊点步骤只补缺失项。若再次生产时复用原载具，且没有其他路径重置已完成的步骤，焊点仍会被判为无需执行，动作被跳过，随后由线程把消息标为完成。',
         [
           's1-reset-messages',
           's1-init',

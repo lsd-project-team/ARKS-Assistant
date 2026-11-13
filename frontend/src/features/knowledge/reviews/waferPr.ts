@@ -4,25 +4,25 @@ export const waferPrFlows = [
   flow(
     'wafer-pr-camera',
     'PR 相机入口：灯光、采图与返回枚举',
-    'PREntity.DoWork 在对象锁内设置采图条件并调用 Excute；失败来源与最终返回枚举需分别看。',
+    'PR 采图入口先取得独占，再设置采图条件并执行采图；失败来自哪一步，和最终按什么结果返回，需要分开看。',
     ['v-pr-light', 'v-pr-call', 'v-pr-snapshot'],
     [
       step(
         'light',
         '可选设置硬件与采图条件',
-        '传入 PRHardware 才 SetHardware；isSetLight=true 时按启用灯光设置亮度，等 15 ms，再设置曝光、增益和 Gamma/10。后三个 setter 返回 false 只记错误日志，未据此提前返回 Fail；此处没有全局 StopSearch。',
+        '只有指定了硬件时才设置硬件；启用灯光时，按配置设置亮度，等 15 毫秒，再设置曝光、增益和伽马（取原值除以 10）。后三项设置失败时只记错误日志，没有据此提前按失败返回；这里也没有统一的停止检查。',
         ['v-pr-light', 'v-pr-camera-settings'],
       ),
       step(
         'snap',
-        '采图为空时返回 None',
-        'Excute 先把 result 设 None，在 using 中 SnapShot；bmp=null 则记错误和描述并 return，最终 DoWork 返回 None。另一个 Photograph(cameraName) 则设置相机名后拍照，为 null 时直接抛“采图失败”，不是同一种失败出口。',
+        '采图为空时返回无',
+        '采图执行先把结果记为无图，再拍照，拍到的临时图片在结束后自动释放；图片为空就记下错误和描述后结束，最终按无图返回。另一个指定相机拍照的入口则是先设相机名再拍照，图片为空时直接抛出“采图失败”，两者不是同一种失败出口。',
         ['v-pr-call', 'v-pr-snapshot', 'v-pr-photograph'],
       ),
       step(
         'find',
-        '算法 FindModel 后才处理保存和枚举',
-        '有图就克隆，按 IsFlash/触发方式可创建关闭光源任务，随后在 lock(this) 内设图、FindModel 并赋 AlgResults。灯光任务没有在这一段等待；算法执行的 bool 与后续设置的 ExcuteResult 是两层结果。',
+        '算法查找模型后才处理保存和枚举',
+        '拿到图片后先复制一份，再按闪光灯或触发方式决定是否另建一个关光源任务；随后取得独占，设置图片、执行算法匹配并保存算法结果。关光源任务在这一段没有被等待；算法执行的成功与否，和之后记录的采图结果是两层判断。',
         ['v-pr-flash', 'v-pr-find'],
       ),
     ],
@@ -30,25 +30,25 @@ export const waferPrFlows = [
   choices(
     'wafer-pr-result-image',
     'PR 保存与展示：结果被异常截断的位置',
-    '保存回调、结果枚举和展示顺序相互影响；Success 不证明保存已落盘。',
+    '保存请求、采图结果和结果展示的先后顺序相互影响；按成功返回并不证明图片已经写入文件。',
     ['v-pr-save-success', 'v-pr-save-fail', 'v-pr-post'],
     [
       step(
         'save',
-        '保存回调先于 Success/Fail 赋值',
-        'FindModel 成功时按 IsSaveImage 调保存原图回调，并先调用 IsSaveLocateImage() 再判断 postImage，满足才保存结果图；之后才赋 Success。失败时可先保存失败图，再赋 Fail。try 内回调或结果读取异常被记录，没有在 catch 补赋枚举，因此 result 可保留先前的 None。',
+        '保存回调先于成功或失败赋值',
+        '算法匹配成功时，按保存原图开关请求保存原图；结果图要同时满足保存定位图和展示图两个开关才会保存；这些做完才记录成功。失败时可以先保存失败图，再记录失败。保存或读取结果过程中出现异常只会被记录，没有在异常处理里补记结果，因此采图结果可能仍停留在之前的无图。',
         ['v-pr-save-success', 'v-pr-save-success-end', 'v-pr-save-fail', 'v-pr-save-catch'],
       ),
       step(
         'post',
-        'Success 展示也读取第 0 项',
-        'DoWork 调 Excute 后释放 bmpClone。仅 Success 时创建展示对象并直接取 AlgResults[0].OutPutImg1，未检查数量；postImage=true 才选择广播通道，无接收通道就 Dispose 展示图。该展示代码在 Excute 的保存 catch 之外，异常可向上抛。',
+        '成功展示也读取第 0 项',
+        '采图入口执行完采图后会释放图片副本。只有采图成功时，才创建展示用的图片并直接取第一个算法结果的输出图，没有检查结果数量；展示开关打开时才选择广播通道，没有接收通道就释放展示图。这段展示处理不在采图内部的异常保护范围里，异常会继续向上抛出。',
         ['v-pr-call', 'v-pr-post', 'v-pr-post-finish'],
       ),
       step(
         'owner',
         '不同重载的展示图所有权不同',
-        '相机重载直接引用第 0 项的输出图；Bitmap 重载则克隆该图用于展示。不能把无接收通道时的 Dispose 统一解释为只释放独立展示副本；也不能据 Task.Run 或保存回调证明文件完成写入。',
+        '相机采图入口直接引用第一个结果的输出图；已有图片入口则先复制这张图再展示。因此不能把无接收通道时的释放一律解释为只释放独立副本；也不能凭另起后台任务或保存请求就断定文件已经写完。',
         ['v-pr-post', 'v-pr-post-finish', 'v-pr-bitmap-post', 'v-pr-bitmap-save'],
       ),
     ],
@@ -56,30 +56,30 @@ export const waferPrFlows = [
   flow(
     'wafer-pr-bitmap',
     'PR 已有图片入口：输入释放与九点复用',
-    'DoWork(Bitmap) 使用传入图片执行算法，正常尾部会释放它；调用方要按实际所有权理解复用。',
+    '已有图片入口用传入的图片执行算法，正常结束时会释放它；发起采图的一侧要按这个实际归属来理解图片能否复用。',
     ['v-pr-bitmap-entry', 'v-pr-bitmap-dispose'],
     [
       step(
         'input',
-        '空图片 Fail，有图先克隆并执行',
-        '对象锁内 bmp=null 时直接 Fail；有图先写 OriginalBmp 克隆并另建 bitmapClone，再把传入 bmp 交给 Alg.SetImage、FindModel 和 AlgResults。这里没有与相机重载相同的 using 和保存 catch 范围。',
+        '空图片失败，有图先克隆并执行',
+        '取得独占后，图片为空就直接按失败结束；有图时先保存原图副本并另建一份图片副本，再把传入图片交给算法设置、匹配并保存结果。这里没有相机入口那样的自动释放和保存异常保护。',
         ['v-pr-bitmap-entry'],
       ),
       step(
         'save',
         '保存克隆的后台任务不阻塞返回',
-        '开启 IsSaveImage 时，成功和失败分别 Task.Run 保存 bitmapClone，任务里锁图片、建目录、Save、Dispose，异常被吞；没有在此等待任务。成功赋 Success、失败赋 Fail，随后显式 Dispose 传入 bmp，再处理成功展示。',
+        '开启保存原图时，成功和失败都会另起后台任务保存那份图片副本；任务里依次建目录、写文件，再释放图片，出错会被吞掉；这里不等待任务结束。随后记录成功或失败，显式释放传入的图片，再处理成功后的展示。',
         ['v-pr-bitmap-save', 'v-pr-bitmap-save-fail', 'v-pr-bitmap-dispose'],
       ),
       step(
         'nine',
-        'Nine 复用图片与被调用方法的释放冲突',
-        'CalculateDiesPosition 对九个候选传同一 Bitmap；DetectInkDot 对 Exist=true 的候选调用这个重载。因此第一处执行正常完成后图片已释放，后续存在候选仍可能收到同一对象。这里展示调用关系导致的风险，不把九次调用写成必然全部完成，也不修改生产实现。',
+        '九点复用图片与被调用方法的释放冲突',
+        '计算九点位置时，九个候选拿到的是同一张图片；墨点检测会对仍标为存在的候选走这个已有图片入口。因此第一处正常执行完就会释放图片，后面仍标为存在的候选可能再拿到这张已经释放的图片。这里说明的是这种先后关系带来的风险，不表示九次调用一定全部执行，也不改动生产实现。',
         ['ws-nine-calculate-ink', 'ws-nine-ink', 'v-pr-bitmap-dispose'],
         [
           outcome(
             '存在标记回写是另一问题',
-            'SingleDieInfo 为值类型，DetectInkDot 仍只修改形参副本；即使图片执行成功，这次赋值也不会写回九点缓存。两个边界不能合并为一个已经生效的自动过滤步骤。',
+            '单个芯片信息是按副本传入的，墨点检测清存在标记也只改副本；即使图片执行成功，这次清标记也不会写回九点缓存。这两个边界不能合并成一个已经生效的自动过滤步骤。',
             'ws-nine-ink',
             'ws-nine-struct',
           ),

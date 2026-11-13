@@ -4,19 +4,19 @@ export const waferVisionFlows = [
   choices(
     'wafer-vision-entry',
     '视觉入口：空跑、模板、真空与避让',
-    'MatchResult 的跳过入口与在线入口不同；等待超时日志不等于返回失败。',
+    '视觉定位在离线或空跑时的跳过入口，与在线入口不同；等待超时的日志并不等于按失败返回。',
     ['v-match-entry', 'v-match-wafer-wait', 'v-match-bond-wait'],
     [
       step(
         'skip',
         '离线或空跑直接给相机中心',
-        'IsOffLineWork 或 IsDryCycle 时直接 true，并返回包含 CameraCenterPixel 的单元素数组，跳过模板、真空、等待和 PR 执行；中心值为 (1224,1024,0)。这不是实际采图成功。',
+        '离线生产或空跑时，直接按成功返回一个只含相机中心坐标的结果，跳过模板、真空、等待和 PR 采图；中心值是 (1224,1024,0)。这不代表真的采到了图。',
         ['v-match-entry', 'v-camera-center'],
       ),
       step(
         'prepare',
         '在线先查模板、处理对称补偿和真空',
-        '模板不存在时提示并 false/null。对称模板先把 SymmetricCenter 转为偏移并加到当前实际位置；随后按 IsMatchWithVacuum 和三种料片配置开关对应真空，再等 DelayPhoto。没有在这里检查真空传感器的结果。',
+        '模板不存在时会给出提示，并按失败、无结果结束。对称模板先把对称中心换算成偏移，加到当前实际位置上；然后按是否带真空匹配以及三种料片配置开关对应的真空处理，再等待拍照延时。这里没有检查真空传感器的结果。',
         [
           'v-match-entry',
           'v-match-vacuum-on',
@@ -28,13 +28,13 @@ export const waferVisionFlows = [
       step(
         'wafer',
         '晶圆相机：超过八秒只记录并重启计时',
-        'isCheckBondPos=true 且 SearchCamera=WaferCamera 时，等待 IsNotAllowWaferCameraAction 变 false；超过 8000 ms 只记日志并 Restart，原报警退出代码被注释。循环调用 StopSearch，没有本地 Sleep 或总体截止时间。',
+        '开启焊头位置检查、且使用晶圆相机时，会等待“不允许晶圆相机动作”的条件解除；超过 8 秒只记日志并重新计时，超时不会触发报警退出。循环里会做停止检查，但没有本地延时，也没有总体截止时间。',
         ['v-match-wafer-wait'],
       ),
       step(
         'bond',
         '其他相机：等到位标记，再检查实际位置',
-        '其他相机路径循环 StopSearch，未收到 IsBondArriveSearchPos 就 Sleep(10)。标记为 true 后还检查 Bond 模组是否在配置位置；不在则抛异常，在才继续。isCheckBondPos=false 绕过这两种等待，但没有绕过模板、真空或 PR 调用。',
+        '其他相机路径在循环里做停止检查，没收到焊头到达搜索位就延时 10 毫秒。收到之后还会检查焊头模组是否在配置位置；不在就抛出异常，在才继续。关闭焊头位置检查会绕过这两种等待，但不会绕过模板、真空或 PR 采图。',
         ['v-match-bond-wait'],
       ),
     ],
@@ -42,31 +42,31 @@ export const waferVisionFlows = [
   choices(
     'wafer-vision-result',
     '视觉返回：结果数量、失败清理与存图',
-    'MatchResult 根据 PR 返回枚举转换 bool；没有给所有失败和异常设置同一个清理出口。',
+    '视觉定位会把 PR 的采图结果转成成功或失败；但所有失败和异常并没有共用一个清理出口。',
     ['v-match-results', 'v-match-fail', 'v-match-missing'],
     [
       step(
         'success',
-        'PR Success 后复制结果数组',
-        'PR 返回 Success 后按 AlgResults.Count 创建数组，逐项强转 MatchResult，再 true。Block 没有另检查数量；PR Success 的展示分支本身也直接读取 AlgResults[0]。空列表或类型不符可能先抛异常，不能画成普通“未找到”false。',
+        'PR 成功后复制结果数组',
+        'PR 采图成功后，按算法结果数量创建数组，逐项转成匹配结果，再按成功返回。这里没有另外检查数量；PR 成功后的展示也直接读第一个结果。列表为空或类型不符时可能先抛出异常，不能画成普通的“未找到”失败。',
         ['v-match-results', 'v-pr-post'],
       ),
       step(
         'image',
-        '这里的 isSaveImg 是同步保存',
-        'isSaveImg=true 时循环内创建 C://搜晶相机存图，并直接 Save 输出图片，文件名按秒生成。没有在 Block 这段创建后台任务或捕获保存异常；与 PR 内部的异步存原图或保存回调是不同路径。',
+        '这里的保存图像是同步保存',
+        '开启存图时，会在循环里创建搜晶相机存图目录，直接保存输出图片，文件名按秒生成。这段没有另起后台任务，也没有捕获保存时的异常；它与 PR 内部另起任务保存原图不是同一条路径。',
         ['v-match-results', 'v-pr-bitmap-save', 'v-pr-save-success'],
       ),
       step(
         'fail',
-        'PR 非 Success 才进入这段失败处理',
-        '非 Success 时仅 CarrierWithWaferConfig 显式关闭顶针台真空，两种 Waffle 的关闭语句被注释；对称模板再以当前实际位置减偏移请求移动，最后 false/null。这里不是方法级 finally，前序异常不保证执行这些调用。',
+        'PR 非成功才进入这段失败处理',
+        'PR 没有成功时，只有带晶圆的载具配置会显式关闭顶针台真空，两种华夫盒的真空不会在这里关闭；对称模板再用当前实际位置减去偏移请求移动，最后按失败、无结果结束。这里不是统一的收尾保护，前面的异常不保证还能执行这些动作。',
         ['v-match-fail'],
       ),
       step(
         'frame',
         '框架匹配是第二次调用',
-        'AnalyseDie 先匹配芯片；启用框架时另调 DieFrameName，只有两次 bool 都成功才置 isOK=true，并用首结果的世界坐标差写 FrameOffset。禁用框架才清 FrameOffset，启用但失败的分支没有清它；两次首结果读取都没有本地数量检查。',
+        '整颗芯片定位先匹配芯片；启用框架匹配时还会再做一次框架匹配，只有两次都成功才置定位有效，并用第一个结果的世界坐标差写入框架偏移。只有禁用框架时才清框架偏移；启用但匹配失败的分支不会清。两次读取第一个结果都没有在本地检查数量。',
         ['v-analyse-frame', 'v-match-defaults'],
       ),
     ],
@@ -74,24 +74,24 @@ export const waferVisionFlows = [
   choices(
     'wafer-vision-ink',
     '共享墨点检测：数量规则与跳过决定',
-    'AnalyseDie 使用 BlobResult 的 bool 作跳过依据；它与 Nine 的值参数检测不是同一个实现。',
+    '整颗芯片定位用墨点检测的结果作为是否跳过的依据；它与九点搜索里按传入副本做检测不是同一套实现。',
     ['v-analyse-ink', 'v-blob-entry', 'v-blob-number'],
     [
       step(
         'detect',
         '只在定位有效且非过桥点时检查',
-        'isOK=true、IsInkDotSearch=true 且非过桥点才对首匹配结果调用 BlobResult。BlobResult 离线或空跑直接 false；在线查模板、设光、拍照、设定位姿并 DoWork(Bitmap)。模板不存在提示后 false，不能按名称解释为一定拒绝该芯片。',
+        '只有定位有效、启用墨点检测且当前不是过桥点时，才对第一个匹配结果做墨点检测。墨点检测在离线或空跑时直接按未命中返回；在线则查模板、设灯光、拍照、设定位姿并用已有图片执行检测。模板不存在时提示后按未命中返回，不能按名字理解成一定会拒绝这颗芯片。',
         ['v-analyse-ink', 'v-blob-entry', 'v-blob-missing'],
       ),
       step(
         'number',
-        '启用数量检查时，区间内返回 false',
-        '算法成功且首结果 IsSuccess=true 时，若开启 IsCheckBlobNum，将首结果强转 BlobResult；Num 在包含上下边界的区间内返回 false，区间外才 true。未开数量检查则 true；首结果 IsSuccess=false 返回 false，PR 执行非 Success 则当墨点返回 true。',
+        '启用数量检查时，区间内判为失败',
+        '算法成功且第一个结果有效时，若开启数量检查，就取它的墨点数量：数量落在包含上下边界的区间内按未命中返回，区间外才按命中返回。未开启数量检查则按命中返回；第一个结果无效按未命中返回，PR 执行未成功则当作墨点按命中返回。',
         ['v-blob-number', 'v-blob-fail'],
         [
           outcome(
             '这里也依赖首结果和图片所有权',
-            '没有检查 AlgResults 的数量或转换类型；PR 的 Bitmap 重载正常尾部释放传入图片，Block 又在各正常分支 Dispose，没有 finally 覆盖异常。这与 Nine 复用同一图片的风险需分别理解。',
+            '这里没有检查算法结果的数量，也没有校验类型转换；PR 的已有图片入口正常结束时会释放传入图片，这段又在各正常分支释放，异常路径没有统一的收尾。这与九点复用同一张图片的风险要分开理解。',
             'v-blob-number',
             'v-blob-fail',
             'v-pr-bitmap-dispose',
@@ -101,7 +101,7 @@ export const waferVisionFlows = [
       step(
         'choice',
         '自动跳过与人工三个选项',
-        'BlobResult=true 时，IsBlobAutoSkip 直接设 isSkip；否则增加定位错误计数并弹框。OK 不跳过，Ignore 跳过，Abort 抛异常；跳过才增加 InkDot 和 Total、清空白计数并返回相机中心。未跳过仍可进入多次定位。',
+        '墨点检测命中时，若允许自动跳过就直接置跳过标记；否则增加定位错误计数并弹框。选择确认不跳过，选择忽略则跳过，选择中止会抛出异常；只有跳过才增加墨点和总数计数、清空空白次数并返回相机中心。未跳过时仍可进入多次定位。',
         ['v-analyse-ink', 'v-analyse-ink-count'],
       ),
     ],
@@ -109,31 +109,31 @@ export const waferVisionFlows = [
   choices(
     'wafer-vision-blank',
     '空晶：自动跳过、换向与视觉报警',
-    '空白计数、过桥标记、提前换行功能和操作员返回枚举共同决定恢复入口。',
+    '空白计数、过桥标记、提前换行功能和操作员的选择一起决定回到哪个恢复入口。',
     ['v-analyse-blank', 'v-analyse-choice-a', 'v-analyse-choice-b'],
     [
       step(
         'auto',
         '未到阈值自动跳过',
-        '定位或框架门失败后，若允许空晶自动跳过且 countBlankNum+1 小于上限，计数加一、isSkip=true，再返回相机中心。禁用自动跳过或达到上限才进入另一分支；过桥点在该分支清计数并跳过，不弹普通视觉报警。',
+        '定位或框架检查失败后，若允许空晶自动跳过，且空白次数加一仍小于上限，就把计数加一、置跳过标记并返回相机中心。禁用自动跳过或达到上限，才进入另一分支；过桥点在这一分支会清空计数并跳过，不弹普通的视觉报警。',
         ['v-analyse-blank', 'v-analyse-empty-end'],
       ),
       step(
         'ahead',
-        'Single 的提前换向不是提前换片标记',
-        '开启 IsAheadReachEnd 和空晶自动跳过且模式为 Single 时，在 countBlankNum+1 等于上限处调用 AheadReachEnd，计数加一后重新 AnalyseDie；之后仍小于上限乘三时继续跳过。AheadReachEnd 改方向、行列步距符号并移到相邻行或列，没有设置 isNeedAheadChangeTablet。',
+        '单点的提前换向不是提前换片标记',
+        '开启提前换向、空晶自动跳过，且当前是单点搜索时，会在空白次数加一达到上限时执行提前换向，计数加一后重新定位；之后只要还小于上限的三倍，就继续跳过。提前换向只改方向、翻转行列步距的正负并移到相邻行或列，没有置提前换片标志。',
         ['v-analyse-blank', 'v-single-ahead-a', 'v-single-ahead-b'],
       ),
       step(
         'retry',
-        'OK 与 Cancel 重新定位',
-        '进入 VisionAlarmFunc 后，OK 还以非 Box 且当前点越界为条件重新选点；表达式用 &，两侧都会求值。范围有效的 OK 和 Cancel 都回 RetryAnalyseDie，返回的人工 matchResult 没有在这个 switch 内直接用作定位结果。',
+        '确认与取消重新定位',
+        '进入视觉报警选择后，确认还会在“不是盒式且当前点越界”时重新选点；这个条件的两边都会被判断。范围有效的确认和取消都会回到重新定位，返回的人工匹配结果并没有在这一层直接当作定位结果使用。',
         ['v-analyse-choice-a', 'v-analyse-choice-b'],
       ),
       step(
         'change',
-        'Retry 表示提前更换，Ignore 才普通跳过',
-        'Abort 抛停止异常；Retry 设置 isSkip 和 isNeedAheadChangeTablet；Ignore 清空白计数并设 isSkip，再返回相机中心。提前换片标记在 SearchSingle 的下一轮入口消费并清除、设置换料和槽 Bad；地图与 Box 的搜索入口没有这个消费条件。',
+        '重试表示提前更换，忽略才普通跳过',
+        '选择中止会抛出停止异常；选择重试会置跳过标记和提前换片标志；选择忽略则清空空白次数、置跳过标记，再返回相机中心。提前换片标志会在单点搜索的下一轮入口被读取并清除，同时置换料和把槽设为不可用；地图和盒式的搜索入口没有这个读取条件。',
         ['v-analyse-choice-b', 'w-single-entry', 'ws-map-search-a', 'ws-box-search-a'],
       ),
     ],

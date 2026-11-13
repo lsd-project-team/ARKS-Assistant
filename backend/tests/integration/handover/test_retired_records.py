@@ -83,7 +83,7 @@ def test_retired_types_have_no_read_write_or_reference_routes_and_preserve_stora
                         record_id=identifier,
                         version=1,
                         title="旧记录",
-                        state="draft",
+                        state="confirmed",
                         payload_json=value,
                     )
                 )
@@ -107,7 +107,6 @@ def test_retired_types_have_no_read_write_or_reference_routes_and_preserve_stora
                 )
         before = stored_records(database)
         assert client.get("/api/handover").json()["records"] == []
-        assert client.get("/api/handover/events").json() == []
         schema = client.get("/api/handover/schema").json()
         assert not set(legacy) & schema["kinds"].keys()
         assert not set(legacy) & schema["schemas"].keys()
@@ -115,7 +114,7 @@ def test_retired_types_have_no_read_write_or_reference_routes_and_preserve_stora
         for kind, payload in legacy.items():
             identifier = "legacy-" + kind
             route = f"/api/handover/records/{identifier}"
-            for suffix in ("", "?version=1", "/history"):
+            for suffix in ("", "?version=1"):
                 assert client.get(route + suffix).status_code == 404
             assert client.get(f"/api/handover/sources/{identifier}/original").status_code == 404
             body = {
@@ -127,7 +126,7 @@ def test_retired_types_have_no_read_write_or_reference_routes_and_preserve_stora
             }
             assert client.patch(route, json=body).status_code == 422
             assert client.post("/api/handover/records", json=body).status_code == 422
-            for action in ("archive", "restore", "confirm", "reject"):
+            for action in ("archive", "restore"):
                 response = client.post(
                     route + "/" + action,
                     json={

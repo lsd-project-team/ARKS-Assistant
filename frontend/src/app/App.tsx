@@ -19,8 +19,6 @@ import { useWindowSync } from './hooks/useWindowSync';
 import { useNavigationLayout } from './layouts/hooks/useNavigationLayout';
 import { useLayoutMotion } from './layouts/hooks/useLayoutMotion';
 import { WorkspaceLoadBoundary } from './layouts/WorkspaceLoadBoundary';
-import { useSourceContext } from '../features/source_reader/hooks/useSourceContext';
-import { ErrorText } from '../shared/ui/ui';
 import { useNewConversation } from '../features/chat/hooks/useNewConversation';
 import { HistoricalSourceDialog } from '../features/source_reader/components/HistoricalSourceDialog';
 import '../features/chat/styles/conversations.css';
@@ -42,7 +40,6 @@ const CodePane = lazy(() =>
 
 export default function App() {
   useWindowSync();
-  const sourceContext = useSourceContext();
   const startConversation = useNewConversation();
   const { route, navigate, knowledgeOpen } = useKnowledgeNavigation();
   const handover = useHandoverNavigation();
@@ -204,37 +201,7 @@ export default function App() {
             />
           </Suspense>
         )}
-        {knowledgeOpen && sourceContext.isPending && (
-          <section className="workspace-placeholder padded muted" role="status">
-            正在读取流程与功能资料…
-          </section>
-        )}
-        {knowledgeOpen && sourceContext.isError && (
-          <section className="workspace-placeholder padded">
-            <ErrorText error={sourceContext.error} />
-            <button className="button" onClick={() => void sourceContext.refetch()}>
-              重新加载
-            </button>
-          </section>
-        )}
-        {knowledgeOpen && sourceContext.isSuccess && !sourceContext.data.knowledge_available && (
-          <section className="workspace-placeholder">
-            <div className="workspace-empty">
-              <h2>此项目还没有流程与功能资料</h2>
-              <p>关联源码后，可以在对话中分析当前项目。已复核图谱属于原来的源码项目。</p>
-              <button
-                className="button"
-                onClick={() => {
-                  if (!startConversation()) return;
-                  void navigate({ kind: 'chat' });
-                }}
-              >
-                开始新对话
-              </button>
-            </div>
-          </section>
-        )}
-        {knowledgeOpen && sourceContext.isSuccess && sourceContext.data.knowledge_available && (
+        {knowledgeOpen && (
           <WorkspaceLoadBoundary kind="knowledge">
             <Suspense
               fallback={

@@ -7,12 +7,8 @@
       "summary": "四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture"
-      ],
-      "documents": [
-        "00-项目总览.md"
-      ],
+      "topicIds": ["architecture"],
+      "documents": ["00-项目总览.md"],
       "searchText": "运行时架构 四个常驻线程、动作节点游标、硬件仓库与三家运动控制平台的关系。 操作员 触摸屏 / 鼠标 SoftKey 授权 启动即校验 主界面 MainForm DevExpress · 323 个界面类 机器状态机 MachineState 全局枚举 动作节点执行器 S2ActionNodeController 固晶线程 BondTask · 66,871 行 晶圆线程 WaferTask · 39,818 行 点胶线程 DispenseWorkTask 物流线程 TransportTask HardwareRepository GetHardware<T>(\"中文名\") Infrastructure DB · 日志 · 事件总线 · AOP SQL Server 库 ZX2200 · SqlSugar 运动控制平台 ETEL · 固高 · 雷赛 视觉 PR VisionMaster 定位 · HALCON 显示 轴 / IO / 执行器 气缸 · 点胶阀 · 真空 · 光源 三个必须先懂的事实 四个子系统各有一个常驻线程，外层统一是 while (Signal.WaitStart()) 停机不是 CancellationToken：Stop 让 WaitStart 返回 false，Pause 在里面 20 ms 空转 流程不是 if 判断，而是一条扁平 ActionNode 链，游标取第一个 Finished == false 的节点 平台边界：哪些能改 11 个 AKRS.Galaxy2.* 工程有源码，可直接改（停机语义就在 Machine/Models/Signal.cs） libs/ 里 20 个 AKRS.Galaxy2.* DLL 是黑盒，只能靠 .pdb 反编译 AKRS.Galaxy2.Parameters 在仓库内缺失，是一处构建断点 硬件栈的真实分布 运动控制三家并存：ETEL / 固高 Googol / 雷赛 Leadshine 匹配定位 100% 由海康 VisionMaster 承担，HALCON 只用于画图与区域显示 硬件对象只认中文名字符串，拼错在运行期才炸",
       "htmlSha256": "cbcd7ac42247468331e19f9715a26d18fd1c168706fee80ddd6f7abb45b19b46",
       "documentHashes": {
@@ -23,15 +19,11 @@
       "id": "manual-00-stop",
       "file": "00-项目总览-停机语义.html",
       "title": "项目总览-停机语义",
-      "summary": "Working / Pause / Stop 三态，以及 WaitStart 里那 20 ms 的忙等。",
+      "summary": "工作、暂停、停止三种状态，以及等待启动指令时的短周期轮询。",
       "detailAnchor": "54-停机语义本项目的停止到底怎么工作的-必读",
       "type": "lifecycle",
-      "topicIds": [
-        "recovery"
-      ],
-      "documents": [
-        "00-项目总览.md"
-      ],
+      "topicIds": ["recovery"],
+      "documents": ["00-项目总览.md"],
       "searchText": "停机到底怎么生效 Working / Pause / Stop 三态，以及 WaitStart 里那 20 ms 的忙等。 待机 待机状态，尚未启动生产 运行 WaitStart() 返回 true 暂停 循环体 20 ms 空转 停止 不再执行新节点 Sleep(20) 每 20 ms 查一次状态 线程退出 while 条件为 false 没有 CancellationToken 全项目找不到取消令牌，停止靠一个全局枚举 四个线程都在转 while (Signal.WaitStart()) 停不下来的问题，先查这个枚举有没有被真正改到 暂停是忙等 Pause 期间每 20 ms 醒一次查状态 所以暂停时 CPU 占用不会归零 急停和暂停走的是同一个枚举，只是终值不同 急停先停轴，再清理状态 普通停止设置 Stop，暂停设置 Pause；急停还先停止各轴运动 EmergencyStop 先逐轴 StopMove，再调用 Stop 清理软件状态 所以查「停不下来」先查这个枚举有没有被改到",
       "htmlSha256": "7cb6f8ffd9cabe92fcaf56966ba2a54e3b324f984795a85e2f09014d0409560d",
       "documentHashes": {
@@ -45,12 +37,8 @@
       "summary": "从按钮到下发运动指令的十步链路，中途没有事件总线。",
       "detailAnchor": "overview",
       "type": "sequence",
-      "topicIds": [
-        "startup"
-      ],
-      "documents": [
-        "01-启动流程与主界面.md"
-      ],
+      "topicIds": ["startup"],
+      "documents": ["01-启动流程与主界面.md"],
       "searchText": "点一次「开始」，硬件收到了什么 从按钮到下发运动指令的十步链路，中途没有事件总线。 操作员 点「开始」 主界面 MainForm 机器状态机 MachineState 固晶线程 BondTask 节点执行器 S2ActionNodeController 硬件仓库 HardwareRepository 运动平台 ETEL / 固高 启动检查与生产任务分开 生产启动先执行就绪检查，再设置 Working、初始化动作序列并按配置启动任务 Start 按配置启动任务；任务运行期间由 Signal.WaitStart() 检查暂停与停止 节点由线程主动去执行器里取，不是执行器派发 硬件名字是字符串 GetHardware(\"BondZ\") 里是中文常量，拼错在运行期才炸 返回的是平台 DLL 里的对象，源码不可见 从这一行往后，调试只能靠日志和 .pdb 入口返回不等于任务完成 按钮调用 Machine.Start，包含就绪检查、排序初始化和任务启动 线程自己轮询 WaitStart()，没人叫醒它 生产任务内的硬件等待与 UI 线程阻塞应分别排查",
       "htmlSha256": "2aa2dfa85c4ffa393114d6637c411c1ea426b99f5bed3d824e2920384436dec5",
       "documentHashes": {
@@ -64,14 +52,8 @@
       "summary": "门面 → 制程 → 步骤 → 排序器 → 线程；停机靠信号门。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture",
-        "startup",
-        "recipe"
-      ],
-      "documents": [
-        "02-机器模型与流程调度.md"
-      ],
+      "topicIds": ["architecture", "startup", "recipe"],
+      "documents": ["02-机器模型与流程调度.md"],
       "searchText": "机器模型：把制程翻译成动作序列 门面 → 制程 → 步骤 → 排序器 → 线程；停机靠信号门。 主界面按钮 启动 / 停止 / 暂停 Machine 门面 5 个 partial · 唯一入口 MachineStateModel 状态 / 模式 / 单步落盘 Signal / SignalPool 23 个跨线程信号 ProcessDomain S1 / S2 两套制程 SystemProcess 步骤集合 + 排序策略 SingleProcessStep 焊点 + 动作 + 序号 S2 排序器 固晶侧展开 S1 排序器 点胶侧展开 任务线程 BondTask / DispenseWorkTask 停机不是查标志位 主循环不是 while (!IsStop()) 而是 Signal.WaitStart() 这道信号门 IsStop 只用来决定要不要发传送许可 平台有基类，门面不用 平台里有 BaseMachine 基类 Machine 并没有继承它 单步另走 MachineStateModel + WaitSingleStep() 23 个信号是隐式的顺序契约 公共 2 / 流道 11 / 晶圆 7 / 固晶 3 12 个登记进 SignalList，其余靠名字约定 改顺序先看信号，不要先看代码行",
       "htmlSha256": "137ed4100e04436f4afb93733d0f4221dd161967538bc59617c74d617e798b26",
       "documentHashes": {
@@ -85,13 +67,8 @@
       "summary": "DB / 串行任务 / 切面 / 路径表 / 两家驱动。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture",
-        "persistence"
-      ],
-      "documents": [
-        "03-基础设施核心层.md"
-      ],
+      "topicIds": ["architecture", "persistence"],
+      "documents": ["03-基础设施核心层.md"],
       "searchText": "基础设施核心层：底座在哪、哪儿是空的 DB / 串行任务 / 切面 / 路径表 / 两家驱动。 Program.cs 启动即建全套硬件 HardwareRepositoryService InitAllHardware DBService SqlSugar 单例 · 建表/增删改查 ControlService 屏蔽控件 → 跑任务 → 恢复 AOP 切面 鉴权 · 属性变更日志 ZX2200PathConfig 60+ 个 JSON 路径唯一声明处 BaseSettingRepository 泛型 JSON 列表仓库 GuGaoDrive GTN.mc.* · 插补 / 补偿表 ETelDrive dsa · Mapping 文件 业务域 固晶 · 点胶 · 晶圆 · 统计 任务书里的五个子目录不存在 Hardware / Parameters / Alarm / Log / Motion 全都不在本项目 实际只有 Service、AOP、EventBus、Models、Utils 找它们会白花一天 两个「看着在用其实没用」 属性变更日志切面默认关，且从未打开 CompensationPredictor.Predict 整体注释，恒返回 null Action/ 目录 127 行没有一条有效语句 路径只有一处声明 所有 JSON 落盘都走 ZX2200PathConfig 要改存储位置只改这一个文件 绕过它硬编码路径的地方，是排障时最先怀疑的对象",
       "htmlSha256": "88faca2d04aecca83afb4b676bc29a9e9a5de6586d826c1a3a53b2d6de9abde6",
       "documentHashes": {
@@ -105,13 +82,8 @@
       "summary": "消息框 / 报警框 / 摇杆 / 光源 / 产品编程。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "recipe",
-        "maintenance"
-      ],
-      "documents": [
-        "04-基础设施界面层.md"
-      ],
+      "topicIds": ["recipe", "maintenance"],
+      "documents": ["04-基础设施界面层.md"],
       "searchText": "界面层：一堆积木，谁都能拿去拼 消息框 / 报警框 / 摇杆 / 光源 / 产品编程。 MainForm.SendUiAction 跨线程投递唯一出口 统一消息框 AKRSXtraMessageBox · 44 个重载 报警框 AKRSMessageBoxExt · 联动三色灯 摇杆 / 方向盘 UcGuideMove · 按模组名绑轴 光源调节 UcLight · 8 路聚合面板 产品编程主面板 TreeList 按 NodeTag 路由 25 类控件 FrmRepository<T> 泛型数据集 · 深拷贝 / 抽取 业务单例 配方 / 程式 / 域对象 光源 / 轴 改值即时下发 AlarmLogEntity 报警结果落库 这一层不持有业务状态 只负责取单例、显示、改值、Save 流程状态全在上层的 Domain / Program 里 所以改界面不会直接改流程 两个界面根本不在这个目录 参数配置界面在 SupportFeature/Parameters/ 用户 / 角色 / 权限界面在 Main/Controls/Ucmain/ 在这层找它们会白找 BaseControl 放在这里却没人继承 全项目的主模块基类住在本目录 本目录内没有任何控件继承它 看起来像基类，实际是个孤儿",
       "htmlSha256": "6fd45ac588dbac69fe122484db01d085cfd26f4314c851394c59a27290b8a53d",
       "documentHashes": {
@@ -122,16 +94,11 @@
       "id": "manual-05",
       "file": "05-动作节点框架.html",
       "title": "动作节点框架",
-      "summary": "排序器展开消息、线程调 DoWork、节点驱动控制器。",
+      "summary": "排序器展开动作消息，线程逐个执行节点，节点再驱动控制器。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s2",
-        "s1"
-      ],
-      "documents": [
-        "05-动作节点框架.md"
-      ],
+      "topicIds": ["s2", "s1"],
+      "documents": ["05-动作节点框架.md"],
       "searchText": "动作节点：37 个子类，线程只管推游标 排序器展开消息、线程调 DoWork、节点驱动控制器。 S2 排序器 把节点展开成扁平消息 ActionNodeMessage 名字 + 坐标 + Finished BondTask 本身不做任何工艺动作 ActionNode 基类 DoWork / IsDoWork / IsAlarm 节点实例库 21 个实例 · Init 注册 19 个 PickActionNode 换吸嘴 → 定位 → 顶针 → 真空 UpLookCorrection 一点 / 两点定位 · 温漂 BondActionNode 预固晶 → 二段速下压 → 焊后检测 控制器 → BondModule 翻译成硬件调用序列 硬件仓库 按中文名取轴 / 相机 / IO 线程是空壳 BondTask 只做三件事：取节点、调 DoWork、翻译结果 取片 / 点胶 / 固晶全在节点类里 所以排查工艺问题不该先看线程 有些属性从没被赋值 System / Style 是全代码库从未赋值的死属性 IsVisionAction 只声明，从未读写 配置里怎么调都不会生效 三个节点是空转或错位 CheckInkDotActionNode.DoWork 第一行就 return Success S2BondPositionIdentityActionNode 用的其实是 substrate 逻辑 BondPositionVisionTest 未被引用、也未注册",
       "htmlSha256": "366cb2b35bb593a20b373d5000b4ccda2d8a7816ef76110a58248c69b026c85d",
       "documentHashes": {
@@ -142,16 +109,11 @@
       "id": "manual-06",
       "file": "06-固晶系统界面与数据模型.html",
       "title": "固晶系统界面与数据模型",
-      "summary": "System2Domain 聚合程式；设备参数统一 G0。",
+      "summary": "固晶域聚合配方；设备参数统一到 G0 坐标。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s2",
-        "tool-bank"
-      ],
-      "documents": [
-        "06-固晶系统界面与数据模型.md"
-      ],
+      "topicIds": ["s2", "tool-bank"],
+      "documents": ["06-固晶系统界面与数据模型.md"],
       "searchText": "固晶界面与模型：配方、参数、吸嘴三本账 System2Domain 聚合程式；设备参数统一 G0。 主界面 Ucmain 菜单 / 快捷键弹出 产品编程界面 UcEditProductProgramming 示教向导群 20 文件 / 12,223 行 System2Domain 8 控制器 + 线程 + 程式 System2RunTimeProvider 节拍打点 · 不落盘 BondProgram 聚合 8 个子程式 吸嘴库 / 吸嘴架 7 个硬编码穴位 焊后检测 参数与算法同处一类 BondDevicePara 7 组设备参数 · 统一 G0 设备参数统一存 G0 所有设备参数存的都是关于 G0 坐标系的 HeadToCameraOffset 只是转发，不存值 换坐标系要先想清楚这一层 不要在固晶模块找老界面 本模块内没有 DotNetBar / SunnyUI 老界面在主界面壳层 Main/Controls/Ucmain 引用错层会白读一遍 有窗体已经弃用但还在 FrmMoveToBondingPosition 全代码库零引用 仍留在目录里，容易被误用 改之前先 grep 一次调用点",
       "htmlSha256": "ae2ce0395a39ca53afa8e72ef2ada91f174e2364cbbd13078ff526f15cafd8ab",
       "documentHashes": {
@@ -162,15 +124,11 @@
       "id": "manual-07",
       "file": "07-固晶系统调度与任务.html",
       "title": "固晶系统调度与任务",
-      "summary": "排序器在 Main；控制器 → 模组 → 平台 DLL。",
+      "summary": "排序在主流程；控制器驱动模组，再调用平台驱动。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s2"
-      ],
-      "documents": [
-        "07-固晶系统调度与任务.md"
-      ],
+      "topicIds": ["s2"],
+      "documents": ["07-固晶系统调度与任务.md"],
       "searchText": "固晶调度：游标在别人手里 排序器在 Main；控制器 → 模组 → 平台 DLL。 ProcessDomain 提供步骤与排序模式 S2 排序器 产 ActionNode 游标 BondTask 唯一主循环 DoWork() SlideFluxerTask 刮胶盘独立线程 SignalPool / MachineState 暂停 / 停止闸门 ActionNode 节点实现（05 篇） 4 个控制器 整机 / 焊头 / 模组 / 点胶头 System2TUService G0 ↔ Bond 坐标换算 System2Module 聚合 4 个子模组 硬件仓库 → 平台 DLL ETEL / GTN / LTDMC 调度中枢不在这个模块 S2ActionNodeController 在 Main/Machine/Process 本模块只有执行者，没有排序者 找「为什么先做这一步」要去 Main 离线模式下控制器全空转 没有硬件时控制器方法全部 no-op 流程照跑、日志照写、动作不发生 所以「离线能跑通」不能证明现场能跑 两个线程共用一道闸门 BondTask 与 SlideFluxerTask 都靠 SignalPool.WaitStart() 状态源只有 MachineStateModel 一个 一个卡住，另一条也停",
       "htmlSha256": "cbea82cfb75c04d3a50878127adbadaf0c090a3b8d4e88edf48a23ee9cf4491a",
       "documentHashes": {
@@ -181,15 +139,11 @@
       "id": "manual-08",
       "file": "08-晶圆系统界面层.html",
       "title": "晶圆系统界面层",
-      "summary": "2 万行只做翻译；51 个 Designer 另有 2 万行。",
+      "summary": "两万行只做界面翻译；另有五十一份设计器代码。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "wafer"
-      ],
-      "documents": [
-        "08-晶圆系统界面层.md"
-      ],
+      "topicIds": ["wafer"],
+      "documents": ["08-晶圆系统界面层.md"],
       "searchText": "晶圆界面：示教写回配置，只有一处碰硬件 2 万行只做翻译；51 个 Designer 另有 2 万行。 产品编程主框架 唯一上游调用者 芯片参数编辑页 UcComponentEdit · 1,336 行 示教向导群 几何 11 步 · 换料 9 步 手动上料面板 料盒动作 / 取放片 / 扫描 载具地图控件 自绘 Die 阵列 · 框选缩放 WaferSubDevicePara 各模组设备参数 WaferSystemProgram 配方级程序 WaferSubController 台 / 顶针 / 料架 顶针实时曲线窗体 唯一直接访问硬件的界面 这 2 万行只做翻译 把用户操作翻译成控制器调用 把示教结果写回配置 不含流程，也不含设备控制 只有一处直连硬件 FrmEjectionRealtimeState 采集 Z 轴速度位置并落 Excel 是全层唯一直接访问硬件的界面 其余都走控制器 代码量只算了一半 手写 20,952 行 51 个 Designer.cs 另有 20,937 行，几乎等量 估工时别只数非 Designer",
       "htmlSha256": "44c77a8513c16f7d02c543a7ce236f5fcf52513c95fd112bf204316a63afb6bf",
       "documentHashes": {
@@ -200,15 +154,11 @@
       "id": "manual-09",
       "file": "09-晶圆系统调度与服务.html",
       "title": "晶圆系统调度与服务",
-      "summary": "信号驱动；5 个控制器无基类；跨线程状态是静态字段。",
+      "summary": "信号驱动；五个控制器没有共同基类；跨线程共享状态缺少统一保护。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "wafer"
-      ],
-      "documents": [
-        "09-晶圆系统调度与服务.md"
-      ],
+      "topicIds": ["wafer"],
+      "documents": ["09-晶圆系统调度与服务.md"],
       "searchText": "晶圆调度：它不决定取哪颗，只等信号 信号驱动；5 个控制器无基类；跨线程状态是静态字段。 固晶侧 PickActionNode 置「需料」信号 WaferSystemDomain 门面 · 持有两条线程 信号池 需料 / 可取样 / 交接 / 成功 WaferSubSystemTask 搜晶线程 · NextDie FlipTask 翻转线程 · 取片 WaferSubController 聚合 5 个控制器 4 个控制器 台 / 顶针 / 料架 / 翻转台 WaferSubModule 中文名聚合 · Point 换算 HardwareRepository → 运控卡（ETEL / 固高 / 雷赛） Static 共享状态 IsComponentOnFlipTool 等标志 晶圆侧完全被动 它自己不决定什么时候取哪颗芯片 取片由固晶侧的「需料」信号驱动 所以「为什么没取」先看信号，不看晶圆代码 5 个控制器没有基类 全是 new 出来即用，无统一生命周期 没有注册表，也没有统一 Dispose 停线程时靠各自实现，容易漏 跨线程状态是静态字段 Static 类里 IsComponentOnFlipTool 等标志无锁 两条线程读写同一个字段 调试时看到的值可能是上一轮残留",
       "htmlSha256": "375c960dcb0efc0dee19a7b3dce85434a6e3471df7cc3d566d7bfd3f53f83762",
       "documentHashes": {
@@ -219,15 +169,11 @@
       "id": "manual-10",
       "file": "10-晶圆系统数据模型.html",
       "title": "晶圆系统数据模型",
-      "summary": "全 JSON 落盘；异常当流程控制；NullTablet 哨兵。",
+      "summary": "全部数据以 JSON 保存；异常被当作流程分支；用空对象作哨兵。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "wafer"
-      ],
-      "documents": [
-        "10-晶圆系统数据模型.md"
-      ],
+      "topicIds": ["wafer"],
+      "documents": ["10-晶圆系统数据模型.md"],
       "searchText": "晶圆数据模型：57 个文件，零张数据库表 全 JSON 落盘；异常当流程控制；NullTablet 哨兵。 WaferSubDevicePara 聚合 5 个子模组参数 BaseCarrierConfig 1,367 行 · 200+ 属性 载具仓库 增删载具联动增删 PR 模板 WaferSystemProgram 导出具名载具与顶针配置 Block 搜晶 5 个 partial · 唯一有算法的类型 SingletonJson<T> 就地在目录里定义，非平台类 料片族 NullTablet 用类型表达「无料」 AKRS.WM DLL SearchMapping 承接全部交互 消费方 控制器 / 线程 / 模块 / 界面 不存在数据库表 57 个文件对 DBService / SqlSugar 的引用数为 0 全部落盘走 JSON 文件 所以备份数据库不等于备份了配方 用异常做流程控制 PickRefEnd 继承 Exception 「回头取参考点」靠抛这个异常实现 调试时看到异常不要急着当故障 用类型表达「无料」 NullTablet 是具体子类，不是 null 好处是不会漏判空 坏处是 is null 判断永远为假",
       "htmlSha256": "82255979435c47becfcc6e902ceb2f835970de45921f4fa8c39a3f99d611fd32",
       "documentHashes": {
@@ -241,14 +187,8 @@
       "summary": "本层只组织测量；结果高度不落盘；两套参数界面并存。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "height-measurement",
-        "motion-safety",
-        "persistence"
-      ],
-      "documents": [
-        "11-支撑特性一-测高运动与监控.md"
-      ],
+      "topicIds": ["height-measurement", "motion-safety", "persistence"],
+      "documents": ["11-支撑特性一-测高运动与监控.md"],
       "searchText": "测高与监控：测量不在这个模块里 本层只组织测量；结果高度不落盘；两套参数界面并存。 Ucmain 菜单 打开入口 测高窗体群 系统1 / 系统2 / 焊头平面度 测量设置 点位 · ZG0Pos · 激光/反吹 MotionPlanDomain 安全区四角 → 避让路径 NeedScanSensorPool 后台每 100ms 扫 3 路压力 参数编辑器 UcProgramArgs 当前生效 · 1,816 行 ParamService 参数树 反射扫描 60+ 参数对象 固晶 / 点胶控制器 真正执行测量的是它 新版参数窗体 只从调试窗体进入 传感器报警 超限写报警列表 + 恢复三色灯 这里不测高，只组织测量 测量动作本身由 BondSystem 的控制器执行 本模块负责示教点位、遍历、收集、着色、导出 所以「测出来不对」先查控制器，不是查这个窗体 结果的高度不落盘 FlatLevelMeasureResult 的 Range 标了不序列化 BondLevelMeasureResult 全部 [JsonIgnore] 测完关窗，结果就没了，只剩导出的 Excel 两套参数界面并存 UcProgramArgs 在用，反射改活对象 新版 FrmParamManager 只从调试窗体进，树还是空的 改参数前先确认自己点的是哪一套",
       "htmlSha256": "8f3afeea245ab843d0ecb8fb6a40929bf542894ae720bbe36b3a9c5c5a940e07",
       "documentHashes": {
@@ -259,17 +199,11 @@
       "id": "manual-12",
       "file": "12-力控与支撑特性二.html",
       "title": "力控与支撑特性二",
-      "summary": "实现在 BondHeadController；三个空壳仍挂着名。",
+      "summary": "力控实现集中在焊头控制器；三个入口仍是空壳。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "force-control",
-        "consumables",
-        "persistence"
-      ],
-      "documents": [
-        "12-力控与支撑特性二.md"
-      ],
+      "topicIds": ["force-control", "consumables", "persistence"],
+      "documents": ["12-力控与支撑特性二.md"],
       "searchText": "力控：算法不在这个目录里 实现在 BondHeadController；三个空壳仍挂着名。 生产动作 BPActionNode 触发力控采集与下发 BondHeadController.ForceRelated ADC 采集 · GTN_SetPress* GTN.mc 写设定力 固高运动控制 ForceConfig 最大压力 · 力段表 · 标定模式 ClosedLoopCalibration 力闭环 · ETEL / 固高两支路 ModbusService RTU 读原始值换算成克 · 寄存器 94 去皮 力传感器 / 压力表 串口 RTU 统计 → 落库 BlockingCollection 异步写 音圈电机标定 方法体整体被注释 目录里只有配置 BondForce 目录内没有力控算法 真正实现在 BondHeadController.ForceRelated.cs 改力控逻辑去 BondSystem，不在这里 三个空壳还挂着名 音圈电机标定控制器方法体整体注释 GooGolCompensate / EtelCompensate 是空类 它们仍作为正式类型登记，容易误以为可用 力值来自串口 Modbus RTU 读传感器，换算成克 寄存器 94 是去皮操作 读数为 0 先查串口和去皮，不查算法",
       "htmlSha256": "d2f3faaf78faa17668fa62e509e6946b4f13f170033df23031dbefa61de2d69f",
       "documentHashes": {
@@ -283,14 +217,8 @@
       "summary": "补偿表真身在固件；JSON 只是副本。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "global-calibration",
-        "camera-calibration",
-        "maintenance"
-      ],
-      "documents": [
-        "13-整机标定.md"
-      ],
+      "topicIds": ["global-calibration", "camera-calibration", "maintenance"],
+      "documents": ["13-整机标定.md"],
       "searchText": "整机标定：三类产物，三套互不相通的机制 补偿表真身在固件；JSON 只是副本。 CalibrateTask 13 个流程 · 走位取像 CalibService 网格 / 圆拟合 / N 点仿射 CalibController 走位 + 定心重试 CalibrateRunPara 4 个矩阵 + 位置点 CalibratePara.json 只存副本 MachineCoordinateSystem 逐坐标系重新 Init GlobalCalibrationDomain 网格 + 双线性插值 DomainEx 实验版 多区域 · BilinearCompensator FrmGlobalCalibration 8 种模式界面 驱动器固件 ETEL DownloadMapping · 固高 CompensateX/Y 补偿表的真身在固件里 二维补偿表实际写在运动控制器固件 JSON 只是副本，删了不一定影响运行 所以要清补偿，得走 DownloadMapping 那条路 三类产物三套机制 JSON 副本、iwcal 文件、驱动器固件 三者互不相通，也不互相校验 「标定没生效」先确认改的是哪一套 两处死代码 BehaviorNode 等 6 个行为树脚手架全仓库零引用 FrmAssistant2DStage 没有 new，分步示教不可达 读到它们不要以为功能存在",
       "htmlSha256": "6c9f360c5fd3c47deee589f9fd6f09781d6065f893f181c9b0c67ff32ba37b26",
       "documentHashes": {
@@ -304,14 +232,8 @@
       "summary": "本层几乎无算法；实验窗体仍挂在主菜单。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "camera-calibration",
-        "tool-calibration",
-        "maintenance"
-      ],
-      "documents": [
-        "14-标定系统界面与测试.md"
-      ],
+      "topicIds": ["camera-calibration", "tool-calibration", "maintenance"],
+      "documents": ["14-标定系统界面与测试.md"],
       "searchText": "标定界面：12 步向导，确定与取消等价 本层几乎无算法；实验窗体仍挂在主菜单。 UcMainSystem 菜单 唯一正常入口 示教向导族 系统2 11 步 · 点胶 4 步 · 光源 2 步 AssistantConfig 列表 驱动上一步 / 下一步 / 完成 CalibrateRunPara 「下一步」写入当前机械坐标 5 家坐标系对象 向导完成后重建 结果确认窗体 只读两张表 FrmStartup 8 个单项标定按钮 TestAlg 实验算法 12 个方法 · 写死 D:\\ Excel FrmCalibTest 菜单入口已注释 确定和取消等价 结果确认窗体的两个按钮效果完全一样 关窗即完成，接受与放弃无差别 别指望点取消能撤销已经写进去的坐标 本层几乎没有算法 算法全在 Models/CalibrateTask.cs 这里只有窗体、步进、落点 「标定不准」先查算法层 实验窗体还挂在主菜单上 TestAlg 写死 D:\\ 下的 Excel 部分实验窗体确实在产线菜单里 操作员点得到，也改得到",
       "htmlSha256": "3d893d37a355125a9451bd1d90d02d60e7a4105b8d4e896781259a3e70f47029",
       "documentHashes": {
@@ -325,12 +247,8 @@
       "summary": "伪基类零子类；测试与产线共用控制器；密码门可绕。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "maintenance"
-      ],
-      "documents": [
-        "16-实验系统框架.md"
-      ],
+      "topicIds": ["maintenance"],
+      "documents": ["16-实验系统框架.md"],
       "searchText": "实验框架：标题叫框架，全仓没有框架 伪基类零子类；测试与产线共用控制器；密码门可绕。 诊断菜单 手动弹窗，旁路主流程 FrmBaseTest 名字像基类，零子类 CMK 精度测试 标定片 → 上视 → 贴片 → 下视 整机功能测试 换晶圆 / 吸嘴 / 顶针重复性 振动测试 + PSO 类名 BtStop · 粒子群搜参数 旋转中心精度 0 / 60 / 120 / 180 度取极差 结果窗体 统计塞在窗体内 · 导出 Excel 主流程控制器 BondModule · BondHead · System2 试验杂物箱 约 25 个按钮 · 密码门 145632 框架不存在 文档标题叫「实验系统框架」 但全仓没有一个实验基类 21 个类型全部裸继承 XtraForm 测试和产线共用控制器 测试窗体直接调 BondModule / BondHead 和主流程共享同一套硬件与视觉 测试跑飞会直接影响产线状态 密码门可以绕 FrmTest 有口令 145632 但 UcMainSystem 有直达 FrmTest2 的入口 别把口令门当成安全边界",
       "htmlSha256": "4842fa171783acc9d0756e2a77fe591139c58a5a563d77249a77706b7f75756f",
       "documentHashes": {
@@ -344,12 +262,8 @@
       "summary": "结果全写死 D 盘；两个窗体编译了但打不开。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "maintenance"
-      ],
-      "documents": [
-        "17-实验系统-具体实验实现.md"
-      ],
+      "topicIds": ["maintenance"],
+      "documents": ["17-实验系统-具体实验实现.md"],
       "searchText": "具体实验：13 个窗体，没有一个是子类 结果全写死 D 盘；两个窗体编译了但打不开。 UcMainSystem 菜单 ItemClick 直接开窗 诊断页 上视 mark 拍照 13 个实验窗体 全部直接继承 XtraForm FrmBaseTest 名字像实验基类 两个打不开的窗体 编译了但 UI 到不了 CalibrateRunPara 读阈值与坐标基准 运控与视觉控制器 取片 / 贴片 / 纠偏 / 测高 结果窗体 极差对比 · DataTable → xls D:\\ 结果文件 Excel / JSON 全部写死 没有实验基类 FrmBaseTest 名字像基类，实际没人继承 13 个窗体各自复制一套流程 改一个流程要改 13 份 结果全写死 D 盘 所有实验输出都写在 D:\\ 下 查结果要去工程目录外面找 换机器没有 D 盘就直接失败 两个窗体编译了但打不开 一个菜单处理函数是空方法 另一个全工程没有 new 看代码像有功能，UI 上到不了",
       "htmlSha256": "8e0b35f98ec5fba809ba1e63f07b6615924a94a17083c681f65394ede4db0753",
       "documentHashes": {
@@ -363,12 +277,8 @@
       "summary": "只有一本账；线程数与段数不绑定；一个类占半边逻辑。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "transport"
-      ],
-      "documents": [
-        "18-物流搬运系统.md"
-      ],
+      "topicIds": ["transport"],
+      "documents": ["18-物流搬运系统.md"],
       "searchText": "物流搬运：物理 5 段，线程 5~8 条 只有一本账；线程数与段数不绑定；一个类占半边逻辑。 Machine.Start 整机启动序列 TransportDomain StartTask 一次性初始化 TransportModule 8 个硬件模组 · 5 段皮带 主线搬运线程 5~8 条 · 与段数不绑定 料仓升降线程 Loader / Unloader TransportController 2,671 行 · 9 条流程 + 清空复位 TransportProgram 聚合 7 个子程式 · Save 5 段控制器 固晶段 1,034 行 · 点胶段 SignalPool 握手 9 个信号 · 平台无源码 固晶 / 点胶域 BondTask / DispenseWorkTask TransportUnit 下游读它做工艺定位 只有一本账：TransportSystem 仓库里没有独立的搬运工程 物流搬运 100% 落在这个目录 找 MoveTransportSystem 会白找 线程数与段数不绑定 物理只有 5 段皮带 主线线程按料仓 / 联机模式浮动到 5~8 条 数线程不能反推有几段 一个类占全模块一半逻辑 TransportController 2,671 行 9 条流程 + 清空复位 + IO 清单全在里面 改搬运先读这一个文件",
       "htmlSha256": "5a3f72f98e5826be08e6f8f3d1970e18681bdde9d8ada4c1f07109e70cee68d1",
       "documentHashes": {
@@ -382,13 +292,8 @@
       "summary": "三栏编辑容器；一批永不实例化的空壳。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "recipe",
-        "product-coordinates"
-      ],
-      "documents": [
-        "19-料单元系统-界面层.md"
-      ],
+      "topicIds": ["recipe", "product-coordinates"],
+      "documents": ["19-料单元系统-界面层.md"],
       "searchText": "料单元界面：叫 Frm 的其实是 UserControl 三栏编辑容器；一批永不实例化的空壳。 UcMainSystem 菜单 按 UseNewMappingUi 二选一 产品编程主界面 DockStyle.Fill 嵌入 对象编辑容器 FrmTransportUnitEdit · 三栏联动 功能编辑器 UcObjectFunctionEdit · 4 种示教入口 Mapping 三窗体 旧版可编辑 · 新版只读 · 实时显示 参数 Tab 容器 承载三个参数 UC TUAssistantHelper 本层唯一 static 工具 Model/Config + TuService 读写 TU / 基板 / 基岛 平台 DLL / 兄弟模块 视觉模板 · 域对象 · 引导移动 类名叫 Frm，实际是 UserControl FrmTransportUnitEdit 是 UserControl 它被 DockStyle.Fill 嵌进产品编程界面 按名字找窗体生命周期会找错 有一批窗体永远不会出现 FrmAssistantHeightPoints 等从未被实例化 自身还会必然 Abort 看代码像功能，其实是不通的壳 别被遗留 using 骗了 两处 DotNetBar / WPF 的 using 是死引用 38 个类型全是 DevExpress 不用为此切换技术栈判断",
       "htmlSha256": "6ab94c191d176df990c0de0143f948c1ef5732a9d873bf7aea978f5c24f9dd04",
       "documentHashes": {
@@ -402,13 +307,8 @@
       "summary": "纯数据层不碰硬件；无真实并发；已有封装是死代码。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "product-coordinates",
-        "recipe"
-      ],
-      "documents": [
-        "20-料单元系统-模型与服务.md"
-      ],
+      "topicIds": ["product-coordinates", "recipe"],
+      "documents": ["20-料单元系统-模型与服务.md"],
       "searchText": "料单元模型：四层实体，一个单例，一个工具 纯数据层不碰硬件；无真实并发；已有封装是死代码。 TransportUnit 载具 实体树根 · 持 List<Substrate> Substrate 基板 持 List<Module> Module 基岛 持 List<BondPosition> BondPosition 焊点 制程完成度的最终承载者 BaseMatter 基类 Config · BaseInfo · 坐标系 · 状态 ProductConfiguration 聚合 6 份配置 · 一个 JSON TuService 30 个静态方法 · 单文件 2,081 行 固晶 / 点胶域 各 13 / 11 处静态调用 TuService 开机门禁 IsTransportUnitReady() 叫「料单元系统」却不碰硬件 本层没有任何 IO、气缸 皮带与气缸时序在 TransportSystem 界面在 Controls/，本层纯数据 没有一处真实并发 grep Thread / Task / Timer / lock / await 只命中无用 using 全部是同步静态调用 所以「加锁会不会死」这个问题不成立 已有封装是死代码 TransportUnitStorage 是静态存取封装 全仓无调用者 别以为它是标准读写入口",
       "htmlSha256": "98522235a1b3ac3b9a2f42722eb79b4f31dd40480ffe28329ffc0d8b051b0722",
       "documentHashes": {
@@ -422,12 +322,8 @@
       "summary": "线程取节点 → 控制器插补 → 视觉判胶量。",
       "detailAnchor": "overview",
       "type": "sequence",
-      "topicIds": [
-        "s1"
-      ],
-      "documents": [
-        "21-点胶系统.md"
-      ],
+      "topicIds": ["s1"],
+      "documents": ["21-点胶系统.md"],
       "searchText": "点胶：等来料、逐节点、做完交回流道 线程取节点 → 控制器插补 → 视觉判胶量。 流道 来料 / 推进 DispenseWorkTask 常驻线程 S1 动作节点 15 个实例 DispenseController 插补 / 胶压 DispenseModule 轴 / 阀 / 胶量 视觉 / 测高 定位 · 胶量判定 这一层没有调度器 节点顺序由 Main 的 S1ActionNodeController 决定 本模块只负责执行单个节点 所以「为什么先点这里」要去 Main 看 两条链共用一套硬件 自动生产链和手动调试链调同一批控制器 全目录没有一把锁 自动跑着点手动，会同时往同一根轴发指令 磁盘上的文件不一定在工程里 ProcessStep / ProcessStepProgram 有文件但不参与编译 真正生效的是 ProcessDomain + SingleProcessStep 改错文件等于没改",
       "htmlSha256": "378c3df5e4e230bbfcb55534b4ee84cb44c28fdea1daf8dd7c717179676da2b8",
       "documentHashes": {
@@ -441,12 +337,8 @@
       "summary": "模板=相机+三轴+光源+算法；无统一门面。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "public-vision"
-      ],
-      "documents": [
-        "23-视觉定位PR工程.md"
-      ],
+      "topicIds": ["public-vision"],
+      "documents": ["23-视觉定位PR工程.md"],
       "searchText": "视觉 PR：只出像素坐标，失败也不抛异常 模板=相机+三轴+光源+算法；无统一门面。 PREntity 模板 相机 + 三轴 + 6 路光源 + 一条算法 模板仓库单例 Find / Add / Save · 设备级目录 BaseAlg 30 个子类 定位 / 几何 / 缺陷 · 9,125 行 AlgsFactory 按 AlgFlowTypeEnum 分派 UcAlgEditor 算法页签 · ROI 绘制 · 参数下发 VmSolution / .prc 一个子类对应一个流程文件 MatchResult CenterX/Y 像素 + 角度 + Score ImageHelp Bitmap ↔ VM ↔ HALCON 主程序 System2Controller.Vision SetFix 把上次结果喂给下次 不做像素 → 机器坐标 本工程只输出像素坐标 mm/pixel 换算在主程序标定模块 在这里找 PixelSize 是零命中 失败不抛异常 30 个算法一律返回 IsSuccess=false 的结果对象 还照样附一张画了检测区域的失败图 所以「没抛异常」不等于「定位成功」 没有统一 PR 入口 没有 PRManager / IPRService 对外就是 6 个类型 + 一个仓库单例 找统一门面会白找",
       "htmlSha256": "4d823c8316f4f982f2e0f79c9e08cb6bd863da3d13766af88f0520da00b7b398",
       "documentHashes": {
@@ -460,12 +352,8 @@
       "summary": "只画曲线不碰运动；选择处理器从未启用。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s1"
-      ],
-      "documents": [
-        "24-点胶图案工程.md"
-      ],
+      "topicIds": ["s1"],
+      "documents": ["24-点胶图案工程.md"],
       "searchText": "点胶图案：一个独立编辑器，存成 .ep 只画曲线不碰运动；选择处理器从未启用。 UcEpoxyApplication 宿主 · 模态打开编辑器 EpoxyPatternForm 套控件 + 4 个 DataGridView EpoxyPatternControl 曲线列表 · 缩放 · 坐标系 · 绘制 12 个 ActionHandler Handle*Event 虚方法 · 状态机骨架 Curve / EndpointUnit 折线聚合端点 Endpoint + Setting 逻辑点 + 速度 / 延时 / 标志位 .ep 文件（XML） PatternFile 读写 · 清临时文件 EPEData 出口 像素当量 · Die 尺寸 · 点集 EpoxyApplicationRepository.json 旋转缩放偏移后落盘 它不碰运动，也不碰硬件 只画曲线、配工艺参数、存 .ep 真正的插补在执行层（点胶控制器） 所以图案画错不会当场动轴 选择处理器从没被选中过 处理器存在，高亮也能用 上层却发 ActionEnum.None 这个功能等于从未启用 Program.cs 里的 Main 永不执行 工程输出类型是 Library 有 Main 也不会被调用 别拿它当独立工具去跑",
       "htmlSha256": "5718f1d370b264aba8885fd7194e90610f639c5b800610d7ecbc19e5f05a5aed",
       "documentHashes": {
@@ -479,13 +367,8 @@
       "summary": "轴补偿空转；依赖坐标系只做正向。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "g0",
-        "motion-safety"
-      ],
-      "documents": [
-        "25-坐标系与对焦补偿工程.md"
-      ],
+      "topicIds": ["g0", "motion-safety"],
+      "documents": ["25-坐标系与对焦补偿工程.md"],
       "searchText": "坐标系与补偿：三个工程，两个在休眠 轴补偿空转；依赖坐标系只做正向。 MachineCoordinateSystem 单例根 · 持坐标系集合 · JSON 读写 BaseCoordinateSystem 正 / 反变换 · 矫正 · Distance / Degree GeneralCoordinateSystem 平移 + 旋转 · 可沿链上下遍历 DependentCoordinateSystem 二维由海康标定文件决定 TransformTool 读写 .iwcal / .xml / .prc 海康 VM 算子 点变换 AutoFocusing 4 套对焦 · 只有 1 套在用 AxisCompensateProgram GetOffset 查表 · AddAxisCompensate 拟合 LsmCompensate 多项式拟合 · BaseCompensate 唯一子类 四个消费方 晶圆 · 固晶 · 点胶 · 标定 三个工程互不依赖 主程序只以 ProjectReference 引入它们 三者之间两两不引用 所以可以单独理解任何一个 轴补偿是空转的 AxisCompensate 工程输出类型是 Exe，Program.Main 是空的 LsmCompensate 两个分支都原样返回入参 分段补偿其实什么都没算 依赖坐标系只做正向 逆变换没有实现 沿链向下走会拿不到结果 需要反算时要绕开它",
       "htmlSha256": "30fec7e145d6657bdae4d9017be0f482cee223a91b0c47601699f3e2427e59d7",
       "documentHashes": {
@@ -499,13 +382,8 @@
       "summary": "授权失败即退出；标定工程主程序零引用。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "startup",
-        "maintenance"
-      ],
-      "documents": [
-        "26-标定与授权工程.md"
-      ],
+      "topicIds": ["startup", "maintenance"],
+      "documents": ["26-标定与授权工程.md"],
       "searchText": "标定与授权：一个在启动最前端，一个已经弃用 授权失败即退出；标定工程主程序零引用。 Program.cs 启动 第一步就是校验 SoftkeyManager Check / Init / GetDateDue / Release SoftkeyConnection 拉起外部进程 + 后台线程读结果 失败即退出 ReleaseMutex + return FormSoftKey 用户号 / 到期日 / 告警 独立 exe 入口 双击只做一次校验 AKRS.Calibration VM 标定工具 · 仅产出 dll Correction 纠偏 图像点→世界点 · 9/12 点标定 VmSolution / .prc 加载并执行方案 授权是启动第一步 Program.cs:141 先校验加密锁 失败直接 return，主进程结束 所以「软件打不开」先看锁，不看日志 标定工程没人用 主程序有 ProjectReference，但一行都没调 成品 exe 的 67 条 AssemblyRef 里没有它 它只产出 dll 被安装包带走 库形态下还留着 Main AKRS.Calibration 是 Library，却保留 Program.Main + Application.Run 这套入口永远不会被调用 别指望双击 dll 能跑起来",
       "htmlSha256": "d2c9eb208b465f6dba1c91f3a35e5fa750f7581185e52585bbc1301cb50168e1",
       "documentHashes": {
@@ -519,12 +397,8 @@
       "summary": "反向引用；有入口却编成库；调试台真能动电机。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture"
-      ],
-      "documents": [
-        "27-工具与测试程序集.md"
-      ],
+      "topicIds": ["architecture"],
+      "documents": ["27-工具与测试程序集.md"],
       "searchText": "工具程序集：五个旁挂工程，主程序一个都不引用 反向引用；有入口却编成库；调试台真能动电机。 主程序 AKRS.ZX2200 csproj 里没有这五个工程 TeachTest 示教快照 6 个演示窗体 · 输出类型是 Library InterpolationMovementTest PVT 调试台 · 9 个运动方法 Akrs.ChangeJson 批量改写 JSON 的 type 命名空间 LogTest / TestDemo 日志与实时曲线演示 libs / packages DLL 只读平台二进制 ETEL DsaDrive 插补 / PT / PVT 真驱动电机 DirAndFileHelper 583 行通用文件工具 主程序不引用工具 五个工程都不在主程序的 ProjectReference 里 反过来 InterpolationMovementTest 引用主程序 关系是单向旁挂的 有入口却编成库 TeachTest 有 Program.cs 和窗体 输出类型是 Library，入口永不执行 而且窗体是主程序里已不存在的孤本 调试台真能动电机 InterpolationMovementTest 直接操作 ETEL 驱动 不是仿真，是真实下发插补 在产线上打开要小心",
       "htmlSha256": "81e6b7145217f72d371da76f99d350fdd2069f99107427eb8a4a9ca2b8b39765",
       "documentHashes": {
@@ -535,15 +409,11 @@
       "id": "manual-29",
       "file": "29-外部依赖与二进制资产.html",
       "title": "外部依赖与二进制资产",
-      "summary": "平台并非全黑盒；旧 DLL 遮蔽源码；82 个解析器不随构建走。",
+      "summary": "平台并非全黑盒；旧动态库会覆盖同名模块；82 个解析器不随构建发布。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture"
-      ],
-      "documents": [
-        "29-外部依赖与二进制资产.md"
-      ],
+      "topicIds": ["architecture"],
+      "documents": ["29-外部依赖与二进制资产.md"],
       "searchText": "外部依赖：哪些能改、哪些改了也没用 平台并非全黑盒；旧 DLL 遮蔽源码；82 个解析器不随构建走。 主程序 AKRS.ZX2200 10 个 ProjectReference libs/ 二进制总仓 406 DLL · 256 MB AKRS.Galaxy2.* 23 个 当前平台主体 11 个有源码工程 停机语义就在 Signal.cs 30 个 .pdb 黑盒唯一能单步调试的途径 WaferMapFileParser 82 DLL 运行时按格式版本反射加载 HALCON / 海康 187 DLL 商用视觉 过期的 Machine.dll GUID 与工程一致 · 遮蔽新源码 Parameters 工程缺失 被引用但仓库里没有 平台并非全黑盒 11 个 Galaxy2 工程带源码，可以直接改 停机语义就在 Models/Signal.cs 判断能不能改，查 §2.1.1 的对照表 改了源码却不生效 libs 里有一个 GUID 相同的旧 Machine.dll csproj 同时引用源码工程与旧 DLL 编译器不报错，运行时实例化的是旧类型 82 个解析器不随构建走 WaferMapFileParser 零 csproj 登记 发布时要手工带，否则现场找不到版本 编号缺口 75–92 就是历史断档",
       "htmlSha256": "09286619fd3e29b2434ab03d04e9af256d43d645e3dc2ae87a1176e2bf718a00",
       "documentHashes": {
@@ -557,12 +427,8 @@
       "summary": "按磁盘生成；幽灵文件假阳性；旧副本改了没用。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture"
-      ],
-      "documents": [
-        "30-代码文件索引.md"
-      ],
+      "topicIds": ["architecture"],
+      "documents": ["30-代码文件索引.md"],
       "searchText": "代码文件索引：一张表，两个世界 按磁盘生成；幽灵文件假阳性；旧副本改了没用。 Program.cs 356 行 · 启动并装配 Machine 5 个 partial Operate / SelfCheck / 维持 ProcessDomain 工序组合与执行 S2 动作节点控制器 1,630 行 · 全表最长之一 S1 动作节点控制器 939 行 BondSystem 节点目录 Models/ActionNodes 起 · 167 文件 WaferSubSystem Services / Tasks / Entities 分层 20 个幽灵文件 磁盘上有、不参与编译 附属工程 Calibration · Galaxy2.Machine 等 索引按磁盘生成，不是按 csproj 20 个幽灵文件混排在表里 版面上和活文件完全一样 要判断活死，得回 csproj 核 grep 命中不等于有人调用 幽灵类型名在活代码里 0 引用 每一处命中都是假阳性 先确认文件在不在编译里 旧副本改了等于没改 4 个乙类旧副本已被 Experiment/Test 新版取代 编译通过、运行时毫无变化 改之前先看同名的活文件在哪",
       "htmlSha256": "ab2796d73d16fbd68ae665243c5c2697b4054a02bdb3730e152022127516f741",
       "documentHashes": {
@@ -573,16 +439,11 @@
       "id": "manual-31",
       "file": "31-料单元系统全景与流程图.html",
       "title": "料单元系统·总览与主流程",
-      "summary": "载具→基板→基岛→焊点的实体链，配置单例与三套 Mapping。",
+      "summary": "载具→基板→基岛→焊点的实体链，配置单例与三套映射。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "product-coordinates",
-        "recipe"
-      ],
-      "documents": [
-        "31-料单元系统全景与流程图.md"
-      ],
+      "topicIds": ["product-coordinates", "recipe"],
+      "documents": ["31-料单元系统全景与流程图.md"],
       "searchText": "料单元：一份数据，四个消费方 载具→基板→基岛→焊点的实体链，配置单例与三套 Mapping。 固晶区（系统2） BondTask · S2 节点家族 点胶区（系统1） DispenseWorkTask 物流搬运 TransportTask · 分段程序 TransportUnit 载具 GetConfigByType() 现场取配置 Substrate 基板 一块基板 Module 基岛 一个基岛 BondPosition 焊点 两颗芯片贴这里 ProductConfiguration 配方单例 · 参数不随实体走 TuService 32 个静态方法 · 2,081 行 Mapping 三套实现 实时图 / 新版 / 旧版 示教与产品编程 UcEditProductProgramming 配置与实体是分离的 实体本身不带工艺参数，参数在 ProductConfiguration 单例里 实体通过 GetConfigByType() 现场去取（BaseMatter.cs:111） 所以「改实体」和「改配置」是两件事 一个焊点的完成状态有两个 S1RemainingSteps / S2RemainingSteps 各存一份 S2 的状态会反过来影响 S1 的判定 查「这颗为什么没做」要看两个字典，不是一个 同一份数据三套显示 实时图 UcTransportShow / 新版 FrmTuMappingNew / 旧版 FrmTuMapping 三者行为互不一致 UseNewMappingUi 默认 false，旧版才是现役（UcTransportConfig.cs:107）",
       "htmlSha256": "24ef27c36948307fedfe414cc800c8b3fd990745433098a4306ce86747e05409",
       "documentHashes": {
@@ -596,12 +457,8 @@
       "summary": "按钮 → 线程 → 节点 → 子控制器 → 硬件，排序不在本模块。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s2"
-      ],
-      "documents": [
-        "32-固晶系统全景与流程图（上）· 模型、动作节点与调度.md"
-      ],
+      "topicIds": ["s2"],
+      "documents": ["32-固晶系统全景与流程图（上）· 模型、动作节点与调度.md"],
       "searchText": "固晶（上）：23 个动作节点怎么被推着走 按钮 → 线程 → 节点 → 子控制器 → 硬件，排序不在本模块。 主界面按钮 启动 / 停止 / 暂停 Machine.Operate 启动入口 S2 节点排序器 Main/Machine/Process BondTask 固晶线程 while (Signal.WaitStart()) ActionNode 23 子类 IsDoWork / DoWork 节点仓库 21 + 8 个实例 System2Domain 单例 · 参数 · 计数器 7 个子控制器 BondHead · UpLook · IPT 轴 / 相机 / 力控 运控卡 · 视觉 DLL · GV 每个节点只回答两个问题 现在该不该做我：IsDoWork() 做了成不成功：DoWork() 返回 ExcuteResult 23 个子类里 BPActionNode 一族占 13 个文件 / 10,120 行 排序不在这里 节点顺序由 Main/Machine/Process/S2ActionNodeController 决定 本篇只管动作怎么实现，不管先后 所以改流程要动 Main，改动作才动 BondSystem 读到死代码别慌 §6.4 列了未挂载的节点，写了但没装进系统 UpLookCorrectionActionNode 单文件 2,044 行，是本篇最大 System2Controller 拆成 4 个 partial，共 5,157 行",
       "htmlSha256": "2184380e3145ec828759db2c93587467e88c23d911d20664bb9d921a7e0d9f80",
       "documentHashes": {
@@ -612,15 +469,11 @@
       "id": "manual-33",
       "file": "33-固晶系统全景与流程图（下）· 界面与按钮流程.html",
       "title": "固晶系统·界面与按钮流程细节",
-      "summary": "入口集中在 Main；全层只有一条落盘通道；主循环没有 try/catch。",
+      "summary": "入口集中在主界面；全层只有一条保存通道；主循环没有异常兜底。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s2"
-      ],
-      "documents": [
-        "33-固晶系统全景与流程图（下）· 界面与按钮流程.md"
-      ],
+      "topicIds": ["s2"],
+      "documents": ["33-固晶系统全景与流程图（下）· 界面与按钮流程.md"],
       "searchText": "固晶（下）：界面层怎么把点击变成动作 入口集中在 Main；全层只有一条落盘通道；主循环没有 try/catch。 Main 的 4 个入口 new / ShowForm / ShowDialog 示教向导族 Assistant/ · 20 个文件 手册页族 Manual/ · 直接开关真空 参数设置页 Setting/ · 11 个页 试验页 51 个按钮 UcBondModuelSetting · 2,070 行 IProgrammingControl 唯一落盘契约 · Confirm() Settings/*.json 设备参数 / 配方参数 BondTask 主循环 DoWork() 无 try/catch SlideFluxerTask 信号池握手 + 超时 BondModule 模组 1,101 行 · 焊头 + 顶针 + 视觉 力控闭环 Modbus RTU 读实际力值 全层只有一条落盘通道 任何参数都要经 IProgrammingControl.Confirm() 才能存 而 11 个设置页里只有 4 个实现了这个接口 没实现的页，改了值也存不下去 两个「保存」按钮不等价 点「保存」：Confirm() 异常被 catch，弹一句英文 点「开始」：同一个 Confirm() 裸调，异常直冒消息泵 同一个失败，两种表现 主循环挂了没人知道 BondTask.DoWork() 通篇没有 try/catch 异常让任务进 Faulted，消费方只看 TaskStatus.Running 机器停转，但无弹框、无日志",
       "htmlSha256": "893f2d8cc8c2180ad8be325e0fe74cbc3ba730bb4ef27e6c3b38dd36c35e9143",
       "documentHashes": {
@@ -634,12 +487,8 @@
       "summary": "门面—控制器—模组—硬件四层；没有状态机，异常当业务流。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "wafer"
-      ],
-      "documents": [
-        "34-晶圆系统全景与流程图（上）· 模型、实体与调度.md"
-      ],
+      "topicIds": ["wafer"],
+      "documents": ["34-晶圆系统全景与流程图（上）· 模型、实体与调度.md"],
       "searchText": "晶圆（上）：算出下一颗，把它送到吸嘴下 门面—控制器—模组—硬件四层；没有状态机，异常当业务流。 界面层 Controls/ 按钮与整机动作 WaferSystemDomain 唯一门面 · 持有两条线程 WaferSubSystemTask 一条 while 驱动整条流程 FlipTask 翻转台独立线程 四个控制器 台 2,101 行 · 顶针 1,056 行 搜晶算法 Block 4,387 行 · NextDie 分四种模式 WaferSubModule 只声明硬件中文名 Settings/*.json 8 仓库 + 13 配置类 硬件 轴 · 气缸 · 相机 这个模块没有状态机 没有 enum State，也没有 switch(state) 状态是散落的 bool 加信号，靠 goto 标签推进 所以「它现在在干什么」只能看信号量，不能看枚举 异常被当成业务流 整个 while 包在一个 try 里 「这一片搜完了」这种正常事件也用 throw 表达 落进 catch 后弹框 + Machine.Stop()，不重抛、不写日志 存配置的代码比跑线程还多 Repositories 3,321 行 > Tasks 1,801 + Services 182 + Modules 591 双轨持久化：单例整文件 与 仓库列表 互不相干 仓库之间没有 ID，靠字符串 Name 找，找不到返回 null",
       "htmlSha256": "ad84c3b0b0f2c4a5a8d009665dba081ccd0458eb907a47ea7916a4e32f6f6ff9",
       "documentHashes": {
@@ -653,12 +502,8 @@
       "summary": "调控制器 / 落盘 / 弹窗 / 只改界面；按钮不是唯一入口。",
       "detailAnchor": "overview",
       "type": "sequence",
-      "topicIds": [
-        "wafer"
-      ],
-      "documents": [
-        "35-晶圆系统全景与流程图（下）· 界面与按钮流程.md"
-      ],
+      "topicIds": ["wafer"],
+      "documents": ["35-晶圆系统全景与流程图（下）· 界面与按钮流程.md"],
       "searchText": "晶圆界面：一个按钮的四条出口 调控制器 / 落盘 / 弹窗 / 只改界面；按钮不是唯一入口。 操作员 点按钮 晶圆窗体 Controls/ 处理器 控制器 WaferSubController 晶圆台 / 顶针 轴 · 气缸 · 相机 仓储 Repository.Save() 示教窗体 ShowDialogForm<T> 界面层是纯界面 不直接碰硬件，也不直接写文件 动硬件走控制器，落盘走仓储 四条出口只有一条无副作用 出口①②③ 分别动硬件、落盘、弹窗 出口④ 只改 Text/Visible，不落盘 按这个顺序排查 先看按钮是否 enabled——多数处理器首行是门禁判断 再看是不是被 UiLock 卡住（R-68，任务线程与 UI 线程互等） 最后才看处理器走的是四条出口里的哪一条",
       "htmlSha256": "46dabba17faaeb7108299d12dd27bfdc0eb9f3dba13f67685a6be48aa1a252c3",
       "documentHashes": {
@@ -672,14 +517,8 @@
       "summary": "45 个界面无自有入口；终极补偿是死代码；参数即时生效。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "force-control",
-        "consumables",
-        "maintenance"
-      ],
-      "documents": [
-        "36-支撑特性全景与流程图.md"
-      ],
+      "topicIds": ["force-control", "consumables", "maintenance"],
+      "documents": ["36-支撑特性全景与流程图.md"],
       "searchText": "支撑特性：名字最响的那个补偿，首行就 return 45 个界面无自有入口；终极补偿是死代码；参数即时生效。 Main Ribbon 45 个按钮入口 45 个业务 UI 无自有入口 参数老系统 UcProgramArgs · 1,816 行 参数新系统 FrmParamManager · 树恒空 网格补偿 TransportUnitCompensate 焊后缺陷补偿 DefectCompensate 温漂补偿 TpMarkCompensate 终极补偿 BondCompensate · 首行 return 统计写库 BlockingCollection(500) 风冷 PID Kp / Ki / Kd 闭环 固晶节点 / BondTask 补偿的唯一消费者 45 个界面，一条自己的入口都没有 入口全在 Main/ 的 Ribbon 按钮上 本模块只被调用，不起线程、不画主界面 所以「这个设置在哪里」要先去 Main 找按钮 名声最响的补偿是死的 BondCompensate 首行就无条件 return（:76） :78-168 全部不可达，但标定界面还在读它的行列数 真正生效的是 TransportUnitCompensate 网格补偿 改参数是即时生效的 UcProgramArgs.LeaveCheck 直接反射改活对象 不需要点保存，离开输入框就改了 想撤销只能记得原值",
       "htmlSha256": "dcc352d0f2cf5995bffdf5e85fcd28e126d3cec52ba6af9bed186455551a3446",
       "documentHashes": {
@@ -690,16 +529,11 @@
       "id": "manual-37",
       "file": "37-基础设施全景与流程图.html",
       "title": "基础设施·架构与依赖总览",
-      "summary": "UI 工具箱 + 路径表 + 数据访问层，以及与 Main 的依赖环。",
+      "summary": "界面工具箱、路径表和数据访问层，以及与主流程的依赖环。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture",
-        "persistence"
-      ],
-      "documents": [
-        "37-基础设施全景与流程图.md"
-      ],
+      "topicIds": ["architecture", "persistence"],
+      "documents": ["37-基础设施全景与流程图.md"],
       "searchText": "基础设施：全项目都在用的那 5 个类型 UI 工具箱 + 路径表 + 数据访问层，以及与 Main 的依赖环。 平台程序集 Galaxy2.* · GTN · gxn.dll Main 70 文件 SendUiAction 静态委托 Controls/ 37 文件 弹窗 · 摇杆 · 编程界面 Service/ 9 文件 Control · DB · Math · Vision Models/ 28 文件 路径表 · 配置基类 · 补偿 AOP · EventBus 6 + 3 个文件 兄弟目录（消费者） BondSystem 222 · Wafer 172 · Support 156 它到底是什么 UI 工具箱 + 路径表 + 数据访问层，不是业务逻辑层 全目录 0 处 SerialPort / TcpClient / Socket，不碰硬件通信 DllImport 只有 2 处：gxn.dll 与 User32.dll 改一行会牵动谁 依赖环：Infrastructure ↔ Main，靠 MainForm.SendUiAction 回 UI 线程 3 处裸调没有 null 检查（ControlService.cs:238 / :304 / :372） 上表 5 个类型动 public 签名，牵连全项目三分之一以上代码 死与危是错位的 ObjectHelper 18 个公有成员里 16 个零调用（约 93% 方法体行数） 天天在跑的摇杆和弹窗，恰恰承载最严重的风险 R-06 摇杆无软限位、R-44 停车 case 永不命中",
       "htmlSha256": "3097fb370a465ee295c27ee9916ded322ecbdcda8ea9387276957a65b9b82135",
       "documentHashes": {
@@ -710,16 +544,11 @@
       "id": "manual-38",
       "file": "38-主框架全景与流程图.html",
       "title": "主框架·启动与调度总览",
-      "summary": "UcMainSystem 是 9 个 .cs 拼成的类；39 个按钮同一道门禁。",
+      "summary": "主系统控件由多份分部文件拼成一个类；三十九个按钮共用同一道门禁。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "startup",
-        "architecture"
-      ],
-      "documents": [
-        "38-主框架全景与流程图.md"
-      ],
+      "topicIds": ["startup", "architecture"],
+      "documents": ["38-主框架全景与流程图.md"],
       "searchText": "主框架：一条外壳、一台状态机、一条回流总线 UcMainSystem 是 9 个 .cs 拼成的类；39 个按钮同一道门禁。 Program.cs 进程入口 MainForm 外壳 瓦片容器 · 反射开窗 UcMainSystem 9 个 .cs 拼成一个类 · 250 按钮 模块面板 双击 / 右键菜单入口 快捷面板 39 个按钮 · 同一道 IsStop Machine 状态机 Start / Stop / Pause / SelfCheck MachineStateModel 在 DLL 里，本仓库无源码 各工艺域 点胶 · 固晶 · 流道 · 晶圆 · 标定 SendUiAction 总线 同步 Invoke · 唯一订阅点 任务线程 BondTask · DispenseWorkTask 主界面是一个类，不是九个文件 UcMainSystem 被拆成 9 个 .cs，其中设计器 1 个 没有任何一个文件能单独读懂 注意 UcmainSystem.Action.cs 的 m 是小写 39 个按钮被同一道门禁静默拦下 每个处理器首行都是 IsStop()，不通过直接 return 不弹提示、不写日志 操作员的感觉是「点了没反应」 唯一一条跨线程 UI 总线 SendUiAction 是静态委托，全仓唯一订阅点用同步 Invoke 改这一行会静默影响 8 处 任务线程等 UI，UI 等锁，就是死锁的来源",
       "htmlSha256": "1d4fa58ff26911384f5620cd7a8d6c219ce2347dd7e30f312eec8483d9633dda",
       "documentHashes": {
@@ -733,12 +562,8 @@
       "summary": "10 条线程 + 令牌环定段序；一个异常永久少一条线程。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "transport"
-      ],
-      "documents": [
-        "39-物流搬运系统全景与流程图.md"
-      ],
+      "topicIds": ["transport"],
+      "documents": ["39-物流搬运系统全景与流程图.md"],
       "searchText": "物流搬运：段序靠令牌，状态一个都不落盘 10 条线程 + 令牌环定段序；一个异常永久少一条线程。 TransportController 2,671 行 · 9 条 TransferXxx 10 条搬运线程 等信号 → 调流程 → 休眠 TransportDomain 唯一入口 · StartTask 只调一次 TransportProgram 5 段 + 2 料仓 + 2 示教状态 SignalPool 令牌环 10 个具名信号决定段序 5 段硬件模组 中文硬件名 → 速度 / 回零 段控制器基类 93 行 · 只有 HasMaterialInModule 固晶 / 点胶 跨模块直读载具 硬件 轴 · 传感器 · 加热 12 个界面 按钮直调流程方法 没有中央状态机 段间顺序由平台信号令牌环决定，不是代码里的状态迁移 流道状态一个都不落盘 「机器现在什么状态」在代码里没有一处能答 一个异常永久少一条线程 catch 只弹模态框，while 随之退出 Task 落 RanToCompletion 而不是 Faulted Start() 不会再调一次，这条搬运线就没了 5 段抽象是半成品 控制器树和模组树都建了 5 个派生类 三段 SearchBelt() 只有 throw new NotImplementedException() 而基类 MapBelt() 会调它 —— 这三段搜料路径根本不存在",
       "htmlSha256": "118cf393e520599b85311021c9f0b9d5c6f07b34f712f38a2579d0b61c8633a8",
       "documentHashes": {
@@ -752,12 +577,8 @@
       "summary": "生产链/手动链/配置链共用硬件；有些窗体打开即落盘。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "s1"
-      ],
-      "documents": [
-        "40-点胶系统全景与流程图.md"
-      ],
+      "topicIds": ["s1"],
+      "documents": ["40-点胶系统全景与流程图.md"],
       "searchText": "点胶：三条链共用一套无锁控制器 生产链/手动链/配置链共用硬件；有些窗体打开即落盘。 Main 的节点调度器 S1ActionNodeController 点胶界面 UcEpoxyApplication · 1,152 + 2,077 行 S1 动作节点 17 个 继承平台 ActionNode DispenseWorkTask 常驻线程 · 循环取节点 System1Domain 唯一门面 · 暴露三个控制器 DispenseController 1,088 行 · 挤胶 / 画线 / 插补 测高 / 视觉 气缸等位 · 拍照转同步 System1Program 配方 Save() → DispenseProgram.json 轴 / 气缸 / 相机 平台硬件门面 这里没有调度器 真正的节点调度在 Main/S1ActionNodeController Services/System2ActionNodesService.cs（925 行）是死文件，不参与编译 所以在本目录找不到「下一步做什么」 三条链共用一套硬件，没有锁 生产链、手动链、配置链调的是同一批控制器与轴 自动跑着点手动按钮，会同时往同一根轴发指令 全目录没有一把 lock 有的窗体打开即生效 构造函数 / Load 里就改数据甚至落盘 点取消不会回滚（FrmDispenseOverAllSettings） 排查「参数怎么变了」先想有没有人打开过设置页",
       "htmlSha256": "3c78d25b63b698507db6b384fae7a3e66a68dfe55ebccb43d4e632ea7d26402e",
       "documentHashes": {
@@ -768,18 +589,11 @@
       "id": "manual-41",
       "file": "41-标定系统全景与流程图.html",
       "title": "标定系统·全景与主流程",
-      "summary": "13 条流程 + 5 个 Only*，产物只有仿射矩阵与位置点。",
+      "summary": "十三条流程加五个独立入口，产物只有仿射矩阵与位置点。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "camera-calibration",
-        "global-calibration",
-        "tool-calibration",
-        "maintenance"
-      ],
-      "documents": [
-        "41-标定系统全景与流程图.md"
-      ],
+      "topicIds": ["camera-calibration", "global-calibration", "tool-calibration", "maintenance"],
+      "documents": ["41-标定系统全景与流程图.md"],
       "searchText": "标定：九个单步入口，一个矩阵仓库 13 条流程 + 5 个 Only*，产物只有仿射矩阵与位置点。 FrmStartup 9 个单步入口 CalibrateTask 13 条流程 + 5 个 Only* CalibrateRunPara ~50 字段 + 4 个仿射矩阵 CalibratePara.json 全流程只 Save 一次 CalibService Halcon 薄封装 · 21 个静态方法 CalibController 运动 + 定位 MachineCoordinateSystem 提前 Save，参数却没 Save 旧版全局标定 二维双线性插值 新版 2D 补偿 扫描点表 + 双线性 生产侧 固晶 · 点胶 · 晶圆 唯一产物是两个东西 仿射矩阵（4 个 HTuple）与一批位置点 其余全是流程、界面、中间量 参数长在 CalibrateRunPara 里，落一个 JSON 5 个 Only* 里只有 1 个落盘 只有 OnlyUpLookCameraCalib 在 :1665 存了盘 OnlyWaferCameraCaib 算出的 homMatTrans 连内存都没留 下次开机等于没标过 第 4 个对话框点 Cancel 是跳过 Save 在 5 个框全 OK 之后才执行 取消后坐标系已经更新，参数还是旧的 机台从此不一致，且没有提示",
       "htmlSha256": "28919a22b72b376f5decb47585e3394e57087a09f50101ba8f41b9e1f7b08e89",
       "documentHashes": {
@@ -793,12 +607,8 @@
       "summary": "能改生产配置的调试面板，31 个窗体各抄一套，无回滚。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "maintenance"
-      ],
-      "documents": [
-        "42-实验系统全景与流程图.md"
-      ],
+      "topicIds": ["maintenance"],
+      "documents": ["42-实验系统全景与流程图.md"],
       "searchText": "实验系统：20 处保存，零处回滚 能改生产配置的调试面板，31 个窗体各抄一套，无回滚。 主菜单 ItemClick 13 个窗体的启动点 诊断页入口 另 6 个窗体 31 个实验窗体 7 个子目录各抄一套 FrmBaseTest 名字像基类 Save() 20 处 直接改生产配置 生产配置 相机标定 · 安全区 · 硬件 结果窗 Max / Min / 3σ / CMK 后台线程弹窗 FrmBMCTest → 结果窗 4 个幽灵文件 811 行 · 不在 .csproj 零回滚能力 Restore / Backup 无命中 这是一个能改生产的调试面板 68 处 Save，其中 20 处直接落生产配置 相机标定、取片安全区、硬件配置都在里面 但它挂在 HMI 主菜单上，操作员点得到 零回滚 全目录 Restore / Backup / Rollback 无命中 改坏了无法判断是哪次实验改的 现场只能靠人回忆或重装 FrmBaseTest 不是基类 全工程没有任何类型继承它 31 个窗体各自复制一套流程 这才是 8 组复制粘贴的结构性根因",
       "htmlSha256": "b3b3121b693a97d8acead1d5c47bfd37b313db04d39cc4661c3da3fbe939f8df",
       "documentHashes": {
@@ -809,16 +619,11 @@
       "id": "manual-43",
       "file": "43-料单元系统按钮与交互流程详解.html",
       "title": "料单元系统·按钮与交互细节",
-      "summary": "四种按钮来源；ProductConfiguration 与 ProductDomain 是两个文件。",
+      "summary": "四种按钮来源；产品配置与产品域分别维护。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "recipe",
-        "product-coordinates"
-      ],
-      "documents": [
-        "43-料单元系统按钮与交互流程详解.md"
-      ],
+      "topicIds": ["recipe", "product-coordinates"],
+      "documents": ["43-料单元系统按钮与交互流程详解.md"],
       "searchText": "料单元界面：243 个处理器，两套单例 四种按钮来源；ProductConfiguration 与 ProductDomain 是两个文件。 配方编辑宿主 确认动作 :873 / :1071 配置外壳 UcTransportUnitFrame · 隐式入口 带树编辑器 FrmTransportUnitEdit 对象功能编辑器 UcObjectFunctionEdit · 25 个处理器 Mapping 两窗体 新旧各一套 · 26 个处理器 TUAssistantHelper 示教 4 个入口 ProductConfiguration 配方主文件 ProductDomain 另一个文件 · 测高走这里 轴 / 相机 / 光源 示教直接下发 按钮有四种来源 Designer 接线 234 处，去重后 233 个处理器 外加 7 个有定义无接线、3 个匿名 lambda，共 243 个 只数 _Click 一定会漏 两套持久化单例 ProductConfiguration.json 与 ProductDomain.json 是两个文件 测高结果走 ProductDomain 所以那条测高结果不会进 ProductConfiguration.json 示教只改内存不落盘 BtAssistantVision_Click 改完不 Save BtAssistantMeasureHeight_Click 连刷新都没有 示教完直接退出，重启后参数没了",
       "htmlSha256": "917e63c107a91bc4e2698d4b2859c8ec8ce954c05094a6492998ae638ca2c1b3",
       "documentHashes": {
@@ -829,15 +634,11 @@
       "id": "manual-44",
       "file": "44-本地化与工程杂项全景.html",
       "title": "本地化与工程杂项·工程说明",
-      "summary": "三块资产合集；Common.cs 从未参与编译；构建期改写 IL。",
+      "summary": "三块资产合集；公共文件从未参与编译；构建时会改写中间代码。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture"
-      ],
-      "documents": [
-        "44-本地化与工程杂项全景.md"
-      ],
+      "topicIds": ["architecture"],
+      "documents": ["44-本地化与工程杂项全景.md"],
       "searchText": "本地化：一套翻译，三处硬编码 三块资产合集；Common.cs 从未参与编译；构建期改写 IL。 Program.Main 11 步启动链 语言下拉 LueLanguage 全工程唯一入口 LocalizationManager 对外唯一 API LocalizationCache 三层缓存，后两层恒空 FormLocalizer 反射写控件属性 LanguageSettings 只存一个 Language 枚举 Data/Forms/*.json 4 个文件 · 177 行 Infrastructure.DLL Singleton<T> 无源码 FodyWeavers.xml 2 个 weaver · 编译期改 IL 三块资产互不相干 翻译框架、强类型资源、进程与构建文件 它们不属于任何业务子系统，却被业务反向依赖 所以「本地化」其实是三个目录的合集 根目录 Common.cs 从没参与编译 新旧工程文件 grep 均为 0，且没有任何 Compile Remove 不是被条件排除，是从没加进来 里面两个类型至今是幽灵 构建期就会改写代码 FodyWeavers 只有 4 行两个 weaver，都是编译期改 IL PostSharp 也在这条链上 「某方法没有 try/catch」不能只看磁盘源码",
       "htmlSha256": "27758bf440925f8278abb393c415490ce9fe00c591ceccf73e79f43e49d15316",
       "documentHashes": {
@@ -851,9 +652,7 @@
       "summary": "流道→点胶→晶圆→固晶→视觉，四系统靠信号握手。",
       "detailAnchor": "overview",
       "type": "sequence",
-      "topicIds": [
-        "architecture"
-      ],
+      "topicIds": ["architecture"],
       "documents": [
         "02-机器模型与流程调度.md",
         "07-固晶系统调度与任务.md",
@@ -878,9 +677,7 @@
       "summary": "区分报警来源、分级处理与停止请求，沿实际分支理解任务退出。",
       "detailAnchor": "46-停止-急停-暂停-继续",
       "type": "architecture",
-      "topicIds": [
-        "recovery"
-      ],
+      "topicIds": ["recovery"],
       "documents": [
         "02-机器模型与流程调度.md",
         "04-基础设施界面层.md",
@@ -903,12 +700,8 @@
       "summary": "_raw → 正文 → _atlas 的对应关系与阅读入口。",
       "detailAnchor": "overview",
       "type": "architecture",
-      "topicIds": [
-        "architecture"
-      ],
-      "documents": [
-        "00-项目总览.md"
-      ],
+      "topicIds": ["architecture"],
+      "documents": ["00-项目总览.md"],
       "searchText": "文档体系地图：三层，一条链路 _raw → 正文 → _atlas 的对应关系与阅读入口。 00~30 模块文档 28 篇 · 按代码目录写 31~44 全景文档 14 篇 · 按子系统写 _写作规范 ×2 规定上面两批怎么写 13 份素材稿 5.5 万行 · 全景文档的草稿 11 份工作底账 按钮清单 · 幽灵文件 · UI 阻塞 素材索引 素材的目录与对照 46 张图 42 篇正文 43 张 + 3 张跨篇 index.html 入口 卡片导航 · 点开即看 _tools 工具链 重渲染 46 张只需一条命令 读者 维护 / 新人 / 产线 三层各管一件事 _raw 负责「当时查到了什么」 31~44 与 00~30 负责「结论是什么」 _atlas 负责「30 秒看懂」 只留一层会缺东西 只留图：细节全丢，改代码没依据 只留文档：8000 行的文件没人从头读 只留 raw：碎、重复、没有结论 从哪进 第一次来：先开 index.html 要改代码：按编号找源文档 要核对结论：回 _raw 查原始记录",
       "htmlSha256": "3d42c41cd822eeb7729f63ec4e0907e4fd6ea029c7fecb7fec2b4d3082ba8236",
       "documentHashes": {

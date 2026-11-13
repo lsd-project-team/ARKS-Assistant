@@ -2,9 +2,9 @@
 
 import asyncio
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 
-from app.modules.handover.application.commands import Write
+from app.modules.handover.application.commands import Action, Write
 from app.modules.handover.application.records import RecordService
 from app.modules.handover.interfaces.http.context import HandoverHTTPContext
 
@@ -23,3 +23,9 @@ def register(router: APIRouter, ctx: HandoverHTTPContext):
     @router.patch("/records/{identifier}")
     async def update(identifier: str, body: Write):
         return await asyncio.to_thread(RecordService(store()).update, identifier, body)
+
+    @router.post("/records/{identifier}/{action}")
+    async def lifecycle(identifier: str, action: str, body: Action):
+        if action not in {"archive", "restore"}:
+            raise HTTPException(status_code=404, detail="接口不存在")
+        return await asyncio.to_thread(store().action, identifier, action, body)

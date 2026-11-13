@@ -9,9 +9,7 @@ export function adminRoute(hash: string) {
   const page = timing.open
     ? 'action-timing'
     : handover.open
-      ? handover.tab === 'updates'
-        ? 'reviews'
-        : 'handover'
+      ? 'handover'
       : match?.[1] || 'overview';
   return {
     page,

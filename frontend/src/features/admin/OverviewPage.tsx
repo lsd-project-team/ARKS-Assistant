@@ -231,7 +231,7 @@ export function OverviewPage() {
       <section className="admin-panel">
         <div className="admin-panel-heading">
           <h2>近期操作</h2>
-          <a href="#handover/updates">查看复核与追溯 →</a>
+          <a href="#handover/materials">查看交接资料 →</a>
         </div>
         {recentOperations.length ? (
           recentOperations.map((row) => (

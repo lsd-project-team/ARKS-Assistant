@@ -74,7 +74,7 @@ export interface Event {
   version: number;
   created_at: string;
 }
-export type Tab = 'overview' | 'materials' | 'tasks' | 'issues' | 'packages' | 'updates';
+export type Tab = 'overview' | 'materials' | 'tasks' | 'issues' | 'packages';
 export const handoverScope = 'global';
 export interface HandoverContext {
   scope_id: 'global';
@@ -88,7 +88,6 @@ export const tabs: { id: Tab; label: string }[] = [
   { id: 'tasks', label: '任务与进度' },
   { id: 'issues', label: '问题与经验' },
   { id: 'packages', label: '交接包' },
-  { id: 'updates', label: '复核与追溯' },
 ];
 export const text = (value: unknown) => (typeof value === 'string' ? value : '');
 export const ids = (value: unknown) =>

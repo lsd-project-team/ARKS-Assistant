@@ -27,7 +27,7 @@ export function PackageDetail({
   definitions: Definitions;
   client: Client;
   readError?: unknown;
-  history: ReactNode;
+  history?: ReactNode;
   onClose: () => void;
   onOpen: (id: string, version?: number) => void;
   onConfirm?: () => Promise<void>;

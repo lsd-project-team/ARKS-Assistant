@@ -4,25 +4,25 @@ export const transportHandoffFlows = [
   flow(
     'transport-dispense-split',
     'S1 第一段到第二段',
-    '点胶段间传输 Task 在 Start 中实际创建，旁边“下一迭代”的注释未禁用 Task.Run。控制器通过物料与许可判断后执行传输。',
+    '点胶段之间的传输任务在启动时确实会创建，旁边的“下一迭代”注释并没有停用这一启动方式。控制器要先通过物料与许可判断，才会执行传输。',
     ['tr-split-task', 'tr-split-gate'],
     [
       step(
         'gate',
         '判断物料与许可',
-        '没有 S1 物料返回 NoStart。自动调用等待 AllowDispense1TransferToDispense2Signal，Wait=false 返回 Abort；手动调用只允许 Divide 且 IsTuInDispense1=true。',
+        'S1 没有物料时返回未启动。自动调用会等待“S1 第一段到第二段”的放行信号，等待遇到停止条件就返回中止；手动调用只允许在分段模式下进行，且要求载具已停在 S1 第一段。',
         ['tr-split-gate'],
       ),
       step(
         'move',
         '段间传输与位置更新',
-        '置 Transfering，UnClamp，第一挡料降下、第二挡料升起，调用皮带运动等待；之后 Clamp，写 HasMaterial、Ready，置 IsTuInDispense1=false，调用 System1MoveDistance 并标记需要预点胶。',
+        '先标记为传输中，松开夹紧，降下第一道挡料、升起第二道挡料，再启动皮带并等待到位；到位后夹紧，记录有料和就绪，标记载具已离开 S1 第一段，再按 S1 的移送距离移动，并标记需要预点胶。',
         ['tr-split-move'],
       ),
       step(
         'signal',
         '向第二段发布完成',
-        '返回 Success 时线程发 TransferToDispense2FinishedSignal；NoStart 延时后下一轮，Abort 调用 Stop 后下一轮重新检查 WaitStart。线程 catch 仅显示异常。',
+        '结果为成功时，任务发出“S1 第二段完成”信号；未启动时延时后进入下一轮；中止时请求停机，下一轮重新等待启动或停止指令。任务的异常处理只做提示。',
         ['tr-split-task'],
       ),
     ],
@@ -30,18 +30,18 @@ export const transportHandoffFlows = [
   flow(
     'transport-dispense-bond',
     'S1 传入 S2',
-    'S1→Bond Task 先处理首次 Bond 已有物料，再调用传输控制器。完成信号也可能来自已有物料分支。',
+    'S1 到固晶工位的任务先处理首次启动时固晶工位已有物料的情况，再调用传输控制器。这个完成信号也可能来自已有物料的分支。',
     ['tr-bond-first', 'tr-bond-task'],
     [
       step(
         'gate',
         '检查占用与放行',
-        '需 Bond=NoMaterial 且 S1=HasMaterial。自动调用等待 AllowDispenseTransferToBondSignal，Wait=false 返回 Abort；手动 Divide 模式下，载具仍在 S1 第一段时返回 NoStart。',
+        '要求固晶工位为无料、S1 为有料。自动调用会等待“S1 到固晶”的放行信号，等待遇到停止条件就返回中止；手动分段模式下，载具还停在 S1 第一段时返回未启动。',
         ['tr-bond-gate'],
         [
           outcome(
-            '首次 Bond 已有料',
-            '不提示时直接发 Bond 完成信号，继续本轮；提示时首轮处理后 continue，Yes 发完成信号，No 调用 Stop。这个信号不只在新传输成功后发出。',
+            '首次固晶已有料',
+            '不提示时直接发出固晶完成信号，并继续本轮；提示时首轮处理完就进入下一轮，选择继续就发完成信号，选择停止则请求停机。这个信号并不只在新传输成功后才发出。',
             'tr-bond-first',
           ),
         ],
@@ -49,30 +49,30 @@ export const transportHandoffFlows = [
       step(
         'move',
         '等待气缸后传输',
-        'retry 位于许可等待之后。并行调用两段 UnClamp 与挡料动作，S1 UnClamp 受配置限制；WaitAll 后启动 S1 皮带，在运动中检测 S1 出口。',
+        '重试入口位于许可等待之后。两段的松开夹紧与挡料动作同时执行，其中 S1 的松开夹紧受配置限制；这些动作全部完成后启动 S1 皮带，并在运行中检测 S1 出口。',
         ['tr-bond-move'],
       ),
       step(
         'alarm',
         '两处卡料与重试',
-        'S1 出口未检测到物料时报警；否则启动 Bond 皮带并复查 S1 出口，仍有料时报警。两处 Retry 都回到气缸与皮带动作前的 retry；Abort 返回，Ignore 继续共同提交区。',
+        'S1 出口没有检测到物料时报警；检测到就启动固晶皮带，再复查 S1 出口，仍有物料时同样报警。两处选择重试都会回到气缸与皮带动作之前的重试入口；选择中止则结束，选择忽略则继续进入共用的提交段。',
         ['tr-bond-alarm'],
       ),
       step(
         'commit',
         '移交载具并发信号',
-        '并行 Clamp Bond、恢复 S1 两个挡料，等待后把 S1 载具移给 Bond 并 Refresh，清 S1 载具，写 Bond 有料/S1 无料、两段 Ready，保存后返回 Success；线程随后发 Bond 完成信号。',
+        '同时夹紧固晶工位并恢复 S1 的两道挡料，等这些动作完成后把 S1 的载具移交给固晶工位并刷新记录，清掉 S1 的载具，记录固晶有料、S1 无料和两段就绪，保存后返回成功；任务随后发出固晶完成信号。',
         ['tr-bond-commit', 'tr-bond-task'],
         [
           outcome(
-            '异常与返回码',
-            '控制器异常返回 Exception，但本线程 switch 没有 Exception 分支；Abort 调用 Stop，NoStart 和未处理返回码进入后续循环。线程 catch 只显示异常。',
+            '异常与返回结果',
+            '控制器遇到异常时返回异常结果，但本任务的结果判断没有单独处理异常的分支；中止会请求停机，未启动和其他未单独处理的结果则进入下一轮。任务的异常处理只做提示。',
             'tr-bond-commit',
             'tr-bond-task',
           ),
           outcome(
-            'Ignore 的边界',
-            '两处报警忽略后同样可写入上述物料状态和 Success，状态提交不能独立证明实际传输成功。',
+            '忽略的边界',
+            '两处报警选择忽略后，同样可能写入上述物料状态并得到成功结果，所以状态已提交本身不能证明物料真的传送到位。',
             'tr-bond-alarm',
             'tr-bond-commit',
           ),
@@ -83,35 +83,35 @@ export const transportHandoffFlows = [
   flow(
     'transport-bond-wait',
     'S2 传入等待区',
-    '需 Bond 有料、等待区无料，并在自动调用中收到 Bond 放行。该段两处报警重试回到不同位置。',
+    '要求固晶工位有料、等待区无料，并且自动调用时收到固晶到等待区的放行。这一段的两处报警重试会回到不同位置。',
     ['tr-wait-gate'],
     [
       step(
         'gate',
         '等待空位与放行',
-        'Bond 不为 HasMaterial 或等待区不为 NoMaterial 返回 NoStart；自动等待 AllowBondTransferToWaitingUnloadSignal，Wait=false 返回 Abort。手动调用跳过这次信号等待。',
+        '固晶工位不是有料，或等待区不是无料时，返回未启动；自动调用会等待“固晶到等待区”的放行信号，等待遇到停止条件就返回中止。手动调用则跳过这次信号等待。',
         ['tr-wait-gate'],
       ),
       step(
         'bond',
         '从 Bond 段送出',
-        'retry1 并行 UnClamp Bond、降挡料，等待后启动 Bond 皮带并检测出口。未检测到时置 Alarm；Retry 回 retry1，Abort 返回，Ignore 跳过等待段传输的 else 而进入共同提交区。',
+        '第一处重试入口同时松开固晶夹紧并降下挡料，等动作完成后启动固晶皮带并检测出口。没有检测到物料就触发报警；选择重试回到第一处重试入口，选择中止则结束，选择忽略会跳过等待段传输的有料分支，直接进入共用的提交段。',
         ['tr-wait-first', 'tr-wait-commit'],
       ),
       step(
         'wait',
         '等待段传输与复查',
-        '出口检测到时进入 retry2，启动等待段皮带，循环读取 Bond 出口与 Unloading 控制器入口；入口检测到时停止 Bond 和等待段皮带。结束后若 Bond 出口仍有料或入口未检测到，进入卡料报警。',
+        '出口检测到物料后进入第二处重试入口，启动等待段皮带，循环读取固晶出口和出料控制器入口的状态；入口检测到物料时，停止固晶皮带和等待段皮带。结束后如果固晶出口仍有物料，或入口没有检测到物料，就进入卡料报警。',
         ['tr-wait-second'],
         [
           outcome(
             '此处重试',
-            'Retry 只回 retry2 重新运行等待段，不回前面的 Bond 解夹与启动步骤；Abort 返回，Ignore 继续共同提交。',
+            '选择重试只回到第二处重试入口重新运行等待段，不会回到前面松开固晶夹紧和启动皮带的步骤；选择中止则结束，选择忽略继续进入共用的提交段。',
             'tr-wait-second',
           ),
           outcome(
             '尚未提前提交',
-            '循环里“Bond 出口无料就提前提交”的赋值已被注释，实际提交在两个检测阶段之后。',
+            '循环里原本“固晶出口无料就提前提交”的处理已被注释停用，实际提交发生在两个检测阶段之后。',
             'tr-wait-second',
             'tr-wait-commit',
           ),
@@ -120,12 +120,12 @@ export const transportHandoffFlows = [
       step(
         'commit',
         '提交等待区状态',
-        '把 Bond 载具移到等待区并 Refresh，等待区置 HasMaterial，Bond 置 NoMaterial 并清载具，两段置 Ready；手动时另调用 Bond.UnClamp。保存后返回 Success。',
+        '把固晶工位的载具移到等待区并刷新记录，等待区记录为有料，固晶工位记录为无料并清掉载具，两段都置为就绪；手动调用时还会另行松开固晶夹紧。保存后返回成功。',
         ['tr-wait-commit'],
         [
           outcome(
             '线程分派',
-            'NoStart 继续循环，Success 记录结果；Abort 或 Exception 调用 Stop 后再循环检查 WaitStart。该线程 catch 记录并提示，没有额外 Stop。',
+            '未启动时继续循环，成功时记录结果；中止或异常会请求停机，然后再回到等待启动或停止指令。该任务的异常处理只记录并提示，不会额外请求停机。',
             'tr-wait-task',
           ),
         ],

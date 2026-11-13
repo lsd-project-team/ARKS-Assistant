@@ -24,16 +24,6 @@ def source_and_package(client):
             "actor": "整理人",
         },
     ).json()
-    confirmed = client.post(
-        f"/api/handover/records/{source['id']}/confirm",
-        json={
-            "version": source["version"],
-            "actor": "管理员",
-            "role": "复核人",
-            "opinion": "PRIVATE-REVIEW-OPINION",
-        },
-    )
-    assert confirmed.status_code == 200, confirmed.text
     package = client.post(
         "/api/handover/packages",
         json={
@@ -43,12 +33,7 @@ def source_and_package(client):
         },
     )
     assert package.status_code == 201, package.text
-    confirmed_package = client.post(
-        f"/api/handover/records/{package.json()['id']}/confirm",
-        json={"version": package.json()["version"], "actor": "管理员", "opinion": "已核对交接包"},
-    )
-    assert confirmed_package.status_code == 200, confirmed_package.text
-    return confirmed.json(), confirmed_package.json()
+    return source, package.json()
 
 
 def test_unauthenticated_api_and_valid_login_cookie(services):
@@ -96,7 +81,7 @@ def test_invalid_login_role_injection_cross_site_and_rate_limit(services):
     with TestClient(create_app(services[0])) as client:
         response = sign_in(client, "user")
         assert response.json()["user"]["role"] == "user"
-        assert client.get("/api/handover/events", headers={"X-Role": "admin"}).status_code == 403
+        assert client.get("/api/handover/events", headers={"X-Role": "admin"}).status_code == 404
         assert (
             client.post(
                 "/api/auth/login", json={"username": "user", "password": "wrong", "role": "admin"}
@@ -140,28 +125,15 @@ def test_user_cannot_read_or_modify_review_but_business_operations_remain(servic
     with TestClient(create_app(services[0])) as client:
         sign_in(client)
         source, package = source_and_package(client)
-        assert client.get("/api/handover/events").status_code == 200
-        assert client.get(f"/api/handover/records/{source['id']}/history").status_code == 200
-        assert (
-            client.get(f"/api/handover/records/{source['id']}").json()["confirmation"]["opinion"]
-            == "PRIVATE-REVIEW-OPINION"
-        )
         sign_in(client, "user")
         for path in ("/api/handover", "/api/handover/context", "/api/handover/schema"):
             assert client.get(path).status_code == 200
-        assert client.get("/api/handover/events").status_code == 403
-        assert client.get(f"/api/handover/records/{source['id']}/history").status_code == 403
         body = {
             "version": source["version"],
             "actor": "管理员",
             "role": "管理员",
             "opinion": "冒名复核",
         }
-        for action in ("confirm", "reject"):
-            assert (
-                client.post(f"/api/handover/records/{source['id']}/{action}", json=body).status_code
-                == 403
-            )
         assert (
             client.post(
                 "/api/handover/candidates/not-found/promote",
@@ -220,7 +192,6 @@ def test_account_switch_logout_expiry_disable_and_live_role_change(services):
             account = session.scalar(select(Account).where(Account.username == "admin"))
             account.role = "user"
         assert client.get("/api/auth/session").json()["user"]["role"] == "user"
-        assert client.get("/api/handover/events").status_code == 403
         with auth.database.session.begin() as session:
             account = session.scalar(select(Account).where(Account.username == "admin"))
             account.enabled = False

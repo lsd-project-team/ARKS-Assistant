@@ -80,7 +80,6 @@ export function RecordEditor({
       }}
       footer={
         <>
-          <span className="handover-muted">保存后到“复核与追溯”审核</span>
           <Button type="button" disabled={busy} onClick={onClose}>
             关闭并保留草稿
           </Button>

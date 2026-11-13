@@ -251,6 +251,7 @@ async def test_low_budget_and_disabled_generation_do_not_claim_jobs(services, wo
     assert not worker[1]
     services[5].save(config)
     ledger = worker[0].ledger(services[2].id)
+    ledger.save({"token_limit": 500000})
     ledger.reserve(490000)
     await worker[0].run_once()
     assert not worker[1]

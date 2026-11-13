@@ -95,7 +95,6 @@ async def test_paused_sources_are_absent_while_other_enabled_sources_work(
     def forbidden(*_args, **_kwargs):
         raise AssertionError("暂不接入的流程说明或交接资料不能进入对话")
 
-    monkeypatch.setattr(runtime.knowledge, "tools", forbidden)
     monkeypatch.setattr(HandoverMaterialCorpus, "__init__", forbidden)
 
     options = SourceOptions(use_knowledge=use_knowledge).model_dump()
@@ -145,8 +144,6 @@ async def test_code_question_and_selection_do_not_automatically_load_flow_guides
 
     async def forbidden(*_args, **_kwargs):
         raise AssertionError("代码问题不能再自动补入流程与功能说明")
-
-    monkeypatch.setattr(runtime.knowledge, "prepare", forbidden)
 
     class ReachedGraph(Exception):
         pass

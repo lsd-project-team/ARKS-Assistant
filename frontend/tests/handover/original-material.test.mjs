@@ -109,10 +109,6 @@ test('管理员从审核入口打开资料也直接看原文件，不出现审�
     '不应覆盖上传人',
   ])
     assert.ok(!html.includes(obsolete), obsolete);
-  assert.equal(
-    environment.queries.find((query) => query.queryKey[0] === 'handover-history').enabled,
-    false,
-  );
 });
 test('不支持预览的文件只提供原文件下载，不显示提取正文', () => {
   const html = render({

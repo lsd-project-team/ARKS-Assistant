@@ -1,41 +1,41 @@
 import { choices, outcome, step } from './builders.ts';
 
-// 只描述当前可达分支，不把参考点 region 或报警确认补写成已完成的检测功能。
+// 只描述当前可达分支，不把参考点区域或报警确认补写成已完成的检测功能。
 export const s2InspectionFlows = [
   choices(
     's2-after-modes',
     '焊后检测入口与频率',
-    'AfterBond 先 WorkStart、Running 并初始化 defectResult=Success，再进入 try。非编辑测试时才取得当前上下文并检查频率，之后才判断离线、空跑和检测用途。',
+    '焊后检测先登记工作开始、置运行状态，并把检测结果初始化为成功，再进入异常保护。非编辑测试时才取当前上下文并检查检测频率，之后才判断离线、空跑和检测用途。',
     ['s2-after-entry'],
     [
       step(
         'guard',
         '物料与步骤门控',
-        'IsDoWork 排除 Disable、EnableInSystem1 与不需要的 S2 步骤，没有 EntityState.Process 门控。非编辑测试路径取得基板、基岛、焊点、检测配置和芯片；编辑测试沿用已经设置的上下文。',
+        '执行判断排除禁用焊点、只在 S1 启用的焊点和不需要的 S2 步骤，没有检查焊点是否处于加工状态。非编辑测试路径会取基板、基岛、焊点、检测配置和芯片；编辑测试沿用已经设置的上下文。',
         ['s2-after-guard', 's2-after-entry'],
       ),
       step(
         'frequency',
         '频率跳过也提交步骤',
-        '频率功能关闭或 CurrentDefectNumber 达到 DefectFrequency 时需检测；未达到时先把计数加一并返回 false。节点收到 false 就提交当前 S2 步骤并 Success；该跳过路径的 FinishedDefect 调用已注释，因此不清频率计数。',
+        '检测频率功能关闭，或当前缺陷数达到设定频率时需要检测；未达到时先把计数加一并返回不检测。节点收到不检测就提交当前 S2 步骤并返回成功；这条跳过路径里清频率计数的调用已被注释，因此计数不会清零。',
         ['s2-inspection-frequency', 's2-after-entry'],
       ),
       step(
         'offline',
-        'OffLine 提交，但不做视觉',
-        '通过前面的频率门控后，OffLine 直接 S2FinishedStep 并 Success，没有调用本方法后续检测用途入口，也未在这个分支调用 FinishedDefect。',
+        '离线提交，但不做视觉',
+        '通过前面的频率判断后，离线模式直接提交 S2 步骤并返回成功，没有进入后面的检测用途入口，也没有在这个分支清频率计数。',
         ['s2-after-entry'],
       ),
       step(
         'dry',
-        'DryCycle 移动、延时并提交',
-        '空跑把 P1 检测位置变换到 G0 并减焊头相机偏移，调用移动和 DownLookSearchDelay，再提交步骤并 Success；这里没有执行普通胶量 / 焊后 / BLT 检测。',
+        '空跑移动、延时并提交',
+        '空跑把 P1 检测位置换算到 G0 并减去焊头相机偏移，执行移动和向下搜索延时，再提交步骤并返回成功；这里不执行胶量、焊后或 BLT 检测。',
         ['s2-after-entry', 's2-after-dry'],
       ),
       step(
         'finish',
-        'finally 清测试标记，不统一提交',
-        'finally 依次清 IsEditTest、置 Stop、WorkStop、刷新 S2 UI，并未统一 S2FinishedStep。回调或刷新抛出异常可能覆盖返回值，WorkStop 异常还会阻断后续刷新；不能写成每个退出路径都已经提交。',
+        '收尾清测试标记，不统一提交',
+        '收尾依次清除编辑测试标记、置停止状态、执行工作结束回调、刷新 S2 界面，并没有统一提交步骤。回调或刷新报错可能覆盖返回值，工作结束回调报错还会阻断后续刷新；不能写成每条退出路径都已经提交。',
         ['s2-after-final'],
       ),
     ],
@@ -43,36 +43,36 @@ export const s2InspectionFlows = [
   choices(
     's2-after-vision',
     '焊后定位模式与背崩',
-    'AfterBondCheck 用途的 switch 当前只有 WithoutReferenceSearch case。保持配置为 WithReferenceSearch 时没有独立入口，会落到末尾 Success；该路径没有显式步骤提交。参考点 region 存在不等于此模式已接通。',
+    '焊后检测的定位模式目前只有无参考点搜索这一条入口。配置为带参考点搜索时没有独立入口，会落到末尾的成功返回；这条路径没有显式提交步骤。参考点区域存在，不等于这个模式已经接通。',
     ['s2-after-vision-entry', 's2-after-reference', 's2-after-final'],
     [
       step(
         'one',
         '无参考点：一点定位',
-        '先对 P1 调用 DefectVision。一点且不检测背崩时直接 WithoutReferResultDeal；该方法点为 null 返回 Fail，否则叠加焊点角度、记录结果，再调用 PostBondDefect。',
+        '先对 P1 做缺陷视觉。一点定位且不检测背崩时直接进入无参考点结果处理；取到的点为无值则返回失败，否则叠加焊点角度、记录结果，再提交焊后缺陷结果。',
         ['s2-after-one', 's2-after-without'],
       ),
       step(
         'two',
         '无参考点：两点定位',
-        '两点配置才调用 P2；P2 为 null 返回 defectResult，没有在这里补一次检测。无参考点两点分支使用 (P1 + P2) / 2 交给结果处理，不能把这写成额外的参考点校正。',
+        '只有两点配置才处理 P2；P2 为无值时直接返回当前检测结果，没有在这里补做一次检测。无参考点的两点分支把 P1、P2 的中点交给结果处理，不能把这写成额外的参考点校正。',
         ['s2-after-two'],
       ),
       step(
         'reference',
         '参考点代码的可达限制',
-        'P1 / P2 参考点处理仍嵌套在 WithoutReferenceSearch 的 case 内，其中一点参考结果又要求 WithReferenceSearch。当前 switch 没有与之对应的独立 case；配置在此过程中保持不变时，不能按代码区域标题画出一条正常参考点流程。',
+        'P1、P2 的参考点处理仍嵌在无参考点搜索的入口内，其中一点参考结果又要求带参考点搜索。当前判断没有与之对应的独立入口；过程中配置保持不变时，不能按现有段落标题画出一条正常的参考点流程。',
         ['s2-after-vision-entry', 's2-after-two', 's2-after-reference'],
       ),
       step(
         'crack',
         '一点背崩：先处理定位结果',
-        '开启背崩时先调用 WithoutReferResultDeal；返回非 Success 会再调用一次并返回第二次结果，并非复用第一次返回。Success 后才取匹配结果做背崩检测，Retry 只回到背崩检测标签。',
+        '开启背崩检测时先做无参考点结果处理；结果不是成功时会再做一次并返回第二次结果，而不是复用第一次。成功后才取匹配结果做背崩检测，重试只回到背崩检测处。',
         ['s2-after-crack'],
         [
           outcome(
             '背崩选择的结果',
-            '发现背崩：Abort 增失败数并 Stop；Ignore 增失败数、禁用焊点但 Success；OK 返回 Retry。该方法未追加步骤提交，之前的 PostBondDefect 却可能已经提交，后续背崩失败没有在此回滚。',
+            '发现背崩时：选择中止会增加失败数并停机；选择忽略会增加失败数、禁用焊点但返回成功；选择确认返回重试。这一层没有追加步骤提交，前面的焊后缺陷处理却可能已经提交，后续背崩失败不会在这里回滚。',
             's2-after-crack-result',
             's2-after-post-result',
           ),
@@ -83,31 +83,31 @@ export const s2InspectionFlows = [
   choices(
     's2-after-results',
     '胶检与焊后检测返回',
-    'EpoxyCheck 调相机视觉后进入胶量结果处理；AfterBond 的定位结果进入 PostBondDefect。两者对 Success / Fail / Abort 的外层处理相似，只有胶量 Retry 另有重新点胶路径。',
+    '胶检在相机视觉后进入胶量结果处理；焊后检测的定位结果进入焊后缺陷处理。两者对成功、失败、中止的外层处理相近，只有胶量重试另有重新点胶路径。',
     ['s2-after-epoxy-entry', 's2-after-epoxy-result', 's2-after-post-result'],
     [
       step(
         'success',
-        'Success：非编辑测试才提交',
-        '共享检测返回 Success 后，仅 !IsEditTest 时提交当前 S2 步骤并调用 FinishedDefect 清频率计数，再 Success。PostBondDefect 在补偿模式先调用 PickUpDie，再判断结果；拾回内部动作仍需另外复核。',
+        '成功：非编辑测试才提交',
+        '检测返回成功后，只有在非编辑测试时才提交当前 S2 步骤并清频率计数，再返回成功。焊后缺陷处理在补偿模式先做拾回，再判断结果；拾回内部的动作仍需另外复核。',
         ['s2-after-epoxy-result', 's2-after-post-result', 's2-inspection-frequency'],
       ),
       step(
         'fail',
-        'Fail：禁用焊点后 Success',
-        '共享检测返回 Fail 时，调用 SetMatterDisable 并返回 Success，没有在这两个分支中提交步骤或清频率计数。外层可以标记消息 Finished，但不能解释为该焊点检测通过。',
+        '失败：禁用焊点后成功',
+        '检测返回失败时，把焊点设为禁用并返回成功，这两个分支都没有提交步骤或清频率计数。外层可以把消息标记为完成，但不能解释为该焊点检测通过。',
         ['s2-after-epoxy-result', 's2-after-post-result', 's2-worker-commit'],
       ),
       step(
         'abort',
-        'Abort 与未列出的返回',
-        'Abort 分支先 Machine.Stop 再 Abort；胶量未列出枚举与焊后非 Success / Fail / Abort 枚举会抛出“未知错误”，由节点 catch 准备返回 Exception。PostBondDefect 没有对应的 Retry 分支。',
+        '中止与未列出的返回',
+        '选择中止时先停机器再返回中止；胶量分支里未列出的结果和焊后分支里非成功、失败、中止的结果会报未知错误，由节点异常处理准备返回异常。焊后缺陷处理没有对应的重试分支。',
         ['s2-after-epoxy-result', 's2-after-post-result', 's2-after-final'],
       ),
       step(
         'retry',
-        '胶量 Retry：按步骤重建点胶与检测',
-        'ReDispense 遍历 S2RemainingSteps 的所有键，查对应步骤；EpoxyNameApplicationName != "Null" 就添加 S2 点胶，DefectName 等于当前检测名就添加 AfterBond。将匹配键赋 false 后按指定步骤重建消息，再 Retry；不只重置当前步骤，步骤查找没有空项保护。',
+        '胶量重试：按步骤重建点胶与检测',
+        '重新点胶会遍历剩余步骤的全部键，查对应步骤；胶名应用不是空值标记时加入 S2 点胶，缺陷名等于当前检测名时加入焊后检测。把匹配的键置为未完成，再按指定步骤重建消息并重试；不只重置当前步骤，步骤查找也没有空项保护。',
         ['s2-after-epoxy-result', 's2-after-redispend', 's2-rework-named'],
       ),
     ],
@@ -115,25 +115,25 @@ export const s2InspectionFlows = [
   choices(
     's2-after-blt',
     'BLT 测量与人工选择',
-    'BLT 用途先测芯片周围和表面高度，再逐项计算差值、平均值与极差；判断严格使用 >，达到阈值相等不在这两个比较中报警。',
+    'BLT 检测先测芯片周围和表面高度，再逐项计算差值、平均值和极差；判断严格使用大于，正好等于阈值时不会在这两个比较中报警。',
     ['s2-after-blt-entry', 's2-after-blt-calc'],
     [
       step(
         'measure',
         '成对高度与列表边界',
-        '按 height2.Count 读取两组高度并将差值四舍五入到 3 位，再 Average、Max、Min。这里没有保护空列表或长度不一致；倾斜报警文案还直接读取 0–3 四项，不能假定异常数据会自动补齐。',
+        '按高度个数取两组高度，把差值四舍五入到三位小数，再算平均、最大和最小。这里没有保护空列表或长度不一致；倾斜报警文案还会直接取四项高度，不能假定异常数据会自动补齐。',
         ['s2-after-blt-calc'],
       ),
       step(
         'pass',
         '无报警：提交并清频率',
-        '平均差值偏离 BLTStandard 超过 MaxBLTOffset，或极差超过 MaxSurfaceSlope 时累计报警文案；文案为空则提交步骤、FinishedDefect，再 Success。',
+        '平均差值偏离标准值超过最大偏移，或极差超过最大表面倾斜时，累计报警文案；文案为空则提交步骤、清频率计数，再返回成功。',
         ['s2-after-blt-calc', 's2-after-blt-options'],
       ),
       step(
         'operator',
         '报警后的确认不重新测量',
-        '先设置 BLT 视觉硬件、关闭测高气缸并移动相机，再显示报警。Abort 及其他未列选择增失败数、Stop、Abort；Ignore 增失败数并禁用焊点后 Success，不在该分支提交；OK 直接提交、清频率并 Success，没有重新测高度的回环。',
+        '先设置 BLT 视觉硬件、关闭测高气缸并移动相机，再显示报警。选择中止及其他未列选择会增加失败数、停机并中止；选择忽略增加失败数、禁用焊点后返回成功，不在该分支提交；选择确认直接提交、清频率计数并返回成功，没有重新测高的回环。',
         ['s2-after-blt-options', 's2-after-blt-return'],
       ),
     ],

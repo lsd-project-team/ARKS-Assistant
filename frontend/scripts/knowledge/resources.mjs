@@ -7,10 +7,9 @@ export const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../
 export const knowledgeRoot = resolve(projectRoot, 'resources/knowledge');
 const mounts = {
   archify: resolve(knowledgeRoot, 'flows'),
-  'agent-knowledge.json': resolve(knowledgeRoot, 'generated/agent-knowledge.json'),
 };
 
-// 发布阅读用图谱时去掉历史源码绑定；原始图谱仍供构建校验使用。
+// 阅读版不附源码依据；源图仅作为图谱内容本身保留。
 export function readingDiagram(html) {
   return html
     .replace(/<script\b[^>]*id="archify-source-evidence-data"[^>]*>[\s\S]*?<\/script>/g, '')
@@ -39,10 +38,6 @@ export function knowledgePath(url) {
   const [prefix, ...parts] = decoded.split('/');
   const root = mounts[prefix];
   if (!root) throw new Error(`未知知识资源地址：${url}`);
-  if (prefix === 'agent-knowledge.json') {
-    if (parts.length) throw new Error('知识资源路径越界');
-    return root;
-  }
   const target = resolve(root, ...parts);
   const within = relative(root, target);
   if (within.startsWith('..') || isAbsolute(within)) throw new Error('知识资源路径越界');

@@ -4,24 +4,24 @@ export const transportLifecycleFlows = [
   flow(
     'transport-bin-workers',
     '料仓定位与换层',
-    '上下料仓 Start 都在未 Enable 或 DryCycle 时返回。它们是独立任务，通过允许推料和允许移动两组信号与输送段交互。',
+    '上料仓和下料仓的启动流程，在未启用或空跑时都会直接返回。它们是独立任务，通过允许推料和允许移动两组信号与各输送段配合。',
     ['tr-loader', 'tr-unloader', 'tr-signal-types'],
     [
       step(
         'initial',
         '首次定位并允许推料',
-        '两侧首轮都调用 MoveToCurrentPlaceLayer，再发对应 AllowPush 信号。结果 switch 只对 Abort 调用 Stop 并返回，Success break；这里没有默认拒绝其他返回码的分支。',
+        '两侧首轮都先定位到当前层，再发出对应的允许推料信号。结果判断只对中止请求停机并结束，成功则继续往下；这里没有统一拦下其他结果的默认分支。',
         ['tr-loader', 'tr-unloader'],
       ),
       step(
         'loader',
         '上料侧等待后推进层号',
-        '等 AllowLoaderMoveSignal 后调用 MoveToNextPlaceLayer：当前层+1未越界时移动到下一层、加层号并保存，随后任务重新发 LoaderAllowPushSignal。',
+        '等待允许料仓移动信号后，再定位到下一层：当前层加一且没有越界时，移动到下一层、累加层号并保存，随后任务重新发出允许推料信号。',
         ['tr-loader', 'tr-loader-next'],
         [
           outcome(
             '料盒与越界',
-            '当前层定位会核对料盒和层数；A 盒越界时换下一盒并重置层号，另一盒越界提供换仓或停止；料盒未检测到提供重试、换下一盒或停止。下一层定位有独立的换盒、重置与报警分支。',
+            '定位当前层时会核对料盒和层数；A 盒越界就换下一盒并重置层号，另一盒越界则提供换仓或停止两种选择；没有检测到料盒时，提供重试、换下一盒或停止。定位下一层另有独立的换盒、重置和报警分支。',
             'tr-loader-current',
             'tr-loader-next',
           ),
@@ -30,12 +30,12 @@ export const transportLifecycleFlows = [
       step(
         'unloader',
         '下料侧移到已推进的当前层',
-        '传输控制器末尾已经 AddCurPlaceLayer。UnloaderTask 收到允许移动后仍调用 MoveToCurrentPlaceLayer，使用这个新层号定位，再发 UnloaderAllowPushSignal；并非在该任务里调用 MoveToNextPlaceLayer。',
+        '输送控制器在收尾时已经把当前层号加一。下料仓任务收到允许移动信号后，仍按当前层定位，用的就是这个新层号，定位后再发出允许推料信号；它并不会自己去定位下一层。',
         ['tr-unload-commit', 'tr-unloader-inc', 'tr-unloader', 'tr-unloader-current'],
         [
           outcome(
             '满仓或料盒不存在',
-            '定位前核对当前盒与层数；A 盒越界换盒并重置，另一盒越界提供换仓或停止；盒未检测到提供重试、换下一盒或停止。',
+            '定位前先核对当前料盒和层数；A 盒越界就换盒并重置层号，另一盒越界则提供换仓或停止；没有检测到料盒时，提供重试、换下一盒或停止。',
             'tr-unloader-current',
           ),
         ],
@@ -43,12 +43,12 @@ export const transportLifecycleFlows = [
       step(
         'exit',
         '观察状态与异常退出',
-        '两侧外层 while 都使用 IsWorking。若在外层判断时读到 Pause，条件为 false 可直接结束任务；下料侧内部的 IsPause 分支只在已经进入循环后才执行。各自 catch 仅显示异常，不补发许可，也不重建任务。',
+        '两侧最外层循环都以“机台是否在工作”为条件。如果在外层判断时读到的是暂停，条件不成立，任务会直接结束；下料侧内部的暂停分支只有在已经进入循环之后才会执行。两侧的异常处理都只做提示，不会补发许可，也不会重建任务。',
         ['tr-loader', 'tr-unloader', 'state-read'],
         [
           outcome(
             '继续入口',
-            'Machine.Continue 恢复状态与相关标记，不重新调用这两个 Start；生产者退出后，等待者是否还能得到许可须另查信号和再次启动路径。',
+            '继续运行时只恢复机台状态和相关标记，不会重新启动上料仓、下料仓这两个任务；生产者退出之后，等待方还能不能拿到许可，要另外核对信号和再次启动的入口。',
             'machine-continue',
             'tr-loader',
             'tr-unloader',
@@ -60,18 +60,18 @@ export const transportLifecycleFlows = [
   flow(
     'transport-signal-lifecycle',
     '信号等待、暂停与停止',
-    '料仓允许移动使用 AutoReset，允许推料使用 ManualReset。Signal.Wait 先检查机台状态，再等待事件；它没有统一的整体等待期限。',
+    '允许料仓移动的信号采用自动复位，允许推料的信号采用手动复位。等待信号时先检查机台状态，再等待事件；它没有统一的整体等待期限。',
     ['tr-signal-types', 'tr-signal-wait', 'tr-signal-start'],
     [
       step(
         'state',
-        'WaitStart 检查状态',
-        '入口 Stop 返回 false；Pause 时每 20 毫秒检查并等待，退出暂停循环后返回 true。这里没有等待具体动作完成，也没有再次启动生产任务。',
+        '等待启动或停止指令检查状态',
+        '入口遇到停止状态就不成立；进入暂停时，每 20 毫秒检查一次并继续等待，退出暂停循环后才算通过。这里既不等待某个具体动作完成，也不会重新启动生产任务。',
         ['tr-signal-start'],
         [
           outcome(
             '暂停切换为停止的窗口',
-            '暂停循环的条件重新读取状态；若这次读取已是 Stop，会直接跳出 while，末尾没有再次检查 Stop 就返回 true。Signal.Wait 后面的事件循环会再查 Stop，直接使用 WaitStart 的外层任务须看各自后续检查。',
+            '暂停循环每轮都会重新读取状态；如果这次读到的已经是停止，就会直接跳出循环，末尾不再检查停止就判为通过。后面的事件等待循环还会再查一次停止状态，所以直接调用这一步的外层任务，要各自确认后续有没有检查。',
             'tr-signal-start',
             'tr-signal-wait',
           ),
@@ -79,13 +79,13 @@ export const transportLifecycleFlows = [
       ),
       step(
         'event',
-        'Wait 轮询事件',
-        'WaitStart 成功后，循环每轮先检查 Stop，再 Sleep(5)、WaitOne(recycleTime)。默认构造使用 100 毫秒周期；超时只进入下一轮，没有整体超时结果。进入事件循环后的 Pause 未在该循环内再次检查。',
+        '等待轮询事件',
+        '启动或停止指令的等待通过后，事件循环每轮先检查停止，再间隔 5 毫秒检查一次，然后按等待周期等事件。默认周期是 100 毫秒；等不到只进入下一轮，没有整体的超时结论。进入事件循环之后如果切到暂停，这个循环里不会再检查。',
         ['tr-signal-wait', 'tr-signal-default'],
         [
           outcome(
             '自动与手动复位',
-            '事件成功后 AutoReset 将 State 标记改为 ReSet；ManualReset 保持已置位，需显式 ReSet。Set/ReSet 同时操作事件与 State 标记。',
+            '事件成功后，自动复位的信号会立刻回到未置位；手动复位的信号则保持置位，需要另外显式复位。置位和复位会同时改变事件本身和对应的状态标记。',
             'tr-signal-wait',
             'tr-signal-set',
             'tr-signal-types',
@@ -95,12 +95,12 @@ export const transportLifecycleFlows = [
       step(
         'producer',
         '区分继续、重试与补信号',
-        '料仓线程异常的 catch 不调用 Stop 或补发信号；等待者使用无整体期限的 Wait。机台仍工作且事件未置位时可持续等待，不能把点击 Continue 描述成必然恢复握手。',
+        '料仓任务出现异常时，异常处理既不请求停机，也不补发信号；等待方用的等待没有整体期限。只要机台仍在工作、事件又没置位，等待就会一直持续，所以不能把点击“继续”说成一定能恢复握手。',
         ['tr-loader', 'tr-unloader', 'tr-signal-wait', 'machine-continue'],
         [
           outcome(
             '推料未开始',
-            '料仓传输返回 NoStart 时 continue，允许推料事件没有在该分支被复位，因此下一轮可继续使用该许可；成功后的换层请求才配合显式复位。',
+            '料仓传输返回未启动时进入下一轮，该分支没有复位允许推料事件，所以下一轮仍可继续使用这份许可；只有成功之后的换层请求才配合显式复位。',
             'tr-bin-run',
             'tr-output-bin',
             'tr-signal-types',
@@ -111,31 +111,31 @@ export const transportLifecycleFlows = [
   ),
   flow(
     'transport-dry-run',
-    'DryCycle 交互',
-    'DryCycle 经 StartTask 进入 StartDryRun，跳过普通传输任务分配。该方法调用 Clamp 并用物料记忆、对象和信号循环配合 S1/S2。',
+    '空跑交互',
+    '空跑模式从输送启动入口转入空跑流程，跳过正常生产的任务分配。空跑流程会执行夹紧，并用物料状态记录、载具对象和信号循环配合 S1 与 S2。',
     ['tr-entry', 'tr-dry-initial'],
     [
       step(
         'initial',
         '初始化两段模拟物料',
-        '依次 Clamp S1 和 Bond；两段各先置 HasMaterial 并发完成信号，再创建对应 System1/System2 TransportUnit。发布信号与对象创建存在这个先后顺序。',
+        '依次夹紧 S1 和固晶工位；两个工位都先记录为有料并发出完成信号，再创建各自对应类型的载具记录。发信号在前、建载具在后，这个顺序是确定的。',
         ['tr-dry-initial'],
       ),
       step(
         's1',
         'S1 放行后重建本段物料',
-        '使用与普通模式相同的 transferDispenseToBondTask 字段。循环检查状态、等待 S1→Bond 放行信号后，把 S1 重新置有料、发 S1 完成信号并创建 S1 对象；没有调用实体 TransferDispenseToBond。',
+        '这里占用的是与正常生产同一个“S1 到固晶”传输任务。循环中先看状态，等到 S1 到固晶的放行信号后，把 S1 重新记录为有料、发出 S1 完成信号并创建 S1 的载具记录；并没有执行实际的 S1 到固晶传送。',
         ['tr-dry-s1'],
       ),
       step(
         's2',
         'S2 放行后重建本段物料',
-        '使用 transferBondToWaitingUnloadTask 字段。等待 Bond→等待区放行后，把 Bond 重新置有料、发 Bond 完成信号并创建 S2 对象；没有调用实体 TransferBondToWaitingUnload。两侧 Wait=false 均退出。',
+        '这里占用的是同一个“固晶到等待区”传输任务。等到固晶到等待区的放行信号后，把固晶工位重新记录为有料、发出固晶完成信号并创建 S2 的载具记录；并没有执行实际的固晶到等待区传送。两个工位在等待放行时如果遇到停止条件，都会退出。',
         ['tr-dry-s2'],
         [
           outcome(
             '对象复用判断',
-            '两个字段为空或非 Running 才创建本次循环，没有在这里强制替换仍为 Running 的原任务。DryCycle 也不是从进料到出料的整条实物传输。',
+            '这两个任务对象不存在，或状态不是运行中时，才会在本次循环重新创建；这里不会强行替换仍在运行的原任务。空跑也不是从进料到出料的整条实物传输。',
             'tr-dry-s1',
             'tr-dry-s2',
             'tr-entry',
@@ -146,19 +146,19 @@ export const transportLifecycleFlows = [
   ),
   flow(
     'transport-task-alive',
-    'IsAlive 的检查范围',
-    'IsAlive 按是否 LoaderBin 选择五个任务对象，要求均非空且 Status=Running；这个列表与实际配置创建的任务并不完全对应。',
+    '任务存活检查的范围',
+    '任务存活检查按是否料仓供料，挑出五个任务对象，要求它们都存在且处于运行中；这份名单与实际配置创建出来的任务并不完全对应。',
     ['tr-alive'],
     [
       step(
         'list',
         '选择五个对象',
-        '非料仓分支检查 Bond→等待区、S1 段间、S1→Bond、皮带→S1、等待区→皮带。料仓分支换为料仓→S1与等待区→料仓，但仍检查皮带→S1，并未检查 Bond→等待区。',
+        '非料仓供料分支检查的是固晶到等待区、S1 段间、S1 到固晶、皮带进 S1、等待区到皮带这五项。料仓供料分支则换成料仓到 S1 和等待区到料仓，但仍保留皮带进 S1，并没有检查固晶到等待区。',
         ['tr-alive'],
         [
           outcome(
             '与创建分支的差异',
-            'LoaderBin 创建料仓进料任务，不在同一分支创建皮带进料任务；None 不创建自动进出料。因而缺少这类对象可能使 IsAlive 返回 false，即使该配置实际创建的其他任务正在运行。',
+            '料仓供料会创建料仓进料任务，但不会在同一分支创建皮带进料任务；不启用的配置则不创建自动进出料任务。因此名单里缺少这类对象时，存活检查就可能判为不成立，即使该配置实际创建的其他任务正在运行。',
             'tr-alive',
             'tr-bin-create',
             'tr-belt-create',
@@ -169,8 +169,8 @@ export const transportLifecycleFlows = [
       ),
       step(
         'meaning',
-        '判断 Running，保留边界',
-        '列表通过才返回五个 Running 判断的合取，否则 false。没有检测外部送收板、LoaderTask、UnloaderTask 或实物位置，也不能代替再次启动时的 IsAllowTaskClosed 检查。',
+        '判断运行中，保留边界',
+        '只有这份名单通过，才会认为五项都在运行中，否则就不成立。这项检查没有涉及外部送收板、上料仓任务、下料仓任务或实物位置，也不能代替再次启动时的任务关闭检查。',
         ['tr-alive', 'running-tasks'],
       ),
     ],

@@ -7,10 +7,10 @@ test('从管理页进入交接、复核和固定历史地址时，直接按当�
   assert.equal(materials.valid, true);
   assert.equal(materials.page, 'handover');
   assert.equal(materials.handover.tab, 'materials');
-  const review = adminRoute('#handover/updates?record=record-1&version=3');
-  assert.equal(review.page, 'reviews');
-  assert.equal(review.handover.recordId, 'record-1');
-  assert.equal(review.handover.version, 3);
+  const task = adminRoute('#handover/tasks?record=record-1&version=3');
+  assert.equal(task.page, 'handover');
+  assert.equal(task.handover.recordId, 'record-1');
+  assert.equal(task.handover.version, 3);
 });
 
 test('管理员默认进入管理概览，交接概览保留工作台，问答详情支持独立刷新', () => {

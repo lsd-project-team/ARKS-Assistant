@@ -407,8 +407,6 @@ class Projects:
             runtime = AgentRuntime(paths, self.base.settings, workspace, repository, memories)
             if folders:
                 runtime.semantic = ProjectAnalysis(workspace)
-            if not self.knowledge_available(str(root)):
-                runtime.knowledge.path = paths.data / "unconfigured-project-knowledge.json"
             runs = RunManager(repository, runtime, self.base.settings)
             runs.capacity, runs.edit_lock = self.base.runs.capacity, self.edit_lock
             runtime.project_lock = self.edit_lock

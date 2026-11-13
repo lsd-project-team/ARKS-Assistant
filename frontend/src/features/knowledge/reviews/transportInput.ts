@@ -4,18 +4,18 @@ export const transportInputFlows = [
   flow(
     'transport-entry',
     '输送入口与配置',
-    'StartTask 先检查输送配置并初始化模块，再分 DryCycle 与普通模式。普通模式经过载具检查和映射后，按配置调用料仓任务与输送任务。',
+    '输送任务启动时，先检查是否配置了输送并完成模块初始化，再区分空跑和正常生产两种模式。正常生产模式先处理上下料口的载具检查与物料映射，再按配置启动料仓任务和各段输送任务。',
     ['tr-entry'],
     [
       step(
         'mode',
         '检查配置与工作模式',
-        '未配置输送时返回；否则调用 TransportModule.Init。DryCycle 直接进入 StartDryRun，跳过下述普通模式检查、映射和料仓启动。',
+        '没有配置输送时直接返回；配置了输送就先初始化输送模块。空跑模式直接转入空跑流程，跳过下面正常生产模式的载具检查、物料映射和料仓启动。',
         ['tr-entry'],
         [
           outcome(
             '入口异常',
-            'catch 记录并显示异常，没有在该 catch 中调用 Stop，也没有给调用方返回布尔成功值。',
+            '异常处理只记录并提示错误，既没有在那里请求停机，也没有向调用方给出表示成功的结论。',
             'tr-entry',
           ),
         ],
@@ -23,25 +23,25 @@ export const transportInputFlows = [
       step(
         'carrier',
         '检查上下料口载具',
-        '出料口检查限制 LoaderBin、OnlineWithAutoUnloader；入料口检查限制 LoaderBin、OnlineWithAutoLoader。对应口有料时，重试回到出料口检测起点，终止返回 false。',
+        '出料口的检查只在料仓供料或联机自动下料这两种配置下进行；入料口的检查只在料仓供料或联机自动上料这两种配置下进行。对应口检测到有料时，选择重试会回到出料口检测的起点，选择终止则结束本次启动。',
         ['tr-carrier-out', 'tr-carrier-in'],
-        [outcome('检查失败', 'StartTask 收到 false 后调用 Stop 并退出本方法。', 'tr-entry')],
+        [outcome('检查失败', '启动流程收到不成功的结果后请求停机，并退出本次启动。', 'tr-entry')],
       ),
       step(
         'map',
         '按配置刷新与映射',
-        '仅 Online 先关要料信号；IsReverseSearch 为 true 时刷新 TransportUnit，随后调用 MapMaterial。映射总是调用 Bond.MapBelt，配置 S1 才调用 Dispense.MapBelt；Online 或 OnlineWithAutoLoader 还按前端检测更新入料段状态。',
+        '只有联机模式会先关闭要料信号；启用反向搜索时，先刷新载具记录，再更新物料映射。物料映射每次都会处理固晶段的皮带，配置了 S1 时才处理点胶段的皮带；联机或联机自动上料还会根据入料口前端检测更新入料段状态。',
         ['tr-entry', 'tr-map'],
       ),
       step(
         'tasks',
         '分别启动任务',
-        'LoaderBin 先调用 LoaderTask.Start、UnloaderTask.Start，随后调用 TransportTask.Start。各段使用 Task.Run，不在这里等待全部任务结束。',
+        '料仓供料时，先启动上料仓任务和下料仓任务，再启动输送任务。各段任务各自运行，这里不会等所有任务都结束才继续。',
         ['tr-entry', 'tr-loader', 'tr-unloader', 'tr-task-online', 'tr-split-task'],
         [
           outcome(
-            'None',
-            '不创建自动入料任务。有 S1 物料时询问是否继续：Yes 发 S1 完成信号，No 调用 Stop。No 分支的 break 只退出 switch，后面三个工位传输 Task 的创建判断仍会执行；到出料部分才 return。',
+            '不启用',
+            '不创建自动入料任务。S1 上已有物料时会询问是否继续：选择继续就发出 S1 完成信号，选择停止则请求停机。选择停止只是退出当前这一组判断，后面三个工位输送任务的创建判断仍会执行，直到出料部分才结束。',
             'tr-feed-none',
             'tr-split-task',
             'tr-bond-first',
@@ -50,13 +50,13 @@ export const transportInputFlows = [
           ),
           outcome(
             '外部设备配置不对称',
-            '送板任务用于 Online 或 OnlineWithAutoLoader，收板任务用于 Online 或 OnlineWithAutoUnloader；不能把两种单侧配置都描述成双侧联机。',
+            '送板任务用于联机或联机自动上料，收板任务用于联机或联机自动下料；不能把这两种只启用单侧的配置都说成双侧联机。',
             'tr-task-online',
             'tr-output-online',
           ),
           outcome(
             '创建判断',
-            '所列任务为空或 Status 不等于 Running 时创建。这里没有统一等待旧任务退出，也没有按配置先清空其他分支已有的任务对象。',
+            '列出的任务不存在，或任务状态不是运行中时，才会新建。这里没有统一等待旧任务退出，也没有先按配置清掉其他分支已有的任务对象。',
             'tr-belt-create',
             'tr-bin-create',
             'tr-split-task',
@@ -69,24 +69,24 @@ export const transportInputFlows = [
   flow(
     'transport-online-feed',
     '送板机进料',
-    '送板线程由 PrepareFeeding 门控，控制器在入料段记忆为 NoMaterial 时发出要料请求并检测前端物料。',
+    '送板任务受上料准备条件控制；输送控制器在入料段记录为无料时发出要料请求，并检测入料口前端是否有物料。',
     ['tr-task-online', 'tr-online-feed'],
     [
       step(
         'permit',
         '等待上料准备',
-        '每轮先调用 WaitStart；PrepareFeeding 为 false 时等待 1000 毫秒再进入下一轮，不调用送板控制器。',
+        '每轮先等待启动或停止指令；上料准备条件不成立时，等 1000 毫秒后进入下一轮，不调用送板控制器。',
         ['tr-task-online'],
       ),
       step(
         'request',
         '要料与前端检测',
-        '入料段为 NoMaterial 时打开要料输出并计时。前端检测到物料后启动入料皮带，延时后关要料输出，再停止皮带。已有物料时直接关要料输出并返回 NoStart。',
+        '入料段记录为无料时，打开要料输出并开始计时。前端检测到物料后启动入料皮带，延时后关闭要料输出，再停止皮带。如果已有物料，就直接关闭要料输出，并返回未启动。',
         ['tr-online-feed'],
         [
           outcome(
             '超过 5000 毫秒',
-            '先置 Alarm 并关要料输出；重试重新要料并计时，终止返回 Abort，不再上料设置 ContinuousFeeding=false 并返回 NoStart。',
+            '先触发报警并关闭要料输出；选择重试就重新要料并重新计时，选择终止则返回中止，选择不再上料则关闭连续上料并返回未启动。',
             'tr-online-feed',
           ),
         ],
@@ -94,7 +94,7 @@ export const transportInputFlows = [
       step(
         'finish',
         '提交入料状态',
-        '控制器尾部写 HasMaterial、创建 System2 类型的 TransportUnit 并保存，然后返回 Success。线程在 Success 时清 PrepareFeeding；Abort 调用 Stop；该 switch 没有 Exception 分支。',
+        '控制器在收尾时记录为有料，创建固晶段对应类型的载具记录并保存，然后返回成功。任务收到成功结果后清除上料准备条件；收到中止结果则请求停机；这组结果判断里没有单独处理异常。',
         ['tr-online-feed', 'tr-task-online'],
       ),
     ],
@@ -102,35 +102,35 @@ export const transportInputFlows = [
   flow(
     'transport-belt-feed',
     '皮带进入 S1',
-    '非 None 且非 LoaderBin 创建皮带进入 S1 的任务；先处理首次启动的已有物料，再按 ContinuousFeeding 调用传输控制器。',
+    '既不是不启用、也不是料仓供料的配置，才会创建“皮带送入 S1”的任务；先处理首次启动时 S1 已有物料的情况，再按连续上料开关决定是否调用传输控制器。',
     ['tr-belt-create', 'tr-belt-first', 'tr-belt-run'],
     [
       step(
         'first',
         '处理已有物料',
-        '不启用重启提示时，首次发现 S1 有料便发完成信号，仍继续本轮后续判断；启用提示时首次处理后一定 continue，有料且选 Yes 发信号，选 No 调用 Stop。',
+        '没有启用重启提示时，首次发现 S1 有料就直接发出完成信号，并继续本轮后面的判断；启用了提示时，首次处理完一定进入下一轮，有料时选择继续就发信号，选择停止则请求停机。',
         ['tr-belt-first'],
       ),
       step(
         'gates',
         '检查上料与占用',
-        'ContinuousFeeding=false 时等待下一轮。控制器发现 S1 已有料便返回 NoStart；仅 Online 额外检查入料段记忆，无料时返回 NoStart。缺少皮带数据时，重试回方法的 retry，终止返回 Abort，忽略继续后续代码。',
+        '连续上料关闭时，等下一轮再判断。控制器发现 S1 已有物料就返回未启动；只有联机模式还会检查入料段记录，记录为无料时同样返回未启动。缺少皮带数据时，选择重试回到这一步的重试入口，选择终止则返回中止，选择忽略则继续后面的流程。',
         ['tr-belt-run', 'tr-belt-gate'],
       ),
       step(
         'sense',
         '检测入料与 S1 传输',
-        '先并行调用挡料与 UnClamp，等待后启动入料皮带；运动中检测入料段物料并在需要时创建载具对象，随后启动 S1 皮带检测 S1 物料。',
+        '先同时执行挡料和松开夹紧，等这些动作完成后启动入料皮带；皮带运行中检测入料段物料，必要时创建载具对象，随后启动 S1 皮带并检测 S1 物料。',
         ['tr-belt-in', 'tr-belt-dispense'],
         [
           outcome(
             '入料未检测到',
-            '自动路径可重新上料、关闭 ContinuousFeeding 后返回 NoStart，或终止返回 Abort；手动路径直接返回 None。',
+            '自动路径可以重新上料、关闭连续上料后返回未启动，或者选择终止返回中止；手动路径则直接结束，不执行传输。',
             'tr-belt-in',
           ),
           outcome(
             'S1 卡料',
-            '重试回 retry，终止返回 Abort，忽略只退出报警 switch。S1 未检测到的 Ignore 路径不会进入 else 中的物料提交，但仍可到方法尾部返回 Success。',
+            '选择重试会回到重试入口，选择终止则返回中止，选择忽略只是退出报警这组判断。S1 未检测到时若选了忽略，不会进入有料分支里的物料提交，但仍可能走到流程末尾并返回成功。',
             'tr-belt-dispense',
             'tr-belt-commit',
           ),
@@ -139,17 +139,17 @@ export const transportInputFlows = [
       step(
         'commit',
         '提交与发布信号',
-        '进入 S1 检测到物料的 else 后，停止入料皮带，按 S1 配置 Clamp，移交 TransportUnit，更新两段物料和 Ready 状态，置 IsTuInDispense1=true。线程在 Success 发 S1 完成信号并清 PrepareFeeding。',
+        '进入“S1 检测到物料”这一分支后，停止入料皮带，按 S1 配置夹紧，移交载具，更新两段物料与就绪状态，并标记载具已在 S1 第一段。任务收到成功结果后发出 S1 完成信号，并清除上料准备条件。',
         ['tr-belt-commit', 'tr-belt-run'],
         [
           outcome(
             '未配置 S1 的放行位置',
-            'AllowDispenseTransferToBondSignal.Set 位于结果 switch 之后，因此未配置 S1 时，NoStart、Abort 或未处理的返回码也可能走到这个放行语句。',
+            'S1 到固晶的放行信号是在结果判断之后才发出的，所以没有配置 S1 时，未启动、中止或其他未单独处理的返回结果也可能走到这一步放行。',
             'tr-belt-run',
           ),
           outcome(
             '异常',
-            '控制器捕获异常返回 Exception；线程结果 switch 没有 Exception 分支，线程自己的 catch 仅显示异常。',
+            '控制器捕获到异常时返回异常结果；任务的结果判断没有单独处理异常的分支，任务自身的异常处理只做提示。',
             'tr-belt-commit',
             'tr-belt-run',
           ),
@@ -160,29 +160,29 @@ export const transportInputFlows = [
   flow(
     'transport-bin-feed',
     '料仓推入 S1',
-    'LoaderBin 任务在首次已有物料处理和 ContinuousFeeding 判断后，等待 LoaderAllowPushSignal，再调用推料控制器。',
+    '料仓供料任务先处理首次启动时已有物料的情况，再判断连续上料开关，然后等待料仓允许推料信号，才调用推料控制器。',
     ['tr-bin-create', 'tr-bin-first', 'tr-bin-run'],
     [
       step(
         'permit',
         '等待料仓允许推料',
-        '首次物料提示与皮带任务相同：关闭重启提示时直接发已有物料信号；启用提示时首轮处理后 continue。持续上料关闭时等待；推料信号 Wait=false 则退出任务。',
+        '首次物料的提示方式与皮带任务相同：关闭重启提示时直接发出已有物料信号；启用提示时首轮处理完就进入下一轮。连续上料关闭时保持等待；等待推料信号时若遇到停止条件，任务直接退出。',
         ['tr-bin-first', 'tr-bin-run'],
       ),
       step(
         'push',
         '推杆回位与推料',
-        'S1 有料返回 NoStart。否则调用挡料与 UnClamp；RePush 先 MovePushRodHome 再 PushTabletToDispenseNoWait，res 被后一次调用覆盖，随后按推料结果分支。',
+        'S1 已有物料时返回未启动。否则先执行挡料和松开夹紧；进入推料重试时，先把推杆回位，再启动推料动作，最终结果以后一次推料动作为准，之后按推料结果分支。',
         ['tr-bin-push'],
         [
           outcome(
-            '推料结果非 Success',
-            '重试清推杆错误、上使能后回 RePush；忽略继续；下一片返回 None；终止返回 Abort；不再上料关闭 ContinuousFeeding 并返回 NoStart。',
+            '推料结果非成功',
+            '选择重试会先清除推杆错误、重新上使能，再回到推料重试入口；选择忽略则继续；选择下一片返回无结果；选择终止返回中止；选择不再上料则关闭连续上料并返回未启动。',
             'tr-bin-push',
           ),
           outcome(
             '推到位却未检测到入口物料',
-            '循环内发现推杆到位时先回位，再提供同组处理选项。此处 Ignore 只退出 switch，仍留在检测循环；不是直接宣布入料完成。',
+            '检测循环里发现推杆已到位时，先把推杆回位，再给出同一组处理选项。这里选择忽略只是退出当前判断，仍留在检测循环中，并不等于宣布入料已经完成。',
             'tr-bin-detect',
           ),
         ],
@@ -190,12 +190,12 @@ export const transportInputFlows = [
       step(
         'belt',
         'S1 皮带传输与入口复查',
-        '入口检测通过后另起推杆回位任务，最多循环检测 10000 毫秒；S1 皮带 MoveBeltWaitArrive 返回后复查入口。有料则置 NoMaterial/Alarm，重试回 RePush、终止返回 Abort、不再上料返回 NoStart。',
+        '入口检测通过后，另外启动推杆回位任务，入口检测最多循环 10000 毫秒；S1 皮带运行结束并到位后，再复查入口。仍有物料就按无料记录并触发报警，选择重试回到推料重试入口、选择终止返回中止、选择不再上料返回未启动。',
         ['tr-bin-belt'],
         [
           outcome(
             '卡料后忽略',
-            'Ignore 跳过无卡料 else 中的载具创建和状态提交，仍可到尾部返回 Success；不要把返回码解释成此处完成了全部提交。',
+            '选择忽略会跳过“没有卡料”分支里的载具创建和状态提交，但仍可能走到末尾返回成功；不能把这个结果理解成这里已经完成全部提交。',
             'tr-bin-belt',
             'tr-bin-commit',
           ),
@@ -204,17 +204,17 @@ export const transportInputFlows = [
       step(
         'handshake',
         '提交与请求下一层',
-        '无卡料 else 中 Clamp，创建或刷新 System1 载具，写 HasMaterial、Ready 和第一段位置，并等待回位 Task。线程收到 Success 发 S1 完成信号并清 PrepareFeeding；Success 或 None 后复位允许推料，发 AllowLoaderMoveSignal。',
+        '在“没有卡料”的分支里夹紧，创建或刷新 S1 对应类型的载具，记录有料、就绪和第一段位置，并等待回位任务结束。任务收到成功结果后发出 S1 完成信号并清除上料准备条件；成功或无结果之后，复位允许推料信号，再发出允许料仓移动信号。',
         ['tr-bin-commit', 'tr-bin-run'],
         [
           outcome(
-            'NoStart',
-            '等待 500 毫秒后 continue，保留允许推料信号，不请求料仓换层。',
+            '未启动',
+            '等待 500 毫秒后进入下一轮，允许推料信号保持置位，也不请求料仓换层。',
             'tr-bin-run',
           ),
           outcome(
-            'Abort / Exception',
-            '调用 Stop 并 return，不执行后面的信号复位与允许移动。',
+            '中止或异常',
+            '会请求停机并结束任务，不再执行后面的信号复位和允许移动。',
             'tr-bin-run',
           ),
         ],

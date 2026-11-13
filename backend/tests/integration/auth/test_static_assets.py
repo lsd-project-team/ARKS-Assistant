@@ -56,7 +56,6 @@ def frontend(tmp_path, monkeypatch):
         "assets/workspace.js.map": b"PRIVATE_SOURCE_MAP_FIXTURE",
         "archify/source.html": b"PRIVATE_SOURCE_HTML_FIXTURE",
         "engineering/manifest.json": b'{"private": "PRIVATE_MANIFEST_FIXTURE"}',
-        "agent-knowledge.json": b'{"private": "PRIVATE_AGENT_KNOWLEDGE_FIXTURE"}',
     }
     for name, value in content.items():
         file = directory / name
@@ -96,7 +95,6 @@ def test_login_resources_are_public_but_private_files_cannot_bypass_session(serv
             "/assets/workspace.js.map",
             "/archify/source.html",
             "/engineering/manifest.json",
-            "/agent-knowledge.json",
             "/public-assets.json",
             "/archify%2fsource.html",
             "//engineering/manifest.json",
@@ -343,12 +341,11 @@ def test_actual_built_login_dependencies_and_private_knowledge_require_real_sess
     )
     StaticAssets(built)
     public = json.loads((built / "public-assets.json").read_text(encoding="utf-8"))["files"]
-    # 只复制本轮构建的UI资产和两份资料；真实数据库、会话和静态服务仍完整运行。
+    # 只复制本轮构建的UI资产和一份资料；真实数据库、会话和静态服务仍完整运行。
     shutil.copytree(built / "assets", frontend / "assets", dirs_exist_ok=True)
     for name in [
         *public,
         "public-assets.json",
-        "agent-knowledge.json",
         "archify/module-source-explorer.html",
     ]:
         destination = frontend / name
@@ -374,8 +371,8 @@ def test_actual_built_login_dependencies_and_private_knowledge_require_real_sess
                         assert urljoin("/" + name, url).lstrip("/") in public
         for file in private_scripts:
             assert client.get("/" + file.relative_to(frontend).as_posix()).status_code == 401
-        for url in ("/agent-knowledge.json", "/archify/module-source-explorer.html"):
-            assert client.get(url).status_code == 401
+        for url in ("archify/module-source-explorer.html",):
+            assert client.get("/" + url).status_code == 401
         sign_in(client, "user")
         sample = next(
             file for file in private_scripts if file.name.startswith("KnowledgeWorkspace-")
@@ -383,5 +380,5 @@ def test_actual_built_login_dependencies_and_private_knowledge_require_real_sess
         assert (
             client.get("/" + sample.relative_to(frontend).as_posix()).content == sample.read_bytes()
         )
-        for name in ("agent-knowledge.json", "archify/module-source-explorer.html"):
+        for name in ("archify/module-source-explorer.html",):
             assert client.get("/" + name).content == (built / name).read_bytes()

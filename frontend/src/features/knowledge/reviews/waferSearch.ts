@@ -4,63 +4,63 @@ export const waferSearchFlows = [
   choices(
     'wafer-search-dispatch',
     '搜索分派、换料标记与停止检查',
-    'NextDie 按 Single、Nine、WaferMap、Box 调用不同方法；不存在统一经过同一 StopSearch 节点再发送许可的实现。',
+    '下一颗搜索按单点、九点、地图和盒式分别走不同入口；并不存在一个统一的停止检查节点，检查完再发许可。',
     ['w-next-die', 'w-single-finish', 'w-publish'],
     [
       step(
         'dispatch',
         '四种模式分别调用',
-        'Single 调 SearchSingle，Nine 调 SearchNine，WaferMap 调 SearchMapping，Box 调 SearchDieBox；未知模式抛异常。四种方法及共享视觉包装分别展开；PR 算法控制器和底层驱动仍需继续阅读。',
+        '单点、九点、地图和盒式分别调用各自的搜索入口；未知模式会抛出异常。四种入口和共用的视觉处理分别在后面展开；PR 算法控制器和底层驱动仍待补充。',
         ['w-next-die'],
       ),
       step(
         'flag',
         '地图的有效换料条件',
-        '原始换料标记为 false 就 false；标记为 true 时，Single、Nine、Box 返回 true，WaferMap 还要求 pickingRefDieInfo 为空或计数为 0。地图缓存尚有参考芯片时，原始标记为 true 也不直接换料。',
+        '原始换料标记为否时，按不需要换料结束；标记为是时，单点、九点和盒式都按需要换料结束，地图搜索还要求当前取到的参考芯片为空，或缓存计数为零。地图缓存里还有参考芯片时，即使原始标记为是，也不会直接换料。',
         ['w-need-change', 'w-change-flags'],
       ),
       step(
         'init',
-        'StartInit 与清换料标记不同',
-        'StartInit 重置首次搜索、空白次数和 isNeedAheadChangeTablet，再依次调用地图、盒式、Single、Nine 四个初始化方法，没有按当前搜索模式择一。ReSetChangeCarrierSignal 另清原始换料和地图标记；不要把 StartInit 名称解释成已经清空全部状态。',
+        '启动初始化与清换料标记不同',
+        '初始化会重置首次搜索、空白次数和提前换片标志，再依次执行地图、盒式、单点、九点四套初始化，并没有按当前搜索模式只选一套。清换料标记是另一步，会清掉原始换料和地图换料两个标记；不要因为名字叫初始化，就认为所有状态都已经清空。',
         ['w-block-init', 'w-change-flags'],
       ),
       step(
         'stop',
-        'StopSearch 是检查点',
-        'StopSearch 发现 IsStop 时，默认先请求顶针吹气、延时、关吹气并回安全位，再抛停止异常。这是调用处的检查，不是此方法为所有搜索路径建立了统一取消机制；NextDie=true 后供晶线程仍直接准备并发布许可。',
+        '停止搜索是检查点',
+        '停止检查发现已经停机时，默认先请求顶针吹气、延时、关吹气并回到安全位，再抛出停止异常。这只是执行到这一处的检查，并不代表所有搜索路径都有了统一的取消机制；下一颗搜索成功之后，供晶线程仍会直接准备并发出许可。',
         ['w-stop-search', 'w-before-pick', 'w-publish'],
       ),
     ],
   ),
   choices(
     'wafer-single-search',
-    'Single：下一位置、定位与换向',
-    'SearchSingle 在定位跳过时循环找下一点；无点与提前结束走 false，正常定位后移到取晶中心并 true。',
+    '单点：下一位置、定位与换向',
+    '单点搜索在定位被跳过时循环找下一个位置；没有下一点或提前结束按失败返回，正常定位后移到取晶中心并按成功返回。',
     ['w-single-entry', 'w-single-finish'],
     [
       step(
         'position',
         '无下一点直接请求换料',
-        '调用 GetNextPosition(isOffset) 后把 isOffset 清 false。位置为空或 isNeedAheadChangeTablet=true 时清提前换片标志、置原始换料标记、将槽设 Bad、经 UI 委托调用设备参数保存并 false；这个提前返回没有经过后面的 StopSearch。它与只负责换向的 AheadReachEnd 方法不同。',
+        '取下一位置后，会清掉这次取点用的偏移标记。位置为空或已置提前换片标志时，会清提前换片标志、置原始换料标记、把槽设为不可用、通过主界面请求保存设备参数，并按失败结束；这条提前结束没有经过后面的停止检查。它与只负责换向的提前换向处理不是同一件事。',
         ['w-single-entry', 'ws-box-save', 'w-form-ui'],
       ),
       step(
         'vision',
         '标准定位与双点模式',
-        '开启位置搜索且为 Standard 时，可按双点配置先定位 P1 再 P2；两次都不跳过时平均角度并移动到两中心的平均位置。某次 isSkip 为 true 时返回原当前点；单点配置则只调用 PR1。',
+        '开启位置搜索且使用标准定位时，可以按双点配置先定位第一点，再定位第二点；两次都没被跳过，就取角度平均值并移到两个中心的平均位置。某一次被跳过时，返回原来的当前点；单点配置则只做第一次 PR 定位。',
         ['w-single-entry', 'w-single-two', 'w-single-finish'],
       ),
       step(
         'loop',
         '检查停止，再决定跳过重搜',
-        'MultipleSearch 与未知定位模式抛异常；关闭位置搜索也直接抛异常。受支持定位执行后 StopSearch，isSkip 为 true 回循环，false 才 MoveDieToPickCenter 并 true；共享 AnalyseDie 另处理框架、墨点、精度和视觉报警，不能把相机中心占位结果视为真实匹配。',
+        '多位置搜索和未知定位模式会抛出异常；关闭位置搜索也直接抛出异常。受支持的定位执行后做停止检查，被跳过就回循环，未被跳过才移到取晶中心并按成功结束；共用的整颗芯片定位还会处理框架、墨点、精度和视觉报警，不能把相机中心的占位结果当成真实匹配。',
         ['w-single-finish'],
       ),
       step(
         'boundary',
         '蛇形移动有局部扫描上限',
-        '首次以实际 G0 位置建立行列步距，并按配置跳行跳列及初始方向决定正负。后续按横向或纵向边界换向，在范围内返回下一点；边界扫描各自最多 retryTimes=50 次，不是所有视觉重试的统一 50 次上限。',
+        '首次时以实际 G0 位置建立行列步距，并按配置的跳行跳列和初始方向决定正负。之后按横向或纵向边界换向，在范围内给出下一点；两个方向的边界扫描各自最多 50 次，这不是所有视觉重试共用的 50 次上限。',
         [
           'w-single-position-first',
           'w-single-position-horizontal',
@@ -75,30 +75,30 @@ export const waferSearchFlows = [
   flow(
     'wafer-refresh-map',
     '取晶后的高度等待与地图更新',
-    'RefreshMap 先按载具与离线条件检查焊头高度，再按搜索模式更新记录。isDebugMode 参数没有在方法内使用。',
+    '刷新地图时，先按载具类型和是否离线检查焊头高度，再按搜索模式更新取晶记录。传入的调试标志在这一步里没有使用。',
     ['w-refresh-height', 'w-refresh-mode'],
     [
       step(
         'height',
         '非静态且在线才等焊头避让',
-        '非 StaticWaffle 且非 Offline 时，用 GetPickPosZ 与实际焊头 Z 比较 RaiseDistance；未满足就 StopSearch、重读高度并继续。这个循环没有显式 Sleep 或本地超时。传 true 不会绕过它。',
+        '只要不是静态料片、也不在离线状态，就会把取片位高度与实际焊头高度比较，确认是否留出抬起距离；不满足就做停止检查、重新读取高度再继续。这个循环没有显式延时，也没有本地超时。传入调试标志同样绕不过它。',
         ['w-refresh-height'],
       ),
       step(
         'ejection',
         '晶圆配置请求顶针准备位',
-        '高度条件满足且配置为 CarrierWithWaferConfig 时，重启并记录计时，请求 MoveEjectToReadyPosition，之后才进入搜索模式更新。此处没有据该调用另建立成功返回分支。',
+        '高度条件满足、且当前是带晶圆的载具配置时，会重启并记录计时，请求顶针移到准备位，之后才进入按搜索模式更新。这里没有根据这个请求单独建立成功与否的分支。',
         ['w-refresh-height'],
       ),
       step(
         'record',
         '地图、盒式、单点与九点分别更新',
-        'WaferMap 记已取芯片并刷新状态；Box 将 CurrentIndex 设为当前槽索引加一、请求保存，再记取晶和刷新；Single 分支为空；Nine 调 ReMoveDieToWaferCameraCenter。不能统一描述为四种模式都更新同一地图字段。',
+        '地图搜索记录已取芯片并刷新状态；盒式把当前索引设为该槽索引加一、请求保存，再记录取晶并刷新；单点分支为空；九点则回晶圆相机中心。不能统一说成四种模式都在更新同一个地图记录。',
         ['w-refresh-mode'],
         [
           outcome(
             '保存与动作是独立边界',
-            '盒式设备参数保存经 UI Invoke 调 Save，Save 加锁后调用 JSON 写入与备份 helper；地图 AsyncSaveFile 是另一接口。这里没有统一保存事务，停止或前序异常可能中断后续更新。',
+            '盒式的设备参数保存通过主界面同步调用，保存时先取得独占，再写数据文件并做备份；地图的保存请求是另一套入口。这里没有统一的保存事务，停机或前面的异常都可能中断后面的更新。',
             'w-refresh-mode',
             'w-stop-search',
             'ws-box-save',

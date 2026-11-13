@@ -38,10 +38,8 @@ def test_minimal_work_item_and_direct_status_updates(services):
             assert response.status_code == 200, response.text
             row = response.json()
         assert row["payload"]["work_status"] == "done"
-        assert row["state"] == "draft"
+        assert row["state"] == "confirmed"
         assert row.get("confirmation", {}) == {}
-        history = client.get(f"/api/handover/records/{row['id']}/history").json()
-        assert len(history) == 4
         first = client.get(f"/api/handover/records/{row['id']}?version=1").json()
         assert first["payload"]["work_status"] == "todo"
 

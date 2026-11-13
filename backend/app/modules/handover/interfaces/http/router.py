@@ -8,7 +8,6 @@ from app.modules.handover.interfaces.http import (
     overview,
     packages,
     records,
-    reviews,
 )
 from app.modules.handover.interfaces.http.context import HandoverHTTPContext
 
@@ -16,6 +15,6 @@ from app.modules.handover.interfaces.http.context import HandoverHTTPContext
 def create_router(projects, repository_factory, parser, exporter):
     router = APIRouter(prefix="/api/handover", tags=["handover"])
     context = HandoverHTTPContext(projects, repository_factory, parser, exporter)
-    for module in (overview, records, debug_issues, reviews, materials, packages):
+    for module in (overview, records, debug_issues, materials, packages):
         module.register(router, context)
     return router

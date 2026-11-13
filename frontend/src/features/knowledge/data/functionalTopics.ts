@@ -9,7 +9,7 @@ export const functionalTopics: PresentationTopic[] = [
     title: '耗材寿命与提醒',
     summary: '从胶水、助焊剂与工具汇集，到次数和时间寿命、后台提醒及清零保存。',
     purpose: '分清实际接入、寿命公式、报警门控与更换后的复位范围。',
-    conditions: ['当前配置、Enable、已提醒标志和报警间隔共同决定提示路径。'],
+    conditions: ['当前配置、启用状态、已提醒标志和报警间隔共同决定提示路径。'],
     exceptions: ['整数提醒、固定卡片、停止清零和仓库保存按实际入口判断。'],
     diagrams: ['consumables-process'],
   },

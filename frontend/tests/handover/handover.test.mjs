@@ -23,7 +23,6 @@ test('交接地址可刷新和后退，其他模块的地址不打开交接页',
   assert.equal(parseHandoverHash('#handover/tasks?record=abc&version=3').version, 3);
   assert.equal(parseHandoverHash('#handover/tasks?record=abc&version=-1').version, undefined);
   assert.equal(parseHandoverHash('#handover/unknown').tab, 'overview');
-  assert.equal(parseHandoverHash('#handover/updates').tab, 'updates');
   assert.deepEqual(parseHandoverHash('#handover/design?record=old-record&version=2'), {
     open: true,
     tab: 'overview',

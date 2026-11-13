@@ -4,30 +4,30 @@ export const transportOutputFlows = [
   flow(
     'transport-belt-unload',
     '等待区进入出料皮带',
-    'None 在出料任务分配前返回；其他非 LoaderBin 配置创建等待区到出料皮带任务。控制器同时检查物料检测与记忆。',
+    '不启用的配置在分配出料任务之前就返回；其他非料仓供料的配置才会创建“等待区到出料皮带”的任务。控制器会同时检查物料检测和状态记录。',
     ['tr-output-task', 'tr-out-gate'],
     [
       step(
         'gate',
         '检查等待区与出口占用',
-        '等待区传感器未检测到物料或记忆为 NoMaterial 均返回 NoStart。Online、OnlineWithAutoUnloader 还检查出料段物料传感器；仅 Online 再检查出料段 Transfering 或 HasMaterial。',
+        '等待区传感器没有检测到物料，或状态记录为无料，都会返回未启动。联机以及联机自动下料都会检查出料段的物料传感器；只有联机模式再检查出料段是否传输中或已有物料。',
         ['tr-out-gate'],
       ),
       step(
         'wait',
         '等待段启动与入口检测',
-        'retry 先置等待区 Transfering 并启动皮带，运动时检测出料控制器入口。未检测到时报警，Retry 回 retry，Abort 返回，Ignore 跳过出料段运动的 else 并进入共同提交。',
+        '重试入口先标记等待区为传输中并启动皮带，运行中检测出料控制器入口。没有检测到物料就报警，选择重试回到这个重试入口，选择中止则结束，选择忽略会跳过出料段运行的有料分支，进入共用的提交段。',
         ['tr-out-first', 'tr-out-commit'],
       ),
       step(
         'out',
         '出料皮带运行与卡料复查',
-        '检测到入口物料后启动出料皮带；入口变为无料时停止等待段，是否停止出料皮带受连续运动配置影响。之后报警条件实际比较“入口仍有料或等待区仍有料”；读取的出料段 HasMaterialInModule 结果未用于该 if。',
+        '检测到入口有物料后启动出料皮带；入口变为无料时停止等待段，出料皮带是否一起停止取决于连续运动配置。之后的报警判断实际比较的是“入口仍有料，或等待区仍有料”；读到的出料段有料状态并没有参与这处判断。',
         ['tr-out-second'],
         [
           outcome(
             '局部重试',
-            '报警 Retry 回等待段启动处 retry，Abort 返回，Ignore 继续提交。代码旁的 H 传感器注释不能代替实际 if 的两个变量。',
+            '报警时选择重试会回到等待段启动处的重试入口，选择中止则结束，选择忽略继续提交。旁边关于 H 传感器的注释不能代替这处判断实际使用的两个条件。',
             'tr-out-second',
           ),
         ],
@@ -35,12 +35,12 @@ export const transportOutputFlows = [
       step(
         'commit',
         '更新出料段载具与状态',
-        '等待区载具交给出料段并 Refresh，清等待区载具与物料，出料段置 HasMaterial，两段 Ready，保存后返回 Success。catch 只恢复进入方法时保存的等待区物料状态，返回 Exception。',
+        '把等待区的载具交给出料段并刷新记录，清掉等待区的载具和物料，出料段记录为有料，两段置为就绪，保存后返回成功。出现异常时，只把等待区物料恢复到进入这一步时保存的状态，并返回异常结果。',
         ['tr-out-commit'],
         [
           outcome(
             '线程结果',
-            'Abort、Exception 调用 Stop，NoStart、Success 进入下一轮；该段未在 Success 发布单独的完成信号。',
+            '中止和异常会请求停机，未启动和成功则进入下一轮；这一段在成功时没有另外发布完成信号。',
             'tr-output-task',
           ),
         ],
@@ -50,42 +50,42 @@ export const transportOutputFlows = [
   flow(
     'transport-bin-unload',
     '等待区进入下料仓',
-    'LoaderBin 线程先等待 UnloaderAllowPushSignal，才调用下料控制器；成功后控制器推进层号，线程再发允许料仓移动。',
+    '料仓下料任务先等待允许下料推料信号，才调用下料控制器；成功后由控制器推进层号，任务再发出允许料仓移动信号。',
     ['tr-output-bin', 'tr-unload-commit'],
     [
       step(
         'gate',
         '检查许可与等待区',
-        '允许推料 Wait=false 退出线程。控制器在等待区检测无料、记忆无料或等待皮带仍运动时返回 NoStart；线程延时后 continue，不复位许可、不请求换层。',
+        '等待允许推料时如果遇到停止条件，任务直接退出。控制器在等待区没有检测到物料、记录为无料，或等待皮带仍在运行时，返回未启动；任务延时后进入下一轮，不复位推料许可，也不请求换层。',
         ['tr-output-bin', 'tr-unload-gate'],
       ),
       step(
         'belt',
         '先运行等待段',
-        'retry 启动等待段皮带；运动时检测等待区物料，变为无料时退出检测循环。若运动结束仍有料则报警：Retry 回 retry，Abort 返回，Ignore 跳过推杆分支继续共同提交。',
+        '重试入口启动等待段皮带；运行中检测等待区物料，变为无料就退出检测循环。如果皮带运行结束仍有物料就报警：选择重试回到这个重试入口，选择中止则结束，选择忽略会跳过推杆分支，继续进入共用的提交段。',
         ['tr-unload-belt', 'tr-unload-commit'],
       ),
       step(
         'push',
         '推入料仓与重试',
-        '正常进入 RePush 时先回推杆再 PushTabletToUnloader，以后一次返回值判断。推料非 Success 时 Retry 回 RePush；推后等待区仍有料时 Retry 先回推杆，再回 retry 重新运行皮带。两处 Abort 返回，Ignore 继续。',
+        '正常进入推料重试时，先把推杆回位，再执行向下料仓推料，最终以后一次推料的结果为准。推料不成功时，选择重试回到推料重试入口；推料后等待区仍有物料时，选择重试会先回推杆，再回到重试入口重新运行皮带。两处选择中止都结束，选择忽略则继续。',
         ['tr-unload-push'],
       ),
       step(
         'commit',
         '推进层号并交还许可',
-        '末尾回推杆、停止等待段，清等待区载具并置无料，出料段置有料、两段 Ready，AddCurPlaceLayer 加一后保存并返回 Success。线程等 200 毫秒、复位推料许可、发 AllowUnloaderMoveSignal。',
+        '收尾时回推杆、停止等待段，清掉等待区的载具并记录为无料，出料段记录为有料、两段置为就绪，当前层号加一后保存并返回成功。任务等待 200 毫秒，复位推料许可，再发出允许料仓移动信号。',
         ['tr-unload-commit', 'tr-unloader-inc', 'tr-output-bin'],
         [
           outcome(
-            'Abort / Exception',
-            '线程调用 Stop 并 return，不执行后续许可复位和允许移动。控制器 catch 只恢复等待区物料状态，并返回 Exception。',
+            '中止或异常',
+            '任务会请求停机并结束，不再执行后面的许可复位和允许移动。控制器出现异常时只恢复等待区的物料状态，并返回异常结果。',
             'tr-output-bin',
             'tr-unload-commit',
           ),
           outcome(
             '忽略报警',
-            '上述 Ignore 路径仍可能清物料、加层号并返回 Success，不能写成这些分支都已确认实物入仓。',
+            '上述选择忽略的路径仍可能清掉物料、累加层号并返回成功，所以不能把这些分支都写成已经确认物料实际进入料仓。',
             'tr-unload-belt',
             'tr-unload-push',
             'tr-unload-commit',
@@ -97,25 +97,25 @@ export const transportOutputFlows = [
   flow(
     'transport-online-unload',
     '出料皮带交给收板机',
-    'Online 或 OnlineWithAutoUnloader 创建此线程。出料段记忆与收板机要料信号满足后才启动交接。',
+    '只有联机或联机自动下料才会创建这个任务。出料段状态记录和收板机要料信号都满足后，才会开始交接。',
     ['tr-output-online', 'tr-online-out'],
     [
       step(
         'gate',
         '检查物料与外部要料',
-        '出料段记忆无料、传输状态为 Transfering 或未收到 GetAutoUnLoaderNeedMaterialSignal，都返回 NoStart。',
+        '出料段记录为无料、仍处于传输中，或没有收到收板机要料信号，都会返回未启动。',
         ['tr-online-out'],
       ),
       step(
         'transfer',
         '检查出口出现与离开',
-        'retry 启动出料皮带，先等出口检测到物料，再检测出口变无料，延时 500 毫秒后停止皮带。两次卡料报警都可 Retry 回皮带启动处、Abort 返回、Ignore 继续提交。',
+        '重试入口启动出料皮带，先等出口检测到物料，再等出口变为无料，延时 500 毫秒后停止皮带。两次卡料报警都可以选择重试回到皮带启动处、选择中止结束、选择忽略继续提交。',
         ['tr-online-out'],
       ),
       step(
         'finish',
         '清出料段状态',
-        '清 TransportUnit，置 NoMaterial 与 Ready，保存后返回 Success。线程在 NoStart 延时、Abort 调用 Stop，Success 继续循环；该 switch 没有 Exception 分支，catch 只显示异常。',
+        '清掉载具记录，记录为无料并置为就绪，保存后返回成功。任务遇到未启动会延时，遇到中止会请求停机，成功则继续循环；结果判断里没有单独处理异常的分支，异常处理只做提示。',
         ['tr-online-out', 'tr-output-online'],
       ),
     ],

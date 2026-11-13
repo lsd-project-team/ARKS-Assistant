@@ -36,7 +36,7 @@ def test_text_source_keeps_exact_original_metadata_and_evidence(client):
     assert response.status_code == 201, response.text
     row = response.json()
     assert row["title"] == "会议/日志:α"
-    assert row["kind"] == "source" and row["state"] == "draft" and row["version"] == 1
+    assert row["kind"] == "source" and row["state"] == "confirmed" and row["version"] == 1
     assert row["scope_id"] == "global" and row["source_project_id"] is None
     assert row["payload"]["content"] == content
     assert row["payload"]["format"] == "text" and row["payload"]["origin"] == "human"
@@ -48,8 +48,6 @@ def test_text_source_keeps_exact_original_metadata_and_evidence(client):
     original = client.get(f"/api/handover/sources/{row['id']}/original")
     assert original.content == content.encode()
     assert original.headers["content-type"].startswith("text/plain")
-    events = client.get("/api/handover/events").json()
-    assert events[0]["actor"] == "整理人" and events[0]["action"] == "created"
     # 文本保存为普通资料记录，后续工作可引用其固定版本及逐字原句。
     linked = client.post(
         "/api/handover/records",
@@ -88,7 +86,6 @@ def test_text_source_rejects_invalid_input_without_writing(client, changes):
     before = client.get("/api/handover").json()
     assert save_text(client, **changes).status_code == 422
     assert client.get("/api/handover").json() == before
-    assert client.get("/api/handover/events").json() == []
 
 
 def test_text_source_accepts_limit_without_truncation(client):
