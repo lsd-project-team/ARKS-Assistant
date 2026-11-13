@@ -20,7 +20,6 @@ import { ThreadItem } from './ThreadItem';
 import { ProjectNavigation } from '../../projects/components/ProjectNavigation';
 import { ProjectEditor } from '../../projects/components/ProjectEditor';
 import { MoveThreadsDialog } from './MoveThreadsDialog';
-import { SidebarDragProvider } from './sidebarDrag';
 
 interface SidebarProps {
   onNavigate: () => void;
@@ -57,7 +56,6 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
       }
       filter=""
       busy={actions.pending === row.id}
-      draggable={entry === 'recent'}
       onSelect={() => {
         onNavigate();
         useWorkspace.getState().switchProject(threadProject(row));
@@ -72,7 +70,6 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
     />
   );
   return (
-    <SidebarDragProvider>
       <aside className="sidebar" aria-label="会话导航">
         <div className="sidebar-views" aria-label="会话列表类型">
           {(
@@ -176,7 +173,6 @@ export function Sidebar({ onNavigate, connected, checking }: SidebarProps) {
           <ProjectEditor onClose={() => setCreatingProject(false)} onCreated={onNavigate} />
         )}
       </aside>
-    </SidebarDragProvider>
   );
 }
 

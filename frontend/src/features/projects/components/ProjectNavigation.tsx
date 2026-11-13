@@ -157,14 +157,6 @@ function ProjectGroup({
       <div className="project-navigation-row">
         <button
           className="project-name"
-          draggable
-          onDragStart={(event) => {
-            event.stopPropagation();
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('text/plain', project.id);
-            drag?.start('project', project.id, pinnedGroup);
-          }}
-          onDragEnd={() => drag?.end()}
           title={project.name}
           aria-expanded={expanded}
           aria-controls={`project-conversations-${project.id}`}
