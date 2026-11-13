@@ -31,13 +31,31 @@ PROGRESS = {
 
 
 class CodingRepeatGuard(AgentMiddleware):
-    def __init__(self, emit, limit=3):
+    def __init__(self, emit, limit=3, total_limit=150):
         self.emit = emit
         self.limit = limit
+        self.total_limit = total_limit
+        self.total = 0
         self.counts = {}
 
     async def awrap_tool_call(self, request, handler):
         name = request.tool_call["name"]
+        if name in GUARDED or name in PROGRESS:
+            self.total += 1
+            if self.total > self.total_limit:
+                self.emit("coding_budget_blocked", {"total": self.total})
+                return _blocked(
+                    request,
+                    name,
+                    {
+                        "ok": False,
+                        "budget_exhausted": True,
+                        "note": (
+                            "本轮编码工具调用已达上限。请停止继续探查，"
+                            "基于已有结果总结完成情况、未完成项和下一步建议。"
+                        ),
+                    },
+                )
         if name in PROGRESS:
             self.counts.clear()
             return await handler(request)
@@ -52,19 +70,24 @@ class CodingRepeatGuard(AgentMiddleware):
         if count < self.limit:
             return await handler(request)
         self.emit("coding_repeat_blocked", {"tool": name, "count": count})
-        return ToolMessage(
-            content=json.dumps(
-                {
-                    "ok": False,
-                    "repeated": True,
-                    "note": (
-                        "相同的工具调用已经连续执行三次，本次已拦截。"
-                        "请改用已有结果，直接写文件、创建工程或运行构建；"
-                        "需要不同信息时改变路径、范围或命令。"
-                    ),
-                },
-                ensure_ascii=False,
-            ),
-            tool_call_id=request.tool_call["id"],
-            name=name,
+        return _blocked(
+            request,
+            name,
+            {
+                "ok": False,
+                "repeated": True,
+                "note": (
+                    "相同的工具调用已经连续执行三次，本次已拦截。"
+                    "请改用已有结果，直接写文件、创建工程或运行构建；"
+                    "需要不同信息时改变路径、范围或命令。"
+                ),
+            },
         )
+
+
+def _blocked(request, name, payload):
+    return ToolMessage(
+        content=json.dumps(payload, ensure_ascii=False),
+        tool_call_id=request.tool_call["id"],
+        name=name,
+    )
