@@ -81,7 +81,6 @@ def knowledge_resources(client, *, authenticated):
     targets = private | {
         "engineering/manifest.json",
         "archify/module-source-explorer.html",
-        "agent-knowledge.json",
     }
     for name in targets:
         response = request(client, "GET", "/" + name, status=200 if authenticated else 401)
