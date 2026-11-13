@@ -53,6 +53,10 @@ class CodeSelection(BaseModel):
         return self
 
 
+class ThreadOrder(BaseModel):
+    before_id: str | None = None
+
+
 class SourceOptions(BaseModel):
     use_knowledge: bool = True
     use_memory: bool = True

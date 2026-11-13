@@ -126,6 +126,26 @@ export function ThreadItem({
   return (
     <div
       className={`thread-row ${selected ? 'active' : ''} ${editing ? 'editing' : ''} ${dragging ? 'dragging' : ''}`}
+      data-thread-id={row.id}
+      onDragOver={(event) => {
+        if (!draggable || drag?.state?.kind !== 'thread') return;
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = 'move';
+        const section = event.currentTarget.closest('.sidebar-thread-section');
+        const rows = Array.from(section?.querySelectorAll<HTMLElement>('[data-thread-id]') || []);
+        const ids = rows.map((item) => item.dataset.threadId);
+        const index = ids.indexOf(row.id);
+        const rect = event.currentTarget.getBoundingClientRect();
+        const after = event.clientY > rect.top + rect.height / 2;
+        drag.hoverThread(after ? (ids[index + 1] ?? null) : row.id);
+      }}
+      onDrop={(event) => {
+        if (!draggable || drag?.state?.kind !== 'thread') return;
+        event.preventDefault();
+        event.stopPropagation();
+        void drag.drop();
+      }}
       onContextMenu={(event) => {
         if (editing || event.defaultPrevented) return;
         event.preventDefault();
@@ -169,7 +189,7 @@ export function ThreadItem({
             onDragStart={(event) => {
               event.dataTransfer.effectAllowed = 'move';
               event.dataTransfer.setData('text/plain', row.id);
-              drag?.start('thread', row.id, pinned ? 'pinned' : 'normal');
+              drag?.start('thread', row.id);
             }}
             onDragEnd={() => drag?.end()}
             title={row.title}

@@ -126,8 +126,8 @@ function ProjectGroup({
         event.preventDefault();
         event.stopPropagation();
         if (drag.state.kind === 'thread') {
-          event.dataTransfer.dropEffect = 'move';
-          drag.hoverProject(project.id, null);
+          event.dataTransfer.dropEffect = 'none';
+          drag.hoverNone();
           return;
         }
         if (drag.state.id === project.id || drag.state.group !== pinnedGroup) {

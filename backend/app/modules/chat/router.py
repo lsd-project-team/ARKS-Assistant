@@ -1,5 +1,6 @@
 """会话和运行 API；SSE 连接仅订阅持久化事件。"""
 
+import asyncio
 from typing import Literal
 
 from fastapi import APIRouter, Query, Request
@@ -17,6 +18,7 @@ from app.modules.chat.schemas import (
     RunCreate,
     SummaryCorrection,
     ThreadCreate,
+    ThreadOrder,
     ThreadUpdate,
 )
 from app.modules.chat.workflow_router import create_router as workflows_router
@@ -93,6 +95,10 @@ def create_router(services: AppServices) -> APIRouter:
     async def mark_read(thread_id: str):
         repository.catalog.mark_read(thread_id)
         return {"ok": True}
+
+    @router.post("/api/threads/{thread_id}/order")
+    async def reorder_recent(thread_id: str, body: ThreadOrder):
+        return await asyncio.to_thread(repository.catalog.reorder_recent, thread_id, body.before_id)
 
     @router.post("/api/threads/{thread_id}/pin-position")
     async def move_pin(thread_id: str, body: PinMove):

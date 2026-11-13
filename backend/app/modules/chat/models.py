@@ -25,6 +25,7 @@ class Thread(Base):
     state: Mapped[str] = mapped_column(String(20), default="active", server_default="active")
     deleted_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     pinned_order: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sort_order: Mapped[int | None] = mapped_column(Integer, nullable=True)
     last_read_at: Mapped[str | None] = mapped_column(String(40), nullable=True)
     auto_title: Mapped[bool] = mapped_column(Boolean, default=True, server_default="1")
     origin_thread_id: Mapped[str | None] = mapped_column(String(36), nullable=True)

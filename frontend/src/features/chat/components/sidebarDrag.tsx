@@ -10,25 +10,23 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { api, jsonBody } from '../../../app/api/client';
 import { toast } from '../../../shared/utils/toasts';
-import { useWorkspace } from '../../../app/state/store';
 
 type DragKind = 'project' | 'thread';
-type DragGroup = 'pinned' | 'normal';
 
 interface DragState {
   kind: DragKind;
   id: string;
-  group: DragGroup;
+  group?: 'pinned' | 'normal';
   overProjectId?: string;
-  overRecent?: boolean;
+  overThreadId?: string;
   beforeId?: string | null;
 }
 
 interface DragContextValue {
   state?: DragState;
-  start: (kind: DragKind, id: string, group: DragGroup) => void;
+  start: (kind: DragKind, id: string, group?: 'pinned' | 'normal') => void;
   hoverProject: (projectId: string, beforeId: string | null) => void;
-  hoverRecent: () => void;
+  hoverThread: (beforeId: string | null) => void;
   hoverNone: () => void;
   drop: () => Promise<void>;
   end: () => void;
@@ -40,7 +38,6 @@ export function useSidebarDrag() {
   return useContext(DragContext);
 }
 
-// 与 DeepSeek Harness 一致：使用浏览器原生拖拽，拖到行的上半/下半显示插入线。
 export function SidebarDragProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DragState | undefined>(undefined);
   const current = useRef<DragState | undefined>(undefined);
@@ -61,24 +58,20 @@ export function SidebarDragProvider({ children }: { children: ReactNode }) {
       },
       hoverProject: (projectId, beforeId) => {
         const active = current.current;
-        if (!active) return;
-        if (
-          active.kind === 'project' &&
-          active.beforeId === beforeId &&
-          active.overProjectId === projectId
-        )
-          return;
-        set({ ...active, overProjectId: projectId, overRecent: false, beforeId });
+        if (!active || active.kind !== 'project') return;
+        if (active.overProjectId === projectId && active.beforeId === beforeId) return;
+        set({ ...active, overProjectId: projectId, beforeId });
       },
-      hoverRecent: () => {
+      hoverThread: (beforeId) => {
         const active = current.current;
-        if (!active || active.kind !== 'thread' || active.overRecent) return;
-        set({ ...active, overProjectId: undefined, overRecent: true, beforeId: undefined });
+        if (!active || active.kind !== 'thread') return;
+        if (active.overThreadId === active.id && active.beforeId === beforeId) return;
+        set({ ...active, overThreadId: active.id, beforeId });
       },
       hoverNone: () => {
         const active = current.current;
-        if (!active || (!active.overProjectId && !active.overRecent)) return;
-        set({ ...active, overProjectId: undefined, overRecent: false, beforeId: undefined });
+        if (!active || (!active.overProjectId && active.overThreadId === undefined)) return;
+        set({ ...active, overProjectId: undefined, overThreadId: undefined, beforeId: undefined });
       },
       drop: async () => {
         const active = current.current;
@@ -96,31 +89,16 @@ export function SidebarDragProvider({ children }: { children: ReactNode }) {
             toast('项目顺序已调整');
             return;
           }
-          if (active.overProjectId) {
-            await api('/projects/move-threads', {
-              method: 'POST',
-              body: jsonBody({ ids: [active.id], project_id: active.overProjectId }),
-            });
-            if (useWorkspace.getState().threadId === active.id)
-              useWorkspace.getState().selectThread('');
-            await cache.invalidateQueries({ queryKey: ['threads'] });
-            await cache.invalidateQueries({ queryKey: ['project-threads'] });
-            await cache.invalidateQueries({ queryKey: ['projects'] });
-            toast('对话已移动');
-          } else if (active.overRecent) {
-            await api('/projects/move-threads', {
-              method: 'POST',
-              body: jsonBody({ ids: [active.id], project_id: null }),
-            });
-            if (useWorkspace.getState().threadId === active.id)
-              useWorkspace.getState().selectThread('');
-            await cache.invalidateQueries({ queryKey: ['threads'] });
-            await cache.invalidateQueries({ queryKey: ['project-threads'] });
-            await cache.invalidateQueries({ queryKey: ['projects'] });
-            toast('对话已移到最近对话');
-          }
+          if (active.overThreadId === undefined) return;
+          await api(`/threads/${active.id}/order`, {
+            method: 'POST',
+            body: jsonBody({ before_id: active.beforeId ?? null }),
+          });
+          await cache.invalidateQueries({ queryKey: ['threads'] });
+          await cache.invalidateQueries({ queryKey: ['project-threads'] });
+          toast('对话顺序已调整');
         } catch (error) {
-          toast(error instanceof Error ? error.message : '拖拽操作失败', undefined, 'error');
+          toast(error instanceof Error ? error.message : '拖动操作失败', undefined, 'error');
         }
       },
       end: () => {

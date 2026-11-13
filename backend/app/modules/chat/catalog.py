@@ -106,6 +106,8 @@ class ConversationCatalog:
                     else [
                         Thread.pinned_order.is_(None),
                         Thread.pinned_order,
+                        Thread.sort_order.is_(None),
+                        Thread.sort_order,
                         Thread.updated_at.desc(),
                         Thread.id,
                     ]
@@ -193,6 +195,40 @@ class ConversationCatalog:
             order = {identifier: index for index, identifier in enumerate(ids)}
             for row in rows:
                 row.pinned_order = order[row.id]
+
+    def reorder_recent(self, thread_id: str, before_id: str | None = None):
+        with self.database.session.begin() as session:
+            target = self.row(session, thread_id)
+            if target.pinned_order is not None:
+                raise ValueError("置顶对话请单独调整置顶顺序")
+            rows = list(
+                session.scalars(
+                    select(Thread)
+                    .where(
+                        Thread.workspace_id == self.workspace_id,
+                        Thread.state == "active",
+                        Thread.pinned_order.is_(None),
+                        thread_filter(),
+                    )
+                    .order_by(
+                        Thread.sort_order.is_(None),
+                        Thread.sort_order,
+                        Thread.updated_at.desc(),
+                        Thread.id,
+                    )
+                )
+            )
+            rows = [row for row in rows if row.id != thread_id]
+            index = len(rows)
+            if before_id:
+                index = next(
+                    (position for position, row in enumerate(rows) if row.id == before_id),
+                    len(rows),
+                )
+            rows.insert(index, target)
+            for position, row in enumerate(rows):
+                row.sort_order = position + 1
+            return {"ok": True}
 
     def mark_read(self, thread_id: str):
         with self.database.session.begin() as session:
