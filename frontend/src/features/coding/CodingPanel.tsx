@@ -198,7 +198,9 @@ export function CodingPanel({ open, onClose }: { open: boolean; onClose: () => v
       <div className="dialog-body" style={{ minWidth: 720, maxHeight: '70vh', overflow: 'auto' }}>
         {readonly && (
           <p className="muted">
-            当前项目是只读分析目录。启用编码后才能修改文件；也可在项目编辑中更换为其他目录。
+            {settings.data?.permission === 'read-only'
+              ? '当前权限为「仅可查看」，写入文件、删除和写命令都会被拒绝；在聊天头部切换权限后即可修改。'
+              : '当前项目是只读分析目录。启用编码后才能修改文件；也可在项目编辑中更换为其他目录。'}
           </p>
         )}
         <section>
