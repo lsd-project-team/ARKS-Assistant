@@ -13,7 +13,8 @@
 | `bugfix-python` | 修复现有库存模块（测试文件受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `bugfix-multi` | 修复 shop 包跨文件折扣 bug（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `feature-python` | 现有待办服务增加截止日期/逾期 | 现有 10 测试通过、隐藏验收 due/overdue、测试文件未被修改 |
-| `project-large` | 图书馆服务（5 模块 + 15 测试）加搜索分页/热门榜 | 现有 15 测试通过、隐藏验收分页/热门榜、测试文件未被修改 |
+| `project-large` | 图书馆服务（8 模块 + 24 测试）加搜索分页/热门榜 | 现有 24 测试通过、隐藏验收分页/热门榜 + auth/导出/通知回归 |
+| `cross-language` | Python service + Node client 跨语言仓库 | pytest 与 node:test 通过、隐藏验收同时验证 full_name/initials |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 | `winforms-tool` | 从零生成 WinForms 点检计时器 | build 0/0、两页截图非空白、布局断言（2 页签/6 按钮/5 输入/日志 ≥120px） |
@@ -90,6 +91,18 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 合计 **18/18**；报告：`output/acceptance/coding-ci-20261115-002025/report.md`。`project-large` 为 5 模块 + 15 测试的图书馆服务，要求新增搜索分页与热门榜；现有测试受保护，隐藏验收直接调用服务验证分页、大小写、非法参数与热门排序。两轮耗时 91s / 256s。
 
 工作流 `.github/workflows/coding-acceptance.yml` 已通过 YAML 解析校验（Windows runner，secret `ARKS_API_KEY`，手动触发并上传报告 artifact）。
+
+### 10 用例 CI（加入 cross-language 与扩大后的 project-large）
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 10 | **10/10** | 46–210s |
+| 2 | 10 | **10/10** | 38–177s |
+
+合计 **20/20**；报告：`output/acceptance/coding-ci-20261115-052808/report.md`。
+
+- `cross-language`：Python `service/` + Node ESM `client/`，隐藏验收同时跑 pytest 与 node:test，验证 `full_name`/`initials` 与旧行为回退。
+- `project-large` 扩为 **8 模块 / 24 测试**（新增 auth、CSV 导出、逾期通知），隐藏验收同时做搜索分页/热门榜与旧模块回归；两轮 176s / 148s。
 
 同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 
