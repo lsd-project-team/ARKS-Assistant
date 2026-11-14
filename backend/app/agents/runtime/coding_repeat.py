@@ -42,12 +42,25 @@ class CodingRepeatGuard(AgentMiddleware):
         self.blocked_streak = 0
 
     async def awrap_model_call(self, request, handler):
-        if self.blocked_streak < 2:
+        repeated = [
+            (key[0], key[1], count)
+            for key, count in self.counts.items()
+            if count > 10
+        ]
+        if self.blocked_streak < 2 and not repeated:
             return await handler(request)
-        guidance = (
-            "\n【重复调用保护】同一工具调用已被拦截多次，不要再读同一段内容。"
-            "直接修改或删除失败的自测、换一个命令/路径，或者结束本轮并说明未完成项。"
-        )
+        if repeated:
+            tool, args, count = repeated[0]
+            guidance = (
+                f"\n【重复读取限制】{tool} 的同一参数已被请求 {count} 次（{args[:120]}）。"
+                "不要再读取同一内容：基于已有信息直接写文件/Actions.cs，或调用 update_plan "
+                "标记完成并结束；继续重复读取不会得到新信息。"
+            )
+        else:
+            guidance = (
+                "\n【重复调用保护】同一工具调用已被拦截多次，不要再读同一段内容。"
+                "直接修改或删除失败的自测、换一个命令/路径，或者结束本轮并说明未完成项。"
+            )
         system = request.system_message
         blocks = list(system.content_blocks) if system else []
         blocks.append({"type": "text", "text": guidance})

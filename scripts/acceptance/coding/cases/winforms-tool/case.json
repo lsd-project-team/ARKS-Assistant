@@ -1,0 +1,10 @@
+{
+  "name": "winforms-tool",
+  "title": "WinForms 设备点检计时器",
+  "build": "dotnet build",
+  "test": "dotnet build",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["App.csproj", "MainForm.cs", "Actions.cs", "README.md"],
+  "min_tests": 0,
+  "ui": true
+}

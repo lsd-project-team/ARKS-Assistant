@@ -376,11 +376,22 @@ class CodingWorkspace:
                 text,
             )
             for name in dict.fromkeys(names):
-                candidate = name.strip("./")
-                if not candidate or "<" in candidate or ">" in candidate:
-                    continue
-                if not (self.root / candidate).is_file():
-                    missing.append(f"任务书要求的文件不存在：{candidate}")
+                raw = name.strip()
+                candidates = (
+                    [raw]
+                    if (self.root / raw).is_file()
+                    else [part for part in re.split(r"[/,、]", raw) if part.strip()]
+                )
+                for candidate in candidates:
+                    candidate = candidate.strip("./")
+                    if not candidate or "<" in candidate or ">" in candidate:
+                        continue
+                    if "." not in candidate:
+                        continue
+                    if not (self.root / candidate).is_file():
+                        missing.append(f"任务书要求的文件不存在：{candidate}")
+                    if len(missing) >= 6:
+                        break
                 if len(missing) >= 6:
                     break
         scan = re.compile(r"\bTODO\b|\bFIXME\b")

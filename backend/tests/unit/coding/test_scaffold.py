@@ -53,6 +53,15 @@ def test_deliverables_require_readme_and_files_named_in_task(tmp_path):
     assert any("app.js" in item for item in work.deliverables())
 
 
+def test_deliverables_split_slash_separated_names(tmp_path):
+    work, root = make_workspace(tmp_path)
+    (root / "README.md").write_text("# x", encoding="utf-8")
+    (root / "A.cs").write_text("// a\n", encoding="utf-8")
+    (root / "B.cs").write_text("// b\n", encoding="utf-8")
+    (root / "任务书.md").write_text("不要改 `A.cs/B.cs`。", encoding="utf-8")
+    assert work.deliverables() == []
+
+
 def test_scaffold_creates_skeleton_with_replacements(tmp_path):
     work, root = make_workspace(tmp_path)
     result = work.scaffold("winforms", {"__PRODUCT__": "测试上位机"})

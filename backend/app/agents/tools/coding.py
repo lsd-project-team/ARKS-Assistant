@@ -87,6 +87,8 @@ GENERATION_GUIDANCE = """
    协议与按钮动作写到 Actions.cs 或新文件，用 Channel/Mode/Pressure/Time/Vacuum 等内部字段读写参数，
    用 WriteLog/SetStatus 更新界面。骨架已有“参数设置/设备功能”两页与日志区，
    必须保持页签数量为 2，不要新增或重复 TabPage；否则先 scaffold_winforms。每完成一步更新计划状态。
+   骨架按钮键为 connect/test/read/set/play/info/…，直接映射即可；不要反复读 MainForm.cs 找布局，
+   需要字段名时看一次 README 或本说明，随后立即写 Actions.cs。
 3. 完成前必须调用 verify build；WinForms/有界面的项目还要调用 verify test 与 check_ui；
    对生成的截图调用 view_image 核对；任何一项失败先修复，不得带着错误或空白界面宣称完成。
    check_ui 失败时先看返回的 issues 与 log_tail：启动异常（尤其是 TabPage/Panel 结构错误）

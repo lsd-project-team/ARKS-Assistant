@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--cases",
-        default="python-cli,dotnet-console,bugfix-python,refactor-python,web-static",
+        default="python-cli,dotnet-console,bugfix-python,refactor-python,bugfix-multi,web-static,winforms-tool",
     )
     parser.add_argument("--port", type=int, default=8791)
     parser.add_argument("--timeout", type=int, default=1500)

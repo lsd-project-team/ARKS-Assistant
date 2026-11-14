@@ -20,6 +20,7 @@ ALL_CASES = [
     "refactor-python",
     "bugfix-multi",
     "web-static",
+    "winforms-tool",
 ]
 
 

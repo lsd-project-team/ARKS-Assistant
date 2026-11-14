@@ -14,6 +14,7 @@
 | `bugfix-multi` | 修复 shop 包跨文件折扣 bug（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
+| `winforms-tool` | 从零生成 WinForms 点检计时器 | build 0/0、两页截图非空白、布局断言（2 页签/6 按钮/5 输入/日志 ≥120px） |
 
 只有 run 状态为 `completed` 且评分全绿才算通过。
 
@@ -51,6 +52,14 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 | 2 | 6 | **6/6** | 37–74s |
 
 合计 **12/12**；报告在 `output/acceptance/coding-ci-20261114-203906/report.md`。dotnet-console 在早前偶发 794s 的长尾本轮未复现（74–92s），仍需继续观察。
+
+### 7 用例 CI 回归（加入 WinForms）
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 7 | **7/7** | 50–128s |
+
+报告：`output/acceptance/coding-ci-20261114-211346/report.md`。WinForms 用例验证了“骨架 + Actions + 截图/布局自检”链路；模型曾出现重复读取同一文件的空转，已加入重复读取超限提示。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 
