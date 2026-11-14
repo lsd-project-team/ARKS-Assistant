@@ -11,6 +11,7 @@
 | `bugfix-python` | 现有项目修复 | pytest 通过、测试文件未被修改、无 TODO |
 | `bugfix-multi` | 跨文件 bug 修复（shop 包） | pytest 通过、测试文件未被修改、README、无 TODO |
 | `feature-python` | 现有待办服务增加截止日期/逾期 | 现有测试通过、隐藏验收验证 due/overdue、测试文件未被修改 |
+| `project-large` | 图书馆服务（5 模块 + 15 测试）加搜索分页/热门榜 | 现有 15 测试通过、隐藏验收验证分页/热门榜、测试文件未被修改 |
 | `refactor-python` | 现有项目重构 | pytest 通过、测试文件未被修改、README 更新、无 TODO |
 | `web-static` | 从零生成原生 JS 单页应用 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 | `winforms-tool` | 从零生成 WinForms 点检计时器 | build 0/0、两页截图非空白、布局断言、无 TODO |

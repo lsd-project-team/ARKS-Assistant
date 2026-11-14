@@ -1,0 +1,12 @@
+{
+  "name": "project-large",
+  "title": "图书馆服务增加搜索分页与热门榜",
+  "build": "python -m compileall -q .",
+  "test": "python -m pytest -q",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["library/service.py", "library/reports.py", "tests/test_service.py", "tests/test_reports.py", "README.md"],
+  "min_tests": 15,
+  "seed": "seed",
+  "protected": ["tests/test_service.py", "tests/test_reports.py"],
+  "ui": false
+}

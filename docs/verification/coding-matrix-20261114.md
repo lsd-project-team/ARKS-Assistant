@@ -13,6 +13,7 @@
 | `bugfix-python` | 修复现有库存模块（测试文件受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `bugfix-multi` | 修复 shop 包跨文件折扣 bug（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `feature-python` | 现有待办服务增加截止日期/逾期 | 现有 10 测试通过、隐藏验收 due/overdue、测试文件未被修改 |
+| `project-large` | 图书馆服务（5 模块 + 15 测试）加搜索分页/热门榜 | 现有 15 测试通过、隐藏验收分页/热门榜、测试文件未被修改 |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 | `winforms-tool` | 从零生成 WinForms 点检计时器 | build 0/0、两页截图非空白、布局断言（2 页签/6 按钮/5 输入/日志 ≥120px） |
@@ -78,6 +79,14 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 | 2 | 8 | **8/8** | 36–146s |
 
 合计 **16/16**；报告：`output/acceptance/coding-ci-20261114-234709/report.md`。加入“禁止安装浏览器依赖 + 单命令 180s 上限”后，之前 668s 的长尾未再复现；CI 报告新增每用例平均/最大耗时统计。
+
+### 9 用例 CI（加入 project-large）
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 9 | **9/9** | 36–134s |
+
+报告：`output/acceptance/coding-ci-20261115-000912/report.md`。`project-large` 为 5 模块 + 15 测试的图书馆服务，要求新增搜索分页与热门榜；现有测试受保护，隐藏验收直接调用服务验证分页、大小写、非法参数与热门排序。一次通过，耗时 134s。
 
 同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 
