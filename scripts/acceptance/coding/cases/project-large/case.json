@@ -1,12 +1,27 @@
 {
   "name": "project-large",
-  "title": "图书馆服务增加搜索分页与热门榜",
+  "title": "图书馆服务（8 模块/24 测试）增加搜索分页与热门榜",
   "build": "python -m compileall -q .",
   "test": "python -m pytest -q",
   "acceptance": "acceptance/check.py",
-  "require_files": ["library/service.py", "library/reports.py", "tests/test_service.py", "tests/test_reports.py", "README.md"],
-  "min_tests": 15,
+  "require_files": [
+    "library/service.py",
+    "library/reports.py",
+    "library/auth.py",
+    "library/export.py",
+    "library/notifications.py",
+    "tests/test_service.py",
+    "tests/test_reports.py",
+    "README.md"
+  ],
+  "min_tests": 24,
   "seed": "seed",
-  "protected": ["tests/test_service.py", "tests/test_reports.py"],
+  "protected": [
+    "tests/test_service.py",
+    "tests/test_reports.py",
+    "tests/test_auth.py",
+    "tests/test_export.py",
+    "tests/test_notifications.py"
+  ],
   "ui": false
 }

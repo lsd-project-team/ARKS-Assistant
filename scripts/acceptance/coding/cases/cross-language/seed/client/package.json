@@ -1,0 +1,5 @@
+{
+  "name": "client",
+  "type": "module",
+  "private": true
+}

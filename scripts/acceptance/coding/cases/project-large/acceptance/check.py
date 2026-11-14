@@ -6,6 +6,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path.cwd()))
 
 from library import LibraryService  # noqa: E402
+from library import (  # noqa: E402
+    books_to_csv,
+    hash_password,
+    overdue_notices,
+    verify_password,
+)
 from library.reports import popular_books  # noqa: E402
 
 FAILS = []
@@ -61,6 +67,17 @@ def main():
         check("非法 limit 抛 ValueError", False)
     except ValueError:
         check("非法 limit 抛 ValueError", True)
+
+    check("密码哈希仍可用", verify_password("s", hash_password("s")) is True)
+    check("错误密码不通过", verify_password("x", hash_password("s")) is False)
+    exported = books_to_csv(svc)
+    check(
+        "CSV 导出仍可用",
+        exported.splitlines()[0] == "id,title,author,year" and "Clean Code" in exported,
+        exported[:100],
+    )
+    notices = overdue_notices(svc, "2026-02-01")
+    check("逾期通知仍可用", len(notices) >= 1, str(notices[:1]))
 
     print("独立验收：", "PASS" if not FAILS else f"FAIL {len(FAILS)} 项")
     return 1 if FAILS else 0

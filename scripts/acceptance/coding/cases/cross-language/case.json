@@ -1,0 +1,12 @@
+{
+  "name": "cross-language",
+  "title": "跨语言仓库增加 full_name 与 initials",
+  "build": "python -m compileall -q service && node --check client/client.mjs",
+  "test": "python -m pytest -q && node --test client/test/client.test.mjs",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["service/api.py", "client/client.mjs", "tests/test_api.py", "client/test/client.test.mjs", "README.md"],
+  "min_tests": 9,
+  "seed": "seed",
+  "protected": ["tests/test_api.py", "client/test/client.test.mjs"],
+  "ui": false
+}
