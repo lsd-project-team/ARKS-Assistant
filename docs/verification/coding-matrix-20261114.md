@@ -57,9 +57,10 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 | 轮次 | 用例数 | 通过 | 单例耗时 |
 | --- | --- | --- | --- |
-| 1 | 7 | **7/7** | 50–128s |
+| 1 | 7 | **7/7** | 39–136s |
+| 2 | 7 | **7/7** | 47–111s |
 
-报告：`output/acceptance/coding-ci-20261114-211346/report.md`。WinForms 用例验证了“骨架 + Actions + 截图/布局自检”链路；模型曾出现重复读取同一文件的空转，已加入重复读取超限提示。
+合计 **14/14**；报告：`output/acceptance/coding-ci-20261114-212440/report.md`。WinForms 用例验证了“骨架 + Actions + 截图/布局自检”链路；模型曾出现重复读取同一文件的空转，已加入重复读取超限提示。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 
