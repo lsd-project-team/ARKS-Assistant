@@ -11,21 +11,22 @@
 | `python-cli` | 从零生成 Python CSV→JSON 命令行工具 | compileall 通过、pytest ≥5 全过、文件齐全、无 TODO |
 | `dotnet-console` | 从零生成 .NET 8 日志分析器 + 控制台自测 | build 0/0、自测 ≥6 全过、README、无 TODO |
 | `bugfix-python` | 修复现有库存模块（测试文件受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
+| `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 
 只有 run 状态为 `completed` 且评分全绿才算通过。
 
 ## 稳定性结果
 
-最近 3 轮完整批次（`scripts/acceptance/coding/batch.py`，每轮 4 个用例）：
+最近 3 轮完整批次（`scripts/acceptance/coding/batch.py`，每轮 5 个用例）：
 
-| 批次 | python-cli | dotnet-console | bugfix-python | web-static | 通过 |
-| --- | --- | --- | --- | --- | --- |
-| 1 | PASS | PASS | PASS | PASS | 4/4 |
-| 2 | PASS | FAIL（自测 1 项失败） | PASS | PASS | 3/4 |
-| 3 | PASS | PASS | PASS | PASS | 4/4 |
+| 批次 | python-cli | dotnet-console | bugfix | refactor | web-static | 通过 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | PASS | PASS | PASS | PASS | PASS | 5/5 |
+| 2 | FAIL（自测断言写错） | FAIL（自测超时/失败） | PASS | PASS | PASS | 3/5 |
+| 3 | PASS | FAIL（坏行统计缺陷） | PASS | PASS | PASS | 4/5 |
 
-合计 11/12。唯一失败是 .NET 用例自测“坏行不计入统计”真实实现缺陷，Agent 在重试后仍未修正；这是应当由矩阵暴露的质量问题。
+合计 12/15。失败集中在 Agent 自己写的自测：`.NET` 的“坏行不计入统计”实现反复留缺陷，Python 有一次把 indent 断言写错后未修正。harness 能稳定捕获并保留现场。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 
@@ -42,6 +43,6 @@
 
 ## 后续
 
-- 继续压 dotnet-console 的稳定性（失败集中在自测逻辑错误）。
-- 增加“较大现有项目重构”“跨文件 bug 修复”用例。
-- 每轮 4 用例 × 3 次作为回归基线；把批次报告接入可手动触发的 CI。
+- **评估独立验收**：目前 pass/fail 依赖 Agent 自己写的测试，自测写错会误伤正确实现；增加隐藏验收用例（直接跑 CLI/纯函数/可执行文件），把自测降为交付质量告警。
+- 继续压 dotnet-console 的“坏行统计”缺陷（把失败断言和实现位置一起喂回）。
+- 增加“较大现有项目重构”“跨文件 bug 修复”用例；每轮 5 用例 × 3 次作为回归基线，把批次报告接入可手动触发的 CI。

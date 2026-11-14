@@ -9,6 +9,7 @@
 | `python-cli` | 从零生成（Python CLI + pytest） | compileall 通过、pytest 通过 ≥5、文件齐全、无 TODO |
 | `dotnet-console` | 从零生成（.NET 8 控制台 + 自测工程） | build 0/0、自测 PASS ≥6、文件齐全、无 TODO |
 | `bugfix-python` | 现有项目修复 | pytest 通过、测试文件未被修改、无 TODO |
+| `refactor-python` | 现有项目重构 | pytest 通过、测试文件未被修改、README 更新、无 TODO |
 | `web-static` | 从零生成原生 JS 单页应用 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 
 ## 运行
