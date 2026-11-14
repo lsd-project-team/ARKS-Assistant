@@ -31,6 +31,8 @@ def _record_command_check(checks, command, output, exit_code):
                 "kind": "build",
                 "warning_count": parsed["warning_count"] if "dotnet" in text else 0,
                 "summary": parsed["summary"],
+                "errors": parsed["errors"][:20],
+                "warnings": parsed["warnings"][:20],
             }
         )
     elif TEST_COMMAND.search(text):
@@ -298,12 +300,13 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
             thread_id=thread_id,
         )
         if checks is not None:
-            # 模型可能用 run_command 而不是 verify 跑构建/测试，验收门禁也要看到结果。
+            # 模型可能用 run_command 而不是 verify 跑构建/测试，验收门禁也要看到结果；
+            # 失败同样记录，让门禁把编译错误/失败用例喂回给模型。
             try:
                 payload = json.loads(result)
             except (TypeError, ValueError):
                 payload = {}
-            if payload.get("ok"):
+            if payload:
                 _record_command_check(
                     checks,
                     command,
