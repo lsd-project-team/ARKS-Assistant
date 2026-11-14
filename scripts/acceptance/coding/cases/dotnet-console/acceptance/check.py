@@ -54,6 +54,16 @@ def main():
         print("FAIL 找不到可运行的 Exe 工程 csproj")
         return 1
     project = projects[0]
+    build = subprocess.run(
+        ["dotnet", "build", str(project)],
+        cwd=project.parent,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=240,
+    )
+    check("dotnet build", build.returncode == 0, (build.stdout + build.stderr)[-400:])
     with tempfile.TemporaryDirectory() as tmp:
         log = Path(tmp) / "sample.log"
         log.write_text(

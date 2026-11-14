@@ -43,6 +43,25 @@ def files(project):
             yield path
 
 
+def resolve_build_command(command, project):
+    """dotnet build 在根目录没有工程时，自动找 sln/csproj（常见于 src/tests 布局）。"""
+    if command.strip().lower() != "dotnet build":
+        return command
+    if any(project.glob("*.sln")) or any(project.glob("*.csproj")):
+        return command
+    solutions = sorted(project.rglob("*.sln"))
+    if solutions:
+        return f'dotnet build "{solutions[0]}"'
+    projects = [
+        path
+        for path in sorted(project.rglob("*.csproj"))
+        if "tests" not in path.parts and "bin" not in path.parts and "obj" not in path.parts
+    ]
+    if projects:
+        return f'dotnet build "{projects[0]}"'
+    return command
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", required=True)
@@ -55,16 +74,17 @@ def main():
     run_dir = Path(args.run_dir).resolve()
     checks = {}
 
-    code, build_output = run(case["build"], project)
+    build_command = resolve_build_command(case["build"], project)
+    code, build_output = run(build_command, project)
     parsed = diagnostics.parse_diagnostics(build_output, code)
     checks["build"] = {
         "ok": code == 0,
         "exit_code": code,
-        "summary": parsed["summary"] if "dotnet" in case["build"] else f"退出码 {code}",
+        "summary": parsed["summary"] if "dotnet" in build_command else f"退出码 {code}",
         "errors": parsed["errors"][:20],
         "warnings": parsed["warnings"][:20],
     }
-    if "dotnet" in case["build"]:
+    if "dotnet" in build_command:
         checks["build"]["ok"] = code == 0 and parsed["error_count"] == 0 and parsed["warning_count"] == 0
 
     code, test_output = run(case["test"], project)

@@ -66,8 +66,17 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 ### dotnet 长尾与真实缺陷（本轮定位）
 
 - 失败构建/测试命令原先**不记录**，门禁只能给泛泛的“未通过 verify build”，模型看不到编译错误。已改为失败也记录 `errors/warnings/tail`，并把错误详情带回门禁提示；改进后 dotnet 单跑 75s 通过（`coding-dotnet-console-20261114-221945`）。
-- 最终确认轮 8 用例 7/8：dotnet 一次真实实现 bug（时间戳解析把所有行判坏行，自测 5 项失败）；重跑 2 分钟通过（`coding-dotnet-console-20261114-224400`）。说明该用例目前存在真实波动，矩阵能正确区分“实现错误”与“验收误判”。
+- 评测脚本原先在项目根目录跑 `dotnet build`；当工程放在 `src/`、`tests/` 子目录时直接 MSB1003 误判失败。已改为自动发现 `*.sln` / 可运行 `*.csproj` 再构建；此前一次“构建失败”的 dotnet 运行复评后为 PASS。
+- 最终确认轮 8 用例 7/8：dotnet 一次真实实现 bug（时间戳解析把所有行判坏行，自测 5 项失败）；重跑 2 分钟通过（`coding-dotnet-console-20261114-224400`）。
 - `feature-python` 曾因 `overdue(today)` 契约不清（`date` vs ISO 字符串）失败；任务书已明确“接受 date 或 YYYY-MM-DD”，重跑通过。
+
+### 最终 8 用例 CI
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 8 | **8/8** | 41–127s |
+
+报告：`output/acceptance/coding-ci-20261114-225046/report.md`。dotnet 用例在修正“根目录构建”误判后，连续 3 次运行均通过（其中 2 次自测告警）。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 
