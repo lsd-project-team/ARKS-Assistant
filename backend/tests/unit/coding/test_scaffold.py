@@ -37,6 +37,22 @@ def test_dotnet_project_commands_are_detected(tmp_path):
     assert work._default_test_command() == "dotnet test"
 
 
+def test_deliverables_require_readme_and_files_named_in_task(tmp_path):
+    work, root = make_workspace(tmp_path)
+    (root / "任务书.md").write_text(
+        "创建 `index.html` 与 `app.js`，并写 README。", encoding="utf-8"
+    )
+    missing = work.deliverables()
+    assert any("README" in item for item in missing)
+    assert any("index.html" in item for item in missing)
+    (root / "README.md").write_text("# x", encoding="utf-8")
+    (root / "index.html").write_text("<html></html>", encoding="utf-8")
+    (root / "app.js").write_text("console.log(1)\n", encoding="utf-8")
+    assert work.deliverables() == []
+    (root / "app.js").write_text("// TODO 实现\n", encoding="utf-8")
+    assert any("app.js" in item for item in work.deliverables())
+
+
 def test_scaffold_creates_skeleton_with_replacements(tmp_path):
     work, root = make_workspace(tmp_path)
     result = work.scaffold("winforms", {"__PRODUCT__": "测试上位机"})

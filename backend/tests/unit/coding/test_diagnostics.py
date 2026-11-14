@@ -64,6 +64,19 @@ def test_chinese_self_test_output_is_counted():
     assert counts["passed"] == 13 and counts["failed"] == 0 and counts["ok"] is True
 
 
+def test_node_tap_summary_is_counted():
+    assert parse_tests("# tests 6\n# pass 6\n# fail 0\n", 0) == {
+        "passed": 6,
+        "failed": 0,
+        "ok": True,
+    }
+    assert parse_tests("ℹ tests 9\nℹ pass 9\nℹ fail 0\n", 0) == {
+        "passed": 9,
+        "failed": 0,
+        "ok": True,
+    }
+
+
 def test_fail_lines_and_short_fail_summary_are_counted():
     output = (
         "[PASS] 基础解析\n[PASS] 等级过滤\n[FAIL] 空文件 -> 应为 0\n\n"

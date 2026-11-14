@@ -10,11 +10,12 @@ from app.core.config import dump_json
 from app.modules.coding import diagnostics
 
 BUILD_COMMAND = re.compile(
-    r"\b(?:dotnet\s+build|python\s+-m\s+compileall|npm\s+run\s+build)\b", re.IGNORECASE
+    r"\b(?:dotnet\s+build|python\s+-m\s+compileall|npm\s+run\s+build|node\s+--check)\b",
+    re.IGNORECASE,
 )
 TEST_COMMAND = re.compile(
     r"\b(?:dotnet\s+(?:test|run\s+--project\s+\S*tests)"
-    r"|python\s+-m\s+pytest|pytest|npm\s+test)\b",
+    r"|python\s+-m\s+pytest|pytest|npm\s+test|node\s+--test)\b",
     re.IGNORECASE,
 )
 
@@ -23,17 +24,25 @@ def _record_command_check(checks, command, output, exit_code):
     text = command or ""
     parsed = diagnostics.parse_diagnostics(output, exit_code)
     if BUILD_COMMAND.search(text):
+        broken = "Cannot find module" in output or "SyntaxError" in output
         checks.record_verify(
             {
-                "ok": parsed["error_count"] == 0,
+                "ok": exit_code == 0 and parsed["error_count"] == 0 and not broken,
                 "kind": "build",
-                "warning_count": parsed["warning_count"],
+                "warning_count": parsed["warning_count"] if "dotnet" in text else 0,
                 "summary": parsed["summary"],
             }
         )
     elif TEST_COMMAND.search(text):
         counts = diagnostics.parse_tests(output, exit_code)
-        checks.record_verify({"ok": counts["ok"], "kind": "test", **counts})
+        checks.record_verify(
+            {
+                "ok": exit_code == 0 and counts["ok"],
+                "kind": "test",
+                **counts,
+                "tail": output[-1200:],
+            }
+        )
 
 CODING_GUIDANCE = """
 【项目编码】
@@ -293,7 +302,12 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
             except (TypeError, ValueError):
                 payload = {}
             if payload.get("ok"):
-                _record_command_check(checks, command, payload.get("output") or "", 0)
+                _record_command_check(
+                    checks,
+                    command,
+                    payload.get("output") or "",
+                    int(payload.get("exit_code", 0) or 0),
+                )
         return result
 
     @tool

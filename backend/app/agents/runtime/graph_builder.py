@@ -318,7 +318,9 @@ class AgentGraphBuilder:
                             plans,
                             emit,
                             generation,
+                            max_retries=5,
                             recover=runtime.coding.recover_ui,
+                            deliverables=runtime.coding.deliverables,
                         )
                     ]
                     if generation and not inspection

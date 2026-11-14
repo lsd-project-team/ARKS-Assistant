@@ -13,7 +13,9 @@ ROOT = BASE.parents[2]
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cases", default="python-cli,dotnet-console,bugfix-python")
+    parser.add_argument(
+        "--cases", default="python-cli,dotnet-console,bugfix-python,web-static"
+    )
     parser.add_argument("--port", type=int, default=8791)
     parser.add_argument("--timeout", type=int, default=1500)
     args = parser.parse_args()

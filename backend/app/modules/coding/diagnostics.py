@@ -22,6 +22,8 @@ CHINESE_PASSED = re.compile(r"通过\s*(?P<count>\d+)\s*项")
 CHINESE_FAILED = re.compile(r"失败\s*(?P<count>\d+)\s*项")
 PASS_LINE = re.compile(r"^\s*\[?PASS\]?(?:\s|:|：)", re.MULTILINE | re.IGNORECASE)
 FAIL_LINE = re.compile(r"^\s*\[?FAIL\]?(?:\s|:|：)", re.MULTILINE | re.IGNORECASE)
+TAP_PASS = re.compile(r"^(?:#|ℹ)\s*pass\s+(\d+)\s*$", re.MULTILINE | re.IGNORECASE)
+TAP_FAIL = re.compile(r"^(?:#|ℹ)\s*fail\s+(\d+)\s*$", re.MULTILINE | re.IGNORECASE)
 
 
 def parse_diagnostics(output, exit_code=0):
@@ -93,8 +95,10 @@ def parse_tests(output, exit_code):
     chinese_failed = sum(int(item) for item in CHINESE_FAILED.findall(output))
     lines = len(PASS_LINE.findall(output))
     failed_lines = len(FAIL_LINE.findall(output))
-    passed = max(passed, chinese_passed, lines)
-    failed = max(failed, chinese_failed, failed_lines)
+    tap_passed = sum(int(item) for item in TAP_PASS.findall(output))
+    tap_failed = sum(int(item) for item in TAP_FAIL.findall(output))
+    passed = max(passed, chinese_passed, lines, tap_passed)
+    failed = max(failed, chinese_failed, failed_lines, tap_failed)
     return {
         "passed": passed,
         "failed": failed,

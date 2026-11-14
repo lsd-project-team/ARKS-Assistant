@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT / "backend"))
 from app.modules.coding import diagnostics  # noqa: E402
 
 SKIP = {"bin", "obj", ".git", ".vs", "publish", "node_modules", "__pycache__", ".pytest_cache"}
-PLACEHOLDER = re.compile(r"TODO|FIXME|占位", re.IGNORECASE)
+PLACEHOLDER = re.compile(r"\bTODO\b|\bFIXME\b")
 
 
 def run(command, cwd, timeout=900):

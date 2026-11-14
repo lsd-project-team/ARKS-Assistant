@@ -54,24 +54,55 @@ class RunChecks:
 class AcceptanceGate(AgentMiddleware):
     """从零生成的最终回答前检查验收项；不满足则要求继续，最多重试两次。"""
 
-    def __init__(self, checks, plan, emit, generation=False, max_retries=3, recover=None):
+    def __init__(
+        self,
+        checks,
+        plan,
+        emit,
+        generation=False,
+        max_retries=3,
+        recover=None,
+        deliverables=None,
+    ):
         self.checks, self.plan, self.emit = checks, plan, emit
         self.generation, self.max_retries = generation, max_retries
         self.recover = recover
+        self.deliverables = deliverables
         self.recovered = False
         self.attempts = 0
 
     async def awrap_model_call(self, request, handler):
         await self.recover_ui_if_needed()
         technical = self.generation and self.checks.technical_complete()
-        if technical:
+        pending = []
+        if self.deliverables:
+            try:
+                pending = list(self.deliverables() or [])
+            except Exception:
+                pending = ["交付物检查失败，请确认 README 等文件存在"]
+        ready = technical and not pending
+        if ready:
             # 技术项已全部通过：禁止继续调用工具，让模型直接收尾，避免通过后空转。
             choice = (
                 {"type": "none"}
                 if "anthropic" in getattr(request.model, "_llm_type", "")
                 else "none"
             )
-            response = await handler(request.override(tool_choice=choice))
+            system = request.system_message
+            note = (
+                "\n【收尾】技术验收已通过，不要再调用工具，也不要输出任何工具调用标记"
+                "（例如 <|DSML|...>）；直接用中文给出最终总结与验证结果。"
+            )
+            blocks = list(system.content_blocks) if system else []
+            blocks.append({"type": "text", "text": note})
+            prompt = (
+                system.model_copy(update={"content": blocks})
+                if system
+                else HumanMessage(content=blocks)
+            )
+            response = await handler(
+                request.override(system_message=prompt, tool_choice=choice)
+            )
         else:
             response = await handler(request)
         if not self.generation:
@@ -82,6 +113,7 @@ class AcceptanceGate(AgentMiddleware):
         missing = self.checks.missing(
             self.plan.complete(), include_plan=not technical
         )
+        missing += pending
         if not missing:
             self.emit(
                 "acceptance",
@@ -158,6 +190,13 @@ class AcceptanceGate(AgentMiddleware):
             )
         if self.checks.test and self.checks.test.get("failed"):
             lines.append(f"自测失败 {self.checks.test['failed']} 项")
+            output = (
+                self.checks.test.get("tail")
+                or self.checks.test.get("log_tail")
+                or ""
+            )
+            if output:
+                lines.append("自测输出尾部：" + output[-700:])
         if self.checks.ui and self.checks.ui.get("issues"):
             lines.append("界面问题：" + "；".join(self.checks.ui["issues"][:5]))
         return ("\n" + "\n".join(lines)) if lines else ""

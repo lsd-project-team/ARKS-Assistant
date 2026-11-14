@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 import threading
 import time
 import uuid
@@ -359,6 +360,57 @@ class CodingWorkspace:
             "last_pass": self._last_ui_pass(),
             "log_tail": diagnostics.tail(output),
         }
+
+    def deliverables(self):
+        """生成项目收尾前必须存在的通用交付物。"""
+        missing = []
+        if not any(
+            path.name.lower().startswith("readme") for path in self.root.glob("README*")
+        ):
+            missing.append("缺少 README.md（用法、示例、验收命令）")
+        task_file = self.root / "任务书.md"
+        if task_file.is_file():
+            text = task_file.read_text(encoding="utf-8", errors="replace")
+            names = re.findall(
+                r"`([^`\s]+\.(?:py|cs|csproj|sln|js|mjs|html|css|json|md|ts|tsx))`",
+                text,
+            )
+            for name in dict.fromkeys(names):
+                candidate = name.strip("./")
+                if not candidate or "<" in candidate or ">" in candidate:
+                    continue
+                if not (self.root / candidate).is_file():
+                    missing.append(f"任务书要求的文件不存在：{candidate}")
+                if len(missing) >= 6:
+                    break
+        scan = re.compile(r"\bTODO\b|\bFIXME\b")
+        for path in self.root.rglob("*"):
+            if not path.is_file() or path.name == "任务书.md":
+                continue
+            if path.suffix.lower() not in {
+                ".py",
+                ".cs",
+                ".js",
+                ".mjs",
+                ".ts",
+                ".tsx",
+                ".html",
+                ".css",
+                ".md",
+            }:
+                continue
+            if any(part in {"bin", "obj", "node_modules", ".git"} for part in path.parts):
+                continue
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            if scan.search(text):
+                relative = path.relative_to(self.root).as_posix()
+                missing.append(f"{relative} 中存在 TODO/FIXME，请删除或实现")
+                if len(missing) >= 3:
+                    break
+        return missing
 
     def _ui_pass_file(self):
         return self.data / "coding" / "ui-pass" / f"{self.project_id}.json"
