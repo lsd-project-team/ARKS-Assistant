@@ -16,3 +16,4 @@
 完成前在 PowerShell 中逐条运行（不要用 `&&` 连接）：
 `node --check app.js`、`node --check logic.mjs`、`node --test tests/logic.test.mjs`，全部通过；不要留 TODO/占位。
 `index.html`、`app.js`、`styles.css` 三个界面文件必须真实存在，缺一不可。
+不要安装 Playwright/浏览器或其它大依赖（验收环境按离线处理，安装会超时）；测试只用 `node:test`。

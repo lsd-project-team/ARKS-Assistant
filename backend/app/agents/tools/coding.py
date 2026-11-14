@@ -95,6 +95,7 @@ GENERATION_GUIDANCE = """
    对生成的截图调用 view_image 核对；任何一项失败先修复，不得带着错误或空白界面宣称完成。
    check_ui 失败时先看返回的 issues 与 log_tail：启动异常（尤其是 TabPage/Panel 结构错误）
    必须先修，修完重新 check_ui。没有界面的项目只需要 verify build/test。
+   不要安装 Playwright/浏览器/大型框架依赖；优先用项目已有运行时，单条命令控制在 120 秒内。
 4. 截图契约固定为 `--screenshot <png路径> <标签页索引>`（scaffold_winforms 已内置），
    不要改成“输出目录”；控件 bounds 要递归打印全部层级（不限深度），
    check_ui 依赖它校验参数表单、按钮与日志区。
@@ -287,6 +288,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
     @tool
     async def run_command(command: str, cwd: str = ".", timeout_seconds: int = 120) -> str:
         """Run a one-shot shell command in the project directory."""
+        timeout_seconds = min(max(10, int(timeout_seconds or 120)), 180)
         result = await run(
             "run_command",
             work.run_command,
