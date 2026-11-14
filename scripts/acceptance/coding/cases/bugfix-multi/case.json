@@ -1,0 +1,12 @@
+{
+  "name": "bugfix-multi",
+  "title": "修复跨文件折扣计算 bug",
+  "build": "python -m compileall -q .",
+  "test": "python -m pytest -q",
+  "acceptance_command": "python -m pytest -q tests/",
+  "require_files": ["shop/__init__.py", "shop/pricing.py", "tests/test_shop.py", "README.md"],
+  "min_tests": 6,
+  "seed": "seed",
+  "protected": ["tests/test_shop.py"],
+  "ui": false
+}
