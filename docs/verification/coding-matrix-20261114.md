@@ -74,9 +74,12 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 | 轮次 | 用例数 | 通过 | 单例耗时 |
 | --- | --- | --- | --- |
-| 1 | 8 | **8/8** | 41–127s |
+| 1 | 8 | **8/8** | 49–180s |
+| 2 | 8 | **8/8** | 41–668s |
 
-报告：`output/acceptance/coding-ci-20261114-225046/report.md`。dotnet 用例在修正“根目录构建”误判后，连续 3 次运行均通过（其中 2 次自测告警）。
+合计 **16/16**；报告：`output/acceptance/coding-ci-20261114-230101/report.md`。dotnet 用例在修正“根目录构建”误判后连续通过；本轮 web-static 第二轮出现一次 668s 长尾（仍通过），说明耗时波动主要来自模型/服务端延迟，需要继续监控。
+
+同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 

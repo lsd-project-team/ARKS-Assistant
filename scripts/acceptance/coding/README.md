@@ -35,6 +35,14 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --cases python-
 
 输出 `output/acceptance/coding-ci-<时间>/report.md` 与 `report.json`；任一轮/用例失败则退出码非 0，适合接 CI。
 
+## GitHub Actions
+
+`.github/workflows/coding-acceptance.yml` 提供手动触发（workflow_dispatch）：
+
+- 需要仓库 secret `ARKS_API_KEY`；可选 variables `ARKS_BASE_URL`、`ARKS_MODEL`。
+- 自动安装 Python/Node/.NET，写入 `data/settings.private.json`，运行 `ci.py` 并上传报告 artifact。
+- 默认 8 个用例 1 轮；可在触发时指定 cases/rounds。
+
 ## 判定
 
 只有 `run` 状态为 `completed` 且 `grade.json` 全绿才算通过。评分分两层：
