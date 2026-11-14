@@ -130,6 +130,14 @@ def main():
             f"{'PASS' if row['acceptance'] else 'FAIL'} | "
             f"{'PASS' if row['selftest'] else 'WARN'} | {row['seconds']}s |"
         )
+    timing = {}
+    for row in rows:
+        timing.setdefault(row["case"], []).append(row["seconds"])
+    lines += ["", "## 耗时统计", "", "| 用例 | 次数 | 平均 | 最大 |", "| --- | --- | --- | --- |"]
+    for case, values in timing.items():
+        lines.append(
+            f"| {case} | {len(values)} | {round(sum(values) / len(values))}s | {max(values)}s |"
+        )
     (report_dir / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"[ci] report {report_dir} {len(passed)}/{len(rows)}")
     return 0 if report["ok"] else 1

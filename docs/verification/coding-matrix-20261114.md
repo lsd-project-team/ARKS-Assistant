@@ -74,12 +74,10 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 | 轮次 | 用例数 | 通过 | 单例耗时 |
 | --- | --- | --- | --- |
-| 1 | 8 | **8/8** | 49–180s |
-| 2 | 8 | **8/8** | 41–668s |
+| 1 | 8 | **8/8** | 41–133s |
+| 2 | 8 | **8/8** | 36–146s |
 
-合计 **16/16**；报告：`output/acceptance/coding-ci-20261114-230101/report.md`。dotnet 用例在修正“根目录构建”误判后连续通过；本轮 web-static 第二轮出现一次 668s 长尾（仍通过），说明耗时波动主要来自模型/服务端延迟，需要继续监控。
-
-**长尾定位（668s）**：模型为验证 Web 界面执行了 `npx --yes playwright install chromium`（下载超时 300s）和 `npx playwright --version`（82s）。已加约束：任务书与生成提示明确“不要安装 Playwright/浏览器/大型依赖、单命令 ≤120s”，`run_command` 工具把超时上限压到 180s。复跑 web-static 降到 **50s**，8 用例 CI（`coding-ci-20261114-233515`）**8/8**、单例 46–123s。
+合计 **16/16**；报告：`output/acceptance/coding-ci-20261114-234709/report.md`。加入“禁止安装浏览器依赖 + 单命令 180s 上限”后，之前 668s 的长尾未再复现；CI 报告新增每用例平均/最大耗时统计。
 
 同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 
