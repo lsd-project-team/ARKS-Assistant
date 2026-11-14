@@ -73,7 +73,7 @@ def main():
     args = parser.parse_args()
 
     case_dir = CASES / args.case
-    case = json.loads((case_dir / "case.json").read_text(encoding="utf-8"))
+    case = json.loads((case_dir / "case.json").read_text(encoding="utf-8-sig"))
     stamp = time.strftime("%Y%m%d-%H%M%S")
     run_dir = ROOT / "output" / "acceptance" / f"coding-{case['name']}-{stamp}"
     data_dir, project_dir = run_dir / "data", run_dir / "project"

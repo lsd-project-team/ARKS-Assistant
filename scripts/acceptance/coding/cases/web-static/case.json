@@ -3,7 +3,16 @@
   "title": "原生 JS 单页任务看板",
   "build": "node --check app.js && node --check logic.mjs",
   "test": "node --test tests/logic.test.mjs",
-  "require_files": ["index.html", "app.js", "logic.mjs", "styles.css", "tests/logic.test.mjs", "README.md", "package.json"],
+  "require_files": [
+    "index.html",
+    "app.js",
+    "logic.mjs",
+    "styles.css",
+    "tests/logic.test.mjs",
+    "README.md",
+    "package.json"
+  ],
   "min_tests": 6,
-  "ui": false
+  "ui": false,
+  "acceptance": "acceptance/check.mjs"
 }

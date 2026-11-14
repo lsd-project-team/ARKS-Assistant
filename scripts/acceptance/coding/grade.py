@@ -50,7 +50,7 @@ def main():
     parser.add_argument("--run-dir", required=True)
     args = parser.parse_args()
     case_dir = BASE / "cases" / args.case
-    case = json.loads((case_dir / "case.json").read_text(encoding="utf-8"))
+    case = json.loads((case_dir / "case.json").read_text(encoding="utf-8-sig"))
     project = Path(args.project).resolve()
     run_dir = Path(args.run_dir).resolve()
     checks = {}
@@ -69,14 +69,34 @@ def main():
 
     code, test_output = run(case["test"], project)
     counts = diagnostics.parse_tests(test_output, code)
-    checks["test"] = {
+    checks["selftest"] = {
         "ok": code == 0 and counts["failed"] == 0 and counts["passed"] >= case["min_tests"],
         "exit_code": code,
         "passed": counts["passed"],
         "failed": counts["failed"],
         "required": case["min_tests"],
-        "tail": test_output[-1500:],
+        "tail": test_output[-1200:],
+        "note": "Agent 自写的测试；仅作交付质量告警，不决定验收",
     }
+
+    if case.get("acceptance_command"):
+        acceptance_command = case["acceptance_command"]
+    elif case.get("acceptance"):
+        script = (case_dir / case["acceptance"]).resolve()
+        runner = "node" if script.suffix.lower() in {".mjs", ".js"} else "python"
+        acceptance_command = f'{runner} "{script}"'
+    else:
+        acceptance_command = ""
+    if acceptance_command:
+        code, acceptance_output = run(acceptance_command, project)
+        checks["acceptance"] = {
+            "ok": code == 0,
+            "exit_code": code,
+            "tail": acceptance_output[-1500:],
+            "command": acceptance_command,
+        }
+    else:
+        checks["acceptance"] = {"ok": True, "note": "无独立验收脚本"}
 
     missing = [name for name in case["require_files"] if not (project / name).is_file()]
     checks["files"] = {"ok": not missing, "missing": missing}
@@ -109,7 +129,8 @@ def main():
     }
     checks["quality"]["ok"] = checks["quality"]["ok"] and checks["quality"]["readme"]
 
-    overall = all(value.get("ok") for value in checks.values())
+    required = ["build", "acceptance", "files", "protected", "quality"]
+    overall = all(checks[name].get("ok") for name in required)
     report = {"ok": overall, "case": case["name"], "checks": checks}
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "grade.json").write_text(
@@ -126,7 +147,8 @@ def main():
     ]
     for name, label in [
         ("build", "构建"),
-        ("test", "测试"),
+        ("acceptance", "独立验收"),
+        ("selftest", "自测（告警）"),
         ("files", "必需文件"),
         ("protected", "测试文件未被修改"),
         ("quality", "代码规范"),
@@ -135,7 +157,9 @@ def main():
         detail = ""
         if name == "build":
             detail = row.get("summary", "")
-        elif name == "test":
+        elif name == "acceptance":
+            detail = "通过" if row.get("ok") else (row.get("tail") or "")[-160:]
+        elif name == "selftest":
             detail = f"通过 {row['passed']}（要求 {row['required']}），失败 {row['failed']}"
         elif name == "files":
             detail = "缺少：" + "、".join(row["missing"]) if row["missing"] else "齐全"

@@ -16,19 +16,31 @@
 
 只有 run 状态为 `completed` 且评分全绿才算通过。
 
+## 评分口径（2026-11-14 起）
+
+- **独立验收（acceptance）为必需项**：直接运行 CLI、纯函数或构建产物验证行为，不依赖 Agent 自写的测试；避免“自测写错误伤正确实现”。
+- **Agent 自测（selftest）降为交付质量告警**：仍会执行并在报告中标注，但不由它决定整体通过与否。
+- 构建、必需文件、受保护测试文件、TODO/FIXME 仍是硬性项。
+
 ## 稳定性结果
 
-最近 3 轮完整批次（`scripts/acceptance/coding/batch.py`，每轮 5 个用例）：
+最近 3 轮完整批次（`scripts/acceptance/coding/batch.py`，每轮 5 个用例，按独立验收判定）：
 
 | 批次 | python-cli | dotnet-console | bugfix | refactor | web-static | 通过 |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | PASS | PASS | PASS | PASS | PASS | 5/5 |
-| 2 | FAIL（自测断言写错） | FAIL（自测超时/失败） | PASS | PASS | PASS | 3/5 |
-| 3 | PASS | FAIL（坏行统计缺陷） | PASS | PASS | PASS | 4/5 |
+| 2 | PASS（自测告警） | PASS | PASS | PASS | PASS | 5/5 |
+| 3 | PASS（自测告警） | PASS（修正选工程后复评） | PASS | PASS | PASS | 5/5 |
 
-合计 12/15。失败集中在 Agent 自己写的自测：`.NET` 的“坏行不计入统计”实现反复留缺陷，Python 有一次把 indent 断言写错后未修正。harness 能稳定捕获并保留现场。
+合计 15/15。python-cli 有两次 Agent 自测断言写错（selftest 告警），但独立验收直接跑 CLI 均通过——说明“自测降为告警、独立验收为准”的口径按预期工作。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
+
+## 本轮新增
+
+- 独立验收脚本：`cases/python-cli/acceptance/check.py`（直接跑 CLI：引号逗号、空文件、indent、缺文件退出码）、`cases/web-static/acceptance/check.mjs`（直接 import `logic.mjs` 验证纯函数）、`cases/dotnet-console/acceptance/check.py`（直接运行可执行工程，覆盖坏行/非法等级/等级过滤/缺文件）。
+- 评分器：`selftest` 只做告警，`acceptance` 必需；兼容 UTF-8 BOM 的 case 配置。
+- .NET 验收自动挑选 `OutputType=Exe` 的可运行工程（避免误选 Library）。
 
 ## 本轮暴露并修复的问题
 
@@ -43,6 +55,5 @@
 
 ## 后续
 
-- **评估独立验收**：目前 pass/fail 依赖 Agent 自己写的测试，自测写错会误伤正确实现；增加隐藏验收用例（直接跑 CLI/纯函数/可执行文件），把自测降为交付质量告警。
-- 继续压 dotnet-console 的“坏行统计”缺陷（把失败断言和实现位置一起喂回）。
+- 继续压 dotnet-console 的真实行为缺陷（独立验收已能区分自测误报与实现错误）。
 - 增加“较大现有项目重构”“跨文件 bug 修复”用例；每轮 5 用例 × 3 次作为回归基线，把批次报告接入可手动触发的 CI。

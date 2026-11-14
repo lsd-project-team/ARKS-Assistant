@@ -23,4 +23,7 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\batch.py
 
 ## 判定
 
-只有 `run` 状态为 `completed` 且 `grade.json` 全绿才算通过；失败会保留现场，便于定位是 Agent 行为、提示词、工具还是评分问题。
+只有 `run` 状态为 `completed` 且 `grade.json` 全绿才算通过。评分分两层：
+
+- **独立验收（acceptance，必需）**：`cases/*/acceptance/` 下的脚本直接跑 CLI/纯函数/可执行文件，不依赖 Agent 自写的测试；bugfix/refactor 用受保护的种子测试。
+- **Agent 自测（selftest，告警）**：仍会执行并记录，但不再决定整体通过与否，避免自测断言写错误伤正确实现。

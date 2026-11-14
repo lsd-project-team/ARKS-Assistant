@@ -3,9 +3,16 @@
   "title": "重构现有 Python 订单统计模块",
   "build": "python -m compileall -q .",
   "test": "python -m pytest -q",
-  "require_files": ["orders.py", "tests/test_orders.py", "README.md"],
+  "require_files": [
+    "orders.py",
+    "tests/test_orders.py",
+    "README.md"
+  ],
   "min_tests": 4,
   "seed": "seed",
-  "protected": ["tests/test_orders.py"],
-  "ui": false
+  "protected": [
+    "tests/test_orders.py"
+  ],
+  "ui": false,
+  "acceptance_command": "python -m pytest -q tests/"
 }
