@@ -11,6 +11,7 @@
 | `python-cli` | 从零生成 Python CSV→JSON 命令行工具 | compileall 通过、pytest ≥5 全过、文件齐全、无 TODO |
 | `dotnet-console` | 从零生成 .NET 8 日志分析器 + 控制台自测 | build 0/0、自测 ≥6 全过、README、无 TODO |
 | `bugfix-python` | 修复现有库存模块（测试文件受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
+| `bugfix-multi` | 修复 shop 包跨文件折扣 bug（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 
@@ -21,6 +22,14 @@
 - **独立验收（acceptance）为必需项**：直接运行 CLI、纯函数或构建产物验证行为，不依赖 Agent 自写的测试；避免“自测写错误伤正确实现”。
 - **Agent 自测（selftest）降为交付质量告警**：仍会执行并在报告中标注，但不由它决定整体通过与否。
 - 构建、必需文件、受保护测试文件、TODO/FIXME 仍是硬性项。
+
+## CI 入口
+
+```powershell
+backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
+```
+
+输出 `output/acceptance/coding-ci-<时间>/report.md` 与 `report.json`；任一轮/用例失败退出码非 0，可直接接 CI。
 
 ## 稳定性结果
 
@@ -33,6 +42,15 @@
 | 3 | PASS（自测告警） | PASS（修正选工程后复评） | PASS | PASS | PASS | 5/5 |
 
 合计 15/15。python-cli 有两次 Agent 自测断言写错（selftest 告警），但独立验收直接跑 CLI 均通过——说明“自测降为告警、独立验收为准”的口径按预期工作。
+
+### 6 用例 CI 回归（含跨文件 bugfix）
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 6 | **6/6** | 37–109s |
+| 2 | 6 | **6/6** | 37–74s |
+
+合计 **12/12**；报告在 `output/acceptance/coding-ci-20261114-203906/report.md`。dotnet-console 在早前偶发 794s 的长尾本轮未复现（74–92s），仍需继续观察。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 
