@@ -16,11 +16,12 @@ ENGLISH_SUMMARY = re.compile(
     r"(?P<errors>\d+)\s+Error\(s\)|(?P<warnings>\d+)\s+Warning\(s\)", re.IGNORECASE
 )
 CHINESE_SUMMARY = re.compile(r"(?P<count>\d+)\s*个(?:错误|警告)")
-TEST_PASSED = re.compile(r"(?P<count>\d+)\s+(?:passed|通过)", re.IGNORECASE)
-TEST_FAILED = re.compile(r"(?P<count>\d+)\s+(?:failed|失败)", re.IGNORECASE)
+TEST_PASSED = re.compile(r"(?P<count>\d+)[ \t]+(?:passed|pass\b|通过)", re.IGNORECASE)
+TEST_FAILED = re.compile(r"(?P<count>\d+)[ \t]+(?:failed|fail\b|失败)", re.IGNORECASE)
 CHINESE_PASSED = re.compile(r"通过\s*(?P<count>\d+)\s*项")
 CHINESE_FAILED = re.compile(r"失败\s*(?P<count>\d+)\s*项")
 PASS_LINE = re.compile(r"^\s*\[?PASS\]?(?:\s|:|：)", re.MULTILINE | re.IGNORECASE)
+FAIL_LINE = re.compile(r"^\s*\[?FAIL\]?(?:\s|:|：)", re.MULTILINE | re.IGNORECASE)
 
 
 def parse_diagnostics(output, exit_code=0):
@@ -91,8 +92,9 @@ def parse_tests(output, exit_code):
     chinese_passed = sum(int(item) for item in CHINESE_PASSED.findall(output))
     chinese_failed = sum(int(item) for item in CHINESE_FAILED.findall(output))
     lines = len(PASS_LINE.findall(output))
+    failed_lines = len(FAIL_LINE.findall(output))
     passed = max(passed, chinese_passed, lines)
-    failed = max(failed, chinese_failed)
+    failed = max(failed, chinese_failed, failed_lines)
     return {
         "passed": passed,
         "failed": failed,

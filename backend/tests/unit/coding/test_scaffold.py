@@ -18,6 +18,25 @@ def make_workspace(tmp_path):
     return work, root
 
 
+def test_build_and_test_command_detection(tmp_path):
+    work, root = make_workspace(tmp_path)
+    (root / "pyproject.toml").write_text("[project]\nname = 'x'\n", encoding="utf-8")
+    (root / "main.py").write_text("print('x')\n", encoding="utf-8")
+    (root / "tests").mkdir()
+    (root / "tests" / "test_main.py").write_text(
+        "def test_ok():\n    assert True\n", encoding="utf-8"
+    )
+    assert work._build_command() == "python -m compileall -q ."
+    assert work._default_test_command() == "python -m pytest -q"
+
+
+def test_dotnet_project_commands_are_detected(tmp_path):
+    work, root = make_workspace(tmp_path)
+    (root / "App.csproj").write_text("<Project />", encoding="utf-8")
+    assert work._build_command() == "dotnet build"
+    assert work._default_test_command() == "dotnet test"
+
+
 def test_scaffold_creates_skeleton_with_replacements(tmp_path):
     work, root = make_workspace(tmp_path)
     result = work.scaffold("winforms", {"__PRODUCT__": "测试上位机"})

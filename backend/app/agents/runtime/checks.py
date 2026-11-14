@@ -9,8 +9,9 @@ from app.agents.runtime.answer_completion import final_message
 
 
 class RunChecks:
-    def __init__(self, generation=False):
+    def __init__(self, generation=False, ui_required=True):
         self.generation = generation
+        self.ui_required = ui_required
         self.verify = None
         self.test = None
         self.ui = None
@@ -32,7 +33,8 @@ class RunChecks:
         """构建（0 错误 0 警告）与界面自检通过；自测由独立评分强制复核。"""
         build = self.verify and self.verify.get("ok") and not self.verify.get("warning_count")
         failed_test = self.test is not None and not self.test.get("ok")
-        return bool(build and not failed_test and self.ui and self.ui.get("ok"))
+        ui = self.ui and self.ui.get("ok") if self.ui_required else True
+        return bool(build and not failed_test and ui)
 
     def missing(self, plan_complete, include_plan=True):
         missing = []
@@ -44,7 +46,7 @@ class RunChecks:
             missing.append(f"构建有 {self.verify['warning_count']} 个警告，需要清零")
         if self.test is not None and not self.test.get("ok"):
             missing.append("verify test 未通过（回放自测失败）")
-        if not (self.ui and self.ui.get("ok")):
+        if self.ui_required and not (self.ui and self.ui.get("ok")):
             missing.append("未通过 check_ui（界面截图与布局自检）")
         return missing
 

@@ -9,8 +9,14 @@ from langchain_core.tools import tool
 from app.core.config import dump_json
 from app.modules.coding import diagnostics
 
-BUILD_COMMAND = re.compile(r"\bdotnet\s+build\b", re.IGNORECASE)
-TEST_COMMAND = re.compile(r"\bdotnet\s+(?:test|run\s+--project\s+\S*tests)", re.IGNORECASE)
+BUILD_COMMAND = re.compile(
+    r"\b(?:dotnet\s+build|python\s+-m\s+compileall|npm\s+run\s+build)\b", re.IGNORECASE
+)
+TEST_COMMAND = re.compile(
+    r"\b(?:dotnet\s+(?:test|run\s+--project\s+\S*tests)"
+    r"|python\s+-m\s+pytest|pytest|npm\s+test)\b",
+    re.IGNORECASE,
+)
 
 
 def _record_command_check(checks, command, output, exit_code):
@@ -62,6 +68,7 @@ GENERATION_GUIDANCE = """
 本轮项目目录为空，目标是一次交付可运行、可验收的完整系统。
 1. 先读需求/任务书，调用 update_plan 建立 4-7 步计划
    （协议层 → 回放测试 → 构建 → 界面骨架 → 业务功能 → 截图自检 → 验收）。
+   先写 README（用法、示例、验收命令），再实现代码；任务书要求的交付物在收尾前必须存在。
 2. 先实现协议层与离线回放测试，verify test 通过后再做界面；
    自测覆盖需求要求的用例即可，不要额外加编码页/区域设置等设备未要求的测试；
    自己新增的用例反复失败时先删除或修正，不要卡在同一个用例上；
@@ -71,10 +78,10 @@ GENERATION_GUIDANCE = """
    协议与按钮动作写到 Actions.cs 或新文件，用 Channel/Mode/Pressure/Time/Vacuum 等内部字段读写参数，
    用 WriteLog/SetStatus 更新界面。骨架已有“参数设置/设备功能”两页与日志区，
    必须保持页签数量为 2，不要新增或重复 TabPage；否则先 scaffold_winforms。每完成一步更新计划状态。
-3. 完成前必须调用 verify build、verify test 与 check_ui；
-   对生成的截图调用 view_image 核对；任何一项失败先修复，
-   不得带着错误或空白界面宣称完成。check_ui 失败时先看返回的 issues 与 log_tail：
-   启动异常（尤其是 TabPage/Panel 结构错误）必须先修，修完重新 check_ui。
+3. 完成前必须调用 verify build；WinForms/有界面的项目还要调用 verify test 与 check_ui；
+   对生成的截图调用 view_image 核对；任何一项失败先修复，不得带着错误或空白界面宣称完成。
+   check_ui 失败时先看返回的 issues 与 log_tail：启动异常（尤其是 TabPage/Panel 结构错误）
+   必须先修，修完重新 check_ui。没有界面的项目只需要 verify build/test。
 4. 截图契约固定为 `--screenshot <png路径> <标签页索引>`（scaffold_winforms 已内置），
    不要改成“输出目录”；控件 bounds 要递归打印全部层级（不限深度），
    check_ui 依赖它校验参数表单、按钮与日志区。

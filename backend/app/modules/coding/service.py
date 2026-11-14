@@ -236,7 +236,10 @@ class CodingWorkspace:
         settings, detected = self.load_settings(), self.environment()
         if kind == "build":
             command = (
-                settings.get("build_command") or detected.get("build_command") or "dotnet build"
+                settings.get("build_command")
+                or self._build_command()
+                or detected.get("build_command")
+                or "dotnet build"
             )
             timeout = timeout or 300
         else:
@@ -244,7 +247,7 @@ class CodingWorkspace:
                 settings.get("test_command")
                 or self._test_command()
                 or detected.get("test_command")
-                or "dotnet test"
+                or self._default_test_command()
             )
             timeout = timeout or 600
         result = self.run_command(command, timeout=timeout, approved=False, wait=False)
@@ -410,7 +413,7 @@ class CodingWorkspace:
         return candidates[0] if candidates else None
 
     def _test_command(self):
-        """没配置测试命令时，优先运行 tests/ 下的控制台自测工程，其次回退到框架检测。"""
+        """没有配置测试命令时，优先运行 tests/ 下的控制台自测工程，其次回退到框架检测。"""
         candidates = (
             sorted((self.root / "tests").glob("**/*.csproj"))
             if (self.root / "tests").is_dir()
@@ -420,6 +423,35 @@ class CodingWorkspace:
             relative = candidates[0].relative_to(self.root).as_posix()
             return f'dotnet run --project "{relative}"'
         return ""
+
+    def _build_command(self):
+        """按项目文件判断构建方式，避免把 Python/Node 项目误跑成 dotnet build。"""
+        root = self.root
+        if (root / "package.json").is_file():
+            return "npm run build --if-present"
+        if (
+            any(
+                (root / name).is_file()
+                for name in ("pyproject.toml", "requirements.txt", "setup.py")
+            )
+            or any(root.glob("*.py"))
+        ):
+            return "python -m compileall -q ."
+        if any(root.glob("*.csproj")):
+            return "dotnet build"
+        return ""
+
+    def _default_test_command(self):
+        root = self.root
+        if (root / "package.json").is_file():
+            return "npm test"
+        if (
+            (root / "pyproject.toml").is_file()
+            or (root / "pytest.ini").is_file()
+            or (root / "tests").is_dir()
+        ):
+            return "python -m pytest -q"
+        return "dotnet test"
 
     def scaffold(self, template="winforms", values=None, path="."):
         """把经验证的界面骨架写入空目录；已有源码的目录拒绝覆盖。"""

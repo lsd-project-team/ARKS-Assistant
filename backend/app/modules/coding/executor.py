@@ -24,7 +24,7 @@ ALLOW = [
     r"^(pnpm|yarn)\s+(test|run|build|lint)\b",
     r"^(cargo\s+(build|test|check|run|fmt|clippy)|go\s+(build|test|run|vet|fmt)|mvn\s+(test|package|compile)|gradle\w*\s+(test|build))\b",
     r"^(make|cmake|ninja)\b",
-    r"^(python|py)\s+(-m\s+)?(pytest|unittest)",
+    r"^(python|py)\s+(-m\s+)?(pytest|unittest|compileall)",
     r"^pytest\b",
     r"^(pip|pip3)\s+(list|show)\b",
     r"^(uv|poetry)\s+(run|test)\b",

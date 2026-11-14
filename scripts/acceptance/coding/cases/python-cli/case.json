@@ -1,0 +1,9 @@
+{
+  "name": "python-cli",
+  "title": "Python CSV→JSON 命令行工具",
+  "build": "python -m compileall -q .",
+  "test": "python -m pytest -q",
+  "require_files": ["csvjson.py", "tests/test_csvjson.py", "README.md"],
+  "min_tests": 5,
+  "ui": false
+}

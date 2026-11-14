@@ -142,7 +142,10 @@ class AgentGraphBuilder:
             tools += document_tools
             retrieval.workflow_tools |= frozenset(tool.name for tool in document_tools)
         # 工具始终可用，由模型理解自然语言需求；权限档位决定写入与命令确认。
-        checks, plans = RunChecks(generation), PlanStore()
+        checks, plans = RunChecks(
+            generation,
+            ui_required=bool(policy.get("ui_required", True)) if policy else True,
+        ), PlanStore()
         work_tools = coding_tools(
             runtime.coding, thread_id, emit, run_id=run_id, checks=checks
         )

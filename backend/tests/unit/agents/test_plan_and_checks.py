@@ -75,6 +75,14 @@ async def test_gate_recovers_ui_before_finishing():
     assert events[-1][1]["ok"] is True
 
 
+def test_non_ui_generation_does_not_require_check_ui():
+    checks = RunChecks(generation=True, ui_required=False)
+    checks.record_verify({"ok": True, "kind": "build"})
+    checks.record_verify({"ok": True, "kind": "test"})
+    assert checks.missing(True) == []
+    assert checks.technical_complete() is True
+
+
 def test_generation_intent_detection():
     from app.agents.analysis.policy import is_generation_request, wants_winforms
 

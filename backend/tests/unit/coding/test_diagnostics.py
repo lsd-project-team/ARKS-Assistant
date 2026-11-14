@@ -62,3 +62,12 @@ def test_chinese_self_test_output_is_counted():
     )
     counts = parse_tests(output, 0)
     assert counts["passed"] == 13 and counts["failed"] == 0 and counts["ok"] is True
+
+
+def test_fail_lines_and_short_fail_summary_are_counted():
+    output = (
+        "[PASS] 基础解析\n[PASS] 等级过滤\n[FAIL] 空文件 -> 应为 0\n\n"
+        "自测结果: 7 PASS, 1 FAIL, 共 8 项\n"
+    )
+    counts = parse_tests(output, 1)
+    assert counts["passed"] == 7 and counts["failed"] == 1 and counts["ok"] is False

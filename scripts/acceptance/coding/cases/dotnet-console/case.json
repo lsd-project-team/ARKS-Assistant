@@ -1,0 +1,9 @@
+{
+  "name": "dotnet-console",
+  "title": ".NET 8 控制台日志分析工具",
+  "build": "dotnet build",
+  "test": "dotnet run --project tests/LogToolSelfTest/LogToolSelfTest.csproj",
+  "require_files": ["README.md"],
+  "min_tests": 6,
+  "ui": false
+}

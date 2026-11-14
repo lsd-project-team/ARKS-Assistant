@@ -2,6 +2,8 @@
 
 2026-11-13，编码助手增加“从零生成”闭环：`update_plan` 任务计划、`verify` 结构化构建/测试诊断（文件:行:错误码）、`check_ui` 截图与布局自检、`scaffold_winforms` 布局骨架、`AcceptanceGate` 完成前门禁；空项目且明确要求做系统/程序时自动进入 generation 模式（工具 256 次、续写 12 次、重复保护 400；WinForms 意图自动准备骨架，`Actions.cs` 作为业务入口，`MainForm/UiParts/Program/ScreenshotTool` 受保护不可重写），界面通过时保存检查点、布局被改坏自动回退并收尾。新增独立验收基准 `scripts/acceptance/sp900/`（空目录 + 任务书 + 参考图，自动构建/自测/截图/评分，要求 run 干净完成）。验证：后端单元 510 项、agents 与聊天集成 162 项、前端 429 项及构建通过；连续 3 次从空目录一次性生成全部 `completed` 且评分全绿。说明见[原地编码 Agent](docs/features/in-place-coding-agent.md)，验收见[SP900 一次性生成验收](docs/verification/sp900-one-shot-20261113.md)。
 
+2026-11-14，新增编码模块多案例验收矩阵 `scripts/acceptance/coding/`：Python CLI 从零生成、.NET 控制台从零生成、现有项目修复（测试文件受保护）；按项目类型区分 `ui_required`，补齐 Python/Node 构建测试探测与 `[FAIL]`/`N PASS/N FAIL` 解析，修复任务书占位误判。三个用例连续一轮全部 `completed` 且评分全绿。验证：后端单元 514 项。说明见[编码多案例验收](docs/verification/coding-matrix-20261114.md)。
+
 2026-11-13，编码对话新增 `view_image`：助手可以直接查看项目内图片（运行后的界面截图、设计图），图片作为用户消息交给支持视觉的 deepseek-flash，检查点只保存文本标记、模型请求边界才展开；单边不超过 8192 像素、单文件不超过 32 MB，超过 2048 像素或 4 MB 时先在本机压缩。验证：编码单元 45 项、相关单元与图片测试 304 项、agents 与聊天 170 项通过；隔离项目用真实 deepseek-flash 通过 `view_image` 读出截图中的“界面截图 / VIEW-OK 7788”并说明蓝色方框在左侧。说明见[原地编码 Agent](docs/features/in-place-coding-agent.md)，验收见[图片输入验收](docs/verification/chat-images-20261113.md)。
 
 2026-11-13，聊天支持图片：附件可上传 PNG/JPG/GIF/WebP（按文件内容判断格式、单边不超过 8192 像素），附件卡片显示缩略图并按原图预览，输入框可直接粘贴截图；图片作为用户消息的多模态内容交给支持视觉的 deepseek-flash，检查点与摘要只保存文本标记、模型请求边界才展开图片块，超过 2048 像素或 4 MB 时先在本机压缩，ZIP 内图片提示单独上传。验证：后端图片 9 项、聊天 163 项、agents 与聊天单元 410 项、前端 422 项及生产构建通过；独立数据目录用真实 deepseek-flash 读出了截图中的中文“错误代码 E-2331”和“请检查供料传感器”。说明见[聊天附件](docs/features/chat-attachments.md)，验收见[图片输入验收](docs/verification/chat-images-20261113.md)。

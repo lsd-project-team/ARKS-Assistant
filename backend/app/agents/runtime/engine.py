@@ -165,6 +165,7 @@ class AgentRuntime:
             policy = {
                 **policy,
                 "generation": True,
+                "ui_required": wants_winforms(question),
                 "limit": max(policy["limit"], 256),
                 "max_continuations": 12,
             }
