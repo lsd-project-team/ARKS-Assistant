@@ -12,6 +12,7 @@
 | `dotnet-console` | 从零生成 .NET 8 日志分析器 + 控制台自测 | build 0/0、自测 ≥6 全过、README、无 TODO |
 | `bugfix-python` | 修复现有库存模块（测试文件受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `bugfix-multi` | 修复 shop 包跨文件折扣 bug（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
+| `feature-python` | 现有待办服务增加截止日期/逾期 | 现有 10 测试通过、隐藏验收 due/overdue、测试文件未被修改 |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
 | `winforms-tool` | 从零生成 WinForms 点检计时器 | build 0/0、两页截图非空白、布局断言（2 页签/6 按钮/5 输入/日志 ≥120px） |
@@ -53,14 +54,14 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 合计 **12/12**；报告在 `output/acceptance/coding-ci-20261114-203906/report.md`。dotnet-console 在早前偶发 794s 的长尾本轮未复现（74–92s），仍需继续观察。
 
-### 7 用例 CI 回归（加入 WinForms）
+### 8 用例 CI 回归（加入 feature-python）
 
 | 轮次 | 用例数 | 通过 | 单例耗时 |
 | --- | --- | --- | --- |
-| 1 | 7 | **7/7** | 39–136s |
-| 2 | 7 | **7/7** | 47–111s |
+| 1 | 8 | **8/8** | 39–102s |
+| 2 | 8 | 7/8 | 37–134s（dotnet 超时 947s） |
 
-合计 **14/14**；报告：`output/acceptance/coding-ci-20261114-212440/report.md`。WinForms 用例验证了“骨架 + Actions + 截图/布局自检”链路；模型曾出现重复读取同一文件的空转，已加入重复读取超限提示。
+合计 **15/16**。第二轮 dotnet-console 在 15 分钟内未收尾（仍在修构建，计划/构建未完成），被超时终止；说明该用例存在长尾。已把 CI 默认超时提到 20 分钟，并把超时状态明确标记为 `timeout`（不再显示 `running`）。报告：`output/acceptance/coding-ci-20261114-214453/report.md`。
 
 运行目录：`output/acceptance/coding-<case>-<时间>/`；批次汇总：`output/acceptance/coding-batch-*/batch.json`。
 

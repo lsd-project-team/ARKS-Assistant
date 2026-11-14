@@ -15,10 +15,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--cases",
-        default="python-cli,dotnet-console,bugfix-python,refactor-python,bugfix-multi,web-static,winforms-tool",
+        default="python-cli,dotnet-console,bugfix-python,refactor-python,bugfix-multi,feature-python,web-static,winforms-tool",
     )
     parser.add_argument("--port", type=int, default=8791)
-    parser.add_argument("--timeout", type=int, default=1500)
+    parser.add_argument("--timeout", type=int, default=1200)
     args = parser.parse_args()
     stamp = time.strftime("%Y%m%d-%H%M%S")
     report_dir = ROOT / "output" / "acceptance" / f"coding-batch-{stamp}"

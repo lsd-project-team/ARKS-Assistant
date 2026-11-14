@@ -1,0 +1,12 @@
+{
+  "name": "feature-python",
+  "title": "现有待办服务增加截止日期与逾期",
+  "build": "python -m compileall -q .",
+  "test": "python -m pytest -q",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["todo/models.py", "todo/service.py", "tests/test_service.py", "README.md"],
+  "min_tests": 10,
+  "seed": "seed",
+  "protected": ["tests/test_service.py"],
+  "ui": false
+}

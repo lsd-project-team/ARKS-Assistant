@@ -170,6 +170,9 @@ def main():
                 break
             time.sleep(2)
         print(f"[case] status={status} approvals={approvals}")
+        if status not in {"completed", "failed", "interrupted", "cancelled"}:
+            status = "timeout"
+            result["error"] = result.get("error") or "运行超时，未在期限内结束"
         if detail.get("error"):
             print("[case] error:", str(detail["error"])[:400])
         (run_dir / "answer.md").write_text(answer, encoding="utf-8")

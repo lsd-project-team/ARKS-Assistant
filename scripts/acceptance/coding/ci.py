@@ -19,6 +19,7 @@ ALL_CASES = [
     "bugfix-python",
     "refactor-python",
     "bugfix-multi",
+    "feature-python",
     "web-static",
     "winforms-tool",
 ]
@@ -39,7 +40,7 @@ def main():
     parser.add_argument("--cases", default=",".join(ALL_CASES))
     parser.add_argument("--rounds", type=int, default=1)
     parser.add_argument("--port", type=int, default=8791)
-    parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--timeout", type=int, default=1200)
     args = parser.parse_args()
     cases = [item.strip() for item in args.cases.split(",") if item.strip()]
     stamp = time.strftime("%Y%m%d-%H%M%S")
