@@ -84,9 +84,12 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 | 轮次 | 用例数 | 通过 | 单例耗时 |
 | --- | --- | --- | --- |
-| 1 | 9 | **9/9** | 36–134s |
+| 1 | 9 | **9/9** | 41–126s |
+| 2 | 9 | **9/9** | 46–256s |
 
-报告：`output/acceptance/coding-ci-20261115-000912/report.md`。`project-large` 为 5 模块 + 15 测试的图书馆服务，要求新增搜索分页与热门榜；现有测试受保护，隐藏验收直接调用服务验证分页、大小写、非法参数与热门排序。一次通过，耗时 134s。
+合计 **18/18**；报告：`output/acceptance/coding-ci-20261115-002025/report.md`。`project-large` 为 5 模块 + 15 测试的图书馆服务，要求新增搜索分页与热门榜；现有测试受保护，隐藏验收直接调用服务验证分页、大小写、非法参数与热门排序。两轮耗时 91s / 256s。
+
+工作流 `.github/workflows/coding-acceptance.yml` 已通过 YAML 解析校验（Windows runner，secret `ARKS_API_KEY`，手动触发并上传报告 artifact）。
 
 同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 
