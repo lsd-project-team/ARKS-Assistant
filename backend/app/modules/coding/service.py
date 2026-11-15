@@ -2,7 +2,10 @@
 
 import hashlib
 import json
+import os
 import re
+import shutil
+import subprocess
 import threading
 import time
 import uuid
@@ -255,6 +258,18 @@ class CodingWorkspace:
                 or self._default_test_command()
             )
             timeout = timeout or 600
+        if not command:
+            return {
+                "ok": False,
+                "kind": kind,
+                "command": "",
+                "summary": "未找到可用的测试命令",
+                "error": (
+                    "当前项目没有可自动发现的测试命令；请在项目编码设置中填写 test_command，"
+                    "或说明该项目不含测试"
+                ),
+                "log_tail": "",
+            }
         result = self.run_command(command, timeout=timeout, approved=False, wait=False)
         if result.get("approval_required"):
             return {
@@ -497,6 +512,63 @@ class CodingWorkspace:
             return f'dotnet run --project "{relative}"'
         return ""
 
+    def _is_legacy_csproj(self, path):
+        """老式 .NET Framework 工程（非 SDK 风格，含 TargetFrameworkVersion）。"""
+        try:
+            head = path.read_text(encoding="utf-8", errors="replace")[:2000]
+        except OSError:
+            return False
+        return "<TargetFrameworkVersion>" in head and "Sdk=" not in head
+
+    def _msbuild_path(self):
+        """定位 MSBuild：环境变量 → vswhere → 常见 VS 安装路径 → PATH。"""
+        configured = os.environ.get("MSBUILD_EXE", "")
+        if configured and Path(configured).is_file():
+            return configured
+        vswhere = Path(r"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe")
+        if vswhere.is_file():
+            try:
+                completed = subprocess.run(
+                    [str(vswhere), "-latest", "-products", "*", "-requires",
+                     "Microsoft.Component.MSBuild", "-find", "MSBuild\\**\\Bin\\MSBuild.exe"],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=20,
+                )
+                for line in (completed.stdout or "").splitlines():
+                    candidate = Path(line.strip())
+                    if candidate.is_file():
+                        return str(candidate)
+            except (OSError, subprocess.TimeoutExpired):
+                pass
+        for candidate in (
+            Path(r"D:\VisualStudio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"),
+            Path(
+                r"C:\Program Files\Microsoft Visual Studio\2022\Community"
+                r"\MSBuild\Current\Bin\MSBuild.exe"
+            ),
+            Path(
+                r"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
+                r"\MSBuild\Current\Bin\MSBuild.exe"
+            ),
+        ):
+            if candidate.is_file():
+                return str(candidate)
+        return shutil.which("msbuild") or ""
+
+    def _legacy_solution(self):
+        for path in sorted(self.root.glob("*.sln")):
+            if path.is_file():
+                return path
+        for path in sorted(self.root.rglob("*.csproj")):
+            if any(part in {"bin", "obj", ".git"} for part in path.parts):
+                continue
+            if self._is_legacy_csproj(path):
+                return path
+        return None
+
     def _build_command(self):
         """按项目文件判断构建方式，避免把 Python/Node 项目误跑成 dotnet build。"""
         root = self.root
@@ -510,12 +582,24 @@ class CodingWorkspace:
             or any(root.glob("*.py"))
         ):
             return "python -m compileall -q ."
+        legacy = self._legacy_solution()
+        if legacy is not None:
+            msbuild = self._msbuild_path()
+            if msbuild:
+                relative = legacy.relative_to(self.root).as_posix()
+                return (
+                    f'& "{msbuild}" "{relative}" /p:Configuration=Debug '
+                    "/m /nologo /v:m"
+                )
         if any(root.glob("*.csproj")):
             return "dotnet build"
         return ""
 
     def _default_test_command(self):
         root = self.root
+        if self._legacy_solution() is not None:
+            # 老式 .NET Framework 工程没有统一的测试命令，需在项目设置里显式配置。
+            return ""
         if (root / "package.json").is_file():
             return "npm test"
         if (

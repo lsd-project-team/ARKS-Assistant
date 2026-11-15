@@ -41,6 +41,16 @@
 - **验收通过自动 checkpoint**：`verify build/test` 成功后自动打 `verify-*` 检查点（Cline 式），失败可回滚到最近通过状态。
 - 大型 C# 用例 `project-large-csharp`：Core + Api + CLI + 18 项自测（4 工程 / 10 个 .cs 文件）的 .NET 8 解决方案，隐藏验收跑 CLI 验证补货/低库存/总值/错误码；已加入 11 用例矩阵。
 
+## 真实项目对照（2026-11-15）
+
+用 `D:\zx2200\产能统计\产能统计.sln` 做验收标尺：18 个工程、376 个 `.cs`、.NET Framework 4.8（老式 csproj）+ WinForms。
+
+- 原工程外部引用失效（`..\..\写胶图形编辑器\...AKRS.Base.dll`、`C:\SQLite\...`、Spire 安装路径），`LogTableRecordsDeleter`/`SQLite_SQL` 仍是 v3.5；
+- 在副本中把引用修到本地 `refs/`、补 `DevComponents.DotNetBar2`、把 v2.0/v3.5 重定向到 v4.8 后，**MSBuild 全解决方案构建 0 错误 0 警告**；
+- 编码模块新增 **legacy .NET Framework 检测**：识别非 SDK 风格 csproj 后自动走 MSBuild（vswhere/常见 VS 路径/PATH），命令用 PowerShell `&` 调用；`verify build` 在该真实解决方案上通过（增量约 1.2s）；
+- 老式工程没有统一测试命令，`test_command` 需显式配置，避免误跑 `dotnet test`；
+- 已知运行问题：`CapacityStatistics.exe` 启动时 `AKRS.Capacity.DB.Data..ctor` 抛 `DllNotFoundException`，是 SQLite 原生 interop 未随输出复制，不是源码编译问题。
+
 ## 后续优先级
 
 - **P1**：按解决方案选择构建目标（只构建改动项目）；`repo_map` 结果进一步参与上下文选择。

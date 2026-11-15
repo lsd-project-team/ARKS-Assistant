@@ -1,0 +1,43 @@
+from types import SimpleNamespace
+
+from app.modules.coding.service import CodingWorkspace
+
+
+def make_workspace(tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    paths = SimpleNamespace(workspace=tmp_path, data=data)
+    repository = SimpleNamespace(project_id="p1", workspace_id="p1")
+    return CodingWorkspace(paths, repository)
+
+
+def test_sdk_style_project_uses_dotnet_build(tmp_path):
+    (tmp_path / "App.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk">\n<PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup>\n</Project>",
+        encoding="utf-8",
+    )
+    assert make_workspace(tmp_path)._build_command() == "dotnet build"
+
+
+def test_legacy_framework_project_uses_msbuild(tmp_path, monkeypatch):
+    (tmp_path / "Legacy.csproj").write_text(
+        '<Project ToolsVersion="15.0">\n<PropertyGroup>'
+        "<TargetFrameworkVersion>v4.8</TargetFrameworkVersion></PropertyGroup>\n</Project>",
+        encoding="utf-8",
+    )
+    (tmp_path / "Legacy.sln").write_text("Microsoft Visual Studio Solution File", encoding="utf-8")
+    workspace = make_workspace(tmp_path)
+    monkeypatch.setattr(workspace, "_msbuild_path", lambda: r"D:\VS\MSBuild.exe")
+    command = workspace._build_command()
+    assert r"D:\VS\MSBuild.exe" in command
+    assert "Legacy.sln" in command
+    assert "/p:Configuration=Debug" in command
+
+
+def test_legacy_test_command_is_not_guessed(tmp_path):
+    (tmp_path / "Legacy.csproj").write_text(
+        "<Project><PropertyGroup><TargetFrameworkVersion>v4.8</TargetFrameworkVersion></PropertyGroup></Project>",
+        encoding="utf-8",
+    )
+    assert make_workspace(tmp_path)._default_test_command() == ""
