@@ -1,4 +1,4 @@
-"""编码验收 CI：多轮跑用例、汇总报告、失败即非零退出。
+﻿"""编码验收 CI：多轮跑用例、汇总报告、失败即非零退出。
 
 用法：
     backend\\.venv\\Scripts\\python.exe scripts\\acceptance\\coding\\ci.py --rounds 2
@@ -22,6 +22,7 @@ ALL_CASES = [
     "feature-python",
     "project-large",
     "project-large-csharp",
+    "capacity-db",
     "cross-language",
     "web-static",
     "winforms-tool",

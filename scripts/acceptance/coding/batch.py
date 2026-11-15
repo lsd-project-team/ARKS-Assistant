@@ -1,4 +1,4 @@
-"""顺序跑多个编码验收案例并汇总。"""
+﻿"""顺序跑多个编码验收案例并汇总。"""
 
 import argparse
 import json
@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--cases",
-        default="python-cli,dotnet-console,bugfix-python,refactor-python,bugfix-multi,feature-python,project-large,project-large-csharp,cross-language,web-static,winforms-tool",
+        default="python-cli,dotnet-console,bugfix-python,refactor-python,bugfix-multi,feature-python,project-large,project-large-csharp,capacity-db,cross-language,web-static,winforms-tool",
     )
     parser.add_argument("--port", type=int, default=8791)
     parser.add_argument("--timeout", type=int, default=1200)

@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import threading
 import time
 import uuid
@@ -16,7 +17,7 @@ from pathlib import Path
 from app.core.config import PROJECT_ROOT
 from app.core.identifiers import now_iso
 from app.infrastructure.images import MAX_IMAGE_BYTES, inspect
-from app.modules.coding import diagnostics, files, repomap, ui_checks
+from app.modules.coding import diagnostics, files, ui_checks
 from app.modules.coding.executor import Executor
 from app.modules.coding.snapshots import Snapshots
 
@@ -208,8 +209,38 @@ class CodingWorkspace:
         return files.read_text(self.root, path, start_line, end_line)
 
     def repo_map(self, max_tokens=1500):
-        """生成 C# 仓库符号地图，帮助大项目先定位再读文件。"""
-        return repomap.build(self.root, max_tokens)
+        """生成 C# 仓库符号地图；在子进程中解析，避免 tree-sitter 崩溃拖垮服务。"""
+        backend = Path(__file__).resolve().parents[3]
+        try:
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "app.modules.coding.repomap_cli",
+                    str(self.root),
+                    str(int(max_tokens)),
+                ],
+                cwd=backend,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=60,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return {"map": "（仓库地图生成超时）", "files": 0, "symbols": 0, "shown": 0}
+        if completed.returncode != 0:
+            return {
+                "map": "（仓库地图生成失败，已隔离）",
+                "files": 0,
+                "symbols": 0,
+                "shown": 0,
+            }
+        try:
+            result = json.loads(completed.stdout)
+        except ValueError:
+            return {"map": "（仓库地图输出无效）", "files": 0, "symbols": 0, "shown": 0}
+        return result if isinstance(result, dict) else {"map": "", "files": 0, "shown": 0}
 
     def read_image(self, path):
         """读取项目内图片用于模型直接查看；只读操作，不要求项目可写。"""

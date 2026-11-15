@@ -1,0 +1,14 @@
+{
+  "name": "capacity-db",
+  "title": "真实 .NET Framework 数据库层增加名称规范化",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": [
+    "src/AKRS.Capacity.DB/FaultClassification.cs",
+    "README.md"
+  ],
+  "min_tests": 0,
+  "seed": "seed",
+  "ui": false
+}

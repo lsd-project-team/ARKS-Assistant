@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace AKRS.Capacity.DB
+{
+	public class YieldRecord : Record
+	{
+		public YieldRecord(DateTime date, string id, int count)
+			: base(date)
+		{
+			this.Id = id;
+			this.Count = count;
+		}
+
+        public YieldRecord(YieldRecord other)
+            : base(other.DateTime)
+        {
+            this.Id = other.Id;
+            this.Count = other.Count;
+        }
+
+
+		public override string ToString()
+		{
+			return string.Format("date : {0}, id : {1}, count : {2}",
+				this.DateTime.ToString("yyyy-MM-dd"),
+				this.Id,
+				this.Count);
+		}
+
+        public void Set(DateTime date, string id, int count)
+        {
+            this.DateTime = date;
+            this.Id = id;
+            this.Count = count;
+        }
+
+		public string Id { get; set; }
+		public int Count { get; set; }
+	}
+}

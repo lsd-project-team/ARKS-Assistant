@@ -49,7 +49,9 @@
 - 在副本中把引用修到本地 `refs/`、补 `DevComponents.DotNetBar2`、把 v2.0/v3.5 重定向到 v4.8 后，**MSBuild 全解决方案构建 0 错误 0 警告**；
 - 编码模块新增 **legacy .NET Framework 检测**：识别非 SDK 风格 csproj 后自动走 MSBuild（vswhere/常见 VS 路径/PATH），命令用 PowerShell `&` 调用；`verify build` 在该真实解决方案上通过（增量约 1.2s）；
 - 老式工程没有统一测试命令，`test_command` 需显式配置，避免误跑 `dotnet test`；
-- 已知运行问题：`CapacityStatistics.exe` 启动时 `AKRS.Capacity.DB.Data..ctor` 抛 `DllNotFoundException`，是 SQLite 原生 interop 未随输出复制，不是源码编译问题。
+- 新增真实项目用例 `capacity-db`：从 `AKRS.Capacity.DB` 裁剪出 20 个 `.cs` + 老式 csproj + SQLite 引用，任务为增加 `FaultClassification.NormalizeName`，隐藏验收编译一个 MSBuild 检查程序直接调用该方法；用例已通过。
+- **repo_map 崩溃隔离**：tree-sitter 解析这套真实 C# 代码时出现 native 访问冲突（0xC0000005），会把服务进程带死并卡在 `connecting_model`。已把 `repo_map` 改为子进程执行（`repomap_cli`），崩溃只影响子进程，主服务返回“地图生成失败，已隔离”继续任务。
+- 已知运行问题：`CapacityStatistics.exe` 启动时 `AKRS.Capacity.DB.Data..ctor` 抛 `BadImageFormatException`/`DllNotFoundException`，是 SQLite 原生 interop 架构/部署问题，不是源码编译问题。
 
 ## 后续优先级
 
