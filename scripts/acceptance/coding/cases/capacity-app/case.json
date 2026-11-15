@@ -1,0 +1,16 @@
+{
+  "name": "capacity-app",
+  "title": "真实 WinForms 应用支持 --title-suffix",
+  "seed_from": "D:/agent_project/code_agent/output/acceptance/capacity-src",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": [
+    "CapacityStatistics/Program.cs",
+    "CapacityStatistics/CapacityStatistics.cs",
+    "README.md"
+  ],
+  "min_tests": 0,
+  "ui": false,
+  "local_only": true
+}

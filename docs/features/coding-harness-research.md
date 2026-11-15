@@ -51,7 +51,8 @@
 - 老式工程没有统一测试命令，`test_command` 需显式配置，避免误跑 `dotnet test`；
 - 新增真实项目用例 `capacity-db`：从 `AKRS.Capacity.DB` 裁剪出 20 个 `.cs` + 老式 csproj + SQLite 引用，任务为增加 `FaultClassification.NormalizeName`，隐藏验收编译一个 MSBuild 检查程序直接调用该方法；用例已通过。
 - **整解决方案运行验证**：修正引用/重定向后，`产能统计.sln` 18 工程构建 0/0；补齐原 bin 的运行时依赖（SQLite.Interop、log4net、AKRS.MessageString、资源目录、DB 文件）后 `CapacityStatistics.exe` 启动成功，主窗口标题 `产能统计 [1.1.5.4]`。
-- 新增 `check_app(exe, timeout)` 工具：对 legacy WinForms 构建产物做启动冒烟（进程存活 + 主窗口标题），供 Agent 做运行验收。
+- 新增 `check_app(exe, arguments, timeout)` 工具：对 legacy WinForms 构建产物做启动冒烟（进程存活 + 主窗口标题），供 Agent 做运行验收。
+- 新增完整应用用例 `capacity-app`：真实 `CapacityStatistics` 增加 `--title-suffix <text>`，隐藏验收构建后分别以默认参数、`--title-suffix TEST123`、含空格文本启动，检查窗口标题；Agent 已通过（build 0/0 + 三种标题断言）。
 - **repo_map 崩溃隔离**：tree-sitter 解析这套真实 C# 代码时出现 native 访问冲突（0xC0000005），会把服务进程带死并卡在 `connecting_model`。已把 `repo_map` 改为子进程执行（`repomap_cli`），崩溃只影响子进程，主服务返回“地图生成失败，已隔离”继续任务。
 - 已知运行问题：`CapacityStatistics.exe` 启动时 `AKRS.Capacity.DB.Data..ctor` 抛 `BadImageFormatException`/`DllNotFoundException`，是 SQLite 原生 interop 架构/部署问题，不是源码编译问题。
 

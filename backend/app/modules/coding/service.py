@@ -208,7 +208,7 @@ class CodingWorkspace:
     def read_file(self, path, start_line=1, end_line=400):
         return files.read_text(self.root, path, start_line, end_line)
 
-    def check_app(self, exe, timeout_seconds=10):
+    def check_app(self, exe, args=None, timeout_seconds=10):
         """启动桌面应用并确认进程/主窗口存活；用于 legacy WinForms 的运行验收。"""
         relative = Path(exe)
         if relative.is_absolute() or ".." in relative.parts:
@@ -218,8 +218,9 @@ class CodingWorkspace:
             raise ValueError("可执行文件超出项目目录")
         if not target.is_file():
             raise ValueError(f"可执行文件不存在：{exe}")
+        arguments = list(args or [])
         process = subprocess.Popen(
-            [str(target)],
+            [str(target), *arguments],
             cwd=str(target.parent),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,

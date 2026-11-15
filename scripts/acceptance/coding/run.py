@@ -79,13 +79,22 @@ def main():
     data_dir, project_dir = run_dir / "data", run_dir / "project"
     data_dir.mkdir(parents=True, exist_ok=True)
     project_dir.mkdir(parents=True, exist_ok=True)
+    source = None
     if case.get("seed"):
         source = case_dir / case["seed"]
+    elif case.get("seed_from"):
+        source = Path(case["seed_from"])
+    if source is not None:
+        if not source.is_dir():
+            raise RuntimeError(f"seed 目录不存在：{source}")
         for item in source.rglob("*"):
-            if item.is_file():
-                target = project_dir / item.relative_to(source)
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(item, target)
+            if not item.is_file():
+                continue
+            if any(part in {"obj", ".vs", ".svn", ".git"} for part in item.parts):
+                continue
+            target = project_dir / item.relative_to(source)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target)
     shutil.copy2(case_dir / "task.md", project_dir / "任务书.md")
     shutil.copy2(ROOT / "data" / "settings.private.json", data_dir / "settings.private.json")
 

@@ -3,6 +3,7 @@
 import asyncio
 import json
 import re
+import shlex
 
 from langchain_core.tools import tool
 
@@ -221,13 +222,17 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
         return dump_json(result)
 
     @tool
-    async def check_app(exe: str, timeout_seconds: int = 10) -> str:
+    async def check_app(exe: str, arguments: str = "", timeout_seconds: int = 10) -> str:
         """Launch a desktop executable and verify it stays alive (legacy WinForms smoke).
 
-        Use the built exe path relative to the project; the process is killed afterwards.
+        `arguments` is an optional command-line string (e.g. "--title-suffix TEST"); the process
+        is killed afterwards. Returns the main window title when available.
         """
         try:
-            result = await asyncio.to_thread(work.check_app, exe, timeout_seconds)
+            parsed = shlex.split(arguments) if arguments.strip() else []
+            result = await asyncio.to_thread(
+                work.check_app, exe, parsed, timeout_seconds
+            )
         except Exception as error:
             result = {"ok": False, "error": str(error)}
         emit(
