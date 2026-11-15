@@ -115,6 +115,7 @@ GENERATION_GUIDANCE = """
    对生成的截图调用 view_image 核对；任何一项失败先修复，不得带着错误或空白界面宣称完成。
    check_ui 失败时先看返回的 issues 与 log_tail：启动异常（尤其是 TabPage/Panel 结构错误）
    必须先修，修完重新 check_ui。没有界面的项目只需要 verify build/test。
+   legacy WinForms 可用 check_app 启动构建产物确认进程/主窗口存活。
    不要安装 Playwright/浏览器/大型框架依赖；优先用项目已有运行时，单条命令控制在 120 秒内。
 4. 截图契约固定为 `--screenshot <png路径> <标签页索引>`（scaffold_winforms 已内置），
    不要改成“输出目录”；控件 bounds 要递归打印全部层级（不限深度），
@@ -215,6 +216,26 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
                 "issues": (result.get("issues") or [])[:10],
                 "shots": result.get("shots", []),
                 "notes": result.get("notes", []),
+            },
+        )
+        return dump_json(result)
+
+    @tool
+    async def check_app(exe: str, timeout_seconds: int = 10) -> str:
+        """Launch a desktop executable and verify it stays alive (legacy WinForms smoke).
+
+        Use the built exe path relative to the project; the process is killed afterwards.
+        """
+        try:
+            result = await asyncio.to_thread(work.check_app, exe, timeout_seconds)
+        except Exception as error:
+            result = {"ok": False, "error": str(error)}
+        emit(
+            "app_check",
+            {
+                "ok": bool(result.get("ok")),
+                "title": result.get("title", ""),
+                "exit_code": result.get("exit_code"),
             },
         )
         return dump_json(result)
@@ -401,6 +422,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
         view_image,
         verify,
         check_ui,
+        check_app,
         scaffold_winforms,
         search_files,
         find_files,

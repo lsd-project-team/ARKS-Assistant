@@ -208,6 +208,64 @@ class CodingWorkspace:
     def read_file(self, path, start_line=1, end_line=400):
         return files.read_text(self.root, path, start_line, end_line)
 
+    def check_app(self, exe, timeout_seconds=10):
+        """启动桌面应用并确认进程/主窗口存活；用于 legacy WinForms 的运行验收。"""
+        relative = Path(exe)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("可执行文件必须是项目内相对路径")
+        target = (self.root / relative).resolve()
+        if target != self.root and not target.is_relative_to(self.root):
+            raise ValueError("可执行文件超出项目目录")
+        if not target.is_file():
+            raise ValueError(f"可执行文件不存在：{exe}")
+        process = subprocess.Popen(
+            [str(target)],
+            cwd=str(target.parent),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        try:
+            time.sleep(max(1, min(int(timeout_seconds), 20)))
+            code = process.poll()
+            if code is not None:
+                return {
+                    "ok": False,
+                    "exit_code": code,
+                    "error": "应用启动后自行退出",
+                    "exe": str(target.relative_to(self.root)),
+                }
+            title = ""
+            try:
+                completed = subprocess.run(
+                    [
+                        "powershell.exe",
+                        "-NoProfile",
+                        "-NonInteractive",
+                        "-Command",
+                        f"(Get-Process -Id {process.pid}).MainWindowTitle",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=15,
+                )
+                title = (completed.stdout or "").strip()
+            except (OSError, subprocess.TimeoutExpired):
+                pass
+            return {
+                "ok": True,
+                "title": title,
+                "exit_code": None,
+                "exe": str(target.relative_to(self.root)),
+                "note": "应用仍在运行；如需界面细节请配合截图或额外自检",
+            }
+        finally:
+            try:
+                process.kill()
+            except OSError:
+                pass
+
     def repo_map(self, max_tokens=1500):
         """生成 C# 仓库符号地图；在子进程中解析，避免 tree-sitter 崩溃拖垮服务。"""
         backend = Path(__file__).resolve().parents[3]

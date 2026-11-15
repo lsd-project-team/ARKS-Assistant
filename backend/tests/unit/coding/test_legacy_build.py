@@ -41,3 +41,13 @@ def test_legacy_test_command_is_not_guessed(tmp_path):
         encoding="utf-8",
     )
     assert make_workspace(tmp_path)._default_test_command() == ""
+
+
+def test_check_app_rejects_paths_outside_project(tmp_path):
+    import pytest
+
+    workspace = make_workspace(tmp_path)
+    with pytest.raises(ValueError):
+        workspace.check_app(r"..\evil.exe")
+    with pytest.raises(ValueError):
+        workspace.check_app(r"bin\Debug\missing.exe")
