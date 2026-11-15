@@ -322,7 +322,14 @@ class AgentGraphBuilder:
                 AnswerFormatValidation(emit),
                 PlanGuidance(plans, generation),
                 *(
-                    [CodingRepeatGuard(emit, total_limit=400 if generation else 150)]
+                    [
+                        CodingRepeatGuard(
+                            emit,
+                            total_limit=400 if generation else 150,
+                            require_source=generation
+                            and not policy.get("ui_required", False),
+                        )
+                    ]
                     if run_id and not inspection
                     else []
                 ),

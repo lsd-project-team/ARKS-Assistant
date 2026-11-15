@@ -117,6 +117,8 @@ GENERATION_GUIDANCE = """
    check_ui 失败时先看返回的 issues 与 log_tail：启动异常（尤其是 TabPage/Panel 结构错误）
    必须先修，修完重新 check_ui。没有界面的项目只需要 verify build/test。
    legacy WinForms 可用 check_app 启动构建产物确认进程/主窗口存活。
+   空目录生成任务：用少量工具完成截图/数据库侦察后，立即创建工程骨架并构建最小可运行版本；
+   不要用打印数字、倒计时或反复探查来等待。
    不要安装 Playwright/浏览器/大型框架依赖；优先用项目已有运行时，单条命令控制在 120 秒内。
 4. 截图契约固定为 `--screenshot <png路径> <标签页索引>`（scaffold_winforms 已内置），
    不要改成“输出目录”；控件 bounds 要递归打印全部层级（不限深度），
