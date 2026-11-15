@@ -1,0 +1,12 @@
+{
+  "name": "capacity-zero-pages",
+  "title": "从零实现多页面产能统计桌面应用",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["CapacityStats.csproj", "README.md"],
+  "min_tests": 0,
+  "seed": "seed",
+  "ui": true,
+  "auto_scaffold": false
+}

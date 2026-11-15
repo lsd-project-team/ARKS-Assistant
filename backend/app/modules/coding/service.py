@@ -702,6 +702,8 @@ class CodingWorkspace:
 
     def scaffold(self, template="winforms", values=None, path="."):
         """把经验证的界面骨架写入空目录；已有源码的目录拒绝覆盖。"""
+        if os.environ.get("CODING_DISABLE_AUTO_SCAFFOLD"):
+            raise ValueError("当前任务要求从零实现，已禁用界面骨架；请自行创建工程与界面")
         with self._locked():
             self._require_writable()
             target = files.resolve(self.root, path)

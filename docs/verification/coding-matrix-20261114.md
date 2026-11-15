@@ -20,6 +20,7 @@
 | `capacity-zero-cli` | **从空目录**生成产能统计查询 CLI（.NET Framework 4.8） | MSBuild 构建 0/0、隐藏验收对比 SQLite 周/月汇总与错误码 |
 | `capacity-zero-ui` | **从空目录**生成 WinForms 产能统计看板 | build 0/0、截图/布局、标题 `产能统计`、WEEK/MONTH 文本与 CSV 独立计算一致 |
 | `capacity-zero-app` | **从空目录**生成完整 WinForms 桌面应用（无骨架） | build 0/0、5 导航 + 7 天柱状图 + 标题/WEEK/MONTH + 截图 |
+| `capacity-zero-pages` | **从空目录**生成多页面应用（导航切换 + 导出） | build 0/0、5 页截图 + PAGE 标题 + WEEK/MONTH + CSV 导出数据一致 |
 | `cross-language` | Python service + Node client 跨语言仓库 | pytest 与 node:test 通过、隐藏验收同时验证 full_name/initials |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
