@@ -1,0 +1,11 @@
+{
+  "name": "capacity-zero-cli",
+  "title": "从零实现产能统计查询 CLI（.NET Framework 4.8）",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["README.md"],
+  "min_tests": 0,
+  "seed": "seed",
+  "ui": false
+}
