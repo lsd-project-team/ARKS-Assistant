@@ -12,6 +12,7 @@
 | `bugfix-multi` | 跨文件 bug 修复（shop 包） | pytest 通过、测试文件未被修改、README、无 TODO |
 | `feature-python` | 现有待办服务增加截止日期/逾期 | 现有测试通过、隐藏验收验证 due/overdue、测试文件未被修改 |
 | `project-large` | 图书馆服务（8 模块 + 24 测试）加搜索分页/热门榜 | 现有 24 测试通过、隐藏验收验证分页/热门榜与 auth/导出/通知回归 |
+| `project-large-csharp` | 多工程 .NET 8 解决方案（Core + CLI + 12 项自测）加补货 | build 0/0、自测 12 项、隐藏验收跑 CLI 验证补货/低库存/总值/错误码 |
 | `cross-language` | 跨语言仓库（Python service + Node client） | pytest 与 node:test 通过、隐藏验收同时验证 full_name/initials |
 | `refactor-python` | 现有项目重构 | pytest 通过、测试文件未被修改、README 更新、无 TODO |
 | `web-static` | 从零生成原生 JS 单页应用 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |

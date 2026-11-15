@@ -21,6 +21,7 @@ ALL_CASES = [
     "bugfix-multi",
     "feature-python",
     "project-large",
+    "project-large-csharp",
     "cross-language",
     "web-static",
     "winforms-tool",
