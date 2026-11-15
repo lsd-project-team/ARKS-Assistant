@@ -115,6 +115,17 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 合计 **22/22**；报告：`output/acceptance/coding-ci-20261115-122134/report.md`。本轮包含自动 repo map、编辑后语法诊断、verify 自动 checkpoint、命令编码回退；winforms 两轮 99s / 80s。
 
+### 12 用例 CI（加入真实 .NET Framework 项目）
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 12 | 11/12 | 50–271s |
+
+报告：`output/acceptance/coding-ci-20261115-194811/report.md`。唯一失败是 python-cli 一次真实 indent 实现错误（隐藏验收直接跑 CLI 抓到），单独重跑通过（`coding-python-cli-20261115-201316`）。`capacity-db` 首次即过（102s）。
+
+- `capacity-db`：从真实 `AKRS.Capacity.DB` 裁剪 20 个 `.cs`，老式 .NET Framework 4.8 csproj + SQLite 引用；MSBuild 构建 0/0，隐藏验收编译独立检查程序直接调用 `NormalizeName`。
+- repo_map 改为子进程执行：tree-sitter 在真实 DB 代码上发生 native 访问冲突（0xC0000005），此前会拖死服务并卡在 `connecting_model`；隔离后主服务返回“地图生成失败，已隔离”继续任务。
+
 - `project-large-csharp`：Core + Api + CLI + **18 项自测 / 4 工程** 的 .NET 8 解决方案，隐藏验收直接跑 CLI 验证补货/低库存/总值/错误码；两轮 88s / 109s。
 - 修复 **任务书二次编码乱码**：之前用 PowerShell 替换中文时把 UTF-8 写成二次编码，模型看到乱码后反复“修编码”；已重写为正确 UTF-8，并作为编码类问题的根因记录。
 - 修复 **Windows 命令输出编码**：固定 UTF-8 解码改为失败回退 GB18030。
