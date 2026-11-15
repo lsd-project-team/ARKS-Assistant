@@ -56,6 +56,7 @@ find_files / write_file / edit_file；
 再结合检索结果回答；只有用户明确要求修改代码、创建工程或运行命令时才使用文件与命令工具。
 用户明确要求实现或修改时，先 list_files / read_project_file / search_files / find_files 了解现状，
 再建目录、写文件、跑构建或测试。
+大型 C# 项目（>20 个 .cs 文件）先调用一次 repo_map 看类/方法地图，再按地图挑文件，不要逐个遍历。
 新建项目可以是空目录，从零创建工程结构也可以。
 修改已有文件优先用 edit_file：按原文精确替换，需要先读取并带上 version；大范围重写才用 write_file。
 覆盖已有文件必须带上一次读取得到的 hash；新建文件 hash 留空。
@@ -286,6 +287,14 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
         return await run("delete_path", work.delete_path, path, recursive)
 
     @tool
+    async def repo_map(max_tokens: int = 1500) -> str:
+        """Build a concise C# repository map (classes/methods + paths) for large repos.
+
+        Call this once before reading many files; use the map to choose the files to open.
+        """
+        return await asyncio.to_thread(work.repo_map, max_tokens)
+
+    @tool
     async def run_command(command: str, cwd: str = ".", timeout_seconds: int = 120) -> str:
         """Run a one-shot shell command in the project directory."""
         timeout_seconds = min(max(10, int(timeout_seconds or 120)), 180)
@@ -366,6 +375,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
     return [
         list_files,
         read_project_file,
+        repo_map,
         view_image,
         verify,
         check_ui,

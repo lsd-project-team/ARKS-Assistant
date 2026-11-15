@@ -13,7 +13,7 @@ from pathlib import Path
 from app.core.config import PROJECT_ROOT
 from app.core.identifiers import now_iso
 from app.infrastructure.images import MAX_IMAGE_BYTES, inspect
-from app.modules.coding import diagnostics, files, ui_checks
+from app.modules.coding import diagnostics, files, repomap, ui_checks
 from app.modules.coding.executor import Executor
 from app.modules.coding.snapshots import Snapshots
 
@@ -203,6 +203,10 @@ class CodingWorkspace:
 
     def read_file(self, path, start_line=1, end_line=400):
         return files.read_text(self.root, path, start_line, end_line)
+
+    def repo_map(self, max_tokens=1500):
+        """生成 C# 仓库符号地图，帮助大项目先定位再读文件。"""
+        return repomap.build(self.root, max_tokens)
 
     def read_image(self, path):
         """读取项目内图片用于模型直接查看；只读操作，不要求项目可写。"""
