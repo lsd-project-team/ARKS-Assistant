@@ -43,10 +43,55 @@ def files(project):
             yield path
 
 
+def _msbuild_path():
+    vswhere = Path(r"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe")
+    if vswhere.is_file():
+        try:
+            completed = subprocess.run(
+                [str(vswhere), "-latest", "-products", "*", "-requires",
+                 "Microsoft.Component.MSBuild", "-find", "MSBuild\\**\\Bin\\MSBuild.exe"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=20,
+            )
+            for line in (completed.stdout or "").splitlines():
+                candidate = Path(line.strip())
+                if candidate.is_file():
+                    return str(candidate)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    for candidate in (
+        Path(r"D:\VisualStudio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"),
+        Path(r"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"),
+    ):
+        if candidate.is_file():
+            return str(candidate)
+    return ""
+
+
 def resolve_build_command(command, project):
-    """dotnet build 在根目录没有工程时，自动找 sln/csproj（常见于 src/tests 布局）。"""
+    """dotnet build 在根目录没有工程时，自动找 sln/csproj；legacy .NET Framework 用 MSBuild。"""
     if command.strip().lower() != "dotnet build":
         return command
+    projects = list(project.rglob("*.csproj"))
+    legacy = any(
+        "TargetFrameworkVersion" in path.read_text(encoding="utf-8", errors="replace")[:2000]
+        and "Sdk=" not in path.read_text(encoding="utf-8", errors="replace")[:2000]
+        for path in projects
+    )
+    if legacy:
+        msbuild = _msbuild_path()
+        solutions = sorted(project.rglob("*.sln"))
+        projects = [
+            path
+            for path in sorted(project.rglob("*.csproj"))
+            if not any(part in {"bin", "obj", "tests"} for part in path.parts)
+        ]
+        targets = solutions or projects
+        if msbuild and targets:
+            return f'"{msbuild}" "{targets[0]}" /p:Configuration=Debug /m /nologo /v:m'
     if any(project.glob("*.sln")) or any(project.glob("*.csproj")):
         return command
     solutions = sorted(project.rglob("*.sln"))
