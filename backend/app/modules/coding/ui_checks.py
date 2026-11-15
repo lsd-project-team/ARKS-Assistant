@@ -8,7 +8,8 @@ from PIL import Image, ImageStat
 BOUNDS = re.compile(
     r"^\s*(?P<type>\w+)\s*(?P<name>[^\s]*)\s+"
     r"bounds=\{X=(?P<x>-?\d+),Y=(?P<y>-?\d+),Width=(?P<w>\d+),Height=(?P<h>\d+)\}\s+"
-    r"dock=(?P<dock>\S+)\s+visible=(?P<visible>True|False)\s*$",
+    r"dock=(?P<dock>\S+)\s+visible=(?P<visible>True|False)"
+    r"(?:\s+text=\"(?P<text>.*?)\")?\s*$",
     re.MULTILINE,
 )
 INPUT_TYPES = {"TextBox", "NumericUpDown", "ComboBox", "MaskedTextBox"}
@@ -37,6 +38,7 @@ def parse_layout(output):
                 "height": int(match.group("h")),
                 "dock": match.group("dock"),
                 "visible": match.group("visible") == "True",
+                "text": match.group("text") or "",
             }
         )
     return rows

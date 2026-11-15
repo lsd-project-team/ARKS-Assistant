@@ -1,0 +1,11 @@
+{
+  "name": "capacity-zero-ui",
+  "title": "从零生成 WinForms 产能统计看板",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["Actions.cs", "MainForm.cs", "README.md"],
+  "min_tests": 0,
+  "seed": "seed",
+  "ui": true
+}

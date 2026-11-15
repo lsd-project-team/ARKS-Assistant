@@ -39,6 +39,9 @@ internal static class ScreenshotTool
         }
 
         var lines = new List<string>();
+        lines.Add(
+            $"FORM {form.GetType().Name} bounds={{X=0,Y=0,Width={form.Width},Height={form.Height}}} "
+            + $"text=\"{Escape(form.Text)}\"");
         DumpLayout(form, 0, lines);
         foreach (var line in lines)
         {
@@ -85,11 +88,20 @@ internal static class ScreenshotTool
             lines.Add(
                 $"{new string(' ', depth * 2)}{control.GetType().Name} {control.Name} "
                 + $"bounds={{X={bounds.X},Y={bounds.Y},Width={bounds.Width},Height={bounds.Height}}} "
-                + $"dock={control.Dock} visible={control.Visible}");
+                + $"dock={control.Dock} visible={control.Visible} text=\"{Escape(control.Text)}\"");
             if (depth < 10)
             {
                 DumpLayout(control, depth + 1, lines);
             }
         }
+    }
+
+    private static string Escape(string? value)
+    {
+        return (value ?? "")
+            .Replace("\\", "\\\\")
+            .Replace("\"", "'")
+            .Replace("\r", " ")
+            .Replace("\n", " ");
     }
 }

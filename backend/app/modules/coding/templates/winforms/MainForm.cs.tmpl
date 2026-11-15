@@ -46,6 +46,7 @@ internal sealed partial class MainForm : Form
         RebuildActions();
         RefreshPorts();
         Log("程序启动，等待连接设备。", UiTheme.Grey);
+        OnReady();
     }
 
     private void BuildLayout()
@@ -488,6 +489,7 @@ internal sealed partial class MainForm : Form
 
     /// <summary>由 Actions.cs 实现：协议与按钮交互放在那里，布局保持骨架。</summary>
     partial void HandleAction(string key);
+    partial void OnReady();
 
     internal void WriteLog(string text, Color color) => Log(text, color);
 

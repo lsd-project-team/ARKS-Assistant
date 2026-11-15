@@ -23,6 +23,8 @@ ALL_CASES = [
     "project-large",
     "project-large-csharp",
     "capacity-db",
+    "capacity-zero-cli",
+    "capacity-zero-ui",
     "cross-language",
     "web-static",
     "winforms-tool",

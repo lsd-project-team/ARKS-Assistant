@@ -6,6 +6,10 @@ namespace __NAMESPACE__;
 /// </summary>
 internal sealed partial class MainForm
 {
+    partial void OnReady()
+    {
+    }
+
     partial void HandleAction(string key)
     {
         WriteLog($"请先连接串口设备（动作：{key}）。", UiTheme.Grey);

@@ -99,7 +99,8 @@ def main():
     shutil.copy2(ROOT / "data" / "settings.private.json", data_dir / "settings.private.json")
 
     prompt = (
-        "按项目根目录《任务书.md》完成任务；如果工作区为空，就从零实现任务书要求的程序或工具。"
+        f"按项目根目录《任务书.md》完成「{case['title']}」；如果工作区为空，"
+        "就从零实现任务书要求的程序或工具。"
         "先调用 update_plan 建立计划；先写 README 与任务要求的全部交付物，再实现代码；"
         "实现后运行任务要求的构建与测试并确保通过；不要留 TODO/占位。"
         "不要安装 Playwright/浏览器/大型框架依赖，单条命令控制在 120 秒内。"

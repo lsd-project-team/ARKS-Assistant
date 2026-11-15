@@ -51,6 +51,7 @@ def test_layout_line_is_parsed():
             "height": 438,
             "dock": "Fill",
             "visible": True,
+            "text": "",
         }
     ]
 
