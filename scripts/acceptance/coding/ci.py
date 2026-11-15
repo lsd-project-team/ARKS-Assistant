@@ -25,6 +25,7 @@ ALL_CASES = [
     "capacity-db",
     "capacity-zero-cli",
     "capacity-zero-ui",
+    "capacity-zero-app",
     "cross-language",
     "web-static",
     "winforms-tool",

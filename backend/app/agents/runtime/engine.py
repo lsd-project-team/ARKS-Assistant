@@ -1,6 +1,7 @@
 """Deep Agents 装配、检查点恢复和流事件归一化。"""
 
 import asyncio
+import os
 
 from langchain_core.messages import AIMessage, HumanMessage
 
@@ -169,7 +170,9 @@ class AgentRuntime:
                 "limit": max(policy["limit"], 256),
                 "max_continuations": 12,
             }
-            if wants_winforms(question):
+            if wants_winforms(question) and not os.environ.get(
+                "CODING_DISABLE_AUTO_SCAFFOLD"
+            ):
                 # 先落一个经验证的布局骨架，保证 --screenshot 契约与容器结构正确；
                 # 协议与业务逻辑仍由模型在骨架上实现。
                 try:

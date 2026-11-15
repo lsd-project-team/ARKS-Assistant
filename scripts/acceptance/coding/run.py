@@ -107,6 +107,9 @@ def main():
         "不要修改任务书要求保护的文件（如测试文件）。最终说明改了什么、测试结果与证据。"
     )
 
+    env = sanitized_env(data_dir)
+    if not case.get("auto_scaffold", True):
+        env["CODING_DISABLE_AUTO_SCAFFOLD"] = "1"
     log = (run_dir / "server.log").open("wb")
     process = subprocess.Popen(
         [
@@ -120,7 +123,7 @@ def main():
             str(args.port),
         ],
         cwd=ROOT / "backend",
-        env=sanitized_env(data_dir),
+        env=env,
         stdout=log,
         stderr=subprocess.STDOUT,
         creationflags=0x08000000,
