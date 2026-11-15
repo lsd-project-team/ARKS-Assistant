@@ -17,7 +17,19 @@ def test_sdk_style_project_uses_dotnet_build(tmp_path):
         "<TargetFramework>net8.0</TargetFramework></PropertyGroup>\n</Project>",
         encoding="utf-8",
     )
-    assert make_workspace(tmp_path)._build_command() == "dotnet build"
+    assert make_workspace(tmp_path)._build_command() == 'dotnet build "App.csproj"'
+
+
+def test_nested_sdk_project_is_discovered(tmp_path):
+    project = tmp_path / "src" / "App"
+    project.mkdir(parents=True)
+    (project / "App.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk">\n<PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup>\n</Project>",
+        encoding="utf-8",
+    )
+    command = make_workspace(tmp_path)._build_command()
+    assert command == 'dotnet build "src/App/App.csproj"'
 
 
 def test_legacy_framework_project_uses_msbuild(tmp_path, monkeypatch):

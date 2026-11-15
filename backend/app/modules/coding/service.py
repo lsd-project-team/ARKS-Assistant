@@ -681,8 +681,22 @@ class CodingWorkspace:
                     f'& "{msbuild}" "{relative}" /p:Configuration=Debug '
                     "/m /nologo /v:m"
                 )
-        if any(root.glob("*.csproj")):
-            return "dotnet build"
+        solutions = [
+            path
+            for path in sorted(self.root.rglob("*.sln"))
+            if not any(part in {"bin", "obj", "node_modules"} for part in path.parts)
+        ]
+        if solutions:
+            relative = solutions[0].relative_to(self.root).as_posix()
+            return f'dotnet build "{relative}"'
+        projects = [
+            path
+            for path in sorted(self.root.rglob("*.csproj"))
+            if not any(part in {"bin", "obj", "tests"} for part in path.parts)
+        ]
+        if projects:
+            relative = projects[0].relative_to(self.root).as_posix()
+            return f'dotnet build "{relative}"'
         return ""
 
     def _default_test_command(self):

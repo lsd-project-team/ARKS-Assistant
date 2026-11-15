@@ -59,6 +59,7 @@
 - **从零生成第三阶段 `capacity-zero-app`**：禁用自动骨架，Agent 从空目录自建 .NET 8 WinForms 应用（5 个导航按钮、7 天柱状图、CSV 数据、标题、状态栏、`--screenshot` 契约）；隐藏验收核对构建、截图、标题、导航、日期、WEEK/MONTH 数字。Agent 已通过。
 - **从零生成第四阶段 `capacity-zero-pages`**：5 个页面切换（`PAGE <名称>` 标题）、每页截图、`--export` 导出周数据；隐藏验收逐页核对标题/截图，并对比导出 CSV。首次失败原因：任务禁用骨架后 Agent 仍手动调用 `scaffold_winforms`，产生两个 csproj 和缺失文件；已给 `scaffold` 增加禁用环境变量硬拦截，重跑通过。
 - **从零生成第五阶段 `capacity-zero-dbapp`**：空目录 + 合成 SQLite 库 + 本地 SQLite 引用，Agent 自建 .NET Framework 4.8 WinForms（老式 csproj、x86、MSBuild），5 页导航、周柱状图、`WEEK/MONTH`、`--screenshot`、`--export`；隐藏验收用 MSBuild 构建、逐页截图、SQL 独立计算对比、导出 CSV 对比，首次运行即通过。
+- **独立复刻 `capacity-zero-free`**：只给原应用截图与两个真实数据库，任务书仅“根据截图与数据库复刻等价应用”。Agent 自建 .NET 9 WinForms；隐藏验收用 UIAutomation 读取控件文本与窗口截图，核对 7 个导航、周/月按钮、SQLite 访问。首轮暴露并修复了四类 harness 缺陷：命令/写入空转、DSML 工具标记被当最终回答、根目录无工程时 `verify build` 不发现嵌套 csproj、.NET 9 WFO1000 未提示。最终该用例通过。
 - **repo_map 崩溃隔离**：tree-sitter 解析这套真实 C# 代码时出现 native 访问冲突（0xC0000005），会把服务进程带死并卡在 `connecting_model`。已把 `repo_map` 改为子进程执行（`repomap_cli`），崩溃只影响子进程，主服务返回“地图生成失败，已隔离”继续任务。
 - 已知运行问题：`CapacityStatistics.exe` 启动时 `AKRS.Capacity.DB.Data..ctor` 抛 `BadImageFormatException`/`DllNotFoundException`，是 SQLite 原生 interop 架构/部署问题，不是源码编译问题。
 

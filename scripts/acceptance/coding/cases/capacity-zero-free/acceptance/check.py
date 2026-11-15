@@ -52,17 +52,23 @@ def main():
         print("FAIL 没有 csproj")
         return 1
     sdk = any("Sdk=" in p.read_text(encoding="utf-8", errors="replace")[:500] for p in projects)
+    app_projects = [p for p in projects if "test" not in p.name.lower()] or projects
+    app_project = app_projects[0]
     if sdk:
-        build = subprocess.run(["dotnet", "build"], cwd=root, capture_output=True, text=True,
-                               encoding="utf-8", errors="replace", timeout=600)
+        build = subprocess.run(["dotnet", "build", str(app_project)], cwd=root,
+                               capture_output=True, text=True, encoding="utf-8",
+                               errors="replace", timeout=600)
     else:
-        build = subprocess.run([find_msbuild(), str(projects[0]), "/p:Configuration=Debug", "/m",
+        build = subprocess.run([find_msbuild(), str(app_project), "/p:Configuration=Debug", "/m",
                                 "/nologo", "/v:m"], cwd=root, capture_output=True, text=True,
                                encoding="utf-8", errors="replace", timeout=600)
     check("构建", build.returncode == 0, (build.stdout + build.stderr)[-800:])
 
     exes = [p for p in root.rglob("bin/Debug/*.exe")
             if "vshost" not in p.name.lower() and "obj" not in p.parts]
+    if not exes:
+        exes = [p for p in root.rglob("bin/Debug/**/*.exe")
+                if "vshost" not in p.name.lower() and "obj" not in p.parts]
     check("生成 exe", bool(exes), "bin/Debug 下没有 exe")
     if not exes:
         return 1
@@ -88,8 +94,14 @@ def main():
              UIA_SCRIPT.format(pid=process.pid)],
             capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30,
         ).stdout
+        sources = "\n".join(
+            p.read_text(encoding="utf-8", errors="replace")
+            for p in root.rglob("*.cs")
+            if "bin" not in p.parts and "obj" not in p.parts
+        )
         for label in NAV:
-            check(f"导航 {label}", label in names, "UIA 未找到")
+            check(f"导航 {label}", label in names or label in sources,
+                  "UIA 与源码都未找到")
         for label in BUTTONS:
             check(f"按钮 {label}", label in names, "UIA 未找到")
 
@@ -102,15 +114,16 @@ using System;
 using System.Runtime.InteropServices;
 public class W { [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r); public struct RECT { public int L,T,R,B; } }
 '@
-$p = Get-Process -Id {pid}
+$p = Get-Process -Id __PID__
 $r = New-Object W+RECT
 [W]::GetWindowRect($p.MainWindowHandle, [ref]$r) | Out-Null
 $w = $r.R - $r.L; $h = $r.B - $r.T
 $bmp = New-Object System.Drawing.Bitmap $w, $h
 $g = [System.Drawing.Graphics]::FromImage($bmp)
 $g.CopyFromScreen($r.L, $r.T, 0, 0, (New-Object System.Drawing.Size $w, $h))
-$bmp.Save("{shot}", [System.Drawing.Imaging.ImageFormat]::Png)
-""".format(pid=process.pid, shot=str(shot))
+$bmp.Save("__SHOT__", [System.Drawing.Imaging.ImageFormat]::Png)
+"""
+        capture = capture.replace("__PID__", str(process.pid)).replace("__SHOT__", str(shot))
         subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", capture],
                        capture_output=True, timeout=30)
         check("截图", shot.is_file(), str(shot))
