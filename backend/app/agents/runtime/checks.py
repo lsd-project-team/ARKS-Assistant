@@ -148,6 +148,12 @@ class AcceptanceGate(AgentMiddleware):
         missing = self.checks.missing(
             self.plan.complete(), include_plan=not technical
         )
+        text = answer.text or ""
+        if "DSML" in text or "<|" in text:
+            missing.append(
+                "最终回答包含工具调用标记文本（如 <|DSML|...>），不是真实工具调用；"
+                "必须继续调用工具或直接用中文总结"
+            )
         missing += pending
         if not missing:
             self.emit(
