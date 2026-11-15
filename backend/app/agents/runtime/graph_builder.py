@@ -319,6 +319,7 @@ class AgentGraphBuilder:
                             emit,
                             generation,
                             max_retries=5,
+                            max_seconds=900,
                             recover=runtime.coding.recover_ui,
                             deliverables=runtime.coding.deliverables,
                         )

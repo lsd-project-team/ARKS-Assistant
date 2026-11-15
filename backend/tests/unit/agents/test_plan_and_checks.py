@@ -75,6 +75,31 @@ async def test_gate_recovers_ui_before_finishing():
     assert events[-1][1]["ok"] is True
 
 
+async def test_gate_time_budget_forces_final_answer():
+    from langchain.agents.middleware.types import ModelRequest
+    from langchain_core.messages import AIMessage, HumanMessage
+
+    from app.agents.runtime.checks import AcceptanceGate, RunChecks
+    from app.agents.runtime.plan import PlanStore
+    from app.infrastructure.providers.models import StateInspectionModel
+
+    checks, plan, events = RunChecks(generation=True), PlanStore(), []
+    gate = AcceptanceGate(
+        checks,
+        plan,
+        lambda *args: events.append(args),
+        generation=True,
+        max_seconds=0,
+    )
+
+    async def handler(request):
+        return type("Response", (), {"result": [AIMessage(content="时间到，收尾。")]})()
+
+    request = ModelRequest(model=StateInspectionModel(), messages=[HumanMessage(content="做")])
+    await gate.awrap_model_call(request, handler)
+    assert events and events[-1][1].get("time_budget") is True
+
+
 def test_non_ui_generation_does_not_require_check_ui():
     checks = RunChecks(generation=True, ui_required=False)
     checks.record_verify({"ok": True, "kind": "build"})

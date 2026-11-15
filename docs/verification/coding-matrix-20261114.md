@@ -14,6 +14,7 @@
 | `bugfix-multi` | 修复 shop 包跨文件折扣 bug（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `feature-python` | 现有待办服务增加截止日期/逾期 | 现有 10 测试通过、隐藏验收 due/overdue、测试文件未被修改 |
 | `project-large` | 图书馆服务（8 模块 + 24 测试）加搜索分页/热门榜 | 现有 24 测试通过、隐藏验收分页/热门榜 + auth/导出/通知回归 |
+| `project-large-csharp` | 多工程 .NET 8 解决方案（Core + CLI + 12 项自测）加补货 | build 0/0、自测 12 项、隐藏验收跑 CLI 验证补货/低库存/总值/错误码 |
 | `cross-language` | Python service + Node client 跨语言仓库 | pytest 与 node:test 通过、隐藏验收同时验证 full_name/initials |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |
@@ -103,6 +104,18 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 - `cross-language`：Python `service/` + Node ESM `client/`，隐藏验收同时跑 pytest 与 node:test，验证 `full_name`/`initials` 与旧行为回退。
 - `project-large` 扩为 **8 模块 / 24 测试**（新增 auth、CSV 导出、逾期通知），隐藏验收同时做搜索分页/热门榜与旧模块回归；两轮 176s / 148s。
+
+### 11 用例 CI（加入多工程 C# 解决方案）
+
+| 轮次 | 用例数 | 通过 | 单例耗时 |
+| --- | --- | --- | --- |
+| 1 | 11 | **11/11** | 44–174s |
+| 2 | 11 | 21/22 | 43–1226s（winforms 超时） |
+
+报告：`output/acceptance/coding-ci-20261115-100945/report.md`。
+
+- `project-large-csharp`：Core + CLI + 12 项自测的 .NET 8 解决方案，隐藏验收直接跑 CLI 验证补货/低库存/总值/错误码；两轮 95s / 92s。
+- 第二轮 winforms 跑了 1226s 被外层超时终止，但**工件独立验收仍通过**；说明该用例偶发“改到停不下来”。已加入运行时间预算（900s）：到时强制模型收尾，由独立评分判定，避免只靠外层超时。
 
 同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 

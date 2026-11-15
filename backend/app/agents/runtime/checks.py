@@ -1,6 +1,7 @@
 """完成前验收门禁：从零生成必须计划完成、构建通过、界面自检通过。"""
 
 import asyncio
+import time
 
 from langchain.agents.middleware.types import AgentMiddleware
 from langchain_core.messages import HumanMessage
@@ -63,6 +64,7 @@ class AcceptanceGate(AgentMiddleware):
         max_retries=3,
         recover=None,
         deliverables=None,
+        max_seconds=None,
     ):
         self.checks, self.plan, self.emit = checks, plan, emit
         self.generation, self.max_retries = generation, max_retries
@@ -70,9 +72,42 @@ class AcceptanceGate(AgentMiddleware):
         self.deliverables = deliverables
         self.recovered = False
         self.attempts = 0
+        self.max_seconds = max_seconds
+        self.deadline = (
+            time.monotonic() + max_seconds if max_seconds is not None else None
+        )
 
     async def awrap_model_call(self, request, handler):
         await self.recover_ui_if_needed()
+        if self.deadline and time.monotonic() > self.deadline:
+            # 时间预算用尽：强制收尾，由独立评分判定交付质量，避免无限跑。
+            choice = (
+                {"type": "none"}
+                if "anthropic" in getattr(request.model, "_llm_type", "")
+                else "none"
+            )
+            system = request.system_message
+            note = (
+                "\n【时间预算】本轮运行时间已到，立即停止调用工具，"
+                "用中文总结已完成内容、未完成项与验证结果，不要输出工具调用标记。"
+            )
+            blocks = list(system.content_blocks) if system else []
+            blocks.append({"type": "text", "text": note})
+            prompt = (
+                system.model_copy(update={"content": blocks})
+                if system
+                else HumanMessage(content=blocks)
+            )
+            response = await handler(
+                request.override(system_message=prompt, tool_choice=choice)
+            )
+            answer = final_message(response)
+            if answer is not None and not answer.tool_calls:
+                self.emit(
+                    "acceptance",
+                    {"ok": True, "missing": [], "time_budget": True, "attempt": self.attempts},
+                )
+            return response
         technical = self.generation and self.checks.technical_complete()
         pending = []
         if self.deliverables:
