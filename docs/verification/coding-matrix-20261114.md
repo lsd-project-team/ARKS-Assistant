@@ -109,13 +109,14 @@ backend\.venv\Scripts\python.exe scripts\acceptance\coding\ci.py --rounds 1
 
 | 轮次 | 用例数 | 通过 | 单例耗时 |
 | --- | --- | --- | --- |
-| 1 | 11 | **11/11** | 45–250s |
-| 2 | 11 | **11/11** | 48–154s |
+| 1 | 11 | **11/11** | 48–166s |
+| 2 | 11 | **11/11** | 45–232s |
 
-合计 **22/22**；报告：`output/acceptance/coding-ci-20261115-114301/report.md`。本轮包含自动 repo map、编辑后语法诊断、verify 自动 checkpoint、命令编码回退；winforms 两轮 84s / 103s，未再出现长尾。
+合计 **22/22**；报告：`output/acceptance/coding-ci-20261115-122134/report.md`。本轮包含自动 repo map、编辑后语法诊断、verify 自动 checkpoint、命令编码回退；winforms 两轮 99s / 80s。
 
-- `project-large-csharp`：Core + CLI + **16 项自测 / 9 个 .cs 文件**的 .NET 8 解决方案，隐藏验收直接跑 CLI 验证补货/低库存/总值/错误码；两轮 76s / 116s。
-- 修复 **Windows 命令输出编码**：之前固定 UTF-8 解码，`cmd`/PowerShell 的 GBK 中文变乱码，模型会花上百条命令“修编码”；现在 UTF-8 失败自动回退 GB18030。
+- `project-large-csharp`：Core + Api + CLI + **18 项自测 / 4 工程** 的 .NET 8 解决方案，隐藏验收直接跑 CLI 验证补货/低库存/总值/错误码；两轮 88s / 109s。
+- 修复 **任务书二次编码乱码**：之前用 PowerShell 替换中文时把 UTF-8 写成二次编码，模型看到乱码后反复“修编码”；已重写为正确 UTF-8，并作为编码类问题的根因记录。
+- 修复 **Windows 命令输出编码**：固定 UTF-8 解码改为失败回退 GB18030。
 
 同时提供手动触发的 GitHub Actions 工作流 `.github/workflows/coding-acceptance.yml`（Windows runner，secret `ARKS_API_KEY`，上传报告 artifact）。
 
