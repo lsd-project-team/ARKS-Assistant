@@ -1,16 +1,19 @@
-﻿# 搴撳瓨绠＄悊瑙ｅ喅鏂规
+# 库存管理解决方案
 
-澶氬伐绋?.NET 8 瑙ｅ喅鏂规锛?
-- `src/Inventory.Core`锛氬簱瀛樻牳蹇冨簱
-- `src/Inventory.Cli`锛氬懡浠よ鍏ュ彛
-- `tests/Inventory.SelfTest`锛?2 椤规帶鍒跺彴鑷祴
+多工程 .NET 8 解决方案：
+
+- `src/Inventory.Core`：库存核心库
+- `src/Inventory.Api`：门面层
+- `src/Inventory.Cli`：命令行入口
+- `tests/Inventory.SelfTest`：18 项控制台自测
 
 ```
 dotnet build
 dotnet run --project tests/Inventory.SelfTest/Inventory.SelfTest.csproj
 ```
 
-CLI 鐢ㄦ硶锛?
+CLI 用法：
+
 ```
 dotnet run --project src/Inventory.Cli -- <state.json> add <sku> <name> <qty> <price>
 dotnet run --project src/Inventory.Cli -- <state.json> remove <sku> <qty>

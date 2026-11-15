@@ -118,6 +118,7 @@ Check("空 SKU 拒绝", () =>
 });
 
 ReportChecks.Run(Check);
+FacadeChecks.Run(Check);
 
 Console.WriteLine($"结果: {passes} PASS, {failures} FAIL");
 return failures == 0 ? 0 : 1;

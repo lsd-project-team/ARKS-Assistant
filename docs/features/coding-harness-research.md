@@ -39,7 +39,7 @@
 - 命令输出编码：UTF-8 解码失败自动回退 GB18030，修复 Windows 中文命令输出乱码导致模型反复“修编码”的问题。
 - **编辑后 C# 语法诊断**：write/edit/multi_edit 后立即用 tree-sitter 检查 `.cs` 语法，把 `syntax_errors`（行号 + 缺失/错误片段）附在工具结果里，模型不必等到下一次 `verify` 才发现。
 - **验收通过自动 checkpoint**：`verify build/test` 成功后自动打 `verify-*` 检查点（Cline 式），失败可回滚到最近通过状态。
-- 大型 C# 用例 `project-large-csharp`：Core + CLI + 16 项自测（9 个 .cs 文件）的 .NET 8 解决方案，隐藏验收跑 CLI 验证补货/低库存/总值/错误码；已加入 11 用例矩阵。
+- 大型 C# 用例 `project-large-csharp`：Core + Api + CLI + 18 项自测（4 工程 / 10 个 .cs 文件）的 .NET 8 解决方案，隐藏验收跑 CLI 验证补货/低库存/总值/错误码；已加入 11 用例矩阵。
 
 ## 后续优先级
 

@@ -7,6 +7,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Inventory.Core\Inventory.Core.csproj" />
+    <ProjectReference Include="..\..\src\Inventory.Api\Inventory.Api.csproj" />
   </ItemGroup>
 </Project>

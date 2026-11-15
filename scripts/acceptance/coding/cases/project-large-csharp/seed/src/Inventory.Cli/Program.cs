@@ -1,4 +1,5 @@
 using System.Globalization;
+using Inventory.Api;
 using Inventory.Core;
 
 if (args.Length < 2)
@@ -9,12 +10,12 @@ if (args.Length < 2)
 
 try
 {
-    var service = new InventoryService(args[0]);
+    var facade = new InventoryFacade(args[0]);
     switch (args[1].ToLowerInvariant())
     {
         case "add" when args.Length == 6:
         {
-            var item = service.Add(args[2], args[3],
+            var item = facade.Add(args[2], args[3],
                 int.Parse(args[4], CultureInfo.InvariantCulture),
                 decimal.Parse(args[5], CultureInfo.InvariantCulture));
             Console.WriteLine($"ADDED SKU={item.Sku} QTY={item.Quantity} PRICE={Formatting.Money(item.Price)}");
@@ -22,20 +23,20 @@ try
         }
         case "remove" when args.Length == 4:
         {
-            var item = service.Remove(args[2], int.Parse(args[3], CultureInfo.InvariantCulture));
+            var item = facade.Remove(args[2], int.Parse(args[3], CultureInfo.InvariantCulture));
             Console.WriteLine($"REMOVED SKU={item.Sku} QTY={item.Quantity}");
             return 0;
         }
         case "low" when args.Length == 3:
         {
-            var items = service.LowStock(int.Parse(args[2], CultureInfo.InvariantCulture));
-            if (items.Count == 0)
+            var lines = facade.LowStock(int.Parse(args[2], CultureInfo.InvariantCulture));
+            if (lines.Count == 0)
             {
                 Console.WriteLine("LOW none");
             }
             else
             {
-                foreach (var line in InventoryReports.LowStockLines(items))
+                foreach (var line in lines)
                 {
                     Console.WriteLine(line);
                 }
@@ -44,7 +45,7 @@ try
         }
         case "value" when args.Length == 2:
         {
-            Console.WriteLine(InventoryReports.ValueLine(service.TotalValue()));
+            Console.WriteLine(facade.Value());
             return 0;
         }
         default:

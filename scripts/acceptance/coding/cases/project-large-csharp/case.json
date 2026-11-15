@@ -1,17 +1,22 @@
 {
   "name": "project-large-csharp",
-  "title": "大型 C# 解决方案增加补货功能",
+  "title": "大型 C# 解决方案（4 工程/18 自测）增加补货",
   "build": "dotnet build",
   "test": "dotnet run --project tests/Inventory.SelfTest/Inventory.SelfTest.csproj",
   "acceptance": "acceptance/check.py",
   "require_files": [
     "src/Inventory.Core/InventoryService.cs",
+    "src/Inventory.Api/InventoryFacade.cs",
     "src/Inventory.Cli/Program.cs",
     "tests/Inventory.SelfTest/Program.cs",
     "README.md"
   ],
-  "min_tests": 16,
+  "min_tests": 18,
   "seed": "seed",
-  "protected": ["tests/Inventory.SelfTest/Program.cs"],
+  "protected": [
+    "tests/Inventory.SelfTest/Program.cs",
+    "tests/Inventory.SelfTest/ReportChecks.cs",
+    "tests/Inventory.SelfTest/FacadeChecks.cs"
+  ],
   "ui": false
 }
