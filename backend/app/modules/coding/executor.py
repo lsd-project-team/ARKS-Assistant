@@ -74,6 +74,14 @@ class ApprovalRequired(Exception):
         self.timeout = timeout
 
 
+def _decode_output(raw):
+    """Windows 控制台可能是 GBK；先按 UTF-8，失败再按 GB18030。"""
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw.decode("gb18030", errors="replace")
+
+
 class Executor:
     def __init__(self, root, logs, mode="allowlist", policy=None):
         self.root = Path(root).resolve()
@@ -191,7 +199,7 @@ class Executor:
         deadline = started + max(5, min(int(timeout), 900))
         timed_out = cancelled = False
         decoder = codecs.getincrementaldecoder("utf-8")("replace")
-        collected = []
+        raw = bytearray()
         log.parent.mkdir(parents=True, exist_ok=True)
         with log.open("wb") as stream:
             while True:
@@ -212,10 +220,10 @@ class Executor:
                     break
                 stream.write(data)
                 stream.flush()
+                raw.extend(data)
                 text = decoder.decode(data)
                 if not text:
                     continue
-                collected.append(text)
                 if on_output is not None:
                     try:
                         on_output(text)
@@ -228,14 +236,17 @@ class Executor:
             process.kill()
             process.wait(timeout=5)
         tail = decoder.decode(b"", final=True)
-        if tail:
-            collected.append(tail)
+        if tail and on_output is not None:
+            try:
+                on_output(tail)
+            except Exception:
+                pass
         try:
             process.stdout.close()
         except (OSError, ValueError):
             pass
         self._running.pop(key, None)
-        text = "".join(collected)[-MAX_OUTPUT:]
+        text = _decode_output(bytes(raw))[-MAX_OUTPUT:]
         code = process.returncode
         if timed_out or cancelled:
             code = -1

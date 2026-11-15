@@ -17,7 +17,7 @@ try
             var item = service.Add(args[2], args[3],
                 int.Parse(args[4], CultureInfo.InvariantCulture),
                 decimal.Parse(args[5], CultureInfo.InvariantCulture));
-            Console.WriteLine($"ADDED SKU={item.Sku} QTY={item.Quantity} PRICE={item.Price}");
+            Console.WriteLine($"ADDED SKU={item.Sku} QTY={item.Quantity} PRICE={Formatting.Money(item.Price)}");
             return 0;
         }
         case "remove" when args.Length == 4:
@@ -35,16 +35,16 @@ try
             }
             else
             {
-                foreach (var item in items)
+                foreach (var line in InventoryReports.LowStockLines(items))
                 {
-                    Console.WriteLine($"LOW SKU={item.Sku} QTY={item.Quantity}");
+                    Console.WriteLine(line);
                 }
             }
             return 0;
         }
         case "value" when args.Length == 2:
         {
-            Console.WriteLine($"VALUE={service.TotalValue().ToString("0.##", CultureInfo.InvariantCulture)}");
+            Console.WriteLine(InventoryReports.ValueLine(service.TotalValue()));
             return 0;
         }
         default:

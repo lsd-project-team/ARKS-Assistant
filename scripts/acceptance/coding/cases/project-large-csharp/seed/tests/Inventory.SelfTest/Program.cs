@@ -117,5 +117,7 @@ Check("空 SKU 拒绝", () =>
     throw new Exception("应拒绝空 SKU");
 });
 
+ReportChecks.Run(Check);
+
 Console.WriteLine($"结果: {passes} PASS, {failures} FAIL");
 return failures == 0 ? 0 : 1;

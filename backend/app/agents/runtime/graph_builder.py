@@ -44,6 +44,20 @@ from app.modules.source_analysis.backend import SourceBackend
 PARAMETER_REUSE_REQUEST = re.compile(r"^\s*/参数复用(?=\s|$)")
 
 
+async def csharp_repo_map_prompt(coding, min_files=8, max_tokens=1000):
+    """大型 C# 项目在系统提示中直接注入仓库地图，避免模型逐个读文件。"""
+    try:
+        repo = await asyncio.to_thread(coding.repo_map, max_tokens)
+    except Exception:
+        return ""
+    if repo.get("files", 0) < min_files or not repo.get("shown"):
+        return ""
+    return (
+        "\n【C# 仓库地图】项目较大，已注入符号地图（类/方法签名，按引用热度排序）。"
+        "先按地图定位，再只读需要的文件，不要遍历全部文件。\n" + repo["map"]
+    )
+
+
 def coding_environment_hint(environment):
     parts = []
     if environment.get("language"):
@@ -170,6 +184,7 @@ class AgentGraphBuilder:
                 )
         else:
             prompt_extra += coding_environment_hint(runtime.coding.environment())
+            prompt_extra += await csharp_repo_map_prompt(runtime.coding)
             if permission == "full-access":
                 prompt_extra += (
                     "\n【权限：完全权限】项目内可以读写，命令除破坏性操作外直接执行，不会等待确认；"

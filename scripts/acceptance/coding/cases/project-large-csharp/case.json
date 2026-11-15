@@ -10,7 +10,7 @@
     "tests/Inventory.SelfTest/Program.cs",
     "README.md"
   ],
-  "min_tests": 12,
+  "min_tests": 16,
   "seed": "seed",
   "protected": ["tests/Inventory.SelfTest/Program.cs"],
   "ui": false
