@@ -275,7 +275,7 @@ class CodingWorkspace:
             else None
         )
         ok = parsed["ok"] and (tests is None or tests["ok"])
-        return {
+        payload = {
             "ok": ok,
             "kind": kind,
             "command": command,
@@ -289,6 +289,12 @@ class CodingWorkspace:
             "tests": tests,
             "log_tail": diagnostics.tail(output),
         }
+        if ok and self.writable() and self.snapshots.available() and self.snapshots.exists():
+            try:
+                payload["checkpoint"] = self.snapshots.checkpoint(f"verify-{kind}")
+            except (OSError, ValueError):
+                pass
+        return payload
 
     def check_ui(self, tabs=2, timeout=150):
         """运行 --screenshot，解析控件树并校验截图，供 Agent 自检界面。"""

@@ -7,7 +7,7 @@ import re
 from langchain_core.tools import tool
 
 from app.core.config import dump_json
-from app.modules.coding import diagnostics
+from app.modules.coding import diagnostics, repomap
 
 BUILD_COMMAND = re.compile(
     r"\b(?:dotnet\s+build|python\s+-m\s+compileall|npm\s+run\s+build|node\s+--check)\b",
@@ -18,6 +18,25 @@ TEST_COMMAND = re.compile(
     r"|python\s+-m\s+pytest|pytest|npm\s+test|node\s+--test)\b",
     re.IGNORECASE,
 )
+
+
+def _csharp_syntax_result(result, path, work):
+    if not str(path).lower().endswith(".cs"):
+        return result
+    try:
+        payload = json.loads(result)
+    except (TypeError, ValueError):
+        return result
+    try:
+        read = work.read_file(path)
+        errors = repomap.syntax_errors(read["content"])
+    except Exception:
+        return result
+    if not errors:
+        return result
+    payload["syntax_errors"] = errors
+    payload["next"] = "C# 语法错误，先修复再继续，不要忽略。"
+    return json.dumps(payload, ensure_ascii=False)
 
 
 def _record_command_check(checks, command, output, exit_code):
@@ -231,7 +250,8 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
     @tool
     async def write_file(path: str, content: str, expected_hash: str = "") -> str:
         """Create or overwrite a text file; expected_hash must match for existing files."""
-        return await run("write_file", work.write_file, path, content, expected_hash)
+        result = await run("write_file", work.write_file, path, content, expected_hash)
+        return _csharp_syntax_result(result, path, work)
 
     @tool
     async def edit_file(
@@ -242,7 +262,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
         replace_all: bool = False,
     ) -> str:
         """Replace exact text in a file; requires the version from read_project_file."""
-        return await run(
+        result = await run(
             "edit_file",
             work.edit_file,
             path,
@@ -255,6 +275,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
             ],
             expected_hash,
         )
+        return _csharp_syntax_result(result, path, work)
 
     @tool
     async def multi_edit(path: str, edits: list[dict], expected_hash: str) -> str:
@@ -262,7 +283,8 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
 
         Each edit is {"old": "...", "new": "...", "replace_all": false}.
         """
-        return await run("multi_edit", work.edit_file, path, edits, expected_hash)
+        result = await run("multi_edit", work.edit_file, path, edits, expected_hash)
+        return _csharp_syntax_result(result, path, work)
 
     @tool
     async def write_binary_file(path: str, content_base64: str, expected_hash: str = "") -> str:

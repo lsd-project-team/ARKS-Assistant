@@ -43,3 +43,9 @@ def test_repo_map_handles_empty_repo(tmp_path):
     result = repomap.build(tmp_path)
     assert result["files"] == 0
     assert "C# 文件" in result["map"]
+
+
+def test_syntax_errors_detects_broken_csharp():
+    assert repomap.syntax_errors("public class A { public void M() { } }") == []
+    errors = repomap.syntax_errors("public class A { public void M( { } }")
+    assert errors and errors[0]["line"] >= 1

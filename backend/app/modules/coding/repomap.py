@@ -61,6 +61,37 @@ def _symbols(parser, text):
     return found
 
 
+def syntax_errors(text):
+    """快速语法检查：返回 ERROR/MISSING 节点（行号 + 说明），不替代编译。"""
+    parser = _parser()
+    tree = parser.parse(text.encode("utf-8", "replace"))
+    if not tree.root_node.has_error:
+        return []
+    errors = []
+    pending = [tree.root_node]
+    while pending and len(errors) < 10:
+        node = pending.pop()
+        if node.is_missing:
+            errors.append(
+                {
+                    "line": node.start_point.row + 1,
+                    "kind": "missing",
+                    "message": f"缺少 {node.type}",
+                }
+            )
+        elif node.is_error:
+            snippet = text[node.start_byte : node.end_byte][:80].replace("\n", " ")
+            errors.append(
+                {
+                    "line": node.start_point.row + 1,
+                    "kind": "error",
+                    "message": f"语法错误: {snippet}",
+                }
+            )
+        pending.extend(reversed(node.children))
+    return errors
+
+
 def csharp_files(root, limit=400):
     root = Path(root)
     files = []

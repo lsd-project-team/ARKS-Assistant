@@ -37,12 +37,13 @@
 - 生成/编码提示补充“大项目先 repo_map”。
 - 运行时间预算 900s：到时强制收尾，由独立评分判定交付，避免无限跑。
 - 命令输出编码：UTF-8 解码失败自动回退 GB18030，修复 Windows 中文命令输出乱码导致模型反复“修编码”的问题。
+- **编辑后 C# 语法诊断**：write/edit/multi_edit 后立即用 tree-sitter 检查 `.cs` 语法，把 `syntax_errors`（行号 + 缺失/错误片段）附在工具结果里，模型不必等到下一次 `verify` 才发现。
+- **验收通过自动 checkpoint**：`verify build/test` 成功后自动打 `verify-*` 检查点（Cline 式），失败可回滚到最近通过状态。
 - 大型 C# 用例 `project-large-csharp`：Core + CLI + 16 项自测（9 个 .cs 文件）的 .NET 8 解决方案，隐藏验收跑 CLI 验证补货/低库存/总值/错误码；已加入 11 用例矩阵。
 
 ## 后续优先级
 
-- **P1**：`repo_map` 结果注入系统提示（无需模型主动调用）；按解决方案选择构建目标；编辑后 `dotnet build` 增量诊断（可复用 `verify build`）。
-- **P1**：`verify`/`check_ui` 成功后自动打 checkpoint（Cline 式），失败可 `restore` 到最近通过状态。
+- **P1**：按解决方案选择构建目标（只构建改动项目）；`repo_map` 结果进一步参与上下文选择。
 - **P2**：更大规模 C# 解决方案（8+ 工程、30+ 自测）与“跨工程重构”任务；GitHub Actions 实跑与云端矩阵；命令沙箱/审批策略对齐 Codex。
 
 ## 参考
