@@ -133,3 +133,37 @@ def test_compile_check_requires_csharp_project(tmp_path):
     result = workspace.compile_check()
     assert result["ok"] is False
     assert "没有 C# 工程" in result["error"]
+
+
+def test_compile_check_caches_until_sources_change(tmp_path, monkeypatch):
+    (tmp_path / "App.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>",
+        encoding="utf-8",
+    )
+    source = tmp_path / "A.cs"
+    source.write_text("public class A { }\n", encoding="utf-8")
+    workspace = make_workspace(tmp_path)
+    calls = []
+
+    def fake_verify(kind, timeout=None):
+        calls.append(1)
+        return {
+            "ok": True,
+            "command": "dotnet build",
+            "summary": "ok",
+            "errors": [],
+            "warnings": [],
+        }
+
+    monkeypatch.setattr(workspace, "verify", fake_verify)
+    first = workspace.compile_check()
+    second = workspace.compile_check()
+    assert len(calls) == 1
+    assert second.get("cached") is True
+    assert first["ok"] is True
+
+    source.write_text("public class A { public int X; }\n", encoding="utf-8")
+    third = workspace.compile_check()
+    assert len(calls) == 2
+    assert third.get("cached") is None

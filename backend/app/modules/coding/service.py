@@ -561,6 +561,29 @@ class CodingWorkspace:
                 "errors": [],
                 "warnings": [],
             }
+        settings = self.load_settings()
+        build = settings.get("build_command") or self._build_command()
+        try:
+            mtimes = [
+                source.stat().st_mtime_ns
+                for source in self.root.rglob("*")
+                if source.is_file() and source.suffix.lower() in {".cs", ".csproj", ".sln"}
+            ]
+        except OSError:
+            mtimes = []
+        signature = {
+            "version": 1,
+            "build": build,
+            "path": path,
+            "max_mtime": max(mtimes) if mtimes else 0,
+        }
+        cache = self.data / "coding" / "compile_cache" / f"{self.project_id}.json"
+        try:
+            cached = json.loads(cache.read_text(encoding="utf-8"))
+            if cached.get("signature") == signature and isinstance(cached.get("result"), dict):
+                return {**cached["result"], "cached": True}
+        except (OSError, ValueError):
+            pass
         result = self.verify("build", timeout=timeout)
         errors = list(result.get("errors") or [])
         warnings = list(result.get("warnings") or [])
@@ -573,7 +596,7 @@ class CodingWorkspace:
 
             errors = [item for item in errors if belongs(item)]
             warnings = [item for item in warnings if belongs(item)]
-        return {
+        payload = {
             "ok": bool(result.get("ok")) and not errors,
             "path": path,
             "command": result.get("command", ""),
@@ -582,6 +605,15 @@ class CodingWorkspace:
             "warnings": warnings,
             "log_tail": result.get("log_tail", ""),
         }
+        try:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(
+                json.dumps({"signature": signature, "result": payload}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+        except OSError:
+            pass
+        return payload
 
     def check_ui(self, tabs=2, timeout=150):
         """运行 --screenshot，解析控件树并校验截图，供 Agent 自检界面。"""
