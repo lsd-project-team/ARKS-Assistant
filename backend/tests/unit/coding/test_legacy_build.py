@@ -63,3 +63,28 @@ def test_check_app_rejects_paths_outside_project(tmp_path):
         workspace.check_app(r"..\evil.exe")
     with pytest.raises(ValueError):
         workspace.check_app(r"bin\Debug\missing.exe")
+
+
+def test_csharp_project_takes_priority_over_node(tmp_path):
+    (tmp_path / "package.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "App.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>",
+        encoding="utf-8",
+    )
+    assert make_workspace(tmp_path)._build_command() == 'dotnet build "App.csproj"'
+
+
+def test_csharp_test_project_enables_dotnet_test(tmp_path):
+    (tmp_path / "Demo.sln").write_text("Microsoft Visual Studio Solution File", encoding="utf-8")
+    (tmp_path / "App.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>",
+        encoding="utf-8",
+    )
+    (tmp_path / "App.Tests.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>",
+        encoding="utf-8",
+    )
+    assert make_workspace(tmp_path)._default_test_command() == 'dotnet test "Demo.sln"'

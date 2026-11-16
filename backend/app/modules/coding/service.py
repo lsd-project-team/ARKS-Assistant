@@ -267,6 +267,23 @@ class CodingWorkspace:
             except OSError:
                 pass
 
+    def has_source_files(self):
+        """工作区是否已有源码（用于从零生成的空转保护，不依赖具体语言）。"""
+        ignored = {"bin", "obj", ".git", "node_modules", ".vs", "dist", "build"}
+        extensions = {
+            ".cs", ".csproj", ".sln", ".py", ".js", ".ts", ".tsx", ".jsx",
+            ".go", ".rs", ".java", ".kt", ".cpp", ".cc", ".h", ".hpp",
+            ".rb", ".php", ".swift", ".vue", ".html", ".css",
+        }
+        for path in self.root.rglob("*"):
+            if not path.is_file():
+                continue
+            if any(part in ignored for part in path.parts):
+                continue
+            if path.suffix.lower() in extensions:
+                return True
+        return False
+
     def repo_map(self, max_tokens=1500):
         """生成 C# 仓库符号地图；在子进程中解析，避免 tree-sitter 崩溃拖垮服务。"""
         backend = Path(__file__).resolve().parents[3]
@@ -406,6 +423,7 @@ class CodingWorkspace:
         project = self._project_file()
         if project is None:
             raise ValueError("项目内找不到 .csproj，请先创建工程或使用 scaffold_winforms")
+        relative_project = project.relative_to(self.root).as_posix()
         shots, outputs, output, missing = [], [], "", []
         for index in range(max(1, min(int(tabs), 4))):
             relative = f"shots/ui_tab{index}.png"
@@ -413,7 +431,7 @@ class CodingWorkspace:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.unlink(missing_ok=True)
             result = self.run_command(
-                f'dotnet run --project "{project.name}" -- --screenshot "{relative}" {index}',
+                f'dotnet run --project "{relative_project}" -- --screenshot "{relative}" {index}',
                 timeout=timeout,
                 approved=False,
                 wait=False,
@@ -587,8 +605,17 @@ class CodingWorkspace:
         }
 
     def _project_file(self):
-        candidates = sorted(path for path in self.root.glob("*.csproj") if path.is_file())
-        return candidates[0] if candidates else None
+        """找可运行的 C# 工程：优先非测试工程，允许工程位于子目录。"""
+        ignored = {"bin", "obj", ".git", "node_modules", ".vs"}
+        projects = [
+            path
+            for path in sorted(self.root.rglob("*.csproj"))
+            if not any(part in ignored for part in path.parts)
+        ]
+        if not projects:
+            return None
+        runnable = [path for path in projects if "test" not in path.stem.lower()]
+        return (runnable or projects)[0]
 
     def _test_command(self):
         """没有配置测试命令时，优先运行 tests/ 下的控制台自测工程，其次回退到框架检测。"""
@@ -659,50 +686,68 @@ class CodingWorkspace:
                 return path
         return None
 
+    def _csharp_targets(self):
+        """收集 C# 解决方案与工程，忽略构建产物和依赖目录。"""
+        ignored = {"bin", "obj", ".git", "node_modules", ".vs"}
+        solutions = [
+            path
+            for path in sorted(self.root.rglob("*.sln"))
+            if not any(part in ignored for part in path.parts)
+        ]
+        projects = [
+            path
+            for path in sorted(self.root.rglob("*.csproj"))
+            if not any(part in ignored for part in path.parts)
+        ]
+        return solutions, projects
+
     def _build_command(self):
-        """按项目文件判断构建方式，避免把 Python/Node 项目误跑成 dotnet build。"""
-        root = self.root
-        if (root / "package.json").is_file():
-            return "npm run build --if-present"
-        if (
-            any(
-                (root / name).is_file()
-                for name in ("pyproject.toml", "requirements.txt", "setup.py")
-            )
-            or any(root.glob("*.py"))
-        ):
-            return "python -m compileall -q ."
-        legacy = self._legacy_solution()
-        if legacy is not None:
+        """按项目文件判断构建方式：显式 C# 工程优先，再回退 Node/Python。"""
+        solutions, projects = self._csharp_targets()
+        legacy = [path for path in projects if self._is_legacy_csproj(path)]
+        if legacy:
             msbuild = self._msbuild_path()
             if msbuild:
-                relative = legacy.relative_to(self.root).as_posix()
+                target = solutions[0] if solutions else legacy[0]
+                relative = target.relative_to(self.root).as_posix()
                 return (
                     f'& "{msbuild}" "{relative}" /p:Configuration=Debug '
                     "/m /nologo /v:m"
                 )
-        solutions = [
-            path
-            for path in sorted(self.root.rglob("*.sln"))
-            if not any(part in {"bin", "obj", "node_modules"} for part in path.parts)
-        ]
         if solutions:
             relative = solutions[0].relative_to(self.root).as_posix()
             return f'dotnet build "{relative}"'
-        projects = [
-            path
-            for path in sorted(self.root.rglob("*.csproj"))
-            if not any(part in {"bin", "obj", "tests"} for part in path.parts)
-        ]
         if projects:
             relative = projects[0].relative_to(self.root).as_posix()
             return f'dotnet build "{relative}"'
+        if (self.root / "package.json").is_file():
+            return "npm run build --if-present"
+        if (
+            any(
+                (self.root / name).is_file()
+                for name in ("pyproject.toml", "requirements.txt", "setup.py")
+            )
+            or any(self.root.glob("*.py"))
+        ):
+            return "python -m compileall -q ."
         return ""
 
     def _default_test_command(self):
+        """有 C# 测试工程才用 dotnet test；老式 .NET Framework 工程需显式配置。"""
         root = self.root
-        if self._legacy_solution() is not None:
-            # 老式 .NET Framework 工程没有统一的测试命令，需在项目设置里显式配置。
+        solutions, projects = self._csharp_targets()
+        if any(self._is_legacy_csproj(path) for path in projects):
+            return ""
+        test_projects = [
+            path for path in projects if "test" in path.stem.lower()
+        ]
+        if test_projects:
+            if solutions:
+                relative = solutions[0].relative_to(root).as_posix()
+                return f'dotnet test "{relative}"'
+            relative = test_projects[0].relative_to(root).as_posix()
+            return f'dotnet test "{relative}"'
+        if projects:
             return ""
         if (root / "package.json").is_file():
             return "npm test"
@@ -712,7 +757,7 @@ class CodingWorkspace:
             or (root / "tests").is_dir()
         ):
             return "python -m pytest -q"
-        return "dotnet test"
+        return ""
 
     def scaffold(self, template="winforms", values=None, path="."):
         """把经验证的界面骨架写入空目录；已有源码的目录拒绝覆盖。"""

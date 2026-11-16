@@ -327,7 +327,7 @@ class AgentGraphBuilder:
                             emit,
                             total_limit=400 if generation else 150,
                             require_source=generation
-                            and not policy.get("ui_required", False),
+                            and not self.coding.has_source_files(),
                         )
                     ]
                     if run_id and not inspection

@@ -469,6 +469,19 @@ def detect_project(root):
         return {}
     if any(name.endswith((".sln", ".csproj")) for name in names):
         return {"language": ".NET", "build": "dotnet build", "test": "dotnet test"}
+    ignored = {"bin", "obj", ".git", "node_modules", ".vs"}
+    csharp = [
+        path
+        for path in root.rglob("*.csproj")
+        if not any(part in ignored for part in path.parts)
+    ]
+    if csharp:
+        tests = [path for path in csharp if "test" in path.stem.lower()]
+        return {
+            "language": ".NET",
+            "build": "dotnet build",
+            "test": "dotnet test" if tests else "",
+        }
     if "package.json" in names:
         scripts = {}
         try:

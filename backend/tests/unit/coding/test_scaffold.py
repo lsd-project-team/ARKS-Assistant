@@ -34,7 +34,7 @@ def test_dotnet_project_commands_are_detected(tmp_path):
     work, root = make_workspace(tmp_path)
     (root / "App.csproj").write_text("<Project />", encoding="utf-8")
     assert work._build_command() == 'dotnet build "App.csproj"'
-    assert work._default_test_command() == "dotnet test"
+    assert work._default_test_command() == ""
 
 
 def test_deliverables_require_readme_and_files_named_in_task(tmp_path):
