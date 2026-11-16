@@ -1,6 +1,7 @@
 """编码工具重复调用保护：同样的检查或命令连续执行三次就拦截，避免空转。"""
 
 import json
+import os
 import re
 
 from langchain.agents.middleware.types import AgentMiddleware
@@ -55,13 +56,22 @@ def _is_source_write(name, args):
     return path.endswith(SOURCE_EXTENSIONS)
 
 
+def _env_int(name, default):
+    try:
+        return max(1, int(os.environ.get(name, default)))
+    except (TypeError, ValueError):
+        return default
+
+
 class CodingRepeatGuard(AgentMiddleware):
     def __init__(self, emit, limit=3, total_limit=150, require_source=False, explore_limit=20):
         self.emit = emit
-        self.limit = limit
-        self.total_limit = total_limit
+        self.limit = _env_int("CODING_REPEAT_LIMIT", limit)
+        self.total_limit = _env_int("CODING_REPEAT_TOTAL_LIMIT", total_limit)
+        self.explore_limit = _env_int("CODING_SOURCE_EXPLORE_LIMIT", explore_limit)
+        self.read_block_at = _env_int("CODING_REPEAT_READ_BLOCK", 6)
+        self.command_block_at = _env_int("CODING_REPEAT_COMMAND_BLOCK", 10)
         self.require_source = require_source
-        self.explore_limit = explore_limit
         self.source_written = False
         self.total = 0
         self.counts = {}
@@ -279,7 +289,7 @@ class CodingRepeatGuard(AgentMiddleware):
             norm_key = (name, normalized)
             norm_count = self.norm_counts.get(norm_key, 0) + 1
             self.norm_counts[norm_key] = norm_count
-            if norm_count >= 10:
+            if norm_count >= self.command_block_at:
                 self.emit("coding_repeat_normalized_blocked", {"command": command[:120]})
                 return _blocked(
                     request,
@@ -301,7 +311,7 @@ class CodingRepeatGuard(AgentMiddleware):
                 self.cached[key] = _reusable(result)
             return result
         if key in self.cached:
-            if count >= 6:
+            if count >= self.read_block_at:
                 self.force_action = True
                 self.emit("coding_repeat_read_blocked", {"tool": name, "count": count})
                 return _blocked(
