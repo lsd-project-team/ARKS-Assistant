@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -17,7 +18,7 @@ from pathlib import Path
 from app.core.config import PROJECT_ROOT
 from app.core.identifiers import now_iso
 from app.infrastructure.images import MAX_IMAGE_BYTES, inspect
-from app.modules.coding import diagnostics, files, ui_checks
+from app.modules.coding import diagnostics, files, repomap, ui_checks
 from app.modules.coding.executor import Executor
 from app.modules.coding.snapshots import Snapshots
 
@@ -284,39 +285,170 @@ class CodingWorkspace:
                 return True
         return False
 
-    def repo_map(self, max_tokens=1500):
-        """生成 C# 仓库符号地图；在子进程中解析，避免 tree-sitter 崩溃拖垮服务。"""
+    def _repomap_run(self, files, max_tokens):
+        """在子进程里为指定文件生成地图；崩溃时返回 None，不拖垮主服务。"""
         backend = Path(__file__).resolve().parents[3]
+        temp_path = None
+        args = [
+            sys.executable,
+            "-m",
+            "app.modules.coding.repomap_cli",
+            str(self.root),
+            str(int(max_tokens)),
+        ]
+        if files is not None:
+            handle = tempfile.NamedTemporaryFile(
+                "w", suffix=".json", delete=False, encoding="utf-8"
+            )
+            json.dump(
+                [path.relative_to(self.root).as_posix() for path in files],
+                handle,
+            )
+            handle.close()
+            temp_path = handle.name
+            args.append(temp_path)
+        try:
+            completed = subprocess.run(
+                args,
+                cwd=backend,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=120,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return None
+        finally:
+            if temp_path:
+                Path(temp_path).unlink(missing_ok=True)
+        if completed.returncode != 0:
+            return None
+        try:
+            result = json.loads(completed.stdout)
+        except ValueError:
+            return None
+        return result if isinstance(result, dict) else None
+
+    def _repomap_probe(self, files):
+        """只解析指定文件，用于快速定位触发 tree-sitter 崩溃的文件。"""
+        backend = Path(__file__).resolve().parents[3]
+        handle = tempfile.NamedTemporaryFile(
+            "w", suffix=".json", delete=False, encoding="utf-8"
+        )
+        json.dump([path.relative_to(self.root).as_posix() for path in files], handle)
+        handle.close()
         try:
             completed = subprocess.run(
                 [
                     sys.executable,
                     "-m",
                     "app.modules.coding.repomap_cli",
+                    "--probe",
                     str(self.root),
-                    str(int(max_tokens)),
+                    handle.name,
                 ],
                 cwd=backend,
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
                 errors="replace",
-                timeout=60,
+                timeout=120,
             )
         except (OSError, subprocess.TimeoutExpired):
-            return {"map": "（仓库地图生成超时）", "files": 0, "symbols": 0, "shown": 0}
-        if completed.returncode != 0:
-            return {
-                "map": "（仓库地图生成失败，已隔离）",
-                "files": 0,
-                "symbols": 0,
-                "shown": 0,
-            }
+            return False
+        finally:
+            Path(handle.name).unlink(missing_ok=True)
+        return completed.returncode == 0
+
+    def repo_map(self, max_tokens=1500):
+        """生成 C# 仓库符号地图；坏文件用子进程二分定位后跳过并缓存，保留其余地图。"""
+        files = repomap.csharp_files(self.root)
+        if not files:
+            return {"map": "（没有找到 C# 文件）", "files": 0, "symbols": 0, "shown": 0}
+        result_cache = self.data / "coding" / "repomap_cache" / f"{self.project_id}.json"
+        bad_cache = self.data / "coding" / "repomap_bad" / f"{self.project_id}.json"
         try:
-            result = json.loads(completed.stdout)
-        except ValueError:
-            return {"map": "（仓库地图输出无效）", "files": 0, "symbols": 0, "shown": 0}
-        return result if isinstance(result, dict) else {"map": "", "files": 0, "shown": 0}
+            mtimes = [path.stat().st_mtime_ns for path in files]
+        except OSError:
+            mtimes = []
+        signature = {
+            "version": 3,
+            "count": len(files),
+            "max_mtime": max(mtimes) if mtimes else 0,
+        }
+        try:
+            cached = json.loads(result_cache.read_text(encoding="utf-8"))
+            if cached.get("signature") == signature and isinstance(cached.get("result"), dict):
+                return cached["result"]
+        except (OSError, ValueError):
+            pass
+        try:
+            bad = set(json.loads(bad_cache.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            bad = set()
+        healthy = [
+            path
+            for path in files
+            if path.relative_to(self.root).as_posix() not in bad
+        ]
+        result = self._repomap_run(healthy, max_tokens)
+        if result is not None:
+            self._store_repo_map(result_cache, signature, result)
+            return result
+
+        for _ in range(5):
+            remaining = [
+                path
+                for path in healthy
+                if path.relative_to(self.root).as_posix() not in bad
+            ]
+            if not remaining:
+                break
+            final = self._repomap_run(remaining, max_tokens)
+            if final is not None:
+                self._save_bad(bad_cache, bad)
+                self._store_repo_map(result_cache, signature, final)
+                return final
+            stack = [remaining]
+            runs = 0
+            while stack and runs < 300:
+                chunk = stack.pop()
+                runs += 1
+                if self._repomap_probe(chunk):
+                    continue
+                if len(chunk) == 1:
+                    bad.add(chunk[0].relative_to(self.root).as_posix())
+                else:
+                    middle = len(chunk) // 2
+                    stack.append(chunk[:middle])
+                    stack.append(chunk[middle:])
+            self._save_bad(bad_cache, bad)
+
+        return {
+            "map": "（仓库地图生成失败：无法定位或跳过崩溃文件）",
+            "files": 0,
+            "symbols": 0,
+            "shown": 0,
+            "skipped": sorted(bad),
+        }
+
+    def _save_bad(self, cache, bad):
+        try:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(json.dumps(sorted(bad), ensure_ascii=False), encoding="utf-8")
+        except OSError:
+            pass
+
+    def _store_repo_map(self, cache, signature, result):
+        try:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(
+                json.dumps({"signature": signature, "result": result}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+        except OSError:
+            pass
 
     def read_image(self, path):
         """读取项目内图片用于模型直接查看；只读操作，不要求项目可写。"""

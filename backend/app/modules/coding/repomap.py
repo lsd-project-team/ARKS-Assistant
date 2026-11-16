@@ -29,7 +29,8 @@ def _parser():
 
 
 def _signature(text, node):
-    lines = text[node.start_byte : node.end_byte].splitlines()
+    raw = text.encode("utf-8")[node.start_byte : node.end_byte]
+    lines = raw.decode("utf-8", "replace").splitlines()
     if not lines:
         return ""
     first = re.sub(r"\s+", " ", lines[0]).strip()
@@ -111,20 +112,30 @@ def csharp_files(root, limit=400):
     return files
 
 
-def build(root, max_tokens=1500):
+def build(root, max_tokens=1500, files=None):
     root = Path(root)
-    files = csharp_files(root)
-    if not files:
+    if files is None:
+        selected = csharp_files(root)
+    else:
+        selected = []
+        for relative in files:
+            path = (root / relative).resolve()
+            if path.is_file() and path.suffix == ".cs":
+                selected.append(path)
+    if not selected:
         return {"map": "（没有找到 C# 文件）", "files": 0, "symbols": 0, "shown": 0}
     parser = _parser()
     texts = {}
     definitions = {}
-    for path in files:
+    for path in selected:
         try:
             text = path.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
-        relative = path.relative_to(root).as_posix()
+        try:
+            relative = path.relative_to(root).as_posix()
+        except ValueError:
+            relative = path.name
         texts[relative] = text
         definitions[relative] = _symbols(parser, text)
 
@@ -163,7 +174,7 @@ def build(root, max_tokens=1500):
     for relative, symbol in chosen:
         grouped.setdefault(relative, []).append(symbol)
     lines = [
-        f"# C# 仓库地图：{len(files)} 个文件，{sum(len(v) for v in definitions.values())} 个符号，"
+        f"# C# 仓库地图：{len(texts)} 个文件，{sum(len(v) for v in definitions.values())} 个符号，"
         f"展示 {len(chosen)} 个（按引用热度排序）"
     ]
     for relative in sorted(grouped):
@@ -172,7 +183,7 @@ def build(root, max_tokens=1500):
             lines.append(f"  {symbol['signature']}")
     return {
         "map": "\n".join(lines),
-        "files": len(files),
+        "files": len(texts),
         "symbols": sum(len(value) for value in definitions.values()),
         "shown": len(chosen),
         "truncated": len(chosen) < sum(len(value) for value in definitions.values()),
