@@ -117,6 +117,7 @@ GENERATION_GUIDANCE = """
    check_ui 失败时先看返回的 issues 与 log_tail：启动异常（尤其是 TabPage/Panel 结构错误）
    必须先修，修完重新 check_ui。没有界面的项目只需要 verify build/test。
    legacy WinForms 可用 check_app 启动构建产物确认进程/主窗口存活。
+   C# 编辑后可用 compile_check 获取编译诊断（可传 path 只看该文件）。
    空目录生成任务：用少量工具完成截图/数据库侦察后，立即创建工程骨架并构建最小可运行版本；
    不要用打印数字、倒计时或反复探查来等待。
    .NET 9 WinForms 自定义控件属性若报 WFO1000，加
@@ -222,6 +223,23 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
                 "issues": (result.get("issues") or [])[:10],
                 "shots": result.get("shots", []),
                 "notes": result.get("notes", []),
+            },
+        )
+        return dump_json(result)
+
+    @tool
+    async def compile_check(path: str = "") -> str:
+        """Build the C# project and return compile diagnostics, optionally only for one file."""
+        try:
+            result = await asyncio.to_thread(work.compile_check, path)
+        except Exception as error:
+            result = {"ok": False, "error": str(error)}
+        emit(
+            "compile_check",
+            {
+                "ok": bool(result.get("ok")),
+                "path": path,
+                "errors": len(result.get("errors") or []),
             },
         )
         return dump_json(result)
@@ -431,6 +449,7 @@ def coding_tools(work, thread_id, emit, *, run_id="", checks=None):
         repo_map,
         view_image,
         verify,
+        compile_check,
         check_ui,
         check_app,
         scaffold_winforms,

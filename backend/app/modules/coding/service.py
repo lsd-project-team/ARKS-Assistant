@@ -551,6 +551,38 @@ class CodingWorkspace:
                 pass
         return payload
 
+    def compile_check(self, path="", timeout=300):
+        """构建 C# 工程并返回编译诊断；path 非空时只保留该文件的诊断。"""
+        _, projects = self._csharp_targets()
+        if not projects:
+            return {
+                "ok": False,
+                "error": "当前项目没有 C# 工程，无法做编译诊断",
+                "errors": [],
+                "warnings": [],
+            }
+        result = self.verify("build", timeout=timeout)
+        errors = list(result.get("errors") or [])
+        warnings = list(result.get("warnings") or [])
+        if path:
+            normalized = path.replace("\\", "/").lstrip("./").lower()
+
+            def belongs(item):
+                file = str(item.get("file") or "").replace("\\", "/").lower()
+                return normalized in file
+
+            errors = [item for item in errors if belongs(item)]
+            warnings = [item for item in warnings if belongs(item)]
+        return {
+            "ok": bool(result.get("ok")) and not errors,
+            "path": path,
+            "command": result.get("command", ""),
+            "summary": result.get("summary", ""),
+            "errors": errors,
+            "warnings": warnings,
+            "log_tail": result.get("log_tail", ""),
+        }
+
     def check_ui(self, tabs=2, timeout=150):
         """运行 --screenshot，解析控件树并校验截图，供 Agent 自检界面。"""
         project = self._project_file()

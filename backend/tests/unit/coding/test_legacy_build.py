@@ -100,3 +100,36 @@ def test_multiple_projects_without_solution_build_all(tmp_path):
     command = make_workspace(tmp_path)._build_command()
     assert "Core.csproj" in command and "Cli.csproj" in command
     assert "foreach" in command
+
+
+def test_compile_check_filters_diagnostics_by_file(tmp_path, monkeypatch):
+    (tmp_path / "App.csproj").write_text(
+        '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
+        "<TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>",
+        encoding="utf-8",
+    )
+    workspace = make_workspace(tmp_path)
+    monkeypatch.setattr(
+        workspace,
+        "verify",
+        lambda kind, timeout=None: {
+            "ok": False,
+            "command": "dotnet build",
+            "summary": "1 error",
+            "errors": [
+                {"file": "A.cs", "line": 1, "code": "CS1", "message": "a"},
+                {"file": "B.cs", "line": 2, "code": "CS2", "message": "b"},
+            ],
+            "warnings": [],
+        },
+    )
+    result = workspace.compile_check("A.cs")
+    assert [item["file"] for item in result["errors"]] == ["A.cs"]
+    assert result["ok"] is False
+
+
+def test_compile_check_requires_csharp_project(tmp_path):
+    workspace = make_workspace(tmp_path)
+    result = workspace.compile_check()
+    assert result["ok"] is False
+    assert "没有 C# 工程" in result["error"]
