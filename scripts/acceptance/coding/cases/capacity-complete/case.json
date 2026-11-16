@@ -1,0 +1,12 @@
+{
+  "name": "capacity-complete",
+  "title": "补完产能统计 7 个页面与导出",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["CapacityStats/MainForm.cs", "README.md"],
+  "min_tests": 0,
+  "seed": "seed",
+  "ui": true,
+  "auto_scaffold": false
+}

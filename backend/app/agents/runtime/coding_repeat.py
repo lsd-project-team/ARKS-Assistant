@@ -69,6 +69,7 @@ class CodingRepeatGuard(AgentMiddleware):
         self.write_counts = {}
         self.write_blocked = 0
         self.force_build = False
+        self.force_action = False
         self.cached = {}
         self.blocked_streak = 0
 
@@ -89,6 +90,7 @@ class CodingRepeatGuard(AgentMiddleware):
             and not normalized
             and not (self.require_source and not self.source_written)
             and not self.force_build
+            and not self.force_action
         ):
             return await handler(request)
         if normalized:
@@ -97,6 +99,11 @@ class CodingRepeatGuard(AgentMiddleware):
                 f"\n【空转保护】检测到 {tool} 的同类命令（忽略数字差异）已执行 {count} 次："
                 f"{args[:120]}。不要再用打印数字/倒计时/重复探查等待；"
                 "立即创建或修改工程文件并构建一个最小可运行版本，或结束并说明未完成项。"
+            )
+        elif self.force_action:
+            guidance = (
+                "\n【停止重复读取】同一内容已重复读取多次。不要再读同一文件；"
+                "立即写文件、修改代码或运行 verify build，然后继续。"
             )
         elif self.force_build:
             guidance = (
@@ -132,6 +139,39 @@ class CodingRepeatGuard(AgentMiddleware):
 
     async def awrap_tool_call(self, request, handler):
         name = request.tool_call["name"]
+        if self.force_action and name in {
+            "read_project_file",
+            "list_files",
+            "grep",
+            "read_source",
+            "search_files",
+            "find_files",
+        }:
+            return _blocked(
+                request,
+                name,
+                {
+                    "ok": False,
+                    "note": (
+                        "重复读取已触发限制。现在必须先写文件/修改代码或构建；"
+                        "写文件或 verify build 成功后才能继续读。"
+                    ),
+                },
+            )
+        if self.force_action and name == "run_command":
+            command = str(request.tool_call.get("args", {}).get("command", "")).lower()
+            if "build" not in command and "verify" not in command:
+                return _blocked(
+                    request,
+                    name,
+                    {
+                        "ok": False,
+                        "note": (
+                            "重复命令已触发限制。不要继续跑同一命令；"
+                            "先修改文件，或执行构建（dotnet build / verify build）。"
+                        ),
+                    },
+                )
         if self.force_build and name in {"write_file", "edit_file", "multi_edit"}:
             return _blocked(
                 request,
@@ -150,6 +190,7 @@ class CodingRepeatGuard(AgentMiddleware):
         ):
             self.force_build = False
             self.write_blocked = 0
+            self.force_action = False
         if name in GUARDED or name in PROGRESS:
             self.total += 1
             if self.total > self.total_limit:
@@ -174,6 +215,7 @@ class CodingRepeatGuard(AgentMiddleware):
             self.blocked_streak = 0
             if name in {"write_file", "edit_file", "multi_edit"}:
                 args = request.tool_call.get("args", {})
+                self.force_action = False
                 import hashlib
 
                 content = str(args.get("content", args.get("new_string", "")))
@@ -259,6 +301,20 @@ class CodingRepeatGuard(AgentMiddleware):
                 self.cached[key] = _reusable(result)
             return result
         if key in self.cached:
+            if count >= 6:
+                self.force_action = True
+                self.emit("coding_repeat_read_blocked", {"tool": name, "count": count})
+                return _blocked(
+                    request,
+                    name,
+                    {
+                        "ok": False,
+                        "note": (
+                            f"同一读取已重复 {count} 次，停止继续读。"
+                            "立即写文件/修改代码或运行 verify build。"
+                        ),
+                    },
+                )
             # 重复读取直接返回上次内容，但必须换成当前调用的 tool_call_id，
             # 否则会出现“tool_result 找不到对应 tool_use”的 400。
             self.emit("coding_repeat_cached", {"tool": name, "count": count})
