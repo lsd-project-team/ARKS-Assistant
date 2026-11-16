@@ -88,3 +88,15 @@ def test_csharp_test_project_enables_dotnet_test(tmp_path):
         encoding="utf-8",
     )
     assert make_workspace(tmp_path)._default_test_command() == 'dotnet test "Demo.sln"'
+
+
+def test_multiple_projects_without_solution_build_all(tmp_path):
+    for name in ("Core", "Cli"):
+        (tmp_path / f"{name}.csproj").write_text(
+            '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
+            "<TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>",
+            encoding="utf-8",
+        )
+    command = make_workspace(tmp_path)._build_command()
+    assert "Core.csproj" in command and "Cli.csproj" in command
+    assert "foreach" in command

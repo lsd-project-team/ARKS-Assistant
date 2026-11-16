@@ -1,5 +1,6 @@
 """项目级编码工作区：文件、快照、命令、审批与设置。"""
 
+import glob
 import hashlib
 import json
 import os
@@ -792,19 +793,14 @@ class CodingWorkspace:
                         return str(candidate)
             except (OSError, subprocess.TimeoutExpired):
                 pass
-        for candidate in (
-            Path(r"D:\VisualStudio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"),
-            Path(
-                r"C:\Program Files\Microsoft Visual Studio\2022\Community"
-                r"\MSBuild\Current\Bin\MSBuild.exe"
-            ),
-            Path(
-                r"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
-                r"\MSBuild\Current\Bin\MSBuild.exe"
-            ),
+        for pattern in (
+            r"D:\VisualStudio\*\*\MSBuild\Current\Bin\MSBuild.exe",
+            r"C:\Program Files\Microsoft Visual Studio\*\*\MSBuild\Current\Bin\MSBuild.exe",
+            r"C:\Program Files (x86)\Microsoft Visual Studio\*\*\MSBuild\Current\Bin\MSBuild.exe",
         ):
-            if candidate.is_file():
-                return str(candidate)
+            matches = sorted(glob.glob(pattern))
+            if matches:
+                return matches[-1]
         return shutil.which("msbuild") or ""
 
     def _legacy_solution(self):
@@ -833,6 +829,22 @@ class CodingWorkspace:
         ]
         return solutions, projects
 
+    def _multi_build_command(self, runner, projects):
+        """没有 sln 时的多工程构建：逐个构建，任一失败即返回该退出码。"""
+        targets = ", ".join(
+            f'"{path.relative_to(self.root).as_posix()}"' for path in projects
+        )
+        if runner == "dotnet":
+            return (
+                f"& {{ foreach ($p in @({targets})) {{ & dotnet build $p; "
+                "if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } } }"
+            )
+        return (
+            f'& {{ foreach ($p in @({targets})) {{ & "{runner}" $p '
+            "/p:Configuration=Debug /m /nologo /v:m; "
+            "if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } } }"
+        )
+
     def _build_command(self):
         """按项目文件判断构建方式：显式 C# 工程优先，再回退 Node/Python。"""
         solutions, projects = self._csharp_targets()
@@ -840,18 +852,27 @@ class CodingWorkspace:
         if legacy:
             msbuild = self._msbuild_path()
             if msbuild:
-                target = solutions[0] if solutions else legacy[0]
-                relative = target.relative_to(self.root).as_posix()
-                return (
-                    f'& "{msbuild}" "{relative}" /p:Configuration=Debug '
-                    "/m /nologo /v:m"
-                )
+                if solutions:
+                    relative = solutions[0].relative_to(self.root).as_posix()
+                    return (
+                        f'& "{msbuild}" "{relative}" /p:Configuration=Debug '
+                        "/m /nologo /v:m"
+                    )
+                if len(legacy) == 1:
+                    relative = legacy[0].relative_to(self.root).as_posix()
+                    return (
+                        f'& "{msbuild}" "{relative}" /p:Configuration=Debug '
+                        "/m /nologo /v:m"
+                    )
+                return self._multi_build_command(msbuild, legacy)
         if solutions:
             relative = solutions[0].relative_to(self.root).as_posix()
             return f'dotnet build "{relative}"'
         if projects:
-            relative = projects[0].relative_to(self.root).as_posix()
-            return f'dotnet build "{relative}"'
+            if len(projects) == 1:
+                relative = projects[0].relative_to(self.root).as_posix()
+                return f'dotnet build "{relative}"'
+            return self._multi_build_command("dotnet", projects)
         if (self.root / "package.json").is_file():
             return "npm run build --if-present"
         if (
@@ -877,8 +898,16 @@ class CodingWorkspace:
             if solutions:
                 relative = solutions[0].relative_to(root).as_posix()
                 return f'dotnet test "{relative}"'
-            relative = test_projects[0].relative_to(root).as_posix()
-            return f'dotnet test "{relative}"'
+            if len(test_projects) == 1:
+                relative = test_projects[0].relative_to(root).as_posix()
+                return f'dotnet test "{relative}"'
+            targets = ", ".join(
+                f'"{path.relative_to(root).as_posix()}"' for path in test_projects
+            )
+            return (
+                f"& {{ foreach ($p in @({targets})) {{ & dotnet test $p; "
+                "if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } } }"
+            )
         if projects:
             return ""
         if (root / "package.json").is_file():
