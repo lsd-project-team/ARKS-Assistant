@@ -23,6 +23,8 @@
 | `capacity-zero-pages` | **从空目录**生成多页面应用（导航切换 + 导出） | build 0/0、5 页截图 + PAGE 标题 + WEEK/MONTH + CSV 导出数据一致 |
 | `capacity-zero-dbapp` | **从空目录**生成直连 SQLite 的 .NET Framework WinForms 应用 | MSBuild 0/0、5 页截图、WEEK/MONTH 与 SQL 计算一致、导出数据一致 |
 | `capacity-zero-free` | **只给原应用截图 + 真实数据库**，无界面规格 | 自建 .NET 9 WinForms 构建通过、启动、UIA/源码 7 导航 + 周/月按钮 + 截图非空白 + SQLite 访问 |
+| `capacity-complete` | 逐页补完 7 个页面、故障分类库、CSV 导出 | 7 页截图互异、PAGE/WEEK/MONTH/SHIFT/FAULT/CLASS/CATEGORY 数字与库一致、两份 CSV 数据一致 |
+| `capacity-settings` | 设置持久化 | `--set-setting/--get-setting`、JSON 合并、缺失键退出码 2、重启读取、设置页显示 |
 | `cross-language` | Python service + Node client 跨语言仓库 | pytest 与 node:test 通过、隐藏验收同时验证 full_name/initials |
 | `refactor-python` | 重构现有订单统计模块（测试受保护） | pytest 全过、测试文件哈希未变、README、无 TODO |
 | `web-static` | 从零生成原生 JS 单页任务看板 | `node --check` 通过、`node --test` ≥6、界面三文件齐全、无 TODO |

@@ -1,0 +1,12 @@
+{
+  "name": "capacity-settings",
+  "title": "为产能统计应用增加设置持久化",
+  "build": "dotnet build",
+  "test": "echo skip",
+  "acceptance": "acceptance/check.py",
+  "require_files": ["CapacityStats/MainForm.cs", "README.md"],
+  "min_tests": 0,
+  "seed": "seed",
+  "ui": true,
+  "auto_scaffold": false
+}
