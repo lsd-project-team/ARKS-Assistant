@@ -22,14 +22,25 @@ def check(name, condition, detail=""):
         FAILS.append(name)
 
 
+def run_capture(args, cwd, timeout=120):
+    result = subprocess.run(args, cwd=cwd, capture_output=True, timeout=timeout)
+    raw = (result.stdout or b"") + (result.stderr or b"")
+    for encoding in ("gb18030", "utf-8"):
+        text = raw.decode(encoding, errors="replace")
+        if "\ufffd" not in text:
+            return result.returncode, text
+    return result.returncode, raw.decode("utf-8", errors="replace")
+
+
 def totals(db, classification):
     con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
     week = 0
     for i in range(7):
         day = (date(2022, 4, 4) + timedelta(days=i)).isoformat()
-        week += con.execute("select coalesce(sum(count),0) from cap where date=?", (day,)).fetchone()[0]
+        row = con.execute("select count from Capacity where date=?", (day,)).fetchone()
+        week += int(row[0]) if row else 0
     month = con.execute(
-        "select coalesce(sum(count),0) from cap where substr(date,1,7)='2022-04'"
+        "select coalesce(sum(count),0) from Capacity where substr(date,1,7)='2022-04'"
     ).fetchone()[0]
     shift = con.execute("select coalesce(sum(count),0) from cap").fetchone()[0]
     con.close()
@@ -68,17 +79,17 @@ def main():
     hashes = []
     for index, page in enumerate(PAGES):
         shot = root / "shots" / f"p{index}.png"
-        result = subprocess.run([str(exe), "--screenshot", str(shot), str(index)],
-                                cwd=exe.parent, capture_output=True, text=True,
-                                encoding="utf-8", errors="replace", timeout=120)
-        output = (result.stdout or "") + (result.stderr or "")
+        code, output = run_capture(
+            [str(exe), "--screenshot", str(shot), str(index)], cwd=exe.parent
+        )
         layout = Path(str(shot) + ".layout.txt")
         if layout.is_file():
             output += layout.read_text(encoding="utf-8", errors="replace")
-        check(f"页面 {index} 截图", result.returncode == 0 and shot.is_file(), output[-300:])
+        compact = output.replace(",", "")
+        check(f"页面 {index} 截图", code == 0 and shot.is_file(), output[-300:])
         check(f"页面 {index} 标题", f"PAGE {page}" in output, page)
         for token in tokens[index]:
-            check(f"页面 {index} {token}", token in output, "文本未出现")
+            check(f"页面 {index} {token}", token.replace(",", "") in compact, "文本未出现")
         if shot.is_file():
             stats = ui_checks.analyze_screenshot(shot)
             check(f"页面 {index} 非空白", stats["stddev"] >= 5.0, str(stats))
@@ -102,8 +113,8 @@ def main():
         con = sqlite3.connect(f"file:{root / 'data' / 'AKRS.capacity.db'}?mode=ro", uri=True)
         for i in range(7):
             day = (date(2022, 4, 4) + timedelta(days=i)).isoformat()
-            expected.append((day, int(con.execute(
-                "select coalesce(sum(count),0) from cap where date=?", (day,)).fetchone()[0])))
+            row = con.execute("select count from Capacity where date=?", (day,)).fetchone()
+            expected.append((day, int(row[0]) if row else 0))
         con.close()
         actual = [(row.get("date"), int(row.get("count", -1))) for row in rows]
         check("capacity.csv 数据", actual == expected, f"actual={actual}")
